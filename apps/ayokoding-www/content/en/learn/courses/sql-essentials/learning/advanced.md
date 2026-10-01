@@ -274,7 +274,7 @@ every query as it fires to make that cost visible.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Example 62: N+1 Query Problem Demonstrated
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: A, the, SELECT title FROM book WHERE author_id = 1 query 2, SELECT title FROM book WHERE author_id = 2 query 3, queries executed: 3 1 parent query + N child queries. Connections: A to the, A to SELECT title FROM book WHERE author_id = 1 query 2, A to SELECT title FROM book WHERE author_id = 2 query 3, SELECT title FROM book WHERE author_id = 1 query 2 to queries executed: 3 1 parent query + N child queries.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: SELECT id, name FROM author query 1 -- the parents, SELECT title FROM book WHERE author_id = 1 query 2, SELECT title FROM book WHERE author_id = 2 query 3, queries executed: 3 1 parent query + N child queries. Connections: SELECT id, name FROM author query 1 -- the parents to SELECT title FROM book WHERE author_id = 1 query 2, SELECT id, name FROM author query 1 -- the parents to SELECT title FROM book WHERE author_id = 2 query 3, SELECT title FROM book WHERE author_id = 1 query 2 to queries executed: 3 1 parent query + N child queries.
     A["SELECT id, name FROM<br/>author<br/>query 1 -- the<br/>parents"]:::blue
     A --> B["SELECT title FROM<br/>book<br/>WHERE author_id = 1<br/>query 2"]:::orange
     A --> C["SELECT title FROM<br/>book<br/>WHERE author_id = 2<br/>query 3"]:::teal
@@ -493,7 +493,7 @@ batched round trip -- 2 total queries, independent of how many authors there are
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 64: N+1 Fixed with a Batched Fetch
-    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: A, every, collect ids: 911, 293, C. Connections: A to every, C to every, A to collect ids: 911, 293, collect ids: 911, 293 to C.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: SELECT id, name FROM author query 1 -- every parent, collect ids: [1, 2], SELECT ... WHERE author_id IN (1, 2) query 2 -- every child, batched. Connections: SELECT id, name FROM author query 1 -- every parent to collect ids: [1, 2], collect ids: [1, 2] to SELECT ... WHERE author_id IN (1, 2) query 2 -- every child, batched.
     A["SELECT id, name FROM<br/>author<br/>query 1 -- every<br/>parent"]:::blue
     B["collect ids: #91;1,<br/>2#93;"]:::orange
     C["SELECT ... WHERE<br/>author_id IN #40;1,<br/>2#41;<br/>query 2 -- every<br/>child, batched"]:::teal
@@ -609,7 +609,7 @@ rejected by the engine itself.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 65: Composite Primary Key
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: book_tag 40book_id=1, tag_id=141, PRIMARY KEY 40book_id, tag_id41, duplicate pair REJECTED by the engine. Connections: book_tag 40book_id=1, tag_id=141 to PRIMARY KEY 40book_id, tag_id41, PRIMARY KEY 40book_id, tag_id41 to duplicate pair REJECTED by the engine.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: book_tag (book_id=1, tag_id=1), PRIMARY KEY (book_id, tag_id), duplicate pair REJECTED by the engine. Connections: book_tag (book_id=1, tag_id=1) to PRIMARY KEY (book_id, tag_id), PRIMARY KEY (book_id, tag_id) to duplicate pair REJECTED by the engine.
     A["book_tag<br/>#40;book_id=1,<br/>tag_id=1#41;"]:::blue
     B["PRIMARY KEY<br/>#40;book_id,<br/>tag_id#41;"]:::orange
     C["duplicate pair<br/>REJECTED by the<br/>engine"]:::teal
@@ -853,7 +853,7 @@ the work done since it was set, while the outer transaction itself stays open an
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 68: Savepoint Partial Rollback
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: BEGIN outer transaction opens, SAVEPOINT sp1, INSERT 40bad row41, ROLLBACK TO sp1 only the bad row undone. Connections: BEGIN outer transaction opens to SAVEPOINT sp1, SAVEPOINT sp1 to INSERT 40bad row41, INSERT 40bad row41 to ROLLBACK TO sp1 only the bad row undone.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: BEGIN outer transaction opens, SAVEPOINT sp1, INSERT (bad row), ROLLBACK TO sp1 only the bad row undone. Connections: BEGIN outer transaction opens to SAVEPOINT sp1, SAVEPOINT sp1 to INSERT (bad row), INSERT (bad row) to ROLLBACK TO sp1 only the bad row undone.
     A["BEGIN<br/>outer transaction<br/>opens"]:::blue
     B["SAVEPOINT sp1"]:::orange
     C["INSERT #40;bad<br/>row#41;"]:::teal
@@ -1163,7 +1163,7 @@ abandoned with `ROLLBACK` before either leg ever lands.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 72: Atomic Transfer
-    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: BEGIN, debit account A, credit account B, D, neither. Connections: BEGIN to debit account A, debit account A to credit account B, credit account B to D.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: BEGIN, debit account A, credit account B, commit() -- both legs visible OR rollback() -- neither leg visible. Connections: BEGIN to debit account A, debit account A to credit account B, credit account B to commit() -- both legs visible OR rollback() -- neither leg visible.
     A["BEGIN"]:::blue
     B["debit account A"]:::orange
     C["credit account B"]:::orange
@@ -1796,7 +1796,7 @@ not the raw rows -- down to authors with more than one book.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 79: Join, Group, and Having Report
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: author JOIN book, GROUP BY author.name, HAVING count40*41 > 1, authors with 2+ books. Connections: author JOIN book to GROUP BY author.name, GROUP BY author.name to HAVING count40*41 > 1, HAVING count40*41 > 1 to authors with 2+ books.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: author JOIN book, GROUP BY author.name, HAVING count(*) > 1, authors with 2+ books. Connections: author JOIN book to GROUP BY author.name, GROUP BY author.name to HAVING count(*) > 1, HAVING count(*) > 1 to authors with 2+ books.
     A["author JOIN book"]:::blue
     B["GROUP BY author.name"]:::orange
     C["HAVING<br/>count#40;*#41; > 1"]:::teal

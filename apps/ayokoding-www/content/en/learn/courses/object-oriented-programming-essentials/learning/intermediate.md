@@ -19,7 +19,7 @@ _ex-29 &middot; exercises co-07_
 %% Color Palette: Blue #0173B2, Teal #029E73
 flowchart LR
     accTitle: Example 29: A Read-Only Property
-    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: r.area looks like an attribute read, 64property area40self41 method runs on every access. Connections: r.area looks like an attribute read to 64property area40self41 method runs on every access (no 4041 needed).
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: r.area looks like an attribute read, @property area(self) method runs on every access. Connections: r.area looks like an attribute read to @property area(self) method runs on every access (no () needed).
     R["r.area<br/>looks like an<br/>attribute read"]:::blue
     M["#64;property<br/>area#40;self#41;<br/>method runs on every<br/>access"]:::teal
     R -->|"no #40;#41; needed"| M
@@ -425,7 +425,7 @@ _ex-34 &middot; exercises co-05_
 %% Color Palette: Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 34: A Consistent hash Alongside eq
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: same 40amount, currency41 fields, __eq__ compares fields 616162 True, __hash__ hashes SAME fields 616162 equal hash4041. Connections: same 40amount, currency41 fields to __eq__ compares fields 616162 True, same 40amount, currency41 fields to __hash__ hashes SAME fields 616162 equal hash4041.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: same (amount, currency) fields, __eq__ compares fields ==> True, __hash__ hashes SAME fields ==> equal hash(). Connections: same (amount, currency) fields to __eq__ compares fields ==> True, same (amount, currency) fields to __hash__ hashes SAME fields ==> equal hash().
     F["same #40;amount,<br/>currency#41; fields"]:::orange
     E["__eq__ compares<br/>fields<br/>#61;#61;#62; True"]:::teal
     H["__hash__ hashes SAME<br/>fields<br/>#61;#61;#62; equal<br/>hash#40;#41;"]:::teal
@@ -605,7 +605,7 @@ _ex-36 &middot; exercises co-06_
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
     accTitle: Example 36: A Frozen Dataclass Rejects Field Assignment
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: p 61 Point401, 241 64dataclass40frozen61True41, p.x 61 99, raises FrozenInstanceError. Connections: p 61 Point401, 241 64dataclass40frozen61True41 to p.x 61 99, p.x 61 99 to raises FrozenInstanceError.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: p = Point( 1, 2) @dataclass( frozen=True), p.x = 99, raises FrozenInstanceError. Connections: p = Point( 1, 2) @dataclass( frozen=True) to p.x = 99, p.x = 99 to raises FrozenInstanceError.
     P["p #61; Point#40;<br/>1, 2#41;<br/>#64;dataclass#40;<br/>frozen#61;True#41;"]:::blue
     A["p.x #61; 99"]:::orange
     E["raises<br/>FrozenInstanceError"]:::orange
@@ -1002,7 +1002,7 @@ _ex-41 &middot; exercises co-08_
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
     accTitle: Example 41: A Subclass Inherits Fields and Methods
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Animal.__init__ sets self.name, class Cat40Animal41: pass NO __init__ of its own, Cat40Whiskers41 runs the INHERITED __init__. Connections: Animal.__init__ sets self.name to class Cat40Animal41: pass NO __init__ of its own, class Cat40Animal41: pass NO __init__ of its own to Cat40Whiskers41 runs the INHERITED __init__.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Animal.__init__ sets self.name, class Cat(Animal): pass NO __init__ of its own, Cat( Whiskers) runs the INHERITED __init__. Connections: Animal.__init__ sets self.name to class Cat(Animal): pass NO __init__ of its own, class Cat(Animal): pass NO __init__ of its own to Cat( Whiskers) runs the INHERITED __init__.
     A["Animal.__init__ sets<br/>self.name"]:::blue
     B["class<br/>Cat#40;Animal#41;:<br/>pass<br/>NO __init__ of its<br/>own"]:::orange
     C["Cat#40;<br/>'Whiskers'#41;<br/>runs the INHERITED<br/>__init__"]:::orange
@@ -1088,7 +1088,7 @@ When a subclass needs its own `__init__`, `super().__init__(...)` explicitly run
 %% Color Palette: Blue #0173B2, Purple #CC78BC
 flowchart LR
     accTitle: Example 42: Chaining Construction with super.init
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Cat4034Rex34, indoor61True41, super4041.__ init__40name41 runs Animals constructor first, Cats own __init__ body sets self.indoor. Connections: Cat4034Rex34, indoor61True41 to super4041.__ init__40name41 runs Animals constructor first, super4041.__ init__40name41 runs Animals constructor first to Cats own __init__ body sets self.indoor.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Cat(Rex, indoor=True), super().__ init__(name) runs Animals constructor first, Cats own __init__ body sets self.indoor. Connections: Cat(Rex, indoor=True) to super().__ init__(name) runs Animals constructor first, super().__ init__(name) runs Animals constructor first to Cats own __init__ body sets self.indoor.
     A["Cat#40;#34;Rex#34;,<br/>indoor#61;True#41;"]:::blue
     B["super#40;#41;.__<br/>init__#40;name#41;<br/>runs Animal's<br/>constructor first"]:::purple
     C["Cat's own __init__<br/>body<br/>sets self.indoor"]:::blue
@@ -1312,7 +1312,7 @@ A single `list[Animal]` can hold instances of several different subclasses, and 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
     accTitle: Example 45: Polymorphic Dispatch Over a Mixed List
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: animals: list91Animal93 91Cat4041, Dog4041, Animal404193, a.speak4041 for a in animals ONE call-site, Cat.speak4041 returns Meow, Dog.speak4041 returns Woof. Connections: animals: list91Animal93 91Cat4041, Dog4041, Animal404193 to a.speak4041 for a in animals ONE call-site, a.speak4041 for a in animals ONE call-site to Cat.speak4041 returns Meow, a.speak4041 for a in animals ONE call-site to Dog.speak4041 returns Woof.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: animals: list[Animal] [Cat(), Dog(), Animal()], a.speak() for a in animals ONE call-site, Cat.speak() returns Meow, Dog.speak() returns Woof. Connections: animals: list[Animal] [Cat(), Dog(), Animal()] to a.speak() for a in animals ONE call-site, a.speak() for a in animals ONE call-site to Cat.speak() returns Meow, a.speak() for a in animals ONE call-site to Dog.speak() returns Woof.
     L["animals:<br/>list#91;Animal#93;<br/>#91;Cat#40;#41;,<br/>Dog#40;#41;,<br/>Animal#40;#41;#93;"]:::blue
     S["a.speak#40;#41; for<br/>a in animals<br/>ONE call-site"]:::orange
     D1["Cat.speak#40;#41;<br/>returns 'Meow'"]:::teal
@@ -1482,7 +1482,7 @@ _ex-47 &middot; exercises co-15_
 %% Color Palette: Orange #DE8F05, Blue #0173B2
 flowchart LR
     accTitle: Example 47: A classmethod Alternative Constructor
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 342026-07-1434 a string, not a Date, Date.from_ iso40s41 64classmethod, cls 61 Date, Date402026, 7, 1441 built via cls40...41. Connections: 342026-07-1434 a string, not a Date to Date.from_ iso40s41 64classmethod, cls 61 Date, Date.from_ iso40s41 64classmethod, cls 61 Date to Date402026, 7, 1441 built via cls40...41.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 2026-07-14 a string, not a Date, Date.from_ iso(s) @classmethod, cls = Date, Date(2026, 7, 14) built via cls(...). Connections: 2026-07-14 a string, not a Date to Date.from_ iso(s) @classmethod, cls = Date, Date.from_ iso(s) @classmethod, cls = Date to Date(2026, 7, 14) built via cls(...).
     S["#34;2026-07-14#34;<br/>a string, not a Date"]:::orange
     F["Date.from_<br/>iso#40;s#41;<br/>#64;classmethod, cls<br/>#61; Date"]:::blue
     D["Date#40;2026, 7,<br/>14#41;<br/>built via<br/>cls#40;...#41;"]:::blue
@@ -1808,7 +1808,7 @@ A mutable value (like a `list`) assigned directly in the class body is one share
 %% Color Palette: Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 51: The Mutable Class-Attribute Pitfall, Reproduced and Fixed
-    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: BuggyCart.items 61 9193 ONE class-level list, cart_a. add4034x3441, cart_b.items ALSO contains 34x34, Cart.__init__: self.items 61 9193, cart_a.items own list, independent. Connections: BuggyCart.items 61 9193 ONE class-level list to cart_a. add4034x3441, cart_a. add4034x3441 to cart_b.items ALSO contains 34x34, Cart.__init__: self.items 61 9193 to cart_a.items own list, independent.
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: BuggyCart.items = [] ONE class-level list, cart_a. add(x), cart_b.items ALSO contains x, Cart.__init__: self.items = [], cart_a.items own list, independent. Connections: BuggyCart.items = [] ONE class-level list to cart_a. add(x), cart_a. add(x) to cart_b.items ALSO contains x, Cart.__init__: self.items = [] to cart_a.items own list, independent.
     Bug["BuggyCart.items #61;<br/>#91;#93;<br/>ONE class-level list"]:::orange
     C1["cart_a.<br/>add#40;#34;x#34;#41;"]:::orange
     C2["cart_b.items<br/>ALSO contains<br/>#34;x#34;"]:::orange
@@ -2316,7 +2316,7 @@ _ex-56 &middot; exercises co-12_
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
     accTitle: Example 56: typing.Protocol Formalizes Duck Typing
-    accDescr: Flowchart with 2 nodes and 0 connections. Nodes: Has Area40Protocol41 declares area4041 returns float, Circle NEVER inherits HasArea.
+    accDescr: Flowchart with 2 nodes and 0 connections. Nodes: Has Area(Protocol) declares area() returns float, Circle NEVER inherits HasArea.
     P["Has<br/>Area#40;Protocol#41;<br/>declares<br/>area#40;#41; returns<br/>float"]:::blue
     C["Circle<br/>NEVER inherits<br/>HasArea"]:::orange
     P -.structurally satisfied by.-> C
@@ -2512,7 +2512,7 @@ A dataclass can subclass another dataclass, inheriting its fields and adding new
 %% Color Palette: Blue #0173B2, Teal #029E73
 flowchart TD
     accTitle: Example 58: A Dataclass Subclassing Another Dataclass
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 64dataclass Vehicle fields: make, model, 64dataclass Car40Vehicle41 adds field: doors, generated __init__40make, model, doors41 base fields first. Connections: 64dataclass Vehicle fields: make, model to 64dataclass Car40Vehicle41 adds field: doors, 64dataclass Car40Vehicle41 adds field: doors to generated __init__40make, model, doors41 base fields first.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: @dataclass Vehicle fields: make, model, @dataclass Car(Vehicle) adds field: doors, generated __init__(make, model, doors) base fields first. Connections: @dataclass Vehicle fields: make, model to @dataclass Car(Vehicle) adds field: doors, @dataclass Car(Vehicle) adds field: doors to generated __init__(make, model, doors) base fields first.
     V["#64;dataclass<br/>Vehicle<br/>fields: make, model"]:::blue
     C["#64;dataclass<br/>Car#40;Vehicle#41;<br/>adds field: doors"]:::teal
     I["generated<br/>__init__#40;make,<br/>model, doors#41;<br/>base fields first"]:::teal

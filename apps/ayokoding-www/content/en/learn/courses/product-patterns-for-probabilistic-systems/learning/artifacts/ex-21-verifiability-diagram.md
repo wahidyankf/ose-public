@@ -15,7 +15,7 @@ takes a user to independently check a claim, from cheapest (top) to most expensi
 %% Ranked top-to-bottom: cheapest verification cost first
 graph TD
     accTitle: graph diagram
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: A, B, ex-18, C, ex-19, Free text, no citation unverifiable, no check. Connections: B to ex-18, C to ex-19, A to B (cheaper), B to C (cheaper), C to Free text, no citation unverifiable, no check (cheaper).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Structured, per-field cite ~5s per field -- ex-20, Free text, clause link ~10s -- ex-18, Free text, doc-only cite several min -- ex-19, Free text, no citation unverifiable, no check. Connections: Structured, per-field cite ~5s per field -- ex-20 to Free text, clause link ~10s -- ex-18 (cheaper), Free text, clause link ~10s -- ex-18 to Free text, doc-only cite several min -- ex-19 (cheaper), Free text, doc-only cite several min -- ex-19 to Free text, no citation unverifiable, no check (cheaper).
     A["Structured,<br/>per-field cite<br/>~5s per field --<br/>ex-20"]:::teal
     B["Free text, clause<br/>link<br/>~10s -- ex-18"]:::blue
     C["Free text, doc-only<br/>cite<br/>several min -- ex-19"]:::orange

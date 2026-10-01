@@ -20,7 +20,7 @@ together on one new project, at a larger and more realistic scale than any singl
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: WBS + dependency graph critical path marked, Velocity estimate sprint47backlog plan, Risk register likelihood x impact, Metrics plan burndown + cycle time, One internally consistent plan.md. Connections: WBS + dependency graph critical path marked to Velocity estimate sprint47backlog plan, Velocity estimate sprint47backlog plan to Risk register likelihood x impact, Risk register likelihood x impact to Metrics plan burndown + cycle time, Metrics plan burndown + cycle time to One internally consistent plan.md.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: WBS + dependency graph critical path marked, Velocity estimate sprint/backlog plan, Risk register likelihood x impact, Metrics plan burndown + cycle time, One internally consistent plan.md. Connections: WBS + dependency graph critical path marked to Velocity estimate sprint/backlog plan, Velocity estimate sprint/backlog plan to Risk register likelihood x impact, Risk register likelihood x impact to Metrics plan burndown + cycle time, Metrics plan burndown + cycle time to One internally consistent plan.md.
     A["WBS + dependency<br/>graph<br/>critical path marked"]:::blue
     B["Velocity estimate<br/>sprint#47;backlog<br/>plan"]:::orange
     C["Risk register<br/>likelihood x impact"]:::teal

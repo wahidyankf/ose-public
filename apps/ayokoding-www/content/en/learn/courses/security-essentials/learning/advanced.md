@@ -2196,7 +2196,7 @@ resource_ is being accessed.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 66: RBAC vs. ABAC Authorization
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: bob (editor) requests doc-1 (owned by alice), B, C, bob, admin, ALLOWED, DENIED. Connections: bob (editor) requests doc-1 (owned by alice) to B, bob (editor) requests doc-1 (owned by alice) to C, C to bob, bob to admin, B to ALLOWED (yes), C to DENIED (no).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: bob (editor) requests doc-1 (owned by alice), RBAC: role == editor/admin?, ABAC: owner == bob OR role == admin?, ALLOWED, DENIED. Connections: bob (editor) requests doc-1 (owned by alice) to RBAC: role == editor/admin?, bob (editor) requests doc-1 (owned by alice) to ABAC: owner == bob OR role == admin?, RBAC: role == editor/admin? to ALLOWED (yes), ABAC: owner == bob OR role == admin? to DENIED (no).
     A["bob (editor)<br/>requests doc-1<br/>(owned by alice)"]:::blue --> B{"RBAC:<br/>role ==<br/>editor/admin?"}:::orange
     A --> C{"ABAC:<br/>owner == bob OR<br/>role == admin?"}:::orange
     B -->|"yes"| D["ALLOWED"]:::teal
@@ -3115,7 +3115,7 @@ production) restores a single, correctly-enforced global limit.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: Example 73: Distributed Rate Limiting
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: client requests (10 total), worker 1 local limiter, worker 2 local limiter, 5 allowed, R2, BUG. Connections: client requests (10 total) to worker 1 local limiter, client requests (10 total) to worker 2 local limiter, worker 1 local limiter to 5 allowed (own count: 5/5), worker 2 local limiter to R2 (own count: 5/5), R2 to BUG.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: client requests (10 total), worker 1 local limiter, worker 2 local limiter, 5 allowed, 5 allowed (10 total -- BUG). Connections: client requests (10 total) to worker 1 local limiter, client requests (10 total) to worker 2 local limiter, worker 1 local limiter to 5 allowed (own count: 5/5), worker 2 local limiter to 5 allowed (10 total -- BUG) (own count: 5/5).
     C1["client requests<br/>(10 total)"]:::blue --> W1["worker 1<br/>local limiter"]:::orange
     C1 --> W2["worker 2<br/>local limiter"]:::purple
     W1 -->|"own count: 5/5"| R1["5 allowed"]:::teal

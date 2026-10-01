@@ -19,7 +19,7 @@ The smallest possible class is just a name and a body of `pass` -- Python still 
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
     accTitle: Example 1: Define a Minimal Class
-    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: class Dog: a template, not an object, Dog4041 constructs an instance. Connections: class Dog: a template, not an object to Dog4041 constructs an instance (call like a function).
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: class Dog: a template, not an object, Dog() constructs an instance. Connections: class Dog: a template, not an object to Dog() constructs an instance (call like a function).
     A["class Dog:<br/>a template, not an<br/>object"]:::blue
     B["Dog#40;#41;<br/>constructs an<br/>instance"]:::orange
     A -->|"call like a<br/>function"| B
@@ -365,7 +365,7 @@ A method can reassign `self`'s own fields, permanently changing the object it wa
 %% Color Palette: Teal #029E73, Orange #DE8F05
 flowchart LR
     accTitle: Example 6: A Method That Mutates Instance State
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: d.name616134Rex34 before rename4041, d.rename4034Max3441 mutates self.name in place, d.name616134Max34 SAME object, new state. Connections: d.name616134Rex34 before rename4041 to d.rename4034Max3441 mutates self.name in place, d.rename4034Max3441 mutates self.name in place to d.name616134Max34 SAME object, new state.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: d.name==Rex before rename(), d.rename(Max) mutates self.name in place, d.name==Max SAME object, new state. Connections: d.name==Rex before rename() to d.rename(Max) mutates self.name in place, d.rename(Max) mutates self.name in place to d.name==Max SAME object, new state.
     A["d.name=='Rex'<br/>before rename()"]:::teal
     B["d.rename('Max')<br/>mutates self.name<br/>in place"]:::orange
     C["d.name=='Max'<br/>SAME object,<br/>new state"]:::teal
@@ -810,7 +810,7 @@ Overriding `__eq__` lets a class define what "equal" means in terms of its own f
 %% Color Palette: Purple #CC78BC, Teal #029E73
 flowchart LR
     accTitle: Example 12: Define eq for Value Comparison
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: a 61 Dog4034Rex3441 b 61 Dog4034Rex3441, a is b 616162 False 40different objects41, a 6161 b 616162 True 40__eq__ compares fields41. Connections: a 61 Dog4034Rex3441 b 61 Dog4034Rex3441 to a is b 616162 False 40different objects41, a 61 Dog4034Rex3441 b 61 Dog4034Rex3441 to a 6161 b 616162 True 40__eq__ compares fields41.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: a = Dog(Rex) b = Dog(Rex), a is b ==> False (different objects), a == b ==> True (__eq__ compares fields). Connections: a = Dog(Rex) b = Dog(Rex) to a is b ==> False (different objects), a = Dog(Rex) b = Dog(Rex) to a == b ==> True (__eq__ compares fields).
     A["a = Dog('Rex')<br/>b = Dog('Rex')"]:::purple
     B["a is b<br/>#61;#61;#62; False<br/>#40;different<br/>objects#41;"]:::teal
     C["a #61;#61; b<br/>#61;#61;#62; True<br/>#40;__eq__ compares<br/>fields#41;"]:::teal
@@ -904,7 +904,7 @@ An attribute declared directly in the class body, outside `__init__`, lives on t
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
     accTitle: Example 13: A Shared Class Attribute
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Dog.species 61 34Canine34 ONE value on the class, a.species reads the class attribute, b.species reads the SAME class attribute. Connections: Dog.species 61 34Canine34 ONE value on the class to a.species reads the class attribute, Dog.species 61 34Canine34 ONE value on the class to b.species reads the SAME class attribute.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Dog.species = Canine ONE value on the class, a.species reads the class attribute, b.species reads the SAME class attribute. Connections: Dog.species = Canine ONE value on the class to a.species reads the class attribute, Dog.species = Canine ONE value on the class to b.species reads the SAME class attribute.
     K["Dog.species #61;<br/>#34;Canine#34;<br/>ONE value on the<br/>class"]:::blue
     A["a.species<br/>reads the class<br/>attribute"]:::orange
     B["b.species<br/>reads the SAME class<br/>attribute"]:::orange
@@ -1064,7 +1064,7 @@ Bundling `_balance` with the only methods allowed to change it -- `deposit`, and
 %% Color Palette: Blue #0173B2, Purple #CC78BC
 flowchart TD
     accTitle: Example 15: Encapsulate a Bank Balance
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: outside caller, deposit40amount41 the ONLY entry point, self._balance never touched directly. Connections: outside caller to deposit40amount41 the ONLY entry point (account. deposit405041), deposit40amount41 the ONLY entry point to self._balance never touched directly.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: outside caller, deposit(amount) the ONLY entry point, self._balance never touched directly. Connections: outside caller to deposit(amount) the ONLY entry point (account. deposit(50)), deposit(amount) the ONLY entry point to self._balance never touched directly.
     Out["outside caller"]:::purple
     D["deposit(amount)<br/>the ONLY entry point"]:::blue
     Bal["self._balance<br/>never touched<br/>directly"]:::blue
@@ -1479,7 +1479,7 @@ _ex-20 &middot; exercises co-06_
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 flowchart LR
     accTitle: Example 20: A Basic Dataclass
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: field declarations x: int, y: int, 64dataclass reads the declarations, generates __init__, __repr__, __eq__. Connections: field declarations x: int, y: int to 64dataclass reads the declarations, 64dataclass reads the declarations to generates __init__, __repr__, __eq__.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: field declarations x: int, y: int, @dataclass reads the declarations, generates __init__, __repr__, __eq__. Connections: field declarations x: int, y: int to @dataclass reads the declarations, @dataclass reads the declarations to generates __init__, __repr__, __eq__.
     F["field declarations<br/>x: int, y: int"]:::blue
     D["#64;dataclass<br/>reads the<br/>declarations"]:::orange
     G["generates __init__,<br/>__repr__, __eq__"]:::teal
@@ -1769,7 +1769,7 @@ A plain mutable default (`tags: list[str] = []`) is forbidden outright by `@data
 %% Color Palette: Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 24: defaultfactory for a Mutable Default
-    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: a 61 Item4041, b 61 Item4041, list4041 called for a, list4041 called for b. Connections: a 61 Item4041 to list4041 called for a, b 61 Item4041 to list4041 called for b.
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: a = Item(), b = Item(), list() called for a, list() called for b. Connections: a = Item() to list() called for a, b = Item() to list() called for b.
     A["a #61; Item#40;#41;"]:::orange
     B["b #61; Item#40;#41;"]:::orange
     F1["list#40;#41; called<br/>for a"]:::teal
@@ -1949,7 +1949,7 @@ Two classes with no shared base at all can still be used interchangeably by any 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Purple #CC78BC
 flowchart LR
     accTitle: Example 26: A Duck-Typed area Preview
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Circle 40no shared base41, Square 40no shared base41, describe40shape41 calls shape.area4041. Connections: Circle 40no shared base41 to describe40shape41 calls shape.area4041 (has area4041), Square 40no shared base41 to describe40shape41 calls shape.area4041 (has area4041).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Circle (no shared base), Square (no shared base), describe(shape) calls shape.area(). Connections: Circle (no shared base) to describe(shape) calls shape.area() (has area()), Square (no shared base) to describe(shape) calls shape.area() (has area()).
     C["Circle<br/>#40;no shared<br/>base#41;"]:::blue
     S["Square<br/>#40;no shared<br/>base#41;"]:::orange
     F["describe(shape)<br/>calls shape.area()"]:::purple

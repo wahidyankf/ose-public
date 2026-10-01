@@ -26,7 +26,7 @@ incidents by 30%" outcome, and this capstone is where that opportunity's solutio
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Problem + JTBD evidence, MVP scope + explicit non-goals, RICE-ranked backlog, North-star + metrics + A47B experiment, One internally consistent brief.md. Connections: Problem + JTBD evidence to MVP scope + explicit non-goals, MVP scope + explicit non-goals to RICE-ranked backlog, RICE-ranked backlog to North-star + metrics + A47B experiment, North-star + metrics + A47B experiment to One internally consistent brief.md.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Problem + JTBD evidence, MVP scope + explicit non-goals, RICE-ranked backlog, North-star + metrics + A/B experiment, One internally consistent brief.md. Connections: Problem + JTBD evidence to MVP scope + explicit non-goals, MVP scope + explicit non-goals to RICE-ranked backlog, RICE-ranked backlog to North-star + metrics + A/B experiment, North-star + metrics + A/B experiment to One internally consistent brief.md.
     A["Problem + JTBD<br/>evidence"]:::blue
     B["MVP scope<br/>+ explicit non-goals"]:::orange
     C["RICE-ranked<br/>backlog"]:::teal

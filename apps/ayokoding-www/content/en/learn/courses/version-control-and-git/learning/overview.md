@@ -62,7 +62,7 @@ command this topic teaches.
 %% Six concept clusters, in the order this page teaches them (co-01 through co-29)
 graph TD
     accTitle: How verification works in this topic
-    accDescr: Graph with 7 nodes and 5 connections. Nodes: A, amp, Staging, committing, history co-06 to co-10, C, D, Safety net: reflog co-22, Remotes, tags, hooks, flow co-23 to co-29. Connections: A to Staging, committing, history co-06 to co-10, Staging, committing, history co-06 to co-10 to C, C to D, D to Safety net: reflog co-22, Safety net: reflog co-22 to Remotes, tags, hooks, flow co-23 to co-29.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Object model & states co-01 to co-05, Staging, committing, history co-06 to co-10, Branching & merging co-11 to co-14, Rebase & the undo family co-15 to co-21, Safety net: reflog co-22, Remotes, tags, hooks, flow co-23 to co-29. Connections: Object model & states co-01 to co-05 to Staging, committing, history co-06 to co-10, Staging, committing, history co-06 to co-10 to Branching & merging co-11 to co-14, Branching & merging co-11 to co-14 to Rebase & the undo family co-15 to co-21, Rebase & the undo family co-15 to co-21 to Safety net: reflog co-22, Safety net: reflog co-22 to Remotes, tags, hooks, flow co-23 to co-29.
     A["Object model &amp;<br/>states<br/>co-01 to co-05"]:::blue
     B["Staging, committing,<br/>history<br/>co-06 to co-10"]:::orange
     C["Branching &amp; merging<br/>co-11 to co-14"]:::teal

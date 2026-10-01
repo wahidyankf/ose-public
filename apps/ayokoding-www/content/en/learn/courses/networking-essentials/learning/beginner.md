@@ -46,7 +46,7 @@ _ex-02 &middot; exercises co-19, co-13_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 2: curl Verbose -- See the Protocol Underneath
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: * Connect + TLS info lines, 62 request lines SENT by curl, 60 response lines RECEIVED by curl. Connections: * Connect + TLS info lines to 62 request lines SENT by curl, 62 request lines SENT by curl to 60 response lines RECEIVED by curl.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: * Connect + TLS info lines, > request lines SENT by curl, < response lines RECEIVED by curl. Connections: * Connect + TLS info lines to > request lines SENT by curl, > request lines SENT by curl to < response lines RECEIVED by curl.
     A["* Connect + TLS<br/>info lines"]:::blue
     B["#62; request lines<br/>SENT by curl"]:::orange
     C["#60; response lines<br/>RECEIVED by curl"]:::teal

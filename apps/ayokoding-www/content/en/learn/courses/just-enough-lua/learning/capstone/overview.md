@@ -18,7 +18,7 @@ Beginner, Intermediate, or Advanced tiers of this primer.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: store.lua module returns 123new = ...125, new4041 closure get47set share one store table, defaults + __index metatable fallback, main.lua set47get, ipairs47pairs, pcall40get_ required41 nil, err printed cleanly. Connections: store.lua module returns 123new = ...125 to new4041 closure get47set share one store table, new4041 closure get47set share one store table to defaults + __index metatable fallback, defaults + __index metatable fallback to main.lua set47get, ipairs47pairs, main.lua set47get, ipairs47pairs to pcall40get_ required41 nil, err printed cleanly.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: store.lua module returns new = ..., new() closure get/set share one store table, defaults + __index metatable fallback, main.lua set/get, ipairs/pairs, pcall(get_ required) nil, err printed cleanly. Connections: store.lua module returns new = ... to new() closure get/set share one store table, new() closure get/set share one store table to defaults + __index metatable fallback, defaults + __index metatable fallback to main.lua set/get, ipairs/pairs, main.lua set/get, ipairs/pairs to pcall(get_ required) nil, err printed cleanly.
     A["store.lua module<br/>returns #123;new =<br/>...#125;"]:::blue
     B["new#40;#41; closure<br/>get#47;set share one<br/>store table"]:::orange
     C["defaults + __index<br/>metatable fallback"]:::teal

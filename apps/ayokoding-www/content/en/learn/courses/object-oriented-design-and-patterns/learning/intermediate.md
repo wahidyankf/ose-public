@@ -19,7 +19,7 @@ An abstract factory is a family of factory methods that together produce a match
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 28: An Abstract Factory for UI Widget Families
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: WidgetFactory abstract, DarkThemeFactory dark family, LightThemeFactory light family, DarkButton 43 DarkCheckbox, LightButton 43 LightCheckbox. Connections: WidgetFactory abstract to DarkThemeFactory dark family, WidgetFactory abstract to LightThemeFactory light family, DarkThemeFactory dark family to DarkButton 43 DarkCheckbox (produces), LightThemeFactory light family to LightButton 43 LightCheckbox (produces).
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: WidgetFactory abstract, DarkThemeFactory dark family, LightThemeFactory light family, DarkButton + DarkCheckbox, LightButton + LightCheckbox. Connections: WidgetFactory abstract to DarkThemeFactory dark family, WidgetFactory abstract to LightThemeFactory light family, DarkThemeFactory dark family to DarkButton + DarkCheckbox (produces), LightThemeFactory light family to LightButton + LightCheckbox (produces).
     F["WidgetFactory<br/>abstract"]:::blue
     D["DarkThemeFactory<br/>dark family"]:::orange
     L["LightThemeFactory<br/>light family"]:::teal
@@ -467,7 +467,7 @@ A virtual proxy stands in for an expensive-to-construct real subject, deferring 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 32: A Virtual Proxy Defers an Expensive Load
-    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: ImageProxy cheap to construct, real image loaded yet?, RealImage expensive load. Connections: ImageProxy cheap to construct to real image loaded yet?, real image loaded yet? to RealImage expensive load (no -- first render4041), real image loaded yet? to ImageProxy cheap to construct (yes -- reuse cached).
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: ImageProxy cheap to construct, real image loaded yet?, RealImage expensive load. Connections: ImageProxy cheap to construct to real image loaded yet?, real image loaded yet? to RealImage expensive load (no -- first render()), real image loaded yet? to ImageProxy cheap to construct (yes -- reuse cached).
     P["ImageProxy<br/>cheap to construct"]:::blue
     C{"real image loaded<br/>yet?"}:::orange
     R["RealImage<br/>expensive load"]:::teal
@@ -933,7 +933,7 @@ Command reifies a request as an object with both a forward action and its revers
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 36: Command Objects with execute/undo for an Editor
-    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: Editor receiver, AppendCommand execute4041 / undo4041, history stack. Connections: AppendCommand execute4041 / undo4041 to Editor receiver (execute4041), AppendCommand execute4041 / undo4041 to Editor receiver (undo4041), history stack to AppendCommand execute4041 / undo4041 (pop4041. undo4041).
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: Editor receiver, AppendCommand execute() / undo(), history stack. Connections: AppendCommand execute() / undo() to Editor receiver (execute()), AppendCommand execute() / undo() to Editor receiver (undo()), history stack to AppendCommand execute() / undo() (pop(). undo()).
     E["Editor<br/>receiver"]:::blue
     C["AppendCommand<br/>execute#40;#41; /<br/>undo#40;#41;"]:::orange
     H["history stack"]:::teal
@@ -1687,7 +1687,7 @@ Chain of Responsibility passes a request along a chain of handlers until one of 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 42: Escalating a Support Ticket Through a Handler Chain
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: ticket: severity, L1Handler severity 6061 1, L2Handler severity 6061 3, L3Handler severity 6061 5, unhandled. Connections: ticket: severity to L1Handler severity 6061 1, L1Handler severity 6061 1 to L2Handler severity 6061 3 (cant handle), L2Handler severity 6061 3 to L3Handler severity 6061 5 (cant handle), L3Handler severity 6061 5 to unhandled (cant handle).
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: ticket: severity, L1Handler severity <= 1, L2Handler severity <= 3, L3Handler severity <= 5, unhandled. Connections: ticket: severity to L1Handler severity <= 1, L1Handler severity <= 1 to L2Handler severity <= 3 (cant handle), L2Handler severity <= 3 to L3Handler severity <= 5 (cant handle), L3Handler severity <= 5 to unhandled (cant handle).
     T["ticket: severity"]:::blue
     L1["L1Handler<br/>severity #60;#61; 1"]:::orange
     L2["L2Handler<br/>severity #60;#61; 3"]:::orange
@@ -1954,7 +1954,7 @@ Observer lets subjects notify subscribers of change without knowing their concre
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 44: A Typed Event Bus with Unsubscribe
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: EventBus, log_handler subscribed, alert_handler unsubscribed. Connections: EventBus to log_handler subscribed (publish4041), EventBus to alert_handler unsubscribed (NOT called).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: EventBus, log_handler subscribed, alert_handler unsubscribed. Connections: EventBus to log_handler subscribed (publish()), EventBus to alert_handler unsubscribed (NOT called).
     B["EventBus"]:::blue
     L["log_handler<br/>subscribed"]:::orange
     A["alert_handler<br/>unsubscribed"]:::teal
@@ -2400,7 +2400,7 @@ GRASP's Indirection pattern inserts a mediator between two collaborators so neit
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 48: A Mediator Decouples Two Collaborators
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Participant: alice, ChatRoom mediator, Participant: bob. Connections: Participant: alice to ChatRoom mediator (send4041), ChatRoom mediator to Participant: bob (relay4041).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Participant: alice, ChatRoom mediator, Participant: bob. Connections: Participant: alice to ChatRoom mediator (send()), ChatRoom mediator to Participant: bob (relay()).
     A["Participant: alice"]:::orange
     R["ChatRoom<br/>mediator"]:::blue
     B["Participant: bob"]:::teal
@@ -3001,7 +3001,7 @@ Factory Method and Abstract Factory both defer object creation, but they vary al
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
     accTitle: Example 53: Factory Method vs Abstract Factory, Contrasted on One Example
-    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: Factory Method varies ONE product, Abstract Factory varies a MATCHED FAMILY, PdfDocument, PdfDocument 43 PdfToolbar. Connections: Factory Method varies ONE product to PdfDocument (PdfCreator), Abstract Factory varies a MATCHED FAMILY to PdfDocument 43 PdfToolbar (PdfSuiteFactory).
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: Factory Method varies ONE product, Abstract Factory varies a MATCHED FAMILY, PdfDocument, PdfDocument + PdfToolbar. Connections: Factory Method varies ONE product to PdfDocument (PdfCreator), Abstract Factory varies a MATCHED FAMILY to PdfDocument + PdfToolbar (PdfSuiteFactory).
     FM["Factory Method<br/>varies ONE product"]:::blue
     AF["Abstract Factory<br/>varies a MATCHED<br/>FAMILY"]:::orange
     FM -->|"PdfCreator"| D1["PdfDocument"]:::blue

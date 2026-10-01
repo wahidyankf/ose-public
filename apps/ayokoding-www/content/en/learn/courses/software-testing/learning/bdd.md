@@ -27,7 +27,7 @@ file is not documentation ABOUT the test -- it IS the test.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 81: One Given/When/Then Scenario, Bound to pytest-bdd
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: greeting.feature Given/When/Then, @scenario4041 binds the .feature to pytest, @given /@when /@then real Python step functions, pytest runs it as a REAL test. Connections: greeting.feature Given/When/Then to @scenario4041 binds the .feature to pytest, @scenario4041 binds the .feature to pytest to @given /@when /@then real Python step functions, @given /@when /@then real Python step functions to pytest runs it as a REAL test.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: greeting.feature Given/When/Then, @scenario() binds the .feature to pytest, @given /@when /@then real Python step functions, pytest runs it as a REAL test. Connections: greeting.feature Given/When/Then to @scenario() binds the .feature to pytest, @scenario() binds the .feature to pytest to @given /@when /@then real Python step functions, @given /@when /@then real Python step functions to pytest runs it as a REAL test.
     A["greeting.feature<br/>Given/When/Then"]:::blue --> B["@scenario#40;#41;<br/>binds the .feature<br/>to pytest"]:::orange
     B --> C["@given /@when /@then<br/>real Python step<br/>functions"]:::teal
     C --> D["pytest runs it as a<br/>REAL test"]:::blue
@@ -402,7 +402,7 @@ scenario green -- through entirely separate binding mechanisms.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 85: behave and pytest-bdd, Run Against the Identical .feature File
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: calculator.feature ONE Gherkin file, behave 1.3.3 features/steps/*.py auto-discovery, pytest-bdd 8.1.0 @scenario4041 explicit binding, 1 scenario passed, 1 passed. Connections: calculator.feature ONE Gherkin file to behave 1.3.3 features/steps/*.py auto-discovery, calculator.feature ONE Gherkin file to pytest-bdd 8.1.0 @scenario4041 explicit binding, behave 1.3.3 features/steps/*.py auto-discovery to 1 scenario passed, pytest-bdd 8.1.0 @scenario4041 explicit binding to 1 passed.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: calculator.feature ONE Gherkin file, behave 1.3.3 features/steps/*.py auto-discovery, pytest-bdd 8.1.0 @scenario() explicit binding, 1 scenario passed, 1 passed. Connections: calculator.feature ONE Gherkin file to behave 1.3.3 features/steps/*.py auto-discovery, calculator.feature ONE Gherkin file to pytest-bdd 8.1.0 @scenario() explicit binding, behave 1.3.3 features/steps/*.py auto-discovery to 1 scenario passed, pytest-bdd 8.1.0 @scenario() explicit binding to 1 passed.
     A["calculator.feature<br/>ONE Gherkin file"]:::blue
     A --> B["behave 1.3.3<br/>features/steps/*.py<br/>auto-discovery"]:::orange
     A --> C["pytest-bdd 8.1.0<br/>@scenario#40;#41;<br/>explicit binding"]:::teal

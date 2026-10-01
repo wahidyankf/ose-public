@@ -52,7 +52,7 @@ Adding the `%` range and the `g` flag turns the same `:substitute` command into 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 32: Substitute Whole File
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Range . 36 3960,3962 10,20, Command s g d w ..., Flags / arguments g c 47pat47repl47. Connections: Range . 36 3960,3962 10,20 to Command s g d w ..., Command s g d w ... to Flags / arguments g c 47pat47repl47.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Range . $ <,> 10,20, Command s g d w ..., Flags / arguments g c /pat/repl/. Connections: Range . $ <,> 10,20 to Command s g d w ..., Command s g d w ... to Flags / arguments g c /pat/repl/.
     Rg["Range<br/>. #36; %<br/>#39;#60;,#39;#62;<br/>10,20"]:::blue
     Cmd["Command<br/>s g d w ..."]:::orange
     Fl["Flags / arguments<br/>g c<br/>#47;pat#47;repl#47;"]:::teal

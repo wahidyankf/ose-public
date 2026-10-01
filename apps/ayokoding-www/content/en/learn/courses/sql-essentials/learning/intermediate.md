@@ -26,7 +26,7 @@ the left table regardless, filling any unmatched right-side columns with NULL --
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
     accTitle: Example 31: Left Join Unmatched
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: author 40LEFT table41 4 rows, book 40RIGHT table41 5 rows, 3 distinct author_id, C, ALL, Margaret Hamilton row book columns = NULL. Connections: C to ALL, author 40LEFT table41 4 rows to C, book 40RIGHT table41 5 rows, 3 distinct author_id to C, C to Margaret Hamilton row book columns = NULL.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: author (LEFT table) 4 rows, book (RIGHT table) 5 rows, 3 distinct author_id, LEFT JOIN result 6 rows -- ALL 4 authors kept, Margaret Hamilton row book columns = NULL. Connections: author (LEFT table) 4 rows to LEFT JOIN result 6 rows -- ALL 4 authors kept, book (RIGHT table) 5 rows, 3 distinct author_id to LEFT JOIN result 6 rows -- ALL 4 authors kept, LEFT JOIN result 6 rows -- ALL 4 authors kept to Margaret Hamilton row book columns = NULL.
     A["author #40;LEFT<br/>table#41;<br/>4 rows"]:::blue
     B["book #40;RIGHT<br/>table#41;<br/>5 rows, 3 distinct<br/>author_id"]:::orange
     C["LEFT JOIN result<br/>6 rows -- ALL 4<br/>authors kept"]:::teal
@@ -196,7 +196,7 @@ chained `JOIN` clauses, one per parent, both keyed off `book`'s two foreign keys
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 33: Three-Table Join
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: author, B, 2, publisher, joined result title + author_name + publisher_name. Connections: B to 2, author to B (author.id = book.author_id), publisher to B (publisher.id = book.publisher_id), B to joined result title + author_name + publisher_name.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: author, book hub table -- 2 FKs, publisher, joined result title + author_name + publisher_name. Connections: author to book hub table -- 2 FKs (author.id = book.author_id), publisher to book hub table -- 2 FKs (publisher.id = book.publisher_id), book hub table -- 2 FKs to joined result title + author_name + publisher_name.
     A["author"]:::blue
     B["book<br/>hub table -- 2 FKs"]:::orange
     C["publisher"]:::teal
@@ -614,7 +614,7 @@ groups.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Example 39: Where Plus Having
-    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: 5 book rows, B, BEFORE, GROUP BY author_id collapse survivors, D, 2 result rows. Connections: B to BEFORE, 5 book rows to B, B to GROUP BY author_id collapse survivors, GROUP BY author_id collapse survivors to D, D to 2 result rows.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: 5 book rows, WHERE in_stock = 1 row filter -- BEFORE aggregation, GROUP BY author_id collapse survivors, HAVING sum(price) > 20 group filter -- AFTER aggregation, 2 result rows. Connections: 5 book rows to WHERE in_stock = 1 row filter -- BEFORE aggregation, WHERE in_stock = 1 row filter -- BEFORE aggregation to GROUP BY author_id collapse survivors, GROUP BY author_id collapse survivors to HAVING sum(price) > 20 group filter -- AFTER aggregation, HAVING sum(price) > 20 group filter -- AFTER aggregation to 2 result rows.
     A["5 book rows"]:::blue
     B["WHERE in_stock = 1<br/>row filter -- BEFORE<br/>aggregation"]:::orange
     C["GROUP BY author_id<br/>collapse survivors"]:::teal
@@ -946,7 +946,7 @@ aggregation then summarizes the joined result, exactly how a per-author revenue 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 44: Aggregate Over Join
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: author JOIN book 5 joined rows, GROUP BY a.name collapse into 3 groups, sum40price41 per group 3 totals. Connections: author JOIN book 5 joined rows to GROUP BY a.name collapse into 3 groups, GROUP BY a.name collapse into 3 groups to sum40price41 per group 3 totals.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: author JOIN book 5 joined rows, GROUP BY a.name collapse into 3 groups, sum(price) per group 3 totals. Connections: author JOIN book 5 joined rows to GROUP BY a.name collapse into 3 groups, GROUP BY a.name collapse into 3 groups to sum(price) per group 3 totals.
     A["author JOIN book<br/>5 joined rows"]:::blue
     B["GROUP BY a.name<br/>collapse into 3<br/>groups"]:::orange
     C["sum#40;price#41; per<br/>group<br/>3 totals"]:::teal
@@ -1040,7 +1040,7 @@ split alone does not address.
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 flowchart LR
     accTitle: Example 45: Normalize Repeating Group
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: book_flat tags: mathematics,history NOT atomic, book id, title, book_tag book_id, tag ONE atomic tag per row. Connections: book_flat tags: mathematics,history NOT atomic to book id, title (split into), book_flat tags: mathematics,history NOT atomic to book_tag book_id, tag ONE atomic tag per row (split into).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: book_flat tags: mathematics, history NOT atomic, book id, title, book_tag book_id, tag ONE atomic tag per row. Connections: book_flat tags: mathematics, history NOT atomic to book id, title (split into), book_flat tags: mathematics, history NOT atomic to book_tag book_id, tag ONE atomic tag per row (split into).
     A["book_flat<br/>tags: 'mathematics,<br/>history'<br/>NOT atomic"]:::blue
     B["book<br/>id, title"]:::teal
     C["book_tag<br/>book_id, tag<br/>ONE atomic tag per<br/>row"]:::orange
@@ -1156,7 +1156,7 @@ fact into its own lookup table is the 3NF fix.
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 flowchart LR
     accTitle: Example 46: Normalize Transitive Dependency
-    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: book_wide publisher_name + publisher_city repeated per book row, B, ONE, book publisher_id FK only. Connections: B to ONE, book_wide publisher_name + publisher_city repeated per book row to B (extract lookup), book_wide publisher_name + publisher_city repeated per book row to book publisher_id FK only (keep only FK), book publisher_id FK only to B (references).
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: book_wide publisher_name + publisher_city repeated per book row, publisher name, city -- ONE row per publisher, book publisher_id FK only. Connections: book_wide publisher_name + publisher_city repeated per book row to publisher name, city -- ONE row per publisher (extract lookup), book_wide publisher_name + publisher_city repeated per book row to book publisher_id FK only (keep only FK), book publisher_id FK only to publisher name, city -- ONE row per publisher (references).
     A["book_wide<br/>publisher_name +<br/>publisher_city<br/>repeated per book<br/>row"]:::blue
     B["publisher<br/>name, city -- ONE<br/>row per publisher"]:::teal
     C["book<br/>publisher_id FK only"]:::orange
@@ -1505,7 +1505,7 @@ original connection's lifetime.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 51: Transaction Commit
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: conn: BEGIN, INSERT, commit4041, conn.close4041, conn2: fresh connection same file, count40*41 = 1 write survived. Connections: conn: BEGIN, INSERT, commit4041 to conn.close4041, conn.close4041 to conn2: fresh connection same file, conn2: fresh connection same file to count40*41 = 1 write survived.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: conn: BEGIN, INSERT, commit(), conn.close(), conn2: fresh connection same file, count(*) = 1 write survived. Connections: conn: BEGIN, INSERT, commit() to conn.close(), conn.close() to conn2: fresh connection same file, conn2: fresh connection same file to count(*) = 1 write survived.
     A["conn: BEGIN, INSERT,<br/>commit#40;#41;"]:::blue
     B["conn.close#40;#41;"]:::orange
     C["conn2: fresh<br/>connection<br/>same file"]:::teal
@@ -1586,7 +1586,7 @@ verified here by re-checking the row count returns to its pre-transaction baseli
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 52: Transaction Rollback
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: baseline: 1 row, committed, BEGIN, INSERT 2nd row visible inside transaction, rollback4041 back to 1 row. Connections: baseline: 1 row, committed to BEGIN, INSERT 2nd row visible inside transaction, BEGIN, INSERT 2nd row visible inside transaction to rollback4041 back to 1 row.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: baseline: 1 row, committed, BEGIN, INSERT 2nd row visible inside transaction, rollback() back to 1 row. Connections: baseline: 1 row, committed to BEGIN, INSERT 2nd row visible inside transaction, BEGIN, INSERT 2nd row visible inside transaction to rollback() back to 1 row.
     A["baseline: 1 row,<br/>committed"]:::blue
     B["BEGIN, INSERT 2nd<br/>row<br/>visible inside<br/>transaction"]:::orange
     C["rollback#40;#41;<br/>back to 1 row"]:::teal
@@ -1664,7 +1664,7 @@ clean exit, or rolls back automatically the moment an exception propagates out o
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Purple #CC78BC, Teal #029E73, Brown #CA9161
 flowchart TD
     accTitle: Example 53: Transaction Context Manager
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: with conn: block begins, INSERT Grace Hopper visible inside the block, raise ValueError, conn ROLLS BACK automatically Grace Hopper undone, except ValueError: caught count40*41 still 1. Connections: with conn: block begins to INSERT Grace Hopper visible inside the block, INSERT Grace Hopper visible inside the block to raise ValueError, raise ValueError to conn ROLLS BACK automatically Grace Hopper undone, conn ROLLS BACK automatically Grace Hopper undone to except ValueError: caught count40*41 still 1.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: with conn: block begins, INSERT Grace Hopper visible inside the block, raise ValueError, conn ROLLS BACK automatically Grace Hopper undone, except ValueError: caught count(*) still 1. Connections: with conn: block begins to INSERT Grace Hopper visible inside the block, INSERT Grace Hopper visible inside the block to raise ValueError, raise ValueError to conn ROLLS BACK automatically Grace Hopper undone, conn ROLLS BACK automatically Grace Hopper undone to except ValueError: caught count(*) still 1.
     A["with conn: block<br/>begins"]:::blue
     B["INSERT Grace Hopper<br/>visible inside the<br/>block"]:::orange
     C["raise ValueError"]:::purple
@@ -1877,7 +1877,7 @@ update if it already exists, in one statement.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 55: Upsert On Conflict
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: INSERT id = 1, id 1 already exists?, C, new, ON CONFLICT DO UPDATE price = excluded.price. Connections: C to new, INSERT id = 1 to id 1 already exists?, id 1 already exists? to C (no), id 1 already exists? to ON CONFLICT DO UPDATE price = excluded.price (yes).
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: INSERT id = 1, id 1 already exists?, INSERT -- new row, ON CONFLICT DO UPDATE price = excluded.price. Connections: INSERT id = 1 to id 1 already exists?, id 1 already exists? to INSERT -- new row (no), id 1 already exists? to ON CONFLICT DO UPDATE price = excluded.price (yes).
     A["INSERT id = 1"]:::blue
     B{"id 1 already exists?"}:::orange
     C["INSERT -- new row"]:::teal
@@ -2040,7 +2040,7 @@ joining `employee` to a second aliased copy of itself pairs every employee with 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 57: Self Join
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: employee e 40the row itself41, employee m 40same table, 2nd alias41, e.manager_id = m.id employee paired with manager. Connections: employee e 40the row itself41 to e.manager_id = m.id employee paired with manager, employee m 40same table, 2nd alias41 to e.manager_id = m.id employee paired with manager.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: employee e (the row itself), employee m (same table, 2nd alias), e.manager_id = m.id employee paired with manager. Connections: employee e (the row itself) to e.manager_id = m.id employee paired with manager, employee m (same table, 2nd alias) to e.manager_id = m.id employee paired with manager.
     A["employee e<br/>#40;the row<br/>itself#41;"]:::blue
     B["employee m<br/>#40;same table, 2nd<br/>alias#41;"]:::orange
     C["e.manager_id = m.id<br/>employee paired with<br/>manager"]:::teal

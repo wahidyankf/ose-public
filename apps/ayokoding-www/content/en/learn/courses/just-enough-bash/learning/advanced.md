@@ -1041,7 +1041,7 @@ _ex-83 &middot; exercises co-26, co-18_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
     accTitle: Example 83: Process Substitution -- Diffing Two Live Pipelines
-    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: a.txt, b.txt, sort 40process substitution41, sort 40process substitution41, diff, identical result to temp-file staging. Connections: a.txt to sort 40process substitution41, sort 40process substitution41 to diff, b.txt to sort 40process substitution41, sort 40process substitution41 to diff, diff to identical result to temp-file staging.
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: a.txt, b.txt, sort (process substitution), sort (process substitution), diff, identical result to temp-file staging. Connections: a.txt to sort (process substitution), sort (process substitution) to diff, b.txt to sort (process substitution), sort (process substitution) to diff, diff to identical result to temp-file staging.
     A["a.txt"]:::blue
     B["b.txt"]:::blue
     C["sort<br/>#40;process<br/>substitution#41;"]:::orange

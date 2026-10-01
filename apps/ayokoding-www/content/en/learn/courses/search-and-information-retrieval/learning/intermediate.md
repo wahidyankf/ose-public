@@ -893,7 +893,7 @@ A size-k min-heap keeps only the k highest-scoring documents seen so far, discar
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 38: Top-K Heap
-    accDescr: Flowchart with 8 nodes and 7 connections. Nodes: new (score, doc_id), heap has < k items?, C, always, score beats heap min?, replace the current minimum, F, not. Connections: new (score, doc_id) to heap has < k items?, heap has < k items? to C (yes), C to always, heap has < k items? to score beats heap min? (no), score beats heap min? to replace the current minimum (yes), score beats heap min? to F (no), F to not.
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: new (score, doc_id), heap has < k items?, push -- always keep it, score beats heap min?, replace the current minimum, discard -- not in the top k. Connections: new (score, doc_id) to heap has < k items?, heap has < k items? to push -- always keep it (yes), heap has < k items? to score beats heap min? (no), score beats heap min? to replace the current minimum (yes), score beats heap min? to discard -- not in the top k (no).
     A["new (score, doc_id)"]:::blue --> B{"heap has < k items?"}:::orange
     B -->|"yes"| C["push -- always keep<br/>it"]:::teal
     B -->|"no"| D{"score beats heap<br/>min?"}:::orange
@@ -1502,7 +1502,7 @@ Average Precision (AP) for one query averages precision@k computed at every rank
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart LR
     accTitle: Example 46: Average Precision
-    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: ranked results, relevant at this rank?, compute precision@this-rank add to running sum, D, no, AP = sum /relevant count. Connections: ranked results to relevant at this rank?, relevant at this rank? to compute precision@this-rank add to running sum (yes), relevant at this rank? to D (no), D to no, compute precision@this-rank add to running sum to AP = sum /relevant count.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: ranked results, relevant at this rank?, compute precision@this-rank add to running sum, skip -- no contribution, AP = sum /relevant count. Connections: ranked results to relevant at this rank?, relevant at this rank? to compute precision@this-rank add to running sum (yes), relevant at this rank? to skip -- no contribution (no), compute precision@this-rank add to running sum to AP = sum /relevant count.
     A["ranked results"]:::blue --> B{"relevant at this<br/>rank?"}:::orange
     B -->|"yes"| C["compute<br/>precision@this-rank<br/>add to running sum"]:::teal
     B -->|"no"| D["skip -- no<br/>contribution"]:::gray
@@ -2320,7 +2320,7 @@ A phrase query for `"quick brown"` matches only documents where the two words ap
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart LR
     accTitle: Example 54: Phrase Query
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: positions of quick, position(brown, positions of brown, phrase match, not a phrase match. Connections: positions of quick to position(brown, positions of brown to position(brown, position(brown to phrase match (yes), position(brown to not a phrase match (no).
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: positions of quick, position(brown) == position(quick) + 1?, positions of brown, phrase match, not a phrase match. Connections: positions of quick to position(brown) == position(quick) + 1?, positions of brown to position(brown) == position(quick) + 1?, position(brown) == position(quick) + 1? to phrase match (yes), position(brown) == position(quick) + 1? to not a phrase match (no).
     A["positions of 'quick'"]:::blue --> C{"position(brown) ==<br/>position(quick) + 1?"}:::orange
     B["positions of 'brown'"]:::blue --> C
     C -->|"yes"| D["phrase match"]:::teal
@@ -2405,7 +2405,7 @@ A proximity query relaxes phrase matching to "within N positions of each other" 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart LR
     accTitle: Example 55: Proximity Query
-    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: distance between positions, distance <= max_distance?, C, match, D, excluded. Connections: distance between positions to distance <= max_distance?, distance <= max_distance? to C (yes), C to match, distance <= max_distance? to D (no), D to excluded.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: distance between positions, distance <= max_distance?, within N -- match, beyond N -- excluded. Connections: distance between positions to distance <= max_distance?, distance <= max_distance? to within N -- match (yes), distance <= max_distance? to beyond N -- excluded (no).
     A["distance between<br/>positions"]:::blue --> B{"distance <=<br/>max_distance?"}:::orange
     B -->|"yes"| C["within N -- match"]:::teal
     B -->|"no"| D["beyond N -- excluded"]:::gray

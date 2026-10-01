@@ -17,7 +17,7 @@ combined coverage report from the CLI, the way a reviewer actually would.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Goal
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Step 1: compute_ subtotal4041 TDDd unit tests, Step 2: TaxGateway stub/mock isolation, Step 3: order-independence property test 40Hypothesis + fast-check41, Step 4: app.py FastAPI integration test, E, cov. Connections: Step 1: compute_ subtotal4041 TDDd unit tests to Step 4: app.py FastAPI integration test, Step 2: TaxGateway stub/mock isolation to Step 4: app.py FastAPI integration test, Step 3: order-independence property test 40Hypothesis + fast-check41 to Step 4: app.py FastAPI integration test, Step 4: app.py FastAPI integration test to E, E to cov.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Step 1: compute_ subtotal() TDDd unit tests, Step 2: TaxGateway stub/mock isolation, Step 3: order-independence property test (Hypothesis + fast-check), Step 4: app.py FastAPI integration test, pytest --cov coverage read from the CLI. Connections: Step 1: compute_ subtotal() TDDd unit tests to Step 4: app.py FastAPI integration test, Step 2: TaxGateway stub/mock isolation to Step 4: app.py FastAPI integration test, Step 3: order-independence property test (Hypothesis + fast-check) to Step 4: app.py FastAPI integration test, Step 4: app.py FastAPI integration test to pytest --cov coverage read from the CLI.
     A["Step 1: compute_<br/>subtotal#40;#41;<br/>TDD'd unit tests"]:::blue
     B["Step 2: TaxGateway<br/>stub/mock isolation"]:::orange
     C["Step 3:<br/>order-independence<br/>property test<br/>#40;Hypothesis +<br/>fast-check#41;"]:::teal

@@ -32,7 +32,7 @@ co-11).
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 29: A Stub Returns a Canned Value
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: calculate_ total4041, StubTaxRateProvider get_rate returns 0.10, always 0.10, regardless of region. Connections: calculate_ total4041 to StubTaxRateProvider get_rate returns 0.10, StubTaxRateProvider get_rate returns 0.10 to always 0.10, regardless of region.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: calculate_ total(), StubTaxRateProvider get_rate returns 0.10, always 0.10, regardless of region. Connections: calculate_ total() to StubTaxRateProvider get_rate returns 0.10, StubTaxRateProvider get_rate returns 0.10 to always 0.10, regardless of region.
     A["calculate_<br/>total#40;#41;"]:::blue --> B["StubTaxRateProvider<br/>get_rate returns<br/>0.10"]:::orange
     B --> C["always 0.10,<br/>regardless of region"]:::teal
 
@@ -557,7 +557,7 @@ entirely (co-15).
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 38: A Spy Wraps the Real Object
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: spy.add402, 341, records the call (like a mock), forwards to real_calculator (genuine computation). Connections: spy.add402, 341 to records the call (like a mock), spy.add402, 341 to forwards to real_calculator (genuine computation).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: spy.add(2, 3), records the call (like a mock), forwards to real_calculator (genuine computation). Connections: spy.add(2, 3) to records the call (like a mock), spy.add(2, 3) to forwards to real_calculator (genuine computation).
     A["spy.add#40;2, 3#41;"]:::blue --> B["records the call<br/>(like a mock)"]:::orange
     A --> C["forwards to<br/>real_calculator<br/>(genuine<br/>computation)"]:::teal
 
@@ -689,7 +689,7 @@ versus mockist/London-style testing, made concrete (co-16, co-13).
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Example 40: Fake vs. Mock -- Two Ways to Check the Same Thing
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: UserService. register(1, Ada), repo.save(1, Ada), C, Mock: assert save. assert_called_once_ with(1, Ada) (checks INTERACTION). Connections: UserService. register(1, Ada) to repo.save(1, Ada), repo.save(1, Ada) to C, repo.save(1, Ada) to Mock: assert save. assert_called_once_ with(1, Ada) (checks INTERACTION).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: UserService. register(1, Ada), repo.save(1, Ada), Fake: assert repo._users == 1: Ada (checks STATE), Mock: assert save. assert_called_once_ with(1, Ada) (checks INTERACTION). Connections: UserService. register(1, Ada) to repo.save(1, Ada), repo.save(1, Ada) to Fake: assert repo._users == 1: Ada (checks STATE), repo.save(1, Ada) to Mock: assert save. assert_called_once_ with(1, Ada) (checks INTERACTION).
     A["UserService.<br/>register(1, 'Ada')"]:::blue --> B["repo.save(1, 'Ada')"]:::orange
     B --> C["Fake: assert<br/>repo._users == {1:<br/>'Ada'}<br/>(checks STATE)"]:::teal
     B --> D["Mock: assert save.<br/>assert_called_once_<br/>with(1, 'Ada')<br/>(checks INTERACTION)"]:::purple
@@ -885,7 +885,7 @@ equal applying it once, for every generated integer (co-18, co-20).
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 43: Property -- Idempotence
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: st.integers4041 generates 100+ values, normalize_ sign40x41, normalize_ sign40normalize_ sign40x4141 must be EQUAL. Connections: st.integers4041 generates 100+ values to normalize_ sign40x41, normalize_ sign40x41 to normalize_ sign40normalize_ sign40x4141 must be EQUAL.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: st.integers() generates 100+ values, normalize_ sign(x), normalize_ sign(normalize_ sign(x)) must be EQUAL. Connections: st.integers() generates 100+ values to normalize_ sign(x), normalize_ sign(x) to normalize_ sign(normalize_ sign(x)) must be EQUAL.
     A["st.integers#40;#41;<br/>generates 100+<br/>values"]:::blue --> B["normalize_<br/>sign#40;x#41;"]:::orange
     B --> C["normalize_<br/>sign#40;normalize_<br/>sign#40;x#41;#41;<br/>must be EQUAL"]:::teal
 
@@ -955,7 +955,7 @@ non-ASCII Unicode (co-18, co-20).
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 44: Property -- Round-Trip
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: st.text4041 generates original, encode40original41, decode40bytes41, D. Connections: st.text4041 generates original to encode40original41, encode40original41 to decode40bytes41, decode40bytes41 to D.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: st.text() generates original, encode(original), decode(bytes), round_tripped == original?. Connections: st.text() generates original to encode(original), encode(original) to decode(bytes), decode(bytes) to round_tripped == original?.
     A["st.text()<br/>generates original"]:::blue --> B["encode(original)"]:::orange
     B --> C["decode#40;bytes#41;"]:::orange
     C --> D["round_tripped ==<br/>original?"]:::teal
@@ -1225,7 +1225,7 @@ where both dimensions are constrained to be positive -- by combining simpler str
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: Example 48: A Custom Composite Strategy
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: draw40st.integers401,10004141 width, rectangles4041 @st.composite, draw40st.integers401,10004141 height, 40width, height41 domain object. Connections: draw40st.integers401,10004141 width to rectangles4041 @st.composite, draw40st.integers401,10004141 height to rectangles4041 @st.composite, rectangles4041 @st.composite to 40width, height41 domain object.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: draw( st.integers(1,1000)) width, rectangles() @st.composite, draw( st.integers(1,1000)) height, (width, height) domain object. Connections: draw( st.integers(1,1000)) width to rectangles() @st.composite, draw( st.integers(1,1000)) height to rectangles() @st.composite, rectangles() @st.composite to (width, height) domain object.
     A["draw(<br/>st.integers(1,1000))<br/>width"]:::blue --> C["rectangles()<br/>@st.composite"]:::purple
     B["draw(<br/>st.integers(1,1000))<br/>height"]:::orange --> C
     C --> D["#40;width,<br/>height#41;<br/>domain object"]:::teal

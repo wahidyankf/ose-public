@@ -24,7 +24,7 @@ postmortem's own follow-ups as the owned fix.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: RFC options + trade-off + review, ADR decision + status + consequences, PR description what47why47verified47where-to-look, Postmortem + C4 context timeline + root cause + follow-ups. Connections: RFC options + trade-off + review to ADR decision + status + consequences, ADR decision + status + consequences to PR description what47why47verified47where-to-look, PR description what47why47verified47where-to-look to Postmortem + C4 context timeline + root cause + follow-ups.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: RFC options + trade-off + review, ADR decision + status + consequences, PR description what/why/ verified/ where-to-look, Postmortem + C4 context timeline + root cause + follow-ups. Connections: RFC options + trade-off + review to ADR decision + status + consequences, ADR decision + status + consequences to PR description what/why/ verified/ where-to-look, PR description what/why/ verified/ where-to-look to Postmortem + C4 context timeline + root cause + follow-ups.
     A["RFC<br/>options + trade-off<br/>+ review"]:::blue
     B["ADR<br/>decision + status +<br/>consequences"]:::orange
     C["PR description<br/>what#47;why#47;<br/>verified#47;<br/>where-to-look"]:::teal

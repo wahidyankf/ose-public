@@ -22,7 +22,7 @@ _ex-61 &middot; exercises co-23, co-14_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 61: http.client -- a GET Request via the Standard Library
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: DNS lookup co-03, TCP handshake co-07, HTTPConnection. request4041 writes request line + headers, getresponse4041 parses status + headers. Connections: DNS lookup co-03 to TCP handshake co-07, TCP handshake co-07 to HTTPConnection. request4041 writes request line + headers, HTTPConnection. request4041 writes request line + headers to getresponse4041 parses status + headers.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: DNS lookup co-03, TCP handshake co-07, HTTPConnection. request() writes request line + headers, getresponse() parses status + headers. Connections: DNS lookup co-03 to TCP handshake co-07, TCP handshake co-07 to HTTPConnection. request() writes request line + headers, HTTPConnection. request() writes request line + headers to getresponse() parses status + headers.
     A["DNS lookup<br/>co-03"]:::blue --> B["TCP handshake<br/>co-07"]:::orange
     B --> C["HTTPConnection.<br/>request#40;#41;<br/>writes request line<br/>+ headers"]:::teal
     C --> D["getresponse#40;#41;<br/>parses status +<br/>headers"]:::teal
@@ -288,7 +288,7 @@ _ex-66 &middot; exercises co-17_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 66: openssl sclient -- a Raw TLS Handshake
-    accDescr: Graph with 5 nodes and 6 connections. Nodes: A, root, B, C, leaf. Connections: A to root, root to B (signs), B to C (signs), C to leaf, C to B (verify return:1), B to A (verify return:1).
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: depth 2 -- root CA SSL.com Root CA ECC, depth 1 -- intermediate CA Cloudflare TLS Issuing ECC CA 3, depth 0 -- leaf cert CN = example.com. Connections: depth 2 -- root CA SSL.com Root CA ECC to depth 1 -- intermediate CA Cloudflare TLS Issuing ECC CA 3 (signs), depth 1 -- intermediate CA Cloudflare TLS Issuing ECC CA 3 to depth 0 -- leaf cert CN = example.com (signs), depth 0 -- leaf cert CN = example.com to depth 1 -- intermediate CA Cloudflare TLS Issuing ECC CA 3 (verify return:1), depth 1 -- intermediate CA Cloudflare TLS Issuing ECC CA 3 to depth 2 -- root CA SSL.com Root CA ECC (verify return:1).
     A["depth 2 -- root CA<br/>SSL.com Root CA<br/>ECC"]:::blue -->|"signs"| B["depth 1 --<br/>intermediate CA<br/>Cloudflare TLS<br/>Issuing ECC CA 3"]:::orange
     B -->|"signs"| C["depth 0 -- leaf cert<br/>CN #61; example.com"]:::teal
     C -.->|"verify return:1"| B
@@ -1321,7 +1321,7 @@ Using an RFC-2606-reserved `.invalid` domain (guaranteed to never resolve) versu
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
     accTitle: Example 80: A DNS Failure and a TCP Failure Surface at DIFFERENT Layers
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: classify_ failure40host, port41, DNS resolves? co-03, failed at DNS layer, TCP connects? co-07, failed at TCP layer, connected successfully. Connections: classify_ failure40host, port41 to DNS resolves? co-03, DNS resolves? co-03 to failed at DNS layer (no), DNS resolves? co-03 to TCP connects? co-07 (yes), TCP connects? co-07 to failed at TCP layer (no), TCP connects? co-07 to connected successfully (yes).
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: classify_ failure(host, port), DNS resolves? co-03, failed at DNS layer, TCP connects? co-07, failed at TCP layer, connected successfully. Connections: classify_ failure(host, port) to DNS resolves? co-03, DNS resolves? co-03 to failed at DNS layer (no), DNS resolves? co-03 to TCP connects? co-07 (yes), TCP connects? co-07 to failed at TCP layer (no), TCP connects? co-07 to connected successfully (yes).
     A["classify_<br/>failure#40;host,<br/>port#41;"]:::blue
     A --> B{"DNS resolves?<br/>co-03"}
     B -->|"no"| C["failed at DNS layer"]:::orange
@@ -1555,7 +1555,7 @@ The capstone-scale explorer, one level down: `dig` (an independent external tool
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
     accTitle: Example 82: A Full DNS -> TCP -> HTTP Explorer, with a UDP Contrast Note
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: dig +short external tool (co-20), TCP connect co-07, gethostbyname4041 Python resolver (co-03), HTTP GET co-12, UDP contrast note co-08, co-09. Connections: dig +short external tool (co-20) to TCP connect co-07, gethostbyname4041 Python resolver (co-03) to TCP connect co-07, TCP connect co-07 to HTTP GET co-12, HTTP GET co-12 to UDP contrast note co-08, co-09.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: dig +short external tool (co-20), TCP connect co-07, gethostbyname () Python resolver (co-03), HTTP GET co-12, UDP contrast note co-08, co-09. Connections: dig +short external tool (co-20) to TCP connect co-07, gethostbyname () Python resolver (co-03) to TCP connect co-07, TCP connect co-07 to HTTP GET co-12, HTTP GET co-12 to UDP contrast note co-08, co-09.
     A["dig +short<br/>external tool<br/>(co-20)"]:::blue --> C["TCP connect<br/>co-07"]:::orange
     B["gethostbyname<br/>#40;#41;<br/>Python resolver<br/>(co-03)"]:::blue --> C
     C --> D["HTTP GET<br/>co-12"]:::teal

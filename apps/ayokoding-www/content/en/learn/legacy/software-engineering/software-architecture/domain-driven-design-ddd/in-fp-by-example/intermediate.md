@@ -5405,7 +5405,7 @@ The `ApprovePO` workflow needs access to the supplier repository (to check eligi
 ```mermaid
 graph TD
     accTitle: Example 44: ApprovePO Workflow Signature with Dependencies
-    accDescr: Graph with 6 nodes and 3 connections. Nodes: Injected Deps LoadPO · CheckSupplier · RecordApproval, ApprovePOCommand (runtime input), approvePOWorkflow (pure function), Out, lt, gt. Connections: Injected Deps LoadPO · CheckSupplier · RecordApproval to approvePOWorkflow (pure function) (partial application), ApprovePOCommand (runtime input) to approvePOWorkflow (pure function) (final argument), approvePOWorkflow (pure function) to Out.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Injected Deps LoadPO · CheckSupplier · RecordApproval, ApprovePOCommand (runtime input), approvePOWorkflow (pure function), Async< Result<ApprovedPO, ApprovalError>>. Connections: Injected Deps LoadPO · CheckSupplier · RecordApproval to approvePOWorkflow (pure function) (partial application), ApprovePOCommand (runtime input) to approvePOWorkflow (pure function) (final argument), approvePOWorkflow (pure function) to Async< Result<ApprovedPO, ApprovalError>>.
     Deps["Injected Deps<br/>LoadPO ·<br/>CheckSupplier ·<br/>RecordApproval"]
     Cmd["ApprovePOCommand<br/>(runtime input)"]
     WF["approvePOWorkflow<br/>(pure function)"]
@@ -6470,7 +6470,7 @@ The complete PO lifecycle from Draft to Issued involves three workflow steps: `C
 ```mermaid
 graph LR
     accTitle: Example 47: Pipeline Composition — Wiring Three Workflow Steps
-    accDescr: Graph with 3 nodes and 1 connections. Nodes: createDraft DraftPO, B, Result. Connections: B to Result (Result.map issueApproved).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: createDraft DraftPO, Result, Result. Connections: createDraft DraftPO to Result, Result to Result (Result.map issueApproved).
     A["createDraft<br/>DraftPO"] -->|"|> approveDraft"| B["Result<ApprovedPO, string>"]
     B -->|"Result.map<br/>issueApproved"| C["Result<IssuedPO*string,string>"]
 

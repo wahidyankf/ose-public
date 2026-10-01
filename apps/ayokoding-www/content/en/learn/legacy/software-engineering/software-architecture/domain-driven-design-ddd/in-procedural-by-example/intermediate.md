@@ -161,7 +161,7 @@ Two-step approval: `RequestApproval` captures which approval chain handles this 
 ```mermaid
 stateDiagram-v2
     accTitle: Example 27: RequestApproval and Approve with Budget Check
-    accDescr: State diagram with 4 items: Submitted, ApprovalPending, Issued, Rejected. Relationships: Submitted to ApprovalPending: RequestApproval40chain41; ApprovalPending to Issued: Approve40by41 [total≤cap]; ApprovalPending to Rejected: Reject40reason41.
+    accDescr: State diagram with 4 items: Submitted, ApprovalPending, Issued, Rejected. Relationships: Submitted to ApprovalPending: RequestApproval(chain); ApprovalPending to Issued: Approve(by) [total≤cap]; ApprovalPending to Rejected: Reject(reason).
     Submitted --> ApprovalPending: RequestApproval(chain)
     ApprovalPending --> Issued: Approve#40;by#41; [total≤cap]
     ApprovalPending --> Rejected: Reject(reason)
@@ -298,7 +298,7 @@ impl PurchaseOrder {
 ```mermaid
 stateDiagram-v2
     accTitle: Example 28: MarkReceived and MarkPaid
-    accDescr: State diagram with 3 items: Issued, Received, Paid. Relationships: Issued to Received: MarkReceived40grnID41; Received to Paid: MarkPaid4041 [grnId set].
+    accDescr: State diagram with 3 items: Issued, Received, Paid. Relationships: Issued to Received: MarkReceived(grnID); Received to Paid: MarkPaid() [grnId set].
     Issued --> Received: MarkReceived(grnID)
     Received --> Paid: MarkPaid#40;#41; [grnId set]
 ```

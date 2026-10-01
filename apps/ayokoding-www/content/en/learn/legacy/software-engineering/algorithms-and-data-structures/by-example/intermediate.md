@@ -410,7 +410,7 @@ A hash table maps keys to values using a hash function that converts each key in
 ```mermaid
 graph TD
     accTitle: Example 31: Hash Table with Chaining
-    accDescr: Graph with 6 nodes and 3 connections. Nodes: Key: apple, Bucket 0: [(apple,1)], Key: banana, Bucket 2: [(banana,2)], Key: cherry, B2: [(banana,2),(cherry,3)]. Connections: Key: apple to Bucket 0: [(apple,1)] (hash mod 5 = 0), Key: banana to Bucket 2: [(banana,2)] (hash mod 5 = 2), Key: cherry to B2: [(banana,2),(cherry,3)] (hash mod 5 = 2).
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: Key: apple, Bucket 0: [(apple,1)], Key: banana, Bucket 2: [(banana,2)], Key: cherry, B2: [(banana,2), (cherry,3)]. Connections: Key: apple to Bucket 0: [(apple,1)] (hash mod 5 = 0), Key: banana to Bucket 2: [(banana,2)] (hash mod 5 = 2), Key: cherry to B2: [(banana,2), (cherry,3)] (hash mod 5 = 2).
     K1["Key: apple"] -->|hash mod 5 = 0| B0["Bucket 0:<br/>[(apple,1)]"]
     K2["Key: banana"] -->|hash mod 5 = 2| B2["Bucket 2:<br/>[(banana,2)]"]
     K3["Key: cherry"] -->|hash mod 5 = 2| B2C["B2: [(banana,2),<br/>(cherry,3)]"]
@@ -5445,7 +5445,7 @@ A prefix sum array stores cumulative totals so that any range sum `sum(arr[l..r]
 ```mermaid
 graph LR
     accTitle: Example 50: Prefix Sum Array for Range Queries
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: arr: [2,4,3,7,1,5], prefix: [0,2,6,9,16,17,22], Q: sum402,441=17- 6=11. Connections: arr: [2,4,3,7,1,5] to prefix: [0,2,6,9,16,17,22] (build), prefix: [0,2,6,9,16,17,22] to Q: sum402,441=17- 6=11 (O40141 lookup).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: arr: [2,4,3,7,1,5], prefix: [0,2,6,9,16,17,22], Q: sum(2,4)=17- 6=11. Connections: arr: [2,4,3,7,1,5] to prefix: [0,2,6,9,16,17,22] (build), prefix: [0,2,6,9,16,17,22] to Q: sum(2,4)=17- 6=11 (O(1) lookup).
     A["arr: [2,4,3,7,1,5]"]
     P["prefix:<br/>[0,2,6,9,16,17,22]"]
     Q["Q:<br/>sum#40;2,4#41;=17-<br/>6=11"]

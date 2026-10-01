@@ -19,7 +19,7 @@ The `supplier` bounded context manages vendor master data. Its output port, `Sup
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph LR
     accTitle: Example 21: SupplierRepository output port
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: SupplierApplication Service 40application zone41, SupplierRepository 40output port interface41, InMemorySupplier Repository 40test adapter41, PgSupplierRepository 40production adapter41. Connections: SupplierApplication Service 40application zone41 to SupplierRepository 40output port interface41 (calls), InMemorySupplier Repository 40test adapter41 to SupplierRepository 40output port interface41 (implements), PgSupplierRepository 40production adapter41 to SupplierRepository 40output port interface41 (implements).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: SupplierApplication Service (application zone), SupplierRepository (output port interface), InMemorySupplier Repository (test adapter), PgSupplierRepository (production adapter). Connections: SupplierApplication Service (application zone) to SupplierRepository (output port interface) (calls), InMemorySupplier Repository (test adapter) to SupplierRepository (output port interface) (implements), PgSupplierRepository (production adapter) to SupplierRepository (output port interface) (implements).
     APP["SupplierApplication<br/>Service<br/>#40;application<br/>zone#41;"]:::teal
     PORT["SupplierRepository<br/>#40;output port<br/>interface#41;"]:::teal
     INMEM["InMemorySupplier<br/>Repository<br/>#40;test adapter#41;"]:::orange
@@ -2470,7 +2470,7 @@ When the `purchasing` context calls the `supplier` context, it must not let the 
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05, Purple #CC78BC
 graph LR
     accTitle: Example 31: Anti-corruption layer — translating supplier context types into purchasing
-    accDescr: Graph with 4 nodes and 4 connections. Nodes: PurchasingContext 40domain types41, SupplierACL 40anti-corruption layer41, SupplierContext 40supplier domain types41, SupplierRepository 40output port41. Connections: PurchasingContext 40domain types41 to SupplierACL 40anti-corruption layer41 (calls), SupplierACL 40anti-corruption layer41 to SupplierRepository 40output port41 (translates + calls), SupplierRepository 40output port41 to SupplierACL 40anti-corruption layer41 (returns Supplier), SupplierACL 40anti-corruption layer41 to PurchasingContext 40domain types41 (returns SupplierSummary).
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: PurchasingContext (domain types), SupplierACL (anti-corruption layer), SupplierContext (supplier domain types), SupplierRepository (output port). Connections: PurchasingContext (domain types) to SupplierACL (anti-corruption layer) (calls), SupplierACL (anti-corruption layer) to SupplierRepository (output port) (translates + calls), SupplierRepository (output port) to SupplierACL (anti-corruption layer) (returns Supplier), SupplierACL (anti-corruption layer) to PurchasingContext (domain types) (returns SupplierSummary).
     PUR["PurchasingContext<br/>#40;domain types#41;"]:::blue
     ACL["SupplierACL<br/>#40;anti-corruption<br/>layer#41;"]:::purple
     SUP["SupplierContext<br/>#40;supplier domain<br/>types#41;"]:::teal

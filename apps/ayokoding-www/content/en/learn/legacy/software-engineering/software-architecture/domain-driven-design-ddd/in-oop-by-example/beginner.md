@@ -195,7 +195,7 @@ A Value Object has no identity. Two `Money` instances with the same amount and c
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph LR
     accTitle: Example 2: Value Object — immutable Money
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Money 40Value Object41, amount: BigDecimal, currency: ISO 4217, add40Money41 → Money, multiply40int41 → Money. Connections: Money 40Value Object41 to amount: BigDecimal, Money 40Value Object41 to currency: ISO 4217, Money 40Value Object41 to add40Money41 → Money, Money 40Value Object41 to multiply40int41 → Money.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Money (Value Object), amount: BigDecimal, currency: ISO 4217, add(Money) → Money, multiply(int) → Money. Connections: Money (Value Object) to amount: BigDecimal, Money (Value Object) to currency: ISO 4217, Money (Value Object) to add(Money) → Money, Money (Value Object) to multiply(int) → Money.
     A["Money #40;Value<br/>Object#41;"]:::blue
     B["amount: BigDecimal"]:::teal
     C["currency: ISO 4217"]:::teal
@@ -2111,7 +2111,7 @@ An Entity has a unique identity that persists across state changes. Two `LineIte
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph LR
     accTitle: Example 11: Entity vs Value Object — identity matters
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Entity: LineItem, id: LineItemId (identity), skuCode: SkuCode 40VO41, quantity: Quantity 40VO41, unitPrice: Money 40VO41. Connections: Entity: LineItem to id: LineItemId (identity), Entity: LineItem to skuCode: SkuCode 40VO41, Entity: LineItem to quantity: Quantity 40VO41, Entity: LineItem to unitPrice: Money 40VO41.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Entity: LineItem, id: LineItemId (identity), skuCode: SkuCode (VO), quantity: Quantity (VO), unitPrice: Money (VO). Connections: Entity: LineItem to id: LineItemId (identity), Entity: LineItem to skuCode: SkuCode (VO), Entity: LineItem to quantity: Quantity (VO), Entity: LineItem to unitPrice: Money (VO).
     A["Entity: LineItem"]:::blue
     B["id: LineItemId<br/>(identity)"]:::orange
     C["skuCode: SkuCode<br/>#40;VO#41;"]:::teal

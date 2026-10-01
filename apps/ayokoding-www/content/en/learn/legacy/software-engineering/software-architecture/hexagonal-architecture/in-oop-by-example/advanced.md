@@ -19,7 +19,7 @@ The `receiving` context owns `GoodsReceiptNote`, which records physical delivery
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05, Purple #CC78BC
 graph TD
     accTitle: Example 56: Receiving context — GoodsReceiptNote aggregate and port
-    accDescr: Graph with 5 nodes and 1 connections. Nodes: GoodsReceiptNote 40aggregate41, GoodsReceipt Repository EventPublisher 40output ports41, RecordGoodsReceipt Service 40application service41, GrnController 40in-adapter41, PurchaseOrderId 40value from purchasing41. Connections: GoodsReceiptNote 40aggregate41 to PurchaseOrderId 40value from purchasing41.
+    accDescr: Graph with 5 nodes and 1 connections. Nodes: GoodsReceiptNote (aggregate), GoodsReceipt Repository EventPublisher (output ports), RecordGoodsReceipt Service (application service), GrnController (in-adapter), PurchaseOrderId (value from purchasing). Connections: GoodsReceiptNote (aggregate) to PurchaseOrderId (value from purchasing).
     subgraph REC["receiving hexagon"]
         GRN["GoodsReceiptNote<br/>#40;aggregate#41;"]:::blue
         PORT["GoodsReceipt<br/>Repository<br/>EventPublisher<br/>#40;output ports#41;"]:::teal
@@ -1403,7 +1403,7 @@ A decorator wraps an existing adapter and adds retry logic without modifying the
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05, Purple #CC78BC
 graph LR
     accTitle: Example 61: RetryingBankingAdapter — retry decorator for BankingPort
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: DisbursementService 40application41, RetryingBanking Adapter 40decorator41, RestBankingAdapter 40real adapter41, Bank REST API 40external41. Connections: DisbursementService 40application41 to RetryingBanking Adapter 40decorator41 (BankingPort. disburse), RetryingBanking Adapter 40decorator41 to RestBankingAdapter 40real adapter41 (delegate with retry), RestBankingAdapter 40real adapter41 to Bank REST API 40external41 (HTTP POST).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: DisbursementService (application), RetryingBanking Adapter (decorator), RestBankingAdapter (real adapter), Bank REST API (external). Connections: DisbursementService (application) to RetryingBanking Adapter (decorator) (BankingPort. disburse), RetryingBanking Adapter (decorator) to RestBankingAdapter (real adapter) (delegate with retry), RestBankingAdapter (real adapter) to Bank REST API (external) (HTTP POST).
     SVC["DisbursementService<br/>#40;application#41;"]:::teal
     RET["RetryingBanking<br/>Adapter<br/>#40;decorator#41;"]:::orange
     REST["RestBankingAdapter<br/>#40;real adapter#41;"]:::blue

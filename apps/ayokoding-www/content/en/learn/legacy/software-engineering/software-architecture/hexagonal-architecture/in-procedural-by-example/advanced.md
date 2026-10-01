@@ -389,7 +389,7 @@ Retries must respect context deadlines — a caller timing out should cancel in-
 ```mermaid
 sequenceDiagram
     accTitle: Example 54: Retry with Context Cancellation
-    accDescr: Sequence diagram between Caller401s deadline41, RetryPORepository, PostgresRepo. Messages: Caller401s deadline41 to RetryPORepository: Save(ctx, po); RetryPORepository to PostgresRepo: attempt 1; PostgresRepo to RetryPORepository: Transient error; Caller401s deadline41 to RetryPORepository: ctx.Done() fires at 150ms; RetryPORepository to Caller401s deadline41: ctx.Err() = DeadlineExceeded.
+    accDescr: Sequence diagram between Caller(1s deadline), RetryPORepository, PostgresRepo. Messages: Caller(1s deadline) to RetryPORepository: Save(ctx, po); RetryPORepository to PostgresRepo: attempt 1; PostgresRepo to RetryPORepository: Transient error; Caller(1s deadline) to RetryPORepository: ctx.Done() fires at 150ms; RetryPORepository to Caller(1s deadline): ctx.Err() = DeadlineExceeded.
     participant C as Caller#40;1s deadline#41;
     participant RR as RetryPORepository
     participant DB as PostgresRepo
@@ -468,7 +468,7 @@ Testing retry behavior requires a stub that fails N times then succeeds — this
 ```mermaid
 sequenceDiagram
     accTitle: Example 55: Retry + Jitter Integration Test
-    accDescr: Sequence diagram between Test, RetryPORepository, StubbedRepo40failFirst=241. Messages: Test to RetryPORepository: Save(ctx, po); RetryPORepository to StubbedRepo40failFirst=241: attempt 1 → RetryableError; RetryPORepository to StubbedRepo40failFirst=241: attempt 2 → RetryableError; RetryPORepository to StubbedRepo40failFirst=241: attempt 3 → nil (success); RetryPORepository to Test: nil; Test to StubbedRepo40failFirst=241: assert callCount == 3.
+    accDescr: Sequence diagram between Test, RetryPORepository, StubbedRepo(failFirst=2). Messages: Test to RetryPORepository: Save(ctx, po); RetryPORepository to StubbedRepo(failFirst=2): attempt 1 → RetryableError; RetryPORepository to StubbedRepo(failFirst=2): attempt 2 → RetryableError; RetryPORepository to StubbedRepo(failFirst=2): attempt 3 → nil (success); RetryPORepository to Test: nil; Test to StubbedRepo(failFirst=2): assert callCount == 3.
     participant T as Test
     participant RR as RetryPORepository
     participant S as StubbedRepo#40;failFirst=2#41;
@@ -1053,7 +1053,7 @@ Callbacks notify the application when the circuit state changes — `OnOpen` fir
 ```mermaid
 sequenceDiagram
     accTitle: Example 60: CircuitBreaker Callbacks
-    accDescr: Sequence diagram between CircuitBreaker, AlertingPlatform. Messages: CircuitBreaker to CircuitBreaker: recordResult40failure41 — failures >= threshold; CircuitBreaker to CircuitBreaker: state = Open; CircuitBreaker to AlertingPlatform: OnOpen callback40lastErr41; AlertingPlatform to CircuitBreaker: 40async — non-blocking41; CircuitBreaker to CircuitBreaker: state = HalfOpen; CircuitBreaker to CircuitBreaker: probe succeeds → state = Closed; CircuitBreaker to AlertingPlatform: OnClose callback4041; AlertingPlatform to CircuitBreaker: 40async — non-blocking41.
+    accDescr: Sequence diagram between CircuitBreaker, AlertingPlatform. Messages: CircuitBreaker to CircuitBreaker: recordResult(failure) — failures >= threshold; CircuitBreaker to CircuitBreaker: state = Open; CircuitBreaker to AlertingPlatform: OnOpen callback(lastErr); AlertingPlatform to CircuitBreaker: (async — non-blocking); CircuitBreaker to CircuitBreaker: state = HalfOpen; CircuitBreaker to CircuitBreaker: probe succeeds → state = Closed; CircuitBreaker to AlertingPlatform: OnClose callback(); AlertingPlatform to CircuitBreaker: (async — non-blocking).
     participant CB as CircuitBreaker
     participant AP as AlertingPlatform
 
@@ -1582,7 +1582,7 @@ Distributed traces connect the HTTP handler, application service, repository, an
 ```mermaid
 sequenceDiagram
     accTitle: Example 64: Distributed Trace Propagation
-    accDescr: Sequence diagram between HTTP Handler, AppService, Repository, ERPClient. Messages: HTTP Handler to HTTP Handler: otelhttp extracts trace-id from headers; HTTP Handler to AppService: ctx with root span; AppService to AppService: StartSpan40ctx, issue_po41 → child span; AppService to Repository: ctx with child span; Repository to Repository: StartSpan40ctx, repo.save41 → grandchild span; Repository to ERPClient: ctx with grandchild span; ERPClient to ERPClient: StartSpan40ctx, erp.fetch41 → leaf span; ERPClient to Repository: return (leaf span ended); Repository to AppService: return (grandchild span ended); AppService to HTTP Handler: return (child span ended); HTTP Handler to HTTP Handler: root span ended full tree exported.
+    accDescr: Sequence diagram between HTTP Handler, AppService, Repository, ERPClient. Messages: HTTP Handler to HTTP Handler: otelhttp extracts trace-id from headers; HTTP Handler to AppService: ctx with root span; AppService to AppService: StartSpan(ctx, issue_po) → child span; AppService to Repository: ctx with child span; Repository to Repository: StartSpan(ctx, repo.save) → grandchild span; Repository to ERPClient: ctx with grandchild span; ERPClient to ERPClient: StartSpan(ctx, erp.fetch) → leaf span; ERPClient to Repository: return (leaf span ended); Repository to AppService: return (grandchild span ended); AppService to HTTP Handler: return (child span ended); HTTP Handler to HTTP Handler: root span ended full tree exported.
     participant H as HTTP Handler
     participant AS as AppService
     participant R as Repository
@@ -2813,7 +2813,7 @@ Graceful shutdown drains in-flight HTTP requests, stops the outbox publisher, an
 ```mermaid
 sequenceDiagram
     accTitle: Example 72: Graceful Shutdown
-    accDescr: Sequence diagram between OS40SIGTERM41, main, HTTP Server, OutboxPublisher, PgPool. Messages: OS40SIGTERM41 to main: SIGTERM; main to main: cancel root context; main to HTTP Server: Shutdown4030s timeout41; HTTP Server to HTTP Server: stop accepting new requests; HTTP Server to HTTP Server: drain in-flight requests; HTTP Server to main: done; main to OutboxPublisher: ctx.Done() fires; OutboxPublisher to main: goroutine exits; main to PgPool: pool.Close(); PgPool to main: connections released; main to OS40SIGTERM41: process exits 0.
+    accDescr: Sequence diagram between OS(SIGTERM), main, HTTP Server, OutboxPublisher, PgPool. Messages: OS(SIGTERM) to main: SIGTERM; main to main: cancel root context; main to HTTP Server: Shutdown(30s timeout); HTTP Server to HTTP Server: stop accepting new requests; HTTP Server to HTTP Server: drain in-flight requests; HTTP Server to main: done; main to OutboxPublisher: ctx.Done() fires; OutboxPublisher to main: goroutine exits; main to PgPool: pool.Close(); PgPool to main: connections released; main to OS(SIGTERM): process exits 0.
     participant OS as OS#40;SIGTERM#41;
     participant M as main
     participant HS as HTTP Server
@@ -3181,7 +3181,7 @@ The complete production hexagon tested end-to-end: HTTP request arrives at the r
 ```mermaid
 sequenceDiagram
     accTitle: Example 75: Full Production Hexagon — Integration Test
-    accDescr: Sequence diagram between Test, HTTP40POST /api/purchase-orders41, POService, InstrumentedRepo, RetryRepo, PostgresTestcontainer. Messages: Test to HTTP40POST /api/purchase-orders41: POST /api/purchase-orders lines: [...]; HTTP40POST /api/purchase-orders41 to POService: IssuePurchaseOrder(cmd); POService to InstrumentedRepo: Save(ctx, po); InstrumentedRepo to RetryRepo: Save(ctx, po) [with metrics]; RetryRepo to PostgresTestcontainer: INSERT purchase_orders; PostgresTestcontainer to RetryRepo: OK; RetryRepo to InstrumentedRepo: nil; InstrumentedRepo to POService: nil (metrics recorded); POService to HTTP40POST /api/purchase-orders41: po.Id; HTTP40POST /api/purchase-orders41 to Test: 201 Created id: po-uuid; Test to HTTP40POST /api/purchase-orders41: GET /api/purchase-orders/id; HTTP40POST /api/purchase-orders41 to Test: 200 OK status: DRAFT.
+    accDescr: Sequence diagram between Test, HTTP(POST /api/purchase-orders), POService, InstrumentedRepo, RetryRepo, PostgresTestcontainer. Messages: Test to HTTP(POST /api/purchase-orders): POST /api/purchase-orders lines: [...]; HTTP(POST /api/purchase-orders) to POService: IssuePurchaseOrder(cmd); POService to InstrumentedRepo: Save(ctx, po); InstrumentedRepo to RetryRepo: Save(ctx, po) [with metrics]; RetryRepo to PostgresTestcontainer: INSERT purchase_orders; PostgresTestcontainer to RetryRepo: OK; RetryRepo to InstrumentedRepo: nil; InstrumentedRepo to POService: nil (metrics recorded); POService to HTTP(POST /api/purchase-orders): po.Id; HTTP(POST /api/purchase-orders) to Test: 201 Created id: po-uuid; Test to HTTP(POST /api/purchase-orders): GET /api/purchase-orders/id; HTTP(POST /api/purchase-orders) to Test: 200 OK status: DRAFT.
     participant T as Test
     participant H as HTTP#40;POST /api/purchase-orders#41;
     participant AS as POService

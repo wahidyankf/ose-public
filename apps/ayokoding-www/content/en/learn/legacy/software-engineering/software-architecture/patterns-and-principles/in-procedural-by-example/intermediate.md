@@ -466,7 +466,7 @@ Routing a PO to the right approval level is a strategy — determined by PO valu
 ```mermaid
 classDiagram
     accTitle: Example 32: Approval Routing Strategy
-    accDescr: Class diagram with 3 items: ApprovalRoutingStrategy, ValueBasedRouting, SupplierTierRouting.
+    accDescr: Class diagram with 2 items: ValueBasedRouting, SupplierTierRouting.
     class ARS["ApprovalRouting<br/>Strategy"] {
         <<interface>>
         +Route(po PurchaseOrder) ApprovalLevel
@@ -615,7 +615,7 @@ A factory selects the correct strategy at runtime based on context — strategie
 ```mermaid
 graph TD
     accTitle: Example 33: Strategy Selection via Factory
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Select40po Type,terms41, LumpSumPricing, PerUnitPricing, TieredPricing. Connections: Select40po Type,terms41 to LumpSumPricing (POTypeBlank), Select40po Type,terms41 to PerUnitPricing (POTypeUnit), Select40po Type,terms41 to TieredPricing (POTypeFramework).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Select(po Type,terms), LumpSumPricing, PerUnitPricing, TieredPricing. Connections: Select(po Type,terms) to LumpSumPricing (POTypeBlank), Select(po Type,terms) to PerUnitPricing (POTypeUnit), Select(po Type,terms) to TieredPricing (POTypeFramework).
     A["Select#40;po<br/>Type,terms#41;"]:::orange
     B["LumpSumPricing"]:::blue
     C["PerUnitPricing"]:::teal
@@ -719,7 +719,7 @@ The Observer pattern allows components to react to events without the event sour
 ```mermaid
 classDiagram
     accTitle: Example 34: Observer Interface + Registration
-    accDescr: Class diagram with 4 items: POObserver, POEventBus, SupplierNotificationObserver, AuditObserver. Relationships: POEventBus to POObserver: notifies 0..*.
+    accDescr: Class diagram with 3 items: POObserver, POEventBus, AuditObserver. Relationships: POEventBus to POObserver: notifies 0..*.
     class POObserver {
         <<interface>>
         +OnPOEvent(event POEvent) error
@@ -860,7 +860,7 @@ A synchronous observer executes in the same call stack — simple but blocks the
 ```mermaid
 sequenceDiagram
     accTitle: Example 35: Synchronous Observer — Supplier Notification
-    accDescr: Sequence diagram between PurchaseOrder, POEventBus, SupplierNotificationObserver, EmailNotifier. Messages: PurchaseOrder to POEventBus: Notify40POApprovedEvent41; POEventBus to SupplierNotificationObserver: OnPOEvent40event41; SupplierNotificationObserver to EmailNotifier: Send40supplierEmail, subject, body41; EmailNotifier to SupplierNotificationObserver: ok; SupplierNotificationObserver to POEventBus: nil; POEventBus to PurchaseOrder: nil.
+    accDescr: Sequence diagram between PurchaseOrder, POEventBus, SupplierNotificationObserver, EmailNotifier. Messages: PurchaseOrder to POEventBus: Notify(POApprovedEvent); POEventBus to SupplierNotificationObserver: OnPOEvent(event); SupplierNotificationObserver to EmailNotifier: Send(supplierEmail, subject, body); EmailNotifier to SupplierNotificationObserver: ok; SupplierNotificationObserver to POEventBus: nil; POEventBus to PurchaseOrder: nil.
     participant PO as PurchaseOrder
     participant Bus as POEventBus
     participant Obs as SupplierNotificationObserver
@@ -957,7 +957,7 @@ Asynchronous observers decouple the event publisher from slow operations — the
 ```mermaid
 sequenceDiagram
     accTitle: Example 36: Asynchronous Observer via Goroutine / Tokio Task
-    accDescr: Sequence diagram between PurchaseOrder, POEventBus, Goroutine/Task, SlowObserver. Messages: PurchaseOrder to POEventBus: NotifyAsync40event41; POEventBus to Goroutine/Task: go/spawn40notify observers41; POEventBus to PurchaseOrder: returns immediately; Goroutine/Task to SlowObserver: OnPOEvent40event41; SlowObserver to Goroutine/Task: result40logged if error41.
+    accDescr: Sequence diagram between PurchaseOrder, POEventBus, Goroutine/Task, SlowObserver. Messages: PurchaseOrder to POEventBus: NotifyAsync(event); POEventBus to Goroutine/Task: go/spawn(notify observers); POEventBus to PurchaseOrder: returns immediately; Goroutine/Task to SlowObserver: OnPOEvent(event); SlowObserver to Goroutine/Task: result(logged if error).
     participant PO as PurchaseOrder
     participant Bus as POEventBus
     participant G as Goroutine/Task
@@ -1433,7 +1433,7 @@ The Retry decorator transparently retries transient failures — callers see a r
 ```mermaid
 sequenceDiagram
     accTitle: Example 40: Retry Decorator for External Calls
-    accDescr: Sequence diagram between Caller, RetrySupplierClient, ExternalSupplierClient. Messages: Caller to RetrySupplierClient: FetchSupplier40code41; RetrySupplierClient to ExternalSupplierClient: attempt 1; ExternalSupplierClient to RetrySupplierClient: 503 transient error; RetrySupplierClient to ExternalSupplierClient: attempt 2 40backoff 100ms41; ExternalSupplierClient to RetrySupplierClient: 503 transient error; RetrySupplierClient to ExternalSupplierClient: attempt 3 40backoff 200ms41; ExternalSupplierClient to RetrySupplierClient: 200 OK; RetrySupplierClient to Caller: SupplierDTO.
+    accDescr: Sequence diagram between Caller, RetrySupplierClient, ExternalSupplierClient. Messages: Caller to RetrySupplierClient: FetchSupplier(code); RetrySupplierClient to ExternalSupplierClient: attempt 1; ExternalSupplierClient to RetrySupplierClient: 503 transient error; RetrySupplierClient to ExternalSupplierClient: attempt 2 (backoff 100ms); ExternalSupplierClient to RetrySupplierClient: 503 transient error; RetrySupplierClient to ExternalSupplierClient: attempt 3 (backoff 200ms); ExternalSupplierClient to RetrySupplierClient: 200 OK; RetrySupplierClient to Caller: SupplierDTO.
     participant Caller
     participant Retry as RetrySupplierClient
     participant Inner as ExternalSupplierClient
@@ -1642,7 +1642,7 @@ A caching decorator reduces database load for read-heavy queries — transparent
 ```mermaid
 sequenceDiagram
     accTitle: Example 42: Caching Decorator
-    accDescr: Sequence diagram between Caller, CachingPORepository, PostgresPORepository. Messages: Caller to CachingPORepository: FindById40id41; CachingPORepository to CachingPORepository: cache.Get40id41 miss; CachingPORepository to PostgresPORepository: FindById40id41; PostgresPORepository to CachingPORepository: PurchaseOrder; CachingPORepository to CachingPORepository: cache.Set40id, po, ttl41; CachingPORepository to Caller: PurchaseOrder; Caller to CachingPORepository: FindById40id41 again; CachingPORepository to CachingPORepository: cache.Get40id41 hit; CachingPORepository to Caller: PurchaseOrder 40from cache41.
+    accDescr: Sequence diagram between Caller, CachingPORepository, PostgresPORepository. Messages: Caller to CachingPORepository: FindById(id); CachingPORepository to CachingPORepository: cache.Get(id) miss; CachingPORepository to PostgresPORepository: FindById(id); PostgresPORepository to CachingPORepository: PurchaseOrder; CachingPORepository to CachingPORepository: cache.Set(id, po, ttl); CachingPORepository to Caller: PurchaseOrder; Caller to CachingPORepository: FindById(id) again; CachingPORepository to CachingPORepository: cache.Get(id) hit; CachingPORepository to Caller: PurchaseOrder (from cache).
     participant Caller
     participant Cache as CachingPORepository
     participant DB as PostgresPORepository
@@ -1987,7 +1987,7 @@ impl CommandBus {
 ```mermaid
 sequenceDiagram
     accTitle: Example 45: CreatePOCommand
-    accDescr: Sequence diagram between Client, CommandBus, CreatePOCommandHandler, PORepository, DomainEventBus. Messages: Client to CommandBus: Dispatch40CreatePOCommand41; CommandBus to CreatePOCommandHandler: Handle40ctx, cmd41; CreatePOCommandHandler to CreatePOCommandHandler: PurchaseOrder.Create40...41; CreatePOCommandHandler to PORepository: Save40po41; CreatePOCommandHandler to DomainEventBus: Publish40POCreatedEvent41; CreatePOCommandHandler to CommandBus: nil; CommandBus to Client: nil.
+    accDescr: Sequence diagram between Client, CommandBus, CreatePOCommandHandler, PORepository, DomainEventBus. Messages: Client to CommandBus: Dispatch(CreatePOCommand); CommandBus to CreatePOCommandHandler: Handle(ctx, cmd); CreatePOCommandHandler to CreatePOCommandHandler: PurchaseOrder.Create(...); CreatePOCommandHandler to PORepository: Save(po); CreatePOCommandHandler to DomainEventBus: Publish(POCreatedEvent); CreatePOCommandHandler to CommandBus: nil; CommandBus to Client: nil.
     participant Client
     participant Bus as CommandBus
     participant Handler as CreatePOCommandHandler
@@ -2121,7 +2121,7 @@ Commands can support undo by capturing the pre-command state before execution. A
 ```mermaid
 sequenceDiagram
     accTitle: Example 46: ApprovePOCommand with Undo Capability
-    accDescr: Sequence diagram between Client, UndoableApprovePOCommand, PORepository. Messages: Client to UndoableApprovePOCommand: Execute40ctx41; UndoableApprovePOCommand to PORepository: FindById40po_id41 capture previous state; UndoableApprovePOCommand to PORepository: Save40po with approved status41; Client to UndoableApprovePOCommand: Undo40ctx41; UndoableApprovePOCommand to PORepository: Save40po with previous status41.
+    accDescr: Sequence diagram between Client, UndoableApprovePOCommand, PORepository. Messages: Client to UndoableApprovePOCommand: Execute(ctx); UndoableApprovePOCommand to PORepository: FindById(po_id) capture previous state; UndoableApprovePOCommand to PORepository: Save(po with approved status); Client to UndoableApprovePOCommand: Undo(ctx); UndoableApprovePOCommand to PORepository: Save(po with previous status).
     participant Client
     participant Undoable as UndoableApprovePOCommand
     participant Repo as PORepository
@@ -2366,7 +2366,7 @@ A Macro command executes multiple commands as a single logical unit — if any s
 ```mermaid
 sequenceDiagram
     accTitle: Example 48: Macro Command
-    accDescr: Sequence diagram between Client, MacroCommand, Command1, Command2, Command3. Messages: Client to MacroCommand: Execute40ctx41; MacroCommand to Command1: Execute; Command1 to MacroCommand: ok; MacroCommand to Command2: Execute; Command2 to MacroCommand: ok; MacroCommand to Command3: Execute; Command3 to MacroCommand: ERROR; MacroCommand to Command2: Undo 40compensation41; MacroCommand to Command1: Undo 40compensation41; MacroCommand to Client: error.
+    accDescr: Sequence diagram between Client, MacroCommand, Command1, Command2, Command3. Messages: Client to MacroCommand: Execute(ctx); MacroCommand to Command1: Execute; Command1 to MacroCommand: ok; MacroCommand to Command2: Execute; Command2 to MacroCommand: ok; MacroCommand to Command3: Execute; Command3 to MacroCommand: ERROR; MacroCommand to Command2: Undo (compensation); MacroCommand to Command1: Undo (compensation); MacroCommand to Client: error.
     participant Client
     participant Macro as MacroCommand
     participant C1 as Command1
@@ -2646,7 +2646,7 @@ Functional options are the idiomatic Go alternative to Builder — variadic func
 ```mermaid
 graph TD
     accTitle: Example 50: Functional Options Pattern
-    accDescr: Graph with 6 nodes and 8 connections. Nodes: NewHTTPAdapter40u,opts41, defaultHTTP Config4041, With Timeout4030s41, WithRetry40341, WithUserAgent40... 41, http Adapter123cfg125. Connections: NewHTTPAdapter40u,opts41 to defaultHTTP Config4041, NewHTTPAdapter40u,opts41 to With Timeout4030s41, NewHTTPAdapter40u,opts41 to WithRetry40341, NewHTTPAdapter40u,opts41 to WithUserAgent40... 41, defaultHTTP Config4041 to http Adapter123cfg125, With Timeout4030s41 to http Adapter123cfg125, WithRetry40341 to http Adapter123cfg125, WithUserAgent40... 41 to http Adapter123cfg125.
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: NewHTTPAdapter( u,opts), defaultHTTP Config(), With Timeout(30s), WithRetry(3), WithUserAgent(... ), http Adaptercfg. Connections: NewHTTPAdapter( u,opts) to defaultHTTP Config(), NewHTTPAdapter( u,opts) to With Timeout(30s), NewHTTPAdapter( u,opts) to WithRetry(3), NewHTTPAdapter( u,opts) to WithUserAgent(... ), defaultHTTP Config() to http Adaptercfg, With Timeout(30s) to http Adaptercfg, WithRetry(3) to http Adaptercfg, WithUserAgent(... ) to http Adaptercfg.
     A["NewHTTPAdapter(<br/>u,opts)"]:::orange
     B["defaultHTTP<br/>Config#40;#41;"]:::blue
     C["With<br/>Timeout#40;30s#41;"]:::teal
@@ -2994,7 +2994,7 @@ The Rust typestate builder enforces required fields at compile time using phanto
 ```mermaid
 classDiagram
     accTitle: Example 53: Builder Validation — Type-State Builder in Rust
-    accDescr: Class diagram with 5 items: Missing, Present, POBuilder_Missing_Missing, POBuilder_Present_Missing, POBuilder_Present_Present. Relationships: POBuilder_Missing_Missing to POBuilder_Present_Missing: set_supplier; POBuilder_Present_Missing to POBuilder_Present_Present: add_items; POBuilder_Present_Present to POBuilder_Present_Present: build available.
+    accDescr: Class diagram with 5 items: Missing, Present, PMM, PPM, PPP. Relationships: PMM to PPM: set_supplier; PPM to PPP: add_items; PPP to PPP: build available.
     class Missing {
         <<marker>>
     }

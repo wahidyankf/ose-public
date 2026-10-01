@@ -2244,7 +2244,7 @@ Tests for the two-dimensional phantom type approach have a unique property: atte
 ```mermaid
 graph TD
     accTitle: Example 48: Testing FSM Transitions
-    accDescr: Graph with 6 nodes and 3 connections. Nodes: Test: draft_can_submit, Invoice::create → .submit(), Test: submit_verify_ approve, create→submit→verify→approve, Test: unverified_no_ approve, Rust err /Go ErrNotVerified. Connections: Test: draft_can_submit to Invoice::create → .submit(), Test: submit_verify_ approve to create→submit→verify→approve, Test: unverified_no_ approve to Rust err /Go ErrNotVerified.
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: Test: draft_can_submit, Invoice::create → .submit(), Test: submit_verify_ approve, create→submit→ verify→approve, Test: unverified_no_ approve, Rust err /Go ErrNotVerified. Connections: Test: draft_can_submit to Invoice::create → .submit(), Test: submit_verify_ approve to create→submit→ verify→approve, Test: unverified_no_ approve to Rust err /Go ErrNotVerified.
     A["Test:<br/>draft_can_submit"]:::blue --> B["Invoice::create →<br/>.submit()"]:::teal
     C["Test: submit_verify_<br/>approve"]:::blue --> D["create→submit→<br/>verify→approve"]:::teal
     E["Test: unverified_no_<br/>approve"]:::blue --> F["Rust err /Go<br/>ErrNotVerified"]:::orange

@@ -744,7 +744,7 @@ Three-way match is a core procurement control: it verifies that a supplier invoi
 ```mermaid
 graph TD
     accTitle: Example 59: Three-Way Match Domain Service
-    accDescr: Graph with 6 nodes and 4 connections. Nodes: PO, amounts, GoodReceiptNote Actually received quantities, INV, ThreeWayMatchService Compares all three, MatchResult OK / Discrepancy. Connections: PO to ThreeWayMatchService Compares all three, GoodReceiptNote Actually received quantities to ThreeWayMatchService Compares all three, INV to ThreeWayMatchService Compares all three, ThreeWayMatchService Compares all three to MatchResult OK / Discrepancy.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: PurchaseOrder Approved quantities & amounts, GoodReceiptNote Actually received quantities, Invoice Amount & quantities billed, ThreeWayMatchService Compares all three, MatchResult OK / Discrepancy. Connections: PurchaseOrder Approved quantities & amounts to ThreeWayMatchService Compares all three, GoodReceiptNote Actually received quantities to ThreeWayMatchService Compares all three, Invoice Amount & quantities billed to ThreeWayMatchService Compares all three, ThreeWayMatchService Compares all three to MatchResult OK / Discrepancy.
     PO["PurchaseOrder<br/>Approved quantities<br/>& amounts"]:::blue
     GRN["GoodReceiptNote<br/>Actually received<br/>quantities"]:::teal
     INV["Invoice<br/>Amount &<br/>quantities billed"]:::orange
@@ -1260,7 +1260,7 @@ The Specification pattern encapsulates a business rule as a first-class object. 
 ```mermaid
 graph TD
     accTitle: Example 63: Specification Interface
-    accDescr: Graph with 6 nodes and 7 connections. Nodes: POSpecification interface / trait, APPROVED, Approved, GoodsReceivedSpec receipt confirmed, AndSpecification left AND right, ReadyToInvoiceSpec Approved AND Received. Connections: APPROVED to Approved, POSpecification interface / trait to APPROVED, POSpecification interface / trait to GoodsReceivedSpec receipt confirmed, POSpecification interface / trait to AndSpecification left AND right, APPROVED to ReadyToInvoiceSpec Approved AND Received, GoodsReceivedSpec receipt confirmed to ReadyToInvoiceSpec Approved AND Received, AndSpecification left AND right to ReadyToInvoiceSpec Approved AND Received.
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: POSpecification interface / trait, ApprovedPOSpec status == Approved, GoodsReceivedSpec receipt confirmed, AndSpecification left AND right, ReadyToInvoiceSpec Approved AND Received. Connections: POSpecification interface / trait to ApprovedPOSpec status == Approved, POSpecification interface / trait to GoodsReceivedSpec receipt confirmed, POSpecification interface / trait to AndSpecification left AND right, ApprovedPOSpec status == Approved to ReadyToInvoiceSpec Approved AND Received, GoodsReceivedSpec receipt confirmed to ReadyToInvoiceSpec Approved AND Received, AndSpecification left AND right to ReadyToInvoiceSpec Approved AND Received.
     SPEC["POSpecification<br/>interface / trait"]:::blue
     APPROVED["ApprovedPOSpec<br/>status == Approved"]:::teal
     RECEIVED["GoodsReceivedSpec<br/>receipt confirmed"]:::teal
@@ -1804,7 +1804,7 @@ A Saga orchestrates a long-running business process that spans multiple aggregat
 ```mermaid
 stateDiagram-v2
     accTitle: Example 68: Saga State Machine for PO Approval Workflow
-    accDescr: State diagram with 6 items: start or end, Initiated, PendingL1, PendingL2, Approved, Rejected. Relationships: start or end to Initiated; Initiated to PendingL1: submit; PendingL1 to PendingL2: l1_approved 40high-value41; PendingL1 to Approved: l1_approved 40std PO41; PendingL2 to Approved: l2_approved; PendingL1 to Rejected: l1_rejected; PendingL2 to Rejected: l2_rejected; Approved to start or end; Rejected to start or end.
+    accDescr: State diagram with 6 items: start or end, Initiated, PendingL1, PendingL2, Approved, Rejected. Relationships: start or end to Initiated; Initiated to PendingL1: submit; PendingL1 to PendingL2: l1_approved (high-value); PendingL1 to Approved: l1_approved (std PO); PendingL2 to Approved: l2_approved; PendingL1 to Rejected: l1_rejected; PendingL2 to Rejected: l2_rejected; Approved to start or end; Rejected to start or end.
     [*] --> Initiated
     Initiated --> PendingL1: submit
     PendingL1 --> PendingL2: l1_approved (high-value)

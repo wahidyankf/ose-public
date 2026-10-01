@@ -20,21 +20,24 @@ taught, individually, somewhere in the Beginner, Intermediate, or Advanced tiers
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Gray #808080
 flowchart TD
-    A["types.ts<br/>Row + LoadState union +<br/>Page cursor + CoreWebVitals<br/>co-30, co-33"]:::blue
-    B["server.ts<br/>streaming SSR + fetch +<br/>CWV measurement<br/>co-04, co-08, co-30"]:::orange
-    C["store.ts<br/>cache + optimistic rollback +<br/>memoized selector<br/>co-15, co-19"]:::teal
-    D["dashboard.ts<br/>combobox + arrow-key nav +<br/>live region + error path<br/>co-23, co-24, co-25, co-37"]:::purple
-    E["dashboard.test.ts<br/>Vitest + Testing-Library<br/>9 passing tests<br/>co-36"]:::gray
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: types.ts Row + LoadState union + Page cursor + CoreWebVitals co-30, co-33, server.ts streaming SSR + fetch + CWV measurement co-04, co-08, co-30, store.ts cache + optimistic rollback + memoized selector co-15, co-19, dashboard.ts combobox + arrow-key nav + live region + error path co-23, co-24, co-25, co-37, dashboard.test.ts Vitest + Testing-Library 9 passing tests co-36. Connections: types.ts Row + LoadState union + Page cursor + CoreWebVitals co-30, co-33 to server.ts streaming SSR + fetch + CWV measurement co-04, co-08, co-30, server.ts streaming SSR + fetch + CWV measurement co-04, co-08, co-30 to store.ts cache + optimistic rollback + memoized selector co-15, co-19, store.ts cache + optimistic rollback + memoized selector co-15, co-19 to dashboard.ts combobox + arrow-key nav + live region + error path co-23, co-24, co-25, co-37, dashboard.ts combobox + arrow-key nav + live region + error path co-23, co-24, co-25, co-37 to dashboard.test.ts Vitest + Testing-Library 9 passing tests co-36.
+    A["types.ts<br/>Row + LoadState<br/>union +<br/>Page cursor +<br/>CoreWebVitals<br/>co-30, co-33"]:::blue
+    B["server.ts<br/>streaming SSR +<br/>fetch +<br/>CWV measurement<br/>co-04, co-08, co-30"]:::orange
+    C["store.ts<br/>cache + optimistic<br/>rollback +<br/>memoized selector<br/>co-15, co-19"]:::teal
+    D["dashboard.ts<br/>combobox + arrow-key<br/>nav +<br/>live region + error<br/>path<br/>co-23, co-24, co-25,<br/>co-37"]:::purple
+    E["dashboard.test.ts<br/>Vitest +<br/>Testing-Library<br/>9 passing tests<br/>co-36"]:::gray
     A --> B
     B --> C
     C --> D
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

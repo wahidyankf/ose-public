@@ -12,13 +12,16 @@ weight: 30
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 0: Blue green switch
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Blue service, Router choice, Green service, Return blue. Connections: Blue service to Router choice, Router choice to Green service (allow), Router choice to Return blue (block).
     A["Blue service"]:::blue --> B{"Router choice"}:::orange
     B -->|allow| C["Green service"]:::teal
     B -->|block| D["Return blue"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 1: Canary rollout
@@ -26,13 +29,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 1: Canary rollout
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: New candidate, Health check, More traffic, Rollback. Connections: New candidate to Health check, Health check to More traffic (allow), Health check to Rollback (block).
     A["New candidate"]:::blue --> B{"Health check"}:::orange
     B -->|allow| C["More traffic"]:::teal
     B -->|block| D["Rollback"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 2: Feature release
@@ -40,13 +46,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 2: Feature release
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Latent code, Toggle state, Visible feature, Keep dark. Connections: Latent code to Toggle state, Toggle state to Visible feature (allow), Toggle state to Keep dark (block).
     A["Latent code"]:::blue --> B{"Toggle state"}:::orange
     B -->|allow| C["Visible feature"]:::teal
     B -->|block| D["Keep dark"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 3: Supply chain
@@ -54,13 +63,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 3: Supply chain
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Artifact digest, Signature check, Deploy candidate, Block. Connections: Artifact digest to Signature check, Signature check to Deploy candidate (allow), Signature check to Block (block).
     A["Artifact digest"]:::blue --> B{"Signature check"}:::orange
     B -->|allow| C["Deploy candidate"]:::teal
     B -->|block| D["Block"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 4: Provenance gate
@@ -68,13 +80,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 4: Provenance gate
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Build record, Source match, Promote, Reject. Connections: Build record to Source match, Source match to Promote (allow), Source match to Reject (block).
     A["Build record"]:::blue --> B{"Source match"}:::orange
     B -->|allow| C["Promote"]:::teal
     B -->|block| D["Reject"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 5: DORA report
@@ -82,13 +97,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 5: DORA report
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Deploy log, Metric query, Trend report, Repair. Connections: Deploy log to Metric query, Metric query to Trend report (allow), Metric query to Repair (block).
     A["Deploy log"]:::blue --> B{"Metric query"}:::orange
     B -->|allow| C["Trend report"]:::teal
     B -->|block| D["Repair"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 6: Artifact promotion
@@ -96,13 +114,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 6: Artifact promotion
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Build once, Digest match, Next stage, Rebuild. Connections: Build once to Digest match, Digest match to Next stage (allow), Digest match to Rebuild (block).
     A["Build once"]:::blue --> B{"Digest match"}:::orange
     B -->|allow| C["Next stage"]:::teal
     B -->|block| D["Rebuild"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 7: Full pipeline
@@ -110,13 +131,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 7: Full pipeline
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Commit, All gates, Production, Stop. Connections: Commit to All gates, All gates to Production (allow), All gates to Stop (block).
     A["Commit"]:::blue --> B{"All gates"}:::orange
     B -->|allow| C["Production"]:::teal
     B -->|block| D["Stop"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 8: Gate tradeoff
@@ -124,13 +148,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 8: Gate tradeoff
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Gate cost, Signal value, Keep gate, Warn. Connections: Gate cost to Signal value, Signal value to Keep gate (allow), Signal value to Warn (block).
     A["Gate cost"]:::blue --> B{"Signal value"}:::orange
     B -->|allow| C["Keep gate"]:::teal
     B -->|block| D["Warn"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 9: Argo analysis
@@ -138,13 +165,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 9: Argo analysis
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Canary step, Metric pass, Promote, Abort. Connections: Canary step to Metric pass, Metric pass to Promote (allow), Metric pass to Abort (block).
     A["Canary step"]:::blue --> B{"Metric pass"}:::orange
     B -->|allow| C["Promote"]:::teal
     B -->|block| D["Abort"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 10: Flagger analysis
@@ -152,13 +182,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 10: Flagger analysis
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Traffic shift, Metric pass, Advance, Rollback. Connections: Traffic shift to Metric pass, Metric pass to Advance (allow), Metric pass to Rollback (block).
     A["Traffic shift"]:::blue --> B{"Metric pass"}:::orange
     B -->|allow| C["Advance"]:::teal
     B -->|block| D["Rollback"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 11: Strategy choice
@@ -166,13 +199,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 11: Strategy choice
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Release goal, Constraint, Strategy, Reconsider. Connections: Release goal to Constraint, Constraint to Strategy (allow), Constraint to Reconsider (block).
     A["Release goal"]:::blue --> B{"Constraint"}:::orange
     B -->|allow| C["Strategy"]:::teal
     B -->|block| D["Reconsider"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 12: Rollback decision
@@ -180,13 +216,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 12: Rollback decision
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Incident, Known good, Restore, Fix forward. Connections: Incident to Known good, Known good to Restore (allow), Known good to Fix forward (block).
     A["Incident"]:::blue --> B{"Known good"}:::orange
     B -->|allow| C["Restore"]:::teal
     B -->|block| D["Fix forward"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 13: Protected deploy
@@ -194,13 +233,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Flow 13: Protected deploy
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Release artifact, Reviewer approval, Deploy, Hold. Connections: Release artifact to Reviewer approval, Reviewer approval to Deploy (allow), Reviewer approval to Hold (block).
     A["Release artifact"]:::blue --> B{"Reviewer approval"}:::orange
     B -->|allow| C["Deploy"]:::teal
     B -->|block| D["Hold"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Examples 56-83 extend the evidence chain through advanced release engineering. Every lesson links to complete, dedicated YAML and typed Python artifacts that use no real credential.

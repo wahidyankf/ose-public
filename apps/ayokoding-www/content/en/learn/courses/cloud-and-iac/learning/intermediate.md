@@ -129,12 +129,15 @@ The remote-backend requirements are captured in its
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; labels and shapes convey meaning without color.
 graph TD
+    accTitle: Worked Example 26: Dependency graph
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Virtual network, Subnet, Service instance, Independent bucket. Connections: Virtual network to Subnet, Subnet to Service instance.
     V["Virtual network"]:::blue --> S["Subnet"]:::teal
     S --> I["Service instance"]:::orange
     B["Independent bucket"]:::blue
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: References create dependency edges; independent nodes can run in parallel.
@@ -251,12 +254,15 @@ Complete resource artifact: [`ex-32-security-group-stateful/rule.tf`](./code/ex-
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; labels and shapes convey meaning without color.
 graph TD
+    accTitle: Worked Example 33: NAT gateway path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Private subnet app, NAT: outbound only, Internet service. Connections: Private subnet app to NAT: outbound only, NAT: outbound only to Internet service.
     P["Private subnet app"]:::blue --> N["NAT: outbound only"]:::orange
     N --> I["Internet service"]:::teal
     I -. "response to established request" .-> P
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: NAT supports outbound initiation; it is not an inbound publishing mechanism.

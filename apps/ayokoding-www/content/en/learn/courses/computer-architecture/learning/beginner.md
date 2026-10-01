@@ -873,12 +873,15 @@ reveals whether the least- or most-significant byte was stored first.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["int value 0x11223344\nwritten via a union"]:::orange --> B["little-endian machine\nfirst byte = 0x44"]:::blue
-    A --> C["big-endian machine\nfirst byte = 0x11"]:::teal
+    accTitle: Example 11: Endianness Detect
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: int value 0x11223344 written via a union, little-endian machine first byte = 0x44, big-endian machine first byte = 0x11. Connections: int value 0x11223344 written via a union to little-endian machine first byte = 0x44, int value 0x11223344 written via a union to big-endian machine first byte = 0x11.
+    A["int value 0x11223344<br/>written via a union"]:::orange --> B["little-endian<br/>machine<br/>first byte = 0x44"]:::blue
+    A --> C["big-endian machine<br/>first byte = 0x11"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the SAME 32-bit value, stored by two different byte orders -- reading back the first byte of
@@ -1147,11 +1150,14 @@ therefore exceed the sum of its fields' sizes. `{char; int; char}` needs 3 paddi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["char c\n(1 byte)"]:::blue --> P["3 padding bytes\n(compiler-inserted)"]:::brown --> B["int i\n(4 bytes, 4-byte aligned)"]:::orange --> C["char c2\n(1 byte)"]:::blue
+    accTitle: Example 14: Struct Sizeof Padding
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: char c (1 byte), 3 padding bytes (compiler-inserted), int i (4 bytes, 4-byte aligned), char c2 (1 byte). Connections: char c (1 byte) to 3 padding bytes (compiler-inserted), 3 padding bytes (compiler-inserted) to int i (4 bytes, 4-byte aligned), int i (4 bytes, 4-byte aligned) to char c2 (1 byte).
+    A["char c<br/>(1 byte)"]:::blue --> P["3 padding bytes<br/>(compiler-inserted)"]:::brown --> B["int i<br/>(4 bytes, 4-byte<br/>aligned)"]:::orange --> C["char c2<br/>(1 byte)"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: `{char; int; char}` needs 3 padding bytes before `int` so that field starts 4-byte aligned --
@@ -1324,18 +1330,21 @@ field-byte sum, at a real cost stated honestly rather than measured here.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 16: Packed Struct
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: char c, 3 padding bytes, int i, char c, int i (immediately after, no padding). Connections: char c to 3 padding bytes, 3 padding bytes to int i, char c to int i (immediately after, no padding).
     subgraph Normal["normal struct"]
         direction LR
         A["char c"]:::blue --> P["3 padding bytes"]:::brown --> B["int i"]:::orange
     end
-    subgraph Packed["__attribute__((packed))"]
+    subgraph Packed["__attribute__<br/>((packed))"]
         direction LR
-        C["char c"]:::blue --> D["int i\n(immediately after,\nno padding)"]:::orange
+        C["char c"]:::blue --> D["int i<br/>(immediately after,<br/>no padding)"]:::orange
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: `packed` removes the compiler's alignment padding entirely, shrinking `sizeof` to the exact
@@ -1512,15 +1521,18 @@ every read is a real cache miss, isolating the alignment penalty itself.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["64 MiB buffer\n(far bigger than any cache)"]:::brown --> B["aligned uint64_t reads\n(8-byte boundaries)"]:::blue
-    A --> C["misaligned uint64_t reads\n(1-byte-shifted)"]:::orange
-    B --> D["both are real cache misses --\nalignment penalty isolated"]:::teal
+    accTitle: Example 18: Misaligned Access Cost
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: 64 MiB buffer (far bigger than any cache), aligned uint64_t reads (8-byte boundaries), misaligned uint64_t reads (1-byte-shifted), D. Connections: 64 MiB buffer (far bigger than any cache) to aligned uint64_t reads (8-byte boundaries), 64 MiB buffer (far bigger than any cache) to misaligned uint64_t reads (1-byte-shifted), aligned uint64_t reads (8-byte boundaries) to D, misaligned uint64_t reads (1-byte-shifted) to D.
+    A["64 MiB buffer<br/>(far bigger than any<br/>cache)"]:::brown --> B["aligned uint64_t<br/>reads<br/>(8-byte boundaries)"]:::blue
+    A --> C["misaligned uint64_t<br/>reads<br/>(1-byte-shifted)"]:::orange
+    B --> D["both are real cache<br/>misses --<br/>alignment penalty<br/>isolated"]:::teal
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: both aligned and misaligned reads pay for a real cache miss over this 64 MiB buffer, so any
@@ -1752,11 +1764,14 @@ checks it against `&a[i][j]` for every cell in a 3x5 array.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    R0["row 0: a[0][0] a[0][1] a[0][2] a[0][3] a[0][4]"]:::blue --> R1["row 1: a[1][0] a[1][1] ..."]:::orange --> R2["row 2: a[2][0] a[2][1] ..."]:::teal
+    accTitle: Example 20: Array Row-Major Layout
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: row 0: a[0][0] a[0][1] a[0][2] a[0][3] a[0][4], row 1: a[1][0] a[1][1] ..., row 2: a[2][0] a[2][1] .... Connections: row 0: a[0][0] a[0][1] a[0][2] a[0][3] a[0][4] to row 1: a[1][0] a[1][1] ..., row 1: a[1][0] a[1][1] ... to row 2: a[2][0] a[2][1] ....
+    R0["row 0: a[0][0]<br/>a[0][1] a[0][2]<br/>a[0][3] a[0][4]"]:::blue --> R1["row 1: a[1][0]<br/>a[1][1] ..."]:::orange --> R2["row 2: a[2][0]<br/>a[2][1] ..."]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: row 0's entire 5 elements sit before row 1 starts -- `base + (i*COLS + j) * sizeof(int)`
@@ -1859,16 +1874,19 @@ order-of-magnitude cycle costs from CS:APP/Drepper and verifies they are strictl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 21: Latency Hierarchy Table
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Register ~1 cycle, L1 Cache ~4 cycles, L2 Cache ~12 cycles, L3 Cache ~40 cycles, DRAM ~200 cycles. Connections: Register ~1 cycle to L1 Cache ~4 cycles, L1 Cache ~4 cycles to L2 Cache ~12 cycles, L2 Cache ~12 cycles to L3 Cache ~40 cycles, L3 Cache ~40 cycles to DRAM ~200 cycles.
     A["Register<br/>~1 cycle"]:::blue --> B["L1 Cache<br/>~4 cycles"]:::orange
     B --> C["L2 Cache<br/>~12 cycles"]:::teal
     C --> D["L3 Cache<br/>~40 cycles"]:::purple
     D --> E["DRAM<br/>~200 cycles"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: each hop down the hierarchy trades capacity for roughly an order of magnitude more latency --
@@ -2284,13 +2302,16 @@ count.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["small 8 KiB set\nstays L1-resident"]:::blue --> B["re-scanned repeatedly,\nsame random order"]:::teal --> C["fast --\nmostly cache HITS"]:::teal
-    D["large 32 MiB set\nnever fits any cache"]:::orange --> E["re-scanned repeatedly,\nsame random order"]:::brown --> F["slow --\nmostly cache MISSES"]:::brown
+    accTitle: Example 24: Temporal Locality Working Set
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: small 8 KiB set stays L1-resident, re-scanned repeatedly, same random order, C, large 32 MiB set never fits any cache, re-scanned repeatedly, same random order, F. Connections: small 8 KiB set stays L1-resident to re-scanned repeatedly, same random order, re-scanned repeatedly, same random order to C, large 32 MiB set never fits any cache to re-scanned repeatedly, same random order, re-scanned repeatedly, same random order to F.
+    A["small 8 KiB set<br/>stays L1-resident"]:::blue --> B["re-scanned<br/>repeatedly,<br/>same random order"]:::teal --> C["fast --<br/>mostly cache HITS"]:::teal
+    D["large 32 MiB set<br/>never fits any cache"]:::orange --> E["re-scanned<br/>repeatedly,<br/>same random order"]:::brown --> F["slow --<br/>mostly cache MISSES"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the identical re-access pattern, for the identical total touch count -- only the working
@@ -2660,14 +2681,17 @@ emitted mnemonics directly.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["array_sum#40;#41; C source"]:::blue --> B["clang -O2, x86_64 target"]:::orange
+    accTitle: Example 27: ISA Compare -- RISC-V vs x86
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: array_sum4041 C source, clang -O2, x86_64 target, riscv64-elf-gcc -O2, x86 assembly: SSE2 vectorized + scalar tail, RISC-V assembly: lw /addw /bne, fully scalar. Connections: array_sum4041 C source to clang -O2, x86_64 target, array_sum4041 C source to riscv64-elf-gcc -O2, clang -O2, x86_64 target to x86 assembly: SSE2 vectorized + scalar tail, riscv64-elf-gcc -O2 to RISC-V assembly: lw /addw /bne, fully scalar.
+    A["array_sum#40;#41; C<br/>source"]:::blue --> B["clang -O2, x86_64<br/>target"]:::orange
     A --> C["riscv64-elf-gcc -O2"]:::orange
-    B --> D["x86 assembly: SSE2 vectorized + scalar tail"]:::teal
-    C --> E["RISC-V assembly: lw / addw / bne, fully scalar"]:::teal
+    B --> D["x86 assembly: SSE2<br/>vectorized + scalar<br/>tail"]:::teal
+    C --> E["RISC-V assembly: lw<br/>/addw /bne, fully<br/>scalar"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: identical C source, two independent compiler backends, two genuinely different instruction

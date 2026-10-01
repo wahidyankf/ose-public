@@ -607,79 +607,109 @@ These ten small diagrams reinforce the named relationships; their labels carry m
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Beginner architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Hardware, KVM host. Connections: Hardware to KVM host.
   A["Hardware"]:::blue --> B["KVM host"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Beginner architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: KVM, QEMU devices. Connections: KVM to QEMU devices.
   A["KVM"]:::blue --> B["QEMU devices"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Beginner architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Host kernel, LXC shares kernel. Connections: Host kernel to LXC shares kernel.
   A["Host kernel"]:::blue --> B["LXC shares kernel"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Beginner architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Proxmox API, UI and CLI. Connections: Proxmox API to UI and CLI.
   A["Proxmox API"]:::blue --> B["UI and CLI"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Beginner architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: VM lifecycle, Health check. Connections: VM lifecycle to Health check.
   A["VM lifecycle"]:::blue --> B["Health check"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Beginner architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Direct disks, ZFS RAID-Z. Connections: Direct disks to ZFS RAID-Z.
   A["Direct disks"]:::blue --> B["ZFS RAID-Z"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Beginner architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Dataset, Snapshot. Connections: Dataset to Snapshot.
   A["Dataset"]:::blue --> B["Snapshot"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Beginner architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Template, Cloud-init guest. Connections: Template to Cloud-init guest.
   A["Template"]:::blue --> B["Cloud-init guest"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Beginner architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Votes, Quorum majority. Connections: Votes to Quorum majority.
   A["Votes"]:::blue --> B["Quorum majority"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Beginner architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Approved lab, Read-only inspection. Connections: Approved lab to Read-only inspection.
   A["Approved lab"]:::blue --> B["Read-only inspection"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

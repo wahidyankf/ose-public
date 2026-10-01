@@ -196,14 +196,17 @@ is parameterized and awaited, and the schema is created idempotently inside the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 22: A CRUD Create and Read Round Trip
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: POST /notes NoteIn body, INSERT row, 201 + Note, GET /notes/1, SELECT by id. Connections: POST /notes NoteIn body to INSERT row, INSERT row to 201 + Note, GET /notes/1 to SELECT by id, SELECT by id to 201 + Note.
     A["POST /notes<br/>NoteIn body"]:::blue --> B["INSERT row"]:::orange
     B --> C["201 + Note"]:::teal
     D["GET /notes/1"]:::blue --> E["SELECT by id"]:::orange
     E --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-22-crud-create-read/app.py`**
@@ -423,14 +426,17 @@ closes it **once** at shutdown -- instead of paying open/close per request. The 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 25: Opening a Pool Once in a Lifespan Handler
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: startup, open pool ONCE, app.state.pool shared by every request, shutdown, close pool ONCE. Connections: startup to open pool ONCE, open pool ONCE to app.state.pool shared by every request, app.state.pool shared by every request to shutdown, shutdown to close pool ONCE.
     A["startup"]:::blue --> B["open pool ONCE"]:::orange
-    B --> C["app.state.pool shared<br/>by every request"]:::teal
+    B --> C["app.state.pool<br/>shared<br/>by every request"]:::teal
     C --> D["shutdown"]:::blue
     D --> E["close pool ONCE"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-25-lifespan-pool/app.py`**
@@ -1253,12 +1259,15 @@ read-modify-write window between two `await`s loses updates; the lock makes the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["request 1: read count=0"]:::blue --> B["request 1: write count=1"]:::teal
-    C["request 2: read count=1"]:::orange --> D["request 2: write count=2"]:::teal
+    accTitle: Example 38: A Concurrency Safe Shared Counter
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: request 1: read count=0, request 1: write count=1, request 2: read count=1, request 2: write count=2. Connections: request 1: read count=0 to request 1: write count=1, request 2: read count=1 to request 2: write count=2, request 1: write count=1 to request 2: read count=1 (lock released).
+    A["request 1: read<br/>count=0"]:::blue --> B["request 1: write<br/>count=1"]:::teal
+    C["request 2: read<br/>count=1"]:::orange --> D["request 2: write<br/>count=2"]:::teal
     B -.->|lock released| C
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-38-concurrency-safe-counter/app.py`**

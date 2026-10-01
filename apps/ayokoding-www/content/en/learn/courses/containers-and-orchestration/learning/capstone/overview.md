@@ -24,13 +24,16 @@ the final deployment as magic.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% Labels and shapes communicate the flow independently of color.
 flowchart LR
-    A["Non-root image"]:::blue --> B["Compose: app + DB + cache"]:::orange
-    B --> C["Deployment and Service"]:::teal
+    accTitle: What the capstone exercises
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Non-root image, Compose: app + DB + cache, Deployment and Service, Ingress and health. Connections: Non-root image to Compose: app + DB + cache, Compose: app + DB + cache to Deployment and Service, Deployment and Service to Ingress and health.
+    A["Non-root image"]:::blue --> B["Compose: app + DB +<br/>cache"]:::orange
+    B --> C["Deployment and<br/>Service"]:::teal
     C --> D["Ingress and health"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Run the local stack

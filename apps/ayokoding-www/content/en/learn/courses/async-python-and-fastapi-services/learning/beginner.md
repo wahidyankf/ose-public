@@ -75,11 +75,14 @@ total wall-clock time is approximately the sum of both waits.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 2: Sequential Awaits Add Up
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: await pause 0.10s, await pause 0.10s, C, the. Connections: await pause 0.10s to await pause 0.10s, await pause 0.10s to C, C to the.
     A["await pause 0.10s"]:::blue --> B["await pause 0.10s"]:::blue
-    B --> C["total ~0.20s -- the SUM"]:::orange
+    B --> C["total ~0.20s -- the<br/>SUM"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-02-await-sequential/example.py`**
@@ -142,11 +145,14 @@ loop and the total time is approximately the slower one, not the sum.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["pause 0.10s"]:::blue -.->|overlap on one loop| C["total ~0.10s -- the MAX"]:::teal
+    accTitle: Example 3: Concurrent Awaits with gather
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: pause 0.10s, C, the, pause 0.10s. Connections: pause 0.10s to C (overlap on one loop), C to the, pause 0.10s to C (overlap on one loop).
+    A["pause 0.10s"]:::blue -.->|overlap on one loop| C["total ~0.10s -- the<br/>MAX"]:::teal
     B["pause 0.10s"]:::blue -.->|overlap on one loop| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-03-gather-concurrent/example.py`**
@@ -368,15 +374,18 @@ the stall, then shows the fix -- an async-native call, or offloading to an execu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["coroutine A calls<br/>time.sleep#40;#41; -- BLOCKING"]:::orange
+    accTitle: Example 7: A Blocking Call Stalls the Loop
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, BLOCKING, loop CANNOT switch, every other coroutine queues behind A, fix: asyncio.sleep OR run_in_executor. Connections: A to BLOCKING, A to loop CANNOT switch, loop CANNOT switch to every other coroutine queues behind A, every other coroutine queues behind A to fix: asyncio.sleep OR run_in_executor (contrast).
+    A["coroutine A calls<br/>time.sleep#40;#41;<br/>-- BLOCKING"]:::orange
     B["loop CANNOT switch"]:::orange
-    C["every other coroutine<br/>queues behind A"]:::orange
+    C["every other<br/>coroutine<br/>queues behind A"]:::orange
     D["fix: asyncio.sleep<br/>OR run_in_executor"]:::teal
     A --> B --> C
     C -.->|contrast| D
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-07-blocking-call-stalls-loop/example.py`**
@@ -680,13 +689,16 @@ on.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 12: A First FastAPI Route
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: curl GET /, FastAPI routes to read_root, return dict, auto JSON + 200. Connections: curl GET / to FastAPI routes to read_root, FastAPI routes to read_root to return dict, return dict to auto JSON + 200.
     A["curl GET /"]:::blue --> B["FastAPI routes to<br/>read_root"]:::orange
     B --> C["return dict"]:::orange
     C --> D["auto JSON + 200"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-12-fastapi-hello/app.py`**
@@ -825,13 +837,16 @@ model. By the time the handler body runs, the body is already a typed, validated
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 15: A Pydantic Model as a Request Body
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: POST JSON body, matches Item model?, handler runs with a validated Item, 422 before handler. Connections: POST JSON body to matches Item model?, matches Item model? to handler runs with a validated Item (yes), matches Item model? to 422 before handler (no).
     A["POST JSON body"]:::blue --> B{"matches Item model?"}:::orange
     B -->|yes| C["handler runs with<br/>a validated Item"]:::teal
     B -->|no| D["422 before handler"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-pydantic-model-body/app.py`**
@@ -942,13 +957,16 @@ model carries (`secret_note`) never reaches the response body if the output mode
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["ItemIn body:<br/>name + secret_note"]:::blue --> B["handler validated by ItemIn"]:::orange
-    B --> C["response_model=ItemOut<br/>filters the output"]:::orange
+    accTitle: Example 17: Shaping the Output with a response model
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: ItemIn body: name + secret_note, handler validated by ItemIn, response_ model=ItemOut filters the output, JSON out: name ONLY. Connections: ItemIn body: name + secret_note to handler validated by ItemIn, handler validated by ItemIn to response_ model=ItemOut filters the output, response_ model=ItemOut filters the output to JSON out: name ONLY.
+    A["ItemIn body:<br/>name + secret_note"]:::blue --> B["handler validated by<br/>ItemIn"]:::orange
+    B --> C["response_<br/>model=ItemOut<br/>filters the output"]:::orange
     C --> D["JSON out: name ONLY"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-17-response-model/app.py`**

@@ -15,19 +15,27 @@ reaches a dead-letter queue.
 
 ```mermaid
 flowchart LR
-    A[OrderPlaced fact] --> B[Event store and outbox]
+    accTitle: Goal
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: OrderPlaced fact, Event store and outbox, Local broker relay, Idempotent CQRS projection, Saga, Compensation, DLQ. Connections: OrderPlaced fact to Event store and outbox, Event store and outbox to Local broker relay, Local broker relay to Idempotent CQRS projection, Local broker relay to Saga, Saga to Compensation (failure), Local broker relay to DLQ (poison).
+    A[OrderPlaced fact] --> B[Event store and<br/>outbox]
     B --> C[Local broker relay]
-    C --> D[Idempotent CQRS projection]
+    C --> D[Idempotent CQRS<br/>projection]
     C --> E[Saga]
     E -->|failure| F[Compensation]
     C -->|poison| G[DLQ]
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CC78BC
+    class G pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

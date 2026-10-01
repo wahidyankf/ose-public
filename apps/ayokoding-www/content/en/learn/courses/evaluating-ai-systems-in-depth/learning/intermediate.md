@@ -166,12 +166,15 @@ A bare agreement percentage hides how much data it rests on -- 90% on 10 cases i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 19: Agreement With a Confidence Interval
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: 9/10 = 90 WIDE interval, Same point estimate, 90/100 = 90 NARROW interval. Connections: 9/10 = 90 WIDE interval to Same point estimate, 90/100 = 90 NARROW interval to Same point estimate.
     A["9/10 = 90%<br/>WIDE interval"]:::orange --> C["Same point<br/>estimate"]:::blue
     B["90/100 = 90%<br/>NARROW interval"]:::teal --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1394,15 +1397,18 @@ Ranking more than two candidates requires more than a single pairwise comparison
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 53: Pairwise Tournament Scoring
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Reply A, Win/loss tallies, Reply B, Reply C, Ranking by win count. Connections: Reply A to Win/loss tallies, Reply B to Win/loss tallies, Reply C to Win/loss tallies, Win/loss tallies to Ranking by win count.
     A["Reply A"]:::blue --> W["Win/loss<br/>tallies"]:::teal
     B["Reply B"]:::orange --> W
     C["Reply C"]:::purple --> W
     W --> R["Ranking by<br/>win count"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

@@ -62,10 +62,12 @@ description of what "should" happen.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-18)
 graph TD
+    accTitle: How verification works in this topic
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Config foundations co-01 to co-07, Plugin ecosystem co-08 to co-09, Language intelligence: LSP co-10 to co-15, Syntax awareness: Treesitter co-16 to co-17, Authorship co-18. Connections: Config foundations co-01 to co-07 to Plugin ecosystem co-08 to co-09, Plugin ecosystem co-08 to co-09 to Language intelligence: LSP co-10 to co-15, Language intelligence: LSP co-10 to co-15 to Syntax awareness: Treesitter co-16 to co-17, Syntax awareness: Treesitter co-16 to co-17 to Authorship co-18.
     A["Config foundations<br/>co-01 to co-07"]:::blue
     B["Plugin ecosystem<br/>co-08 to co-09"]:::orange
-    C["Language intelligence: LSP<br/>co-10 to co-15"]:::teal
-    D["Syntax awareness: Treesitter<br/>co-16 to co-17"]:::purple
+    C["Language<br/>intelligence: LSP<br/>co-10 to co-15"]:::teal
+    D["Syntax awareness:<br/>Treesitter<br/>co-16 to co-17"]:::purple
     E["Authorship<br/>co-18"]:::brown
 
     A --> B
@@ -74,10 +76,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

@@ -54,11 +54,14 @@ correct failure-domain placement.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC; labels, not colors, carry meaning.
 flowchart LR
-    I["Golden image contract"]:::blue --> C["Cloud-init guest intent"]:::orange
+    accTitle: Acceptance criteria
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Golden image contract, Cloud-init guest intent, Reviewed IaC plan, Backup and restore evidence. Connections: Golden image contract to Cloud-init guest intent, Cloud-init guest intent to Reviewed IaC plan, Reviewed IaC plan to Backup and restore evidence.
+    I["Golden image<br/>contract"]:::blue --> C["Cloud-init guest<br/>intent"]:::orange
     C --> T["Reviewed IaC plan"]:::teal
-    T --> R["Backup and restore evidence"]:::purple
+    T --> R["Backup and restore<br/>evidence"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

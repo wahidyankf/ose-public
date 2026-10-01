@@ -120,13 +120,16 @@ lifecycle, measurement, and safe emulation replay (`co-22`–`co-24`).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Lab map
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Original local log, Decoder fields, Rule and correlation, Dashboard evidence and tuning. Connections: Original local log to Decoder fields, Decoder fields to Rule and correlation, Rule and correlation to Dashboard evidence and tuning.
     A["Original local log"]:::blue --> B["Decoder fields"]:::orange
     B --> C["Rule and correlation"]:::teal
-    C --> D["Dashboard evidence and tuning"]:::purple
+    C --> D["Dashboard evidence<br/>and tuning"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The pipeline is local and one-way: parse an invented line, evaluate an invented rule, inspect the

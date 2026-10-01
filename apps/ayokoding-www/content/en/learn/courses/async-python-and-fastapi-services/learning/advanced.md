@@ -1013,13 +1013,16 @@ target codebase uses.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 53: A remotebrowser Shaped Fan Out and Aggregate
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: GET /fanout, gather 8 calls, semaphore caps CONCURRENCY at 4, aggregate successes, total, succeeded, results. Connections: GET /fanout to gather 8 calls, gather 8 calls to semaphore caps CONCURRENCY at 4, semaphore caps CONCURRENCY at 4 to aggregate successes, aggregate successes to total, succeeded, results.
     A["GET /fanout"]:::blue --> B["gather 8 calls"]:::orange
     B --> C["semaphore caps<br/>CONCURRENCY at 4"]:::orange
     C --> D["aggregate successes"]:::teal
-    D --> E["{total, succeeded, results}"]:::teal
+    D --> E["{total, succeeded,<br/>results}"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-53-remotebrowser-shaped-fanout/app.py`**

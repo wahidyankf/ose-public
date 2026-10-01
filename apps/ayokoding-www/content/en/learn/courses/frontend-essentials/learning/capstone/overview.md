@@ -20,18 +20,21 @@ tiers of this topic.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A["types.ts<br/>Task + TaskListState union<br/>co-27, co-28"]:::blue
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: types.ts Task + TaskListState union co-27, co-28, render.ts functional core co-18, co-21, app.ts imperative shell: state, form, filter co-19, co-20, co-22, co-23, co-24, co-26, taskList.test.ts Vitest + Testing-Library. Connections: types.ts Task + TaskListState union co-27, co-28 to render.ts functional core co-18, co-21, render.ts functional core co-18, co-21 to app.ts imperative shell: state, form, filter co-19, co-20, co-22, co-23, co-24, co-26, app.ts imperative shell: state, form, filter co-19, co-20, co-22, co-23, co-24, co-26 to taskList.test.ts Vitest + Testing-Library.
+    A["types.ts<br/>Task + TaskListState<br/>union<br/>co-27, co-28"]:::blue
     B["render.ts<br/>functional core<br/>co-18, co-21"]:::orange
-    C["app.ts<br/>imperative shell: state,<br/>form, filter<br/>co-19, co-20, co-22, co-23, co-24, co-26"]:::teal
-    D["taskList.test.ts<br/>Vitest + Testing-Library"]:::purple
+    C["app.ts<br/>imperative shell:<br/>state,<br/>form, filter<br/>co-19, co-20, co-22,<br/>co-23, co-24, co-26"]:::teal
+    D["taskList.test.ts<br/>Vitest +<br/>Testing-Library"]:::purple
     A --> B
     B --> C
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

@@ -18,20 +18,23 @@ Two coroutines run on one thread, interleaving their steps in a fixed order; two
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    subgraph Concurrency["Concurrency (interleaved)"]
+    accTitle: Example 1: Concurrency vs. Parallelism, Illustrated
+    accDescr: Flowchart with 6 nodes and 3 connections. Nodes: A0, B0, A1, B1, Process A: A0 A1 A2, Process B: B0 B1 B2. Connections: A0 to B0, B0 to A1, A1 to B1.
+    subgraph Concurrency["Concurrency<br/>(interleaved)"]
         direction LR
         A1["A0"]:::blue --> B1["B0"]:::orange --> A2["A1"]:::blue --> B2["B1"]:::orange
     end
-    subgraph Parallelism["Parallelism (simultaneous)"]
+    subgraph Parallelism["Parallelism<br/>(simultaneous)"]
         direction LR
         C1["Process A: A0 A1 A2"]:::teal
         C2["Process B: B0 B1 B2"]:::purple
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-01-concurrency-vs-parallelism-illustration/example.py`**
@@ -151,15 +154,18 @@ A global variable mutated inside a new thread is visible from the main thread af
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TB
-    G["counter = 0<br/>(parent process memory)"]:::blue
-    G -->|"shared address space"| T["Thread: counter += 1"]:::orange
-    G -.->|"copied at fork/spawn"| P["Child Process: counter += 1<br/>(its OWN private copy)"]:::teal
-    T -->|"parent sees counter = 1"| R1["Result: visible"]:::orange
-    P -.->|"parent's counter still 0"| R2["Result: invisible without IPC"]:::teal
+    accTitle: Example 2: Process vs. Thread Address Space
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: counter = 0 (parent process memory), Thread: counter += 1, Child Process: counter += 1 (its OWN private copy), Result: visible, Result: invisible without IPC. Connections: counter = 0 (parent process memory) to Thread: counter += 1 (shared address space), counter = 0 (parent process memory) to Child Process: counter += 1 (its OWN private copy) (copied at fork/spawn), Thread: counter += 1 to Result: visible (parent sees counter = 1), Child Process: counter += 1 (its OWN private copy) to Result: invisible without IPC (parents counter still 0).
+    G["counter = 0<br/>(parent process<br/>memory)"]:::blue
+    G -->|"shared address<br/>space"| T["Thread: counter += 1"]:::orange
+    G -.->|"copied at<br/>fork/spawn"| P["Child Process:<br/>counter += 1<br/>(its OWN private<br/>copy)"]:::teal
+    T -->|"parent sees counter<br/>= 1"| R1["Result: visible"]:::orange
+    P -.->|"parent's counter<br/>still 0"| R2["Result: invisible<br/>without IPC"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-02-process-vs-thread-address-space/example.py`**
@@ -460,21 +466,24 @@ Two threads that each `time.sleep()` (standing in for a blocking network call) r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: Example 5: I/O-Bound Threads Actually Help
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: sleep A (0.2s), sleep B (0.2s), sleep A (0.2s), sleep B (0.2s). Connections: sleep A (0.2s) to sleep B (0.2s), sleep A (0.2s) to sleep B (0.2s) (GIL released during sleep -- B runs too).
     subgraph Serial["Serial: 0.4s total"]
         direction LR
         S1["sleep A (0.2s)"]:::blue --> S2["sleep B (0.2s)"]:::orange
     end
-    subgraph Threaded["Threaded: ~0.2s total"]
+    subgraph Threaded["Threaded: ~0.2s<br/>total"]
         direction LR
         T1["sleep A (0.2s)"]:::teal
         T2["sleep B (0.2s)"]:::purple
-        T1 -.->|"GIL released during sleep -- B runs too"| T2
+        T1 -.->|"GIL released during<br/>sleep -- B runs too"| T2
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-05-io-bound-threads-help/example.py`**
@@ -744,6 +753,8 @@ Two threads each increment a shared `counter[0]` two thousand times with no sync
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 8: A Shared Counter Without a Lock Loses Updates
+    accDescr: Sequence diagram between Thread A, counter[0] = 5, Thread B. Messages: Thread A to counter[0] = 5: read 5; Thread B to counter[0] = 5: read 5; Thread A to counter[0] = 5: write 6; Thread B to counter[0] = 5: write 6.
     participant A as Thread A
     participant C as counter[0] = 5
     participant B as Thread B
@@ -1382,15 +1393,18 @@ A `threading.Semaphore(2)` lets at most two threads into a guarded section simul
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 15: A Semaphore Limits Concurrent Access
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Semaphore(2) 2 permits, Thread 1, Thread 2, Thread 3, Thread 4. Connections: Thread 1 to Semaphore(2) 2 permits (acquires permit), Thread 2 to Semaphore(2) 2 permits (acquires permit), Thread 3 to Semaphore(2) 2 permits (BLOCKS: no permits left), Thread 4 to Semaphore(2) 2 permits (BLOCKS: no permits left).
     S["Semaphore(2)<br/>2 permits"]:::blue
     T1["Thread 1"]:::orange -->|"acquires permit"| S
     T2["Thread 2"]:::orange -->|"acquires permit"| S
-    T3["Thread 3"]:::teal -.->|"BLOCKS: no permits left"| S
-    T4["Thread 4"]:::teal -.->|"BLOCKS: no permits left"| S
+    T3["Thread 3"]:::teal -.->|"BLOCKS: no permits<br/>left"| S
+    T4["Thread 4"]:::teal -.->|"BLOCKS: no permits<br/>left"| S
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-semaphore-limits-concurrency/example.py`**
@@ -1684,15 +1698,18 @@ A `threading.Barrier(4)` is an N-way rendezvous point: it releases ALL waiting t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 18: A Barrier Rendezvous Point
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Thread 1 arrives early, Barrier(4), Thread 2, Thread 3, Thread 4 arrives last, All 4 proceed. Connections: Thread 1 arrives early to Barrier(4) (wait()), Thread 2 to Barrier(4) (wait()), Thread 3 to Barrier(4) (wait()), Thread 4 arrives last to Barrier(4) (wait()), Barrier(4) to All 4 proceed (ALL 4 arrived -- release together).
     T1["Thread 1<br/>arrives early"]:::blue -->|"wait()"| Bar["Barrier(4)"]:::orange
     T2["Thread 2"]:::blue -->|"wait()"| Bar
     T3["Thread 3"]:::blue -->|"wait()"| Bar
     T4["Thread 4<br/>arrives last"]:::blue -->|"wait()"| Bar
-    Bar -->|"ALL 4 arrived -- release together"| Go["All 4 proceed"]:::teal
+    Bar -->|"ALL 4 arrived --<br/>release together"| Go["All 4 proceed"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-18-barrier-rendezvous/example.py`**
@@ -1791,6 +1808,8 @@ A consumer thread waits on a `threading.Condition` inside a `while not state["re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 19: Condition -- wait and notify
+    accDescr: Sequence diagram between Consumer, Condition, Producer. Messages: Consumer to Condition: with cond: while not ready: wait(); Producer to Condition: with cond: ready = True notify(); Condition to Consumer: wakes, re-acquires lock; Consumer to Consumer: re-checks predicate -- now True, proceeds.
     participant Consumer
     participant Cond as Condition
     participant Producer
@@ -1997,11 +2016,14 @@ One producer thread and one consumer thread, connected by a single `queue.Queue`
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 21: A Basic Producer/Consumer Pipeline
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Producer put(0..9), queue.Queue(), Consumer get() x 10. Connections: Producer put(0..9) to queue.Queue(), queue.Queue() to Consumer get() x 10.
     P["Producer<br/>put(0..9)"]:::blue --> Q["queue.Queue()"]:::orange --> C["Consumer<br/>get() x 10"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-21-producer-consumer-basic/example.py`**
@@ -2632,6 +2654,8 @@ _ex-28 &middot; exercises co-26, co-05_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 28: asyncio.gather Runs asyncio.sleep Tasks Concurrently
+    accDescr: Sequence diagram between Event Loop, Task A, Task B, Task C. Messages: Event Loop to Task A: schedules A; Event Loop to Task B: schedules B; Event Loop to Task C: schedules C; Task A to Event Loop: await sleep(0.2) -- yields; Task B to Event Loop: await sleep(0.2) -- yields; Task C to Event Loop: await sleep(0.2) -- yields; Event Loop to Task A: sleep done, resumes; Event Loop to Task B: sleep done, resumes; Event Loop to Task C: sleep done, resumes.
     participant Loop as Event Loop
     participant A as Task A
     participant B as Task B

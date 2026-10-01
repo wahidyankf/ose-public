@@ -272,9 +272,12 @@ actually occurs.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
-    A["(:Person name: Ada)"]:::blue -->|KNOWS| B["(:Person name: Charles)"]:::orange
+    accTitle: Example 6: Match a Relationship Pattern
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: (:Person name: Ada), (:Person name: Charles). Connections: (:Person name: Ada) to (:Person name: Charles) (KNOWS).
+    A["(:Person name: Ada)"]:::blue -->|KNOWS| B["(:Person name:<br/>Charles)"]:::orange
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-06-match-relationship-pattern/example.cypher`**
@@ -374,11 +377,14 @@ genuinely spans more than one kind of edge ("everyone connected to this movie, h
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 8: Match Multiple Relationship Types
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Ada, Null Pointer Blues, Grace. Connections: Ada to Null Pointer Blues (ACTED_IN), Grace to Null Pointer Blues (DIRECTED).
     Ada:::blue -->|ACTED_IN| Movie["Null Pointer Blues"]:::teal
     Grace:::orange -->|DIRECTED| Movie
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-08-match-multiple-relationship-types/example.cypher`**
@@ -678,10 +684,13 @@ friends-of-friends, and friends-of-friends-of-friends" in one `MATCH`, no manual
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 14: Variable-Length Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Ada, Bob, Cid. Connections: Ada to Bob (KNOWS), Bob to Cid (KNOWS).
     Ada:::blue -->|KNOWS| Bob:::orange -->|KNOWS| Cid:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-14-variable-length-path-classic/example.cypher`**
@@ -732,10 +741,13 @@ relationship itself, using curly braces instead of the classic `*min..max` insid
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 15: Quantified Relationship Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Central, Market, Pier. Connections: Central to Market (NEXT), Market to Pier (NEXT).
     Central:::blue -->|NEXT| Market:::orange -->|NEXT| Pier:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-quantified-relationship-path/example.cypher`**
@@ -789,11 +801,14 @@ the classic, still-supported way to answer "what's the shortest connection betwe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Purple #CC78BC
 graph LR
-    Ada:::blue -->|"KNOWS (2-hop route)"| Bob:::orange -->|KNOWS| Zoe:::purple
-    Ada -->|"KNOWS (1-hop shortcut, wins)"| Zoe
+    accTitle: Example 16: Shortest Path with shortestPath
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Ada, Bob, Zoe. Connections: Ada to Bob (KNOWS (2-hop route)), Bob to Zoe (KNOWS), Ada to Zoe (KNOWS (1-hop shortcut, wins)).
+    Ada:::blue -->|"KNOWS (2-hop<br/>route)"| Bob:::orange -->|KNOWS| Zoe:::purple
+    Ada -->|"KNOWS (1-hop<br/>shortcut, wins)"| Zoe
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-16-shortest-path-legacy-function/example.cypher`**
@@ -849,12 +864,15 @@ the first found -- `shortestPath()` (Example 16) only ever returns one.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 17: All Shortest Paths with allShortestPaths
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Ada, Mid1, Zoe, Mid2. Connections: Ada to Mid1 (KNOWS), Mid1 to Zoe (KNOWS), Ada to Mid2 (KNOWS), Mid2 to Zoe (KNOWS).
     Ada:::blue -->|KNOWS| Mid1:::orange -->|KNOWS| Zoe:::purple
     Ada -->|KNOWS| Mid2:::teal -->|KNOWS| Zoe
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-17-all-shortest-paths-legacy/example.cypher`**
@@ -988,11 +1006,14 @@ that adds one more join per hop, versus a single Cypher pattern whose shape bare
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 19: Graph Traversal vs. Relational Join Explosion
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Ada, Bob, Cid, Dee. Connections: Ada to Bob (KNOWS), Bob to Cid (KNOWS), Cid to Dee (KNOWS).
     Ada:::blue -->|KNOWS| Bob:::orange -->|KNOWS| Cid:::teal -->|KNOWS| Dee:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Relational form (SQLite self-joins)**:

@@ -16,14 +16,17 @@ account, no real credential, and no secret value. Its only state is local and ig
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC; labels and shapes convey meaning without color.
 graph TD
-    M["Reusable service module"]:::blue --> D["Dev variables and local state"]:::teal
+    accTitle: Architecture
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Reusable service module, Dev variables and local state, Stage variables, LocalStack endpoint. Connections: Reusable service module to Dev variables and local state, Reusable service module to Stage variables, Dev variables and local state to LocalStack endpoint, Stage variables to LocalStack endpoint.
+    M["Reusable service<br/>module"]:::blue --> D["Dev variables and<br/>local state"]:::teal
     M --> S["Stage variables"]:::orange
     D --> L["LocalStack endpoint"]:::purple
     S --> L
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Run locally

@@ -31,14 +31,17 @@ appends to an in-memory list and issues zero SQL, deferring every write until a 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["uow.register_new#40;obj#41;"]:::blue
+    accTitle: Example 55: UnitOfWork.registernew -- Tracking a Brand-New, Not-Yet-Saved Object
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: uow.register_ new40obj41, appended to _new list, zero SQL issued yet. Connections: uow.register_ new40obj41 to appended to _new list, appended to _new list to zero SQL issued yet.
+    A["uow.register_<br/>new#40;obj#41;"]:::blue
     B["appended to<br/>_new list"]:::orange
     C["zero SQL<br/>issued yet"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-55-uow-track-new/example.py`**
@@ -141,14 +144,17 @@ database-assigned primary key is written back onto the same Python object the ca
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["register_new#40;user#41;<br/>co-16"]:::blue
+    accTitle: Example 56: Flushing the New Set Issues Real INSERTs and Assigns Primary Keys
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: register_ new40user41 co-16, flush4041 co-20, INSERT ... user.id 61 cursor.lastrowid. Connections: register_ new40user41 co-16 to flush4041 co-20, flush4041 co-20 to INSERT ... user.id 61 cursor.lastrowid.
+    A["register_<br/>new#40;user#41;<br/>co-16"]:::blue
     B["flush#40;#41;<br/>co-20"]:::orange
-    C["INSERT ... user.id #61;<br/>cursor.lastrowid"]:::teal
+    C["INSERT ... user.id<br/>#61;<br/>cursor.lastrowid"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-56-uow-new-becomes-insert/example.py`**
@@ -689,6 +695,8 @@ object produces a real `DELETE FROM ... WHERE id = ?`, and the row is genuinely 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 61: Flushing the Deleted Set Issues Real DELETE Statements
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: _deleted list 91obj1, obj293, flush4041, DELETE FROM ... WHERE id = ? per object, rows genuinely gone. Connections: _deleted list 91obj1, obj293 to flush4041, flush4041 to DELETE FROM ... WHERE id = ? per object, DELETE FROM ... WHERE id = ? per object to rows genuinely gone.
     A["_deleted list<br/>#91;obj1, obj2#93;"]:::blue
     B["flush#40;#41;"]:::orange
     C["DELETE FROM ...<br/>WHERE id = ?<br/>per object"]:::teal
@@ -696,8 +704,9 @@ flowchart LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-61-uow-deleted-becomes-delete/example.py`**
@@ -823,12 +832,15 @@ the parent have a real primary key the child's foreign key can legally point at.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
+    accTitle: Example 62: Flush Ordering -- a Parents INSERT Runs Before Its Childs
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: INSERT customers assigns customer.id, INSERT orders reads customer.id. Connections: INSERT customers assigns customer.id to INSERT orders reads customer.id.
     A["INSERT customers<br/>assigns customer.id"]:::blue
     B["INSERT orders<br/>reads customer.id"]:::orange
     A --> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-62-flush-order-insert-before-child/example.py`**
@@ -980,14 +992,17 @@ parent's own `DELETE` violates the same foreign-key constraint that insert order
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 63: Flush Ordering -- a Childs DELETE Runs Before Its Parents
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: DELETE child 40order41, DELETE parent 40customer41, FK constraint never violated. Connections: DELETE child 40order41 to DELETE parent 40customer41, DELETE parent 40customer41 to FK constraint never violated.
     A["DELETE child<br/>#40;order#41;"]:::blue
     B["DELETE parent<br/>#40;customer#41;"]:::orange
     C["FK constraint<br/>never violated"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-63-flush-order-delete-child-before-parent/example.py`**
@@ -1254,16 +1269,19 @@ transaction -- including writes that individually would have succeeded, because 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 65: A Flush Failure Rolls Back EVERY Write in the Batch, Not Just the Failing One
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: INSERT Alice succeeds, INSERT Bob VIOLATES constraint, except: rollback4041, Alices row ALSO gone. Connections: INSERT Alice succeeds to INSERT Bob VIOLATES constraint, INSERT Bob VIOLATES constraint to except: rollback4041, except: rollback4041 to Alices row ALSO gone.
     A["INSERT Alice<br/>succeeds"]:::blue
     B["INSERT Bob<br/>VIOLATES constraint"]:::orange
-    C["except: rollback#40;#41;"]:::purple
+    C["except:<br/>rollback#40;#41;"]:::purple
     D["Alice's row<br/>ALSO gone"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-flush-atomic-rollback/example.py`**
@@ -1518,15 +1536,18 @@ right after construction.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["Customer#40;name#61;'Alice'#41;<br/>construction"]:::blue
+    accTitle: Example 67: A Lazy-Loading Descriptor Defers Its Query Until First Attribute Access
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Customer40name61Alice41 construction, customer.orders accessed?, loader4041 runs co-21. Connections: Customer40name61Alice41 construction to customer.orders accessed?, customer.orders accessed? to loader4041 runs co-21 (first access).
+    A["Customer#40;<br/>name#61;'Alice'#41;<br/>construction"]:::blue
     B{"customer.orders<br/>accessed?"}:::orange
     C["loader#40;#41; runs<br/>co-21"]:::teal
     A --> B
     B -->|first access| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-67-lazy-descriptor-defers/example.py`**
@@ -1654,18 +1675,21 @@ the cached value on each instance separately.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["descriptor#40;#41;<br/>class-level, ONE object"]:::blue
+    accTitle: Example 68: setname Lets a Descriptor Cache Per-Instance, Not Per-Descriptor
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: descriptor4041 class-level, ONE object, alice.orders, bob.orders, alice.__dict__91_ orders93, bob.__dict__91_ orders93. Connections: descriptor4041 class-level, ONE object to alice.orders, alice.orders to alice.__dict__91_ orders93, descriptor4041 class-level, ONE object to bob.orders, bob.orders to bob.__dict__91_ orders93.
+    A["descriptor#40;#41;<br/>class-level, ONE<br/>object"]:::blue
     B["alice.orders"]:::orange
     C["bob.orders"]:::orange
-    D["alice.__dict__#91;_orders#93;"]:::teal
-    E["bob.__dict__#91;_orders#93;"]:::purple
+    D["alice.__dict__#91;_<br/>orders#93;"]:::teal
+    E["bob.__dict__#91;_<br/>orders#93;"]:::purple
     A --> B --> D
     A --> C --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-lazy-descriptor-set-name/example.py`**
@@ -1926,13 +1950,16 @@ separate query per customer -- a logged, countable N+1 pattern, not a theoretica
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
-    A["list_customers#40;#41;<br/>1 query"]:::blue
-    B["for customer in customers:<br/>orders_for#40;customer.id#41;"]:::orange
+    accTitle: Example 70: Naive Lazy Loading Over a List Produces N+1 Queries, Observably
+    accDescr: Flowchart with 2 nodes and 2 connections. Nodes: list_ customers4041 1 query, for customer in customers: orders_ for40customer. id41. Connections: list_ customers4041 1 query to for customer in customers: orders_ for40customer. id41, for customer in customers: orders_ for40customer. id41 to for customer in customers: orders_ for40customer. id41 (N times).
+    A["list_<br/>customers#40;#41;<br/>1 query"]:::blue
+    B["for customer in<br/>customers:<br/>orders_<br/>for#40;customer.<br/>id#41;"]:::orange
     A --> B
     B -->|"N times"| B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-70-n-plus-1-observable/example.py`**
@@ -2060,15 +2087,18 @@ customer_id IN (...)` query, then group the results in memory -- total query cou
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 71: Fixing N+1 by Batch-Loading All Children in One Extra Query
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: 1 query: load N customers, 1 query: WHERE customer_id IN 40...41, group results in memory, total: 2 queries always. Connections: 1 query: load N customers to 1 query: WHERE customer_id IN 40...41, 1 query: WHERE customer_id IN 40...41 to group results in memory, group results in memory to total: 2 queries always.
     A["1 query:<br/>load N customers"]:::blue
-    B["1 query:<br/>WHERE customer_id IN #40;...#41;"]:::orange
+    B["1 query:<br/>WHERE customer_id IN<br/>#40;...#41;"]:::orange
     C["group results<br/>in memory"]:::teal
     D["total: 2 queries<br/>always"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-n-plus-1-fix-eager/example.py`**
@@ -2534,16 +2564,19 @@ one class: two DIFFERENT compiled queries that both touch the same row return th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["Select.compile#40;#41;<br/>co-08"]:::blue
+    accTitle: Example 75: Wiring the Full Read Stack -- Builder, Driver, Identity Map, Mapper
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Select. compile4041 co-08, conn.execute4041 co-23, row_to_User4041 co-10, identity map co-13. Connections: Select. compile4041 co-08 to conn.execute4041 co-23, conn.execute4041 co-23 to row_to_User4041 co-10, row_to_User4041 co-10 to identity map co-13.
+    A["Select.<br/>compile#40;#41;<br/>co-08"]:::blue
     B["conn.execute#40;#41;<br/>co-23"]:::orange
     C["row_to_User#40;#41;<br/>co-10"]:::teal
     D["identity map<br/>co-13"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-75-wire-full-stack-select/example.py`**
@@ -2963,16 +2996,19 @@ loaded objects by pk, and a batch query avoids N+1 when loading each customer's 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: Example 78: A Mini-ORM Preview -- Migrations, UnitOfWork, Identity Map, Eager Loading
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: migrate4041 co-24, orm.add4041 43 flush4041 co-20, orm.all_with_ orders4041 co-22, identity_ of40pk41 co-13. Connections: migrate4041 co-24 to orm.add4041 43 flush4041 co-20, orm.add4041 43 flush4041 co-20 to orm.all_with_ orders4041 co-22, orm.all_with_ orders4041 co-22 to identity_ of40pk41 co-13.
     A["migrate#40;#41;<br/>co-24"]:::blue
-    B["orm.add#40;#41; #43; flush#40;#41;<br/>co-20"]:::orange
-    C["orm.all_with_orders#40;#41;<br/>co-22"]:::teal
-    D["identity_of#40;pk#41;<br/>co-13"]:::purple
+    B["orm.add#40;#41; #43;<br/>flush#40;#41;<br/>co-20"]:::orange
+    C["orm.all_with_<br/>orders#40;#41;<br/>co-22"]:::teal
+    D["identity_<br/>of#40;pk#41;<br/>co-13"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-78-capstone-preview-mini-orm/example.py`**

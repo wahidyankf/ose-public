@@ -32,14 +32,17 @@ asking a reader to operate a real lab.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC; color is supplementary.
 flowchart TB
-    H["Physical hosts and direct disks"]:::blue --> P["KVM QEMU and Proxmox"]:::orange
+    accTitle: Substrate map
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Physical hosts and direct disks, KVM QEMU and Proxmox, ZFS or Ceph storage, Cloud-init VMs, Workloads above this course. Connections: Physical hosts and direct disks to KVM QEMU and Proxmox, KVM QEMU and Proxmox to ZFS or Ceph storage, ZFS or Ceph storage to Cloud-init VMs, Cloud-init VMs to Workloads above this course.
+    H["Physical hosts and<br/>direct disks"]:::blue --> P["KVM QEMU and Proxmox"]:::orange
     P --> S["ZFS or Ceph storage"]:::teal
     S --> V["Cloud-init VMs"]:::purple
-    V --> W["Workloads above this course"]:::blue
+    V --> W["Workloads above this<br/>course"]:::blue
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The arrows show dependency, not an instruction to combine every technology. A small installation may use one

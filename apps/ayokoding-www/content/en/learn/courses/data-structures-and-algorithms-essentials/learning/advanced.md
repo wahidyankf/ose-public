@@ -18,6 +18,8 @@ The textbook recursive Fibonacci definition (`fib(n) = fib(n-1) + fib(n-2)`) rec
 ```mermaid
 %% TD required: parent call must appear above the child calls it spawns, to show the call tree
 graph TD
+    accTitle: Example 61: Naive Recursive Fibonacci -- and Its Exponential Cost
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: fib40441, fib40341, fib40241 402nd time41, fib40241 401st time41, fib40141. Connections: fib40441 to fib40341, fib40441 to fib40241 402nd time41, fib40341 to fib40241 401st time41, fib40341 to fib40141.
     A["fib#40;4#41;"]:::blue
     B["fib#40;3#41;"]:::orange
     C["fib#40;2#41;<br/>#40;2nd time#41;"]:::purple
@@ -29,9 +31,10 @@ graph TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-61-fibonacci-naive-recursive/example.py`**
@@ -90,17 +93,20 @@ Caching each `fib(n)` result in a `dict` the first time it's computed turns ever
 ```mermaid
 %% TD required: parent call must appear above child calls to show the call tree
 graph TD
+    accTitle: Example 62: Memoized Fibonacci with a Dict Cache
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: fib40441, fib40341, fib40241 cache hit, O40141, fib40241 computed once. Connections: fib40441 to fib40341, fib40441 to fib40241 cache hit, O40141, fib40341 to fib40241 computed once.
     A["fib#40;4#41;"]:::blue
     B["fib#40;3#41;"]:::orange
-    C["fib#40;2#41;<br/>cache hit, O#40;1#41;"]:::teal
+    C["fib#40;2#41;<br/>cache hit,<br/>O#40;1#41;"]:::teal
     D["fib#40;2#41;<br/>computed once"]:::orange
     A --> B
     A --> C
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-62-fibonacci-memoized-dict/example.py`**
@@ -384,16 +390,19 @@ Deleting a node from a BST has three distinct cases: a leaf (just remove it), a 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
-    A["delete#40;2#41;: two children"]:::blue
-    B["successor = 3<br/>#40;min of right subtree#41;"]:::orange
-    C["2's value replaced by 3<br/>original node 3 removed #40;leaf case#41;"]:::teal
-    D["delete#40;3#41;: one child #40;left=1#41;<br/>splices 1 up into 3's place"]:::purple
+    accTitle: Example 67: Delete a Node from a BST -- All Three Cases
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: delete40241: two children, successor = 3 40min of right subtree41, 2s value replaced by 3 original node 3 removed 40leaf case41, delete40341: one child 40left=141 splices 1 up into 3s place. Connections: delete40241: two children to successor = 3 40min of right subtree41, successor = 3 40min of right subtree41 to 2s value replaced by 3 original node 3 removed 40leaf case41, 2s value replaced by 3 original node 3 removed 40leaf case41 to delete40341: one child 40left=141 splices 1 up into 3s place.
+    A["delete#40;2#41;: two<br/>children"]:::blue
+    B["successor = 3<br/>#40;min of right<br/>subtree#41;"]:::orange
+    C["2's value replaced<br/>by 3<br/>original node 3<br/>removed #40;leaf<br/>case#41;"]:::teal
+    D["delete#40;3#41;: one<br/>child #40;left=1#41;<br/>splices 1 up into<br/>3's place"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-67-bst-delete/example.py`**
@@ -514,6 +523,8 @@ Inorder traversal (Example 49) is naturally recursive, but any recursion can be 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 68: Iterative Inorder Traversal with an Explicit Stack
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: push 5, 2, 1 stack: 915,2,193, pop 1, visit 1 stack: 915,293, pop 2, visit 2 push 3, pop 3, visit 3 stack: 91593. Connections: push 5, 2, 1 stack: 915,2,193 to pop 1, visit 1 stack: 915,293, pop 1, visit 1 stack: 915,293 to pop 2, visit 2 push 3, pop 2, visit 2 push 3 to pop 3, visit 3 stack: 91593.
     A["push 5, 2, 1<br/>stack: #91;5,2,1#93;"]:::blue
     B["pop 1, visit 1<br/>stack: #91;5,2#93;"]:::orange
     C["pop 2, visit 2<br/>push 3"]:::orange
@@ -521,8 +532,9 @@ graph LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-bst-inorder-iterative/example.py`**
@@ -630,6 +642,8 @@ A tree is height-balanced if, at every node, its left and right subtrees' height
 ```mermaid
 %% TD required: parent nodes must appear above child nodes to show tree structure
 graph TD
+    accTitle: Example 69: Check Whether a Binary Tree Is Height-Balanced
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: balanced_tree: 1, left: 2 40h=141, right: 3 40h=141, unbalanced_tree: 1, left: 2 40h=241, left.left: 3. Connections: balanced_tree: 1 to left: 2 40h=141, balanced_tree: 1 to right: 3 40h=141, unbalanced_tree: 1 to left: 2 40h=241, left: 2 40h=241 to left.left: 3.
     A["balanced_tree: 1"]:::blue
     B["left: 2 #40;h=1#41;"]:::teal
     C["right: 3 #40;h=1#41;"]:::teal
@@ -642,8 +656,9 @@ graph TD
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-69-tree-is-balanced/example.py`**
@@ -744,6 +759,8 @@ The lowest common ancestor (LCA) of two nodes in a BST is the deepest node that 
 ```mermaid
 %% TD required: parent nodes must appear above child nodes to show tree structure
 graph TD
+    accTitle: Example 70: Lowest Common Ancestor in a BST
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 6, 2 = LCA400,441, 8, 0, 4. Connections: 6 to 2 = LCA400,441, 6 to 8, 2 = LCA400,441 to 0, 2 = LCA400,441 to 4.
     A["6"]:::blue
     B["2 = LCA#40;0,4#41;"]:::purple
     C["8"]:::gray
@@ -755,9 +772,10 @@ graph TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-70-bst-lowest-common-ancestor/example.py`**
@@ -855,6 +873,8 @@ Dijkstra's algorithm generalizes BFS's unweighted shortest path (Example 59) to 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 71: Dijkstras Shortest Paths with a Min-Heap
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: a dist 0, c dist 1, b dist 3, d dist 4. Connections: a dist 0 to c dist 1 (weight 1), a dist 0 to b dist 3 (weight 4), c dist 1 to b dist 3 (weight 2), c dist 1 to d dist 4 (weight 5), b dist 3 to d dist 4 (weight 1).
     A["a<br/>dist 0"]:::blue
     B["c<br/>dist 1"]:::orange
     C["b<br/>dist 3"]:::teal
@@ -866,9 +886,10 @@ graph LR
     C -->|weight 1| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-dijkstra-with-heap/example.py`**
@@ -956,6 +977,8 @@ Kahn's algorithm topologically sorts a directed acyclic graph (DAG) by repeatedl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 72: Topological Sort via Kahns Algorithm
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: shirt, socks, underwear, pants, jacket, shoes. Connections: shirt to jacket, socks to shoes, underwear to pants, pants to jacket, pants to shoes.
     A[shirt]:::blue
     B[socks]:::blue
     C[underwear]:::blue
@@ -969,8 +992,9 @@ graph LR
     D --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-72-topological-sort-kahn/example.py`**
@@ -1065,6 +1089,8 @@ Detecting a cycle in a **directed** graph needs more than a plain visited set (w
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 73: Detect a Cycle in a Directed Graph via DFS Coloring
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: a: WHITE to GRAY, b: WHITE to GRAY, c: WHITE to GRAY, c sees a is GRAY cycle detected. Connections: a: WHITE to GRAY to b: WHITE to GRAY, b: WHITE to GRAY to c: WHITE to GRAY, c: WHITE to GRAY to c sees a is GRAY cycle detected.
     A["a: WHITE to GRAY"]:::blue
     B["b: WHITE to GRAY"]:::orange
     C["c: WHITE to GRAY"]:::teal
@@ -1072,9 +1098,10 @@ graph LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-73-detect-cycle-directed/example.py`**
@@ -1158,6 +1185,8 @@ Merging k sorted linked lists into one sorted list uses a min-heap seeded with e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 74: Merge k Sorted Linked Lists with a Heap
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: list_a head: 1, list_b head: 1, list_c head: 2, min-heap pops smallest, merged: 1,1,2.... Connections: list_a head: 1 to min-heap pops smallest, list_b head: 1 to min-heap pops smallest, list_c head: 2 to min-heap pops smallest, min-heap pops smallest to merged: 1,1,2....
     A["list_a head: 1"]:::blue
     B["list_b head: 1"]:::blue
     C["list_c head: 2"]:::blue
@@ -1169,8 +1198,9 @@ graph LR
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-74-merge-k-sorted-lists/example.py`**
@@ -1278,16 +1308,19 @@ Quickselect finds the kth smallest element without fully sorting the collection:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 75: Kth Smallest via Quickselect
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: pivot = 4, less has 3 items k=2 fits inside, equal + greater discarded entirely, recurse into less only answer: 3. Connections: pivot = 4 to less has 3 items k=2 fits inside, less has 3 items k=2 fits inside to equal + greater discarded entirely, equal + greater discarded entirely to recurse into less only answer: 3.
     A["pivot = 4"]:::blue
     B["less has 3 items<br/>k=2 fits inside"]:::orange
     C["equal + greater<br/>discarded entirely"]:::teal
-    D["recurse into less only<br/>answer: 3"]:::purple
+    D["recurse into less<br/>only<br/>answer: 3"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-75-quickselect-kth-smallest/example.py`**
@@ -1358,14 +1391,17 @@ On a **sorted** array, finding a pair summing to a target can be done with two p
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 76: Two-Pointer Pair Sum on a Sorted Array
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: left=1 right=11 sum=12 too high, left=1 right=8 sum=9 too low, left=2 right=8 sum=10 match. Connections: left=1 right=11 sum=12 too high to left=1 right=8 sum=9 too low, left=1 right=8 sum=9 too low to left=2 right=8 sum=10 match.
     A["left=1 right=11<br/>sum=12 too high"]:::blue
     B["left=1 right=8<br/>sum=9 too low"]:::orange
     C["left=2 right=8<br/>sum=10 match"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-76-two-pointer-pair-sum/example.py`**
@@ -1441,6 +1477,8 @@ Finding the longest substring without repeating characters uses a variable-size 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 77: Longest Substring Without Repeating Characters
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: window: a b c len 3, all unique, next char a: repeat shrink from left, window: b c a len 3 again, best length stays 3. Connections: window: a b c len 3, all unique to next char a: repeat shrink from left, next char a: repeat shrink from left to window: b c a len 3 again, window: b c a len 3 again to best length stays 3.
     A["window: a b c<br/>len 3, all unique"]:::blue
     B["next char a: repeat<br/>shrink from left"]:::orange
     C["window: b c a<br/>len 3 again"]:::teal
@@ -1448,9 +1486,10 @@ graph LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-77-sliding-window-longest-unique/example.py`**
@@ -1516,6 +1555,8 @@ An LRU (least-recently-used) cache needs O(1) `get` and `put`, including O(1) ev
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 78: LRU Cache from Scratch -- Dict + Doubly Linked List
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: dict: keys 1, 3, head 40MRU end41, node 3, node 1, tail 40LRU end41. Connections: dict: keys 1, 3 to node 3, dict: keys 1, 3 to node 1, head 40MRU end41 to node 3, node 3 to node 1, node 1 to tail 40LRU end41.
     Dict["dict: keys 1, 3"]:::blue
     Head["head #40;MRU end#41;"]:::orange
     N3["node 3"]:::teal
@@ -1526,9 +1567,10 @@ graph LR
     Head --> N3 --> N1 --> Tail
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-78-lru-cache-from-scratch/example.py`**
@@ -1653,6 +1695,8 @@ A prefix trie stores strings character by character down a tree, where each node
 ```mermaid
 %% TD required: parent characters must appear above child characters to show the trie path
 graph TD
+    accTitle: Example 79: Prefix Trie with Dict-Based Children
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: root, c, a, t 40end: cat41, r 40end: car41, d 40end: card41. Connections: root to c, c to a, a to t 40end: cat41, a to r 40end: car41, r 40end: car41 to d 40end: card41.
     Root["root"]:::blue
     C["c"]:::orange
     A["a"]:::orange
@@ -1664,9 +1708,10 @@ graph TD
     A --> R --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-79-trie-insert-search/example.py`**

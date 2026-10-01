@@ -123,17 +123,20 @@ _ex-32 &middot; exercises co-09_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 32: Bootstrap lazy.nvim
+    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: fs_stat(lazypath) checked on EVERY run, Path exists?, C, filter, rtp:prepend + require(lazy). setup() runs on EVERY run. Connections: C to filter, fs_stat(lazypath) checked on EVERY run to Path exists?, Path exists? to C (No), C to rtp:prepend + require(lazy). setup() runs on EVERY run, Path exists? to rtp:prepend + require(lazy). setup() runs on EVERY run (Yes).
     A["fs_stat(lazypath)<br/>checked on EVERY run"]:::blue
     B{"Path exists?"}:::orange
-    C["git clone --filter=blob:none<br/>runs ONCE, fresh install only"]:::teal
-    D["rtp:prepend + require('lazy').setup()<br/>runs on EVERY run"]:::teal
+    C["git clone<br/>--filter=blob:none<br/>runs ONCE, fresh<br/>install only"]:::teal
+    D["rtp:prepend +<br/>require('lazy').<br/>setup()<br/>runs on EVERY run"]:::teal
     A --> B
     B -- No --> C --> D
     B -- Yes --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-32-lazy-nvim-bootstrap/after/init.lua`**
@@ -178,15 +181,18 @@ Setting `opts = {}` on a plugin spec tells lazy.nvim to call that plugin's own `
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 33: lazy.nvim Plugin Spec with opts
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Plugin spec with opts =, lazy.nvim loads the plugins module, lazy.nvim auto-calls require(plugin). setup(opts), Fails IF the plugin has no conventional .setup(). Connections: Plugin spec with opts = to lazy.nvim loads the plugins module, lazy.nvim loads the plugins module to lazy.nvim auto-calls require(plugin). setup(opts), lazy.nvim auto-calls require(plugin). setup(opts) to Fails IF the plugin has no conventional .setup().
     A["Plugin spec with<br/>opts = {}"]:::blue
     B["lazy.nvim loads<br/>the plugin's module"]:::orange
-    C["lazy.nvim auto-calls<br/>require(plugin).setup(opts)"]:::teal
-    D["Fails IF the plugin has<br/>no conventional .setup()"]:::orange
+    C["lazy.nvim auto-calls<br/>require(plugin).<br/>setup(opts)"]:::teal
+    D["Fails IF the plugin<br/>has<br/>no conventional<br/>.setup()"]:::orange
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-33-lazy-plugin-spec-opts/after/lua/plugins/init.lua`**
@@ -225,13 +231,16 @@ An `event` trigger keeps a plugin installed but completely unloaded until that s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
-    A["Startup<br/>loaded = 1 (lazy.nvim only)"]:::blue
+    accTitle: Example 34: Lazy-Load a Plugin by Event
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Startup loaded = 1 (lazy.nvim only), InsertEnter fires FIRST time, plenary.nvim loads loaded = 2. Connections: Startup loaded = 1 (lazy.nvim only) to InsertEnter fires FIRST time (idle, unloaded), InsertEnter fires FIRST time to plenary.nvim loads loaded = 2.
+    A["Startup<br/>loaded = 1<br/>(lazy.nvim only)"]:::blue
     B["InsertEnter fires<br/>FIRST time"]:::orange
     C["plenary.nvim loads<br/>loaded = 2"]:::orange
     A -->|idle, unloaded| B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-34-lazy-loading-by-event/after/lua/plugins/init.lua`**
@@ -301,15 +310,18 @@ _ex-36 &middot; exercises co-10, co-11_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 36: Enable an LSP Server
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: vim.pack.add nvim-lspconfig, vim.lsp.enable(lua_ ls) config turned ON, Matching .lua file opened, lua_ls process attaches vim.lsp.get_ clients() > 0. Connections: vim.pack.add nvim-lspconfig to vim.lsp.enable(lua_ ls) config turned ON, vim.lsp.enable(lua_ ls) config turned ON to Matching .lua file opened, Matching .lua file opened to lua_ls process attaches vim.lsp.get_ clients() > 0.
     A["vim.pack.add<br/>nvim-lspconfig"]:::blue
-    B["vim.lsp.enable('lua_ls')<br/>config turned ON"]:::orange
-    C["Matching .lua file opened"]:::orange
-    D["lua_ls process attaches<br/>vim.lsp.get_clients() > 0"]:::teal
+    B["vim.lsp.enable('lua_<br/>ls')<br/>config turned ON"]:::orange
+    C["Matching .lua file<br/>opened"]:::orange
+    D["lua_ls process<br/>attaches<br/>vim.lsp.get_<br/>clients() > 0"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-36-enable-lsp-server/after/init.lua`**
@@ -377,14 +389,17 @@ A file at `~/.config/nvim/lsp/<name>.lua` returning a config table is auto-disco
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["lsp/pyright.lua on runtimepath<br/>returns a config table"]:::blue
-    B["vim.lsp.enable('pyright')"]:::orange
-    C["Neovim auto-discovers lsp/pyright.lua<br/>vim.lsp.config.pyright populated"]:::teal
+    accTitle: Example 38: LSP Config from the lsp/ Directory
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: lsp/pyright.lua on runtimepath returns a config table, vim.lsp. enable(pyright), Neovim auto-discovers lsp/pyright.lua vim.lsp.config. pyright populated. Connections: lsp/pyright.lua on runtimepath returns a config table to vim.lsp. enable(pyright), vim.lsp. enable(pyright) to Neovim auto-discovers lsp/pyright.lua vim.lsp.config. pyright populated.
+    A["lsp/pyright.lua on<br/>runtimepath<br/>returns a config<br/>table"]:::blue
+    B["vim.lsp.<br/>enable('pyright')"]:::orange
+    C["Neovim<br/>auto-discovers<br/>lsp/pyright.lua<br/>vim.lsp.config.<br/>pyright populated"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-38-lsp-config-from-lsp-directory/after/lsp/pyright.lua`**
@@ -429,18 +444,21 @@ _ex-39 &middot; exercises co-12_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A["Server attaches to buffer N"]:::blue
+    accTitle: Example 39: LspAttach Buffer-Local Keymap
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: Server attaches to buffer N, LspAttach fires callback(args), vim.keymap.set with buffer = args.buf, K exists in buffer N only, A plain .txt buffer never gets K. Connections: Server attaches to buffer N to LspAttach fires callback(args), LspAttach fires callback(args) to vim.keymap.set with buffer = args.buf, vim.keymap.set with buffer = args.buf to K exists in buffer N only.
+    A["Server attaches to<br/>buffer N"]:::blue
     B["LspAttach fires<br/>callback(args)"]:::orange
     C["vim.keymap.set with<br/>buffer = args.buf"]:::teal
-    D["K exists in buffer N only"]:::teal
+    D["K exists in buffer N<br/>only"]:::teal
     E["A plain .txt buffer<br/>never gets K"]:::purple
     A --> B --> C --> D
     D -.contrast.-> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-39-lspattach-buffer-keymap/after/init.lua`**
@@ -482,14 +500,17 @@ Neovim 0.11+ ships `grn` (rename) bound globally the instant any server attaches
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 40: Verify the Default grn LSP Keymap
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: lua_ls attaches zero custom keymaps, grn already bound Neovim core default (co-13), Press grn dispatches to vim.lsp.buf.rename(). Connections: lua_ls attaches zero custom keymaps to grn already bound Neovim core default (co-13), grn already bound Neovim core default (co-13) to Press grn dispatches to vim.lsp.buf.rename().
     A["lua_ls attaches<br/>zero custom keymaps"]:::blue
-    B["grn already bound<br/>Neovim core default (co-13)"]:::orange
-    C["Press grn<br/>dispatches to vim.lsp.buf.rename()"]:::teal
+    B["grn already bound<br/>Neovim core default<br/>(co-13)"]:::orange
+    C["Press grn<br/>dispatches to<br/>vim.lsp.buf.rename()"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-40-verify-default-lsp-keymap/after/init.lua`**
@@ -608,19 +629,22 @@ _ex-44 &middot; exercises co-12, co-05_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A[":w triggers BufWritePre"]:::blue
+    accTitle: Example 44: LSP Format on Save
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: :w triggers BufWritePre, Client attached to this buffer?, vim.lsp.buf.format async = false BLOCKS, Formatted text lands on disk, Write proceeds unformatted no attached client. Connections: :w triggers BufWritePre to Client attached to this buffer?, Client attached to this buffer? to vim.lsp.buf.format async = false BLOCKS (Yes), vim.lsp.buf.format async = false BLOCKS to Formatted text lands on disk, Client attached to this buffer? to Write proceeds unformatted no attached client (No).
+    A[":w triggers<br/>BufWritePre"]:::blue
     B{"Client attached<br/>to this buffer?"}:::orange
     C["vim.lsp.buf.format<br/>async = false BLOCKS"]:::teal
-    D["Formatted text lands on disk"]:::teal
-    E["Write proceeds unformatted<br/>no attached client"]:::purple
+    D["Formatted text lands<br/>on disk"]:::teal
+    E["Write proceeds<br/>unformatted<br/>no attached client"]:::purple
     A --> B
     B -- Yes --> C --> D
     B -- No --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-44-lsp-format-on-save/after/init.lua`**
@@ -661,17 +685,20 @@ _ex-45 &middot; exercises co-15_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 45: Enable Native LSP Completion
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: LspAttach fires, client:supports_ method textDocument/ completion?, completion. enable(true, ..., autotrigger = true), InsertCharPre autocmd registered typing triggers completion, Block is a quiet no-op. Connections: LspAttach fires to client:supports_ method textDocument/ completion?, client:supports_ method textDocument/ completion? to completion. enable(true, ..., autotrigger = true) (Yes), completion. enable(true, ..., autotrigger = true) to InsertCharPre autocmd registered typing triggers completion, client:supports_ method textDocument/ completion? to Block is a quiet no-op (No).
     A["LspAttach fires"]:::blue
-    B{"client:supports_method<br/>'textDocument/completion'?"}:::orange
-    C["completion.enable(true, ...,<br/>{autotrigger = true})"]:::teal
-    D["InsertCharPre autocmd registered<br/>typing triggers completion"]:::teal
+    B{"client:supports_<br/>method<br/>'textDocument/<br/>completion'?"}:::orange
+    C["completion.<br/>enable(true, ...,<br/>{autotrigger =<br/>true})"]:::teal
+    D["InsertCharPre<br/>autocmd registered<br/>typing triggers<br/>completion"]:::teal
     A --> B
     B -- Yes --> C --> D
-    B -- No --> E["Block is a quiet no-op"]:::orange
+    B -- No --> E["Block is a quiet<br/>no-op"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-45-native-completion-enable/after/init.lua`**
@@ -774,21 +801,24 @@ The original `nvim-treesitter/nvim-treesitter` has been archived since 2026-04-0
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161
 flowchart TD
-    A["neovim-treesitter/nvim-treesitter<br/>the ACTIVE fork"]:::blue
-    B["+ treesitter-parser-registry<br/>required companion repo"]:::blue
-    C["require('nvim-treesitter').setup()"]:::orange
-    D[":TSInstall! python<br/>needs the tree-sitter CLI too"]:::orange
-    E["python.so compiled and installed"]:::teal
-    F["nvim-treesitter/nvim-treesitter<br/>ARCHIVED since 2026-04-03"]:::brown
+    accTitle: Example 48: Install a Missing Parser with the Active Fork
+    accDescr: Flowchart with 6 nodes and 4 connections. Nodes: neovim-treesitter/ nvim-treesitter the ACTIVE fork, + treesitter-parser- registry required companion repo, require(nvim- treesitter).setup(), :TSInstall! python needs the tree-sitter CLI too, python.so compiled and installed, nvim-treesitter/ nvim-treesitter ARCHIVED since 2026-04-03. Connections: neovim-treesitter/ nvim-treesitter the ACTIVE fork to require(nvim- treesitter).setup(), + treesitter-parser- registry required companion repo to require(nvim- treesitter).setup(), require(nvim- treesitter).setup() to :TSInstall! python needs the tree-sitter CLI too, :TSInstall! python needs the tree-sitter CLI too to python.so compiled and installed.
+    A["neovim-treesitter/<br/>nvim-treesitter<br/>the ACTIVE fork"]:::blue
+    B["+ treesitter-parser-<br/>registry<br/>required companion<br/>repo"]:::blue
+    C["require('nvim-<br/>treesitter').setup()"]:::orange
+    D[":TSInstall! python<br/>needs the<br/>tree-sitter CLI too"]:::orange
+    E["python.so compiled<br/>and installed"]:::teal
+    F["nvim-treesitter/<br/>nvim-treesitter<br/>ARCHIVED since<br/>2026-04-03"]:::brown
     A --> C
     B --> C
     C --> D --> E
     F -.wrong URL, frozen.-> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-48-treesitter-install-missing-parser/after/init.lua`**
@@ -833,15 +863,18 @@ Once a parser is installed, a `FileType` autocommand calling `vim.treesitter.sta
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["Bundled parser (Lua, co-16)<br/>ftplugin/lua.lua auto-starts"]:::blue
-    B["Non-bundled parser (Python)<br/>NO ftplugin/python.lua exists"]:::orange
-    C["FileType autocmd<br/>vim.treesitter.start(0, 'python')"]:::teal
-    D["Highlighter active for .py"]:::teal
+    accTitle: Example 49: Manually Start Treesitter for a Non-Bundled Language
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: Bundled parser (Lua, co-16) ftplugin/lua.lua auto-starts, Non-bundled parser (Python) NO ftplugin/python.lua exists, FileType autocmd vim.treesitter. start(0, python), Highlighter active for .py. Connections: Bundled parser (Lua, co-16) ftplugin/lua.lua auto-starts to FileType autocmd vim.treesitter. start(0, python), FileType autocmd vim.treesitter. start(0, python) to Highlighter active for .py.
+    A["Bundled parser (Lua,<br/>co-16)<br/>ftplugin/lua.lua<br/>auto-starts"]:::blue
+    B["Non-bundled parser<br/>(Python)<br/>NO<br/>ftplugin/python.lua<br/>exists"]:::orange
+    C["FileType autocmd<br/>vim.treesitter.<br/>start(0, 'python')"]:::teal
+    D["Highlighter active<br/>for .py"]:::teal
     A -.contrast.-> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-49-treesitter-manual-start/after/init.lua`**
@@ -1004,16 +1037,19 @@ A module-level `local` variable becomes an upvalue shared by every function the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    A["First require('config.scratch')<br/>module runs, count = 0"]:::blue
-    B["package.loaded caches the module"]:::orange
+    accTitle: Example 54: Module with Local State
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: First require(config. scratch) module runs, count = 0, package.loaded caches the module, M.increment() called count is now 1, Second require(config. scratch) returns the SAME cached table, M.increment() called again count is now 2, not reset. Connections: First require(config. scratch) module runs, count = 0 to package.loaded caches the module, package.loaded caches the module to M.increment() called count is now 1, M.increment() called count is now 1 to Second require(config. scratch) returns the SAME cached table, Second require(config. scratch) returns the SAME cached table to M.increment() called again count is now 2, not reset.
+    A["First<br/>require('config.<br/>scratch')<br/>module runs, count =<br/>0"]:::blue
+    B["package.loaded<br/>caches the module"]:::orange
     C["M.increment() called<br/>count is now 1"]:::teal
-    D["Second require('config.scratch')<br/>returns the SAME cached table"]:::orange
-    E["M.increment() called again<br/>count is now 2, not reset"]:::teal
+    D["Second<br/>require('config.<br/>scratch')<br/>returns the SAME<br/>cached table"]:::orange
+    E["M.increment() called<br/>again<br/>count is now 2, not<br/>reset"]:::teal
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-54-module-with-local-state/after/lua/config/scratch.lua`**
@@ -1054,16 +1090,19 @@ _ex-55 &middot; exercises co-07, co-18_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["defaults<br/>{ greeting = 'Hello', width = 80 }"]:::blue
-    B["opts (caller's call)<br/>{ greeting = 'Hi there' }"]:::orange
-    C["vim.tbl_deep_extend('force', ...)"]:::teal
-    D["M.options<br/>{ greeting = 'Hi there', width = 80 }"]:::teal
+    accTitle: Example 55: Module setup Merge Pattern
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: defaults greeting = Hello, width = 80, opts (callers call) greeting = Hi there, vim.tbl_deep_ extend(force, ...), M.options greeting = Hi there, width = 80. Connections: defaults greeting = Hello, width = 80 to vim.tbl_deep_ extend(force, ...), opts (callers call) greeting = Hi there to vim.tbl_deep_ extend(force, ...), vim.tbl_deep_ extend(force, ...) to M.options greeting = Hi there, width = 80.
+    A["defaults<br/>{ greeting =<br/>'Hello', width = 80<br/>}"]:::blue
+    B["opts (caller's call)<br/>{ greeting = 'Hi<br/>there' }"]:::orange
+    C["vim.tbl_deep_<br/>extend('force', ...)"]:::teal
+    D["M.options<br/>{ greeting = 'Hi<br/>there', width = 80 }"]:::teal
     A --> C
     B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-55-module-setup-merge-pattern/after/lua/myplugin/init.lua`**
@@ -1161,6 +1200,8 @@ Re-sourcing a config three additional times on top of its initial load still lea
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 58: Augroup Clear Idempotence Across Three Re-Sources
+    accDescr: State diagram with 2 items: start or end, TwoAutocmds. Relationships: start or end to TwoAutocmds: initial load; TwoAutocmds to TwoAutocmds: source 1 (wipe, re-add); TwoAutocmds to TwoAutocmds: source 2 (wipe, re-add); TwoAutocmds to TwoAutocmds: source 3 (wipe, re-add).
     [*] --> TwoAutocmds: initial load
     TwoAutocmds --> TwoAutocmds: source #1 (wipe, re-add)
     TwoAutocmds --> TwoAutocmds: source #2 (wipe, re-add)

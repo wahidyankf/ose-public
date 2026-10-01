@@ -18,6 +18,8 @@ Pressing Tab moves focus through interactive elements in DOM order by default --
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 61: Keyboard Tab Order
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: first-name 1st in source order, last-name 2nd in source order, submit-btn 3rd in source order. Connections: first-name 1st in source order to last-name 2nd in source order (Tab), last-name 2nd in source order to submit-btn 3rd in source order (Tab).
     A["#first-name<br/>1st in source order"]:::blue
     B["#last-name<br/>2nd in source order"]:::orange
     C["#submit-btn<br/>3rd in source order"]:::teal
@@ -25,8 +27,9 @@ flowchart LR
     B -->|"Tab"| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-61-keyboard-tab-order/index.html`**
@@ -89,15 +92,18 @@ _ex-62 &middot; exercises co-26, co-25_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 62: Keyboard-Activate a Custom Button
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: click event, keydown: Enter or Space, activate(). Connections: click event to activate(), keydown: Enter or Space to activate().
     A["click event"]:::blue
-    B["keydown: Enter or Space"]:::orange
+    B["keydown: Enter or<br/>Space"]:::orange
     C["activate()"]:::teal
     A --> C
     B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-62-keyboard-activate-custom-button/index.html`**
@@ -173,6 +179,8 @@ A focus trap intercepts Tab at the modal's first and last focusable elements, wr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 stateDiagram-v2
+    accTitle: Example 63: Focus Trap Modal
+    accDescr: State diagram with 4 items: start or end, first, second, last. Relationships: start or end to first; first to second: Tab; second to last: Tab; last to first: Tab (wraps); first to last: Shift+Tab (wraps); second to first: Shift+Tab; last to second: Shift+Tab.
     [*] --> first
     first --> second: Tab
     second --> last: Tab
@@ -266,6 +274,8 @@ In a roving-tabindex pattern, only ONE item in a group has `tabindex="0"` at any
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 stateDiagram-v2
+    accTitle: Example 64: Roving Tabindex Menu
+    accDescr: State diagram with 4 items: start or end, item0, item1, item2. Relationships: start or end to item0; item0 to item1: ArrowRight; item1 to item2: ArrowRight; item2 to item0: ArrowRight (wraps); item1 to item0: ArrowLeft; item2 to item1: ArrowLeft; item0 to item2: ArrowLeft (wraps).
     [*] --> item0
     item0: item-0 (tabindex=0)
     item1: item-1 (tabindex=0)
@@ -362,15 +372,18 @@ Modeling UI state as a tagged union (`{status: "loading"} | {status: "error", me
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 65: Discriminated Union: Loading
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: state.status, spinner (this example), error message, empty state, results list. Connections: state.status to spinner (this example) (loading), state.status to error message (error), state.status to empty state (empty), state.status to results list (loaded).
     S["state.status"]:::blue
-    S -->|"loading"| L["spinner (this example)"]:::orange
+    S -->|"loading"| L["spinner (this<br/>example)"]:::orange
     S -->|"error"| E["error message"]:::teal
     S -->|"empty"| M["empty state"]:::teal
     S -->|"loaded"| D["results list"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-discriminated-union-loading/index.html`**
@@ -481,15 +494,18 @@ The `error` branch of the same union carries an EXTRA field (`message`) that onl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 66: Discriminated Union: Error
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: state.status, spinner, error message (this example), empty state, results list. Connections: state.status to spinner (loading), state.status to error message (this example) (error), state.status to empty state (empty), state.status to results list (loaded).
     S["state.status"]:::blue
     S -->|"loading"| L["spinner"]:::teal
-    S -->|"error"| E["error message (this example)"]:::orange
+    S -->|"error"| E["error message (this<br/>example)"]:::orange
     S -->|"empty"| M["empty state"]:::teal
     S -->|"loaded"| D["results list"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-66-discriminated-union-error/index.html`**
@@ -600,15 +616,18 @@ A dedicated `empty` state (as opposed to just "loaded, with zero items") lets th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 67: Discriminated Union: Empty
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: state.status, spinner, error message, empty state (this example), results list. Connections: state.status to spinner (loading), state.status to error message (error), state.status to empty state (this example) (empty), state.status to results list (loaded).
     S["state.status"]:::blue
     S -->|"loading"| L["spinner"]:::teal
     S -->|"error"| E["error message"]:::teal
-    S -->|"empty"| M["empty state (this example)"]:::orange
+    S -->|"empty"| M["empty state (this<br/>example)"]:::orange
     S -->|"loaded"| D["results list"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-67-discriminated-union-empty/index.html`**
@@ -719,16 +738,19 @@ Assigning the `switch`'s `default` case to a variable typed `never` makes the co
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Brown #CA9161
 flowchart TD
+    accTitle: Example 68: Discriminated Union: Exhaustive
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: state.status, spinner, error message, empty state, results list, default case: never-typed TYPE ERROR at compile time. Connections: state.status to spinner (loading), state.status to error message (error), state.status to empty state (empty), state.status to results list (loaded), state.status to default case: never-typed TYPE ERROR at compile time (stale (new, unhandled)).
     S["state.status"]:::blue
     S -->|"loading"| L["spinner"]:::teal
     S -->|"error"| E["error message"]:::teal
     S -->|"empty"| M["empty state"]:::teal
     S -->|"loaded"| D["results list"]:::teal
-    S -.->|"stale (new, unhandled)"| X["default case: never-typed<br/>TYPE ERROR at compile time"]:::brown
+    S -.->|"stale (new,<br/>unhandled)"| X["default case:<br/>never-typed<br/>TYPE ERROR at<br/>compile time"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-discriminated-union-exhaustive/example.ts`**
@@ -1239,11 +1261,14 @@ The broken version (shown in a comment) is a `div` with only a `click` handler -
 ```mermaid
 %% Color Palette: Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["div + onclick"]:::orange --> A1["+ role=button (manual)"]:::orange --> A2["+ tabindex=0 (manual)"]:::orange --> A3["+ keydown handler<br/>(Example 62's fix)"]:::orange
-    B["real button (this example)"]:::teal --> B1["click handler only<br/>-- Enter/Space free"]:::teal
+    accTitle: Example 76: Fix: div-as-Button to Semantic Button
+    accDescr: Flowchart with 7 nodes and 5 connections. Nodes: div + onclick, + role=button (manual), + tabindex=0 (manual), + keydown handler (Example 62s fix), real button (this example), B1, Enter. Connections: div + onclick to + role=button (manual), + role=button (manual) to + tabindex=0 (manual), + tabindex=0 (manual) to + keydown handler (Example 62s fix), real button (this example) to B1, B1 to Enter.
+    A["div + onclick"]:::orange --> A1["+ role=button<br/>(manual)"]:::orange --> A2["+ tabindex=0<br/>(manual)"]:::orange --> A3["+ keydown handler<br/>(Example 62's fix)"]:::orange
+    B["real button (this<br/>example)"]:::teal --> B1["click handler only<br/>-- Enter/Space free"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-76-fix-div-button-to-semantic/index.html`**
@@ -1535,6 +1560,8 @@ A disclosure widget combines everything: a real, focusable `<button>` (co-26), `
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 stateDiagram-v2
+    accTitle: Example 80: Accessible Interactive Widget
+    accDescr: State diagram with 3 items: start or end, closed, open. Relationships: start or end to closed; closed to open: click or Enter/Space; open to closed: click or Enter/Space.
     [*] --> closed
     closed: closed (aria-expanded=false, panel hidden)
     open: open (aria-expanded=true, panel visible)

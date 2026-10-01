@@ -219,6 +219,8 @@ Merge sort's running time obeys `T(n) = 2T(n/2) + n`: two half-size recursive ca
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 3: Unroll the Merge Sort Recurrence
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: T(n) n work at this level, T(n/2), T(n/2), T(n/4), T(n/4), T(n/4), T(n/4). Connections: T(n) n work at this level to T(n/2), T(n) n work at this level to T(n/2), T(n/2) to T(n/4), T(n/2) to T(n/4), T(n/2) to T(n/4), T(n/2) to T(n/4).
     A["T(n)<br/>n work at this level"]:::blue
     B["T(n/2)"]:::orange
     C["T(n/2)"]:::orange
@@ -234,8 +236,9 @@ flowchart TD
     C --> G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-03-recurrence-for-merge-sort/example.py`**
@@ -870,6 +873,8 @@ Python's `heapq` module maintains the min-heap property directly on a plain list
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
+    accTitle: Example 9: heapq Push and Pop
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: 1, 3, 2, 7, 4. Connections: 1 to 3, 1 to 2, 3 to 7, 3 to 4.
     A["1"]:::blue
     B["3"]:::orange
     C["2"]:::orange
@@ -881,7 +886,8 @@ flowchart TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-09-heap-push-pop/example.py`**
@@ -1414,6 +1420,8 @@ A binary search tree's defining invariant is that every left subtree holds only 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 14: BST Insert, Search, and the Inorder Invariant
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: 8, 3, 10, 1, 6. Connections: 8 to 3, 8 to 10, 3 to 1, 3 to 6.
     A["8"]:::blue
     B["3"]:::orange
     C["10"]:::orange
@@ -1425,8 +1433,9 @@ flowchart TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-14-bst-insert-search/example.py`**
@@ -1556,11 +1565,14 @@ Inserting already-sorted keys into a plain BST makes every new node become the p
 ```mermaid
 %% Color Palette: Blue #0173B2
 flowchart TD
+    accTitle: Example 15: A Plain BST Degenerates on Sorted Input
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: 1, 2, 3, 4. Connections: 1 to 2, 2 to 3, 3 to 4.
     A["1"]:::blue --> B["2"]:::blue
     B --> C["3"]:::blue
     C --> D["4"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-bst-degenerates/example.py`**
@@ -1681,14 +1693,17 @@ A trie stores strings character by character down a tree of nodes, so a lookup o
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 16: A Prefix Trie -- Insert and Lookup
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: root, c, a, t (end: cat), r (end: car). Connections: root to c, c to a, a to t (end: cat), a to r (end: car).
     R["root"]:::blue --> C1["c"]:::orange
     C1 --> A1["a"]:::orange
     A1 --> T1["t (end: cat)"]:::teal
     A1 --> R1["r (end: car)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-16-trie-insert-lookup/example.py`**
@@ -2028,14 +2043,17 @@ BFS explores a graph level by level using a queue, so every node at distance k i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 19: BFS -- Shortest Hop-Count
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: start dist 0, dist 1, dist 1, dist 2. Connections: start dist 0 to dist 1, start dist 0 to dist 1, dist 1 to dist 2, dist 1 to dist 2.
     A["start<br/>dist 0"]:::blue --> B["dist 1"]:::orange
     A --> C["dist 1"]:::orange
     B --> D["dist 2"]:::teal
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-19-bfs-shortest-unweighted/example.py`**

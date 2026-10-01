@@ -187,15 +187,18 @@ _ex-07 &middot; exercises co-03_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    A["vim.g.mapleader = ' '<br/>runs first"]:::blue
-    B["vim.keymap.set with '&lt;leader&gt;w'<br/>runs second"]:::orange
-    C["Neovim resolves &lt;leader&gt; to<br/>the CURRENT mapleader value NOW"]:::teal
-    D["Mapping is stored as a<br/>literal Space-prefixed lhs"]:::teal
+    accTitle: Example 7: Set mapleader
+    accDescr: Flowchart with 6 nodes and 3 connections. Nodes: vim.g.mapleader = runs first, B, lt, gt, C, Mapping is stored as a literal Space-prefixed lhs. Connections: vim.g.mapleader = runs first to B, B to C, C to Mapping is stored as a literal Space-prefixed lhs.
+    A["vim.g.mapleader = '<br/>'<br/>runs first"]:::blue
+    B["vim.keymap.set with<br/>'&lt;leader&gt;w'<br/>runs second"]:::orange
+    C["Neovim resolves<br/>&lt;leader&gt; to<br/>the CURRENT<br/>mapleader value NOW"]:::teal
+    D["Mapping is stored as<br/>a<br/>literal<br/>Space-prefixed lhs"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-07-set-mapleader/after/init.lua`**
@@ -325,14 +328,17 @@ Combining a `FileType` autocommand with `opts.buffer` scopes a keymap to only th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["Before :help<br/>q has NO mapping anywhere"]:::blue
+    accTitle: Example 11: Buffer-Local Keymap via FileType Autocmd
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Before :help q has NO mapping anywhere, :help opens FileType=help fires, q mapped, buffer = args.buf ONLY in this help buffer. Connections: Before :help q has NO mapping anywhere to :help opens FileType=help fires, :help opens FileType=help fires to q mapped, buffer = args.buf ONLY in this help buffer.
+    A["Before :help<br/>q has NO mapping<br/>anywhere"]:::blue
     B[":help opens<br/>FileType=help fires"]:::orange
-    C["q mapped, buffer = args.buf<br/>ONLY in this help buffer"]:::teal
+    C["q mapped, buffer =<br/>args.buf<br/>ONLY in this help<br/>buffer"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-11-buffer-local-keymap/after/init.lua`**
@@ -493,15 +499,18 @@ _ex-16 &middot; exercises co-05_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    A["First :source $MYVIMRC<br/>augroup(clear=true) wipes MyConfig"]:::blue
-    B["2 autocmds registered<br/>under MyConfig"]:::teal
-    C["Second :source $MYVIMRC<br/>augroup(clear=true) wipes MyConfig AGAIN"]:::orange
-    D["Same 2 autocmds re-registered<br/>no duplicates"]:::teal
+    accTitle: Example 16: Augroup-Scoped Autocmds
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: First :source $MYVIMRC augroup(clear=true) wipes MyConfig, 2 autocmds registered under MyConfig, Second :source $MYVIMRC augroup(clear=true) wipes MyConfig AGAIN, Same 2 autocmds re-registered no duplicates. Connections: First :source $MYVIMRC augroup(clear=true) wipes MyConfig to 2 autocmds registered under MyConfig, 2 autocmds registered under MyConfig to Second :source $MYVIMRC augroup(clear=true) wipes MyConfig AGAIN, Second :source $MYVIMRC augroup(clear=true) wipes MyConfig AGAIN to Same 2 autocmds re-registered no duplicates.
+    A["First :source<br/>$MYVIMRC<br/>augroup(clear=true)<br/>wipes MyConfig"]:::blue
+    B["2 autocmds<br/>registered<br/>under MyConfig"]:::teal
+    C["Second :source<br/>$MYVIMRC<br/>augroup(clear=true)<br/>wipes MyConfig AGAIN"]:::orange
+    D["Same 2 autocmds<br/>re-registered<br/>no duplicates"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-16-augroup-scoped-autocmds/after/init.lua`**
@@ -544,14 +553,17 @@ A `FileType` autocommand paired with `vim.opt_local` lets one filetype override 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["vim.o.wrap = false<br/>GLOBAL baseline, off everywhere"]:::blue
-    B["FileType=markdown fires"]:::orange
-    C["vim.opt_local.wrap = true<br/>THIS buffer only"]:::teal
+    accTitle: Example 17: Filetype-Local Option
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: vim.o.wrap = false GLOBAL baseline, off everywhere, FileType=markdown fires, vim.opt_local.wrap = true THIS buffer only. Connections: vim.o.wrap = false GLOBAL baseline, off everywhere to FileType=markdown fires, FileType=markdown fires to vim.opt_local.wrap = true THIS buffer only.
+    A["vim.o.wrap = false<br/>GLOBAL baseline, off<br/>everywhere"]:::blue
+    B["FileType=markdown<br/>fires"]:::orange
+    C["vim.opt_local.wrap =<br/>true<br/>THIS buffer only"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-17-filetype-local-option/after/init.lua`**
@@ -648,15 +660,18 @@ Moving option lines into a `lua/config/options.lua` file and `require`-ing it fr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    A["init.lua<br/>require#40;'config.options'#41;"]:::blue
+    accTitle: Example 20: Split Config into a Module
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: init.lua require40config. options41, lua/ on runtimepath (co-01), lua/config/ options.lua found and executed, package. loaded91config. options93 cached, non-nil. Connections: init.lua require40config. options41 to lua/ on runtimepath (co-01), lua/ on runtimepath (co-01) to lua/config/ options.lua found and executed, lua/config/ options.lua found and executed to package. loaded91config. options93 cached, non-nil.
+    A["init.lua<br/>require#40;'config.<br/>options'#41;"]:::blue
     B["lua/ on runtimepath<br/>(co-01)"]:::orange
-    C["lua/config/options.lua<br/>found and executed"]:::teal
-    D["package.loaded#91;'config.options'#93;<br/>cached, non-nil"]:::teal
+    C["lua/config/<br/>options.lua<br/>found and executed"]:::teal
+    D["package.<br/>loaded#91;'config.<br/>options'#93;<br/>cached, non-nil"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-20-split-config-into-module/after/init.lua`**
@@ -697,15 +712,18 @@ Because `require()` caches a module in `package.loaded`, editing a required file
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["Module edited on disk<br/>shiftwidth 2 -> 4"]:::blue
-    B["require('config.options')<br/>ALONE: still cached, still 2"]:::orange
-    C["package.loaded[...] = nil<br/>THEN require() again: 4"]:::teal
+    accTitle: Example 21: Reload a Module
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Module edited on disk shiftwidth 2 -> 4, require(config. options) ALONE: still cached, still 2, package.loaded[...] = nil THEN require() again: 4. Connections: Module edited on disk shiftwidth 2 -> 4 to require(config. options) ALONE: still cached, still 2, Module edited on disk shiftwidth 2 -> 4 to package.loaded[...] = nil THEN require() again: 4.
+    A["Module edited on<br/>disk<br/>shiftwidth 2 -> 4"]:::blue
+    B["require('config.<br/>options')<br/>ALONE: still cached,<br/>still 2"]:::orange
+    C["package.loaded[...]<br/>= nil<br/>THEN require()<br/>again: 4"]:::teal
     A --> B
     A --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-21-reload-a-module/before/lua/config/options.lua`**
@@ -811,14 +829,17 @@ _ex-24 &middot; exercises co-03_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["vim.g.my_setting = 1<br/>vim.b.my_setting = 2 (one.txt)"]:::blue
+    accTitle: Example 24: Scoped Variable Independence
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: vim.g.my_setting = 1 vim.b.my_setting = 2 (one.txt), Switch to two.txt a FRESH buffer, vim.g.my_setting still 1 vim.b.my_setting is nil. Connections: vim.g.my_setting = 1 vim.b.my_setting = 2 (one.txt) to Switch to two.txt a FRESH buffer, Switch to two.txt a FRESH buffer to vim.g.my_setting still 1 vim.b.my_setting is nil.
+    A["vim.g.my_setting = 1<br/>vim.b.my_setting = 2<br/>(one.txt)"]:::blue
     B["Switch to two.txt<br/>a FRESH buffer"]:::orange
-    C["vim.g.my_setting still 1<br/>vim.b.my_setting is nil"]:::teal
+    C["vim.g.my_setting<br/>still 1<br/>vim.b.my_setting is<br/>nil"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-24-scoped-variable-independence/before/init.lua`**

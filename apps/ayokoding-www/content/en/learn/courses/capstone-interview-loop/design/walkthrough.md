@@ -27,12 +27,15 @@ need a clear degraded mode. These are interview assumptions, not a production sp
 
 ```mermaid
 flowchart LR
+  accTitle: Diagram
+  accDescr: Flowchart with 5 nodes and 6 connections. Nodes: Client, Stateless API, Read cache, Durable note store, Expiry worker. Connections: Client to Stateless API, Stateless API to Read cache (cache hit), Stateless API to Durable note store (cache miss), Durable note store to Stateless API, Stateless API to Client, Expiry worker to Durable note store.
   C[Client] --> A[Stateless API]
   A -->|cache hit| K[Read cache]
   A -->|cache miss| D[(Durable note store)]
   D --> A
   A --> C
   W[Expiry worker] --> D
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Self-check

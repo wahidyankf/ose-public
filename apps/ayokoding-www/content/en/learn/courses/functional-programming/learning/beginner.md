@@ -513,11 +513,14 @@ older version is still completely intact.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
+    accTitle: Example 7: A Persistent Cons-List Prepend
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: version_b head=2, version_a head=1, None empty list. Connections: version_b head=2 to version_a head=1 (tail), version_a head=1 to None empty list (tail).
     B["version_b<br/>head=2"]:::orange -->|tail| A["version_a<br/>head=1"]:::blue
     A -->|tail| N["None<br/>empty list"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -831,12 +834,15 @@ independent closure remembering its own `n`.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 11: A Function Returning a Closure
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: multiplier40341, closure remembers n=3, 12. Connections: multiplier40341 to closure remembers n=3 (returns), closure remembers n=3 to 12 (call40441).
     M["multiplier#40;3#41;"]:::blue -->|returns| C["closure<br/>remembers n=3"]:::orange
     C -->|"call#40;4#41;"| R["12"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1400,12 +1406,15 @@ computes exactly `f(g(x))`.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 19: A compose Helper
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: x = 3, 4, 8. Connections: x = 3 to 4 (g = add_one), 4 to 8 (f = double).
     X["x = 3"]:::blue -->|"g = add_one"| G["4"]:::orange
     G -->|"f = double"| F["8"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1563,6 +1572,8 @@ counter and confirms only the values actually pulled are ever computed.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 21: A Generator Yields on Demand
+    accDescr: Sequence diagram between Caller, counter401041. Messages: Caller to counter401041: next40gen41; counter401041 to Caller: 10; Caller to counter401041: next40gen41; counter401041 to Caller: 11; Caller to counter401041: next40gen41; counter401041 to Caller: 12.
     participant Caller
     participant Gen as counter#40;10#41;
     Caller->>Gen: next#40;gen#41;
@@ -1719,10 +1730,13 @@ confirms the underlying source resumes right where `islice` stopped.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
-    S["count#40;0, 2#41;<br/>infinite: 0, 2, 4, ..."]:::blue -->|"islice#40;..., 5#41;"| F["[0, 2, 4, 6, 8]"]:::orange
+    accTitle: Example 23: islice Over an Infinite count
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: count400, 241 infinite: 0, 2, 4, ..., [0, 2, 4, 6, 8]. Connections: count400, 241 infinite: 0, 2, 4, ... to [0, 2, 4, 6, 8] (islice40..., 541).
+    S["count#40;0, 2#41;<br/>infinite: 0, 2, 4,<br/>..."]:::blue -->|"islice#40;...,<br/>5#41;"| F["[0, 2, 4, 6, 8]"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1868,11 +1882,14 @@ recursive Fibonacci and confirms `cache_info()` shows a hit on the second identi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 25: @lrucache on a Recursive fib
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: fib403041 first call, 832040 cached, fib403041 second call. Connections: fib403041 first call to 832040 cached (cache MISS full recursion), fib403041 second call to 832040 cached (cache HIT no recursion).
     A["fib#40;30#41;<br/>first call"]:::blue -->|"cache MISS<br/>full recursion"| B["832040<br/>cached"]:::orange
     C["fib#40;30#41;<br/>second call"]:::blue -->|"cache HIT<br/>no recursion"| B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1956,13 +1973,16 @@ example wraps `add` with logging and confirms the wrapped result is unchanged.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 26: A Logging Decorator Wraps a Function
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: add402, 341 callers call, wrapper402, 341 logs BEFORE, original add402, 341 = 5, wrapper logs AFTER returns 5. Connections: add402, 341 callers call to wrapper402, 341 logs BEFORE, wrapper402, 341 logs BEFORE to original add402, 341 = 5, original add402, 341 = 5 to wrapper logs AFTER returns 5.
     A["add#40;2, 3#41;<br/>caller's call"]:::blue --> W["wrapper#40;2, 3#41;<br/>logs BEFORE"]:::orange
-    W --> F["original add#40;2, 3#41;<br/>= 5"]:::teal
+    W --> F["original add#40;2,<br/>3#41;<br/>= 5"]:::teal
     F --> W2["wrapper logs AFTER<br/>returns 5"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2114,13 +2134,16 @@ explicitly by the same guard pattern.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    L["find_user_age#40;...#41;"]:::blue --> Q{"result is<br/>not None?"}:::orange
+    accTitle: Example 28: Guarding a None-Returning Function
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: find_user_age40... 41, result is not None?, use the age, handle absence. Connections: find_user_age40... 41 to result is not None?, result is not None? to use the age (Yes: hit), result is not None? to handle absence (No: miss).
+    L["find_user_age#40;...<br/>#41;"]:::blue --> Q{"result is<br/>not None?"}:::orange
     Q -->|Yes: hit| H["use the age"]:::teal
     Q -->|No: miss| M["handle absence"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

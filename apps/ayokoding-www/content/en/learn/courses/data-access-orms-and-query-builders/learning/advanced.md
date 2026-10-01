@@ -232,15 +232,18 @@ differs.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 59: Bulk vs ORM Performance
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: 2000 rows to write, ORM loop 2000x session.add(), Core insert() 1x, list of 2000 dicts, D, per-object, E, one. Connections: 2000 rows to write to ORM loop 2000x session.add(), 2000 rows to write to Core insert() 1x, list of 2000 dicts, ORM loop 2000x session.add() to D, D to per-object, Core insert() 1x, list of 2000 dicts to E, E to one.
     A["2000 rows to write"]:::blue
     A --> B["ORM loop<br/>2000x session.add()"]:::orange
-    A --> C["Core insert()<br/>1x, list of 2000 dicts"]:::teal
-    B --> D["slower -- per-object overhead"]:::orange
-    C --> E["faster -- one batched statement"]:::teal
+    A --> C["Core insert()<br/>1x, list of 2000<br/>dicts"]:::teal
+    B --> D["slower -- per-object<br/>overhead"]:::orange
+    C --> E["faster -- one<br/>batched statement"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-59-bulk-vs-orm-perf/example.py`**
@@ -362,12 +365,15 @@ event loop.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 60: Async Engine Session
+    accDescr: Flowchart with 2 nodes and 0 connections. Nodes: Sync: Session blocking .execute(), Async: AsyncSession await .execute().
     A["Sync: Session<br/>blocking .execute()"]:::blue
     B["Async: AsyncSession<br/>await .execute()"]:::orange
     A -.same mapped classes.-> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-60-async-engine-session/example.py`**
@@ -568,15 +574,18 @@ awaited coroutine instead of an implicit blocking call.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
-    A["order.customer unloaded"]:::blue
-    A --> B["order.customer.name<br/>implicit blocking call"]:::orange
-    A --> C["await order.awaitable_attrs.customer<br/>explicit coroutine"]:::teal
-    B --> D["MissingGreenlet<br/>no sync fallback under async"]:::orange
-    C --> E["OK -- same lazy SELECT, awaited"]:::teal
+    accTitle: Example 62: Async Lazy Forbidden
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: order.customer unloaded, order.customer.name implicit blocking call, await order. awaitable_attrs. customer explicit coroutine, MissingGreenlet no sync fallback under async, E, same. Connections: order.customer unloaded to order.customer.name implicit blocking call, order.customer unloaded to await order. awaitable_attrs. customer explicit coroutine, order.customer.name implicit blocking call to MissingGreenlet no sync fallback under async, await order. awaitable_attrs. customer explicit coroutine to E, E to same.
+    A["order.customer<br/>unloaded"]:::blue
+    A --> B["order.customer.name<br/>implicit blocking<br/>call"]:::orange
+    A --> C["await order.<br/>awaitable_attrs.<br/>customer<br/>explicit coroutine"]:::teal
+    B --> D["MissingGreenlet<br/>no sync fallback<br/>under async"]:::orange
+    C --> E["OK -- same lazy<br/>SELECT, awaited"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-62-async-lazy-forbidden/example.py`**
@@ -695,6 +704,8 @@ ran sequentially.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 sequenceDiagram
+    accTitle: Example 63: Async Concurrent Sessions
+    accDescr: Sequence diagram between asyncio.gather(), Task 1 (own AsyncSession), Task 2 (own AsyncSession), Task 3 (own AsyncSession). Messages: asyncio.gather() to Task 1 (own AsyncSession): query (0.2s sleep); asyncio.gather() to Task 2 (own AsyncSession): query (0.2s sleep); asyncio.gather() to Task 3 (own AsyncSession): query (0.2s sleep); Task 1 (own AsyncSession) to asyncio.gather(): result; Task 2 (own AsyncSession) to asyncio.gather(): result; Task 3 (own AsyncSession) to asyncio.gather(): result.
     participant Main as asyncio.gather()
     participant T1 as Task 1 (own AsyncSession)
     participant T2 as Task 2 (own AsyncSession)
@@ -1048,15 +1059,18 @@ first.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
-    A["runtime filter dict<br/>{'city': 'Berlin', 'active': True}"]:::blue
-    A --> B["PyPika Table('customer')<br/>no mapped class needed"]:::orange
-    A --> C["ORM getattr(Customer, col)<br/>needs DeclarativeBase first"]:::teal
-    B --> D["equivalent rendered SQL"]:::blue
+    accTitle: Example 66: Query Builder vs ORM Dynamic Filter
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: runtime filter dict city: Berlin, active: True, PyPika Table(customer) no mapped class needed, ORM getattr(Customer, col) needs DeclarativeBase first, equivalent rendered SQL. Connections: runtime filter dict city: Berlin, active: True to PyPika Table(customer) no mapped class needed, runtime filter dict city: Berlin, active: True to ORM getattr(Customer, col) needs DeclarativeBase first, PyPika Table(customer) no mapped class needed to equivalent rendered SQL, ORM getattr(Customer, col) needs DeclarativeBase first to equivalent rendered SQL.
+    A["runtime filter dict<br/>{'city': 'Berlin',<br/>'active': True}"]:::blue
+    A --> B["PyPika<br/>Table('customer')<br/>no mapped class<br/>needed"]:::orange
+    A --> C["ORM<br/>getattr(Customer,<br/>col)<br/>needs<br/>DeclarativeBase<br/>first"]:::teal
+    B --> D["equivalent rendered<br/>SQL"]:::blue
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-66-querybuilder-vs-orm-dynamic/example.py`**
@@ -1251,16 +1265,19 @@ the specific payoff.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart TD
-    A["workload: customer profile edit"]:::blue
+    accTitle: Example 68: Choosing Tier CRUD
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: workload: customer profile edit, is_set_oriented?, is_latency_critical?, is_object_shaped?, tier: orm identity map + change tracking pay off. Connections: workload: customer profile edit to is_set_oriented?, is_set_oriented? to is_latency_critical? (no), is_latency_critical? to is_object_shaped? (no), is_object_shaped? to tier: orm identity map + change tracking pay off (yes).
+    A["workload: customer<br/>profile edit"]:::blue
     A --> B{"is_set_oriented?"}:::orange
     B -->|no| C{"is_latency_critical?"}:::orange
     C -->|no| D{"is_object_shaped?"}:::teal
-    D -->|yes| E["tier: orm<br/>identity map + change tracking pay off"]:::purple
+    D -->|yes| E["tier: orm<br/>identity map +<br/>change tracking pay<br/>off"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-choosing-tier-crud/example.py`**
@@ -1512,14 +1529,17 @@ The everyday CRUD path (`create_product()`) uses the ORM to build and commit map
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
-    A["ONE Session, ONE transaction"]:::blue
-    A --> B["create_product()<br/>ORM -- mapped Product objects"]:::blue
-    A --> C["apply_holiday_discount()<br/>session.execute(text(...))"]:::teal
-    B --> D["session.commit()<br/>both tiers' writes together"]:::blue
+    accTitle: Example 71: Hybrid ORM Plus Raw
+    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: ONE Session, ONE transaction, B, mapped, apply_holiday_ discount() session. execute(text(...)), session.commit() both tiers writes together. Connections: ONE Session, ONE transaction to B, B to mapped, ONE Session, ONE transaction to apply_holiday_ discount() session. execute(text(...)), B to session.commit() both tiers writes together, apply_holiday_ discount() session. execute(text(...)) to session.commit() both tiers writes together.
+    A["ONE Session, ONE<br/>transaction"]:::blue
+    A --> B["create_product()<br/>ORM -- mapped<br/>Product objects"]:::blue
+    A --> C["apply_holiday_<br/>discount()<br/>session.<br/>execute(text(...))"]:::teal
+    B --> D["session.commit()<br/>both tiers' writes<br/>together"]:::blue
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-hybrid-orm-plus-raw/example.py`**
@@ -1831,17 +1851,20 @@ single class.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
-    A["Electronics<br/>(root, parent_id=NULL)"]:::blue
-    B["Laptops<br/>(parent_id -> Electronics.id)"]:::orange
-    C["Phones<br/>(parent_id -> Electronics.id)"]:::teal
+    accTitle: Example 74: Self Referential Relationship
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Electronics (root, parent_id=NULL), Laptops (parent_id -> Electronics.id), Phones (parent_id -> Electronics.id). Connections: Electronics (root, parent_id=NULL) to Laptops (parent_id -> Electronics.id) (.children), Electronics (root, parent_id=NULL) to Phones (parent_id -> Electronics.id) (.children).
+    A["Electronics<br/>(root,<br/>parent_id=NULL)"]:::blue
+    B["Laptops<br/>(parent_id -><br/>Electronics.id)"]:::orange
+    C["Phones<br/>(parent_id -><br/>Electronics.id)"]:::teal
     A -->|".children"| B
     A -->|".children"| C
     B -.".parent".-> A
     C -.".parent".-> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-74-self-referential-relationship/example.py`**
@@ -1943,6 +1966,8 @@ round-trips all three values correctly.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73 -- color-blind friendly, WCAG AA
 erDiagram
+    accTitle: Example 75: Association Object M2M
+    accDescr: Entity-relationship diagram with 3 items: STUDENT, ENROLLMENT, COURSE. Relationships: STUDENT to ENROLLMENT: enrollments; COURSE to ENROLLMENT: enrollments.
     STUDENT ||--o{ ENROLLMENT : "enrollments"
     COURSE ||--o{ ENROLLMENT : "enrollments"
     STUDENT {
@@ -1958,6 +1983,7 @@ erDiagram
         int course_id PK,FK
         string grade
     }
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-75-association-object-m2m/example.py`**
@@ -2069,13 +2095,16 @@ reading Postgres' own schema and data.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 76: Migration Zero Downtime
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: only email column, email AND contact_email both populated, only contact_email column. Connections: only email column to email AND contact_email both populated (EXPAND: add contact_email, backfill old deploy still works), email AND contact_email both populated to only contact_email column (CONTRACT: drop email only after every deploy cut over).
     A["only email column"]:::blue
-    A -->|"EXPAND: add contact_email, backfill<br/>old deploy still works"| B["email AND contact_email<br/>both populated"]:::orange
-    B -->|"CONTRACT: drop email<br/>only after every deploy cut over"| C["only contact_email column"]:::teal
+    A -->|"EXPAND: add<br/>contact_email,<br/>backfill<br/>old deploy still<br/>works"| B["email AND<br/>contact_email<br/>both populated"]:::orange
+    B -->|"CONTRACT: drop<br/>email<br/>only after every<br/>deploy cut over"| C["only contact_email<br/>column"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-76-migration-zero-downtime/example.py`**
@@ -2237,15 +2266,18 @@ connection immediately).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 77: Connection Pool Tuning
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: 8 concurrent workers 0.2s each, pool_size=2 undersized, pool_size=8 tuned, D, workers, E, every. Connections: 8 concurrent workers 0.2s each to pool_size=2 undersized, 8 concurrent workers 0.2s each to pool_size=8 tuned, pool_size=2 undersized to D, D to workers, pool_size=8 tuned to E, E to every.
     A["8 concurrent workers<br/>0.2s each"]:::blue
     A --> B["pool_size=2<br/>undersized"]:::orange
     A --> C["pool_size=8<br/>tuned"]:::teal
-    B --> D["~0.87s -- workers queue in waves"]:::orange
-    C --> E["~0.24s -- every worker gets a connection immediately"]:::teal
+    B --> D["~0.87s -- workers<br/>queue in waves"]:::orange
+    C --> E["~0.24s -- every<br/>worker gets a<br/>connection<br/>immediately"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-77-connection-pool-tuning/example.py`**
@@ -2338,21 +2370,24 @@ claim is verified by running it, not asserted from memory.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart TD
-    A["Same customer/order data"]:::blue
+    accTitle: Example 78: Capstone Preview Three Tier
+    accDescr: Flowchart with 8 nodes and 9 connections. Nodes: Same customer/order data, Tier 1: raw SQL, Tier 2: query builder, Tier 3: ORM, Identical answer, N+1: 4 queries, Fixed: 2 queries, Migration: upgrade + downgrade. Connections: Same customer/order data to Tier 1: raw SQL, Same customer/order data to Tier 2: query builder, Same customer/order data to Tier 3: ORM, Tier 1: raw SQL to Identical answer, Tier 2: query builder to Identical answer, Tier 3: ORM to Identical answer, Tier 3: ORM to N+1: 4 queries, N+1: 4 queries to Fixed: 2 queries (selectinload fix), Same customer/order data to Migration: upgrade + downgrade.
+    A["Same customer/order<br/>data"]:::blue
     A --> B["Tier 1: raw SQL"]:::orange
-    A --> C["Tier 2: query builder"]:::teal
+    A --> C["Tier 2: query<br/>builder"]:::teal
     A --> D["Tier 3: ORM"]:::purple
     B --> E["Identical answer"]:::blue
     C --> E
     D --> E
     D --> F["N+1: 4 queries"]:::orange
     F -->|"selectinload fix"| G["Fixed: 2 queries"]:::teal
-    A --> H["Migration: upgrade + downgrade"]:::purple
+    A --> H["Migration: upgrade +<br/>downgrade"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-78-capstone-preview-three-tier/example.py`**

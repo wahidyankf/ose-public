@@ -16,13 +16,16 @@ infecting another.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: How to use these examples
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Language and value objects, Aggregates and events, Contexts and integration, Capstone: protected seams. Connections: Language and value objects to Aggregates and events, Aggregates and events to Contexts and integration, Contexts and integration to Capstone: protected seams.
     A["Language and value<br/>objects"]:::blue --> B["Aggregates and<br/>events"]:::orange
     B --> C["Contexts and<br/>integration"]:::teal
     C --> D["Capstone:<br/>protected seams"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

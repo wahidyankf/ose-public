@@ -342,20 +342,23 @@ host on each side can reach every host on the other, through one tunnel endpoint
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    subgraph SiteToSite["Site-to-site -- two WHOLE networks joined"]
+    accTitle: Example 60: Site-to-Site vs. Remote-Access Tunnels
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: Office A network 10.1.0.0/16, Gateway A, Gateway B, Office B network 10.2.0.0/16, Single remote laptop 10.3.x.5, VPN gateway, Office network 10.4.0.0/16. Connections: Office A network 10.1.0.0/16 to Gateway A, Gateway A to Gateway B (encrypted tunnel routes 10.2.0.0/16), Gateway B to Office B network 10.2.0.0/16, Single remote laptop 10.3.x.5 to VPN gateway (encrypted tunnel routes 10.4.0.0/16 only), VPN gateway to Office network 10.4.0.0/16.
+    subgraph SiteToSite["Site-to-site -- two<br/>WHOLE networks<br/>joined"]
         A1["Office A network<br/>10.1.0.0/16"]:::blue --> GW1["Gateway A"]:::orange
         GW1 <-->|"encrypted tunnel<br/>routes 10.2.0.0/16"| GW2["Gateway B"]:::orange
         GW2 --> A2["Office B network<br/>10.2.0.0/16"]:::teal
     end
-    subgraph RemoteAccess["Remote-access -- ONE client into one network"]
-        C["Single remote laptop<br/>10.3.x.5"]:::purple -->|"encrypted tunnel<br/>routes 10.4.0.0/16 only"| GW3["VPN gateway"]:::orange
+    subgraph RemoteAccess["Remote-access -- ONE<br/>client into one<br/>network"]
+        C["Single remote laptop<br/>10.3.x.5"]:::purple -->|"encrypted tunnel<br/>routes 10.4.0.0/16<br/>only"| GW3["VPN gateway"]:::orange
         GW3 --> Net["Office network<br/>10.4.0.0/16"]:::teal
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: site-to-site (top) routes an ENTIRE subnet on each side through one gateway-to-gateway

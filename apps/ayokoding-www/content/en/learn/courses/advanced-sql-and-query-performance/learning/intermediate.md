@@ -168,15 +168,18 @@ loop forever. The fix: carry the visited path in an array and refuse to revisit 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly
 flowchart LR
+    accTitle: Example 30: Recursive CTE Graph Cycle
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: Jakarta, Singapore, Bangkok, Hanoi. Connections: Jakarta to Singapore, Singapore to Bangkok, Bangkok to Jakarta (cycle back), Bangkok to Hanoi.
     A["Jakarta"]:::blue --> B["Singapore"]:::orange
     B --> C["Bangkok"]:::teal
     C -->|cycle back| A
     C --> D["Hanoi"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-30-recursive-cte-graph-cycle/example.sql`**
@@ -401,12 +404,15 @@ the whole-history running total Example 8's default frame computed.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 32: Window Moving Average
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Jan 3 window: Jan1-3, Jan 4 window: Jan2-4, Jan 5 window: Jan3-5. Connections: Jan 3 window: Jan1-3 to Jan 4 window: Jan2-4, Jan 4 window: Jan2-4 to Jan 5 window: Jan3-5.
     A["Jan 3<br/>window: Jan1-3"]:::blue --> B["Jan 4<br/>window: Jan2-4"]:::orange
     B --> C["Jan 5<br/>window: Jan3-5"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-32-window-moving-average/example.sql`**
@@ -630,13 +636,16 @@ the frame is widened explicitly.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly
 flowchart TD
-    A["default frame ends<br/>AT the current row"]:::blue --> B["LAST_VALUE returns<br/>the CURRENT row's own value"]:::orange
-    C["frame widened to<br/>UNBOUNDED FOLLOWING"]:::teal --> D["LAST_VALUE returns the<br/>TRUE partition-final value"]:::purple
+    accTitle: Example 34: FIRSTVALUE and LASTVALUE
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: default frame ends AT the current row, LAST_VALUE returns the CURRENT rows own value, frame widened to UNBOUNDED FOLLOWING, LAST_VALUE returns the TRUE partition-final value. Connections: default frame ends AT the current row to LAST_VALUE returns the CURRENT rows own value, frame widened to UNBOUNDED FOLLOWING to LAST_VALUE returns the TRUE partition-final value.
+    A["default frame ends<br/>AT the current row"]:::blue --> B["LAST_VALUE returns<br/>the CURRENT row's<br/>own value"]:::orange
+    C["frame widened to<br/>UNBOUNDED FOLLOWING"]:::teal --> D["LAST_VALUE returns<br/>the<br/>TRUE partition-final<br/>value"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-34-window-first-last-value/example.sql`**
@@ -837,12 +846,15 @@ in an outer query is the standard, idiomatic "top N per group" pattern.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 36: Top-N per Group
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: all 6 employees, ROW_NUMBER PARTITION BY dept, WHERE rn <= 2 4 rows survive. Connections: all 6 employees to ROW_NUMBER PARTITION BY dept, ROW_NUMBER PARTITION BY dept to WHERE rn <= 2 4 rows survive.
     A["all 6 employees"]:::blue --> B["ROW_NUMBER<br/>PARTITION BY dept"]:::orange
     B --> C["WHERE rn <= 2<br/>4 rows survive"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-36-top-n-per-group/example.sql`**
@@ -983,12 +995,15 @@ plain join's subquery could never reference.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["author row: Ada"]:::blue --> B["LATERAL subquery<br/>WHERE author_id = Ada.id<br/>LIMIT 2"]:::orange
+    accTitle: Example 37: LATERAL Join Top-N
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: author row: Ada, LATERAL subquery WHERE author_id = Ada.id LIMIT 2, Adas top 2 books by price. Connections: author row: Ada to LATERAL subquery WHERE author_id = Ada.id LIMIT 2, LATERAL subquery WHERE author_id = Ada.id LIMIT 2 to Adas top 2 books by price.
+    A["author row: Ada"]:::blue --> B["LATERAL subquery<br/>WHERE author_id =<br/>Ada.id<br/>LIMIT 2"]:::orange
     B --> C["Ada's top 2 books<br/>by price"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-37-lateral-join-topn/example.sql`**
@@ -1417,13 +1432,16 @@ here (see "Why it matters" below).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly
 flowchart TD
-    A["WHERE customer_id = 50000<br/>leftmost column present"]:::blue --> B["Index Scan<br/>cost 0.29..8.31"]:::teal
-    C["WHERE product_id = 5<br/>leftmost column ABSENT"]:::orange --> D["Seq Scan<br/>cost 0.00..1791.00"]:::purple
+    accTitle: Example 40: Composite Index Order
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: WHERE customer_id = 50000 leftmost column present, Index Scan cost 0.29..8.31, WHERE product_id = 5 leftmost column ABSENT, Seq Scan cost 0.00..1791.00. Connections: WHERE customer_id = 50000 leftmost column present to Index Scan cost 0.29..8.31, WHERE product_id = 5 leftmost column ABSENT to Seq Scan cost 0.00..1791.00.
+    A["WHERE customer_id =<br/>50000<br/>leftmost column<br/>present"]:::blue --> B["Index Scan<br/>cost 0.29..8.31"]:::teal
+    C["WHERE product_id = 5<br/>leftmost column<br/>ABSENT"]:::orange --> D["Seq Scan<br/>cost 0.00..1791.00"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-40-composite-index-order/example.sql`**
@@ -1506,12 +1524,15 @@ entirely: an **Index Only Scan**.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 41: Covering Index and Index Only Scan
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: query needs isbn + price, both present IN the index?, Index Only Scan heap never touched. Connections: query needs isbn + price to both present IN the index?, both present IN the index? to Index Only Scan heap never touched (yes, via INCLUDE).
     A["query needs<br/>isbn + price"]:::blue --> B{"both present<br/>IN the index?"}:::orange
     B -->|yes, via INCLUDE| C["Index Only Scan<br/>heap never touched"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-41-covering-index-only-scan/example.sql`**
@@ -1752,13 +1773,16 @@ than a tree descent.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly
 flowchart LR
+    accTitle: Example 44: Hash Index
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: WHERE email = ? equality, Index Scan hash index usable, WHERE email > ? range, Seq Scan hash index CANNOT help. Connections: WHERE email = ? equality to Index Scan hash index usable, WHERE email > ? range to Seq Scan hash index CANNOT help.
     A["WHERE email = ?<br/>equality"]:::blue --> B["Index Scan<br/>hash index usable"]:::teal
-    C["WHERE email > ?<br/>range"]:::orange --> D["Seq Scan<br/>hash index CANNOT help"]:::purple
+    C["WHERE email > ?<br/>range"]:::orange --> D["Seq Scan<br/>hash index CANNOT<br/>help"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-44-hash-index/example.sql`**
@@ -1948,12 +1972,15 @@ order, exactly the case for an append-only timestamp column.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["500,000 rows<br/>timestamps increasing"]:::blue --> B["BRIN: 24 kB<br/>min/max per block range"]:::orange
+    accTitle: Example 46: BRIN Index on Timeseries
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 500,000 rows timestamps increasing, BRIN: 24 kB min/max per block range, B-tree: 11 MB one entry per row. Connections: 500,000 rows timestamps increasing to BRIN: 24 kB min/max per block range, 500,000 rows timestamps increasing to B-tree: 11 MB one entry per row.
+    A["500,000 rows<br/>timestamps<br/>increasing"]:::blue --> B["BRIN: 24 kB<br/>min/max per block<br/>range"]:::orange
     A --> C["B-tree: 11 MB<br/>one entry per row"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-46-brin-index-timeseries/example.sql`**
@@ -2107,14 +2134,17 @@ row versions, until a `VACUUM`/`REINDEX` cleans it up.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 48: Index Bloat, Observed
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: 152 kB fresh index, 20 UPDATE rounds on every row, 2728 kB bloated, REINDEX, 152 kB back to fresh. Connections: 152 kB fresh index to 20 UPDATE rounds on every row, 20 UPDATE rounds on every row to 2728 kB bloated, 2728 kB bloated to REINDEX, REINDEX to 152 kB back to fresh.
     A["152 kB<br/>fresh index"]:::blue --> B["20 UPDATE rounds<br/>on every row"]:::orange
     B --> C["2728 kB<br/>bloated"]:::orange
     C --> D["REINDEX"]:::teal
     D --> E["152 kB<br/>back to fresh"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-48-index-bloat-observe/example.sql`**
@@ -2292,13 +2322,16 @@ Example 49's indexed Nested Loop.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 50: EXPLAIN Hash Join
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: publisher 500 rows, Hash: build in-memory table, book_catalog 100,000 rows, probe the hash table once per row. Connections: publisher 500 rows to Hash: build in-memory table, book_catalog 100,000 rows to probe the hash table once per row, Hash: build in-memory table to probe the hash table once per row.
     A["publisher<br/>500 rows"]:::blue --> B["Hash: build<br/>in-memory table"]:::orange
     C["book_catalog<br/>100,000 rows"]:::blue --> D["probe the hash<br/>table once per row"]:::teal
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-50-explain-hash-join/example.sql`**
@@ -2601,11 +2634,14 @@ with one query, then issue one more query per row to fetch related data -- N+1 r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart TB
-    A["SELECT * FROM book<br/>1 query"]:::blue --> B["for each of 500 books"]:::orange
-    B --> C["SELECT name FROM author<br/>WHERE id = ?<br/>500 MORE queries"]:::orange
+    accTitle: Example 54: N+1 Reproduce
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: SELECT * FROM book 1 query, for each of 500 books, SELECT name FROM author WHERE id = ? 500 MORE queries. Connections: SELECT * FROM book 1 query to for each of 500 books, for each of 500 books to SELECT name FROM author WHERE id = ? 500 MORE queries.
+    A["SELECT * FROM book<br/>1 query"]:::blue --> B["for each of 500<br/>books"]:::orange
+    B --> C["SELECT name FROM<br/>author<br/>WHERE id = ?<br/>500 MORE queries"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-54-n-plus-1-reproduce/example.py`**
@@ -3253,6 +3289,8 @@ commit -- together violating an invariant neither one violated alone.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Purple #CC78BC -- color-blind friendly, WCAG AA
 sequenceDiagram
+    accTitle: Example 59: Write Skew
+    accDescr: Sequence diagram between Session A, doctor_on_call, Session B. Messages: Session A to doctor_on_call: SELECT COUNT(*) WHERE on_call -- sees 2; Session B to doctor_on_call: SELECT COUNT(*) WHERE on_call -- sees 2; Session A to doctor_on_call: UPDATE Alice off_call, COMMIT; Session B to doctor_on_call: UPDATE Bob off_call, COMMIT (no conflict detected).
     participant A as Session A
     participant DB as doctor_on_call
     participant B as Session B

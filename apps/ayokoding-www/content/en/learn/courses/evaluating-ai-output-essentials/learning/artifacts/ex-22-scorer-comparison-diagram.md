@@ -12,26 +12,29 @@ weight: 22
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
-    subgraph Cheap["Cheap, Narrow Reach -- this course, co-05/co-06"]
+    accTitle: graph diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: exact_match single right answer, substring one required fact, regex required format, numeric_tolerance a number, within bounds, schema structure, all fields, LLM-as-judge subjective quality. Connections: exact_match single right answer to substring one required fact, substring one required fact to regex required format, regex required format to numeric_tolerance a number, within bounds, numeric_tolerance a number, within bounds to schema structure, all fields, schema structure, all fields to LLM-as-judge subjective quality (needs measured agreement before trusting it).
+    subgraph Cheap["Cheap, Narrow Reach<br/>-- this course,<br/>co-05/co-06"]
         EM["exact_match<br/>single right answer"]:::blue
         SUB["substring<br/>one required fact"]:::blue
         RE["regex<br/>required format"]:::orange
-        NUM["numeric_tolerance<br/>a number, within bounds"]:::orange
-        SCH["schema<br/>structure, all fields"]:::teal
+        NUM["numeric_tolerance<br/>a number, within<br/>bounds"]:::orange
+        SCH["schema<br/>structure, all<br/>fields"]:::teal
         EM --- SUB
         SUB --- RE
         RE --- NUM
         NUM --- SCH
     end
-    subgraph Expensive["Expensive, Broad Reach -- out of scope, co-12"]
+    subgraph Expensive["Expensive, Broad<br/>Reach -- out of<br/>scope, co-12"]
         JUDGE["LLM-as-judge<br/>subjective quality"]:::purple
     end
-    SCH -->|"needs measured agreement<br/>before trusting it"| JUDGE
+    SCH -->|"needs measured<br/>agreement<br/>before trusting it"| JUDGE
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: every scorer this course teaches sits in the cheap, narrow-reach cluster -- each checks one

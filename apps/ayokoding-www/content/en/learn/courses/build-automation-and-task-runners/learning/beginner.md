@@ -14,10 +14,13 @@ These examples start with GNU Make's timestamp-driven dependency graph, then con
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Flow 1: Rule parts
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Prerequisite, Recipe, Target. Connections: Prerequisite to Recipe, Recipe to Target.
     A["Prerequisite"]:::blue --> B["Recipe"]:::orange --> C["Target"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 2: Freshness decision
@@ -25,13 +28,16 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: Flow 2: Freshness decision
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Input changed, Target older?, Rebuild, Skip. Connections: Input changed to Target older?, Target older? to Rebuild (yes), Target older? to Skip (no).
     A["Input changed"]:::blue --> B{"Target older?"}:::orange
     B -->|yes| C["Rebuild"]:::teal
     B -->|no| D["Skip"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 3: Dependency order
@@ -39,10 +45,13 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Flow 3: Dependency order
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: main.c, main.o, app. Connections: main.c to main.o, main.o to app.
     A["main.c"]:::blue --> B["main.o"]:::orange --> C["app"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 4: Phony command
@@ -50,10 +59,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Flow 4: Phony command
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: make clean, .PHONY, Remove output. Connections: make clean to .PHONY, .PHONY to Remove output.
     A["make clean"]:::blue --> B[".PHONY"]:::orange --> C["Remove output"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 5: Automatic variables
@@ -61,10 +73,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Flow 5: Automatic variables
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: $< input, recipe, $@ output. Connections: $< input to recipe, recipe to $@ output.
     A["$< input"]:::blue --> B["recipe"]:::orange --> C["$@ output"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 6: Pattern rule
@@ -72,10 +87,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Flow 6: Pattern rule
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: foo.c, .o: .c, foo.o. Connections: foo.c to .o: .c, .o: .c to foo.o.
     A["foo.c"]:::blue --> B["%.o: %.c"]:::orange --> C["foo.o"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 7: Variable timing
@@ -83,10 +101,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Flow 7: Variable timing
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: = use time, := definition time, recipe value. Connections: = use time to := definition time, := definition time to recipe value.
     A["= use time"]:::blue --> B[":= definition time"]:::orange --> C["recipe value"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 8: Built-in inference
@@ -94,10 +115,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Flow 8: Built-in inference
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: source.c, built-in rule, program. Connections: source.c to built-in rule, built-in rule to program.
     A["source.c"]:::blue --> B["built-in rule"]:::orange --> C["program"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 9: Command runner
@@ -105,10 +129,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Flow 9: Command runner
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: just recipe, always run, named task. Connections: just recipe to always run, always run to named task.
     A["just recipe"]:::blue --> B["always run"]:::orange --> C["named task"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 1: Choose Automation Over Repetition

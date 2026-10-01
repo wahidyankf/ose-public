@@ -25,20 +25,23 @@ capstone therefore builds ten small, cleanly separated modules -- one per mechan
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["migrations.py + domain.py<br/>+ metadata.py<br/>schema, types, registry"]:::blue
-    B["query_builder.py<br/>immutable fluent builder"]:::orange
-    C["mapper.py +<br/>identity_map.py<br/>row&lt;-&gt;object, weak-ref cache"]:::teal
-    D["session.py +<br/>unit_of_work.py<br/>transaction boundary, atomic flush"]:::purple
-    E["lazy.py<br/>descriptor lazy load, N+1"]:::brown
-    F["run_scenario.py<br/>wires all five, one scenario"]
+    accTitle: Goal
+    accDescr: Flowchart with 8 nodes and 5 connections. Nodes: migrations.py + domain.py + metadata.py schema, types, registry, query_builder.py immutable fluent builder, C, lt, gt, session.py + unit_of_work.py transaction boundary, atomic flush, lazy.py descriptor lazy load, N+1, run_scenario.py wires all five, one scenario. Connections: migrations.py + domain.py + metadata.py schema, types, registry to query_builder.py immutable fluent builder, query_builder.py immutable fluent builder to C, C to session.py + unit_of_work.py transaction boundary, atomic flush, session.py + unit_of_work.py transaction boundary, atomic flush to lazy.py descriptor lazy load, N+1, lazy.py descriptor lazy load, N+1 to run_scenario.py wires all five, one scenario.
+    A["migrations.py +<br/>domain.py<br/>+ metadata.py<br/>schema, types,<br/>registry"]:::blue
+    B["query_builder.py<br/>immutable fluent<br/>builder"]:::orange
+    C["mapper.py +<br/>identity_map.py<br/>row&lt;-&gt;object,<br/>weak-ref cache"]:::teal
+    D["session.py +<br/>unit_of_work.py<br/>transaction<br/>boundary, atomic<br/>flush"]:::purple
+    E["lazy.py<br/>descriptor lazy<br/>load, N+1"]:::brown
+    F["run_scenario.py<br/>wires all five, one<br/>scenario"]
 
     A --> B --> C --> D --> E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

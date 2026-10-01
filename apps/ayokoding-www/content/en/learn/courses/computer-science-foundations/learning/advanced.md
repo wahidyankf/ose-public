@@ -25,6 +25,8 @@ by hand.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 stateDiagram-v2
+    accTitle: Example 41: A Turing Machine Incrementing a Binary Number on Its Tape
+    accDescr: State diagram with 7 items: start or end, scan_right, increment, done, scan_right start, increment mid, done halt. Relationships: start or end to scan_right; scan_right to scan_right: 0/0,R 1/1,R; scan_right to increment: blank/blank,L; increment to increment: 1/0,L; increment to done: 0/1,R blank/1,R; done to start or end.
     [*] --> scan_right
     scan_right --> scan_right: 0/0,R ; 1/1,R
     scan_right --> increment: blank/blank,L
@@ -33,8 +35,8 @@ stateDiagram-v2
     done --> [*]
 
     classDef start fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef mid fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef halt fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef mid fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef halt fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class scan_right start
     class increment mid
     class done halt

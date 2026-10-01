@@ -26,11 +26,14 @@ Use `LayoutBuilder` to inspect the `BoxConstraints` supplied by the parent befor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Observe the Constraints Model}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 27: Observe the Constraints Model
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Observe the Constraints Model, Visible state or target effect. Connections: Widget to Observe the Constraints Model, Observe the Constraints Model to Visible state or target effect.
+    A[Widget]:::blue --> B{Observe the<br/>Constraints Model}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -66,11 +69,14 @@ Create an `InheritedWidget` that carries the saved count and compares it with th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Expose an Inherited Widget}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 29: Expose an Inherited Widget
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Expose an Inherited Widget, Visible state or target effect. Connections: Widget to Expose an Inherited Widget, Expose an Inherited Widget to Visible state or target effect.
+    A[Widget]:::blue --> B{Expose an Inherited<br/>Widget}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -107,11 +113,14 @@ Define a `ChangeNotifier` that mutates its saved count and calls `notifyListener
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Provide a ChangeNotifier}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 31: Provide a ChangeNotifier
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Provide a ChangeNotifier, Visible state or target effect. Connections: Widget to Provide a ChangeNotifier, Provide a ChangeNotifier to Visible state or target effect.
+    A[Widget]:::blue --> B{Provide a<br/>ChangeNotifier}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -148,11 +157,14 @@ Place the provider above the navigator so both the list and its pushed detail ro
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Shared provider state}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 33: Share Provider State Across Screens
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Shared provider state, Visible state or target effect. Connections: Widget to Shared provider state, Shared provider state to Visible state or target effect.
+    A[Widget]:::blue --> B{Shared provider<br/>state}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -221,11 +233,14 @@ Call `Navigator.of(context).push` with a route that builds the selected article'
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 37: Push a Detail Screen
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Push a Detail Screen, Visible state or target effect. Connections: Widget to Push a Detail Screen, Push a Detail Screen to Visible state or target effect.
     A[Widget]:::blue --> B{Push a Detail Screen}:::orange
-    B --> C[Visible state or target effect]:::teal
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -307,11 +322,14 @@ Declare `GoRoute` entries in a `GoRouter` when the app needs a route table that 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Declare Routes with go_router}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 42: Declare Routes with gorouter
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Declare Routes with go_router, Visible state or target effect. Connections: Widget to Declare Routes with go_router, Declare Routes with go_router to Visible state or target effect.
+    A[Widget]:::blue --> B{Declare Routes with<br/>go_router}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -348,11 +366,14 @@ Give `FutureBuilder` a future and branch on its snapshot while the operation is 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Render a FutureBuilder}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 44: Render a FutureBuilder
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Render a FutureBuilder, Visible state or target effect. Connections: Widget to Render a FutureBuilder, Render a FutureBuilder to Visible state or target effect.
+    A[Widget]:::blue --> B{Render a<br/>FutureBuilder}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -420,11 +441,14 @@ Pass the repository's fetch future into a `FutureBuilder` and render the decoded
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Render HTTP Data in a Widget}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 48: Render HTTP Data in a Widget
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Render HTTP Data in a Widget, Visible state or target effect. Connections: Widget to Render HTTP Data in a Widget, Render HTTP Data in a Widget to Visible state or target effect.
+    A[Widget]:::blue --> B{Render HTTP Data in<br/>a Widget}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -461,11 +485,14 @@ Open a SQLite database, insert an article record, and query it back through the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Round Trip SQLite Data}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 50: Round Trip SQLite Data
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Round Trip SQLite Data, Visible state or target effect. Connections: Widget to Round Trip SQLite Data, Round Trip SQLite Data to Visible state or target effect.
+    A[Widget]:::blue --> B{Round Trip SQLite<br/>Data}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -517,11 +544,14 @@ Branch the snapshot into a progress indicator, a retry message, or the successfu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Render Loading and Error State}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 53: Render Loading and Error State
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Render Loading and Error State, Visible state or target effect. Connections: Widget to Render Loading and Error State, Render Loading and Error State to Visible state or target effect.
+    A[Widget]:::blue --> B{Render Loading and<br/>Error State}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart

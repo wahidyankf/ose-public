@@ -1259,6 +1259,8 @@ adaptation becomes a candidate, and every branch terminates in a decision.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
+    accTitle: Worked Example 16: The Decision Diagram
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Complaint measured gap, co-06, Behaviour or knowledge? co-01, Retrieval co-04, RD, Prompting co-03, PD, Scoping co-05, SD, Decision gate co-06, GO, NOGO. Connections: Complaint measured gap, co-06 to Behaviour or knowledge? co-01, Behaviour or knowledge? co-01 to Retrieval co-04 (knowledge-shaped), Retrieval co-04 to RD, Behaviour or knowledge? co-01 to Prompting co-03 (behaviour-shaped), Prompting co-03 to PD (closes the gap), Prompting co-03 to Scoping co-05 (gap remains), Scoping co-05 to SD (closes the gap), Scoping co-05 to Decision gate co-06 (gap remains), Decision gate co-06 to GO (all checks pass), Decision gate co-06 to NOGO (any check fails).
     C["Complaint<br/>measured gap, co-06"]:::blue --> T{"Behaviour or<br/>knowledge? co-01"}
     T -->|knowledge-shaped| R["Retrieval<br/>co-04"]:::orange
     R --> RD["Solved --<br/>NO-GO on adaptation"]:::teal
@@ -1267,13 +1269,14 @@ graph TD
     P -->|gap remains| S["Scoping<br/>co-05"]:::orange
     S -->|closes the gap| SD["Solved --<br/>NO-GO on adaptation"]:::teal
     S -->|gap remains| G["Decision gate<br/>co-06"]:::purple
-    G -->|all checks pass| GO["GO --<br/>adaptation is a candidate"]:::teal
-    G -->|any check fails| NOGO["NO-GO --<br/>documented and stopped"]:::teal
+    G -->|all checks pass| GO["GO --<br/>adaptation is a<br/>candidate"]:::teal
+    G -->|any check fails| NOGO["NO-GO --<br/>documented and<br/>stopped"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the decision diagram. Knowledge-shaped complaints exit immediately to retrieval;

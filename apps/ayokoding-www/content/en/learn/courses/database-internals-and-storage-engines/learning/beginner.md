@@ -182,6 +182,8 @@ The slot array grows forward from right after the header; each slot is a fixed 4
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 3: Append a Slot to the Slot Array
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Header pd_lower, pd_upper, Slot array grows right, Free space, Tuple data grows left. Connections: Header pd_lower, pd_upper to Slot array grows right, Slot array grows right to Free space, Free space to Tuple data grows left.
     A["Header<br/>pd_lower, pd_upper"]:::blue
     B["Slot array<br/>grows right"]:::orange
     C["Free space"]:::teal
@@ -189,9 +191,10 @@ graph LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-03-slot-array-append/example.py`**
@@ -624,6 +627,8 @@ Because each slot carries its own length field, records on the same page can be 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 7: Variable-Length Records by Slot
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Slot 0 offset, length=5, Slot 1 offset, length=40, short record 5 bytes, long record 40 bytes. Connections: Slot 0 offset, length=5 to short record 5 bytes, Slot 1 offset, length=40 to long record 40 bytes.
     A["Slot 0<br/>offset, length=5"]:::blue
     B["Slot 1<br/>offset, length=40"]:::blue
     C["short record<br/>5 bytes"]:::orange
@@ -632,8 +637,9 @@ graph LR
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-07-variable-length-records/example.py`**
@@ -1059,6 +1065,8 @@ A fetch for a non-resident page must load it from disk and cache it before retur
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 11: Buffer Fetch on a Miss
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: fetch(page_id), page in page table?, MISS read from disk, insert into page table. Connections: fetch(page_id) to page in page table?, page in page table? to MISS read from disk (no), MISS read from disk to insert into page table.
     A["fetch(page_id)"]:::blue
     B{"page in<br/>page table?"}:::orange
     C["MISS<br/>read from disk"]:::teal
@@ -1067,8 +1075,9 @@ graph LR
     B -->|no| C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-11-buffer-fetch-miss/example.py`**
@@ -1256,6 +1265,8 @@ A frame currently in use must never be evicted out from under its user. This exa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 13: Pin Count Guards Against Eviction
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: pin(frame), pin_count > 0?, evict blocked, unpin(frame), evict allowed. Connections: pin(frame) to pin_count > 0?, pin_count > 0? to evict blocked (yes), unpin(frame) to pin_count > 0?, pin_count > 0? to evict allowed (no).
     A["pin(frame)"]:::blue
     B{"pin_count > 0?"}:::orange
     C["evict blocked"]:::teal
@@ -1267,8 +1278,9 @@ graph LR
     B -->|no| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-13-pin-count-guard/example.py`**
@@ -1564,6 +1576,8 @@ CLOCK approximates LRU cheaply with a single reference bit per frame and a sweep
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 16: CLOCK Eviction
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: hand points at frame, ref bit set?, clear bit advance hand, evict frame. Connections: hand points at frame to ref bit set?, ref bit set? to clear bit advance hand (yes), clear bit advance hand to hand points at frame, ref bit set? to evict frame (no).
     A["hand points<br/>at frame"]:::blue
     B{"ref bit set?"}:::orange
     C["clear bit<br/>advance hand"]:::blue
@@ -1573,8 +1587,9 @@ graph LR
     B -->|no| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-16-clock-second-chance/example.py`**
@@ -1931,6 +1946,8 @@ When a leaf's key count exceeds its capacity, it splits into two leaves and prom
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 20: B-Tree Leaf Split and Separator Promotion
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: overfull leaf [1,2,3,4,5], new parent separator: 3, left leaf [1,2], right leaf [3,4,5]. Connections: overfull leaf [1,2,3,4,5] to new parent separator: 3 (split), new parent separator: 3 to left leaf [1,2], new parent separator: 3 to right leaf [3,4,5].
     A["overfull leaf<br/>[1,2,3,4,5]"]:::blue
     B["new parent<br/>separator: 3"]:::orange
     C["left leaf<br/>[1,2]"]:::teal
@@ -1940,9 +1957,10 @@ graph TD
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-20-btree-leaf-split/example.py`**
@@ -2036,6 +2054,8 @@ Sibling-linked leaves let a range scan walk forward leaf-to-leaf without ever re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 21: B-Tree Range Scan via Sibling Links
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: leaf 1 [1,2,3], leaf 2 [4,5,6], leaf 3 [7,8,9]. Connections: leaf 1 [1,2,3] to leaf 2 [4,5,6] (next), leaf 2 [4,5,6] to leaf 3 [7,8,9] (next).
     A["leaf 1<br/>[1,2,3]"]:::blue
     B["leaf 2<br/>[4,5,6]"]:::orange
     C["leaf 3<br/>[7,8,9]"]:::teal
@@ -2043,8 +2063,9 @@ graph LR
     B -->|"next"| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-21-btree-range-scan/example.py`**
@@ -2327,6 +2348,8 @@ Once a memtable crosses a size threshold, it flushes to disk as an immutable SST
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 24: Flush a Memtable to an SSTable
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: memtable full, sorted, flush to disk, immutable SSTable, new empty memtable. Connections: memtable full, sorted to flush to disk, flush to disk to immutable SSTable, flush to disk to new empty memtable.
     A["memtable<br/>full, sorted"]:::blue
     B["flush to disk"]:::orange
     C["immutable<br/>SSTable"]:::teal
@@ -2335,8 +2358,9 @@ graph LR
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-24-memtable-flush-to-sstable/example.py`**
@@ -2422,6 +2446,8 @@ A point read checks the memtable first, then on-disk SSTables from newest to old
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 25: LSM Read Path: Newest Wins
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: memtable newest, SSTable 1 newer, SSTable 0 oldest, first match wins, stop. Connections: memtable newest to SSTable 1 newer (miss), SSTable 1 newer to SSTable 0 oldest (miss), memtable newest to first match wins, stop (hit), SSTable 1 newer to first match wins, stop (hit), SSTable 0 oldest to first match wins, stop (hit).
     A["memtable<br/>newest"]:::blue
     B["SSTable 1<br/>newer"]:::orange
     C["SSTable 0<br/>oldest"]:::teal
@@ -2432,9 +2458,10 @@ graph LR
     C -->|hit| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-25-lsm-read-newest-first/example.py`**

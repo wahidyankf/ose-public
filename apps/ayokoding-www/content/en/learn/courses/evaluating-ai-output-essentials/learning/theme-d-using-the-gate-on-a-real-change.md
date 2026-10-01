@@ -592,11 +592,13 @@ course this one hands off to.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph LR
-    M["First Working Model Call<br/>creating-ai-powered-apps"]:::brown
+    accTitle: Worked Example 43: Where the Light Eval Gate Sits
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: First Working Model Call creating-ai-powered- apps, Light Eval Gate this course, co-09, Prompt Changes measured against the gate, Retrieval Added measured against the SAME gate, Agents Added measured against the SAME gate, Deep Evals deep course, co-12. Connections: First Working Model Call creating-ai-powered- apps to Light Eval Gate this course, co-09, Light Eval Gate this course, co-09 to Prompt Changes measured against the gate, Light Eval Gate this course, co-09 to Retrieval Added measured against the SAME gate, Light Eval Gate this course, co-09 to Agents Added measured against the SAME gate, Prompt Changes measured against the gate to Deep Evals deep course, co-12, Retrieval Added measured against the SAME gate to Deep Evals deep course, co-12, Agents Added measured against the SAME gate to Deep Evals deep course, co-12.
+    M["First Working Model<br/>Call<br/>creating-ai-powered-<br/>apps"]:::brown
     G["Light Eval Gate<br/>this course, co-09"]:::blue
-    P["Prompt Changes<br/>measured against the gate"]:::orange
-    R["Retrieval Added<br/>measured against the SAME gate"]:::orange
-    A["Agents Added<br/>measured against the SAME gate"]:::orange
+    P["Prompt Changes<br/>measured against the<br/>gate"]:::orange
+    R["Retrieval Added<br/>measured against the<br/>SAME gate"]:::orange
+    A["Agents Added<br/>measured against the<br/>SAME gate"]:::orange
     D["Deep Evals<br/>deep course, co-12"]:::purple
 
     M --> G
@@ -607,10 +609,11 @@ graph LR
     R --> D
     A --> D
 
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the gate installs immediately after the first working model call and BEFORE every

@@ -136,13 +136,16 @@ and hardening (`co-26`–`co-30`), CSF functions and purple-team coverage (`co-3
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["Synthetic events"]:::blue --> B["Normalize and inspect"]:::orange
-    B --> C["Portable Sigma decision"]:::teal
-    C --> D["Contain, recover, harden"]:::purple
+    accTitle: Lab map
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Synthetic events, Normalize and inspect, Portable Sigma decision, Contain, recover, harden. Connections: Synthetic events to Normalize and inspect, Normalize and inspect to Portable Sigma decision, Portable Sigma decision to Contain, recover, harden.
+    A["Synthetic events"]:::blue --> B["Normalize and<br/>inspect"]:::orange
+    B --> C["Portable Sigma<br/>decision"]:::teal
+    C --> D["Contain, recover,<br/>harden"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The data flow is deliberately one-way: the lab reads synthetic files, derives a decision, and records

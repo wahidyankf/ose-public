@@ -18,6 +18,8 @@ Thread A grabs `lock_a` then wants `lock_b`; thread B grabs `lock_b` then wants 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 29: Two Threads, Two Locks, Opposite Order -- A Reproduced Deadlock
+    accDescr: Sequence diagram between Thread A, lock_a, lock_b, Thread B. Messages: Thread A to lock_a: acquire (holds it); Thread B to lock_b: acquire (holds it); Thread A to lock_b: wants lock_b -- BLOCKS (B holds it); Thread B to lock_a: wants lock_a -- BLOCKS (A holds it).
     participant A as Thread A
     participant LA as lock_a
     participant LB as lock_b
@@ -127,6 +129,8 @@ Both threads now acquire `lock_a` before `lock_b` -- a single, consistent global
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 30: A Global Lock Order Fixes the Deadlock
+    accDescr: Sequence diagram between Thread A, lock_a, lock_b, Thread B. Messages: Thread A to lock_a: acquire lock_a FIRST; Thread A to lock_b: acquire lock_b SECOND; Thread A to lock_a: release; Thread A to lock_b: release; Thread B to lock_a: acquire lock_a (now free); Thread B to lock_b: acquire lock_b.
     participant A as Thread A
     participant LA as lock_a
     participant LB as lock_b
@@ -578,19 +582,22 @@ The four Coffman conditions -- mutual exclusion, hold-and-wait, no preemption, c
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: Example 34: The Four Coffman Conditions -- Present in ex-29, Broken in ex-30
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Mutual Exclusion each lock: 1 holder, Hold and Wait holds one, wants another, No Preemption a lock cant be forcibly taken, Circular Wait A waits on B, B waits on A, DEADLOCK. Connections: Mutual Exclusion each lock: 1 holder to DEADLOCK, Hold and Wait holds one, wants another to DEADLOCK, No Preemption a lock cant be forcibly taken to DEADLOCK, Circular Wait A waits on B, B waits on A to DEADLOCK.
     A["Mutual Exclusion<br/>each lock: 1 holder"]:::blue
-    B["Hold and Wait<br/>holds one, wants another"]:::orange
-    C["No Preemption<br/>a lock can't be forcibly taken"]:::teal
-    D["Circular Wait<br/>A waits on B, B waits on A"]:::purple
+    B["Hold and Wait<br/>holds one, wants<br/>another"]:::orange
+    C["No Preemption<br/>a lock can't be<br/>forcibly taken"]:::teal
+    D["Circular Wait<br/>A waits on B, B<br/>waits on A"]:::purple
     A --> E["DEADLOCK"]:::orange
     B --> E
     C --> E
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-34-coffman-conditions/example.py`**
@@ -1117,12 +1124,15 @@ A `queue.Queue(maxsize=N)` blocks a producer's `put()` call once the queue is fu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    P["Fast Producer"]:::blue -->|"put() BLOCKS when full"| Q["Queue(maxsize=3)<br/>[item item item]"]:::orange
+    accTitle: Example 38: A Bounded Queue Applies Backpressure to a Fast Producer
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Fast Producer, Queue(maxsize=3) [item item item], Slow Consumer. Connections: Fast Producer to Queue(maxsize=3) [item item item] (put() BLOCKS when full), Queue(maxsize=3) [item item item] to Slow Consumer (get() makes room).
+    P["Fast Producer"]:::blue -->|"put() BLOCKS when<br/>full"| Q["Queue(maxsize=3)<br/>[item item item]"]:::orange
     Q -->|"get() makes room"| C["Slow Consumer"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-38-bounded-queue-backpressure/example.py`**
@@ -1927,17 +1937,20 @@ A global counter mutated inside a `multiprocessing.Process` target function incr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 45: A Global Mutated in a Child Process Is Invisible to the Parent
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: counter = 0, counter = 0 -> mutated to 99, Parent, Child. Connections: Parent to Child (fork/spawn: COPIES memory, does not share it), Child to Parent (child exits: mutation NEVER propagates back).
     subgraph Parent["Parent process"]
         PG["counter = 0"]:::blue
     end
-    subgraph Child["Child process (forked/spawned copy)"]
-        CG["counter = 0 -> mutated to 99"]:::orange
+    subgraph Child["Child process<br/>(forked/spawned<br/>copy)"]
+        CG["counter = 0 -><br/>mutated to 99"]:::orange
     end
-    Parent -.->|"fork/spawn: COPIES memory,<br/>does not share it"| Child
-    Child -.->|"child exits: mutation NEVER<br/>propagates back"| Parent
+    Parent -.->|"fork/spawn: COPIES<br/>memory,<br/>does not share it"| Child
+    Child -.->|"child exits:<br/>mutation NEVER<br/>propagates back"| Parent
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-45-process-shared-state-fails/example.py`**
@@ -2426,6 +2439,8 @@ _ex-50 &middot; exercises co-26_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 50: asyncio.createtask Schedules Work CONCURRENTLY, Not Sequentially
+    accDescr: Sequence diagram between Event Loop, Task A, Task B. Messages: Event Loop to Task A: schedule; Event Loop to Task B: schedule; Task A to Event Loop: sleep (yields); Task B to Event Loop: sleep (yields); Event Loop to Task A: resume, finish; Event Loop to Task B: resume, finish.
     participant Loop as Event Loop
     participant A as Task A
     participant B as Task B
@@ -2642,11 +2657,14 @@ _ex-52 &middot; exercises co-26, co-22_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 52: An asyncio.Queue Pipeline -- Cooperative Producer/Consumer
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Producer coroutine await queue.put(i), asyncio.Queue(), Consumer coroutine await queue.get(). Connections: Producer coroutine await queue.put(i) to asyncio.Queue(), asyncio.Queue() to Consumer coroutine await queue.get().
     P["Producer coroutine<br/>await queue.put(i)"]:::blue --> Q["asyncio.Queue()"]:::orange --> C["Consumer coroutine<br/>await queue.get()"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-52-asyncio-queue-producer-consumer/example.py`**
@@ -3051,15 +3069,18 @@ Amdahl's Law computes the theoretical CEILING on speedup from parallelizing a fr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 56: Amdahls Law -- the Theoretical CEILING on Parallel Speedup
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: Total Work, Serial Fraction (cannot parallelize), Parallel Fraction (splits across N workers), Speedup CEILING bounded by serial fraction. Connections: Total Work to Serial Fraction (cannot parallelize), Total Work to Parallel Fraction (splits across N workers), Serial Fraction (cannot parallelize) to Speedup CEILING bounded by serial fraction, Parallel Fraction (splits across N workers) to Speedup CEILING bounded by serial fraction.
     W["Total Work"]:::blue --> S["Serial Fraction<br/>(cannot parallelize)"]:::orange
-    W --> P["Parallel Fraction<br/>(splits across N workers)"]:::teal
-    S --> C["Speedup CEILING<br/>bounded by serial fraction"]:::purple
+    W --> P["Parallel Fraction<br/>(splits across N<br/>workers)"]:::teal
+    S --> C["Speedup CEILING<br/>bounded by serial<br/>fraction"]:::purple
     P --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-56-amdahl-speedup-estimate/example.py`**
@@ -3177,18 +3198,21 @@ A large sum is split into chunks, each chunk summed independently by a separate 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    D["Data"]:::blue --> M1["Worker 1: sum chunk 1"]:::orange
-    D --> M2["Worker 2: sum chunk 2"]:::orange
-    D --> M3["Worker 3: sum chunk 3"]:::orange
-    M1 --> R["Reduce: combine partial sums"]:::teal
+    accTitle: Example 57: Map-Reduce -- Split the Work, Combine the Partial Results
+    accDescr: Flowchart with 6 nodes and 7 connections. Nodes: Data, Worker 1: sum chunk 1, Worker 2: sum chunk 2, Worker 3: sum chunk 3, Reduce: combine partial sums, Final Total. Connections: Data to Worker 1: sum chunk 1, Data to Worker 2: sum chunk 2, Data to Worker 3: sum chunk 3, Worker 1: sum chunk 1 to Reduce: combine partial sums, Worker 2: sum chunk 2 to Reduce: combine partial sums, Worker 3: sum chunk 3 to Reduce: combine partial sums, Reduce: combine partial sums to Final Total.
+    D["Data"]:::blue --> M1["Worker 1: sum chunk<br/>1"]:::orange
+    D --> M2["Worker 2: sum chunk<br/>2"]:::orange
+    D --> M3["Worker 3: sum chunk<br/>3"]:::orange
+    M1 --> R["Reduce: combine<br/>partial sums"]:::teal
     M2 --> R
     M3 --> R
     R --> F["Final Total"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-57-map-reduce-decomposition/example.py`**

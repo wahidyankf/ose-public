@@ -27,11 +27,13 @@ Every one of this topic's 78 worked examples is a complete, self-contained `exam
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five mechanism clusters, in the order this page teaches them (co-01 through co-25)
 graph TD
+    accTitle: How verification works in this topic
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Query builder co-01 to co-08, Metadata and mapping co-09 to co-12, Identity map and session co-13 to co-15, Unit of work and flush co-16 to co-20, Lazy load, wiring, migrations, and typed API co-21 to co-25. Connections: Query builder co-01 to co-08 to Metadata and mapping co-09 to co-12, Metadata and mapping co-09 to co-12 to Identity map and session co-13 to co-15, Identity map and session co-13 to co-15 to Unit of work and flush co-16 to co-20, Unit of work and flush co-16 to co-20 to Lazy load, wiring, migrations, and typed API co-21 to co-25.
     A["Query builder<br/>co-01 to co-08"]:::blue
     B["Metadata and mapping<br/>co-09 to co-12"]:::orange
-    C["Identity map and session<br/>co-13 to co-15"]:::teal
-    D["Unit of work and flush<br/>co-16 to co-20"]:::purple
-    E["Lazy load, wiring, migrations,<br/>and typed API<br/>co-21 to co-25"]:::brown
+    C["Identity map and<br/>session<br/>co-13 to co-15"]:::teal
+    D["Unit of work and<br/>flush<br/>co-16 to co-20"]:::purple
+    E["Lazy load, wiring,<br/>migrations,<br/>and typed API<br/>co-21 to co-25"]:::brown
 
     A --> B
     B --> C
@@ -39,10 +41,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

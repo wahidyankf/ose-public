@@ -99,19 +99,22 @@ rule in exactly this observable-property form -- read the artifact, check the st
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-20)
 graph TD
-    A["Transition and people<br/>development<br/>co-01 to co-07"]:::blue
-    B["Delegation and delivery<br/>stewardship<br/>co-08 to co-11"]:::orange
-    C["Strategy and trade-off<br/>communication<br/>co-12 to co-14"]:::teal
+    accTitle: How verification works in this topic
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Transition and people development co-01 to co-07, Delegation and delivery stewardship co-08 to co-11, Strategy and trade-off communication co-12 to co-14, Culture, hiring and influence co-15 to co-17, Org design and sustaining leadership co-18 to co-20. Connections: Transition and people development co-01 to co-07 to Delegation and delivery stewardship co-08 to co-11, Delegation and delivery stewardship co-08 to co-11 to Strategy and trade-off communication co-12 to co-14, Strategy and trade-off communication co-12 to co-14 to Culture, hiring and influence co-15 to co-17, Culture, hiring and influence co-15 to co-17 to Org design and sustaining leadership co-18 to co-20.
+    A["Transition and<br/>people<br/>development<br/>co-01 to co-07"]:::blue
+    B["Delegation and<br/>delivery<br/>stewardship<br/>co-08 to co-11"]:::orange
+    C["Strategy and<br/>trade-off<br/>communication<br/>co-12 to co-14"]:::teal
     D["Culture, hiring<br/>and influence<br/>co-15 to co-17"]:::purple
-    E["Org design and<br/>sustaining leadership<br/>co-18 to co-20"]:::brown
+    E["Org design and<br/>sustaining<br/>leadership<br/>co-18 to co-20"]:::brown
 
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: the five concept clusters this topic teaches, in reading order -- from the personal

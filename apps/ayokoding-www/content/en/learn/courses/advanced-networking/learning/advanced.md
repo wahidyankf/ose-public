@@ -32,24 +32,27 @@ space, so a lost packet on stream A never blocks streams B or C.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    subgraph TCP["HTTP/2 over TCP -- ONE shared byte stream"]
-        T1["Stream A packet 3<br/>LOST"]:::orange --> TC["Single TCP byte stream<br/>strict in-order delivery"]:::brown
+    accTitle: Example 37: QUIC vs. TCP -- Head-of-Line Blocking, Contrasted Stream by Stream
+    accDescr: Graph with 12 nodes and 7 connections. Nodes: Stream A packet 3 LOST, Single TCP byte stream strict in-order delivery, Stream B packet 1 arrived intact, Stream C packet 1 arrived intact, ALL streams stall waiting for As retransmit, Stream A packet 3 LOST, Stream As own recovery sequence, Stream B packet 1 arrived intact, Stream B delivered immediately, Stream C packet 1 arrived intact, Stream C delivered immediately, Only stream A waits for its own retransmit. Connections: Stream A packet 3 LOST to Single TCP byte stream strict in-order delivery, Stream B packet 1 arrived intact to Single TCP byte stream strict in-order delivery, Single TCP byte stream strict in-order delivery to ALL streams stall waiting for As retransmit, Stream A packet 3 LOST to Stream As own recovery sequence, Stream B packet 1 arrived intact to Stream B delivered immediately, Stream C packet 1 arrived intact to Stream C delivered immediately, Stream As own recovery sequence to Only stream A waits for its own retransmit.
+    subgraph TCP["HTTP/2 over TCP --<br/>ONE shared byte<br/>stream"]
+        T1["Stream A packet 3<br/>LOST"]:::orange --> TC["Single TCP byte<br/>stream<br/>strict in-order<br/>delivery"]:::brown
         T2["Stream B packet 1<br/>arrived intact"]:::blue --> TC
         T3["Stream C packet 1<br/>arrived intact"]:::teal
-        TC --> TSTALL["ALL streams stall<br/>waiting for A's retransmit"]:::orange
+        TC --> TSTALL["ALL streams stall<br/>waiting for A's<br/>retransmit"]:::orange
         T3 -.blocked behind A.-> TSTALL
     end
-    subgraph QUIC["HTTP/3 over QUIC -- per-stream loss recovery"]
+    subgraph QUIC["HTTP/3 over QUIC --<br/>per-stream loss<br/>recovery"]
         Q1["Stream A packet 3<br/>LOST"]:::orange --> QA["Stream A's own<br/>recovery sequence"]:::orange
         Q2["Stream B packet 1<br/>arrived intact"]:::blue --> QB["Stream B delivered<br/>immediately"]:::blue
         Q3["Stream C packet 1<br/>arrived intact"]:::teal --> QC["Stream C delivered<br/>immediately"]:::teal
-        QA --> QSTALL["Only stream A waits<br/>for its own retransmit"]:::orange
+        QA --> QSTALL["Only stream A waits<br/>for its own<br/>retransmit"]:::orange
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: TCP's single shared byte stream (top) means one lost packet on stream A stalls B and C too,
@@ -82,6 +85,8 @@ changes underneath it.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 38: QUIC Connection Migration -- Surviving a Network Change Without a New Handshake
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: QUIC packets, CID=7f3a..., source IP=192.0.2.50; Server to Client: QUIC packets, CID=7f3a...; Client to Server: QUIC packets, CID=7f3a... (SAME CID), source IP=198.51.100.40 (NEW IP); Server to Client: QUIC packets, CID=7f3a... (connection continues uninterrupted).
     participant C as Client
     participant S as Server
     Note over C,S: Connection established over Wi-Fi -- server assigns Connection ID #61;CID#41; 7f3a...
@@ -477,24 +482,27 @@ Example 37) plus send datagrams that are allowed to be lost outright.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    subgraph WS["WebSocket -- ONE ordered, reliable TCP stream"]
+    accTitle: Example 43: WebTransport -- QUICs Multiplexed Streams and Datagrams, Exposed to the Browser
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Client, Single ordered byte stream, Server, Client, Stream 1 reliable, ordered, Stream 2 reliable, ordered, Datagrams UNRELIABLE, may be dropped, Server. Connections: Client to Single ordered byte stream, Single ordered byte stream to Server, Client to Stream 1 reliable, ordered, Client to Stream 2 reliable, ordered, Client to Datagrams UNRELIABLE, may be dropped, Stream 1 reliable, ordered to Server, Stream 2 reliable, ordered to Server, Datagrams UNRELIABLE, may be dropped to Server.
+    subgraph WS["WebSocket -- ONE<br/>ordered, reliable<br/>TCP stream"]
         WSC["Client"]:::blue --> WST["Single ordered<br/>byte stream"]:::brown
         WST --> WSS["Server"]:::teal
     end
-    subgraph WT["WebTransport session -- ONE QUIC connection, MANY independent flows"]
+    subgraph WT["WebTransport session<br/>-- ONE QUIC<br/>connection, MANY<br/>independent flows"]
         WTC["Client"]:::blue --> S1["Stream 1<br/>reliable, ordered"]:::orange
         WTC --> S2["Stream 2<br/>reliable, ordered"]:::orange
-        WTC --> D1["Datagrams<br/>UNRELIABLE, may be dropped"]:::purple
+        WTC --> D1["Datagrams<br/>UNRELIABLE, may be<br/>dropped"]:::purple
         S1 --> WTS["Server"]:::teal
         S2 --> WTS
         D1 --> WTS
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: a WebSocket (top) is exactly one ordered TCP stream; a WebTransport session (bottom) is one
@@ -525,6 +533,8 @@ addresses (via STUN, and TURN as a relay fallback) before the direct path opens.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 44: WebRTC -- Signaling, ICE/STUN/TURN, Then a Direct Peer-to-Peer Path
+    accDescr: Sequence diagram between Browser A, Signaling server 40often a WebSocket41, Browser B, STUN server. Messages: Browser A to Signaling server 40often a WebSocket41: SDP offer 40codecs, capabilities41; Signaling server 40often a WebSocket41 to Browser B: relay SDP offer; Browser B to Signaling server 40often a WebSocket41: SDP answer; Signaling server 40often a WebSocket41 to Browser A: relay SDP answer; Browser A to STUN server: discover my own public IP:port 40behind NAT41; Browser B to STUN server: discover my own public IP:port 40behind NAT41; Browser A to Browser B: ICE candidates exchanged 40via signaling server41; Browser A to Browser B: DIRECT peer-to-peer media/data 40server no longer in the path41.
     participant A as Browser A
     participant Sig as Signaling server<br/>#40;often a WebSocket#41;
     participant B as Browser B
@@ -571,16 +581,19 @@ that connection goes to the same backend for the connection's whole lifetime.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161
 graph TD
-    C["Client TCP connection<br/>dst=lb-ip:443"]:::blue --> LB{"L4 load balancer<br/>sees ONLY IP+port<br/>no HTTP visibility"}:::orange
-    LB -->|round-robin/hash on 4-tuple| B1["Backend 1"]:::teal
+    accTitle: Example 45: L4 Load Balancing -- Routing by IP/Port, No Content Visibility
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Client TCP connection dst=lb-ip:443, L4 load balancer sees ONLY IP+port no HTTP visibility, Backend 1, Same backend serves EVERY request on this connection. Connections: Client TCP connection dst=lb-ip:443 to L4 load balancer sees ONLY IP+port no HTTP visibility, L4 load balancer sees ONLY IP+port no HTTP visibility to Backend 1 (round-robin/hash on 4-tuple), Backend 1 to Same backend serves EVERY request on this connection (GET /api/orders AND GET /static/logo.png both go here -- L4 cannot tell them apart).
+    C["Client TCP<br/>connection<br/>dst=lb-ip:443"]:::blue --> LB{"L4 load balancer<br/>sees ONLY IP+port<br/>no HTTP visibility"}:::orange
+    LB -->|round-robin/hash on<br/>4-tuple| B1["Backend 1"]:::teal
     LB -.not chosen this connection.-> B2["Backend 2"]:::brown
     LB -.not chosen this connection.-> B3["Backend 3"]:::brown
-    B1 -->|"GET /api/orders AND\nGET /static/logo.png\nboth go here -- L4 cannot tell them apart"| B1NOTE["Same backend serves\nEVERY request on this connection"]:::teal
+    B1 -->|"GET /api/orders AND<br/>GET /static/logo.png<br/>both go here -- L4<br/>cannot tell them<br/>apart"| B1NOTE["Same backend serves<br/>EVERY request on<br/>this connection"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the L4 load balancer picks Backend 1 based only on the connection's IP/port 4-tuple -- it
@@ -611,15 +624,18 @@ own content.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    C["Client"]:::blue --> LB["L7 load balancer<br/>TERMINATES the client connection<br/>reads the real HTTP request"]:::orange
-    LB -->|"path starts with /api/"| API["API backend pool"]:::teal
-    LB -->|"path starts with /static/"| CDN_BE["Static-asset backend pool"]:::purple
-    LB -->|"Host: admin.example.com"| ADMIN["Admin backend pool<br/>#40;routed by header, not path#41;"]:::teal
+    accTitle: Example 46: L7 Load Balancing -- Routing by HTTP Path/Header Content
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client, L7 load balancer TERMINATES the client connection reads the real HTTP request, API backend pool, Static-asset backend pool, Admin backend pool 40routed by header, not path41. Connections: Client to L7 load balancer TERMINATES the client connection reads the real HTTP request, L7 load balancer TERMINATES the client connection reads the real HTTP request to API backend pool (path starts with /api/), L7 load balancer TERMINATES the client connection reads the real HTTP request to Static-asset backend pool (path starts with /static/), L7 load balancer TERMINATES the client connection reads the real HTTP request to Admin backend pool 40routed by header, not path41 (Host: admin.example.com).
+    C["Client"]:::blue --> LB["L7 load balancer<br/>TERMINATES the<br/>client connection<br/>reads the real HTTP<br/>request"]:::orange
+    LB -->|"path starts with<br/>/api/"| API["API backend pool"]:::teal
+    LB -->|"path starts with<br/>/static/"| CDN_BE["Static-asset backend<br/>pool"]:::purple
+    LB -->|"Host:<br/>admin.example.com"| ADMIN["Admin backend pool<br/>#40;routed by<br/>header, not path#41;"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the SAME load balancer routes `/api/*` requests to one backend pool and `/static/*`
@@ -1076,15 +1092,18 @@ contention are accounted for (throughput).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["Latency<br/>time for the FIRST bit to arrive<br/>#40;a delay, measured in ms#41;"]:::blue
-    B["Bandwidth<br/>the link's MAXIMUM possible capacity<br/>#40;e.g. a 1 Gbps link#41;"]:::orange
-    C["Throughput<br/>capacity ACTUALLY achieved<br/>#40;bandwidth minus loss/contention/overhead#41;"]:::teal
-    A -.->|"a SHORT, low-bandwidth link<br/>can still have LOW latency"| B
-    B -->|"loss, retransmits, and contention<br/>from OTHER traffic reduce this"| C
+    accTitle: Example 53: Latency vs. Bandwidth vs. Throughput -- Three Different Things, One Link
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Latency time for the FIRST bit to arrive 40a delay, measured in ms41, Bandwidth the links MAXIMUM possible capacity 40e.g. a 1 Gbps link41, Throughput capacity ACTUALLY achieved 40bandwidth minus loss/contention/ overhead41. Connections: Latency time for the FIRST bit to arrive 40a delay, measured in ms41 to Bandwidth the links MAXIMUM possible capacity 40e.g. a 1 Gbps link41 (a SHORT, low-bandwidth link can still have LOW latency), Bandwidth the links MAXIMUM possible capacity 40e.g. a 1 Gbps link41 to Throughput capacity ACTUALLY achieved 40bandwidth minus loss/contention/ overhead41 (loss, retransmits, and contention from OTHER traffic reduce this).
+    A["Latency<br/>time for the FIRST<br/>bit to arrive<br/>#40;a delay,<br/>measured in ms#41;"]:::blue
+    B["Bandwidth<br/>the link's MAXIMUM<br/>possible capacity<br/>#40;e.g. a 1 Gbps<br/>link#41;"]:::orange
+    C["Throughput<br/>capacity ACTUALLY<br/>achieved<br/>#40;bandwidth minus<br/>loss/contention/<br/>overhead#41;"]:::teal
+    A -.->|"a SHORT,<br/>low-bandwidth link<br/>can still have LOW<br/>latency"| B
+    B -->|"loss, retransmits,<br/>and contention<br/>from OTHER traffic<br/>reduce this"| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: on the SAME link, latency (delay), bandwidth (theoretical maximum capacity), and throughput
@@ -1117,6 +1136,8 @@ then permitted automatically, without needing its own explicit "allow inbound" r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 54: A Stateful Firewall -- Permitting a Reply by Matching Connection State
+    accDescr: Sequence diagram between Internal host, Stateful firewall, External server. Messages: Internal host to Stateful firewall: outbound SYN 40dst=203.0.113.5:44341; Stateful firewall to External server: outbound SYN 40forwarded41; External server to Stateful firewall: inbound SYN-ACK 40reply41; Stateful firewall to Internal host: inbound SYN-ACK 40forwarded41.
     participant Host as Internal host
     participant FW as Stateful firewall
     participant Ext as External server
@@ -1158,6 +1179,8 @@ one.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 55: Mutual TLS -- Both Sides Present and Verify a Certificate
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: ClientHello + KeyShare; Server to Client: ServerHello + KeyShare + Certificate + CertificateVerify + Finished; Client to Server: Finished; Client to Server: ClientHello + KeyShare; Server to Client: ServerHello + KeyShare + Certificate + CertificateVerify + CertificateRequest + Finished; Client to Server: Certificate + CertificateVerify + Finished.
     participant C as Client
     participant S as Server
     Note over C,S: Ordinary, one-sided TLS -- only the SERVER proves identity

@@ -27,16 +27,19 @@ what a framework like FastAPI does invisibly on every single request.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 1: Raw Server Hello
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Client sends GET /, send_ response4020041 writes status line, send_header + end_headers, wfile.write40bquothelloquot41 writes body. Connections: Client sends GET / to send_ response4020041 writes status line, send_ response4020041 writes status line to send_header + end_headers, send_header + end_headers to wfile.write40bquothelloquot41 writes body.
     A["Client sends<br/>GET /"]:::blue
-    B["send_response#40;200#41;<br/>writes status line"]:::orange
+    B["send_<br/>response#40;200#41;<br/>writes status line"]:::orange
     C["send_header +<br/>end_headers"]:::orange
-    D["wfile.write#40;b#quot;hello#quot;#41;<br/>writes body"]:::teal
+    D["wfile.write(<br/>b'hello')<br/>writes body"]:::teal
 
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-01-raw-server-hello/server.py`**
@@ -249,6 +252,8 @@ framework's router.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 4: Raw Read Path
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: self.path arrives as a plain string, self.path equals?, route a, route b, unknown route. Connections: self.path arrives as a plain string to self.path equals?, self.path equals? to route a (/a), self.path equals? to route b (/b), self.path equals? to unknown route (else).
     A["self.path arrives<br/>as a plain string"]:::blue
     B{"self.path<br/>equals?"}:::orange
     C["route a"]:::teal
@@ -260,8 +265,9 @@ graph LR
     B -->|else| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-04-raw-read-path/server.py`**
@@ -404,12 +410,15 @@ A raw handler decides its own status code by hand: `send_response(404)` for an u
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 6: Raw 404
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: GET /known, B, GET anything else, D. Connections: GET /known to B, GET anything else to D.
     A["GET /known"]:::blue --> B["200 OK --<br/>found it"]:::teal
     C["GET anything else"]:::orange --> D["404 Not Found --<br/>not found"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-06-raw-404/server.py`**
@@ -615,6 +624,8 @@ syllabus's acceptance criterion.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 9: Method 405, Raw
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Client sends POST /, Is there a do_POST method?, do_POST runs: 405 + Allow: GET, stdlib default: 501 Not Implemented. Connections: Client sends POST / to Is there a do_POST method?, Is there a do_POST method? to do_POST runs: 405 + Allow: GET (Yes, defined), Is there a do_POST method? to stdlib default: 501 Not Implemented (No 40Example 841).
     A["Client sends<br/>POST /"]:::blue
     B{"Is there a<br/>do_POST method?"}:::orange
     C["do_POST runs:<br/>405 + Allow: GET"]:::teal
@@ -625,8 +636,9 @@ graph TD
     B -->|No #40;Example 8#41;| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-09-method-405-raw/server.py`**
@@ -903,13 +915,16 @@ path parameter and its type -- a non-numeric path segment fails validation autom
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 14: Typed Path Param
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: GET /items/5, segment parses as int?, read_item runs, item_id=5 (int), D. Connections: GET /items/5 to segment parses as int?, segment parses as int? to read_item runs, item_id=5 (int) (yes), segment parses as int? to D (no, e.g. /items/abc).
     A["GET /items/5"]:::blue --> B{"segment parses<br/>as int?"}:::orange
     B -->|yes| C["read_item runs,<br/>item_id=5 (int)"]:::teal
-    B -->|"no, e.g. /items/abc"| D["422 --<br/>handler never runs"]:::orange
+    B -->|"no, e.g.<br/>/items/abc"| D["422 --<br/>handler never runs"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-14-typed-path-param/app.py`**
@@ -1054,9 +1069,11 @@ validate it against the model -- a malformed body never reaches the handler's ow
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 17: JSON Request Body
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: curl POST JSON body, Body matches Item model?, create_item4041 runs 200 + echoed JSON, 422 Unprocessable structured detail. Connections: curl POST JSON body to Body matches Item model?, Body matches Item model? to create_item4041 runs 200 + echoed JSON (Yes), Body matches Item model? to 422 Unprocessable structured detail (No).
     A["curl POST<br/>JSON body"]:::blue
     B{"Body matches<br/>Item model?"}:::orange
-    C["create_item#40;#41; runs<br/>200 + echoed JSON"]:::teal
+    C["create_item#40;#41;<br/>runs<br/>200 + echoed JSON"]:::teal
     D["422 Unprocessable<br/>structured detail"]:::orange
 
     A --> B
@@ -1064,8 +1081,9 @@ graph LR
     B -->|No| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-17-json-request-body/app.py`**
@@ -1128,13 +1146,16 @@ response body if the output model omits it.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 18: responsemodel Filters the Output
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: ItemIn body: name + secret_note, create_item runs, validated by ItemIn, response_ model=ItemOut filters the return value, JSON out: name ONLY. Connections: ItemIn body: name + secret_note to create_item runs, validated by ItemIn, create_item runs, validated by ItemIn to response_ model=ItemOut filters the return value, response_ model=ItemOut filters the return value to JSON out: name ONLY.
     A["ItemIn body:<br/>name + secret_note"]:::blue --> B["create_item runs,<br/>validated by ItemIn"]:::orange
-    B --> C["response_model=ItemOut<br/>filters the return value"]:::orange
+    B --> C["response_<br/>model=ItemOut<br/>filters the return<br/>value"]:::orange
     C --> D["JSON out:<br/>name ONLY"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-18-response-model/app.py`**
@@ -1473,13 +1494,16 @@ guarantee.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
+    accTitle: Example 24: PUT Is Idempotent
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: PUT /items/1 name: widget, items[1] = widget (overwrite), SAME PUT again, items[1] = widget (overwrite, same value), byte-identical response both times. Connections: PUT /items/1 name: widget to items[1] = widget (overwrite), SAME PUT again to items[1] = widget (overwrite, same value), items[1] = widget (overwrite) to byte-identical response both times, items[1] = widget (overwrite, same value) to byte-identical response both times.
     A["PUT /items/1<br/>{name: widget}"]:::blue --> B["items[1] = widget<br/>(overwrite)"]:::teal
-    C["SAME PUT again"]:::blue --> D["items[1] = widget<br/>(overwrite, same value)"]:::teal
+    C["SAME PUT again"]:::blue --> D["items[1] = widget<br/>(overwrite, same<br/>value)"]:::teal
     B --> E["byte-identical<br/>response both times"]:::teal
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-24-put-idempotent/app.py`**
@@ -1660,12 +1684,15 @@ in the code.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["POST /notes<br/>Content-Type: application/json"]:::blue --> B["body parsed as JSON,<br/>Note validates"]:::teal
-    C["POST /notes<br/>Content-Type: text/plain"]:::orange --> D["body never parsed as JSON --<br/>422, native default"]:::orange
+    accTitle: Example 27: FastAPIs Native Content-Type Rejection
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: POST /notes Content-Type: application/json, body parsed as JSON, Note validates, POST /notes Content-Type: text/plain, D. Connections: POST /notes Content-Type: application/json to body parsed as JSON, Note validates, POST /notes Content-Type: text/plain to D.
+    A["POST /notes<br/>Content-Type:<br/>application/json"]:::blue --> B["body parsed as JSON,<br/>Note validates"]:::teal
+    C["POST /notes<br/>Content-Type:<br/>text/plain"]:::orange --> D["body never parsed as<br/>JSON --<br/>422, native default"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-27-require-json-content-type/app.py`**

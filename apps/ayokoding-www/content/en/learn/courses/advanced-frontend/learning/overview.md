@@ -68,12 +68,14 @@ to react.dev, web.dev, the W3C, MDN, and the TypeScript Handbook, per the syllab
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 %% Six concept clusters, in the order this page teaches them (co-01 through co-37)
 graph TD
-    A["Rendering strategies:<br/>CSR, SSR, SSG, streaming,<br/>hydration, islands, RSC<br/>co-01 to co-07"]:::blue
-    B["Core Web Vitals &<br/>the critical path:<br/>LCP, INP, CLS, splitting,<br/>tree shaking<br/>co-08 to co-14"]:::orange
-    C["State at scale:<br/>cache vs client, Redux,<br/>hooks, reconciliation,<br/>virtual DOM, signals<br/>co-15 to co-22"]:::teal
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: Rendering strategies: CSR, SSR, SSG, streaming, hydration, islands, RSC co-01 to co-07, B, State at scale: cache vs client, Redux, hooks, reconciliation, virtual DOM, signals co-15 to co-22, Accessibility: WCAG, focus, forms, CSS at scale co-23 to co-29, E, edge, F. Connections: Rendering strategies: CSR, SSR, SSG, streaming, hydration, islands, RSC co-01 to co-07 to B, B to State at scale: cache vs client, Redux, hooks, reconciliation, virtual DOM, signals co-15 to co-22, State at scale: cache vs client, Redux, hooks, reconciliation, virtual DOM, signals co-15 to co-22 to Accessibility: WCAG, focus, forms, CSS at scale co-23 to co-29, Accessibility: WCAG, focus, forms, CSS at scale co-23 to co-29 to E, E to F.
+    A["Rendering<br/>strategies:<br/>CSR, SSR, SSG,<br/>streaming,<br/>hydration, islands,<br/>RSC<br/>co-01 to co-07"]:::blue
+    B["Core Web Vitals &<br/>the critical path:<br/>LCP, INP, CLS,<br/>splitting,<br/>tree shaking<br/>co-08 to co-14"]:::orange
+    C["State at scale:<br/>cache vs client,<br/>Redux,<br/>hooks,<br/>reconciliation,<br/>virtual DOM, signals<br/>co-15 to co-22"]:::teal
     D["Accessibility:<br/>WCAG, focus, forms,<br/>CSS at scale<br/>co-23 to co-29"]:::purple
     E["Data, media & edge:<br/>fetching, images,<br/>edge, TS, PWA, i18n<br/>co-30 to co-35"]:::brown
-    F["Testing & resilience:<br/>behaviour tests, e2e,<br/>error boundary<br/>co-36 to co-37"]:::gray
+    F["Testing &<br/>resilience:<br/>behaviour tests,<br/>e2e,<br/>error boundary<br/>co-36 to co-37"]:::gray
 
     A --> B
     B --> C
@@ -82,11 +84,12 @@ graph TD
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

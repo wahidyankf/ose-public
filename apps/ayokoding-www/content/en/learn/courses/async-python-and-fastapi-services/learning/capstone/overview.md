@@ -16,16 +16,19 @@ Advanced tiers; this capstone is where they all run together in one real async s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Step 1 async DB + health, Step 2 typed CRUD + validation, Step 3 streaming + config + logging, Step 4 async tests + ruff/pyright. Connections: Step 1 async DB + health to Step 2 typed CRUD + validation, Step 2 typed CRUD + validation to Step 3 streaming + config + logging, Step 3 streaming + config + logging to Step 4 async tests + ruff/pyright.
     A["Step 1<br/>async DB + health"]:::blue
-    B["Step 2<br/>typed CRUD + validation"]:::orange
-    C["Step 3<br/>streaming + config + logging"]:::teal
-    D["Step 4<br/>async tests + ruff/pyright"]:::purple
+    B["Step 2<br/>typed CRUD +<br/>validation"]:::orange
+    C["Step 3<br/>streaming + config +<br/>logging"]:::teal
+    D["Step 4<br/>async tests +<br/>ruff/pyright"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

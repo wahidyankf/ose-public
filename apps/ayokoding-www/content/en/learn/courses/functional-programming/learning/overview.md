@@ -70,11 +70,13 @@ by hand.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 %% Six concept clusters, in the order this page teaches them (co-01 through co-28)
 graph TD
-    A["Purity, referential transparency,<br/>immutability & sharing<br/>co-01 to co-05"]:::blue
-    B["Functions as values: first-class,<br/>higher-order, closures, currying,<br/>composition, pipe<br/>co-06 to co-12"]:::orange
-    C["Sequence transforms, recursion,<br/>laziness, itertools, memoization<br/>co-13 to co-17"]:::teal
-    D["Decorators, point-free style,<br/>ADTs & pattern matching<br/>co-18 to co-21"]:::purple
-    E["Option/Result, railway errors,<br/>functor/applicative/monad<br/>co-22 to co-27"]:::brown
+    accTitle: How verification works in this topic
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: A, Functions as values: first-class, higher-order, closures, currying, composition, pipe co-06 to co-12, Sequence transforms, recursion, laziness, itertools, memoization co-13 to co-17, D, pattern, Option/Result, railway errors, functor/applicative/ monad co-22 to co-27, Functional core, imperative shell co-28. Connections: A to Functions as values: first-class, higher-order, closures, currying, composition, pipe co-06 to co-12, Functions as values: first-class, higher-order, closures, currying, composition, pipe co-06 to co-12 to Sequence transforms, recursion, laziness, itertools, memoization co-13 to co-17, Sequence transforms, recursion, laziness, itertools, memoization co-13 to co-17 to D, D to Option/Result, railway errors, functor/applicative/ monad co-22 to co-27, Option/Result, railway errors, functor/applicative/ monad co-22 to co-27 to Functional core, imperative shell co-28.
+    A["Purity, referential<br/>transparency,<br/>immutability &<br/>sharing<br/>co-01 to co-05"]:::blue
+    B["Functions as values:<br/>first-class,<br/>higher-order,<br/>closures, currying,<br/>composition, pipe<br/>co-06 to co-12"]:::orange
+    C["Sequence transforms,<br/>recursion,<br/>laziness, itertools,<br/>memoization<br/>co-13 to co-17"]:::teal
+    D["Decorators,<br/>point-free style,<br/>ADTs & pattern<br/>matching<br/>co-18 to co-21"]:::purple
+    E["Option/Result,<br/>railway errors,<br/>functor/applicative/<br/>monad<br/>co-22 to co-27"]:::brown
     F["Functional core,<br/>imperative shell<br/>co-28"]:::gray
 
     A --> B
@@ -84,11 +86,12 @@ graph TD
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

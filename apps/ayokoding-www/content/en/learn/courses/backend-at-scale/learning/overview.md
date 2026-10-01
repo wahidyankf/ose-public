@@ -65,13 +65,15 @@ live installation, so every "Output" block is a real captured run.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 %% Seven concept clusters, in the order this page teaches them (co-01 through co-40)
 graph TD
-    A["HTTP & API foundations:<br/>methods, status, versioning,<br/>pagination, idempotency<br/>co-01 to co-06"]:::blue
-    B["Persistence & transactions:<br/>repository, unit-of-work,<br/>ACID, dual-write, outbox<br/>co-09 to co-13"]:::orange
-    C["AuthN/Z:<br/>JWT, OAuth2/OIDC, PKCE,<br/>RBAC/ABAC, refresh rotation<br/>co-14 to co-18"]:::teal
-    D["Limits & caching:<br/>rate-limit algorithms, 429,<br/>cache-aside/write-through/TTL, HTTP caching<br/>co-19 to co-24"]:::purple
-    E["Observability & health:<br/>structured logs, tracing,<br/>liveness vs readiness<br/>co-25 to co-27"]:::brown
-    F["Async messaging:<br/>at-least-once, idempotent consumer,<br/>DLQ, backpressure, webhooks, WS/SSE<br/>co-28 to co-34"]:::gray
-    G["Resilience & testing:<br/>circuit breaker, retry/jitter,<br/>timeout/bulkhead, pool, pact, testcontainers<br/>co-35 to co-40"]:::blue
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: A, API, B, AuthN/Z: JWT, OAuth2/OIDC, PKCE, RBAC/ABAC, refresh rotation co-14 to co-18, D, caching, E, Async messaging: at-least-once, idempotent consumer, DLQ, backpressure, webhooks, WS/SSE co-28 to co-34, G. Connections: A to B, B to AuthN/Z: JWT, OAuth2/OIDC, PKCE, RBAC/ABAC, refresh rotation co-14 to co-18, AuthN/Z: JWT, OAuth2/OIDC, PKCE, RBAC/ABAC, refresh rotation co-14 to co-18 to D, D to E, E to Async messaging: at-least-once, idempotent consumer, DLQ, backpressure, webhooks, WS/SSE co-28 to co-34, Async messaging: at-least-once, idempotent consumer, DLQ, backpressure, webhooks, WS/SSE co-28 to co-34 to G.
+    A["HTTP & API<br/>foundations:<br/>methods, status,<br/>versioning,<br/>pagination,<br/>idempotency<br/>co-01 to co-06"]:::blue
+    B["Persistence &<br/>transactions:<br/>repository,<br/>unit-of-work,<br/>ACID, dual-write,<br/>outbox<br/>co-09 to co-13"]:::orange
+    C["AuthN/Z:<br/>JWT, OAuth2/OIDC,<br/>PKCE,<br/>RBAC/ABAC, refresh<br/>rotation<br/>co-14 to co-18"]:::teal
+    D["Limits & caching:<br/>rate-limit<br/>algorithms, 429,<br/>cache-aside/<br/>write-through/TTL,<br/>HTTP caching<br/>co-19 to co-24"]:::purple
+    E["Observability &<br/>health:<br/>structured logs,<br/>tracing,<br/>liveness vs<br/>readiness<br/>co-25 to co-27"]:::brown
+    F["Async messaging:<br/>at-least-once,<br/>idempotent consumer,<br/>DLQ, backpressure,<br/>webhooks, WS/SSE<br/>co-28 to co-34"]:::gray
+    G["Resilience &<br/>testing:<br/>circuit breaker,<br/>retry/jitter,<br/>timeout/bulkhead,<br/>pool, pact,<br/>testcontainers<br/>co-35 to co-40"]:::blue
 
     A --> B
     B --> C
@@ -81,11 +83,12 @@ graph TD
     F --> G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

@@ -102,16 +102,19 @@ curl -s -v --http1.1 https://example.com
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["Host example.com:443 was resolved<br/>Application layer -- DNS name lookup"]:::blue
-    B["Connected to example.com port 443<br/>Transport layer -- TCP three-way handshake"]:::orange
-    C["SSL connection using TLSv1.3<br/>sits between Transport and Application -- TLS handshake"]:::teal
-    D["GET / HTTP/1.1 then HTTP/1.1 200 OK<br/>Application layer -- HTTP request/response"]:::purple
+    accTitle: are easy to point at one by one when mapping them to OSI/TCP-IP layers
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, TLS, D. Connections: C to TLS, A to B, B to C, C to D.
+    A["Host example.com:443<br/>was resolved<br/>Application layer --<br/>DNS name lookup"]:::blue
+    B["Connected to<br/>example.com port 443<br/>Transport layer --<br/>TCP three-way<br/>handshake"]:::orange
+    C["SSL connection using<br/>TLSv1.3<br/>sits between<br/>Transport and<br/>Application -- TLS<br/>handshake"]:::teal
+    D["GET /HTTP/1.1 then<br/>HTTP/1.1 200 OK<br/>Application layer --<br/>HTTP<br/>request/response"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the four visible stages of one `curl -v` request, each labeled with the OSI/TCP-IP layer
@@ -140,21 +143,24 @@ exactly the header it added, never touching what's inside.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    P["Application payload<br/>e.g. HTTP request bytes"]:::blue
-    T["+ TCP header<br/>src/dst port, sequence/ack numbers, flags"]:::orange
-    N["+ IP header<br/>src/dst IP address, TTL, protocol number"]:::teal
-    L["+ Ethernet header and trailer<br/>src/dst MAC address, frame check sequence"]:::purple
+    accTitle: Example 2: Encapsulation -- a Payload Gaining and Shedding Headers
+    accDescr: Graph with 4 nodes and 6 connections. Nodes: Application payload e.g. HTTP request bytes, + TCP header src/dst port, sequence/ack numbers, flags, + IP header src/dst IP address, TTL, protocol number, + Ethernet header and trailer src/dst MAC address, frame check sequence. Connections: Application payload e.g. HTTP request bytes to + TCP header src/dst port, sequence/ack numbers, flags, + TCP header src/dst port, sequence/ack numbers, flags to + IP header src/dst IP address, TTL, protocol number, + IP header src/dst IP address, TTL, protocol number to + Ethernet header and trailer src/dst MAC address, frame check sequence, + Ethernet header and trailer src/dst MAC address, frame check sequence to + IP header src/dst IP address, TTL, protocol number (receiver strips Ethernet), + IP header src/dst IP address, TTL, protocol number to + TCP header src/dst port, sequence/ack numbers, flags (receiver strips IP), + TCP header src/dst port, sequence/ack numbers, flags to Application payload e.g. HTTP request bytes (receiver strips TCP).
+    P["Application payload<br/>e.g. HTTP request<br/>bytes"]:::blue
+    T["+ TCP header<br/>src/dst port,<br/>sequence/ack<br/>numbers, flags"]:::orange
+    N["+ IP header<br/>src/dst IP address,<br/>TTL, protocol number"]:::teal
+    L["+ Ethernet header<br/>and trailer<br/>src/dst MAC address,<br/>frame check sequence"]:::purple
     P --> T
     T --> N
     N --> L
-    L -.->|receiver strips Ethernet| N
+    L -.->|receiver strips<br/>Ethernet| N
     N -.->|receiver strips IP| T
     T -.->|receiver strips TCP| P
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: solid arrows descend the stack, each layer prepending its own header (Ethernet also
@@ -758,12 +764,15 @@ remembers this mapping so the reply can be routed back to the correct private ho
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["Private host<br/>src 192.168.x.10:51000"]:::blue --> G{"NAT gateway<br/>rewrites source address:port"}:::orange
-    G --> B["Public Internet<br/>src rewritten to 203.0.113.5:40000"]:::teal
+    accTitle: Example 12: NAT Translation -- a Packet Crossing the Gateway
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Private host src 192.168.x.10:51000, NAT gateway rewrites source address:port, Public Internet src rewritten to 203.0.113.5:40000. Connections: Private host src 192.168.x.10:51000 to NAT gateway rewrites source address:port, NAT gateway rewrites source address:port to Public Internet src rewritten to 203.0.113.5:40000.
+    A["Private host<br/>src<br/>192.168.x.10:51000"]:::blue --> G{"NAT gateway<br/>rewrites source<br/>address:port"}:::orange
+    G --> B["Public Internet<br/>src rewritten to<br/>203.0.113.5:40000"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the packet's source `192.168.x.10:51000` (private, per Example 11's classifier) is

@@ -26,13 +26,16 @@ per iteration. `running_total` has a seeded sign-flip bug that only fires when a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 1: First Breakpoint with breakpoint
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: for n in values:, breakpoint() pauses HERE, p n, total inspect, then c. Connections: for n in values: to breakpoint() pauses HERE, breakpoint() pauses HERE to p n, total inspect, then c, p n, total inspect, then c to for n in values: (loop continues).
     A["for n in values:"]:::blue --> B["breakpoint()<br/>pauses HERE"]:::orange
     B --> C["p n, total<br/>inspect, then c"]:::teal
     C -->|"loop continues"| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -247,13 +250,16 @@ from the module's top level down to the current breakpoint, in order.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["&lt;module&gt;<br/>print(handle_request(...))"]:::blue --> B["handle_request()<br/>return parse_amount(amount)"]:::blue
-    B --> C["parse_amount()<br/>return to_cents(amount)"]:::orange
-    C --> D["to_cents()<br/>&gt; CURRENT (breakpoint here)"]:::teal
+    accTitle: Example 4: Reading the Call Stack with w
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: A, lt, handle_ request(...)), handle_request() return parse_amount(amount), parse_amount() return to_cents(amount), D. Connections: A to handle_request() return parse_amount(amount), lt to handle_request() return parse_amount(amount), handle_ request(...)) to handle_request() return parse_amount(amount), handle_request() return parse_amount(amount) to parse_amount() return to_cents(amount), parse_amount() return to_cents(amount) to D, parse_amount() return to_cents(amount) to handle_ request(...)).
+    A["&lt;module&gt;<br/>print(handle_<br/>request(...))"]:::blue --> B["handle_request()<br/>return<br/>parse_amount(amount)"]:::blue
+    B --> C["parse_amount()<br/>return<br/>to_cents(amount)"]:::orange
+    C --> D["to_cents()<br/>&gt; CURRENT<br/>(breakpoint here)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -327,13 +333,16 @@ moves back. Printing the same name (`amount`) at two different frames shows two 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["to_cents()<br/>amount = 19.99 (float)"]:::teal -->|"u"| B["parse_amount()<br/>amount = 19.99 (float)"]:::orange
+    accTitle: Example 5: Navigating Frames with up/down
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: to_cents() amount = 19.99 (float), parse_amount() amount = 19.99 (float), handle_request() amount = 19.99 (str). Connections: to_cents() amount = 19.99 (float) to parse_amount() amount = 19.99 (float) (u), parse_amount() amount = 19.99 (float) to to_cents() amount = 19.99 (float) (d), parse_amount() amount = 19.99 (float) to handle_request() amount = 19.99 (str) (u (not visited)).
+    A["to_cents()<br/>amount = 19.99<br/>(float)"]:::teal -->|"u"| B["parse_amount()<br/>amount = 19.99<br/>(float)"]:::orange
     B -->|"d"| A
-    B -.->|"u (not visited)"| C["handle_request()<br/>amount = '19.99' (str)"]:::blue
+    B -.->|"u (not visited)"| C["handle_request()<br/>amount = '19.99'<br/>(str)"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -476,14 +485,17 @@ continuing, confirms or refutes a hypothesis in the exact same debugging session
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 7: Mutating a Variable to Confirm a Hypothesis
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: break zone_key = intl, p zone_key confirms wrong value, zone_key = international WRITE, live, c resumes with the fix, 24.0 hypothesis CONFIRMED. Connections: break zone_key = intl to p zone_key confirms wrong value, p zone_key confirms wrong value to zone_key = international WRITE, live, zone_key = international WRITE, live to c resumes with the fix, c resumes with the fix to 24.0 hypothesis CONFIRMED.
     A["break<br/>zone_key = 'intl'"]:::blue --> B["p zone_key<br/>confirms wrong value"]:::orange
-    B --> C["zone_key = 'international'<br/>WRITE, live"]:::teal
+    B --> C["zone_key =<br/>'international'<br/>WRITE, live"]:::teal
     C --> D["c<br/>resumes with the fix"]:::orange
     D --> E["24.0<br/>hypothesis CONFIRMED"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -546,14 +558,17 @@ times but only ONE iteration is interesting.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 8: Conditional Breakpoint in a Loop
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: for i in range(100):, B, 50, breakpoint fires p i, total. Connections: for i in range(100): to B, B to 50, B to for i in range(100): (no (x99)), B to breakpoint fires p i, total (yes (x1)), breakpoint fires p i, total to for i in range(100):.
     A["for i in range(100):"]:::blue --> B{"i == 50?"}:::orange
     B -->|"no (x99)"| A
     B -->|"yes (x1)"| C["breakpoint fires<br/>p i, total"]:::teal
     C --> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -981,14 +996,17 @@ post-mortem debugging, right at the raising frame -- no `breakpoint()` call need
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["python -m pdb<br/>parse_config.py"]:::blue --> B["c<br/>runs to completion or crash"]:::orange
+    accTitle: Example 15: First Post-Mortem with python -m pdb
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: python -m pdb parse_config.py, c runs to completion or crash, KeyError: port UNCAUGHT, post-mortem opens AT the raising frame, p config locals still intact. Connections: python -m pdb parse_config.py to c runs to completion or crash, c runs to completion or crash to KeyError: port UNCAUGHT, KeyError: port UNCAUGHT to post-mortem opens AT the raising frame, post-mortem opens AT the raising frame to p config locals still intact.
+    A["python -m pdb<br/>parse_config.py"]:::blue --> B["c<br/>runs to completion<br/>or crash"]:::orange
     B --> C["KeyError: 'port'<br/>UNCAUGHT"]:::orange
     C --> D["post-mortem opens<br/>AT the raising frame"]:::teal
     D --> E["p config<br/>locals still intact"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1403,13 +1421,16 @@ self-built sampler (matching py-spy's folded-stack format) and renders the SVG w
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 21: Reading a Pregenerated Flame Graph
+    accDescr: Graph with 3 nodes and 1 connections. Nodes: hot_loop() WIDE, shallow most total time, deep_phase() TALL, 40 frames deep modest total time, deep_recursion() x40 stack depth. Connections: deep_phase() TALL, 40 frames deep modest total time to deep_recursion() x40 stack depth.
     A["hot_loop()<br/>WIDE, shallow<br/>most total time"]:::orange
     B["deep_phase()<br/>TALL, 40 frames deep<br/>modest total time"]:::blue
     B --> C["deep_recursion()<br/>x40 stack depth"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1480,14 +1501,17 @@ the exact commit that introduced a regression in `O(log2 n)` steps instead of ch
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 22: git bisect by Hand
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: commit 1 good, commit 2 good, commit 3 good, commit 4 BAD (regression), commit 5 bad (HEAD). Connections: commit 1 good to commit 2 good, commit 2 good to commit 3 good, commit 3 good to commit 4 BAD (regression), commit 4 BAD (regression) to commit 5 bad (HEAD).
     A["commit 1<br/>good"]:::teal --> B["commit 2<br/>good"]:::teal
     B --> C["commit 3<br/>good"]:::teal
     C --> D["commit 4<br/>BAD (regression)"]:::orange
     D --> E["commit 5<br/>bad (HEAD)"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1628,15 +1652,18 @@ large failing string down toward its essential trigger in a handful of steps.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["77 chars<br/>still_fails() == True"]:::blue --> B["drop a left chunk<br/>still_fails() == True"]:::orange
-    B --> C["... 4 more left drops<br/>all still True"]:::orange
-    C --> D["drop a right chunk<br/>still_fails() == True"]:::teal
-    D --> E["... 4 more right drops<br/>all still True"]:::teal
+    accTitle: Example 24: Minimizing a Failing Input by Hand
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: 77 chars still_fails(, drop a left chunk still_fails(, ... 4 more left drops all still True, drop a right chunk still_fails(, ... 4 more right drops all still True, BADSEQ 6 chars, still True. Connections: drop a left chunk still_fails( to ... 4 more left drops all still True, ... 4 more left drops all still True to drop a right chunk still_fails(, drop a right chunk still_fails( to ... 4 more right drops all still True, ... 4 more right drops all still True to BADSEQ 6 chars, still True.
+    A["77 chars<br/>still_fails() ==<br/>True"]:::blue --> B["drop a left chunk<br/>still_fails() ==<br/>True"]:::orange
+    B --> C["... 4 more left<br/>drops<br/>all still True"]:::orange
+    C --> D["drop a right chunk<br/>still_fails() ==<br/>True"]:::teal
+    D --> E["... 4 more right<br/>drops<br/>all still True"]:::teal
     E --> F["'BADSEQ'<br/>6 chars, still True"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

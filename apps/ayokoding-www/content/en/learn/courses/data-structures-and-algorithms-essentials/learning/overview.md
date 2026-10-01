@@ -97,10 +97,12 @@ web-verified 2026-07-12 and re-confirmed 2026-07-14.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-22)
 graph TD
-    A["Complexity vocabulary<br/>and linear structures<br/>co-01 to co-09"]:::blue
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Complexity vocabulary and linear structures co-01 to co-09, Trees and heaps co-10 to co-12, Searching and sorting co-13 to co-16, Recursion and optimization co-17 to co-20, Graphs and typing co-21 to co-22. Connections: Complexity vocabulary and linear structures co-01 to co-09 to Trees and heaps co-10 to co-12, Trees and heaps co-10 to co-12 to Searching and sorting co-13 to co-16, Searching and sorting co-13 to co-16 to Recursion and optimization co-17 to co-20, Recursion and optimization co-17 to co-20 to Graphs and typing co-21 to co-22.
+    A["Complexity<br/>vocabulary<br/>and linear<br/>structures<br/>co-01 to co-09"]:::blue
     B["Trees and heaps<br/>co-10 to co-12"]:::orange
-    C["Searching and sorting<br/>co-13 to co-16"]:::teal
-    D["Recursion and optimization<br/>co-17 to co-20"]:::purple
+    C["Searching and<br/>sorting<br/>co-13 to co-16"]:::teal
+    D["Recursion and<br/>optimization<br/>co-17 to co-20"]:::purple
     E["Graphs and typing<br/>co-21 to co-22"]:::brown
 
     A --> B
@@ -109,10 +111,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

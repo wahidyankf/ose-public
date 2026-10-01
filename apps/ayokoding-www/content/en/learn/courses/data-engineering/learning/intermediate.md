@@ -892,20 +892,23 @@ decision, not a purely technical one.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
-    subgraph T["Tumbling -- fixed, non-overlapping, co-14"]
+    accTitle: Three stream-window shapes, side by side
+    accDescr: Graph with 10 nodes and 8 connections. Nodes: [0,10), [10,20), [20,30), [0,10), [5,15), [10,20), burst: 0,5,12, SE2, ge, burst: 50,55. Connections: [0,10) to [10,20), [10,20) to [20,30), [0,10) to [5,15), [5,15) to [10,20), burst: 0,5,12 to SE2, burst: 0,5,12 to ge, SE2 to burst: 50,55, ge to burst: 50,55.
+    subgraph T["Tumbling -- fixed,<br/>non-overlapping,<br/>co-14"]
         T1["[0,10)"]:::blue --> T2["[10,20)"]:::blue --> T3["[20,30)"]:::blue
     end
-    subgraph H["Hopping -- overlapping, advance &lt; size, co-14"]
+    subgraph H["Hopping --<br/>overlapping, advance<br/>&lt; size, co-14"]
         H1["[0,10)"]:::orange --> H2["[5,15)"]:::orange --> H3["[10,20)"]:::orange
     end
-    subgraph SE["Session -- data-driven, activity-gap, co-14"]
+    subgraph SE["Session --<br/>data-driven,<br/>activity-gap, co-14"]
         SE1["burst: 0,5,12"]:::teal --> SE2["gap &ge; 30s"]:::brown --> SE3["burst: 50,55"]:::teal
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the three window shapes ex-28 through ex-30 built, side by side. Tumbling windows tile the

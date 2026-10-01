@@ -15,10 +15,13 @@ composition. Run each command in its linked, dedicated artifact directory.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 10: Recipe lookup
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: just recipe, lookup, shell command. Connections: just recipe to lookup, lookup to shell command.
   A["just recipe"]:::blue --> B["lookup"]:::orange --> C["shell command"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 11: Recipe prerequisite
@@ -26,10 +29,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 11: Recipe prerequisite
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: build, prepare, build action. Connections: build to prepare, prepare to build action.
   A["build"]:::blue --> B["prepare"]:::orange --> C["build action"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 12: Parameter binding
@@ -37,10 +43,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 12: Parameter binding
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: argument, recipe parameter, command value. Connections: argument to recipe parameter, recipe parameter to command value.
   A["argument"]:::blue --> B["recipe parameter"]:::orange --> C["command value"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 13: Hook order
@@ -48,11 +57,14 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+  accTitle: Flow 13: Hook order
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: prebuild, build, postbuild, result. Connections: prebuild to build, build to postbuild, postbuild to result.
   A["prebuild"]:::blue --> B["build"]:::orange --> C["postbuild"]:::teal --> D["result"]:::purple
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 28: List Available just Recipes
@@ -341,11 +353,14 @@ Keep composition and lifecycle order explicit so a failure identifies the respon
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+  accTitle: Flow 14: npm hook order
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: prebuild, build, postbuild, result. Connections: prebuild to build, build to postbuild, postbuild to result.
   A["prebuild"]:::blue --> B["build"]:::orange --> C["postbuild"]:::teal --> D["result"]:::purple
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 15: Script composition
@@ -353,10 +368,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 15: Script composition
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: verify, lint and test, result. Connections: verify to lint and test, lint and test to result.
   A["verify"]:::blue --> B["lint and test"]:::orange --> C["result"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 16: Parallel prerequisites
@@ -364,14 +382,17 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+  accTitle: Flow 16: Parallel prerequisites
+  accDescr: Flowchart with 4 nodes and 4 connections. Nodes: all, api, web, complete. Connections: all to api, all to web, api to complete, web to complete.
   A["all"]:::blue --> B["api"]:::orange
   A --> C["web"]:::teal
   B --> D["complete"]:::purple
   C --> D
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 17: Freshness comparison
@@ -379,13 +400,16 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+  accTitle: Flow 17: Freshness comparison
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Make mtime, execution choice, hash input, just action. Connections: Make mtime to execution choice, hash input to execution choice, just action to execution choice.
   A["Make mtime"]:::blue --> D["execution choice"]:::purple
   B["hash input"]:::orange --> D
   C["just action"]:::teal --> D
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 18: Content hash cache
@@ -393,13 +417,16 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+  accTitle: Flow 18: Content hash cache
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: input fingerprint, cache hit?, reuse output, execute. Connections: input fingerprint to cache hit?, cache hit? to reuse output (yes), cache hit? to execute (no).
   A["input fingerprint"]:::blue --> B{"cache hit?"}:::orange
   B -->|yes| C["reuse output"]:::teal
   B -->|no| D["execute"]:::purple
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 19: Hermetic boundary
@@ -407,10 +434,13 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 19: Hermetic boundary
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: declared inputs, isolated action, repeatable output. Connections: declared inputs to isolated action, isolated action to repeatable output.
   A["declared inputs"]:::blue --> B["isolated action"]:::orange --> C["repeatable output"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 39: Run an npm prebuild Hook

@@ -429,15 +429,18 @@ in its Score stage and Theme C starts filling in its Run and Compare stages.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph LR
-    D["Fixed Dataset<br/>versioned JSONL, co-03"]:::blue --> R["Run<br/>call the system, co-01"]:::orange
-    R --> S["Score<br/>deterministic scorers, co-05"]:::teal
-    S --> C["Compare<br/>baseline vs candidate, co-09"]:::purple
+    accTitle: Worked Example 6: The Fixed-Dataset Eval Loop
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Fixed Dataset versioned JSONL, co-03, Run call the system, co-01, Score deterministic scorers, co-05, Compare baseline vs candidate, co-09. Connections: Fixed Dataset versioned JSONL, co-03 to Run call the system, co-01, Run call the system, co-01 to Score deterministic scorers, co-05, Score deterministic scorers, co-05 to Compare baseline vs candidate, co-09, Compare baseline vs candidate, co-09 to Run call the system, co-01 (next candidate).
+    D["Fixed Dataset<br/>versioned JSONL,<br/>co-03"]:::blue --> R["Run<br/>call the system,<br/>co-01"]:::orange
+    R --> S["Score<br/>deterministic<br/>scorers, co-05"]:::teal
+    S --> C["Compare<br/>baseline vs<br/>candidate, co-09"]:::purple
     C -->|next candidate| R
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the fixed-dataset loop. The Dataset stage never changes between runs -- that fixed-ness is

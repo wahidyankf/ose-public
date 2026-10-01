@@ -34,20 +34,23 @@ either from the tool itself, in a degraded form, or from an equally real substit
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["native tool attempted"]:::blue --> B{"gdb?"}:::orange
+    accTitle: graph diagram
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: native tool attempted, gdb?, logging substitute (ex-63, ex-64), lldb attach?, .ips crash report substitute (ex-65, ex-66), perf?, mini_sampler + inferno, cross-tool-verified (ex-67, ex-68, ex-69), py-spy?, mini_sampler substitute (ex-71, ex-76, ex-77), cProfiles own opaque view (ex-70). Connections: native tool attempted to gdb?, gdb? to logging substitute (ex-63, ex-64) (not installed), native tool attempted to lldb attach?, lldb attach? to .ips crash report substitute (ex-65, ex-66) (Developer Mode disabled -- hangs, confirmed), native tool attempted to perf?, perf? to mini_sampler + inferno, cross-tool-verified (ex-67, ex-68, ex-69) (Linux-kernel only), native tool attempted to py-spy?, py-spy? to mini_sampler substitute (ex-71, ex-76, ex-77) (requires root on macOS), py-spy? to cProfiles own opaque view (ex-70) (--native unsupported on macOS at all).
+    A["native tool<br/>attempted"]:::blue --> B{"gdb?"}:::orange
     B -->|"not installed"| B1["logging substitute<br/>(ex-63, ex-64)"]:::teal
     A --> C{"lldb attach?"}:::orange
-    C -->|"Developer Mode disabled<br/>-- hangs, confirmed"| C1[".ips crash report<br/>substitute (ex-65, ex-66)"]:::teal
+    C -->|"Developer Mode<br/>disabled<br/>-- hangs, confirmed"| C1[".ips crash report<br/>substitute (ex-65,<br/>ex-66)"]:::teal
     A --> D{"perf?"}:::orange
-    D -->|"Linux-kernel only"| D1["mini_sampler +<br/>inferno, cross-tool-verified<br/>(ex-67, ex-68, ex-69)"]:::teal
+    D -->|"Linux-kernel only"| D1["mini_sampler +<br/>inferno,<br/>cross-tool-verified<br/>(ex-67, ex-68,<br/>ex-69)"]:::teal
     A --> E{"py-spy?"}:::orange
-    E -->|"requires root on macOS"| E1["mini_sampler substitute<br/>(ex-71, ex-76, ex-77)"]:::teal
-    E -->|"--native unsupported<br/>on macOS at all"| E2["cProfile's own<br/>opaque view (ex-70)"]:::purple
+    E -->|"requires root on<br/>macOS"| E1["mini_sampler<br/>substitute<br/>(ex-71, ex-76,<br/>ex-77)"]:::teal
+    E -->|"--native<br/>unsupported<br/>on macOS at all"| E2["cProfile's own<br/>opaque view (ex-70)"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ---
@@ -240,14 +243,17 @@ function is visible in the crash backtrace.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["faulthandler._sigsegv()<br/>REAL SIGSEGV"]:::blue --> B{"lldb -c core?"}:::orange
-    B -->|"core dump generation<br/>fails on this sandbox"| C["NOT available"]:::orange
-    A --> D["macOS ReportCrash<br/>generates .ips report"]:::teal
+    accTitle: Example 66: lldb Post-Mortem -- a Real Substitute
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: faulthandler._ sigsegv() REAL SIGSEGV, lldb -c core?, NOT available, macOS ReportCrash generates .ips report, symbolized backtrace crash_here() visible. Connections: faulthandler._ sigsegv() REAL SIGSEGV to lldb -c core?, lldb -c core? to NOT available (core dump generation fails on this sandbox), faulthandler._ sigsegv() REAL SIGSEGV to macOS ReportCrash generates .ips report, macOS ReportCrash generates .ips report to symbolized backtrace crash_here() visible.
+    A["faulthandler._<br/>sigsegv()<br/>REAL SIGSEGV"]:::blue --> B{"lldb -c core?"}:::orange
+    B -->|"core dump<br/>generation<br/>fails on this<br/>sandbox"| C["NOT available"]:::orange
+    A --> D["macOS ReportCrash<br/>generates .ips<br/>report"]:::teal
     D --> E["symbolized backtrace<br/>crash_here() visible"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -664,6 +670,8 @@ regressions).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 72: One Repo, Two Bugs -- Correctness and Performance
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: git bisect run check_correctness.sh, commit 3 isolated (off-by-one), RED: test fails 7.5 != 10.0, fix correctness (qty, not qty-1), GREEN: test passes, profile_totals.py 653925.0us, fix perf regression (O(1) multiply), 9.4us + test STILL green. Connections: git bisect run check_correctness.sh to commit 3 isolated (off-by-one), commit 3 isolated (off-by-one) to RED: test fails 7.5 != 10.0, RED: test fails 7.5 != 10.0 to fix correctness (qty, not qty-1), fix correctness (qty, not qty-1) to GREEN: test passes, GREEN: test passes to profile_totals.py 653925.0us, profile_totals.py 653925.0us to fix perf regression (O(1) multiply), fix perf regression (O(1) multiply) to 9.4us + test STILL green.
     A["git bisect run<br/>check_correctness.sh"]:::blue --> B["commit 3 isolated<br/>(off-by-one)"]:::orange
     B --> C["RED: test fails<br/>7.5 != 10.0"]:::orange
     C --> D["fix correctness<br/>(qty, not qty-1)"]:::teal
@@ -673,9 +681,10 @@ graph LR
     G --> H["9.4us<br/>+ test STILL green"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -982,14 +991,17 @@ unbounded version which would have grown proportionally every time.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["snap_a<br/>baseline"]:::blue --> B["burst 1<br/>fills cache to max_size"]:::orange
+    accTitle: Example 74: A Cache That Never Evicts
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: snap_a baseline, burst 1 fills cache to max_size, snap_b after burst 1, burst 2 evicts LRU entries, snap_c near-zero NET growth. Connections: snap_a baseline to burst 1 fills cache to max_size, burst 1 fills cache to max_size to snap_b after burst 1, snap_b after burst 1 to burst 2 evicts LRU entries, burst 2 evicts LRU entries to snap_c near-zero NET growth.
+    A["snap_a<br/>baseline"]:::blue --> B["burst 1<br/>fills cache to<br/>max_size"]:::orange
     B --> C["snap_b<br/>after burst 1"]:::blue
     C --> D["burst 2<br/>evicts LRU entries"]:::teal
     D --> E["snap_c<br/>near-zero NET growth"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1237,13 +1249,16 @@ ex-29/ex-71).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["single caller<br/>handle_request()"]:::blue --> B["wall time == work time"]:::blue
-    C["N concurrent callers<br/>ALL want _coarse_lock"]:::orange --> D["serialized, one at a time"]:::orange
-    D --> E["wall time N x work time<br/>most of it WAITING"]:::teal
+    accTitle: Example 76: Lock Contention Under Load
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: single caller handle_request(), B, work, N concurrent callers ALL want _coarse_lock, serialized, one at a time, wall time N x work time most of it WAITING. Connections: single caller handle_request() to B, B to work, N concurrent callers ALL want _coarse_lock to serialized, one at a time, serialized, one at a time to wall time N x work time most of it WAITING.
+    A["single caller<br/>handle_request()"]:::blue --> B["wall time == work<br/>time"]:::blue
+    C["N concurrent callers<br/>ALL want<br/>_coarse_lock"]:::orange --> D["serialized, one at a<br/>time"]:::orange
+    D --> E["wall time N x work<br/>time<br/>most of it WAITING"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1939,14 +1954,17 @@ confirmed: sys.monitoring's overhead is 1.8x lower than sys.settrace's, for the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: learning/code/ex-80-sys-monitoring-low-overhead-tracer/comparetracers.py
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: no tracer 10.4ms, sys.settrace 87.7ms (+77.3ms), sys.monitoring 53.7ms (+43.3ms), 1.8x MORE overhead. Connections: no tracer 10.4ms to sys.settrace 87.7ms (+77.3ms), no tracer 10.4ms to sys.monitoring 53.7ms (+43.3ms), sys.settrace 87.7ms (+77.3ms) to 1.8x MORE overhead, sys.monitoring 53.7ms (+43.3ms) to 1.8x MORE overhead.
     A["no tracer<br/>10.4ms"]:::blue --> B["sys.settrace<br/>87.7ms (+77.3ms)"]:::orange
     A --> C["sys.monitoring<br/>53.7ms (+43.3ms)"]:::teal
     B --> D["1.8x MORE<br/>overhead"]:::orange
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: both tracers see the identical 4 distinct lines (proving they instrument the SAME

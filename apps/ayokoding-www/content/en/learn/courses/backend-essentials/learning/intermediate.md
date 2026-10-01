@@ -18,13 +18,16 @@ Pydantic validates a request body against `TaskCreate` before the handler functi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 29: A Missing Required Field Fails Validation
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: POST /tasks body:, title present in body?, C, create_task runs, 201 Created. Connections: POST /tasks body: to title present in body?, title present in body? to C (no), title present in body? to create_task runs, 201 Created (yes).
     A["POST /tasks<br/>body: {}"]:::blue --> B{"title present<br/>in body?"}:::orange
-    B -->|no| C["422 --<br/>create_task never runs"]:::orange
+    B -->|no| C["422 --<br/>create_task never<br/>runs"]:::orange
     B -->|yes| D["create_task runs,<br/>201 Created"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-29-validation-required-field/app.py`**
@@ -299,14 +302,17 @@ _ex-33 &middot; exercises co-11_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 33: A Domain Exception Maps to an HTTP Response
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: handler raises TaskNotFoundError, FastAPI catches it, looks up the registered handler, handler returns 404 JSONResponse. Connections: handler raises TaskNotFoundError to FastAPI catches it, looks up the registered handler, FastAPI catches it, looks up the registered handler to handler returns 404 JSONResponse.
     A["handler raises<br/>TaskNotFoundError"]:::blue
-    B["FastAPI catches it,<br/>looks up the registered handler"]:::orange
+    B["FastAPI catches it,<br/>looks up the<br/>registered handler"]:::orange
     C["handler returns<br/>404 JSONResponse"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-33-exception-handler/app.py`**
@@ -497,13 +503,16 @@ _ex-35 &middot; exercises co-14, co-24_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 35: A Repository Module Opens SQLite and Runs a Query
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: app.py (handler), repository.py (connect + query), tasks.db. Connections: app.py (handler) to repository.py (connect + query) (calls), repository.py (connect + query) to tasks.db (reads/writes).
     A["app.py<br/>(handler)"]:::blue
     B["repository.py<br/>(connect + query)"]:::orange
     C[("tasks.db")]:::orange
     A -->|calls| B -->|reads/writes| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-35-repository-connect/app.py`**
@@ -735,13 +744,16 @@ The first letter of CRUD: `POST /tasks` validates the body with `TaskCreate`, th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["POST /tasks<br/>{title: ...}"]:::blue --> B["handler calls<br/>repository.create_task"]:::orange
+    accTitle: Example 37: CRUD -- Create a Task
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: POST /tasks title: ..., handler calls repository.create_ task, parameterized INSERT into tasks.db, 201 + the new row, server-assigned id. Connections: POST /tasks title: ... to handler calls repository.create_ task, handler calls repository.create_ task to parameterized INSERT into tasks.db, parameterized INSERT into tasks.db to 201 + the new row, server-assigned id.
+    A["POST /tasks<br/>{title: ...}"]:::blue --> B["handler calls<br/>repository.create_<br/>task"]:::orange
     B --> C["parameterized INSERT<br/>into tasks.db"]:::orange
     C --> D["201 + the new row,<br/>server-assigned id"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-37-crud-create/app.py`**
@@ -1105,13 +1117,16 @@ _ex-40 &middot; exercises co-14, co-02_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["PUT /tasks/id<br/>full replacement body"]:::blue --> B{"row with<br/>this id exists?"}:::orange
+    accTitle: Example 40: CRUD -- Update a Task
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: PUT /tasks/id full replacement body, row with this id exists?, C, UPDATE ... WHERE id = ?, 200 + fresh row. Connections: PUT /tasks/id full replacement body to row with this id exists?, row with this id exists? to C (no), row with this id exists? to UPDATE ... WHERE id = ?, 200 + fresh row (yes).
+    A["PUT /tasks/id<br/>full replacement<br/>body"]:::blue --> B{"row with<br/>this id exists?"}:::orange
     B -->|no| C["404 --<br/>PUT never creates"]:::orange
-    B -->|yes| D["UPDATE ... WHERE id = ?,<br/>200 + fresh row"]:::teal
+    B -->|yes| D["UPDATE ... WHERE id<br/>= ?,<br/>200 + fresh row"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-40-crud-update/app.py`**
@@ -1364,11 +1379,14 @@ This example combines the DB-backed `update_task`/`delete_task` from Examples 40
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 42: Update or Delete Against a Missing Id Returns a 404 Envelope
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: GET /tasks/999 (never created), repository SELECT returns no row, handler raises 404, structured envelope. Connections: GET /tasks/999 (never created) to repository SELECT returns no row, repository SELECT returns no row to handler raises 404, structured envelope.
     A["GET /tasks/999<br/>(never created)"]:::blue --> B["repository SELECT<br/>returns no row"]:::orange
-    B --> C["handler raises<br/>404, structured envelope"]:::orange
+    B --> C["handler raises<br/>404, structured<br/>envelope"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-42-crud-missing-404/app.py`**
@@ -1649,6 +1667,8 @@ _ex-44 &middot; exercises co-15_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 44: An Additive ALTER TABLE + Backfill Migration
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: v1 schema (id, title), seed one row BEFORE migrating, ALTER TABLE ADD COLUMN priority, UPDATE ... WHERE priority IS NULL. Connections: v1 schema (id, title) to seed one row BEFORE migrating, seed one row BEFORE migrating to ALTER TABLE ADD COLUMN priority, ALTER TABLE ADD COLUMN priority to UPDATE ... WHERE priority IS NULL.
     A["v1 schema<br/>(id, title)"]:::blue
     B["seed one row<br/>BEFORE migrating"]:::blue
     C["ALTER TABLE<br/>ADD COLUMN priority"]:::orange
@@ -1656,8 +1676,9 @@ graph LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-44-migration-add-column/app.py`**
@@ -2018,15 +2039,18 @@ _ex-47 &middot; exercises co-23, co-14_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 47: FastAPIs Depends Supplies the DB Connection
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: request arrives, FastAPI runs get_connection() up to yield, handler runs, receives the connection, response sent, finally: connection.close(). Connections: request arrives to FastAPI runs get_connection() up to yield, FastAPI runs get_connection() up to yield to handler runs, receives the connection, handler runs, receives the connection to response sent, finally: connection.close().
     A["request arrives"]:::blue
-    B["FastAPI runs<br/>get_connection() up to yield"]:::orange
-    C["handler runs,<br/>receives the connection"]:::orange
-    D["response sent,<br/>finally: connection.close()"]:::teal
+    B["FastAPI runs<br/>get_connection() up<br/>to yield"]:::orange
+    C["handler runs,<br/>receives the<br/>connection"]:::orange
+    D["response sent,<br/>finally:<br/>connection.close()"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-47-dependency-injection-db/app.py`**
@@ -2147,13 +2171,16 @@ A `BaseHTTPMiddleware` subclass's `dispatch()` method runs `call_next(request)` 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 48: Middleware Stamps Every Response with X-Request-Id
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: request arrives, call_next() runs routing + handler, C, response returned to the client. Connections: request arrives to call_next() runs routing + handler, call_next() runs routing + handler to C, C to response returned to the client.
     A["request arrives"]:::blue --> B["call_next() runs<br/>routing + handler"]:::orange
-    B --> C["middleware stamps a<br/>FRESH uuid4() on the<br/>response, unconditionally --<br/>any incoming X-Request-Id<br/>header is ignored"]:::teal
+    B --> C["middleware stamps a<br/>FRESH uuid4() on the<br/>response,<br/>unconditionally --<br/>any incoming<br/>X-Request-Id<br/>header is ignored"]:::teal
     C --> D["response returned<br/>to the client"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-48-request-id-middleware/app.py`**
@@ -2335,13 +2362,16 @@ _ex-50 &middot; exercises co-16_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["request arrives,<br/>start = perf_counter()"]:::blue --> B["call_next() --<br/>handler runs"]:::orange
-    B --> C["duration = perf_counter()<br/>- start"]:::orange
-    C --> D["X-Process-Time header<br/>set on the response"]:::teal
+    accTitle: Example 50: Middleware Measures Request Duration
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: request arrives, start = perf_counter(), call_next(, duration = perf_counter() - start, X-Process-Time header set on the response. Connections: request arrives, start = perf_counter() to call_next(, call_next( to duration = perf_counter() - start, duration = perf_counter() - start to X-Process-Time header set on the response.
+    A["request arrives,<br/>start =<br/>perf_counter()"]:::blue --> B["call_next() --<br/>handler runs"]:::orange
+    B --> C["duration =<br/>perf_counter()<br/>- start"]:::orange
+    C --> D["X-Process-Time<br/>header<br/>set on the response"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-50-timing-middleware/app.py`**
@@ -2644,13 +2674,16 @@ FastAPI does NOT enforce `Accept` header negotiation out of the box -- this exam
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["GET /tasks/1<br/>Accept: text/plain"]:::blue --> B{"hand-written<br/>dependency checks Accept"}:::orange
-    B -->|"json excluded"| C["406 --<br/>hand-written, not a framework default"]:::orange
+    accTitle: Example 54: Hand-Written Accept Header Negotiation
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: GET /tasks/1 Accept: text/plain, hand-written dependency checks Accept, C, 200 + JSON body, same as always. Connections: GET /tasks/1 Accept: text/plain to hand-written dependency checks Accept, hand-written dependency checks Accept to C (json excluded), hand-written dependency checks Accept to 200 + JSON body, same as always (application/json).
+    A["GET /tasks/1<br/>Accept: text/plain"]:::blue --> B{"hand-written<br/>dependency checks<br/>Accept"}:::orange
+    B -->|"json excluded"| C["406 --<br/>hand-written, not a<br/>framework default"]:::orange
     B -->|"application/json"| D["200 + JSON body,<br/>same as always"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-54-accept-json-negotiation/app.py`**
@@ -2855,6 +2888,8 @@ A `@pytest.fixture()` yields a `TestClient` wrapped in `with TestClient(app) as 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 56: pytest + FastAPIs TestClient, Explicitly
+    accDescr: Graph with 8 nodes and 3 connections. Nodes: A, client, B, yields, C, against, D, runs. Connections: A to B, B to C, C to D.
     A["pytest calls the
 client fixture"]:::blue
     B["fixture resets the DB,
@@ -2866,8 +2901,9 @@ runs again, DB resets"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-56-pytest-testclient/app.py`**

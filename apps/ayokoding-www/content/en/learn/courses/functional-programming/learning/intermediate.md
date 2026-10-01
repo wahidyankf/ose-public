@@ -122,11 +122,14 @@ than traversing to count nodes.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
+    accTitle: Example 30: O Sharing on a Persistent Linked List
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: version_b head=2, length=2, version_a head=1, length=1, None empty list. Connections: version_b head=2, length=2 to version_a head=1, length=1 (tail), version_a head=1, length=1 to None empty list (tail).
     B["version_b<br/>head=2, length=2"]:::orange -->|tail| A["version_a<br/>head=1, length=1"]:::blue
     A -->|tail| N["None<br/>empty list"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -465,13 +468,16 @@ applying the rightmost function first to match ordinary mathematical composition
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 34: compose Folds a List of Functions
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: x = 3, add_one40x41 = 4, double40441 = 8, square40841 = 64. Connections: x = 3 to add_one40x41 = 4, add_one40x41 = 4 to double40441 = 8, double40441 = 8 to square40841 = 64.
     X["x = 3"]:::blue --> A["add_one#40;x#41;<br/>= 4"]:::orange
     A --> D["double#40;4#41;<br/>= 8"]:::teal
     D --> S["square#40;8#41;<br/>= 64"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -721,13 +727,16 @@ total -- and confirms the three-stage pipeline matches an equivalent single comp
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 37: Chaining map, filter, and reduce
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: orders 6 values, map40doubled41 6 values, filter40622041 3 values, reduce40sum41 110. Connections: orders 6 values to map40doubled41 6 values, map40doubled41 6 values to filter40622041 3 values, filter40622041 3 values to reduce40sum41 110.
     O["orders<br/>6 values"]:::blue --> M["map#40;doubled#41;<br/>6 values"]:::orange
     M --> Fi["filter#40;#62;20#41;<br/>3 values"]:::teal
     Fi --> R["reduce#40;sum#41;<br/>110"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -803,13 +812,16 @@ touched to satisfy three `next()` calls.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    Src["logged_source#40;#41;<br/>range 1..999"]:::blue -->|pulled one at a time| Map["map#40;n * 2#41;"]:::orange
-    Map -->|pulled one at a time| Filt["filter#40;n % 4 == 0#41;"]:::teal
+    accTitle: Example 38: A Lazy map/filter Pipeline Pulled by next
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: logged_ source4041 range 1..999, map40n * 241, Filt, 4, 8, 12. Connections: logged_ source4041 range 1..999 to map40n * 241 (pulled one at a time), map40n * 241 to Filt (pulled one at a time), Filt to 4, 8, 12 (next4041 x3).
+    Src["logged_<br/>source#40;#41;<br/>range 1..999"]:::blue -->|pulled one at a time| Map["map#40;n * 2#41;"]:::orange
+    Map -->|pulled one at a time| Filt["filter#40;n % 4 ==<br/>0#41;"]:::teal
     Filt -->|next#40;#41; x3| Out["4, 8, 12"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1128,13 +1140,16 @@ succeeds on the third, and the retry loop logs every attempt before returning th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 42: A Parameterized @retry Decorator
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: attempt 1, attempt 2, attempt 3, return ok. Connections: attempt 1 to attempt 2 (ValueError), attempt 2 to attempt 3 (ValueError), attempt 3 to return ok (success).
     A["attempt 1"]:::orange -->|ValueError| B["attempt 2"]:::orange
     B -->|ValueError| C["attempt 3"]:::teal
     C -->|success| D["return 'ok'"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1436,11 +1451,14 @@ variant needs, and computes area with an `isinstance` check that narrows the typ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
-    S["Shape: Circle or Square"]:::blue --> C["Circle#40;radius#41;"]:::orange
+    accTitle: Example 45: A Shape ADT as a Union of Frozen Dataclasses
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Shape: Circle or Square, Circle40radius41, Square40side41. Connections: Shape: Circle or Square to Circle40radius41, Shape: Circle or Square to Square40side41.
+    S["Shape: Circle or<br/>Square"]:::blue --> C["Circle#40;radius#41;"]:::orange
     S --> Q["Square#40;side#41;"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1532,13 +1550,16 @@ variant.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    M["match shape"]:::blue --> C["case Circle#40;radius=r#41;"]:::orange
-    M --> Q["case Square#40;side=s#41;"]:::teal
+    accTitle: Example 46: match/case Dispatches Over the Shape ADT
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: match shape, case Circle40radius=r41, case Square40side=s41, case _ unreachable. Connections: match shape to case Circle40radius=r41, match shape to case Square40side=s41, match shape to case _ unreachable.
+    M["match shape"]:::blue --> C["case Circle(<br/>radius=r)"]:::orange
+    M --> Q["case<br/>Square#40;side=s#41;"]:::teal
     M --> U["case _<br/>unreachable"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1703,11 +1724,14 @@ method, and confirms `map` transforms a present value but is a safe no-op on an 
 ```mermaid
 %% Color Palette: Blue #0173B2, Gray #808080
 flowchart LR
+    accTitle: Example 48: A Hand-Rolled Some/Nothing With map
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: Some40541, Some40641, Nothing4041, Nothing4041. Connections: Some40541 to Some40641 (map40+141), Nothing4041 to Nothing4041 (map40+141 skipped).
     S["Some#40;5#41;"]:::blue -->|map#40;+1#41;| S2["Some#40;6#41;"]:::blue
-    N["Nothing#40;#41;"]:::gray -->|map#40;+1#41; skipped| N2["Nothing#40;#41;"]:::gray
+    N["Nothing#40;#41;"]:::gray -->|map#40;+1#41;<br/>skipped| N2["Nothing#40;#41;"]:::gray
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1807,13 +1831,16 @@ attempting the second lookup.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Gray #808080
 flowchart LR
-    U["find users, 'ana'"]:::blue -->|Some#40;'jakarta'#41;| C["find cities, 'jakarta'"]:::orange
-    C -->|Some#40;'Jakarta, Indonesia'#41;| R1["hit"]:::blue
-    U2["find users, 'budi'"]:::gray -->|Nothing#40;#41; short-circuits| R2["miss"]:::gray
+    accTitle: Example 49: Chaining Option-Returning Lookups
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: find users, ana, find cities, jakarta, hit, find users, budi, miss. Connections: find users, ana to find cities, jakarta (Some40jakarta41), find cities, jakarta to hit (Some40Jakarta, Indonesia41), find users, budi to miss (Nothing4041 short-circuits).
+    U["find users, 'ana'"]:::blue -->|"Some('jakarta')"| C["find cities,<br/>'jakarta'"]:::orange
+    C -->|Some#40;'Jakarta,<br/>Indonesia'#41;| R1["hit"]:::blue
+    U2["find users, 'budi'"]:::gray -->|Nothing#40;#41;<br/>short-circuits| R2["miss"]:::gray
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1918,11 +1945,14 @@ a caller can inspect which one it got with a plain `isinstance` check, no `try`/
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
+    accTitle: Example 50: A Hand-Rolled Ok/Err Result Type
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: divide4010, 241, Ok405.041, divide4010, 041, Err40division by zero41. Connections: divide4010, 241 to Ok405.041 (success), divide4010, 041 to Err40division by zero41 (failure).
     D1["divide#40;10, 2#41;"]:::blue -->|success| Ok1["Ok#40;5.0#41;"]:::blue
-    D2["divide#40;10, 0#41;"]:::orange -->|failure| Err1["Err#40;'division by zero'#41;"]:::orange
+    D2["divide#40;10, 0#41;"]:::orange -->|failure| Err1["Err#40;'division by<br/>zero'#41;"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2131,6 +2161,8 @@ means the second is never even attempted.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
+    accTitle: Example 52: A Validation Pipeline Threading Result
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: validate_form, validate_name, validate_age, failure track, success, failure track. Connections: validate_form to validate_name, validate_name to validate_age (Ok), validate_name to failure track (Err), validate_age to success (Ok), validate_age to failure track (Err).
     Start["validate_form"]:::blue --> N["validate_name"]:::blue
     N -->|Ok| A["validate_age"]:::blue
     N -->|Err| F1["failure track"]:::orange
@@ -2138,7 +2170,8 @@ flowchart LR
     A -->|Err| F2["failure track"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2254,11 +2287,14 @@ not the SAME object.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 flowchart LR
+    accTitle: Example 53: The Functor Identity Law by Example
+    accDescr: Flowchart with 2 nodes and 2 connections. Nodes: Box404241, Box404241. Connections: Box404241 to Box404241 (map40identity41), Box404241 to Box404241 (equals).
     B["Box#40;42#41;"]:::blue -->|map#40;identity#41;| B2["Box#40;42#41;"]:::teal
     B2 -.->|equals| B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2444,13 +2480,16 @@ short-circuiting to `Nothing` the instant either one is absent.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 55: map2 Combines Two Options
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Some40241, map240add41, Some40341, Some40541. Connections: Some40241 to map240add41, Some40341 to map240add41, map240add41 to Some40541.
     A["Some#40;2#41;"]:::blue --> M["map2#40;add#41;"]:::teal
     B["Some#40;3#41;"]:::orange --> M
     M --> R["Some#40;5#41;"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2552,13 +2591,16 @@ FIRST bind, because 7 is odd).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 56: bind/flatmap Chaining Result Steps
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: Ok40841, Ok404.041, Ok404.041, Ok40741, Err407 is odd41. Connections: Ok40841 to Ok404.041 (bind40half41), Ok404.041 to Ok404.041 (bind40to_ positive41), Ok40741 to Err407 is odd41 (bind40half41 fails: odd).
     O8["Ok#40;8#41;"]:::blue -->|bind#40;half#41;| O4["Ok#40;4.0#41;"]:::teal
-    O4 -->|bind#40;to_positive#41;| O4b["Ok#40;4.0#41;"]:::teal
-    O7["Ok#40;7#41;"]:::orange -->|bind#40;half#41; fails: odd| E["Err#40;'7 is odd'#41;"]:::orange
+    O4 -->|bind#40;to_<br/>positive#41;| O4b["Ok#40;4.0#41;"]:::teal
+    O7["Ok#40;7#41;"]:::orange -->|bind#40;half#41;<br/>fails: odd| E["Err#40;'7 is<br/>odd'#41;"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

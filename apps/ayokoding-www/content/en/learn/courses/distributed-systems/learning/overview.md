@@ -14,14 +14,17 @@ the guarantee it needs, the failure it tolerates, and the mechanism that provide
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: Mental model
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Unreliable messages, Replication choice, Consistency behavior, Failure evidence and recovery. Connections: Unreliable messages to Replication choice, Replication choice to Consistency behavior, Consistency behavior to Failure evidence and recovery.
     A["Unreliable messages"]:::blue --> B["Replication choice"]:::orange
     B --> C["Consistency behavior"]:::teal
-    C --> D["Failure evidence and recovery"]:::purple
+    C --> D["Failure evidence and<br/>recovery"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Example progression

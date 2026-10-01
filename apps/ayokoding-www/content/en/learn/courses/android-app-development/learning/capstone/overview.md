@@ -24,13 +24,16 @@ Build an app that satisfies all of the following:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A["Step 1<br/>stateful ViewModel + Compose list"]:::blue --> B{{"Step 2<br/>Room cache + Retrofit refresh"}}:::orange
-    B --> C["Step 3<br/>navigation + saved state"]:::teal
-    C --> D["Step 4<br/>JUnit + Compose UI tests"]:::purple
+    accTitle: Goal and acceptance criteria
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Step 1 stateful ViewModel + Compose list, Step 2 Room cache + Retrofit refresh, Step 3 navigation + saved state, Step 4 JUnit + Compose UI tests. Connections: Step 1 stateful ViewModel + Compose list to Step 2 Room cache + Retrofit refresh, Step 2 Room cache + Retrofit refresh to Step 3 navigation + saved state, Step 3 navigation + saved state to Step 4 JUnit + Compose UI tests.
+    A["Step 1<br/>stateful ViewModel +<br/>Compose list"]:::blue --> B{{"Step 2<br/>Room cache +<br/>Retrofit refresh"}}:::orange
+    B --> C["Step 3<br/>navigation + saved<br/>state"]:::teal
+    C --> D["Step 4<br/>JUnit + Compose UI<br/>tests"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Build it

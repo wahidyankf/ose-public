@@ -90,11 +90,13 @@ into prose.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-24)
 graph TD
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: async/await and the event loop co-01 to co-06, Tooling: uv, ruff, pyright co-07 to co-09, FastAPI routes, params, Pydantic models co-10 to co-14, co-20, DI, async DB, errors, lifespan, middleware co-15 to co-19, Testing, streaming, concurrency safety, config co-21 to co-24. Connections: async/await and the event loop co-01 to co-06 to Tooling: uv, ruff, pyright co-07 to co-09, Tooling: uv, ruff, pyright co-07 to co-09 to FastAPI routes, params, Pydantic models co-10 to co-14, co-20, FastAPI routes, params, Pydantic models co-10 to co-14, co-20 to DI, async DB, errors, lifespan, middleware co-15 to co-19, DI, async DB, errors, lifespan, middleware co-15 to co-19 to Testing, streaming, concurrency safety, config co-21 to co-24.
     A["async/await and<br/>the event loop<br/>co-01 to co-06"]:::blue
-    B["Tooling: uv, ruff, pyright<br/>co-07 to co-09"]:::orange
-    C["FastAPI routes, params,<br/>Pydantic models<br/>co-10 to co-14, co-20"]:::teal
-    D["DI, async DB, errors,<br/>lifespan, middleware<br/>co-15 to co-19"]:::purple
-    E["Testing, streaming,<br/>concurrency safety, config<br/>co-21 to co-24"]:::brown
+    B["Tooling: uv, ruff,<br/>pyright<br/>co-07 to co-09"]:::orange
+    C["FastAPI routes,<br/>params,<br/>Pydantic models<br/>co-10 to co-14,<br/>co-20"]:::teal
+    D["DI, async DB,<br/>errors,<br/>lifespan, middleware<br/>co-15 to co-19"]:::purple
+    E["Testing, streaming,<br/>concurrency safety,<br/>config<br/>co-21 to co-24"]:::brown
 
     A --> B
     B --> C
@@ -102,10 +104,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

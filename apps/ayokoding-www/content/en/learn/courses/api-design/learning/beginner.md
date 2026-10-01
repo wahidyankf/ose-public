@@ -163,6 +163,8 @@ status codes) can rely on the same vocabulary instead of re-deriving it per endp
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 3: Mapping CRUD onto HTTP Methods
+    accDescr: Graph with 10 nodes and 5 connections. Nodes: Create, POST, Read, GET, Update (replace), PUT, Update (partial), PATCH, Delete, DELETE. Connections: Create to POST (maps to), Read to GET (maps to), Update (replace) to PUT (maps to), Update (partial) to PATCH (maps to), Delete to DELETE (maps to).
     A[Create] -->|maps to| B[POST]
     C[Read] -->|maps to| D[GET]
     E["Update (replace)"] -->|maps to| F[PUT]
@@ -173,6 +175,7 @@ graph LR
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     class A,C,E,G,I blue
     class B,D,F,H,J orange
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-03-method-semantics-map/example.py`**
@@ -582,18 +585,21 @@ the ladder's own criteria.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161
 graph LR
+    accTitle: Example 9: Classify Three APIs by Richardson Maturity Model Level
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: L0: POX one RPC endpoint, L1: Resources + resource URIs, L2: HTTP Verbs+Status + verbs/status codes, L3: Hypermedia + _links. Connections: L0: POX one RPC endpoint to L1: Resources + resource URIs, L1: Resources + resource URIs to L2: HTTP Verbs+Status + verbs/status codes, L2: HTTP Verbs+Status + verbs/status codes to L3: Hypermedia + _links.
     L0["L0: POX<br/>one RPC endpoint"] --> L1["L1: Resources<br/>+ resource URIs"]
-    L1 --> L2["L2: HTTP Verbs+Status<br/>+ verbs/status codes"]
+    L1 --> L2["L2: HTTP<br/>Verbs+Status<br/>+ verbs/status codes"]
     L2 --> L3["L3: Hypermedia<br/>+ _links"]
 
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class L0 brown
     class L1 blue
     class L2 orange
     class L3 teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-09-richardson-level-classify/example.py`**
@@ -734,6 +740,8 @@ the API wherever it actually points -- co-28 names this specific mechanism.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 11: HATEOAS -- Following Links Instead of Hardcoding URLs
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: GET /orders/101; Server to Client: 200 OK, _links.cancel = /orders/101/cancel; Client to Server: POST /orders/101/cancel (discovered, not hardcoded); Server to Client: 200 OK.
     participant Client
     participant Server
 
@@ -1057,23 +1065,26 @@ example builds the smallest valid skeleton and checks it against that requiremen
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[OpenAPI Spec] --> B["openapi: spec version"]
-    A --> C["info: title + version"]
+    accTitle: Example 15: A Minimal OpenAPI 3.1 Document
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: OpenAPI Spec, openapi: spec version, info: title + version, paths: operations, Examples 16-20: schemas, Example 21: mock server, Example 22: client codegen. Connections: OpenAPI Spec to openapi: spec version, OpenAPI Spec to info: title + version, OpenAPI Spec to paths: operations, paths: operations to Examples 16-20: schemas, Examples 16-20: schemas to Example 21: mock server, Example 21: mock server to Example 22: client codegen.
+    A[OpenAPI Spec] --> B["openapi: spec<br/>version"]
+    A --> C["info: title +<br/>version"]
     A --> D["paths: operations"]
-    D --> E[Examples 16-20: schemas]
-    E --> F[Example 21: mock server]
-    F --> G[Example 22: client codegen]
+    D --> E[Examples 16-20:<br/>schemas]
+    E --> F[Example 21: mock<br/>server]
+    F --> G[Example 22: client<br/>codegen]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     class A blue
     class B,C,D orange
     class E teal
     class F purple
     class G brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-openapi-skeleton/example.py`**
@@ -1500,6 +1511,8 @@ against an API before its real handlers exist.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 21: Serving a Mock from the Specs Own Examples
+    accDescr: Sequence diagram between Frontend, Mock Server, OpenAPI Spec. Messages: Frontend to Mock Server: GET /articles/1; Mock Server to OpenAPI Spec: read the declared example (no handler logic); OpenAPI Spec to Mock Server: id: 1, title: Hello, API Design; Mock Server to Frontend: 200 OK, served verbatim.
     participant Frontend
     participant MockServer as Mock Server
     participant Spec as OpenAPI Spec
@@ -1658,6 +1671,8 @@ makes visible with a counted "fetch."
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Brown #CA9161
 graph LR
+    accTitle: Example 23: Offset/Limit Pagination
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: skip 3 (discarded reads), take 3 (returned), seek directly to cursor, take next N (returned). Connections: skip 3 (discarded reads) to take 3 (returned), seek directly to cursor to take next N (returned).
     subgraph "Offset pagination (Example 23)"
         A1["skip 3<br/>(discarded reads)"] --> A2["take 3<br/>(returned)"]
     end
@@ -1665,12 +1680,13 @@ graph LR
         B1["seek directly<br/>to cursor"] --> B2["take next N<br/>(returned)"]
     end
 
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class A1 brown
     class A2,B2 blue
     class B1 teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-23-offset-page-endpoint/example.py`**
@@ -1950,22 +1966,25 @@ request's `Accept` header requests.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 27: Accept Chooses JSON vs. CSV
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: GET /articles/1 Accept: ?, Accept header value, Serve JSON representation, Serve CSV representation, Same underlying ARTICLE data. Connections: GET /articles/1 Accept: ? to Accept header value, Accept header value to Serve JSON representation (application/json), Accept header value to Serve CSV representation (text/csv), Serve JSON representation to Same underlying ARTICLE data, Serve CSV representation to Same underlying ARTICLE data.
     A["GET /articles/1<br/>Accept: ?"] --> B{Accept header value}
-    B -->|application/json| C[Serve JSON representation]
-    B -->|text/csv| D[Serve CSV representation]
-    C --> E[Same underlying ARTICLE data]
+    B -->|application/json| C[Serve JSON<br/>representation]
+    B -->|text/csv| D[Serve CSV<br/>representation]
+    C --> E[Same underlying<br/>ARTICLE data]
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     class A blue
     class B orange
     class C teal
     class D purple
     class E brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-27-accept-negotiation/example.py`**

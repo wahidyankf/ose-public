@@ -19,19 +19,22 @@ this topic's Beginner, Intermediate, or Advanced tiers.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: graph.py build_graph, BFS/DFS O40n + e41, graph.py topological_sort Kahns, O40n + e41, critical_path.py DP longest path O40n + e41, shortest.py dijkstra O4040n + e41 log n41, workbench.py feasibility check. Connections: graph.py build_graph, BFS/DFS O40n + e41 to graph.py topological_sort Kahns, O40n + e41, graph.py topological_sort Kahns, O40n + e41 to critical_path.py DP longest path O40n + e41, critical_path.py DP longest path O40n + e41 to workbench.py feasibility check, graph.py topological_sort Kahns, O40n + e41 to shortest.py dijkstra O4040n + e41 log n41, shortest.py dijkstra O4040n + e41 log n41 to workbench.py feasibility check.
     A["graph.py<br/>build_graph, BFS/DFS<br/>O#40;n + e#41;"]:::blue
-    B["graph.py<br/>topological_sort<br/>Kahn's, O#40;n + e#41;"]:::orange
+    B["graph.py<br/>topological_sort<br/>Kahn's, O#40;n +<br/>e#41;"]:::orange
     C["critical_path.py<br/>DP longest path<br/>O#40;n + e#41;"]:::teal
-    D["shortest.py<br/>dijkstra<br/>O#40;#40;n + e#41; log n#41;"]:::purple
+    D["shortest.py<br/>dijkstra<br/>O#40;#40;n + e#41;<br/>log n#41;"]:::purple
     E["workbench.py<br/>feasibility check"]:::brown
     A --> B --> C --> E
     B --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

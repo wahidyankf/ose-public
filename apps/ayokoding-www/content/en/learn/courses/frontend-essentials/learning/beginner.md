@@ -69,15 +69,18 @@ _ex-02 &middot; exercises co-02_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 2: Semantic Page Landmarks
+    accDescr: Graph with 10 nodes and 12 connections. Nodes: A, lt, gt, role: banner, C, role: navigation, E, role: main, G, role: contentinfo. Connections: A to role: banner, lt to role: banner, gt to role: banner, C to role: navigation, lt to role: navigation, gt to role: navigation, E to role: main, lt to role: main, gt to role: main, G to role: contentinfo, lt to role: contentinfo, gt to role: contentinfo.
     A["&lt;header&gt;"]:::blue --> B["role: banner"]:::blue
     C["&lt;nav&gt;"]:::orange --> D["role: navigation"]:::orange
     E["&lt;main&gt;"]:::teal --> F["role: main"]:::teal
     G["&lt;footer&gt;"]:::purple --> H["role: contentinfo"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-02-semantic-page-landmarks/index.html`**
@@ -736,15 +739,18 @@ By default (`box-sizing: content-box`), a declared `width` sizes only the conten
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161
 flowchart LR
+    accTitle: Example 12: Box Model: Padding, Border, Margin
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: content: 200px, offsetWidth: 230px, B, times, C, E. Connections: content: 200px to offsetWidth: 230px, B to offsetWidth: 230px, times to offsetWidth: 230px, C to offsetWidth: 230px, times to offsetWidth: 230px.
     A["content: 200px"]:::blue --> D["offsetWidth: 230px"]:::blue
-    B["padding: 10px &times; 2 sides"]:::orange --> D
-    C["border: 5px &times; 2 sides"]:::teal --> D
-    E["margin: 20px<br/>real space, but excluded"]:::brown -.not counted.-> D
+    B["padding: 10px<br/>&times; 2 sides"]:::orange --> D
+    C["border: 5px &times;<br/>2 sides"]:::teal --> D
+    E["margin: 20px<br/>real space, but<br/>excluded"]:::brown -.not counted.-> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-12-box-model-padding-border-margin/index.html`**
@@ -811,13 +817,16 @@ _ex-13 &middot; exercises co-07_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["width: 200px<br/>(the declared AND final width)"]:::blue --> B["border-box folds padding+border INSIDE"]:::teal
-    C["padding: 10px &times; 2 sides"]:::orange -.inside.-> A
-    D["border: 5px &times; 2 sides"]:::orange -.inside.-> A
+    accTitle: Example 13: box-sizing: border-box
+    accDescr: Flowchart with 5 nodes and 1 connections. Nodes: width: 200px (the declared AND final width), border-box folds padding+border INSIDE, C, times, D. Connections: width: 200px (the declared AND final width) to border-box folds padding+border INSIDE.
+    A["width: 200px<br/>(the declared AND<br/>final width)"]:::blue --> B["border-box folds<br/>padding+border<br/>INSIDE"]:::teal
+    C["padding: 10px<br/>&times; 2 sides"]:::orange -.inside.-> A
+    D["border: 5px &times;<br/>2 sides"]:::orange -.inside.-> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-13-box-sizing-border-box/index.html`**
@@ -884,11 +893,14 @@ A block-level element (`div`) fills its container's full available width by defa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
-    A["div (display: block)<br/>width: 600px<br/>fills the full container"]:::blue
-    B["span (display: inline)<br/>width: ~36px<br/>sized to its own text"]:::orange
+    accTitle: Example 14: Block vs. Inline
+    accDescr: Graph with 2 nodes and 0 connections. Nodes: div (display: block) width: 600px fills the full container, span (display: inline) width: ~36px sized to its own text.
+    A["div (display: block)<br/>width: 600px<br/>fills the full<br/>container"]:::blue
+    B["span (display:<br/>inline)<br/>width: ~36px<br/>sized to its own<br/>text"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-14-block-vs-inline/index.html`**
@@ -962,13 +974,16 @@ _ex-15 &middot; exercises co-08_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["display: inline<br/>ignores width/height entirely"]:::orange
+    accTitle: Example 15: inline-block Sizing
+    accDescr: Graph with 3 nodes and 0 connections. Nodes: display: inline ignores width/height entirely, display: block honors width/height, own separate line, display: inline-block honors width/height, SAME line as neighbors.
+    A["display: inline<br/>ignores width/height<br/>entirely"]:::orange
     B["display: block<br/>honors width/height,<br/>own separate line"]:::blue
-    C["display: inline-block<br/>honors width/height,<br/>SAME line as neighbors"]:::teal
+    C["display:<br/>inline-block<br/>honors width/height,<br/>SAME line as<br/>neighbors"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-inline-block-sizing/index.html`**
@@ -1038,10 +1053,13 @@ _ex-16 &middot; exercises co-08_
 ```mermaid
 %% Color Palette: Blue #0173B2, Brown #CA9161
 flowchart LR
-    A["Visible panel<br/>offsetParent: real element"]:::blue -->|"display: none applied"| B["Removed from layout<br/>offsetParent: null"]:::brown
+    accTitle: Example 16: display: none Removes Layout
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Visible panel offsetParent: real element, Removed from layout offsetParent: null. Connections: Visible panel offsetParent: real element to Removed from layout offsetParent: null (display: none applied).
+    A["Visible panel<br/>offsetParent: real<br/>element"]:::blue -->|"display: none<br/>applied"| B["Removed from layout<br/>offsetParent: null"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-16-display-none-removes-layout/index.html`**
@@ -1106,11 +1124,14 @@ _ex-17 &middot; exercises co-12_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
+    accTitle: Example 17: Select a Single Node
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: body, H1, quot, querySelector(. title). Connections: body to H1, body to quot, body to quot, querySelector(. title) to H1 (returns).
     Body["body"]:::orange --> H1["h1.title<br/>&quot;Dashboard&quot;"]:::blue
-    Q["querySelector('.title')"]:::orange -.->|"returns"| H1
+    Q["querySelector('.<br/>title')"]:::orange -.->|"returns"| H1
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-17-select-single-node/index.html`**
@@ -1166,14 +1187,17 @@ _ex-18 &middot; exercises co-12_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
+    accTitle: Example 18: Select All Nodes
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: ul, li: Alpha, li: Beta, li: Gamma, li: Delta, Q. Connections: ul to li: Alpha, ul to li: Beta, ul to li: Gamma, ul to li: Delta.
     UL["ul"]:::orange --> L1["li: Alpha"]:::blue
     UL --> L2["li: Beta"]:::blue
     UL --> L3["li: Gamma"]:::blue
     UL --> L4["li: Delta"]:::blue
-    Q["querySelectorAll('li')"]:::orange -.matches all 4.-> UL
+    Q["querySelector<br/>All('li')"]:::orange -.matches all 4.-> UL
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-18-select-all-nodes/index.html`**
@@ -1705,15 +1729,18 @@ _ex-27 &middot; exercises co-09_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    subgraph Row["display: flex; justify-content: space-between; width: 400px"]
+    accTitle: Example 27: Flex Row Distribution
+    accDescr: Graph with 3 nodes and 0 connections. Nodes: left chip x: 0, middle chip floats in remaining space, right chip right: 400.
+    subgraph Row["display: flex;<br/>justify-content:<br/>space-between;<br/>width: 400px"]
         L["left chip<br/>x: 0"]:::blue
-        M["middle chip<br/>floats in remaining space"]:::orange
+        M["middle chip<br/>floats in remaining<br/>space"]:::orange
         R["right chip<br/>right: 400"]:::teal
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-27-flex-row-distribution/index.html`**
@@ -1797,12 +1824,15 @@ _ex-28 &middot; exercises co-09_
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph TD
-    subgraph Row["display: flex; align-items: center; height: 120px"]
+    accTitle: Example 28: Flex Align Center
+    accDescr: Graph with 1 nodes and 0 connections. Nodes: chip (30x30) vertically centered center y: 60.
+    subgraph Row["display: flex;<br/>align-items: center;<br/>height: 120px"]
         C["chip (30x30)<br/>vertically centered<br/>center y: 60"]:::blue
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-28-flex-align-center/index.html`**

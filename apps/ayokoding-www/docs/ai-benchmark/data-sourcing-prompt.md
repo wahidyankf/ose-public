@@ -96,9 +96,16 @@ own "last updated" date.
    `datacurve()`, `aaTb4()`, `tbench()`, `vals()`, `scale()` for single fallbacks, `aaCost()` for
    cost per task, and `vendorPrice()` / `opencodePrice()` for prices.
 2. Update `dataset.lastUpdated`, the header date in `models.ts`, and `checkedOn` in `operators.ts`.
-3. Check the tiers still make sense: every anchor must land in its own tier (an invariant test), and
+3. Keep the Indonesian notes in step: add, change, or remove the `ID_NOTES` entry in
+   `src/features/ai-benchmark/shell/note-text.ts` for every model or price `note` you added, changed, or
+   dropped. The entry is keyed by the English note text verbatim, and its unit test fails both ways: a
+   note with no entry, and an entry no note uses.
+4. When the OpenCode Go roster changes, update the hard-coded Go model count in
+   `tests/unit/features/ai-benchmark/core/data/models.unit.test.ts`: the count and as-of date in the
+   "includes every OpenCode Go model" test title, and the count in its `toHaveLength` assertion.
+5. Check the tiers still make sense: every anchor must land in its own tier (an invariant test), and
    any model that moves tier should be explainable from its figures.
-4. Run the guards:
+6. Run the guards:
    `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www:test:quick`,
    then regenerate the reference with
    `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www:generate-benchmark-reference`

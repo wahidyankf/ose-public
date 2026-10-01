@@ -182,7 +182,7 @@ The browser discovers the manifest through a `<link>` tag in the HTML `<head>`. 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
   accTitle: Example 4: Linking the Manifest in HTML
-  accDescr: Graph with 9 nodes and 10 connections. Nodes: HTML page loads, B, lt, gt, C, Fetches manifest.json, Reads name, icons start_url, display, Evaluates installability, Fires beforeinstallprompt if criteria met. Connections: HTML page loads to B, HTML page loads to lt, HTML page loads to gt, B to C, B to lt, B to gt, C to Fetches manifest.json, Fetches manifest.json to Reads name, icons start_url, display, Reads name, icons start_url, display to Evaluates installability, Evaluates installability to Fires beforeinstallprompt if criteria met.
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: HTML page loads, Browser reads <head>, Finds <link rel=manifest>, Fetches manifest.json, Reads name, icons start_url, display, Evaluates installability, Fires beforeinstallprompt if criteria met. Connections: HTML page loads to Browser reads <head>, Browser reads <head> to Finds <link rel=manifest>, Finds <link rel=manifest> to Fetches manifest.json, Fetches manifest.json to Reads name, icons start_url, display, Reads name, icons start_url, display to Evaluates installability, Evaluates installability to Fires beforeinstallprompt if criteria met.
   A["HTML page loads"] --> B["Browser reads &lt;head&gt;"]
   B --> C["Finds &lt;link<br/>rel='manifest'&gt;"]
   C --> D["Fetches<br/>manifest.json"]

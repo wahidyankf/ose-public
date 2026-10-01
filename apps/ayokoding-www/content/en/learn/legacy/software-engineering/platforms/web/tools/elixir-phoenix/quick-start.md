@@ -45,7 +45,7 @@ By the end of this tutorial, you will understand:
 ```mermaid
 graph TB
     accTitle: Learning Path
-    accDescr: Graph with 16 nodes and 15 connections. Nodes: Quick Start, Prerequisites Check, Request Lifecycle, Routing, Controllers, View, Templates, Layouts, Ecto Basics, Changesets, Contexts, LiveView, and 4 more. Connections: Quick Start to Prerequisites Check, Prerequisites Check to Request Lifecycle, Request Lifecycle to Routing, Routing to Controllers, Controllers to View, Controllers to Templates, View to Layouts, Layouts to Ecto Basics, Ecto Basics to Changesets, Changesets to Contexts, Contexts to LiveView, LiveView to Channels, and 3 more.
+    accDescr: Graph with 15 nodes and 14 connections. Nodes: Quick Start, Prerequisites Check, Request Lifecycle, Routing, Controllers, Views & Templates, Layouts, Ecto Basics, Changesets, Contexts, LiveView, Channels, and 3 more. Connections: Quick Start to Prerequisites Check, Prerequisites Check to Request Lifecycle, Request Lifecycle to Routing, Routing to Controllers, Controllers to Views & Templates, Views & Templates to Layouts, Layouts to Ecto Basics, Ecto Basics to Changesets, Changesets to Contexts, Contexts to LiveView, LiveView to Channels, Channels to Authentication, and 2 more.
     Start[Quick Start] --> Setup[Prerequisites Check]
     Setup --> Lifecycle[Request Lifecycle]
     Lifecycle --> Route[Routing]

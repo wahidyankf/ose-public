@@ -40,7 +40,7 @@ TanStack Start is a **full-stack React framework built on TanStack Router and Vi
 ```mermaid
 graph TD
   accTitle: Learning Path
-  accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, 0 React + TypeScript 40Prerequisite41, 95 Framework Mastery. Connections: A to B, B to C, 0 React + TypeScript 40Prerequisite41 to A, C to 95 Framework Mastery.
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Core Routing & Loaders Examples 1-27, Intermediate Server Functions & Auth Examples 28-55, Advanced SSR, Deployment & Scale Examples 56-80, 0 React + TypeScript (Prerequisite), 95 Framework Mastery. Connections: Beginner Core Routing & Loaders Examples 1-27 to Intermediate Server Functions & Auth Examples 28-55, Intermediate Server Functions & Auth Examples 28-55 to Advanced SSR, Deployment & Scale Examples 56-80, 0 React + TypeScript (Prerequisite) to Beginner Core Routing & Loaders Examples 1-27, Advanced SSR, Deployment & Scale Examples 56-80 to 95 Framework Mastery.
   A["Beginner<br/>Core Routing &<br/>Loaders<br/>Examples 1-27"] --> B["Intermediate<br/>Server Functions &<br/>Auth<br/>Examples 28-55"]
   B --> C["Advanced<br/>SSR, Deployment &<br/>Scale<br/>Examples 56-80"]
   D["0%<br/>React + TypeScript<br/>#40;Prerequisite#41;"] -.-> A

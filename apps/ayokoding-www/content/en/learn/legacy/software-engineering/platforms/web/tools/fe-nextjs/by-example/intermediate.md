@@ -1705,7 +1705,7 @@ Use middleware to protect multiple routes at once. More efficient than checking 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
   accTitle: Example 38: Middleware-Based Authentication
-  accDescr: Graph with 5 nodes and 4 connections. Nodes: Request, middleware.ts, Protected Route, Redirect to /login, /login?redirect=original-path. Connections: Request to middleware.ts, middleware.ts to Protected Route (has auth cookie), middleware.ts to Redirect to /login (no auth cookie), Redirect to /login to /login?redirect=original-path.
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Request, middleware.ts, Protected Route, Redirect to /login, /login?redirect= original-path. Connections: Request to middleware.ts, middleware.ts to Protected Route (has auth cookie), middleware.ts to Redirect to /login (no auth cookie), Redirect to /login to /login?redirect= original-path.
   A[Request] --> B{middleware.ts}
   B -->|has auth cookie| C[Protected Route]
   B -->|no auth cookie| D[Redirect to /login]

@@ -601,7 +601,7 @@ Redirection operators control where command input comes from and where output go
 %% Redirection flow
 graph TD
     accTitle: Example 9: Output Redirection
-    accDescr: Graph with 8 nodes and 7 connections. Nodes: Command, Output Type?, > file overwrite, >> file append, 2> error file, F, file, < stdin. Connections: Command to Output Type?, Output Type? to > file overwrite (stdout, 1), Output Type? to >> file append (stdout, 1), Output Type? to 2> error file (stderr, 2), Output Type? to F (both), file to < stdin, < stdin to Command.
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Command, Output Type?, > file overwrite, >> file append, 2> error file, &> file both, file, < stdin. Connections: Command to Output Type?, Output Type? to > file overwrite (stdout, 1), Output Type? to >> file append (stdout, 1), Output Type? to 2> error file (stderr, 2), Output Type? to &> file both (both), file to < stdin, < stdin to Command.
     A[Command] --> B{Output Type?}
     B -->|stdout, 1| C[> file overwrite]
     B -->|stdout, 1| D[>> file append]
@@ -2768,7 +2768,7 @@ Here documents (`<<`) allow multi-line input to commands, while here strings (`<
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Diagram
-    accDescr: Graph with 6 nodes and 9 connections. Nodes: A, lt, Shell Buffer, Command cat / sql / ssh, Output / File, E. Connections: A to Shell Buffer (multi-line text), lt to Shell Buffer (multi-line text), lt to Shell Buffer (multi-line text), Shell Buffer to Command cat / sql / ssh (stdin), Command cat / sql / ssh to Output / File (stdout), E to Command cat / sql / ssh (single line), lt to Command cat / sql / ssh (single line), lt to Command cat / sql / ssh (single line), lt to Command cat / sql / ssh (single line).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Script Source << EOF ... EOF, Shell Buffer, Command cat / sql / ssh, Output / File, Here String <<< word. Connections: Script Source << EOF ... EOF to Shell Buffer (multi-line text), Shell Buffer to Command cat / sql / ssh (stdin), Command cat / sql / ssh to Output / File (stdout), Here String <<< word to Command cat / sql / ssh (single line).
     A[Script Source<br/>&lt;&lt; EOF ... EOF] -->|multi-line text| B[Shell Buffer]
     B -->|stdin| C[Command<br/>cat / sql / ssh]
     C -->|stdout| D[Output / File]

@@ -209,7 +209,7 @@ The `$ref` keyword can reference schemas in external files, enabling modular spe
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 58: External $ref for Cross-File References
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: openapi.yaml 40main spec41, schemas/book.yaml, parameters/ pagination.yaml, responses/ errors.yaml, schemas/common.yaml. Connections: openapi.yaml 40main spec41 to schemas/book.yaml, openapi.yaml 40main spec41 to parameters/ pagination.yaml, openapi.yaml 40main spec41 to responses/ errors.yaml, schemas/book.yaml to schemas/common.yaml.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: openapi.yaml (main spec), schemas/book.yaml, parameters/ pagination.yaml, responses/ errors.yaml, schemas/common.yaml. Connections: openapi.yaml (main spec) to schemas/book.yaml, openapi.yaml (main spec) to parameters/ pagination.yaml, openapi.yaml (main spec) to responses/ errors.yaml, schemas/book.yaml to schemas/common.yaml.
     Main["openapi.yaml<br/>#40;main spec#41;"] --> Schemas["schemas/book.yaml"]
     Main --> Params["parameters/<br/>pagination.yaml"]
     Main --> Responses["responses/<br/>errors.yaml"]

@@ -3296,7 +3296,7 @@ Signals allow processes to respond to external events like termination requests,
 %% Signal handling flow
 graph TD
     accTitle: Example 53: Signal Handling Deep Dive
-    accDescr: Graph with 9 nodes and 8 connections. Nodes: Signal Received, Handler Set?, Execute Handler, Default Action, Continue?, Resume Execution, G, Exit, Terminate/Ignore/ Core. Connections: Signal Received to Handler Set?, Handler Set? to Execute Handler (Yes), Handler Set? to Default Action (No), Execute Handler to Continue?, Continue? to Resume Execution (Yes), Continue? to G (No), Continue? to Exit (No), Default Action to Terminate/Ignore/ Core.
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Signal Received, Handler Set?, Execute Handler, Default Action, Continue?, Resume Execution, Cleanup & Exit, Terminate/Ignore/ Core. Connections: Signal Received to Handler Set?, Handler Set? to Execute Handler (Yes), Handler Set? to Default Action (No), Execute Handler to Continue?, Continue? to Resume Execution (Yes), Continue? to Cleanup & Exit (No), Default Action to Terminate/Ignore/ Core.
     A[Signal Received] --> B{Handler Set?}
     B -->|Yes| C[Execute Handler]
     B -->|No| D[Default Action]

@@ -42,7 +42,7 @@ Unlike narrative tutorials that build understanding through explanation and stor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Learning Path
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: A, APIs, Intermediate Examples 21-50 Production Patterns, C. Connections: A to Intermediate Examples 21-50 Production Patterns, APIs to Intermediate Examples 21-50 Production Patterns, Intermediate Examples 21-50 Production Patterns to C.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-25 Core Concepts & APIs, Intermediate Examples 21-50 Production Patterns, Advanced Examples 41-70 Microservices & Cloud-Native. Connections: Beginner Examples 1-25 Core Concepts & APIs to Intermediate Examples 21-50 Production Patterns, Intermediate Examples 21-50 Production Patterns to Advanced Examples 41-70 Microservices & Cloud-Native.
     A["Beginner<br/>Examples 1-25<br/>Core Concepts & APIs"] --> B["Intermediate<br/>Examples 21-50<br/>Production Patterns"]
     B --> C["Advanced<br/>Examples 41-70<br/>Microservices &<br/>Cloud-Native"]
 

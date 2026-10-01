@@ -18,7 +18,7 @@ The `HttpHandler` type is Giraffe's core abstraction. Every route, middleware, a
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 1: The HttpHandler Type
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: HttpContext 40request41, HttpHandler function, Next Handler 40success41, Short-circuit 40handled or error41. Connections: HttpContext 40request41 to HttpHandler function (passed to), HttpHandler function to Next Handler 40success41 (Some ctx), HttpHandler function to Short-circuit 40handled or error41 (None).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: HttpContext (request), HttpHandler function, Next Handler (success), Short-circuit (handled or error). Connections: HttpContext (request) to HttpHandler function (passed to), HttpHandler function to Next Handler (success) (Some ctx), HttpHandler function to Short-circuit (handled or error) (None).
     A["HttpContext<br/>#40;request#41;"] -->|passed to| B["HttpHandler<br/>function"]
     B -->|Some ctx| C["Next Handler<br/>#40;success#41;"]
     B -->|None| D["Short-circuit<br/>#40;handled or<br/>error#41;"]
@@ -189,7 +189,7 @@ app.Run()
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 4: The choose Combinator and Basic Routing
-    accDescr: Graph with 8 nodes and 9 connections. Nodes: Incoming Request, choose 91handlers93, route quot/quot, route quot/healthquot, route quot/aboutquot, text quotHomequot, json healthStatus, text quotAboutquot. Connections: Incoming Request to choose 91handlers93, choose 91handlers93 to route quot/quot, choose 91handlers93 to route quot/healthquot, choose 91handlers93 to route quot/aboutquot, route quot/quot to text quotHomequot (matches), route quot/healthquot to json healthStatus (matches), route quot/aboutquot to text quotAboutquot (matches), route quot/quot to route quot/healthquot (no match), route quot/healthquot to route quot/aboutquot (no match).
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: Incoming Request, choose [handlers], route quot/quot, route quot/healthquot, route quot/aboutquot, text quotHomequot, json healthStatus, text quotAboutquot. Connections: Incoming Request to choose [handlers], choose [handlers] to route quot/quot, choose [handlers] to route quot/healthquot, choose [handlers] to route quot/aboutquot, route quot/quot to text quotHomequot (matches), route quot/healthquot to json healthStatus (matches), route quot/aboutquot to text quotAboutquot (matches), route quot/quot to route quot/healthquot (no match), route quot/healthquot to route quot/aboutquot (no match).
     A["Incoming Request"] --> B["choose<br/>#91;handlers#93;"]
     B --> C["route #quot;/#quot;"]
     B --> D["route<br/>#quot;/health#quot;"]
@@ -1882,7 +1882,7 @@ Understanding the execution order of ASP.NET Core middleware and Giraffe handler
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 27: Request Pipeline Order and Middleware Integration
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: HTTP Request, HTTPS Redirection Middleware, Static Files Middleware, Authentication Middleware, Authorization Middleware, Giraffe UseGiraffe40web App41, Handler Pipeline choose91...93. Connections: HTTP Request to HTTPS Redirection Middleware, HTTPS Redirection Middleware to Static Files Middleware, Static Files Middleware to Authentication Middleware, Authentication Middleware to Authorization Middleware, Authorization Middleware to Giraffe UseGiraffe40web App41, Giraffe UseGiraffe40web App41 to Handler Pipeline choose91...93.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: HTTP Request, HTTPS Redirection Middleware, Static Files Middleware, Authentication Middleware, Authorization Middleware, Giraffe UseGiraffe(web App), Handler Pipeline choose[...]. Connections: HTTP Request to HTTPS Redirection Middleware, HTTPS Redirection Middleware to Static Files Middleware, Static Files Middleware to Authentication Middleware, Authentication Middleware to Authorization Middleware, Authorization Middleware to Giraffe UseGiraffe(web App), Giraffe UseGiraffe(web App) to Handler Pipeline choose[...].
     A["HTTP Request"] --> B["HTTPS Redirection<br/>Middleware"]
     B --> C["Static Files<br/>Middleware"]
     C --> D["Authentication<br/>Middleware"]

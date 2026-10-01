@@ -36,7 +36,7 @@ Phoenix is a **web framework for Elixir** that prioritizes developer productivit
 ```mermaid
 graph TD
   accTitle: Learning Path
-  accDescr: Graph with 6 nodes and 5 connections. Nodes: Beginner Core Phoenix Concepts Examples 1-25, Intermediate Production Patterns Examples 26-50, C, Resilience, 0 No Phoenix Knowledge, 95 Framework Mastery. Connections: Beginner Core Phoenix Concepts Examples 1-25 to Intermediate Production Patterns Examples 26-50, Intermediate Production Patterns Examples 26-50 to C, Intermediate Production Patterns Examples 26-50 to Resilience, 0 No Phoenix Knowledge to Beginner Core Phoenix Concepts Examples 1-25, C to 95 Framework Mastery.
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Core Phoenix Concepts Examples 1-25, Intermediate Production Patterns Examples 26-50, Advanced Scale & Resilience Examples 51-80, 0 No Phoenix Knowledge, 95 Framework Mastery. Connections: Beginner Core Phoenix Concepts Examples 1-25 to Intermediate Production Patterns Examples 26-50, Intermediate Production Patterns Examples 26-50 to Advanced Scale & Resilience Examples 51-80, 0 No Phoenix Knowledge to Beginner Core Phoenix Concepts Examples 1-25, Advanced Scale & Resilience Examples 51-80 to 95 Framework Mastery.
   A["Beginner<br/>Core Phoenix<br/>Concepts<br/>Examples 1-25"] --> B["Intermediate<br/>Production Patterns<br/>Examples 26-50"]
   B --> C["Advanced<br/>Scale & Resilience<br/>Examples 51-80"]
   D["0%<br/>No Phoenix Knowledge"] -.-> A

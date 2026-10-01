@@ -498,7 +498,7 @@ Demonstrates automatic bean discovery using `@Component` and `@ComponentScan`.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Diagram
-    accDescr: Graph with 5 nodes and 2 connections. Nodes: A, B, QardHassanCalculator, C, Application Code. Connections: B to C (auto-registers), C to Application Code (getBean()).
+    accDescr: Graph with 5 nodes and 2 connections. Nodes: A, QardHassanCalculator, B, C, Application Code. Connections: B to C (auto-registers), C to Application Code (getBean()).
     A["@ComponentScan
 (scans package)"] -->|"discovers"| B["@Component
 QardHassanCalculator"]
@@ -805,10 +805,10 @@ Demonstrates specifying custom names for beans instead of defaults.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Diagram
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: @Bean(name=myCalc) Factory Method, B, bean, @Bean(name=calc,calculator) Aliases, Application Code. Connections: @Bean(name=myCalc) Factory Method to B (registers with name), @Bean(name=calc,calculator) Aliases to B (registers with aliases), B to Application Code (getBean(myCalc)), B to Application Code (get Bean(calculator)).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: @Bean(name=myCalc) Factory Method, B, bean, @Bean( name=calc, calculator) Aliases, Application Code. Connections: @Bean(name=myCalc) Factory Method to B (registers with name), @Bean( name=calc, calculator) Aliases to B (registers with aliases), B to Application Code (getBean(myCalc)), B to Application Code (get Bean(calculator)).
     A["@Bean(name='myCalc')<br/>Factory Method"] -->|"registers with<br/>name"| B["Spring Container
 bean: 'myCalc'"]
-    C["@Bean(<br/>name={'calc',<br/>'calculator'})\nAliases"] -->|"registers with<br/>aliases"| B
+    C["@Bean(<br/>name={'calc',<br/>'calculator'})<br/>Aliases"] -->|"registers with<br/>aliases"| B
     B -->|"getBean('myCalc')"| D["Application Code"]
     B -->|"get<br/>Bean('calculator')"| D
 

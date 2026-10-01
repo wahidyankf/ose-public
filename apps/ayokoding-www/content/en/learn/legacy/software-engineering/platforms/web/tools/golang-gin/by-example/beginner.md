@@ -1177,7 +1177,7 @@ Understanding middleware execution order—including how `c.Next()` creates a pr
 %% Middleware execution order with c.Next()
 graph TD
     accTitle: Example 20: Middleware Execution Order
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: Request arrives, Middleware 1 - before c.Next4041, Middleware 2 - before c.Next4041, Handler executes, Middleware 2 - after c.Next4041, Middleware 1 - after c.Next4041, Response sent. Connections: Request arrives to Middleware 1 - before c.Next4041, Middleware 1 - before c.Next4041 to Middleware 2 - before c.Next4041, Middleware 2 - before c.Next4041 to Handler executes, Handler executes to Middleware 2 - after c.Next4041, Middleware 2 - after c.Next4041 to Middleware 1 - after c.Next4041, Middleware 1 - after c.Next4041 to Response sent.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Request arrives, Middleware 1 - before c.Next(), Middleware 2 - before c.Next(), Handler executes, Middleware 2 - after c.Next(), Middleware 1 - after c.Next(), Response sent. Connections: Request arrives to Middleware 1 - before c.Next(), Middleware 1 - before c.Next() to Middleware 2 - before c.Next(), Middleware 2 - before c.Next() to Handler executes, Handler executes to Middleware 2 - after c.Next(), Middleware 2 - after c.Next() to Middleware 1 - after c.Next(), Middleware 1 - after c.Next() to Response sent.
     A["Request arrives"] --> B["Middleware 1 -<br/>before<br/>c.Next#40;#41;"]
     B --> C["Middleware 2 -<br/>before<br/>c.Next#40;#41;"]
     C --> D["Handler executes"]

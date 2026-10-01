@@ -17,7 +17,7 @@ An Axum application starts with a `Router`, a socket address, and a call to `axu
 ```mermaid
 graph TD
     accTitle: Example 1: Minimal Axum Server
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: tokio::main Async Runtime, Router::new4041 Build Routes, TcpListener::bind Open Port, axum::serve Accept Connections, Handler fn Return Response. Connections: tokio::main Async Runtime to Router::new4041 Build Routes, Router::new4041 Build Routes to TcpListener::bind Open Port, TcpListener::bind Open Port to axum::serve Accept Connections, axum::serve Accept Connections to Handler fn Return Response.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: tokio::main Async Runtime, Router::new() Build Routes, TcpListener::bind Open Port, axum::serve Accept Connections, Handler fn Return Response. Connections: tokio::main Async Runtime to Router::new() Build Routes, Router::new() Build Routes to TcpListener::bind Open Port, TcpListener::bind Open Port to axum::serve Accept Connections, axum::serve Accept Connections to Handler fn Return Response.
     A["tokio::main<br/>Async Runtime"] --> B["Router::new#40;#41;<br/>Build Routes"]
     B --> C["TcpListener::bind<br/>Open Port"]
     C --> D["axum::serve<br/>Accept Connections"]
@@ -294,7 +294,7 @@ Axum's `State` extractor injects shared application state into handlers. The sta
 ```mermaid
 graph LR
     accTitle: Example 6: Shared State with State Extractor
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: App Startup with_state40App State41, Router, Handler A State60App State62, Handler B State60App State62, Handler C State60App State62. Connections: App Startup with_state40App State41 to Router, Router to Handler A State60App State62, Router to Handler B State60App State62, Router to Handler C State60App State62.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: App Startup with_state(App State), Router, Handler A State<App State>, Handler B State<App State>, Handler C State<App State>. Connections: App Startup with_state(App State) to Router, Router to Handler A State<App State>, Router to Handler B State<App State>, Router to Handler C State<App State>.
     A["App Startup<br/>with_state#40;App<br/>State#41;"] --> B["Router"]
     B --> C["Handler A<br/>State#60;App<br/>State#62;"]
     B --> D["Handler B<br/>State#60;App<br/>State#62;"]

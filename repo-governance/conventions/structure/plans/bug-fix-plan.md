@@ -1,22 +1,22 @@
 ---
 description: >-
-  Defines the bug-fix plan: one current document that carries a defect's report, duplicate check, root cause,
-  referenced solution, delivery, and learnings, what makes each section useful, and which plan rules it is exempt from.
+  Defines the bug-fix plan: one document carrying a defect's report, duplicate check, root cause, referenced solution,
+  delivery, and learnings; what makes each section useful; and which plan rules it is exempt from.
 when_to_use: >-
-  Use when fixing a defect through a plan in the repository that owns the defective code, or when reviewing, executing,
-  or archiving such a plan.
+  Use when fixing a defect through a plan in the repository owning the defective code, or when reviewing, executing, or
+  archiving one.
 ---
 
 # Bug-Fix Plan
 
 A bug-fix plan is the compressed formal plan for one defect. The defect already answers why the work is worth doing and
-what the result must do — the behaviour should not happen — so separate business and product documents would only
-restate the report. What a cold executor still needs is the evidence, the cause, and the change.
+what the result must do (the behaviour should not happen), so separate business and product documents would only restate
+the report. What a cold executor still needs is the evidence, the cause, and the change.
 
 It is reserved for a defect that blocks the work in hand with no workaround. Any other defect is filed as a
 [two-pager](./two-pager-template.md) and waits for grooming, per
 [Upstream Tool Defects](../../../development/workflow/upstream-tool-defects.md) where that standard applies. It is a
-current, distinct form with its own fixed sections — not the
+current, distinct form with its own fixed sections, not the
 [Retired Single-File Structure](./single-file-structure.md), which no new plan may use.
 
 ## Shape
@@ -37,8 +37,8 @@ The slug starts with `fix-` and names the symptom, not the suspected cause: `fix
 
 ## What Makes Each Section Useful
 
-**Root Cause** separates the symptom from the mechanism. It names where the behaviour comes from — a file and line, a
-commit, a condition — and shows why: a minimal reproduction, a trace, or the failing assertion. "The parser is buggy" is
+**Root Cause** separates the symptom from the mechanism. It names where the behaviour comes from (a file and line, a
+commit, a condition) and shows why: a minimal reproduction, a trace, or the failing assertion. "The parser is buggy" is
 a symptom restated; "an empty path reaches the matcher at this line and matches nothing" is a cause. A cause that is
 still a hypothesis says so and states the test that would confirm it.
 
@@ -60,8 +60,8 @@ item carries its [executor tag](./executor-tagging-tags-and-bias.md).
 - **The planning workflow's decision gates:** a defect has one correct behaviour, so there is nothing to grill.
 - **[Plan-Artifact Authorization](./plan-artifact-authorization-and-transition.md):** it needs no separate request when
   written under [Upstream Tool Defects](../../../development/workflow/upstream-tool-defects.md), or when the owner asks.
-  That standing request also directs its plan quality gate and execution: once the plan lands, run the gate on it and
-  execute on a passing verdict, without a further prompt.
+  That standing request also directs its plan quality gate, its execution, and its release: once the plan lands, run the
+  gate on it, execute on a passing verdict, and release the fix once its tests pass, without a further prompt.
 
 Every other plan rule holds: slug rules, one lifecycle root, executor tags, no time estimates, the delivery mode,
 Knowledge Capture, and archival.
@@ -74,5 +74,5 @@ continuing.
 
 ## Landing the Plan First
 
-The plan lands on the owning repository's trunk alone, through that repository's route, before any fix is committed. A
-parallel finder's duplicate check then sees it, and the fix follows in its own change.
+The plan lands on the owning repository's trunk alone, through its route, before any fix is committed. A parallel
+finder's duplicate check then sees it, and the fix follows in its own change.

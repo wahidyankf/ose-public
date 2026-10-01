@@ -18,7 +18,7 @@ list, discovery notes, and temporary tester findings.
   [Upstream Tool Defects](../../../development/workflow/upstream-tool-defects.md) standard: it
   authorizes a defect's two-pager and a blocking defect's [Bug-Fix Plan](./bug-fix-plan.md) at the
   tool's owner, and a consumer's FERRET brief or bug-fix plan here, without a further request. Each
-  such bug-fix plan's authorization includes its quality gate and execution.
+  such bug-fix plan's authorization includes its quality gate, execution, and release.
 - Plan Mode, internal task planning, discovery, an omitted tester output mode, and a useful learning
   do not authorize a `plans/` write. Testers default to `local-tmp`; Knowledge Capture reports an
   unapproved follow-up instead of filing it.

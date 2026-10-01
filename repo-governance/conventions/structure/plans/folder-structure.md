@@ -32,6 +32,7 @@ plans/
 **in-progress/** - Active Work
 
 - Contains plans currently being executed
+- A [Bug-Fix Plan](./bug-fix-plan.md) starts here, with no idea or backlog stage
 - Plans being actively worked on by the team
 - Limited to a small number of concurrent plans (prevents context switching)
 - Each subfolder has a `README.md` listing all active plans

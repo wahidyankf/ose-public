@@ -18,8 +18,8 @@ at most one worktree per repository across every delivery unit. A main mode sync
 **Where to declare**:
 
 - **Multi-file plans**: top-level `## Worktree` section in `delivery.md`, placed before any phase heading.
-- **Existing pre-contract single-file plans only**: top-level `## Worktree` section in `README.md`,
-  before `## Delivery Checklist`. Compatibility handling never authorizes a new single-file formal
+- **Existing pre-contract single-file plans and bug-fix plans**: top-level `## Worktree` section in
+  `README.md`, before `## Delivery Checklist`. This never authorizes any other new single-file formal
   plan.
 
 **Worktree-mode path format**: `worktrees/<plan-identifier>/` where `<plan-identifier>` matches the plan-folder identifier (strip the `YYYY-MM-DD__` date prefix). Examples:

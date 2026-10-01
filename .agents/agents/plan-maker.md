@@ -34,7 +34,9 @@ Authors formal plans end to end, for execution through the
    envelope and stop; the root owns user interaction and resumes the maker with the answers. Author nothing until the
    gate closes.
 4. Write the fixed mature core — `README.md`, `brd.md`, `prd.md`, `delivery.md`, and `learnings.md` — plus exactly one
-   reader-led technical form, `delivery.md` last.
+   reader-led technical form, `delivery.md` last. A
+   [Bug-Fix Plan](../../repo-governance/conventions/structure/plans/bug-fix-plan.md) is instead one `README.md` in
+   `plans/in-progress/`, authorized and gate-free per that module.
 5. Run the post-write decision gate on the complete draft the same way.
 6. Submit the draft to the [Quality Gate](../../repo-governance/workflows/plan/plan-quality-gate.md), whose declared
    repair budget bounds every repair.

@@ -12,9 +12,9 @@ and branch inventory, and use the primary checkout.
 **Where to declare**:
 
 - **Multi-file plans**: Add a top-level `## Worktree` section in `delivery.md`, placed before any phase heading.
-- **Existing pre-contract single-file plans only**: Add a `## Worktree` section in `README.md`,
-  placed before `## Delivery Checklist`. This compatibility path never authorizes creation of a new
-  single-file formal plan.
+- **Existing pre-contract single-file plans and [Bug-Fix Plans](./bug-fix-plan.md)**: Add a
+  `## Worktree` section in `README.md`, placed before `## Delivery Checklist`. This path never
+  authorizes creation of any other new single-file formal plan.
 
 **Worktree path format for worktree modes**: `worktrees/<plan-identifier>/` where
 `<plan-identifier>` is the slug portion of the folder name (strip the date prefix when present).

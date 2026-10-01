@@ -16,6 +16,7 @@ when_to_use: "Read this index to find the right Plans Organization Convention ch
 - [Comprehensive Decision Records](./comprehensive-decision-records.md) — Making a formal plan understandable to a bootcamp graduate with no professional experience, with alternatives and prior art.
 - [Structure Decision](./structure-decision.md) — Choosing the required mature-plan core and reader-led technical shape.
 - [Retired Single-File Structure](./single-file-structure.md) — Recognizing the prospective boundary for existing single-file plans.
+- [Bug-Fix Plan](./bug-fix-plan.md) — The current one-document plan for a blocking defect.
 - [Multi-File Structure](./multi-file-structure-layout-and-core-files.md) — Scaffolding the fixed mature-plan core and choosing one technical shape.
 - [Additional File Purposes](./multi-file-structure-additional-file-purposes.md) — Clarifying what belongs in tech-docs.md, delivery.md, learnings.md, or evidence/.
 - [File-Impact Analysis Format](./file-impact-analysis-format.md) — Writing or reviewing a plan's tech-docs.md File-Impact Analysis section.
@@ -41,10 +42,10 @@ when_to_use: "Read this index to find the right Plans Organization Convention ch
 - [Boundary Test](./prs-open-at-delivery-boundaries-boundary-test.md) — Testing a delivery boundary.
 - [Natural Seams and Deployable State](./prs-open-at-delivery-boundaries-natural-seams.md) — Splitting delivery by cohesive purpose while preserving atomic consistency, immediate production deployability, and prompt trunk integration.
 - [What Every PR Body Must Carry](./prs-open-at-delivery-boundaries-pr-body.md) — Writing or reviewing a PR description.
-- [PR-Size Redirect](./prs-open-at-delivery-boundaries-pr-size.md) — Legacy redirect. Follow old links.
-- [Addition-Limit Redirect](./prs-open-at-delivery-boundaries-pr-size-addition-limits.md) — Legacy redirect. Follow old links.
-- [Document-Exception Redirect](./prs-open-at-delivery-boundaries-pr-size-single-source-other-document-exception.md) — Legacy redirect. Follow old links.
-- [Atomicity-Rule Redirect](./prs-open-at-delivery-boundaries-pr-size-atomicity.md) — Legacy redirect. Follow old links.
+- [PR-Size Redirect](./prs-open-at-delivery-boundaries-pr-size.md) — Legacy redirect.
+- [Addition-Limit Redirect](./prs-open-at-delivery-boundaries-pr-size-addition-limits.md) — Legacy redirect.
+- [Document-Exception Redirect](./prs-open-at-delivery-boundaries-pr-size-single-source-other-document-exception.md) — Legacy redirect.
+- [Atomicity-Rule Redirect](./prs-open-at-delivery-boundaries-pr-size-atomicity.md) — Legacy redirect.
 - [Delivery Boundaries Declaration and Applicability](./delivery-boundaries-and-applicability.md) — Writing a Delivery Boundaries table, or checking whether a grandfathered plan must retrofit gates.
 - [Worktree Specification](./worktree-specification.md) — Writing a plan's Worktree section or resolving worktree entry/cleanup.
 - [Executor Lifecycle and Example](./worktree-specification-executor-lifecycle.md) — Auditing worktree entry, sync, and cleanup.

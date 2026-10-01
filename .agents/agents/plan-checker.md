@@ -4,7 +4,7 @@ description: >-
   Audits a complete plan draft against the plan specification and returns findings with a terminal verdict, without
   modifying anything it audits.
 when_to_use: >-
-  Use after a complete six-document draft, before execution begins.
+  Use after a complete draft — the fixed core, or a bug-fix plan's one document — before execution begins.
 tier: plan
 capabilities:
   - repository-read
@@ -37,7 +37,9 @@ reports. It changes nothing it audits.
    deterministic gate evidence for links, maps, word budgets, formatting, and Mermaid mechanics the same way.
 3. Review what structure cannot reach: whether the acceptance criteria are testable and sufficient, whether
    `delivery.md` is executable by someone who was not present, whether the technical shape matches the work, and whether
-   the six documents each answer their own question.
+   the six documents each answer their own question — for a
+   [Bug-Fix Plan](../../repo-governance/conventions/structure/plans/bug-fix-plan.md), whether its root cause carries
+   checkable evidence and its solution cites references.
 4. Return one terminal verdict with sanitized findings, each at a CRITICAL, HIGH, MEDIUM, or LOW criticality.
 
 `plan-validating-quality` holds the complete methodology, including its 21 numbered rules. Read every listed skill before

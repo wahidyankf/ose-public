@@ -13,6 +13,7 @@ This directory contains universal standards for writing documentation content th
 
 ## Documents
 
+- [Bug Reports Convention](./bug-reports.md) — What a reporter checks before filing a bug and what the report contains, including the recorded duplicate search and the version and commit. Use when filing a bug, writing a bug-fix plan's report, or maintaining the contributing guide's bug section.
 - [Content Quality Principles](./quality.md) — Universal markdown content quality standards applicable to all repository markdown contexts. Read this before writing or reviewing any markdown content in this repository.
 - [Convention Writing Convention](./conventions.md) — Meta-convention defining how to write and organize convention documents in the conventions/ directory. Use when writing, restructuring, or reviewing a convention document under repo-governance/conventions/.
 - [Dynamic Collection References Convention](./dynamic-collection-references.md) — Standards for referencing dynamic collections (agents, principles, conventions, practices, skills) in documentation without hardcoding counts that become stale. Use when writing a sentence, layer description, index summary, or directory-tree comment that mentions how many agents, skills, conventions, principles, practices, or workflows exist.

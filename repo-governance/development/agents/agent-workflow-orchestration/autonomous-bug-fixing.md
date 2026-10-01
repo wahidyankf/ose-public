@@ -47,6 +47,6 @@ The required behaviour is identical whether the error was assigned or discovered
 3. Verify the fix works
 4. Communicate what was found and what was fixed
 
-Scope judgment determines commit strategy: small fixes go inline, medium fixes get their own commit, large fixes require a plan in `plans/in-progress/` with execution underway.
+Scope judgment determines commit strategy: small fixes go inline, medium fixes get their own commit, large fixes require a plan in `plans/in-progress/` with execution underway. A defect in a pinned upstream tool is fixed at its owner instead, per [Upstream Tool Defects](../../workflow/upstream-tool-defects.md).
 
 See [Proactive Preexisting Error Resolution](../../../development/practice/proactive-preexisting-error-resolution.md) for the full practice including the three anti-patterns to avoid (acting ignorant, monkey-patching, passive mentioning) and the complete agent checklist.

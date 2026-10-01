@@ -33,6 +33,10 @@ gates the carve-out would bypass. A backlog artifact that arrived this way is re
   File a separate `plans/ideas/` two-pager only with literal authorization; otherwise use the
   reported terminal state. Never create, move, or write its backlog folder. The Iron Rule 3
   current-plan-blocker carve-out remains unchanged.
+- **Upstream tool defects**: a learning that is a defect in a pinned upstream tool follows
+  [Upstream Tool Defects](../../workflow/upstream-tool-defects.md) instead. Its two-pager or bug-fix
+  plan lands at the tool's owner under that standard's standing request, and the entry is **Filed**
+  with its link.
 - **Discard**: logged with a one-line reason; no further action.
 
 Archival is **BLOCKED** until every `learnings.md` entry reaches one of four terminal states:

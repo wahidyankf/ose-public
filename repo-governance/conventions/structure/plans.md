@@ -37,6 +37,7 @@ Standards for organizing planning documents in `plans/` — temporary, distinct 
 - [Plan Artifact Authorization and Transition](./plans/plan-artifact-authorization-and-transition.md) — Defines literal authorization for plans/ artifacts and the prospective applicability of the mature-plan contract. Use before creating a plans/ artifact or deciding whether an existing plan must adopt the current contract.
 - [Structure Decision](./plans/structure-decision.md) — fixed core and reader-led technical shape.
 - [Retired Single-File Structure](./plans/single-file-structure.md) — grandfathered plans only.
+- [Bug-Fix Plan](./plans/bug-fix-plan.md) — the current one-document plan for one blocking defect.
 - [Mature Formal-Plan Structure](./plans/multi-file-structure-layout-and-core-files.md) — required core files.
 - [Additional File Purposes](./plans/multi-file-structure-additional-file-purposes.md) — technical shape, delivery, learnings, and evidence.
 - [Comprehensive Decision Records](./plans/comprehensive-decision-records.md) — substantive solution choices, alternatives, and prior art without editorial iteration history.

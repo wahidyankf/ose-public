@@ -6,7 +6,8 @@ when_to_use: Use when reviewing an existing single-file plan against the prospec
 # Retired Single-File Structure
 
 New formal plans never use the retired all-in-one `README.md` exception. Use the fixed core in
-[Structure Decision](./structure-decision.md).
+[Structure Decision](./structure-decision.md). A [Bug-Fix Plan](./bug-fix-plan.md) is a distinct,
+current one-document form with its own fixed sections, not this retired exception.
 
 Do not migrate or report structure findings against:
 

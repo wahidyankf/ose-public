@@ -22,7 +22,11 @@ This Skill provides guidance for creating **structured project plans** in the pl
 
 **Authorization gate**: creating a tracked plan requires a literal user plan request or explicit
 plan-authoring invocation. Plan Mode, internal task planning, discovery, and omitted tester output
-mode do not authorize `plans/` writes.
+mode do not authorize `plans/` writes. The standing exception is the
+[Upstream Tool Defects](../../../repo-governance/development/workflow/upstream-tool-defects.md)
+standard's two-pager or
+[Bug-Fix Plan](../../../repo-governance/conventions/structure/plans/bug-fix-plan.md) — the latter
+one `README.md` whose sections take the core documents' roles.
 
 **Start here — mandatory grilling**: before writing, resolve material design decisions that cannot
 be answered from repository evidence. After writing, run a separate validation/stress-test grill

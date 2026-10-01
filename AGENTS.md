@@ -82,7 +82,8 @@ require regression tests. Stack rules and decisions: the
 [repository adapter](./repo-governance/development/quality/stacks/repository-adapter.md). Fix a flaky test at its
 [root cause](./repo-governance/development/workflow/test-driven-development/flaky-tests-are-defects.md);
 never retry, sleep, widen, loosen, skip, or quarantine. Create `plans/` artifacts only on literal plan
-authorization; formal plans follow the
+authorization or per [Upstream Tool Defects](./repo-governance/development/workflow/upstream-tool-defects.md);
+formal plans follow the
 [plans convention](./repo-governance/conventions/structure/plans.md). PR bodies state new-code cost/benefit;
 tests exempt.
 

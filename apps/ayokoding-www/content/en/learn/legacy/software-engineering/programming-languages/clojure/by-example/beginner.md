@@ -176,7 +176,7 @@ Functions are first-class values in Clojure defined with `defn` (named) or `fn` 
 %% Function definition types
 graph TD
     accTitle: Example 4: Defining Functions
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Function Definitions, defn: Named, fn: Anonymous, Multi-arity, E. Connections: Function Definitions to defn: Named, Function Definitions to fn: Anonymous, defn: Named to Multi-arity, defn: Named to E.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Function Definitions, defn: Named, fn: Anonymous, Multi-arity, Variadic with &. Connections: Function Definitions to defn: Named, Function Definitions to fn: Anonymous, defn: Named to Multi-arity, defn: Named to Variadic with &.
     A[Function Definitions] --> B[defn: Named]
     A --> C[fn: Anonymous]
     B --> D[Multi-arity]

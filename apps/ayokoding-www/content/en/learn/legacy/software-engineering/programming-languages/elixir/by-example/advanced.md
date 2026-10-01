@@ -224,7 +224,7 @@ GenServer state is immutable. Updates return new state, and the GenServer mainta
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 62: GenServer State Management
-    accDescr: Graph with 8 nodes and 7 connections. Nodes: init/1 Initial State, State: balance=1000, handle_call :deposit, 500, State: balance=1500 transactions=[:deposit, 500, ...], handle_call :withdraw, 200, State: balance=1300 transactions=[:withdrawal, 200, ..., ...], handle_call :withdraw, 2000, State unchanged balance=1300 Return: :error, :insufficient_funds. Connections: init/1 Initial State to State: balance=1000, State: balance=1000 to handle_call :deposit, 500, handle_call :deposit, 500 to State: balance=1500 transactions=[:deposit, 500, ...], State: balance=1500 transactions=[:deposit, 500, ...] to handle_call :withdraw, 200, handle_call :withdraw, 200 to State: balance=1300 transactions=[:withdrawal, 200, ..., ...], State: balance=1300 transactions=[:withdrawal, 200, ..., ...] to handle_call :withdraw, 2000, handle_call :withdraw, 2000 to State unchanged balance=1300 Return: :error, :insufficient_funds.
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: init/1 Initial State, State: balance=1000, handle_call :deposit, 500, State: balance=1500 transactions= [:deposit, 500, ...], handle_call :withdraw, 200, State: balance=1300 transactions= [:withdrawal, 200, ..., ...], handle_call :withdraw, 2000, State unchanged balance=1300 Return: :error, :insufficient_funds. Connections: init/1 Initial State to State: balance=1000, State: balance=1000 to handle_call :deposit, 500, handle_call :deposit, 500 to State: balance=1500 transactions= [:deposit, 500, ...], State: balance=1500 transactions= [:deposit, 500, ...] to handle_call :withdraw, 200, handle_call :withdraw, 200 to State: balance=1300 transactions= [:withdrawal, 200, ..., ...], State: balance=1300 transactions= [:withdrawal, 200, ..., ...] to handle_call :withdraw, 2000, handle_call :withdraw, 2000 to State unchanged balance=1300 Return: :error, :insufficient_funds.
     Init["init/1<br/>Initial State"] --> State1["State: balance=1000"]
 
     State1 --> Deposit["handle_call<br/>{:deposit, 500}"]
@@ -1351,7 +1351,7 @@ graph TD
 ```mermaid
 graph TD
     accTitle: Example 67: Restart Strategies
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Supervisor, Worker 1, Worker 2 💥, Worker 3, R3, 3. Connections: Supervisor to Worker 1, Supervisor to Worker 2 💥, Supervisor to Worker 3, Worker 2 💥 to R3, Worker 2 💥 to 3.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Supervisor, Worker 1, Worker 2 💥, Worker 3, Restart Worker 2 & 3. Connections: Supervisor to Worker 1, Supervisor to Worker 2 💥, Supervisor to Worker 3, Worker 2 💥 to Restart Worker 2 & 3.
     S3["Supervisor"] --> W7["Worker 1"]
     S3 --> W8["Worker 2 💥"]
     S3 --> W9["Worker 3"]
@@ -1584,7 +1584,7 @@ DynamicSupervisors start children on demand rather than at supervisor init. Use 
 ```mermaid
 graph TD
     accTitle: Example 68: Dynamic Supervisors
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: DynamicSupervisor Started with 0 children, start_ child40worker141, Worker 1, start_ child40worker241, Worker 2, start_ child40worker341, Worker 3. Connections: start_ child40worker141 to Worker 1, start_ child40worker241 to Worker 2, start_ child40worker341 to Worker 3, DynamicSupervisor Started with 0 children to Worker 1, DynamicSupervisor Started with 0 children to Worker 2, DynamicSupervisor Started with 0 children to Worker 3.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: DynamicSupervisor Started with 0 children, start_ child(worker1), Worker 1, start_ child(worker2), Worker 2, start_ child(worker3), Worker 3. Connections: start_ child(worker1) to Worker 1, start_ child(worker2) to Worker 2, start_ child(worker3) to Worker 3, DynamicSupervisor Started with 0 children to Worker 1, DynamicSupervisor Started with 0 children to Worker 2, DynamicSupervisor Started with 0 children to Worker 3.
     Supervisor["DynamicSupervisor<br/>Started with 0<br/>children"]
     Request1["start_<br/>child#40;worker1#41;"] --> Worker1["Worker 1"]
     Request2["start_<br/>child#40;worker2#41;"] --> Worker2["Worker 2"]
@@ -1612,7 +1612,7 @@ graph TD
 ```mermaid
 graph TD
     accTitle: Example 68: Dynamic Supervisors
-    accDescr: Graph with 2 nodes and 1 connections. Nodes: terminate_ child40worker241, Worker 2 stopped. Connections: terminate_ child40worker241 to Worker 2 stopped.
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: terminate_ child(worker2), Worker 2 stopped. Connections: terminate_ child(worker2) to Worker 2 stopped.
     Terminate["terminate_<br/>child#40;worker2#41;"] --> Remove["Worker 2 stopped"]
 
     classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
@@ -3275,7 +3275,7 @@ Agent wraps GenServer for simple state storage with functional API. Use for cach
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 77: Agent for Simple State
-    accDescr: Graph with 9 nodes and 8 connections. Nodes: Agent (wraps GenServer), Agent.get Read State, Agent.update Modify State, GetAndUpdate, Modify, Returns State, Returns :ok, Sets New State, Both, Sets. Connections: Agent (wraps GenServer) to Agent.get Read State, Agent (wraps GenServer) to Agent.update Modify State, Agent (wraps GenServer) to GetAndUpdate, Agent (wraps GenServer) to Modify, Agent.get Read State to Returns State, Agent.update Modify State to Returns :ok, Sets New State, GetAndUpdate to Both, GetAndUpdate to Sets.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Agent (wraps GenServer), Agent.get Read State, Agent.update Modify State, Agent.get_and_update Read & Modify, Returns State, Returns :ok, Sets New State, Returns Value & Sets New State. Connections: Agent (wraps GenServer) to Agent.get Read State, Agent (wraps GenServer) to Agent.update Modify State, Agent (wraps GenServer) to Agent.get_and_update Read & Modify, Agent.get Read State to Returns State, Agent.update Modify State to Returns :ok, Sets New State, Agent.get_and_update Read & Modify to Returns Value & Sets New State.
     Agent["Agent (wraps<br/>GenServer)"] --> Get["Agent.get<br/>Read State"]
     Agent --> Update["Agent.update<br/>Modify State"]
     Agent --> GetAndUpdate["Agent.get_and_update<br/>Read & Modify"]
@@ -4039,7 +4039,7 @@ Comprehensions generate collections from enumerables with filtering and transfor
 ```mermaid
 graph TD
     accTitle: Example 82: Comprehensions Deep Dive
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: Input: 911,2,3,4,5,693, Generator: x from list, Filter1, 0, Filter 2: x greater than 2, Transform: x * 2, Output: 918, 1293. Connections: Input: 911,2,3,4,5,693 to Generator: x from list, Generator: x from list to Filter1, Filter1 to 0, Filter1 to Filter 2: x greater than 2, Filter 2: x greater than 2 to Transform: x * 2, Transform: x * 2 to Output: 918, 1293.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Input: [1,2,3,4,5,6], Generator: x from list, Filter 1: rem(x, 2) == 0, Filter 2: x greater than 2, Transform: x * 2, Output: [8, 12]. Connections: Input: [1,2,3,4,5,6] to Generator: x from list, Generator: x from list to Filter 1: rem(x, 2) == 0, Filter 1: rem(x, 2) == 0 to Filter 2: x greater than 2, Filter 2: x greater than 2 to Transform: x * 2, Transform: x * 2 to Output: [8, 12].
     Input["Input:<br/>#91;1,2,3,4,5,6#93;"] --> Generator["Generator: x from<br/>list"]
     Generator --> Filter1["Filter 1: rem#40;x,<br/>2#41; == 0"]
     Filter1 --> Filter2["Filter 2: x greater<br/>than 2"]
@@ -4191,7 +4191,7 @@ Bitstrings enable binary pattern matching with precise control over bit sizes an
 ```mermaid
 graph TD
     accTitle: Example 83: Bitstring Pattern Matching
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Binary 60601,2,3,46262, Pattern Match, Pattern 60a::8,b::8,rest62, a=1,b=2,rest=603,462. Connections: Binary 60601,2,3,46262 to Pattern Match, Pattern Match to Pattern 60a::8,b::8,rest62, Pattern 60a::8,b::8,rest62 to a=1,b=2,rest=603,462.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Binary << 1,2,3,4>>, Pattern Match, Pattern < a::8,b::8, rest>, a=1,b=2, rest=<3,4>. Connections: Binary << 1,2,3,4>> to Pattern Match, Pattern Match to Pattern < a::8,b::8, rest>, Pattern < a::8,b::8, rest> to a=1,b=2, rest=<3,4>.
     Binary["Binary #60;#60;<br/>1,2,3,4#62;#62;"] --> Match["Pattern Match"]
     Match --> Parts["Pattern #60;<br/>a::8,b::8,<br/>rest#62;"]
     Parts --> Values["a=1,b=2,<br/>rest=#60;3,4#62;"]
@@ -4212,7 +4212,7 @@ graph TD
 ```mermaid
 graph LR
     accTitle: Example 83: Bitstring Pattern Matching
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Type Specifiers, integer 40default41, float, binary, bits, utf8/utf16/utf32. Connections: Type Specifiers to integer 40default41, Type Specifiers to float, Type Specifiers to binary, Type Specifiers to bits, Type Specifiers to utf8/utf16/utf32.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Type Specifiers, integer (default), float, binary, bits, utf8/utf16/utf32. Connections: Type Specifiers to integer (default), Type Specifiers to float, Type Specifiers to binary, Type Specifiers to bits, Type Specifiers to utf8/utf16/utf32.
     Format["Type Specifiers"] --> Int["integer<br/>#40;default#41;"]
     Format --> Float["float"]
     Format --> Bin["binary"]

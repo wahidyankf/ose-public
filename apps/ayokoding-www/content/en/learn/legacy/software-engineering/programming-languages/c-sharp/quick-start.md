@@ -47,7 +47,7 @@ A **Task Management CLI** that:
 ```mermaid
 graph LR
     accTitle: Project Structure
-    accDescr: Graph with 15 nodes and 23 connections. Nodes: Quick Start: C, B, Types, Collections, D, Objects, String Interpolation, Control Flow, LINQ, Methods, Error Handling, File I/O, and 3 more. Connections: Quick Start: C to B, Quick Start: C to Types, Quick Start: C to Collections, Quick Start: C to D, Quick Start: C to Objects, Quick Start: C to String Interpolation, Quick Start: C to Control Flow, Quick Start: C to LINQ, Quick Start: C to Methods, Quick Start: C to Error Handling, Quick Start: C to File I/O, Quick Start: C to Async/Await, and 11 more.
+    accDescr: Graph with 13 nodes and 21 connections. Nodes: Quick Start: C, Variables & Types, Collections, Classes & Objects, String Interpolation, Control Flow, LINQ, Methods, Error Handling, File I/O, Async/Await, Task Manager CLI, and 1 more. Connections: Quick Start: C to Variables & Types, Quick Start: C to Collections, Quick Start: C to Classes & Objects, Quick Start: C to String Interpolation, Quick Start: C to Control Flow, Quick Start: C to LINQ, Quick Start: C to Methods, Quick Start: C to Error Handling, Quick Start: C to File I/O, Quick Start: C to Async/Await, Variables & Types to Task Manager CLI, Collections to Task Manager CLI, and 9 more.
     A[Quick Start: C#] --> B[Variables & Types]
     A --> C[Collections]
     A --> D[Classes & Objects]

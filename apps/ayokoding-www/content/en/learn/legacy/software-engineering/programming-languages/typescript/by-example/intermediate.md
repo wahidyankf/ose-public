@@ -118,7 +118,7 @@ Generic classes define type parameters at the class level. All methods share the
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 32: Generic Classes
-    accDescr: Graph with 9 nodes and 16 connections. Nodes: A, lt, gt, B, C, push(hello), pop() => string, push(42), pop() => number. Connections: A to B (instantiate with string), A to lt (instantiate with string), A to gt (instantiate with string), lt to B (instantiate with string), lt to lt (instantiate with string), lt to gt (instantiate with string), gt to B (instantiate with string), gt to lt (instantiate with string), gt to gt (instantiate with string), A to C (instantiate with number), A to lt (instantiate with number), A to gt (instantiate with number), and 4 more.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Stack<T>, Stack<string>, Stack<number>, push(hello), pop() => string, push(42), pop() => number. Connections: Stack<T> to Stack<string> (instantiate with string), Stack<T> to Stack<number> (instantiate with number), Stack<string> to push(hello), Stack<string> to pop() => string, Stack<number> to push(42), Stack<number> to pop() => number.
     A["Stack&lt;T&gt;"] -->|"instantiate with<br/>string"| B["Stack&lt;string&gt;"]
     A -->|"instantiate with<br/>number"| C["Stack&lt;number&gt;"]
 
@@ -912,7 +912,7 @@ Conditional types distribute over union types automatically. This enables powerf
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 39: Conditional Types with Distributive Behavior
-    accDescr: Graph with 8 nodes and 16 connections. Nodes: A, lt, gt, B, C, string[], number[], string[] | number[]. Connections: A to B (distributes), A to lt (distributes), A to gt (distributes), lt to B (distributes), lt to lt (distributes), lt to gt (distributes), gt to B (distributes), gt to lt (distributes), gt to gt (distributes), A to C (distributes), A to lt (distributes), A to gt (distributes), and 4 more.
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: ToArray<string | number>, ToArray<string>, ToArray<number>, string[], number[], string[] | number[]. Connections: ToArray<string | number> to ToArray<string> (distributes), ToArray<string | number> to ToArray<number> (distributes), ToArray<string> to string[], ToArray<number> to number[], string[] to string[] | number[] (union result), number[] to string[] | number[].
     A["ToArray&lt;string | number&gt;"] -->|"distributes"| B["ToArray&lt;string&gt;"]
     A -->|"distributes"| C["ToArray&lt;number&gt;"]
     B --> D["string[]"]
@@ -1498,7 +1498,7 @@ Branded types create distinct types from the same underlying type. They prevent 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 45: Branded Types
-    accDescr: Graph with 3 nodes and 4 connections. Nodes: string (unbranded), B, C. Connections: string (unbranded) to B (brand as UserId), string (unbranded) to C (brand as ProductId), B to C (not assignable to), C to B (not assignable to).
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: string (unbranded), UserId = string & _brand: UserId, ProductId = string & _brand: ProductId. Connections: string (unbranded) to UserId = string & _brand: UserId (brand as UserId), string (unbranded) to ProductId = string & _brand: ProductId (brand as ProductId), UserId = string & _brand: UserId to ProductId = string & _brand: ProductId (not assignable to), ProductId = string & _brand: ProductId to UserId = string & _brand: UserId (not assignable to).
     A["string (unbranded)"] -->|"brand as UserId"| B["UserId = string &<br/>{_brand: UserId}"]
     A -->|"brand as ProductId"| C["ProductId = string &<br/>{_brand: ProductId}"]
 
@@ -1958,7 +1958,7 @@ The `Awaited<T>` utility type unwraps Promise types recursively. It's essential 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 50: Awaited Type
-    accDescr: Graph with 8 nodes and 11 connections. Nodes: A, lt, gt, string, C, number, E, User[]. Connections: A to string (Awaited), lt to string (Awaited), gt to string (Awaited), C to number (Awaited), lt to number (Awaited), lt to number (Awaited), gt to number (Awaited), gt to number (Awaited), E to User[] (Awaited), lt to User[] (Awaited), gt to User[] (Awaited).
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: Promise<string>, string, Promise< Promise<number>>, number, Promise<User[]>, User[]. Connections: Promise<string> to string (Awaited), Promise< Promise<number>> to number (Awaited), Promise<User[]> to User[] (Awaited).
     A["Promise&lt;string&gt;"] -->|"Awaited<>"| B["string"]
     C["Promise&lt;<br/>Promise&lt;number&gt;&gt;"] -->|"Awaited<>"| D["number"]
     E["Promise&lt;User[]&gt;"] -->|"Awaited<>"| F["User[]"]

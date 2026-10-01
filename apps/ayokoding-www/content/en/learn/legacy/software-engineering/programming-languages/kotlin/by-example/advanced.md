@@ -2338,7 +2338,7 @@ Use Arrow's Either type for type-safe error handling without exceptions.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 68: Arrow Either for Functional Error Handling
-    accDescr: Graph with 8 nodes and 9 connections. Nodes: findUser40id41, Validation, Left: InvalidId, Left: NotFound, Right: User, fold, Handle Error, Process User. Connections: findUser40id41 to Validation, Validation to Left: InvalidId (id <= 0), Validation to Left: NotFound (user not found), Validation to Right: User (user exists), Left: InvalidId to fold, Left: NotFound to fold, Right: User to fold, fold to Handle Error (Left), fold to Process User (Right).
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: findUser(id), Validation, Left: InvalidId, Left: NotFound, Right: User, fold, Handle Error, Process User. Connections: findUser(id) to Validation, Validation to Left: InvalidId (id <= 0), Validation to Left: NotFound (user not found), Validation to Right: User (user exists), Left: InvalidId to fold, Left: NotFound to fold, Right: User to fold, fold to Handle Error (Left), fold to Process User (Right).
     A[findUser#40;id#41;] --> B{Validation}
     B -->|id <= 0| C[Left: InvalidId]
     B -->|user not found| D[Left: NotFound]
@@ -2373,7 +2373,7 @@ graph TD
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 68: Arrow Either for Functional Error Handling
-    accDescr: Graph with 9 nodes and 10 connections. Nodes: Either60E,A62, map, f40A41 -> B, Propagate Error, Either60E,B62, flatMap, f40B41 -> Either60E,C62, Propagate Error, Either60E,C62. Connections: Either60E,A62 to map, map to f40A41 -> B (Right), map to Propagate Error (Left), f40A41 -> B to Either60E,B62, Propagate Error to Either60E,B62, Either60E,B62 to flatMap, flatMap to f40B41 -> Either60E,C62 (Right), flatMap to Propagate Error (Left), f40B41 -> Either60E,C62 to Either60E,C62, Propagate Error to Either60E,C62.
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: Either<E,A>, map, f(A) -> B, Propagate Error, Either<E,B>, flatMap, f(B) -> Either<E,C>, Propagate Error, Either<E,C>. Connections: Either<E,A> to map, map to f(A) -> B (Right), map to Propagate Error (Left), f(A) -> B to Either<E,B>, Propagate Error to Either<E,B>, Either<E,B> to flatMap, flatMap to f(B) -> Either<E,C> (Right), flatMap to Propagate Error (Left), f(B) -> Either<E,C> to Either<E,C>, Propagate Error to Either<E,C>.
     Start[Either#60;E,A#62;] --> Map{map}
     Map -->|Right| Transform[f#40;A#41; -> B]
     Map -->|Left| PropagateE1[Propagate Error]
@@ -2687,7 +2687,7 @@ graph TD
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 69: Arrow Validated for Accumulating Errors
-    accDescr: Graph with 9 nodes and 8 connections. Nodes: Validated60E,A62, zipOrAccumulate, Validated60E,B62, Validated60E,C62, All Valid?, Combine A,B,C, Accumulate all errors, Valid40Result41, Invalid40List60E6241. Connections: Validated60E,A62 to zipOrAccumulate, Validated60E,B62 to zipOrAccumulate, Validated60E,C62 to zipOrAccumulate, zipOrAccumulate to All Valid?, All Valid? to Combine A,B,C (Yes), All Valid? to Accumulate all errors (No), Combine A,B,C to Valid40Result41, Accumulate all errors to Invalid40List60E6241.
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Validated<E,A>, zipOrAccumulate, Validated<E,B>, Validated<E,C>, All Valid?, Combine A,B,C, Accumulate all errors, Valid(Result), Invalid(List <E>). Connections: Validated<E,A> to zipOrAccumulate, Validated<E,B> to zipOrAccumulate, Validated<E,C> to zipOrAccumulate, zipOrAccumulate to All Valid?, All Valid? to Combine A,B,C (Yes), All Valid? to Accumulate all errors (No), Combine A,B,C to Valid(Result), Accumulate all errors to Invalid(List <E>).
     V1[Validated#60;E,A#62;] --> Zip[zipOrAccumulate]
     V2[Validated#60;E,B#62;] --> Zip
     V3[Validated#60;E,C#62;] --> Zip
@@ -3193,7 +3193,7 @@ Use sequences for large collections to avoid intermediate allocations.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 71: Performance - Sequences for Lazy Evaluation
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Range: 1..10M elements, toList4041: Allocate 10M list, map: Allocate 10M list, filter: Allocate large list, take401041: Allocate 10-element list, Result: 10 elements. Connections: Range: 1..10M elements to toList4041: Allocate 10M list, toList4041: Allocate 10M list to map: Allocate 10M list, map: Allocate 10M list to filter: Allocate large list, filter: Allocate large list to take401041: Allocate 10-element list, take401041: Allocate 10-element list to Result: 10 elements.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Range: 1..10M elements, toList(): Allocate 10M list, map: Allocate 10M list, filter: Allocate large list, take(10): Allocate 10-element list, Result: 10 elements. Connections: Range: 1..10M elements to toList(): Allocate 10M list, toList(): Allocate 10M list to map: Allocate 10M list, map: Allocate 10M list to filter: Allocate large list, filter: Allocate large list to take(10): Allocate 10-element list, take(10): Allocate 10-element list to Result: 10 elements.
     Source[Range: 1..10M<br/>elements]
     Source --> ToList[toList#40;#41;:<br/>Allocate 10M list]
     ToList --> Map[map:<br/>Allocate 10M list]
@@ -3220,7 +3220,7 @@ graph TD
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 71: Performance - Sequences for Lazy Evaluation
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Range: 1..10M elements, asSequence4041: No allocation, map: Lazy transform, filter: Lazy predicate, take401041: Computes 10 elements, Result: 10 elements. Connections: Range: 1..10M elements to asSequence4041: No allocation, asSequence4041: No allocation to map: Lazy transform, map: Lazy transform to filter: Lazy predicate, filter: Lazy predicate to take401041: Computes 10 elements, take401041: Computes 10 elements to Result: 10 elements.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Range: 1..10M elements, asSequence(): No allocation, map: Lazy transform, filter: Lazy predicate, take(10): Computes 10 elements, Result: 10 elements. Connections: Range: 1..10M elements to asSequence(): No allocation, asSequence(): No allocation to map: Lazy transform, map: Lazy transform to filter: Lazy predicate, filter: Lazy predicate to take(10): Computes 10 elements, take(10): Computes 10 elements to Result: 10 elements.
     Source[Range: 1..10M<br/>elements]
     Source --> AsSeq[asSequence#40;#41;:<br/>No allocation]
     AsSeq --> Map[map:<br/>Lazy transform]
@@ -5271,7 +5271,7 @@ Master variance (in/out) and star projection for flexible generic types.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 80: Advanced Generics - Variance and Star Projection
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Producer60out Animal62, Can assign: Producer60Dog62, Produces T Cannot consume T, List60out T62 read-only. Connections: Producer60out Animal62 to Can assign: Producer60Dog62, Can assign: Producer60Dog62 to Produces T Cannot consume T, Produces T Cannot consume T to List60out T62 read-only.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Producer<out Animal>, Can assign: Producer<Dog>, Produces T Cannot consume T, List<out T> read-only. Connections: Producer<out Animal> to Can assign: Producer<Dog>, Can assign: Producer<Dog> to Produces T Cannot consume T, Produces T Cannot consume T to List<out T> read-only.
     Source["Producer#60;out<br/>Animal#62;"]
     Source --> SubType["Can assign:<br/>Producer#60;Dog#62;"]
     SubType --> Behavior[Produces T<br/>Cannot consume T]
@@ -5294,7 +5294,7 @@ graph TD
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 80: Advanced Generics - Variance and Star Projection
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Consumer60in Dog62, Can assign: Consumer60Animal62, Consumes T Cannot produce T, Comparable60in T62 compare method. Connections: Consumer60in Dog62 to Can assign: Consumer60Animal62, Can assign: Consumer60Animal62 to Consumes T Cannot produce T, Consumes T Cannot produce T to Comparable60in T62 compare method.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Consumer<in Dog>, Can assign: Consumer< Animal>, Consumes T Cannot produce T, Comparable<in T> compare method. Connections: Consumer<in Dog> to Can assign: Consumer< Animal>, Can assign: Consumer< Animal> to Consumes T Cannot produce T, Consumes T Cannot produce T to Comparable<in T> compare method.
     Source["Consumer#60;in<br/>Dog#62;"]
     Source --> SuperType["Can assign:<br/>Consumer#60;<br/>Animal#62;"]
     SuperType --> Behavior[Consumes T<br/>Cannot produce T]
@@ -5317,7 +5317,7 @@ graph TD
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 80: Advanced Generics - Variance and Star Projection
-    accDescr: Graph with 4 nodes and 4 connections. Nodes: List60*62, Can read: Any?, Cannot write: Nothing, Type-safe reading. Connections: List60*62 to Can read: Any?, List60*62 to Cannot write: Nothing, Can read: Any? to Type-safe reading, Cannot write: Nothing to Type-safe reading.
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: List<*>, Can read: Any?, Cannot write: Nothing, Type-safe reading. Connections: List<*> to Can read: Any?, List<*> to Cannot write: Nothing, Can read: Any? to Type-safe reading, Cannot write: Nothing to Type-safe reading.
     Star["List#60;*#62;"]
     Star --> Read["Can read:<br/>Any?"]
     Star --> Write["Cannot write:<br/>Nothing"]

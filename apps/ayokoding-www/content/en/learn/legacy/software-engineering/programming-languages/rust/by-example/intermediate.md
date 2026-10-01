@@ -197,7 +197,7 @@ Structs holding references need lifetime annotations to ensure referenced data o
 %% Struct lifetime constraint visualization
 graph TD
     accTitle: Example 31: Struct Lifetimes
-    accDescr: Graph with 9 nodes and 8 connections. Nodes: String: novel, B, str, ImportantExcerpt, Lifetime Check, Valid: Use struct, Compile Error, Access struct.part, Dangling Reference Prevented. Connections: String: novel to B, String: novel to str, B to ImportantExcerpt, ImportantExcerpt to Lifetime Check, Lifetime Check to Valid: Use struct (excerpt lifetime ≤ novel), Lifetime Check to Compile Error (excerpt lifetime > novel), Valid: Use struct to Access struct.part, Compile Error to Dangling Reference Prevented.
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: String: novel, Create &str slice, ImportantExcerpt, Lifetime Check, Valid: Use struct, Compile Error, Access struct.part, Dangling Reference Prevented. Connections: String: novel to Create &str slice, Create &str slice to ImportantExcerpt, ImportantExcerpt to Lifetime Check, Lifetime Check to Valid: Use struct (excerpt lifetime ≤ novel), Lifetime Check to Compile Error (excerpt lifetime > novel), Valid: Use struct to Access struct.part, Compile Error to Dangling Reference Prevented.
     A[String: novel] --> B[Create &str slice]
     B --> C[ImportantExcerpt]
     C --> D{Lifetime Check}
@@ -960,7 +960,7 @@ Closures are anonymous functions that capture their environment, enabling functi
 ```mermaid
 graph TD
     accTitle: Example 38: Closures Basics
-    accDescr: Graph with 9 nodes and 10 connections. Nodes: Define Closure, Capture Environment, Capture Mode?, D, T, E, mut, T, Execute Closure. Connections: Define Closure to Capture Environment, Capture Environment to Capture Mode?, Capture Mode? to D (Borrow), Capture Mode? to T (Borrow), Capture Mode? to E (Mutable Borrow), Capture Mode? to mut (Mutable Borrow), Capture Mode? to T (Move), D to Execute Closure, E to Execute Closure, T to Execute Closure.
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: Define Closure, Capture Environment, Capture Mode?, &T, &mut T, T, Execute Closure. Connections: Define Closure to Capture Environment, Capture Environment to Capture Mode?, Capture Mode? to &T (Borrow), Capture Mode? to &mut T (Mutable Borrow), Capture Mode? to T (Move), &T to Execute Closure, &mut T to Execute Closure, T to Execute Closure.
     A[Define Closure] --> B[Capture Environment]
     B --> C{Capture Mode?}
     C -->|Borrow| D[&T]

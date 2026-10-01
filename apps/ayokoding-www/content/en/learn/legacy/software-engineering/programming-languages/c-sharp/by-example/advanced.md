@@ -236,7 +236,7 @@ Span&lt;T&gt; is a stack-only type providing safe, zero-copy access to contiguou
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Example 63: Span<T> for Zero-Copy Memory Access
-    accDescr: Graph with 6 nodes and 4 connections. Nodes: Array in Memory, B, lt, gt, C, No Copying Direct Access. Connections: Array in Memory to B, Array in Memory to C, B to No Copying Direct Access, C to No Copying Direct Access.
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Array in Memory, Span<T> 1 Elements 0-4, Span<T> 2 Elements 5-9, No Copying Direct Access. Connections: Array in Memory to Span<T> 1 Elements 0-4, Array in Memory to Span<T> 2 Elements 5-9, Span<T> 1 Elements 0-4 to No Copying Direct Access, Span<T> 2 Elements 5-9 to No Copying Direct Access.
     A["Array in Memory"]
     B["Span&lt;T&gt; #1<br/>Elements 0-4"]
     C["Span&lt;T&gt; #2<br/>Elements 5-9"]

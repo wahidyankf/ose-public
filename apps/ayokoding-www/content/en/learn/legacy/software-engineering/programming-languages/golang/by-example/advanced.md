@@ -458,7 +458,7 @@ Atomic operations ensure thread-safe modifications without mutexes. The `sync/at
 %% Compare-and-swap atomic operation flow
 graph TD
     accTitle: Example 65: Atomic Operations
-    accDescr: Graph with 10 nodes and 9 connections. Nodes: Start: value=5, Call CompareAndSwap expected=5, new=10, Current value equals expected?, D, 5, No: value!=5, Atomically swap value=10, Return true, No change value unchanged, Return false. Connections: D to 5, Start: value=5 to Call CompareAndSwap expected=5, new=10, Call CompareAndSwap expected=5, new=10 to Current value equals expected?, Current value equals expected? to D (value==5), Current value equals expected? to No: value!=5 (value!=5), D to Atomically swap value=10, No: value!=5 to No change value unchanged, Atomically swap value=10 to Return true, No change value unchanged to Return false.
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Start: value=5, Call CompareAndSwap expected=5, new=10, Current value equals expected?, Yes: value==5, No: value!=5, Atomically swap value=10, Return true, No change value unchanged, Return false. Connections: Start: value=5 to Call CompareAndSwap expected=5, new=10, Call CompareAndSwap expected=5, new=10 to Current value equals expected?, Current value equals expected? to Yes: value==5 (value==5), Current value equals expected? to No: value!=5 (value!=5), Yes: value==5 to Atomically swap value=10, No: value!=5 to No change value unchanged, Atomically swap value=10 to Return true, No change value unchanged to Return false.
     A["Start: value=5"]
     B["Call CompareAndSwap<br/>expected=5, new=10"]
     C{Current value<br/>equals expected?}
@@ -1354,7 +1354,7 @@ The options pattern provides flexible configuration through functional options. 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 73: Options Pattern
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: NewServer4041, Default Config Host: 0.0.0.0 Port: 80, WithHost40localhost41, WithPort40808041, With Timeout403041, Final Config Host: localhost Port: 8080 Timeout: 30. Connections: NewServer4041 to Default Config Host: 0.0.0.0 Port: 80, Default Config Host: 0.0.0.0 Port: 80 to WithHost40localhost41, WithHost40localhost41 to WithPort40808041, WithPort40808041 to With Timeout403041, With Timeout403041 to Final Config Host: localhost Port: 8080 Timeout: 30.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: NewServer(), Default Config Host: 0.0.0.0 Port: 80, WithHost( localhost), WithPort(8080), With Timeout(30), Final Config Host: localhost Port: 8080 Timeout: 30. Connections: NewServer() to Default Config Host: 0.0.0.0 Port: 80, Default Config Host: 0.0.0.0 Port: 80 to WithHost( localhost), WithHost( localhost) to WithPort(8080), WithPort(8080) to With Timeout(30), With Timeout(30) to Final Config Host: localhost Port: 8080 Timeout: 30.
     A["NewServer#40;#41;"]
     B["Default Config<br/>Host: 0.0.0.0<br/>Port: 80"]
     C["WithHost#40;<br/>localhost#41;"]

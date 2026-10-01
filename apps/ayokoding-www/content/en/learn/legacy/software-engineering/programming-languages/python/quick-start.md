@@ -38,7 +38,7 @@ By the end of this tutorial, you will have touchpoints for:
 ```mermaid
 graph TD
     accTitle: Learning Path
-    accDescr: Graph with 15 nodes and 27 connections. Nodes: Quick Start: Python, B, Types, Control Flow, Functions, Data Structures, String Operations, File I/O, Error Handling, List Comprehensions, J, Objects, and 3 more. Connections: Quick Start: Python to B, Quick Start: Python to Types, Quick Start: Python to Control Flow, Quick Start: Python to Functions, Quick Start: Python to Data Structures, Quick Start: Python to String Operations, Quick Start: Python to File I/O, Quick Start: Python to Error Handling, Quick Start: Python to List Comprehensions, Quick Start: Python to J, Quick Start: Python to Objects, Quick Start: Python to Modules, and 15 more.
+    accDescr: Graph with 13 nodes and 25 connections. Nodes: Quick Start: Python, Variables & Types, Control Flow, Functions, Data Structures, String Operations, File I/O, Error Handling, List Comprehensions, Classes & Objects, Modules, Beginner Tutorial, and 1 more. Connections: Quick Start: Python to Variables & Types, Quick Start: Python to Control Flow, Quick Start: Python to Functions, Quick Start: Python to Data Structures, Quick Start: Python to String Operations, Quick Start: Python to File I/O, Quick Start: Python to Error Handling, Quick Start: Python to List Comprehensions, Quick Start: Python to Classes & Objects, Quick Start: Python to Modules, Control Flow to Functions, Data Structures to String Operations, and 13 more.
     A[Quick Start: Python] --> B[Variables & Types]
     A --> C[Control Flow]
     A --> D[Functions]

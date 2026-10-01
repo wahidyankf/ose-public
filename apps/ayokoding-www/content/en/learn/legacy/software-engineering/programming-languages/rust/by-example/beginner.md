@@ -85,7 +85,7 @@ Rust allows redeclaring variables with the same name, which creates a new bindin
 %% Variable shadowing creates new bindings
 graph TD
     accTitle: Example 3: Variable Shadowing
-    accDescr: Graph with 9 nodes and 8 connections. Nodes: let x = 5, x: i32 = 5 at Address A, let x = x + 1, Drop old x at Address A, x: i32 = 6 at Address B, let x = hello, Drop old x at Address B, H, str. Connections: let x = 5 to x: i32 = 5 at Address A, x: i32 = 5 at Address A to let x = x + 1, let x = x + 1 to Drop old x at Address A, let x = x + 1 to x: i32 = 6 at Address B, x: i32 = 6 at Address B to let x = hello, let x = hello to Drop old x at Address B, let x = hello to H, let x = hello to str.
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: let x = 5, x: i32 = 5 at Address A, let x = x + 1, Drop old x at Address A, x: i32 = 6 at Address B, let x = hello, Drop old x at Address B, x: &str = hello at Address C. Connections: let x = 5 to x: i32 = 5 at Address A, x: i32 = 5 at Address A to let x = x + 1, let x = x + 1 to Drop old x at Address A, let x = x + 1 to x: i32 = 6 at Address B, x: i32 = 6 at Address B to let x = hello, let x = hello to Drop old x at Address B, let x = hello to x: &str = hello at Address C.
     A[let x = 5] --> B[x: i32 = 5 at<br/>Address A]
     B --> C[let x = x + 1]
     C --> D[Drop old x at<br/>Address A]
@@ -689,7 +689,7 @@ References allow accessing values without taking ownership. Borrowing enables mu
 ```mermaid
 graph TD
     accTitle: Example 11: References and Borrowing
-    accDescr: Graph with 7 nodes and 7 connections. Nodes: s = String, s owns data, C, s, Read data, Borrow ends, s dropped. Connections: s = String to s owns data, s owns data to C, s owns data to s, C to Read data, Read data to Borrow ends, Borrow ends to s owns data, s owns data to s dropped.
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: s = String, s owns data, &s borrows, Read data, Borrow ends, s dropped. Connections: s = String to s owns data, s owns data to &s borrows, &s borrows to Read data, Read data to Borrow ends, Borrow ends to s owns data, s owns data to s dropped.
     A[s = String] --> B[s owns data]
     B --> C[&s borrows]
     C --> D[Read data]
@@ -753,7 +753,7 @@ Mutable references allow modifying borrowed data, but Rust enforces at most one 
 %% Mutable reference exclusive access
 graph TD
     accTitle: Example 12: Mutable References
-    accDescr: Graph with 10 nodes and 10 connections. Nodes: let mut s = String, s owns data, C, mut, r1 has exclusive write access, r1.push_str, r1 lifetime ends, G, r2 has exclusive write access, Only ONE mutable ref at a time. Connections: let mut s = String to s owns data, s owns data to C, s owns data to mut, C to r1 has exclusive write access, r1 has exclusive write access to r1.push_str, r1.push_str to r1 lifetime ends, r1 lifetime ends to G, r1 lifetime ends to mut, G to r2 has exclusive write access, r2 has exclusive write access to Only ONE mutable ref at a time.
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: let mut s = String, s owns data, let r1 = &mut s, r1 has exclusive write access, r1.push_str, r1 lifetime ends, let r2 = &mut s, r2 has exclusive write access, Only ONE mutable ref at a time. Connections: let mut s = String to s owns data, s owns data to let r1 = &mut s, let r1 = &mut s to r1 has exclusive write access, r1 has exclusive write access to r1.push_str, r1.push_str to r1 lifetime ends, r1 lifetime ends to let r2 = &mut s, let r2 = &mut s to r2 has exclusive write access, r2 has exclusive write access to Only ONE mutable ref at a time.
     A[let mut s = String] --> B[s owns data]
     B --> C[let r1 = &mut s]
     C --> D[r1 has exclusive<br/>write access]
@@ -824,7 +824,7 @@ Rust enforces borrowing rules at compile time: multiple immutable references OR 
 %% Borrowing rules: readers-writer lock at compile-time
 graph TD
     accTitle: Example 13: Borrowing Rules
-    accDescr: Graph with 12 nodes and 15 connections. Nodes: let mut s = String, Borrow Type?, C, s, D, All read simultaneously, No mutation possible, G, mut, H, Exclusive write access, No other references. Connections: let mut s = String to Borrow Type?, Borrow Type? to C (Immutable), Borrow Type? to s (Immutable), C to D, C to s, C to s, C to s, D to All read simultaneously, All read simultaneously to No mutation possible, Borrow Type? to G (Mutable), Borrow Type? to mut (Mutable), G to H, and 3 more.
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: let mut s = String, Borrow Type?, Multiple &s allowed, r1 = &s, r2 = &s, r3 = &s, All read simultaneously, No mutation possible, Only ONE &mut s allowed, r = &mut s, Exclusive write access, No other references. Connections: let mut s = String to Borrow Type?, Borrow Type? to Multiple &s allowed (Immutable), Multiple &s allowed to r1 = &s, r2 = &s, r3 = &s, r1 = &s, r2 = &s, r3 = &s to All read simultaneously, All read simultaneously to No mutation possible, Borrow Type? to Only ONE &mut s allowed (Mutable), Only ONE &mut s allowed to r = &mut s, r = &mut s to Exclusive write access, Exclusive write access to No other references.
     A[let mut s = String] --> B{Borrow Type?}
     B -->|Immutable| C[Multiple &s allowed]
     C --> D[r1 = &s, r2 = &s, r3<br/>= &s]

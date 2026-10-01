@@ -32,7 +32,7 @@ Abstract classes provide partial implementations with abstract methods that subc
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 34: Abstract Classes and Template Method Pattern
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: Abstract Class template method4041, Concrete Class A implements abstract methods, Concrete Class B implements abstract methods. Connections: Abstract Class template method4041 to Concrete Class A implements abstract methods, Abstract Class template method4041 to Concrete Class B implements abstract methods.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Abstract Class template method(), Concrete Class A implements abstract methods, Concrete Class B implements abstract methods. Connections: Abstract Class template method() to Concrete Class A implements abstract methods, Abstract Class template method() to Concrete Class B implements abstract methods.
     Abstract["Abstract Class<br/>template<br/>method#40;#41;"] --> Concrete1["Concrete Class A<br/>implements abstract<br/>methods"]
     Abstract --> Concrete2["Concrete Class B<br/>implements abstract<br/>methods"]
 
@@ -416,7 +416,7 @@ Reflection allows runtime inspection and manipulation of classes, methods, and f
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 37: Reflection API - Runtime Introspection
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Class Object, Methods getMethods4041, Fields getFields4041, Constructors get Constructors4041, Invoke method. invoke4041. Connections: Class Object to Methods getMethods4041, Class Object to Fields getFields4041, Class Object to Constructors get Constructors4041, Methods getMethods4041 to Invoke method. invoke4041.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Class Object, Methods getMethods(), Fields getFields(), Constructors get Constructors(), Invoke method. invoke(). Connections: Class Object to Methods getMethods(), Class Object to Fields getFields(), Class Object to Constructors get Constructors(), Methods getMethods() to Invoke method. invoke().
     Class["Class Object"] --> Methods["Methods<br/>getMethods#40;#41;"]
     Class --> Fields["Fields<br/>getFields#40;#41;"]
     Class --> Constructors["Constructors<br/>get<br/>Constructors#40;#41;"]
@@ -715,7 +715,7 @@ Generic methods enable type-safe method implementations that work with any type.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 39: Generic Methods and Bounded Type Parameters
-    accDescr: Graph with 9 nodes and 6 connections. Nodes: Generic Method void print40T item41, Accepts any type String, Integer, etc., Bounded Method, Only Number subclasses Integer, Double, etc., Can call Number methods doubleValue4041, MultiBound, B, Extends class A, Implements interface B. Connections: Generic Method void print40T item41 to Accepts any type String, Integer, etc., Bounded Method to Only Number subclasses Integer, Double, etc., Only Number subclasses Integer, Double, etc. to Can call Number methods doubleValue4041, MultiBound to Extends class A, B to Extends class A, MultiBound to Implements interface B.
+    accDescr: Graph with 8 nodes and 5 connections. Nodes: Generic Method void print(T item), Accepts any type String, Integer, etc., Bounded Method, Only Number subclasses Integer, Double, etc., Can call Number methods doubleValue(), Multiple Bounds, Extends class A, Implements interface B. Connections: Generic Method void print(T item) to Accepts any type String, Integer, etc., Bounded Method to Only Number subclasses Integer, Double, etc., Only Number subclasses Integer, Double, etc. to Can call Number methods doubleValue(), Multiple Bounds to Extends class A, Multiple Bounds to Implements interface B.
     Method["Generic Method<br/><T> void<br/>print#40;T item#41;"] --> AnyType["Accepts any type<br/>String, Integer,<br/>etc."]
 
     Bounded["Bounded Method<br/><T extends Number>"] --> Restrict["Only Number<br/>subclasses<br/>Integer, Double,<br/>etc."]
@@ -846,7 +846,7 @@ Wildcards (`?`) represent unknown types in generics. Upper-bounded wildcards (`?
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 40: Wildcards and Type Variance
-    accDescr: Graph with 9 nodes and 6 connections. Nodes: Unbounded List, Read as Object, Cannot write, Upper bound List, Read as Number, Cannot write 40unknown exact type41, Lower bound List, Write Integer, Read as Object only. Connections: Unbounded List to Read as Object, Unbounded List to Cannot write, Upper bound List to Read as Number, Upper bound List to Cannot write 40unknown exact type41, Lower bound List to Write Integer, Lower bound List to Read as Object only.
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: Unbounded List, Read as Object, Cannot write, Upper bound List, Read as Number, Cannot write (unknown exact type), Lower bound List, Write Integer, Read as Object only. Connections: Unbounded List to Read as Object, Unbounded List to Cannot write, Upper bound List to Read as Number, Upper bound List to Cannot write (unknown exact type), Lower bound List to Write Integer, Lower bound List to Read as Object only.
     Unbounded["Unbounded<br/>List<?>"] --> ReadObj["Read as Object"]
     Unbounded --> NoWrite["Cannot write"]
 
@@ -1273,7 +1273,7 @@ Stream operations are lazy (intermediate) or eager (terminal). Understanding laz
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 45: Stream Pipeline Optimization
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: Collection [1,2,3,4,5], stream4041, filter 40intermediate/ lazy41, map 40intermediate/ lazy41, collect 40terminal/ eager41, Execute pipeline process elements, Result: List. Connections: Collection [1,2,3,4,5] to stream4041, stream4041 to filter 40intermediate/ lazy41, filter 40intermediate/ lazy41 to map 40intermediate/ lazy41, map 40intermediate/ lazy41 to collect 40terminal/ eager41, collect 40terminal/ eager41 to Execute pipeline process elements, Execute pipeline process elements to Result: List.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Collection [1,2,3,4,5], stream(), filter (intermediate/ lazy), map (intermediate/ lazy), collect (terminal/ eager), Execute pipeline process elements, Result: List. Connections: Collection [1,2,3,4,5] to stream(), stream() to filter (intermediate/ lazy), filter (intermediate/ lazy) to map (intermediate/ lazy), map (intermediate/ lazy) to collect (terminal/ eager), collect (terminal/ eager) to Execute pipeline process elements, Execute pipeline process elements to Result: List.
     Source["Collection<br/>[1,2,3,4,5]"] --> Stream["stream#40;#41;"]
     Stream --> Filter["filter<br/>#40;intermediate/<br/>lazy#41;"]
     Filter --> Map["map<br/>#40;intermediate/<br/>lazy#41;"]
@@ -1390,7 +1390,7 @@ Collectors transform stream results into collections, maps, or aggregated values
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 46: Collectors and Stream Reduction
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Stream, collect40Collector41, toList4041 → List, groupingBy4041 → Map, joining4041 → String, Custom Collector → Any type. Connections: Stream to collect40Collector41, collect40Collector41 to toList4041 → List, collect40Collector41 to groupingBy4041 → Map, collect40Collector41 to joining4041 → String, collect40Collector41 to Custom Collector → Any type.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Stream, collect(Collector), toList() → List, groupingBy() → Map, joining() → String, Custom Collector → Any type. Connections: Stream to collect(Collector), collect(Collector) to toList() → List, collect(Collector) to groupingBy() → Map, collect(Collector) to joining() → String, collect(Collector) to Custom Collector → Any type.
     Stream["Stream<String>"] --> Collect["collect(Collector)"]
     Collect --> ToList["toList#40;#41;<br/>→ List"]
     Collect --> GroupBy["groupingBy#40;#41;<br/>→ Map"]
@@ -1902,7 +1902,7 @@ Shared mutable state requires synchronization to prevent race conditions. Java p
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 50: Synchronization and Thread Safety
-    accDescr: Graph with 8 nodes and 5 connections. Nodes: Unsynchronized count++, Race Condition Lost updates, synchronized method, Acquire intrinsic lock, Execute method 40exclusive access41, Release lock, AtomicInteger incrementAndGet, Compare-And-Swap 40lock-free41. Connections: Unsynchronized count++ to Race Condition Lost updates, synchronized method to Acquire intrinsic lock, Acquire intrinsic lock to Execute method 40exclusive access41, Execute method 40exclusive access41 to Release lock, AtomicInteger incrementAndGet to Compare-And-Swap 40lock-free41.
+    accDescr: Graph with 8 nodes and 5 connections. Nodes: Unsynchronized count++, Race Condition Lost updates, synchronized method, Acquire intrinsic lock, Execute method (exclusive access), Release lock, AtomicInteger incrementAndGet, Compare-And-Swap (lock-free). Connections: Unsynchronized count++ to Race Condition Lost updates, synchronized method to Acquire intrinsic lock, Acquire intrinsic lock to Execute method (exclusive access), Execute method (exclusive access) to Release lock, AtomicInteger incrementAndGet to Compare-And-Swap (lock-free).
     Unsafe["Unsynchronized<br/>count++"] --> Race["Race Condition<br/>Lost updates"]
 
     Sync["synchronized method"] --> Lock["Acquire intrinsic<br/>lock"]
@@ -2856,7 +2856,7 @@ Pattern matching for switch combines type checking, casting, and conditional log
 ```mermaid
 graph TD
     accTitle: Example 55: Pattern Matching for Switch
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: switch40object41, case String s, case Integer i, case List list, case null, when s.length4041 > 10, when i > 100. Connections: switch40object41 to case String s, switch40object41 to case Integer i, switch40object41 to case List list, switch40object41 to case null, case String s to when s.length4041 > 10, case Integer i to when i > 100.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: switch(object), case String s, case Integer i, case List list, case null, when s.length() > 10, when i > 100. Connections: switch(object) to case String s, switch(object) to case Integer i, switch(object) to case List list, switch(object) to case null, case String s to when s.length() > 10, case Integer i to when i > 100.
     Switch["switch#40;object#41;"] --> Type1["case String s"]
     Switch --> Type2["case Integer i"]
     Switch --> Type3["case List list"]

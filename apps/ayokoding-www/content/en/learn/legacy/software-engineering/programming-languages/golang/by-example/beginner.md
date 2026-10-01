@@ -205,7 +205,7 @@ Arrays have fixed size declared upfront. Slices are dynamic collections backed b
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 4: Arrays and Slices
-    accDescr: Graph with 4 nodes and 2 connections. Nodes: Slice s := []int1, 2, 3, Backing Array [3]int1, 2, 3, C, 0] len=3 cap=3. Connections: Slice s := []int1, 2, 3 to C, C to Backing Array [3]int1, 2, 3.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Slice s := []int1, 2, 3, Backing Array [3]int1, 2, 3, Slice Header ptr=&arr[0] len=3 cap=3. Connections: Slice s := []int1, 2, 3 to Slice Header ptr=&arr[0] len=3 cap=3, Slice Header ptr=&arr[0] len=3 cap=3 to Backing Array [3]int1, 2, 3.
     A["Slice s := []int{1,<br/>2, 3}"]
     B["Backing Array<br/>[3]int{1, 2, 3}"]
     C["Slice Header<br/>ptr=&arr[0]<br/>len=3<br/>cap=3"]
@@ -656,7 +656,7 @@ Pointers hold memory addresses. The `&` operator takes an address, `*` dereferen
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 9: Pointers
-    accDescr: Graph with 4 nodes and 2 connections. Nodes: Variable x = 10 Memory Address: 0x1234, B, x, *p dereferencing Access value at address Result: 10. Connections: Variable x = 10 Memory Address: 0x1234 to B (&x), B to *p dereferencing Access value at address Result: 10 (*p).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Variable x = 10 Memory Address: 0x1234, Pointer p = &x Holds Address: 0x1234, *p dereferencing Access value at address Result: 10. Connections: Variable x = 10 Memory Address: 0x1234 to Pointer p = &x Holds Address: 0x1234 (&x), Pointer p = &x Holds Address: 0x1234 to *p dereferencing Access value at address Result: 10 (*p).
     A["Variable x = 10<br/>Memory Address:<br/>0x1234"]
     B["Pointer p = &x<br/>Holds Address:<br/>0x1234"]
     C["*p dereferencing<br/>Access value at<br/>address<br/>Result: 10"]
@@ -1311,7 +1311,7 @@ Go supports bitwise operations on integers and compound assignment operators tha
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 16: Bitwise and Compound Assignment Operators
-    accDescr: Graph with 9 nodes and 8 connections. Nodes: a = 12 Binary: 1100, b = 10 Binary: 1010, C, b, 1010, OR: a | b 1100 | 1010 = 1110 Result: 14, XOR: a ^ b 1100 ^ 1010 = 0110 Result: 6, Left Shift: a << 1 1100 << 1 = 11000 Result: 24 multiply by 2, Right Shift: a >> 1 1100 >> 1 = 0110 Result: 6 divide by 2. Connections: a = 12 Binary: 1100 to C, b = 10 Binary: 1010 to C, a = 12 Binary: 1100 to OR: a | b 1100 | 1010 = 1110 Result: 14, b = 10 Binary: 1010 to OR: a | b 1100 | 1010 = 1110 Result: 14, a = 12 Binary: 1100 to XOR: a ^ b 1100 ^ 1010 = 0110 Result: 6, b = 10 Binary: 1010 to XOR: a ^ b 1100 ^ 1010 = 0110 Result: 6, a = 12 Binary: 1100 to Left Shift: a << 1 1100 << 1 = 11000 Result: 24 multiply by 2, a = 12 Binary: 1100 to Right Shift: a >> 1 1100 >> 1 = 0110 Result: 6 divide by 2.
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: a = 12 Binary: 1100, b = 10 Binary: 1010, AND: a & b 1100 & 1010 = 1000 Result: 8, OR: a | b 1100 | 1010 = 1110 Result: 14, XOR: a ^ b 1100 ^ 1010 = 0110 Result: 6, Left Shift: a << 1 1100 << 1 = 11000 Result: 24 multiply by 2, Right Shift: a >> 1 1100 >> 1 = 0110 Result: 6 divide by 2. Connections: a = 12 Binary: 1100 to AND: a & b 1100 & 1010 = 1000 Result: 8, b = 10 Binary: 1010 to AND: a & b 1100 & 1010 = 1000 Result: 8, a = 12 Binary: 1100 to OR: a | b 1100 | 1010 = 1110 Result: 14, b = 10 Binary: 1010 to OR: a | b 1100 | 1010 = 1110 Result: 14, a = 12 Binary: 1100 to XOR: a ^ b 1100 ^ 1010 = 0110 Result: 6, b = 10 Binary: 1010 to XOR: a ^ b 1100 ^ 1010 = 0110 Result: 6, a = 12 Binary: 1100 to Left Shift: a << 1 1100 << 1 = 11000 Result: 24 multiply by 2, a = 12 Binary: 1100 to Right Shift: a >> 1 1100 >> 1 = 0110 Result: 6 divide by 2.
     A["a = 12<br/>Binary: 1100"]
     B["b = 10<br/>Binary: 1010"]
     C["AND: a & b<br/>1100 & 1010 = 1000<br/>Result: 8"]

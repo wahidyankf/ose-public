@@ -41,7 +41,7 @@ By the end of this tutorial, you will understand:
 ```mermaid
 graph TB
     accTitle: Learning Path
-    accDescr: Graph with 15 nodes and 14 connections. Nodes: Quick Start, Prerequisites Check, Pattern Matching, Immutability, Basic Types, Funcs, Modules, Pipeline Operator, Recursion, Enumerables, Multi-Clause Functions, Processes, and 3 more. Connections: Quick Start to Prerequisites Check, Prerequisites Check to Pattern Matching, Pattern Matching to Immutability, Immutability to Basic Types, Basic Types to Funcs, Basic Types to Modules, Funcs to Pipeline Operator, Pipeline Operator to Recursion, Recursion to Enumerables, Enumerables to Multi-Clause Functions, Multi-Clause Functions to Processes, Processes to Message Passing, and 2 more.
+    accDescr: Graph with 14 nodes and 13 connections. Nodes: Quick Start, Prerequisites Check, Pattern Matching, Immutability, Basic Types, Functions & Modules, Pipeline Operator, Recursion, Enumerables, Multi-Clause Functions, Processes, Message Passing, and 2 more. Connections: Quick Start to Prerequisites Check, Prerequisites Check to Pattern Matching, Pattern Matching to Immutability, Immutability to Basic Types, Basic Types to Functions & Modules, Functions & Modules to Pipeline Operator, Pipeline Operator to Recursion, Recursion to Enumerables, Enumerables to Multi-Clause Functions, Multi-Clause Functions to Processes, Processes to Message Passing, Message Passing to GenServer, and 1 more.
     Start[Quick Start] --> Setup[Prerequisites Check]
     Setup --> Pattern[Pattern Matching]
     Pattern --> Immut[Immutability]

@@ -567,7 +567,7 @@ Classes can extend other classes to inherit properties and methods. Subclasses c
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 9: Inheritance and Method Overriding
-    accDescr: Graph with 5 nodes and 5 connections. Nodes: Base Class Animal, Derived Class Dog, Derived Class Cat, D, Methods. Connections: Base Class Animal to Derived Class Dog, Base Class Animal to Derived Class Cat, Derived Class Dog to D, Derived Class Dog to Methods, Derived Class Cat to D.
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Base Class Animal, Derived Class Dog, Derived Class Cat, Inherits Properties & Methods. Connections: Base Class Animal to Derived Class Dog, Base Class Animal to Derived Class Cat, Derived Class Dog to Inherits Properties & Methods, Derived Class Cat to Inherits Properties & Methods.
     A["Base Class<br/>Animal"] --> B["Derived Class<br/>Dog"]
     A --> C["Derived Class<br/>Cat"]
 
@@ -2603,7 +2603,7 @@ Conditional types select types based on conditions using `extends` keyword. They
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 28: Conditional Types
-    accDescr: Graph with 9 nodes and 8 connections. Nodes: T extends string ?, TrueType, FalseType, D, lt, gt, true, F, false. Connections: T extends string ? to TrueType (true), T extends string ? to FalseType (false), D to true, lt to true, gt to true, F to false, lt to false, gt to false.
+    accDescr: Graph with 7 nodes and 4 connections. Nodes: T extends string ?, TrueType, FalseType, IsString<string>, true, IsString<number>, false. Connections: T extends string ? to TrueType (true), T extends string ? to FalseType (false), IsString<string> to true, IsString<number> to false.
     A["T extends string ?"] -->|"true"| B["TrueType"]
     A -->|"false"| C["FalseType"]
 

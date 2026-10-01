@@ -524,7 +524,7 @@ Classes are blueprints for objects, defining fields (state) and methods (behavio
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 10: Classes and Objects
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Class Person 40Blueprint41, Fields: name, age 40State41, Methods: introduce4041 40Behavior41, Constructor Person40name, age41, Object: alice name=quotAlicequot, age=30, Object: bob name=quotBobquot, age=25. Connections: Class Person 40Blueprint41 to Fields: name, age 40State41, Class Person 40Blueprint41 to Methods: introduce4041 40Behavior41, Class Person 40Blueprint41 to Constructor Person40name, age41, Constructor Person40name, age41 to Object: alice name=quotAlicequot, age=30, Constructor Person40name, age41 to Object: bob name=quotBobquot, age=25.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Class Person (Blueprint), Fields: name, age (State), Methods: introduce() (Behavior), Constructor Person(name, age), Object: alice name=quot Alicequot, age=30, Object: bob name=quot Bobquot, age=25. Connections: Class Person (Blueprint) to Fields: name, age (State), Class Person (Blueprint) to Methods: introduce() (Behavior), Class Person (Blueprint) to Constructor Person(name, age), Constructor Person(name, age) to Object: alice name=quot Alicequot, age=30, Constructor Person(name, age) to Object: bob name=quot Bobquot, age=25.
     Class["Class Person<br/>#40;Blueprint#41;"] --> Fields["Fields: name, age<br/>#40;State#41;"]
     Class --> Methods["Methods:<br/>introduce#40;#41;<br/>#40;Behavior#41;"]
     Class --> Constructor["Constructor<br/>Person#40;name,<br/>age#41;"]
@@ -599,7 +599,7 @@ Inheritance creates class hierarchies where subclasses extend superclasses, inhe
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 11: Inheritance and Polymorphism
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Animal Superclass makeSound4041, Dog Subclass extends Animal, Cat Subclass extends Animal, Dog object: makeSound4041 → Woof, Cat object: makeSound4041 → Meow. Connections: Animal Superclass makeSound4041 to Dog Subclass extends Animal, Animal Superclass makeSound4041 to Cat Subclass extends Animal, Dog Subclass extends Animal to Dog object: makeSound4041 → Woof, Cat Subclass extends Animal to Cat object: makeSound4041 → Meow.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Animal Superclass makeSound(), Dog Subclass extends Animal, Cat Subclass extends Animal, Dog object: makeSound() → Woof, Cat object: makeSound() → Meow. Connections: Animal Superclass makeSound() to Dog Subclass extends Animal, Animal Superclass makeSound() to Cat Subclass extends Animal, Dog Subclass extends Animal to Dog object: makeSound() → Woof, Cat Subclass extends Animal to Cat object: makeSound() → Meow.
     Animal["Animal Superclass<br/>makeSound#40;#41;"] --> Dog["Dog Subclass<br/>extends Animal"]
     Animal --> Cat["Cat Subclass<br/>extends Animal"]
     Dog --> DogObj["Dog object:<br/>makeSound#40;#41; →<br/>Woof"]
@@ -760,7 +760,7 @@ ArrayList is a resizable array implementation providing fast random access and a
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 13: ArrayList - Dynamic Arrays
-    accDescr: Graph with 8 nodes and 7 connections. Nodes: ArrayList names, Internal array capacity=10, add Alice, [Alice, null, null, ...], add Bob, [Alice, Bob, null, ...], add401, Charlie41, Shift Bob right [Alice, Charlie, Bob, ...]. Connections: ArrayList names to Internal array capacity=10, Internal array capacity=10 to add Alice, add Alice to [Alice, null, null, ...], [Alice, null, null, ...] to add Bob, add Bob to [Alice, Bob, null, ...], [Alice, Bob, null, ...] to add401, Charlie41, add401, Charlie41 to Shift Bob right [Alice, Charlie, Bob, ...].
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: ArrayList names, Internal array capacity=10, add Alice, [Alice, null, null, ...], add Bob, [Alice, Bob, null, ...], add(1, Charlie), Shift Bob right [Alice, Charlie, Bob, ...]. Connections: ArrayList names to Internal array capacity=10, Internal array capacity=10 to add Alice, add Alice to [Alice, null, null, ...], [Alice, null, null, ...] to add Bob, add Bob to [Alice, Bob, null, ...], [Alice, Bob, null, ...] to add(1, Charlie), add(1, Charlie) to Shift Bob right [Alice, Charlie, Bob, ...].
     Create["ArrayList<String> names"] --> Internal["Internal array<br/>capacity=10"]
     Internal --> Add1["add Alice"] --> Grow1["[Alice, null, null,<br/>...]"]
     Grow1 --> Add2["add Bob"] --> Grow2["[Alice, Bob, null,<br/>...]"]
@@ -834,7 +834,7 @@ HashMap stores key-value pairs with O(1) average-case lookup using hash-based in
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 14: HashMap - Key-Value Mappings
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Key: Alice, hashCode4041 hash value, Bucket index 40hash array.length41, Entry: Alice=30 stored in bucket, get Alice, Return value: 30. Connections: Key: Alice to hashCode4041 hash value, hashCode4041 hash value to Bucket index 40hash array.length41, Bucket index 40hash array.length41 to Entry: Alice=30 stored in bucket, Entry: Alice=30 stored in bucket to get Alice, get Alice to Return value: 30.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Key: Alice, hashCode() hash value, Bucket index (hash array.length), Entry: Alice=30 stored in bucket, get Alice, Return value: 30. Connections: Key: Alice to hashCode() hash value, hashCode() hash value to Bucket index (hash array.length), Bucket index (hash array.length) to Entry: Alice=30 stored in bucket, Entry: Alice=30 stored in bucket to get Alice, get Alice to Return value: 30.
     Key["Key: Alice"] --> Hash["hashCode#40;#41;<br/>hash value"]
     Hash --> Bucket["Bucket index<br/>#40;hash %<br/>array.length#41;"]
     Bucket --> Entry["Entry: Alice=30<br/>stored in bucket"]
@@ -1117,7 +1117,7 @@ Java methods encapsulate reusable logic with parameters and return values. Param
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 18: Methods and Parameter Passing
-    accDescr: Graph with 8 nodes and 6 connections. Nodes: Method Call modify Primitive40num41, Copy primitive value param x = 10, Modify x = 100 40local copy41, Return Original num still 10, Method Call modify Array40arr41, Copy reference param points to same array, Modify arr[0] = 999 40affects original41, Return Original array modified. Connections: Method Call modify Primitive40num41 to Copy primitive value param x = 10, Copy primitive value param x = 10 to Modify x = 100 40local copy41, Modify x = 100 40local copy41 to Return Original num still 10, Method Call modify Array40arr41 to Copy reference param points to same array, Copy reference param points to same array to Modify arr[0] = 999 40affects original41, Modify arr[0] = 999 40affects original41 to Return Original array modified.
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: Method Call modify Primitive(num), Copy primitive value param x = 10, Modify x = 100 (local copy), Return Original num still 10, Method Call modify Array(arr), Copy reference param points to same array, Modify arr[0] = 999 (affects original), Return Original array modified. Connections: Method Call modify Primitive(num) to Copy primitive value param x = 10, Copy primitive value param x = 10 to Modify x = 100 (local copy), Modify x = 100 (local copy) to Return Original num still 10, Method Call modify Array(arr) to Copy reference param points to same array, Copy reference param points to same array to Modify arr[0] = 999 (affects original), Modify arr[0] = 999 (affects original) to Return Original array modified.
     Call["Method Call<br/>modify<br/>Primitive#40;num#41;"] --> CopyPrim["Copy primitive value<br/>param x = 10"]
     CopyPrim --> ModifyPrim["Modify x = 100<br/>#40;local copy#41;"]
     ModifyPrim --> ReturnPrim["Return<br/>Original num still<br/>10"]

@@ -254,7 +254,7 @@ Hermes Agent uses `~/.hermes/config.yaml` as the main configuration file, `~/.he
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 7: Configuration File Structure
-    accDescr: Graph with 7 nodes and 5 connections. Nodes: ~/.hermes/, config.yaml Main configuration, C, secrets, auth.json OAuth tokens, memories/ MEMORY.md, USER.md, SOUL.md Agent personality. Connections: ~/.hermes/ to config.yaml Main configuration, ~/.hermes/ to C, ~/.hermes/ to auth.json OAuth tokens, ~/.hermes/ to memories/ MEMORY.md, USER.md, ~/.hermes/ to SOUL.md Agent personality.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: ~/.hermes/, config.yaml Main configuration, .env API keys & secrets, auth.json OAuth tokens, memories/ MEMORY.md, USER.md, SOUL.md Agent personality. Connections: ~/.hermes/ to config.yaml Main configuration, ~/.hermes/ to .env API keys & secrets, ~/.hermes/ to auth.json OAuth tokens, ~/.hermes/ to memories/ MEMORY.md, USER.md, ~/.hermes/ to SOUL.md Agent personality.
     A["~/.hermes/"]
     B["config.yaml<br/>Main configuration"]
     C[".env<br/>API keys & secrets"]

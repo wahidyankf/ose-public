@@ -34,7 +34,7 @@ When security incidents occur, defensive teams follow structured response proces
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
     accTitle: Incident Response
-    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Detection, B, Analysis, Containment, Eradication, Recovery, Post-Incident Review. Connections: Detection to B, Detection to Analysis, B to Containment, Containment to Eradication, Eradication to Recovery, Recovery to Post-Incident Review.
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Detection, Triage & Analysis, Containment, Eradication, Recovery, Post-Incident Review. Connections: Detection to Triage & Analysis, Triage & Analysis to Containment, Containment to Eradication, Eradication to Recovery, Recovery to Post-Incident Review.
     A[Detection] --> B[Triage & Analysis]
     B --> C[Containment]
     C --> D[Eradication]
@@ -226,7 +226,7 @@ A Security Operations Centre (SOC) provides centralized 24/7 monitoring, detecti
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
     accTitle: SOC Structure and Three-Tier Model
-    accDescr: Flowchart with 11 nodes and 10 connections. Nodes: Security Alerts, Tier 1: Alert Triage, Escalation Needed?, D, Close, Tier 2: Investigation, Major Incident?, G, Tier 3: Advanced Response, I, Post-Incident Review. Connections: Security Alerts to Tier 1: Alert Triage, Tier 1: Alert Triage to Escalation Needed?, Escalation Needed? to D (No), Escalation Needed? to Close (No), Escalation Needed? to Tier 2: Investigation (Yes), Tier 2: Investigation to Major Incident?, Major Incident? to G (No), Major Incident? to Tier 3: Advanced Response (Yes), Tier 3: Advanced Response to I, I to Post-Incident Review.
+    accDescr: Flowchart with 10 nodes and 9 connections. Nodes: Security Alerts, Tier 1: Alert Triage, Escalation Needed?, Document & Close, Tier 2: Investigation, Major Incident?, Remediation & Documentation, Tier 3: Advanced Response, Forensics & Eradication, Post-Incident Review. Connections: Security Alerts to Tier 1: Alert Triage, Tier 1: Alert Triage to Escalation Needed?, Escalation Needed? to Document & Close (No), Escalation Needed? to Tier 2: Investigation (Yes), Tier 2: Investigation to Major Incident?, Major Incident? to Remediation & Documentation (No), Major Incident? to Tier 3: Advanced Response (Yes), Tier 3: Advanced Response to Forensics & Eradication, Forensics & Eradication to Post-Incident Review.
     A[Security Alerts] --> B[Tier 1: Alert Triage]
     B --> C{Escalation Needed?}
     C -->|No| D[Document & Close]

@@ -1264,7 +1264,7 @@ Generate descriptive commit messages by analyzing staged changes. Claude reads d
 ```mermaid
 graph TD
     accTitle: Example 52: Commit Message Generation from Changes
-    accDescr: Graph with 8 nodes and 9 connections. Nodes: A, staged, Claude Analysis, Type: feat/fix/docs, Scope: api/utils/tests, Breaking changes?, Conventional Commit Message, Version Control History. Connections: A to staged, staged to Claude Analysis (Changed files), Claude Analysis to Type: feat/fix/docs (Categorizes), Claude Analysis to Scope: api/utils/tests (Identifies), Claude Analysis to Breaking changes? (Summarizes), Type: feat/fix/docs to Conventional Commit Message (Formats), Scope: api/utils/tests to Conventional Commit Message (Formats), Breaking changes? to Conventional Commit Message (Includes), Conventional Commit Message to Version Control History (git commit).
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: git diff --staged, Claude Analysis, Type: feat/fix/docs, Scope: api/utils/tests, Breaking changes?, Conventional Commit Message, Version Control History. Connections: git diff --staged to Claude Analysis (Changed files), Claude Analysis to Type: feat/fix/docs (Categorizes), Claude Analysis to Scope: api/utils/tests (Identifies), Claude Analysis to Breaking changes? (Summarizes), Type: feat/fix/docs to Conventional Commit Message (Formats), Scope: api/utils/tests to Conventional Commit Message (Formats), Breaking changes? to Conventional Commit Message (Includes), Conventional Commit Message to Version Control History (git commit).
     A[git diff --staged] -->|Changed files| B[Claude Analysis]
     B -->|Categorizes| C[Type: feat/fix/docs]
     B -->|Identifies| D[Scope:<br/>api/utils/tests]

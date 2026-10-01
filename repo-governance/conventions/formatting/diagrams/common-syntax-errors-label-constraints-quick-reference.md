@@ -13,8 +13,8 @@ when_to_use: "Use when you want the full label-constraint rules summarized in on
 **Automated check**: The `md-mermaid` gate runs `./rhino md mermaid validate`, which fails node
 and edge label segments over the 20-grapheme limit declared in `repo-config.yml`
 `policies.markdown.mermaid`. The validator also checks `accTitle`/`accDescr` and the declared
-colour palette; it does not parse syntax or measure rank width. The `md-mermaid-palette` gate
-checks that each diagram type that applies it declares a palette `classDef default`.
+colour palette, and `mermaid.require-default-class` requires a palette `classDef default` wherever
+the renderer applies one; it does not parse syntax or measure rank width.
 
 **Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in the monorepo. Failures observed:
 

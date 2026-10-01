@@ -40,16 +40,6 @@ before calling the tool; the tool itself cannot be pointed at an arbitrary path 
 
 `lint-gates.test.mjs` proves each selector in both directions and runs in `npm run test:validators`.
 
-## The Mermaid palette gate
-
-- [`validate-mermaid-palette.mjs`](./validate-mermaid-palette.mjs) — Fails when a flowchart,
-  graph, class, ER, or requirement diagram in the given Markdown files declares no
-  `classDef default` setting fill, stroke, and color. Use when tracing the `md-mermaid-palette`
-  gate; `rhino md mermaid validate` checks only the colours a diagram declares, so it passes a
-  diagram left on the theme colours. See the
-  [palette default](../repo-governance/conventions/formatting/diagrams/mermaid-color-accessibility-palette.md)
-  rule. Its tests run in `npm run test:validators`.
-
 ## The public-safety gate
 
 [`public-safety/`](./public-safety/README.md) is not a wrapper. It is the outbound public-safety gate, copied byte for
@@ -69,7 +59,6 @@ offline suite runs as the `leak-review-tests` gate.
 | Gate id              | Command                                                 | Surface                                     |
 | -------------------- | ------------------------------------------------------- | ------------------------------------------- |
 | `format-staged`      | `scripts/format-staged` (calls both formatter wrappers) | pre-commit (staged), pull-request (changed) |
-| `md-mermaid-palette` | `node scripts/validate-mermaid-palette.mjs`             | pre-commit (staged), pull-request (changed) |
 
 At pre-commit Rhino applies the formatted bytes to the index; on the pull-request surface it
 replays `format-staged` and fails on any change, so no separate verify gate exists.

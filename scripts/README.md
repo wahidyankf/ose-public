@@ -56,9 +56,9 @@ offline suite runs as the `leak-review-tests` gate.
 
 ## Which gates invoke these
 
-| Gate id              | Command                                                 | Surface                                     |
-| -------------------- | ------------------------------------------------------- | ------------------------------------------- |
-| `format-staged`      | `scripts/format-staged` (calls both formatter wrappers) | pre-commit (staged), pull-request (changed) |
+| Gate id         | Command                                                 | Surface                                     |
+| --------------- | ------------------------------------------------------- | ------------------------------------------- |
+| `format-staged` | `scripts/format-staged` (calls both formatter wrappers) | pre-commit (staged), pull-request (changed) |
 
 At pre-commit Rhino applies the formatted bytes to the index; on the pull-request surface it
 replays `format-staged` and fails on any change, so no separate verify gate exists.

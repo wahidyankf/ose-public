@@ -430,7 +430,7 @@ tests/
 ```mermaid
 graph TD
     accTitle: Organization Architecture Diagram
-    accDescr: Graph with 5 nodes and 5 connections. Nodes: Test Specifications, Page Objects, Fixtures, D, Test State. Connections: Test Specifications to Page Objects (use), Test Specifications to Fixtures (inject), Page Objects to D (encapsulate), Fixtures to Test State (setup), Fixtures to Page Objects (use).
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Test Specifications, Page Objects, Fixtures, Selectors & Interactions, Test State. Connections: Test Specifications to Page Objects (use), Test Specifications to Fixtures (inject), Page Objects to Selectors & Interactions (encapsulate), Fixtures to Test State (setup), Fixtures to Page Objects (use).
     A[Test Specifications] -->|use| B[Page Objects]
     A -->|inject| C[Fixtures]
     B -->|encapsulate| D[Selectors &<br/>Interactions]

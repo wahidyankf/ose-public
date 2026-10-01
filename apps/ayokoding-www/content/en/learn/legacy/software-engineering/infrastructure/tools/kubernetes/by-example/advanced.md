@@ -2679,7 +2679,7 @@ Helm values provide hierarchical configuration with multiple override mechanisms
 %% Helm values precedence
 graph TD
  accTitle: Example 75: Helm Values and Overrides
- accDescr: Graph with 7 nodes and 6 connections. Nodes: values.yaml defaults, Merge, values-dev.yaml -f flag, D, set, Final values, Template rendering. Connections: values.yaml defaults to Merge, values-dev.yaml -f flag to Merge, D to set, set to Merge, Merge to Final values, Final values to Template rendering.
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: values.yaml defaults, Merge, values-dev.yaml -f flag, --set replicaCount=5 CLI flag, Final values, Template rendering. Connections: values.yaml defaults to Merge, values-dev.yaml -f flag to Merge, --set replicaCount=5 CLI flag to Merge, Merge to Final values, Final values to Template rendering.
  A[values.yaml<br/>defaults] --> B[Merge]
  C[values-dev.yaml<br/>-f flag] --> B
  D[--set replicaCount=5<br/>CLI flag] --> B

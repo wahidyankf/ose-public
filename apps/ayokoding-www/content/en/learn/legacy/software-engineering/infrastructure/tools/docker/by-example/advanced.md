@@ -1827,7 +1827,7 @@ Automate Docker image builds, tests, scans, and deployments using
 %% CI/CD workflow
 graph TD
  accTitle: Example 65: CI/CD with GitHub Actions
- accDescr: Graph with 10 nodes and 9 connections. Nodes: Git Push, B, Test, Security Scan Trivy, Pass?, Fail Build, Branch?, Deploy Staging, Deploy Production, Create Release. Connections: Git Push to B, Git Push to Test, B to Security Scan Trivy, Security Scan Trivy to Pass?, Pass? to Fail Build (No), Pass? to Branch? (Yes), Branch? to Deploy Staging (develop), Branch? to Deploy Production (v tag), Deploy Production to Create Release.
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: Git Push, Build & Test, Security Scan Trivy, Pass?, Fail Build, Branch?, Deploy Staging, Deploy Production, Create Release. Connections: Git Push to Build & Test, Build & Test to Security Scan Trivy, Security Scan Trivy to Pass?, Pass? to Fail Build (No), Pass? to Branch? (Yes), Branch? to Deploy Staging (develop), Branch? to Deploy Production (v tag), Deploy Production to Create Release.
  A["Git Push"] --> B["Build & Test"]
  B --> C["Security Scan<br/>Trivy"]
  C --> D{Pass?}
@@ -3029,7 +3029,7 @@ Implement distributed tracing to debug performance issues across microservices.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 74: Distributed Tracing with Jaeger
- accDescr: Graph with 9 nodes and 7 connections. Nodes: Client Request, Web Service Span: /api/users, Auth Service Span: /auth/verify, User Service Span: /users/get, Database Span: SELECT, F, Jaeger Storage Elasticsearch/ Cassandra, H, Visualize. Connections: Client Request to Web Service Span: /api/users, Web Service Span: /api/users to Auth Service Span: /auth/verify, Web Service Span: /api/users to User Service Span: /users/get, User Service Span: /users/get to Database Span: SELECT, F to Jaeger Storage Elasticsearch/ Cassandra, Jaeger Storage Elasticsearch/ Cassandra to H, Jaeger Storage Elasticsearch/ Cassandra to Visualize.
+ accDescr: Graph with 8 nodes and 6 connections. Nodes: Client Request, Web Service Span: /api/users, Auth Service Span: /auth/verify, User Service Span: /users/get, Database Span: SELECT, F, Jaeger Storage Elasticsearch/ Cassandra, Jaeger UI Query & Visualize. Connections: Client Request to Web Service Span: /api/users, Web Service Span: /api/users to Auth Service Span: /auth/verify, Web Service Span: /api/users to User Service Span: /users/get, User Service Span: /users/get to Database Span: SELECT, F to Jaeger Storage Elasticsearch/ Cassandra, Jaeger Storage Elasticsearch/ Cassandra to Jaeger UI Query & Visualize.
  A["Client Request"] --> B["Web Service<br/>Span: /api/users"]
  B --> C["Auth Service<br/>Span: /auth/verify"]
  B --> D["User Service<br/>Span: /users/get"]

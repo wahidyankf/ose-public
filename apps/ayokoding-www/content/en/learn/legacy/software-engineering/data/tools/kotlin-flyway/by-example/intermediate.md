@@ -36,7 +36,7 @@ Flyway supports programmatic migrations through Java (or Kotlin) classes that ex
 %% Java-based migration lifecycle
 graph TD
     accTitle: Example 31: Java-Based Migration
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Flyway scans classpath migration locations, Discovers V2__ SeedAdminUser.class 40implements JavaMigration41, Calls migrate40context41 on your class, Records success in flyway_schema_ history. Connections: Flyway scans classpath migration locations to Discovers V2__ SeedAdminUser.class 40implements JavaMigration41, Discovers V2__ SeedAdminUser.class 40implements JavaMigration41 to Calls migrate40context41 on your class, Calls migrate40context41 on your class to Records success in flyway_schema_ history.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Flyway scans classpath migration locations, Discovers V2__ SeedAdminUser.class (implements JavaMigration), Calls migrate( context) on your class, Records success in flyway_schema_ history. Connections: Flyway scans classpath migration locations to Discovers V2__ SeedAdminUser.class (implements JavaMigration), Discovers V2__ SeedAdminUser.class (implements JavaMigration) to Calls migrate( context) on your class, Calls migrate( context) on your class to Records success in flyway_schema_ history.
     A["Flyway scans<br/>classpath migration<br/>locations"]:::blue
     B["Discovers V2__<br/>SeedAdminUser.class<br/>#40;implements<br/>JavaMigration#41;"]:::orange
     C["Calls migrate#40;<br/>context#41;<br/>on your class"]:::teal
@@ -148,7 +148,7 @@ Flyway callbacks hook into lifecycle events. `beforeMigrate` runs once before an
 %% Flyway callback execution order
 graph TD
     accTitle: Example 33: Callbacks
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: flyway.migrate() called, beforeMigrate callback 40SQL or Java41, V1, V2, V3... applied in order, afterMigrate callback 40SQL or Java41, migrate() returns MigrateResult. Connections: flyway.migrate() called to beforeMigrate callback 40SQL or Java41, beforeMigrate callback 40SQL or Java41 to V1, V2, V3... applied in order, V1, V2, V3... applied in order to afterMigrate callback 40SQL or Java41, afterMigrate callback 40SQL or Java41 to migrate() returns MigrateResult.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: flyway.migrate() called, beforeMigrate callback (SQL or Java), V1, V2, V3... applied in order, afterMigrate callback (SQL or Java), migrate() returns MigrateResult. Connections: flyway.migrate() called to beforeMigrate callback (SQL or Java), beforeMigrate callback (SQL or Java) to V1, V2, V3... applied in order, V1, V2, V3... applied in order to afterMigrate callback (SQL or Java), afterMigrate callback (SQL or Java) to migrate() returns MigrateResult.
     A["flyway.migrate()<br/>called"]:::blue
     B["beforeMigrate<br/>callback<br/>#40;SQL or Java#41;"]:::orange
     C["V1, V2, V3...<br/>applied in order"]:::teal
@@ -360,7 +360,7 @@ When introducing Flyway to an existing database, you cannot run `V1__initial_sch
 %% Baseline adoption workflow
 graph TD
     accTitle: Example 36: Baseline Migrations for Existing Databases
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Existing database 40no flyway_ schema_history41, flyway.baseline() creates flyway_ schema_history with version=1 entry, V2, V3, V4... applied normally, V1 permanently skipped 40already baselined41. Connections: Existing database 40no flyway_ schema_history41 to flyway.baseline() creates flyway_ schema_history with version=1 entry, flyway.baseline() creates flyway_ schema_history with version=1 entry to V2, V3, V4... applied normally, flyway.baseline() creates flyway_ schema_history with version=1 entry to V1 permanently skipped 40already baselined41 (skipped).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Existing database (no flyway_ schema_history), flyway.baseline() creates flyway_ schema_history with version=1 entry, V2, V3, V4... applied normally, V1 permanently skipped (already baselined). Connections: Existing database (no flyway_ schema_history) to flyway.baseline() creates flyway_ schema_history with version=1 entry, flyway.baseline() creates flyway_ schema_history with version=1 entry to V2, V3, V4... applied normally, flyway.baseline() creates flyway_ schema_history with version=1 entry to V1 permanently skipped (already baselined) (skipped).
     A["Existing database<br/>#40;no flyway_<br/>schema_history#41;"]:::blue
     B["flyway.baseline()<br/>creates flyway_<br/>schema_history<br/>with version=1 entry"]:::orange
     C["V2, V3, V4...<br/>applied normally"]:::teal

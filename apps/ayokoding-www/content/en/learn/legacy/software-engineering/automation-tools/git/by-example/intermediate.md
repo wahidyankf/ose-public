@@ -603,7 +603,7 @@ git blame -w notes.txt                   # => Ignores whitespace changes when at
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 40: git reflog
-    accDescr: Graph with 6 nodes and 6 connections. Nodes: A, 2, git reflog shows all HEAD movements, Find previous HEAD@2, D, Commits Recovered. Connections: A to 2, D to 2, A to git reflog shows all HEAD movements, git reflog shows all HEAD movements to Find previous HEAD@2, Find previous HEAD@2 to D, D to Commits Recovered.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Accidental git reset --hard, git reflog shows all HEAD movements, Find previous HEAD@2, git checkout HEAD@2 or git reset --hard HEAD@2, Commits Recovered. Connections: Accidental git reset --hard to git reflog shows all HEAD movements, git reflog shows all HEAD movements to Find previous HEAD@2, Find previous HEAD@2 to git checkout HEAD@2 or git reset --hard HEAD@2, git checkout HEAD@2 or git reset --hard HEAD@2 to Commits Recovered.
     A["Accidental<br/>git reset --hard"]
     B["git reflog<br/>shows all HEAD<br/>movements"]
     C["Find previous<br/>HEAD@{2}"]
@@ -671,7 +671,7 @@ git log --oneline                         # => C3 → C2 → C1 restored
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 41: git reset --soft, --mixed, --hard
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: git reset HEAD~1, B, soft, C, default) Index: unstaged Working dir: unchanged, D, hard. Connections: B to soft, C to default) Index: unstaged Working dir: unchanged, D to hard, git reset HEAD~1 to B, git reset HEAD~1 to C, git reset HEAD~1 to D.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: git reset HEAD~1, --soft Index: staged Working dir: unchanged, --mixed (default) Index: unstaged Working dir: unchanged, --hard Index: cleared Working dir: overwritten. Connections: git reset HEAD~1 to --soft Index: staged Working dir: unchanged, git reset HEAD~1 to --mixed (default) Index: unstaged Working dir: unchanged, git reset HEAD~1 to --hard Index: cleared Working dir: overwritten.
     A["git reset HEAD~1"]
     B["--soft<br/>Index: staged<br/>Working dir:<br/>unchanged"]
     C["--mixed (default)<br/>Index: unstaged<br/>Working dir:<br/>unchanged"]

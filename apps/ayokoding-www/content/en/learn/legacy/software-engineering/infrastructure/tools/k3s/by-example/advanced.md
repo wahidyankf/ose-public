@@ -1922,7 +1922,7 @@ K3s automatically takes etcd snapshots every 12 hours by default, storing them l
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 78: K3s Backup and Restore — etcd Snapshot
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: K3s etcd (embedded), etcd snapshot /var/lib/rancher/ k3s/server/db/ snapshots/, S3 / NFS (off-node copy), RESTORE, cluster-reset, cluster-reset-. Connections: RESTORE to cluster-reset, cluster-reset to cluster-reset-, K3s etcd (embedded) to etcd snapshot /var/lib/rancher/ k3s/server/db/ snapshots/ (every 12h auto or manual save), etcd snapshot /var/lib/rancher/ k3s/server/db/ snapshots/ to S3 / NFS (off-node copy) (copy off-node), S3 / NFS (off-node copy) to RESTORE (disaster recovery).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: K3s etcd (embedded), etcd snapshot /var/lib/rancher/ k3s/server/db/ snapshots/, S3 / NFS (off-node copy), k3s server --cluster-reset --cluster-reset- restore-path. Connections: K3s etcd (embedded) to etcd snapshot /var/lib/rancher/ k3s/server/db/ snapshots/ (every 12h auto or manual save), etcd snapshot /var/lib/rancher/ k3s/server/db/ snapshots/ to S3 / NFS (off-node copy) (copy off-node), S3 / NFS (off-node copy) to k3s server --cluster-reset --cluster-reset- restore-path (disaster recovery).
     ETCD["K3s etcd<br/>(embedded)"]
     SNAP["etcd snapshot<br/>/var/lib/rancher/<br/>k3s/server/db/<br/>snapshots/"]
     S3["S3 / NFS<br/>(off-node copy)"]
@@ -1997,7 +1997,7 @@ Replacing a failed HA server node requires removing the failed node from etcd, t
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 79: HA Node Replacement in K3s Cluster
-    accDescr: Graph with 8 nodes and 5 connections. Nodes: Server 1 (healthy), Server 2 (FAILED), Server 3 (healthy), New Node (replacement), Step 1: kubectl delete node server-2, Step 2: etcdctl member remove server-2, STEP3, server. Connections: STEP3 to server, Server 2 (FAILED) to Step 1: kubectl delete node server-2 (triggers), Step 1: kubectl delete node server-2 to Step 2: etcdctl member remove server-2 (then), Step 2: etcdctl member remove server-2 to STEP3 (then), STEP3 to New Node (replacement) (joins as etcd member).
+    accDescr: Graph with 7 nodes and 4 connections. Nodes: Server 1 (healthy), Server 2 (FAILED), Server 3 (healthy), New Node (replacement), Step 1: kubectl delete node server-2, Step 2: etcdctl member remove server-2, Step 3: join new node with --server. Connections: Server 2 (FAILED) to Step 1: kubectl delete node server-2 (triggers), Step 1: kubectl delete node server-2 to Step 2: etcdctl member remove server-2 (then), Step 2: etcdctl member remove server-2 to Step 3: join new node with --server (then), Step 3: join new node with --server to New Node (replacement) (joins as etcd member).
     S1["Server 1<br/>(healthy)"]
     S2["Server 2<br/>(FAILED)"]
     S3["Server 3<br/>(healthy)"]
@@ -2610,7 +2610,7 @@ The CIS Kubernetes Benchmark provides security configuration recommendations. K3
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 84: K3s Security Hardening — CIS Kubernetes Benchmark
-    accDescr: Graph with 10 nodes and 9 connections. Nodes: kube-bench CIS compliance scanner, API, audit-log-path, anonymous-, KUBELET, protect-kernel-, read-only-port, ETCD, client-cert-auth, auto-tls. Connections: API to audit-log-path, audit-log-path to anonymous-, KUBELET to protect-kernel-, protect-kernel- to read-only-port, ETCD to client-cert-auth, client-cert-auth to auto-tls, kube-bench CIS compliance scanner to API (validates), kube-bench CIS compliance scanner to KUBELET (validates), kube-bench CIS compliance scanner to ETCD (validates).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: kube-bench CIS compliance scanner, API Server hardening --audit-log-path --anonymous- auth=false, Kubelet hardening --protect-kernel- defaults --read-only-port=0, etcd hardening --client-cert-auth --auto-tls=false. Connections: kube-bench CIS compliance scanner to API Server hardening --audit-log-path --anonymous- auth=false (validates), kube-bench CIS compliance scanner to Kubelet hardening --protect-kernel- defaults --read-only-port=0 (validates), kube-bench CIS compliance scanner to etcd hardening --client-cert-auth --auto-tls=false (validates).
     KBENCH["kube-bench<br/>CIS compliance<br/>scanner"]
     API["API Server hardening<br/>--audit-log-path<br/>--anonymous-<br/>auth=false"]
     KUBELET["Kubelet hardening<br/>--protect-kernel-<br/>defaults<br/>--read-only-port=0"]

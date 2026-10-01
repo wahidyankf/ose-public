@@ -589,7 +589,7 @@ Integrating Liquibase into a CI/CD pipeline requires distinct stages: status che
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 69: Liquibase in CI/CD Pipeline
-    accDescr: Graph with 11 nodes and 10 connections. Nodes: CI Trigger, B, verbose, Pending changes?, liquibase update, Skip mark success, Update success?, Run integration tests, liquibase rollback, Alert + fail pipeline, Deploy to next stage. Connections: CI Trigger to B, B to verbose, B to Pending changes?, Pending changes? to liquibase update (Yes), Pending changes? to Skip mark success (No), liquibase update to Update success?, Update success? to Run integration tests (Yes), Update success? to liquibase rollback (No), liquibase rollback to Alert + fail pipeline, Run integration tests to Deploy to next stage.
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: CI Trigger, liquibase status --verbose, Pending changes?, liquibase update, Skip mark success, Update success?, Run integration tests, liquibase rollback, Alert + fail pipeline, Deploy to next stage. Connections: CI Trigger to liquibase status --verbose, liquibase status --verbose to Pending changes?, Pending changes? to liquibase update (Yes), Pending changes? to Skip mark success (No), liquibase update to Update success?, Update success? to Run integration tests (Yes), Update success? to liquibase rollback (No), liquibase rollback to Alert + fail pipeline, Run integration tests to Deploy to next stage.
     A[CI Trigger] --> B[liquibase status<br/>--verbose]
     B --> C{Pending changes?}
     C -->|Yes| D[liquibase update]

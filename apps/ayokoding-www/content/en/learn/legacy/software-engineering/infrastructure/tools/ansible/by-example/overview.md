@@ -41,7 +41,7 @@ Unlike narrative tutorials that build understanding through explanation and stor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Learning Path
-    accDescr: Graph with 5 nodes and 5 connections. Nodes: A, Core, B, Templates, C. Connections: A to B, A to Templates, Core to B, Core to Templates, B to C.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-27 Playbooks & Core Modules, Intermediate Examples 28-54 Roles & Templates, Advanced Examples 55-80 Collections & Testing. Connections: Beginner Examples 1-27 Playbooks & Core Modules to Intermediate Examples 28-54 Roles & Templates, Intermediate Examples 28-54 Roles & Templates to Advanced Examples 55-80 Collections & Testing.
     A["Beginner<br/>Examples 1-27<br/>Playbooks & Core<br/>Modules"] --> B["Intermediate<br/>Examples 28-54<br/>Roles & Templates"]
     B --> C["Advanced<br/>Examples 55-80<br/>Collections &<br/>Testing"]
 

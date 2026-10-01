@@ -522,7 +522,7 @@ Terraform provides 100+ built-in functions for string manipulation, collection o
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 6: HCL Functions
- accDescr: Graph with 9 nodes and 8 connections. Nodes: Input String: Hello, Terraform!, trimspace4041 Remove whitespace, Trimmed: Hello, Terraform!, lower4041 To lowercase, upper4041 To uppercase, replace4041 Substitute text, hello, terraform!, HELLO, TERRAFORM!, Hello, HCL!. Connections: Input String: Hello, Terraform! to trimspace4041 Remove whitespace, trimspace4041 Remove whitespace to Trimmed: Hello, Terraform!, Trimmed: Hello, Terraform! to lower4041 To lowercase, Trimmed: Hello, Terraform! to upper4041 To uppercase, Trimmed: Hello, Terraform! to replace4041 Substitute text, lower4041 To lowercase to hello, terraform!, upper4041 To uppercase to HELLO, TERRAFORM!, replace4041 Substitute text to Hello, HCL!.
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: Input String: Hello, Terraform!, trimspace() Remove whitespace, Trimmed: Hello, Terraform!, lower() To lowercase, upper() To uppercase, replace() Substitute text, hello, terraform!, HELLO, TERRAFORM!, Hello, HCL!. Connections: Input String: Hello, Terraform! to trimspace() Remove whitespace, trimspace() Remove whitespace to Trimmed: Hello, Terraform!, Trimmed: Hello, Terraform! to lower() To lowercase, Trimmed: Hello, Terraform! to upper() To uppercase, Trimmed: Hello, Terraform! to replace() Substitute text, lower() To lowercase to hello, terraform!, upper() To uppercase to HELLO, TERRAFORM!, replace() Substitute text to Hello, HCL!.
  A["Input String:<br/> Hello, Terraform! "] --> B["trimspace#40;#41;<br/>Remove whitespace"]
  B --> C["Trimmed:<br/>Hello, Terraform!"]
  C --> D1["lower#40;#41;<br/>To lowercase"]
@@ -1207,7 +1207,7 @@ Input variables make Terraform configurations reusable and environment-agnostic.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 11: Input Variables
- accDescr: Graph with 8 nodes and 7 connections. Nodes: Variable Input 40CLI/File/Env41, Type Check, Type Valid?, Error: Type mismatch, Validation Rules, Validation Passes?, Error: Custom message, Variable Available in Configuration. Connections: Variable Input 40CLI/File/Env41 to Type Check, Type Check to Type Valid?, Type Valid? to Error: Type mismatch (No), Type Valid? to Validation Rules (Yes), Validation Rules to Validation Passes?, Validation Passes? to Error: Custom message (No), Validation Passes? to Variable Available in Configuration (Yes).
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Variable Input (CLI/File/Env), Type Check, Type Valid?, Error: Type mismatch, Validation Rules, Validation Passes?, Error: Custom message, Variable Available in Configuration. Connections: Variable Input (CLI/File/Env) to Type Check, Type Check to Type Valid?, Type Valid? to Error: Type mismatch (No), Type Valid? to Validation Rules (Yes), Validation Rules to Validation Passes?, Validation Passes? to Error: Custom message (No), Validation Passes? to Variable Available in Configuration (Yes).
  A["Variable Input<br/>#40;CLI/File/Env#41;"] --> B["Type Check"]
  B --> C{"Type Valid?"}
  C -->|No| D["Error:<br/>Type mismatch"]
@@ -1645,7 +1645,7 @@ Local values (locals) are named expressions computed once and reused throughout 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 13: Local Values
- accDescr: Graph with 8 nodes and 8 connections. Nodes: Variables project, environment, Computed Local: prefix, Computed Local: is_production, Computed Local: backup_enabled, Computed Local: common_tags, Computed Local: config, Computed Local: resource_names, Resources 40for_each41. Connections: Variables project, environment to Computed Local: prefix, Variables project, environment to Computed Local: is_production, Computed Local: is_production to Computed Local: backup_enabled, Computed Local: prefix to Computed Local: common_tags, Computed Local: is_production to Computed Local: config, Computed Local: prefix to Computed Local: resource_names, Computed Local: config to Computed Local: resource_names, Computed Local: resource_names to Resources 40for_each41.
+ accDescr: Graph with 8 nodes and 8 connections. Nodes: Variables project, environment, Computed Local: prefix, Computed Local: is_production, Computed Local: backup_enabled, Computed Local: common_tags, Computed Local: config, Computed Local: resource_names, Resources (for_each). Connections: Variables project, environment to Computed Local: prefix, Variables project, environment to Computed Local: is_production, Computed Local: is_production to Computed Local: backup_enabled, Computed Local: prefix to Computed Local: common_tags, Computed Local: is_production to Computed Local: config, Computed Local: prefix to Computed Local: resource_names, Computed Local: config to Computed Local: resource_names, Computed Local: resource_names to Resources (for_each).
  A["Variables<br/>project, environment"] --> B["Computed Local:<br/>prefix"]
  A --> C["Computed Local:<br/>is_production"]
  C --> D["Computed Local:<br/>backup_enabled"]

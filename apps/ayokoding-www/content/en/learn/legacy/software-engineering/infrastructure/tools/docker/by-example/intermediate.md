@@ -22,7 +22,7 @@ Multi-stage builds use multiple FROM instructions to create optimized production
 %% Multi-stage build flow
 graph TD
  accTitle: Example 28: Multi-Stage Build Basics
- accDescr: Graph with 10 nodes and 9 connections. Nodes: Builder Stage node:18-alpine, Install all dependencies npm ci, Copy source code, Build production bundle npm run build, Production Stage node:18-alpine, F, nly, G, from, Final Image 120MB 4073 smaller41. Connections: Builder Stage node:18-alpine to Install all dependencies npm ci, Install all dependencies npm ci to Copy source code, Copy source code to Build production bundle npm run build, Build production bundle npm run build to Production Stage node:18-alpine, Production Stage node:18-alpine to F, F to nly, F to G, G to from, G to Final Image 120MB 4073 smaller41.
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Builder Stage node:18-alpine, Install all dependencies npm ci, Copy source code, Build production bundle npm run build, Production Stage node:18-alpine, Install prod dependencies npm ci --only=production, Copy built artifacts COPY --from=builder, Final Image 120MB (73 smaller). Connections: Builder Stage node:18-alpine to Install all dependencies npm ci, Install all dependencies npm ci to Copy source code, Copy source code to Build production bundle npm run build, Build production bundle npm run build to Production Stage node:18-alpine, Production Stage node:18-alpine to Install prod dependencies npm ci --only=production, Install prod dependencies npm ci --only=production to Copy built artifacts COPY --from=builder, Copy built artifacts COPY --from=builder to Final Image 120MB (73 smaller).
  A["Builder Stage<br/>node:18-alpine"] --> B["Install all<br/>dependencies<br/>npm ci"]
  B --> C["Copy source code"]
  C --> D["Build production<br/>bundle<br/>npm run build"]
@@ -497,7 +497,7 @@ Build-time secrets (API keys, credentials) needed during build should never be c
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 31: Build-Time Secrets
- accDescr: Graph with 8 nodes and 7 connections. Nodes: Host Secret File .npmrc, B, mount, Mounted in RUN, Secret Available /run/secrets/npmrc, npm ci executes, RUN completes, Secret Removed NOT in image layer. Connections: Host Secret File .npmrc to B, B to mount, B to Mounted in RUN, Mounted in RUN to Secret Available /run/secrets/npmrc, Secret Available /run/secrets/npmrc to npm ci executes, npm ci executes to RUN completes, RUN completes to Secret Removed NOT in image layer.
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Host Secret File .npmrc, --mount=type=secret, Mounted in RUN, Secret Available /run/secrets/npmrc, npm ci executes, RUN completes, Secret Removed NOT in image layer. Connections: Host Secret File .npmrc to --mount=type=secret, --mount=type=secret to Mounted in RUN, Mounted in RUN to Secret Available /run/secrets/npmrc, Secret Available /run/secrets/npmrc to npm ci executes, npm ci executes to RUN completes, RUN completes to Secret Removed NOT in image layer.
  A["Host Secret File<br/>.npmrc"] --> B["--mount=type=secret"]
  B --> C["Mounted in RUN"]
  C --> D["Secret Available<br/>/run/secrets/npmrc"]

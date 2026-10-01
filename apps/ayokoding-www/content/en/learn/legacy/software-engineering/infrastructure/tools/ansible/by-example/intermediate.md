@@ -2544,7 +2544,7 @@ Ansible Vault encrypts sensitive data (passwords, API keys, certificates) in ver
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 43: Vault Basics
- accDescr: Graph with 8 nodes and 7 connections. Nodes: Plaintext secrets.yml, ansible-vault encrypt, Encrypted secrets.yml AES256, Commit to Git 40Safe41, Playbook Execution, vault-password-file, Decrypt Secrets Runtime Only, Use in Tasks. Connections: Plaintext secrets.yml to ansible-vault encrypt, ansible-vault encrypt to Encrypted secrets.yml AES256, Encrypted secrets.yml AES256 to Commit to Git 40Safe41, Encrypted secrets.yml AES256 to Playbook Execution, Playbook Execution to vault-password-file, vault-password-file to Decrypt Secrets Runtime Only, Decrypt Secrets Runtime Only to Use in Tasks.
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Plaintext secrets.yml, ansible-vault encrypt, Encrypted secrets.yml AES256, Commit to Git (Safe), Playbook Execution, vault-password-file, Decrypt Secrets Runtime Only, Use in Tasks. Connections: Plaintext secrets.yml to ansible-vault encrypt, ansible-vault encrypt to Encrypted secrets.yml AES256, Encrypted secrets.yml AES256 to Commit to Git (Safe), Encrypted secrets.yml AES256 to Playbook Execution, Playbook Execution to vault-password-file, vault-password-file to Decrypt Secrets Runtime Only, Decrypt Secrets Runtime Only to Use in Tasks.
  A["Plaintext<br/>secrets.yml"] --> B["ansible-vault<br/>encrypt"]
  B --> C["Encrypted<br/>secrets.yml<br/>AES256"]
  C --> D["Commit to Git<br/>#40;Safe#41;"]
@@ -3880,7 +3880,7 @@ Tags enable selective task execution without modifying playbooks. Run subsets of
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 51: Task Tagging Basics
- accDescr: Graph with 14 nodes and 11 connections. Nodes: Playbook with Tags, Task 1: install, Task 2: configure, Task 3: always, Task 4: never, F, tags, Execute Task 1 Only, H, Execute Task 2 Only, No Tags, Execute All Except never, and 2 more. Connections: Playbook with Tags to Task 1: install, Playbook with Tags to Task 2: configure, Playbook with Tags to Task 3: always, Playbook with Tags to Task 4: never, F to tags, tags to Execute Task 1 Only, H to tags, tags to Execute Task 2 Only, No Tags to Execute All Except never, L to tags, tags to Execute Task 4 Only.
+ accDescr: Graph with 13 nodes and 8 connections. Nodes: Playbook with Tags, Task 1: install, Task 2: configure, Task 3: always, Task 4: never, --tags install, Execute Task 1 Only, --tags configure, Execute Task 2 Only, No Tags, Execute All Except never, --tags never, and 1 more. Connections: Playbook with Tags to Task 1: install, Playbook with Tags to Task 2: configure, Playbook with Tags to Task 3: always, Playbook with Tags to Task 4: never, --tags install to Execute Task 1 Only, --tags configure to Execute Task 2 Only, No Tags to Execute All Except never, --tags never to Execute Task 4 Only.
  A["Playbook with Tags"] --> B["Task 1: install"]
  A --> C["Task 2: configure"]
  A --> D["Task 3: always"]

@@ -537,7 +537,7 @@ Variables can be defined in multiple locations: playbook vars, command-line, inv
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 6: Playbook Variables and Precedence
- accDescr: Graph with 7 nodes and 10 connections. Nodes: Variable Sources, Role Defaults 40Precedence: 241, Inventory Vars 40Precedence: 1241, Playbook Vars 40Precedence: 1541, Task Vars 40Precedence: 2141, Extra Vars 40Precedence: 2241, Final Value. Connections: Variable Sources to Role Defaults 40Precedence: 241, Variable Sources to Inventory Vars 40Precedence: 1241, Variable Sources to Playbook Vars 40Precedence: 1541, Variable Sources to Task Vars 40Precedence: 2141, Variable Sources to Extra Vars 40Precedence: 2241, Role Defaults 40Precedence: 241 to Final Value, Inventory Vars 40Precedence: 1241 to Final Value, Playbook Vars 40Precedence: 1541 to Final Value, Task Vars 40Precedence: 2141 to Final Value, Extra Vars 40Precedence: 2241 to Final Value.
+ accDescr: Graph with 7 nodes and 10 connections. Nodes: Variable Sources, Role Defaults (Precedence: 2), Inventory Vars (Precedence: 12), Playbook Vars (Precedence: 15), Task Vars (Precedence: 21), Extra Vars (Precedence: 22), Final Value. Connections: Variable Sources to Role Defaults (Precedence: 2), Variable Sources to Inventory Vars (Precedence: 12), Variable Sources to Playbook Vars (Precedence: 15), Variable Sources to Task Vars (Precedence: 21), Variable Sources to Extra Vars (Precedence: 22), Role Defaults (Precedence: 2) to Final Value, Inventory Vars (Precedence: 12) to Final Value, Playbook Vars (Precedence: 15) to Final Value, Task Vars (Precedence: 21) to Final Value, Extra Vars (Precedence: 22) to Final Value.
  A["Variable Sources"] --> B["Role Defaults<br/>#40;Precedence:<br/>2#41;"]
  A --> C["Inventory Vars<br/>#40;Precedence:<br/>12#41;"]
  A --> D["Playbook Vars<br/>#40;Precedence:<br/>15#41;"]
@@ -947,7 +947,7 @@ Dynamic inventory pulls host information from external sources (cloud APIs, CMDB
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 10: Dynamic Inventory Basics
- accDescr: Graph with 6 nodes and 5 connections. Nodes: Ansible Playbook, Inventory Script inventory.py, Cloud API (AWS/GCP/Azure), D, Groups, Execute Tasks. Connections: Ansible Playbook to Inventory Script inventory.py, Inventory Script inventory.py to Cloud API (AWS/GCP/Azure), Cloud API (AWS/GCP/Azure) to D, Cloud API (AWS/GCP/Azure) to Groups, D to Execute Tasks.
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Ansible Playbook, Inventory Script inventory.py, Cloud API (AWS/GCP/Azure), JSON Response Hosts & Groups, Execute Tasks. Connections: Ansible Playbook to Inventory Script inventory.py, Inventory Script inventory.py to Cloud API (AWS/GCP/Azure), Cloud API (AWS/GCP/Azure) to JSON Response Hosts & Groups, JSON Response Hosts & Groups to Execute Tasks.
  A["Ansible Playbook"] --> B["Inventory Script<br/>inventory.py"]
  B --> C["Cloud API<br/>(AWS/GCP/Azure)"]
  C --> D["JSON Response<br/>Hosts & Groups"]
@@ -1438,7 +1438,7 @@ The `template` module processes Jinja2 templates on the control node and copies 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 14: Template Module with Jinja2
- accDescr: Graph with 6 nodes and 5 connections. Nodes: Template File nginx.conf.j2, Jinja2 Engine 40Control Node41, Variables port, name, root, Rendered Config nginx.conf, Copy to Target /etc/nginx/ nginx.conf, Target Host. Connections: Template File nginx.conf.j2 to Jinja2 Engine 40Control Node41, Variables port, name, root to Jinja2 Engine 40Control Node41, Jinja2 Engine 40Control Node41 to Rendered Config nginx.conf, Rendered Config nginx.conf to Copy to Target /etc/nginx/ nginx.conf, Copy to Target /etc/nginx/ nginx.conf to Target Host.
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Template File nginx.conf.j2, Jinja2 Engine (Control Node), Variables port, name, root, Rendered Config nginx.conf, Copy to Target /etc/nginx/ nginx.conf, Target Host. Connections: Template File nginx.conf.j2 to Jinja2 Engine (Control Node), Variables port, name, root to Jinja2 Engine (Control Node), Jinja2 Engine (Control Node) to Rendered Config nginx.conf, Rendered Config nginx.conf to Copy to Target /etc/nginx/ nginx.conf, Copy to Target /etc/nginx/ nginx.conf to Target Host.
  A["Template File<br/>nginx.conf.j2"] --> B["Jinja2 Engine<br/>#40;Control Node#41;"]
  C["Variables<br/>port, name, root"] --> B
  B --> D["Rendered Config<br/>nginx.conf"]
@@ -2272,7 +2272,7 @@ Custom facts extend Ansible's built-in facts with application-specific informati
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 20: Custom Facts
- accDescr: Graph with 7 nodes and 6 connections. Nodes: Ansible Facts, Built-in Facts ansible_hostname, Custom Facts ansible_local, Static Facts /etc/ansible/ facts.d/*.fact, Dynamic Facts Executable Scripts, JSON File, Script Output 40JSON41. Connections: Ansible Facts to Built-in Facts ansible_hostname, Ansible Facts to Custom Facts ansible_local, Custom Facts ansible_local to Static Facts /etc/ansible/ facts.d/*.fact, Custom Facts ansible_local to Dynamic Facts Executable Scripts, Static Facts /etc/ansible/ facts.d/*.fact to JSON File, Dynamic Facts Executable Scripts to Script Output 40JSON41.
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Ansible Facts, Built-in Facts ansible_hostname, Custom Facts ansible_local, Static Facts /etc/ansible/ facts.d/*.fact, Dynamic Facts Executable Scripts, JSON File, Script Output (JSON). Connections: Ansible Facts to Built-in Facts ansible_hostname, Ansible Facts to Custom Facts ansible_local, Custom Facts ansible_local to Static Facts /etc/ansible/ facts.d/*.fact, Custom Facts ansible_local to Dynamic Facts Executable Scripts, Static Facts /etc/ansible/ facts.d/*.fact to JSON File, Dynamic Facts Executable Scripts to Script Output (JSON).
  A["Ansible Facts"] --> B["Built-in Facts<br/>ansible_hostname"]
  A --> C["Custom Facts<br/>ansible_local"]
  C --> D["Static Facts<br/>/etc/ansible/<br/>facts.d/*.fact"]

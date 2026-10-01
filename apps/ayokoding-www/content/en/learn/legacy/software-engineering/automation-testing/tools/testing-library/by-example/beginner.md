@@ -19,7 +19,7 @@ The `render()` function mounts a React component into a jsdom environment. The `
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 1: First Test with render and screen
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: React Component, render4041, jsdom Document 40document. body41, screen object 40query methods41, Test Assertions. Connections: React Component to render4041, render4041 to jsdom Document 40document. body41, jsdom Document 40document. body41 to screen object 40query methods41, screen object 40query methods41 to Test Assertions.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: React Component, render(), jsdom Document (document. body), screen object (query methods), Test Assertions. Connections: React Component to render(), render() to jsdom Document (document. body), jsdom Document (document. body) to screen object (query methods), screen object (query methods) to Test Assertions.
     Component["React Component"] --> Render["render#40;#41;"]
     Render --> JSDOM["jsdom Document<br/>#40;document.<br/>body#41;"]
     JSDOM --> Screen["screen object<br/>#40;query<br/>methods#41;"]
@@ -295,7 +295,7 @@ test("renders all list items", () => {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 6: getByRole - Buttons and Links
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: getByRole40role, options41, ARIA Role Types, button 40, role=button41, link 4041, heading 40-41, textbox 4041. Connections: getByRole40role, options41 to ARIA Role Types, ARIA Role Types to button 40, role=button41, ARIA Role Types to link 4041, ARIA Role Types to heading 40-41, ARIA Role Types to textbox 4041.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: getByRole(role, options), ARIA Role Types, button (, role=button), link (), heading (-), textbox (). Connections: getByRole(role, options) to ARIA Role Types, ARIA Role Types to button (, role=button), ARIA Role Types to link (), ARIA Role Types to heading (-), ARIA Role Types to textbox ().
     Query["getByRole#40;role,<br/>options#41;"] --> Roles["ARIA Role Types"]
     Roles --> Button["button<br/>#40;<button>,<br/>role=button#41;"]
     Roles --> Link["link<br/>#40;<a href=...>#41;"]

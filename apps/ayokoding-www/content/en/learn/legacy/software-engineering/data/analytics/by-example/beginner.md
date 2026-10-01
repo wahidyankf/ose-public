@@ -142,7 +142,7 @@ Copy-on-Write (CoW) is the most important breaking change in pandas 3.0.2. Code 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 4: Copy-on-Write in pandas 3.0.2 — ChainedAssignmentError
-    accDescr: Graph with 2 nodes and 1 connections. Nodes: df91col93 = value pandas 2.x: sometimes works pandas 3.x: Chained AssignmentError, df.loc91row, col93 = value Always correct in both versions Explicit, no ambiguity. Connections: df91col93 = value pandas 2.x: sometimes works pandas 3.x: Chained AssignmentError to df.loc91row, col93 = value Always correct in both versions Explicit, no ambiguity (migrate to).
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: df[col] = value pandas 2.x: sometimes works pandas 3.x: Chained AssignmentError, df.loc[row, col] = value Always correct in both versions Explicit, no ambiguity. Connections: df[col] = value pandas 2.x: sometimes works pandas 3.x: Chained AssignmentError to df.loc[row, col] = value Always correct in both versions Explicit, no ambiguity (migrate to).
     A["df#91;col#93; =<br/>value<br/>pandas 2.x:<br/>sometimes works<br/>pandas 3.x: Chained<br/>AssignmentError"]
     B["df.loc#91;row,<br/>col#93; = value<br/>Always correct in<br/>both versions<br/>Explicit, no<br/>ambiguity"]
 

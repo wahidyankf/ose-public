@@ -192,7 +192,7 @@ Adding a `NOT NULL` column with a default value is the most common zero-downtime
 %% Zero-downtime column addition phases
 graph LR
     accTitle: Example 63: Zero-Downtime Column Addition
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: V10 ADD COLUMN nullable 40no lock41, V11 BATCH UPDATE existing rows, V12 SET NOT NULL 40instant on PG 12+41. Connections: V10 ADD COLUMN nullable 40no lock41 to V11 BATCH UPDATE existing rows, V11 BATCH UPDATE existing rows to V12 SET NOT NULL 40instant on PG 12+41.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: V10 ADD COLUMN nullable (no lock), V11 BATCH UPDATE existing rows, V12 SET NOT NULL (instant on PG 12+). Connections: V10 ADD COLUMN nullable (no lock) to V11 BATCH UPDATE existing rows, V11 BATCH UPDATE existing rows to V12 SET NOT NULL (instant on PG 12+).
     A["V10<br/>ADD COLUMN nullable<br/>#40;no lock#41;"]:::blue
     B["V11<br/>BATCH UPDATE<br/>existing rows"]:::orange
     C["V12<br/>SET NOT NULL<br/>#40;instant on PG<br/>12+#41;"]:::teal
@@ -284,7 +284,7 @@ Removing a column safely requires the application to stop reading and writing th
 %% Three-phase safe column removal
 graph TD
     accTitle: Example 64: Zero-Downtime Column Removal
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Deploy: app ignores the column in queries, V20 ADD ignored column marker 40optional annotation41, Deploy: app no longer references the column, V21 DROP COLUMN 40after full rollout41. Connections: Deploy: app ignores the column in queries to V20 ADD ignored column marker 40optional annotation41, V20 ADD ignored column marker 40optional annotation41 to Deploy: app no longer references the column, Deploy: app no longer references the column to V21 DROP COLUMN 40after full rollout41.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Deploy: app ignores the column in queries, V20 ADD ignored column marker (optional annotation), Deploy: app no longer references the column, V21 DROP COLUMN (after full rollout). Connections: Deploy: app ignores the column in queries to V20 ADD ignored column marker (optional annotation), V20 ADD ignored column marker (optional annotation) to Deploy: app no longer references the column, Deploy: app no longer references the column to V21 DROP COLUMN (after full rollout).
     A["Deploy: app ignores<br/>the column in<br/>queries"]:::orange
     B["V20<br/>ADD ignored column<br/>marker<br/>#40;optional<br/>annotation#41;"]:::blue
     C["Deploy: app no<br/>longer<br/>references the<br/>column"]:::orange
@@ -567,7 +567,7 @@ Integrating Flyway into a CI/CD pipeline ensures every deployment applies pendin
 %% CI/CD pipeline with Flyway migration step
 graph TD
     accTitle: Example 69: Flyway in CI/CD Pipeline
-    accDescr: Graph with 6 nodes and 4 connections. Nodes: A, Test, Run Flyway migrate against staging DB, Migration successful?, Deploy application container, Rollback: restore DB backup. Connections: A to Run Flyway migrate against staging DB, Run Flyway migrate against staging DB to Migration successful?, Migration successful? to Deploy application container (Yes), Migration successful? to Rollback: restore DB backup (No).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Build & Test JVM artifact, Run Flyway migrate against staging DB, Migration successful?, Deploy application container, Rollback: restore DB backup. Connections: Build & Test JVM artifact to Run Flyway migrate against staging DB, Run Flyway migrate against staging DB to Migration successful?, Migration successful? to Deploy application container (Yes), Migration successful? to Rollback: restore DB backup (No).
     A["Build & Test<br/>JVM artifact"]:::blue
     B["Run Flyway migrate<br/>against staging DB"]:::orange
     C{Migration<br/>successful?}:::purple
@@ -734,7 +734,7 @@ Blue-green deployments run two identical production environments. The green envi
 %% Blue-green deployment with shared database
 graph TD
     accTitle: Example 71: Blue-Green Deployment Migrations
-    accDescr: Graph with 4 nodes and 4 connections. Nodes: Shared Production DB, Blue Environment 40current live41, Green Environment 40new version41, Load Balancer switch traffic. Connections: Shared Production DB to Blue Environment 40current live41, Shared Production DB to Green Environment 40new version41, Load Balancer switch traffic to Blue Environment 40current live41 (before cutover), Load Balancer switch traffic to Green Environment 40new version41 (after cutover).
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Shared Production DB, Blue Environment (current live), Green Environment (new version), Load Balancer switch traffic. Connections: Shared Production DB to Blue Environment (current live), Shared Production DB to Green Environment (new version), Load Balancer switch traffic to Blue Environment (current live) (before cutover), Load Balancer switch traffic to Green Environment (new version) (after cutover).
     A["Shared<br/>Production DB"]:::brown
     B["Blue Environment<br/>#40;current live#41;"]:::blue
     C["Green Environment<br/>#40;new version#41;"]:::teal
@@ -1344,7 +1344,7 @@ Some migrations logically depend on others — for example, a foreign key migrat
 %% Migration dependency graph for a sample schema
 graph TD
     accTitle: Example 80: Migration Dependency Graph
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: V1 create users, V2 create products, V3 create orders 40FK: users41, V4 create order_items 40FK: orders, products41, V5 create payments 40FK: orders41, V6 add user indexes, V7 add order indexes. Connections: V1 create users to V3 create orders 40FK: users41, V2 create products to V4 create order_items 40FK: orders, products41, V3 create orders 40FK: users41 to V4 create order_items 40FK: orders, products41, V3 create orders 40FK: users41 to V5 create payments 40FK: orders41, V1 create users to V6 add user indexes, V3 create orders 40FK: users41 to V7 add order indexes.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: V1 create users, V2 create products, V3 create orders (FK: users), V4 create order_items (FK: orders, products), V5 create payments (FK: orders), V6 add user indexes, V7 add order indexes. Connections: V1 create users to V3 create orders (FK: users), V2 create products to V4 create order_items (FK: orders, products), V3 create orders (FK: users) to V4 create order_items (FK: orders, products), V3 create orders (FK: users) to V5 create payments (FK: orders), V1 create users to V6 add user indexes, V3 create orders (FK: users) to V7 add order indexes.
     V1["V1<br/>create users"]:::blue
     V2["V2<br/>create products"]:::blue
     V3["V3<br/>create orders<br/>#40;FK: users#41;"]:::orange

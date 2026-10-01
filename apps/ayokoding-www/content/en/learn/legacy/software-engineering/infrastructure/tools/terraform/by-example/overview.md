@@ -41,7 +41,7 @@ Unlike narrative tutorials that build understanding through explanation and stor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Learning Path
-    accDescr: Graph with 6 nodes and 6 connections. Nodes: A, Resources, B, State, C, CI. Connections: A to B, A to State, Resources to B, Resources to State, B to C, B to CI.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-28 HCL & Resources, Intermediate Examples 29+ Modules & State (in development), Advanced Examples 57+ Testing & CI/CD (in development). Connections: Beginner Examples 1-28 HCL & Resources to Intermediate Examples 29+ Modules & State (in development), Intermediate Examples 29+ Modules & State (in development) to Advanced Examples 57+ Testing & CI/CD (in development).
     A["Beginner<br/>Examples 1-28<br/>HCL & Resources"] --> B["Intermediate<br/>Examples 29+<br/>Modules & State<br/>#40;in<br/>development#41;"]
     B --> C["Advanced<br/>Examples 57+<br/>Testing & CI/CD<br/>#40;in<br/>development#41;"]
 

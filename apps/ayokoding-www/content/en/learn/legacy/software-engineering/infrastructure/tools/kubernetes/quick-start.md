@@ -28,7 +28,7 @@ This quick start covers 10 essential Kubernetes touchpoints:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Learning Path
-    accDescr: Graph with 10 nodes and 9 connections. Nodes: 1. Pods, 2. Deployments, 3. Services, 4. ConfigMaps, 5. Secrets, 6. Namespaces, G, 8. Scaling, 9. Rolling Updates, 10. Persistent Volumes. Connections: 1. Pods to 2. Deployments, 2. Deployments to 3. Services, 3. Services to 4. ConfigMaps, 4. ConfigMaps to 5. Secrets, 5. Secrets to 6. Namespaces, 6. Namespaces to G, G to 8. Scaling, 8. Scaling to 9. Rolling Updates, 9. Rolling Updates to 10. Persistent Volumes.
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: 1. Pods, 2. Deployments, 3. Services, 4. ConfigMaps, 5. Secrets, 6. Namespaces, 7. Labels & Selectors, 8. Scaling, 9. Rolling Updates, 10. Persistent Volumes. Connections: 1. Pods to 2. Deployments, 2. Deployments to 3. Services, 3. Services to 4. ConfigMaps, 4. ConfigMaps to 5. Secrets, 5. Secrets to 6. Namespaces, 6. Namespaces to 7. Labels & Selectors, 7. Labels & Selectors to 8. Scaling, 8. Scaling to 9. Rolling Updates, 9. Rolling Updates to 10. Persistent Volumes.
     A["1. Pods"] --> B["2. Deployments"]
     B --> C["3. Services"]
     C --> D["4. ConfigMaps"]
@@ -898,7 +898,7 @@ You've completed 10 essential Kubernetes touchpoints:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Learning Path Summary
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, D, E. Connections: A to B, B to C, C to D, D to E.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Pods & Deployments, Services & Config, Secrets & Namespaces, Labels & Scaling, Updates & Storage. Connections: Pods & Deployments to Services & Config, Services & Config to Secrets & Namespaces, Secrets & Namespaces to Labels & Scaling, Labels & Scaling to Updates & Storage.
     A["Pods &<br/>Deployments"] --> B["Services &<br/>Config"]
     B --> C["Secrets &<br/>Namespaces"]
     C --> D["Labels &<br/>Scaling"]

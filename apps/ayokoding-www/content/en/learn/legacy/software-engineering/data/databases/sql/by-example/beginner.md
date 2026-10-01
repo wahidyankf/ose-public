@@ -703,7 +703,7 @@ SQLite stores dates and times as TEXT (ISO8601), REAL (Julian day), or INTEGER (
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 9: Date and Time Types
-    accDescr: Graph with 6 nodes and 6 connections. Nodes: Date Storage Formats, TEXT ISO8601 strings, REAL Julian days, INTEGER Unix timestamps, E, Format. Connections: Date Storage Formats to TEXT ISO8601 strings, Date Storage Formats to REAL Julian days, Date Storage Formats to INTEGER Unix timestamps, TEXT ISO8601 strings to E, REAL Julian days to E, INTEGER Unix timestamps to E.
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Date Storage Formats, TEXT ISO8601 strings, REAL Julian days, INTEGER Unix timestamps, Date Functions Convert & Format. Connections: Date Storage Formats to TEXT ISO8601 strings, Date Storage Formats to REAL Julian days, Date Storage Formats to INTEGER Unix timestamps, TEXT ISO8601 strings to Date Functions Convert & Format, REAL Julian days to Date Functions Convert & Format, INTEGER Unix timestamps to Date Functions Convert & Format.
     A["Date Storage Formats"]
     B["TEXT<br/>ISO8601 strings"]
     C["REAL<br/>Julian days"]
@@ -2559,7 +2559,7 @@ Indexes speed up queries by creating sorted lookup structures. B-tree indexes (d
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 26: Indexes for Query Performance
-    accDescr: Graph with 4 nodes and 2 connections. Nodes: Table Scan Check every row, Index Scan Use sorted structure, Fast Lookup O40log n41 time, Slow for large tables. Connections: Table Scan Check every row to Slow for large tables (Without index), Index Scan Use sorted structure to Fast Lookup O40log n41 time (With index).
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Table Scan Check every row, Index Scan Use sorted structure, Fast Lookup O(log n) time, Slow for large tables. Connections: Table Scan Check every row to Slow for large tables (Without index), Index Scan Use sorted structure to Fast Lookup O(log n) time (With index).
     A["Table Scan<br/>Check every row"]
     B["Index Scan<br/>Use sorted structure"]
     C["Fast Lookup<br/>O#40;log n#41; time"]

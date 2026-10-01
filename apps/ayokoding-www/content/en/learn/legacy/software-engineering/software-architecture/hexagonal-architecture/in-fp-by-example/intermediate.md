@@ -685,19 +685,22 @@ Every output port that performs I/O wraps its return type in both an asynchronou
 
 ```mermaid
 graph LR
-    A["save port\nAsync Result unit"]:::blue
-    B["publish port\nAsync Result unit"]:::teal
-    C["Ok track\nhappy path"]:::teal
-    D["Error track\nshort-circuit"]:::orange
+    accTitle: Example 28: Async Output Port — Async> Composition
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: save port Async Result unit, publish port Async Result unit, Ok track happy path, Error track short-circuit. Connections: save port Async Result unit to publish port Async Result unit (Ok ()), save port Async Result unit to Error track short-circuit (Error e), publish port Async Result unit to Ok track happy path (Ok ()), publish port Async Result unit to Error track short-circuit (Error e).
+    A["save port<br/>Async Result unit"]:::blue
+    B["publish port<br/>Async Result unit"]:::teal
+    C["Ok track<br/>happy path"]:::teal
+    D["Error track<br/>short-circuit"]:::orange
 
     A -->|"Ok ()"| B
     A -->|"Error e"| D
     B -->|"Ok ()"| C
     B -->|"Error e"| D
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Manual composition (no helper library):**
@@ -1138,11 +1141,13 @@ A full application service pipeline spans pure domain steps (synchronous, no I/O
 
 ```mermaid
 graph TD
+    accTitle: Example 29: Railway-Oriented Programming Across Async Port Calls
+    accDescr: Graph with 7 nodes and 9 connections. Nodes: UnvalidatedPO, validatePO pure fn, loadSupplier port Async Result, savePO port Async Result, publishEvent port Async Result, PurchaseOrderIssued, Error track. Connections: UnvalidatedPO to validatePO pure fn, validatePO pure fn to loadSupplier port Async Result (Ok), validatePO pure fn to Error track (Error), loadSupplier port Async Result to savePO port Async Result (Ok), loadSupplier port Async Result to Error track (Error), savePO port Async Result to publishEvent port Async Result (Ok), savePO port Async Result to Error track (Error), publishEvent port Async Result to PurchaseOrderIssued (Ok), publishEvent port Async Result to Error track (Error).
     IN["UnvalidatedPO"]:::blue
-    V["validatePO\npure fn"]:::teal
-    R["loadSupplier port\nAsync Result"]:::purple
-    S["savePO port\nAsync Result"]:::purple
-    P["publishEvent port\nAsync Result"]:::purple
+    V["validatePO<br/>pure fn"]:::teal
+    R["loadSupplier port<br/>Async Result"]:::purple
+    S["savePO port<br/>Async Result"]:::purple
+    P["publishEvent port<br/>Async Result"]:::purple
     OUT["PurchaseOrderIssued"]:::teal
     ERR["Error track"]:::orange
 
@@ -1156,10 +1161,11 @@ graph TD
     P -->|Ok| OUT
     P -->|Error| ERR
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1563,21 +1569,24 @@ Domain functions produce domain errors; adapters produce infrastructure errors. 
 
 ```mermaid
 graph TD
+    accTitle: Example 30: Error Union Across Port and Domain Layers
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: IssuingPOError DU, ValidationError → HTTP 422, SupplierNotFound → HTTP 404, RepositoryError → HTTP 503, PublishError → HTTP 202 warn. Connections: IssuingPOError DU to ValidationError → HTTP 422, IssuingPOError DU to SupplierNotFound → HTTP 404, IssuingPOError DU to RepositoryError → HTTP 503, IssuingPOError DU to PublishError → HTTP 202 warn.
     E["IssuingPOError DU"]:::blue
-    V["ValidationError\n→ HTTP 422"]:::orange
-    S["SupplierNotFound\n→ HTTP 404"]:::orange
-    R["RepositoryError\n→ HTTP 503"]:::purple
-    P["PublishError\n→ HTTP 202 warn"]:::teal
+    V["ValidationError<br/>→ HTTP 422"]:::orange
+    S["SupplierNotFound<br/>→ HTTP 404"]:::orange
+    R["RepositoryError<br/>→ HTTP 503"]:::purple
+    P["PublishError<br/>→ HTTP 202 warn"]:::teal
 
     E --> V
     E --> S
     E --> R
     E --> P
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1965,21 +1974,24 @@ A repository with multiple operations can be expressed as a single record of fun
 
 ```mermaid
 graph TD
-    R["PurchaseOrderRepository\nrecord of functions"]:::blue
-    S["save\nPO → Async Result"]:::teal
-    L["load\nId → Async Result"]:::teal
-    IM["inMemoryRepo\nDictionary-backed"]:::orange
-    PG["postgresRepo\nNpgsql-backed"]:::purple
+    accTitle: Example 31: Repository Port as a Record of Functions
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: PurchaseOrder Repository record of functions, save PO → Async Result, load Id → Async Result, inMemoryRepo Dictionary-backed, postgresRepo Npgsql-backed. Connections: PurchaseOrder Repository record of functions to save PO → Async Result, PurchaseOrder Repository record of functions to load Id → Async Result, inMemoryRepo Dictionary-backed to PurchaseOrder Repository record of functions (satisfies), postgresRepo Npgsql-backed to PurchaseOrder Repository record of functions (satisfies).
+    R["PurchaseOrder<br/>Repository<br/>record of functions"]:::blue
+    S["save<br/>PO → Async Result"]:::teal
+    L["load<br/>Id → Async Result"]:::teal
+    IM["inMemoryRepo<br/>Dictionary-backed"]:::orange
+    PG["postgresRepo<br/>Npgsql-backed"]:::purple
 
     R --> S
     R --> L
     IM -.->|satisfies| R
     PG -.->|satisfies| R
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -3359,35 +3371,41 @@ The composition root is the single place in the application where concrete adapt
 
 ```mermaid
 graph TD
-    CR["Composition Root\nAdapters zone"]:::orange
-    PGR["PostgresPORepo\nNpgsql-backed"]:::purple
-    PGS["PostgresSupplierRepo\nNpgsql-backed"]:::purple
-    KAF["KafkaPublisher\nconfluent-kafka"]:::purple
-    WFE["WorkflowEngineRouter\nHTTP client"]:::purple
+    accTitle: Example 35: The Composition Root — Wiring Adapters to Ports
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Composition Root Adapters zone, PostgresPORepo Npgsql-backed, PostgresSupplierRepo Npgsql-backed, KafkaPublisher confluent-kafka, WorkflowEngineRouter HTTP client. Connections: Composition Root Adapters zone to PostgresPORepo Npgsql-backed, Composition Root Adapters zone to PostgresSupplierRepo Npgsql-backed, Composition Root Adapters zone to KafkaPublisher confluent-kafka, Composition Root Adapters zone to WorkflowEngineRouter HTTP client.
+    CR["Composition Root<br/>Adapters zone"]:::orange
+    PGR["PostgresPORepo<br/>Npgsql-backed"]:::purple
+    PGS["PostgresSupplierRepo<br/>Npgsql-backed"]:::purple
+    KAF["KafkaPublisher<br/>confluent-kafka"]:::purple
+    WFE["WorkflowEngineRouter<br/>HTTP client"]:::purple
 
     CR --> PGR
     CR --> PGS
     CR --> KAF
     CR --> WFE
 
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Application wiring** (composition root also injects adapters into the application service):
 
 ```mermaid
 graph TD
-    CR["Composition Root\nAdapters zone"]:::orange
-    SVC["issuePO service\nApplication zone"]:::teal
-    DOM["Domain\npure functions"]:::blue
+    accTitle: Example 35: The Composition Root — Wiring Adapters to Ports
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Composition Root Adapters zone, issuePO service Application zone, Domain pure functions. Connections: Composition Root Adapters zone to issuePO service Application zone, issuePO service Application zone to Domain pure functions.
+    CR["Composition Root<br/>Adapters zone"]:::orange
+    SVC["issuePO service<br/>Application zone"]:::teal
+    DOM["Domain<br/>pure functions"]:::blue
 
     CR --> SVC
     SVC --> DOM
 
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -5932,12 +5950,14 @@ This final intermediate example traces a complete `POST /purchase-orders/{id}/is
 
 ```mermaid
 graph TD
-    HTTP["HTTP Adapter\nPOST /issue"]:::orange
-    SVC["issuePO service\nApplication zone"]:::teal
-    DOM["validatePO\nDomain zone"]:::blue
-    REPO["PurchaseOrderRepository\nport call"]:::purple
-    PUB["EventPublisher\nport call"]:::purple
-    RESP["HTTP Response\n200 / 4xx / 503"]:::orange
+    accTitle: Example 43: Full Flow — HTTP Request to Domain to Repository to Event Bus
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: HTTP Adapter POST /issue, issuePO service Application zone, validatePO Domain zone, PurchaseOrder Repository port call, EventPublisher port call, HTTP Response 200 / 4xx / 503. Connections: HTTP Adapter POST /issue to issuePO service Application zone, issuePO service Application zone to validatePO Domain zone, validatePO Domain zone to PurchaseOrder Repository port call (Ok), validatePO Domain zone to HTTP Response 200 / 4xx / 503 (Error), PurchaseOrder Repository port call to EventPublisher port call (Ok), PurchaseOrder Repository port call to HTTP Response 200 / 4xx / 503 (Error), EventPublisher port call to HTTP Response 200 / 4xx / 503 (Ok), EventPublisher port call to HTTP Response 200 / 4xx / 503 (Error).
+    HTTP["HTTP Adapter<br/>POST /issue"]:::orange
+    SVC["issuePO service<br/>Application zone"]:::teal
+    DOM["validatePO<br/>Domain zone"]:::blue
+    REPO["PurchaseOrder<br/>Repository<br/>port call"]:::purple
+    PUB["EventPublisher<br/>port call"]:::purple
+    RESP["HTTP Response<br/>200 / 4xx / 503"]:::orange
 
     HTTP --> SVC
     SVC --> DOM
@@ -5948,10 +5968,11 @@ graph TD
     PUB -->|Ok| RESP
     PUB -->|Error| RESP
 
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -6325,18 +6346,21 @@ A port contract test suite runs the same assertions against every adapter implem
 
 ```mermaid
 graph LR
-    CONTRACT["Port Contract\nTest Suite"]:::blue
-    INMEM["In-Memory\nAdapter"]:::teal
-    PG["Postgres\nAdapter (stub)"]:::purple
+    accTitle: Example 44: Port Contract Testing — Verifying Every Adapter Satisfies the Same Spec
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Port Contract Test Suite, In-Memory Adapter, Postgres Adapter (stub), All Green, All Green. Connections: Port Contract Test Suite to In-Memory Adapter (same tests), Port Contract Test Suite to Postgres Adapter (stub) (same tests), In-Memory Adapter to All Green (passes), Postgres Adapter (stub) to All Green (passes).
+    CONTRACT["Port Contract<br/>Test Suite"]:::blue
+    INMEM["In-Memory<br/>Adapter"]:::teal
+    PG["Postgres<br/>Adapter (stub)"]:::purple
 
     CONTRACT -->|"same tests"| INMEM
     CONTRACT -->|"same tests"| PG
     INMEM -->|"passes"| OK1["All Green"]:::teal
     PG -->|"passes"| OK2["All Green"]:::teal
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -10120,11 +10144,13 @@ This final intermediate example shows a composition root that wires the `purchas
 
 ```mermaid
 graph LR
+    accTitle: Example 55: Composition Root for the Full Purchasing + Receiving Flow
+    accDescr: Graph with 7 nodes and 11 connections. Nodes: Composition Root, PurchaseOrder Repository Postgres adapter, GoodsReceiptNote Repository Postgres adapter, ApprovalRouterPort In-process adapter, ObservabilityPort Console adapter, submitPO service, recordGRN service. Connections: Composition Root to PurchaseOrder Repository Postgres adapter, Composition Root to GoodsReceiptNote Repository Postgres adapter, Composition Root to ApprovalRouterPort In-process adapter, Composition Root to ObservabilityPort Console adapter, Composition Root to submitPO service, Composition Root to recordGRN service, PurchaseOrder Repository Postgres adapter to submitPO service, GoodsReceiptNote Repository Postgres adapter to recordGRN service, ApprovalRouterPort In-process adapter to submitPO service, ObservabilityPort Console adapter to submitPO service, ObservabilityPort Console adapter to recordGRN service.
     ROOT["Composition Root"]:::orange
-    REPO["PurchaseOrderRepository\nPostgres adapter"]:::purple
-    GRN["GoodsReceiptNoteRepository\nPostgres adapter"]:::purple
-    ROUTER["ApprovalRouterPort\nIn-process adapter"]:::purple
-    OBS["ObservabilityPort\nConsole adapter"]:::teal
+    REPO["PurchaseOrder<br/>Repository<br/>Postgres adapter"]:::purple
+    GRN["GoodsReceiptNote<br/>Repository<br/>Postgres adapter"]:::purple
+    ROUTER["ApprovalRouterPort<br/>In-process adapter"]:::purple
+    OBS["ObservabilityPort<br/>Console adapter"]:::teal
     SVC1["submitPO service"]:::blue
     SVC2["recordGRN service"]:::blue
 
@@ -10140,10 +10166,11 @@ graph LR
     OBS --> SVC1
     OBS --> SVC2
 
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}

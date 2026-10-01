@@ -50,17 +50,23 @@ TDD follows a three-phase rhythm: Red (failing test), Green (passing test), Refa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A[Red: Write Failing Test]
+    accTitle: Example 2: Red-Green-Refactor Cycle
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Red: Write Failing Test, Green: Make It Pass, Refactor: Improve Design. Connections: Red: Write Failing Test to Green: Make It Pass (Test fails), Green: Make It Pass to Refactor: Improve Design (Test passes), Refactor: Improve Design to Red: Write Failing Test (Tests still pass).
+    A[Red: Write Failing<br/>Test]
     B[Green: Make It Pass]
-    C[Refactor: Improve Design]
+    C[Refactor: Improve<br/>Design]
 
     A -->|Test fails| B
     B -->|Test passes| C
     C -->|Tests still pass| A
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red Phase**
@@ -409,19 +415,26 @@ Each test should verify one behavior. Multiple assertions are acceptable if they
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 9: Single Responsibility Principle in Tests
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: One Test Suite, User Creation Tests, Email Validation Tests, Password Tests. Connections: One Test Suite to User Creation Tests (split by concern), One Test Suite to Email Validation Tests (split by concern), One Test Suite to Password Tests (split by concern).
     A[One Test Suite]
     B[User Creation Tests]
-    C[Email Validation Tests]
+    C[Email Validation<br/>Tests]
     D[Password Tests]
 
     A -->|"split by concern"| B
     A -->|"split by concern"| C
     A -->|"split by concern"| D
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test violating single responsibility**
@@ -548,6 +561,8 @@ Boundary conditions often reveal off-by-one errors and edge case bugs. TDD syste
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 11: Testing Boundaries - Numbers
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Min: 0 (infant), Boundary: 12→13, Range: 13-19 (teen), Boundary: 19→20, Max+ (adult). Connections: Min: 0 (infant) to Boundary: 12→13 (just below), Boundary: 12→13 to Range: 13-19 (teen) (just above), Range: 13-19 (teen) to Boundary: 19→20 (just below), Boundary: 19→20 to Max+ (adult) (just above).
     A["Min: 0 (infant)"]
     B["Boundary: 12→13"]
     C["Range: 13-19 (teen)"]
@@ -559,11 +574,16 @@ graph LR
     C -->|"just below"| D
     D -->|"just above"| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test number boundaries**
@@ -702,16 +722,22 @@ The AAA pattern provides clear test structure: Arrange (setup), Act (execute), A
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A[Arrange: Set Up State]
-    B[Act: Execute Behavior]
-    C[Assert: Verify Result]
+    accTitle: Example 13: Arrange-Act-Assert Pattern
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Arrange: Set Up State, Act: Execute Behavior, Assert: Verify Result. Connections: Arrange: Set Up State to Act: Execute Behavior (test data ready), Act: Execute Behavior to Assert: Verify Result (result produced).
+    A[Arrange: Set Up<br/>State]
+    B[Act: Execute<br/>Behavior]
+    C[Assert: Verify<br/>Result]
 
     A -->|"test data ready"| B
     B -->|"result produced"| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test without clear structure**
@@ -804,16 +830,22 @@ Given-When-Then is an alternative to AAA that emphasizes behavioral specificatio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 14: Given-When-Then Test Structure
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Given: System State, When: User Action, Then: Expected Outcome. Connections: Given: System State to When: User Action (precondition set), When: User Action to Then: Expected Outcome (event triggered).
     A["Given: System State"]
     B["When: User Action"]
-    C["Then: Expected Outcome"]
+    C["Then: Expected<br/>Outcome"]
 
     A -->|"precondition set"| B
     B -->|"event triggered"| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test with Given-When-Then**
@@ -1312,6 +1344,8 @@ TDD changes how you think about requirements. Writing tests first forces clarity
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 20: Test-First Thinking Exercise
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Requirements, Tests First, Implementation, Verified Behavior. Connections: Requirements to Tests First (translate to), Tests First to Implementation (drives), Implementation to Verified Behavior (passes).
     A[Requirements]
     B[Tests First]
     C[Implementation]
@@ -1321,10 +1355,15 @@ graph LR
     B -->|"drives"| C
     C -->|"passes"| D
 
-    style A fill:#CA9161,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Start with requirements as tests**
@@ -1419,18 +1458,25 @@ A complete TDD cycle shows the rhythm: write failing test, make it pass, refacto
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A[Red: Write Failing Test]
-    B[Green: Minimal Implementation]
-    C[Refactor: Improve Design]
+    accTitle: Example 21: TDD Workflow Demonstration
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Red: Write Failing Test, Green: Minimal Implementation, Refactor: Improve Design, All Tests Pass. Connections: Red: Write Failing Test to Green: Minimal Implementation, Green: Minimal Implementation to Refactor: Improve Design, Refactor: Improve Design to All Tests Pass, All Tests Pass to Red: Write Failing Test (next cycle).
+    A[Red: Write Failing<br/>Test]
+    B[Green: Minimal<br/>Implementation]
+    C[Refactor: Improve<br/>Design]
     D[All Tests Pass]
 
     A --> B --> C --> D
     D -->|"next cycle"| A
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Iteration 1: First test (Red)**
@@ -1999,16 +2045,22 @@ Array filtering is a common operation requiring edge case coverage. TDD ensures 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 28: Testing Collections - Filtering
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Input: [1,2,3,4,5], Predicate: isEven, Output: [2,4]. Connections: Input: [1,2,3,4,5] to Predicate: isEven (each element tested), Predicate: isEven to Output: [2,4] (passing elements kept).
     A["Input: [1,2,3,4,5]"]
     B["Predicate: isEven"]
     C["Output: [2,4]"]
 
-    A -->|"each element tested"| B
-    B -->|"passing elements kept"| C
+    A -->|"each element<br/>tested"| B
+    B -->|"passing elements<br/>kept"| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test array filtering**
@@ -2136,6 +2188,8 @@ Array aggregation operations combine elements into a single value. TDD ensures c
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 30: Testing Aggregation
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Array: [3,1,4,1,5], reduce: Math.max, Result: 5. Connections: Array: [3,1,4,1,5] to reduce: Math.max (fold over), reduce: Math.max to Result: 5 (accumulate).
     A["Array: [3,1,4,1,5]"]
     B["reduce: Math.max"]
     C["Result: 5"]
@@ -2143,9 +2197,13 @@ graph LR
     A -->|"fold over"| B
     B -->|"accumulate"| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test array maximum**

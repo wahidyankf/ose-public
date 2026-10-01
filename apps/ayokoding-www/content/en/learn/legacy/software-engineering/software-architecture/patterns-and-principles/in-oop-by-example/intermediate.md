@@ -31,6 +31,8 @@ Hexagonal architecture (also called Ports and Adapters) separates the applicatio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 29: Hexagonal Architecture — Ports and Adapters
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: HTTP Adapter (Driving), CLI Adapter (Driving), Application Core + Ports, DB Adapter (Driven), Email Adapter (Driven). Connections: HTTP Adapter (Driving) to Application Core + Ports (UserPort), CLI Adapter (Driving) to Application Core + Ports (UserPort), Application Core + Ports to DB Adapter (Driven) (UserRepository), Application Core + Ports to Email Adapter (Driven) (NotifierPort).
     A["HTTP Adapter<br/>(Driving)"]
     B["CLI Adapter<br/>(Driving)"]
     C["Application Core<br/>+ Ports"]
@@ -42,11 +44,15 @@ graph LR
     C -->|UserRepository| D
     C -->|NotifierPort| E
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    class B pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -417,19 +423,26 @@ Clean Architecture organizes code into concentric rings (Entities → Use Cases 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 30: Clean Architecture — Layer Separation with Dependency Rule
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: A, Drivers, Interface Adapters Controllers, Presenters, Use Cases Application Business Rules, Entities Enterprise Business Rules. Connections: A to Interface Adapters Controllers, Presenters (depends on), Interface Adapters Controllers, Presenters to Use Cases Application Business Rules (depends on), Use Cases Application Business Rules to Entities Enterprise Business Rules (depends on).
     A["Frameworks & Drivers<br/>Web, DB, UI"]
-    B["Interface Adapters<br/>Controllers, Presenters"]
-    C["Use Cases<br/>Application Business Rules"]
-    D["Entities<br/>Enterprise Business Rules"]
+    B["Interface Adapters<br/>Controllers,<br/>Presenters"]
+    C["Use Cases<br/>Application Business<br/>Rules"]
+    D["Entities<br/>Enterprise Business<br/>Rules"]
 
     A -->|depends on| B
     B -->|depends on| C
     C -->|depends on| D
 
-    style A fill:#CA9161,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -1171,6 +1184,8 @@ The Observer pattern defines a one-to-many dependency so that when one object ch
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 32: Observer Pattern — Event Notification Without Coupling
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: EventBus (Subject), EmailHandler (Observer), AuditHandler (Observer), StatsHandler (Observer). Connections: EventBus (Subject) to EmailHandler (Observer) (notify), EventBus (Subject) to AuditHandler (Observer) (notify), EventBus (Subject) to StatsHandler (Observer) (notify).
     A["EventBus<br/>(Subject)"]
     B["EmailHandler<br/>(Observer)"]
     C["AuditHandler<br/>(Observer)"]
@@ -1180,10 +1195,15 @@ graph LR
     A -->|notify| C
     A -->|notify| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -2254,6 +2274,8 @@ The Strategy pattern defines a family of algorithms, encapsulates each one, and 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 35: Strategy Pattern — Swappable Algorithms
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: ShippingCalculator (Context), ShippingStrategy (Interface), FlatRateStrategy, WeightBasedStrategy, FreeShippingStrategy. Connections: ShippingCalculator (Context) to ShippingStrategy (Interface) (uses), ShippingStrategy (Interface) to FlatRateStrategy, ShippingStrategy (Interface) to WeightBasedStrategy, ShippingStrategy (Interface) to FreeShippingStrategy.
     A["ShippingCalculator<br/>(Context)"]
     B["ShippingStrategy<br/>(Interface)"]
     C["FlatRateStrategy"]
@@ -2265,11 +2287,15 @@ graph TD
     B -.-> D
     B -.-> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -3582,6 +3608,8 @@ The Decorator pattern attaches additional responsibilities to an object dynamica
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 39: Decorator Pattern — Adding Behavior Without Subclassing
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: LoggingDecorator, CachingDecorator, RetryDecorator, UserRepository (core). Connections: LoggingDecorator to CachingDecorator (wraps), CachingDecorator to RetryDecorator (wraps), RetryDecorator to UserRepository (core) (wraps).
     A["LoggingDecorator"]
     B["CachingDecorator"]
     C["RetryDecorator"]
@@ -3591,10 +3619,15 @@ graph LR
     B -->|wraps| C
     C -->|wraps| D
 
-    style A fill:#CC78BC,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -4474,6 +4507,8 @@ The Command pattern encapsulates a request as an object, allowing you to paramet
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 41: Command Pattern — Encapsulate Actions as Objects
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Invoker (CommandQueue), Command Interface, CreateUserCmd, DeleteUserCmd, UpdateEmailCmd, Receiver (UserService). Connections: Invoker (CommandQueue) to Command Interface (executes), Command Interface to CreateUserCmd (implements), Command Interface to DeleteUserCmd (implements), Command Interface to UpdateEmailCmd (implements), CreateUserCmd to Receiver (UserService) (calls), DeleteUserCmd to Receiver (UserService) (calls), UpdateEmailCmd to Receiver (UserService) (calls).
     A["Invoker<br/>(CommandQueue)"]
     B["Command<br/>Interface"]
     C["CreateUserCmd"]
@@ -4489,12 +4524,17 @@ graph LR
     D -->|calls| F
     E -->|calls| F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -6301,6 +6341,8 @@ Value Objects represent domain concepts that are defined entirely by their attri
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 45: Value Objects — Immutable Domain Concepts Without Identity
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Money amount + currency (Value Object), Email address string (Value Object), Address street, city, zip (Value Object), Order (Entity). Connections: Order (Entity) to Money amount + currency (Value Object) (has a), Order (Entity) to Email address string (Value Object) (has a), Order (Entity) to Address street, city, zip (Value Object) (has a).
     A["Money<br/>amount + currency<br/>(Value Object)"]
     B["Email<br/>address string<br/>(Value Object)"]
     C["Address<br/>street, city, zip<br/>(Value Object)"]
@@ -6310,10 +6352,13 @@ graph TD
     D -->|has a| B
     D -->|has a| C
 
-    style A fill:#029E73,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class A pal-029E73
+    class B pal-029E73
+    class C pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -7375,6 +7420,8 @@ The Anti-Corruption Layer (ACL) is a translation layer between two bounded conte
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 48: Anti-Corruption Layer — Protecting the Domain from External Models
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: Domain Model (Internal), Anti-Corruption Layer, Legacy System (External). Connections: Domain Model (Internal) to Anti-Corruption Layer (domain concepts), Anti-Corruption Layer to Legacy System (External) (legacy format), Legacy System (External) to Anti-Corruption Layer (legacy format), Anti-Corruption Layer to Domain Model (Internal) (domain concepts).
     A["Domain Model<br/>(Internal)"]
     B["Anti-Corruption<br/>Layer"]
     C["Legacy System<br/>(External)"]
@@ -7384,9 +7431,13 @@ graph LR
     C -->|legacy format| B
     B -->|domain concepts| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -7775,11 +7826,13 @@ Command Query Responsibility Segregation (CQRS) separates the model used to upda
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 49: CQRS Pattern — Separate Read and Write Models
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Client, Command Handler (Write Side), Write Store (Normalized DB), Query Handler (Read Side), Read Store (Denormalized / Cache). Connections: Client to Command Handler (Write Side) (Command), Command Handler (Write Side) to Write Store (Normalized DB) (persist), Write Store (Normalized DB) to Read Store (Denormalized / Cache) (sync event), Client to Query Handler (Read Side) (Query), Query Handler (Read Side) to Read Store (Denormalized / Cache) (read).
     A["Client"]
     B["Command Handler<br/>(Write Side)"]
     C["Write Store<br/>(Normalized DB)"]
     D["Query Handler<br/>(Read Side)"]
-    E["Read Store<br/>(Denormalized / Cache)"]
+    E["Read Store<br/>(Denormalized /<br/>Cache)"]
 
     A -- Command --> B
     B -- persist --> C
@@ -7787,11 +7840,17 @@ graph TD
     A -- Query --> D
     D -- read --> E
 
-    style A fill:#CA9161,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -11331,15 +11390,17 @@ The Circuit Breaker pattern wraps calls to remote services and monitors for fail
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 57: Circuit Breaker Pattern — Preventing Cascade Failures
+    accDescr: State diagram with 4 items: start or end, Closed, Open, HalfOpen. Relationships: start or end to Closed; Closed to Open: failures >= threshold; Open to HalfOpen: timeout elapsed; HalfOpen to Closed: probe succeeds; HalfOpen to Open: probe fails.
     [*] --> Closed
     Closed --> Open : failures >= threshold
     Open --> HalfOpen : timeout elapsed
     HalfOpen --> Closed : probe succeeds
     HalfOpen --> Open : probe fails
 
-    classDef closed fill:#029E73,color:#fff
-    classDef open fill:#DE8F05,color:#fff
-    classDef halfopen fill:#CC78BC,color:#fff
+    classDef closed fill:#029E73,color:#000000,stroke:#000000
+    classDef open fill:#DE8F05,color:#000000,stroke:#000000
+    classDef halfopen fill:#CC78BC,color:#000000,stroke:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}

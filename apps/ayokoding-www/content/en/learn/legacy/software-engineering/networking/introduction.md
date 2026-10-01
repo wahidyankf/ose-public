@@ -41,12 +41,18 @@ Networks don't send data as continuous streams. Instead, they break data into sm
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Packets
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Header, Payload, Trailer. Connections: Header to Payload, Payload to Trailer.
     A[Header] --> B[Payload]
     B --> C[Trailer]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 When you download a file, it's divided into thousands of packets that travel independently across the network. The receiving device reassembles them in the correct order. This packet-switching approach makes networks efficient and resilient - if one path fails, packets can take alternate routes.
@@ -58,6 +64,8 @@ Networks use two types of addresses to identify and locate devices: MAC addresse
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Network Addressing
+    accDescr: Flowchart with 9 nodes and 8 connections. Nodes: Network Addressing, MAC Address, IP Address, Layer 2: Data Link, Local network, 48-bit hardware ID, Layer 3: Network, Global routing, IPv4: 32-bit IPv6: 128-bit. Connections: Network Addressing to MAC Address, Network Addressing to IP Address, MAC Address to Layer 2: Data Link, MAC Address to Local network, MAC Address to 48-bit hardware ID, IP Address to Layer 3: Network, IP Address to Global routing, IP Address to IPv4: 32-bit IPv6: 128-bit.
     A[Network Addressing] --> B[MAC Address]
     A --> C[IP Address]
 
@@ -69,15 +77,21 @@ flowchart TD
     C --> H[Global routing]
     C --> I[IPv4: 32-bit<br/>IPv6: 128-bit]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#000
-    style H fill:#CA9161,stroke:#000,color:#000
-    style I fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-CA9161
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### MAC Addresses
@@ -123,20 +137,28 @@ The OSI (Open Systems Interconnection) model organizes networking into seven con
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
-    L7[Layer 7: Application<br/>HTTP, FTP, SMTP] --> L6[Layer 6: Presentation<br/>Data format translation]
+    accTitle: Network Layers
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Layer 7: Application HTTP, FTP, SMTP, Layer 6: Presentation Data format translation, Layer 5: Session Managing connections, Layer 4: Transport TCP, UDP, Layer 3: Network IP addresses, routing, Layer 2: Data Link MAC addresses, Ethernet, Wi-Fi, Layer 1: Physical Cables, radio waves. Connections: Layer 7: Application HTTP, FTP, SMTP to Layer 6: Presentation Data format translation, Layer 6: Presentation Data format translation to Layer 5: Session Managing connections, Layer 5: Session Managing connections to Layer 4: Transport TCP, UDP, Layer 4: Transport TCP, UDP to Layer 3: Network IP addresses, routing, Layer 3: Network IP addresses, routing to Layer 2: Data Link MAC addresses, Ethernet, Wi-Fi, Layer 2: Data Link MAC addresses, Ethernet, Wi-Fi to Layer 1: Physical Cables, radio waves.
+    L7[Layer 7: Application<br/>HTTP, FTP, SMTP] --> L6[Layer 6:<br/>Presentation<br/>Data format<br/>translation]
     L6 --> L5[Layer 5: Session<br/>Managing connections]
     L5 --> L4[Layer 4: Transport<br/>TCP, UDP]
-    L4 --> L3[Layer 3: Network<br/>IP addresses, routing]
-    L3 --> L2[Layer 2: Data Link<br/>MAC addresses, Ethernet, Wi-Fi]
+    L4 --> L3[Layer 3: Network<br/>IP addresses,<br/>routing]
+    L3 --> L2[Layer 2: Data Link<br/>MAC addresses,<br/>Ethernet, Wi-Fi]
     L2 --> L1[Layer 1: Physical<br/>Cables, radio waves]
 
-    style L7 fill:#0173B2,stroke:#000,color:#fff
-    style L6 fill:#029E73,stroke:#000,color:#fff
-    style L5 fill:#DE8F05,stroke:#000,color:#000
-    style L4 fill:#CC78BC,stroke:#000,color:#000
-    style L3 fill:#CA9161,stroke:#000,color:#000
-    style L2 fill:#0173B2,stroke:#000,color:#fff
-    style L1 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class L7 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class L6 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class L5 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class L4 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class L3 pal-CA9161
+    class L2 pal-0173B2
+    class L1 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 In practice, most engineers work primarily with the application, transport, and network layers. Understanding that MAC addresses operate at Layer 2 while IP addresses operate at Layer 3 clarifies why both are necessary.
@@ -215,25 +237,33 @@ Networks are categorized by geographic scope:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
-    A[Network Types by Scope] --> B[PAN]
+    accTitle: Network Types
+    accDescr: Flowchart with 9 nodes and 8 connections. Nodes: Network Types by Scope, PAN, LAN, MAN, WAN, Personal Area Bluetooth, phone-headphones, Local Area Home, office, building, Metropolitan Area City, large campus, Wide Area Countries, continents The Internet. Connections: Network Types by Scope to PAN, Network Types by Scope to LAN, Network Types by Scope to MAN, Network Types by Scope to WAN, PAN to Personal Area Bluetooth, phone-headphones, LAN to Local Area Home, office, building, MAN to Metropolitan Area City, large campus, WAN to Wide Area Countries, continents The Internet.
+    A[Network Types by<br/>Scope] --> B[PAN]
     A --> C[LAN]
     A --> D[MAN]
     A --> E[WAN]
 
-    B --> F[Personal Area<br/>Bluetooth, phone-headphones]
-    C --> G[Local Area<br/>Home, office, building]
+    B --> F[Personal Area<br/>Bluetooth,<br/>phone-headphones]
+    C --> G[Local Area<br/>Home, office,<br/>building]
     D --> H[Metropolitan Area<br/>City, large campus]
-    E --> I[Wide Area<br/>Countries, continents<br/>The Internet]
+    E --> I[Wide Area<br/>Countries,<br/>continents<br/>The Internet]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
-    style H fill:#CC78BC,stroke:#000,color:#000
-    style I fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-DE8F05
+    class H pal-CC78BC
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **LAN (Local Area Network)**: Covers a small geographic area like a home, office, or building. Your home Wi-Fi is a LAN where devices communicate directly using MAC addresses and private IP addresses.
@@ -259,6 +289,8 @@ Most networked applications follow the client-server model:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Client-Server Architecture
+    accDescr: Flowchart with 4 nodes and 6 connections. Nodes: Client 1 Web Browser, Server Web Server Database API, Client 2 Mobile App, Client 3 Desktop App. Connections: Client 1 Web Browser to Server Web Server Database API, Client 2 Mobile App to Server Web Server Database API, Client 3 Desktop App to Server Web Server Database API, Server Web Server Database API to Client 1 Web Browser, Server Web Server Database API to Client 2 Mobile App, Server Web Server Database API to Client 3 Desktop App.
     C1[Client 1<br/>Web Browser] --> S[Server<br/>Web Server<br/>Database<br/>API]
     C2[Client 2<br/>Mobile App] --> S
     C3[Client 3<br/>Desktop App] --> S
@@ -267,10 +299,13 @@ flowchart LR
     S --> C2
     S --> C3
 
-    style C1 fill:#0173B2,stroke:#000,color:#fff
-    style C2 fill:#0173B2,stroke:#000,color:#fff
-    style C3 fill:#0173B2,stroke:#000,color:#fff
-    style S fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C1 pal-0173B2
+    class C2 pal-0173B2
+    class C3 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Clients** initiate requests (your web browser, mobile app).
@@ -298,8 +333,10 @@ Consider what happens when you type a URL into your browser:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
-    A[Type URL] --> B[DNS Resolution<br/>www.example.com → 93.184.216.34]
-    B --> C[ARP Resolution<br/>Find router MAC address]
+    accTitle: Real-World Example
+    accDescr: Flowchart with 14 nodes and 13 connections. Nodes: Type URL, DNS Resolution www.example.com → 93.184.216.34, ARP Resolution Find router MAC address, Packet Creation HTTP request packets, Local Delivery Using MAC addresses, Internet Routing Using IP addresses, Firewall Inspection Allow/Block packets, Routing Success?, ICMP Error Messages, TCP Connection Three-way handshake, HTTP Request GET webpage, HTTP Response HTML, CSS, JS, images, and 2 more. Connections: Type URL to DNS Resolution www.example.com → 93.184.216.34, DNS Resolution www.example.com → 93.184.216.34 to ARP Resolution Find router MAC address, ARP Resolution Find router MAC address to Packet Creation HTTP request packets, Packet Creation HTTP request packets to Local Delivery Using MAC addresses, Local Delivery Using MAC addresses to Internet Routing Using IP addresses, Internet Routing Using IP addresses to Firewall Inspection Allow/Block packets, Firewall Inspection Allow/Block packets to Routing Success?, Routing Success? to ICMP Error Messages (No), Routing Success? to TCP Connection Three-way handshake (Yes), TCP Connection Three-way handshake to HTTP Request GET webpage, HTTP Request GET webpage to HTTP Response HTML, CSS, JS, images, HTTP Response HTML, CSS, JS, images to Packet Reassembly Correct order, and 1 more.
+    A[Type URL] --> B[DNS Resolution<br/>www.example.com →<br/>93.184.216.34]
+    B --> C[ARP Resolution<br/>Find router MAC<br/>address]
     C --> D[Packet Creation<br/>HTTP request packets]
     D --> E[Local Delivery<br/>Using MAC addresses]
     E --> F[Internet Routing<br/>Using IP addresses]
@@ -308,24 +345,30 @@ flowchart TD
     H -->|No| I[ICMP Error Messages]
     H -->|Yes| J[TCP Connection<br/>Three-way handshake]
     J --> K[HTTP Request<br/>GET webpage]
-    K --> L[HTTP Response<br/>HTML, CSS, JS, images]
+    K --> L[HTTP Response<br/>HTML, CSS, JS,<br/>images]
     L --> M[Packet Reassembly<br/>Correct order]
     M --> N[Rendering<br/>Display webpage]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#DE8F05,stroke:#000,color:#000
-    style I fill:#CC78BC,stroke:#000,color:#000
-    style J fill:#CA9161,stroke:#000,color:#000
-    style K fill:#0173B2,stroke:#000,color:#fff
-    style L fill:#029E73,stroke:#000,color:#fff
-    style M fill:#DE8F05,stroke:#000,color:#000
-    style N fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-029E73
+    class H pal-DE8F05
+    class I pal-CC78BC
+    class J pal-CA9161
+    class K pal-0173B2
+    class L pal-029E73
+    class M pal-DE8F05
+    class N pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 1. **DNS Resolution**: Your computer queries DNS servers to convert `www.example.com` into an IP address like `93.184.216.34`

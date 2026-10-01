@@ -24,6 +24,8 @@ objects.
 
 ```mermaid
 graph TD
+    accTitle: Example 58: Microservices Decomposition by Business Capability
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Monolith All capabilities, Orders Module Place, track, cancel, Inventory Module Stock, reservations, Billing Module Payments, invoices, Notification Module Email, SMS. Connections: Monolith All capabilities to Orders Module Place, track, cancel (decompose by business capability), Monolith All capabilities to Inventory Module Stock, reservations, Monolith All capabilities to Billing Module Payments, invoices, Monolith All capabilities to Notification Module Email, SMS.
     A["Monolith<br/>All capabilities"]
     B["Orders Module<br/>Place, track, cancel"]
     C["Inventory Module<br/>Stock, reservations"]
@@ -35,11 +37,17 @@ graph TD
     A --> D
     A --> E
 
-    style A fill:#CA9161,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -369,14 +377,21 @@ path and payload to a response, making the routing table explicit, testable, and
 
 ```mermaid
 graph LR
+    accTitle: Example 59: Strangler Fig Pattern
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Client, Strangler Router (pure function), New Modules, Legacy Monolith. Connections: Client to Strangler Router (pure function), Strangler Router (pure function) to New Modules (migrated routes), Strangler Router (pure function) to Legacy Monolith (legacy routes).
     Client["Client"] --> Proxy["Strangler Router<br/>(pure function)"]
     Proxy -->|"migrated routes"| New["New Modules"]
     Proxy -->|"legacy routes"| Old["Legacy Monolith"]
 
-    style Client fill:#CA9161,stroke:#000,color:#fff
-    style Proxy fill:#DE8F05,stroke:#000,color:#fff
-    style New fill:#029E73,stroke:#000,color:#fff
-    style Old fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Client pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Proxy pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class New pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Old pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -633,6 +648,8 @@ the orchestrator accumulates completed steps and unwinds them on failure.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 60: Saga Orchestration
+    accDescr: Sequence diagram between Orchestrator, Inventory, Payment, Shipping. Messages: Orchestrator to Inventory: ReserveStock; Inventory to Orchestrator: Ok (); Orchestrator to Payment: ChargePayment; Payment to Orchestrator: Error declined; Orchestrator to Inventory: ReleaseStock (compensation).
     participant O as Orchestrator
     participant I as Inventory
     participant P as Payment
@@ -965,26 +982,37 @@ strings to lists of handler functions registered at startup.
 
 ```mermaid
 graph LR
+    accTitle: Example 61: Saga Choreography
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: OrderPlaced event, Inventory reserves stock, StockReserved event, Payment charges card. Connections: OrderPlaced event to Inventory reserves stock, Inventory reserves stock to StockReserved event, StockReserved event to Payment charges card.
     A["OrderPlaced<br/>event"] --> B["Inventory<br/>reserves stock"]
     B --> C["StockReserved<br/>event"]
     C --> D["Payment<br/>charges card"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-0173B2
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Compensation path** (continues from `Payment`):
 
 ```mermaid
 graph LR
+    accTitle: Example 61: Saga Choreography
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Payment charges card, PaymentFailed event, Inventory releases stock. Connections: Payment charges card to PaymentFailed event, PaymentFailed event to Inventory releases stock.
     D["Payment<br/>charges card"] --> E["PaymentFailed<br/>event"]
     E --> F["Inventory<br/>releases stock"]
 
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1553,6 +1581,8 @@ service layer; each BFF function shapes its own response independently.
 
 ```mermaid
 graph TD
+    accTitle: Example 63: Backend for Frontend Pattern
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Mobile Client, Mobile BFF (pure function), Web Client, Web BFF (pure function), Third-party, Partner BFF (pure function), Downstream Services. Connections: Mobile Client to Mobile BFF (pure function), Web Client to Web BFF (pure function), Third-party to Partner BFF (pure function), Mobile BFF (pure function) to Downstream Services, Web BFF (pure function) to Downstream Services, Partner BFF (pure function) to Downstream Services.
     Mobile["Mobile Client"] --> BFFM["Mobile BFF<br/>(pure function)"]
     Web["Web Client"] --> BFFW["Web BFF<br/>(pure function)"]
     Third["Third-party"] --> BFFT["Partner BFF<br/>(pure function)"]
@@ -1560,13 +1590,19 @@ graph TD
     BFFW --> DS
     BFFT --> DS
 
-    style Mobile fill:#CA9161,stroke:#000,color:#fff
-    style Web fill:#CA9161,stroke:#000,color:#fff
-    style Third fill:#CA9161,stroke:#000,color:#fff
-    style BFFM fill:#0173B2,stroke:#000,color:#fff
-    style BFFW fill:#029E73,stroke:#000,color:#fff
-    style BFFT fill:#CC78BC,stroke:#000,color:#fff
-    style DS fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Mobile pal-CA9161
+    class Web pal-CA9161
+    class Third pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class BFFM pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class BFFW pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class BFFT pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class DS pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1823,6 +1859,8 @@ explicit transitions driven by success or failure of each call attempt.
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 64: Circuit Breaker with Fallback
+    accDescr: State diagram with 4 items: start or end, Closed, Open, HalfOpen. Relationships: start or end to Closed; Closed to Open: failures >= threshold; Open to HalfOpen: probe timeout elapsed; HalfOpen to Closed: probe succeeds; HalfOpen to Open: probe fails.
     [*] --> Closed
     Closed --> Open : failures >= threshold
     Open --> HalfOpen : probe timeout elapsed
@@ -2201,7 +2239,9 @@ callers cannot silently ignore the "pool full" outcome.
 
 ```mermaid
 graph TD
-    App["Application<br/>(shared pool — vulnerable)"]
+    accTitle: Example 65: Bulkhead Pattern
+    accDescr: Graph with 5 nodes and 2 connections. Nodes: Application (shared pool — vulnerable), Bulkhead: Payments (isolated, max 2), Bulkhead: Inventory (isolated, max 5), Payment Service, Inventory Service. Connections: Bulkhead: Payments (isolated, max 2) to Payment Service, Bulkhead: Inventory (isolated, max 5) to Inventory Service.
+    App["Application<br/>(shared pool —<br/>vulnerable)"]
     BH1["Bulkhead: Payments<br/>(isolated, max 2)"]
     BH2["Bulkhead: Inventory<br/>(isolated, max 5)"]
     P["Payment Service"]
@@ -2210,11 +2250,17 @@ graph TD
     BH1 --> P
     BH2 --> I
 
-    style App fill:#DE8F05,stroke:#000,color:#fff
-    style BH1 fill:#0173B2,stroke:#000,color:#fff
-    style BH2 fill:#029E73,stroke:#000,color:#fff
-    style P fill:#CC78BC,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class App pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class BH1 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class BH2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class P pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -2784,6 +2830,8 @@ as plain maps; TypeScript as readonly interfaces — the functional principle is
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 67: Distributed Tracing Architecture
+    accDescr: Sequence diagram between API Gateway traceId=abc, span=1, Orders Service traceId=abc, span=2, Inventory Service traceId=abc, span=3. Messages: API Gateway traceId=abc, span=1 to Orders Service traceId=abc, span=2: request + trace headers; Orders Service traceId=abc, span=2 to Inventory Service traceId=abc, span=3: request + trace headers; Inventory Service traceId=abc, span=3 to Orders Service traceId=abc, span=2: response (span 3 ends); Orders Service traceId=abc, span=2 to API Gateway traceId=abc, span=1: response (span 2 ends).
     participant A as API Gateway<br/>traceId=abc, span=1
     participant B as Orders Service<br/>traceId=abc, span=2
     participant C as Inventory Service<br/>traceId=abc, span=3
@@ -3094,15 +3142,21 @@ Ring-style middleware; TypeScript as a higher-order function wrapping an async h
 
 ```mermaid
 graph LR
+    accTitle: Example 68: Sidecar Pattern
+    accDescr: Graph with 3 nodes and 1 connections. Nodes: App Handler (business logic), Sidecar Wrapper (logging, TLS, metrics), Collector (Prometheus / Loki). Connections: Sidecar Wrapper (logging, TLS, metrics) to Collector (Prometheus / Loki).
     subgraph Pod["Pod / VM"]
         App["App Handler<br/>(business logic)"]
-        Side["Sidecar Wrapper<br/>(logging, TLS, metrics)"]
+        Side["Sidecar Wrapper<br/>(logging, TLS,<br/>metrics)"]
     end
     Side --> Collector["Collector<br/>(Prometheus / Loki)"]
 
-    style App fill:#0173B2,stroke:#000,color:#fff
-    style Side fill:#029E73,stroke:#000,color:#fff
-    style Collector fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class App pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Side pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Collector pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -3638,6 +3692,8 @@ processing all events is the current state.
 
 ```mermaid
 graph TD
+    accTitle: Example 70: Event Sourcing Implementation
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: AccountOpened balance: 0, MoneyDeposited amount: 500, MoneyWithdrawn amount: 200, Current State balance=300. Connections: AccountOpened balance: 0 to MoneyDeposited amount: 500, MoneyDeposited amount: 500 to MoneyWithdrawn amount: 200, MoneyWithdrawn amount: 200 to Current State balance=300 (List.fold).
     E1["AccountOpened<br/>{balance: 0}"]
     E2["MoneyDeposited<br/>{amount: 500}"]
     E3["MoneyWithdrawn<br/>{amount: 200}"]
@@ -3645,10 +3701,15 @@ graph TD
 
     E1 --> E2 --> E3 -->|"List.fold"| E4
 
-    style E1 fill:#0173B2,stroke:#000,color:#fff
-    style E2 fill:#029E73,stroke:#000,color:#fff
-    style E3 fill:#DE8F05,stroke:#000,color:#fff
-    style E4 fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class E1 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E2 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E3 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E4 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -5139,20 +5200,28 @@ higher-order functions that wrap the next handler, threading a request map throu
 
 ```mermaid
 graph TD
+    accTitle: Example 75: Chain of Responsibility
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Request, Auth middleware, RateLimit middleware, Business handler, 401 Unauthorized, 429 Too Many Requests, 200 OK. Connections: Request to Auth middleware, Auth middleware to RateLimit middleware (Ok), RateLimit middleware to Business handler (Ok), Auth middleware to 401 Unauthorized (Error), RateLimit middleware to 429 Too Many Requests (Error), Business handler to 200 OK.
     Req["Request"] --> H1["Auth<br/>middleware"]
     H1 -->|"Ok"| H2["RateLimit<br/>middleware"]
     H2 -->|"Ok"| H3["Business<br/>handler"]
     H1 -->|"Error"| Resp1["401 Unauthorized"]
-    H2 -->|"Error"| Resp2["429 Too Many Requests"]
+    H2 -->|"Error"| Resp2["429 Too Many<br/>Requests"]
     H3 --> Resp3["200 OK"]
 
-    style Req fill:#CA9161,stroke:#000,color:#fff
-    style H1 fill:#0173B2,stroke:#000,color:#fff
-    style H2 fill:#029E73,stroke:#000,color:#fff
-    style H3 fill:#DE8F05,stroke:#000,color:#fff
-    style Resp1 fill:#CC78BC,stroke:#000,color:#fff
-    style Resp2 fill:#CC78BC,stroke:#000,color:#fff
-    style Resp3 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Req pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class H1 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class H2 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class H3 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Resp1 pal-CC78BC
+    class Resp2 pal-CC78BC
+    class Resp3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -6161,6 +6230,8 @@ receiving the dereferenced store.
 
 ```mermaid
 graph LR
+    accTitle: Example 78: Feature Toggle Architecture
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Deployed Code (all features), Toggle Store (immutable Map), User Segment A (flag=ON), User Segment B (flag=OFF), New Feature Path, Old Feature Path. Connections: Deployed Code (all features) to Toggle Store (immutable Map), Toggle Store (immutable Map) to User Segment A (flag=ON) (segment A), Toggle Store (immutable Map) to User Segment B (flag=OFF) (segment B), User Segment A (flag=ON) to New Feature Path, User Segment B (flag=OFF) to Old Feature Path.
     Code["Deployed Code<br/>(all features)"]
     FS["Toggle Store<br/>(immutable Map)"]
     User1["User Segment A<br/>(flag=ON)"]
@@ -6174,12 +6245,17 @@ graph LR
     User1 --> F1
     User2 --> F2
 
-    style Code fill:#0173B2,stroke:#000,color:#fff
-    style FS fill:#DE8F05,stroke:#000,color:#fff
-    style User1 fill:#029E73,stroke:#000,color:#fff
-    style User2 fill:#CA9161,stroke:#000,color:#fff
-    style F1 fill:#029E73,stroke:#000,color:#fff
-    style F2 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Code pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class FS pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class User1 pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class User2 pal-CA9161
+    class F1 pal-029E73
+    class F2 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -6466,6 +6542,8 @@ the sidecar but focused on outbound calls to other services rather than inbound 
 
 ```mermaid
 graph TD
+    accTitle: Example 79: Service Mesh Architecture
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: App A (business logic), Mesh Proxy A (F wrapper fn), App B, Mesh Proxy B, Control Plane (policy config). Connections: Mesh Proxy A (F wrapper fn) to Mesh Proxy B (mTLS + retry), Control Plane (policy config) to Mesh Proxy A (F wrapper fn), Control Plane (policy config) to Mesh Proxy B.
     subgraph SvcA["Service A"]
         A["App A<br/>(business logic)"]
         PA["Mesh Proxy A<br/>(F# wrapper fn)"]
@@ -6480,11 +6558,15 @@ graph TD
     CP --> PA
     CP --> PB
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style PA fill:#029E73,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style PB fill:#029E73,stroke:#000,color:#fff
-    style CP fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class PA pal-029E73
+    class B pal-0173B2
+    class PB pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CP pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -7127,6 +7209,8 @@ a discriminated union with `Result` wrappers — the CQRS boundary is the same r
 
 ```mermaid
 graph LR
+    accTitle: Example 81: CQRS
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Client, Command Side (write model), Query Side (read model), Event List (source of truth), Read Store (denormalised). Connections: Client to Command Side (write model) (commands), Client to Query Side (read model) (queries), Command Side (write model) to Event List (source of truth), Event List (source of truth) to Read Store (denormalised) (project events), Query Side (read model) to Read Store (denormalised).
     C["Client"]
     CMD["Command Side<br/>(write model)"]
     QRY["Query Side<br/>(read model)"]
@@ -7139,11 +7223,17 @@ graph LR
     ES -->|"project events"| RM
     QRY --> RM
 
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style CMD fill:#0173B2,stroke:#000,color:#fff
-    style QRY fill:#029E73,stroke:#000,color:#fff
-    style ES fill:#DE8F05,stroke:#000,color:#fff
-    style RM fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CMD pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class QRY pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ES pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class RM pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -7487,16 +7577,24 @@ business record exists without its corresponding outbox entry.
 
 ```mermaid
 graph LR
+    accTitle: Example 82: Outbox Pattern for Reliable Event Publishing
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Application, State Tuple (record + outbox), Outbox Relay (poller), Message Broker (Kafka / RabbitMQ), Downstream Services. Connections: Application to State Tuple (record + outbox) (single pure fn), Outbox Relay (poller) to State Tuple (record + outbox) (reads unpublished), Outbox Relay (poller) to Message Broker (Kafka / RabbitMQ) (publishes), Message Broker (Kafka / RabbitMQ) to Downstream Services.
     App["Application"] -->|"single pure fn"| DB["State Tuple<br/>(record + outbox)"]
     Relay["Outbox Relay<br/>(poller)"] -->|"reads unpublished"| DB
     Relay -->|"publishes"| Broker["Message Broker<br/>(Kafka / RabbitMQ)"]
     Broker --> Consumers["Downstream<br/>Services"]
 
-    style App fill:#0173B2,stroke:#000,color:#fff
-    style DB fill:#DE8F05,stroke:#000,color:#fff
-    style Relay fill:#029E73,stroke:#000,color:#fff
-    style Broker fill:#CC78BC,stroke:#000,color:#fff
-    style Consumers fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class App pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class DB pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Relay pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Broker pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Consumers pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -8234,22 +8332,28 @@ adapters as arguments at the application entry point.
 
 ```mermaid
 graph TD
+    accTitle: Example 84: Ports and Adapters
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: HTTP Adapter (function), CLI Adapter (function), Postgres Adapter (function), Event Adapter (function), Domain Core (pure functions + port types). Connections: HTTP Adapter (function) to Domain Core (pure functions + port types) (OrderService port), CLI Adapter (function) to Domain Core (pure functions + port types) (OrderService port), Domain Core (pure functions + port types) to Postgres Adapter (function) (OrderRepo port), Domain Core (pure functions + port types) to Event Adapter (function) (EventPub port).
     HTTP["HTTP Adapter<br/>(function)"]
     CLI["CLI Adapter<br/>(function)"]
     PG["Postgres Adapter<br/>(function)"]
     MQ["Event Adapter<br/>(function)"]
-    Domain["Domain Core<br/>(pure functions + port types)"]
+    Domain["Domain Core<br/>(pure functions +<br/>port types)"]
 
     HTTP -- "OrderService port" --> Domain
     CLI  -- "OrderService port" --> Domain
     Domain -- "OrderRepo port" --> PG
     Domain -- "EventPub port" --> MQ
 
-    style HTTP fill:#0173B2,stroke:#000,color:#fff
-    style CLI fill:#0173B2,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
-    style MQ fill:#CA9161,stroke:#000,color:#fff
-    style Domain fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class HTTP pal-0173B2
+    class CLI pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    class MQ pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Domain pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -8586,6 +8690,8 @@ exhausted gives producers an explicit feedback mechanism without throwing except
 
 ```mermaid
 graph LR
+    accTitle: Example 85: Reactive Architecture with Backpressure
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Producer (fast: 1000 items/s), Backpressure Signal (inbox full — drop), Bounded Inbox (MailboxProcessor), Consumer (slow: 100 items/s). Connections: Producer (fast: 1000 items/s) to Bounded Inbox (MailboxProcessor) (Post), Bounded Inbox (MailboxProcessor) to Consumer (slow: 100 items/s) (Receive), Bounded Inbox (MailboxProcessor) to Backpressure Signal (inbox full — drop) (full — TryPost false), Backpressure Signal (inbox full — drop) to Producer (fast: 1000 items/s) (feedback).
     P["Producer<br/>(fast: 1000 items/s)"]
     B["Backpressure Signal<br/>(inbox full — drop)"]
     Buffer["Bounded Inbox<br/>(MailboxProcessor)"]
@@ -8593,13 +8699,18 @@ graph LR
 
     P -->|"Post"| Buffer
     Buffer -->|"Receive"| C
-    Buffer -->|"full — TryPost false"| B
+    Buffer -->|"full — TryPost<br/>false"| B
     B -->|"feedback"| P
 
-    style P fill:#0173B2,stroke:#000,color:#fff
-    style Buffer fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Buffer pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -8944,6 +9055,8 @@ ROP composes effectful steps that may fail into a single pipeline. Each step tak
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+  accTitle: Example 86: Railway-Oriented Programming
+  accDescr: Graph with 6 nodes and 7 connections. Nodes: Input, validate, normalize, Error track, persist, Success. Connections: Input to validate, validate to normalize (Ok), validate to Error track (Error), normalize to persist (Ok), normalize to Error track (Error), persist to Success (Ok), persist to Error track (Error).
   A[Input] --> B[validate]
   B -->|Ok| C[normalize]
   B -.->|Error| Z[Error track]
@@ -8951,10 +9064,11 @@ graph LR
   C -.->|Error| Z
   D -->|Ok| E[Success]
   D -.->|Error| Z
-  classDef ok fill:#029E73,color:#fff
-  classDef err fill:#DE8F05,color:#fff
+  classDef ok fill:#029E73,color:#000000,stroke:#000000
+  classDef err fill:#DE8F05,color:#000000,stroke:#000000
   class A,B,C,D,E ok
   class Z err
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}

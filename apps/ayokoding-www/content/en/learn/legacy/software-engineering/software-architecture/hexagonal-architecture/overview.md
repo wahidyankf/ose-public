@@ -30,20 +30,22 @@ Hexagonal Architecture reverses this. The domain sits at the centre and owns not
 
 ```mermaid
 graph TD
+    accTitle: The Three Zones
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: HTTP Adapter (Spring /ASP.NET / Ktor), CLI Adapter, Database Adapter (JPA /EF Core / Npgsql), Message Queue Adapter, Email Adapter, Application Service (orchestrates ports), Domain Model (entities, VOs, services), Domain Events. Connections: HTTP Adapter (Spring /ASP.NET / Ktor) to Application Service (orchestrates ports) (Input Port), CLI Adapter to Application Service (orchestrates ports) (Input Port), Application Service (orchestrates ports) to Domain Model (entities, VOs, services), Domain Model (entities, VOs, services) to Domain Events, Application Service (orchestrates ports) to Database Adapter (JPA /EF Core / Npgsql) (Output Port), Application Service (orchestrates ports) to Message Queue Adapter (Output Port), Application Service (orchestrates ports) to Email Adapter (Output Port).
     subgraph Adapters["Adapters (outside)"]
-        HTTP["HTTP Adapter\n(Spring / ASP.NET / Ktor)"]
+        HTTP["HTTP Adapter<br/>(Spring /ASP.NET /<br/>Ktor)"]
         CLI["CLI Adapter"]
-        DB["Database Adapter\n(JPA / EF Core / Npgsql)"]
-        MQ["Message Queue Adapter"]
+        DB["Database Adapter<br/>(JPA /EF Core /<br/>Npgsql)"]
+        MQ["Message Queue<br/>Adapter"]
         Email["Email Adapter"]
     end
 
     subgraph Application["Application Layer"]
-        AS["Application Service\n(orchestrates ports)"]
+        AS["Application Service<br/>(orchestrates ports)"]
     end
 
     subgraph Domain["Domain Core (inside)"]
-        DM["Domain Model\n(entities, VOs, services)"]
+        DM["Domain Model<br/>(entities, VOs,<br/>services)"]
         DE["Domain Events"]
     end
 
@@ -55,9 +57,13 @@ graph TD
     AS -- "Output Port" --> MQ
     AS -- "Output Port" --> Email
 
-    style Domain fill:#0173B2,stroke:#000,color:#fff
-    style Application fill:#029E73,stroke:#000,color:#fff
-    style Adapters fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Domain pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Application pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Adapters pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Domain Core**: Pure business logic. Entities, value objects, domain services, domain events. Zero imports from any framework, database library, or infrastructure package. The domain is the application's reason for existing.

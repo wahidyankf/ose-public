@@ -215,19 +215,26 @@ Domain events represent facts that have already occurred in the domain. DDD conv
 
 ```mermaid
 graph TD
-    PE["ProcurementEvent\n(OR type — past tense)"]
-    RS["RequisitionSubmitted\nof RequisitionSubmittedPayload"]
-    RA["RequisitionApproved\nof RequisitionId * ApprovedAt"]
-    PI["PurchaseOrderIssued\nof PurchaseOrderIssuedPayload"]
+    accTitle: Example 2: Domain Event Named in Past Tense
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: ProcurementEvent (OR type — past tense), RequisitionSubmitted of Requisition SubmittedPayload, RequisitionApproved of RequisitionId * ApprovedAt, PurchaseOrderIssued of PurchaseOrder IssuedPayload. Connections: ProcurementEvent (OR type — past tense) to RequisitionSubmitted of Requisition SubmittedPayload, ProcurementEvent (OR type — past tense) to RequisitionApproved of RequisitionId * ApprovedAt, ProcurementEvent (OR type — past tense) to PurchaseOrderIssued of PurchaseOrder IssuedPayload.
+    PE["ProcurementEvent<br/>(OR type — past<br/>tense)"]
+    RS["RequisitionSubmitted<br/>of Requisition<br/>SubmittedPayload"]
+    RA["RequisitionApproved<br/>of RequisitionId *<br/>ApprovedAt"]
+    PI["PurchaseOrderIssued<br/>of PurchaseOrder<br/>IssuedPayload"]
 
     PE --> RS
     PE --> RA
     PE --> PI
 
-    style PE fill:#0173B2,stroke:#000,color:#fff
-    style RS fill:#029E73,stroke:#000,color:#fff
-    style RA fill:#CC78BC,stroke:#000,color:#000
-    style PI fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PE pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RS pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class RA pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PI pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -483,18 +490,25 @@ A bounded context is an explicit boundary within which a particular domain model
 
 ```mermaid
 graph TD
-    P["module Purchasing\nRequisitionId, PurchaseOrder"]
-    S["module Supplier\nSupplierId, SupplierStatus"]
-    R["module Receiving\nGoodsReceiptNote"]
-    I["module Invoicing\nInvoice, Tolerance"]
+    accTitle: Example 3: Bounded Context as Module / Namespace
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: module Purchasing RequisitionId, PurchaseOrder, module Supplier SupplierId, SupplierStatus, module Receiving GoodsReceiptNote, module Invoicing Invoice, Tolerance. Connections: module Purchasing RequisitionId, PurchaseOrder to module Receiving GoodsReceiptNote (publishes events (no direct type sharing)), module Receiving GoodsReceiptNote to module Invoicing Invoice, Tolerance (GoodsReceived event).
+    P["module Purchasing<br/>RequisitionId,<br/>PurchaseOrder"]
+    S["module Supplier<br/>SupplierId,<br/>SupplierStatus"]
+    R["module Receiving<br/>GoodsReceiptNote"]
+    I["module Invoicing<br/>Invoice, Tolerance"]
 
-    P -.->|"publishes events\n(no direct type sharing)"| R
-    R -.->|"GoodsReceived event"| I
+    P -.->|"publishes events<br/>(no direct type<br/>sharing)"| R
+    R -.->|"GoodsReceived<br/>event"| I
 
-    style P fill:#0173B2,stroke:#000,color:#fff
-    style S fill:#DE8F05,stroke:#000,color:#000
-    style R fill:#029E73,stroke:#000,color:#fff
-    style I fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class S pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class R pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class I pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1507,25 +1521,32 @@ A single-case DU wraps a primitive type to give it a distinct identity. This pre
 
 ```mermaid
 graph LR
-    Raw["string\n'req_abc'\n'po_xyz'\n'sup_999'"]
-    RI["RequisitionId\nof string"]
-    PI["PurchaseOrderId\nof string"]
-    SI["SupplierId\nof string"]
+    accTitle: Example 7: Single-Case Discriminated Union Wrapper
+    accDescr: Graph with 6 nodes and 2 connections. Nodes: string req_abc po_xyz sup_999, RequisitionId of string, PurchaseOrderId of string, SupplierId of string, routeApproval (RequisitionId id), PurchaseOrderId cannot be passed to routeApproval (compile error). Connections: string req_abc po_xyz sup_999 to SupplierId of string (SupplierId.create), RequisitionId of string to routeApproval (RequisitionId id).
+    Raw["string<br/>'req_abc'<br/>'po_xyz'<br/>'sup_999'"]
+    RI["RequisitionId<br/>of string"]
+    PI["PurchaseOrderId<br/>of string"]
+    SI["SupplierId<br/>of string"]
 
-    Raw -- "RequisitionId.create" --> RI
-    Raw -- "PurchaseOrderId.create" --> PI
+    Raw -- "RequisitionId.<br/>create" --> RI
+    Raw -- "PurchaseOrderId.<br/>create" --> PI
     Raw -- "SupplierId.create" --> SI
 
-    Fn["routeApproval\n(RequisitionId id)"]
+    Fn["routeApproval<br/>(RequisitionId id)"]
     RI --> Fn
 
-    note1["PurchaseOrderId cannot be\npassed to routeApproval\n(compile error)"]
+    note1["PurchaseOrderId<br/>cannot be<br/>passed to<br/>routeApproval<br/>(compile error)"]
     PI -. "blocked by compiler" .-> Fn
 
-    style RI fill:#0173B2,stroke:#000,color:#fff
-    style PI fill:#029E73,stroke:#000,color:#fff
-    style SI fill:#DE8F05,stroke:#000,color:#000
-    style note1 fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class RI pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class PI pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SI pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class note1 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1736,12 +1757,14 @@ A smart constructor validates its input and returns `Result<'T, 'Error>` rather 
 
 ````mermaid
 graph LR
-    Raw["raw: string\n(untrusted input)"]
+    accTitle: Example 8: Smart Constructor Returning Result
+    accDescr: Graph with 14 nodes and 5 connections. Nodes: raw: string (untrusted input), IsNullOrWhiteSpace?, Matches req_ prefix?, Ok (RequisitionId raw) (valid wrapper), Error RequisitionId is blank, Error must start with req_, type, module, let, if, sprintf RequisitionId s must start with req_ raw, elif, and 2 more. Connections: raw: string (untrusted input) to IsNullOrWhiteSpace?, IsNullOrWhiteSpace? to Error RequisitionId is blank (yes), IsNullOrWhiteSpace? to Matches req_ prefix? (no), Matches req_ prefix? to Error must start with req_ (no), Matches req_ prefix? to Ok (RequisitionId raw) (valid wrapper) (yes).
+    Raw["raw: string<br/>(untrusted input)"]
     Check1{"IsNullOrWhiteSpace?"}
     Check2{"Matches req_ prefix?"}
-    Ok["Ok (RequisitionId raw)\n(valid wrapper)"]
-    Err1["Error\n'RequisitionId is blank'"]
-    Err2["Error\n'must start with req_'"]
+    Ok["Ok (RequisitionId<br/>raw)<br/>(valid wrapper)"]
+    Err1["Error<br/>'RequisitionId is<br/>blank'"]
+    Err2["Error<br/>'must start with<br/>req_'"]
 
     Raw --> Check1
     Check1 -- "yes" --> Err1
@@ -1749,9 +1772,6 @@ graph LR
     Check2 -- "no" --> Err2
     Check2 -- "yes" --> Ok
 
-    style Ok fill:#029E73,stroke:#000,color:#fff
-    style Err1 fill:#CC78BC,stroke:#000,color:#000
-    style Err2 fill:#CC78BC,stroke:#000,color:#000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1770,15 +1790,15 @@ module RequisitionId =
     // => Convention: module with same name as the type holds the smart constructor
 
     let create (raw: string) : Result<RequisitionId, string> =
-        // => Input: raw string from outside (DTO, HTTP body, config)
+        // => Input: raw string from outside (DTO, HTTP body,<br/>config)
         // => Output: Ok with a validated RequisitionId, or Error with a message
         if System.String.IsNullOrWhiteSpace(raw) then
             // => Guard 1: empty or whitespace IDs are not valid in this domain
             Error "RequisitionId cannot be blank"
             // => Returns Error case — caller must handle this
-        elif not (raw.StartsWith("req_")) then
+        elif not (raw.StartsWith("req_<br/>")) then
             // => Guard 2: canonical format requires the "req_" prefix
-            Error (sprintf "RequisitionId '%s' must start with 'req_'" raw)
+            Error (sprintf<br/>"RequisitionId '%s'<br/>must start with<br/>'req_'" raw)
             // => Descriptive error message for logging and API error responses
         else
             Ok (RequisitionId raw)
@@ -1786,11 +1806,11 @@ module RequisitionId =
             // => Caller receives a RequisitionId they know is valid
 
     let value (RequisitionId id) = id
-    // => Accessor: safely unwrap the string when needed (e.g., for persistence)
+    // => Accessor: safely unwrap the string when needed (e.g., for<br/>persistence)
 
 // Usage
 let result1 = RequisitionId.create "req_f4c2a1b7"
-// => result1 : Result<RequisitionId, string> = Ok (RequisitionId "req_f4c2a1b7")
+// => result1 : Result<RequisitionId, string> = Ok (RequisitionId<br/>"req_f4c2a1b7")
 
 let result2 = RequisitionId.create ""
 // => result2 : Result<RequisitionId, string> = Error "RequisitionId cannot be blank"
@@ -1799,9 +1819,15 @@ let result3 = RequisitionId.create "12345"
 // => result3 : Result<RequisitionId, string> = Error "RequisitionId '12345' must start with 'req_'"
 
 match result1 with
-| Ok id   -> printfn "Valid: %s" (RequisitionId.value id)
+| Ok id   -> printfn "Valid: %s" (RequisitionId.value<br/>id)
 | Error e -> printfn "Invalid: %s" e
 // => Output: Valid: req_f4c2a1b7
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Ok pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Err1 pal-CC78BC
+    class Err2 pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ````
 
 {{< /tab >}}
@@ -3715,6 +3741,8 @@ The full `PurchaseRequisition` lifecycle has six states: `Draft`, `Submitted`, `
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 15: Lifecycle States as a Discriminated Union
+    accDescr: State diagram with 7 items: start or end, Draft, Submitted, ManagerReview, Approved, Rejected, ConvertedToPO. Relationships: start or end to Draft: create; Draft to Submitted: submit; Submitted to ManagerReview: route to manager; ManagerReview to Approved: manager approves; ManagerReview to Rejected: manager rejects; Approved to ConvertedToPO: purchasing converts; ConvertedToPO to start or end; Rejected to start or end.
     [*] --> Draft : create
     Draft --> Submitted : submit
     Submitted --> ManagerReview : route to manager
@@ -4029,6 +4057,8 @@ State transitions in the procurement domain are pure functions from one state to
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 16: State Machine Encoded Purely by Type Transitions
+    accDescr: State diagram with 4 items: start or end, DraftRequisition, SubmittedRequisition, ApprovedRequisition. Relationships: start or end to DraftRequisition: create; DraftRequisition to SubmittedRequisition: submitRequisition (pure fn); SubmittedRequisition to ApprovedRequisition: approveRequisition (pure fn); DraftRequisition to start or end: cancelled.
     [*] --> DraftRequisition : create
     DraftRequisition --> SubmittedRequisition : submitRequisition (pure fn)
     SubmittedRequisition --> ApprovedRequisition : approveRequisition (pure fn)
@@ -5809,10 +5839,12 @@ The `PurchaseRequisition` is the aggregate root of the purchasing context at the
 
 ```mermaid
 graph TD
-    PR["PurchaseRequisition\n(aggregate root)"]
-    ID["RequisitionId\n(identity)"]
-    ST["RequisitionStatus\n(lifecycle state)"]
-    LN["PurchaseRequisitionLine list\n(validated lines)"]
+    accTitle: Example 22: PurchaseRequisition Aggregate Record
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: PurchaseRequisition (aggregate root), RequisitionId (identity), RequisitionStatus (lifecycle state), PurchaseRequisition Line list (validated lines), SkuCode, Quantity, UnitPrice. Connections: PurchaseRequisition (aggregate root) to RequisitionId (identity), PurchaseRequisition (aggregate root) to RequisitionStatus (lifecycle state), PurchaseRequisition (aggregate root) to PurchaseRequisition Line list (validated lines), PurchaseRequisition Line list (validated lines) to SkuCode, PurchaseRequisition Line list (validated lines) to Quantity, PurchaseRequisition Line list (validated lines) to UnitPrice.
+    PR["PurchaseRequisition<br/>(aggregate root)"]
+    ID["RequisitionId<br/>(identity)"]
+    ST["RequisitionStatus<br/>(lifecycle state)"]
+    LN["PurchaseRequisition<br/>Line list<br/>(validated lines)"]
     SKU["SkuCode"]
     QTY["Quantity"]
     UP["UnitPrice"]
@@ -5824,13 +5856,18 @@ graph TD
     LN --> QTY
     LN --> UP
 
-    style PR fill:#0173B2,stroke:#000,color:#fff
-    style LN fill:#DE8F05,stroke:#000,color:#000
-    style ID fill:#029E73,stroke:#000,color:#fff
-    style ST fill:#029E73,stroke:#000,color:#fff
-    style SKU fill:#CC78BC,stroke:#000,color:#000
-    style QTY fill:#CC78BC,stroke:#000,color:#000
-    style UP fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PR pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class LN pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ID pal-029E73
+    class ST pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class SKU pal-CC78BC
+    class QTY pal-CC78BC
+    class UP pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -6632,19 +6669,26 @@ The `ApprovalLevel` of a purchase requisition is a domain rule derived from its 
 
 ```mermaid
 graph LR
-    T["Requisition Total\n(decimal)"]
-    L1["L1: ≤ $1,000\nDirect manager"]
-    L2["L2: $1,001–$10,000\nDepartment head"]
-    L3["L3: > $10,000\nCFO / Finance Committee"]
+    accTitle: Example 24: Approval Level Derived from Requisition Total
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Requisition Total (decimal), L1: ≤ $1,000 Direct manager, L2: $1,001–$10,000 Department head, L3: > $10,000 CFO /Finance Committee. Connections: Requisition Total (decimal) to L1: ≤ $1,000 Direct manager (≤ 1000), Requisition Total (decimal) to L2: $1,001–$10,000 Department head (1001–10000), Requisition Total (decimal) to L3: > $10,000 CFO /Finance Committee (> 10000).
+    T["Requisition Total<br/>(decimal)"]
+    L1["L1: ≤ $1,000<br/>Direct manager"]
+    L2["L2: $1,001–$10,000<br/>Department head"]
+    L3["L3: > $10,000<br/>CFO /Finance<br/>Committee"]
 
     T -->|"≤ 1000"| L1
     T -->|"1001–10000"| L2
     T -->|"> 10000"| L3
 
-    style T fill:#0173B2,stroke:#000,color:#fff
-    style L1 fill:#029E73,stroke:#000,color:#fff
-    style L2 fill:#DE8F05,stroke:#000,color:#000
-    style L3 fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class T pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class L1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class L2 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class L3 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}

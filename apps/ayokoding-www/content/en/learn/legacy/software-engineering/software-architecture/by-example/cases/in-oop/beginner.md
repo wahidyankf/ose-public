@@ -147,26 +147,29 @@ The hexagonal pattern enforces the boundary by making each context own its `doma
 
 ```mermaid
 flowchart LR
+    accTitle: Production Framework
+    accDescr: Flowchart with 7 nodes and 2 connections. Nodes: domain/ (PO, POId records), application/ (PurchaseOrder Repository port), infrastructure/ (JdbcPurchaseOrder Repository), presentation/ (@RestController), domain/ (GRN, GRNId records), application/ (POQueryPort interface), infrastructure/ (PurchaseOrderQuery Acl). Connections: application/ (POQueryPort interface) to application/ (PurchaseOrder Repository port) (consumes port only), infrastructure/ (PurchaseOrderQuery Acl) to infrastructure/ (JdbcPurchaseOrder Repository) (calls HTTP / DB).
     subgraph ctx["purchasing context"]
         direction TB
-        dom["domain/\n(PO, POId records)"]:::blue
-        app["application/\n(PurchaseOrderRepository port)"]:::orange
-        inf["infrastructure/\n(JdbcPurchaseOrderRepository)"]:::teal
-        pres["presentation/\n(@RestController)"]:::purple
+        dom["domain/<br/>(PO, POId records)"]:::blue
+        app["application/<br/>(PurchaseOrder<br/>Repository port)"]:::orange
+        inf["infrastructure/<br/>(JdbcPurchaseOrder<br/>Repository)"]:::teal
+        pres["presentation/<br/>(@RestController)"]:::purple
     end
     subgraph recv["receiving context"]
         direction TB
-        rdom["domain/\n(GRN, GRNId records)"]:::blue
-        rapp["application/\n(POQueryPort interface)"]:::orange
-        rinf["infrastructure/\n(PurchaseOrderQueryAcl)"]:::teal
+        rdom["domain/<br/>(GRN, GRNId records)"]:::blue
+        rapp["application/<br/>(POQueryPort<br/>interface)"]:::orange
+        rinf["infrastructure/<br/>(PurchaseOrderQuery<br/>Acl)"]:::teal
     end
     rapp -->|"consumes port only"| app
     rinf -->|"calls HTTP / DB"| inf
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The `procurement-platform-be` service places each bounded context at its own top-level package under `com.procurement.platform`:
@@ -1564,17 +1567,20 @@ In all four stacks the output port interface is declared in the `application` pa
 
 ```mermaid
 flowchart LR
-    svc["IssuePurchaseOrderService\n(application package)"]:::orange
-    port["PurchaseOrderRepository\n(application package)"]:::orange
-    jdbc["JdbcPurchaseOrderRepository\n@Repository (infrastructure)"]:::teal
-    mem["InMemoryPORepository\n(test)"]:::purple
-    svc -->|"declares dependency on"| port
+    accTitle: Production Framework
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: IssuePurchaseOrder Service (application package), PurchaseOrder Repository (application package), JdbcPurchaseOrder Repository @Repository (infrastructure), InMemoryPORepository (test). Connections: IssuePurchaseOrder Service (application package) to PurchaseOrder Repository (application package) (declares dependency on), PurchaseOrder Repository (application package) to JdbcPurchaseOrder Repository @Repository (infrastructure) (satisfied by), PurchaseOrder Repository (application package) to InMemoryPORepository (test) (satisfied by in tests).
+    svc["IssuePurchaseOrder<br/>Service<br/>(application<br/>package)"]:::orange
+    port["PurchaseOrder<br/>Repository<br/>(application<br/>package)"]:::orange
+    jdbc["JdbcPurchaseOrder<br/>Repository<br/>@Repository<br/>(infrastructure)"]:::teal
+    mem["InMemoryPORepository<br/>(test)"]:::purple
+    svc -->|"declares dependency<br/>on"| port
     port -->|"satisfied by"| jdbc
-    port -->|"satisfied by in tests"| mem
+    port -->|"satisfied by in<br/>tests"| mem
 
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}

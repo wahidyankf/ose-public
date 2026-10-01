@@ -17,16 +17,22 @@ The first Container diagram zooms inside the system boundary and reveals the two
 
 ```mermaid
 graph TD
+    accTitle: Example 31: Minimal Container Diagram — web-ui and purchasing-api
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: [Person] Buyer Employee, [Container: Browser App] web-ui Next.js portal Requisition and PO management, [Container: REST API] purchasing-api Requisition and PO commands Node.js / TypeScript. Connections: [Person] Buyer Employee to [Container: Browser App] web-ui Next.js portal Requisition and PO management (Submits requisitions [HTTPS browser]), [Container: Browser App] web-ui Next.js portal Requisition and PO management to [Container: REST API] purchasing-api Requisition and PO commands Node.js / TypeScript (POST /requisitions [HTTPS/JSON]).
     Buyer["[Person]<br/>Buyer Employee"]
-    WebUI["[Container: Browser App]<br/>web-ui<br/>Next.js portal<br/>Requisition and PO management"]
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>Requisition and PO commands<br/>Node.js / TypeScript"]
+    WebUI["[Container: Browser<br/>App]<br/>web-ui<br/>Next.js portal<br/>Requisition and PO<br/>management"]
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>Requisition and PO<br/>commands<br/>Node.js / TypeScript"]
 
-    Buyer -->|"Submits requisitions [HTTPS browser]"| WebUI
-    WebUI -->|"POST /requisitions [HTTPS/JSON]"| PurchAPI
+    Buyer -->|"Submits<br/>requisitions [HTTPS<br/>browser]"| WebUI
+    WebUI -->|"POST /requisitions<br/>[HTTPS/JSON]"| PurchAPI
 
-    style Buyer fill:#029E73,stroke:#000,color:#fff
-    style WebUI fill:#0173B2,stroke:#000,color:#fff
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Buyer pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class WebUI pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -49,17 +55,23 @@ The primary datastore for all P2P state. Every command that changes PO or requis
 
 ```mermaid
 graph TD
-    WebUI["[Container: Browser App]<br/>web-ui<br/>Next.js portal"]
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>Command handling"]
-    PG["[Container: Database]<br/>postgres<br/>PostgreSQL 16<br/>Primary write store"]
+    accTitle: Example 32: Adding PostgreSQL — the Write Store
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: [Container: Browser App] web-ui Next.js portal, [Container: REST API] purchasing-api Command handling, [Container: Database] postgres PostgreSQL 16 Primary write store. Connections: [Container: Browser App] web-ui Next.js portal to [Container: REST API] purchasing-api Command handling (POST /requisitions [HTTPS/JSON]), [Container: REST API] purchasing-api Command handling to [Container: Database] postgres PostgreSQL 16 Primary write store (Writes PO and requisition state [TCP/5432]), [Container: REST API] purchasing-api Command handling to [Container: Database] postgres PostgreSQL 16 Primary write store (Reads PO details for responses [TCP/5432]).
+    WebUI["[Container: Browser<br/>App]<br/>web-ui<br/>Next.js portal"]
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>Command handling"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>PostgreSQL 16<br/>Primary write store"]
 
-    WebUI -->|"POST /requisitions [HTTPS/JSON]"| PurchAPI
-    PurchAPI -->|"Writes PO and requisition state [TCP/5432]"| PG
-    PurchAPI -->|"Reads PO details for responses [TCP/5432]"| PG
+    WebUI -->|"POST /requisitions<br/>[HTTPS/JSON]"| PurchAPI
+    PurchAPI -->|"Writes PO and<br/>requisition state<br/>[TCP/5432]"| PG
+    PurchAPI -->|"Reads PO details<br/>for responses<br/>[TCP/5432]"| PG
 
-    style WebUI fill:#0173B2,stroke:#000,color:#fff
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class WebUI pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -82,20 +94,26 @@ Domain events flow between containers through Kafka. This decouples purchasing-a
 
 ```mermaid
 graph TD
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>Requisition and PO commands"]
-    EventBus["[Container: Message Broker]<br/>event-bus<br/>Apache Kafka<br/>Domain event streaming"]
-    RecvAPI["[Container: REST API]<br/>receiving-api<br/>Goods receipt recording"]
-    InvAPI["[Container: REST API]<br/>invoicing-api<br/>Invoice registration"]
+    accTitle: Example 33: Adding the Event Bus — Kafka
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: [Container: REST API] purchasing-api Requisition and PO commands, [Container: Message Broker] event-bus Apache Kafka Domain event streaming, [Container: REST API] receiving-api Goods receipt recording, [Container: REST API] invoicing-api Invoice registration. Connections: [Container: REST API] purchasing-api Requisition and PO commands to [Container: Message Broker] event-bus Apache Kafka Domain event streaming (Publishes PurchaseOrderIssued [Kafka topic: po-events]), [Container: REST API] purchasing-api Requisition and PO commands to [Container: Message Broker] event-bus Apache Kafka Domain event streaming (Publishes Purchase OrderAcknowledged [Kafka topic: po-events]), [Container: Message Broker] event-bus Apache Kafka Domain event streaming to [Container: REST API] receiving-api Goods receipt recording (Delivers po-events to receiving subscriber), [Container: Message Broker] event-bus Apache Kafka Domain event streaming to [Container: REST API] invoicing-api Invoice registration (Delivers po-events to invoicing subscriber).
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>Requisition and PO<br/>commands"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus<br/>Apache Kafka<br/>Domain event<br/>streaming"]
+    RecvAPI["[Container: REST<br/>API]<br/>receiving-api<br/>Goods receipt<br/>recording"]
+    InvAPI["[Container: REST<br/>API]<br/>invoicing-api<br/>Invoice registration"]
 
-    PurchAPI -->|"Publishes PurchaseOrderIssued [Kafka topic: po-events]"| EventBus
-    PurchAPI -->|"Publishes PurchaseOrderAcknowledged [Kafka topic: po-events]"| EventBus
-    EventBus -->|"Delivers po-events to receiving subscriber"| RecvAPI
-    EventBus -->|"Delivers po-events to invoicing subscriber"| InvAPI
+    PurchAPI -->|"Publishes<br/>PurchaseOrderIssued<br/>[Kafka topic:<br/>po-events]"| EventBus
+    PurchAPI -->|"Publishes Purchase<br/>OrderAcknowledged<br/>[Kafka topic:<br/>po-events]"| EventBus
+    EventBus -->|"Delivers po-events<br/>to receiving<br/>subscriber"| RecvAPI
+    EventBus -->|"Delivers po-events<br/>to invoicing<br/>subscriber"| InvAPI
 
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style RecvAPI fill:#029E73,stroke:#000,color:#fff
-    style InvAPI fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class EventBus pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RecvAPI pal-029E73
+    class InvAPI pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -118,24 +136,32 @@ The payments-worker is a background process, not a REST API. It polls for paymen
 
 ```mermaid
 graph TD
-    InvAPI["[Container: REST API]<br/>invoicing-api<br/>Invoice registration and matching"]
-    EventBus["[Container: Message Broker]<br/>event-bus<br/>Kafka"]
-    PayWorker["[Container: Background Worker]<br/>payments-worker<br/>Payment run scheduling<br/>and bank disbursement"]
-    Bank["[External System]<br/>Bank<br/>ISO 20022 payment processing"]
-    PG["[Container: Database]<br/>postgres<br/>Primary write store"]
+    accTitle: Example 34: Adding the payments-worker Container
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: [Container: REST API] invoicing-api Invoice registration and matching, [Container: Message Broker] event-bus Kafka, [Container: Background Worker] payments-worker Payment run scheduling and bank disbursement, [External System] Bank ISO 20022 payment processing, [Container: Database] postgres Primary write store. Connections: [Container: REST API] invoicing-api Invoice registration and matching to [Container: Message Broker] event-bus Kafka (Publishes InvoiceMatched [Kafka topic: invoice-events]), [Container: Message Broker] event-bus Kafka to [Container: Background Worker] payments-worker Payment run scheduling and bank disbursement (Delivers invoice-events), [Container: Background Worker] payments-worker Payment run scheduling and bank disbursement to [Container: Database] postgres Primary write store (Reads payment schedule [TCP/5432]), [Container: Background Worker] payments-worker Payment run scheduling and bank disbursement to [Container: Database] postgres Primary write store (Writes payment status [TCP/5432]), [Container: Background Worker] payments-worker Payment run scheduling and bank disbursement to [External System] Bank ISO 20022 payment processing (Sends payment file [ISO 20022 pain.001]), [External System] Bank ISO 20022 payment processing to [Container: Background Worker] payments-worker Payment run scheduling and bank disbursement (Returns status report [ISO 20022 pain.002]).
+    InvAPI["[Container: REST<br/>API]<br/>invoicing-api<br/>Invoice registration<br/>and matching"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus<br/>Kafka"]
+    PayWorker["[Container:<br/>Background Worker]<br/>payments-worker<br/>Payment run<br/>scheduling<br/>and bank<br/>disbursement"]
+    Bank["[External System]<br/>Bank<br/>ISO 20022 payment<br/>processing"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>Primary write store"]
 
-    InvAPI -->|"Publishes InvoiceMatched [Kafka topic: invoice-events]"| EventBus
-    EventBus -->|"Delivers invoice-events"| PayWorker
-    PayWorker -->|"Reads payment schedule [TCP/5432]"| PG
-    PayWorker -->|"Writes payment status [TCP/5432]"| PG
-    PayWorker -->|"Sends payment file [ISO 20022 pain.001]"| Bank
-    Bank -->|"Returns status report [ISO 20022 pain.002]"| PayWorker
+    InvAPI -->|"Publishes<br/>InvoiceMatched<br/>[Kafka topic:<br/>invoice-events]"| EventBus
+    EventBus -->|"Delivers<br/>invoice-events"| PayWorker
+    PayWorker -->|"Reads payment<br/>schedule [TCP/5432]"| PG
+    PayWorker -->|"Writes payment<br/>status [TCP/5432]"| PG
+    PayWorker -->|"Sends payment file<br/>[ISO 20022<br/>pain.001]"| Bank
+    Bank -->|"Returns status<br/>report [ISO 20022<br/>pain.002]"| PayWorker
 
-    style InvAPI fill:#029E73,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style PayWorker fill:#CC78BC,stroke:#000,color:#fff
-    style Bank fill:#808080,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class InvAPI pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class EventBus pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PayWorker pal-CC78BC
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class Bank pal-808080
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -158,22 +184,28 @@ A read-store (materialized views or read-optimized DB) separates query concerns 
 
 ```mermaid
 graph TD
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>Commands — write path"]
-    PG["[Container: Database]<br/>postgres<br/>Primary write store"]
-    EventBus["[Container: Message Broker]<br/>event-bus<br/>Kafka"]
-    ReadStore["[Container: Database]<br/>read-store<br/>Materialized views<br/>PostgreSQL read replica<br/>or ElasticSearch"]
-    WebUI["[Container: Browser App]<br/>web-ui<br/>Next.js portal"]
+    accTitle: Example 35: Adding the read-store Container
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: [Container: REST API] purchasing-api Commands — write path, [Container: Database] postgres Primary write store, [Container: Message Broker] event-bus Kafka, [Container: Database] read-store Materialized views PostgreSQL read replica or ElasticSearch, [Container: Browser App] web-ui Next.js portal. Connections: [Container: REST API] purchasing-api Commands — write path to [Container: Database] postgres Primary write store (Writes state [TCP/5432]), [Container: Database] postgres Primary write store to [Container: Message Broker] event-bus Kafka (Publishes change events [CDC / Debezium]), [Container: Message Broker] event-bus Kafka to [Container: Database] read-store Materialized views PostgreSQL read replica or ElasticSearch (Delivers change events), [Container: Browser App] web-ui Next.js portal to [Container: Database] read-store Materialized views PostgreSQL read replica or ElasticSearch (Queries order list and status [HTTPS/JSON]).
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>Commands — write<br/>path"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>Primary write store"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus<br/>Kafka"]
+    ReadStore["[Container:<br/>Database]<br/>read-store<br/>Materialized views<br/>PostgreSQL read<br/>replica<br/>or ElasticSearch"]
+    WebUI["[Container: Browser<br/>App]<br/>web-ui<br/>Next.js portal"]
 
-    PurchAPI -->|"Writes state [TCP/5432]"| PG
-    PG -->|"Publishes change events [CDC / Debezium]"| EventBus
-    EventBus -->|"Delivers change events"| ReadStore
-    WebUI -->|"Queries order list and status [HTTPS/JSON]"| ReadStore
+    PurchAPI -->|"Writes state<br/>[TCP/5432]"| PG
+    PG -->|"Publishes change<br/>events [CDC /<br/>Debezium]"| EventBus
+    EventBus -->|"Delivers change<br/>events"| ReadStore
+    WebUI -->|"Queries order list<br/>and status<br/>[HTTPS/JSON]"| ReadStore
 
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style ReadStore fill:#CA9161,stroke:#000,color:#fff
-    style WebUI fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class EventBus pal-0173B2
+    class ReadStore pal-CA9161
+    class WebUI pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -196,23 +228,30 @@ The secret-manager container stores and rotates credentials used by all other co
 
 ```mermaid
 graph TD
-    PurchAPI["[Container: REST API]<br/>purchasing-api"]
-    RecvAPI["[Container: REST API]<br/>receiving-api"]
-    InvAPI["[Container: REST API]<br/>invoicing-api"]
-    PayWorker["[Container: Background Worker]<br/>payments-worker"]
-    SecretMgr["[Container: Secret Store]<br/>secret-manager<br/>AWS Secrets Manager<br/>or HashiCorp Vault"]
+    accTitle: Example 36: Adding the secret-manager Container
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: [Container: REST API] purchasing-api, [Container: REST API] receiving-api, [Container: REST API] invoicing-api, [Container: Background Worker] payments-worker, [Container: Secret Store] secret-manager AWS Secrets Manager or HashiCorp Vault. Connections: [Container: REST API] purchasing-api to [Container: Secret Store] secret-manager AWS Secrets Manager or HashiCorp Vault (Retrieves DB credentials on startup [HTTPS]), [Container: REST API] receiving-api to [Container: Secret Store] secret-manager AWS Secrets Manager or HashiCorp Vault (Retrieves DB credentials on startup [HTTPS]), [Container: REST API] invoicing-api to [Container: Secret Store] secret-manager AWS Secrets Manager or HashiCorp Vault (Retrieves DB credentials on startup [HTTPS]), [Container: Background Worker] payments-worker to [Container: Secret Store] secret-manager AWS Secrets Manager or HashiCorp Vault (Retrieves bank API key on startup [HTTPS]), [Container: Secret Store] secret-manager AWS Secrets Manager or HashiCorp Vault to [Container: Secret Store] secret-manager AWS Secrets Manager or HashiCorp Vault (Rotates credentials on schedule [internal]).
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api"]
+    RecvAPI["[Container: REST<br/>API]<br/>receiving-api"]
+    InvAPI["[Container: REST<br/>API]<br/>invoicing-api"]
+    PayWorker["[Container:<br/>Background Worker]<br/>payments-worker"]
+    SecretMgr["[Container: Secret<br/>Store]<br/>secret-manager<br/>AWS Secrets Manager<br/>or HashiCorp Vault"]
 
-    PurchAPI -->|"Retrieves DB credentials on startup [HTTPS]"| SecretMgr
-    RecvAPI -->|"Retrieves DB credentials on startup [HTTPS]"| SecretMgr
-    InvAPI -->|"Retrieves DB credentials on startup [HTTPS]"| SecretMgr
-    PayWorker -->|"Retrieves bank API key on startup [HTTPS]"| SecretMgr
-    SecretMgr -->|"Rotates credentials on schedule [internal]"| SecretMgr
+    PurchAPI -->|"Retrieves DB<br/>credentials on<br/>startup [HTTPS]"| SecretMgr
+    RecvAPI -->|"Retrieves DB<br/>credentials on<br/>startup [HTTPS]"| SecretMgr
+    InvAPI -->|"Retrieves DB<br/>credentials on<br/>startup [HTTPS]"| SecretMgr
+    PayWorker -->|"Retrieves bank API<br/>key on startup<br/>[HTTPS]"| SecretMgr
+    SecretMgr -->|"Rotates credentials<br/>on schedule<br/>[internal]"| SecretMgr
 
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style RecvAPI fill:#029E73,stroke:#000,color:#fff
-    style InvAPI fill:#029E73,stroke:#000,color:#fff
-    style PayWorker fill:#CC78BC,stroke:#000,color:#fff
-    style SecretMgr fill:#808080,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RecvAPI pal-029E73
+    class InvAPI pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PayWorker pal-CC78BC
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class SecretMgr pal-808080
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Elements**:
@@ -235,54 +274,63 @@ The complete Level 2 view of the Procurement Platform with all containers in one
 
 ```mermaid
 graph TD
+    accTitle: Example 37: Full Container Diagram — All Nine Containers
+    accDescr: Graph with 13 nodes and 19 connections. Nodes: [Person] Buyer Employee, [Person /Ext System] Supplier, [External System] Bank, [External System] Internal ERP / GL, [Container: Browser App] web-ui Next.js portal, [Container: REST API] purchasing-api Requisition and PO, [Container: REST API] receiving-api Goods receipt, [Container: REST API] invoicing-api Invoice matching, [Container: Background Worker] payments-worker Payment runs, [Container: Message Broker] event-bus Kafka, [Container: Database] postgres Primary write store, [Container: Database] read-store Query projections, and 1 more. Connections: [Person] Buyer Employee to [Container: Browser App] web-ui Next.js portal (Uses portal [HTTPS]), [Container: Browser App] web-ui Next.js portal to [Container: REST API] purchasing-api Requisition and PO (Commands [REST]), [Container: Browser App] web-ui Next.js portal to [Container: Database] read-store Query projections (Queries [REST]), [Container: REST API] purchasing-api Requisition and PO to [Container: Database] postgres Primary write store (Writes [TCP/5432]), [Container: REST API] purchasing-api Requisition and PO to [Container: Message Broker] event-bus Kafka (Publishes events [Kafka]), [Container: REST API] receiving-api Goods receipt to [Container: Database] postgres Primary write store (Writes GRNs [TCP/5432]), [Container: REST API] receiving-api Goods receipt to [Container: Message Broker] event-bus Kafka (Publishes GoodsReceived [Kafka]), [Container: REST API] invoicing-api Invoice matching to [Container: Database] postgres Primary write store (Writes invoices [TCP/5432]), [Container: REST API] invoicing-api Invoice matching to [Container: Message Broker] event-bus Kafka (Publishes InvoiceMatched [Kafka]), [Container: Message Broker] event-bus Kafka to [Container: REST API] receiving-api Goods receipt (Delivers po-events), [Container: Message Broker] event-bus Kafka to [Container: Background Worker] payments-worker Payment runs (Delivers invoice-events), [Container: Database] postgres Primary write store to [Container: Database] read-store Query projections (CDC to read-store [Debezium]), and 7 more.
     Buyer["[Person]<br/>Buyer Employee"]
-    Supplier["[Person / Ext System]<br/>Supplier"]
+    Supplier["[Person /Ext System]<br/>Supplier"]
     Bank["[External System]<br/>Bank"]
     ERP["[External System]<br/>Internal ERP / GL"]
 
-    WebUI["[Container: Browser App]<br/>web-ui<br/>Next.js portal"]
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>Requisition and PO"]
-    RecvAPI["[Container: REST API]<br/>receiving-api<br/>Goods receipt"]
-    InvAPI["[Container: REST API]<br/>invoicing-api<br/>Invoice matching"]
-    PayWorker["[Container: Background Worker]<br/>payments-worker<br/>Payment runs"]
-    EventBus["[Container: Message Broker]<br/>event-bus<br/>Kafka"]
-    PG["[Container: Database]<br/>postgres<br/>Primary write store"]
-    ReadStore["[Container: Database]<br/>read-store<br/>Query projections"]
-    SecretMgr["[Container: Secret Store]<br/>secret-manager"]
+    WebUI["[Container: Browser<br/>App]<br/>web-ui<br/>Next.js portal"]
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>Requisition and PO"]
+    RecvAPI["[Container: REST<br/>API]<br/>receiving-api<br/>Goods receipt"]
+    InvAPI["[Container: REST<br/>API]<br/>invoicing-api<br/>Invoice matching"]
+    PayWorker["[Container:<br/>Background Worker]<br/>payments-worker<br/>Payment runs"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus<br/>Kafka"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>Primary write store"]
+    ReadStore["[Container:<br/>Database]<br/>read-store<br/>Query projections"]
+    SecretMgr["[Container: Secret<br/>Store]<br/>secret-manager"]
 
-    Buyer -->|"Uses portal [HTTPS]"| WebUI
+    Buyer -->|"Uses portal<br/>[HTTPS]"| WebUI
     WebUI -->|"Commands [REST]"| PurchAPI
     WebUI -->|"Queries [REST]"| ReadStore
     PurchAPI -->|"Writes [TCP/5432]"| PG
-    PurchAPI -->|"Publishes events [Kafka]"| EventBus
-    RecvAPI -->|"Writes GRNs [TCP/5432]"| PG
-    RecvAPI -->|"Publishes GoodsReceived [Kafka]"| EventBus
-    InvAPI -->|"Writes invoices [TCP/5432]"| PG
-    InvAPI -->|"Publishes InvoiceMatched [Kafka]"| EventBus
+    PurchAPI -->|"Publishes events<br/>[Kafka]"| EventBus
+    RecvAPI -->|"Writes GRNs<br/>[TCP/5432]"| PG
+    RecvAPI -->|"Publishes<br/>GoodsReceived<br/>[Kafka]"| EventBus
+    InvAPI -->|"Writes invoices<br/>[TCP/5432]"| PG
+    InvAPI -->|"Publishes<br/>InvoiceMatched<br/>[Kafka]"| EventBus
     EventBus -->|"Delivers po-events"| RecvAPI
-    EventBus -->|"Delivers invoice-events"| PayWorker
-    PG -->|"CDC to read-store [Debezium]"| ReadStore
-    PayWorker -->|"Writes payment status [TCP/5432]"| PG
-    PayWorker -->|"Sends payment file [ISO 20022]"| Bank
-    Bank -->|"Returns status [ISO 20022]"| PayWorker
-    PurchAPI -->|"Posts accounting [REST]"| ERP
-    Supplier -->|"Sends invoice [portal]"| InvAPI
-    PurchAPI -->|"Fetches credentials [HTTPS]"| SecretMgr
-    PayWorker -->|"Fetches bank key [HTTPS]"| SecretMgr
+    EventBus -->|"Delivers<br/>invoice-events"| PayWorker
+    PG -->|"CDC to read-store<br/>[Debezium]"| ReadStore
+    PayWorker -->|"Writes payment<br/>status [TCP/5432]"| PG
+    PayWorker -->|"Sends payment file<br/>[ISO 20022]"| Bank
+    Bank -->|"Returns status [ISO<br/>20022]"| PayWorker
+    PurchAPI -->|"Posts accounting<br/>[REST]"| ERP
+    Supplier -->|"Sends invoice<br/>[portal]"| InvAPI
+    PurchAPI -->|"Fetches credentials<br/>[HTTPS]"| SecretMgr
+    PayWorker -->|"Fetches bank key<br/>[HTTPS]"| SecretMgr
 
-    style Buyer fill:#029E73,stroke:#000,color:#fff
-    style Supplier fill:#CA9161,stroke:#000,color:#fff
-    style Bank fill:#808080,stroke:#000,color:#fff
-    style ERP fill:#CC78BC,stroke:#000,color:#fff
-    style WebUI fill:#0173B2,stroke:#000,color:#fff
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style RecvAPI fill:#029E73,stroke:#000,color:#fff
-    style InvAPI fill:#029E73,stroke:#000,color:#fff
-    style PayWorker fill:#CC78BC,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
-    style ReadStore fill:#CA9161,stroke:#000,color:#fff
-    style SecretMgr fill:#808080,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Buyer pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Supplier pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class Bank pal-808080
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ERP pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class WebUI pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    class RecvAPI pal-029E73
+    class InvAPI pal-029E73
+    class PayWorker pal-CC78BC
+    class EventBus pal-0173B2
+    class PG pal-CA9161
+    class ReadStore pal-CA9161
+    class SecretMgr pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -305,22 +353,29 @@ Annotating technology choices at Container level makes the architecture decision
 
 ```mermaid
 graph TD
-    WebUI["[Container: Browser App]<br/>web-ui<br/>Next.js 16 (App Router)<br/>TypeScript — deployed to Vercel"]
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>Node.js 22 + Express<br/>TypeScript — Docker on ECS"]
-    EventBus["[Container: Message Broker]<br/>event-bus<br/>Apache Kafka 3.7<br/>MSK managed — 3 brokers"]
-    PG["[Container: Database]<br/>postgres<br/>PostgreSQL 16<br/>AWS RDS Multi-AZ"]
-    SecretMgr["[Container: Secret Store]<br/>secret-manager<br/>AWS Secrets Manager<br/>KMS encrypted"]
+    accTitle: Example 38: Container Diagram — Technology Choices
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: [Container: Browser App] web-ui Next.js 16 (App Router) TypeScript — deployed to Vercel, [Container: REST API] purchasing-api Node.js 22 + Express TypeScript — Docker on ECS, [Container: Message Broker] event-bus Apache Kafka 3.7 MSK managed — 3 brokers, [Container: Database] postgres PostgreSQL 16 AWS RDS Multi-AZ, [Container: Secret Store] secret-manager AWS Secrets Manager KMS encrypted. Connections: [Container: Browser App] web-ui Next.js 16 (App Router) TypeScript — deployed to Vercel to [Container: REST API] purchasing-api Node.js 22 + Express TypeScript — Docker on ECS (REST commands [HTTPS/JSON]), [Container: REST API] purchasing-api Node.js 22 + Express TypeScript — Docker on ECS to [Container: Message Broker] event-bus Apache Kafka 3.7 MSK managed — 3 brokers (Publishes events [Kafka]), [Container: REST API] purchasing-api Node.js 22 + Express TypeScript — Docker on ECS to [Container: Database] postgres PostgreSQL 16 AWS RDS Multi-AZ (Reads/writes state [TCP/5432]), [Container: REST API] purchasing-api Node.js 22 + Express TypeScript — Docker on ECS to [Container: Secret Store] secret-manager AWS Secrets Manager KMS encrypted (Retrieves credentials [HTTPS]).
+    WebUI["[Container: Browser<br/>App]<br/>web-ui<br/>Next.js 16 (App<br/>Router)<br/>TypeScript —<br/>deployed to Vercel"]
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>Node.js 22 + Express<br/>TypeScript — Docker<br/>on ECS"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus<br/>Apache Kafka 3.7<br/>MSK managed — 3<br/>brokers"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>PostgreSQL 16<br/>AWS RDS Multi-AZ"]
+    SecretMgr["[Container: Secret<br/>Store]<br/>secret-manager<br/>AWS Secrets Manager<br/>KMS encrypted"]
 
-    WebUI -->|"REST commands [HTTPS/JSON]"| PurchAPI
-    PurchAPI -->|"Publishes events [Kafka]"| EventBus
-    PurchAPI -->|"Reads/writes state [TCP/5432]"| PG
-    PurchAPI -->|"Retrieves credentials [HTTPS]"| SecretMgr
+    WebUI -->|"REST commands<br/>[HTTPS/JSON]"| PurchAPI
+    PurchAPI -->|"Publishes events<br/>[Kafka]"| EventBus
+    PurchAPI -->|"Reads/writes state<br/>[TCP/5432]"| PG
+    PurchAPI -->|"Retrieves<br/>credentials [HTTPS]"| SecretMgr
 
-    style WebUI fill:#0173B2,stroke:#000,color:#fff
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
-    style SecretMgr fill:#808080,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class WebUI pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    class EventBus pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class SecretMgr pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -345,23 +400,30 @@ The Container diagram can explicitly show which relationships are synchronous re
 
 ```mermaid
 graph TD
-    WebUI["[Container: Browser App]<br/>web-ui"]
-    PurchAPI["[Container: REST API]<br/>purchasing-api"]
-    EventBus["[Container: Message Broker]<br/>event-bus / Kafka"]
-    RecvAPI["[Container: REST API]<br/>receiving-api"]
-    PG["[Container: Database]<br/>postgres"]
+    accTitle: Example 39: Request-Response vs. Event-Driven Containers
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: [Container: Browser App] web-ui, [Container: REST API] purchasing-api, [Container: Message Broker] event-bus / Kafka, [Container: REST API] receiving-api, [Container: Database] postgres. Connections: [Container: Browser App] web-ui to [Container: REST API] purchasing-api (SYNC: POST /requisitions [blocking HTTP]), [Container: REST API] purchasing-api to [Container: Database] postgres (SYNC: INSERT into po table [TCP]), [Container: REST API] purchasing-api to [Container: Message Broker] event-bus / Kafka (ASYNC: Publish PurchaseOrderIssued [fire-and-forget]), [Container: Message Broker] event-bus / Kafka to [Container: REST API] receiving-api (ASYNC: Deliver to receiving subscriber), [Container: REST API] receiving-api to [Container: Database] postgres (SYNC: INSERT into grn table [TCP]).
+    WebUI["[Container: Browser<br/>App]<br/>web-ui"]
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka"]
+    RecvAPI["[Container: REST<br/>API]<br/>receiving-api"]
+    PG["[Container:<br/>Database]<br/>postgres"]
 
-    WebUI -->|"SYNC: POST /requisitions [blocking HTTP]"| PurchAPI
-    PurchAPI -->|"SYNC: INSERT into po table [TCP]"| PG
-    PurchAPI -->|"ASYNC: Publish PurchaseOrderIssued [fire-and-forget]"| EventBus
-    EventBus -->|"ASYNC: Deliver to receiving subscriber"| RecvAPI
-    RecvAPI -->|"SYNC: INSERT into grn table [TCP]"| PG
+    WebUI -->|"SYNC: POST<br/>/requisitions<br/>[blocking HTTP]"| PurchAPI
+    PurchAPI -->|"SYNC: INSERT into<br/>po table [TCP]"| PG
+    PurchAPI -->|"ASYNC: Publish<br/>PurchaseOrderIssued<br/>[fire-and-forget]"| EventBus
+    EventBus -->|"ASYNC: Deliver to<br/>receiving<br/>subscriber"| RecvAPI
+    RecvAPI -->|"SYNC: INSERT into<br/>grn table [TCP]"| PG
 
-    style WebUI fill:#0173B2,stroke:#000,color:#fff
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style RecvAPI fill:#029E73,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class WebUI pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    class EventBus pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RecvAPI pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -384,22 +446,29 @@ Adding scaling strategy to container labels makes horizontal scaling decisions e
 
 ```mermaid
 graph TD
-    WebUI["[Container: Browser App]<br/>web-ui<br/>CDN-distributed<br/>Stateless, scales to edge"]
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>Horizontally scalable<br/>3–10 instances behind ALB"]
-    EventBus["[Container: Message Broker]<br/>event-bus / Kafka<br/>3-broker cluster<br/>6 partitions per topic"]
-    PayWorker["[Container: Background Worker]<br/>payments-worker<br/>Single-instance preferred<br/>during payment runs"]
-    PG["[Container: Database]<br/>postgres<br/>Primary + 2 read replicas<br/>Multi-AZ failover"]
+    accTitle: Example 40: Container Diagram — Scaling Annotations
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: [Container: Browser App] web-ui CDN-distributed Stateless, scales to edge, [Container: REST API] purchasing-api Horizontally scalable 3–10 instances behind ALB, [Container: Message Broker] event-bus / Kafka 3-broker cluster 6 partitions per topic, [Container: Background Worker] payments-worker Single-instance preferred during payment runs, [Container: Database] postgres Primary + 2 read replicas Multi-AZ failover. Connections: [Container: Browser App] web-ui CDN-distributed Stateless, scales to edge to [Container: REST API] purchasing-api Horizontally scalable 3–10 instances behind ALB (REST [HTTPS]), [Container: REST API] purchasing-api Horizontally scalable 3–10 instances behind ALB to [Container: Message Broker] event-bus / Kafka 3-broker cluster 6 partitions per topic (Publishes events), [Container: Message Broker] event-bus / Kafka 3-broker cluster 6 partitions per topic to [Container: Background Worker] payments-worker Single-instance preferred during payment runs (Delivers payment events), [Container: REST API] purchasing-api Horizontally scalable 3–10 instances behind ALB to [Container: Database] postgres Primary + 2 read replicas Multi-AZ failover (Writes [TCP/5432 primary]).
+    WebUI["[Container: Browser<br/>App]<br/>web-ui<br/>CDN-distributed<br/>Stateless, scales to<br/>edge"]
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>Horizontally<br/>scalable<br/>3–10 instances<br/>behind ALB"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka<br/>3-broker cluster<br/>6 partitions per<br/>topic"]
+    PayWorker["[Container:<br/>Background Worker]<br/>payments-worker<br/>Single-instance<br/>preferred<br/>during payment runs"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>Primary + 2 read<br/>replicas<br/>Multi-AZ failover"]
 
     WebUI -->|"REST [HTTPS]"| PurchAPI
     PurchAPI -->|"Publishes events"| EventBus
-    EventBus -->|"Delivers payment events"| PayWorker
-    PurchAPI -->|"Writes [TCP/5432 primary]"| PG
+    EventBus -->|"Delivers payment<br/>events"| PayWorker
+    PurchAPI -->|"Writes [TCP/5432<br/>primary]"| PG
 
-    style WebUI fill:#0173B2,stroke:#000,color:#fff
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style PayWorker fill:#CC78BC,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class WebUI pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    class EventBus pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PayWorker pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -423,22 +492,30 @@ Annotating what happens when each container fails makes resilience design explic
 
 ```mermaid
 graph TD
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>FAIL: Returns 503<br/>Retry with exponential backoff"]
-    EventBus["[Container: Message Broker]<br/>event-bus / Kafka<br/>FAIL: Events queued in outbox<br/>Delivered on recovery"]
-    RecvAPI["[Container: REST API]<br/>receiving-api<br/>FAIL: GRN entry blocked<br/>Alert warehouse team"]
-    PG["[Container: Database]<br/>postgres<br/>FAIL: Failover to standby<br/>~30s RTO via Multi-AZ"]
-    PayWorker["[Container: Background Worker]<br/>payments-worker<br/>FAIL: Payment run delayed<br/>Resume from last checkpoint"]
+    accTitle: Example 41: Container Diagram — Failure Modes
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: [Container: REST API] purchasing-api FAIL: Returns 503 Retry with exponential backoff, [Container: Message Broker] event-bus / Kafka FAIL: Events queued in outbox Delivered on recovery, [Container: REST API] receiving-api FAIL: GRN entry blocked Alert warehouse team, [Container: Database] postgres FAIL: Failover to standby ~30s RTO via Multi-AZ, [Container: Background Worker] payments-worker FAIL: Payment run delayed Resume from last checkpoint. Connections: [Container: REST API] purchasing-api FAIL: Returns 503 Retry with exponential backoff to [Container: Message Broker] event-bus / Kafka FAIL: Events queued in outbox Delivered on recovery (Publishes to outbox if Kafka unavailable), [Container: Message Broker] event-bus / Kafka FAIL: Events queued in outbox Delivered on recovery to [Container: REST API] receiving-api FAIL: GRN entry blocked Alert warehouse team (Delivers GoodsReceived to receiving), [Container: REST API] purchasing-api FAIL: Returns 503 Retry with exponential backoff to [Container: Database] postgres FAIL: Failover to standby ~30s RTO via Multi-AZ (Writes [with circuit breaker]), [Container: Message Broker] event-bus / Kafka FAIL: Events queued in outbox Delivered on recovery to [Container: Background Worker] payments-worker FAIL: Payment run delayed Resume from last checkpoint (Delivers InvoiceMatched to worker).
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>FAIL: Returns 503<br/>Retry with<br/>exponential backoff"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka<br/>FAIL: Events queued<br/>in outbox<br/>Delivered on<br/>recovery"]
+    RecvAPI["[Container: REST<br/>API]<br/>receiving-api<br/>FAIL: GRN entry<br/>blocked<br/>Alert warehouse team"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>FAIL: Failover to<br/>standby<br/>~30s RTO via<br/>Multi-AZ"]
+    PayWorker["[Container:<br/>Background Worker]<br/>payments-worker<br/>FAIL: Payment run<br/>delayed<br/>Resume from last<br/>checkpoint"]
 
-    PurchAPI -->|"Publishes to outbox if Kafka unavailable"| EventBus
-    EventBus -->|"Delivers GoodsReceived to receiving"| RecvAPI
-    PurchAPI -->|"Writes [with circuit breaker]"| PG
-    EventBus -->|"Delivers InvoiceMatched to worker"| PayWorker
+    PurchAPI -->|"Publishes to outbox<br/>if Kafka<br/>unavailable"| EventBus
+    EventBus -->|"Delivers<br/>GoodsReceived to<br/>receiving"| RecvAPI
+    PurchAPI -->|"Writes [with<br/>circuit breaker]"| PG
+    EventBus -->|"Delivers<br/>InvoiceMatched to<br/>worker"| PayWorker
 
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style RecvAPI fill:#029E73,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
-    style PayWorker fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class EventBus pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RecvAPI pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PayWorker pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -461,28 +538,30 @@ Showing which containers are in which network zones reveals security and latency
 
 ```mermaid
 graph TD
+    accTitle: Example 42: Container Diagram — Network Topology
+    accDescr: Graph with 12 nodes and 10 connections. Nodes: [Person] Buyer Employee, [Person /Ext System] Supplier, [Container: Browser App] web-ui Next.js — Vercel Edge, [Container: API Gateway] API Gateway WAF + rate limiting, [Container: REST API] purchasing-api, [Container: REST API] receiving-api, [Container: REST API] invoicing-api, [Container: Background Worker] payments-worker, [Container: Message Broker] event-bus / Kafka, [Container: Database] postgres, [Container: Database] read-store, [Container: Secret Store] secret-manager. Connections: [Person] Buyer Employee to [Container: Browser App] web-ui Next.js — Vercel Edge (HTTPS), [Person /Ext System] Supplier to [Container: API Gateway] API Gateway WAF + rate limiting (HTTPS), [Container: Browser App] web-ui Next.js — Vercel Edge to [Container: API Gateway] API Gateway WAF + rate limiting (REST [HTTPS]), [Container: API Gateway] API Gateway WAF + rate limiting to [Container: REST API] purchasing-api (mTLS), [Container: API Gateway] API Gateway WAF + rate limiting to [Container: REST API] receiving-api (mTLS), [Container: API Gateway] API Gateway WAF + rate limiting to [Container: REST API] invoicing-api (mTLS), [Container: REST API] purchasing-api to [Container: Database] postgres (TCP/5432), [Container: REST API] purchasing-api to [Container: Message Broker] event-bus / Kafka (Kafka), [Container: Message Broker] event-bus / Kafka to [Container: Background Worker] payments-worker (Kafka), [Container: Background Worker] payments-worker to [Container: Database] postgres (TCP/5432).
     subgraph PublicInternet["Public Internet"]
         Buyer["[Person]<br/>Buyer Employee"]
-        Supplier["[Person / Ext System]<br/>Supplier"]
+        Supplier["[Person /Ext System]<br/>Supplier"]
     end
 
     subgraph PublicSubnet["Public Subnet — DMZ"]
-        WebUI["[Container: Browser App]<br/>web-ui<br/>Next.js — Vercel Edge"]
-        APIGW["[Container: API Gateway]<br/>API Gateway<br/>WAF + rate limiting"]
+        WebUI["[Container: Browser<br/>App]<br/>web-ui<br/>Next.js — Vercel<br/>Edge"]
+        APIGW["[Container: API<br/>Gateway]<br/>API Gateway<br/>WAF + rate limiting"]
     end
 
-    subgraph PrivateSubnet["Private Subnet — Application Tier"]
-        PurchAPI["[Container: REST API]<br/>purchasing-api"]
-        RecvAPI["[Container: REST API]<br/>receiving-api"]
-        InvAPI["[Container: REST API]<br/>invoicing-api"]
-        PayWorker["[Container: Background Worker]<br/>payments-worker"]
-        EventBus["[Container: Message Broker]<br/>event-bus / Kafka"]
+    subgraph PrivateSubnet["Private Subnet —<br/>Application Tier"]
+        PurchAPI["[Container: REST<br/>API]<br/>purchasing-api"]
+        RecvAPI["[Container: REST<br/>API]<br/>receiving-api"]
+        InvAPI["[Container: REST<br/>API]<br/>invoicing-api"]
+        PayWorker["[Container:<br/>Background Worker]<br/>payments-worker"]
+        EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka"]
     end
 
-    subgraph DataSubnet["Data Subnet — Storage Tier"]
-        PG["[Container: Database]<br/>postgres"]
-        ReadStore["[Container: Database]<br/>read-store"]
-        SecretMgr["[Container: Secret Store]<br/>secret-manager"]
+    subgraph DataSubnet["Data Subnet —<br/>Storage Tier"]
+        PG["[Container:<br/>Database]<br/>postgres"]
+        ReadStore["[Container:<br/>Database]<br/>read-store"]
+        SecretMgr["[Container: Secret<br/>Store]<br/>secret-manager"]
     end
 
     Buyer -->|"HTTPS"| WebUI
@@ -496,18 +575,25 @@ graph TD
     EventBus -->|"Kafka"| PayWorker
     PayWorker -->|"TCP/5432"| PG
 
-    style Buyer fill:#029E73,stroke:#000,color:#fff
-    style Supplier fill:#CA9161,stroke:#000,color:#fff
-    style WebUI fill:#0173B2,stroke:#000,color:#fff
-    style APIGW fill:#DE8F05,stroke:#000,color:#fff
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style RecvAPI fill:#029E73,stroke:#000,color:#fff
-    style InvAPI fill:#029E73,stroke:#000,color:#fff
-    style PayWorker fill:#CC78BC,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
-    style ReadStore fill:#CA9161,stroke:#000,color:#fff
-    style SecretMgr fill:#808080,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Buyer pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Supplier pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class WebUI pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class APIGW pal-DE8F05
+    class PurchAPI pal-DE8F05
+    class RecvAPI pal-029E73
+    class InvAPI pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PayWorker pal-CC78BC
+    class EventBus pal-0173B2
+    class PG pal-CA9161
+    class ReadStore pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class SecretMgr pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -530,22 +616,29 @@ Each container owns specific data. Making data ownership explicit prevents accid
 
 ```mermaid
 graph TD
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>OWNS: purchase_requisitions<br/>purchase_orders tables"]
-    RecvAPI["[Container: REST API]<br/>receiving-api<br/>OWNS: goods_receipt_notes table"]
-    InvAPI["[Container: REST API]<br/>invoicing-api<br/>OWNS: invoices table"]
-    PayWorker["[Container: Background Worker]<br/>payments-worker<br/>OWNS: payments table"]
-    PG["[Container: Database]<br/>postgres<br/>Shared infrastructure<br/>Separate schemas per service"]
+    accTitle: Example 43: Container Diagram — Data Ownership
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: [Container: REST API] purchasing-api OWNS: purchase_ requisitions purchase_orders tables, [Container: REST API] receiving-api OWNS: goods_receipt_notes table, [Container: REST API] invoicing-api OWNS: invoices table, [Container: Background Worker] payments-worker OWNS: payments table, [Container: Database] postgres Shared infrastructure Separate schemas per service. Connections: [Container: REST API] purchasing-api OWNS: purchase_ requisitions purchase_orders tables to [Container: Database] postgres Shared infrastructure Separate schemas per service (Reads/writes schema: purchasing), [Container: REST API] receiving-api OWNS: goods_receipt_notes table to [Container: Database] postgres Shared infrastructure Separate schemas per service (Reads/writes schema: receiving), [Container: REST API] invoicing-api OWNS: invoices table to [Container: Database] postgres Shared infrastructure Separate schemas per service (Reads/writes schema: invoicing), [Container: Background Worker] payments-worker OWNS: payments table to [Container: Database] postgres Shared infrastructure Separate schemas per service (Reads/writes schema: payments).
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>OWNS: purchase_<br/>requisitions<br/>purchase_orders<br/>tables"]
+    RecvAPI["[Container: REST<br/>API]<br/>receiving-api<br/>OWNS:<br/>goods_receipt_notes<br/>table"]
+    InvAPI["[Container: REST<br/>API]<br/>invoicing-api<br/>OWNS: invoices table"]
+    PayWorker["[Container:<br/>Background Worker]<br/>payments-worker<br/>OWNS: payments table"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>Shared<br/>infrastructure<br/>Separate schemas per<br/>service"]
 
-    PurchAPI -->|"Reads/writes schema: purchasing"| PG
-    RecvAPI -->|"Reads/writes schema: receiving"| PG
-    InvAPI -->|"Reads/writes schema: invoicing"| PG
-    PayWorker -->|"Reads/writes schema: payments"| PG
+    PurchAPI -->|"Reads/writes<br/>schema: purchasing"| PG
+    RecvAPI -->|"Reads/writes<br/>schema: receiving"| PG
+    InvAPI -->|"Reads/writes<br/>schema: invoicing"| PG
+    PayWorker -->|"Reads/writes<br/>schema: payments"| PG
 
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style RecvAPI fill:#029E73,stroke:#000,color:#fff
-    style InvAPI fill:#029E73,stroke:#000,color:#fff
-    style PayWorker fill:#CC78BC,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RecvAPI pal-029E73
+    class InvAPI pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PayWorker pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Elements**:
@@ -568,23 +661,30 @@ The invoice three-way matching process spans three containers. A container-level
 
 ```mermaid
 graph LR
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>Source: PO data"]
-    EventBus["[Container: Message Broker]<br/>event-bus / Kafka"]
-    RecvAPI["[Container: REST API]<br/>receiving-api<br/>Source: GRN data"]
-    InvAPI["[Container: REST API]<br/>invoicing-api<br/>Matcher: PO vs GRN vs Invoice"]
-    PayWorker["[Container: Background Worker]<br/>payments-worker<br/>Disburser on match"]
+    accTitle: Example 44: Three-Way Match Flow — Container Interaction
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: [Container: REST API] purchasing-api Source: PO data, [Container: Message Broker] event-bus / Kafka, [Container: REST API] receiving-api Source: GRN data, [Container: REST API] invoicing-api Matcher: PO vs GRN vs Invoice, [Container: Background Worker] payments-worker Disburser on match. Connections: [Container: REST API] purchasing-api Source: PO data to [Container: Message Broker] event-bus / Kafka (1. PurchaseOrderIssued), [Container: REST API] receiving-api Source: GRN data to [Container: Message Broker] event-bus / Kafka (2. GoodsReceived), [Container: Message Broker] event-bus / Kafka to [Container: REST API] invoicing-api Matcher: PO vs GRN vs Invoice (3. Delivers both events), [Container: REST API] invoicing-api Matcher: PO vs GRN vs Invoice to [Container: Message Broker] event-bus / Kafka (4. InvoiceMatched (if all three match)), [Container: Message Broker] event-bus / Kafka to [Container: Background Worker] payments-worker Disburser on match (5. Triggers payment run).
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>Source: PO data"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka"]
+    RecvAPI["[Container: REST<br/>API]<br/>receiving-api<br/>Source: GRN data"]
+    InvAPI["[Container: REST<br/>API]<br/>invoicing-api<br/>Matcher: PO vs GRN<br/>vs Invoice"]
+    PayWorker["[Container:<br/>Background Worker]<br/>payments-worker<br/>Disburser on match"]
 
-    PurchAPI -->|"1. PurchaseOrderIssued"| EventBus
+    PurchAPI -->|"1.<br/>PurchaseOrderIssued"| EventBus
     RecvAPI -->|"2. GoodsReceived"| EventBus
-    EventBus -->|"3. Delivers both events"| InvAPI
-    InvAPI -->|"4. InvoiceMatched (if all three match)"| EventBus
-    EventBus -->|"5. Triggers payment run"| PayWorker
+    EventBus -->|"3. Delivers both<br/>events"| InvAPI
+    InvAPI -->|"4. InvoiceMatched<br/>(if all three<br/>match)"| EventBus
+    EventBus -->|"5. Triggers payment<br/>run"| PayWorker
 
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style RecvAPI fill:#029E73,stroke:#000,color:#fff
-    style InvAPI fill:#029E73,stroke:#000,color:#fff
-    style PayWorker fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class EventBus pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RecvAPI pal-029E73
+    class InvAPI pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PayWorker pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -607,25 +707,27 @@ Aligning containers to teams makes Conway's Law visible and enables autonomous t
 
 ```mermaid
 graph TD
-    subgraph BuyerTeam["Buyer Experience Team"]
-        WebUI["[Container: Browser App]<br/>web-ui<br/>Next.js portal"]
-        PurchAPI["[Container: REST API]<br/>purchasing-api"]
+    accTitle: Example 45: Container Diagram — Deployment Units and Teams
+    accDescr: Graph with 9 nodes and 5 connections. Nodes: [Container: Browser App] web-ui Next.js portal, [Container: REST API] purchasing-api, [Container: REST API] receiving-api, [Container: REST API] invoicing-api, [Container: Background Worker] payments-worker, [Container: Message Broker] event-bus / Kafka, [Container: Database] postgres, [Container: Database] read-store, [Container: Secret Store] secret-manager. Connections: [Container: Browser App] web-ui Next.js portal to [Container: REST API] purchasing-api (REST), [Container: REST API] purchasing-api to [Container: Message Broker] event-bus / Kafka (Events), [Container: Message Broker] event-bus / Kafka to [Container: REST API] receiving-api (Events), [Container: Message Broker] event-bus / Kafka to [Container: REST API] invoicing-api (Events), [Container: Message Broker] event-bus / Kafka to [Container: Background Worker] payments-worker (Events).
+    subgraph BuyerTeam["Buyer Experience<br/>Team"]
+        WebUI["[Container: Browser<br/>App]<br/>web-ui<br/>Next.js portal"]
+        PurchAPI["[Container: REST<br/>API]<br/>purchasing-api"]
     end
 
     subgraph OperationsTeam["Operations Team"]
-        RecvAPI["[Container: REST API]<br/>receiving-api"]
+        RecvAPI["[Container: REST<br/>API]<br/>receiving-api"]
     end
 
     subgraph FinanceTeam["Finance Team"]
-        InvAPI["[Container: REST API]<br/>invoicing-api"]
-        PayWorker["[Container: Background Worker]<br/>payments-worker"]
+        InvAPI["[Container: REST<br/>API]<br/>invoicing-api"]
+        PayWorker["[Container:<br/>Background Worker]<br/>payments-worker"]
     end
 
     subgraph PlatformTeam["Platform Team"]
-        EventBus["[Container: Message Broker]<br/>event-bus / Kafka"]
-        PG["[Container: Database]<br/>postgres"]
-        ReadStore["[Container: Database]<br/>read-store"]
-        SecretMgr["[Container: Secret Store]<br/>secret-manager"]
+        EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka"]
+        PG["[Container:<br/>Database]<br/>postgres"]
+        ReadStore["[Container:<br/>Database]<br/>read-store"]
+        SecretMgr["[Container: Secret<br/>Store]<br/>secret-manager"]
     end
 
     WebUI -->|"REST"| PurchAPI
@@ -634,15 +736,22 @@ graph TD
     EventBus -->|"Events"| InvAPI
     EventBus -->|"Events"| PayWorker
 
-    style WebUI fill:#0173B2,stroke:#000,color:#fff
-    style PurchAPI fill:#DE8F05,stroke:#000,color:#fff
-    style RecvAPI fill:#029E73,stroke:#000,color:#fff
-    style InvAPI fill:#029E73,stroke:#000,color:#fff
-    style PayWorker fill:#CC78BC,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
-    style ReadStore fill:#CA9161,stroke:#000,color:#fff
-    style SecretMgr fill:#808080,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class WebUI pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchAPI pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RecvAPI pal-029E73
+    class InvAPI pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PayWorker pal-CC78BC
+    class EventBus pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    class ReadStore pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class SecretMgr pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -665,19 +774,25 @@ Annotating health check behavior on containers makes the deployment contract exp
 
 ```mermaid
 graph TD
-    LB["[Container: Load Balancer]<br/>ALB<br/>Routes traffic to healthy instances"]
-    PurchAPI["[Container: REST API]<br/>purchasing-api<br/>GET /health → 200 OK (liveness)<br/>GET /ready → 200 if DB connected (readiness)"]
-    PG["[Container: Database]<br/>postgres<br/>Monitored by RDS health checks<br/>Failover triggered at 30s timeout"]
-    EventBus["[Container: Message Broker]<br/>event-bus / Kafka<br/>Lag monitored per consumer group<br/>Alert if lag > 10k messages"]
+    accTitle: Example 46: Container Diagram — Health and Readiness Boundaries
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: [Container: Load Balancer] ALB Routes traffic to healthy instances, [Container: REST API] purchasing-api GET /health → 200 OK (liveness) GET /ready → 200 if DB connected (readiness), [Container: Database] postgres Monitored by RDS health checks Failover triggered at 30s timeout, [Container: Message Broker] event-bus / Kafka Lag monitored per consumer group Alert if lag > 10k messages. Connections: [Container: Load Balancer] ALB Routes traffic to healthy instances to [Container: REST API] purchasing-api GET /health → 200 OK (liveness) GET /ready → 200 if DB connected (readiness) (Routes only to ready instances), [Container: REST API] purchasing-api GET /health → 200 OK (liveness) GET /ready → 200 if DB connected (readiness) to [Container: Database] postgres Monitored by RDS health checks Failover triggered at 30s timeout (Checks connectivity [TCP/5432]), [Container: REST API] purchasing-api GET /health → 200 OK (liveness) GET /ready → 200 if DB connected (readiness) to [Container: Message Broker] event-bus / Kafka Lag monitored per consumer group Alert if lag > 10k messages (Consumes and publishes events).
+    LB["[Container: Load<br/>Balancer]<br/>ALB<br/>Routes traffic to<br/>healthy instances"]
+    PurchAPI["[Container: REST<br/>API]<br/>purchasing-api<br/>GET /health → 200 OK<br/>(liveness)<br/>GET /ready → 200 if<br/>DB connected<br/>(readiness)"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>Monitored by RDS<br/>health checks<br/>Failover triggered<br/>at 30s timeout"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka<br/>Lag monitored per<br/>consumer group<br/>Alert if lag > 10k<br/>messages"]
 
-    LB -->|"Routes only to ready instances"| PurchAPI
-    PurchAPI -->|"Checks connectivity [TCP/5432]"| PG
-    PurchAPI -->|"Consumes and publishes events"| EventBus
+    LB -->|"Routes only to<br/>ready instances"| PurchAPI
+    PurchAPI -->|"Checks connectivity<br/>[TCP/5432]"| PG
+    PurchAPI -->|"Consumes and<br/>publishes events"| EventBus
 
-    style LB fill:#DE8F05,stroke:#000,color:#fff
-    style PurchAPI fill:#0173B2,stroke:#000,color:#fff
-    style PG fill:#CA9161,stroke:#000,color:#fff
-    style EventBus fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class LB pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PurchAPI pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PG pal-CA9161
+    class EventBus pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -702,22 +817,29 @@ purchasing-api is organized in four horizontal layers. The Component diagram zoo
 
 ```mermaid
 graph TD
-    subgraph PurchAPI["purchasing-api Container"]
-        HTTP["[Component]<br/>HTTP Layer<br/>HttpController + request DTOs<br/>Express routers"]
-        AppSvc["[Component]<br/>Application Services<br/>SubmitRequisitionHandler<br/>ApprovePOHandler"]
-        Domain["[Component]<br/>Domain Layer<br/>PurchaseRequisition aggregate<br/>PurchaseOrder aggregate"]
-        Infra["[Component]<br/>Infrastructure Adapters<br/>PgPurchaseOrderRepository<br/>OutboxEventPublisher"]
+    accTitle: Example 47: Component Overview — purchasing-api Layer Structure
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: [Component] HTTP Layer HttpController + request DTOs Express routers, [Component] Application Services SubmitRequisition Handler ApprovePOHandler, [Component] Domain Layer PurchaseRequisition aggregate PurchaseOrder aggregate, [Component] Infrastructure Adapters PgPurchaseOrder Repository OutboxEventPublisher. Connections: [Component] HTTP Layer HttpController + request DTOs Express routers to [Component] Application Services SubmitRequisition Handler ApprovePOHandler (Invokes use case handlers), [Component] Application Services SubmitRequisition Handler ApprovePOHandler to [Component] Domain Layer PurchaseRequisition aggregate PurchaseOrder aggregate (Calls aggregate methods), [Component] Application Services SubmitRequisition Handler ApprovePOHandler to [Component] Infrastructure Adapters PgPurchaseOrder Repository OutboxEventPublisher (Persists via repository port), [Component] Domain Layer PurchaseRequisition aggregate PurchaseOrder aggregate to [Component] Application Services SubmitRequisition Handler ApprovePOHandler (Emits domain events).
+    subgraph PurchAPI["purchasing-api<br/>Container"]
+        HTTP["[Component]<br/>HTTP Layer<br/>HttpController +<br/>request DTOs<br/>Express routers"]
+        AppSvc["[Component]<br/>Application Services<br/>SubmitRequisition<br/>Handler<br/>ApprovePOHandler"]
+        Domain["[Component]<br/>Domain Layer<br/>PurchaseRequisition<br/>aggregate<br/>PurchaseOrder<br/>aggregate"]
+        Infra["[Component]<br/>Infrastructure<br/>Adapters<br/>PgPurchaseOrder<br/>Repository<br/>OutboxEventPublisher"]
     end
 
-    HTTP -->|"Invokes use case handlers"| AppSvc
-    AppSvc -->|"Calls aggregate methods"| Domain
-    AppSvc -->|"Persists via repository port"| Infra
-    Domain -->|"Emits domain events"| AppSvc
+    HTTP -->|"Invokes use case<br/>handlers"| AppSvc
+    AppSvc -->|"Calls aggregate<br/>methods"| Domain
+    AppSvc -->|"Persists via<br/>repository port"| Infra
+    Domain -->|"Emits domain<br/>events"| AppSvc
 
-    style HTTP fill:#0173B2,stroke:#000,color:#fff
-    style AppSvc fill:#DE8F05,stroke:#000,color:#fff
-    style Domain fill:#029E73,stroke:#000,color:#fff
-    style Infra fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class HTTP pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class AppSvc pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Domain pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Infra pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -740,31 +862,39 @@ The HTTP layer contains controllers that translate HTTP requests into use case c
 
 ```mermaid
 graph TD
-    Client["[Person / Container]<br/>web-ui or API consumer"]
+    accTitle: Example 48: HTTP Layer Components — Controllers and DTOs
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: [Person / Container] web-ui or API consumer, [Component] Express Router Route definitions and middleware Auth, validation, error handling, [Component] Requisition Controller POST /requisitions GET /requisitions/:id, [Component] PurchaseOrder Controller POST /purchase-orders PATCH / purchase-orders/:id/ approve, [Component] Request DTOs SubmitRequisition Request ApprovePORequest — Zod validated, [Component] Application Services. Connections: [Person / Container] web-ui or API consumer to [Component] Express Router Route definitions and middleware Auth, validation, error handling (HTTPS requests), [Component] Express Router Route definitions and middleware Auth, validation, error handling to [Component] Requisition Controller POST /requisitions GET /requisitions/:id (Routes to controller), [Component] Express Router Route definitions and middleware Auth, validation, error handling to [Component] PurchaseOrder Controller POST /purchase-orders PATCH / purchase-orders/:id/ approve (Routes to controller), [Component] Requisition Controller POST /requisitions GET /requisitions/:id to [Component] Request DTOs SubmitRequisition Request ApprovePORequest — Zod validated (Validates and maps to command), [Component] PurchaseOrder Controller POST /purchase-orders PATCH / purchase-orders/:id/ approve to [Component] Request DTOs SubmitRequisition Request ApprovePORequest — Zod validated (Validates and maps to command), [Component] Requisition Controller POST /requisitions GET /requisitions/:id to [Component] Application Services (Invokes Submit RequisitionHandler), [Component] PurchaseOrder Controller POST /purchase-orders PATCH / purchase-orders/:id/ approve to [Component] Application Services (Invokes ApprovePOHandler).
+    Client["[Person / Container]<br/>web-ui or API<br/>consumer"]
 
-    subgraph HTTPLayer["HTTP Layer — purchasing-api"]
-        Router["[Component]<br/>Express Router<br/>Route definitions and middleware<br/>Auth, validation, error handling"]
-        ReqCtrl["[Component]<br/>RequisitionController<br/>POST /requisitions<br/>GET /requisitions/:id"]
-        POCtrl["[Component]<br/>PurchaseOrderController<br/>POST /purchase-orders<br/>PATCH /purchase-orders/:id/approve"]
-        ReqDTO["[Component]<br/>Request DTOs<br/>SubmitRequisitionRequest<br/>ApprovePORequest — Zod validated"]
+    subgraph HTTPLayer["HTTP Layer —<br/>purchasing-api"]
+        Router["[Component]<br/>Express Router<br/>Route definitions<br/>and middleware<br/>Auth, validation,<br/>error handling"]
+        ReqCtrl["[Component]<br/>Requisition<br/>Controller<br/>POST /requisitions<br/>GET<br/>/requisitions/:id"]
+        POCtrl["[Component]<br/>PurchaseOrder<br/>Controller<br/>POST<br/>/purchase-orders<br/>PATCH /<br/>purchase-orders/:id/<br/>approve"]
+        ReqDTO["[Component]<br/>Request DTOs<br/>SubmitRequisition<br/>Request<br/>ApprovePORequest —<br/>Zod validated"]
     end
 
     AppSvc["[Component]<br/>Application Services"]
 
     Client -->|"HTTPS requests"| Router
-    Router -->|"Routes to controller"| ReqCtrl
-    Router -->|"Routes to controller"| POCtrl
-    ReqCtrl -->|"Validates and maps to command"| ReqDTO
-    POCtrl -->|"Validates and maps to command"| ReqDTO
-    ReqCtrl -->|"Invokes SubmitRequisitionHandler"| AppSvc
-    POCtrl -->|"Invokes ApprovePOHandler"| AppSvc
+    Router -->|"Routes to<br/>controller"| ReqCtrl
+    Router -->|"Routes to<br/>controller"| POCtrl
+    ReqCtrl -->|"Validates and maps<br/>to command"| ReqDTO
+    POCtrl -->|"Validates and maps<br/>to command"| ReqDTO
+    ReqCtrl -->|"Invokes Submit<br/>RequisitionHandler"| AppSvc
+    POCtrl -->|"Invokes<br/>ApprovePOHandler"| AppSvc
 
-    style Client fill:#029E73,stroke:#000,color:#fff
-    style Router fill:#0173B2,stroke:#000,color:#fff
-    style ReqCtrl fill:#DE8F05,stroke:#000,color:#fff
-    style POCtrl fill:#DE8F05,stroke:#000,color:#fff
-    style ReqDTO fill:#CA9161,stroke:#000,color:#fff
-    style AppSvc fill:#808080,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Client pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Router pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ReqCtrl pal-DE8F05
+    class POCtrl pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ReqDTO pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class AppSvc pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -788,33 +918,40 @@ Application services orchestrate the business use case: load aggregate, call met
 
 ```mermaid
 graph TD
+    accTitle: Example 49: Application Services — Use Case Handlers
+    accDescr: Graph with 6 nodes and 9 connections. Nodes: [Component] HTTP Layer, [Component] SubmitRequisition Handler Orchestrates: load supplier → create requisition → persist → publish, [Component] ApprovePOHandler Orchestrates: load PO → call approve() → persist → publish, [Component] IssuePOHandler Orchestrates: load PO → call issue() → notify supplier, [Component] Domain Layer, [Component] Infrastructure Adapters. Connections: [Component] HTTP Layer to [Component] SubmitRequisition Handler Orchestrates: load supplier → create requisition → persist → publish (Invokes with validated command), [Component] HTTP Layer to [Component] ApprovePOHandler Orchestrates: load PO → call approve() → persist → publish (Invokes with validated command), [Component] HTTP Layer to [Component] IssuePOHandler Orchestrates: load PO → call issue() → notify supplier (Invokes with validated command), [Component] SubmitRequisition Handler Orchestrates: load supplier → create requisition → persist → publish to [Component] Domain Layer (Creates PurchaseRequisition), [Component] ApprovePOHandler Orchestrates: load PO → call approve() → persist → publish to [Component] Domain Layer (Calls PurchaseOrder. approve()), [Component] IssuePOHandler Orchestrates: load PO → call issue() → notify supplier to [Component] Domain Layer (Calls PurchaseOrder. issue()), [Component] SubmitRequisition Handler Orchestrates: load supplier → create requisition → persist → publish to [Component] Infrastructure Adapters (Persists via Requisition Repository), [Component] ApprovePOHandler Orchestrates: load PO → call approve() → persist → publish to [Component] Infrastructure Adapters (Persists via PurchaseOrder Repository), [Component] IssuePOHandler Orchestrates: load PO → call issue() → notify supplier to [Component] Infrastructure Adapters (Publishes PurchaseOrderIssued).
     HTTP["[Component]<br/>HTTP Layer"]
 
-    subgraph AppServices["Application Services — purchasing-api"]
-        SubmitHandler["[Component]<br/>SubmitRequisitionHandler<br/>Orchestrates: load supplier →<br/>create requisition → persist → publish"]
-        ApproveHandler["[Component]<br/>ApprovePOHandler<br/>Orchestrates: load PO →<br/>call approve() → persist → publish"]
-        IssuePOHandler["[Component]<br/>IssuePOHandler<br/>Orchestrates: load PO →<br/>call issue() → notify supplier"]
+    subgraph AppServices["Application Services<br/>— purchasing-api"]
+        SubmitHandler["[Component]<br/>SubmitRequisition<br/>Handler<br/>Orchestrates: load<br/>supplier →<br/>create requisition →<br/>persist → publish"]
+        ApproveHandler["[Component]<br/>ApprovePOHandler<br/>Orchestrates: load<br/>PO →<br/>call approve() →<br/>persist → publish"]
+        IssuePOHandler["[Component]<br/>IssuePOHandler<br/>Orchestrates: load<br/>PO →<br/>call issue() →<br/>notify supplier"]
     end
 
     Domain["[Component]<br/>Domain Layer"]
-    Infra["[Component]<br/>Infrastructure Adapters"]
+    Infra["[Component]<br/>Infrastructure<br/>Adapters"]
 
-    HTTP -->|"Invokes with validated command"| SubmitHandler
-    HTTP -->|"Invokes with validated command"| ApproveHandler
-    HTTP -->|"Invokes with validated command"| IssuePOHandler
-    SubmitHandler -->|"Creates PurchaseRequisition"| Domain
-    ApproveHandler -->|"Calls PurchaseOrder.approve()"| Domain
-    IssuePOHandler -->|"Calls PurchaseOrder.issue()"| Domain
-    SubmitHandler -->|"Persists via RequisitionRepository"| Infra
-    ApproveHandler -->|"Persists via PurchaseOrderRepository"| Infra
-    IssuePOHandler -->|"Publishes PurchaseOrderIssued"| Infra
+    HTTP -->|"Invokes with<br/>validated command"| SubmitHandler
+    HTTP -->|"Invokes with<br/>validated command"| ApproveHandler
+    HTTP -->|"Invokes with<br/>validated command"| IssuePOHandler
+    SubmitHandler -->|"Creates<br/>PurchaseRequisition"| Domain
+    ApproveHandler -->|"Calls<br/>PurchaseOrder.<br/>approve()"| Domain
+    IssuePOHandler -->|"Calls<br/>PurchaseOrder.<br/>issue()"| Domain
+    SubmitHandler -->|"Persists via<br/>Requisition<br/>Repository"| Infra
+    ApproveHandler -->|"Persists via<br/>PurchaseOrder<br/>Repository"| Infra
+    IssuePOHandler -->|"Publishes<br/>PurchaseOrderIssued"| Infra
 
-    style HTTP fill:#0173B2,stroke:#000,color:#fff
-    style SubmitHandler fill:#DE8F05,stroke:#000,color:#fff
-    style ApproveHandler fill:#DE8F05,stroke:#000,color:#fff
-    style IssuePOHandler fill:#DE8F05,stroke:#000,color:#fff
-    style Domain fill:#029E73,stroke:#000,color:#fff
-    style Infra fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class HTTP pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SubmitHandler pal-DE8F05
+    class ApproveHandler pal-DE8F05
+    class IssuePOHandler pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Domain pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Infra pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -837,30 +974,38 @@ The Domain layer contains the aggregates, value objects, and domain events that 
 
 ```mermaid
 graph TD
+    accTitle: Example 50: Domain Layer — Aggregate Components
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: [Component] Application Services, [Component] PurchaseRequisition aggregate States: Draft → Submitted → ManagerReview → Approved → ConvertedToPO, [Component] PurchaseOrder aggregate States: Draft → AwaitingApproval → Approved → Issued → ... → Paid, [Component] Value Objects Money, PurchaseOrderId, RequisitionId, SupplierId, ApprovalLevel, SkuCode, [Component] Domain Events Requisition Submitted, PurchaseOrderIssued, PurchaseOrder Acknowledged, [Component] Repository Ports (interfaces) PurchaseOrder Repository, Requisition Repository. Connections: [Component] Application Services to [Component] PurchaseRequisition aggregate States: Draft → Submitted → ManagerReview → Approved → ConvertedToPO (Calls aggregate methods), [Component] Application Services to [Component] PurchaseOrder aggregate States: Draft → AwaitingApproval → Approved → Issued → ... → Paid (Calls aggregate methods), [Component] PurchaseRequisition aggregate States: Draft → Submitted → ManagerReview → Approved → ConvertedToPO to [Component] Value Objects Money, PurchaseOrderId, RequisitionId, SupplierId, ApprovalLevel, SkuCode (Uses), [Component] PurchaseOrder aggregate States: Draft → AwaitingApproval → Approved → Issued → ... → Paid to [Component] Value Objects Money, PurchaseOrderId, RequisitionId, SupplierId, ApprovalLevel, SkuCode (Uses), [Component] PurchaseRequisition aggregate States: Draft → Submitted → ManagerReview → Approved → ConvertedToPO to [Component] Domain Events Requisition Submitted, PurchaseOrderIssued, PurchaseOrder Acknowledged (Emits), [Component] PurchaseOrder aggregate States: Draft → AwaitingApproval → Approved → Issued → ... → Paid to [Component] Domain Events Requisition Submitted, PurchaseOrderIssued, PurchaseOrder Acknowledged (Emits), [Component] Application Services to [Component] Repository Ports (interfaces) PurchaseOrder Repository, Requisition Repository (Calls via port interface).
     AppSvc["[Component]<br/>Application Services"]
 
-    subgraph DomainLayer["Domain Layer — purchasing-api"]
-        PRAggregate["[Component]<br/>PurchaseRequisition aggregate<br/>States: Draft → Submitted →<br/>ManagerReview → Approved → ConvertedToPO"]
-        POAggregate["[Component]<br/>PurchaseOrder aggregate<br/>States: Draft → AwaitingApproval →<br/>Approved → Issued → ... → Paid"]
-        VOs["[Component]<br/>Value Objects<br/>Money, PurchaseOrderId,<br/>RequisitionId, SupplierId,<br/>ApprovalLevel, SkuCode"]
-        Events["[Component]<br/>Domain Events<br/>RequisitionSubmitted,<br/>PurchaseOrderIssued,<br/>PurchaseOrderAcknowledged"]
-        Ports["[Component]<br/>Repository Ports (interfaces)<br/>PurchaseOrderRepository,<br/>RequisitionRepository"]
+    subgraph DomainLayer["Domain Layer —<br/>purchasing-api"]
+        PRAggregate["[Component]<br/>PurchaseRequisition<br/>aggregate<br/>States: Draft →<br/>Submitted →<br/>ManagerReview →<br/>Approved →<br/>ConvertedToPO"]
+        POAggregate["[Component]<br/>PurchaseOrder<br/>aggregate<br/>States: Draft →<br/>AwaitingApproval →<br/>Approved → Issued →<br/>... → Paid"]
+        VOs["[Component]<br/>Value Objects<br/>Money,<br/>PurchaseOrderId,<br/>RequisitionId,<br/>SupplierId,<br/>ApprovalLevel,<br/>SkuCode"]
+        Events["[Component]<br/>Domain Events<br/>Requisition<br/>Submitted,<br/>PurchaseOrderIssued,<br/>PurchaseOrder<br/>Acknowledged"]
+        Ports["[Component]<br/>Repository Ports<br/>(interfaces)<br/>PurchaseOrder<br/>Repository,<br/>Requisition<br/>Repository"]
     end
 
-    AppSvc -->|"Calls aggregate methods"| PRAggregate
-    AppSvc -->|"Calls aggregate methods"| POAggregate
+    AppSvc -->|"Calls aggregate<br/>methods"| PRAggregate
+    AppSvc -->|"Calls aggregate<br/>methods"| POAggregate
     PRAggregate -->|"Uses"| VOs
     POAggregate -->|"Uses"| VOs
     PRAggregate -->|"Emits"| Events
     POAggregate -->|"Emits"| Events
-    AppSvc -->|"Calls via port interface"| Ports
+    AppSvc -->|"Calls via port<br/>interface"| Ports
 
-    style AppSvc fill:#808080,stroke:#000,color:#fff
-    style PRAggregate fill:#029E73,stroke:#000,color:#fff
-    style POAggregate fill:#029E73,stroke:#000,color:#fff
-    style VOs fill:#CC78BC,stroke:#000,color:#fff
-    style Events fill:#0173B2,stroke:#000,color:#fff
-    style Ports fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class AppSvc pal-808080
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class PRAggregate pal-029E73
+    class POAggregate pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class VOs pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Events pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Ports pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -884,34 +1029,39 @@ Infrastructure adapters implement the domain ports. Each adapter maps between do
 
 ```mermaid
 graph TD
-    Ports["[Component]<br/>Repository Ports (interfaces)<br/>Domain layer — purchasing-api"]
+    accTitle: Example 51: Infrastructure Adapters — Repository Implementations
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: [Component] Repository Ports (interfaces) Domain layer — purchasing-api, [Component] PgPurchaseOrder Repository Implements Purchase OrderRepository Maps PO aggregate to pg rows, [Component] PgRequisition Repository Implements Requisition Repository Maps Requisition to pg rows, [Component] OutboxEventPublisher Implements EventPublisher Writes events to outbox table, [Component] KafkaRelayJob Reads outbox → publishes to Kafka Deletes on ACK, [Container: Database] postgres, [Container: Message Broker] event-bus / Kafka. Connections: [Component] Repository Ports (interfaces) Domain layer — purchasing-api to [Component] PgPurchaseOrder Repository Implements Purchase OrderRepository Maps PO aggregate to pg rows (Implemented by), [Component] Repository Ports (interfaces) Domain layer — purchasing-api to [Component] PgRequisition Repository Implements Requisition Repository Maps Requisition to pg rows (Implemented by), [Component] Repository Ports (interfaces) Domain layer — purchasing-api to [Component] OutboxEventPublisher Implements EventPublisher Writes events to outbox table (Implemented by), [Component] PgPurchaseOrder Repository Implements Purchase OrderRepository Maps PO aggregate to pg rows to [Container: Database] postgres (SQL queries [TCP/5432]), [Component] PgRequisition Repository Implements Requisition Repository Maps Requisition to pg rows to [Container: Database] postgres (SQL queries [TCP/5432]), [Component] OutboxEventPublisher Implements EventPublisher Writes events to outbox table to [Container: Database] postgres (INSERT into outbox table [TCP/5432]), [Component] KafkaRelayJob Reads outbox → publishes to Kafka Deletes on ACK to [Container: Database] postgres (SELECT from outbox [TCP/5432]), [Component] KafkaRelayJob Reads outbox → publishes to Kafka Deletes on ACK to [Container: Message Broker] event-bus / Kafka (Publish events [Kafka]).
+    Ports["[Component]<br/>Repository Ports<br/>(interfaces)<br/>Domain layer —<br/>purchasing-api"]
 
-    subgraph InfraLayer["Infrastructure Adapters — purchasing-api"]
-        PgPORepo["[Component]<br/>PgPurchaseOrderRepository<br/>Implements PurchaseOrderRepository<br/>Maps PO aggregate to pg rows"]
-        PgReqRepo["[Component]<br/>PgRequisitionRepository<br/>Implements RequisitionRepository<br/>Maps Requisition to pg rows"]
-        OutboxPublisher["[Component]<br/>OutboxEventPublisher<br/>Implements EventPublisher<br/>Writes events to outbox table"]
-        KafkaRelay["[Component]<br/>KafkaRelayJob<br/>Reads outbox → publishes to Kafka<br/>Deletes on ACK"]
+    subgraph InfraLayer["Infrastructure<br/>Adapters —<br/>purchasing-api"]
+        PgPORepo["[Component]<br/>PgPurchaseOrder<br/>Repository<br/>Implements Purchase<br/>OrderRepository<br/>Maps PO aggregate to<br/>pg rows"]
+        PgReqRepo["[Component]<br/>PgRequisition<br/>Repository<br/>Implements<br/>Requisition<br/>Repository<br/>Maps Requisition to<br/>pg rows"]
+        OutboxPublisher["[Component]<br/>OutboxEventPublisher<br/>Implements<br/>EventPublisher<br/>Writes events to<br/>outbox table"]
+        KafkaRelay["[Component]<br/>KafkaRelayJob<br/>Reads outbox →<br/>publishes to Kafka<br/>Deletes on ACK"]
     end
 
-    PG["[Container: Database]<br/>postgres"]
-    EventBus["[Container: Message Broker]<br/>event-bus / Kafka"]
+    PG["[Container:<br/>Database]<br/>postgres"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka"]
 
     Ports -->|"Implemented by"| PgPORepo
     Ports -->|"Implemented by"| PgReqRepo
     Ports -->|"Implemented by"| OutboxPublisher
-    PgPORepo -->|"SQL queries [TCP/5432]"| PG
-    PgReqRepo -->|"SQL queries [TCP/5432]"| PG
-    OutboxPublisher -->|"INSERT into outbox table [TCP/5432]"| PG
-    KafkaRelay -->|"SELECT from outbox [TCP/5432]"| PG
-    KafkaRelay -->|"Publish events [Kafka]"| EventBus
+    PgPORepo -->|"SQL queries<br/>[TCP/5432]"| PG
+    PgReqRepo -->|"SQL queries<br/>[TCP/5432]"| PG
+    OutboxPublisher -->|"INSERT into outbox<br/>table [TCP/5432]"| PG
+    KafkaRelay -->|"SELECT from outbox<br/>[TCP/5432]"| PG
+    KafkaRelay -->|"Publish events<br/>[Kafka]"| EventBus
 
-    style Ports fill:#808080,stroke:#000,color:#fff
-    style PgPORepo fill:#CA9161,stroke:#000,color:#fff
-    style PgReqRepo fill:#CA9161,stroke:#000,color:#fff
-    style OutboxPublisher fill:#CA9161,stroke:#000,color:#fff
-    style KafkaRelay fill:#CA9161,stroke:#000,color:#fff
-    style PG fill:#808080,stroke:#000,color:#fff
-    style EventBus fill:#808080,stroke:#000,color:#fff
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class Ports pal-808080
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PgPORepo pal-CA9161
+    class PgReqRepo pal-CA9161
+    class OutboxPublisher pal-CA9161
+    class KafkaRelay pal-CA9161
+    class PG pal-808080
+    class EventBus pal-808080
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Elements**:
@@ -934,30 +1084,37 @@ Tracing one use case through all four layers shows how components collaborate fo
 
 ```mermaid
 graph TD
+    accTitle: Example 52: Component Diagram — SubmitRequisitionHandler Flow
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: [Person / Container] web-ui, [Component] Requisition Controller HTTP Layer, [Component] SubmitRequisition Request DTO Zod validated, [Component] SubmitRequisition Handler Application Services, [Component] PurchaseRequisition Domain Layer, [Component] PgRequisition Repository Infrastructure, [Component] OutboxEventPublisher Infrastructure. Connections: [Person / Container] web-ui to [Component] Requisition Controller HTTP Layer (POST /requisitions [HTTPS]), [Component] Requisition Controller HTTP Layer to [Component] SubmitRequisition Request DTO Zod validated (Validates body), [Component] SubmitRequisition Request DTO Zod validated to [Component] SubmitRequisition Handler Application Services (Returns Submit RequisitionCommand), [Component] SubmitRequisition Handler Application Services to [Component] PurchaseRequisition Domain Layer (Creates PurchaseRequisition. createDraft()), [Component] PurchaseRequisition Domain Layer to [Component] SubmitRequisition Handler Application Services (Returns RequisitionSubmitted event), [Component] SubmitRequisition Handler Application Services to [Component] PgRequisition Repository Infrastructure (Saves requisition), [Component] SubmitRequisition Handler Application Services to [Component] OutboxEventPublisher Infrastructure (Publishes Requisition Submitted), [Component] OutboxEventPublisher Infrastructure to [Component] PgRequisition Repository Infrastructure (Inserts into outbox table).
     Client["[Person / Container]<br/>web-ui"]
-    ReqCtrl["[Component]<br/>RequisitionController<br/>HTTP Layer"]
-    ReqDTO["[Component]<br/>SubmitRequisitionRequest DTO<br/>Zod validated"]
-    SubmitHandler["[Component]<br/>SubmitRequisitionHandler<br/>Application Services"]
+    ReqCtrl["[Component]<br/>Requisition<br/>Controller<br/>HTTP Layer"]
+    ReqDTO["[Component]<br/>SubmitRequisition<br/>Request DTO<br/>Zod validated"]
+    SubmitHandler["[Component]<br/>SubmitRequisition<br/>Handler<br/>Application Services"]
     PRAggregate["[Component]<br/>PurchaseRequisition<br/>Domain Layer"]
-    PgReqRepo["[Component]<br/>PgRequisitionRepository<br/>Infrastructure"]
+    PgReqRepo["[Component]<br/>PgRequisition<br/>Repository<br/>Infrastructure"]
     OutboxPub["[Component]<br/>OutboxEventPublisher<br/>Infrastructure"]
 
-    Client -->|"POST /requisitions [HTTPS]"| ReqCtrl
+    Client -->|"POST /requisitions<br/>[HTTPS]"| ReqCtrl
     ReqCtrl -->|"Validates body"| ReqDTO
-    ReqDTO -->|"Returns SubmitRequisitionCommand"| SubmitHandler
-    SubmitHandler -->|"Creates PurchaseRequisition.createDraft()"| PRAggregate
-    PRAggregate -->|"Returns RequisitionSubmitted event"| SubmitHandler
+    ReqDTO -->|"Returns Submit<br/>RequisitionCommand"| SubmitHandler
+    SubmitHandler -->|"Creates<br/>PurchaseRequisition.<br/>createDraft()"| PRAggregate
+    PRAggregate -->|"Returns<br/>RequisitionSubmitted<br/>event"| SubmitHandler
     SubmitHandler -->|"Saves requisition"| PgReqRepo
-    SubmitHandler -->|"Publishes RequisitionSubmitted"| OutboxPub
-    OutboxPub -->|"Inserts into outbox table"| PgReqRepo
+    SubmitHandler -->|"Publishes<br/>Requisition<br/>Submitted"| OutboxPub
+    OutboxPub -->|"Inserts into outbox<br/>table"| PgReqRepo
 
-    style Client fill:#029E73,stroke:#000,color:#fff
-    style ReqCtrl fill:#0173B2,stroke:#000,color:#fff
-    style ReqDTO fill:#0173B2,stroke:#000,color:#fff
-    style SubmitHandler fill:#DE8F05,stroke:#000,color:#fff
-    style PRAggregate fill:#029E73,stroke:#000,color:#fff
-    style PgReqRepo fill:#CA9161,stroke:#000,color:#fff
-    style OutboxPub fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Client pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class ReqCtrl pal-0173B2
+    class ReqDTO pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SubmitHandler pal-DE8F05
+    class PRAggregate pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PgReqRepo pal-CA9161
+    class OutboxPub pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -980,29 +1137,37 @@ The approval use case demonstrates how the domain aggregate enforces FSM transit
 
 ```mermaid
 graph TD
-    POCtrl["[Component]<br/>PurchaseOrderController<br/>HTTP Layer"]
+    accTitle: Example 53: Component Diagram — ApprovePOHandler with FSM Guard
+    accDescr: Graph with 6 nodes and 9 connections. Nodes: [Component] PurchaseOrder Controller HTTP Layer, [Component] ApprovePOHandler Application Services, [Component] PurchaseOrder aggregate Domain Layer — FSM guard: must be in AwaitingApproval state, [Component] ApprovalLevel value object L1 ≤ $1k /L2 ≤ $10k /L3 > $10k, [Component] PgPurchaseOrder Repository Infrastructure, [Component] OutboxEventPublisher Infrastructure. Connections: [Component] PurchaseOrder Controller HTTP Layer to [Component] ApprovePOHandler Application Services (PATCH / purchase-orders/:id/ approve), [Component] ApprovePOHandler Application Services to [Component] PgPurchaseOrder Repository Infrastructure (Loads PO by id), [Component] PgPurchaseOrder Repository Infrastructure to [Component] ApprovePOHandler Application Services (Returns PurchaseOrder aggregate), [Component] ApprovePOHandler Application Services to [Component] PurchaseOrder aggregate Domain Layer — FSM guard: must be in AwaitingApproval state (Calls PurchaseOrder. approve(approverId)), [Component] PurchaseOrder aggregate Domain Layer — FSM guard: must be in AwaitingApproval state to [Component] ApprovalLevel value object L1 ≤ $1k /L2 ≤ $10k /L3 > $10k (Validates ApprovalLevel for PO total), [Component] PurchaseOrder aggregate Domain Layer — FSM guard: must be in AwaitingApproval state to [Component] ApprovePOHandler Application Services (Throws if not AwaitingApproval state), [Component] PurchaseOrder aggregate Domain Layer — FSM guard: must be in AwaitingApproval state to [Component] ApprovePOHandler Application Services (Returns Purchase OrderApproved event on success), [Component] ApprovePOHandler Application Services to [Component] PgPurchaseOrder Repository Infrastructure (Saves updated PO), [Component] ApprovePOHandler Application Services to [Component] OutboxEventPublisher Infrastructure (Publishes event).
+    POCtrl["[Component]<br/>PurchaseOrder<br/>Controller<br/>HTTP Layer"]
     ApproveHandler["[Component]<br/>ApprovePOHandler<br/>Application Services"]
-    POAggregate["[Component]<br/>PurchaseOrder aggregate<br/>Domain Layer — FSM guard:<br/>must be in AwaitingApproval state"]
-    ApprovalLevelVO["[Component]<br/>ApprovalLevel value object<br/>L1 ≤ $1k / L2 ≤ $10k / L3 > $10k"]
-    PgPORepo["[Component]<br/>PgPurchaseOrderRepository<br/>Infrastructure"]
+    POAggregate["[Component]<br/>PurchaseOrder<br/>aggregate<br/>Domain Layer — FSM<br/>guard:<br/>must be in<br/>AwaitingApproval<br/>state"]
+    ApprovalLevelVO["[Component]<br/>ApprovalLevel value<br/>object<br/>L1 ≤ $1k /L2 ≤ $10k<br/>/L3 > $10k"]
+    PgPORepo["[Component]<br/>PgPurchaseOrder<br/>Repository<br/>Infrastructure"]
     OutboxPub["[Component]<br/>OutboxEventPublisher<br/>Infrastructure"]
 
-    POCtrl -->|"PATCH /purchase-orders/:id/approve"| ApproveHandler
+    POCtrl -->|"PATCH /<br/>purchase-orders/:id/<br/>approve"| ApproveHandler
     ApproveHandler -->|"Loads PO by id"| PgPORepo
-    PgPORepo -->|"Returns PurchaseOrder aggregate"| ApproveHandler
-    ApproveHandler -->|"Calls PurchaseOrder.approve(approverId)"| POAggregate
-    POAggregate -->|"Validates ApprovalLevel for PO total"| ApprovalLevelVO
-    POAggregate -->|"Throws if not AwaitingApproval state"| ApproveHandler
-    POAggregate -->|"Returns PurchaseOrderApproved event on success"| ApproveHandler
+    PgPORepo -->|"Returns<br/>PurchaseOrder<br/>aggregate"| ApproveHandler
+    ApproveHandler -->|"Calls<br/>PurchaseOrder.<br/>approve(approverId)"| POAggregate
+    POAggregate -->|"Validates<br/>ApprovalLevel for PO<br/>total"| ApprovalLevelVO
+    POAggregate -->|"Throws if not<br/>AwaitingApproval<br/>state"| ApproveHandler
+    POAggregate -->|"Returns Purchase<br/>OrderApproved event<br/>on success"| ApproveHandler
     ApproveHandler -->|"Saves updated PO"| PgPORepo
     ApproveHandler -->|"Publishes event"| OutboxPub
 
-    style POCtrl fill:#0173B2,stroke:#000,color:#fff
-    style ApproveHandler fill:#DE8F05,stroke:#000,color:#fff
-    style POAggregate fill:#029E73,stroke:#000,color:#fff
-    style ApprovalLevelVO fill:#CC78BC,stroke:#000,color:#fff
-    style PgPORepo fill:#CA9161,stroke:#000,color:#fff
-    style OutboxPub fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class POCtrl pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ApproveHandler pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class POAggregate pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ApprovalLevelVO pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PgPORepo pal-CA9161
+    class OutboxPub pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -1025,32 +1190,39 @@ The port/adapter pattern enables swapping infrastructure adapters without touchi
 
 ```mermaid
 graph TD
+    accTitle: Example 54: Component Diagram — Infrastructure Adapter Swapping
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: [Component] ApprovePOHandler Application Services, [Component] PgPurchaseOrder Repository Implements Purchase OrderRepository Writes to PostgreSQL, [Component] OutboxEventPublisher Implements EventPublisher Writes to postgres outbox, [Component] InMemoryPurchase OrderRepository Implements Purchase OrderRepository Stores in Map — no DB needed, [Component] FakeEventPublisher Implements EventPublisher Captures events for assertions, [Component] PurchaseOrder Repository (interface) Domain Port. Connections: [Component] ApprovePOHandler Application Services to [Component] PurchaseOrder Repository (interface) Domain Port (Calls interface methods), [Component] PurchaseOrder Repository (interface) Domain Port to [Component] PgPurchaseOrder Repository Implements Purchase OrderRepository Writes to PostgreSQL (Production: implemented by), [Component] PurchaseOrder Repository (interface) Domain Port to [Component] InMemoryPurchase OrderRepository Implements Purchase OrderRepository Stores in Map — no DB needed (Test: implemented by), [Component] ApprovePOHandler Application Services to [Component] OutboxEventPublisher Implements EventPublisher Writes to postgres outbox (Calls EventPublisher interface), [Component] ApprovePOHandler Application Services to [Component] FakeEventPublisher Implements EventPublisher Captures events for assertions (Test: uses).
     AppSvc["[Component]<br/>ApprovePOHandler<br/>Application Services"]
 
     subgraph ProdAdapters["Production Adapters"]
-        PgRepo["[Component]<br/>PgPurchaseOrderRepository<br/>Implements PurchaseOrderRepository<br/>Writes to PostgreSQL"]
-        KafkaPub["[Component]<br/>OutboxEventPublisher<br/>Implements EventPublisher<br/>Writes to postgres outbox"]
+        PgRepo["[Component]<br/>PgPurchaseOrder<br/>Repository<br/>Implements Purchase<br/>OrderRepository<br/>Writes to PostgreSQL"]
+        KafkaPub["[Component]<br/>OutboxEventPublisher<br/>Implements<br/>EventPublisher<br/>Writes to postgres<br/>outbox"]
     end
 
     subgraph TestAdapters["Test Adapters"]
-        MemRepo["[Component]<br/>InMemoryPurchaseOrderRepository<br/>Implements PurchaseOrderRepository<br/>Stores in Map — no DB needed"]
-        FakePub["[Component]<br/>FakeEventPublisher<br/>Implements EventPublisher<br/>Captures events for assertions"]
+        MemRepo["[Component]<br/>InMemoryPurchase<br/>OrderRepository<br/>Implements Purchase<br/>OrderRepository<br/>Stores in Map — no<br/>DB needed"]
+        FakePub["[Component]<br/>FakeEventPublisher<br/>Implements<br/>EventPublisher<br/>Captures events for<br/>assertions"]
     end
 
-    Port["[Component]<br/>PurchaseOrderRepository (interface)<br/>Domain Port"]
+    Port["[Component]<br/>PurchaseOrder<br/>Repository<br/>(interface)<br/>Domain Port"]
 
-    AppSvc -->|"Calls interface methods"| Port
-    Port -->|"Production: implemented by"| PgRepo
-    Port -->|"Test: implemented by"| MemRepo
-    AppSvc -->|"Calls EventPublisher interface"| KafkaPub
+    AppSvc -->|"Calls interface<br/>methods"| Port
+    Port -->|"Production:<br/>implemented by"| PgRepo
+    Port -->|"Test: implemented<br/>by"| MemRepo
+    AppSvc -->|"Calls<br/>EventPublisher<br/>interface"| KafkaPub
     AppSvc -->|"Test: uses"| FakePub
 
-    style AppSvc fill:#DE8F05,stroke:#000,color:#fff
-    style PgRepo fill:#CA9161,stroke:#000,color:#fff
-    style KafkaPub fill:#CA9161,stroke:#000,color:#fff
-    style MemRepo fill:#029E73,stroke:#000,color:#fff
-    style FakePub fill:#029E73,stroke:#000,color:#fff
-    style Port fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class AppSvc pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PgRepo pal-CA9161
+    class KafkaPub pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class MemRepo pal-029E73
+    class FakePub pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Port pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -1073,34 +1245,43 @@ receiving-api has its own component structure mirroring purchasing-api but optim
 
 ```mermaid
 graph TD
-    subgraph RecvAPI["receiving-api Container"]
-        GRNCtrl["[Component]<br/>GoodsReceiptController<br/>POST /grn<br/>Entry point for GRN data"]
-        GRNHandler["[Component]<br/>RecordGoodsReceiptHandler<br/>Validates GRN against open PO<br/>Checks quantity tolerances"]
-        GRNAggregate["[Component]<br/>GoodsReceiptNote aggregate<br/>States: Draft → Verified → Submitted<br/>Tolerance: ≤ 10% quantity variance"]
-        GRNRepo["[Component]<br/>PgGoodsReceiptRepository<br/>Stores GRN records"]
-        GRNEventPub["[Component]<br/>GoodsReceivedEventPublisher<br/>Publishes GoodsReceived event"]
-        POConsumer["[Component]<br/>PurchaseOrderEventConsumer<br/>Subscribes to po-events Kafka topic<br/>Opens GRN expectation on PO Issued"]
+    accTitle: Example 55: Component Diagram — Receiving-api Internal Structure
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: [Component] GoodsReceipt Controller POST /grn Entry point for GRN data, [Component] RecordGoodsReceipt Handler Validates GRN against open PO Checks quantity tolerances, [Component] GoodsReceiptNote aggregate States: Draft → Verified → Submitted Tolerance: ≤ 10 quantity variance, [Component] PgGoodsReceipt Repository Stores GRN records, [Component] GoodsReceivedEvent Publisher Publishes GoodsReceived event, [Component] PurchaseOrderEvent Consumer Subscribes to po-events Kafka topic Opens GRN expectation on PO Issued, [Container: Database] postgres receiving schema, [Container: Message Broker] event-bus / Kafka. Connections: [Component] PurchaseOrderEvent Consumer Subscribes to po-events Kafka topic Opens GRN expectation on PO Issued to [Container: Message Broker] event-bus / Kafka (Consumes PurchaseOrderIssued), [Component] GoodsReceipt Controller POST /grn Entry point for GRN data to [Component] RecordGoodsReceipt Handler Validates GRN against open PO Checks quantity tolerances (Invokes handler), [Component] RecordGoodsReceipt Handler Validates GRN against open PO Checks quantity tolerances to [Component] GoodsReceiptNote aggregate States: Draft → Verified → Submitted Tolerance: ≤ 10 quantity variance (Creates GRN aggregate), [Component] RecordGoodsReceipt Handler Validates GRN against open PO Checks quantity tolerances to [Component] PgGoodsReceipt Repository Stores GRN records (Saves GRN), [Component] RecordGoodsReceipt Handler Validates GRN against open PO Checks quantity tolerances to [Component] GoodsReceivedEvent Publisher Publishes GoodsReceived event (Publishes GoodsReceived), [Component] PgGoodsReceipt Repository Stores GRN records to [Container: Database] postgres receiving schema (SQL [TCP/5432]), [Component] GoodsReceivedEvent Publisher Publishes GoodsReceived event to [Container: Message Broker] event-bus / Kafka (Publishes to grn-events topic).
+    subgraph RecvAPI["receiving-api<br/>Container"]
+        GRNCtrl["[Component]<br/>GoodsReceipt<br/>Controller<br/>POST /grn<br/>Entry point for GRN<br/>data"]
+        GRNHandler["[Component]<br/>RecordGoodsReceipt<br/>Handler<br/>Validates GRN<br/>against open PO<br/>Checks quantity<br/>tolerances"]
+        GRNAggregate["[Component]<br/>GoodsReceiptNote<br/>aggregate<br/>States: Draft →<br/>Verified → Submitted<br/>Tolerance: ≤ 10%<br/>quantity variance"]
+        GRNRepo["[Component]<br/>PgGoodsReceipt<br/>Repository<br/>Stores GRN records"]
+        GRNEventPub["[Component]<br/>GoodsReceivedEvent<br/>Publisher<br/>Publishes<br/>GoodsReceived event"]
+        POConsumer["[Component]<br/>PurchaseOrderEvent<br/>Consumer<br/>Subscribes to<br/>po-events Kafka<br/>topic<br/>Opens GRN<br/>expectation on PO<br/>Issued"]
     end
 
-    PG["[Container: Database]<br/>postgres<br/>receiving schema"]
-    EventBus["[Container: Message Broker]<br/>event-bus / Kafka"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>receiving schema"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka"]
 
-    POConsumer -->|"Consumes PurchaseOrderIssued"| EventBus
+    POConsumer -->|"Consumes<br/>PurchaseOrderIssued"| EventBus
     GRNCtrl -->|"Invokes handler"| GRNHandler
-    GRNHandler -->|"Creates GRN aggregate"| GRNAggregate
+    GRNHandler -->|"Creates GRN<br/>aggregate"| GRNAggregate
     GRNHandler -->|"Saves GRN"| GRNRepo
-    GRNHandler -->|"Publishes GoodsReceived"| GRNEventPub
+    GRNHandler -->|"Publishes<br/>GoodsReceived"| GRNEventPub
     GRNRepo -->|"SQL [TCP/5432]"| PG
-    GRNEventPub -->|"Publishes to grn-events topic"| EventBus
+    GRNEventPub -->|"Publishes to<br/>grn-events topic"| EventBus
 
-    style GRNCtrl fill:#0173B2,stroke:#000,color:#fff
-    style GRNHandler fill:#DE8F05,stroke:#000,color:#fff
-    style GRNAggregate fill:#029E73,stroke:#000,color:#fff
-    style GRNRepo fill:#CA9161,stroke:#000,color:#fff
-    style GRNEventPub fill:#CA9161,stroke:#000,color:#fff
-    style POConsumer fill:#CC78BC,stroke:#000,color:#fff
-    style PG fill:#808080,stroke:#000,color:#fff
-    style EventBus fill:#808080,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class GRNCtrl pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class GRNHandler pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GRNAggregate pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class GRNRepo pal-CA9161
+    class GRNEventPub pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class POConsumer pal-CC78BC
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class PG pal-808080
+    class EventBus pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -1123,37 +1304,46 @@ invoicing-api's core component implements three-way match logic: compare PO, GRN
 
 ```mermaid
 graph TD
-    subgraph InvAPI["invoicing-api Container"]
-        InvCtrl["[Component]<br/>InvoiceController<br/>POST /invoices<br/>Invoice registration endpoint"]
-        InvHandler["[Component]<br/>RegisterInvoiceHandler<br/>Orchestrates registration<br/>and match trigger"]
-        InvAggregate["[Component]<br/>Invoice aggregate<br/>States: Registered → Matching →<br/>Matched → Disputed"]
-        MatchSvc["[Component]<br/>ThreeWayMatchService<br/>Compares: PO unit price × GRN qty<br/>vs Invoice amount ± Tolerance 2%"]
+    accTitle: Example 56: Component Diagram — invoicing-api Three-Way Match
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: [Component] InvoiceController POST /invoices Invoice registration endpoint, [Component] RegisterInvoice Handler Orchestrates registration and match trigger, [Component] Invoice aggregate States: Registered → Matching → Matched → Disputed, [Component] ThreeWayMatchService Compares: PO unit price × GRN qty vs Invoice amount ± Tolerance 2, [Component] PgInvoiceRepository, [Component] POEventConsumer Subscribes to po-events Caches PO data for matching, [Component] GRNEventConsumer Subscribes to grn-events Caches GRN data for matching, [Container: Database] postgres invoicing schema, [Container: Message Broker] event-bus / Kafka. Connections: [Component] POEventConsumer Subscribes to po-events Caches PO data for matching to [Container: Message Broker] event-bus / Kafka (Consumes po-events), [Component] GRNEventConsumer Subscribes to grn-events Caches GRN data for matching to [Container: Message Broker] event-bus / Kafka (Consumes grn-events), [Component] InvoiceController POST /invoices Invoice registration endpoint to [Component] RegisterInvoice Handler Orchestrates registration and match trigger (Invokes handler), [Component] RegisterInvoice Handler Orchestrates registration and match trigger to [Component] Invoice aggregate States: Registered → Matching → Matched → Disputed (Creates Invoice aggregate), [Component] RegisterInvoice Handler Orchestrates registration and match trigger to [Component] ThreeWayMatchService Compares: PO unit price × GRN qty vs Invoice amount ± Tolerance 2 (Triggers match), [Component] ThreeWayMatchService Compares: PO unit price × GRN qty vs Invoice amount ± Tolerance 2 to [Container: Database] postgres invoicing schema (Reads cached PO and GRN data), [Component] RegisterInvoice Handler Orchestrates registration and match trigger to [Component] PgInvoiceRepository (Saves invoice and match result), [Component] PgInvoiceRepository to [Container: Database] postgres invoicing schema (SQL [TCP/5432]).
+    subgraph InvAPI["invoicing-api<br/>Container"]
+        InvCtrl["[Component]<br/>InvoiceController<br/>POST /invoices<br/>Invoice registration<br/>endpoint"]
+        InvHandler["[Component]<br/>RegisterInvoice<br/>Handler<br/>Orchestrates<br/>registration<br/>and match trigger"]
+        InvAggregate["[Component]<br/>Invoice aggregate<br/>States: Registered →<br/>Matching →<br/>Matched → Disputed"]
+        MatchSvc["[Component]<br/>ThreeWayMatchService<br/>Compares: PO unit<br/>price × GRN qty<br/>vs Invoice amount ±<br/>Tolerance 2%"]
         InvRepo["[Component]<br/>PgInvoiceRepository"]
-        POConsumer["[Component]<br/>POEventConsumer<br/>Subscribes to po-events<br/>Caches PO data for matching"]
-        GRNConsumer["[Component]<br/>GRNEventConsumer<br/>Subscribes to grn-events<br/>Caches GRN data for matching"]
+        POConsumer["[Component]<br/>POEventConsumer<br/>Subscribes to<br/>po-events<br/>Caches PO data for<br/>matching"]
+        GRNConsumer["[Component]<br/>GRNEventConsumer<br/>Subscribes to<br/>grn-events<br/>Caches GRN data for<br/>matching"]
     end
 
-    PG["[Container: Database]<br/>postgres<br/>invoicing schema"]
-    EventBus["[Container: Message Broker]<br/>event-bus / Kafka"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>invoicing schema"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka"]
 
     POConsumer -->|"Consumes po-events"| EventBus
-    GRNConsumer -->|"Consumes grn-events"| EventBus
+    GRNConsumer -->|"Consumes<br/>grn-events"| EventBus
     InvCtrl -->|"Invokes handler"| InvHandler
-    InvHandler -->|"Creates Invoice aggregate"| InvAggregate
+    InvHandler -->|"Creates Invoice<br/>aggregate"| InvAggregate
     InvHandler -->|"Triggers match"| MatchSvc
-    MatchSvc -->|"Reads cached PO and GRN data"| PG
-    InvHandler -->|"Saves invoice and match result"| InvRepo
+    MatchSvc -->|"Reads cached PO and<br/>GRN data"| PG
+    InvHandler -->|"Saves invoice and<br/>match result"| InvRepo
     InvRepo -->|"SQL [TCP/5432]"| PG
 
-    style InvCtrl fill:#0173B2,stroke:#000,color:#fff
-    style InvHandler fill:#DE8F05,stroke:#000,color:#fff
-    style InvAggregate fill:#029E73,stroke:#000,color:#fff
-    style MatchSvc fill:#CC78BC,stroke:#000,color:#fff
-    style InvRepo fill:#CA9161,stroke:#000,color:#fff
-    style POConsumer fill:#CA9161,stroke:#000,color:#fff
-    style GRNConsumer fill:#CA9161,stroke:#000,color:#fff
-    style PG fill:#808080,stroke:#000,color:#fff
-    style EventBus fill:#808080,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class InvCtrl pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class InvHandler pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class InvAggregate pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class MatchSvc pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class InvRepo pal-CA9161
+    class POConsumer pal-CA9161
+    class GRNConsumer pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class PG pal-808080
+    class EventBus pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -1176,40 +1366,48 @@ payments-worker's internal components show how a background worker is organized 
 
 ```mermaid
 graph TD
-    subgraph PayWorker["payments-worker Container"]
-        InvoiceConsumer["[Component]<br/>InvoiceMatchedConsumer<br/>Subscribes to invoice-events<br/>Triggers payment scheduling"]
-        PayScheduler["[Component]<br/>PaymentScheduler<br/>Groups invoices into payment runs<br/>Respects bank cut-off times"]
-        PayExecutor["[Component]<br/>PaymentExecutor<br/>Builds ISO 20022 pain.001 file<br/>Sends to bank, handles pain.002"]
-        PayRepo["[Component]<br/>PgPaymentRepository<br/>Saves payment state and checkpoints"]
-        BankAdapter["[Component]<br/>BankApiAdapter<br/>Implements BankingPort<br/>REST + retry + circuit breaker"]
-        IdempotencyChecker["[Component]<br/>IdempotencyChecker<br/>Prevents double-payment<br/>Checks payment_id uniqueness"]
+    accTitle: Example 57: Component Diagram — payments-worker Internal Structure
+    accDescr: Graph with 9 nodes and 11 connections. Nodes: [Component] InvoiceMatched Consumer Subscribes to invoice-events Triggers payment scheduling, [Component] PaymentScheduler Groups invoices into payment runs Respects bank cut-off times, [Component] PaymentExecutor Builds ISO 20022 pain.001 file Sends to bank, handles pain.002, [Component] PgPaymentRepository Saves payment state and checkpoints, [Component] BankApiAdapter Implements BankingPort REST + retry + circuit breaker, [Component] IdempotencyChecker Prevents double-payment Checks payment_id uniqueness, [Container: Message Broker] event-bus / Kafka, [Container: Database] postgres payments schema, [External System] Bank. Connections: [Component] InvoiceMatched Consumer Subscribes to invoice-events Triggers payment scheduling to [Container: Message Broker] event-bus / Kafka (Consumes InvoiceMatched), [Component] InvoiceMatched Consumer Subscribes to invoice-events Triggers payment scheduling to [Component] PaymentScheduler Groups invoices into payment runs Respects bank cut-off times (Schedules payment), [Component] PaymentScheduler Groups invoices into payment runs Respects bank cut-off times to [Component] PgPaymentRepository Saves payment state and checkpoints (Persists payment schedule), [Component] PaymentScheduler Groups invoices into payment runs Respects bank cut-off times to [Component] IdempotencyChecker Prevents double-payment Checks payment_id uniqueness (Checks idempotency), [Component] IdempotencyChecker Prevents double-payment Checks payment_id uniqueness to [Component] PgPaymentRepository Saves payment state and checkpoints (Queries payment_id), [Component] PaymentScheduler Groups invoices into payment runs Respects bank cut-off times to [Component] PaymentExecutor Builds ISO 20022 pain.001 file Sends to bank, handles pain.002 (Triggers executor), [Component] PaymentExecutor Builds ISO 20022 pain.001 file Sends to bank, handles pain.002 to [Component] BankApiAdapter Implements BankingPort REST + retry + circuit breaker (Sends pain.001 via adapter), [Component] BankApiAdapter Implements BankingPort REST + retry + circuit breaker to [External System] Bank (HTTPS to bank API), [External System] Bank to [Component] BankApiAdapter Implements BankingPort REST + retry + circuit breaker (Returns pain.002 status), [Component] BankApiAdapter Implements BankingPort REST + retry + circuit breaker to [Component] PgPaymentRepository Saves payment state and checkpoints (Updates payment status), [Component] PgPaymentRepository Saves payment state and checkpoints to [Container: Database] postgres payments schema (SQL [TCP/5432]).
+    subgraph PayWorker["payments-worker<br/>Container"]
+        InvoiceConsumer["[Component]<br/>InvoiceMatched<br/>Consumer<br/>Subscribes to<br/>invoice-events<br/>Triggers payment<br/>scheduling"]
+        PayScheduler["[Component]<br/>PaymentScheduler<br/>Groups invoices into<br/>payment runs<br/>Respects bank<br/>cut-off times"]
+        PayExecutor["[Component]<br/>PaymentExecutor<br/>Builds ISO 20022<br/>pain.001 file<br/>Sends to bank,<br/>handles pain.002"]
+        PayRepo["[Component]<br/>PgPaymentRepository<br/>Saves payment state<br/>and checkpoints"]
+        BankAdapter["[Component]<br/>BankApiAdapter<br/>Implements<br/>BankingPort<br/>REST + retry +<br/>circuit breaker"]
+        IdempotencyChecker["[Component]<br/>IdempotencyChecker<br/>Prevents<br/>double-payment<br/>Checks payment_id<br/>uniqueness"]
     end
 
-    EventBus["[Container: Message Broker]<br/>event-bus / Kafka"]
-    PG["[Container: Database]<br/>postgres<br/>payments schema"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka"]
+    PG["[Container:<br/>Database]<br/>postgres<br/>payments schema"]
     Bank["[External System]<br/>Bank"]
 
-    InvoiceConsumer -->|"Consumes InvoiceMatched"| EventBus
+    InvoiceConsumer -->|"Consumes<br/>InvoiceMatched"| EventBus
     InvoiceConsumer -->|"Schedules payment"| PayScheduler
-    PayScheduler -->|"Persists payment schedule"| PayRepo
+    PayScheduler -->|"Persists payment<br/>schedule"| PayRepo
     PayScheduler -->|"Checks idempotency"| IdempotencyChecker
     IdempotencyChecker -->|"Queries payment_id"| PayRepo
     PayScheduler -->|"Triggers executor"| PayExecutor
-    PayExecutor -->|"Sends pain.001 via adapter"| BankAdapter
+    PayExecutor -->|"Sends pain.001 via<br/>adapter"| BankAdapter
     BankAdapter -->|"HTTPS to bank API"| Bank
-    Bank -->|"Returns pain.002 status"| BankAdapter
-    BankAdapter -->|"Updates payment status"| PayRepo
+    Bank -->|"Returns pain.002<br/>status"| BankAdapter
+    BankAdapter -->|"Updates payment<br/>status"| PayRepo
     PayRepo -->|"SQL [TCP/5432]"| PG
 
-    style InvoiceConsumer fill:#CC78BC,stroke:#000,color:#fff
-    style PayScheduler fill:#DE8F05,stroke:#000,color:#fff
-    style PayExecutor fill:#DE8F05,stroke:#000,color:#fff
-    style PayRepo fill:#CA9161,stroke:#000,color:#fff
-    style BankAdapter fill:#CA9161,stroke:#000,color:#fff
-    style IdempotencyChecker fill:#029E73,stroke:#000,color:#fff
-    style EventBus fill:#808080,stroke:#000,color:#fff
-    style PG fill:#808080,stroke:#000,color:#fff
-    style Bank fill:#808080,stroke:#000,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class InvoiceConsumer pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PayScheduler pal-DE8F05
+    class PayExecutor pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PayRepo pal-CA9161
+    class BankAdapter pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class IdempotencyChecker pal-029E73
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class EventBus pal-808080
+    class PG pal-808080
+    class Bank pal-808080
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Elements**:
@@ -1232,29 +1430,36 @@ The approval router component routes requisitions to the correct approval level 
 
 ```mermaid
 graph TD
-    SubmitHandler["[Component]<br/>SubmitRequisitionHandler<br/>Application Services"]
+    accTitle: Example 58: Component Diagram — Approval Router Component
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: [Component] SubmitRequisition Handler Application Services, [Component] ApprovalRouter Adapter Implements ApprovalRouterPort Determines ApprovalLevel from PO total, [Component] ApproverNotification Adapter Sends approval request to manager via email or workflow engine, [Component] ApprovalLevel value object L1: PO total ≤ $1,000 L2: PO total ≤ $10,000 L3: PO total > $10,000, [Person] Approving Manager, [External System] Email Service. Connections: [Component] SubmitRequisition Handler Application Services to [Component] ApprovalRouter Adapter Implements ApprovalRouterPort Determines ApprovalLevel from PO total (Routes requisition via ApprovalRouterPort), [Component] ApprovalRouter Adapter Implements ApprovalRouterPort Determines ApprovalLevel from PO total to [Component] ApprovalLevel value object L1: PO total ≤ $1,000 L2: PO total ≤ $10,000 L3: PO total > $10,000 (Derives ApprovalLevel), [Component] ApprovalRouter Adapter Implements ApprovalRouterPort Determines ApprovalLevel from PO total to [Component] ApproverNotification Adapter Sends approval request to manager via email or workflow engine (Notifies correct approver), [Component] ApproverNotification Adapter Sends approval request to manager via email or workflow engine to [External System] Email Service (Sends approval request email [SMTP]), [External System] Email Service to [Person] Approving Manager (Delivers to manager inbox).
+    SubmitHandler["[Component]<br/>SubmitRequisition<br/>Handler<br/>Application Services"]
 
-    subgraph ApprovalComponents["Approval Routing — purchasing-api"]
-        ApprovalRouter["[Component]<br/>ApprovalRouterAdapter<br/>Implements ApprovalRouterPort<br/>Determines ApprovalLevel from PO total"]
-        NotifyAdapter["[Component]<br/>ApproverNotificationAdapter<br/>Sends approval request to manager<br/>via email or workflow engine"]
-        ApprovalLevelVO["[Component]<br/>ApprovalLevel value object<br/>L1: PO total ≤ $1,000<br/>L2: PO total ≤ $10,000<br/>L3: PO total > $10,000"]
+    subgraph ApprovalComponents["Approval Routing —<br/>purchasing-api"]
+        ApprovalRouter["[Component]<br/>ApprovalRouter<br/>Adapter<br/>Implements<br/>ApprovalRouterPort<br/>Determines<br/>ApprovalLevel from<br/>PO total"]
+        NotifyAdapter["[Component]<br/>ApproverNotification<br/>Adapter<br/>Sends approval<br/>request to manager<br/>via email or<br/>workflow engine"]
+        ApprovalLevelVO["[Component]<br/>ApprovalLevel value<br/>object<br/>L1: PO total ≤<br/>$1,000<br/>L2: PO total ≤<br/>$10,000<br/>L3: PO total ><br/>$10,000"]
     end
 
     Manager["[Person]<br/>Approving Manager"]
     EmailSvc["[External System]<br/>Email Service"]
 
-    SubmitHandler -->|"Routes requisition via ApprovalRouterPort"| ApprovalRouter
-    ApprovalRouter -->|"Derives ApprovalLevel"| ApprovalLevelVO
-    ApprovalRouter -->|"Notifies correct approver"| NotifyAdapter
-    NotifyAdapter -->|"Sends approval request email [SMTP]"| EmailSvc
-    EmailSvc -->|"Delivers to manager inbox"| Manager
+    SubmitHandler -->|"Routes requisition<br/>via<br/>ApprovalRouterPort"| ApprovalRouter
+    ApprovalRouter -->|"Derives<br/>ApprovalLevel"| ApprovalLevelVO
+    ApprovalRouter -->|"Notifies correct<br/>approver"| NotifyAdapter
+    NotifyAdapter -->|"Sends approval<br/>request email<br/>[SMTP]"| EmailSvc
+    EmailSvc -->|"Delivers to manager<br/>inbox"| Manager
 
-    style SubmitHandler fill:#808080,stroke:#000,color:#fff
-    style ApprovalRouter fill:#CA9161,stroke:#000,color:#fff
-    style NotifyAdapter fill:#CA9161,stroke:#000,color:#fff
-    style ApprovalLevelVO fill:#CC78BC,stroke:#000,color:#fff
-    style Manager fill:#029E73,stroke:#000,color:#fff
-    style EmailSvc fill:#808080,stroke:#000,color:#fff
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class SubmitHandler pal-808080
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ApprovalRouter pal-CA9161
+    class NotifyAdapter pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ApprovalLevelVO pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Manager pal-029E73
+    class EmailSvc pal-808080
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Elements**:
@@ -1277,30 +1482,38 @@ Kafka consumer components need explicit registration and offset management. This
 
 ```mermaid
 graph TD
-    subgraph EventConsumers["Event Consumers — purchasing-api"]
-        PaymentConsumer["[Component]<br/>PaymentDisbursedConsumer<br/>Subscribes to payment-events topic<br/>Updates PO state to Paid"]
-        DisputeConsumer["[Component]<br/>InvoiceDisputedConsumer<br/>Subscribes to invoice-events topic<br/>Transitions PO to Disputed state"]
-        ConsumerRegistry["[Component]<br/>KafkaConsumerRegistry<br/>Manages consumer group offsets<br/>Handles rebalance events"]
+    accTitle: Example 59: Component Diagram — Event Consumer Registration Pattern
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: [Component] PaymentDisbursed Consumer Subscribes to payment-events topic Updates PO state to Paid, [Component] InvoiceDisputed Consumer Subscribes to invoice-events topic Transitions PO to Disputed state, [Component] KafkaConsumer Registry Manages consumer group offsets Handles rebalance events, [Component] PurchaseOrder aggregate Domain Layer, [Component] PgPurchaseOrder Repository Infrastructure, [Container: Message Broker] event-bus / Kafka. Connections: [Component] KafkaConsumer Registry Manages consumer group offsets Handles rebalance events to [Container: Message Broker] event-bus / Kafka (Registers consumers on startup), [Container: Message Broker] event-bus / Kafka to [Component] PaymentDisbursed Consumer Subscribes to payment-events topic Updates PO state to Paid (Delivers PaymentDisbursed), [Container: Message Broker] event-bus / Kafka to [Component] InvoiceDisputed Consumer Subscribes to invoice-events topic Transitions PO to Disputed state (Delivers InvoiceDisputed), [Component] PaymentDisbursed Consumer Subscribes to payment-events topic Updates PO state to Paid to [Component] PurchaseOrder aggregate Domain Layer (Loads PO, calls pay()), [Component] InvoiceDisputed Consumer Subscribes to invoice-events topic Transitions PO to Disputed state to [Component] PurchaseOrder aggregate Domain Layer (Loads PO, calls dispute()), [Component] PaymentDisbursed Consumer Subscribes to payment-events topic Updates PO state to Paid to [Component] PgPurchaseOrder Repository Infrastructure (Saves updated PO), [Component] InvoiceDisputed Consumer Subscribes to invoice-events topic Transitions PO to Disputed state to [Component] PgPurchaseOrder Repository Infrastructure (Saves updated PO).
+    subgraph EventConsumers["Event Consumers —<br/>purchasing-api"]
+        PaymentConsumer["[Component]<br/>PaymentDisbursed<br/>Consumer<br/>Subscribes to<br/>payment-events topic<br/>Updates PO state to<br/>Paid"]
+        DisputeConsumer["[Component]<br/>InvoiceDisputed<br/>Consumer<br/>Subscribes to<br/>invoice-events topic<br/>Transitions PO to<br/>Disputed state"]
+        ConsumerRegistry["[Component]<br/>KafkaConsumer<br/>Registry<br/>Manages consumer<br/>group offsets<br/>Handles rebalance<br/>events"]
     end
 
-    POAggregate["[Component]<br/>PurchaseOrder aggregate<br/>Domain Layer"]
-    PgPORepo["[Component]<br/>PgPurchaseOrderRepository<br/>Infrastructure"]
-    EventBus["[Container: Message Broker]<br/>event-bus / Kafka"]
+    POAggregate["[Component]<br/>PurchaseOrder<br/>aggregate<br/>Domain Layer"]
+    PgPORepo["[Component]<br/>PgPurchaseOrder<br/>Repository<br/>Infrastructure"]
+    EventBus["[Container: Message<br/>Broker]<br/>event-bus / Kafka"]
 
-    ConsumerRegistry -->|"Registers consumers on startup"| EventBus
-    EventBus -->|"Delivers PaymentDisbursed"| PaymentConsumer
-    EventBus -->|"Delivers InvoiceDisputed"| DisputeConsumer
-    PaymentConsumer -->|"Loads PO, calls pay()"| POAggregate
-    DisputeConsumer -->|"Loads PO, calls dispute()"| POAggregate
+    ConsumerRegistry -->|"Registers consumers<br/>on startup"| EventBus
+    EventBus -->|"Delivers<br/>PaymentDisbursed"| PaymentConsumer
+    EventBus -->|"Delivers<br/>InvoiceDisputed"| DisputeConsumer
+    PaymentConsumer -->|"Loads PO, calls<br/>pay()"| POAggregate
+    DisputeConsumer -->|"Loads PO, calls<br/>dispute()"| POAggregate
     PaymentConsumer -->|"Saves updated PO"| PgPORepo
     DisputeConsumer -->|"Saves updated PO"| PgPORepo
 
-    style PaymentConsumer fill:#CC78BC,stroke:#000,color:#fff
-    style DisputeConsumer fill:#CC78BC,stroke:#000,color:#fff
-    style ConsumerRegistry fill:#0173B2,stroke:#000,color:#fff
-    style POAggregate fill:#029E73,stroke:#000,color:#fff
-    style PgPORepo fill:#CA9161,stroke:#000,color:#fff
-    style EventBus fill:#808080,stroke:#000,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PaymentConsumer pal-CC78BC
+    class DisputeConsumer pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class ConsumerRegistry pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class POAggregate pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PgPORepo pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class EventBus pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -1323,26 +1536,33 @@ When purchasing-api receives events from receiving-api, an Anti-Corruption Layer
 
 ```mermaid
 graph TD
-    GRNConsumer["[Component]<br/>GoodsReceivedEventConsumer<br/>purchasing-api — subscribes to grn-events"]
+    accTitle: Example 60: Component Diagram — Anti-Corruption Layer Between Contexts
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: [Component] GoodsReceivedEvent Consumer purchasing-api — subscribes to grn-events, [Component] GoodsReceipt Translator Maps GoodsReceived event (receiving context) to PurchaseOrder ReceivedEvent (purchasing context), [Component] ReceivingContext Mapper Translates SupplierId, Quantity, SkuCode to purchasing context value objects, [Component] PurchaseOrder aggregate purchasing context domain, [Component] RecordGoodsReceipt Handler Application Services — purchasing context. Connections: [Component] GoodsReceivedEvent Consumer purchasing-api — subscribes to grn-events to [Component] GoodsReceipt Translator Maps GoodsReceived event (receiving context) to PurchaseOrder ReceivedEvent (purchasing context) (Raw GoodsReceived event from receiving), [Component] GoodsReceipt Translator Maps GoodsReceived event (receiving context) to PurchaseOrder ReceivedEvent (purchasing context) to [Component] ReceivingContext Mapper Translates SupplierId, Quantity, SkuCode to purchasing context value objects (Maps receiving types to purchasing types), [Component] ReceivingContext Mapper Translates SupplierId, Quantity, SkuCode to purchasing context value objects to [Component] RecordGoodsReceipt Handler Application Services — purchasing context (Returns purchasing context command), [Component] RecordGoodsReceipt Handler Application Services — purchasing context to [Component] PurchaseOrder aggregate purchasing context domain (Calls PO.partialReceive() or PO.fullReceive()).
+    GRNConsumer["[Component]<br/>GoodsReceivedEvent<br/>Consumer<br/>purchasing-api —<br/>subscribes to<br/>grn-events"]
 
-    subgraph ACL["Anti-Corruption Layer — purchasing-api"]
-        GRNTranslator["[Component]<br/>GoodsReceiptTranslator<br/>Maps GoodsReceived event (receiving context)<br/>to PurchaseOrderReceivedEvent (purchasing context)"]
-        ContextMapper["[Component]<br/>ReceivingContextMapper<br/>Translates SupplierId, Quantity, SkuCode<br/>to purchasing context value objects"]
+    subgraph ACL["Anti-Corruption<br/>Layer —<br/>purchasing-api"]
+        GRNTranslator["[Component]<br/>GoodsReceipt<br/>Translator<br/>Maps GoodsReceived<br/>event (receiving<br/>context)<br/>to PurchaseOrder<br/>ReceivedEvent<br/>(purchasing context)"]
+        ContextMapper["[Component]<br/>ReceivingContext<br/>Mapper<br/>Translates<br/>SupplierId,<br/>Quantity, SkuCode<br/>to purchasing<br/>context value<br/>objects"]
     end
 
-    POAggregate["[Component]<br/>PurchaseOrder aggregate<br/>purchasing context domain"]
-    Handler["[Component]<br/>RecordGoodsReceiptHandler<br/>Application Services — purchasing context"]
+    POAggregate["[Component]<br/>PurchaseOrder<br/>aggregate<br/>purchasing context<br/>domain"]
+    Handler["[Component]<br/>RecordGoodsReceipt<br/>Handler<br/>Application Services<br/>— purchasing context"]
 
-    GRNConsumer -->|"Raw GoodsReceived event from receiving"| GRNTranslator
-    GRNTranslator -->|"Maps receiving types to purchasing types"| ContextMapper
-    ContextMapper -->|"Returns purchasing context command"| Handler
-    Handler -->|"Calls PO.partialReceive() or PO.fullReceive()"| POAggregate
+    GRNConsumer -->|"Raw GoodsReceived<br/>event from<br/>receiving"| GRNTranslator
+    GRNTranslator -->|"Maps receiving<br/>types to purchasing<br/>types"| ContextMapper
+    ContextMapper -->|"Returns purchasing<br/>context command"| Handler
+    Handler -->|"Calls<br/>PO.partialReceive()<br/>or PO.fullReceive()"| POAggregate
 
-    style GRNConsumer fill:#CC78BC,stroke:#000,color:#fff
-    style GRNTranslator fill:#DE8F05,stroke:#000,color:#fff
-    style ContextMapper fill:#DE8F05,stroke:#000,color:#fff
-    style POAggregate fill:#029E73,stroke:#000,color:#fff
-    style Handler fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class GRNConsumer pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class GRNTranslator pal-DE8F05
+    class ContextMapper pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class POAggregate pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Handler pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:

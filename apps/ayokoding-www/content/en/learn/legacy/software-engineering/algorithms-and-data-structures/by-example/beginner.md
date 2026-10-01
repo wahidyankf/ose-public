@@ -1174,17 +1174,23 @@ A singly linked list stores elements in nodes, each holding a value and a pointe
 
 ```mermaid
 graph TD
+    accTitle: Example 6: Singly Linked List — Structure and Traversal
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: head, Node: 10, Node: 20, Node: 30, None. Connections: head to Node: 10, Node: 10 to Node: 20, Node: 20 to Node: 30, Node: 30 to None.
     H["head"] --> A["Node: 10"]
     A --> B["Node: 20"]
     B --> C["Node: 30"]
     C --> D["None"]
 
     %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
-    style H fill:#CA9161,stroke:#000,color:#fff
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#808080,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    class C pal-0173B2
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class D pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -2191,15 +2197,20 @@ A stack enforces Last-In First-Out (LIFO) access. Python lists implement stacks 
 
 ```mermaid
 graph TD
+    accTitle: Example 9: Stack Using a List — Push and Pop
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: TOP, 30 (last pushed), 20, 10 (first pushed, BOTTOM). Connections: TOP to 30 (last pushed), 30 (last pushed) to 20, 20 to 10 (first pushed, BOTTOM).
     T["TOP"] --> A["30 (last pushed)"]
     A --> B["20"]
-    B --> C["10 (first pushed, BOTTOM)"]
+    B --> C["10 (first pushed,<br/>BOTTOM)"]
 
     %% Stack diagram — Blue nodes, Orange for TOP marker
-    style T fill:#DE8F05,stroke:#000,color:#fff
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class T pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    class C pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -2970,17 +2981,23 @@ A queue enforces First-In First-Out (FIFO) access. `collections.deque` provides 
 
 ```mermaid
 graph TD
+    accTitle: Example 12: Queue Using collections.deque — Enqueue and Dequeue
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Enqueue (rear), 30, 20, 10, Dequeue (front). Connections: Enqueue (rear) to 30, 30 to 20, 20 to 10, 10 to Dequeue (front).
     ENQ["Enqueue (rear)"] --> C["30"]
     C --> B["20"]
     B --> A["10"]
     A --> DEQ["Dequeue (front)"]
 
     %% Queue diagram — Teal for enqueue side, Orange for dequeue side
-    style ENQ fill:#029E73,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style DEQ fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ENQ pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    class B pal-0173B2
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class DEQ pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -4526,17 +4543,23 @@ Big-O notation classifies how an algorithm's running time grows as input size n 
 
 ```mermaid
 graph TD
-    O1["O(1) Constant\nArray index access"]
-    ON["O(n) Linear\nArray scan / linear search"]
-    ON2["O(n²) Quadratic\nNested loop comparison"]
+    accTitle: Example 18: Big-O — O, O, and O in Practice
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: O(1) Constant Array index access, O(n) Linear Array scan /linear search, O(n²) Quadratic Nested loop comparison. Connections: O(1) Constant Array index access to O(n) Linear Array scan /linear search, O(n) Linear Array scan /linear search to O(n²) Quadratic Nested loop comparison.
+    O1["O(1) Constant<br/>Array index access"]
+    ON["O(n) Linear<br/>Array scan /linear<br/>search"]
+    ON2["O(n²) Quadratic<br/>Nested loop<br/>comparison"]
 
     O1 --> ON
     ON --> ON2
 
     %% Complexity hierarchy diagram
-    style O1 fill:#029E73,stroke:#000,color:#fff
-    style ON fill:#DE8F05,stroke:#000,color:#fff
-    style ON2 fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class O1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ON pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ON2 pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -4837,15 +4860,22 @@ Bubble sort repeatedly compares adjacent elements and swaps them if they are out
 
 ```mermaid
 graph LR
-    P1["Pass 1\n[64,25,12,22,11]"] --> P2["Pass 2\n[25,12,22,11,64]"]
-    P2 --> P3["Pass 3\n[12,11,22,25,64]"]
-    P3 --> P4["Sorted\n[11,12,22,25,64]"]
+    accTitle: Example 19: Bubble Sort
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Pass 1 [64,25,12,22,11], Pass 2 [25,12,22,11,64], Pass 3 [12,11,22,25,64], Sorted [11,12,22,25,64]. Connections: Pass 1 [64,25,12,22,11] to Pass 2 [25,12,22,11,64], Pass 2 [25,12,22,11,64] to Pass 3 [12,11,22,25,64], Pass 3 [12,11,22,25,64] to Sorted [11,12,22,25,64].
+    P1["Pass 1<br/>[64,25,12,22,11]"] --> P2["Pass 2<br/>[25,12,22,11,64]"]
+    P2 --> P3["Pass 3<br/>[12,11,22,25,64]"]
+    P3 --> P4["Sorted<br/>[11,12,22,25,64]"]
 
     %% Bubble sort passes — each pass places one more element correctly
-    style P1 fill:#0173B2,stroke:#000,color:#fff
-    style P2 fill:#DE8F05,stroke:#000,color:#fff
-    style P3 fill:#029E73,stroke:#000,color:#fff
-    style P4 fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P1 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class P2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class P3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class P4 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -5803,11 +5833,13 @@ Factorial n! = n × (n-1) × ... × 1 is the canonical recursion example. Every 
 
 ```mermaid
 graph TD
-    F5["factorial(5)\n= 5 × factorial(4)"]
-    F4["factorial(4)\n= 4 × factorial(3)"]
-    F3["factorial(3)\n= 3 × factorial(2)"]
-    F2["factorial(2)\n= 2 × factorial(1)"]
-    F1["factorial(1)\n= 1  BASE CASE"]
+    accTitle: Example 23: Factorial — Recursive vs Iterative
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: factorial(5) = 5 × factorial(4), factorial(4) = 4 × factorial(3), factorial(3) = 3 × factorial(2), factorial(2) = 2 × factorial(1), factorial(1) = 1 BASE CASE. Connections: factorial(5) = 5 × factorial(4) to factorial(4) = 4 × factorial(3), factorial(4) = 4 × factorial(3) to factorial(3) = 3 × factorial(2), factorial(3) = 3 × factorial(2) to factorial(2) = 2 × factorial(1), factorial(2) = 2 × factorial(1) to factorial(1) = 1 BASE CASE.
+    F5["factorial(5)<br/>= 5 × factorial(4)"]
+    F4["factorial(4)<br/>= 4 × factorial(3)"]
+    F3["factorial(3)<br/>= 3 × factorial(2)"]
+    F2["factorial(2)<br/>= 2 × factorial(1)"]
+    F1["factorial(1)<br/>= 1  BASE CASE"]
 
     F5 --> F4
     F4 --> F3
@@ -5815,11 +5847,17 @@ graph TD
     F2 --> F1
 
     %% Recursion tree — each level gets a different color
-    style F5 fill:#0173B2,stroke:#000,color:#fff
-    style F4 fill:#DE8F05,stroke:#000,color:#fff
-    style F3 fill:#029E73,stroke:#000,color:#fff
-    style F2 fill:#CC78BC,stroke:#000,color:#fff
-    style F1 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class F5 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F4 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F2 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F1 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}

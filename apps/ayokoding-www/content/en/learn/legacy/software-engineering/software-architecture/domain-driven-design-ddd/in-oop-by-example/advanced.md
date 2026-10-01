@@ -17,16 +17,19 @@ When the `receiving` context imports a `PurchaseOrder` from `purchasing`, it mus
 
 ```mermaid
 graph LR
+    accTitle: Example 56: Anti-Corruption Layer — translating purchasing vocabulary into receiving
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: purchasing context PurchaseOrder, ACL PurchaseOrder Translator, receiving context ExpectedDelivery. Connections: purchasing context PurchaseOrder to ACL PurchaseOrder Translator (raw purchasing DTO), ACL PurchaseOrder Translator to receiving context ExpectedDelivery (translated).
     A["purchasing context<br/>PurchaseOrder"]:::brown
-    B["ACL<br/>PurchaseOrderTranslator"]:::orange
+    B["ACL<br/>PurchaseOrder<br/>Translator"]:::orange
     C["receiving context<br/>ExpectedDelivery"]:::blue
 
     A -->|raw purchasing DTO| B
     B -->|translated| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -7365,12 +7368,14 @@ A saga orchestrates a multi-step business process that spans bounded contexts. E
 
 ```mermaid
 graph LR
+    accTitle: Example 75: Saga — coordinating PurchaseOrder issuance across purchasing and supplier contexts
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: PO DRAFT, SupplierCreditCheck Requested, SupplierCredit Approved, PO ISSUED, SupplierCreditDenied, PO CANCELLED (compensate). Connections: PO DRAFT to SupplierCreditCheck Requested (saga step 1), SupplierCreditCheck Requested to SupplierCredit Approved (approved), SupplierCredit Approved to PO ISSUED (saga step 2), SupplierCreditCheck Requested to SupplierCreditDenied (denied), SupplierCreditDenied to PO CANCELLED (compensate) (compensate).
     A["PO DRAFT"]:::blue
-    B["SupplierCreditCheckRequested"]:::orange
-    C["SupplierCreditApproved"]:::teal
+    B["SupplierCreditCheck<br/>Requested"]:::orange
+    C["SupplierCredit<br/>Approved"]:::teal
     D["PO ISSUED"]:::teal
     E["SupplierCreditDenied"]:::brown
-    F["PO CANCELLED (compensate)"]:::brown
+    F["PO CANCELLED<br/>(compensate)"]:::brown
 
     A -->|saga step 1| B
     B -->|approved| C
@@ -7379,9 +7384,10 @@ graph LR
     E -->|compensate| F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -9021,19 +9027,22 @@ An Open Host Service (OHS) exposes a context's capabilities via a well-defined, 
 
 ```mermaid
 graph LR
+    accTitle: Example 79: Open Host Service — publishing a supplier API for external consumers
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: supplier context domain model, SupplierOpenHost Service (OHS), published API contract (SupplierSummaryDto), External consumers (purchasing, receiving). Connections: supplier context domain model to SupplierOpenHost Service (OHS) (maps to), SupplierOpenHost Service (OHS) to published API contract (SupplierSummaryDto) (publishes), published API contract (SupplierSummaryDto) to External consumers (purchasing, receiving) (consumed by).
     A["supplier context<br/>domain model"]:::blue
-    B["SupplierOpenHostService<br/>(OHS)"]:::teal
-    C["published API contract<br/>(SupplierSummaryDto)"]:::orange
-    D["External consumers<br/>(purchasing, receiving)"]:::purple
+    B["SupplierOpenHost<br/>Service<br/>(OHS)"]:::teal
+    C["published API<br/>contract<br/>(SupplierSummaryDto)"]:::orange
+    D["External consumers<br/>(purchasing,<br/>receiving)"]:::purple
 
     A -->|maps to| B
     B -->|publishes| C
     C -->|consumed by| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}

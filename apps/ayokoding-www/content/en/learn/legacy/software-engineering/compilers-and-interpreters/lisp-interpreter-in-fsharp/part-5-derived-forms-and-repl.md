@@ -20,10 +20,13 @@ The interpreter from Part 4 is complete — it can express any computable functi
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    W1["Source"] --> W2["eval\n(handles everything)"]
+    accTitle: CS Concept: Syntactic Sugar and Derived Forms
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Source, eval (handles everything). Connections: Source to eval (handles everything).
+    W1["Source"] --> W2["eval<br/>(handles everything)"]
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
     class W1,W2 blue
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **With derived forms** — an expansion phase rewrites sugar before `eval` ever sees it:
@@ -31,12 +34,15 @@ flowchart TB
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    S1["Source\n(surface language)"] --> S2["Expander\nlet · cond → core"] --> S3["eval\n(core forms only)"]
+    accTitle: CS Concept: Syntactic Sugar and Derived Forms
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Source (surface language), Expander let · cond → core, eval (core forms only). Connections: Source (surface language) to Expander let · cond → core, Expander let · cond → core to eval (core forms only).
+    S1["Source<br/>(surface language)"] --> S2["Expander<br/>let · cond → core"] --> S3["eval<br/>(core forms only)"]
 
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
     class S1 orange
     class S2,S3 teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The insight from SICP Chapter 4: you can define an arbitrarily rich surface language on top of a tiny primitive core, as long as every surface form can be mechanically rewritten into primitive forms. This is the foundation of Lisp's macro systems and of how languages like Haskell (`do` notation), Rust (procedural macros), and Kotlin (coroutines) implement syntactic extensions.
@@ -59,22 +65,25 @@ This is identical in meaning to immediately invoking a lambda:
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    Let["(let ((x 5) (y 3))\n  (+ x y))"]
-    Rule["Transformation rule:\n(let ((v1 e1) (v2 e2)) body)\n→\n((lambda (v1 v2) body) e1 e2)"]
-    Lambda["((lambda (x y)\n   (+ x y)) 5 3)"]
-    Eval["eval\n(normal application)"]
+    accTitle: let as a Derived Form
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: (let ((x 5) (y 3)) (+ x y)), Transformation rule: (let ((v1 e1) (v2 e2)) body) → ((lambda (v1 v2) body) e1 e2), ((lambda (x y) (+ x y)) 5 3), eval (normal application). Connections: (let ((x 5) (y 3)) (+ x y)) to Transformation rule: (let ((v1 e1) (v2 e2)) body) → ((lambda (v1 v2) body) e1 e2) (desugar), Transformation rule: (let ((v1 e1) (v2 e2)) body) → ((lambda (v1 v2) body) e1 e2) to ((lambda (x y) (+ x y)) 5 3), ((lambda (x y) (+ x y)) 5 3) to eval (normal application).
+    Let["(let ((x 5) (y 3))<br/>  (+ x y))"]
+    Rule["Transformation rule:<br/>(let ((v1 e1) (v2<br/>e2)) body)<br/>→<br/>((lambda (v1 v2)<br/>body) e1 e2)"]
+    Lambda["((lambda (x y)<br/>   (+ x y)) 5 3)"]
+    Eval["eval<br/>(normal application)"]
 
     Let -->|"desugar"| Rule
     Rule --> Lambda
     Lambda --> Eval
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
 
     class Let blue
     class Rule orange
     class Lambda,Eval teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 In F#:
@@ -111,23 +120,26 @@ This desugars to nested `if` expressions:
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    Cond["cond:\n  (= x 0) → zero\n  (lt x 0) → negative\n  else → positive"]
+    accTitle: cond as a Derived Form
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: cond: (= x 0) → zero (lt x 0) → negative else → positive, if (= x 0) zero else ..., if (lt x 0) negative else ..., positive. Connections: cond: (= x 0) → zero (lt x 0) → negative else → positive to if (= x 0) zero else ... (desugar), if (= x 0) zero else ... to if (lt x 0) negative else ... (alternate branch), if (lt x 0) negative else ... to positive (else branch).
+    Cond["cond:<br/>  (= x 0) → zero<br/>(lt x 0) → negative<br/>  else → positive"]
 
-    If1["if (= x 0) zero\n  else ..."]
-    If2["if (lt x 0) negative\n  else ..."]
+    If1["if (= x 0) zero<br/>  else ..."]
+    If2["if (lt x 0) negative<br/>  else ..."]
     Else["positive"]
 
     Cond -->|"desugar"| If1
     If1 -->|"alternate branch"| If2
     If2 -->|"else branch"| Else
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
 
     class Cond blue
     class If1,If2 orange
     class Else teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 In F#:
@@ -164,16 +176,19 @@ The desugared form is passed back to `eval` recursively. The evaluator processes
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    R["read\ntext → LispVal"] --> E["expand\nderived → core"] --> V["eval\ncore → value"] --> P["print\nvalue → text"]
+    accTitle: CS Concept: The Expansion Phase
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: read text → LispVal, expand derived → core, eval core → value, print value → text. Connections: read text → LispVal to expand derived → core, expand derived → core to eval core → value, eval core → value to print value → text.
+    R["read<br/>text → LispVal"] --> E["expand<br/>derived → core"] --> V["eval<br/>core → value"] --> P["print<br/>value → text"]
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
     class R blue
     class E orange
     class V teal
     class P purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **What each phase processes:**
@@ -181,16 +196,19 @@ flowchart TB
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    RF["(let ((x 5))\n  (cond ...))"] --> EF["((lambda (x)\n  (if ...)) 5)"] --> VF["Number 42"] --> PF["42"]
+    accTitle: CS Concept: The Expansion Phase
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: (let ((x 5)) (cond ...)), ((lambda (x) (if ...)) 5), Number 42, 42. Connections: (let ((x 5)) (cond ...)) to ((lambda (x) (if ...)) 5), ((lambda (x) (if ...)) 5) to Number 42, Number 42 to 42.
+    RF["(let ((x 5))<br/>  (cond ...))"] --> EF["((lambda (x)<br/>  (if ...)) 5)"] --> VF["Number 42"] --> PF["42"]
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
     class RF blue
     class EF orange
     class VF teal
     class PF purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 What we have implemented manually is a rudimentary **expansion phase**. Production Lisp implementations (Racket, Guile, SBCL) have a full macro expander as a separate phase between parsing and evaluation. A macro expander can apply user-defined transformations (`define-syntax`, `syntax-rules`), not just built-in ones.
@@ -237,11 +255,13 @@ define "newline" (Builtin (fun _ -> printfn ""; Nil))
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    Start["repl()\nCreate global env"]
+    accTitle: The REPL
+    accDescr: Flowchart with 10 nodes and 11 connections. Nodes: repl() Create global env, Print prompt, read input from stdin, EOF or null?, read input text → LispVal, eval expr env, Error?, print result, print error message, exit. Connections: repl() Create global env to Print prompt, Print prompt to read input from stdin, read input from stdin to EOF or null?, EOF or null? to exit (yes), EOF or null? to read input text → LispVal (no), read input text → LispVal to eval expr env, eval expr env to Error?, Error? to print result (no), Error? to print error message (yes), print result to Print prompt, print error message to Print prompt.
+    Start["repl()<br/>Create global env"]
     Prompt["Print prompt"]
-    Read["read input\nfrom stdin"]
-    EOF{"EOF or\nnull?"}
-    Parse["read input\ntext → LispVal"]
+    Read["read input<br/>from stdin"]
+    EOF{"EOF or<br/>null?"}
+    Parse["read input<br/>text → LispVal"]
     Eval["eval expr env"]
     Err{"Error?"}
     Print["print result"]
@@ -259,15 +279,16 @@ flowchart TB
     Print --> Prompt
     PrintErr --> Prompt
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
 
     class Start,Prompt blue
     class Read,EOF orange
     class Parse,Eval teal
     class Err,Print,PrintErr,Exit brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp
@@ -330,24 +351,26 @@ fib
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
+    accTitle: What We Have Built After Part 5
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Part 6 (next) Tail-call optimization, Part 5 ← you are here Derived forms + REPL, Part 4 Special forms + closures, Part 3 Environments + eval/apply, Part 2 Tokenizer + parser, Part 1 Foundation. Connections: Part 6 (next) Tail-call optimization to Part 5 ← you are here Derived forms + REPL, Part 5 ← you are here Derived forms + REPL to Part 4 Special forms + closures, Part 4 Special forms + closures to Part 3 Environments + eval/apply, Part 3 Environments + eval/apply to Part 2 Tokenizer + parser, Part 2 Tokenizer + parser to Part 1 Foundation.
     subgraph Stack["Interpreter stack"]
         direction TB
-        L6["Part 6 (next)\nTail-call optimization"]
-        L5["Part 5 ← you are here\nDerived forms + REPL"]
-        L4["Part 4\nSpecial forms + closures"]
-        L3["Part 3\nEnvironments + eval/apply"]
-        L2["Part 2\nTokenizer + parser"]
-        L1["Part 1\nFoundation"]
+        L6["Part 6 (next)<br/>Tail-call<br/>optimization"]
+        L5["Part 5 ← you are<br/>here<br/>Derived forms + REPL"]
+        L4["Part 4<br/>Special forms +<br/>closures"]
+        L3["Part 3<br/>Environments +<br/>eval/apply"]
+        L2["Part 2<br/>Tokenizer + parser"]
+        L1["Part 1<br/>Foundation"]
 
         L6 --> L5 --> L4 --> L3 --> L2 --> L1
     end
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
-    classDef gray fill:#808080,color:#fff,stroke:#808080
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
+    classDef gray fill:#808080,color:#000000,stroke:#000000
 
     class L6 gray
     class L5 blue
@@ -355,6 +378,7 @@ flowchart TB
     class L3 teal
     class L2 purple
     class L1 brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 One correctness property is still missing: **tail-call optimization**. A deeply recursive program using tail calls will overflow the F# call stack. Scheme's R5RS standard mandates that tail calls must not consume stack space.

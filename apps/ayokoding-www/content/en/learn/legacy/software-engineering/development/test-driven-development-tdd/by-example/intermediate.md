@@ -83,17 +83,23 @@ Mocks verify that specific methods were called with expected arguments. Unlike s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 32: Test Doubles - Mocks
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Test Code, Mock Object, Verification. Connections: Test Code to Mock Object (Calls method), Mock Object to Verification (Records call), Verification to Test Code (Asserts called correctly).
     A[Test Code]
     B[Mock Object]
     C[Verification]
 
     A -->|Calls method| B
     B -->|Records call| C
-    C -->|Asserts called correctly| A
+    C -->|Asserts called<br/>correctly| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test email sending behavior**
@@ -296,6 +302,8 @@ Fakes are lightweight, working implementations that replace complex dependencies
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 34: Test Doubles - Fakes
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Service Under Test, Fake Repository, Real Database, In-Memory Map. Connections: Service Under Test to Real Database (production), Service Under Test to Fake Repository (testing), Fake Repository to In-Memory Map (backed by).
     A[Service Under Test]
     B[Fake Repository]
     C[Real Database]
@@ -305,10 +313,15 @@ graph TD
     A -->|"testing"| B
     B -->|"backed by"| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test user service with database**
@@ -423,6 +436,8 @@ Dependency injection makes code testable by allowing dependencies to be swapped 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 35: Dependency Injection for Testability
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Production Code, Real Dependencies, Test Code, Test Doubles, Service Under Test. Connections: Production Code to Real Dependencies (Injects), Real Dependencies to Service Under Test (Used by), Test Code to Test Doubles (Injects), Test Doubles to Service Under Test (Used by).
     A[Production Code]
     B[Real Dependencies]
     C[Test Code]
@@ -434,11 +449,17 @@ graph TD
     C -- Injects --> D
     D -- Used by --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Hard-coded dependency (untestable)**
@@ -547,6 +568,8 @@ Promises represent asynchronous operations. TDD requires testing both resolution
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 stateDiagram-v2
+    accTitle: Example 36: Testing Promises - Basic Resolution
+    accDescr: State diagram with 4 items: start or end, Pending, Resolved, Rejected. Relationships: start or end to Pending; Pending to Resolved: resolve(value); Pending to Rejected: reject(error); Resolved to start or end; Rejected to start or end.
     [*] --> Pending
     Pending --> Resolved: resolve(value)
     Pending --> Rejected: reject(error)
@@ -847,6 +870,8 @@ Code with timers (setTimeout, setInterval) runs slowly in tests. Use fake timers
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 39: Testing Timers and Delays
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Real Timer, Fake Timer, Instant Test. Connections: Real Timer to Instant Test (Takes 5 seconds), Fake Timer to Instant Test (Takes 0 seconds).
     A[Real Timer]
     B[Fake Timer]
     C[Instant Test]
@@ -854,9 +879,13 @@ graph TD
     A -->|Takes 5 seconds| C
     B -->|Takes 0 seconds| C
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test with real timer (slow)**
@@ -1249,23 +1278,31 @@ Property-based testing generates random inputs to verify properties hold for all
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 42: Property-Based Testing Introduction
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Property-Based Test, Generate Random Inputs, Apply Function Under Test, Property Holds?, All Pass: High Confidence, Failure: Shrink to Min Case. Connections: Property-Based Test to Generate Random Inputs, Generate Random Inputs to Apply Function Under Test, Apply Function Under Test to Property Holds?, Property Holds? to All Pass: High Confidence (yes), Property Holds? to Failure: Shrink to Min Case (no).
     A[Property-Based Test]
-    B[Generate Random Inputs]
-    C[Apply Function Under Test]
+    B[Generate Random<br/>Inputs]
+    C[Apply Function Under<br/>Test]
     D{Property Holds?}
-    E[All Pass: High Confidence]
-    F[Failure: Shrink to Min Case]
+    E[All Pass: High<br/>Confidence]
+    F[Failure: Shrink to<br/>Min Case]
 
     A --> B --> C --> D
     D -->|"yes"| E
     D -->|"no"| F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Traditional example-based test**
@@ -1714,6 +1751,8 @@ Event-driven code (EventEmitter, observers) requires testing that events are emi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 47: Testing Event-Driven Code
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Event Source, Event Emitter, Event Handler 1, Event Handler 2. Connections: Event Source to Event Emitter (Triggers), Event Emitter to Event Handler 1 (Emits), Event Emitter to Event Handler 2 (Emits).
     A[Event Source]
     B[Event Emitter]
     C[Event Handler 1]
@@ -1723,10 +1762,14 @@ graph TD
     B -->|Emits| C
     B -->|Emits| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test event emission**
@@ -1844,15 +1887,20 @@ State machines model workflows with discrete states and transitions. TDD ensures
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 stateDiagram-v2
+    accTitle: Example 48: Testing State Machines
+    accDescr: State diagram with 4 items: start or end, Draft, Published, Archived. Relationships: start or end to Draft; Draft to Published: publish(); Published to Archived: archive(); Archived to Draft: restore(); Published to Draft: unpublish().
     [*] --> Draft
     Draft --> Published: publish()
     Published --> Archived: archive()
     Archived --> Draft: restore()
     Published --> Draft: unpublish()
 
-    style Draft fill:#0173B2,color:#fff
-    style Published fill:#029E73,color:#fff
-    style Archived fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Draft pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Published pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Archived pal-CC78BC
 ```
 
 **Red: Test state transitions**
@@ -2355,17 +2403,24 @@ Continuous Integration runs tests automatically on every commit. Configure CI to
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 53: CI/CD Integration for TDD
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Code Push, Unit + Integration Tests, Build, Deploy. Connections: Code Push to Unit + Integration Tests, Unit + Integration Tests to Build, Build to Deploy.
     A[Code Push]
-    B["Unit + Integration Tests"]
+    B["Unit + Integration<br/>Tests"]
     C[Build]
     D[Deploy]
 
     A --> B --> C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test CI configuration**
@@ -2653,17 +2708,24 @@ Test data builders create complex test objects with readable, maintainable code.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 56: Test Data Builders Pattern
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: UserBuilder.new, .withName + .withRole .inOrganization, .build(), User Object. Connections: UserBuilder.new to .withName + .withRole .inOrganization, .withName + .withRole .inOrganization to .build(), .build() to User Object.
     A[UserBuilder.new]
-    B[".withName + .withRole<br/>.inOrganization"]
+    B[".withName +<br/>.withRole<br/>.inOrganization"]
     C[".build()"]
     D[User Object]
 
     A --> B --> C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Repetitive object creation**
@@ -2765,21 +2827,29 @@ Object mothers provide named factory methods for common test scenarios. Similar 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 57: Object Mother Pattern
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: CustomerMother, .premiumCustomer(), .newCustomer(), .bannedCustomer(), Preconfigured Test Object. Connections: CustomerMother to .premiumCustomer(), .premiumCustomer() to Preconfigured Test Object, CustomerMother to .newCustomer(), .newCustomer() to Preconfigured Test Object, CustomerMother to .bannedCustomer(), .bannedCustomer() to Preconfigured Test Object.
     A[CustomerMother]
     B[".premiumCustomer()"]
     C[".newCustomer()"]
     D[".bannedCustomer()"]
-    E[Preconfigured Test Object]
+    E[Preconfigured Test<br/>Object]
 
     A --> B --> E
     A --> C --> E
     A --> D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Duplicated test scenarios**
@@ -2885,6 +2955,8 @@ Two TDD approaches differ in interaction testing (London/mockist) versus state t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 58: London vs Chicago TDD Schools
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: London School, Mock Dependencies, Test Interactions, Chicago School, Use Real Objects, Test State Changes. Connections: London School to Mock Dependencies, Mock Dependencies to Test Interactions, Chicago School to Use Real Objects, Use Real Objects to Test State Changes.
     A[London School]
     B[Mock Dependencies]
     C[Test Interactions]
@@ -2897,12 +2969,16 @@ graph TD
     D --> E
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-0173B2
+    class E pal-DE8F05
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **London School (Mockist) Approach**

@@ -37,30 +37,40 @@ Domain types never directly touch serialization libraries. JSON serialization us
 
 ```mermaid
 graph LR
-    JSON_In["JSON string\n(HTTP request body)"]
-    DTO_In["CreatePODto\n(deserialized DTO)"]
-    Domain["PurchaseOrderAgg\n(validated domain type)"]
+    accTitle: Example 56: Serialization — JSON via DTO Boundary
+    accDescr: Graph with 3 nodes and 0 connections. Nodes: JSON string (HTTP request body), CreatePODto (deserialized DTO), PurchaseOrderAgg (validated domain type).
+    JSON_In["JSON string<br/>(HTTP request body)"]
+    DTO_In["CreatePODto<br/>(deserialized DTO)"]
+    Domain["PurchaseOrderAgg<br/>(validated domain<br/>type)"]
 
-    JSON_In -- "JsonSerializer.Deserialize" --> DTO_In
-    DTO_In -- "fromDto (validates)" --> Domain
+    JSON_In -- "JsonSerializer.<br/>Deserialize" --> DTO_In
+    DTO_In -- "fromDto<br/>(validates)" --> Domain
 
-    style DTO_In fill:#DE8F05,stroke:#000,color:#000
-    style Domain fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class DTO_In pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Domain pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Outbound boundary** (domain to JSON):
 
 ```mermaid
 graph LR
-    Domain["PurchaseOrderAgg\n(validated domain type)"]
-    DTO_Out["PoResponseDto\n(serialized DTO)"]
-    JSON_Out["JSON string\n(HTTP response body)"]
+    accTitle: Example 56: Serialization — JSON via DTO Boundary
+    accDescr: Graph with 3 nodes and 1 connections. Nodes: PurchaseOrderAgg (validated domain type), PoResponseDto (serialized DTO), JSON string (HTTP response body). Connections: PurchaseOrderAgg (validated domain type) to PoResponseDto (serialized DTO) (toDto (infallible)).
+    Domain["PurchaseOrderAgg<br/>(validated domain<br/>type)"]
+    DTO_Out["PoResponseDto<br/>(serialized DTO)"]
+    JSON_Out["JSON string<br/>(HTTP response body)"]
 
     Domain -- "toDto (infallible)" --> DTO_Out
-    DTO_Out -- "JsonSerializer.Serialize" --> JSON_Out
+    DTO_Out -- "JsonSerializer.<br/>Serialize" --> JSON_Out
 
-    style Domain fill:#0173B2,stroke:#000,color:#fff
-    style DTO_Out fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Domain pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class DTO_Out pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1091,12 +1101,14 @@ The `Invoice` aggregate in the `invoicing` context registers supplier invoices a
 
 ```mermaid
 graph LR
-    PO["PurchaseOrder\n(unit price per line)"]
-    GRN["GoodsReceiptNote\n(actual quantities)"]
-    INV["Invoice\n(supplier's billed amount)"]
-    MATCH["threeWayMatch\nInvoice ≈ GRN qty × PO price\n(within Tolerance)"]
-    OK["Matched\n→ schedule payment"]
-    ERR["Disputed\n→ block payment"]
+    accTitle: Example 59: Invoice Aggregate — Three-Way Matching
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: PurchaseOrder (unit price per line), GoodsReceiptNote (actual quantities), Invoice (suppliers billed amount), threeWayMatch Invoice ≈ GRN qty × PO price (within Tolerance), Matched → schedule payment, Disputed → block payment. Connections: PurchaseOrder (unit price per line) to threeWayMatch Invoice ≈ GRN qty × PO price (within Tolerance), GoodsReceiptNote (actual quantities) to threeWayMatch Invoice ≈ GRN qty × PO price (within Tolerance), Invoice (suppliers billed amount) to threeWayMatch Invoice ≈ GRN qty × PO price (within Tolerance), threeWayMatch Invoice ≈ GRN qty × PO price (within Tolerance) to Matched → schedule payment (within 2), threeWayMatch Invoice ≈ GRN qty × PO price (within Tolerance) to Disputed → block payment (outside tolerance).
+    PO["PurchaseOrder<br/>(unit price per<br/>line)"]
+    GRN["GoodsReceiptNote<br/>(actual quantities)"]
+    INV["Invoice<br/>(supplier's billed<br/>amount)"]
+    MATCH["threeWayMatch<br/>Invoice ≈ GRN qty ×<br/>PO price<br/>(within Tolerance)"]
+    OK["Matched<br/>→ schedule payment"]
+    ERR["Disputed<br/>→ block payment"]
 
     PO --> MATCH
     GRN --> MATCH
@@ -1104,12 +1116,18 @@ graph LR
     MATCH -->|"within 2%"| OK
     MATCH -->|"outside tolerance"| ERR
 
-    style PO fill:#0173B2,stroke:#000,color:#fff
-    style GRN fill:#029E73,stroke:#000,color:#fff
-    style INV fill:#DE8F05,stroke:#000,color:#000
-    style MATCH fill:#CA9161,stroke:#000,color:#000
-    style OK fill:#029E73,stroke:#000,color:#fff
-    style ERR fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PO pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GRN pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class INV pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class MATCH pal-CA9161
+    class OK pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ERR pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1459,21 +1477,28 @@ The procurement domain supports two persistence strategies: a traditional reposi
 
 ```mermaid
 graph TD
-    A["Traditional Repository\nStores current state"]
-    B["Event Store\nStores transition history"]
+    accTitle: Example 60: EventStore vs Repository — Trade-offs
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: Traditional Repository Stores current state, Event Store Stores transition history, Fast point-in-time reads Simple queries, No built-in audit trail Loses history on update, Complete audit trail Replay to any past state, Requires projection for current-state reads. Connections: Traditional Repository Stores current state to Fast point-in-time reads Simple queries, Traditional Repository Stores current state to No built-in audit trail Loses history on update, Event Store Stores transition history to Complete audit trail Replay to any past state, Event Store Stores transition history to Requires projection for current-state reads.
+    A["Traditional<br/>Repository<br/>Stores current state"]
+    B["Event Store<br/>Stores transition<br/>history"]
 
-    A --> A1["Fast point-in-time reads\nSimple queries"]
-    A --> A2["No built-in audit trail\nLoses history on update"]
+    A --> A1["Fast point-in-time<br/>reads<br/>Simple queries"]
+    A --> A2["No built-in audit<br/>trail<br/>Loses history on<br/>update"]
 
-    B --> B1["Complete audit trail\nReplay to any past state"]
-    B --> B2["Requires projection\nfor current-state reads"]
+    B --> B1["Complete audit trail<br/>Replay to any past<br/>state"]
+    B --> B2["Requires projection<br/>for current-state<br/>reads"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style A1 fill:#DE8F05,stroke:#000,color:#000
-    style A2 fill:#CC78BC,stroke:#000,color:#000
-    style B1 fill:#DE8F05,stroke:#000,color:#000
-    style B2 fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A1 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A2 pal-CC78BC
+    class B1 pal-DE8F05
+    class B2 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -2150,16 +2175,22 @@ An Anti-Corruption Layer (ACL) translates between two bounded context models. Wh
 
 ```mermaid
 graph LR
-    R["receiving context\nGoodsReceiptNote\n(internal type)"]
-    ACL["translateGrnToSummary\n(ACL function)"]
-    I["invoicing context\nGrnSummary\n(invoicing's view)"]
+    accTitle: Example 62: ACL as a Translation Function Between Contexts
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: receiving context GoodsReceiptNote (internal type), translateGrnTo Summary (ACL function), invoicing context GrnSummary (invoicings view). Connections: receiving context GoodsReceiptNote (internal type) to translateGrnTo Summary (ACL function) (internal type never crosses), translateGrnTo Summary (ACL function) to invoicing context GrnSummary (invoicings view) (translated summary).
+    R["receiving context<br/>GoodsReceiptNote<br/>(internal type)"]
+    ACL["translateGrnTo<br/>Summary<br/>(ACL function)"]
+    I["invoicing context<br/>GrnSummary<br/>(invoicing's view)"]
 
-    R -->|"internal type never crosses"| ACL
+    R -->|"internal type never<br/>crosses"| ACL
     ACL -->|"translated summary"| I
 
-    style R fill:#DE8F05,stroke:#000,color:#000
-    style ACL fill:#CA9161,stroke:#000,color:#000
-    style I fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class R pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ACL pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -3224,20 +3255,27 @@ A repository can be modelled as a set of named function types — one per operat
 
 ```mermaid
 graph TD
+    accTitle: Example 65: Repository as Function-Type Alias
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Port (type alias) LoadPO: POId → Async SavePO: Data → Async, Production adapter Npgsql query, Test adapter In-memory map, approvePOWorkflow (only sees the type alias). Connections: Port (type alias) LoadPO: POId → Async SavePO: Data → Async to Production adapter Npgsql query (satisfies), Port (type alias) LoadPO: POId → Async SavePO: Data → Async to Test adapter In-memory map (satisfies), Production adapter Npgsql query to approvePOWorkflow (only sees the type alias) (wired at composition root), Test adapter In-memory map to approvePOWorkflow (only sees the type alias) (wired in tests).
     Port["Port (type alias)\nLoadPO: POId → Async<Data opt>\nSavePO: Data → Async<unit>"]
-    Prod["Production adapter\nNpgsql query"]
-    Test["Test adapter\nIn-memory map"]
-    WF["approvePOWorkflow\n(only sees the type alias)"]
+    Prod["Production adapter<br/>Npgsql query"]
+    Test["Test adapter<br/>In-memory map"]
+    WF["approvePOWorkflow<br/>(only sees the type<br/>alias)"]
 
     Port -->|"satisfies"| Prod
     Port -->|"satisfies"| Test
-    Prod -->|"wired at composition root"| WF
+    Prod -->|"wired at<br/>composition root"| WF
     Test -->|"wired in tests"| WF
 
-    style Port fill:#0173B2,stroke:#000,color:#fff
-    style Prod fill:#DE8F05,stroke:#000,color:#000
-    style Test fill:#029E73,stroke:#000,color:#fff
-    style WF fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Port pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Prod pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Test pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class WF pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -3889,24 +3927,32 @@ The procurement platform uses eventual consistency for cross-context updates: wh
 
 ```mermaid
 graph TD
-    subgraph Strong["Strong Consistency (within one context)"]
-        TX["Single DB Transaction"]
+    accTitle: Example 67: Cross-Context Consistency — Eventual vs Strong
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: Single DB Transaction, PO state saved, Event saved to outbox, receiving: GRN created, Event Bus GoodsReceived published, invoicing: GRN summary updated (after message delivery). Connections: Single DB Transaction to PO state saved, Single DB Transaction to Event saved to outbox, receiving: GRN created to Event Bus GoodsReceived published, Event Bus GoodsReceived published to invoicing: GRN summary updated (after message delivery).
+    subgraph Strong["Strong Consistency<br/>(within one context)"]
+        TX["Single DB<br/>Transaction"]
         TX --> PO["PO state saved"]
-        TX --> EV["Event saved to outbox"]
+        TX --> EV["Event saved to<br/>outbox"]
     end
-    subgraph Eventual["Eventual Consistency (across contexts)"]
-        GRN["receiving: GRN created"]
-        Bus["Event Bus\nGoodsReceived published"]
-        INV["invoicing: GRN summary updated\n(after message delivery)"]
+    subgraph Eventual["Eventual Consistency<br/>(across contexts)"]
+        GRN["receiving: GRN<br/>created"]
+        Bus["Event Bus<br/>GoodsReceived<br/>published"]
+        INV["invoicing: GRN<br/>summary updated<br/>(after message<br/>delivery)"]
         GRN --> Bus --> INV
     end
 
-    style TX fill:#0173B2,stroke:#000,color:#fff
-    style PO fill:#029E73,stroke:#000,color:#fff
-    style EV fill:#029E73,stroke:#000,color:#fff
-    style GRN fill:#DE8F05,stroke:#000,color:#000
-    style Bus fill:#CA9161,stroke:#000,color:#000
-    style INV fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class TX pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class PO pal-029E73
+    class EV pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class GRN pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Bus pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class INV pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -4200,22 +4246,30 @@ Property-based testing generates hundreds of random inputs and verifies that an 
 
 ```mermaid
 graph LR
-    GEN["FsCheck Generator\n(random decimal inputs)"]
-    FN["deriveApprovalLevel\n(pure domain function)"]
-    PROP["Property assertion\nresult ∈ {L1, L2, L3}"]
+    accTitle: Example 68: Property-Based Test for an Invariant — FsCheck
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: FsCheck Generator (random decimal inputs), deriveApprovalLevel (pure domain function), Property assertion result ∈ L1, L2, L3, PASS (100 samples), FAIL + shrink (counterexample found). Connections: FsCheck Generator (random decimal inputs) to deriveApprovalLevel (pure domain function) (random total), deriveApprovalLevel (pure domain function) to Property assertion result ∈ L1, L2, L3 (ApprovalLevel), Property assertion result ∈ L1, L2, L3 to PASS (100 samples) (all pass), Property assertion result ∈ L1, L2, L3 to FAIL + shrink (counterexample found) (one fails).
+    GEN["FsCheck Generator<br/>(random decimal<br/>inputs)"]
+    FN["deriveApprovalLevel<br/>(pure domain<br/>function)"]
+    PROP["Property assertion<br/>result ∈ {L1, L2,<br/>L3}"]
     PASS["PASS (100 samples)"]
-    FAIL["FAIL + shrink\n(counterexample found)"]
+    FAIL["FAIL + shrink<br/>(counterexample<br/>found)"]
 
     GEN -->|"random total"| FN
     FN -->|"ApprovalLevel"| PROP
     PROP -->|"all pass"| PASS
     PROP -->|"one fails"| FAIL
 
-    style GEN fill:#DE8F05,stroke:#000,color:#000
-    style FN fill:#0173B2,stroke:#000,color:#fff
-    style PROP fill:#CA9161,stroke:#000,color:#000
-    style PASS fill:#029E73,stroke:#000,color:#fff
-    style FAIL fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class GEN pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class FN pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PROP pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class PASS pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class FAIL pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -6037,56 +6091,76 @@ This example documents the full integration topology of the procurement platform
 
 ```mermaid
 graph TD
-    P["purchasing\nPurchaseRequisition\nPurchaseOrder"]
-    R["receiving\nGoodsReceiptNote"]
-    I["invoicing\nInvoice"]
-    PA["payments\nPayment"]
+    accTitle: Example 74: Bounded Context Integration Map
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: purchasing PurchaseRequisition PurchaseOrder, receiving GoodsReceiptNote, invoicing Invoice, payments Payment. Connections: receiving GoodsReceiptNote to invoicing Invoice (GoodsReceived), invoicing Invoice to payments Payment (InvoiceMatched).
+    P["purchasing<br/>PurchaseRequisition<br/>PurchaseOrder"]
+    R["receiving<br/>GoodsReceiptNote"]
+    I["invoicing<br/>Invoice"]
+    PA["payments<br/>Payment"]
 
-    P -- "PurchaseOrderIssued" --> R
+    P -- "PurchaseOrder<br/>Issued" --> R
     R -- "GoodsReceived" --> I
-    R -- "GoodsReceiptDiscrepancyDetected" --> I
+    R -- "GoodsReceipt<br/>DiscrepancyDetected" --> I
     I -- "InvoiceMatched" --> PA
 
-    style P  fill:#0173B2,stroke:#000,color:#fff
-    style R  fill:#DE8F05,stroke:#000,color:#000
-    style I  fill:#CC78BC,stroke:#000,color:#000
-    style PA fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class R pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class I pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PA pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Supplier lifecycle loop**:
 
 ```mermaid
 graph TD
+    accTitle: Example 74: Bounded Context Integration Map
+    accDescr: Graph with 3 nodes and 1 connections. Nodes: purchasing, supplier Supplier, invoicing. Connections: invoicing to supplier Supplier (InvoiceDisputed).
     P["purchasing"]
-    S["supplier\nSupplier"]
+    S["supplier<br/>Supplier"]
     I["invoicing"]
 
-    P -- "PurchaseOrderIssued / Cancelled" --> S
-    S -- "SupplierApproved / Suspended" --> P
+    P -- "PurchaseOrderIssued<br/>/Cancelled" --> S
+    S -- "SupplierApproved /<br/>Suspended" --> P
     I -- "InvoiceDisputed" --> S
 
-    style P  fill:#0173B2,stroke:#000,color:#fff
-    style S  fill:#029E73,stroke:#000,color:#fff
-    style I  fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class I pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Payment and finance integration**:
 
 ```mermaid
 graph TD
+    accTitle: Example 74: Bounded Context Integration Map
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: purchasing, supplier, payments, murabaha-finance MurabahaContract (optional). Connections: payments to purchasing (PaymentDisbursed), payments to supplier (PaymentDisbursed).
     P["purchasing"]
     S["supplier"]
     PA["payments"]
-    MF["murabaha-finance\nMurabahaContract (optional)"]
+    MF["murabaha-finance<br/>MurabahaContract<br/>(optional)"]
 
     PA -- "PaymentDisbursed" --> P
     PA -- "PaymentDisbursed" --> S
-    MF -- "MurabahaContractSigned" --> P
+    MF -- "MurabahaContract<br/>Signed" --> P
 
-    style P  fill:#0173B2,stroke:#000,color:#fff
-    style S  fill:#029E73,stroke:#000,color:#fff
-    style PA fill:#CA9161,stroke:#000,color:#000
-    style MF fill:#808080,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PA pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class MF pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -6355,6 +6429,8 @@ The PO approval process can span days (L3 approvals take up to 10 business days)
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 75: Long-Running Workflow — Approval Saga
+    accDescr: State diagram with 5 items: start or end, WaitingForApprover, ApprovalReceived, Escalated, Completed. Relationships: start or end to WaitingForApprover: Start Saga; WaitingForApprover to ApprovalReceived: Approver responds; WaitingForApprover to Escalated: SLA deadline passed; Escalated to ApprovalReceived: Escalated approver responds; ApprovalReceived to Completed: PO transitioned to Approved; WaitingForApprover to Completed: Rejected (Cancelled); Escalated to Completed: Rejected after escalation; Completed to start or end.
     [*] --> WaitingForApprover : Start Saga
     WaitingForApprover --> ApprovalReceived : Approver responds
     WaitingForApprover --> Escalated : SLA deadline passed
@@ -6878,16 +6954,24 @@ CQRS (Command Query Responsibility Segregation) separates the write model (aggre
 
 ```mermaid
 graph TD
-    Cmd["Command\n(ApprovePO, IssuePO)"] --> W["Write Model\nPoWriteModel aggregate"]
-    W -->|"emits events"| Proj["Projection\napplyStatusChange"]
-    Proj --> R["Read Model\nPoDashboardEntry\n(denormalised)"]
-    R --> Q["Dashboard Query\nO(1) table scan"]
+    accTitle: Example 77: CQRS — Separate Read and Write Models
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Command (ApprovePO, IssuePO), Write Model PoWriteModel aggregate, Projection applyStatusChange, Read Model PoDashboardEntry (denormalised), Dashboard Query O(1) table scan. Connections: Command (ApprovePO, IssuePO) to Write Model PoWriteModel aggregate, Write Model PoWriteModel aggregate to Projection applyStatusChange (emits events), Projection applyStatusChange to Read Model PoDashboardEntry (denormalised), Read Model PoDashboardEntry (denormalised) to Dashboard Query O(1) table scan.
+    Cmd["Command<br/>(ApprovePO, IssuePO)"] --> W["Write Model<br/>PoWriteModel<br/>aggregate"]
+    W -->|"emits events"| Proj["Projection<br/>applyStatusChange"]
+    Proj --> R["Read Model<br/>PoDashboardEntry<br/>(denormalised)"]
+    R --> Q["Dashboard Query<br/>O(1) table scan"]
 
-    style Cmd fill:#DE8F05,stroke:#000,color:#000
-    style W fill:#0173B2,stroke:#000,color:#fff
-    style Proj fill:#CA9161,stroke:#000,color:#000
-    style R fill:#029E73,stroke:#000,color:#fff
-    style Q fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Cmd pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class W pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Proj pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class R pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Q pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -7587,6 +7671,8 @@ When the business requires a new `OnHold` state for POs pending budget confirmat
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 79: Domain Model Evolution — Adding a New State
+    accDescr: State diagram with 7 items: start or end, Draft, AwaitingApproval, Approved, OnHold, Cancelled, Issued. Relationships: start or end to Draft; Draft to AwaitingApproval; AwaitingApproval to Approved; AwaitingApproval to OnHold: budget hold (NEW); OnHold to AwaitingApproval: hold released; OnHold to Cancelled: cancelled while on hold; Approved to Issued; Issued to Cancelled; Cancelled to start or end; Issued to start or end.
     [*] --> Draft
     Draft --> AwaitingApproval
     AwaitingApproval --> Approved

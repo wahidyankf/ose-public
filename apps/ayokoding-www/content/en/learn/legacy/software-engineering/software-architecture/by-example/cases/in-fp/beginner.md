@@ -117,24 +117,27 @@ The diagram below shows the per-context layout that the `Contexts/` scaffolding 
 
 ```mermaid
 flowchart LR
+    accTitle: Production Framework
+    accDescr: Flowchart with 6 nodes and 2 connections. Nodes: Domain/ (PO, VOs, Events), Application/ (ports, services), Infrastructure/ (adapters, DB), Domain/ (Supplier types), Application/ (PurchaseOrderIssued Port), Infrastructure/ (ACL adapter). Connections: Application/ (PurchaseOrderIssued Port) to Application/ (ports, services) (consumes port only), Infrastructure/ (ACL adapter) to Infrastructure/ (adapters, DB) (calls HTTP / DB).
     subgraph ctx["purchasing context"]
         direction TB
-        dom["Domain/\n(PO, VOs, Events)"]:::blue
-        app["Application/\n(ports, services)"]:::orange
-        inf["Infrastructure/\n(adapters, DB)"]:::teal
+        dom["Domain/<br/>(PO, VOs, Events)"]:::blue
+        app["Application/<br/>(ports, services)"]:::orange
+        inf["Infrastructure/<br/>(adapters, DB)"]:::teal
     end
     subgraph sup["supplier context"]
         direction TB
-        sdom["Domain/\n(Supplier types)"]:::blue
-        sapp["Application/\n(PurchaseOrderIssuedPort)"]:::orange
-        sinf["Infrastructure/\n(ACL adapter)"]:::teal
+        sdom["Domain/<br/>(Supplier types)"]:::blue
+        sapp["Application/<br/>(PurchaseOrderIssued<br/>Port)"]:::orange
+        sinf["Infrastructure/<br/>(ACL adapter)"]:::teal
     end
     sapp -->|"consumes port only"| app
     sinf -->|"calls HTTP / DB"| inf
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Each bounded context gets its own layers:
@@ -1423,15 +1426,18 @@ Each stack wraps its ports in a typed error union and makes the async or effectf
 
 ```mermaid
 flowchart LR
-    app["Application layer\nPurchaseOrderRepository port"]:::orange
-    inf["Infrastructure layer\nnpgsqlPurchaseOrderRepository"]:::teal
-    mem["Test infrastructure\ninMemoryPORepository"]:::purple
+    accTitle: Production Framework
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Application layer PurchaseOrder Repository port, Infrastructure layer npgsqlPurchaseOrder Repository, Test infrastructure inMemoryPORepository. Connections: Application layer PurchaseOrder Repository port to Infrastructure layer npgsqlPurchaseOrder Repository (satisfied by), Application layer PurchaseOrder Repository port to Test infrastructure inMemoryPORepository (satisfied by in tests).
+    app["Application layer<br/>PurchaseOrder<br/>Repository port"]:::orange
+    inf["Infrastructure layer<br/>npgsqlPurchaseOrder<br/>Repository"]:::teal
+    mem["Test infrastructure<br/>inMemoryPORepository"]:::purple
     app -->|"satisfied by"| inf
-    app -->|"satisfied by in tests"| mem
+    app -->|"satisfied by in<br/>tests"| mem
 
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}

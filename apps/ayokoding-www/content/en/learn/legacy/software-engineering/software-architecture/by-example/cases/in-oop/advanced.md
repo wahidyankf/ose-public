@@ -187,22 +187,25 @@ The Testcontainers framework integrates with the test runner via lifecycle annot
 
 ```mermaid
 flowchart TD
-    jvm["JUnit 5\ntest runner"]:::blue
-    tc["@Testcontainers\nextension"]:::orange
-    pg["PostgreSQLContainer\n(postgres:17-alpine)"]:::teal
-    probe["waitingFor:\nlog message\n'ready to accept'"]:::purple
-    adapter["JdbcPurchaseOrderRepository\n(adapter under test)"]:::brown
-    jvm -->|"@BeforeAll\nstarts"| tc
+    accTitle: Production Framework
+    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: JUnit 5 test runner, @Testcontainers extension, PostgreSQLContainer (postgres:17-alpine), waitingFor: log message ready to accept, JdbcPurchaseOrder Repository (adapter under test). Connections: JUnit 5 test runner to @Testcontainers extension (@BeforeAll starts), @Testcontainers extension to PostgreSQLContainer (postgres:17-alpine) (container.start()), PostgreSQLContainer (postgres:17-alpine) to waitingFor: log message ready to accept (health-check), waitingFor: log message ready to accept to JdbcPurchaseOrder Repository (adapter under test) (ready → exposes JDBC URL), JdbcPurchaseOrder Repository (adapter under test) to PostgreSQLContainer (postgres:17-alpine) (SQL via JDBC URL).
+    jvm["JUnit 5<br/>test runner"]:::blue
+    tc["@Testcontainers<br/>extension"]:::orange
+    pg["PostgreSQLContainer<br/>(postgres:17-alpine)"]:::teal
+    probe["waitingFor:<br/>log message<br/>'ready to accept'"]:::purple
+    adapter["JdbcPurchaseOrder<br/>Repository<br/>(adapter under test)"]:::brown
+    jvm -->|"@BeforeAll<br/>starts"| tc
     tc -->|"container.start()"| pg
     pg -->|"health-check"| probe
-    probe -->|"ready → exposes\nJDBC URL"| adapter
+    probe -->|"ready → exposes<br/>JDBC URL"| adapter
     adapter -->|"SQL via JDBC URL"| pg
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -3743,6 +3746,8 @@ export class PurchaseOrderIssuedEventHandler {
 
 ```mermaid
 sequenceDiagram
+    accTitle: Domain Event Flow — End-to-End Sequence
+    accDescr: Sequence diagram between Primary Adapter (@RestController), Application Service (IssuePurchaseOrderServiceImpl), Repository Port (PurchaseOrderRepository), Event Publisher Port (EventPublisher), Event Handler (PurchaseOrderIssuedEventHandler). Messages: Primary Adapter (@RestController) to Application Service (IssuePurchaseOrderServiceImpl): issue(supplierId, lines); Application Service (IssuePurchaseOrderServiceImpl) to Application Service (IssuePurchaseOrderServiceImpl): new PurchaseOrder(id, supplierId, lines, ...); Application Service (IssuePurchaseOrderServiceImpl) to Repository Port (PurchaseOrderRepository): save(purchaseOrder); Repository Port (PurchaseOrderRepository) to Application Service (IssuePurchaseOrderServiceImpl): (PurchaseOrder — saved aggregate); Application Service (IssuePurchaseOrderServiceImpl) to Event Publisher Port (EventPublisher): publish(PurchaseOrderIssued); Event Publisher Port (EventPublisher) to Event Handler (PurchaseOrderIssuedEventHandler): onPurchaseOrderIssued(event); Event Handler (PurchaseOrderIssuedEventHandler) to Event Publisher Port (EventPublisher): (side-effect complete — GRN expectation opened); Event Publisher Port (EventPublisher) to Application Service (IssuePurchaseOrderServiceImpl): (all handlers finished); Application Service (IssuePurchaseOrderServiceImpl) to Primary Adapter (@RestController): PurchaseOrder (created aggregate); Primary Adapter (@RestController) to Primary Adapter (@RestController): map PurchaseOrder → PurchaseOrderResponse DTO.
     autonumber
     participant Controller as Primary Adapter<br/>(@RestController)
     participant AppService as Application Service<br/>(IssuePurchaseOrderServiceImpl)
@@ -4466,26 +4471,29 @@ spec:
 
 ```mermaid
 flowchart LR
-    ci["CI workflow\n(build + push OCI image)"]:::orange
-    secret["Kubernetes Secret\n(DB password, bank API key)"]:::purple
-    cm["Kubernetes ConfigMap\n(DATASOURCE_URL, ports)"]:::teal
-    dep["Deployment\n(2 replicas)"]:::blue
-    svc["Service\nClusterIP :80 → :8080"]:::brown
-    pg["PostgreSQL\n(postgres-svc)"]:::teal
-    prom["Prometheus\n(/actuator/prometheus :8081)"]:::orange
+    accTitle: => Service: stable network endpoint for the pod replicas — DNS-resolvable cluster-internal address
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: CI workflow (build + push OCI image), Kubernetes Secret (DB password, bank API key), Kubernetes ConfigMap (DATASOURCE_URL, ports), Deployment (2 replicas), Service ClusterIP :80 → :8080, PostgreSQL (postgres-svc), Prometheus (/actuator/ prometheus :8081). Connections: CI workflow (build + push OCI image) to Deployment (2 replicas) (OCI image pull), Kubernetes Secret (DB password, bank API key) to Deployment (2 replicas) (envFrom secretRef), Kubernetes ConfigMap (DATASOURCE_URL, ports) to Deployment (2 replicas) (envFrom configMapRef), Deployment (2 replicas) to PostgreSQL (postgres-svc) (HikariCP adapter DATASOURCE_URL), Deployment (2 replicas) to Prometheus (/actuator/ prometheus :8081) (Prometheus scrape :8081), Service ClusterIP :80 → :8080 to Deployment (2 replicas) (routes :80 → pod :8080).
+    ci["CI workflow<br/>(build + push OCI<br/>image)"]:::orange
+    secret["Kubernetes Secret<br/>(DB password, bank<br/>API key)"]:::purple
+    cm["Kubernetes ConfigMap<br/>(DATASOURCE_URL,<br/>ports)"]:::teal
+    dep["Deployment<br/>(2 replicas)"]:::blue
+    svc["Service<br/>ClusterIP :80 →<br/>:8080"]:::brown
+    pg["PostgreSQL<br/>(postgres-svc)"]:::teal
+    prom["Prometheus<br/>(/actuator/<br/>prometheus :8081)"]:::orange
 
     ci -->|"OCI image pull"| dep
     secret -->|"envFrom secretRef"| dep
-    cm -->|"envFrom configMapRef"| dep
-    dep -->|"HikariCP adapter\nDATASOURCE_URL"| pg
-    dep -->|"Prometheus scrape\n:8081"| prom
-    svc -->|"routes :80 → pod :8080"| dep
+    cm -->|"envFrom<br/>configMapRef"| dep
+    dep -->|"HikariCP adapter<br/>DATASOURCE_URL"| pg
+    dep -->|"Prometheus scrape<br/>:8081"| prom
+    svc -->|"routes :80 → pod<br/>:8080"| dep
 
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trade-offs**: `envFrom` with `secretRef` exposes all Secret keys as environment variables — any process inside the container can read them. For stricter isolation, mount the Secret as a volume and read files from `/run/secrets/`; Spring Boot supports file-based property sources via `spring.config.import=optional:file:/run/secrets/`. Kubernetes Secrets are base64-encoded, not encrypted at rest by default; enable etcd encryption at rest and use Sealed Secrets or External Secrets Operator before moving to production.
@@ -4828,24 +4836,27 @@ data:
 
 ```mermaid
 flowchart LR
-    req["HTTP request\n(Spring @RestController)"]:::blue
-    obs["ObservationRegistry\n(Micrometer)"]:::orange
-    trace["Micrometer Tracing\n(Brave bridge)"]:::teal
-    metrics["Micrometer Metrics\n(Prometheus registry)"]:::purple
-    otlp["OTLP Collector\n(otel-collector-svc :4318)"]:::brown
-    prom["Prometheus\n(/actuator/prometheus)"]:::orange
+    accTitle: Extend apps/procurement-platform-be/deploy/k8s/configmap.yaml with observability keys
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: HTTP request (Spring @RestController), ObservationRegistry (Micrometer), Micrometer Tracing (Brave bridge), Micrometer Metrics (Prometheus registry), OTLP Collector (otel-collector-svc :4318), Prometheus (/actuator/ prometheus). Connections: HTTP request (Spring @RestController) to ObservationRegistry (Micrometer) (observation. start()), ObservationRegistry (Micrometer) to Micrometer Tracing (Brave bridge) (span emitted), ObservationRegistry (Micrometer) to Micrometer Metrics (Prometheus registry) (timer recorded), Micrometer Tracing (Brave bridge) to OTLP Collector (otel-collector-svc :4318) (OTLP/HTTP export), Micrometer Metrics (Prometheus registry) to Prometheus (/actuator/ prometheus) (scrape).
+    req["HTTP request<br/>(Spring<br/>@RestController)"]:::blue
+    obs["ObservationRegistry<br/>(Micrometer)"]:::orange
+    trace["Micrometer Tracing<br/>(Brave bridge)"]:::teal
+    metrics["Micrometer Metrics<br/>(Prometheus<br/>registry)"]:::purple
+    otlp["OTLP Collector<br/>(otel-collector-svc<br/>:4318)"]:::brown
+    prom["Prometheus<br/>(/actuator/<br/>prometheus)"]:::orange
 
-    req -->|"observation.start()"| obs
+    req -->|"observation.<br/>start()"| obs
     obs -->|"span emitted"| trace
     obs -->|"timer recorded"| metrics
     trace -->|"OTLP/HTTP export"| otlp
     metrics -->|"scrape"| prom
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trade-offs**: `management.tracing.sampling.probability: 1.0` captures every span during development but adds measurable overhead above 1000 req/s in production. Reduce to 0.1 and use tail-based sampling in the collector for high-traffic services.
@@ -6714,24 +6725,27 @@ export function buildDataSource(): Pool {
 
 ```mermaid
 flowchart TD
-    k8s["Kubernetes Secret\n(base64-encoded)"]:::purple
-    env["JVM environment\n(SPRING_DATASOURCE_*)"]:::orange
-    props["DataSourceProperties\n(@ConfigurationProperties)"]:::teal
-    valid["@Validated\n(Jakarta Bean Validation)"]:::brown
-    ds["HikariDataSource\n(AppConfig @Bean)"]:::blue
-    port["JdbcPurchaseOrderRepository\n(repository port)"]:::teal
+    accTitle: Production Framework
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Kubernetes Secret (base64-encoded), JVM environment (SPRING_DATASOURCE_ *), DataSourceProperties (@Configuration Properties), @Validated (Jakarta Bean Validation), HikariDataSource (AppConfig @Bean), JdbcPurchaseOrder Repository (repository port). Connections: Kubernetes Secret (base64-encoded) to JVM environment (SPRING_DATASOURCE_ *) (envFrom secretRef (Kubernetes decodes base64)), JVM environment (SPRING_DATASOURCE_ *) to DataSourceProperties (@Configuration Properties) (Spring Environment binds prefix), DataSourceProperties (@Configuration Properties) to @Validated (Jakarta Bean Validation) (@NotBlank + @Pattern checked at startup), @Validated (Jakarta Bean Validation) to HikariDataSource (AppConfig @Bean) (passes at startup), HikariDataSource (AppConfig @Bean) to JdbcPurchaseOrder Repository (repository port) (DataSource injected).
+    k8s["Kubernetes Secret<br/>(base64-encoded)"]:::purple
+    env["JVM environment<br/>(SPRING_DATASOURCE_<br/>*)"]:::orange
+    props["DataSourceProperties<br/>(@Configuration<br/>Properties)"]:::teal
+    valid["@Validated<br/>(Jakarta Bean<br/>Validation)"]:::brown
+    ds["HikariDataSource<br/>(AppConfig @Bean)"]:::blue
+    port["JdbcPurchaseOrder<br/>Repository<br/>(repository port)"]:::teal
 
-    k8s -->|"envFrom secretRef\n(Kubernetes decodes base64)"| env
-    env -->|"Spring Environment\nbinds prefix"| props
-    props -->|"@NotBlank + @Pattern\nchecked at startup"| valid
+    k8s -->|"envFrom secretRef<br/>(Kubernetes decodes<br/>base64)"| env
+    env -->|"Spring Environment<br/>binds prefix"| props
+    props -->|"@NotBlank +<br/>@Pattern<br/>checked at startup"| valid
     valid -->|"passes at startup"| ds
-    ds -->|"DataSource injected"| port
+    ds -->|"DataSource<br/>injected"| port
 
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trade-offs**: `@ConfigurationProperties` with `@Validated` adds one extra class per configuration group. The startup validation overhead is measured in milliseconds — negligible compared to HikariCP pool initialization. The `@Pattern` constraint on the JDBC URL is a double-edged sword: it catches URL typos early, but it also rejects valid non-PostgreSQL JDBC URLs if `procurement-platform-be` ever migrates to a different database — update the pattern when changing the database vendor. For `spring.config.import` with SSM or Vault, add the dependency and set `spring.config.import=optional:aws-ssm:/procurement/` in `application.yml`; the `@ConfigurationProperties` binding is identical — no code change, only a new property source.

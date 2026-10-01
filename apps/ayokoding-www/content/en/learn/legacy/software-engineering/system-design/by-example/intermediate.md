@@ -17,6 +17,8 @@ Pub/sub decouples producers from consumers: a producer publishes a message to a 
 
 ```mermaid
 graph LR
+    accTitle: Example 29: Publish-Subscribe Pattern with Message Queue
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Producer OrderService, Topic order.created, Subscriber EmailService, Subscriber InventoryService, Subscriber AnalyticsService. Connections: Producer OrderService to Topic order.created (publish), Topic order.created to Subscriber EmailService (fan-out copy), Topic order.created to Subscriber InventoryService (fan-out copy), Topic order.created to Subscriber AnalyticsService (fan-out copy).
     P["Producer<br/>OrderService"]:::blue
     T["Topic<br/>order.created"]:::orange
     S1["Subscriber<br/>EmailService"]:::teal
@@ -28,9 +30,10 @@ graph LR
     T -->|fan-out copy| S2
     T -->|fan-out copy| S3
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -467,20 +470,23 @@ Master-slave (primary-replica) replication routes all writes to one primary node
 
 ```mermaid
 graph TD
+    accTitle: Example 31: Master-Slave Replication
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: Application, Primary Read + Write, Replica 1 Read Only, Replica 2 Read Only. Connections: Application to Primary Read + Write (writes (INSERT/ UPDATE/DELETE)), Primary Read + Write to Replica 1 Read Only (async replication stream), Primary Read + Write to Replica 2 Read Only (async replication stream), Application to Replica 1 Read Only (reads (SELECT)), Application to Replica 2 Read Only (reads (SELECT)).
     App["Application"]:::blue
     Primary["Primary<br/>Read + Write"]:::orange
     R1["Replica 1<br/>Read Only"]:::teal
     R2["Replica 2<br/>Read Only"]:::teal
 
-    App -->|"writes (INSERT/UPDATE/DELETE)"| Primary
-    Primary -->|"async replication stream"| R1
-    Primary -->|"async replication stream"| R2
+    App -->|"writes (INSERT/<br/>UPDATE/DELETE)"| Primary
+    Primary -->|"async replication<br/>stream"| R1
+    Primary -->|"async replication<br/>stream"| R2
     App -->|"reads (SELECT)"| R1
     App -->|"reads (SELECT)"| R2
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -1570,6 +1576,8 @@ Consistent hashing maps both nodes and keys onto a circular hash ring. Each key 
 
 ```mermaid
 graph TD
+    accTitle: Example 35: Consistent Hashing Ring
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Hash Ring 0 to 2^32-1, Node A position=100, Node B position=200, Node C position=300, Key user:1 hash=150 -> Node B, Key user:2 hash=250 -> Node C, Key user:3 hash=50 -> Node A. Connections: Hash Ring 0 to 2^32-1 to Node A position=100, Hash Ring 0 to 2^32-1 to Node B position=200, Hash Ring 0 to 2^32-1 to Node C position=300, Node A position=100 to Key user:3 hash=50 -> Node A, Node B position=200 to Key user:1 hash=150 -> Node B, Node C position=300 to Key user:2 hash=250 -> Node C.
     Ring["Hash Ring<br/>0 to 2^32-1"]:::blue
     N1["Node A<br/>position=100"]:::teal
     N2["Node B<br/>position=200"]:::teal
@@ -1585,9 +1593,10 @@ graph TD
     N2 --> K1
     N3 --> K2
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -1848,6 +1857,8 @@ The token bucket algorithm maintains a bucket that fills with tokens at a fixed 
 
 ```mermaid
 graph LR
+    accTitle: Example 36: Token Bucket Rate Limiter
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Incoming Requests, Token Bucket capacity=10 rate=5/sec, Allowed Requests, Rejected Requests 4042941. Connections: Incoming Requests to Token Bucket capacity=10 rate=5/sec (consume token), Token Bucket capacity=10 rate=5/sec to Allowed Requests (token available), Token Bucket capacity=10 rate=5/sec to Rejected Requests 4042941 (bucket empty).
     Req["Incoming<br/>Requests"]:::blue
     Bucket["Token Bucket<br/>capacity=10<br/>rate=5/sec"]:::orange
     Allow["Allowed<br/>Requests"]:::teal
@@ -1857,10 +1868,11 @@ graph LR
     Bucket -->|token available| Allow
     Bucket -->|bucket empty| Deny
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -2280,18 +2292,21 @@ The circuit breaker pattern wraps external calls and tracks failures. After a fa
 
 ```mermaid
 graph LR
+    accTitle: Example 38: Circuit Breaker with Three States
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: CLOSED Normal operation, OPEN Fast fail 40reject all41, HALF-OPEN Probe recovery. Connections: CLOSED Normal operation to OPEN Fast fail 40reject all41 (failures >= threshold), OPEN Fast fail 40reject all41 to HALF-OPEN Probe recovery (timeout elapsed), HALF-OPEN Probe recovery to CLOSED Normal operation (probe succeeds), HALF-OPEN Probe recovery to OPEN Fast fail 40reject all41 (probe fails).
     Closed["CLOSED<br/>Normal operation"]:::teal
-    Open["OPEN<br/>Fast fail #40;reject all#41;"]:::purple
+    Open["OPEN<br/>Fast fail #40;reject<br/>all#41;"]:::purple
     HalfOpen["HALF-OPEN<br/>Probe recovery"]:::orange
 
-    Closed -->|"failures >= threshold"| Open
+    Closed -->|"failures >=<br/>threshold"| Open
     Open -->|"timeout elapsed"| HalfOpen
     HalfOpen -->|"probe succeeds"| Closed
     HalfOpen -->|"probe fails"| Open
 
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -5541,6 +5556,8 @@ A notification system routes messages to users across multiple channels (email, 
 
 ```mermaid
 graph TD
+    accTitle: Example 48: Multi-Channel Notification Dispatcher
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Notification Event type=order_shipped, Dispatcher Routes by preference, Email Channel alice@example.com, SMS Channel +1-555-0100, Push Channel device_token_xyz. Connections: Notification Event type=order_shipped to Dispatcher Routes by preference, Dispatcher Routes by preference to Email Channel alice@example.com (preference: email), Dispatcher Routes by preference to SMS Channel +1-555-0100 (preference: sms), Dispatcher Routes by preference to Push Channel device_token_xyz (preference: push).
     Event["Notification Event<br/>type=order_shipped"]:::blue
     Dispatcher["Dispatcher<br/>Routes by preference"]:::orange
     Email["Email Channel<br/>alice@example.com"]:::teal
@@ -5552,9 +5569,10 @@ graph TD
     Dispatcher -->|preference: sms| SMS
     Dispatcher -->|preference: push| Push
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}

@@ -33,6 +33,8 @@ Hexagonal architecture separates the application core from external systems by d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 29: Hexagonal Architecture — Ports and Adapters
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: CLI Adapter (Driving), Application Core + Port Types, InMemory Adapter (Driven - Repo), Console Adapter (Driven - Notifier). Connections: CLI Adapter (Driving) to Application Core + Port Types (UserPort fns), Application Core + Port Types to InMemory Adapter (Driven - Repo) (UserRepo fns), Application Core + Port Types to Console Adapter (Driven - Notifier) (Notifier fn).
     A["CLI Adapter<br/>(Driving)"]
     B["Application Core<br/>+ Port Types"]
     C["InMemory Adapter<br/>(Driven - Repo)"]
@@ -42,10 +44,14 @@ graph LR
     B -->|"UserRepo fns"| C
     B -->|"Notifier fn"| D
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -324,6 +330,8 @@ Clean Architecture organises code into concentric rings: Entities → Use Cases 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 30: Clean Architecture — Layer Separation with Dependency Rule
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: A, Drivers, Interface Adapters Controller Module, Use Cases Application Module, Entities Domain Module. Connections: A to Interface Adapters Controller Module (depends on), Interface Adapters Controller Module to Use Cases Application Module (depends on), Use Cases Application Module to Entities Domain Module (depends on).
     A["Frameworks & Drivers<br/>In-Memory Adapter"]
     B["Interface Adapters<br/>Controller Module"]
     C["Use Cases<br/>Application Module"]
@@ -333,10 +341,15 @@ graph TD
     B -->|"depends on"| C
     C -->|"depends on"| D
 
-    style A fill:#CA9161,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1006,6 +1019,8 @@ The Observer pattern defines a one-to-many dependency so that when one object ch
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 32: Observer Pattern — Event Notification Without Coupling
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: EventBus (publish fn), emailHandler (fn), auditHandler (fn), statsHandler (fn). Connections: EventBus (publish fn) to emailHandler (fn) (notify), EventBus (publish fn) to auditHandler (fn) (notify), EventBus (publish fn) to statsHandler (fn) (notify).
     A["EventBus<br/>(publish fn)"]
     B["emailHandler<br/>(fn)"]
     C["auditHandler<br/>(fn)"]
@@ -1015,10 +1030,15 @@ graph LR
     A -->|notify| C
     A -->|notify| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -4139,6 +4159,8 @@ The State pattern allows an object to alter its behaviour when its internal stat
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 43: State Pattern — Objects That Change Behavior Based on State
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: Idle, Processing, Completed, Cancelled. Connections: Idle to Processing (Start), Processing to Completed (Complete), Processing to Cancelled (Cancel), Completed to Idle (Reset), Cancelled to Idle (Reset).
     A["Idle"]
     B["Processing"]
     C["Completed"]
@@ -4150,10 +4172,15 @@ graph LR
     C -->|"Reset"| A
     D -->|"Reset"| A
 
-    style A fill:#808080,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class A pal-808080
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -8621,18 +8648,24 @@ The Circuit Breaker pattern stops calls to a failing dependency when the failure
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 57: Circuit Breaker Pattern — Preventing Cascade Failures
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: Closed (normal), Open (blocking), HalfOpen (probing). Connections: Closed (normal) to Open (blocking) (failures >= threshold), Open (blocking) to HalfOpen (probing) (timeout elapsed), HalfOpen (probing) to Closed (normal) (success), HalfOpen (probing) to Open (blocking) (failure).
     A["Closed<br/>(normal)"]
     B["Open<br/>(blocking)"]
     C["HalfOpen<br/>(probing)"]
 
-    A -->|"failures >= threshold"| B
+    A -->|"failures >=<br/>threshold"| B
     B -->|"timeout elapsed"| C
     C -->|"success"| A
     C -->|"failure"| B
 
-    style A fill:#029E73,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class A pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}

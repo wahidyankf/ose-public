@@ -36,6 +36,8 @@ Hierarchical State Machines (HSMs) group states into superstates — a transitio
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 50: Hierarchical States — The Concept
+    accDescr: State diagram with 8 items: Active, Submitted, ApprovalPending, Issued, Draft, Cancelled, Received, Active active. Relationships: Submitted to ApprovalPending: request_approval; ApprovalPending to Issued: approve; Draft to Submitted: submit; Active to Cancelled: cancel; Issued to Received: receive.
     state Active {
         Submitted --> ApprovalPending: request_approval
         ApprovalPending --> Issued: approve
@@ -44,8 +46,8 @@ stateDiagram-v2
     Active --> Cancelled: cancel
     Issued --> Received: receive
 
-    classDef active fill:#0173B2,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef active fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
     class Active active
     class Cancelled,Received terminal
 ```
@@ -155,18 +157,21 @@ Rust encodes two-level hierarchy using two `PhantomData` type parameters — the
 
 ```mermaid
 classDiagram
+    accTitle: Example 51: Rust Nested Typestate
+    accDescr: Class diagram with 5 items: PO_Draft, PO_ActSubmitted, PO_ActApproval, PO_Active_Issued, PO_Cancelled. Relationships: PO_Draft to PO_ActSubmitted: submit(); PO_ActSubmitted to PO_ActApproval: request_approval(); PO_ActApproval to PO_Active_Issued: approve(); PO_Active_Issued to PO_Cancelled: cancel(); PO_ActSubmitted to PO_Cancelled: cancel().
     direction TB
     class PO_Draft["PO&lt;Draft, ()&gt;"]
-    class PO_Active_Submitted["PO&lt;Active, Submitted&gt;"]
-    class PO_Active_ApprovalPending["PO&lt;Active, ApprovalPending&gt;"]
-    class PO_Active_Issued["PO&lt;Active, Issued&gt;"]
-    class PO_Cancelled["PO&lt;Cancelled, ()&gt;"]
+    class PO_ActSubmitted["PO<Active,<br/>Submitted>"]
+    class PO_ActApproval["PO<Active,<br/>ApprovalPending>"]
+    class PO_Active_Issued["PO<Active,<br/>Issued>"]
+    class PO_Cancelled["PO<Cancelled,<br/>()>"]
 
-    PO_Draft --> PO_Active_Submitted : submit()
-    PO_Active_Submitted --> PO_Active_ApprovalPending : request_approval()
-    PO_Active_ApprovalPending --> PO_Active_Issued : approve()
+    PO_Draft --> PO_ActSubmitted : submit()
+    PO_ActSubmitted --> PO_ActApproval : request_approval()
+    PO_ActApproval --> PO_Active_Issued : approve()
     PO_Active_Issued --> PO_Cancelled : cancel()
-    PO_Active_Submitted --> PO_Cancelled : cancel()
+    PO_ActSubmitted --> PO_Cancelled : cancel()
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -290,6 +295,8 @@ State machines fire entry actions when entering a state and exit actions when le
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 52: Entry and Exit Actions
+    accDescr: Sequence diagram between Draft, Active, Submitted. Messages: Draft to Draft: EXIT Draft; Draft to Active: ENTER Active; Active to Submitted: ENTER Submitted.
     participant D as Draft
     participant A as Active
     participant S as Submitted
@@ -418,6 +425,8 @@ A history pseudo-state re-enters the most recently active substate when returnin
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 53: History Pseudo-State
+    accDescr: State diagram with 7 items: Active, start or end, Submitted, ApprovalPending, Issued, Negotiating, Cancelled. Relationships: start or end to Submitted; Submitted to ApprovalPending: request_approval; ApprovalPending to Issued: approve; Active to Negotiating: pause; Negotiating to Active: resume [H*]; Active to Cancelled: cancel.
     direction LR
     state Active {
         [*] --> Submitted
@@ -568,6 +577,8 @@ A full three-level hierarchy models real procurement complexity: a top-level `Li
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 54: Hierarchical PO FSM — Full Lifecycle
+    accDescr: State diagram with 10 items: Open, Draft, Active, Submitted, ApprovalPending, Issued, Received, Paid, Closed, start or end. Relationships: Draft to Active: submit; Submitted to ApprovalPending: request_approval; ApprovalPending to Issued: approve; Issued to Received: receive; Active to Paid: pay; start or end to Open; Open to Closed: cancel; Paid to start or end.
     direction TB
     state Open {
         Draft --> Active : submit
@@ -706,7 +717,9 @@ Without hierarchy, every global event (`cancel`) must enumerate every source sta
 
 ```mermaid
 graph LR
-    subgraph Flat["Flat FSM (10 cancel arrows)"]
+    accTitle: Example 55: Limitations of Flat FSMs
+    accDescr: Graph with 11 nodes and 9 connections. Nodes: S1, Cancelled, S2, S3, S4, S5, Active Superstate, Cancelled, S1, S2, S3. Connections: S1 to Cancelled (cancel), S2 to Cancelled (cancel), S3 to Cancelled (cancel), S4 to Cancelled (cancel), S5 to Cancelled (cancel), Active Superstate to Cancelled (cancel), Active Superstate to S1, Active Superstate to S2, Active Superstate to S3.
+    subgraph Flat["Flat FSM (10 cancel<br/>arrows)"]
         S1((S1)) -->|cancel| C((Cancelled))
         S2((S2)) -->|cancel| C
         S3((S3)) -->|cancel| C
@@ -720,12 +733,13 @@ graph LR
         A --- sub3((S3))
     end
 
-    classDef flat fill:#DE8F05,stroke:#000,color:#fff
-    classDef hsm fill:#0173B2,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef flat fill:#DE8F05,stroke:#000000,color:#000000
+    classDef hsm fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
     class S1,S2,S3,S4,S5 flat
     class A,sub1,sub2,sub3 hsm
     class C,C2 terminal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -825,6 +839,8 @@ Parallel regions model two independent concurrent state machines on the same agg
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 56: Parallel Regions — Concept
+    accDescr: State diagram with 8 items: PO, Approval Region, Draft, Submitted, Issued, Document Region, Unattached, Attached. Relationships: Draft to Submitted: submit; Submitted to Issued: approve; Unattached to Attached: attach_document.
     direction LR
     state PO {
         state "Approval Region" as AR {
@@ -1076,6 +1092,8 @@ An AND-join fires a transition only when all parallel regions have reached their
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 58: AND-Join — Both Regions Must Complete
+    accDescr: State diagram with 6 items: start or end, fork_state, Issued, Attached, join_state, Received. Relationships: start or end to fork_state; fork_state to Issued: approve; fork_state to Attached: attach; Issued to join_state; Attached to join_state; join_state to Received: AND-join complete.
     state fork_state <<fork>>
     state join_state <<join>>
     [*] --> fork_state
@@ -1477,6 +1495,8 @@ A saga is a long-running business transaction spanning multiple aggregates. Mode
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 61: Saga as an Explicit FSM — Three-Way Match Saga
+    accDescr: State diagram with 7 items: start or end, WaitingGRN, MatchPending, MatchComplete, MatchFailed, Compensating, Compensated. Relationships: start or end to WaitingGRN: po_submitted; WaitingGRN to MatchPending: grn_received; MatchPending to MatchComplete: match_passed; MatchPending to MatchFailed: match_failed; WaitingGRN to MatchFailed: timeout; MatchFailed to Compensating: compensate; Compensating to Compensated: compensation_done; MatchComplete to start or end; Compensated to start or end.
     [*] --> WaitingGRN : po_submitted
     WaitingGRN --> MatchPending : grn_received
     MatchPending --> MatchComplete : match_passed
@@ -1636,6 +1656,8 @@ When the three-way match fails, the saga must compensate — undo completed step
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 62: Saga Compensation Transitions
+    accDescr: State diagram with 4 items: MatchFailed, Compensating, Compensated, start or end. Relationships: MatchFailed to Compensating: compensate; Compensating to Compensated: compensation_done; Compensated to start or end.
     direction LR
     MatchFailed --> Compensating : compensate
     Compensating --> Compensated : compensation_done
@@ -1772,6 +1794,8 @@ Sagas waiting for external events must have deadlines — a GRN that never arriv
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 63: Saga Timeout Transitions
+    accDescr: State diagram with 3 items: WaitingGRN, MatchFailed, MatchPending. Relationships: WaitingGRN to MatchFailed: timeout [elapsed > 72h]; WaitingGRN to MatchPending: grn_received.
     direction LR
     WaitingGRN --> MatchFailed : timeout [elapsed > 72h]
     WaitingGRN --> MatchPending : grn_received
@@ -1912,6 +1936,8 @@ A saga must survive process restarts. `SagaRecord` is a serializable snapshot of
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 64: Saga Persistence
+    accDescr: Sequence diagram between Event Handler, ThreeWayMatchSaga, SagaRepository. Messages: Event Handler to ThreeWayMatchSaga: grn_received(grn_id); ThreeWayMatchSaga to ThreeWayMatchSaga: advance state to MatchPending; ThreeWayMatchSaga to SagaRepository: save(SagaRecord state: match_pending, grn_id ); SagaRepository to Event Handler: Ok(()).
     participant H as Event Handler
     participant S as ThreeWayMatchSaga
     participant R as SagaRepository
@@ -2107,6 +2133,8 @@ When the three-way match engine returns a transient error (network timeout, temp
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 65: Saga Retry on Transient Failure
+    accDescr: State diagram with 3 items: MatchPending, MatchFailed, MatchComplete. Relationships: MatchPending to MatchPending: retry [count < max_retries]; MatchPending to MatchFailed: match_failed [max retries]; MatchPending to MatchComplete: match_passed.
     direction LR
     MatchPending --> MatchPending : retry [count < max_retries]
     MatchPending --> MatchFailed : match_failed [max retries]
@@ -2253,6 +2281,8 @@ Rust typestate cannot be directly serialized — `PhantomData<S>` carries no run
 
 ```mermaid
 classDiagram
+    accTitle: Example 66: FSM State Persistence — Storing Typestate
+    accDescr: Class diagram with 3 items: POStateTag, PORecord, PO_Draft. Relationships: PORecord to POStateTag: contains; PO_Draft to PORecord: to_record(); PORecord to PO_Draft: from_record() dispatch.
     direction LR
     class POStateTag {
         +Draft
@@ -2268,12 +2298,13 @@ classDiagram
         +id: String
         +state_tag: POStateTag
     }
-    class PO_Draft["PO&lt;Draft&gt;"]
-    class PO_Submitted["PO&lt;Submitted&gt;"]
+    class PO_Draft["PO&lt;<br/>Draft&gt;"]
+    class PO_Submitted["PO&lt;<br/>Submitted&gt;"]
 
     PORecord --> POStateTag : contains
     PO_Draft ..> PORecord : to_record()
     PORecord ..> PO_Draft : from_record() dispatch
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -2410,6 +2441,8 @@ Instead of storing the current state, event sourcing stores the sequence of tran
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 67: FSM Event Sourcing
+    accDescr: Sequence diagram between Command Handler, Event Store, Projector. Messages: Command Handler to Event Store: append POTransitionEvent::Submitted; Command Handler to Event Store: append POTransitionEvent::ApprovalRequested; Event Store to Projector: replay events; Projector to Projector: fold events → current state; Projector to Command Handler: POStateTag::ApprovalPending.
     participant H as Command Handler
     participant ES as Event Store
     participant P as Projector
@@ -2990,6 +3023,8 @@ Miro Samek's QP/C framework is the canonical C implementation of UML Hierarchica
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 71: Samek Statecharts in C — Basics
+    accDescr: State diagram with 5 items: start or end, PO_draft, PO_submitted, PO_issued, PO_cancelled. Relationships: start or end to PO_draft: QActive_start; PO_draft to PO_submitted: SUBMIT_SIG [lineItemCount > 0]; PO_submitted to PO_issued: APPROVE_SIG; PO_draft to PO_cancelled: CANCEL_SIG.
     direction LR
     [*] --> PO_draft : QActive_start
     PO_draft --> PO_submitted : SUBMIT_SIG [lineItemCount > 0]
@@ -3483,17 +3518,20 @@ Three canonical approaches to FSM implementation each serve different trade-offs
 
 ```mermaid
 graph TD
-    FSM["FSM Implementation Choice"]
-    FSM --> Rust["Rust Typestate\n• Compile-time transitions\n• Zero overhead\n• Safety-critical logic"]
-    FSM --> Go["Go looplab/fsm\n• Runtime event table\n• Declarative config\n• Application-level workflows"]
-    FSM --> C["C QP/C\n• Function-pointer dispatch\n• Q_SUPER hierarchy\n• Embedded/firmware"]
+    accTitle: Example 74: FSM Comparison Summary — Rust vs Go vs C
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: FSM Implementation Choice, Rust Typestate • Compile-time transitions • Zero overhead • Safety-critical logic, Go looplab/fsm • Runtime event table • Declarative config • Application-level workflows, C QP/C • Function-pointer dispatch • Q_SUPER hierarchy • Embedded/firmware. Connections: FSM Implementation Choice to Rust Typestate • Compile-time transitions • Zero overhead • Safety-critical logic, FSM Implementation Choice to Go looplab/fsm • Runtime event table • Declarative config • Application-level workflows, FSM Implementation Choice to C QP/C • Function-pointer dispatch • Q_SUPER hierarchy • Embedded/firmware.
+    FSM["FSM Implementation<br/>Choice"]
+    FSM --> Rust["Rust Typestate<br/>• Compile-time<br/>transitions<br/>• Zero overhead<br/>• Safety-critical<br/>logic"]
+    FSM --> Go["Go looplab/fsm<br/>• Runtime event<br/>table<br/>• Declarative config<br/>• Application-level<br/>workflows"]
+    FSM --> C["C QP/C<br/>• Function-pointer<br/>dispatch<br/>• Q_SUPER hierarchy<br/>• Embedded/firmware"]
 
-    classDef rust fill:#DE8F05,stroke:#000,color:#fff
-    classDef go fill:#0173B2,stroke:#000,color:#fff
-    classDef c fill:#029E73,stroke:#000,color:#fff
+    classDef rust fill:#DE8F05,stroke:#000000,color:#000000
+    classDef go fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef c fill:#029E73,stroke:#000000,color:#000000
     class Rust rust
     class Go go
     class C c
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Rust,Go" >}}

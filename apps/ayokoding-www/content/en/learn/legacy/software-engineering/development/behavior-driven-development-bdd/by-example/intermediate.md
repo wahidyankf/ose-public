@@ -17,14 +17,21 @@ Page Object Model (POM) encapsulates page-specific UI logic in classes, separati
 
 ```mermaid
 graph TD
+    accTitle: Example 31: Page Object Model - Separating UI Logic from Tests
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Gherkin Scenario, Step Definition, Page Object, Web Driver. Connections: Gherkin Scenario to Step Definition, Step Definition to Page Object, Page Object to Web Driver.
     A[Gherkin Scenario] --> B[Step Definition]
     B --> C[Page Object]
     C --> D[Web Driver]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Page Object Class**:
@@ -160,6 +167,8 @@ BDD scenarios can test REST APIs directly using HTTP clients, verifying API cont
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Diagram
+    accDescr: Sequence diagram between Gherkin Scenario, Step Definition, Axios HTTP Client, REST API. Messages: Gherkin Scenario to Step Definition: Given / When step; Step Definition to Axios HTTP Client: HTTP Request (GET/POST/PUT); Axios HTTP Client to REST API: Send request; REST API to Axios HTTP Client: HTTP Response (JSON); Axios HTTP Client to Step Definition: Response data; Step Definition to Gherkin Scenario: Store in World; Gherkin Scenario to Step Definition: Then assertion step; Step Definition to Step Definition: expect(response.status).to.equal(200).
     participant SC as Gherkin Scenario
     participant SD as Step Definition
     participant AX as Axios HTTP Client
@@ -347,6 +356,8 @@ BDD scenarios can verify database state directly to ensure data integrity and bu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Diagram
+    accDescr: Sequence diagram between Gherkin Scenario, Step Definition, Test Database. Messages: Gherkin Scenario to Step Definition: Given: seed test data; Step Definition to Test Database: INSERT test records; Test Database to Step Definition: Records created; Gherkin Scenario to Step Definition: When: trigger business action; Step Definition to Step Definition: Execute business logic; Step Definition to Test Database: Data written by logic; Gherkin Scenario to Step Definition: Then: verify data state; Step Definition to Test Database: SELECT / query result; Test Database to Step Definition: Data rows; Step Definition to Gherkin Scenario: expect(rows).to.deep.equal(expected).
     participant SC as Gherkin Scenario
     participant SD as Step Definition
     participant DB as Test Database
@@ -1503,8 +1514,10 @@ BDD scenarios integrate into CI/CD pipelines for automated quality gates on ever
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Git Push, CI Trigger, Install + Smoke Tests, Smoke Pass?, Fail Build, Run Regression Suite, All Pass?, Deploy + Reports. Connections: Git Push to CI Trigger, CI Trigger to Install + Smoke Tests, Install + Smoke Tests to Smoke Pass?, Smoke Pass? to Fail Build (No), Smoke Pass? to Run Regression Suite (Yes), Run Regression Suite to All Pass?, All Pass? to Fail Build (No), All Pass? to Deploy + Reports (Yes).
     A[Git Push] --> B[CI Trigger]
-    B --> C[Install + Smoke Tests]
+    B --> C[Install + Smoke<br/>Tests]
     C --> D{Smoke Pass?}
     D -->|No| E[Fail Build]
     D -->|Yes| F[Run Regression Suite]
@@ -1512,14 +1525,20 @@ graph LR
     G -->|No| E
     G -->|Yes| H[Deploy + Reports]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-029E73
+    class G pal-CA9161
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **GitHub Actions Workflow**:
@@ -1786,25 +1805,32 @@ Parallel execution runs scenarios concurrently across multiple workers, dramatic
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Test Suite: 100 Scenarios] --> B[Parallel Coordinator]
-    B --> C[Worker 1: 25 Scenarios]
-    B --> D[Worker 2: 25 Scenarios]
-    B --> E[Worker 3: 25 Scenarios]
-    B --> F[Worker 4: 25 Scenarios]
+    accTitle: Diagram
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: Test Suite: 100 Scenarios, Parallel Coordinator, Worker 1: 25 Scenarios, Worker 2: 25 Scenarios, Worker 3: 25 Scenarios, Worker 4: 25 Scenarios, Results Merged, Unified Report. Connections: Test Suite: 100 Scenarios to Parallel Coordinator, Parallel Coordinator to Worker 1: 25 Scenarios, Parallel Coordinator to Worker 2: 25 Scenarios, Parallel Coordinator to Worker 3: 25 Scenarios, Parallel Coordinator to Worker 4: 25 Scenarios, Worker 1: 25 Scenarios to Results Merged, Worker 2: 25 Scenarios to Results Merged, Worker 3: 25 Scenarios to Results Merged, Worker 4: 25 Scenarios to Results Merged, Results Merged to Unified Report.
+    A[Test Suite: 100<br/>Scenarios] --> B[Parallel Coordinator]
+    B --> C[Worker 1: 25<br/>Scenarios]
+    B --> D[Worker 2: 25<br/>Scenarios]
+    B --> E[Worker 3: 25<br/>Scenarios]
+    B --> F[Worker 4: 25<br/>Scenarios]
     C --> G[Results Merged]
     D --> G
     E --> G
     F --> G
     G --> H[Unified Report]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#000
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Cucumber Parallel Configuration**:
@@ -2639,23 +2665,31 @@ BDD scenarios serve as living documentation when formatted into human-readable r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Diagram
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Run Cucumber Tests, Generate JSON Report, cucumber-html- reporter, HTML Report with Scenarios, Stakeholder Review, Changes Needed?, Update Feature Files, Living Documentation Published. Connections: Run Cucumber Tests to Generate JSON Report, Generate JSON Report to cucumber-html- reporter, cucumber-html- reporter to HTML Report with Scenarios, HTML Report with Scenarios to Stakeholder Review, Stakeholder Review to Changes Needed?, Changes Needed? to Update Feature Files (Yes), Update Feature Files to Run Cucumber Tests, Changes Needed? to Living Documentation Published (No).
     A[Run Cucumber Tests] --> B[Generate JSON Report]
-    B --> C[cucumber-html-reporter]
-    C --> D[HTML Report with Scenarios]
+    B --> C[cucumber-html-<br/>reporter]
+    C --> D[HTML Report with<br/>Scenarios]
     D --> E[Stakeholder Review]
     E --> F{Changes Needed?}
     F -->|Yes| G[Update Feature Files]
     G --> A
-    F -->|No| H[Living Documentation Published]
+    F -->|No| H[Living Documentation<br/>Published]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-DE8F05
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **HTML Report Configuration**:
@@ -5841,25 +5875,33 @@ BDD test reports aggregate metrics, trends, and failure analysis to provide acti
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[BDD Test Results JSON] --> B[Analytics Processor]
-    B --> C[Summary: Pass/Fail/Skip Counts]
-    B --> D[Slowest Scenarios Top 10]
+    accTitle: Diagram
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: BDD Test Results JSON, Analytics Processor, Summary: Pass/Fail/Skip Counts, Slowest Scenarios Top 10, Failure Analysis, Historical Trends, HTML Dashboard, Team Insights and Actions. Connections: BDD Test Results JSON to Analytics Processor, Analytics Processor to Summary: Pass/Fail/Skip Counts, Analytics Processor to Slowest Scenarios Top 10, Analytics Processor to Failure Analysis, Analytics Processor to Historical Trends, Summary: Pass/Fail/Skip Counts to HTML Dashboard, Slowest Scenarios Top 10 to HTML Dashboard, Failure Analysis to HTML Dashboard, Historical Trends to HTML Dashboard, HTML Dashboard to Team Insights and Actions.
+    A[BDD Test Results<br/>JSON] --> B[Analytics Processor]
+    B --> C[Summary:<br/>Pass/Fail/Skip<br/>Counts]
+    B --> D[Slowest Scenarios<br/>Top 10]
     B --> E[Failure Analysis]
     B --> F[Historical Trends]
     C --> G[HTML Dashboard]
     D --> G
     E --> G
     F --> G
-    G --> H[Team Insights and Actions]
+    G --> H[Team Insights and<br/>Actions]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Custom Report Generator**:
@@ -6700,18 +6742,26 @@ BDD integration tests verify interaction between multiple system components (API
 
 ```mermaid
 graph TB
+    accTitle: Example 57: Integration Testing Patterns
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: BDD Scenario, API Layer, Business Logic, Database, Cache Redis, External API. Connections: BDD Scenario to API Layer, API Layer to Business Logic, Business Logic to Database, Business Logic to Cache Redis, Business Logic to External API.
     A[BDD Scenario] --> B[API Layer]
     B --> C[Business Logic]
     C --> D[Database]
     C --> E[Cache Redis]
     C --> F[External API]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Integration Test Utilities**:
@@ -7095,16 +7145,23 @@ BDD scenarios verify API contracts between consumers and providers using Pact, e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Consumer Test Generate Contract, Pact Broker, Provider Verification, Deploy Check, Build Fails. Connections: Consumer Test Generate Contract to Pact Broker, Pact Broker to Provider Verification, Provider Verification to Deploy Check (Pass), Provider Verification to Build Fails (Fail).
     A["Consumer Test<br/>Generate Contract"] --> B[Pact Broker]
-    B --> C[Provider Verification]
+    B --> C[Provider<br/>Verification]
     C -- Pass --> D[Deploy Check]
     C -- Fail --> E[Build Fails]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    class D pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Consumer Contract Test**:

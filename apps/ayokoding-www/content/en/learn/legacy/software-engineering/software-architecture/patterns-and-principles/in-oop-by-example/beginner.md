@@ -637,7 +637,9 @@ A layered architecture organizes code into a presentation layer (handles user in
 
 ```mermaid
 graph TD
-    A["Presentation Layer<br/>(Controller / API handler)"]
+    accTitle: Example 3: Three-Layer Architecture
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: Presentation Layer (Controller /API handler), Business Logic Layer (Service / Use case), Data Access Layer (Repository / DAO). Connections: Presentation Layer (Controller /API handler) to Business Logic Layer (Service / Use case) (calls), Business Logic Layer (Service / Use case) to Data Access Layer (Repository / DAO) (calls), Data Access Layer (Repository / DAO) to Business Logic Layer (Service / Use case) (returns data), Business Logic Layer (Service / Use case) to Presentation Layer (Controller /API handler) (returns result).
+    A["Presentation Layer<br/>(Controller /API<br/>handler)"]
     B["Business Logic Layer<br/>(Service / Use case)"]
     C["Data Access Layer<br/>(Repository / DAO)"]
 
@@ -646,9 +648,13 @@ graph TD
     C -->|returns data| B
     B -->|returns result| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -1172,6 +1178,8 @@ MVC separates a program into a Model (data and rules), a View (formatting output
 
 ```mermaid
 graph LR
+    accTitle: Example 5: Model-View-Controller Basics
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: User Input, Controller (coordinates), Model (data + rules), View (formats output). Connections: User Input to Controller (coordinates) (request), Controller (coordinates) to Model (data + rules) (queries / commands), Model (data + rules) to Controller (coordinates) (data), Controller (coordinates) to View (formats output) (data), View (formats output) to User Input (response).
     User["User Input"]
     C["Controller<br/>(coordinates)"]
     M["Model<br/>(data + rules)"]
@@ -1183,10 +1191,15 @@ graph LR
     C -->|data| V
     V -->|response| User
 
-    style User fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style M fill:#DE8F05,stroke:#000,color:#fff
-    style V fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class User pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class M pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class V pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -1871,17 +1884,23 @@ Dependency injection means passing dependencies into an object rather than creat
 
 ```mermaid
 graph TD
-    Caller["Caller / Composition Root"]
-    DB["Database (real or fake)"]
+    accTitle: Example 7: Manual Dependency Injection
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Caller /Composition Root, Database (real or fake), UserService. Connections: Caller /Composition Root to Database (real or fake) (creates and passes), Caller /Composition Root to UserService (creates and injects DB), UserService to Database (real or fake) (uses injected DB).
+    Caller["Caller /Composition<br/>Root"]
+    DB["Database (real or<br/>fake)"]
     Svc["UserService"]
 
     Caller -->|creates and passes| DB
-    Caller -->|creates and injects DB| Svc
+    Caller -->|creates and injects<br/>DB| Svc
     Svc -->|uses injected DB| DB
 
-    style Caller fill:#0173B2,stroke:#000,color:#fff
-    style DB fill:#029E73,stroke:#000,color:#fff
-    style Svc fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Caller pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DB pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Svc pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Without dependency injection (hard to test):**
@@ -2834,6 +2853,8 @@ The Open/Closed Principle states that a class should be open for extension (new 
 
 ```mermaid
 graph TD
+    accTitle: Example 10: Open for Extension, Closed for Modification
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client Code, Discount Strategy (interface/protocol), RegularDiscount, LoyaltyDiscount, SeasonalDiscount. Connections: Client Code to Discount Strategy (interface/protocol) (uses), Discount Strategy (interface/protocol) to RegularDiscount (implemented by), Discount Strategy (interface/protocol) to LoyaltyDiscount (implemented by), Discount Strategy (interface/protocol) to SeasonalDiscount (implemented by).
     Client["Client Code"]
     Base["Discount Strategy<br/>(interface/protocol)"]
     A["RegularDiscount"]
@@ -2845,11 +2866,15 @@ graph TD
     Base -- "implemented by" --> B
     Base -- "implemented by" --> C
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style Base fill:#DE8F05,stroke:#000,color:#fff
-    style A fill:#029E73,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Base pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class A pal-029E73
+    class B pal-029E73
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Closed approach — requires modifying existing code for every new discount:**
@@ -4591,18 +4616,24 @@ Reducing coupling means modules communicate through stable public interfaces, no
 
 ```mermaid
 graph LR
+    accTitle: Example 16: Low Coupling Through Encapsulation
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: OrderService, Customer (encapsulated), Inventory (encapsulated). Connections: OrderService to Customer (encapsulated) (canAccept Charge40price41), OrderService to Customer (encapsulated) (record Charge40price41), OrderService to Inventory (encapsulated) (isAvailable40item41), OrderService to Inventory (encapsulated) (decrement40item41).
     OS["OrderService"]
     C["Customer<br/>(encapsulated)"]
     I["Inventory<br/>(encapsulated)"]
 
-    OS -->|canAcceptCharge#40;price#41;| C
-    OS -->|recordCharge#40;price#41;| C
-    OS -->|isAvailable#40;item#41;| I
-    OS -->|decrement#40;item#41;| I
+    OS -->|canAccept<br/>Charge#40;price#41;| C
+    OS -->|record<br/>Charge#40;price#41;| C
+    OS -->|isAvailable#40;<br/>item#41;| I
+    OS -->|decrement#40;<br/>item#41;| I
 
-    style OS fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style I fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class OS pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -5529,6 +5560,8 @@ Composition over inheritance means building complex behavior by combining simple
 
 ```mermaid
 graph TD
+    accTitle: Example 19: Preferring Composition
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: Bird, FlyBehavior, SwimBehavior, Eagle, Duck, Penguin. Connections: Eagle to FlyBehavior (has a), Duck to FlyBehavior (has a), Duck to SwimBehavior (has a), Penguin to SwimBehavior (has a).
     Bird["Bird"]
     Fly["FlyBehavior"]
     Swim["SwimBehavior"]
@@ -5541,12 +5574,17 @@ graph TD
     Duck -- "has a" --> Swim
     Penguin -- "has a" --> Swim
 
-    style Bird fill:#CA9161,stroke:#000,color:#fff
-    style Fly fill:#0173B2,stroke:#000,color:#fff
-    style Swim fill:#029E73,stroke:#000,color:#fff
-    style Eagle fill:#DE8F05,stroke:#000,color:#fff
-    style Duck fill:#DE8F05,stroke:#000,color:#fff
-    style Penguin fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Bird pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Fly pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Swim pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Eagle pal-DE8F05
+    class Duck pal-DE8F05
+    class Penguin pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Inheritance approach — rigid hierarchy:**
@@ -6332,6 +6370,8 @@ The Repository pattern abstracts the data access layer behind a collection-like 
 
 ```mermaid
 graph LR
+    accTitle: Example 21: Repository Pattern Basics
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Business Logic (Service), Repository (interface), InMemoryRepository (tests), DatabaseRepository (production). Connections: Business Logic (Service) to Repository (interface) (depends on), Repository (interface) to InMemoryRepository (tests) (implemented by), Repository (interface) to DatabaseRepository (production) (implemented by).
     Service["Business Logic<br/>(Service)"]
     Repo["Repository<br/>(interface)"]
     ImplA["InMemoryRepository<br/>(tests)"]
@@ -6341,10 +6381,15 @@ graph LR
     Repo -->|implemented by| ImplA
     Repo -->|implemented by| ImplB
 
-    style Service fill:#0173B2,stroke:#000,color:#fff
-    style Repo fill:#DE8F05,stroke:#000,color:#fff
-    style ImplA fill:#029E73,stroke:#000,color:#fff
-    style ImplB fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Service pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Repo pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ImplA pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ImplB pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -7557,6 +7602,8 @@ A Data Transfer Object (DTO) is a simple container for carrying data between lay
 
 ```mermaid
 graph TD
+    accTitle: Example 25: Data Transfer Objects
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: External Client (API / UI), Request DTO (validated input), Service Layer, Domain Object (internal), Response DTO (serialized output). Connections: External Client (API / UI) to Request DTO (validated input) (sends), Request DTO (validated input) to Domain Object (internal) (mapped to), Domain Object (internal) to Service Layer (processed by), Service Layer to Response DTO (serialized output) (mapped to), Response DTO (serialized output) to External Client (API / UI) (returned to).
     Ext["External Client<br/>(API / UI)"]
     DTO["Request DTO<br/>(validated input)"]
     Svc["Service Layer"]
@@ -7569,11 +7616,17 @@ graph TD
     Svc -->|mapped to| RespDTO
     RespDTO -->|returned to| Ext
 
-    style Ext fill:#CA9161,stroke:#000,color:#fff
-    style DTO fill:#0173B2,stroke:#000,color:#fff
-    style Svc fill:#DE8F05,stroke:#000,color:#fff
-    style Domain fill:#029E73,stroke:#000,color:#fff
-    style RespDTO fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Ext pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class DTO pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Svc pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Domain pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class RespDTO pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -8544,22 +8597,29 @@ Architecture smells are patterns in code structure that signal design problems. 
 
 ```mermaid
 graph TD
+    accTitle: Example 28: Recognizing Architecture Smells
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Architecture Smell, God Object Does everything, Leaking Layers SQL in controller, Anemic Domain Empty domain objects, Implicit Coupling Global state / singletons. Connections: Architecture Smell to God Object Does everything, Architecture Smell to Leaking Layers SQL in controller, Architecture Smell to Anemic Domain Empty domain objects, Architecture Smell to Implicit Coupling Global state / singletons.
     A["Architecture Smell"]
     B["God Object<br/>Does everything"]
     C["Leaking Layers<br/>SQL in controller"]
     D["Anemic Domain<br/>Empty domain objects"]
-    E["Implicit Coupling<br/>Global state / singletons"]
+    E["Implicit Coupling<br/>Global state /<br/>singletons"]
 
     A --> B
     A --> C
     A --> D
     A --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Smell 1: God Object — one class knows everything:**

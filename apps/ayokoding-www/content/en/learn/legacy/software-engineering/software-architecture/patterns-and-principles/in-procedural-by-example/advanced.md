@@ -15,6 +15,8 @@ Topic-based routing dispatches domain events to handlers subscribed to a named t
 
 ```mermaid
 graph LR
+    accTitle: Example 58: EventBus with Topic-Based Routing
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: POApprovalService publisher, InvoiceService publisher, EventBus topic router, NotificationHandler po.approved, AnalyticsHandler po.approved, ReconcileHandler invoice.received. Connections: POApprovalService publisher to EventBus topic router (publish po.approved), InvoiceService publisher to EventBus topic router (publish invoice.received), EventBus topic router to NotificationHandler po.approved, EventBus topic router to AnalyticsHandler po.approved, EventBus topic router to ReconcileHandler invoice.received.
     P1["POApprovalService<br/>publisher"]:::blue
     P2["InvoiceService<br/>publisher"]:::blue
     BUS["EventBus<br/>topic router"]:::orange
@@ -22,16 +24,17 @@ graph LR
     H2["AnalyticsHandler<br/>po.approved"]:::teal
     H3["ReconcileHandler<br/>invoice.received"]:::purple
 
-    P1 -->|"publish po.approved"| BUS
-    P2 -->|"publish invoice.received"| BUS
+    P1 -->|"publish<br/>po.approved"| BUS
+    P2 -->|"publish<br/>invoice.received"| BUS
     BUS --> H1
     BUS --> H2
     BUS --> H3
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -424,8 +427,10 @@ Event sourcing replaces current-state storage with an ordered log of every event
 
 ```mermaid
 graph TD
+    accTitle: Example 61: Event Sourcing Store
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: ApprovePO Command, PurchaseOrder Aggregate replay from events, POApproved Event new event, EventStore append-only log, POSummaryProjection read model. Connections: ApprovePO Command to PurchaseOrder Aggregate replay from events, PurchaseOrder Aggregate replay from events to POApproved Event new event (emit), POApproved Event new event to EventStore append-only log (Append), EventStore append-only log to PurchaseOrder Aggregate replay from events (Load + replay), EventStore append-only log to POSummaryProjection read model (feed projector).
     CMD["ApprovePO Command"]:::blue
-    AGG["PurchaseOrder Aggregate<br/>replay from events"]:::orange
+    AGG["PurchaseOrder<br/>Aggregate<br/>replay from events"]:::orange
     EVT["POApproved Event<br/>new event"]:::teal
     STORE["EventStore<br/>append-only log"]:::purple
     PROJ["POSummaryProjection<br/>read model"]:::teal
@@ -437,9 +442,10 @@ graph TD
     STORE -->|"feed projector"| PROJ
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -690,19 +696,22 @@ Structured logging attaches machine-readable key-value fields to every log entry
 
 ```mermaid
 graph LR
-    SVC["AppService<br/>log.Info#40;msg, fields...#41;"]:::blue
+    accTitle: Example 63: Structured Logging Pattern
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: AppService log.Info40msg, fields...41, Logger interface Info / Error / With, JSONFormatter marshal to JSON, Log Sink stdout /file / Datadog. Connections: AppService log.Info40msg, fields...41 to Logger interface Info / Error / With, Logger interface Info / Error / With to JSONFormatter marshal to JSON, JSONFormatter marshal to JSON to Log Sink stdout /file / Datadog.
+    SVC["AppService<br/>log.Info#40;msg,<br/>fields...#41;"]:::blue
     IFACE["Logger interface<br/>Info / Error / With"]:::orange
     FMT["JSONFormatter<br/>marshal to JSON"]:::teal
-    SINK["Log Sink<br/>stdout / file / Datadog"]:::purple
+    SINK["Log Sink<br/>stdout /file /<br/>Datadog"]:::purple
 
     SVC --> IFACE
     IFACE --> FMT
     FMT --> SINK
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1269,7 +1278,9 @@ The Saga Orchestrator pattern centralizes coordination logic for a long-running 
 
 ```mermaid
 graph TD
-    ORCH["POApprovalOrchestrator<br/>coordinates steps"]:::orange
+    accTitle: Example 68: Saga Orchestrator Interface
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: POApproval Orchestrator coordinates steps, ReserveCredit Step 1, NotifyL1Manager Step 2, UpdatePOStatus Step 3, ReleaseCredit compensate Step 1, CancelL1Notification compensate Step 2. Connections: POApproval Orchestrator coordinates steps to ReserveCredit Step 1, ReserveCredit Step 1 to NotifyL1Manager Step 2, NotifyL1Manager Step 2 to UpdatePOStatus Step 3, UpdatePOStatus Step 3 to CancelL1Notification compensate Step 2 (Step 3 fails), CancelL1Notification compensate Step 2 to ReleaseCredit compensate Step 1.
+    ORCH["POApproval<br/>Orchestrator<br/>coordinates steps"]:::orange
     S1["ReserveCredit<br/>Step 1"]:::blue
     S2["NotifyL1Manager<br/>Step 2"]:::blue
     S3["UpdatePOStatus<br/>Step 3"]:::blue
@@ -1283,8 +1294,9 @@ graph TD
     C2 --> C1
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}

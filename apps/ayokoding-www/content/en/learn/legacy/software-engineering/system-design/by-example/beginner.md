@@ -18,6 +18,8 @@ Every networked application separates concerns into two roles: a client that ini
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 1: The Client-Server Model
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: Client Initiates Request, Network Transport Layer, Server Processes Request. Connections: Client Initiates Request to Network Transport Layer (HTTP Request), Network Transport Layer to Server Processes Request (Forward), Server Processes Request to Network Transport Layer (HTTP Response), Network Transport Layer to Client Initiates Request (Return).
     A["Client<br/>Initiates Request"]
     B["Network<br/>Transport Layer"]
     C["Server<br/>Processes Request"]
@@ -27,9 +29,13 @@ graph LR
     C -->|"HTTP Response"| B
     B -->|"Return"| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -601,7 +607,9 @@ DNS (Domain Name System) translates human-readable names like `api.example.com` 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Browser<br/>Query api.example.com"]
+    accTitle: Example 4: DNS Resolution — How Names Become Addresses
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Browser Query api.example.com, OS DNS Cache Check local cache, Recursive Resolver Iterative query, DNS Hierarchy Root → TLD → Auth, IP: 203.0.113.42 Returned to browser. Connections: Browser Query api.example.com to OS DNS Cache Check local cache (1 query), OS DNS Cache Check local cache to Recursive Resolver Iterative query (2 cache miss), Recursive Resolver Iterative query to DNS Hierarchy Root → TLD → Auth (3 query chain), DNS Hierarchy Root → TLD → Auth to Recursive Resolver Iterative query (4 IP address), Recursive Resolver Iterative query to IP: 203.0.113.42 Returned to browser (5 cache+return).
+    A["Browser<br/>Query<br/>api.example.com"]
     B["OS DNS Cache<br/>Check local cache"]
     C["Recursive Resolver<br/>Iterative query"]
     D["DNS Hierarchy<br/>Root → TLD → Auth"]
@@ -613,11 +621,17 @@ graph TD
     D -- 4 IP address --> C
     C -- 5 cache+return --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -1255,6 +1269,8 @@ A cache stores the result of expensive operations so future requests can be serv
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 7: In-Memory Caching with TTL
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Incoming Request GET /user/42, Cache Check Is user:42 cached?, Cache Hit Return from memory, Cache Miss Query database, Database users table, Store in Cache TTL = 300s, Return Response. Connections: Incoming Request GET /user/42 to Cache Check Is user:42 cached?, Cache Check Is user:42 cached? to Cache Hit Return from memory (Hit), Cache Check Is user:42 cached? to Cache Miss Query database (Miss), Cache Miss Query database to Database users table, Cache Miss Query database to Store in Cache TTL = 300s, Store in Cache TTL = 300s to Return Response, Cache Hit Return from memory to Return Response.
     A["Incoming Request<br/>GET /user/42"]
     B{"Cache Check<br/>Is user:42 cached?"}
     C["Cache Hit<br/>Return from memory"]
@@ -1271,13 +1287,19 @@ graph TD
     F --> G
     C --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-029E73
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -2375,6 +2397,8 @@ Horizontal scaling (scale out) adds more servers behind a load balancer rather t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 12: Horizontal Scaling — Scale Out
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Load Balancer Distributes Traffic, Server 1 Handles subset, Server 2 Handles subset, Server 3 Handles subset, Shared Database Persistent State. Connections: Load Balancer Distributes Traffic to Server 1 Handles subset, Load Balancer Distributes Traffic to Server 2 Handles subset, Load Balancer Distributes Traffic to Server 3 Handles subset, Server 1 Handles subset to Shared Database Persistent State, Server 2 Handles subset to Shared Database Persistent State, Server 3 Handles subset to Shared Database Persistent State.
     LB["Load Balancer<br/>Distributes Traffic"]
     S1["Server 1<br/>Handles subset"]
     S2["Server 2<br/>Handles subset"]
@@ -2388,11 +2412,15 @@ graph TD
     S2 --> DB
     S3 --> DB
 
-    style LB fill:#DE8F05,stroke:#000,color:#fff
-    style S1 fill:#0173B2,stroke:#000,color:#fff
-    style S2 fill:#0173B2,stroke:#000,color:#fff
-    style S3 fill:#0173B2,stroke:#000,color:#fff
-    style DB fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class LB pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S1 pal-0173B2
+    class S2 pal-0173B2
+    class S3 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DB pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -3187,6 +3215,8 @@ A reverse proxy sits in front of backend servers, accepting requests from client
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 15: Reverse Proxy — Server-Side Intermediary
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client Sees only proxy IP, Reverse Proxy nginx / Caddy, API Server :8001, Static Files :8002, Admin Service :8003. Connections: Client Sees only proxy IP to Reverse Proxy nginx / Caddy (HTTPS :443), Reverse Proxy nginx / Caddy to API Server :8001 (/api/*), Reverse Proxy nginx / Caddy to Static Files :8002 (/static/*), Reverse Proxy nginx / Caddy to Admin Service :8003 (/admin/*).
     Client["Client<br/>Sees only proxy IP"]
     RP["Reverse Proxy<br/>nginx / Caddy"]
     API["API Server<br/>:8001"]
@@ -3198,11 +3228,16 @@ graph LR
     RP -->|"/static/*"| Static
     RP -->|"/admin/*"| Admin
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style RP fill:#DE8F05,stroke:#000,color:#fff
-    style API fill:#029E73,stroke:#000,color:#fff
-    style Static fill:#029E73,stroke:#000,color:#fff
-    style Admin fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class RP pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class API pal-029E73
+    class Static pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Admin pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -4177,6 +4212,8 @@ A CDN is a geographically distributed network of edge servers that cache and ser
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 19: CDN — Content Delivery Network Basics
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: US User New York, EU User London, Asia User Singapore, CDN Edge New York PoP, CDN Edge London PoP, CDN Edge Singapore PoP, Origin Server Single datacenter. Connections: US User New York to CDN Edge New York PoP (2ms), EU User London to CDN Edge London PoP (1ms), Asia User Singapore to CDN Edge Singapore PoP (3ms), CDN Edge New York PoP to Origin Server Single datacenter (cache miss 120ms), CDN Edge London PoP to Origin Server Single datacenter (cache miss 90ms), CDN Edge Singapore PoP to Origin Server Single datacenter (cache miss 200ms).
     US["US User<br/>New York"]
     EU["EU User<br/>London"]
     AS["Asia User<br/>Singapore"]
@@ -4192,13 +4229,17 @@ graph TD
     EdgeEU -- cache miss 90ms --> Origin
     EdgeAS -- cache miss 200ms --> Origin
 
-    style US fill:#0173B2,stroke:#000,color:#fff
-    style EU fill:#0173B2,stroke:#000,color:#fff
-    style AS fill:#0173B2,stroke:#000,color:#fff
-    style EdgeUS fill:#DE8F05,stroke:#000,color:#fff
-    style EdgeEU fill:#DE8F05,stroke:#000,color:#fff
-    style EdgeAS fill:#DE8F05,stroke:#000,color:#fff
-    style Origin fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class US pal-0173B2
+    class EU pal-0173B2
+    class AS pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class EdgeUS pal-DE8F05
+    class EdgeEU pal-DE8F05
+    class EdgeAS pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Origin pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -5428,19 +5469,25 @@ A message queue decouples services by placing messages in a buffer between produ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 24: Message Queue Basics — Decoupling Services
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Producer Order Service, Message Queue Buffer, Consumer 1 Email Service, Consumer 2 Inventory Service. Connections: Producer Order Service to Message Queue Buffer (publish order.created), Message Queue Buffer to Consumer 1 Email Service (deliver message), Message Queue Buffer to Consumer 2 Inventory Service (deliver message).
     P["Producer<br/>Order Service"]
     Q["Message Queue<br/>Buffer"]
     C1["Consumer 1<br/>Email Service"]
     C2["Consumer 2<br/>Inventory Service"]
 
-    P -->|"publish order.created"| Q
+    P -->|"publish<br/>order.created"| Q
     Q -->|"deliver message"| C1
     Q -->|"deliver message"| C2
 
-    style P fill:#0173B2,stroke:#000,color:#fff
-    style Q fill:#DE8F05,stroke:#000,color:#fff
-    style C1 fill:#029E73,stroke:#000,color:#fff
-    style C2 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Q pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C1 pal-029E73
+    class C2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -5992,6 +6039,8 @@ A circuit breaker prevents a service from repeatedly calling a failing dependenc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 26: Circuit Breaker Pattern
+    accDescr: State diagram with 4 items: start or end, Closed, Open, HalfOpen. Relationships: start or end to Closed; Closed to Open: failure_count >= threshold; Open to HalfOpen: timeout elapsed; HalfOpen to Closed: probe request succeeds; HalfOpen to Open: probe request fails.
     [*] --> Closed
     Closed --> Open : failure_count >= threshold
     Open --> HalfOpen : timeout elapsed

@@ -13,16 +13,19 @@ A bounded context is an explicit boundary within which a domain model is interna
 
 ```mermaid
 graph LR
-    PC["Procurement Context\nInvoice = goods receipt"]:::blue
-    FC["Finance Context\nInvoice = payment obligation"]:::teal
-    ACL["Anti-Corruption Layer\ntranslates between models"]:::orange
+    accTitle: Example 52: Defining Bounded Context Boundaries
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Procurement Context Invoice = goods receipt, Finance Context Invoice = payment obligation, Anti-Corruption Layer translates between models. Connections: Procurement Context Invoice = goods receipt to Anti-Corruption Layer translates between models (publishes event), Anti-Corruption Layer translates between models to Finance Context Invoice = payment obligation (translates to).
+    PC["Procurement Context<br/>Invoice = goods<br/>receipt"]:::blue
+    FC["Finance Context<br/>Invoice = payment<br/>obligation"]:::teal
+    ACL["Anti-Corruption<br/>Layer<br/>translates between<br/>models"]:::orange
 
     PC -->|publishes event| ACL
     ACL -->|translates to| FC
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -740,11 +743,13 @@ Three-way match is a core procurement control: it verifies that a supplier invoi
 
 ```mermaid
 graph TD
-    PO["PurchaseOrder\nApproved quantities\n& amounts"]:::blue
-    GRN["GoodReceiptNote\nActually received\nquantities"]:::teal
-    INV["Invoice\nAmount &\nquantities billed"]:::orange
-    SVC["ThreeWayMatchService\nCompares all three"]:::purple
-    RESULT["MatchResult\nOK / Discrepancy"]:::brown
+    accTitle: Example 59: Three-Way Match Domain Service
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: PO, amounts, GoodReceiptNote Actually received quantities, INV, ThreeWayMatchService Compares all three, MatchResult OK / Discrepancy. Connections: PO to ThreeWayMatchService Compares all three, GoodReceiptNote Actually received quantities to ThreeWayMatchService Compares all three, INV to ThreeWayMatchService Compares all three, ThreeWayMatchService Compares all three to MatchResult OK / Discrepancy.
+    PO["PurchaseOrder<br/>Approved quantities<br/>& amounts"]:::blue
+    GRN["GoodReceiptNote<br/>Actually received<br/>quantities"]:::teal
+    INV["Invoice<br/>Amount &<br/>quantities billed"]:::orange
+    SVC["ThreeWayMatchService<br/>Compares all three"]:::purple
+    RESULT["MatchResult<br/>OK / Discrepancy"]:::brown
 
     PO --> SVC
     GRN --> SVC
@@ -752,10 +757,11 @@ graph TD
     SVC --> RESULT
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1253,11 +1259,13 @@ The Specification pattern encapsulates a business rule as a first-class object. 
 
 ```mermaid
 graph TD
-    SPEC["POSpecification\ninterface / trait"]:::blue
-    APPROVED["ApprovedPOSpec\nstatus == Approved"]:::teal
-    RECEIVED["GoodsReceivedSpec\nreceipt confirmed"]:::teal
-    AND["AndSpecification\nleft AND right"]:::orange
-    READY["ReadyToInvoiceSpec\nApproved AND Received"]:::purple
+    accTitle: Example 63: Specification Interface
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: POSpecification interface / trait, APPROVED, Approved, GoodsReceivedSpec receipt confirmed, AndSpecification left AND right, ReadyToInvoiceSpec Approved AND Received. Connections: APPROVED to Approved, POSpecification interface / trait to APPROVED, POSpecification interface / trait to GoodsReceivedSpec receipt confirmed, POSpecification interface / trait to AndSpecification left AND right, APPROVED to ReadyToInvoiceSpec Approved AND Received, GoodsReceivedSpec receipt confirmed to ReadyToInvoiceSpec Approved AND Received, AndSpecification left AND right to ReadyToInvoiceSpec Approved AND Received.
+    SPEC["POSpecification<br/>interface / trait"]:::blue
+    APPROVED["ApprovedPOSpec<br/>status == Approved"]:::teal
+    RECEIVED["GoodsReceivedSpec<br/>receipt confirmed"]:::teal
+    AND["AndSpecification<br/>left AND right"]:::orange
+    READY["ReadyToInvoiceSpec<br/>Approved AND<br/>Received"]:::purple
 
     SPEC --> APPROVED
     SPEC --> RECEIVED
@@ -1267,9 +1275,10 @@ graph TD
     AND --> READY
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1794,10 +1803,12 @@ A Saga orchestrates a long-running business process that spans multiple aggregat
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 68: Saga State Machine for PO Approval Workflow
+    accDescr: State diagram with 6 items: start or end, Initiated, PendingL1, PendingL2, Approved, Rejected. Relationships: start or end to Initiated; Initiated to PendingL1: submit; PendingL1 to PendingL2: l1_approved 40high-value41; PendingL1 to Approved: l1_approved 40std PO41; PendingL2 to Approved: l2_approved; PendingL1 to Rejected: l1_rejected; PendingL2 to Rejected: l2_rejected; Approved to start or end; Rejected to start or end.
     [*] --> Initiated
     Initiated --> PendingL1: submit
-    PendingL1 --> PendingL2: l1_approved #40;high-value#41;
-    PendingL1 --> Approved: l1_approved #40;std PO#41;
+    PendingL1 --> PendingL2: l1_approved (high-value)
+    PendingL1 --> Approved: l1_approved (std PO)
     PendingL2 --> Approved: l2_approved
     PendingL1 --> Rejected: l1_rejected
     PendingL2 --> Rejected: l2_rejected

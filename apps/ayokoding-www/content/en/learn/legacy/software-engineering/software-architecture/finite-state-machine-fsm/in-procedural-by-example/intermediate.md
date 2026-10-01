@@ -31,6 +31,8 @@ The Invoice lifecycle is parallel to but independent from the PurchaseOrder — 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 25: Invoice State Types
+    accDescr: State diagram with 6 items: start or end, InvoiceDraft, InvoiceSubmitted, InvoiceRejected, InvoiceApproved, InvoicePaid. Relationships: start or end to InvoiceDraft: create; InvoiceDraft to InvoiceSubmitted: submit; InvoiceDraft to InvoiceRejected: cancel; InvoiceSubmitted to InvoiceApproved: approve; InvoiceSubmitted to InvoiceRejected: reject; InvoiceApproved to InvoicePaid: pay; InvoiceRejected to start or end; InvoicePaid to start or end.
     [*] --> InvoiceDraft: create
     InvoiceDraft --> InvoiceSubmitted: submit
     InvoiceDraft --> InvoiceRejected: cancel
@@ -138,6 +140,8 @@ The factory function establishes the entry point for the Invoice lifecycle. In R
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 26: Creating a Draft Invoice
+    accDescr: State diagram with 2 items: start or end, InvoiceDraft. Relationships: start or end to InvoiceDraft: Invoice::create/CreateInvoice.
     [*] --> InvoiceDraft: Invoice::create/CreateInvoice
 ```
 
@@ -222,6 +226,8 @@ The submit transition represents the supplier formally presenting the invoice fo
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 27: Draft → Submitted
+    accDescr: State diagram with 2 items: InvoiceDraft, InvoiceSubmitted. Relationships: InvoiceDraft to InvoiceSubmitted: submit.
     InvoiceDraft --> InvoiceSubmitted: submit
 ```
 
@@ -283,6 +289,8 @@ Approval records who authorised the invoice — a mandatory audit requirement in
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 28: Submitted → Approved
+    accDescr: State diagram with 2 items: InvoiceSubmitted, InvoiceApproved. Relationships: InvoiceSubmitted to InvoiceApproved: approve.
     InvoiceSubmitted --> InvoiceApproved: approve
 ```
 
@@ -368,6 +376,8 @@ Payment closes the invoice lifecycle with a bank transfer reference required for
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 29: Approved → Paid
+    accDescr: State diagram with 2 items: InvoiceApproved, InvoicePaid. Relationships: InvoiceApproved to InvoicePaid: pay.
     InvoiceApproved --> InvoicePaid: pay
 ```
 
@@ -439,6 +449,8 @@ Two separate source states lead to the same `InvoiceRejected` terminal state —
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 30: Rejection from Submitted
+    accDescr: State diagram with 4 items: InvoiceDraft, InvoiceRejected, InvoiceSubmitted, start or end. Relationships: InvoiceDraft to InvoiceRejected: cancel; InvoiceSubmitted to InvoiceRejected: reject; InvoiceRejected to start or end.
     InvoiceDraft --> InvoiceRejected: cancel
     InvoiceSubmitted --> InvoiceRejected: reject
     InvoiceRejected --> [*]
@@ -532,6 +544,8 @@ Three-way match guards are pluggable strategies that each validate one dimension
 
 ```mermaid
 classDiagram
+    accTitle: Example 31: MatchGuard Trait / Interface
+    accDescr: Class diagram with 4 items: MatchGuard, QuantityMatchGuard, PriceMatchGuard, CompositeGuard.
     class MatchGuard {
         <<trait>>
         +check(po, grn, invoice) Result~MatchError~
@@ -550,6 +564,7 @@ classDiagram
     MatchGuard <|.. QuantityMatchGuard
     MatchGuard <|.. PriceMatchGuard
     MatchGuard <|.. CompositeGuard
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -607,6 +622,8 @@ The quantity guard iterates every PO line item, finds the matching GRN receipt, 
 
 ```mermaid
 classDiagram
+    accTitle: Example 32: QuantityMatchGuard
+    accDescr: Class diagram with 2 items: QuantityMatchGuard, MatchGuard.
     class QuantityMatchGuard {
         -tolerance_pct: f64
         +check(po, grn, invoice) Result~MatchError~
@@ -615,6 +632,7 @@ classDiagram
         <<trait>>
     }
     MatchGuard <|.. QuantityMatchGuard
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -721,6 +739,8 @@ The price guard compares PO unit prices against the invoice's line-level amounts
 
 ```mermaid
 classDiagram
+    accTitle: Example 33: PriceMatchGuard
+    accDescr: Class diagram with 2 items: PriceMatchGuard, MatchGuard.
     class PriceMatchGuard {
         -tolerance_pct: f64
         +check(po, grn, invoice) Result~MatchError~
@@ -729,6 +749,7 @@ classDiagram
         <<trait>>
     }
     MatchGuard <|.. PriceMatchGuard
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -836,16 +857,19 @@ The composite guard aggregates a list of guards and runs them in sequence. It is
 
 ```mermaid
 graph TD
-    A["CompositeGuard.check()"]:::blue --> B["QuantityMatchGuard.check()"]:::teal
-    B -->|"Ok()"| C["PriceMatchGuard.check()"]:::orange
-    C -->|"Ok()"| D["Ok — proceed to approve"]:::teal
-    B -->|"Err(QuantityMismatch)"| E["Return Err immediately"]:::brown
+    accTitle: Example 34: CompositeGuard — All Guards Must Pass
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: CompositeGuard. check(), QuantityMatchGuard. check(), PriceMatchGuard. check(), Ok — proceed to approve, Return Err immediately. Connections: CompositeGuard. check() to QuantityMatchGuard. check(), QuantityMatchGuard. check() to PriceMatchGuard. check() (Ok()), PriceMatchGuard. check() to Ok — proceed to approve (Ok()), QuantityMatchGuard. check() to Return Err immediately (Err(Quantity Mismatch)), PriceMatchGuard. check() to Return Err immediately (Err(PriceMismatch)).
+    A["CompositeGuard.<br/>check()"]:::blue --> B["QuantityMatchGuard.<br/>check()"]:::teal
+    B -->|"Ok()"| C["PriceMatchGuard.<br/>check()"]:::orange
+    C -->|"Ok()"| D["Ok — proceed to<br/>approve"]:::teal
+    B -->|"Err(Quantity<br/>Mismatch)"| E["Return Err<br/>immediately"]:::brown
     C -->|"Err(PriceMismatch)"| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -940,6 +964,8 @@ Structured error types carry the context needed to display actionable messages t
 
 ```mermaid
 classDiagram
+    accTitle: Example 35: MatchError Types
+    accDescr: Class diagram with 3 items: MatchError, QuantityMismatch, PriceMismatch. Relationships: MatchError to QuantityMismatch; MatchError to PriceMismatch.
     class MatchError {
         <<enum>>
         QuantityMismatch
@@ -957,6 +983,7 @@ classDiagram
     }
     MatchError *-- QuantityMismatch
     MatchError *-- PriceMismatch
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -1044,6 +1071,8 @@ The approve transition is gated behind the guard: the guard runs first, and only
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 36: Guard Execution Before State Transition
+    accDescr: Sequence diagram between Caller, Guard, Invoice. Messages: Caller to Guard: check(po, grn, invoice); Guard to Caller: Ok(()); Caller to Invoice: approve(approved_by); Invoice to Caller: Invoice[InvoiceApproved]; Guard to Caller: Err(MatchError); Caller to Caller: return Err (no state change).
     participant Caller
     participant Guard
     participant Invoice
@@ -1139,6 +1168,8 @@ The coordinator is an application service that holds references to the PO, Invoi
 
 ```mermaid
 classDiagram
+    accTitle: Example 37: POInvoiceCoordinator
+    accDescr: Class diagram with 5 items: POInvoiceCoordinator, PORepository, InvoiceRepository, GRNRepository, MatchGuard. Relationships: POInvoiceCoordinator to PORepository; POInvoiceCoordinator to InvoiceRepository; POInvoiceCoordinator to GRNRepository; POInvoiceCoordinator to MatchGuard.
     class POInvoiceCoordinator {
         -po_repo: Arc~dyn PORepository~
         -invoice_repo: Arc~dyn InvoiceRepository~
@@ -1165,6 +1196,7 @@ classDiagram
     POInvoiceCoordinator --> InvoiceRepository
     POInvoiceCoordinator --> GRNRepository
     POInvoiceCoordinator --> MatchGuard
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -1242,6 +1274,8 @@ When a Goods Receipt Note arrives, the coordinator fetches all submitted invoice
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 38: GRN Received Event Triggers Invoice Check
+    accDescr: Sequence diagram between Event, Coordinator, PORepo, GRNRepo, InvoiceRepo, Guard. Messages: Event to Coordinator: GRNReceivedpo_id, grn_id; Coordinator to PORepo: find_by_id(po_id); PORepo to Coordinator: PurchaseOrder; Coordinator to GRNRepo: find_by_id(grn_id); GRNRepo to Coordinator: GoodsReceiptNote; Coordinator to InvoiceRepo: find_submitted_by_po(po_id); InvoiceRepo to Coordinator: Vec[Invoice]; Coordinator to Guard: check(po, grn, invoice); Guard to Coordinator: Ok; Coordinator to InvoiceRepo: save_approved(invoice); Guard to Coordinator: Err(MatchError); Coordinator to InvoiceRepo: mark_match_failed(id, err).
     participant Event
     participant Coordinator
     participant PORepo
@@ -1384,6 +1418,8 @@ The coordinator tracks its own state separate from both the PO and Invoice aggre
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 39: Dual-FSM Coordination State
+    accDescr: State diagram with 5 items: start or end, WaitingForGRN, MatchPending, MatchComplete, MatchFailed. Relationships: start or end to WaitingForGRN: create coordination record; WaitingForGRN to MatchPending: grn_received; MatchPending to MatchComplete: match_passed; MatchPending to MatchFailed: match_failed; MatchFailed to start or end: human review required; MatchComplete to start or end.
     [*] --> WaitingForGRN: create coordination record
     WaitingForGRN --> MatchPending: grn_received
     MatchPending --> MatchComplete: match_passed
@@ -1468,6 +1504,8 @@ Go channels provide a lightweight in-process event bus. A coordinator registers 
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 40: Channel-Based Event Dispatch
+    accDescr: Sequence diagram between Sender, Channel, Dispatcher, Handler. Messages: Sender to Channel: ch <- GRNReceivedEvent; Dispatcher to Channel: drain loop (goroutine); Channel to Dispatcher: GRNReceivedEvent; Dispatcher to Handler: HandleGRNReceived(event); Handler to Dispatcher: nil / error.
     participant Sender
     participant Channel
     participant Dispatcher
@@ -1587,6 +1625,8 @@ When a guard check fails, the invoice must remain in its current state — not s
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 41: Rollback on Match Failure
+    accDescr: Sequence diagram between Coordinator, Guard, Invoice, Repo, Supplier. Messages: Coordinator to Guard: check(po, grn, invoice); Guard to Coordinator: Err(QuantityMismatch); Coordinator to Repo: mark_match_failed(invoice_id, QuantityMismatch); Repo to Coordinator: Ok; Coordinator to Supplier: notify_match_failure(invoice_id, reason).
     participant Coordinator
     participant Guard
     participant Invoice
@@ -1686,6 +1726,8 @@ The coordinator's own lifecycle — waiting for GRN, matching, complete, or fail
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 42: Coordinator as a State Machine
+    accDescr: State diagram with 5 items: start or end, waiting_grn, match_pending, match_complete, match_failed. Relationships: start or end to waiting_grn: create; waiting_grn to match_pending: grn_received; match_pending to match_complete: match_passed; match_pending to match_failed: match_failed; match_complete to start or end; match_failed to start or end: human_resolved.
     [*] --> waiting_grn: create
     waiting_grn --> match_pending: grn_received
     match_pending --> match_complete: match_passed
@@ -1774,6 +1816,8 @@ A second phantom type parameter encodes whether an invoice has passed the three-
 
 ```mermaid
 classDiagram
+    accTitle: Example 43: Two-Dimensional Phantom Types — State + Verification
+    accDescr: Class diagram with 2 items: Unverified, Verified.
     class Invoice~S_V~ {
         +id: String
         +po_id: String
@@ -1789,6 +1833,7 @@ classDiagram
     }
     Invoice~S_V~ ..> Unverified : V=Unverified
     Invoice~S_V~ ..> Verified : V=Verified
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -1856,8 +1901,10 @@ The verify_match method runs the guard and, if it passes, returns an invoice wit
 
 ```mermaid
 stateDiagram-v2
-    state "Invoice[Submitted, Unverified]" as SU
-    state "Invoice[Submitted, Verified]" as SV
+    accTitle: Example 44: Unverified → Verified Transition
+    accDescr: State diagram with 2 items: SU, SV. Relationships: SU to SV: verify_match (guard passes); SU to SU: verify_match (guard fails).
+    state "Invoice[Submitted,<br/>Unverified]" as SU
+    state "Invoice[Submitted,<br/>Verified]" as SV
     SU --> SV: verify_match (guard passes)
     SU --> SU: verify_match (guard fails)
 ```
@@ -1936,6 +1983,8 @@ The `approve` method exists only on `Invoice<InvoiceSubmitted, Verified>`. There
 
 ```mermaid
 classDiagram
+    accTitle: Example 45: Only Verified Invoices Can Be Approved
+    accDescr: Class diagram of two invoice states. Invoice Submitted Verified has an approve method returning Approved Verified; Invoice Submitted Unverified has only verify_match and no approve method.
     class `Invoice[Submitted, Verified]` {
         +approve(approved_by) Invoice[Approved, Verified]
     }
@@ -1943,6 +1992,7 @@ classDiagram
         +verify_match(guard, po, grn) Result
         %% no approve method
     }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -2013,11 +2063,13 @@ Payment requires both the Approved lifecycle state and the Verified match status
 
 ```mermaid
 stateDiagram-v2
-    state "Invoice[Draft, Unverified]" as DU
-    state "Invoice[Submitted, Unverified]" as SU
-    state "Invoice[Submitted, Verified]" as SV
-    state "Invoice[Approved, Verified]" as AV
-    state "Invoice[Paid, Verified]" as PV
+    accTitle: Example 46: Only Approved+Verified Invoices Can Be Paid
+    accDescr: State diagram with 5 items: DU, SU, SV, AV, PV. Relationships: DU to SU: submit; SU to SV: verify_match; SV to AV: approve; AV to PV: pay.
+    state "Invoice[Draft,<br/>Unverified]" as DU
+    state "Invoice[Submitted,<br/>Unverified]" as SU
+    state "Invoice[Submitted,<br/>Verified]" as SV
+    state "Invoice[Approved,<br/>Verified]" as AV
+    state "Invoice[Paid,<br/>Verified]" as PV
 
     DU --> SU: submit
     SU --> SV: verify_match
@@ -2088,15 +2140,18 @@ A builder API for constructing guard chains makes the composition readable and d
 
 ```mermaid
 graph TD
+    accTitle: Example 47: Guard Chain as Composed Trait Objects
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: GuardChain::new(), GuardChain [qty], GuardChain [qty, price], POInvoice Coordinator.guard. Connections: GuardChain::new() to GuardChain [qty] (.add(QuantityMatch Guard)), GuardChain [qty] to GuardChain [qty, price] (.add(PriceMatch Guard)), GuardChain [qty, price] to POInvoice Coordinator.guard (dyn MatchGuard).
     A["GuardChain::new()"]:::blue
-    A -->|".add(QuantityMatchGuard)"| B["GuardChain [qty]"]:::teal
-    B -->|".add(PriceMatchGuard)"| C["GuardChain [qty, price]"]:::orange
-    C -->|"dyn MatchGuard"| D["POInvoiceCoordinator.guard"]:::purple
+    A -->|".add(QuantityMatch<br/>Guard)"| B["GuardChain [qty]"]:::teal
+    B -->|".add(PriceMatch<br/>Guard)"| C["GuardChain [qty,<br/>price]"]:::orange
+    C -->|"dyn MatchGuard"| D["POInvoice<br/>Coordinator.guard"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -2188,13 +2243,16 @@ Tests for the two-dimensional phantom type approach have a unique property: atte
 
 ```mermaid
 graph TD
-    A["Test: draft_can_submit"]:::blue --> B["Invoice::create → .submit()"]:::teal
-    C["Test: submit_verify_approve"]:::blue --> D["create→submit→verify→approve"]:::teal
-    E["Test: unverified_no_approve"]:::blue --> F["Rust err / Go ErrNotVerified"]:::orange
+    accTitle: Example 48: Testing FSM Transitions
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: Test: draft_can_submit, Invoice::create → .submit(), Test: submit_verify_ approve, create→submit→verify→approve, Test: unverified_no_ approve, Rust err /Go ErrNotVerified. Connections: Test: draft_can_submit to Invoice::create → .submit(), Test: submit_verify_ approve to create→submit→verify→approve, Test: unverified_no_ approve to Rust err /Go ErrNotVerified.
+    A["Test:<br/>draft_can_submit"]:::blue --> B["Invoice::create →<br/>.submit()"]:::teal
+    C["Test: submit_verify_<br/>approve"]:::blue --> D["create→submit→<br/>verify→approve"]:::teal
+    E["Test: unverified_no_<br/>approve"]:::blue --> F["Rust err /Go<br/>ErrNotVerified"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Rust,Go" >}}
@@ -2300,6 +2358,8 @@ The full happy path exercises every transition: create → submit → verify_mat
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 49: Integration — Full Invoice Lifecycle
+    accDescr: Sequence diagram between Test, Factory, Invoice, Guard, Coordinator, InvoiceRepo. Messages: Test to Factory: create(id, po_id, supplier_id, amount); Factory to Invoice: Invoice[Draft, Unverified]; Test to Invoice: .submit(); Invoice to Invoice: Invoice[Submitted, Unverified]; Test to Guard: AlwaysPassGuard; Test to Invoice: .verify_match(guard, po, grn); Invoice to Invoice: Invoice[Submitted, Verified]; Test to Invoice: .approve(finance-mgr); Invoice to Invoice: Invoice[Approved, Verified]; Test to Invoice: .pay(payment_ref); Invoice to Invoice: Invoice[Paid, Verified]; Test to InvoiceRepo: assert saved as Paid.
     participant Test
     participant Factory
     participant Invoice

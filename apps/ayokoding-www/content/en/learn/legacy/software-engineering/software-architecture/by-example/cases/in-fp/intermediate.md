@@ -201,18 +201,21 @@ The Npgsql stack in `procurement-platform-be` replaces raw `IDbConnection` threa
 
 ```mermaid
 flowchart LR
-    port["App/Ports.fs\nPurchaseOrderRepository record"]:::orange
-    npgsql["Infra/NpgsqlPORepository.fs\nnpgsqlPORepository"]:::teal
-    mem["Infra/InMemoryPORepository.fs\ninMemoryPORepository"]:::purple
-    app["App/SubmitPurchaseOrder.fs\nsubmitPurchaseOrder (repo)"]:::blue
+    accTitle: Production Framework
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: App/Ports.fs PurchaseOrder Repository record, Infra/ NpgsqlPORepository. fs npgsqlPORepository, Infra/InMemoryPO Repository.fs inMemoryPORepository, App/ SubmitPurchaseOrder. fs submitPurchaseOrder (repo). Connections: App/Ports.fs PurchaseOrder Repository record to Infra/ NpgsqlPORepository. fs npgsqlPORepository (satisfied by), App/Ports.fs PurchaseOrder Repository record to Infra/InMemoryPO Repository.fs inMemoryPORepository (satisfied by in tests), App/ SubmitPurchaseOrder. fs submitPurchaseOrder (repo) to App/Ports.fs PurchaseOrder Repository record (calls).
+    port["App/Ports.fs<br/>PurchaseOrder<br/>Repository record"]:::orange
+    npgsql["Infra/<br/>NpgsqlPORepository.<br/>fs<br/>npgsqlPORepository"]:::teal
+    mem["Infra/InMemoryPO<br/>Repository.fs<br/>inMemoryPORepository"]:::purple
+    app["App/<br/>SubmitPurchaseOrder.<br/>fs<br/>submitPurchaseOrder<br/>(repo)"]:::blue
     port -->|"satisfied by"| npgsql
-    port -->|"satisfied by in tests"| mem
+    port -->|"satisfied by in<br/>tests"| mem
     app -->|"calls"| port
 
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The application layer port record:
@@ -1668,18 +1671,21 @@ The record-of-functions port groups all publisher operations into one injected v
 
 ```mermaid
 flowchart LR
-    port["App/Ports.fs\nEventPublisher record"]:::orange
-    mem["Infra/InMemoryEventPublisher\ninMemoryPublisher"]:::purple
-    outbox["Infra/OutboxEventPublisher\noutboxPublisher"]:::teal
-    svc["App/SubmitPurchaseOrder.fs\nsubmitPurchaseOrder (pub)"]:::blue
+    accTitle: Production Framework
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: App/Ports.fs EventPublisher record, Infra/InMemoryEvent Publisher inMemoryPublisher, Infra/ OutboxEventPublisher outboxPublisher, App/ SubmitPurchaseOrder. fs submitPurchaseOrder (pub). Connections: App/Ports.fs EventPublisher record to Infra/InMemoryEvent Publisher inMemoryPublisher (satisfied by), App/Ports.fs EventPublisher record to Infra/ OutboxEventPublisher outboxPublisher (satisfied by in prod), App/ SubmitPurchaseOrder. fs submitPurchaseOrder (pub) to App/Ports.fs EventPublisher record (calls).
+    port["App/Ports.fs<br/>EventPublisher<br/>record"]:::orange
+    mem["Infra/InMemoryEvent<br/>Publisher<br/>inMemoryPublisher"]:::purple
+    outbox["Infra/<br/>OutboxEventPublisher<br/>outboxPublisher"]:::teal
+    svc["App/<br/>SubmitPurchaseOrder.<br/>fs<br/>submitPurchaseOrder<br/>(pub)"]:::blue
     port -->|"satisfied by"| mem
-    port -->|"satisfied by in prod"| outbox
+    port -->|"satisfied by in<br/>prod"| outbox
     svc -->|"calls"| port
 
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -3566,20 +3572,23 @@ The ACL adapter lives in `receiving`'s infrastructure layer. It imports the `pur
 
 ```mermaid
 flowchart LR
-    purdom["purchasing\nDomain/PurchaseOrder"]:::blue
-    purport["purchasing\nApp/FindPurchaseOrder"]:::orange
-    acl["receiving\nInfra/PurchasingAcl.fs"]:::teal
-    recport["receiving\nApplication/POSummaryPort"]:::orange
-    recdom["receiving\nDomain/PurchaseOrderSummary"]:::purple
+    accTitle: Production Framework
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: purchasing Domain/PurchaseOrder, purchasing App/ FindPurchaseOrder, receiving Infra/ PurchasingAcl.fs, receiving Application/ POSummaryPort, receiving Domain/ PurchaseOrderSummary. Connections: purchasing App/ FindPurchaseOrder to receiving Infra/ PurchasingAcl.fs (queried by), purchasing Domain/PurchaseOrder to receiving Infra/ PurchasingAcl.fs (translated by), receiving Infra/ PurchasingAcl.fs to receiving Domain/ PurchaseOrderSummary (returns), receiving Infra/ PurchasingAcl.fs to receiving Application/ POSummaryPort (satisfies).
+    purdom["purchasing<br/>Domain/PurchaseOrder"]:::blue
+    purport["purchasing<br/>App/<br/>FindPurchaseOrder"]:::orange
+    acl["receiving<br/>Infra/<br/>PurchasingAcl.fs"]:::teal
+    recport["receiving<br/>Application/<br/>POSummaryPort"]:::orange
+    recdom["receiving<br/>Domain/<br/>PurchaseOrderSummary"]:::purple
     purport -->|"queried by"| acl
     purdom -->|"translated by"| acl
     acl -->|"returns"| recdom
     acl -->|"satisfies"| recport
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}

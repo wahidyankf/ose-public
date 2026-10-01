@@ -164,14 +164,21 @@ Tabulation builds the solution table iteratively from the smallest subproblems u
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Items + Capacity"] -->|fill table row by row| B["dp table n x W+1"]
+    accTitle: Example 59: Tabulation — Bottom-Up Knapsack
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Items + Capacity, dp table n x W+1, Maximum Value, Selected Items. Connections: Items + Capacity to dp table n x W+1 (fill table row by row), dp table n x W+1 to Maximum Value (read dp[n][W]), dp table n x W+1 to Selected Items (backtrack through table).
+    A["Items + Capacity"] -->|fill table row by<br/>row| B["dp table n x W+1"]
     B -->|read dp[n][W]| C["Maximum Value"]
-    B -->|backtrack through table| D["Selected Items"]
+    B -->|backtrack through<br/>table| D["Selected Items"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -580,14 +587,21 @@ LIS finds the length of the longest strictly increasing subsequence in an array.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 61: Longest Increasing Subsequence
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Input Array, Tails Array patience sort piles, Replace or Append, LIS Length. Connections: Input Array to Tails Array patience sort piles (process each element), Tails Array patience sort piles to Replace or Append (binary search for position), Replace or Append to LIS Length (length of tails array).
     A["Input Array"] -->|process each element| B["Tails Array<br/>patience sort piles"]
-    B -->|binary search for position| C["Replace or Append"]
-    C -->|length of tails array| D["LIS Length"]
+    B -->|binary search for<br/>position| C["Replace or Append"]
+    C -->|length of tails<br/>array| D["LIS Length"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -925,17 +939,25 @@ Dijkstra's algorithm finds the shortest path from a source vertex to all other v
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 63: Dijkstras Shortest Path
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Source Node dist=0, Min-Heap priority queue, Current Node, Neighbor v, Shortest Distances. Connections: Source Node dist=0 to Min-Heap priority queue (relax neighbors), Min-Heap priority queue to Current Node (pop smallest dist), Current Node to Neighbor v (update dist[v] if shorter), Neighbor v to Min-Heap priority queue (push updated dist), Current Node to Shortest Distances (all nodes settled).
     A["Source Node<br/>dist=0"] -->|relax neighbors| B["Min-Heap<br/>priority queue"]
     B -->|pop smallest dist| C["Current Node"]
-    C -->|update dist[v] if shorter| D["Neighbor v"]
+    C -->|update dist[v] if<br/>shorter| D["Neighbor v"]
     D -->|push updated dist| B
     C -->|all nodes settled| E["Shortest Distances"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -1672,17 +1694,25 @@ Topological sort orders vertices of a directed acyclic graph (DAG) so that for e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Compute In-Degrees"] -->|nodes with in-degree=0| B["Queue"]
+    accTitle: Example 66: Topological Sort
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Compute In-Degrees, Queue, Add to Result, Check Neighbor In-Degree, Result or Cycle Detected. Connections: Compute In-Degrees to Queue (nodes with in-degree=0), Queue to Add to Result (process node), Add to Result to Check Neighbor In-Degree (decrement neighbor in-degrees), Check Neighbor In-Degree to Queue (in-degree becomes 0), Add to Result to Result or Cycle Detected (queue empty).
+    A["Compute In-Degrees"] -->|nodes with<br/>in-degree=0| B["Queue"]
     B -->|process node| C["Add to Result"]
-    C -->|decrement neighbor in-degrees| D["Check Neighbor In-Degree"]
+    C -->|decrement neighbor<br/>in-degrees| D["Check Neighbor<br/>In-Degree"]
     D -->|in-degree becomes 0| B
-    C -->|queue empty| E["Result or Cycle Detected"]
+    C -->|queue empty| E["Result or Cycle<br/>Detected"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -2352,6 +2382,8 @@ A trie stores strings character-by-character, enabling O(m) insert, search, and 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 69: Trie — Prefix Tree
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Root, a, b, p, p* app, l, e* apple, a, t* bat. Connections: Root to a (a), Root to b (b), a to p (p), p to p* app (p), p* app to l (l), l to e* apple (e), b to a (a), a to t* bat (t).
     R["Root"] -->|a| A["a"]
     R -->|b| B["b"]
     A -->|p| AP["p"]
@@ -2361,15 +2393,20 @@ graph TD
     B -->|a| BA["a"]
     BA -->|t| BAT["t*<br/>bat"]
 
-    style R fill:#0173B2,stroke:#000,color:#fff
-    style APP fill:#029E73,stroke:#000,color:#fff
-    style APPLE fill:#029E73,stroke:#000,color:#fff
-    style BAT fill:#029E73,stroke:#000,color:#fff
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style AP fill:#CA9161,stroke:#000,color:#fff
-    style APPL fill:#CA9161,stroke:#000,color:#fff
-    style BA fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class R pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class APP pal-029E73
+    class APPLE pal-029E73
+    class BAT pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class AP pal-CA9161
+    class APPL pal-CA9161
+    class BA pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -2622,6 +2659,8 @@ A segment tree supports range queries (sum, min, max) and point updates in O(log
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 70: Segment Tree — Range Sum and Point Update
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: [0..7] sum=36, [0..3] sum=10, [4..7] sum=26, [0..1] sum=3, [2..3] sum=7, [4..5] sum=11, [6..7] sum=15. Connections: [0..7] sum=36 to [0..3] sum=10 (left), [0..7] sum=36 to [4..7] sum=26 (right), [0..3] sum=10 to [0..1] sum=3 (left), [0..3] sum=10 to [2..3] sum=7 (right), [4..7] sum=26 to [4..5] sum=11 (left), [4..7] sum=26 to [6..7] sum=15 (right).
     R["[0..7] sum=36"] -->|left| L["[0..3] sum=10"]
     R -->|right| RR["[4..7] sum=26"]
     L -->|left| LL["[0..1] sum=3"]
@@ -2629,13 +2668,17 @@ graph TD
     RR -->|left| RL["[4..5] sum=11"]
     RR -->|right| RRR["[6..7] sum=15"]
 
-    style R fill:#0173B2,stroke:#000,color:#fff
-    style L fill:#DE8F05,stroke:#000,color:#fff
-    style RR fill:#DE8F05,stroke:#000,color:#fff
-    style LL fill:#029E73,stroke:#000,color:#fff
-    style LR fill:#029E73,stroke:#000,color:#fff
-    style RL fill:#029E73,stroke:#000,color:#fff
-    style RRR fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class R pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class L pal-DE8F05
+    class RR pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class LL pal-029E73
+    class LR pal-029E73
+    class RL pal-029E73
+    class RRR pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -2872,14 +2915,21 @@ Union-Find maintains a collection of disjoint sets with near-O(1) amortized unio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Initial: each node<br/>is its own root"] -->|union operations| B["Merged Components<br/>with rank-based trees"]
-    B -->|find with path compression| C["Flat Tree<br/>all point to root"]
-    C -->|O(α(n)) per operation| D["Near-Constant Time"]
+    accTitle: Example 71: Union-Find
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Initial: each node is its own root, Merged Components with rank-based trees, Flat Tree all point to root, Near-Constant Time. Connections: Initial: each node is its own root to Merged Components with rank-based trees (union operations), Merged Components with rank-based trees to Flat Tree all point to root (find with path compression), Flat Tree all point to root to Near-Constant Time (O(α(n)) per operation).
+    A["Initial: each node<br/>is its own root"] -->|union operations| B["Merged Components<br/>with rank-based<br/>trees"]
+    B -->|find with path<br/>compression| C["Flat Tree<br/>all point to root"]
+    C -->|O(α(n)) per<br/>operation| D["Near-Constant Time"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -3498,17 +3548,25 @@ The Knuth-Morris-Pratt (KMP) algorithm finds all occurrences of a pattern in a t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Pattern"] -->|build failure function| B["LPS Array<br/>longest proper prefix-suffix"]
-    C["Text"] -->|slide with LPS on mismatch| D["KMP Search"]
+    accTitle: Example 74: KMP String Search
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Pattern, LPS Array longest proper prefix-suffix, Text, KMP Search, Record position. Connections: Pattern to LPS Array longest proper prefix-suffix (build failure function), Text to KMP Search (slide with LPS on mismatch), LPS Array longest proper prefix-suffix to KMP Search, KMP Search to Record position (match found), KMP Search to KMP Search (shift by LPS[j-1]).
+    A["Pattern"] -->|build failure<br/>function| B["LPS Array<br/>longest proper<br/>prefix-suffix"]
+    C["Text"] -->|slide with LPS on<br/>mismatch| D["KMP Search"]
     B --> D
     D -->|match found| E["Record position"]
     D -->|shift by LPS[j-1]| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -4260,16 +4318,24 @@ A monotonic stack maintains elements in monotone order (increasing or decreasing
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 78: Monotonic Stack — Next Greater Element
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Input Array, Monotonic Stack decreasing order, Pop: stack tops NGE is current element, Push current, NGE Result Array. Connections: Input Array to Monotonic Stack decreasing order (push to stack), Monotonic Stack decreasing order to Pop: stack tops NGE is current element (current > stack top), Monotonic Stack decreasing order to Push current (current <= stack top), Pop: stack tops NGE is current element to NGE Result Array (all elements popped).
     A["Input Array"] -->|push to stack| B["Monotonic Stack<br/>decreasing order"]
     B -->|current > stack top| C["Pop: stack top's NGE<br/>is current element"]
     B -->|current <= stack top| D["Push current"]
     C -->|all elements popped| E["NGE Result Array"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -4572,16 +4638,24 @@ Radix sort sorts integers by processing individual digits from least significant
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 80: Radix Sort — Non-Comparative Linear Sort
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Input Array, Pass 1 sort by ones, Pass 2 sort by tens, Pass 3 sort by hundreds, Sorted Array. Connections: Input Array to Pass 1 sort by ones (sort by digit 0 LSD), Pass 1 sort by ones to Pass 2 sort by tens (sort by digit 1), Pass 2 sort by tens to Pass 3 sort by hundreds (sort by digit 2), Pass 3 sort by hundreds to Sorted Array (all digits processed).
     A["Input Array"] -->|sort by digit 0 LSD| B["Pass 1<br/>sort by ones"]
     B -->|sort by digit 1| C["Pass 2<br/>sort by tens"]
     C -->|sort by digit 2| D["Pass 3<br/>sort by hundreds"]
     D -->|all digits processed| E["Sorted Array"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -5510,17 +5584,25 @@ A\* combines Dijkstra's guaranteed shortest path with a heuristic estimate to th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 85: A Search — Heuristic Pathfinding
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Start Node f=g+h, Open Set min-heap by f, Update g-scores, Push to Open Set with new f, Reconstruct Path. Connections: Start Node f=g+h to Open Set min-heap by f (pop min f), Open Set min-heap by f to Update g-scores (explore neighbors), Update g-scores to Push to Open Set with new f (compute h heuristic), Push to Open Set with new f to Reconstruct Path (goal reached), Push to Open Set with new f to Open Set min-heap by f (not goal).
     A["Start Node<br/>f=g+h"] -->|pop min f| B["Open Set<br/>min-heap by f"]
     B -->|explore neighbors| C["Update g-scores"]
     C -->|compute h heuristic| D["Push to Open Set<br/>with new f"]
     D -->|goal reached| E["Reconstruct Path"]
     D -->|not goal| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}

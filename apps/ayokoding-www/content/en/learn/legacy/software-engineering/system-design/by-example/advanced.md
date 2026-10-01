@@ -17,19 +17,26 @@ The CAP theorem (Brewer, 2000; formally proved by Gilbert and Lynch, 2002) state
 
 ```mermaid
 graph TD
-    P["Network Partition<br/>Nodes cannot communicate"]
-    CP["CP System<br/>Return error or block"]
+    accTitle: Example 58: CAP Theorem — Partition Tolerance Forces a Choice
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Network Partition Nodes cannot communicate, CP System Return error or block, AP System Return stale data, CA System Single-node only (not truly distributed). Connections: Network Partition Nodes cannot communicate to CP System Return error or block (choose consistency), Network Partition Nodes cannot communicate to AP System Return stale data (choose availability), Network Partition Nodes cannot communicate to CA System Single-node only (not truly distributed) (no partition tolerance).
+    P["Network Partition<br/>Nodes cannot<br/>communicate"]
+    CP["CP System<br/>Return error or<br/>block"]
     AP["AP System<br/>Return stale data"]
-    CA["CA System<br/>Single-node only<br/>(not truly distributed)"]
+    CA["CA System<br/>Single-node only<br/>(not truly<br/>distributed)"]
 
     P -->|choose consistency| CP
     P -->|choose availability| AP
-    P -->|no partition tolerance| CA
+    P -->|no partition<br/>tolerance| CA
 
-    style P fill:#DE8F05,stroke:#000,color:#fff
-    style CP fill:#0173B2,stroke:#000,color:#fff
-    style AP fill:#029E73,stroke:#000,color:#fff
-    style CA fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class P pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CP pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class AP pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class CA pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -373,6 +380,8 @@ Raft (Ongaro and Ousterhout, 2014) is a consensus algorithm designed to be under
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 60: Raft Consensus — Leader Election Basics
+    accDescr: State diagram with 4 items: start or end, Follower, Candidate, Leader. Relationships: start or end to Follower; Follower to Candidate: election timeout expires; Candidate to Leader: receives majority votes; Candidate to Follower: discovers current leader; Leader to Follower: discovers higher term; Leader to start or end: cluster shutdown.
     [*] --> Follower
     Follower --> Candidate: election timeout expires
     Candidate --> Leader: receives majority votes
@@ -813,6 +822,8 @@ Event sourcing stores state changes as an immutable, ordered sequence of events 
 
 ```mermaid
 graph TD
+    accTitle: Example 62: Event Sourcing — State as Append-Only Event Log
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Command PlaceOrder, Aggregate Order, Event Store Append-Only Log, Projection Read Model, Query Current State. Connections: Command PlaceOrder to Aggregate Order, Aggregate Order to Event Store Append-Only Log (emit event), Event Store Append-Only Log to Projection Read Model (replay events), Projection Read Model to Query Current State.
     CMD["Command<br/>PlaceOrder"]
     AGG["Aggregate<br/>Order"]
     EVT["Event Store<br/>Append-Only Log"]
@@ -824,11 +835,17 @@ graph TD
     EVT -->|replay events| PROJ
     PROJ --> QUERY
 
-    style CMD fill:#0173B2,stroke:#000,color:#fff
-    style AGG fill:#DE8F05,stroke:#000,color:#fff
-    style EVT fill:#029E73,stroke:#000,color:#fff
-    style PROJ fill:#CC78BC,stroke:#000,color:#fff
-    style QUERY fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CMD pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class AGG pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class EVT pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PROJ pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class QUERY pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -1308,6 +1325,8 @@ The Saga pattern (Garcia-Molina and Salem, 1987) manages long-running distribute
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 64: Saga Pattern — Long-Running Transactions Without 2PC
+    accDescr: Sequence diagram between Order Service, Payment Service, Inventory Service, Notification Service. Messages: Order Service to Payment Service: charge_customer; Payment Service to Order Service: payment_confirmed; Order Service to Inventory Service: reserve_inventory; Inventory Service to Order Service: inventory_reserved; Order Service to Notification Service: send_confirmation; Order Service to Inventory Service: reserve_inventory (FAIL); Inventory Service to Order Service: out_of_stock; Order Service to Payment Service: refund_customer (compensate); Payment Service to Order Service: refund_confirmed.
     participant O as Order Service
     participant P as Payment Service
     participant I as Inventory Service
@@ -2454,7 +2473,9 @@ Three primary distributed caching strategies differ in how they handle cache pop
 
 ```mermaid
 graph TD
-    subgraph CacheAside["Cache-Aside (Lazy Load)"]
+    accTitle: Example 69: Distributed Caching Strategies — Cache-Aside, Write-Through, Write-Behind
+    accDescr: Graph with 12 nodes and 9 connections. Nodes: App reads cache, Load from DB, Populate cache, Return to App, App writes, Write to cache, Write to DB (sync), Ack to App, App writes, Write to cache, Ack to App (fast), Flush to DB. Connections: App reads cache to Load from DB (miss), Load from DB to Populate cache, Populate cache to Return to App, App writes to Write to cache, Write to cache to Write to DB (sync), Write to DB (sync) to Ack to App, App writes to Write to cache, Write to cache to Ack to App (fast), Write to cache to Flush to DB (async).
+    subgraph CacheAside["Cache-Aside (Lazy<br/>Load)"]
         CA1["App reads cache"] -->|miss| CA2["Load from DB"]
         CA2 --> CA3["Populate cache"]
         CA3 --> CA4["Return to App"]
@@ -2470,12 +2491,18 @@ graph TD
         WB2 -->|async| WB4["Flush to DB"]
     end
 
-    style CA1 fill:#0173B2,stroke:#000,color:#fff
-    style WT1 fill:#029E73,stroke:#000,color:#fff
-    style WB1 fill:#CC78BC,stroke:#000,color:#fff
-    style CA2 fill:#DE8F05,stroke:#000,color:#fff
-    style WT2 fill:#CA9161,stroke:#000,color:#fff
-    style WB2 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CA1 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class WT1 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class WB1 pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CA2 pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class WT2 pal-CA9161
+    class WB2 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -3155,6 +3182,8 @@ Apache Kafka is a distributed commit log used as a message broker and event stre
 
 ```mermaid
 graph LR
+    accTitle: Example 72: Kafka Concepts — Topics, Partitions, Consumer Groups
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Producer 1 order events, Producer 2 payment events, Topic: events 3 partitions, Consumer A Partition 0, Consumer B Partition 1, Consumer C Partition 2. Connections: Producer 1 order events to Topic: events 3 partitions (partition by key), Producer 2 payment events to Topic: events 3 partitions (partition by key), Topic: events 3 partitions to Consumer A Partition 0, Topic: events 3 partitions to Consumer B Partition 1, Topic: events 3 partitions to Consumer C Partition 2.
     P1["Producer 1<br/>order events"]
     P2["Producer 2<br/>payment events"]
     T["Topic: events<br/>3 partitions"]
@@ -3168,12 +3197,17 @@ graph LR
     T --> C2
     T --> C3
 
-    style P1 fill:#0173B2,stroke:#000,color:#fff
-    style P2 fill:#DE8F05,stroke:#000,color:#fff
-    style T fill:#029E73,stroke:#000,color:#fff
-    style C1 fill:#CC78BC,stroke:#000,color:#fff
-    style C2 fill:#CC78BC,stroke:#000,color:#fff
-    style C3 fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P1 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class P2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class T pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C1 pal-CC78BC
+    class C2 pal-CC78BC
+    class C3 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -4413,10 +4447,12 @@ Observability is the ability to understand a system's internal state from its ex
 
 ```mermaid
 graph TD
+    accTitle: Example 77: Observability — Metrics, Logs, and Traces
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Incoming Request, API Service, Database, Metrics Prometheus/Grafana Rate, Errors, Duration, Logs Elasticsearch/Loki Structured events, Traces Jaeger/Zipkin Distributed spans. Connections: Incoming Request to API Service, API Service to Database, API Service to Metrics Prometheus/Grafana Rate, Errors, Duration (emit), API Service to Logs Elasticsearch/Loki Structured events (emit), API Service to Traces Jaeger/Zipkin Distributed spans (emit), Database to Traces Jaeger/Zipkin Distributed spans (emit).
     REQ["Incoming Request"]
     API["API Service"]
     DB["Database"]
-    METRICS["Metrics<br/>Prometheus/Grafana<br/>Rate, Errors, Duration"]
+    METRICS["Metrics<br/>Prometheus/Grafana<br/>Rate, Errors,<br/>Duration"]
     LOGS["Logs<br/>Elasticsearch/Loki<br/>Structured events"]
     TRACES["Traces<br/>Jaeger/Zipkin<br/>Distributed spans"]
 
@@ -4427,12 +4463,18 @@ graph TD
     API -.->|emit| TRACES
     DB -.->|emit| TRACES
 
-    style REQ fill:#0173B2,stroke:#000,color:#fff
-    style API fill:#DE8F05,stroke:#000,color:#fff
-    style DB fill:#029E73,stroke:#000,color:#fff
-    style METRICS fill:#CC78BC,stroke:#000,color:#fff
-    style LOGS fill:#CA9161,stroke:#000,color:#fff
-    style TRACES fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class REQ pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class API pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DB pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class METRICS pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class LOGS pal-CA9161
+    class TRACES pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}
@@ -6111,11 +6153,13 @@ A URL shortener handles write-heavy URL creation and read-heavy redirect lookups
 
 ```mermaid
 graph TD
+    accTitle: Example 85: URL Shortener at Scale — Applying Advanced Patterns
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Client shorten or redirect, CDN / GeoDNS nearest region, API Layer rate-limited, autoscaled, Redis Cache 99 hit rate, PostgreSQL sharded by short_code, Bloom Filter duplicate detection, Kafka click analytics. Connections: Client shorten or redirect to CDN / GeoDNS nearest region, CDN / GeoDNS nearest region to API Layer rate-limited, autoscaled, API Layer rate-limited, autoscaled to Redis Cache 99 hit rate (read), Redis Cache 99 hit rate to PostgreSQL sharded by short_code (miss), API Layer rate-limited, autoscaled to Bloom Filter duplicate detection (write), Bloom Filter duplicate detection to PostgreSQL sharded by short_code (new URL), API Layer rate-limited, autoscaled to Kafka click analytics (emit).
     CLIENT["Client<br/>shorten or redirect"]
     CDN["CDN / GeoDNS<br/>nearest region"]
-    API["API Layer<br/>rate-limited, autoscaled"]
+    API["API Layer<br/>rate-limited,<br/>autoscaled"]
     CACHE["Redis Cache<br/>99% hit rate"]
-    DB["PostgreSQL<br/>sharded by short_code"]
+    DB["PostgreSQL<br/>sharded by<br/>short_code"]
     BLOOM["Bloom Filter<br/>duplicate detection"]
     KAFKA["Kafka<br/>click analytics"]
 
@@ -6127,13 +6171,19 @@ graph TD
     BLOOM -- new URL --> DB
     API -- emit --> KAFKA
 
-    style CLIENT fill:#0173B2,stroke:#000,color:#fff
-    style CDN fill:#DE8F05,stroke:#000,color:#fff
-    style API fill:#029E73,stroke:#000,color:#fff
-    style CACHE fill:#CC78BC,stroke:#000,color:#fff
-    style DB fill:#CA9161,stroke:#000,color:#fff
-    style BLOOM fill:#0173B2,stroke:#000,color:#fff
-    style KAFKA fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CLIENT pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CDN pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class API pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class CACHE pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class DB pal-CA9161
+    class BLOOM pal-0173B2
+    class KAFKA pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Python" >}}

@@ -17,6 +17,8 @@ A `Supplier` record tracks vendor approval status. Unlike `PurchaseOrder`, the S
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 51: Supplier States and Risk-Tier Semantics
+    accDescr: State diagram with 9 items: start or end, Pending, Approved, Blacklisted, Suspended, Pending pending, Approved approved, Suspended suspended, Blacklisted blacklisted. Relationships: start or end to Pending; Pending to Approved: approve; Pending to Blacklisted: blacklist; Approved to Suspended: suspend; Approved to Blacklisted: blacklist; Suspended to Approved: reinstate; Suspended to Blacklisted: blacklist; Blacklisted to start or end.
     [*] --> Pending
     Pending --> Approved: approve
     Pending --> Blacklisted: blacklist
@@ -26,10 +28,10 @@ stateDiagram-v2
     Suspended --> Blacklisted: blacklist
     Blacklisted --> [*]
 
-    classDef pending fill:#DE8F05,stroke:#000,color:#000
-    classDef approved fill:#029E73,stroke:#000,color:#fff
-    classDef suspended fill:#CC78BC,stroke:#000,color:#fff
-    classDef blacklisted fill:#CA9161,stroke:#000,color:#fff
+    classDef pending fill:#DE8F05,stroke:#000000,color:#000000
+    classDef approved fill:#029E73,stroke:#000000,color:#000000
+    classDef suspended fill:#CC78BC,stroke:#000000,color:#000000
+    classDef blacklisted fill:#CA9161,stroke:#000000,color:#000000
 
     class Pending pending
     class Approved approved
@@ -380,6 +382,8 @@ The Supplier FSM state gates which suppliers are selectable for new POs — a gu
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 52: Supplier State Consequences on PO Selection
+    accDescr: State diagram with 11 items: Supplier Eligibility, Pending, Blocked, Approved, Allowed, Suspended, Blacklisted, NewPO, Rejected, Pending pending, Suspended suspended. Relationships: Pending to Blocked: supplierEligibleForPO = false; Approved to Allowed: supplierEligibleForPO = true; Suspended to Blocked: supplierEligibleForPO = false; Blacklisted to Blocked: supplierEligibleForPO = false; Allowed to NewPO: PO can be created; Blocked to Rejected: PO creation rejected.
     direction LR
     state "Supplier Eligibility" as Check {
         Pending --> Blocked: supplierEligibleForPO = false
@@ -391,10 +395,10 @@ stateDiagram-v2
     Allowed --> NewPO: PO can be created
     Blocked --> Rejected: PO creation rejected
 
-    classDef allowed fill:#029E73,stroke:#000,color:#fff
-    classDef blocked fill:#CA9161,stroke:#000,color:#fff
-    classDef pending fill:#DE8F05,stroke:#000,color:#000
-    classDef suspended fill:#CC78BC,stroke:#000,color:#fff
+    classDef allowed fill:#029E73,stroke:#000000,color:#000000
+    classDef blocked fill:#CA9161,stroke:#000000,color:#000000
+    classDef pending fill:#DE8F05,stroke:#000000,color:#000000
+    classDef suspended fill:#CC78BC,stroke:#000000,color:#000000
 
     class Approved,Allowed,NewPO allowed
     class Pending pending
@@ -896,6 +900,8 @@ The `Approved` state can have sub-states representing tier levels (PreferredVend
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 54: Hierarchical States — Supplier with Sub-States
+    accDescr: State diagram with 10 items: start or end, Pending, Approved, Standard, Preferred, Suspended, Blacklisted, Pending pending, Suspended suspended, Blacklisted blacklisted. Relationships: start or end to Pending; Pending to Approved; start or end to Standard; Standard to Preferred: upgrade; Preferred to Standard: downgrade; Approved to Suspended: suspend; Approved to Blacklisted: blacklist; Suspended to Approved: reinstate; Suspended to Blacklisted: blacklist; Blacklisted to start or end.
     [*] --> Pending
     Pending --> Approved
     state Approved {
@@ -909,10 +915,10 @@ stateDiagram-v2
     Suspended --> Blacklisted: blacklist
     Blacklisted --> [*]
 
-    classDef pending fill:#DE8F05,stroke:#000,color:#000
-    classDef approved fill:#029E73,stroke:#000,color:#fff
-    classDef suspended fill:#CC78BC,stroke:#000,color:#fff
-    classDef blacklisted fill:#CA9161,stroke:#000,color:#fff
+    classDef pending fill:#DE8F05,stroke:#000000,color:#000000
+    classDef approved fill:#029E73,stroke:#000000,color:#000000
+    classDef suspended fill:#CC78BC,stroke:#000000,color:#000000
+    classDef blacklisted fill:#CA9161,stroke:#000000,color:#000000
 
     class Pending pending
     class Approved,Standard,Preferred approved
@@ -1279,6 +1285,8 @@ When a supplier is reinstated after suspension, they should return to their prev
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 55: History States — Restoring Previous Sub-State After Suspension
+    accDescr: State diagram with 8 items: start or end, Pending, Approved, Standard, Preferred, Suspended, Pending pending, Suspended suspended. Relationships: start or end to Pending; Pending to Approved; Standard to Preferred: upgrade; Preferred to Standard: downgrade; Approved to Suspended: suspend; Suspended to Approved: reinstate (restores to [H]).
     [*] --> Pending
     Pending --> Approved
     state Approved {
@@ -1289,9 +1297,9 @@ stateDiagram-v2
     Approved --> Suspended: suspend
     Suspended --> Approved: reinstate (restores to [H])
 
-    classDef pending fill:#DE8F05,stroke:#000,color:#000
-    classDef approved fill:#029E73,stroke:#000,color:#fff
-    classDef suspended fill:#CC78BC,stroke:#000,color:#fff
+    classDef pending fill:#DE8F05,stroke:#000000,color:#000000
+    classDef approved fill:#029E73,stroke:#000000,color:#000000
+    classDef suspended fill:#CC78BC,stroke:#000000,color:#000000
 
     class Pending pending
     class Approved,Standard,Preferred approved
@@ -2171,6 +2179,8 @@ The `Payment` aggregate models the financial leg of the P2P cycle: a payment is 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 58: Payment States and the Disbursement Lifecycle
+    accDescr: State diagram with 11 items: start or end, Scheduled, Disbursed, Remitted, Failed, Reversed, Scheduled scheduled, Disbursed disbursed, Remitted remitted, Failed failed, Reversed reversed. Relationships: start or end to Scheduled; Scheduled to Disbursed: disburse; Disbursed to Remitted: remit; Disbursed to Failed: fail; Failed to Scheduled: retry; Remitted to start or end; Scheduled to Reversed: reverse; Disbursed to Reversed: reverse.
     [*] --> Scheduled
     Scheduled --> Disbursed: disburse
     Disbursed --> Remitted: remit
@@ -2180,11 +2190,11 @@ stateDiagram-v2
     Scheduled --> Reversed: reverse
     Disbursed --> Reversed: reverse
 
-    classDef scheduled fill:#0173B2,stroke:#000,color:#fff
-    classDef disbursed fill:#DE8F05,stroke:#000,color:#000
-    classDef remitted fill:#029E73,stroke:#000,color:#fff
-    classDef failed fill:#CC78BC,stroke:#000,color:#fff
-    classDef reversed fill:#CA9161,stroke:#000,color:#fff
+    classDef scheduled fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef disbursed fill:#DE8F05,stroke:#000000,color:#000000
+    classDef remitted fill:#029E73,stroke:#000000,color:#000000
+    classDef failed fill:#CC78BC,stroke:#000000,color:#000000
+    classDef reversed fill:#CA9161,stroke:#000000,color:#000000
 
     class Scheduled scheduled
     class Disbursed disbursed
@@ -2843,6 +2853,8 @@ A payment disbursement has two parallel concerns: the financial transfer and the
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 60: Parallel Regions — Payment + Notification
+    accDescr: State diagram with 13 items: start or end, Disbursing, Transferring, Notifying, Pending, Sent, Confirmed, Failed, Queued, Delivered, Completed, PartiallyFailed, and 1 more. Relationships: start or end to Disbursing; start or end to Transferring; start or end to Notifying; start or end to Pending; Pending to Sent: initiate; Sent to Confirmed: bank_ack; Sent to Failed: bank_error; start or end to Queued; Queued to Delivered: delivered; Queued to Failed: notify_error; Disbursing to Completed: both confirmed; Disbursing to PartiallyFailed: one failed.
     direction LR
     [*] --> Disbursing
     state Disbursing {
@@ -2863,9 +2875,9 @@ stateDiagram-v2
     Disbursing --> Completed: both confirmed
     Disbursing --> PartiallyFailed: one failed
 
-    classDef disbursing fill:#0173B2,stroke:#000,color:#fff
-    classDef completed fill:#029E73,stroke:#000,color:#fff
-    classDef failed fill:#CA9161,stroke:#000,color:#fff
+    classDef disbursing fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef completed fill:#029E73,stroke:#000000,color:#000000
+    classDef failed fill:#CA9161,stroke:#000000,color:#000000
 
     class Disbursing,Transferring,Notifying disbursing
     class Completed completed
@@ -3165,6 +3177,8 @@ FSM state must survive process restarts. Serialising to JSON and deserialising b
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 61: FSM Persistence — Serialising State to JSON
+    accDescr: State diagram with 8 items: start or end, TypedState, Persistent Storage, JSONSnapshot, Memory, Store, TypedState memory, JSONSnapshot store. Relationships: start or end to TypedState; TypedState to TypedState: transition(); start or end to JSONSnapshot; JSONSnapshot to JSONSnapshot: upsert on transition; Memory to Store: serialise() on each transition; Store to Memory: deserialise() on restart.
     state "In-Memory FSM State" as Memory {
         [*] --> TypedState
         TypedState --> TypedState: transition()
@@ -3178,8 +3192,8 @@ stateDiagram-v2
     Memory --> Store: serialise() on each transition
     Store --> Memory: deserialise() on restart
 
-    classDef memory fill:#0173B2,stroke:#000,color:#fff
-    classDef store fill:#029E73,stroke:#000,color:#fff
+    classDef memory fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef store fill:#029E73,stroke:#000000,color:#000000
 
     class TypedState memory
     class JSONSnapshot store
@@ -3733,6 +3747,8 @@ The `Payment` statechart uses all three statechart concepts: a hierarchical `Act
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 63: Statechart — Combining Hierarchical + Parallel + History
+    accDescr: State diagram with 13 items: start or end, Active, Disbursing, TransferPending, NotifyQueued, TransferConfirmed, NotifyDelivered, TemporarilyFailed, Completed, Reversed, Completed completed, TemporarilyFailed failed, and 1 more. Relationships: start or end to Active; start or end to TransferPending; start or end to NotifyQueued; TransferPending to TransferConfirmed: bank_ack; NotifyQueued to NotifyDelivered: notify_ok; Disbursing to TemporarilyFailed: any_failure; TemporarilyFailed to Disbursing: retry (restores [H]); Active to Completed: both_regions_done; Active to Reversed: recall.
     direction LR
     [*] --> Active
     state Active {
@@ -3749,10 +3765,10 @@ stateDiagram-v2
     Active --> Completed: both_regions_done
     Active --> Reversed: recall
 
-    classDef active fill:#0173B2,stroke:#000,color:#fff
-    classDef completed fill:#029E73,stroke:#000,color:#fff
-    classDef failed fill:#CC78BC,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef active fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef completed fill:#029E73,stroke:#000000,color:#000000
+    classDef failed fill:#CC78BC,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Active,Disbursing active
     class Completed completed
@@ -4365,6 +4381,8 @@ The `MurabahaContract` aggregate models a Sharia-compliant financing arrangement
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 65: MurabahaContract State Machine
+    accDescr: State diagram with 11 items: start or end, Quoted, AssetAcquired, Signed, InstallmentPending, InstallmentPaid, Settled, Defaulted, Quoted quoted, AssetAcquired acquired, Signed signed. Relationships: start or end to Quoted; Quoted to AssetAcquired: acquire_asset; AssetAcquired to Signed: sign; Signed to InstallmentPending: first_installment_due; InstallmentPending to InstallmentPaid: pay_installment; InstallmentPaid to InstallmentPending: next_installment_due; InstallmentPaid to Settled: final_installment; InstallmentPending to Defaulted: default; Settled to start or end; Defaulted to start or end.
     [*] --> Quoted
     Quoted --> AssetAcquired: acquire_asset
     AssetAcquired --> Signed: sign
@@ -4376,11 +4394,11 @@ stateDiagram-v2
     Settled --> [*]
     Defaulted --> [*]
 
-    classDef quoted fill:#0173B2,stroke:#000,color:#fff
-    classDef acquired fill:#DE8F05,stroke:#000,color:#000
-    classDef signed fill:#029E73,stroke:#000,color:#fff
-    classDef installment fill:#CC78BC,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef quoted fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef acquired fill:#DE8F05,stroke:#000000,color:#000000
+    classDef signed fill:#029E73,stroke:#000000,color:#000000
+    classDef installment fill:#CC78BC,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Quoted quoted
     class AssetAcquired acquired
@@ -5856,6 +5874,8 @@ A saga coordinates the three FSMs across a long-running process. If any step fai
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 70: Saga Pattern — Coordinating PO + Invoice + Payment
+    accDescr: State diagram with 12 items: start or end, SagaStarted, POIssued, InvoiceMatched, PaymentDisbursed, SagaCompleted, Compensating, SagaFailed, SagaStarted started, Compensating compensating, SagaCompleted active, SagaFailed terminal. Relationships: start or end to SagaStarted; SagaStarted to POIssued: issue PO; POIssued to InvoiceMatched: match invoice; InvoiceMatched to PaymentDisbursed: disburse payment; PaymentDisbursed to SagaCompleted: all done; POIssued to Compensating: PO issue fails; InvoiceMatched to Compensating: match fails; PaymentDisbursed to Compensating: payment fails; Compensating to SagaFailed: compensations done.
     [*] --> SagaStarted
     SagaStarted --> POIssued: issue PO
     POIssued --> InvoiceMatched: match invoice
@@ -5866,10 +5886,10 @@ stateDiagram-v2
     PaymentDisbursed --> Compensating: payment fails
     Compensating --> SagaFailed: compensations done
 
-    classDef started fill:#0173B2,stroke:#000,color:#fff
-    classDef active fill:#029E73,stroke:#000,color:#fff
-    classDef compensating fill:#CC78BC,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef started fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef active fill:#029E73,stroke:#000000,color:#000000
+    classDef compensating fill:#CC78BC,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class SagaStarted started
     class POIssued,InvoiceMatched,PaymentDisbursed active

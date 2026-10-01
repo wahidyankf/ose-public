@@ -196,17 +196,20 @@ Spring Boot 4 ships a modernised `JdbcClient` (Spring Framework 6.1+) that is le
 
 ```mermaid
 flowchart LR
-    svc["IssuePurchaseOrderServiceImpl\n(application package)"]:::orange
-    port["PurchaseOrderRepository\n(application package)"]:::orange
-    jdbc["JdbcPurchaseOrderRepository\n@Repository (infrastructure)"]:::teal
-    mem["InMemoryPORepository\n(test)"]:::purple
-    svc -->|"declares dependency on"| port
-    port -->|"satisfied in production"| jdbc
+    accTitle: Production Framework
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: IssuePurchaseOrder ServiceImpl (application package), PurchaseOrder Repository (application package), JdbcPurchaseOrder Repository @Repository (infrastructure), InMemoryPORepository (test). Connections: IssuePurchaseOrder ServiceImpl (application package) to PurchaseOrder Repository (application package) (declares dependency on), PurchaseOrder Repository (application package) to JdbcPurchaseOrder Repository @Repository (infrastructure) (satisfied in production), PurchaseOrder Repository (application package) to InMemoryPORepository (test) (satisfied in tests).
+    svc["IssuePurchaseOrder<br/>ServiceImpl<br/>(application<br/>package)"]:::orange
+    port["PurchaseOrder<br/>Repository<br/>(application<br/>package)"]:::orange
+    jdbc["JdbcPurchaseOrder<br/>Repository<br/>@Repository<br/>(infrastructure)"]:::teal
+    mem["InMemoryPORepository<br/>(test)"]:::purple
+    svc -->|"declares dependency<br/>on"| port
+    port -->|"satisfied in<br/>production"| jdbc
     port -->|"satisfied in tests"| mem
 
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The port interface with typed exceptions in the `application` package:
@@ -1658,18 +1661,21 @@ The domain event publisher port is a plain interface (or equivalent structural t
 
 ```mermaid
 flowchart LR
-    port["EventPublisher interface\n(application package)"]:::orange
-    mem["InMemoryEventPublisher\n(test infrastructure)"]:::purple
-    outbox["OutboxEventPublisher\n@Component (infrastructure)"]:::teal
-    svc["IssuePurchaseOrderServiceImpl\n(application package)"]:::blue
+    accTitle: Production Framework
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: EventPublisher interface (application package), InMemoryEvent Publisher (test infrastructure), OutboxEventPublisher @Component (infrastructure), IssuePurchaseOrder ServiceImpl (application package). Connections: EventPublisher interface (application package) to InMemoryEvent Publisher (test infrastructure) (satisfied in tests), EventPublisher interface (application package) to OutboxEventPublisher @Component (infrastructure) (satisfied in production), IssuePurchaseOrder ServiceImpl (application package) to EventPublisher interface (application package) (calls).
+    port["EventPublisher<br/>interface<br/>(application<br/>package)"]:::orange
+    mem["InMemoryEvent<br/>Publisher<br/>(test<br/>infrastructure)"]:::purple
+    outbox["OutboxEventPublisher<br/>@Component<br/>(infrastructure)"]:::teal
+    svc["IssuePurchaseOrder<br/>ServiceImpl<br/>(application<br/>package)"]:::blue
     port -->|"satisfied in tests"| mem
-    port -->|"satisfied in production"| outbox
+    port -->|"satisfied in<br/>production"| outbox
     svc -->|"calls"| port
 
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Domain event records and the publisher port interface, both in `application`:
@@ -3773,20 +3779,23 @@ The ACL adapter lives in `receiving.infrastructure`. It imports the `purchasing`
 
 ```mermaid
 flowchart LR
-    purdom["purchasing\ndomain/PurchaseOrder record"]:::blue
-    purport["purchasing\napplication/PORepository port"]:::orange
-    acl["receiving\ninfra/PurchaseOrderAcl"]:::teal
-    recvport["receiving\napplication/PurchasedItemsPort"]:::orange
-    recvdom["receiving\ndomain/PurchasedItems record"]:::purple
+    accTitle: Production Framework
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: purchasing domain/PurchaseOrder record, purchasing application/ PORepository port, receiving infra/ PurchaseOrderAcl, receiving application/ PurchasedItemsPort, receiving domain/ PurchasedItems record. Connections: purchasing application/ PORepository port to receiving infra/ PurchaseOrderAcl (queried by), purchasing domain/PurchaseOrder record to receiving infra/ PurchaseOrderAcl (translated by), receiving infra/ PurchaseOrderAcl to receiving domain/ PurchasedItems record (returns), receiving infra/ PurchaseOrderAcl to receiving application/ PurchasedItemsPort (satisfies).
+    purdom["purchasing<br/>domain/PurchaseOrder<br/>record"]:::blue
+    purport["purchasing<br/>application/<br/>PORepository port"]:::orange
+    acl["receiving<br/>infra/<br/>PurchaseOrderAcl"]:::teal
+    recvport["receiving<br/>application/<br/>PurchasedItemsPort"]:::orange
+    recvdom["receiving<br/>domain/<br/>PurchasedItems<br/>record"]:::purple
     purport -->|"queried by"| acl
     purdom -->|"translated by"| acl
     acl -->|"returns"| recvdom
     acl -->|"satisfies"| recvport
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 `receiving` domain type — independent of `purchasing.domain.PurchaseOrder`:

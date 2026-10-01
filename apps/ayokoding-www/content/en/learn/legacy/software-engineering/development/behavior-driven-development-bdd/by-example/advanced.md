@@ -17,14 +17,21 @@ Testing interactions between microservices requires coordinating multiple servic
 
 ```mermaid
 graph TD
+    accTitle: Example 59: BDD in Microservices - Service-to-Service Communication
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Order Service, Payment Service, Notification Service, Inventory Service. Connections: Order Service to Payment Service (HTTP), Payment Service to Notification Service (Event), Order Service to Inventory Service (Query).
     A[Order Service] -->|HTTP| B[Payment Service]
     B -->|Event| C[Notification Service]
     A -->|Query| D[Inventory Service]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Gherkin Scenario**:
@@ -210,16 +217,24 @@ Event-driven architectures use message brokers (Kafka, RabbitMQ) for asynchronou
 
 ```mermaid
 graph TD
+    accTitle: Example 60: Event-Driven BDD with Message Brokers
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Order Service, Message Broker, Email Service, Analytics Service, Warehouse Service. Connections: Order Service to Message Broker (Publish), Message Broker to Email Service (Subscribe), Message Broker to Analytics Service (Subscribe), Message Broker to Warehouse Service (Subscribe).
     A[Order Service] -->|Publish| B[Message Broker]
     B -->|Subscribe| C[Email Service]
     B -->|Subscribe| D[Analytics Service]
     B -->|Subscribe| E[Warehouse Service]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Gherkin Scenario**:
@@ -463,18 +478,26 @@ SAGA pattern manages distributed transactions through orchestrated or choreograp
 
 ```mermaid
 graph TD
+    accTitle: Example 61: SAGA Pattern - Distributed Transaction Coordination
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Order Created, Reserve Inventory, Process Payment, Ship Order, Release Inventory, Cancel Order. Connections: Order Created to Reserve Inventory, Reserve Inventory to Process Payment (Success), Process Payment to Ship Order (Success), Process Payment to Release Inventory (Failure), Release Inventory to Cancel Order.
     A[Order Created] --> B[Reserve Inventory]
     B -->|Success| C[Process Payment]
     C -->|Success| D[Ship Order]
     C -->|Failure| E[Release Inventory]
     E --> F[Cancel Order]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Gherkin Scenario - Success Path**:
@@ -1035,6 +1058,8 @@ Chaos engineering intentionally introduces failures to verify system resilience.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Diagram
+    accDescr: State diagram with 4 items: start or end, Closed, Open, HalfOpen. Relationships: start or end to Closed; Closed to Open: Failure threshold reached (3 failures); Open to HalfOpen: Timeout elapsed; HalfOpen to Closed: Test request succeeds; HalfOpen to Open: Test request fails; Open to Open: Requests fast-fail (no network call).
     [*] --> Closed
     Closed --> Open : Failure threshold reached (3 failures)
     Open --> HalfOpen : Timeout elapsed
@@ -1260,23 +1285,30 @@ BDD anti-patterns produce brittle, hard-to-maintain scenarios. This example demo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 7 nodes and 9 connections. Nodes: Anti-Pattern, Type, Refactor: Declarative Steps, Refactor: Business Language, Refactor: Single Behavior, Refactor: Background or Hooks, Maintainable Scenarios. Connections: Anti-Pattern to Type, Type to Refactor: Declarative Steps (Imperative Steps), Type to Refactor: Business Language (UI Details in Gherkin), Type to Refactor: Single Behavior (Multiple Actions per Scenario), Type to Refactor: Background or Hooks (Technical Setup Exposed), Refactor: Declarative Steps to Maintainable Scenarios, Refactor: Business Language to Maintainable Scenarios, Refactor: Single Behavior to Maintainable Scenarios, Refactor: Background or Hooks to Maintainable Scenarios.
     A[Anti-Pattern] --> B{Type}
-    B -->|Imperative Steps| C[Refactor: Declarative Steps]
-    B -->|UI Details in Gherkin| D[Refactor: Business Language]
-    B -->|Multiple Actions per Scenario| E[Refactor: Single Behavior]
-    B -->|Technical Setup Exposed| F[Refactor: Background or Hooks]
-    C --> G[Maintainable Scenarios]
+    B -->|Imperative Steps| C[Refactor:<br/>Declarative Steps]
+    B -->|UI Details in<br/>Gherkin| D[Refactor: Business<br/>Language]
+    B -->|Multiple Actions per<br/>Scenario| E[Refactor: Single<br/>Behavior]
+    B -->|Technical Setup<br/>Exposed| F[Refactor: Background<br/>or Hooks]
+    C --> G[Maintainable<br/>Scenarios]
     D --> G
     E --> G
     F --> G
 
-    style A fill:#CC78BC,stroke:#000,color:#000
-    style B fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Anti-Pattern 1: Imperative Steps (Too Detailed)**:
@@ -1985,28 +2017,36 @@ Living documentation automatically generates specification documents from BDD sc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Diagram
+    accDescr: Flowchart with 9 nodes and 9 connections. Nodes: Feature Files in Git, CI Pipeline, Run BDD Tests, Generate Spec JSON, Spec Generator Script, Structured Spec Docs, Publish to Wiki/Portal, Stakeholders Access Specs, Feedback Loop. Connections: Feature Files in Git to CI Pipeline, CI Pipeline to Run BDD Tests, Run BDD Tests to Generate Spec JSON, Generate Spec JSON to Spec Generator Script, Spec Generator Script to Structured Spec Docs, Structured Spec Docs to Publish to Wiki/Portal, Publish to Wiki/Portal to Stakeholders Access Specs, Stakeholders Access Specs to Feedback Loop, Feedback Loop to Feature Files in Git (back to source).
     A[Feature Files in Git]
     B[CI Pipeline]
     C[Run BDD Tests]
     D[Generate Spec JSON]
-    E[Spec Generator Script]
+    E[Spec Generator<br/>Script]
     F[Structured Spec Docs]
-    G[Publish to Wiki/Portal]
-    H[Stakeholders Access Specs]
+    G[Publish to<br/>Wiki/Portal]
+    H[Stakeholders Access<br/>Specs]
     I[Feedback Loop]
 
     A --> B --> C --> D --> E --> F --> G --> H --> I
     I -.->|back to source| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
-    style I fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-0173B2
+    class I pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -3430,6 +3470,8 @@ Blue-green deployment runs two identical production environments. BDD scenarios 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Load Balancer, Blue: Production v1, Green: New v2, BDD Tests, Green Passes?, Switch Traffic, Keep Blue Active, Green: 100 traffic, Blue: Standby or Decommission. Connections: Load Balancer to Blue: Production v1 (100 traffic), Load Balancer to Green: New v2 (0 traffic), BDD Tests to Green: New v2, BDD Tests to Green Passes?, Green Passes? to Switch Traffic (Yes), Green Passes? to Keep Blue Active (No), Switch Traffic to Green: 100 traffic, Switch Traffic to Blue: Standby or Decommission.
     A[Load Balancer] -->|100% traffic| B[Blue: Production v1]
     A -.->|0% traffic| C[Green: New v2]
     D[BDD Tests] --> C
@@ -3437,17 +3479,23 @@ graph LR
     E -->|Yes| F[Switch Traffic]
     E -->|No| G[Keep Blue Active]
     F --> H[Green: 100% traffic]
-    F --> I[Blue: Standby or Decommission]
+    F --> I[Blue: Standby or<br/>Decommission]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#000
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-029E73
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```gherkin
@@ -3551,26 +3599,33 @@ Observability BDD verifies monitoring infrastructure correctly captures metrics,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[BDD Scenario Triggers Action] --> B[Service Under Test]
-    B --> C[Emit Metric: request_count++]
-    B --> D[Write Log:\nINFO request processed]
+    accTitle: Diagram
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: BDD Scenario Triggers Action, Service Under Test, Emit Metric: request_count++, Write Log: INFO request processed, Create Trace Span, Prometheus Metrics Store, Log Aggregator, Distributed Trace Store, BDD Assertion: metric value correct. Connections: BDD Scenario Triggers Action to Service Under Test, Service Under Test to Emit Metric: request_count++, Service Under Test to Write Log: INFO request processed, Service Under Test to Create Trace Span, Emit Metric: request_count++ to Prometheus Metrics Store, Write Log: INFO request processed to Log Aggregator, Create Trace Span to Distributed Trace Store, Prometheus Metrics Store to BDD Assertion: metric value correct, Log Aggregator to BDD Assertion: metric value correct, Distributed Trace Store to BDD Assertion: metric value correct.
+    A[BDD Scenario<br/>Triggers Action] --> B[Service Under Test]
+    B --> C[Emit Metric:<br/>request_count++]
+    B --> D[Write Log:<br/>INFO request<br/>processed]
     B --> E[Create Trace Span]
-    C --> F[Prometheus Metrics Store]
+    C --> F[Prometheus Metrics<br/>Store]
     D --> G[Log Aggregator]
-    E --> H[Distributed Trace Store]
-    F --> I[BDD Assertion:\nmetric value correct]
+    E --> H[Distributed Trace<br/>Store]
+    F --> I[BDD Assertion:<br/>metric value correct]
     G --> I
     H --> I
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CC78BC,stroke:#000,color:#000
-    style H fill:#CC78BC,stroke:#000,color:#000
-    style I fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-CC78BC
+    class H pal-CC78BC
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```gherkin
@@ -3988,8 +4043,10 @@ Enterprise BDD requires governance to maintain quality and consistency across te
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[BDD Governance Standards] --> B[Naming Conventions]
-    A --> C[Scenario Quality Rules]
+    accTitle: Diagram
+    accDescr: Graph with 10 nodes and 12 connections. Nodes: BDD Governance Standards, Naming Conventions, Scenario Quality Rules, Tag Taxonomy, Review Process, Automated Lint Check, Manual Review Gate, Standards Met?, Merge Approved, PR Blocked with Feedback. Connections: BDD Governance Standards to Naming Conventions, BDD Governance Standards to Scenario Quality Rules, BDD Governance Standards to Tag Taxonomy, BDD Governance Standards to Review Process, Naming Conventions to Automated Lint Check, Scenario Quality Rules to Automated Lint Check, Tag Taxonomy to Automated Lint Check, Review Process to Manual Review Gate, Automated Lint Check to Standards Met?, Manual Review Gate to Standards Met?, Standards Met? to Merge Approved (Yes), Standards Met? to PR Blocked with Feedback (No).
+    A[BDD Governance<br/>Standards] --> B[Naming Conventions]
+    A --> C[Scenario Quality<br/>Rules]
     A --> D[Tag Taxonomy]
     A --> E[Review Process]
     B --> F[Automated Lint Check]
@@ -3999,18 +4056,24 @@ graph TD
     F --> H{Standards Met?}
     G --> H
     H -->|Yes| I[Merge Approved]
-    H -->|No| J[PR Blocked with Feedback]
+    H -->|No| J[PR Blocked with<br/>Feedback]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#DE8F05,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#000
-    style H fill:#CA9161,stroke:#000,color:#fff
-    style I fill:#029E73,stroke:#000,color:#fff
-    style J fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    class I pal-029E73
+    class J pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```gherkin
@@ -4184,8 +4247,10 @@ Large organizations use federated BDD ownership where teams own their scenarios 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Central BDD Platform Team] --> B[Shared Step Library]
-    A --> C[Common Standards and Tooling]
+    accTitle: Diagram
+    accDescr: Graph with 10 nodes and 14 connections. Nodes: Central BDD Platform Team, Shared Step Library, Common Standards and Tooling, Team Authentication, Team Payments, Team Checkout, Auth Feature Files, Payment Feature Files, Checkout Feature Files, Unified CI Pipeline. Connections: Central BDD Platform Team to Shared Step Library, Central BDD Platform Team to Common Standards and Tooling, Shared Step Library to Team Authentication, Shared Step Library to Team Payments, Shared Step Library to Team Checkout, Common Standards and Tooling to Team Authentication, Common Standards and Tooling to Team Payments, Common Standards and Tooling to Team Checkout, Team Authentication to Auth Feature Files, Team Payments to Payment Feature Files, Team Checkout to Checkout Feature Files, Auth Feature Files to Unified CI Pipeline, and 2 more.
+    A[Central BDD Platform<br/>Team] --> B[Shared Step Library]
+    A --> C[Common Standards and<br/>Tooling]
     B --> D[Team Authentication]
     B --> E[Team Payments]
     B --> F[Team Checkout]
@@ -4193,22 +4258,27 @@ graph TD
     C --> E
     C --> F
     D --> G[Auth Feature Files]
-    E --> H[Payment Feature Files]
-    F --> I[Checkout Feature Files]
+    E --> H[Payment Feature<br/>Files]
+    F --> I[Checkout Feature<br/>Files]
     G --> J[Unified CI Pipeline]
     H --> J
     I --> J
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#000
-    style H fill:#CC78BC,stroke:#000,color:#000
-    style I fill:#CC78BC,stroke:#000,color:#000
-    style J fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-CC78BC
+    class I pal-CC78BC
+    class J pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -4615,6 +4685,8 @@ Organizations need metrics to justify BDD investment. This example demonstrates 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 11 nodes and 16 connections. Nodes: BDD Investment, Costs, Benefits, Training Hours, Tooling Costs, Maintenance Overhead, Defects Prevented, Reduced Rework Cost, Faster Onboarding, Living Documentation Value, ROI Calculation. Connections: BDD Investment to Costs, BDD Investment to Benefits, Costs to Training Hours, Costs to Tooling Costs, Costs to Maintenance Overhead, Benefits to Defects Prevented, Benefits to Reduced Rework Cost, Benefits to Faster Onboarding, Benefits to Living Documentation Value, Defects Prevented to ROI Calculation, Reduced Rework Cost to ROI Calculation, Faster Onboarding to ROI Calculation, and 4 more.
     A[BDD Investment] --> B[Costs]
     A --> C[Benefits]
     B --> B1[Training Hours]
@@ -4623,7 +4695,7 @@ graph LR
     C --> C1[Defects Prevented]
     C --> C2[Reduced Rework Cost]
     C --> C3[Faster Onboarding]
-    C --> C4[Living Documentation Value]
+    C --> C4[Living Documentation<br/>Value]
     C1 --> D[ROI Calculation]
     C2 --> D
     C3 --> D
@@ -4632,10 +4704,15 @@ graph LR
     B2 --> D
     B3 --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

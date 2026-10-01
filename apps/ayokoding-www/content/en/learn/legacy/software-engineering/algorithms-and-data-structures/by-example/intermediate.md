@@ -409,16 +409,24 @@ A hash table maps keys to values using a hash function that converts each key in
 
 ```mermaid
 graph TD
-    K1["Key: apple"] -->|hash mod 5 = 0| B0["Bucket 0: [(apple,1)]"]
-    K2["Key: banana"] -->|hash mod 5 = 2| B2["Bucket 2: [(banana,2)]"]
-    K3["Key: cherry"] -->|hash mod 5 = 2| B2C["B2: [(banana,2),(cherry,3)]"]
+    accTitle: Example 31: Hash Table with Chaining
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: Key: apple, Bucket 0: [(apple,1)], Key: banana, Bucket 2: [(banana,2)], Key: cherry, B2: [(banana,2),(cherry,3)]. Connections: Key: apple to Bucket 0: [(apple,1)] (hash mod 5 = 0), Key: banana to Bucket 2: [(banana,2)] (hash mod 5 = 2), Key: cherry to B2: [(banana,2),(cherry,3)] (hash mod 5 = 2).
+    K1["Key: apple"] -->|hash mod 5 = 0| B0["Bucket 0:<br/>[(apple,1)]"]
+    K2["Key: banana"] -->|hash mod 5 = 2| B2["Bucket 2:<br/>[(banana,2)]"]
+    K3["Key: cherry"] -->|hash mod 5 = 2| B2C["B2: [(banana,2),<br/>(cherry,3)]"]
 
-    style K1 fill:#0173B2,stroke:#000,color:#fff
-    style K2 fill:#DE8F05,stroke:#000,color:#fff
-    style K3 fill:#029E73,stroke:#000,color:#fff
-    style B0 fill:#CA9161,stroke:#000,color:#fff
-    style B2 fill:#CA9161,stroke:#000,color:#fff
-    style B2C fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class K1 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class K2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class K3 pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B0 pal-CA9161
+    class B2 pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B2C pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -1016,6 +1024,8 @@ A Binary Search Tree stores values so that every node's left subtree contains on
 
 ```mermaid
 graph TD
+    accTitle: Example 33: BST Insert and Search
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: 50 (root), 30, 70, 20, 40, 60, 80. Connections: 50 (root) to 30, 50 (root) to 70, 30 to 20, 30 to 40, 70 to 60, 70 to 80.
     R["50 (root)"]
     L["30"]
     RL["70"]
@@ -1031,13 +1041,17 @@ graph TD
     RL --> RLL
     RL --> RLR
 
-    style R fill:#0173B2,stroke:#000,color:#fff
-    style L fill:#DE8F05,stroke:#000,color:#fff
-    style RL fill:#DE8F05,stroke:#000,color:#fff
-    style LL fill:#029E73,stroke:#000,color:#fff
-    style LR fill:#029E73,stroke:#000,color:#fff
-    style RLL fill:#029E73,stroke:#000,color:#fff
-    style RLR fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class R pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class L pal-DE8F05
+    class RL pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class LL pal-029E73
+    class LR pal-029E73
+    class RLL pal-029E73
+    class RLR pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -1634,6 +1648,8 @@ A min-heap is a complete binary tree where every parent is smaller than or equal
 
 ```mermaid
 graph TD
+    accTitle: Example 35: Min-Heap with heapq
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: 1 (root/min), 3, 2, 7, 5, 4, 6. Connections: 1 (root/min) to 3, 1 (root/min) to 2, 3 to 7, 3 to 5, 2 to 4, 2 to 6.
     N1["1 (root/min)"]
     N3["3"]
     N2["2"]
@@ -1649,13 +1665,17 @@ graph TD
     N2 --> N4
     N2 --> N6
 
-    style N1 fill:#0173B2,stroke:#000,color:#fff
-    style N3 fill:#DE8F05,stroke:#000,color:#fff
-    style N2 fill:#DE8F05,stroke:#000,color:#fff
-    style N7 fill:#029E73,stroke:#000,color:#fff
-    style N5 fill:#029E73,stroke:#000,color:#fff
-    style N4 fill:#029E73,stroke:#000,color:#fff
-    style N6 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class N1 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class N3 pal-DE8F05
+    class N2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class N7 pal-029E73
+    class N5 pal-029E73
+    class N4 pal-029E73
+    class N6 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -2360,6 +2380,8 @@ Merge sort divides the array in half recursively until each piece contains one e
 
 ```mermaid
 graph TD
+    accTitle: Example 38: Merge Sort Implementation
+    accDescr: Graph with 10 nodes and 12 connections. Nodes: [38,27,43,3], [38,27], [43,3], [38], [27], [43], [3], [27,38], [3,43], [3,27,38,43]. Connections: [38,27,43,3] to [38,27] (split), [38,27,43,3] to [43,3] (split), [38,27] to [38] (split), [38,27] to [27] (split), [43,3] to [43] (split), [43,3] to [3] (split), [38] to [27,38] (merge), [27] to [27,38] (merge), [43] to [3,43] (merge), [3] to [3,43] (merge), [27,38] to [3,27,38,43] (merge), [3,43] to [3,27,38,43] (merge).
     A["[38,27,43,3]"] -->|split| B["[38,27]"]
     A -->|split| C["[43,3]"]
     B -->|split| D["[38]"]
@@ -2373,16 +2395,22 @@ graph TD
     H -->|merge| J["[3,27,38,43]"]
     I -->|merge| J
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
-    style J fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    class I pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class J pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -3492,6 +3520,8 @@ Breadth-first search visits nodes level by level using a queue. On a binary tree
 
 ```mermaid
 graph TD
+    accTitle: Example 42: BFS on a Binary Tree
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 1, 2, 3, 4, 5. Connections: 1 to 2, 1 to 3, 2 to 4, 2 to 5.
     R["1"]
     L["2"]
     RL["3"]
@@ -3503,11 +3533,15 @@ graph TD
     L --> LL
     L --> LR
 
-    style R fill:#0173B2,stroke:#000,color:#fff
-    style L fill:#DE8F05,stroke:#000,color:#fff
-    style RL fill:#DE8F05,stroke:#000,color:#fff
-    style LL fill:#029E73,stroke:#000,color:#fff
-    style LR fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class R pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class L pal-DE8F05
+    class RL pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class LL pal-029E73
+    class LR pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -4336,6 +4370,8 @@ Backtracking builds candidates incrementally and abandons ("backtracks") a candi
 
 ```mermaid
 graph LR
+    accTitle: Example 45: Backtracking — Generating Permutations
+    accDescr: Graph with 16 nodes and 15 connections. Nodes: Start: [], [1], [2], [3], [1,2], [1,3], [2,1], [2,3], [3,1], [3,2], [1,2,3], [1,3,2], and 4 more. Connections: Start: [] to [1], Start: [] to [2], Start: [] to [3], [1] to [1,2], [1] to [1,3], [2] to [2,1], [2] to [2,3], [3] to [3,1], [3] to [3,2], [1,2] to [1,2,3], [1,3] to [1,3,2], [2,1] to [2,1,3], and 3 more.
     S["Start: []"]
     A["[1]"]
     B["[2]"]
@@ -4369,16 +4405,20 @@ graph LR
     CA --> CAB
     CB --> CBA
 
-    style S fill:#0173B2,stroke:#000,color:#fff
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style ABC fill:#029E73,stroke:#000,color:#fff
-    style ACB fill:#029E73,stroke:#000,color:#fff
-    style BAC fill:#029E73,stroke:#000,color:#fff
-    style BCA fill:#029E73,stroke:#000,color:#fff
-    style CAB fill:#029E73,stroke:#000,color:#fff
-    style CBA fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ABC pal-029E73
+    class ACB pal-029E73
+    class BAC pal-029E73
+    class BCA pal-029E73
+    class CAB pal-029E73
+    class CBA pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -5030,22 +5070,29 @@ The sliding window technique maintains a contiguous subarray of fixed or variabl
 
 ```mermaid
 graph TD
+    accTitle: Example 48: Fixed-Size Sliding Window — Maximum Sum Subarray
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: [2, 1, 5, 1, 3, 2], Window 1: [2,1,5] sum=8, Window 2: [1,5,1] sum=7, Window 3: [5,1,3] sum=9, Window 4: [1,3,2] sum=6. Connections: [2, 1, 5, 1, 3, 2] to Window 1: [2,1,5] sum=8, Window 1: [2,1,5] sum=8 to Window 2: [1,5,1] sum=7 (slide right), Window 2: [1,5,1] sum=7 to Window 3: [5,1,3] sum=9 (slide right), Window 3: [5,1,3] sum=9 to Window 4: [1,3,2] sum=6 (slide right).
     A["[2, 1, 5, 1, 3, 2]"]
-    W1["Window 1: [2,1,5] sum=8"]
-    W2["Window 2: [1,5,1] sum=7"]
-    W3["Window 3: [5,1,3] sum=9"]
-    W4["Window 4: [1,3,2] sum=6"]
+    W1["Window 1: [2,1,5]<br/>sum=8"]
+    W2["Window 2: [1,5,1]<br/>sum=7"]
+    W3["Window 3: [5,1,3]<br/>sum=9"]
+    W4["Window 4: [1,3,2]<br/>sum=6"]
 
     A --> W1
     W1 -->|slide right| W2
     W2 -->|slide right| W3
     W3 -->|slide right| W4
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style W1 fill:#DE8F05,stroke:#000,color:#fff
-    style W2 fill:#DE8F05,stroke:#000,color:#fff
-    style W3 fill:#029E73,stroke:#000,color:#fff
-    style W4 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class W1 pal-DE8F05
+    class W2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class W3 pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class W4 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -5397,16 +5444,22 @@ A prefix sum array stores cumulative totals so that any range sum `sum(arr[l..r]
 
 ```mermaid
 graph LR
+    accTitle: Example 50: Prefix Sum Array for Range Queries
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: arr: [2,4,3,7,1,5], prefix: [0,2,6,9,16,17,22], Q: sum402,441=17- 6=11. Connections: arr: [2,4,3,7,1,5] to prefix: [0,2,6,9,16,17,22] (build), prefix: [0,2,6,9,16,17,22] to Q: sum402,441=17- 6=11 (O40141 lookup).
     A["arr: [2,4,3,7,1,5]"]
-    P["prefix: [0,2,6,9,16,17,22]"]
-    Q["Q: sum#40;2,4#41;=17-6=11"]
+    P["prefix:<br/>[0,2,6,9,16,17,22]"]
+    Q["Q:<br/>sum#40;2,4#41;=17-<br/>6=11"]
 
     A -->|build| P
     P -->|O#40;1#41; lookup| Q
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style P fill:#DE8F05,stroke:#000,color:#fff
-    style Q fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class P pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Q pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}
@@ -5656,17 +5709,24 @@ An adjacency list represents a graph as a dictionary mapping each node to its li
 
 ```mermaid
 graph LR
+    accTitle: Example 51: Adjacency List Representation
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: A, B, C, D, E. Connections: A to B, A to C, B to D, C to D, D to E.
     A["A"] --> B["B"]
     A --> C["C"]
     B --> D["D"]
     C --> D
     D --> E["E"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="C,Go,Python,Java" >}}

@@ -34,6 +34,8 @@ A retry decorator transparently retries transient failures — callers receive a
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 51: RetryDecorator for Output Ports
+    accDescr: Sequence diagram between AppService, RetryPORepository, PostgresPORepository. Messages: AppService to RetryPORepository: Save(ctx, po); RetryPORepository to PostgresPORepository: Save(ctx, po); PostgresPORepository to RetryPORepository: RetryableError (attempt 1); RetryPORepository to PostgresPORepository: Save(ctx, po); PostgresPORepository to RetryPORepository: RetryableError (attempt 2); RetryPORepository to PostgresPORepository: Save(ctx, po); PostgresPORepository to RetryPORepository: nil (success); RetryPORepository to AppService: nil.
     participant AS as AppService
     participant RR as RetryPORepository
     participant DB as PostgresPORepository
@@ -179,6 +181,8 @@ Exponential backoff prevents thundering herd — if multiple service instances a
 
 ```mermaid
 graph TD
+    accTitle: Example 52: Exponential Backoff with Jitter
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Attempt 0 immediate, Attempt 1 ~100 ms ± jitter, Attempt 2 ~200 ms ± jitter, Attempt 3 ~400 ms ± jitter. Connections: Attempt 0 immediate to Attempt 1 ~100 ms ± jitter, Attempt 1 ~100 ms ± jitter to Attempt 2 ~200 ms ± jitter, Attempt 2 ~200 ms ± jitter to Attempt 3 ~400 ms ± jitter.
     A["Attempt 0<br/>immediate"]:::teal
     B["Attempt 1<br/>~100 ms ± jitter"]:::blue
     C["Attempt 2<br/>~200 ms ± jitter"]:::orange
@@ -186,12 +190,13 @@ graph TD
 
     A --> B --> C --> D
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -276,6 +281,8 @@ Not all errors should be retried — a 404 Not Found will never succeed on retry
 
 ```mermaid
 classDiagram
+    accTitle: Example 53: Retryable vs Non-Retryable Error Classification
+    accDescr: Class diagram with 2 items: RepoError, RetryableError. Relationships: RepoError to RetryableError: wraps transient/timeout variants.
     class RepoError {
         +NotFound
         +ConstraintViolation
@@ -290,6 +297,7 @@ classDiagram
     RepoError <|-- RetryableError : wraps transient/timeout variants
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -380,6 +388,8 @@ Retries must respect context deadlines — a caller timing out should cancel in-
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 54: Retry with Context Cancellation
+    accDescr: Sequence diagram between Caller401s deadline41, RetryPORepository, PostgresRepo. Messages: Caller401s deadline41 to RetryPORepository: Save(ctx, po); RetryPORepository to PostgresRepo: attempt 1; PostgresRepo to RetryPORepository: Transient error; Caller401s deadline41 to RetryPORepository: ctx.Done() fires at 150ms; RetryPORepository to Caller401s deadline41: ctx.Err() = DeadlineExceeded.
     participant C as Caller#40;1s deadline#41;
     participant RR as RetryPORepository
     participant DB as PostgresRepo
@@ -457,6 +467,8 @@ Testing retry behavior requires a stub that fails N times then succeeds — this
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 55: Retry + Jitter Integration Test
+    accDescr: Sequence diagram between Test, RetryPORepository, StubbedRepo40failFirst=241. Messages: Test to RetryPORepository: Save(ctx, po); RetryPORepository to StubbedRepo40failFirst=241: attempt 1 → RetryableError; RetryPORepository to StubbedRepo40failFirst=241: attempt 2 → RetryableError; RetryPORepository to StubbedRepo40failFirst=241: attempt 3 → nil (success); RetryPORepository to Test: nil; Test to StubbedRepo40failFirst=241: assert callCount == 3.
     participant T as Test
     participant RR as RetryPORepository
     participant S as StubbedRepo#40;failFirst=2#41;
@@ -594,6 +606,8 @@ The circuit breaker prevents cascading failures — when a downstream service is
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 56: CircuitBreaker State Machine
+    accDescr: State diagram with 4 items: start or end, Closed, Open, HalfOpen. Relationships: start or end to Closed; Closed to Open: failures >= threshold; Open to HalfOpen: timeout elapsed; HalfOpen to Closed: probe success; HalfOpen to Open: probe failure.
     [*] --> Closed
     Closed --> Open : failures >= threshold
     Open --> HalfOpen : timeout elapsed
@@ -805,6 +819,8 @@ Wrapping the ERP client in a circuit breaker prevents PO creation from hanging w
 
 ```mermaid
 classDiagram
+    accTitle: Example 58: CircuitBreaker Wrapping ExternalVendorClient
+    accDescr: Class diagram with 3 items: ExternalVendorClient, CBVendorClient, HTTPVendorClient. Relationships: CBVendorClient to HTTPVendorClient: wraps.
     class ExternalVendorClient {
         <<interface>>
         +FetchVendor(ctx, code) ExternalVendorDTO, error
@@ -822,6 +838,7 @@ classDiagram
     CBVendorClient --> HTTPVendorClient : wraps
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -917,6 +934,8 @@ Count-based thresholds are brittle — three failures in a quiet period (10 req/
 
 ```mermaid
 graph TD
+    accTitle: Example 59: Failure Rate Threshold
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Last 10 calls sliding window, failure rate > 50?, Stay Closed normal operation, Transition to Open reject calls. Connections: Last 10 calls sliding window to failure rate > 50?, failure rate > 50? to Stay Closed normal operation (No), failure rate > 50? to Transition to Open reject calls (Yes).
     A["Last 10 calls<br/>sliding window"]:::blue
     B{"failure rate<br/>> 50%?"}:::orange
     C["Stay Closed<br/>normal operation"]:::teal
@@ -927,11 +946,12 @@ graph TD
     B -->|Yes| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1032,6 +1052,8 @@ Callbacks notify the application when the circuit state changes — `OnOpen` fir
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 60: CircuitBreaker Callbacks
+    accDescr: Sequence diagram between CircuitBreaker, AlertingPlatform. Messages: CircuitBreaker to CircuitBreaker: recordResult40failure41 — failures >= threshold; CircuitBreaker to CircuitBreaker: state = Open; CircuitBreaker to AlertingPlatform: OnOpen callback40lastErr41; AlertingPlatform to CircuitBreaker: 40async — non-blocking41; CircuitBreaker to CircuitBreaker: state = HalfOpen; CircuitBreaker to CircuitBreaker: probe succeeds → state = Closed; CircuitBreaker to AlertingPlatform: OnClose callback4041; AlertingPlatform to CircuitBreaker: 40async — non-blocking41.
     participant CB as CircuitBreaker
     participant AP as AlertingPlatform
 
@@ -1139,6 +1161,8 @@ The metrics port decouples domain and application code from the Prometheus libra
 
 ```mermaid
 classDiagram
+    accTitle: Example 61: Metrics Port Interface
+    accDescr: Class diagram with 3 items: MetricsCollector, NoopMetrics, PrometheusMetrics.
     class MetricsCollector {
         <<interface>>
         +IncrCounter(name, labels)
@@ -1161,6 +1185,7 @@ classDiagram
     MetricsCollector <|.. PrometheusMetrics : satisfies
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1245,36 +1270,39 @@ The instrumented decorator records request count, latency, and error rate for ev
 
 ```mermaid
 classDiagram
-    class PurchaseOrderRepository {
+    accTitle: Example 62: InstrumentedRepository Decorator
+    accDescr: Class diagram with 5 items: PurchaseOrderRepo, InstrumentedPORepo, LoggingPORepository, RetryPORepository, PostgresPORepository. Relationships: InstrumentedPORepo to LoggingPORepository: wraps; LoggingPORepository to RetryPORepository: wraps; RetryPORepository to PostgresPORepository: wraps.
+    class PurchaseOrderRepo {
         <<interface>>
         +Save(ctx, po) error
         +FindByID(ctx, id) PurchaseOrder, error
     }
-    class InstrumentedPORepository {
-        -inner PurchaseOrderRepository
+    class InstrumentedPORepo {
+        -inner PurchaseOrderRepo
         -metrics MetricsCollector
         -repoName string
     }
     class LoggingPORepository {
-        -inner PurchaseOrderRepository
+        -inner PurchaseOrderRepo
         -logger Logger
     }
     class RetryPORepository {
-        -inner PurchaseOrderRepository
+        -inner PurchaseOrderRepo
         -maxAttempts int
     }
     class PostgresPORepository {
         -pool pgxpool.Pool
     }
-    PurchaseOrderRepository <|.. InstrumentedPORepository
-    PurchaseOrderRepository <|.. LoggingPORepository
-    PurchaseOrderRepository <|.. RetryPORepository
-    PurchaseOrderRepository <|.. PostgresPORepository
-    InstrumentedPORepository --> LoggingPORepository : wraps
+    PurchaseOrderRepo <|.. InstrumentedPORepo
+    PurchaseOrderRepo <|.. LoggingPORepository
+    PurchaseOrderRepo <|.. RetryPORepository
+    PurchaseOrderRepo <|.. PostgresPORepository
+    InstrumentedPORepo --> LoggingPORepository : wraps
     LoggingPORepository --> RetryPORepository : wraps
     RetryPORepository --> PostgresPORepository : wraps
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1388,6 +1416,8 @@ The tracing port decouples application code from OpenTelemetry's concrete API �
 
 ```mermaid
 classDiagram
+    accTitle: Example 63: TracingPort Interface + OpenTelemetry Adapter
+    accDescr: Class diagram with 4 items: Tracer, Span, OtelTracer, NoopTracer. Relationships: OtelTracer to Span: creates OtelSpan.
     class Tracer {
         <<interface>>
         +StartSpan(ctx, name, opts) Context, Span
@@ -1410,6 +1440,7 @@ classDiagram
     OtelTracer --> Span : creates OtelSpan
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1550,6 +1581,8 @@ Distributed traces connect the HTTP handler, application service, repository, an
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 64: Distributed Trace Propagation
+    accDescr: Sequence diagram between HTTP Handler, AppService, Repository, ERPClient. Messages: HTTP Handler to HTTP Handler: otelhttp extracts trace-id from headers; HTTP Handler to AppService: ctx with root span; AppService to AppService: StartSpan40ctx, issue_po41 → child span; AppService to Repository: ctx with child span; Repository to Repository: StartSpan40ctx, repo.save41 → grandchild span; Repository to ERPClient: ctx with grandchild span; ERPClient to ERPClient: StartSpan40ctx, erp.fetch41 → leaf span; ERPClient to Repository: return (leaf span ended); Repository to AppService: return (grandchild span ended); AppService to HTTP Handler: return (child span ended); HTTP Handler to HTTP Handler: root span ended full tree exported.
     participant H as HTTP Handler
     participant AS as AppService
     participant R as Repository
@@ -1682,13 +1715,15 @@ Health check ports expose liveness and readiness endpoints — Kubernetes uses `
 
 ```mermaid
 graph TD
+    accTitle: Example 65: Health Check Port
+    accDescr: Graph with 7 nodes and 10 connections. Nodes: GET /healthz, CompositeHealthCheck, DBHealthCheck pool.Ping, ERPHealthCheck HTTP HEAD /ping, OutboxHealthCheck count pending > max, 200 OK, 503 Service Unavailable. Connections: GET /healthz to CompositeHealthCheck, CompositeHealthCheck to DBHealthCheck pool.Ping, CompositeHealthCheck to ERPHealthCheck HTTP HEAD /ping, CompositeHealthCheck to OutboxHealthCheck count pending > max, DBHealthCheck pool.Ping to 200 OK (all pass), ERPHealthCheck HTTP HEAD /ping to 200 OK (all pass), OutboxHealthCheck count pending > max to 200 OK (all pass), DBHealthCheck pool.Ping to 503 Service Unavailable (any fail), ERPHealthCheck HTTP HEAD /ping to 503 Service Unavailable (any fail), OutboxHealthCheck count pending > max to 503 Service Unavailable (any fail).
     A["GET /healthz"]:::blue
     B["CompositeHealthCheck"]:::orange
     C["DBHealthCheck<br/>pool.Ping"]:::teal
     D["ERPHealthCheck<br/>HTTP HEAD /ping"]:::teal
     E["OutboxHealthCheck<br/>count pending > max"]:::teal
     F["200 OK"]:::teal
-    G["503 Service Unavailable"]:::purple
+    G["503 Service<br/>Unavailable"]:::purple
 
     A --> B
     B --> C
@@ -1700,11 +1735,12 @@ graph TD
     E -->|any fail| G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1846,6 +1882,8 @@ The outbox repository port provides the database operations needed to implement 
 
 ```mermaid
 classDiagram
+    accTitle: Example 66: OutboxRepository Port + Postgres Adapter
+    accDescr: Class diagram with 3 items: OutboxRepository, PostgresOutboxRepo, InMemoryOutboxRepo.
     class OutboxRepository {
         <<interface>>
         +SaveTx(ctx, tx, entry) error
@@ -1853,24 +1891,25 @@ classDiagram
         +MarkPublished(ctx, id) error
         +IncrementRetry(ctx, id) error
     }
-    class PostgresOutboxRepository {
+    class PostgresOutboxRepo {
         -pool pgxpool.Pool
         +SaveTx(ctx, tx, entry) error
         +FindUnpublished(ctx, limit) OutboxEntry[], error
         +MarkPublished(ctx, id) error
         +IncrementRetry(ctx, id) error
     }
-    class InMemoryOutboxRepository {
+    class InMemoryOutboxRepo {
         -entries map
         +SaveTx(ctx, tx, entry) error
         +FindUnpublished(ctx, limit) OutboxEntry[], error
         +MarkPublished(ctx, id) error
         +IncrementRetry(ctx, id) error
     }
-    OutboxRepository <|.. PostgresOutboxRepository : satisfies
-    OutboxRepository <|.. InMemoryOutboxRepository : satisfies
+    OutboxRepository <|.. PostgresOutboxRepo : satisfies
+    OutboxRepository <|.. InMemoryOutboxRepo : satisfies
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2069,6 +2108,8 @@ The transactional outbox guarantees exactly-once delivery semantics by writing t
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 67: Atomic Aggregate + Outbox Save
+    accDescr: Sequence diagram between AppService, Database, OutboxPoller. Messages: AppService to Database: BEGIN TX; AppService to Database: INSERT purchase_orders row; AppService to Database: INSERT outbox rows (one per domain event); AppService to Database: COMMIT; OutboxPoller to Database: SELECT unpublished outbox rows (separate transaction); OutboxPoller to OutboxPoller: publish each event to message bus; OutboxPoller to Database: UPDATE outbox SET published_at = NOW().
     participant AS as AppService
     participant DB as Database
     participant OP as OutboxPoller
@@ -2339,12 +2380,14 @@ When an outbox entry exceeds its retry budget, moving it to a dead-letter store 
 
 ```mermaid
 graph TD
+    accTitle: Example 69: Dead-Letter Handling for Max-Retry Events
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: publishBatch processes entry, publish success?, mark published done, increment retry_count, retry_count > maxRetries?, move to dead_letter table, skip entry log warning. Connections: publishBatch processes entry to publish success?, publish success? to mark published done (Yes), publish success? to increment retry_count (No), increment retry_count to retry_count > maxRetries?, retry_count > maxRetries? to move to dead_letter table (Yes), retry_count > maxRetries? to skip entry log warning (No).
     A["publishBatch<br/>processes entry"]:::blue
     B{"publish<br/>success?"}:::orange
     C["mark published<br/>done"]:::teal
-    D["increment retry_count"]:::orange
+    D["increment<br/>retry_count"]:::orange
     E{"retry_count<br/>> maxRetries?"}:::orange
-    F["move to dead_letter table"]:::purple
+    F["move to dead_letter<br/>table"]:::purple
     G["skip entry<br/>log warning"]:::gray
 
     A --> B
@@ -2355,12 +2398,13 @@ graph TD
     E -->|No| G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Gray #808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2465,6 +2509,8 @@ At-least-once delivery means consumers may receive the same event more than once
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 70: Idempotent Event Handler
+    accDescr: Sequence diagram between OutboxPublisher, IdempotentHandler, IdempotencyStore, InnerHandler. Messages: OutboxPublisher to IdempotentHandler: Handle(ctx, event); IdempotentHandler to IdempotencyStore: Has(ctx, event.EventId()); IdempotencyStore to IdempotentHandler: false (first delivery); IdempotentHandler to InnerHandler: Handle(ctx, event); InnerHandler to IdempotentHandler: nil; IdempotentHandler to IdempotencyStore: Mark(ctx, event.EventId()); IdempotentHandler to OutboxPublisher: nil; OutboxPublisher to IdempotentHandler: Handle(ctx, event) [duplicate]; IdempotentHandler to IdempotencyStore: Has(ctx, event.EventId()); IdempotencyStore to IdempotentHandler: true (already processed); IdempotentHandler to OutboxPublisher: nil (no-op).
     participant P as OutboxPublisher
     participant IH as IdempotentHandler
     participant IS as IdempotencyStore
@@ -2594,10 +2640,12 @@ The composition root is the only place that knows about concrete types — it co
 
 ```mermaid
 classDiagram
-    class PurchaseOrderRepository {
+    accTitle: Example 71: Composition Root — All Decorators Stacked
+    accDescr: Class diagram with 5 items: PurchaseOrderRepo, InstrumentedPORepo, LoggingPORepository, RetryPORepository, PostgresPORepository. Relationships: InstrumentedPORepo to LoggingPORepository; LoggingPORepository to RetryPORepository; RetryPORepository to PostgresPORepository.
+    class PurchaseOrderRepo {
         <<interface>>
     }
-    class InstrumentedPORepository {
+    class InstrumentedPORepo {
         outermost — measures full latency
     }
     class LoggingPORepository {
@@ -2609,12 +2657,13 @@ classDiagram
     class PostgresPORepository {
         innermost — real DB calls
     }
-    PurchaseOrderRepository <|.. InstrumentedPORepository
-    InstrumentedPORepository --> LoggingPORepository
+    PurchaseOrderRepo <|.. InstrumentedPORepo
+    InstrumentedPORepo --> LoggingPORepository
     LoggingPORepository --> RetryPORepository
     RetryPORepository --> PostgresPORepository
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2763,6 +2812,8 @@ Graceful shutdown drains in-flight HTTP requests, stops the outbox publisher, an
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 72: Graceful Shutdown
+    accDescr: Sequence diagram between OS40SIGTERM41, main, HTTP Server, OutboxPublisher, PgPool. Messages: OS40SIGTERM41 to main: SIGTERM; main to main: cancel root context; main to HTTP Server: Shutdown4030s timeout41; HTTP Server to HTTP Server: stop accepting new requests; HTTP Server to HTTP Server: drain in-flight requests; HTTP Server to main: done; main to OutboxPublisher: ctx.Done() fires; OutboxPublisher to main: goroutine exits; main to PgPool: pool.Close(); PgPool to main: connections released; main to OS40SIGTERM41: process exits 0.
     participant OS as OS#40;SIGTERM#41;
     participant M as main
     participant HS as HTTP Server
@@ -3032,21 +3083,24 @@ Default connection pool settings are designed for development, not production. T
 
 ```mermaid
 graph TD
-    A["MaxConns = 20<br/>ceiling on DB connections"]:::blue
+    accTitle: Example 74: Connection Pool Tuning
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: MaxConns = 20 ceiling on DB connections, MinConns = 5 warm pool at startup, MaxConnLifetime = 30m recycle to avoid stale TCP, MaxConnIdleTime = 5m release unused under low load, HealthCheckPeriod = 1m ping idle connections. Connections: MaxConns = 20 ceiling on DB connections to MinConns = 5 warm pool at startup, MinConns = 5 warm pool at startup to MaxConnLifetime = 30m recycle to avoid stale TCP, MaxConnLifetime = 30m recycle to avoid stale TCP to MaxConnIdleTime = 5m release unused under low load, MaxConnIdleTime = 5m release unused under low load to HealthCheckPeriod = 1m ping idle connections.
+    A["MaxConns = 20<br/>ceiling on DB<br/>connections"]:::blue
     B["MinConns = 5<br/>warm pool at startup"]:::teal
-    C["MaxConnLifetime = 30m<br/>recycle to avoid stale TCP"]:::orange
-    D["MaxConnIdleTime = 5m<br/>release unused under low load"]:::purple
-    E["HealthCheckPeriod = 1m<br/>ping idle connections"]:::brown
+    C["MaxConnLifetime =<br/>30m<br/>recycle to avoid<br/>stale TCP"]:::orange
+    D["MaxConnIdleTime = 5m<br/>release unused under<br/>low load"]:::purple
+    E["HealthCheckPeriod =<br/>1m<br/>ping idle<br/>connections"]:::brown
 
     A --- B --- C --- D --- E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 
     %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -3126,6 +3180,8 @@ The complete production hexagon tested end-to-end: HTTP request arrives at the r
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 75: Full Production Hexagon — Integration Test
+    accDescr: Sequence diagram between Test, HTTP40POST /api/purchase-orders41, POService, InstrumentedRepo, RetryRepo, PostgresTestcontainer. Messages: Test to HTTP40POST /api/purchase-orders41: POST /api/purchase-orders lines: [...]; HTTP40POST /api/purchase-orders41 to POService: IssuePurchaseOrder(cmd); POService to InstrumentedRepo: Save(ctx, po); InstrumentedRepo to RetryRepo: Save(ctx, po) [with metrics]; RetryRepo to PostgresTestcontainer: INSERT purchase_orders; PostgresTestcontainer to RetryRepo: OK; RetryRepo to InstrumentedRepo: nil; InstrumentedRepo to POService: nil (metrics recorded); POService to HTTP40POST /api/purchase-orders41: po.Id; HTTP40POST /api/purchase-orders41 to Test: 201 Created id: po-uuid; Test to HTTP40POST /api/purchase-orders41: GET /api/purchase-orders/id; HTTP40POST /api/purchase-orders41 to Test: 200 OK status: DRAFT.
     participant T as Test
     participant H as HTTP#40;POST /api/purchase-orders#41;
     participant AS as POService

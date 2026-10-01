@@ -18,19 +18,21 @@ Hexagonal architecture divides every application into three concentric zones: th
 ```mermaid
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph TD
-    subgraph Adapter["Adapter Zone #40;outermost#41;"]
-        WEB["handler.go\n#40;chi HTTP adapter#41;"]:::orange
-        DB["mem_repo.go\n#40;in-memory adapter#41;"]:::orange
+    accTitle: Example 1: The hexagon metaphor — three zones as Go packages
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: handler.go 40chi HTTP adapter41, mem_repo.go 40in-memory adapter41, UseCase interface 40input port41, Repository interface 40output port41, service.go 40application service41, PurchaseOrder 40aggregate root41, PurchaseOrderID 40value object41, Money 40value object41. Connections: handler.go 40chi HTTP adapter41 to UseCase interface 40input port41 (calls), service.go 40application service41 to UseCase interface 40input port41 (implements), service.go 40application service41 to Repository interface 40output port41 (calls), mem_repo.go 40in-memory adapter41 to Repository interface 40output port41 (implements), service.go 40application service41 to PurchaseOrder 40aggregate root41 (uses), PurchaseOrder 40aggregate root41 to PurchaseOrderID 40value object41 (has), PurchaseOrder 40aggregate root41 to Money 40value object41 (has).
+    subgraph Adapter["Adapter Zone<br/>#40;outermost#41;"]
+        WEB["handler.go<br/>#40;chi HTTP<br/>adapter#41;"]:::orange
+        DB["mem_repo.go<br/>#40;in-memory<br/>adapter#41;"]:::orange
     end
-    subgraph Application["Application Zone #40;middle#41;"]
-        UC["UseCase interface\n#40;input port#41;"]:::teal
-        REPO["Repository interface\n#40;output port#41;"]:::teal
-        SVC["service.go\n#40;application service#41;"]:::teal
+    subgraph Application["Application Zone<br/>#40;middle#41;"]
+        UC["UseCase interface<br/>#40;input port#41;"]:::teal
+        REPO["Repository interface<br/>#40;output port#41;"]:::teal
+        SVC["service.go<br/>#40;application<br/>service#41;"]:::teal
     end
-    subgraph Domain["Domain Zone #40;innermost#41;"]
-        PO["PurchaseOrder\n#40;aggregate root#41;"]:::blue
-        POID["PurchaseOrderID\n#40;value object#41;"]:::blue
-        MONEY["Money\n#40;value object#41;"]:::blue
+    subgraph Domain["Domain Zone<br/>#40;innermost#41;"]
+        PO["PurchaseOrder<br/>#40;aggregate<br/>root#41;"]:::blue
+        POID["PurchaseOrderID<br/>#40;value object#41;"]:::blue
+        MONEY["Money<br/>#40;value object#41;"]:::blue
     end
 
     WEB -- "calls" --> UC
@@ -41,9 +43,10 @@ graph TD
     PO -- "has" --> POID
     PO -- "has" --> MONEY
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}

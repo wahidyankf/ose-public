@@ -20,6 +20,8 @@ Using a raw `int64` for monetary amounts causes currency-mismatch bugs that only
 
 ```mermaid
 classDiagram
+  accTitle: Example 1: Money as a Domain Primitive
+  accDescr: Class diagram with 1 items: Money.
   class Money {
     +amountCents int64
     +Currency string
@@ -30,6 +32,7 @@ classDiagram
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   class Money:::blue
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -151,6 +154,8 @@ Passing the wrong ID type to a function is a category of bug that raw strings en
 
 ```mermaid
 classDiagram
+  accTitle: Example 2: PurchaseOrderId Newtype
+  accDescr: Class diagram with 2 items: PurchaseOrderId, SupplierId.
   class PurchaseOrderId {
     +value string
     +New() PurchaseOrderId
@@ -163,9 +168,10 @@ classDiagram
   }
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  class PurchaseOrderId:::blue
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  cssClass "PurchaseOrderId" blue
   class SupplierId:::teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -262,6 +268,8 @@ All legal states of a purchase order should be explicit and exhaustive — no ma
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 3: POStatus Enumeration
+  accDescr: State diagram with 9 items: start or end, Draft, Submitted, ApprovalPending, Issued, Cancelled, Received, Paid, Disputed. Relationships: start or end to Draft; Draft to Submitted: submit; Submitted to ApprovalPending: route for approval; ApprovalPending to Issued: approve; ApprovalPending to Cancelled: reject; Issued to Received: goods received; Received to Paid: invoice paid; Issued to Disputed: raise dispute; Disputed to Cancelled: resolve cancelled; Disputed to Issued: resolve reissued.
   [*] --> Draft
   Draft --> Submitted : submit
   Submitted --> ApprovalPending : route for approval
@@ -373,6 +381,8 @@ Business rules that determine who must approve a purchase order — how many app
 
 ```mermaid
 classDiagram
+  accTitle: Example 4: ApprovalLevel Value Object
+  accDescr: Class diagram with 1 items: ApprovalLevel.
   class ApprovalLevel {
     +tier int
     +requiredApprovers int
@@ -383,8 +393,9 @@ classDiagram
     +BudgetCapCents() int64
   }
 
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  class ApprovalLevel:::orange
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  cssClass "ApprovalLevel" orange
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -482,14 +493,17 @@ Domain identifiers often carry format rules — a `SupplierCode` in the procurem
 
 ```mermaid
 classDiagram
+  accTitle: Example 5: SupplierCode Validated Identifier
+  accDescr: Class diagram with 1 items: SupplierCode.
   class SupplierCode {
     +value string
     +Parse(s string) SupplierCode
     +String() string
   }
 
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
   class SupplierCode:::teal
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -571,6 +585,8 @@ A number without a unit is a ticking ambiguity. Adding 10 kilograms to 10 pieces
 
 ```mermaid
 classDiagram
+  accTitle: Example 6: Quantity with Unit of Measure
+  accDescr: Class diagram with 2 items: Quantity, Unit. Relationships: Quantity to Unit.
   class Quantity {
     +Amount float64
     +Unit Unit
@@ -586,9 +602,10 @@ classDiagram
   Quantity --> Unit
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
   class Quantity:::blue
   class Unit:::orange
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -691,6 +708,8 @@ A line item aggregates the product description, quantity ordered, and unit price
 
 ```mermaid
 classDiagram
+  accTitle: Example 7: LineItem Value Object
+  accDescr: Class diagram with 3 items: LineItem, Quantity, Money. Relationships: LineItem to Quantity; LineItem to Money.
   class LineItem {
     +Id LineItemId
     +Description string
@@ -711,10 +730,11 @@ classDiagram
   LineItem --> Money
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
   class LineItem:::blue
   class Quantity:::teal
   class Money:::teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -819,6 +839,8 @@ A delivery address is a value object — two addresses are equal if all their fi
 
 ```mermaid
 classDiagram
+  accTitle: Example 8: Address Value Object
+  accDescr: Class diagram with 1 items: Address.
   class Address {
     +Street string
     +City string
@@ -828,8 +850,9 @@ classDiagram
     +Equal(other Address) bool
   }
 
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
   class Address:::purple
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -934,6 +957,8 @@ Procurement validity windows — PO expiry dates, delivery windows, contract per
 
 ```mermaid
 classDiagram
+  accTitle: Example 9: DateRange Value Object
+  accDescr: Class diagram with 1 items: DateRange.
   class DateRange {
     +Start time.Time
     +End time.Time
@@ -943,8 +968,9 @@ classDiagram
     +Duration() time.Duration
   }
 
-  classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
   class DateRange:::brown
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1040,6 +1066,8 @@ A rich value object exposes domain-meaningful operations rather than forcing cal
 
 ```mermaid
 classDiagram
+  accTitle: Example 10: Money Arithmetic Operations
+  accDescr: Class diagram with 1 items: Money.
   class Money {
     +amountCents int64
     +Currency string
@@ -1052,6 +1080,7 @@ classDiagram
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   class Money:::blue
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1149,17 +1178,19 @@ The key difference between a value object and an entity is equality semantics. T
 
 ```mermaid
 graph TD
+  accTitle: Example 11: Value Object Equality — No Identity
+  accDescr: Graph with 10 nodes and 10 connections. Nodes: Entity: Supplier, Supplier A id=s-001 name=Acme, Supplier B id=s-001 name=Acme Corp, same_identity?, TRUE: same entity 40id matches41, Value Object: Money, Money X amount=1000 currency=THB, Money Y amount=1000 currency=THB, Equal?, TRUE: equal values 40all fields match41. Connections: Entity: Supplier to Supplier A id=s-001 name=Acme, Entity: Supplier to Supplier B id=s-001 name=Acme Corp, Supplier A id=s-001 name=Acme to same_identity?, Supplier B id=s-001 name=Acme Corp to same_identity?, same_identity? to TRUE: same entity 40id matches41, Value Object: Money to Money X amount=1000 currency=THB, Value Object: Money to Money Y amount=1000 currency=THB, Money X amount=1000 currency=THB to Equal?, Money Y amount=1000 currency=THB to Equal?, Equal? to TRUE: equal values 40all fields match41.
   A["Entity: Supplier"]:::blue
-  B["Supplier A\nid='s-001'\nname='Acme'"]:::teal
-  C["Supplier B\nid='s-001'\nname='Acme Corp'"]:::teal
+  B["Supplier A<br/>id='s-001'<br/>name='Acme'"]:::teal
+  C["Supplier B<br/>id='s-001'<br/>name='Acme Corp'"]:::teal
   D{"same_identity?"}:::orange
-  E["TRUE: same entity\n#40;id matches#41;"]:::teal
+  E["TRUE: same entity<br/>#40;id matches#41;"]:::teal
 
   F["Value Object: Money"]:::blue
-  G["Money X\namount=1000\ncurrency=THB"]:::purple
-  H["Money Y\namount=1000\ncurrency=THB"]:::purple
+  G["Money X<br/>amount=1000<br/>currency=THB"]:::purple
+  H["Money Y<br/>amount=1000<br/>currency=THB"]:::purple
   I{"Equal?"}:::orange
-  J["TRUE: equal values\n#40;all fields match#41;"]:::purple
+  J["TRUE: equal values<br/>#40;all fields<br/>match#41;"]:::purple
 
   A --> B
   A --> C
@@ -1174,9 +1205,10 @@ graph TD
   I --> J
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1238,6 +1270,8 @@ Value objects must not mutate — returning a new value preserves the original a
 
 ```mermaid
 sequenceDiagram
+  accTitle: Example 12: Immutability by Convention and Enforcement
+  accDescr: Sequence diagram between Caller, Money. Messages: Caller to Money: withCurrency(self, USD); Money to Caller: new Moneycurrency: USD.
   participant Caller
   participant Money
 
@@ -1311,6 +1345,8 @@ Entities have identity — two `Supplier` records are the same supplier as long 
 
 ```mermaid
 classDiagram
+  accTitle: Example 13: Supplier Entity
+  accDescr: Class diagram with 1 items: Supplier.
   class Supplier {
     -id SupplierId
     +Name string
@@ -1324,8 +1360,9 @@ classDiagram
     +UpdateEmail(email string)
   }
 
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
   class Supplier:::teal
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1472,6 +1509,8 @@ The entity/value-object distinction drives every downstream design decision in D
 
 ```mermaid
 classDiagram
+  accTitle: Example 14: Entity vs Value Object Distinction
+  accDescr: Class diagram with 4 items: Entity, ValueObject, Supplier, Money. Relationships: Entity to Supplier; ValueObject to Money.
   class Entity {
     +id ID
     +state mutable
@@ -1497,12 +1536,13 @@ classDiagram
   ValueObject <|-- Money
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
   class Entity:::blue
   class ValueObject:::orange
   class Supplier:::teal
   class Money:::teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1565,6 +1605,8 @@ A `PurchaseOrder` is an entity with a rich lifecycle — it progresses through s
 
 ```mermaid
 classDiagram
+  accTitle: Example 15: PurchaseOrder Entity
+  accDescr: Class diagram with 3 items: PurchaseOrder, POStatus, LineItem. Relationships: PurchaseOrder to POStatus; PurchaseOrder to LineItem.
   class PurchaseOrder {
     -id PurchaseOrderId
     +SupplierId SupplierId
@@ -1594,11 +1636,12 @@ classDiagram
   PurchaseOrder "1" --> "*" LineItem
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
   class PurchaseOrder:::blue
   class POStatus:::orange
   class LineItem:::teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1698,6 +1741,8 @@ A Good Receipt Note records the physical arrival of goods — it is a separate e
 
 ```mermaid
 classDiagram
+  accTitle: Example 16: GoodReceiptNote Entity
+  accDescr: Class diagram with 3 items: GoodReceiptNote, ReceivedItem, PurchaseOrderId. Relationships: GoodReceiptNote to ReceivedItem; GoodReceiptNote to PurchaseOrderId: references by ID.
   class GoodReceiptNote {
     -id GRNId
     +POId PurchaseOrderId
@@ -1718,9 +1763,10 @@ classDiagram
   GoodReceiptNote --> PurchaseOrderId : references by ID
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  class GoodReceiptNote:::blue
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  cssClass "GoodReceiptNote" blue
   class ReceivedItem:::teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1861,6 +1907,8 @@ An invoice represents the supplier's payment claim and has its own lifecycle ind
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 17: Invoice Entity
+  accDescr: State diagram with 6 items: start or end, Draft, Submitted, Approved, Rejected, Paid. Relationships: start or end to Draft; Draft to Submitted: submit; Submitted to Approved: approve; Submitted to Rejected: reject; Approved to Paid: pay; Rejected to start or end; Paid to start or end.
   [*] --> Draft
   Draft --> Submitted : submit
   Submitted --> Approved : approve
@@ -2008,6 +2056,8 @@ The aggregate root is the gatekeeper: all mutations to the aggregate must pass t
 
 ```mermaid
 classDiagram
+  accTitle: Example 18: PurchaseOrder as Aggregate Root — Protecting Invariants
+  accDescr: Class diagram with 2 items: PurchaseOrder, LineItem. Relationships: PurchaseOrder to LineItem: invariant protected.
   class PurchaseOrder {
     -id PurchaseOrderId
     +Status POStatus
@@ -2023,9 +2073,10 @@ classDiagram
   PurchaseOrder "guards" --> "*" LineItem : invariant protected
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
   class PurchaseOrder:::blue
   class LineItem:::teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2121,6 +2172,8 @@ The `Submit` transition moves a Draft PO into the approval queue. Two preconditi
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 19: Submit for Approval
+  accDescr: State diagram with 3 items: Draft, Submitted, ApprovalPending. Relationships: Draft to Submitted: submit [lineItems > 0]; Submitted to ApprovalPending: route.
   Draft --> Submitted : submit [lineItems > 0]
   Submitted --> ApprovalPending : route
   note right of Draft : Empty PO rejected\nNon-Draft PO rejected
@@ -2188,6 +2241,8 @@ Approval enforces the budget cap associated with the approver's level. Before se
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 20: Approve — Multi-Level Authorization Check
+  accDescr: State diagram with 2 items: ApprovalPending, Issued. Relationships: ApprovalPending to Issued: approve [total <= cap]; ApprovalPending to ApprovalPending: approve [total>cap, escalate].
   ApprovalPending --> Issued : approve [total <= cap]
   ApprovalPending --> ApprovalPending : approve [total>cap, escalate]
   note right of ApprovalPending : Budget cap checked\nAgainst ApprovalLevel
@@ -2273,6 +2328,8 @@ Rejection terminates the current approval attempt with an auditable reason. A bl
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 21: Reject with Reason
+  accDescr: State diagram with 2 items: ApprovalPending, Cancelled. Relationships: ApprovalPending to Cancelled: reject [reason non-empty].
   ApprovalPending --> Cancelled : reject [reason non-empty]
   note right of ApprovalPending : Blank reason rejected\nReason stored for audit
 ```
@@ -2365,6 +2422,8 @@ The `TotalValue` method is the aggregate root's internal computation that sums a
 
 ```mermaid
 classDiagram
+  accTitle: Example 22: Budget Invariant — TotalValue
+  accDescr: Class diagram with 2 items: PurchaseOrder, LineItem. Relationships: PurchaseOrder to LineItem: sums TotalPrice.
   class PurchaseOrder {
     -lineItems []LineItem
     +TotalValue() Money
@@ -2376,9 +2435,10 @@ classDiagram
   PurchaseOrder "1" --> "*" LineItem : sums TotalPrice
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
   class PurchaseOrder:::blue
   class LineItem:::teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2454,6 +2514,8 @@ Domain events record facts that occurred in the domain — they are past-tense, 
 
 ```mermaid
 classDiagram
+  accTitle: Example 23: DomainEvent Interface and POCreated
+  accDescr: Class diagram with 4 items: DomainEvent, POCreated, POApproved, POCancelled.
   class DomainEvent {
     <<interface>>
     +EventType() string
@@ -2484,11 +2546,12 @@ classDiagram
   DomainEvent <|.. POCancelled
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
   class DomainEvent:::blue
   class POCreated:::teal
   class POApproved:::teal
   class POCancelled:::teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2588,6 +2651,8 @@ Aggregates collect domain events internally during state transitions and expose 
 
 ```mermaid
 sequenceDiagram
+  accTitle: Example 24: Raising Events in the Aggregate
+  accDescr: Sequence diagram between AppService, PurchaseOrder, Repository, EventBus. Messages: AppService to PurchaseOrder: NewPurchaseOrder(id, supplierId); PurchaseOrder to PurchaseOrder: emit POCreated (internal); AppService to Repository: Save(po); Repository to AppService: saved; AppService to PurchaseOrder: DomainEvents(); PurchaseOrder to AppService: [POCreated]; AppService to EventBus: Publish(POCreated); AppService to PurchaseOrder: ClearEvents().
   participant AppService
   participant PurchaseOrder
   participant Repository
@@ -2709,6 +2774,8 @@ Event handlers subscribe to specific event types and react with side effects —
 
 ```mermaid
 sequenceDiagram
+  accTitle: Example 25: Event Handler Pattern
+  accDescr: Sequence diagram between EventBus, POCreatedNotifier, SupplierRepository, Notifier. Messages: EventBus to POCreatedNotifier: Handle(POCreated); POCreatedNotifier to SupplierRepository: FindById(supplierId); SupplierRepository to POCreatedNotifier: Supplier; POCreatedNotifier to Notifier: Send(supplierEmail, message); Notifier to POCreatedNotifier: sent; POCreatedNotifier to EventBus: nil (success).
   participant EventBus
   participant POCreatedNotifier
   participant SupplierRepository

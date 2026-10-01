@@ -88,25 +88,28 @@ The hexagonal pattern enforces the boundary by making each context own its `doma
 
 ```mermaid
 flowchart LR
+    accTitle: Production Framework
+    accDescr: Flowchart with 7 nodes and 2 connections. Nodes: domain/ (PurchaseOrder, Money structs), app/ (PO Repository interface), adapter/in/ (chi HTTP handler), adapter/out/ (postgres.Repo, mem.Repo), domain/ (GoodsReceipt struct), app/ (POQueryPort interface), adapter/out/ (POQueryAcl). Connections: app/ (POQueryPort interface) to app/ (PO Repository interface) (consumes port only), adapter/out/ (POQueryAcl) to adapter/out/ (postgres.Repo, mem.Repo) (calls HTTP / DB).
     subgraph ctx["purchasing context"]
         direction TB
-        dom["domain/\n(PurchaseOrder, Money structs)"]:::blue
-        app["app/\n(PO Repository interface)"]:::orange
-        adpIn["adapter/in/\n(chi HTTP handler)"]:::teal
-        adpOut["adapter/out/\n(postgres.Repo, mem.Repo)"]:::teal
+        dom["domain/<br/>(PurchaseOrder,<br/>Money structs)"]:::blue
+        app["app/<br/>(PO Repository<br/>interface)"]:::orange
+        adpIn["adapter/in/<br/>(chi HTTP handler)"]:::teal
+        adpOut["adapter/out/<br/>(postgres.Repo,<br/>mem.Repo)"]:::teal
     end
     subgraph recv["receiving context"]
         direction TB
-        rdom["domain/\n(GoodsReceipt struct)"]:::blue
-        rapp["app/\n(POQueryPort interface)"]:::orange
-        rAdpOut["adapter/out/\n(POQueryAcl)"]:::teal
+        rdom["domain/<br/>(GoodsReceipt<br/>struct)"]:::blue
+        rapp["app/<br/>(POQueryPort<br/>interface)"]:::orange
+        rAdpOut["adapter/out/<br/>(POQueryAcl)"]:::teal
     end
     rapp -->|"consumes port only"| app
     rAdpOut -->|"calls HTTP / DB"| adpOut
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The `procurement-platform-be` service places each bounded context under `internal/<context>`:
@@ -1787,13 +1790,15 @@ The full composition flow:
 
 ```mermaid
 flowchart TD
-    env["Environment\n(DATABASE_URL present?)"]:::orange
-    mem["mem.PurchaseOrderRepo\n(in-memory, no Docker)"]:::teal
-    pg["postgres.PurchaseOrderRepo\n(database/sql or sqlx)"]:::teal
-    svc["IssuePurchaseOrderService\n(app layer)"]:::blue
-    handler["PurchaseOrderHandler\n(adapter/in_/http)"]:::blue
-    router["chi Router / axum Router\nPOST /api/v1/purchase-orders"]:::orange
-    client["HTTP Client\n(curl, Playwright, unit test)"]:::teal
+    accTitle: Production Framework
+    accDescr: Flowchart with 7 nodes and 7 connections. Nodes: Environment (DATABASE_URL present?), mem. PurchaseOrderRepo (in-memory, no Docker), postgres. PurchaseOrderRepo (database/sql or sqlx), IssuePurchaseOrder Service (app layer), PurchaseOrderHandler (adapter/in_/http), chi Router /axum Router POST /api/v1/ purchase-orders, HTTP Client (curl, Playwright, unit test). Connections: Environment (DATABASE_URL present?) to mem. PurchaseOrderRepo (in-memory, no Docker) (empty), Environment (DATABASE_URL present?) to postgres. PurchaseOrderRepo (database/sql or sqlx) (set), mem. PurchaseOrderRepo (in-memory, no Docker) to IssuePurchaseOrder Service (app layer), postgres. PurchaseOrderRepo (database/sql or sqlx) to IssuePurchaseOrder Service (app layer), IssuePurchaseOrder Service (app layer) to PurchaseOrderHandler (adapter/in_/http), PurchaseOrderHandler (adapter/in_/http) to chi Router /axum Router POST /api/v1/ purchase-orders, HTTP Client (curl, Playwright, unit test) to chi Router /axum Router POST /api/v1/ purchase-orders.
+    env["Environment<br/>(DATABASE_URL<br/>present?)"]:::orange
+    mem["mem.<br/>PurchaseOrderRepo<br/>(in-memory, no<br/>Docker)"]:::teal
+    pg["postgres.<br/>PurchaseOrderRepo<br/>(database/sql or<br/>sqlx)"]:::teal
+    svc["IssuePurchaseOrder<br/>Service<br/>(app layer)"]:::blue
+    handler["PurchaseOrderHandler<br/>(adapter/in_/http)"]:::blue
+    router["chi Router /axum<br/>Router<br/>POST /api/v1/<br/>purchase-orders"]:::orange
+    client["HTTP Client<br/>(curl, Playwright,<br/>unit test)"]:::teal
 
     env -->|"empty"| mem
     env -->|"set"| pg
@@ -1803,9 +1808,10 @@ flowchart TD
     handler --> router
     client --> router
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trade-offs**: the composition root is the most import-heavy file in the codebase because it must know about all layers. This is intentional — every other file maintains strict layer discipline because main.go / main.rs accepts the cross-layer import burden on their behalf. In larger services, the composition root is split into per-context wire functions called from main.

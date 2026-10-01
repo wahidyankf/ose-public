@@ -18,14 +18,21 @@ Ansible playbooks are YAML files describing desired system state. Every playbook
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 1: Hello World Playbook
+ accDescr: Graph with 4 nodes and 3 connections. Nodes: Playbook hello.yml, Ansible Parser YAML → Tasks, Execute on localhost, Output: Hello, Ansible!. Connections: Playbook hello.yml to Ansible Parser YAML → Tasks, Ansible Parser YAML → Tasks to Execute on localhost, Execute on localhost to Output: Hello, Ansible!.
  A["Playbook<br/>hello.yml"] --> B["Ansible Parser<br/>YAML → Tasks"]
  B --> C["Execute on<br/>localhost"]
  C --> D["Output:<br/>Hello, Ansible!"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -398,16 +405,24 @@ A playbook can contain multiple plays targeting different hosts or requiring dif
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 5: Multiple Plays in One Playbook
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Playbook Start, Play 1: Web Servers, Play 2: Database Servers, Play 3: localhost Report, Playbook Complete. Connections: Playbook Start to Play 1: Web Servers, Play 1: Web Servers to Play 2: Database Servers, Play 2: Database Servers to Play 3: localhost Report, Play 3: localhost Report to Playbook Complete.
  A["Playbook Start"] --> B["Play 1:<br/>Web Servers"]
  B --> C["Play 2:<br/>Database Servers"]
  C --> D["Play 3:<br/>localhost Report"]
  D --> E["Playbook Complete"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -521,11 +536,13 @@ Variables can be defined in multiple locations: playbook vars, command-line, inv
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
- A["Variable Sources"] --> B["Role Defaults<br/>#40;Precedence: 2#41;"]
- A --> C["Inventory Vars<br/>#40;Precedence: 12#41;"]
- A --> D["Playbook Vars<br/>#40;Precedence: 15#41;"]
- A --> E["Task Vars<br/>#40;Precedence: 21#41;"]
- A --> F["Extra Vars<br/>#40;Precedence: 22#41;"]
+ accTitle: Example 6: Playbook Variables and Precedence
+ accDescr: Graph with 7 nodes and 10 connections. Nodes: Variable Sources, Role Defaults 40Precedence: 241, Inventory Vars 40Precedence: 1241, Playbook Vars 40Precedence: 1541, Task Vars 40Precedence: 2141, Extra Vars 40Precedence: 2241, Final Value. Connections: Variable Sources to Role Defaults 40Precedence: 241, Variable Sources to Inventory Vars 40Precedence: 1241, Variable Sources to Playbook Vars 40Precedence: 1541, Variable Sources to Task Vars 40Precedence: 2141, Variable Sources to Extra Vars 40Precedence: 2241, Role Defaults 40Precedence: 241 to Final Value, Inventory Vars 40Precedence: 1241 to Final Value, Playbook Vars 40Precedence: 1541 to Final Value, Task Vars 40Precedence: 2141 to Final Value, Extra Vars 40Precedence: 2241 to Final Value.
+ A["Variable Sources"] --> B["Role Defaults<br/>#40;Precedence:<br/>2#41;"]
+ A --> C["Inventory Vars<br/>#40;Precedence:<br/>12#41;"]
+ A --> D["Playbook Vars<br/>#40;Precedence:<br/>15#41;"]
+ A --> E["Task Vars<br/>#40;Precedence:<br/>21#41;"]
+ A --> F["Extra Vars<br/>#40;Precedence:<br/>22#41;"]
 
  B --> G["Final Value"]
  C --> G
@@ -533,13 +550,19 @@ graph TD
  E --> G
  F --> G
 
- style A fill:#0173B2,color:#fff
- style B fill:#CA9161,color:#fff
- style C fill:#DE8F05,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#CC78BC,color:#fff
- style F fill:#CC78BC,color:#fff
- style G fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class B pal-CA9161
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class E pal-CC78BC
+ class F pal-CC78BC
+ class G pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -923,16 +946,24 @@ Dynamic inventory pulls host information from external sources (cloud APIs, CMDB
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 10: Dynamic Inventory Basics
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Ansible Playbook, Inventory Script inventory.py, Cloud API (AWS/GCP/Azure), D, Groups, Execute Tasks. Connections: Ansible Playbook to Inventory Script inventory.py, Inventory Script inventory.py to Cloud API (AWS/GCP/Azure), Cloud API (AWS/GCP/Azure) to D, Cloud API (AWS/GCP/Azure) to Groups, D to Execute Tasks.
  A["Ansible Playbook"] --> B["Inventory Script<br/>inventory.py"]
  B --> C["Cloud API<br/>(AWS/GCP/Azure)"]
  C --> D["JSON Response<br/>Hosts & Groups"]
  D --> E["Execute Tasks"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1406,18 +1437,26 @@ The `template` module processes Jinja2 templates on the control node and copies 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 14: Template Module with Jinja2
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Template File nginx.conf.j2, Jinja2 Engine 40Control Node41, Variables port, name, root, Rendered Config nginx.conf, Copy to Target /etc/nginx/ nginx.conf, Target Host. Connections: Template File nginx.conf.j2 to Jinja2 Engine 40Control Node41, Variables port, name, root to Jinja2 Engine 40Control Node41, Jinja2 Engine 40Control Node41 to Rendered Config nginx.conf, Rendered Config nginx.conf to Copy to Target /etc/nginx/ nginx.conf, Copy to Target /etc/nginx/ nginx.conf to Target Host.
  A["Template File<br/>nginx.conf.j2"] --> B["Jinja2 Engine<br/>#40;Control Node#41;"]
  C["Variables<br/>port, name, root"] --> B
  B --> D["Rendered Config<br/>nginx.conf"]
- D --> E["Copy to Target<br/>/etc/nginx/nginx.conf"]
+ D --> E["Copy to Target<br/>/etc/nginx/<br/>nginx.conf"]
  E --> F["Target Host"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
- style F fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ class F pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1708,6 +1747,8 @@ The `service` module manages system services across init systems (systemd, SysV,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 16: Service Management
+ accDescr: Graph with 8 nodes and 9 connections. Nodes: Service Module, Desired State?, Start Service if not running, Stop Service if running, Restart Service always, Enabled?, Enable at Boot, Disable at Boot. Connections: Service Module to Desired State?, Desired State? to Start Service if not running (started), Desired State? to Stop Service if running (stopped), Desired State? to Restart Service always (restarted), Start Service if not running to Enabled?, Stop Service if running to Enabled?, Restart Service always to Enabled?, Enabled? to Enable at Boot (yes), Enabled? to Disable at Boot (no).
  A["Service Module"] --> B{Desired State?}
  B -->|started| C["Start Service<br/>if not running"]
  B -->|stopped| D["Stop Service<br/>if running"]
@@ -1718,14 +1759,20 @@ graph TD
  F -->|yes| G["Enable at Boot"]
  F -->|no| H["Disable at Boot"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
- style F fill:#DE8F05,color:#fff
- style G fill:#029E73,color:#fff
- style H fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ class F pal-DE8F05
+ class G pal-029E73
+ class H pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2224,20 +2271,28 @@ Custom facts extend Ansible's built-in facts with application-specific informati
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 20: Custom Facts
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Ansible Facts, Built-in Facts ansible_hostname, Custom Facts ansible_local, Static Facts /etc/ansible/ facts.d/*.fact, Dynamic Facts Executable Scripts, JSON File, Script Output 40JSON41. Connections: Ansible Facts to Built-in Facts ansible_hostname, Ansible Facts to Custom Facts ansible_local, Custom Facts ansible_local to Static Facts /etc/ansible/ facts.d/*.fact, Custom Facts ansible_local to Dynamic Facts Executable Scripts, Static Facts /etc/ansible/ facts.d/*.fact to JSON File, Dynamic Facts Executable Scripts to Script Output 40JSON41.
  A["Ansible Facts"] --> B["Built-in Facts<br/>ansible_hostname"]
  A --> C["Custom Facts<br/>ansible_local"]
- C --> D["Static Facts<br/>/etc/ansible/facts.d/*.fact"]
+ C --> D["Static Facts<br/>/etc/ansible/<br/>facts.d/*.fact"]
  C --> E["Dynamic Facts<br/>Executable Scripts"]
  D --> F["JSON File"]
  E --> G["Script Output<br/>#40;JSON#41;"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#029E73,color:#fff
- style C fill:#DE8F05,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CC78BC,color:#fff
- style F fill:#CA9161,color:#fff
- style G fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class B pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class C pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class F pal-CA9161
+ class G pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2644,18 +2699,26 @@ The `when` keyword enables conditional task execution based on variables, facts,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 23: When Conditionals
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Task, When Condition?, Execute Task, Skip Task, Report: ok/changed, Report: skipped. Connections: Task to When Condition?, When Condition? to Execute Task (True), When Condition? to Skip Task (False), Execute Task to Report: ok/changed, Skip Task to Report: skipped.
  A["Task"] --> B{When Condition?}
  B -->|True| C["Execute Task"]
  B -->|False| D["Skip Task"]
  C --> E["Report: ok/changed"]
  D --> F["Report: skipped"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#029E73,color:#fff
- style F fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-029E73
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class F pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

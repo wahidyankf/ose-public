@@ -421,23 +421,31 @@ test.describe("User Registration", () => {
 
 ```mermaid
 graph LR
+    accTitle: Database State Progression Diagram
+    accDescr: Graph with 10 nodes and 7 connections. Nodes: Standard Library: Manual SQL Cleanup, Failed Tests Data Corruption, Missed Cleanup Orphaned Data, Production Framework: Prisma Transactions, Clean State Every Test, Isolated Transactions No Conflicts, Test 1 Transaction, Database State, Test 2 Transaction, Test 3 Transaction. Connections: Standard Library: Manual SQL Cleanup to Failed Tests Data Corruption (Race Conditions), Standard Library: Manual SQL Cleanup to Missed Cleanup Orphaned Data (Manual DELETE), Production Framework: Prisma Transactions to Clean State Every Test (Automatic Rollback), Production Framework: Prisma Transactions to Isolated Transactions No Conflicts (Parallel Execution), Test 1 Transaction to Database State (Rollback), Test 2 Transaction to Database State (Rollback), Test 3 Transaction to Database State (Rollback).
     A["Standard Library:<br/>Manual SQL Cleanup"] -->|"Race Conditions"| B["Failed Tests<br/>Data Corruption"]
     A -->|"Manual DELETE"| C["Missed Cleanup<br/>Orphaned Data"]
 
-    D["Production Framework:<br/>Prisma Transactions"] -->|"Automatic Rollback"| E["Clean State<br/>Every Test"]
-    D -->|"Parallel Execution"| F["Isolated Transactions<br/>No Conflicts"]
+    D["Production<br/>Framework:<br/>Prisma Transactions"] -->|"Automatic Rollback"| E["Clean State<br/>Every Test"]
+    D -->|"Parallel Execution"| F["Isolated<br/>Transactions<br/>No Conflicts"]
 
     G["Test 1 Transaction"] -.->|"Rollback"| H["Database State"]
     I["Test 2 Transaction"] -.->|"Rollback"| H
     J["Test 3 Transaction"] -.->|"Rollback"| H
 
-    style A fill:#CC78BC,stroke:#9D5F99,color:#000
-    style D fill:#0173B2,stroke:#015A8F,color:#fff
-    style B fill:#DE8F05,stroke:#B17304,color:#000
-    style C fill:#DE8F05,stroke:#B17304,color:#000
-    style E fill:#029E73,stroke:#017A59,color:#fff
-    style F fill:#029E73,stroke:#017A59,color:#fff
-    style H fill:#CA9161,stroke:#A1734E,color:#000
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

@@ -25,14 +25,21 @@ The join macro performs SQL joins between tables, allowing you to query across a
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Join Query Flow
 graph TD
+    accTitle: Example 31: Join Query with join/5
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: User Query, Join Posts Table, Filter Results, Return Users. Connections: User Query to Join Posts Table (join :posts), Join Posts Table to Filter Results (where: post.published), Filter Results to Return Users.
     A[User Query] -->|join :posts| B[Join Posts Table]
-    B -->|where: post.published| C[Filter Results]
+    B -->|where:<br/>post.published| C[Filter Results]
     C --> D[Return Users]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -115,6 +122,8 @@ left_join includes all records from the left table even when no matching records
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Left Join Behavior
 graph TD
+    accTitle: Example 32: Left Join with leftjoin/5
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Users Table, Left Join, Posts Table, Post Exists?, User + Post Data, User + NULL Post, Result Set. Connections: Users Table to Left Join, Posts Table to Left Join, Left Join to Post Exists?, Post Exists? to User + Post Data (Yes), Post Exists? to User + NULL Post (No), User + Post Data to Result Set, User + NULL Post to Result Set.
     A[Users Table] --> B[Left Join]
     C[Posts Table] --> B
     B --> D{Post Exists?}
@@ -123,13 +132,19 @@ graph TD
     E --> G[Result Set]
     F --> G
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -216,19 +231,26 @@ The group_by clause groups records by field values, enabling aggregate functions
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Group By with Aggregates
 graph TD
+    accTitle: Example 33: Group By with Aggregates
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: All Posts, group_by :user_id, Group 1: User 1 Posts, Group 2: User 2 Posts, count/1, Aggregated Results. Connections: All Posts to group_by :user_id, group_by :user_id to Group 1: User 1 Posts, group_by :user_id to Group 2: User 2 Posts, Group 1: User 1 Posts to count/1, Group 2: User 2 Posts to count/1, count/1 to Aggregated Results.
     A[All Posts] --> B[group_by :user_id]
-    B --> C[Group 1: User 1 Posts]
-    B --> D[Group 2: User 2 Posts]
+    B --> C[Group 1: User 1<br/>Posts]
+    B --> D[Group 2: User 2<br/>Posts]
     C --> E[count/1]
     D --> E
     E --> F[Aggregated Results]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    class D pal-CC78BC
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -376,18 +398,26 @@ Repo.transaction/1 wraps multiple database operations in a transaction, ensuring
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Transaction Flow
 graph TD
+    accTitle: Example 35: Transactions with Repo.transaction/1
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Start Transaction, Operation 1, Operation 2, All Succeeded?, Commit, Rollback. Connections: Start Transaction to Operation 1, Operation 1 to Operation 2, Operation 2 to All Succeeded?, All Succeeded? to Commit (Yes), All Succeeded? to Rollback (No).
     A[Start Transaction] --> B[Operation 1]
     B --> C[Operation 2]
     C --> D{All Succeeded?}
     D -->|Yes| E[Commit]
     D -->|No| F[Rollback]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -523,16 +553,22 @@ Ecto.Multi builds composable transaction pipelines, allowing you to name each op
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Ecto.Multi Pipeline
 graph TD
+    accTitle: Example 37: Ecto.Multi for Composable Transactions
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Multi.new, insert :user, insert :post, update :stats, Repo.transaction. Connections: Multi.new to insert :user, insert :user to insert :post, insert :post to update :stats, update :stats to Repo.transaction.
     A[Multi.new] --> B[insert :user]
     B --> C[insert :post]
     C --> D[update :stats]
     D --> E[Repo.transaction]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -626,6 +662,8 @@ Multi operations can be conditional using Multi.run/3, allowing you to skip or m
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Conditional Multi Flow
 graph TD
+    accTitle: Example 38: Conditional Multi Operations
+    accDescr: Graph with 9 nodes and 9 connections. Nodes: Multi.new, Operation 1, Check Result, Operation A, Operation B, Repo.transaction, All Success?, Commit, Rollback All. Connections: Multi.new to Operation 1, Operation 1 to Check Result, Check Result to Operation A (Condition Met), Check Result to Operation B (Condition Not Met), Operation A to Repo.transaction, Operation B to Repo.transaction, Repo.transaction to All Success?, All Success? to Commit (Yes), All Success? to Rollback All (No).
     A[Multi.new] --> B[Operation 1]
     B --> C{Check Result}
     C -->|Condition Met| D[Operation A]
@@ -636,15 +674,21 @@ graph TD
     G -->|Yes| H[Commit]
     G -->|No| I[Rollback All]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-DE8F05
+    class G pal-CC78BC
+    class H pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -794,17 +838,24 @@ The alter table macro modifies existing tables by adding, removing, or changing 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Migration Evolution
 graph TD
+    accTitle: Example 40: Migration - Adding Columns
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Current Schema, alter table, add :column, New Schema Version, remove :column. Connections: Current Schema to alter table, alter table to add :column, add :column to New Schema Version, New Schema Version to remove :column (rollback), remove :column to Current Schema.
     A[Current Schema] --> B[alter table]
     B --> C[add :column]
     C --> D[New Schema Version]
     D -.->|rollback| E[remove :column]
     E -.-> A
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -940,14 +991,21 @@ embeds_one stores a nested schema as JSON in a single column, useful for structu
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  embeds_one Structure
 graph TD
+    accTitle: Example 43: Embedded Schemas with embedsone
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: User Schema, embeds_one :profile, Profile Schema name, bio, avatar, Stored as JSON in users.profile column. Connections: User Schema to embeds_one :profile, embeds_one :profile to Profile Schema name, bio, avatar, Profile Schema name, bio, avatar to Stored as JSON in users.profile column.
     A[User Schema] --> B[embeds_one :profile]
     B --> C[Profile Schema<br/>name, bio, avatar]
-    C --> D[Stored as JSON<br/>in users.profile column]
+    C --> D[Stored as JSON<br/>in users.profile<br/>column]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1015,22 +1073,29 @@ embeds_many stores an array of nested schemas as JSON, useful for lists of struc
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  embeds_many Structure
 graph TD
-    A[Post Schema] --> B[embeds_many :comments]
+    accTitle: Example 44: Embedded Schemas with embedsmany
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: Post Schema, embeds_many :comments, Comment Schema Array, Comment 1, Comment 2, Comment N, Stored as JSON Array in posts.comments column. Connections: Post Schema to embeds_many :comments, embeds_many :comments to Comment Schema Array, Comment Schema Array to Comment 1, Comment Schema Array to Comment 2, Comment Schema Array to Comment N, Comment 1 to Stored as JSON Array in posts.comments column, Comment 2 to Stored as JSON Array in posts.comments column, Comment N to Stored as JSON Array in posts.comments column.
+    A[Post Schema] --> B[embeds_many<br/>:comments]
     B --> C[Comment Schema Array]
     C --> D[Comment 1]
     C --> E[Comment 2]
     C --> F[Comment N]
-    D --> G[Stored as JSON Array<br/>in posts.comments column]
+    D --> G[Stored as JSON Array<br/>in posts.comments<br/>column]
     E --> G
     F --> G
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1289,13 +1354,18 @@ many_to_many creates a bidirectional association through a join table, allowing 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  many_to_many Association
 graph TD
+    accTitle: Example 47: manytomany Associations
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: User, Skill, Join Table. Connections: User to Skill (user_skills), User to Join Table (user_id), Skill to Join Table (skill_id).
     A[User] <-->|user_skills| B[Skill]
     A -->|user_id| C[Join Table]
     B -->|skill_id| C
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1406,16 +1476,23 @@ put_assoc/3 replaces all associated records in a changeset, useful for managing 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  put_assoc Replacement Flow
 graph TD
+    accTitle: Example 48: Putting Associations with putassoc/3
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Parent Record, put_assoc/3, Delete Old Associated Records, Insert New Associated Records, Parent with New Associations. Connections: Parent Record to put_assoc/3, put_assoc/3 to Delete Old Associated Records, Delete Old Associated Records to Insert New Associated Records, Insert New Associated Records to Parent with New Associations.
     A[Parent Record] --> B[put_assoc/3]
-    B --> C[Delete Old Associated Records]
-    C --> D[Insert New Associated Records]
-    D --> E[Parent with New Associations]
+    B --> C[Delete Old<br/>Associated Records]
+    C --> D[Insert New<br/>Associated Records]
+    D --> E[Parent with New<br/>Associations]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CA9161,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1615,18 +1692,25 @@ Subqueries allow you to filter a query based on the results of another query, en
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Subquery Composition
 graph TD
+    accTitle: Example 50: Subqueries for Complex Filtering
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Inner Query, Filter/Aggregate, Inner Result Set, Outer Query, Use Inner Results as Filter, Final Results. Connections: Inner Query to Filter/Aggregate, Filter/Aggregate to Inner Result Set, Inner Result Set to Outer Query, Outer Query to Use Inner Results as Filter, Use Inner Results as Filter to Final Results.
     A[Inner Query] --> B[Filter/Aggregate]
     B --> C[Inner Result Set]
     C --> D[Outer Query]
-    D --> E[Use Inner Results as Filter]
+    D --> E[Use Inner Results as<br/>Filter]
     E --> F[Final Results]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#0173B2,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    class D pal-0173B2
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -2028,12 +2112,18 @@ CTEs (Common Table Expressions) create named temporary result sets that can be r
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  CTE Query Flow
 graph TD
-    A[Define CTE] --> B[Reference CTE in Main Query]
-    B --> C[Execute Combined Query]
+    accTitle: Example 56: Common Table Expressions with withcte/3
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Define CTE, Reference CTE in Main Query, Execute Combined Query. Connections: Define CTE to Reference CTE in Main Query, Reference CTE in Main Query to Execute Combined Query.
+    A[Define CTE] --> B[Reference CTE in<br/>Main Query]
+    B --> C[Execute Combined<br/>Query]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir

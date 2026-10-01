@@ -25,19 +25,22 @@ A `MigrationResolver` lets Flyway discover migrations from non-standard sources 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Custom MigrationResolver integration with Flyway
 graph TD
-    A["Flyway.configure()\n.resolvers(...)"]:::blue
-    B["CustomResolver.resolveMigrations()\ncalled at startup"]:::orange
-    C["Returns List of\nResolvedMigration objects"]:::teal
-    D["Flyway merges with\nbuilt-in classpath results"]:::purple
-    E["migrate() executes\nordered combined list"]:::brown
+    accTitle: Example 61: Custom MigrationResolver
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Flyway.configure() .resolvers(...), CustomResolver. resolveMigrations() called at startup, Returns List of ResolvedMigration objects, Flyway merges with built-in classpath results, migrate() executes ordered combined list. Connections: Flyway.configure() .resolvers(...) to CustomResolver. resolveMigrations() called at startup, CustomResolver. resolveMigrations() called at startup to Returns List of ResolvedMigration objects, Returns List of ResolvedMigration objects to Flyway merges with built-in classpath results, Flyway merges with built-in classpath results to migrate() executes ordered combined list.
+    A["Flyway.configure()<br/>.resolvers(...)"]:::blue
+    B["CustomResolver.<br/>resolveMigrations()<br/>called at startup"]:::orange
+    C["Returns List of<br/>ResolvedMigration<br/>objects"]:::teal
+    D["Flyway merges with<br/>built-in classpath<br/>results"]:::purple
+    E["migrate() executes<br/>ordered combined<br/>list"]:::brown
 
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -188,15 +191,18 @@ Adding a `NOT NULL` column with a default value is the most common zero-downtime
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Zero-downtime column addition phases
 graph LR
-    A["V10\nADD COLUMN nullable\n#40;no lock#41;"]:::blue
-    B["V11\nBATCH UPDATE\nexisting rows"]:::orange
-    C["V12\nSET NOT NULL\n#40;instant on PG 12+#41;"]:::teal
+    accTitle: Example 63: Zero-Downtime Column Addition
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: V10 ADD COLUMN nullable 40no lock41, V11 BATCH UPDATE existing rows, V12 SET NOT NULL 40instant on PG 12+41. Connections: V10 ADD COLUMN nullable 40no lock41 to V11 BATCH UPDATE existing rows, V11 BATCH UPDATE existing rows to V12 SET NOT NULL 40instant on PG 12+41.
+    A["V10<br/>ADD COLUMN nullable<br/>#40;no lock#41;"]:::blue
+    B["V11<br/>BATCH UPDATE<br/>existing rows"]:::orange
+    C["V12<br/>SET NOT NULL<br/>#40;instant on PG<br/>12+#41;"]:::teal
 
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Phase 1 — Add nullable column (no table lock):**
@@ -277,16 +283,19 @@ Removing a column safely requires the application to stop reading and writing th
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Three-phase safe column removal
 graph TD
-    A["Deploy: app ignores\nthe column in queries"]:::orange
-    B["V20\nADD ignored column marker\n#40;optional annotation#41;"]:::blue
-    C["Deploy: app no longer\nreferences the column"]:::orange
-    D["V21\nDROP COLUMN\n#40;after full rollout#41;"]:::teal
+    accTitle: Example 64: Zero-Downtime Column Removal
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Deploy: app ignores the column in queries, V20 ADD ignored column marker 40optional annotation41, Deploy: app no longer references the column, V21 DROP COLUMN 40after full rollout41. Connections: Deploy: app ignores the column in queries to V20 ADD ignored column marker 40optional annotation41, V20 ADD ignored column marker 40optional annotation41 to Deploy: app no longer references the column, Deploy: app no longer references the column to V21 DROP COLUMN 40after full rollout41.
+    A["Deploy: app ignores<br/>the column in<br/>queries"]:::orange
+    B["V20<br/>ADD ignored column<br/>marker<br/>#40;optional<br/>annotation#41;"]:::blue
+    C["Deploy: app no<br/>longer<br/>references the<br/>column"]:::orange
+    D["V21<br/>DROP COLUMN<br/>#40;after full<br/>rollout#41;"]:::teal
 
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Phase 1 — Stop writing to the column (application change only, no migration):**
@@ -475,15 +484,18 @@ A data backfill populates a new column derived from existing data. The pattern s
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Data backfill migration sequence
 graph LR
-    A["V55\nADD COLUMN display_name\nnullable"]:::blue
-    B["V56\nUPDATE display_name\nfrom first_name + last_name"]:::orange
-    C["V57\nALTER COLUMN\nSET NOT NULL"]:::teal
+    accTitle: Example 68: Data Backfill Pattern
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: V55 ADD COLUMN display_name nullable, V56 UPDATE display_name from first_name + last_name, V57 ALTER COLUMN SET NOT NULL. Connections: V55 ADD COLUMN display_name nullable to V56 UPDATE display_name from first_name + last_name, V56 UPDATE display_name from first_name + last_name to V57 ALTER COLUMN SET NOT NULL.
+    A["V55<br/>ADD COLUMN<br/>display_name<br/>nullable"]:::blue
+    B["V56<br/>UPDATE display_name<br/>from first_name +<br/>last_name"]:::orange
+    C["V57<br/>ALTER COLUMN<br/>SET NOT NULL"]:::teal
 
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **V55 — Add column nullable:**
@@ -554,21 +566,24 @@ Integrating Flyway into a CI/CD pipeline ensures every deployment applies pendin
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% CI/CD pipeline with Flyway migration step
 graph TD
-    A["Build & Test\nJVM artifact"]:::blue
-    B["Run Flyway migrate\nagainst staging DB"]:::orange
-    C{Migration\nsuccessful?}:::purple
-    D["Deploy application\ncontainer"]:::teal
-    E["Rollback: restore\nDB backup"]:::brown
+    accTitle: Example 69: Flyway in CI/CD Pipeline
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: A, Test, Run Flyway migrate against staging DB, Migration successful?, Deploy application container, Rollback: restore DB backup. Connections: A to Run Flyway migrate against staging DB, Run Flyway migrate against staging DB to Migration successful?, Migration successful? to Deploy application container (Yes), Migration successful? to Rollback: restore DB backup (No).
+    A["Build & Test<br/>JVM artifact"]:::blue
+    B["Run Flyway migrate<br/>against staging DB"]:::orange
+    C{Migration<br/>successful?}:::purple
+    D["Deploy application<br/>container"]:::teal
+    E["Rollback: restore<br/>DB backup"]:::brown
 
     A --> B --> C
     C -->|Yes| D
     C -->|No| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -718,10 +733,12 @@ Blue-green deployments run two identical production environments. The green envi
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Blue-green deployment with shared database
 graph TD
-    A["Shared\nProduction DB"]:::brown
-    B["Blue Environment\n#40;current live#41;"]:::blue
-    C["Green Environment\n#40;new version#41;"]:::teal
-    D["Load Balancer\nswitch traffic"]:::orange
+    accTitle: Example 71: Blue-Green Deployment Migrations
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Shared Production DB, Blue Environment 40current live41, Green Environment 40new version41, Load Balancer switch traffic. Connections: Shared Production DB to Blue Environment 40current live41, Shared Production DB to Green Environment 40new version41, Load Balancer switch traffic to Blue Environment 40current live41 (before cutover), Load Balancer switch traffic to Green Environment 40new version41 (after cutover).
+    A["Shared<br/>Production DB"]:::brown
+    B["Blue Environment<br/>#40;current live#41;"]:::blue
+    C["Green Environment<br/>#40;new version#41;"]:::teal
+    D["Load Balancer<br/>switch traffic"]:::orange
 
     A --- B
     A --- C
@@ -729,9 +746,10 @@ graph TD
     D -->|"after cutover"| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -819,20 +837,23 @@ Multi-tenant SaaS applications often give each tenant a separate PostgreSQL sche
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Multi-tenant schema migration flow
 graph TD
-    A["Load tenant list\nfrom public.tenants"]:::blue
-    B["For each tenant\nschema name"]:::orange
-    C["Configure Flyway\nwith tenant schema"]:::teal
-    D["flyway.migrate()\non tenant schema"]:::purple
-    E["Record result\nper tenant"]:::brown
+    accTitle: Example 73: Multi-Tenant Schema Migration
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Load tenant list from public.tenants, For each tenant schema name, Configure Flyway with tenant schema, flyway.migrate() on tenant schema, Record result per tenant. Connections: Load tenant list from public.tenants to For each tenant schema name, For each tenant schema name to Configure Flyway with tenant schema, Configure Flyway with tenant schema to flyway.migrate() on tenant schema, flyway.migrate() on tenant schema to Record result per tenant, Record result per tenant to For each tenant schema name (next tenant).
+    A["Load tenant list<br/>from public.tenants"]:::blue
+    B["For each tenant<br/>schema name"]:::orange
+    C["Configure Flyway<br/>with tenant schema"]:::teal
+    D["flyway.migrate()<br/>on tenant schema"]:::purple
+    E["Record result<br/>per tenant"]:::brown
 
     A --> B --> C --> D --> E
     E -->|next tenant| B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -1322,13 +1343,15 @@ Some migrations logically depend on others — for example, a foreign key migrat
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Migration dependency graph for a sample schema
 graph TD
-    V1["V1\ncreate users"]:::blue
-    V2["V2\ncreate products"]:::blue
-    V3["V3\ncreate orders\n#40;FK: users#41;"]:::orange
-    V4["V4\ncreate order_items\n#40;FK: orders, products#41;"]:::orange
-    V5["V5\ncreate payments\n#40;FK: orders#41;"]:::teal
-    V6["V6\nadd user indexes"]:::purple
-    V7["V7\nadd order indexes"]:::purple
+    accTitle: Example 80: Migration Dependency Graph
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: V1 create users, V2 create products, V3 create orders 40FK: users41, V4 create order_items 40FK: orders, products41, V5 create payments 40FK: orders41, V6 add user indexes, V7 add order indexes. Connections: V1 create users to V3 create orders 40FK: users41, V2 create products to V4 create order_items 40FK: orders, products41, V3 create orders 40FK: users41 to V4 create order_items 40FK: orders, products41, V3 create orders 40FK: users41 to V5 create payments 40FK: orders41, V1 create users to V6 add user indexes, V3 create orders 40FK: users41 to V7 add order indexes.
+    V1["V1<br/>create users"]:::blue
+    V2["V2<br/>create products"]:::blue
+    V3["V3<br/>create orders<br/>#40;FK: users#41;"]:::orange
+    V4["V4<br/>create order_items<br/>#40;FK: orders,<br/>products#41;"]:::orange
+    V5["V5<br/>create payments<br/>#40;FK: orders#41;"]:::teal
+    V6["V6<br/>add user indexes"]:::purple
+    V7["V7<br/>add order indexes"]:::purple
 
     V1 --> V3
     V2 --> V4
@@ -1338,9 +1361,10 @@ graph TD
     V3 --> V7
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -1410,21 +1434,24 @@ After accumulating many migrations on a mature codebase, squashing combines all 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Migration squashing process
 graph TD
-    A["V1 through V80\npending on fresh DB"]:::orange
-    B["Generate schema dump\nof current prod DB"]:::blue
-    C["Create B1__baseline_v80.sql\nfrom dump"]:::teal
-    D["Set baselineVersion=80\nin Flyway config"]:::teal
-    E["Fresh DB: applies B1\nthen V81+"]:::blue
-    F["Existing prod DB:\nskips baseline\napplies V81+"]:::brown
+    accTitle: Example 81: Migration Squashing Pattern
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: V1 through V80 pending on fresh DB, Generate schema dump of current prod DB, Create B1__baseline_v80.sql from dump, Set baselineVersion=80 in Flyway config, Fresh DB: applies B1 then V81+, Existing prod DB: skips baseline applies V81+. Connections: V1 through V80 pending on fresh DB to Generate schema dump of current prod DB, Generate schema dump of current prod DB to Create B1__baseline_v80.sql from dump, Create B1__baseline_v80.sql from dump to Set baselineVersion=80 in Flyway config, Set baselineVersion=80 in Flyway config to Fresh DB: applies B1 then V81+, Set baselineVersion=80 in Flyway config to Existing prod DB: skips baseline applies V81+.
+    A["V1 through V80<br/>pending on fresh DB"]:::orange
+    B["Generate schema dump<br/>of current prod DB"]:::blue
+    C["Create<br/>B1__baseline_v80.sql<br/>from dump"]:::teal
+    D["Set<br/>baselineVersion=80<br/>in Flyway config"]:::teal
+    E["Fresh DB: applies B1<br/>then V81+"]:::blue
+    F["Existing prod DB:<br/>skips baseline<br/>applies V81+"]:::brown
 
     A --> B --> C --> D
     D --> E
     D --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Step 1 — Generate baseline SQL from current production schema:**

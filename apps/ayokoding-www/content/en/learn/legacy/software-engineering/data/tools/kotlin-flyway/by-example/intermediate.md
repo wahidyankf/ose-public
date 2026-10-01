@@ -35,17 +35,20 @@ Flyway supports programmatic migrations through Java (or Kotlin) classes that ex
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Java-based migration lifecycle
 graph TD
-    A["Flyway scans\nclasspath migration locations"]:::blue
-    B["Discovers V2__SeedAdminUser.class\n#40;implements JavaMigration#41;"]:::orange
-    C["Calls migrate#40;context#41;\non your class"]:::teal
-    D["Records success\nin flyway_schema_history"]:::purple
+    accTitle: Example 31: Java-Based Migration
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Flyway scans classpath migration locations, Discovers V2__ SeedAdminUser.class 40implements JavaMigration41, Calls migrate40context41 on your class, Records success in flyway_schema_ history. Connections: Flyway scans classpath migration locations to Discovers V2__ SeedAdminUser.class 40implements JavaMigration41, Discovers V2__ SeedAdminUser.class 40implements JavaMigration41 to Calls migrate40context41 on your class, Calls migrate40context41 on your class to Records success in flyway_schema_ history.
+    A["Flyway scans<br/>classpath migration<br/>locations"]:::blue
+    B["Discovers V2__<br/>SeedAdminUser.class<br/>#40;implements<br/>JavaMigration#41;"]:::orange
+    C["Calls migrate#40;<br/>context#41;<br/>on your class"]:::teal
+    D["Records success<br/>in flyway_schema_<br/>history"]:::purple
 
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -144,19 +147,22 @@ Flyway callbacks hook into lifecycle events. `beforeMigrate` runs once before an
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Flyway callback execution order
 graph TD
-    A["flyway.migrate() called"]:::blue
-    B["beforeMigrate callback\n#40;SQL or Java#41;"]:::orange
-    C["V1, V2, V3...\napplied in order"]:::teal
-    D["afterMigrate callback\n#40;SQL or Java#41;"]:::purple
-    E["migrate() returns\nMigrateResult"]:::brown
+    accTitle: Example 33: Callbacks
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: flyway.migrate() called, beforeMigrate callback 40SQL or Java41, V1, V2, V3... applied in order, afterMigrate callback 40SQL or Java41, migrate() returns MigrateResult. Connections: flyway.migrate() called to beforeMigrate callback 40SQL or Java41, beforeMigrate callback 40SQL or Java41 to V1, V2, V3... applied in order, V1, V2, V3... applied in order to afterMigrate callback 40SQL or Java41, afterMigrate callback 40SQL or Java41 to migrate() returns MigrateResult.
+    A["flyway.migrate()<br/>called"]:::blue
+    B["beforeMigrate<br/>callback<br/>#40;SQL or Java#41;"]:::orange
+    C["V1, V2, V3...<br/>applied in order"]:::teal
+    D["afterMigrate<br/>callback<br/>#40;SQL or Java#41;"]:::purple
+    E["migrate() returns<br/>MigrateResult"]:::brown
 
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **SQL callback file (beforeMigrate)**:
@@ -353,18 +359,21 @@ When introducing Flyway to an existing database, you cannot run `V1__initial_sch
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Baseline adoption workflow
 graph TD
-    A["Existing database\n#40;no flyway_schema_history#41;"]:::blue
-    B["flyway.baseline()\ncreates flyway_schema_history\nwith version=1 entry"]:::orange
-    C["V2, V3, V4...\napplied normally"]:::teal
-    D["V1 permanently skipped\n#40;already baselined#41;"]:::purple
+    accTitle: Example 36: Baseline Migrations for Existing Databases
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Existing database 40no flyway_ schema_history41, flyway.baseline() creates flyway_ schema_history with version=1 entry, V2, V3, V4... applied normally, V1 permanently skipped 40already baselined41. Connections: Existing database 40no flyway_ schema_history41 to flyway.baseline() creates flyway_ schema_history with version=1 entry, flyway.baseline() creates flyway_ schema_history with version=1 entry to V2, V3, V4... applied normally, flyway.baseline() creates flyway_ schema_history with version=1 entry to V1 permanently skipped 40already baselined41 (skipped).
+    A["Existing database<br/>#40;no flyway_<br/>schema_history#41;"]:::blue
+    B["flyway.baseline()<br/>creates flyway_<br/>schema_history<br/>with version=1 entry"]:::orange
+    C["V2, V3, V4...<br/>applied normally"]:::teal
+    D["V1 permanently<br/>skipped<br/>#40;already<br/>baselined#41;"]:::purple
 
     A --> B --> C
     B -.->|skipped| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -1508,19 +1517,22 @@ JetBrains Exposed is a Kotlin SQL framework commonly used with Ktor. Flyway mana
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Flyway + Exposed integration startup sequence
 graph TD
-    A["Application starts\nKtor server init"]:::blue
-    B["DatabaseFactory.init()\nconnect HikariCP"]:::orange
-    C["Flyway.configure()\n.migrate()"]:::teal
-    D["Exposed table objects\nmap to migrated schema"]:::purple
-    E["Application ready\naccepts HTTP requests"]:::brown
+    accTitle: Example 60: Exposed ORM Integration Pattern
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Application starts Ktor server init, DatabaseFactory. init() connect HikariCP, Flyway.configure() .migrate(), Exposed table objects map to migrated schema, Application ready accepts HTTP requests. Connections: Application starts Ktor server init to DatabaseFactory. init() connect HikariCP, DatabaseFactory. init() connect HikariCP to Flyway.configure() .migrate(), Flyway.configure() .migrate() to Exposed table objects map to migrated schema, Exposed table objects map to migrated schema to Application ready accepts HTTP requests.
+    A["Application starts<br/>Ktor server init"]:::blue
+    B["DatabaseFactory.<br/>init()<br/>connect HikariCP"]:::orange
+    C["Flyway.configure()<br/>.migrate()"]:::teal
+    D["Exposed table<br/>objects<br/>map to migrated<br/>schema"]:::purple
+    E["Application ready<br/>accepts HTTP<br/>requests"]:::brown
 
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin

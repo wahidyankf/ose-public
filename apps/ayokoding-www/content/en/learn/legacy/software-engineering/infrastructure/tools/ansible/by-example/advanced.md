@@ -16,18 +16,26 @@ Custom modules extend Ansible's functionality using Python. This simple module d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 55: Custom Module - Hello Module
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Ansible Task, Custom Module hello.py, AnsibleModule Parse Args, Module Logic Process Input, exit_json Return Results, Ansible Core Task Result. Connections: Ansible Task to Custom Module hello.py, Custom Module hello.py to AnsibleModule Parse Args, AnsibleModule Parse Args to Module Logic Process Input, Module Logic Process Input to exit_json Return Results, exit_json Return Results to Ansible Core Task Result.
  A["Ansible Task"] --> B["Custom Module<br/>hello.py"]
  B --> C["AnsibleModule<br/>Parse Args"]
  C --> D["Module Logic<br/>Process Input"]
  D --> E["exit_json<br/>Return Results"]
  E --> F["Ansible Core<br/>Task Result"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
- style F fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ class F pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -94,6 +102,8 @@ Production modules manage resources with state (present/absent). This pattern ch
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 56: Custom Module with State Management
+ accDescr: Graph with 8 nodes and 9 connections. Nodes: Module Execution, Check Current State, State Matches Desired?, changed: False No Action, Desired State?, Create Resource changed: True, Remove Resource changed: True, Return Result. Connections: Module Execution to Check Current State, Check Current State to State Matches Desired?, State Matches Desired? to changed: False No Action (Yes), State Matches Desired? to Desired State? (No), Desired State? to Create Resource changed: True (present), Desired State? to Remove Resource changed: True (absent), Create Resource changed: True to Return Result, Remove Resource changed: True to Return Result, changed: False No Action to Return Result.
  A["Module Execution"] --> B["Check Current State"]
  B --> C{State Matches<br/>Desired?}
  C -->|Yes| D["changed: False<br/>No Action"]
@@ -104,14 +114,19 @@ graph TD
  G --> H
  D --> H
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#CC78BC,color:#fff
- style F fill:#DE8F05,color:#fff
- style G fill:#DE8F05,color:#fff
- style H fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class E pal-CC78BC
+ class F pal-DE8F05
+ class G pal-DE8F05
+ class H pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -210,6 +225,8 @@ Collections bundle modules, plugins, and roles into distributable packages. Inst
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 57: Ansible Collections - Using Collections
+ accDescr: Graph with 6 nodes and 6 connections. Nodes: requirements.yml, ansible-galaxy install, Collection community.general, Collection ansible.posix, Playbook FQCN Reference, Module Execution. Connections: requirements.yml to ansible-galaxy install, ansible-galaxy install to Collection community.general, ansible-galaxy install to Collection ansible.posix, Collection community.general to Playbook FQCN Reference, Collection ansible.posix to Playbook FQCN Reference, Playbook FQCN Reference to Module Execution.
  A["requirements.yml"] --> B["ansible-galaxy<br/>install"]
  B --> C["Collection<br/>community.general"]
  B --> D["Collection<br/>ansible.posix"]
@@ -217,12 +234,18 @@ graph TD
  D --> E
  E --> F["Module Execution"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#CC78BC,color:#fff
- style F fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class E pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class F pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -301,6 +324,8 @@ Molecule automates role testing across multiple platforms. It creates test insta
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 58: Testing with Molecule - Scenario
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: molecule test, Create Docker Instance, Converge Apply Role, Verify Run Tests, Tests Pass?, Destroy Cleanup, G, Report, Success. Connections: molecule test to Create Docker Instance, Create Docker Instance to Converge Apply Role, Converge Apply Role to Verify Run Tests, Verify Run Tests to Tests Pass?, Tests Pass? to Destroy Cleanup (Yes), Tests Pass? to G (No), Tests Pass? to Report (No), Destroy Cleanup to Success.
  A["molecule test"] --> B["Create<br/>Docker Instance"]
  B --> C["Converge<br/>Apply Role"]
  C --> D["Verify<br/>Run Tests"]
@@ -309,14 +334,20 @@ graph TD
  E -->|No| G["Fail & Report"]
  F --> H["Success"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#DE8F05,color:#fff
- style F fill:#029E73,color:#fff
- style G fill:#CA9161,color:#fff
- style H fill:#029E73,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-DE8F05
+ class F pal-029E73
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class G pal-CA9161
+ class H pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -468,6 +499,8 @@ Fact gathering is slow on large inventories. Enable fact caching to store facts 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 60: Performance - Fact Caching
+ accDescr: Graph with 7 nodes and 8 connections. Nodes: Playbook Run 1, Facts Cached?, Gather Facts 40Slow41, Cache Facts Redis/File, Load from Cache 40Fast41, Execute Tasks, Playbook Run 2. Connections: Playbook Run 1 to Facts Cached?, Facts Cached? to Gather Facts 40Slow41 (No), Gather Facts 40Slow41 to Cache Facts Redis/File, Facts Cached? to Load from Cache 40Fast41 (Yes), Cache Facts Redis/File to Execute Tasks, Load from Cache 40Fast41 to Execute Tasks, Execute Tasks to Playbook Run 2, Playbook Run 2 to Load from Cache 40Fast41.
  A["Playbook Run 1"] --> B{Facts Cached?}
  B -->|No| C["Gather Facts<br/>#40;Slow#41;"]
  C --> D["Cache Facts<br/>Redis/File"]
@@ -477,13 +510,19 @@ graph TD
  F --> G["Playbook Run 2"]
  G --> E
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CA9161,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#029E73,color:#fff
- style F fill:#CC78BC,color:#fff
- style G fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class C pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class E pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class F pal-CC78BC
+ class G pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```ini
@@ -542,6 +581,8 @@ Pipelining reduces SSH overhead by executing modules without creating temporary 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 61: Performance - Pipelining
+ accDescr: Graph with 9 nodes and 7 connections. Nodes: Without Pipelining, SSH Connect, Create Temp File, Execute Module, Delete Temp File, With Pipelining, SSH Connect, Stream Module to stdin, Execute Directly. Connections: Without Pipelining to SSH Connect, SSH Connect to Create Temp File, Create Temp File to Execute Module, Execute Module to Delete Temp File, With Pipelining to SSH Connect, SSH Connect to Stream Module to stdin, Stream Module to stdin to Execute Directly.
  A["Without Pipelining"] --> B["SSH Connect"]
  B --> C["Create Temp File"]
  C --> D["Execute Module"]
@@ -551,15 +592,20 @@ graph TD
  G --> H["Stream Module<br/>to stdin"]
  H --> I["Execute Directly"]
 
- style A fill:#CA9161,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CA9161,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#CA9161,color:#fff
- style F fill:#0173B2,color:#fff
- style G fill:#DE8F05,color:#fff
- style H fill:#029E73,color:#fff
- style I fill:#029E73,color:#fff
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class A pal-CA9161
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ class C pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class E pal-CA9161
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class F pal-0173B2
+ class G pal-DE8F05
+ class H pal-029E73
+ class I pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```ini
@@ -724,6 +770,8 @@ Rolling updates deploy changes gradually to avoid downtime. Use `serial` to cont
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 63: Production Pattern - Rolling Updates
+ accDescr: Graph with 11 nodes and 10 connections. Nodes: Start Rolling Update, Batch 1: 2 Hosts, Remove from LB, D, Test, Success?, Add to LB, G, Rollback, Batch 2: 2 Hosts, Repeat Process. Connections: Start Rolling Update to Batch 1: 2 Hosts, Batch 1: 2 Hosts to Remove from LB, Remove from LB to D, Remove from LB to Test, D to Success?, Success? to Add to LB (Yes), Success? to G (No), Success? to Rollback (No), Add to LB to Batch 2: 2 Hosts, Batch 2: 2 Hosts to Repeat Process.
  A["Start Rolling Update"] --> B["Batch 1: 2 Hosts"]
  B --> C["Remove from LB"]
  C --> D["Deploy & Test"]
@@ -733,15 +781,21 @@ graph TD
  F --> H["Batch 2: 2 Hosts"]
  H --> I["Repeat Process"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#DE8F05,color:#fff
- style F fill:#029E73,color:#fff
- style G fill:#CA9161,color:#fff
- style H fill:#DE8F05,color:#fff
- style I fill:#029E73,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class E pal-DE8F05
+ class F pal-029E73
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class G pal-CA9161
+ class H pal-DE8F05
+ class I pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -841,6 +895,8 @@ Canary deployments test new versions on a subset of servers before full rollout.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 64: Production Pattern - Canary Deployment
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: New Version, Deploy to Canary 401 Server41, Monitor Metrics, Metrics OK?, Deploy to All 4099 Servers41, Rollback Canary, Complete, Fix Issues. Connections: New Version to Deploy to Canary 401 Server41, Deploy to Canary 401 Server41 to Monitor Metrics, Monitor Metrics to Metrics OK?, Metrics OK? to Deploy to All 4099 Servers41 (Yes), Metrics OK? to Rollback Canary (No), Deploy to All 4099 Servers41 to Complete, Rollback Canary to Fix Issues.
  A["New Version"] --> B["Deploy to Canary<br/>#40;1 Server#41;"]
  B --> C["Monitor Metrics"]
  C --> D{Metrics OK?}
@@ -849,14 +905,20 @@ graph TD
  E --> G["Complete"]
  F --> H["Fix Issues"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#DE8F05,color:#fff
- style E fill:#029E73,color:#fff
- style F fill:#CA9161,color:#fff
- style G fill:#029E73,color:#fff
- style H fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ class D pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class E pal-029E73
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class F pal-CA9161
+ class G pal-029E73
+ class H pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -944,6 +1006,8 @@ Blue-green deployments maintain two identical environments. Deploy to inactive e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 65: Production Pattern - Blue-Green Deployment
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Blue: Active Green: Inactive, Deploy to Green, Test Green, Tests Pass?, Switch LB to Green, Keep Blue Active, Green: Active Blue: Inactive, Fix Green. Connections: Blue: Active Green: Inactive to Deploy to Green, Deploy to Green to Test Green, Test Green to Tests Pass?, Tests Pass? to Switch LB to Green (Yes), Tests Pass? to Keep Blue Active (No), Switch LB to Green to Green: Active Blue: Inactive, Keep Blue Active to Fix Green.
  A["Blue: Active<br/>Green: Inactive"] --> B["Deploy to Green"]
  B --> C["Test Green"]
  C --> D{Tests Pass?}
@@ -952,14 +1016,20 @@ graph TD
  E --> G["Green: Active<br/>Blue: Inactive"]
  F --> H["Fix Green"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#029E73,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#DE8F05,color:#fff
- style E fill:#029E73,color:#fff
- style F fill:#CA9161,color:#fff
- style G fill:#029E73,color:#fff
- style H fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class B pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class D pal-DE8F05
+ class E pal-029E73
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class F pal-CA9161
+ class G pal-029E73
+ class H pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1421,6 +1491,8 @@ Automate disaster recovery with playbooks that restore from backups, recreate in
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 69: Disaster Recovery Pattern
+ accDescr: Graph with 10 nodes and 9 connections. Nodes: Disaster Occurs, Provision New Infrastructure, Restore Database from Backup, Restore App Files, Verify Integrity, Data Valid?, Update DNS to DR Site, H, Investigate, DR Complete. Connections: Disaster Occurs to Provision New Infrastructure, Provision New Infrastructure to Restore Database from Backup, Restore Database from Backup to Restore App Files, Restore App Files to Verify Integrity, Verify Integrity to Data Valid?, Data Valid? to Update DNS to DR Site (Yes), Data Valid? to H (No), Data Valid? to Investigate (No), Update DNS to DR Site to DR Complete.
  A["Disaster Occurs"] --> B["Provision New<br/>Infrastructure"]
  B --> C["Restore Database<br/>from Backup"]
  C --> D["Restore App Files"]
@@ -1430,15 +1502,20 @@ graph TD
  F -->|No| H["Alert & Investigate"]
  G --> I["DR Complete"]
 
- style A fill:#CA9161,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#029E73,color:#fff
- style F fill:#DE8F05,color:#fff
- style G fill:#029E73,color:#fff
- style H fill:#CA9161,color:#fff
- style I fill:#029E73,color:#fff
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class A pal-CA9161
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ class D pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class E pal-029E73
+ class F pal-DE8F05
+ class G pal-029E73
+ class H pal-CA9161
+ class I pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1563,7 +1640,9 @@ Detect configuration drift by comparing desired state (playbooks) against actual
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
- A["Playbook<br/>#40;Desired State#41;"] --> B["Run in<br/>--check Mode"]
+ accTitle: Example 70: Configuration Drift Detection
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: Playbook 40Desired State41, B, check, Target Hosts 40Actual State41, State Matches?, No Drift Report: OK, Drift Detected, Generate Report, Alert Ops Team. Connections: Playbook 40Desired State41 to B, B to check, Target Hosts 40Actual State41 to B, B to State Matches?, State Matches? to No Drift Report: OK (Yes), State Matches? to Drift Detected (No), Drift Detected to Generate Report, Generate Report to Alert Ops Team.
+ A["Playbook<br/>#40;Desired<br/>State#41;"] --> B["Run in<br/>--check Mode"]
  C["Target Hosts<br/>#40;Actual State#41;"] --> B
  B --> D{State Matches?}
  D -->|Yes| E["No Drift<br/>Report: OK"]
@@ -1571,14 +1650,20 @@ graph TD
  F --> G["Generate Report"]
  G --> H["Alert Ops Team"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#DE8F05,color:#fff
- style E fill:#029E73,color:#fff
- style F fill:#CA9161,color:#fff
- style G fill:#CC78BC,color:#fff
- style H fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ class D pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class E pal-029E73
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class F pal-CA9161
+ class G pal-CC78BC
+ class H pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1827,6 +1912,8 @@ Integrate Ansible with HashiCorp Vault for dynamic secrets. Fetch credentials at
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 72: Secrets Management with HashiCorp Vault
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Ansible Task, Request Creds from Vault API, Vault Server, Generate Dynamic DB Credentials, Return Creds 401h Lease41, Use in Task, Revoke Lease on Completion. Connections: Ansible Task to Request Creds from Vault API, Request Creds from Vault API to Vault Server, Vault Server to Generate Dynamic DB Credentials, Generate Dynamic DB Credentials to Return Creds 401h Lease41, Return Creds 401h Lease41 to Use in Task, Use in Task to Revoke Lease on Completion.
  A["Ansible Task"] --> B["Request Creds<br/>from Vault API"]
  B --> C["Vault Server"]
  C --> D["Generate Dynamic<br/>DB Credentials"]
@@ -1834,13 +1921,19 @@ graph TD
  E --> F["Use in Task"]
  F --> G["Revoke Lease<br/>on Completion"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#DE8F05,color:#fff
- style F fill:#029E73,color:#fff
- style G fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-DE8F05
+ class F pal-029E73
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class G pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2423,6 +2516,8 @@ Implement self-healing by detecting failures and automatically remediating. Moni
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 78: Self-Healing Infrastructure
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Scheduled Playbook 40Every 15min41, Check Service Health, Service Running?, No Action, Restart Service, Restart Success?, Log Recovery, Alert Ops Team. Connections: Scheduled Playbook 40Every 15min41 to Check Service Health, Check Service Health to Service Running?, Service Running? to No Action (Yes), Service Running? to Restart Service (No), Restart Service to Restart Success?, Restart Success? to Log Recovery (Yes), Restart Success? to Alert Ops Team (No).
  A["Scheduled Playbook<br/>#40;Every 15min#41;"] --> B["Check Service<br/>Health"]
  B --> C{Service Running?}
  C -->|Yes| D["No Action"]
@@ -2431,14 +2526,20 @@ graph TD
  F -->|Yes| G["Log Recovery"]
  F -->|No| H["Alert Ops Team"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#DE8F05,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#CC78BC,color:#fff
- style F fill:#DE8F05,color:#fff
- style G fill:#029E73,color:#fff
- style H fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class E pal-CC78BC
+ class F pal-DE8F05
+ class G pal-029E73
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class H pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

@@ -80,6 +80,8 @@ Build complex queries by composing simple specifications using logical operators
 ```mermaid
 %% Specification composition flow
 graph TD
+    accTitle: Example 62: Combining Specifications with AND/OR
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: Base Specifications, isActive, hasMinPrice, hasCategory, Combine with AND, Combine with OR, Final Specification, Execute Query. Connections: Base Specifications to isActive, Base Specifications to hasMinPrice, Base Specifications to hasCategory, isActive to Combine with AND, hasMinPrice to Combine with AND, hasCategory to Combine with OR, Combine with AND to Combine with OR, Combine with OR to Final Specification, Final Specification to Execute Query.
     A[Base Specifications] --> B[isActive]
     A --> C[hasMinPrice]
     A --> D[hasCategory]
@@ -90,14 +92,19 @@ graph TD
     F --> G[Final Specification]
     G --> H[Execute Query]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    class F pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -377,6 +384,8 @@ Use negation and complex predicate logic in specifications.
 ```mermaid
 %% Complex predicate composition
 graph TD
+    accTitle: Example 65: Specifications with NOT and Complex Predicates
+    accDescr: Graph with 9 nodes and 11 connections. Nodes: Predicate Building, Equal, GreaterThan, Like, In, NOT Operation, AND Conjunction, OR Disjunction, Final Complex Predicate. Connections: Predicate Building to Equal, Predicate Building to GreaterThan, Predicate Building to Like, Predicate Building to In, Equal to NOT Operation, GreaterThan to NOT Operation, Like to AND Conjunction, In to AND Conjunction, NOT Operation to OR Disjunction, AND Conjunction to OR Disjunction, OR Disjunction to Final Complex Predicate.
     A[Predicate Building] --> B[Equal]
     A --> C[GreaterThan]
     A --> D[Like]
@@ -387,17 +396,22 @@ graph TD
     E --> G
     F --> H[OR Disjunction]
     G --> H
-    H --> I[Final Complex Predicate]
+    H --> I[Final Complex<br/>Predicate]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#fff
-    style I fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    class G pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -977,6 +991,8 @@ Use Criteria API directly for full control over query construction.
 ```mermaid
 %% Criteria API query building flow
 graph TD
+    accTitle: Example 69: Basic Criteria API Query
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: EntityManager, CriteriaBuilder, CriteriaQuery, Root Entity, Build Predicates, Apply WHERE Clause, Apply ORDER BY, Create TypedQuery, Execute Query. Connections: EntityManager to CriteriaBuilder, CriteriaBuilder to CriteriaQuery, CriteriaQuery to Root Entity, Root Entity to Build Predicates, Build Predicates to Apply WHERE Clause, Apply WHERE Clause to Apply ORDER BY, Apply ORDER BY to Create TypedQuery, Create TypedQuery to Execute Query.
     A[EntityManager] --> B[CriteriaBuilder]
     B --> C[CriteriaQuery]
     C --> D[Root Entity]
@@ -986,15 +1002,20 @@ graph TD
     G --> H[Create TypedQuery]
     H --> I[Execute Query]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-CC78BC
+    class H pal-029E73
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -1429,26 +1450,33 @@ Select specific columns and map results to DTOs using Criteria API.
 ```mermaid
 %% Projection types and flow
 graph TD
+    accTitle: Example 73: Criteria API with Projections and DTOs
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Criteria Query, Projection Type, Single Column, Multiple Columns Object Array, Tuple, DTO Constructor, TypedQuery String, TypedQuery Object Array, TypedQuery Tuple, TypedQuery DTO. Connections: Criteria Query to Projection Type, Projection Type to Single Column, Projection Type to Multiple Columns Object Array, Projection Type to Tuple, Projection Type to DTO Constructor, Single Column to TypedQuery String, Multiple Columns Object Array to TypedQuery Object Array, Tuple to TypedQuery Tuple, DTO Constructor to TypedQuery DTO.
     A[Criteria Query] --> B{Projection Type}
     B --> C[Single Column]
-    B --> D[Multiple Columns Object Array]
+    B --> D[Multiple Columns<br/>Object Array]
     B --> E[Tuple]
     B --> F[DTO Constructor]
     C --> G[TypedQuery String]
-    D --> H[TypedQuery Object Array]
+    D --> H[TypedQuery Object<br/>Array]
     E --> I[TypedQuery Tuple]
     F --> J[TypedQuery DTO]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#fff
-    style H fill:#DE8F05,stroke:#000,color:#fff
-    style I fill:#DE8F05,stroke:#000,color:#fff
-    style J fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class G pal-DE8F05
+    class H pal-DE8F05
+    class I pal-DE8F05
+    class J pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -1620,22 +1648,29 @@ Extend Spring Data repositories with custom query methods using EntityManager.
 ```mermaid
 %% Custom repository pattern
 graph TD
-    A[Standard Repository] --> B[ProductRepository Interface]
-    C[Custom Fragment] --> D[ProductRepoCustom Interface]
-    D --> E[ProductRepoCustomImpl Class]
-    E --> F[EntityManager Injection]
+    accTitle: Example 74: Custom Repository Implementation
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Standard Repository, ProductRepository Interface, Custom Fragment, ProductRepoCustom Interface, ProductRepoCustom Impl Class, EntityManager Injection, Extends Both, Combined Repository Bean. Connections: Standard Repository to ProductRepository Interface, Custom Fragment to ProductRepoCustom Interface, ProductRepoCustom Interface to ProductRepoCustom Impl Class, ProductRepoCustom Impl Class to EntityManager Injection, ProductRepository Interface to Extends Both, ProductRepoCustom Interface to Extends Both, Extends Both to Combined Repository Bean.
+    A[Standard Repository] --> B[ProductRepository<br/>Interface]
+    C[Custom Fragment] --> D[ProductRepoCustom<br/>Interface]
+    D --> E[ProductRepoCustom<br/>Impl Class]
+    E --> F[EntityManager<br/>Injection]
     B --> G[Extends Both]
     D --> G
-    G --> H[Combined Repository Bean]
+    G --> H[Combined Repository<br/>Bean]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-0173B2
+    class D pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-029E73
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -1867,9 +1902,11 @@ Execute database-specific SQL in custom repositories.
 ```mermaid
 %% Native query execution flow
 graph TD
+    accTitle: Example 76: Custom Repository with Native Queries
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: EntityManager, createNativeQuery, Result Type, Entity Class Specified, No Entity Class, Map to Entity, Return Object Array, List Entity, Transform to DTO/Map, Return Custom Result. Connections: EntityManager to createNativeQuery, createNativeQuery to Result Type, Result Type to Entity Class Specified, Result Type to No Entity Class, Entity Class Specified to Map to Entity, No Entity Class to Return Object Array, Map to Entity to List Entity, Return Object Array to Transform to DTO/Map, Transform to DTO/Map to Return Custom Result.
     A[EntityManager] --> B[createNativeQuery]
     B --> C{Result Type}
-    C --> D[Entity Class Specified]
+    C --> D[Entity Class<br/>Specified]
     C --> E[No Entity Class]
     D --> F[Map to Entity]
     E --> G[Return Object Array]
@@ -1877,16 +1914,22 @@ graph TD
     G --> I[Transform to DTO/Map]
     I --> J[Return Custom Result]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
-    style J fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    class E pal-DE8F05
+    class F pal-029E73
+    class G pal-029E73
+    class H pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class I pal-CA9161
+    class J pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -2394,24 +2437,31 @@ Automatically track entity creation and modification times using JPA auditing.
 ```mermaid
 %% JPA Auditing flow
 graph TD
+    accTitle: Example 79: JPA Auditing with Timestamps
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Enable JPA Auditing, @EnableJpaAuditing, Entity Annotations, @CreatedDate, @LastModifiedDate, Persist Event, Update Event, Auto-populate createdAt, Auto-populate updatedAt. Connections: Enable JPA Auditing to @EnableJpaAuditing, @EnableJpaAuditing to Entity Annotations, Entity Annotations to @CreatedDate, Entity Annotations to @LastModifiedDate, @CreatedDate to Persist Event, @LastModifiedDate to Update Event, Persist Event to Auto-populate createdAt, Update Event to Auto-populate updatedAt.
     A[Enable JPA Auditing] --> B[@EnableJpaAuditing]
     B --> C[Entity Annotations]
     C --> D[@CreatedDate]
     C --> E[@LastModifiedDate]
     D --> F[Persist Event]
     E --> G[Update Event]
-    F --> H[Auto-populate createdAt]
-    G --> I[Auto-populate updatedAt]
+    F --> H[Auto-populate<br/>createdAt]
+    G --> I[Auto-populate<br/>updatedAt]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
-    style I fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-029E73
+    class G pal-029E73
+    class H pal-0173B2
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -2535,26 +2585,34 @@ Track which user created or modified entities using `@CreatedBy` and `@LastModif
 ```mermaid
 %% User auditing flow
 graph TD
-    A[Save/Update Entity] --> B[AuditingEntityListener]
+    accTitle: Example 80: JPA Auditing with User Tracking
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Save/Update Entity, AuditingEntity Listener, Call AuditorAware, getCurrentAuditor, User Authenticated?, Return Username, Return Empty, Set CreatedBy/UpdatedBy, Skip User Audit, Persist to Database. Connections: Save/Update Entity to AuditingEntity Listener, AuditingEntity Listener to Call AuditorAware, Call AuditorAware to getCurrentAuditor, getCurrentAuditor to User Authenticated?, User Authenticated? to Return Username (Yes), User Authenticated? to Return Empty (No), Return Username to Set CreatedBy/UpdatedBy, Return Empty to Skip User Audit, Set CreatedBy/UpdatedBy to Persist to Database.
+    A[Save/Update Entity] --> B[AuditingEntity<br/>Listener]
     B --> C[Call AuditorAware]
     C --> D[getCurrentAuditor]
     D --> E{User Authenticated?}
     E -->|Yes| F[Return Username]
     E -->|No| G[Return Empty]
-    F --> H[Set CreatedBy/UpdatedBy]
+    F --> H[Set<br/>CreatedBy/UpdatedBy]
     G --> I[Skip User Audit]
     H --> J[Persist to Database]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
-    style J fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-029E73
+    class I pal-CA9161
+    class J pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -2714,6 +2772,8 @@ Execute custom logic during entity lifecycle events using JPA callbacks.
 ```mermaid
 %% Entity lifecycle callback sequence
 graph TD
+    accTitle: Example 81: Entity Lifecycle Callbacks with @EntityListeners
+    accDescr: Graph with 12 nodes and 11 connections. Nodes: Entity Operation, Operation Type, @PrePersist, @PreUpdate, @PreRemove, @PostLoad, INSERT, UPDATE, DELETE, @PostPersist, @PostUpdate, @PostRemove. Connections: Entity Operation to Operation Type, Operation Type to @PrePersist (Create), Operation Type to @PreUpdate (Update), Operation Type to @PreRemove (Delete), Operation Type to @PostLoad (Load), @PrePersist to INSERT, @PreUpdate to UPDATE, @PreRemove to DELETE, INSERT to @PostPersist, UPDATE to @PostUpdate, DELETE to @PostRemove.
     A[Entity Operation] --> B{Operation Type}
     B -->|Create| C[@PrePersist]
     B -->|Update| D[@PreUpdate]
@@ -2726,18 +2786,23 @@ graph TD
     H --> K[@PostUpdate]
     I --> L[@PostRemove]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#029E73,stroke:#000,color:#fff
-    style J fill:#0173B2,stroke:#000,color:#fff
-    style K fill:#0173B2,stroke:#000,color:#fff
-    style L fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class G pal-029E73
+    class H pal-029E73
+    class I pal-029E73
+    class J pal-0173B2
+    class K pal-0173B2
+    class L pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -3334,24 +3399,32 @@ Optimize query performance using JPA query hints and batch fetching strategies.
 ```mermaid
 %% Fetch strategies comparison
 graph TD
+    accTitle: Example 85: Query Hints and Batch Fetching for Performance
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Fetch Strategy, EAGER N+1 Problem, LAZY On-Demand, BATCH Fetching, JOIN FETCH, 1 + N Queries, 1 + N Queries on Access, 1 + N/batchSize Queries, 1 Query with JOIN. Connections: Fetch Strategy to EAGER N+1 Problem, Fetch Strategy to LAZY On-Demand, Fetch Strategy to BATCH Fetching, Fetch Strategy to JOIN FETCH, EAGER N+1 Problem to 1 + N Queries, LAZY On-Demand to 1 + N Queries on Access, BATCH Fetching to 1 + N/batchSize Queries, JOIN FETCH to 1 Query with JOIN.
     A[Fetch Strategy] --> B[EAGER N+1 Problem]
     A --> C[LAZY On-Demand]
     A --> D[BATCH Fetching]
     A --> E[JOIN FETCH]
     B --> F[1 + N Queries]
-    C --> G[1 + N Queries on Access]
-    D --> H[1 + N/batchSize Queries]
+    C --> G[1 + N Queries on<br/>Access]
+    D --> H[1 + N/batchSize<br/>Queries]
     E --> I[1 Query with JOIN]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#fff
-    style I fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    class G pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java

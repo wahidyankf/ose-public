@@ -25,14 +25,21 @@ A SQLx migration file is a plain `.sql` file placed in a `migrations/` directory
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Migration file lifecycle: file on disk -> SQLx reads -> database changes
 graph TD
-    A["migrations/ directory"] -->|"SQLx scans at startup"| B["Version-ordered file list"]
-    B -->|"For each unapplied file"| C["Execute SQL statements"]
-    C -->|"On success"| D["Record in _sqlx_migrations"]
+    accTitle: Example 1: First SQL Migration File
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: migrations/directory, Version-ordered file list, Execute SQL statements, Record in _sqlx_migrations. Connections: migrations/directory to Version-ordered file list (SQLx scans at startup), Version-ordered file list to Execute SQL statements (For each unapplied file), Execute SQL statements to Record in _sqlx_migrations (On success).
+    A["migrations/directory"] -->|"SQLx scans at<br/>startup"| B["Version-ordered file<br/>list"]
+    B -->|"For each unapplied<br/>file"| C["Execute SQL<br/>statements"]
+    C -->|"On success"| D["Record in<br/>_sqlx_migrations"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -402,16 +409,24 @@ The `migrate!()` macro reads migration files from a directory at Rust compile ti
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% migrate!() macro compile-time embedding vs runtime application
 graph TD
-    A["migrations/ directory<br/>SQL files on disk"] -->|"cargo build compile time"| B["Rust binary<br/>SQL embedded in binary"]
-    B -->|"runtime: migrate.run#40;&pool#41;"| C["Database _sqlx_migrations check"]
-    C -->|"pending versions found"| D["Execute SQL statements"]
-    D -->|"success"| E["Record applied version"]
+    accTitle: Example 12: Embedded Migrations with migrate! Macro
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: migrations/directory SQL files on disk, Rust binary SQL embedded in binary, Database _sqlx_migrations check, Execute SQL statements, Record applied version. Connections: migrations/directory SQL files on disk to Rust binary SQL embedded in binary (cargo build compile time), Rust binary SQL embedded in binary to Database _sqlx_migrations check (runtime: migrate. run40&pool41), Database _sqlx_migrations check to Execute SQL statements (pending versions found), Execute SQL statements to Record applied version (success).
+    A["migrations/directory<br/>SQL files on disk"] -->|"cargo build compile<br/>time"| B["Rust binary<br/>SQL embedded in<br/>binary"]
+    B -->|"runtime: migrate.<br/>run#40;&pool#41;"| C["Database<br/>_sqlx_migrations<br/>check"]
+    C -->|"pending versions<br/>found"| D["Execute SQL<br/>statements"]
+    D -->|"success"| E["Record applied<br/>version"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -1187,21 +1202,29 @@ SQLx automatically creates and manages the `_sqlx_migrations` table in every dat
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% _sqlx_migrations table structure and how SQLx uses it
 graph TD
-    A["sqlx migrate run"] -->|"1. Connect to database"| B["Check _sqlx_migrations<br/>table exists"]
-    B -->|"table absent: create it"| C["CREATE TABLE _sqlx_migrations"]
-    B -->|"table present: query applied versions"| D["SELECT version FROM<br/>_sqlx_migrations"]
-    D --> E["Compare with migration files<br/>on disk or embedded"]
-    E -->|"pending versions found"| F["Execute migration SQL<br/>in transaction"]
-    F -->|"success"| G["INSERT INTO _sqlx_migrations<br/>version, checksum, applied_at"]
-    G -->|"next pending migration"| F
+    accTitle: Example 30: sqlxmigrations Table Structure
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: sqlx migrate run, Check _sqlx_migrations table exists, CREATE TABLE _sqlx_migrations, SELECT version FROM _sqlx_migrations, Compare with migration files on disk or embedded, Execute migration SQL in transaction, INSERT INTO _sqlx_migrations version, checksum, applied_at. Connections: sqlx migrate run to Check _sqlx_migrations table exists (1. Connect to database), Check _sqlx_migrations table exists to CREATE TABLE _sqlx_migrations (table absent: create it), Check _sqlx_migrations table exists to SELECT version FROM _sqlx_migrations (table present: query applied versions), SELECT version FROM _sqlx_migrations to Compare with migration files on disk or embedded, Compare with migration files on disk or embedded to Execute migration SQL in transaction (pending versions found), Execute migration SQL in transaction to INSERT INTO _sqlx_migrations version, checksum, applied_at (success), INSERT INTO _sqlx_migrations version, checksum, applied_at to Execute migration SQL in transaction (next pending migration).
+    A["sqlx migrate run"] -->|"1. Connect to<br/>database"| B["Check<br/>_sqlx_migrations<br/>table exists"]
+    B -->|"table absent:<br/>create it"| C["CREATE TABLE<br/>_sqlx_migrations"]
+    B -->|"table present:<br/>query applied<br/>versions"| D["SELECT version FROM<br/>_sqlx_migrations"]
+    D --> E["Compare with<br/>migration files<br/>on disk or embedded"]
+    E -->|"pending versions<br/>found"| F["Execute migration<br/>SQL<br/>in transaction"]
+    F -->|"success"| G["INSERT INTO<br/>_sqlx_migrations<br/>version, checksum,<br/>applied_at"]
+    G -->|"next pending<br/>migration"| F
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style G fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    class F pal-DE8F05
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql

@@ -476,6 +476,8 @@ test("verify user search makes correct API call", async ({ page, interceptedRequ
 
 ```mermaid
 flowchart TB
+    accTitle: Network Interception Flow
+    accDescr: Flowchart with 14 nodes and 16 connections. Nodes: Browser Test, Playwright Page, Route Handler, Mock Response, Real API, Network Error, Test Assertions, Test Setup, HAR File, Browser Context, Page with HAR, Request Match, and 2 more. Connections: Browser Test to Playwright Page (1. Navigate/Interact), Playwright Page to Route Handler (2. Request Triggered), Route Handler to Mock Response (3a. route.fulfill), Route Handler to Real API (3b. route.continue), Route Handler to Network Error (3c. route.abort), Mock Response to Playwright Page (4a. Return Mock), Real API to Playwright Page (4b. Return Real Response), Network Error to Playwright Page (4c. Trigger Error), Playwright Page to Test Assertions (5. Render Response), Test Setup to HAR File (1. Load HAR), HAR File to Browser Context (2. Configure), Browser Context to Page with HAR (3. Create Page), and 4 more.
     subgraph "Network Interception Architecture"
         A[Browser Test] -->|1. Navigate/Interact| B[Playwright Page]
         B -->|2. Request Triggered| C{Route Handler}
@@ -483,7 +485,7 @@ flowchart TB
         C -->|3b. route.continue| E[Real API]
         C -->|3c. route.abort| F[Network Error]
         D -->|4a. Return Mock| B
-        E -->|4b. Return Real Response| B
+        E -->|4b. Return Real<br/>Response| B
         F -->|4c. Trigger Error| B
         B -->|5. Render Response| G[Test Assertions]
     end
@@ -498,11 +500,17 @@ flowchart TB
         M -->|6. Return Cached| K
     end
 
-    style D fill:#0173B2,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#000
-    style M fill:#CC78BC,color:#fff
-    style N fill:#CA9161,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class M pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class N pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

@@ -20,16 +20,24 @@ Roles organize playbooks into reusable components with standardized directory st
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 28: Basic Role Structure
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Role webserver, tasks/main.yml Task definitions, handlers/main.yml Service handlers, templates/ Jinja2 templates, files/ Static files. Connections: Role webserver to tasks/main.yml Task definitions, Role webserver to handlers/main.yml Service handlers, Role webserver to templates/ Jinja2 templates, Role webserver to files/ Static files.
  A["Role<br/>webserver"] --> B["tasks/main.yml<br/>Task definitions"]
  A --> C["handlers/main.yml<br/>Service handlers"]
  A --> D["templates/<br/>Jinja2 templates"]
  A --> E["files/<br/>Static files"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Variable Hierarchy:**
@@ -37,12 +45,18 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 28: Basic Role Structure
+ accDescr: Graph with 3 nodes and 2 connections. Nodes: Role webserver, vars/main.yml Role variables, defaults/main.yml Default variables. Connections: Role webserver to vars/main.yml Role variables, Role webserver to defaults/main.yml Default variables.
  A["Role<br/>webserver"] --> F["vars/main.yml<br/>Role variables"]
  A --> G["defaults/main.yml<br/>Default variables"]
 
- style A fill:#0173B2,color:#fff
- style F fill:#029E73,color:#fff
- style G fill:#DE8F05,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class F pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class G pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Role Metadata:**
@@ -50,10 +64,15 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 28: Basic Role Structure
+ accDescr: Graph with 2 nodes and 1 connections. Nodes: Role webserver, meta/main.yml Dependencies. Connections: Role webserver to meta/main.yml Dependencies.
  A["Role<br/>webserver"] --> H["meta/main.yml<br/>Dependencies"]
 
- style A fill:#0173B2,color:#fff
- style H fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class H pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -383,17 +402,24 @@ Roles can depend on other roles using `meta/main.yml`. Dependencies install auto
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 30: Role Dependencies
+ accDescr: Graph with 5 nodes and 5 connections. Nodes: Database Role Applied, Check Dependencies meta/main.yml, Execute Common Role First, Execute Firewall Role Second, Database Tasks Execute Last. Connections: Database Role Applied to Check Dependencies meta/main.yml, Check Dependencies meta/main.yml to Execute Common Role First, Check Dependencies meta/main.yml to Execute Firewall Role Second, Execute Common Role First to Database Tasks Execute Last, Execute Firewall Role Second to Database Tasks Execute Last.
  A["Database Role<br/>Applied"] --> B["Check Dependencies<br/>meta/main.yml"]
  B --> C["Execute Common<br/>Role First"]
  B --> D["Execute Firewall<br/>Role Second"]
  C --> E["Database Tasks<br/>Execute Last"]
  D --> E
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class E pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1083,18 +1109,26 @@ Handlers execute once at the end of a play, triggered by task changes. Prevent r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 34: Handler Basics
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Task 1 Change Config, Handler Queue, Task 2 Change Template, Task 3 No Change, Play End, Execute Handler Once. Connections: Task 1 Change Config to Handler Queue (notify), Task 2 Change Template to Handler Queue (notify), Task 3 No Change to Handler Queue (skip), Handler Queue to Play End, Play End to Execute Handler Once.
  A["Task 1<br/>Change Config"] -->|notify| B["Handler Queue"]
  C["Task 2<br/>Change Template"] -->|notify| B
  D["Task 3<br/>No Change"] -.->|skip| B
  B --> E["Play End"]
  E --> F["Execute Handler Once"]
 
- style A fill:#0173B2,color:#fff
- style C fill:#0173B2,color:#fff
- style D fill:#CA9161,color:#fff
- style B fill:#DE8F05,color:#fff
- style E fill:#029E73,color:#fff
- style F fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ class C pal-0173B2
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class D pal-CA9161
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class E pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class F pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1537,16 +1571,24 @@ Jinja2 templates combine static text with dynamic variables. The `template` modu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 38: Jinja2 Template Basics
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Template app_config.yml.j2, Jinja2 Variables app_name, version, Jinja2 Engine Render, Rendered File app_config.yml, Copy to Target /etc/app/config.yml. Connections: Template app_config.yml.j2 to Jinja2 Variables app_name, version, Jinja2 Variables app_name, version to Jinja2 Engine Render, Jinja2 Engine Render to Rendered File app_config.yml, Rendered File app_config.yml to Copy to Target /etc/app/config.yml.
  A["Template<br/>app_config.yml.j2"] --> B["Jinja2 Variables<br/>app_name, version"]
  B --> C["Jinja2 Engine<br/>Render"]
  C --> D["Rendered File<br/>app_config.yml"]
  D --> E["Copy to Target<br/>/etc/app/config.yml"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1705,6 +1747,8 @@ Jinja2 supports control structures: conditionals (`{% if %}`), loops (`{% for %}
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 39: Jinja2 Conditionals and Loops
+ accDescr: Graph with 6 nodes and 6 connections. Nodes: Template Logic, Conditionals if, Loops for, Include/Exclude Sections, Repeat Sections Multiple Times, Final Config. Connections: Template Logic to Conditionals if, Template Logic to Loops for, Conditionals if to Include/Exclude Sections, Loops for to Repeat Sections Multiple Times, Include/Exclude Sections to Final Config, Repeat Sections Multiple Times to Final Config.
  A["Template Logic"] --> B["Conditionals<br/>{% if %}"]
  A --> C["Loops<br/>{% for %}"]
  B --> D["Include/Exclude<br/>Sections"]
@@ -1712,12 +1756,18 @@ graph TD
  D --> F["Final Config"]
  E --> F
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CC78BC,color:#fff
- style F fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class F pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2493,22 +2543,30 @@ Ansible Vault encrypts sensitive data (passwords, API keys, certificates) in ver
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
- A["Plaintext secrets.yml"] --> B["ansible-vault encrypt"]
- B --> C["Encrypted secrets.yml<br/>AES256"]
+ accTitle: Example 43: Vault Basics
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Plaintext secrets.yml, ansible-vault encrypt, Encrypted secrets.yml AES256, Commit to Git 40Safe41, Playbook Execution, vault-password-file, Decrypt Secrets Runtime Only, Use in Tasks. Connections: Plaintext secrets.yml to ansible-vault encrypt, ansible-vault encrypt to Encrypted secrets.yml AES256, Encrypted secrets.yml AES256 to Commit to Git 40Safe41, Encrypted secrets.yml AES256 to Playbook Execution, Playbook Execution to vault-password-file, vault-password-file to Decrypt Secrets Runtime Only, Decrypt Secrets Runtime Only to Use in Tasks.
+ A["Plaintext<br/>secrets.yml"] --> B["ansible-vault<br/>encrypt"]
+ B --> C["Encrypted<br/>secrets.yml<br/>AES256"]
  C --> D["Commit to Git<br/>#40;Safe#41;"]
  C --> E["Playbook Execution"]
  E --> F["vault-password-file"]
  F --> G["Decrypt Secrets<br/>Runtime Only"]
  G --> H["Use in Tasks"]
 
- style A fill:#DE8F05,color:#fff
- style B fill:#0173B2,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#CC78BC,color:#fff
- style F fill:#CA9161,color:#fff
- style G fill:#DE8F05,color:#fff
- style H fill:#029E73,color:#fff
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class A pal-DE8F05
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class B pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class E pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class F pal-CA9161
+ class G pal-DE8F05
+ class H pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3141,18 +3199,26 @@ Control task success/failure criteria and changed status reporting with `failed_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 47: Failed When and Changed When
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Task Execution, failed_when Condition?, Report: Failed, changed_when Condition?, Report: Changed, Report: OK. Connections: Task Execution to failed_when Condition?, failed_when Condition? to Report: Failed (True), failed_when Condition? to changed_when Condition? (False), changed_when Condition? to Report: Changed (True), changed_when Condition? to Report: OK (False).
  A["Task Execution"] --> B{failed_when<br/>Condition?}
  B -->|True| C["Report: Failed"]
  B -->|False| D{changed_when<br/>Condition?}
  D -->|True| E["Report: Changed"]
  D -->|False| F["Report: OK"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CA9161,color:#fff
- style D fill:#DE8F05,color:#fff
- style E fill:#CC78BC,color:#fff
- style F fill:#029E73,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class C pal-CA9161
+ class D pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class E pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class F pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3405,6 +3471,8 @@ Blocks group tasks with unified error handling. `rescue` executes on failure, `a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 49: Block, Rescue, and Always
+ accDescr: Graph with 7 nodes and 7 connections. Nodes: Block Section, Success?, Always Section, Rescue Section, Rescue Success?, Playbook Fails, Continue Playbook. Connections: Block Section to Success?, Success? to Always Section (Success), Success? to Rescue Section (Failure), Rescue Section to Rescue Success?, Rescue Success? to Always Section (Success), Rescue Success? to Playbook Fails (Failure), Always Section to Continue Playbook.
  A["Block Section"] --> B{Success?}
  B -->|Success| C["Always Section"]
  B -->|Failure| D["Rescue Section"]
@@ -3413,13 +3481,19 @@ graph TD
  E -->|Failure| F["Playbook Fails"]
  C --> G["Continue Playbook"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style D fill:#CC78BC,color:#fff
- style C fill:#029E73,color:#fff
- style E fill:#DE8F05,color:#fff
- style F fill:#CA9161,color:#fff
- style G fill:#029E73,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ class E pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class F pal-CA9161
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3805,6 +3879,8 @@ Tags enable selective task execution without modifying playbooks. Run subsets of
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 51: Task Tagging Basics
+ accDescr: Graph with 14 nodes and 11 connections. Nodes: Playbook with Tags, Task 1: install, Task 2: configure, Task 3: always, Task 4: never, F, tags, Execute Task 1 Only, H, Execute Task 2 Only, No Tags, Execute All Except never, and 2 more. Connections: Playbook with Tags to Task 1: install, Playbook with Tags to Task 2: configure, Playbook with Tags to Task 3: always, Playbook with Tags to Task 4: never, F to tags, tags to Execute Task 1 Only, H to tags, tags to Execute Task 2 Only, No Tags to Execute All Except never, L to tags, tags to Execute Task 4 Only.
  A["Playbook with Tags"] --> B["Task 1: install"]
  A --> C["Task 2: configure"]
  A --> D["Task 3: always"]
@@ -3812,18 +3888,24 @@ graph TD
 
  F["--tags install"] --> G["Execute Task 1 Only"]
  H["--tags configure"] --> I["Execute Task 2 Only"]
- J["No Tags"] --> K["Execute All Except never"]
+ J["No Tags"] --> K["Execute All Except<br/>never"]
  L["--tags never"] --> M["Execute Task 4 Only"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
- style G fill:#DE8F05,color:#fff
- style I fill:#029E73,color:#fff
- style K fill:#CC78BC,color:#fff
- style M fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ class G pal-DE8F05
+ class I pal-029E73
+ class K pal-CC78BC
+ class M pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

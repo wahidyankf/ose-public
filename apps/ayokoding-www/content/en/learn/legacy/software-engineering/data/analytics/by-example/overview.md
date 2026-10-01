@@ -27,16 +27,22 @@ The tutorial guides you through 85 examples organized into three progressive lev
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner (Examples 1-28)<br/>Loading data, pandas basics,<br/>numpy, basic visualization"]
-    B["Intermediate (Examples 29-57)<br/>Advanced pandas, polars, DuckDB,<br/>scikit-learn pipelines, stats"]
-    C["Advanced (Examples 58-85)<br/>ML models, time series, financial,<br/>production pipelines, dashboards"]
+    accTitle: Learning Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner (Examples 1-28) Loading data, pandas basics, numpy, basic visualization, Intermediate (Examples 29-57) Advanced pandas, polars, DuckDB, scikit-learn pipelines, stats, Advanced (Examples 58-85) ML models, time series, financial, production pipelines, dashboards. Connections: Beginner (Examples 1-28) Loading data, pandas basics, numpy, basic visualization to Intermediate (Examples 29-57) Advanced pandas, polars, DuckDB, scikit-learn pipelines, stats (Master foundations), Intermediate (Examples 29-57) Advanced pandas, polars, DuckDB, scikit-learn pipelines, stats to Advanced (Examples 58-85) ML models, time series, financial, production pipelines, dashboards (Advanced patterns).
+    A["Beginner (Examples<br/>1-28)<br/>Loading data, pandas<br/>basics,<br/>numpy, basic<br/>visualization"]
+    B["Intermediate<br/>(Examples 29-57)<br/>Advanced pandas,<br/>polars, DuckDB,<br/>scikit-learn<br/>pipelines, stats"]
+    C["Advanced (Examples<br/>58-85)<br/>ML models, time<br/>series, financial,<br/>production<br/>pipelines,<br/>dashboards"]
 
     A -->|Master foundations| B
     B -->|Advanced patterns| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Version Landscape
@@ -46,15 +52,22 @@ This tutorial targets the current major versions as of 2026. Understanding break
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Version Landscape
+    accDescr: Graph with 4 nodes and 0 connections. Nodes: pandas 3.0.2 CoW enforced New string dtype, numpy 2.4.4 np.float64 not np.float_ np.nan not np.NaN, scikit-learn 1.8.0 set_output pandas HistGradientBoosting, polars 1.40.1 group_by not groupby Lazy evaluation.
     A["pandas 3.0.2<br/>CoW enforced<br/>New string dtype"]
-    B["numpy 2.4.4<br/>np.float64 not np.float_<br/>np.nan not np.NaN"]
+    B["numpy 2.4.4<br/>np.float64 not<br/>np.float_<br/>np.nan not np.NaN"]
     C["scikit-learn 1.8.0<br/>set_output pandas<br/>HistGradientBoosting"]
     D["polars 1.40.1<br/>group_by not groupby<br/>Lazy evaluation"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## What This Tutorial Covers

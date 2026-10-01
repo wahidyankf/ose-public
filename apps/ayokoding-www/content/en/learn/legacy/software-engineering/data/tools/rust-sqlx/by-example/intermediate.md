@@ -25,20 +25,27 @@ A migration that modifies multiple tables should wrap all statements in a single
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Transaction migration: all-or-nothing execution
 graph TD
+    accTitle: Example 31: Transactions in Migrations
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: BEGIN, CREATE TABLE orders, CREATE TABLE order_items, COMMIT, ROLLBACK, _sqlx_migrations updated, Migration not recorded. Connections: BEGIN to CREATE TABLE orders (Execute statements), CREATE TABLE orders to CREATE TABLE order_items (Continue), CREATE TABLE order_items to COMMIT (All succeed), CREATE TABLE order_items to ROLLBACK (Any fail), COMMIT to _sqlx_migrations updated (Migration recorded), ROLLBACK to Migration not recorded (Schema unchanged).
     A["BEGIN"] -->|"Execute statements"| B["CREATE TABLE orders"]
-    B -->|"Continue"| C["CREATE TABLE order_items"]
+    B -->|"Continue"| C["CREATE TABLE<br/>order_items"]
     C -->|"All succeed"| D["COMMIT"]
     C -->|"Any fail"| E["ROLLBACK"]
-    D -->|"Migration recorded"| F["_sqlx_migrations updated"]
-    E -->|"Schema unchanged"| G["Migration not recorded"]
+    D -->|"Migration recorded"| F["_sqlx_migrations<br/>updated"]
+    E -->|"Schema unchanged"| G["Migration not<br/>recorded"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style G fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    class F pal-029E73
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -673,14 +680,21 @@ SQLx applies migrations in lexicographic order by filename. When a migration cre
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Migration dependency order: lower version must run before higher version
 graph LR
+    accTitle: Example 43: Migration Ordering and Dependencies
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: 001_create_users.sql, 002_create_posts.sql, 003_add_post_stats. sql, 004_create_sessions. sql. Connections: 001_create_users.sql to 002_create_posts.sql (Must exist before), 002_create_posts.sql to 003_add_post_stats. sql (Must exist before), 001_create_users.sql to 004_create_sessions. sql (Must exist before).
     A["001_create_users.sql"] -->|"Must exist before"| B["002_create_posts.sql"]
-    B -->|"Must exist before"| C["003_add_post_stats.sql"]
-    A -->|"Must exist before"| D["004_create_sessions.sql"]
+    B -->|"Must exist before"| C["003_add_post_stats.<br/>sql"]
+    A -->|"Must exist before"| D["004_create_sessions.<br/>sql"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql

@@ -14,22 +14,29 @@ A reusable workflow is a separate `.yml` file that other workflows call via `wor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 58: Reusable Workflow with Inputs, Outputs, and Secrets
+    accDescr: Graph with 4 nodes and 6 connections. Nodes: Caller Workflow caller.yml, Reusable Workflow reusable-build.yml, Outputs artifact-url, Secrets NPM_TOKEN. Connections: Caller Workflow caller.yml to Reusable Workflow reusable-build.yml (uses: ./.github/ workflows/ reusable-build.yml), Caller Workflow caller.yml to Reusable Workflow reusable-build.yml (with: inputs), Caller Workflow caller.yml to Secrets NPM_TOKEN (secrets: inherit), Secrets NPM_TOKEN to Reusable Workflow reusable-build.yml (passed to), Reusable Workflow reusable-build.yml to Outputs artifact-url (outputs), Outputs artifact-url to Caller Workflow caller.yml (available to).
     A["Caller Workflow<br/>caller.yml"]
     B["Reusable Workflow<br/>reusable-build.yml"]
     C["Outputs<br/>artifact-url"]
     D["Secrets<br/>NPM_TOKEN"]
 
-    A -->|uses: ./.github/workflows/reusable-build.yml| B
+    A -->|uses: ./.github/<br/>workflows/<br/>reusable-build.yml| B
     A -->|with: inputs| B
     A -->|secrets: inherit| D
     D -->|passed to| B
     B -->|outputs| C
     C -->|available to| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Reusable workflow definition** (`.github/workflows/reusable-build.yml`):
@@ -422,6 +429,8 @@ The `matrix` strategy runs a job multiple times with different parameter combina
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 62: Matrix with include/exclude and Dynamic fromJSON
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Matrix Definition os x node-version, ubuntu + 18 EXCLUDED, ubuntu + 20 + coverage: true, ubuntu + 22, windows + 20 macos + 20. Connections: Matrix Definition os x node-version to ubuntu + 18 EXCLUDED (generates), Matrix Definition os x node-version to ubuntu + 20 + coverage: true (generates), Matrix Definition os x node-version to ubuntu + 22 (generates), Matrix Definition os x node-version to windows + 20 macos + 20 (generates).
     A["Matrix Definition<br/>os x node-version"]
     B["ubuntu + 18<br/>EXCLUDED"]
     C["ubuntu + 20<br/>+ coverage: true"]
@@ -433,11 +442,16 @@ graph TD
     A -- generates --> D
     A -- generates --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Static matrix with include/exclude**:
@@ -533,6 +547,8 @@ The `workflow_run` trigger starts a workflow when another workflow completes, su
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 63: Workflow Chaining with workflowrun
+    accDescr: Sequence diagram between Git Push, CI Workflow, Deploy Workflow, Notify Workflow. Messages: Git Push to CI Workflow: Triggers on push to main; CI Workflow to CI Workflow: Run tests and build; CI Workflow to Deploy Workflow: workflow_run completed + success; Deploy Workflow to Deploy Workflow: Deploy to staging; Deploy Workflow to Notify Workflow: workflow_run completed; Notify Workflow to Notify Workflow: Send Slack notification.
     participant Push as Git Push
     participant CI as CI Workflow
     participant Deploy as Deploy Workflow
@@ -618,6 +634,8 @@ GitHub deployment environments enforce protection rules before a workflow deploy
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 64: Deployment Environments with Required Approvals
+    accDescr: State diagram with 7 items: start or end, BuildSuccess, WaitingApproval, Approved, Rejected, Deploying, Deployed. Relationships: start or end to BuildSuccess: Tests pass; BuildSuccess to WaitingApproval: Job requests production env; WaitingApproval to Approved: Reviewer approves; WaitingApproval to Rejected: Reviewer rejects; Approved to Deploying: Secrets unlocked; Deploying to Deployed: Deploy step succeeds; Rejected to start or end: Workflow cancelled; Deployed to start or end: Success.
     [*] --> BuildSuccess: Tests pass
     BuildSuccess --> WaitingApproval: Job requests production env
     WaitingApproval --> Approved: Reviewer approves
@@ -711,6 +729,8 @@ OpenID Connect (OIDC) federation allows GitHub Actions to authenticate to cloud 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 65: OIDC Federated Identity for AWS
+    accDescr: Sequence diagram between GitHub Actions Runner, GitHub OIDC Provider, AWS STS, AWS S3. Messages: GitHub Actions Runner to GitHub OIDC Provider: Request OIDC token (JWT); GitHub OIDC Provider to GitHub Actions Runner: JWT with claims (repo, ref, workflow); GitHub Actions Runner to AWS STS: AssumeRoleWithWebIdentity(JWT, RoleARN); AWS STS to GitHub OIDC Provider: Verify JWT signature; GitHub OIDC Provider to AWS STS: Valid; AWS STS to AWS STS: Check trust policy conditions; AWS STS to GitHub Actions Runner: Temporary credentials (15min TTL); GitHub Actions Runner to AWS S3: API call with temp credentials; AWS S3 to GitHub Actions Runner: Response.
     participant GH as GitHub Actions Runner
     participant GHOIDC as GitHub OIDC Provider
     participant AWS as AWS STS
@@ -1216,6 +1236,8 @@ Monorepo workflows run only the CI relevant to changed packages using `paths` fi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 71: Monorepo CI with Path Filters and Conditional Jobs
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Git Push changes detected, Paths Filter Job detect-changes, Build Auth Service if auth changed, Build API Service if api changed, Build Frontend if frontend changed, Deploy All Changed needs: all builds. Connections: Git Push changes detected to Paths Filter Job detect-changes, Paths Filter Job detect-changes to Build Auth Service if auth changed (auth: true), Paths Filter Job detect-changes to Build API Service if api changed (api: true), Paths Filter Job detect-changes to Build Frontend if frontend changed (frontend: true), Build Auth Service if auth changed to Deploy All Changed needs: all builds, Build API Service if api changed to Deploy All Changed needs: all builds, Build Frontend if frontend changed to Deploy All Changed needs: all builds.
     A["Git Push<br/>changes detected"]
     B["Paths Filter Job<br/>detect-changes"]
     C["Build Auth Service<br/>if auth changed"]
@@ -1231,12 +1253,17 @@ graph TD
     D --> F
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2278,6 +2305,8 @@ Complex CI pipelines fan out to parallel jobs and fan in to aggregate results. T
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 83: Workflow Job Dependencies and Fan-Out/Fan-In Patterns
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: checkout clone code, lint code style, unit-tests fast feedback, build compile artifact, integration-tests slow, real DB, security-scan SAST analysis, aggregate fan-in gate, deploy production. Connections: checkout clone code to lint code style, checkout clone code to unit-tests fast feedback, checkout clone code to build compile artifact, build compile artifact to integration-tests slow, real DB, build compile artifact to security-scan SAST analysis, lint code style to aggregate fan-in gate, unit-tests fast feedback to aggregate fan-in gate, integration-tests slow, real DB to aggregate fan-in gate, security-scan SAST analysis to aggregate fan-in gate, aggregate fan-in gate to deploy production.
     A["checkout<br/>clone code"]
     B["lint<br/>code style"]
     C["unit-tests<br/>fast feedback"]
@@ -2298,14 +2327,20 @@ graph TD
     F --> G
     G --> H
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

@@ -98,21 +98,29 @@ Test forms where fields appear/disappear based on user selections. This validate
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Select["Select dropdown option"] --> JS["JavaScript event handler<br/>evaluates selection"]
+    accTitle: Example 33: Dynamic Forms - Conditional Fields
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Select dropdown option, JavaScript event handler evaluates selection, Cond, Show conditional field toBeVisible(), Hide conditional field toBeHidden(), Fill conditional field with user input, Change selection back. Connections: Select dropdown option to JavaScript event handler evaluates selection, JavaScript event handler evaluates selection to Cond, Cond to Show conditional field toBeVisible() (yes), Cond to Hide conditional field toBeHidden() (no), Show conditional field toBeVisible() to Fill conditional field with user input, Fill conditional field with user input to Change selection back, Change selection back to JavaScript event handler evaluates selection.
+    Select["Select dropdown<br/>option"] --> JS["JavaScript event<br/>handler<br/>evaluates selection"]
     JS --> Cond{"Option == 'Other'?"}
-    Cond -->|yes| Show["Show conditional field<br/>toBeVisible()"]
-    Cond -->|no| Hide["Hide conditional field<br/>toBeHidden()"]
-    Show --> Fill["Fill conditional field<br/>with user input"]
-    Fill --> ChangeBack["Change selection back"]
+    Cond -->|yes| Show["Show conditional<br/>field<br/>toBeVisible()"]
+    Cond -->|no| Hide["Hide conditional<br/>field<br/>toBeHidden()"]
+    Show --> Fill["Fill conditional<br/>field<br/>with user input"]
+    Fill --> ChangeBack["Change selection<br/>back"]
     ChangeBack --> JS
 
-    style Select fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style JS fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Cond fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Show fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Hide fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Fill fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style ChangeBack fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Select pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class JS pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Cond pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Show pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Hide pal-CA9161
+    class Fill pal-029E73
+    class ChangeBack pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -373,6 +381,8 @@ Test drag-and-drop interactions for reordering lists. This validates mouse-based
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 38: Drag-and-Drop - Reordering Items
+    accDescr: Sequence diagram between Test Code, Playwright, Browser DOM. Messages: Test Code to Playwright: firstTask.dragTo(secondTask); Playwright to Browser DOM: mousedown on firstTask (center); Browser DOM to Playwright: dragstart event fired; Playwright to Browser DOM: mousemove toward secondTask; Browser DOM to Playwright: dragover event on secondTask; Playwright to Browser DOM: mouseup on secondTask; Browser DOM to Playwright: drop event fired, DOM reordered; Playwright to Test Code: dragTo() resolved; Test Code to Playwright: expect(tasks.nth(0)).toHaveText(Task 2); Playwright to Test Code: assertion passes.
     participant Test as Test Code
     participant PW as Playwright
     participant DOM as Browser DOM
@@ -483,24 +493,32 @@ Test complete form submission lifecycle including success responses and server e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Submit["button.click() — form submit"] --> API["POST /api/register"]
+    accTitle: Example 40: Form Submission - Success and Error Handling
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: button.click() — form submit, POST /api/register, HTTP Status?, Show success message Navigate to /dashboard, Show error message Stay on /register, Show generic error Stay on /register, expect(page). toHaveURL(/ dashboard/), expect(page. getByText(Username taken)), expect(page. getByText(Something went wrong)). Connections: button.click() — form submit to POST /api/register, POST /api/register to HTTP Status?, HTTP Status? to Show success message Navigate to /dashboard (201 Created), HTTP Status? to Show error message Stay on /register (409 Conflict), HTTP Status? to Show generic error Stay on /register (500 Server Error), Show success message Navigate to /dashboard to expect(page). toHaveURL(/ dashboard/), Show error message Stay on /register to expect(page. getByText(Username taken)), Show generic error Stay on /register to expect(page. getByText(Something went wrong)).
+    Submit["button.click() —<br/>form submit"] --> API["POST /api/register"]
     API --> Status{"HTTP Status?"}
-    Status -->|"201 Created"| Success["Show success message<br/>Navigate to /dashboard"]
+    Status -->|"201 Created"| Success["Show success message<br/>Navigate to<br/>/dashboard"]
     Status -->|"409 Conflict"| Error["Show error message<br/>Stay on /register"]
     Status -->|"500 Server Error"| ServerErr["Show generic error<br/>Stay on /register"]
-    Success --> AssertURL["expect(page).toHaveURL(/dashboard/)"]
-    Error --> AssertErr["expect(page.getByText('Username taken'))"]
-    ServerErr --> AssertErr2["expect(page.getByText('Something went wrong'))"]
+    Success --> AssertURL["expect(page).<br/>toHaveURL(/<br/>dashboard/)"]
+    Error --> AssertErr["expect(page.<br/>getByText('Username<br/>taken'))"]
+    ServerErr --> AssertErr2["expect(page.<br/>getByText('Something<br/>went wrong'))"]
 
-    style Submit fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style API fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Status fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Success fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Error fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style ServerErr fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style AssertURL fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style AssertErr fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style AssertErr2 fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Submit pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class API pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Status pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Success pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Error pal-CA9161
+    class ServerErr pal-CA9161
+    class AssertURL pal-029E73
+    class AssertErr pal-DE8F05
+    class AssertErr2 pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -742,22 +760,30 @@ Test visual appearance by comparing screenshots. This catches unintended UI chan
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Assert["expect(page).toHaveScreenshot('baseline.png')"] --> FirstRun{"Baseline<br/>exists?"}
-    FirstRun -->|no| CreateBase["Capture current screenshot<br/>Save as baseline"]
-    FirstRun -->|yes| Capture["Capture current screenshot"]
-    CreateBase --> PassFirst["Pass (first run creates baseline)"]
-    Capture --> Diff["Pixel diff comparison<br/>(with maxDiffPixels threshold)"]
+    accTitle: Example 44: Screenshot Comparison - Visual Regression
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: expect(page).toHaveScreenshot(baseline.png), Baseline exists?, Capture current screenshot Save as baseline, Capture current screenshot, Pass (first run creates baseline), Pixel diff comparison (with maxDiffPixels threshold), Assertion Passes, Fail: attach diff image to test report. Connections: expect(page).toHaveScreenshot(baseline.png) to Baseline exists?, Baseline exists? to Capture current screenshot Save as baseline (no), Baseline exists? to Capture current screenshot (yes), Capture current screenshot Save as baseline to Pass (first run creates baseline), Capture current screenshot to Pixel diff comparison (with maxDiffPixels threshold), Pixel diff comparison (with maxDiffPixels threshold) to Assertion Passes (within threshold), Pixel diff comparison (with maxDiffPixels threshold) to Fail: attach diff image to test report (exceeds threshold).
+    Assert["expect(page).<br/>toHaveScreenshot(<br/>'baseline.png')"] --> FirstRun{"Baseline<br/>exists?"}
+    FirstRun -->|no| CreateBase["Capture current<br/>screenshot<br/>Save as baseline"]
+    FirstRun -->|yes| Capture["Capture current<br/>screenshot"]
+    CreateBase --> PassFirst["Pass (first run<br/>creates baseline)"]
+    Capture --> Diff["Pixel diff<br/>comparison<br/>(with maxDiffPixels<br/>threshold)"]
     Diff -->|"within threshold"| Pass["Assertion Passes"]
-    Diff -->|"exceeds threshold"| Fail["Fail: attach diff image<br/>to test report"]
+    Diff -->|"exceeds threshold"| Fail["Fail: attach diff<br/>image<br/>to test report"]
 
-    style Assert fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style FirstRun fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style CreateBase fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Capture fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style PassFirst fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Diff fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Pass fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Fail fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Assert pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class FirstRun pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class CreateBase pal-CA9161
+    class Capture pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class PassFirst pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Diff pal-CC78BC
+    class Pass pal-029E73
+    class Fail pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -806,20 +832,28 @@ Test accessibility violations using axe-core integration. This validates WCAG co
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Page["await page.goto(url)"] --> Scan["new AxeBuilder({ page }).analyze()"]
+    accTitle: Example 45: Accessibility Assertions - Axe Integration
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: await page.goto(url), new AxeBuilder( page ).analyze(), Run WCAG 2.x rules: • Missing labels • Color contrast • Invalid ARIA • Keyboard traps, violations array, violations.length?, All rules pass, Violations found (rule, impact, element). Connections: await page.goto(url) to new AxeBuilder( page ).analyze(), new AxeBuilder( page ).analyze() to Run WCAG 2.x rules: • Missing labels • Color contrast • Invalid ARIA • Keyboard traps, Run WCAG 2.x rules: • Missing labels • Color contrast • Invalid ARIA • Keyboard traps to violations array, violations array to violations.length?, violations.length? to All rules pass (== 0), violations.length? to Violations found (rule, impact, element) (> 0).
+    Page["await page.goto(url)"] --> Scan["new AxeBuilder({<br/>page }).analyze()"]
     Scan --> Rules["Run WCAG 2.x rules:<br/>• Missing labels<br/>• Color contrast<br/>• Invalid ARIA<br/>• Keyboard traps"]
     Rules --> Results["violations array"]
     Results --> Check{"violations.length?"}
     Check -->|"== 0"| Pass["All rules pass"]
-    Check -->|"> 0"| Fail["Violations found<br/>(rule, impact, element)"]
+    Check -->|"> 0"| Fail["Violations found<br/>(rule, impact,<br/>element)"]
 
-    style Page fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Scan fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Rules fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Results fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Check fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Pass fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Fail fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Page pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Scan pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Rules pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Results pal-CA9161
+    class Check pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Pass pal-029E73
+    class Fail pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Why this external dependency**: Playwright's built-in `accessibility()` snapshot API provides access to the accessibility tree for assertions on individual elements, but it does not detect WCAG rule violations automatically. `@axe-core/playwright` wraps the industry-standard axe-core engine, which tests pages against WCAG 2.x rules (missing labels, color contrast violations, invalid ARIA, keyboard traps, and more) in a single scan. Install with: `npm install @axe-core/playwright`.
@@ -872,6 +906,8 @@ Test network responses for data integrity and error handling. This validates API
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 46: Network Response Assertions - API Validation
+    accDescr: Sequence diagram between Test Code, Playwright, Browser UI, Backend API. Messages: Test Code to Playwright: Set up waitForResponse() promise; Test Code to Browser UI: page.getByRole(button).click(); Browser UI to Backend API: XHR/fetch POST /api/data; Backend API to Browser UI: HTTP 200 data: [...]; Browser UI to Playwright: Network response intercepted; Playwright to Test Code: response object resolved; Test Code to Test Code: expect(response.status()).toBe(200); Test Code to Test Code: expect(data).toMatchObject(schema).
     participant Test as Test Code
     participant PW as Playwright
     participant UI as Browser UI
@@ -1153,6 +1189,8 @@ Test API endpoints directly using Playwright's request context. This validates b
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 51: API Request Basics - REST Endpoint Testing
+    accDescr: Sequence diagram between Test Code, request fixture, Backend API. Messages: Test Code to request fixture: request.get(/api/users); request fixture to Backend API: HTTP GET /api/users (no browser overhead); Backend API to request fixture: HTTP 200 [ id, name, email ]; request fixture to Test Code: APIResponse object; Test Code to Test Code: expect(response.ok()).toBeTruthy(); Test Code to Test Code: const data = await response.json(); Test Code to Test Code: expect(data[0]).toHaveProperty(email).
     participant Test as Test Code
     participant Req as request fixture
     participant API as Backend API
@@ -1240,6 +1278,8 @@ Test API endpoints requiring authentication. This validates auth flows and prote
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 52: API Authentication - Bearer Token and Cookies
+    accDescr: Sequence diagram between Test Code, request context, Auth API, Protected API. Messages: Test Code to request context: POST /auth/login email, password; request context to Auth API: HTTP POST with credentials; Auth API to request context: HTTP 200 token: eyJ...; request context to Test Code: loginResponse with token; Test Code to request context: GET /dashboard/stats Authorization: Bearer eyJ...; request context to Protected API: HTTP GET with Bearer token; Protected API to Protected API: Validate JWT signature & expiry; Protected API to request context: HTTP 200 revenue: ...; request context to Test Code: protectedResponse; Test Code to Test Code: expect(stats).toHaveProperty(revenue).
     participant Test as Test Code
     participant Req as request context
     participant Auth as Auth API
@@ -1341,22 +1381,30 @@ Mock API responses to test frontend behavior in isolation. This enables testing 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Route["page.route('**/api/products', handler)"] --> Navigate["page.goto('/shop')"]
+    accTitle: Example 53: API Mocking - Stubbing External Services
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: page.route(**/api/ products, handler), page.goto(/shop), Browser fires fetch to /api/products, Playwright intercepts request (real server NOT called), Route handler executes: delays, modifies, or blocks, Returns mock response to browser, UI renders based on mock data, Assertions on UI state (loading spinner, error msg). Connections: page.route(**/api/ products, handler) to page.goto(/shop), page.goto(/shop) to Browser fires fetch to /api/products, Browser fires fetch to /api/products to Playwright intercepts request (real server NOT called), Playwright intercepts request (real server NOT called) to Route handler executes: delays, modifies, or blocks, Route handler executes: delays, modifies, or blocks to Returns mock response to browser, Returns mock response to browser to UI renders based on mock data, UI renders based on mock data to Assertions on UI state (loading spinner, error msg).
+    Route["page.route('**/api/<br/>products', handler)"] --> Navigate["page.goto('/shop')"]
     Navigate --> BrowserReq["Browser fires fetch<br/>to /api/products"]
-    BrowserReq --> Intercept["Playwright intercepts request<br/>(real server NOT called)"]
-    Intercept --> Handler["Route handler executes:<br/>delays, modifies, or blocks"]
-    Handler --> MockResp["Returns mock response<br/>to browser"]
+    BrowserReq --> Intercept["Playwright<br/>intercepts request<br/>(real server NOT<br/>called)"]
+    Intercept --> Handler["Route handler<br/>executes:<br/>delays, modifies, or<br/>blocks"]
+    Handler --> MockResp["Returns mock<br/>response<br/>to browser"]
     MockResp --> UI["UI renders based<br/>on mock data"]
-    UI --> Assert["Assertions on UI state<br/>(loading spinner, error msg)"]
+    UI --> Assert["Assertions on UI<br/>state<br/>(loading spinner,<br/>error msg)"]
 
-    style Route fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Navigate fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style BrowserReq fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Intercept fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Handler fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style MockResp fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style UI fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Assert fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Route pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Navigate pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class BrowserReq pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Intercept pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Handler pal-029E73
+    class MockResp pal-029E73
+    class UI pal-DE8F05
+    class Assert pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1445,21 +1493,29 @@ Create test fixtures for API authentication and data setup. This reduces duplica
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Extend["base.extend({ authenticatedRequest })"] --> FixSetup["Fixture Setup:<br/>POST /auth/login → get token"]
-    FixSetup --> ConfigReq["Configure request context<br/>with extraHTTPHeaders"]
-    ConfigReq --> Use["await use(authenticatedRequest)<br/>(test body runs here)"]
-    Use --> Test1["test 1: GET /orders<br/>(token auto-included)"]
-    Use --> Test2["test 2: POST /orders<br/>(token auto-included)"]
+    accTitle: Example 54: API Test Fixtures - Reusable Setup
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: base.extend( authenticatedRequest ), Fixture Setup: POST /auth/login → get token, Configure request context with extraHTTPHeaders, await use(authenticated Request) (test body runs here), test 1: GET /orders (token auto-included), test 2: POST /orders (token auto-included), Fixture Teardown: POST /auth/logout. Connections: base.extend( authenticatedRequest ) to Fixture Setup: POST /auth/login → get token, Fixture Setup: POST /auth/login → get token to Configure request context with extraHTTPHeaders, Configure request context with extraHTTPHeaders to await use(authenticated Request) (test body runs here), await use(authenticated Request) (test body runs here) to test 1: GET /orders (token auto-included), await use(authenticated Request) (test body runs here) to test 2: POST /orders (token auto-included), test 1: GET /orders (token auto-included) to Fixture Teardown: POST /auth/logout, test 2: POST /orders (token auto-included) to Fixture Teardown: POST /auth/logout.
+    Extend["base.extend({<br/>authenticatedRequest<br/>})"] --> FixSetup["Fixture Setup:<br/>POST /auth/login →<br/>get token"]
+    FixSetup --> ConfigReq["Configure request<br/>context<br/>with<br/>extraHTTPHeaders"]
+    ConfigReq --> Use["await<br/>use(authenticated<br/>Request)<br/>(test body runs<br/>here)"]
+    Use --> Test1["test 1: GET /orders<br/>(token<br/>auto-included)"]
+    Use --> Test2["test 2: POST /orders<br/>(token<br/>auto-included)"]
     Test1 --> Cleanup["Fixture Teardown:<br/>POST /auth/logout"]
     Test2 --> Cleanup
 
-    style Extend fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style FixSetup fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style ConfigReq fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Use fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Test1 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Test2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Cleanup fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Extend pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class FixSetup pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class ConfigReq pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Use pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Test1 pal-029E73
+    class Test2 pal-029E73
+    class Cleanup pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1620,6 +1676,8 @@ Create page objects to encapsulate page-specific locators and actions. This impr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 56: Page Object Model Basics - Encapsulation
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Test File, LoginPage (Page Object), Locators (getters): usernameInput passwordInput submitButton errorMessage, Action Methods: navigate() login(user, pass), Assertion Helpers: expectError(msg), Playwright Page API (fill, click, goto), expect() assertions. Connections: Test File to LoginPage (Page Object), LoginPage (Page Object) to Locators (getters): usernameInput passwordInput submitButton errorMessage, LoginPage (Page Object) to Action Methods: navigate() login(user, pass), LoginPage (Page Object) to Assertion Helpers: expectError(msg), Action Methods: navigate() login(user, pass) to Playwright Page API (fill, click, goto), Locators (getters): usernameInput passwordInput submitButton errorMessage to Playwright Page API (fill, click, goto), Assertion Helpers: expectError(msg) to expect() assertions.
     Test["Test File"] --> PO["LoginPage<br/>(Page Object)"]
     PO --> Locators["Locators (getters):<br/>usernameInput<br/>passwordInput<br/>submitButton<br/>errorMessage"]
     PO --> Actions["Action Methods:<br/>navigate()<br/>login(user, pass)"]
@@ -1628,13 +1686,19 @@ graph TD
     Locators --> Page
     Assertions --> Expect["expect() assertions"]
 
-    style Test fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style PO fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Locators fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Actions fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Assertions fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Page fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Expect fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Test pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class PO pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Locators pal-029E73
+    class Actions pal-029E73
+    class Assertions pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Page pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Expect pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1751,21 +1815,29 @@ Create custom test fixtures for reusable setup, teardown, and test data. This el
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Extend["test = base.extend({ loginPage, authenticatedPage })"] --> Setup["Fixture Setup Phase"]
-    Setup --> LoginFix["loginPage fixture:<br/>creates LoginPage instance"]
-    Setup --> AuthFix["authenticatedPage fixture:<br/>navigates + logs in"]
-    LoginFix --> TestBody["Test Body Executes<br/>(await use() yields to test)"]
+    accTitle: Example 57: Test Fixtures - Custom Setup and Teardown
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: test = base.extend( loginPage, authenticatedPage ), Fixture Setup Phase, loginPage fixture: creates LoginPage instance, authenticatedPage fixture: navigates + logs in, Test Body Executes (await use() yields to test), Fixture Teardown Phase (runs after test, even on failure), Cleanup actions: logout, clear state, delete data. Connections: test = base.extend( loginPage, authenticatedPage ) to Fixture Setup Phase, Fixture Setup Phase to loginPage fixture: creates LoginPage instance, Fixture Setup Phase to authenticatedPage fixture: navigates + logs in, loginPage fixture: creates LoginPage instance to Test Body Executes (await use() yields to test), authenticatedPage fixture: navigates + logs in to Test Body Executes (await use() yields to test), Test Body Executes (await use() yields to test) to Fixture Teardown Phase (runs after test, even on failure), Fixture Teardown Phase (runs after test, even on failure) to Cleanup actions: logout, clear state, delete data.
+    Extend["test = base.extend({<br/>loginPage,<br/>authenticatedPage })"] --> Setup["Fixture Setup Phase"]
+    Setup --> LoginFix["loginPage fixture:<br/>creates LoginPage<br/>instance"]
+    Setup --> AuthFix["authenticatedPage<br/>fixture:<br/>navigates + logs in"]
+    LoginFix --> TestBody["Test Body Executes<br/>(await use() yields<br/>to test)"]
     AuthFix --> TestBody
-    TestBody --> Teardown["Fixture Teardown Phase<br/>(runs after test, even on failure)"]
-    Teardown --> Cleanup["Cleanup actions:<br/>logout, clear state, delete data"]
+    TestBody --> Teardown["Fixture Teardown<br/>Phase<br/>(runs after test,<br/>even on failure)"]
+    Teardown --> Cleanup["Cleanup actions:<br/>logout, clear state,<br/>delete data"]
 
-    style Extend fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Setup fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style LoginFix fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style AuthFix fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style TestBody fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Teardown fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Cleanup fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Extend pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Setup pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class LoginFix pal-029E73
+    class AuthFix pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class TestBody pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Teardown pal-CA9161
+    class Cleanup pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1880,24 +1952,32 @@ Use beforeEach, afterEach, beforeAll, and afterAll hooks for test lifecycle mana
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Suite["test.describe('Shopping cart tests')"] --> BeforeAll["test.beforeAll()<br/>Runs ONCE: create test product via API"]
-    BeforeAll --> BeforeEach1["test.beforeEach()<br/>Before test 1: goto homepage, clear localStorage"]
-    BeforeEach1 --> T1["test('adds product to cart')"]
-    T1 --> AfterEach1["test.afterEach()<br/>After test 1: clear localStorage"]
-    AfterEach1 --> BeforeEach2["test.beforeEach()<br/>Before test 2: goto homepage, clear localStorage"]
-    BeforeEach2 --> T2["test('removes product from cart')"]
-    T2 --> AfterEach2["test.afterEach()<br/>After test 2: clear localStorage"]
-    AfterEach2 --> AfterAll["test.afterAll()<br/>Runs ONCE: delete test product via API"]
+    accTitle: Example 58: Test Hooks - Setup and Teardown
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: test. describe(Shopping cart tests), test.beforeAll() Runs ONCE: create test product via API, test.beforeEach() Before test 1: goto homepage, clear localStorage, test(adds product to cart), test.afterEach() After test 1: clear localStorage, test.beforeEach() Before test 2: goto homepage, clear localStorage, test(removes product from cart), test.afterEach() After test 2: clear localStorage, test.afterAll() Runs ONCE: delete test product via API. Connections: test. describe(Shopping cart tests) to test.beforeAll() Runs ONCE: create test product via API, test.beforeAll() Runs ONCE: create test product via API to test.beforeEach() Before test 1: goto homepage, clear localStorage, test.beforeEach() Before test 1: goto homepage, clear localStorage to test(adds product to cart), test(adds product to cart) to test.afterEach() After test 1: clear localStorage, test.afterEach() After test 1: clear localStorage to test.beforeEach() Before test 2: goto homepage, clear localStorage, test.beforeEach() Before test 2: goto homepage, clear localStorage to test(removes product from cart), test(removes product from cart) to test.afterEach() After test 2: clear localStorage, test.afterEach() After test 2: clear localStorage to test.afterAll() Runs ONCE: delete test product via API.
+    Suite["test.<br/>describe('Shopping<br/>cart tests')"] --> BeforeAll["test.beforeAll()<br/>Runs ONCE: create<br/>test product via API"]
+    BeforeAll --> BeforeEach1["test.beforeEach()<br/>Before test 1: goto<br/>homepage, clear<br/>localStorage"]
+    BeforeEach1 --> T1["test('adds product<br/>to cart')"]
+    T1 --> AfterEach1["test.afterEach()<br/>After test 1: clear<br/>localStorage"]
+    AfterEach1 --> BeforeEach2["test.beforeEach()<br/>Before test 2: goto<br/>homepage, clear<br/>localStorage"]
+    BeforeEach2 --> T2["test('removes<br/>product from cart')"]
+    T2 --> AfterEach2["test.afterEach()<br/>After test 2: clear<br/>localStorage"]
+    AfterEach2 --> AfterAll["test.afterAll()<br/>Runs ONCE: delete<br/>test product via API"]
 
-    style Suite fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style BeforeAll fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style BeforeEach1 fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style BeforeEach2 fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style T1 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style T2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style AfterEach1 fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style AfterEach2 fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style AfterAll fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Suite pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class BeforeAll pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class BeforeEach1 pal-CC78BC
+    class BeforeEach2 pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class T1 pal-029E73
+    class T2 pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class AfterEach1 pal-CA9161
+    class AfterEach2 pal-CA9161
+    class AfterAll pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1998,22 +2078,30 @@ Use test annotations to add metadata, skip tests conditionally, or mark tests as
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Annotations["Test Annotations"] --> Skip["test.skip(condition)<br/>Skip conditionally based on env/flag"]
-    Annotations --> Slow["test.slow()<br/>Triple the default timeout"]
-    Annotations --> Fail["test.fail()<br/>Mark expected failure (known bug)"]
-    Annotations --> Info["test.info().annotations<br/>Add custom { type, description } metadata"]
-    Skip --> CI["Example: skip on CI<br/>skip(!process.env.CI, 'Local only')"]
-    Slow --> Timeout["Example: known slow operation<br/>timeout multiplied by 3"]
+    accTitle: Example 59: Test Annotations - Metadata and Conditional Execution
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Test Annotations, test.skip(condition) Skip conditionally based on env/flag, test.slow() Triple the default timeout, test.fail() Mark expected failure (known bug), test.info(). annotations Add custom type, description metadata, Example: skip on CI skip(!process.env. CI, Local only), Example: known slow operation timeout multiplied by 3, Metadata appears in HTML test report. Connections: Test Annotations to test.skip(condition) Skip conditionally based on env/flag, Test Annotations to test.slow() Triple the default timeout, Test Annotations to test.fail() Mark expected failure (known bug), Test Annotations to test.info(). annotations Add custom type, description metadata, test.skip(condition) Skip conditionally based on env/flag to Example: skip on CI skip(!process.env. CI, Local only), test.slow() Triple the default timeout to Example: known slow operation timeout multiplied by 3, test.info(). annotations Add custom type, description metadata to Metadata appears in HTML test report.
+    Annotations["Test Annotations"] --> Skip["test.skip(condition)<br/>Skip conditionally<br/>based on env/flag"]
+    Annotations --> Slow["test.slow()<br/>Triple the default<br/>timeout"]
+    Annotations --> Fail["test.fail()<br/>Mark expected<br/>failure (known bug)"]
+    Annotations --> Info["test.info().<br/>annotations<br/>Add custom { type,<br/>description }<br/>metadata"]
+    Skip --> CI["Example: skip on CI<br/>skip(!process.env.<br/>CI, 'Local only')"]
+    Slow --> Timeout["Example: known slow<br/>operation<br/>timeout multiplied<br/>by 3"]
     Info --> Report["Metadata appears in<br/>HTML test report"]
 
-    style Annotations fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Skip fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Slow fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Fail fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Info fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style CI fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Timeout fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Report fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Annotations pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Skip pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Slow pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Fail pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Info pal-029E73
+    class CI pal-DE8F05
+    class Timeout pal-CC78BC
+    class Report pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2110,6 +2198,8 @@ Configure test retries and timeouts to handle flaky tests and slow operations. T
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 60: Test Retries and Timeouts - Reliability Configuration
+    accDescr: State diagram with 6 items: start or end, Running, Passed, Failed, Retrying, FinalFail. Relationships: start or end to Running: Test starts (attempt 1); Running to Passed: Test assertions all pass; Running to Failed: Assertion or timeout fails; Failed to Retrying: retries > 0 remaining; Failed to FinalFail: No retries left; Retrying to Running: New attempt (fresh browser context); Passed to start or end: Report: PASS; FinalFail to start or end: Report: FAIL (after N+1 attempts).
     [*] --> Running: Test starts (attempt 1)
     Running --> Passed: Test assertions all pass
     Running --> Failed: Assertion or timeout fails

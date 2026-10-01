@@ -25,16 +25,22 @@ A Goose SQL migration file uses special comment directives to separate the "appl
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Goose migration file structure showing Up and Down sections
 graph TD
+    accTitle: Example 1: First SQL Migration File
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Migration File, Apply Block, Rollback Block, Database: schema applied, Database: schema reverted. Connections: Migration File to Apply Block (-- +goose Up), Migration File to Rollback Block (-- +goose Down), Apply Block to Database: schema applied (goose up), Rollback Block to Database: schema reverted (goose down).
     A[Migration File] -->|-- +goose Up| B[Apply Block]
     A -->|-- +goose Down| C[Rollback Block]
-    B -->|goose up| D[Database: schema applied]
-    C -->|goose down| E[Database: schema reverted]
+    B -->|goose up| D[Database: schema<br/>applied]
+    C -->|goose down| E[Database: schema<br/>reverted]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-DE8F05
+    class D pal-029E73
+    class E pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -272,16 +278,22 @@ Goose uses the filename to determine migration version order. The standard conve
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Migration file naming and execution order
 graph TD
-    A[00001_create_users.sql] -->|version 1| D[Applied first]
-    B[00002_create_expenses.sql] -->|version 2| E[Applied second]
-    C[00003_add_indexes.sql] -->|version 3| F[Applied third]
+    accTitle: Example 8: Migration File Naming Convention
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: 00001_create_users. sql, Applied first, 00002_create_ expenses.sql, Applied second, 00003_add_indexes. sql, Applied third. Connections: 00001_create_users. sql to Applied first (version 1), 00002_create_ expenses.sql to Applied second (version 2), 00003_add_indexes. sql to Applied third (version 3).
+    A[00001_create_users.<br/>sql] -->|version 1| D[Applied first]
+    B[00002_create_<br/>expenses.sql] -->|version 2| E[Applied second]
+    C[00003_add_indexes.<br/>sql] -->|version 3| F[Applied third]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CC78BC
+    class D pal-0173B2
+    class E pal-029E73
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -693,16 +705,23 @@ Go's `embed` package allows SQL migration files to be bundled into the compiled 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% embed.FS compile-time embedding flow
 graph TD
-    A[db/migrations/*.sql files] -->|go:embed directive at build time| B[embed.FS in binary]
-    B -->|fs.Sub strips migrations/ prefix| C[goose-compatible FS]
+    accTitle: Example 18: Embedding Migrations with Go embed.FS
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: db/migrations/*.sql files, embed.FS in binary, goose-compatible FS, Migration Provider, Database: migrations applied. Connections: db/migrations/*.sql files to embed.FS in binary (go:embed directive at build time), embed.FS in binary to goose-compatible FS (fs.Sub strips migrations/prefix), goose-compatible FS to Migration Provider (goose.NewProvider), Migration Provider to Database: migrations applied (provider.Up).
+    A[db/migrations/*.sql<br/>files] -->|go:embed directive<br/>at build time| B[embed.FS in binary]
+    B -->|fs.Sub strips<br/>migrations/prefix| C[goose-compatible FS]
     C -->|goose.NewProvider| D[Migration Provider]
-    D -->|provider.Up| E[Database: migrations applied]
+    D -->|provider.Up| E[Database: migrations<br/>applied]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go

@@ -18,9 +18,11 @@ Flux CD v2 continuously reconciles a Git repository's state with the cluster. `f
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 58: GitOps with Flux CD v2 — Bootstrap on K3s
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Git Repository github.com/org/fleet, Flux Source Controller watches repo, Flux Kustomize Controller applies manifests, Flux Helm Controller manages releases, K3s Cluster desired state. Connections: Git Repository github.com/org/fleet to Flux Source Controller watches repo (poll every 1m), Flux Source Controller watches repo to Flux Kustomize Controller applies manifests (Kustomization CRs), Flux Source Controller watches repo to Flux Helm Controller manages releases (HelmRelease CRs), Flux Kustomize Controller applies manifests to K3s Cluster desired state (kubectl apply), Flux Helm Controller manages releases to K3s Cluster desired state (helm upgrade).
     GIT["Git Repository<br/>github.com/org/fleet"]
-    FC["Flux Source Controller<br/>watches repo"]
-    FK["Flux Kustomize Controller<br/>applies manifests"]
+    FC["Flux Source<br/>Controller<br/>watches repo"]
+    FK["Flux Kustomize<br/>Controller<br/>applies manifests"]
     FH["Flux Helm Controller<br/>manages releases"]
     K3S["K3s Cluster<br/>desired state"]
 
@@ -30,11 +32,17 @@ graph LR
     FK -->|kubectl apply| K3S
     FH -->|helm upgrade| K3S
 
-    style GIT fill:#CA9161,stroke:#000,color:#fff
-    style FC fill:#0173B2,stroke:#000,color:#fff
-    style FK fill:#DE8F05,stroke:#000,color:#fff
-    style FH fill:#029E73,stroke:#000,color:#fff
-    style K3S fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class GIT pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class FC pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class FK pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class FH pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class K3S pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -392,7 +400,9 @@ Rancher provides a web UI and API for managing multiple K3s and Kubernetes clust
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    RANCHER["Rancher Management Cluster<br/>rancher.example.com"]
+    accTitle: Example 62: Multi-Cluster Management with Rancher v2.14.2
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Rancher Management Cluster rancher.example.com, K3s Cluster A Production, K3s Cluster B Staging, K3s Cluster C Edge, cattle-cluster-agent (outbound WebSocket). Connections: Rancher Management Cluster rancher.example.com to K3s Cluster A Production (manages), Rancher Management Cluster rancher.example.com to K3s Cluster B Staging (manages), Rancher Management Cluster rancher.example.com to K3s Cluster C Edge (manages), K3s Cluster A Production to cattle-cluster-agent (outbound WebSocket) (agent connects out), cattle-cluster-agent (outbound WebSocket) to Rancher Management Cluster rancher.example.com (WebSocket to).
+    RANCHER["Rancher Management<br/>Cluster<br/>rancher.example.com"]
     CL1["K3s Cluster A<br/>Production"]
     CL2["K3s Cluster B<br/>Staging"]
     CL3["K3s Cluster C<br/>Edge"]
@@ -404,11 +414,15 @@ graph TD
     CL1 -->|"agent connects out"| AGENT
     AGENT -->|"WebSocket to"| RANCHER
 
-    style RANCHER fill:#0173B2,stroke:#000,color:#fff
-    style CL1 fill:#029E73,stroke:#000,color:#fff
-    style CL2 fill:#029E73,stroke:#000,color:#fff
-    style CL3 fill:#029E73,stroke:#000,color:#fff
-    style AGENT fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class RANCHER pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class CL1 pal-029E73
+    class CL2 pal-029E73
+    class CL3 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class AGENT pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -654,8 +668,10 @@ OPA (Open Policy Agent) Gatekeeper enforces custom admission policies using the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 65: OPA Gatekeeper for Policy Enforcement
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: kubectl apply Pod, Kubernetes API Server, Gatekeeper ValidatingWebhook, ConstraintTemplate (Rego logic), Constraint (scope + params). Connections: kubectl apply Pod to Kubernetes API Server (admission request), Kubernetes API Server to Gatekeeper ValidatingWebhook (webhook call), Gatekeeper ValidatingWebhook to ConstraintTemplate (Rego logic) (evaluates against), ConstraintTemplate (Rego logic) to Constraint (scope + params) (scoped by), Gatekeeper ValidatingWebhook to Kubernetes API Server (allow / deny).
     REQ["kubectl apply Pod"]
-    API["Kubernetes API Server"]
+    API["Kubernetes API<br/>Server"]
     GK["Gatekeeper<br/>ValidatingWebhook"]
     CT["ConstraintTemplate<br/>(Rego logic)"]
     C["Constraint<br/>(scope + params)"]
@@ -666,11 +682,17 @@ graph LR
     CT -->|scoped by| C
     GK -->|"allow / deny"| API
 
-    style REQ fill:#CA9161,stroke:#000,color:#fff
-    style API fill:#0173B2,stroke:#000,color:#fff
-    style GK fill:#DE8F05,stroke:#000,color:#000
-    style CT fill:#029E73,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class REQ pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class API pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class GK pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class CT pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -865,19 +887,26 @@ Velero backs up Kubernetes resources (YAML) and persistent volume data to object
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 67: Velero for Cluster Backup and Restore
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: K3s Cluster Deployments + PVCs, Velero Controller + node-agent DaemonSet, S3 Bucket backup storage, Target Cluster (restore destination). Connections: K3s Cluster Deployments + PVCs to Velero Controller + node-agent DaemonSet (velero backup create), Velero Controller + node-agent DaemonSet to S3 Bucket backup storage (serializes YAML + PV snapshots), S3 Bucket backup storage to Target Cluster (restore destination) (velero restore create).
     K3S["K3s Cluster<br/>Deployments + PVCs"]
-    VC["Velero Controller<br/>+ node-agent DaemonSet"]
+    VC["Velero Controller<br/>+ node-agent<br/>DaemonSet"]
     S3["S3 Bucket<br/>backup storage"]
-    REST["Target Cluster<br/>(restore destination)"]
+    REST["Target Cluster<br/>(restore<br/>destination)"]
 
-    K3S -->|"velero backup create"| VC
-    VC -->|"serializes YAML + PV snapshots"| S3
-    S3 -->|"velero restore create"| REST
+    K3S -->|"velero backup<br/>create"| VC
+    VC -->|"serializes YAML +<br/>PV snapshots"| S3
+    S3 -->|"velero restore<br/>create"| REST
 
-    style K3S fill:#0173B2,stroke:#000,color:#fff
-    style VC fill:#DE8F05,stroke:#000,color:#000
-    style S3 fill:#029E73,stroke:#000,color:#fff
-    style REST fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class K3S pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class VC pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class REST pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -995,8 +1024,10 @@ The kube-prometheus-stack Helm chart deploys Prometheus, Alertmanager, Grafana, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 69: Prometheus and Grafana Stack via Helm
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Pods / Nodes (metrics endpoints), Prometheus scrapes via ServiceMonitor, Alertmanager routes alerts, Grafana dashboards, Slack / PagerDuty (notifications). Connections: Pods / Nodes (metrics endpoints) to Prometheus scrapes via ServiceMonitor (/metrics), Prometheus scrapes via ServiceMonitor to Alertmanager routes alerts (firing rules), Prometheus scrapes via ServiceMonitor to Grafana dashboards (data source), Alertmanager routes alerts to Slack / PagerDuty (notifications) (webhook).
     PODS["Pods / Nodes<br/>(metrics endpoints)"]
-    PROM["Prometheus<br/>scrapes via ServiceMonitor"]
+    PROM["Prometheus<br/>scrapes via<br/>ServiceMonitor"]
     AM["Alertmanager<br/>routes alerts"]
     GRAF["Grafana<br/>dashboards"]
     SLACK["Slack / PagerDuty<br/>(notifications)"]
@@ -1006,11 +1037,17 @@ graph LR
     PROM -->|"data source"| GRAF
     AM -->|"webhook"| SLACK
 
-    style PODS fill:#CA9161,stroke:#000,color:#fff
-    style PROM fill:#0173B2,stroke:#000,color:#fff
-    style AM fill:#DE8F05,stroke:#000,color:#000
-    style GRAF fill:#029E73,stroke:#000,color:#fff
-    style SLACK fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PODS pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PROM pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class AM pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GRAF pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class SLACK pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1324,8 +1361,10 @@ Grafana Tempo stores distributed traces and integrates with Grafana for trace vi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 72: Distributed Tracing with Tempo and Grafana
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Instrumented App (OTEL SDK), OpenTelemetry Collector (DaemonSet), Grafana Tempo trace storage, Grafana trace viewer. Connections: Instrumented App (OTEL SDK) to OpenTelemetry Collector (DaemonSet) (OTLP spans), OpenTelemetry Collector (DaemonSet) to Grafana Tempo trace storage (batch export), Grafana Tempo trace storage to Grafana trace viewer (data source).
     APP["Instrumented App<br/>(OTEL SDK)"]
-    OTELCOL["OpenTelemetry Collector<br/>(DaemonSet)"]
+    OTELCOL["OpenTelemetry<br/>Collector<br/>(DaemonSet)"]
     TEMPO["Grafana Tempo<br/>trace storage"]
     GRAF["Grafana<br/>trace viewer"]
 
@@ -1333,10 +1372,15 @@ graph LR
     OTELCOL -->|"batch export"| TEMPO
     TEMPO -->|"data source"| GRAF
 
-    style APP fill:#CA9161,stroke:#000,color:#fff
-    style OTELCOL fill:#DE8F05,stroke:#000,color:#000
-    style TEMPO fill:#0173B2,stroke:#000,color:#fff
-    style GRAF fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class APP pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class OTELCOL pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class TEMPO pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GRAF pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1516,19 +1560,26 @@ KEDA (Kubernetes Event-Driven Autoscaler) scales Deployments based on external e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    SRC["Event Source<br/>(SQS / Kafka / Redis)"]
+    accTitle: Example 74: KEDA — Event-Driven Autoscaling
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Event Source (SQS /Kafka /Redis), KEDA Operator reads queue depth, ScaledObject triggers + min/max replicas, Deployment scales 0 → N pods. Connections: Event Source (SQS /Kafka /Redis) to KEDA Operator reads queue depth (metric: queue depth), KEDA Operator reads queue depth to ScaledObject triggers + min/max replicas (evaluates), ScaledObject triggers + min/max replicas to Deployment scales 0 → N pods (adjusts replicas).
+    SRC["Event Source<br/>(SQS /Kafka /Redis)"]
     KEDA["KEDA Operator<br/>reads queue depth"]
-    SO["ScaledObject<br/>triggers + min/max replicas"]
+    SO["ScaledObject<br/>triggers + min/max<br/>replicas"]
     DEPLOY["Deployment<br/>scales 0 → N pods"]
 
-    SRC -->|"metric: queue depth"| KEDA
+    SRC -->|"metric: queue<br/>depth"| KEDA
     KEDA -->|"evaluates"| SO
     SO -->|"adjusts replicas"| DEPLOY
 
-    style SRC fill:#CA9161,stroke:#000,color:#fff
-    style KEDA fill:#0173B2,stroke:#000,color:#fff
-    style SO fill:#DE8F05,stroke:#000,color:#000
-    style DEPLOY fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class SRC pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class KEDA pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SO pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DEPLOY pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1776,19 +1827,26 @@ The system-upgrade-controller (SUC) manages in-place K3s upgrades using `Plan` c
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    PLAN["Plan CRD<br/>version: v1.36.1+k3s1<br/>concurrency: 1"]
-    SUC["system-upgrade-controller"]
-    N1["Node 1<br/>drain → upgrade → uncordon"]
-    N2["Node 2<br/>drain → upgrade → uncordon"]
+    accTitle: Example 77: K3s Upgrade via system-upgrade-controller
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Plan CRD version: v1.36.1+k3s1 concurrency: 1, system-upgrade- controller, Node 1 drain → upgrade → uncordon, Node 2 drain → upgrade → uncordon. Connections: Plan CRD version: v1.36.1+k3s1 concurrency: 1 to system-upgrade- controller (triggers), system-upgrade- controller to Node 1 drain → upgrade → uncordon (Job on node 1 first), Node 1 drain → upgrade → uncordon to Node 2 drain → upgrade → uncordon (complete → next).
+    PLAN["Plan CRD<br/>version:<br/>v1.36.1+k3s1<br/>concurrency: 1"]
+    SUC["system-upgrade-<br/>controller"]
+    N1["Node 1<br/>drain → upgrade →<br/>uncordon"]
+    N2["Node 2<br/>drain → upgrade →<br/>uncordon"]
 
     PLAN -->|"triggers"| SUC
-    SUC -->|"Job on node 1 first"| N1
+    SUC -->|"Job on node 1<br/>first"| N1
     N1 -->|"complete → next"| N2
 
-    style PLAN fill:#DE8F05,stroke:#000,color:#000
-    style SUC fill:#0173B2,stroke:#000,color:#fff
-    style N1 fill:#029E73,stroke:#000,color:#fff
-    style N2 fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PLAN pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class SUC pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class N1 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class N2 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1863,19 +1921,26 @@ K3s automatically takes etcd snapshots every 12 hours by default, storing them l
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 78: K3s Backup and Restore — etcd Snapshot
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: K3s etcd (embedded), etcd snapshot /var/lib/rancher/ k3s/server/db/ snapshots/, S3 / NFS (off-node copy), RESTORE, cluster-reset, cluster-reset-. Connections: RESTORE to cluster-reset, cluster-reset to cluster-reset-, K3s etcd (embedded) to etcd snapshot /var/lib/rancher/ k3s/server/db/ snapshots/ (every 12h auto or manual save), etcd snapshot /var/lib/rancher/ k3s/server/db/ snapshots/ to S3 / NFS (off-node copy) (copy off-node), S3 / NFS (off-node copy) to RESTORE (disaster recovery).
     ETCD["K3s etcd<br/>(embedded)"]
-    SNAP["etcd snapshot<br/>/var/lib/rancher/k3s/server/db/snapshots/"]
+    SNAP["etcd snapshot<br/>/var/lib/rancher/<br/>k3s/server/db/<br/>snapshots/"]
     S3["S3 / NFS<br/>(off-node copy)"]
-    RESTORE["k3s server<br/>--cluster-reset<br/>--cluster-reset-restore-path"]
+    RESTORE["k3s server<br/>--cluster-reset<br/>--cluster-reset-<br/>restore-path"]
 
     ETCD -->|"every 12h auto<br/>or manual save"| SNAP
     SNAP -->|"copy off-node"| S3
     S3 -->|"disaster recovery"| RESTORE
 
-    style ETCD fill:#0173B2,stroke:#000,color:#fff
-    style SNAP fill:#DE8F05,stroke:#000,color:#000
-    style S3 fill:#029E73,stroke:#000,color:#fff
-    style RESTORE fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class ETCD pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SNAP pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class RESTORE pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1931,26 +1996,34 @@ Replacing a failed HA server node requires removing the failed node from etcd, t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 79: HA Node Replacement in K3s Cluster
+    accDescr: Graph with 8 nodes and 5 connections. Nodes: Server 1 (healthy), Server 2 (FAILED), Server 3 (healthy), New Node (replacement), Step 1: kubectl delete node server-2, Step 2: etcdctl member remove server-2, STEP3, server. Connections: STEP3 to server, Server 2 (FAILED) to Step 1: kubectl delete node server-2 (triggers), Step 1: kubectl delete node server-2 to Step 2: etcdctl member remove server-2 (then), Step 2: etcdctl member remove server-2 to STEP3 (then), STEP3 to New Node (replacement) (joins as etcd member).
     S1["Server 1<br/>(healthy)"]
     S2["Server 2<br/>(FAILED)"]
     S3["Server 3<br/>(healthy)"]
     NEW["New Node<br/>(replacement)"]
-    STEP1["Step 1: kubectl delete node server-2"]
-    STEP2["Step 2: etcdctl member remove server-2"]
-    STEP3["Step 3: join new node with --server"]
+    STEP1["Step 1: kubectl<br/>delete node server-2"]
+    STEP2["Step 2: etcdctl<br/>member remove<br/>server-2"]
+    STEP3["Step 3: join new<br/>node with --server"]
 
     S2 -->|triggers| STEP1
     STEP1 -->|then| STEP2
     STEP2 -->|then| STEP3
-    STEP3 -->|"joins as etcd member"| NEW
+    STEP3 -->|"joins as etcd<br/>member"| NEW
 
-    style S1 fill:#029E73,stroke:#000,color:#fff
-    style S2 fill:#DE8F05,stroke:#000,color:#000
-    style S3 fill:#029E73,stroke:#000,color:#fff
-    style NEW fill:#0173B2,stroke:#000,color:#fff
-    style STEP1 fill:#CC78BC,stroke:#000,color:#000
-    style STEP2 fill:#CC78BC,stroke:#000,color:#000
-    style STEP3 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class S2 pal-DE8F05
+    class S3 pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class NEW pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class STEP1 pal-CC78BC
+    class STEP2 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class STEP3 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2136,6 +2209,8 @@ CRDs extend the Kubernetes API with custom resource types. An operator implement
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 81: Custom Resource Definitions — Write a Simple Operator
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: kubectl apply WebApp, K3s API Server (stores WebApp CR), Operator controller (watches WebApp CRD), Deployment + Service created. Connections: kubectl apply WebApp to K3s API Server (stores WebApp CR) (CR written), K3s API Server (stores WebApp CR) to Operator controller (watches WebApp CRD) (watch event), Operator controller (watches WebApp CRD) to Deployment + Service created (reconcile → creates).
     USER["kubectl apply WebApp"]
     API["K3s API Server<br/>(stores WebApp CR)"]
     OP["Operator controller<br/>(watches WebApp CRD)"]
@@ -2143,12 +2218,17 @@ graph LR
 
     USER -->|"CR written"| API
     API -->|"watch event"| OP
-    OP -->|"reconcile → creates"| DEPLOY
+    OP -->|"reconcile →<br/>creates"| DEPLOY
 
-    style USER fill:#CA9161,stroke:#000,color:#fff
-    style API fill:#0173B2,stroke:#000,color:#fff
-    style OP fill:#DE8F05,stroke:#000,color:#000
-    style DEPLOY fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class USER pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class API pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class OP pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DEPLOY pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2529,19 +2609,26 @@ The CIS Kubernetes Benchmark provides security configuration recommendations. K3
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    KBENCH["kube-bench<br/>CIS compliance scanner"]
-    API["API Server hardening<br/>--audit-log-path<br/>--anonymous-auth=false"]
-    KUBELET["Kubelet hardening<br/>--protect-kernel-defaults<br/>--read-only-port=0"]
+    accTitle: Example 84: K3s Security Hardening — CIS Kubernetes Benchmark
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: kube-bench CIS compliance scanner, API, audit-log-path, anonymous-, KUBELET, protect-kernel-, read-only-port, ETCD, client-cert-auth, auto-tls. Connections: API to audit-log-path, audit-log-path to anonymous-, KUBELET to protect-kernel-, protect-kernel- to read-only-port, ETCD to client-cert-auth, client-cert-auth to auto-tls, kube-bench CIS compliance scanner to API (validates), kube-bench CIS compliance scanner to KUBELET (validates), kube-bench CIS compliance scanner to ETCD (validates).
+    KBENCH["kube-bench<br/>CIS compliance<br/>scanner"]
+    API["API Server hardening<br/>--audit-log-path<br/>--anonymous-<br/>auth=false"]
+    KUBELET["Kubelet hardening<br/>--protect-kernel-<br/>defaults<br/>--read-only-port=0"]
     ETCD["etcd hardening<br/>--client-cert-auth<br/>--auto-tls=false"]
 
     KBENCH -->|"validates"| API
     KBENCH -->|"validates"| KUBELET
     KBENCH -->|"validates"| ETCD
 
-    style KBENCH fill:#0173B2,stroke:#000,color:#fff
-    style API fill:#DE8F05,stroke:#000,color:#000
-    style KUBELET fill:#029E73,stroke:#000,color:#fff
-    style ETCD fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class KBENCH pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class API pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class KUBELET pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ETCD pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

@@ -29,16 +29,22 @@ The PostgreSQL by-example tutorial guides you through 85 examples organized into
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner (Examples 1-30)<br/>0-40% Coverage<br/>Fundamentals"]
-    B["Intermediate (Examples 31-60)<br/>40-75% Coverage<br/>Production Ready"]
-    C["Advanced (Examples 61-85)<br/>75-95% Coverage<br/>Expert Mastery"]
+    accTitle: Learning Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner (Examples 1-30) 0-40 Coverage Fundamentals, Intermediate (Examples 31-60) 40-75 Coverage Production Ready, Advanced (Examples 61-85) 75-95 Coverage Expert Mastery. Connections: Beginner (Examples 1-30) 0-40 Coverage Fundamentals to Intermediate (Examples 31-60) 40-75 Coverage Production Ready (Master foundations), Intermediate (Examples 31-60) 40-75 Coverage Production Ready to Advanced (Examples 61-85) 75-95 Coverage Expert Mastery (Advanced patterns).
+    A["Beginner (Examples<br/>1-30)<br/>0-40% Coverage<br/>Fundamentals"]
+    B["Intermediate<br/>(Examples 31-60)<br/>40-75% Coverage<br/>Production Ready"]
+    C["Advanced (Examples<br/>61-85)<br/>75-95% Coverage<br/>Expert Mastery"]
 
     A -->|Master foundations| B
     B -->|Advanced patterns| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Philosophy

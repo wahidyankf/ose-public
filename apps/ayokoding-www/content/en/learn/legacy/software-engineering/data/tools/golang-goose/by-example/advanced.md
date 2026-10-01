@@ -25,14 +25,20 @@ These examples assume you understand beginner and intermediate concepts. All exa
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% AllowMissing: out-of-order migration application
 graph TD
-    A[DB has versions 1,2,4] -->|Normal mode| B[Error: version 3 missing]
-    A -->|AllowMissing=true| C[Apply version 3 out of order]
-    C --> D[DB has versions 1,2,3,4]
+    accTitle: Example 61: Custom goose.Provider with AllowMissing
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: DB has versions 1,2,4, Error: version 3 missing, Apply version 3 out of order, DB has versions 1,2,3,4. Connections: DB has versions 1,2,4 to Error: version 3 missing (Normal mode), DB has versions 1,2,4 to Apply version 3 out of order (AllowMissing=true), Apply version 3 out of order to DB has versions 1,2,3,4.
+    A[DB has versions<br/>1,2,4] -->|Normal mode| B[Error: version 3<br/>missing]
+    A -->|AllowMissing=true| C[Apply version 3 out<br/>of order]
+    C --> D[DB has versions<br/>1,2,3,4]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go
@@ -183,12 +189,18 @@ Adding a `NOT NULL` column with no default to a large live table causes a full t
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Zero-downtime column addition phases
 graph LR
-    A[Phase 1: ADD COLUMN NULL] --> B[Phase 2: Backfill rows]
-    B --> C[Phase 3: SET NOT NULL]
+    accTitle: Example 63: Zero-Downtime Column Addition
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Phase 1: ADD COLUMN NULL, Phase 2: Backfill rows, Phase 3: SET NOT NULL. Connections: Phase 1: ADD COLUMN NULL to Phase 2: Backfill rows, Phase 2: Backfill rows to Phase 3: SET NOT NULL.
+    A[Phase 1: ADD COLUMN<br/>NULL] --> B[Phase 2: Backfill<br/>rows]
+    B --> C[Phase 3: SET NOT<br/>NULL]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Phase 1 migration — add nullable column:**
@@ -268,14 +280,21 @@ Dropping a column that the application still reads causes errors at runtime. The
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Safe column removal phases
 graph LR
-    A[App: ignore column] --> B[Migration: DROP DEFAULT]
-    B --> C[Deploy new app version]
-    C --> D[Migration: DROP COLUMN]
+    accTitle: Example 64: Zero-Downtime Column Removal
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: App: ignore column, Migration: DROP DEFAULT, Deploy new app version, Migration: DROP COLUMN. Connections: App: ignore column to Migration: DROP DEFAULT, Migration: DROP DEFAULT to Deploy new app version, Deploy new app version to Migration: DROP COLUMN.
+    A[App: ignore column] --> B[Migration: DROP<br/>DEFAULT]
+    B --> C[Deploy new app<br/>version]
+    C --> D[Migration: DROP<br/>COLUMN]
 
-    style A fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class B pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Phase 1 — make column optional at DB level:**
@@ -637,18 +656,25 @@ CI/CD migration checks use `goose status` to detect unapplied migrations before 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% CI/CD migration pipeline stages
 graph LR
+    accTitle: Example 69: Migration in CI/CD Pipeline
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Build, Test with migrations, goose status check, Fail pipeline, Deploy app, goose up on prod DB. Connections: Build to Test with migrations, Test with migrations to goose status check, goose status check to Fail pipeline (Pending exists), goose status check to Deploy app (All applied), Deploy app to goose up on prod DB.
     A[Build] --> B[Test with migrations]
     B --> C{goose status check}
     C -->|Pending exists| D[Fail pipeline]
     C -->|All applied| E[Deploy app]
     E --> F[goose up on prod DB]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    class B pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go
@@ -956,12 +982,18 @@ Large features often need both DDL changes (SQL migrations) and data seeding or 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Hybrid SQL + Go migration ordering
 graph LR
-    A[00050_create_regions.sql] --> B[00051_seed_regions.go]
-    B --> C[00052_add_region_fk.sql]
+    accTitle: Example 72: Hybrid SQL + Go Migration Workflow
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: 00050_create_ regions.sql, 00051_seed_regions. go, 00052_add_region_fk. sql. Connections: 00050_create_ regions.sql to 00051_seed_regions. go, 00051_seed_regions. go to 00052_add_region_fk. sql.
+    A[00050_create_<br/>regions.sql] --> B[00051_seed_regions.<br/>go]
+    B --> C[00052_add_region_fk.<br/>sql]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **SQL migration — create table:**
@@ -1339,18 +1371,26 @@ Blue-green deployments run two environments simultaneously during a switch. Migr
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Blue-green migration compatibility window
 graph TD
-    A[Migration runs] --> B{New column backward-compatible?}
-    B -->|Yes: nullable + default| C[Both blue and green pods work]
-    B -->|No: NOT NULL no default| D[Blue pods crash - rollback required]
-    C --> E[Switch load balancer to green]
+    accTitle: Example 76: Blue-Green Deployment Migrations
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Migration runs, New column backward-compatible?, Both blue and green pods work, Blue pods crash - rollback required, Switch load balancer to green, Decommission blue. Connections: Migration runs to New column backward-compatible?, New column backward-compatible? to Both blue and green pods work (Yes: nullable + default), New column backward-compatible? to Blue pods crash - rollback required (No: NOT NULL no default), Both blue and green pods work to Switch load balancer to green, Switch load balancer to green to Decommission blue.
+    A[Migration runs] --> B{New column<br/>backward-compatible?}
+    B -->|Yes: nullable +<br/>default| C[Both blue and green<br/>pods work]
+    B -->|No: NOT NULL no<br/>default| D[Blue pods crash -<br/>rollback required]
+    C --> E[Switch load balancer<br/>to green]
     E --> F[Decommission blue]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CA9161
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **The backward-compatible migration:**

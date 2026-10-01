@@ -18,10 +18,12 @@ K3s ships as a self-contained binary with an install script that configures syst
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Install K3s Single-Node Server
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: curl install script get.k3s.io, k3s binary /usr/local/bin/k3s, systemd service k3s.service, Control Plane API + etcd + scheduler, Embedded agents containerd + kubelet. Connections: curl install script get.k3s.io to k3s binary /usr/local/bin/k3s (downloads + runs), k3s binary /usr/local/bin/k3s to systemd service k3s.service (registers), systemd service k3s.service to Control Plane API + etcd + scheduler (starts), systemd service k3s.service to Embedded agents containerd + kubelet (starts).
     A["curl install script<br/>get.k3s.io"]
     B["k3s binary<br/>/usr/local/bin/k3s"]
     C["systemd service<br/>k3s.service"]
-    D["Control Plane<br/>API + etcd + scheduler"]
+    D["Control Plane<br/>API + etcd +<br/>scheduler"]
     E["Embedded agents<br/>containerd + kubelet"]
 
     A -->|downloads + runs| B
@@ -29,11 +31,17 @@ graph TD
     C -->|starts| D
     C -->|starts| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -175,6 +183,8 @@ A Deployment manages a ReplicaSet that maintains a desired number of identical p
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 5: Create a Deployment with Replicas
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Deployment desired: 3 replicas, ReplicaSet selector: app=web, Pod 1 app=web, Pod 2 app=web, Pod 3 app=web. Connections: Deployment desired: 3 replicas to ReplicaSet selector: app=web (owns), ReplicaSet selector: app=web to Pod 1 app=web (creates + watches), ReplicaSet selector: app=web to Pod 2 app=web (creates + watches), ReplicaSet selector: app=web to Pod 3 app=web (creates + watches).
     D["Deployment<br/>desired: 3 replicas"]
     RS["ReplicaSet<br/>selector: app=web"]
     P1["Pod 1<br/>app=web"]
@@ -186,11 +196,15 @@ graph TD
     RS -->|creates + watches| P2
     RS -->|creates + watches| P3
 
-    style D fill:#0173B2,stroke:#000,color:#fff
-    style RS fill:#DE8F05,stroke:#000,color:#000
-    style P1 fill:#029E73,stroke:#000,color:#fff
-    style P2 fill:#029E73,stroke:#000,color:#fff
-    style P3 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class RS pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class P1 pal-029E73
+    class P2 pal-029E73
+    class P3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -231,6 +245,8 @@ A Service provides a stable network identity (IP + DNS name) for a set of pods. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 6: Expose a Deployment with a Service
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Client, Service ClusterIP 10.43.x.123:80 selector: app=web, Pod 1 10.42.x.5:80, Pod 2 10.42.x.6:80. Connections: Client to Service ClusterIP 10.43.x.123:80 selector: app=web (stable IP), Service ClusterIP 10.43.x.123:80 selector: app=web to Pod 1 10.42.x.5:80 (iptables DNAT), Service ClusterIP 10.43.x.123:80 selector: app=web to Pod 2 10.42.x.6:80 (iptables DNAT).
     C["Client"]
     SVC["Service ClusterIP<br/>10.43.x.123:80<br/>selector: app=web"]
     P1["Pod 1<br/>10.42.x.5:80"]
@@ -240,10 +256,14 @@ graph LR
     SVC -->|iptables DNAT| P1
     SVC -->|iptables DNAT| P2
 
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style SVC fill:#0173B2,stroke:#000,color:#fff
-    style P1 fill:#029E73,stroke:#000,color:#fff
-    style P2 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class SVC pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class P1 pal-029E73
+    class P2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -695,17 +715,23 @@ Joining a worker node to an existing K3s cluster requires the server's URL and n
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 14: Add and Verify a Worker Node Join
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Worker Node K3S_URL + K3S_TOKEN, K3s Server API :6443 node-token, k3s-agent.service starts on worker. Connections: Worker Node K3S_URL + K3S_TOKEN to k3s-agent.service starts on worker (curl install script), k3s-agent.service starts on worker to K3s Server API :6443 node-token (authenticate with token), K3s Server API :6443 node-token to k3s-agent.service starts on worker (register node).
     W["Worker Node<br/>K3S_URL + K3S_TOKEN"]
     S["K3s Server<br/>API :6443<br/>node-token"]
     K["k3s-agent.service<br/>starts on worker"]
 
-    W -->|"curl install script"| K
-    K -->|"authenticate with token"| S
+    W -->|"curl install<br/>script"| K
+    K -->|"authenticate with<br/>token"| S
     S -->|"register node"| K
 
-    style W fill:#CC78BC,stroke:#000,color:#000
-    style S fill:#0173B2,stroke:#000,color:#fff
-    style K fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class W pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class K pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -754,19 +780,26 @@ sudo systemctl status k3s-agent
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 15: Port-Forward to a Pod or Service
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: curl localhost:8080, kubectl port-forward (local process), K3s API Server :6443, Pod port 80. Connections: curl localhost:8080 to kubectl port-forward (local process) (TCP :8080), kubectl port-forward (local process) to K3s API Server :6443 (tunnel via kubeconfig), K3s API Server :6443 to Pod port 80 (kubelet proxy).
     CURL["curl localhost:8080"]
     KCF["kubectl port-forward<br/>(local process)"]
     API["K3s API Server<br/>:6443"]
     POD["Pod<br/>port 80"]
 
     CURL -->|"TCP :8080"| KCF
-    KCF -->|"tunnel via kubeconfig"| API
+    KCF -->|"tunnel via<br/>kubeconfig"| API
     API -->|"kubelet proxy"| POD
 
-    style CURL fill:#CA9161,stroke:#000,color:#fff
-    style KCF fill:#0173B2,stroke:#000,color:#fff
-    style API fill:#DE8F05,stroke:#000,color:#000
-    style POD fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class CURL pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class KCF pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class API pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class POD pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -902,9 +935,11 @@ K3s ships Traefik as the default ingress controller. A standard Kubernetes `Ingr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    CLI["curl client<br/>Host: hello.example.com"]
+    accTitle: Example 17: Basic Ingress with Traefik
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: curl client Host: hello.example.com, Traefik Node port 80, Ingress rule hello.example.com → hello-svc, Service: hello-svc port 80, Pod: hello-app port 5678. Connections: curl client Host: hello.example.com to Traefik Node port 80 (HTTP :80), Traefik Node port 80 to Ingress rule hello.example.com → hello-svc (matches Ingress rule), Ingress rule hello.example.com → hello-svc to Service: hello-svc port 80 (routes to), Service: hello-svc port 80 to Pod: hello-app port 5678 (forwards to).
+    CLI["curl client<br/>Host:<br/>hello.example.com"]
     TR["Traefik<br/>Node port 80"]
-    ING["Ingress rule<br/>hello.example.com → hello-svc"]
+    ING["Ingress rule<br/>hello.example.com →<br/>hello-svc"]
     SVC["Service: hello-svc<br/>port 80"]
     POD["Pod: hello-app<br/>port 5678"]
 
@@ -913,11 +948,17 @@ graph LR
     ING -->|routes to| SVC
     SVC -->|forwards to| POD
 
-    style CLI fill:#CA9161,stroke:#000,color:#fff
-    style TR fill:#0173B2,stroke:#000,color:#fff
-    style ING fill:#DE8F05,stroke:#000,color:#000
-    style SVC fill:#CC78BC,stroke:#000,color:#000
-    style POD fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class CLI pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class TR pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ING pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class SVC pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class POD pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1144,10 +1185,12 @@ K3s bundles `local-path-provisioner` which dynamically provisions `hostPath`-bac
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    PVC["PVC: data-pvc<br/>StorageClass: local-path<br/>Status: Pending"]
+    accTitle: Example 20: local-path-provisioner — PVC and Pod Volume
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: PVC: data-pvc StorageClass: local-path Status: Pending, Pod: storage-test mounts /data, local-path- provisioner watches PVCs, PV: hostPath /opt/local-path- provisioner/..., Node Disk (actual storage). Connections: PVC: data-pvc StorageClass: local-path Status: Pending to Pod: storage-test mounts /data (pod claims), Pod: storage-test mounts /data to local-path- provisioner watches PVCs (triggers binding), local-path- provisioner watches PVCs to PV: hostPath /opt/local-path- provisioner/... (creates), PV: hostPath /opt/local-path- provisioner/... to Node Disk (actual storage) (maps to), PV: hostPath /opt/local-path- provisioner/... to PVC: data-pvc StorageClass: local-path Status: Pending (bound to).
+    PVC["PVC: data-pvc<br/>StorageClass:<br/>local-path<br/>Status: Pending"]
     POD["Pod: storage-test<br/>mounts /data"]
-    PROV["local-path-provisioner<br/>watches PVCs"]
-    PV["PV: hostPath<br/>/opt/local-path-provisioner/..."]
+    PROV["local-path-<br/>provisioner<br/>watches PVCs"]
+    PV["PV: hostPath<br/>/opt/local-path-<br/>provisioner/..."]
     HOST["Node Disk<br/>(actual storage)"]
 
     PVC -->|pod claims| POD
@@ -1156,11 +1199,17 @@ graph TD
     PV -->|maps to| HOST
     PV -->|bound to| PVC
 
-    style PVC fill:#DE8F05,stroke:#000,color:#000
-    style POD fill:#0173B2,stroke:#000,color:#fff
-    style PROV fill:#CC78BC,stroke:#000,color:#000
-    style PV fill:#029E73,stroke:#000,color:#fff
-    style HOST fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PVC pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class POD pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PROV pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class PV pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class HOST pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1388,10 +1437,12 @@ Kubernetes health probes control pod lifecycle. Liveness probes restart containe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 22: Health Checks — Liveness, Readiness, and Startup Probes
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Container starts, startupProbe fails → wait passes → done, livenessProbe fails 3× → restart container, readinessProbe fails → remove from Service endpoints passes → add to Service endpoints, Container running. Connections: Container starts to startupProbe fails → wait passes → done (runs first), startupProbe fails → wait passes → done to Container running (passes once), Container running to livenessProbe fails 3× → restart container (ongoing check), Container running to readinessProbe fails → remove from Service endpoints passes → add to Service endpoints (ongoing check).
     START["Container starts"]
     SP["startupProbe<br/>fails → wait<br/>passes → done"]
-    LP["livenessProbe<br/>fails 3× → restart container"]
-    RP["readinessProbe<br/>fails → remove from Service endpoints<br/>passes → add to Service endpoints"]
+    LP["livenessProbe<br/>fails 3× → restart<br/>container"]
+    RP["readinessProbe<br/>fails → remove from<br/>Service endpoints<br/>passes → add to<br/>Service endpoints"]
     RUN["Container running"]
 
     START -->|runs first| SP
@@ -1399,11 +1450,17 @@ graph TD
     RUN -->|ongoing check| LP
     RUN -->|ongoing check| RP
 
-    style START fill:#0173B2,stroke:#000,color:#fff
-    style SP fill:#CA9161,stroke:#000,color:#fff
-    style LP fill:#DE8F05,stroke:#000,color:#000
-    style RP fill:#029E73,stroke:#000,color:#fff
-    style RUN fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class START pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class SP pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class LP pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RP pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class RUN pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1562,7 +1619,9 @@ A DaemonSet runs exactly one pod on every node (or every node matching a selecto
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    DS["DaemonSet: log-collector<br/>tolerates: control-plane NoSchedule"]
+    accTitle: Example 24: DaemonSet for Per-Node Agents
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: DaemonSet: log-collector tolerates: control-plane NoSchedule, Node: server-1 log-collector pod, Node: worker-1 log-collector pod, Node: worker-2 log-collector pod. Connections: DaemonSet: log-collector tolerates: control-plane NoSchedule to Node: server-1 log-collector pod (1 pod per node), DaemonSet: log-collector tolerates: control-plane NoSchedule to Node: worker-1 log-collector pod (1 pod per node), DaemonSet: log-collector tolerates: control-plane NoSchedule to Node: worker-2 log-collector pod (1 pod per node).
+    DS["DaemonSet:<br/>log-collector<br/>tolerates:<br/>control-plane<br/>NoSchedule"]
     N1["Node: server-1<br/>log-collector pod"]
     N2["Node: worker-1<br/>log-collector pod"]
     N3["Node: worker-2<br/>log-collector pod"]
@@ -1571,10 +1630,13 @@ graph TD
     DS -->|"1 pod per node"| N2
     DS -->|"1 pod per node"| N3
 
-    style DS fill:#0173B2,stroke:#000,color:#fff
-    style N1 fill:#029E73,stroke:#000,color:#fff
-    style N2 fill:#029E73,stroke:#000,color:#fff
-    style N3 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class DS pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class N1 pal-029E73
+    class N2 pal-029E73
+    class N3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

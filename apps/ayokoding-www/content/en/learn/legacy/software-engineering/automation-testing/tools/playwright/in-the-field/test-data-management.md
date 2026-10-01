@@ -466,8 +466,9 @@ export const test = base.extend<CleanupFixtures>({
 ## Production Data Management Architecture
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','background':'#fff','mainBkg':'#fff','secondaryBkg':'#f4f4f4','tertiaryBkg':'#f0f0f0'}}}%%
 graph TD
+    accTitle: Production Data Management Architecture
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Test, Factory, Data with Faker, API/Database, Database, Test Case, Cleanup Fixture. Connections: Test to Factory (calls), Factory to Data with Faker (generates), Data with Faker to API/Database (sent to), API/Database to Database (persists), Test to Test Case (uses data), Test Case to Cleanup Fixture (completes), Cleanup Fixture to Database (deletes).
     T[Test] -->|calls| F[Factory]
     F -->|generates| D[Data with Faker]
     D -->|sent to| API[API/Database]
@@ -476,11 +477,17 @@ graph TD
     TC -->|completes| C[Cleanup Fixture]
     C -->|deletes| DB
 
-    style T fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style API fill:#CC78BC,color:#fff
-    style DB fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class T pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class API pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class DB pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

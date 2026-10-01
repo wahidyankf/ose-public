@@ -553,7 +553,9 @@ The following diagram illustrates the progression from local emulation to real d
 
 ```mermaid
 flowchart TD
-    A[Playwright Test Suite] --> B{Testing Strategy}
+    accTitle: Mobile Testing Architecture
+    accDescr: Flowchart with 19 nodes and 23 connections. Nodes: Playwright Test Suite, Testing Strategy, Local Emulation, Cloud Real Devices, Viewport Emulation, User Agent Spoofing, Touch Events, Fast Feedback, BrowserStack/Sauce Labs, Appium, Real iOS Devices, Real Android Devices, and 7 more. Connections: Playwright Test Suite to Testing Strategy, Testing Strategy to Local Emulation, Testing Strategy to Cloud Real Devices, Local Emulation to Viewport Emulation, Local Emulation to User Agent Spoofing, Local Emulation to Touch Events, Viewport Emulation to Fast Feedback, User Agent Spoofing to Fast Feedback, Touch Events to Fast Feedback, Cloud Real Devices to BrowserStack/Sauce Labs, BrowserStack/Sauce Labs to Appium, BrowserStack/Sauce Labs to Real iOS Devices, and 11 more.
+    A[Playwright Test<br/>Suite] --> B{Testing Strategy}
 
     B --> C[Local Emulation]
     B --> D[Cloud Real Devices]
@@ -566,20 +568,20 @@ flowchart TD
     C2 --> C4
     C3 --> C4
 
-    D --> D1[BrowserStack/Sauce Labs]
+    D --> D1[BrowserStack/Sauce<br/>Labs]
     D1 --> D2[Appium]
 
     D1 --> D3[Real iOS Devices]
     D1 --> D4[Real Android Devices]
 
-    D3 --> D5[Comprehensive Coverage]
+    D3 --> D5[Comprehensive<br/>Coverage]
     D4 --> D5
 
     C4 --> E[Development Cycle]
-    D5 --> F[Production Validation]
+    D5 --> F[Production<br/>Validation]
 
     E --> G[Emulation First]
-    G --> H{Emulation Sufficient?}
+    G --> H{Emulation<br/>Sufficient?}
 
     H -->|Yes| I[Deploy to Staging]
     H -->|No| D5
@@ -587,14 +589,20 @@ flowchart TD
     D5 --> I
     I --> J[Deploy to Production]
 
-    style A fill:#0173B2,stroke:#015a8c,color:#fff
-    style B fill:#DE8F05,stroke:#b57204,color:#000
-    style C fill:#029E73,stroke:#027d5b,color:#fff
-    style D fill:#029E73,stroke:#027d5b,color:#fff
-    style D5 fill:#CC78BC,stroke:#a35f96,color:#000
-    style J fill:#CA9161,stroke:#a1734d,color:#000
 
-    linkStyle default stroke:#666,stroke-width:2px
+    linkStyle default stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D5 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class J pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Architecture explanation**:

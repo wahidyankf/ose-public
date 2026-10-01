@@ -37,16 +37,20 @@ This covers 5-30% of Ecto features - enough to build real applications while und
 ## Learning Path
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0066cc','primaryTextColor':'#000','primaryBorderColor':'#003d7a','lineColor':'#0066cc','secondaryColor':'#e6f2ff','tertiaryColor':'#fff'}}}%%
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Initial Setup (0-5), Quick Start (5-30), By-Example (30-95), Beginner Tutorial (0-40). Connections: Initial Setup (0-5) to Quick Start (5-30), Quick Start (5-30) to By-Example (30-95), Quick Start (5-30) to Beginner Tutorial (0-40).
     A["Initial Setup<br/>(0-5%)"] --> B["Quick Start<br/>(5-30%)"]
     B --> C["By-Example<br/>(30-95%)"]
     B --> D["Beginner Tutorial<br/>(0-40%)"]
 
-    style A fill:#e6f2ff,stroke:#0066cc,stroke-width:2px,color:#000
-    style B fill:#0066cc,stroke:#003d7a,stroke-width:3px,color:#fff
-    style C fill:#e6f2ff,stroke:#0066cc,stroke-width:2px,color:#000
-    style D fill:#e6f2ff,stroke:#0066cc,stroke-width:2px,color:#000
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:3px
+    class B pal-0173B2
+    class C pal-CC78BC
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Learning Objectives

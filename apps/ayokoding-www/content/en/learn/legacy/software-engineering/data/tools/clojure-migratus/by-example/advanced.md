@@ -25,20 +25,27 @@ Migratus exposes a `Protocol` abstraction that lets you implement a custom migra
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Custom store protocol hierarchy
 graph TD
-    A[migratus.protocols/Store] -->|implemented by| B[DatabaseStore]
+    accTitle: Example 61: Custom Migration Protocol
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: migratus.protocols/ Store, DatabaseStore, CustomStore, fetch-completed-ids, migrate-up!, migrate-down!, init!. Connections: migratus.protocols/ Store to DatabaseStore (implemented by), migratus.protocols/ Store to CustomStore (implemented by), CustomStore to fetch-completed-ids, CustomStore to migrate-up!, CustomStore to migrate-down!, CustomStore to init!.
+    A[migratus.protocols/<br/>Store] -->|implemented by| B[DatabaseStore]
     A -->|implemented by| C[CustomStore]
     C --> D[fetch-completed-ids]
     C --> E[migrate-up!]
     C --> F[migrate-down!]
     C --> G[init!]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style G fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -153,12 +160,18 @@ Removing a column safely requires three separate deployments to avoid errors in 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Three-phase column removal
 graph LR
-    A[Phase 1<br/>Ignore column in code] --> B[Phase 2<br/>Deploy + run migration]
+    accTitle: Example 63: Zero-Downtime Column Removal
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Phase 1 Ignore column in code, Phase 2 Deploy + run migration, Phase 3 Drop column. Connections: Phase 1 Ignore column in code to Phase 2 Deploy + run migration, Phase 2 Deploy + run migration to Phase 3 Drop column.
+    A[Phase 1<br/>Ignore column in<br/>code] --> B[Phase 2<br/>Deploy + run<br/>migration]
     B --> C[Phase 3<br/>Drop column]
 
-    style A fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Phase 1 — Stop referencing the column in application code (no migration yet):**
@@ -358,12 +371,18 @@ A data backfill populates a new column based on existing data. The safest patter
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Three-migration backfill pattern
 graph TD
+    accTitle: Example 67: Data Backfill Pattern
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Migration N ADD COLUMN nullable, Migration N+1 Backfill data, Migration N+2 SET NOT NULL. Connections: Migration N ADD COLUMN nullable to Migration N+1 Backfill data, Migration N+1 Backfill data to Migration N+2 SET NOT NULL.
     A[Migration N<br/>ADD COLUMN nullable] --> B[Migration N+1<br/>Backfill data]
     B --> C[Migration N+2<br/>SET NOT NULL]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Migration N — Add nullable column:**
@@ -426,16 +445,23 @@ Running Migratus migrations automatically in CI/CD ensures the database schema m
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% CI/CD migration pipeline
 graph LR
+    accTitle: Example 68: Migratus in CI/CD Pipeline
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Build artifact, Run migrations, Deploy application, Alert + halt, Health check. Connections: Build artifact to Run migrations, Run migrations to Deploy application (success), Run migrations to Alert + halt (failure), Deploy application to Health check.
     A[Build artifact] --> B[Run migrations]
     B -->|success| C[Deploy application]
     B -->|failure| D[Alert + halt]
     C --> E[Health check]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -604,18 +630,26 @@ Blue-green deployments require migrations to be backward-compatible with the cur
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Blue-green deployment sequence
 graph TD
+    accTitle: Example 71: Blue-Green Deployment Migrations
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Blue app running, Run migration backward-compat, Blue + new schema both work, Deploy green app, Health check passes, Decommission blue. Connections: Blue app running to Run migration backward-compat, Run migration backward-compat to Blue + new schema both work, Blue + new schema both work to Deploy green app, Deploy green app to Health check passes, Health check passes to Decommission blue.
     A[Blue app running] --> B[Run migration<br/>backward-compat]
     B --> C[Blue + new schema<br/>both work]
     C --> D[Deploy green app]
     D --> E[Health check passes]
     E --> F[Decommission blue]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -1463,6 +1497,8 @@ Complete observability for the migration lifecycle combines structured logging, 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Migration observability stack
 graph TD
+    accTitle: Example 85: Migration Observability and Alerting
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Migration Runner, Log Aggregator, Metrics Platform, Distributed Tracing, Incident Manager. Connections: Migration Runner to Log Aggregator (structured log), Migration Runner to Metrics Platform (counter/gauge), Migration Runner to Distributed Tracing (trace span), Log Aggregator to Incident Manager (alert rule), Metrics Platform to Incident Manager (threshold alert), Distributed Tracing to Incident Manager (slow span alert).
     A[Migration Runner] -->|structured log| B[Log Aggregator]
     A -->|counter/gauge| C[Metrics Platform]
     A -->|trace span| D[Distributed Tracing]
@@ -1470,11 +1506,15 @@ graph TD
     C -->|threshold alert| E
     D -->|slow span alert| E
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure

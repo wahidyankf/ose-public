@@ -40,12 +40,18 @@ Unlike narrative tutorials that build understanding through explanation and stor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner<br/>Examples 1-27<br/>Playbooks & Core Modules"] --> B["Intermediate<br/>Examples 28-54<br/>Roles & Templates"]
-    B --> C["Advanced<br/>Examples 55-80<br/>Collections & Testing"]
+    accTitle: Learning Path
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: A, Core, B, Templates, C. Connections: A to B, A to Templates, Core to B, Core to Templates, B to C.
+    A["Beginner<br/>Examples 1-27<br/>Playbooks & Core<br/>Modules"] --> B["Intermediate<br/>Examples 28-54<br/>Roles & Templates"]
+    B --> C["Advanced<br/>Examples 55-80<br/>Collections &<br/>Testing"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Progress from Ansible fundamentals (playbooks, inventory, core modules) through production patterns (roles, templates, vault) to advanced automation (custom modules, collections, testing). Each level builds on the previous, introducing more sophisticated Ansible features and real-world patterns.

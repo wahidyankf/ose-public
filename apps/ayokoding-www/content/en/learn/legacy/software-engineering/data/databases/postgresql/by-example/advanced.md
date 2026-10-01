@@ -18,22 +18,30 @@ GIN (Generalized Inverted Index) indexes excel at indexing arrays, JSONB, and fu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 61: GIN Indexes for Full-Text Search
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Document Text, to_tsvector() Tokenization, tsvector postgresql database tutorial, GIN Index, Fast Full-Text Search. Connections: Document Text to to_tsvector() Tokenization, to_tsvector() Tokenization to tsvector postgresql database tutorial, tsvector postgresql database tutorial to GIN Index, GIN Index to Fast Full-Text Search.
     A["Document Text"]
     B["to_tsvector()<br/>Tokenization"]
-    C["tsvector<br/>'postgresql' 'database' 'tutorial'"]
+    C["tsvector<br/>'postgresql'<br/>'database'<br/>'tutorial'"]
     D["GIN Index"]
-    E["Fast Full-Text Search"]
+    E["Fast Full-Text<br/>Search"]
 
     A --> B
     B --> C
     C --> D
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -192,6 +200,8 @@ GiST (Generalized Search Tree) indexes support geometric types, range types, and
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 62: GiST Indexes for Geometric and Range Data
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Point/Range Data, GiST Index (B-tree-like), Spatial Queries (Distance, Overlap), Fast Results. Connections: Point/Range Data to GiST Index (B-tree-like), GiST Index (B-tree-like) to Spatial Queries (Distance, Overlap), Spatial Queries (Distance, Overlap) to Fast Results.
     A["Point/Range Data"]
     B["GiST Index<br/>(B-tree-like)"]
     C["Spatial Queries<br/>(Distance, Overlap)"]
@@ -201,10 +211,15 @@ graph TD
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -367,10 +382,12 @@ Expression indexes index computed values (functions, operators) instead of raw c
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Raw Data<br/>(email: 'Alice@Example.com')"]
+    accTitle: Example 63: Expression Indexes
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Raw Data (email: Alice@Example.com), Expression LOWER(email), Index Stores (alice@example.com → row ID), Query WHERE LOWER(email) = alice@example.com, Fast Lookup (Uses index). Connections: Raw Data (email: Alice@Example.com) to Expression LOWER(email), Expression LOWER(email) to Index Stores (alice@example.com → row ID), Query WHERE LOWER(email) = alice@example.com to Index Stores (alice@example.com → row ID), Index Stores (alice@example.com → row ID) to Fast Lookup (Uses index).
+    A["Raw Data<br/>(email:<br/>'Alice@Example.com')"]
     B["Expression<br/>LOWER(email)"]
-    C["Index Stores<br/>('alice@example.com' → row ID)"]
-    D["Query<br/>WHERE LOWER(email) = 'alice@example.com'"]
+    C["Index Stores<br/>('alice@example.com'<br/>→ row ID)"]
+    D["Query<br/>WHERE LOWER(email) =<br/>'alice@example.com'"]
     E["Fast Lookup<br/>(Uses index)"]
 
     A --> B
@@ -378,11 +395,16 @@ graph TD
     D --> C
     C --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -520,13 +542,15 @@ Covering indexes store additional columns in index leaf nodes - enables index-on
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Query<br/>SELECT name, email WHERE id = 123"]
+    accTitle: Example 64: Covering Indexes
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Query SELECT name, email WHERE id = 123, Regular Index (id only), Covering Index (id INCLUDE name, email), Heap Access Required, Index-Only Scan, Slow (2 I/O operations), Fast (1 I/O operation). Connections: Query SELECT name, email WHERE id = 123 to Regular Index (id only), Query SELECT name, email WHERE id = 123 to Covering Index (id INCLUDE name, email), Regular Index (id only) to Heap Access Required, Covering Index (id INCLUDE name, email) to Index-Only Scan, Heap Access Required to Slow (2 I/O operations), Index-Only Scan to Fast (1 I/O operation).
+    A["Query<br/>SELECT name, email<br/>WHERE id = 123"]
     B["Regular Index<br/>(id only)"]
-    C["Covering Index<br/>(id INCLUDE name, email)"]
+    C["Covering Index<br/>(id INCLUDE name,<br/>email)"]
     D["Heap Access Required"]
     E["Index-Only Scan"]
-    F["Slow (2 I/O operations)"]
-    G["Fast (1 I/O operation)"]
+    F["Slow (2 I/O<br/>operations)"]
+    G["Fast (1 I/O<br/>operation)"]
 
     A --> B
     A --> C
@@ -535,13 +559,18 @@ graph TD
     D --> F
     E --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#000
-    style G fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    class F pal-DE8F05
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -733,22 +762,29 @@ Index-only scans retrieve all required data from index without accessing table h
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 65: Index-Only Scans
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Query Execution, Check Visibility Map, All Rows Visible?, Index-Only Scan, Index Scan + Heap Fetches. Connections: Query Execution to Check Visibility Map, Check Visibility Map to All Rows Visible?, All Rows Visible? to Index-Only Scan (Yes), All Rows Visible? to Index Scan + Heap Fetches (No).
     A["Query Execution"]
     B["Check Visibility Map"]
     C["All Rows Visible?"]
     D["Index-Only Scan"]
-    E["Index Scan + Heap Fetches"]
+    E["Index Scan + Heap<br/>Fetches"]
 
     A --> B
     B --> C
     C -->|Yes| D
     C -->|No| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2028,12 +2064,14 @@ VACUUM reclaims dead tuple space and updates visibility map - essential for inde
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["INSERT/UPDATE/DELETE<br/>(Creates dead tuples)"]
-    B["Dead Tuples<br/>(Invisible rows, wasted space)"]
+    accTitle: Example 70: Vacuum and Analyze
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: INSERT/UPDATE/DELETE (Creates dead tuples), Dead Tuples (Invisible rows, wasted space), VACUUM (Reclaim space), VACUUM ANALYZE (Reclaim + update stats), Visibility Map Updated (Enables index-only scans), Planner Stats Updated (Optimal query plans). Connections: INSERT/UPDATE/DELETE (Creates dead tuples) to Dead Tuples (Invisible rows, wasted space), Dead Tuples (Invisible rows, wasted space) to VACUUM (Reclaim space), Dead Tuples (Invisible rows, wasted space) to VACUUM ANALYZE (Reclaim + update stats), VACUUM (Reclaim space) to Visibility Map Updated (Enables index-only scans), VACUUM ANALYZE (Reclaim + update stats) to Visibility Map Updated (Enables index-only scans), VACUUM ANALYZE (Reclaim + update stats) to Planner Stats Updated (Optimal query plans).
+    A["INSERT/UPDATE/DELETE<br/>(Creates dead<br/>tuples)"]
+    B["Dead Tuples<br/>(Invisible rows,<br/>wasted space)"]
     C["VACUUM<br/>(Reclaim space)"]
-    D["VACUUM ANALYZE<br/>(Reclaim + update stats)"]
-    E["Visibility Map Updated<br/>(Enables index-only scans)"]
-    F["Planner Stats Updated<br/>(Optimal query plans)"]
+    D["VACUUM ANALYZE<br/>(Reclaim + update<br/>stats)"]
+    E["Visibility Map<br/>Updated<br/>(Enables index-only<br/>scans)"]
+    F["Planner Stats<br/>Updated<br/>(Optimal query<br/>plans)"]
 
     A --> B
     B --> C
@@ -2042,12 +2080,18 @@ graph TD
     D --> E
     D --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#000
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -2515,12 +2559,14 @@ Range partitioning divides large tables into smaller partitions based on value r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["orders (PARTITION BY RANGE(order_date))"]
+    accTitle: Example 72: Table Partitioning
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: orders (PARTITION BY RANGE(order_date)), orders_2023 Jan 1 - Dec 31 2023, orders_2024 Jan 1 - Dec 31 2024, orders_2025 Jan 1 - Dec 31 2025, Query: WHERE order_date = 2024-06-01, Partition Pruning (scans only orders_2024). Connections: orders (PARTITION BY RANGE(order_date)) to orders_2023 Jan 1 - Dec 31 2023, orders (PARTITION BY RANGE(order_date)) to orders_2024 Jan 1 - Dec 31 2024, orders (PARTITION BY RANGE(order_date)) to orders_2025 Jan 1 - Dec 31 2025, Query: WHERE order_date = 2024-06-01 to Partition Pruning (scans only orders_2024), Partition Pruning (scans only orders_2024) to orders_2024 Jan 1 - Dec 31 2024.
+    A["orders (PARTITION BY<br/>RANGE(order_date))"]
     B["orders_2023<br/>Jan 1 - Dec 31 2023"]
     C["orders_2024<br/>Jan 1 - Dec 31 2024"]
     D["orders_2025<br/>Jan 1 - Dec 31 2025"]
-    E["Query: WHERE order_date = '2024-06-01'"]
-    F["Partition Pruning<br/>(scans only orders_2024)"]
+    E["Query: WHERE<br/>order_date =<br/>'2024-06-01'"]
+    F["Partition Pruning<br/>(scans only<br/>orders_2024)"]
 
     A --> B
     A --> C
@@ -2528,12 +2574,18 @@ graph TD
     E --> F
     F --> C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -3130,12 +3182,14 @@ Logical replication enables selective data replication (specific tables, columns
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Publisher Database<br/>(example_75_publisher)"]
+    accTitle: Example 75: Logical Replication Basics
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Publisher Database (example_75_ publisher), Publication (my_publication), WAL Stream (logical decoding), Subscriber Database (example_75_ subscriber), Subscription (my_subscription), Replicated Tables (products, categories). Connections: Publisher Database (example_75_ publisher) to Publication (my_publication), Publication (my_publication) to WAL Stream (logical decoding), WAL Stream (logical decoding) to Subscription (my_subscription), Subscriber Database (example_75_ subscriber) to Subscription (my_subscription), Subscription (my_subscription) to Replicated Tables (products, categories).
+    A["Publisher Database<br/>(example_75_<br/>publisher)"]
     B["Publication<br/>(my_publication)"]
     C["WAL Stream<br/>(logical decoding)"]
-    D["Subscriber Database<br/>(example_75_subscriber)"]
+    D["Subscriber Database<br/>(example_75_<br/>subscriber)"]
     E["Subscription<br/>(my_subscription)"]
-    F["Replicated Tables<br/>(products, categories)"]
+    F["Replicated Tables<br/>(products,<br/>categories)"]
 
     A --> B
     B --> C
@@ -3143,12 +3197,18 @@ graph LR
     D --> E
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CA9161,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -3954,9 +4014,11 @@ pg_stat views provide real-time database performance metrics - essential for ide
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 80: Monitoring with pgstat Views
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: PostgreSQL Activity, pg_stat_activity (Live queries, locks), pg_stat_user_tables (Table access patterns), pg_stat_user_indexes (Index usage), pg_stat_statements (Query performance), Performance Insights (Tuning decisions). Connections: PostgreSQL Activity to pg_stat_activity (Live queries, locks), PostgreSQL Activity to pg_stat_user_tables (Table access patterns), PostgreSQL Activity to pg_stat_user_indexes (Index usage), PostgreSQL Activity to pg_stat_statements (Query performance), pg_stat_activity (Live queries, locks) to Performance Insights (Tuning decisions), pg_stat_user_tables (Table access patterns) to Performance Insights (Tuning decisions), pg_stat_user_indexes (Index usage) to Performance Insights (Tuning decisions), pg_stat_statements (Query performance) to Performance Insights (Tuning decisions).
     A["PostgreSQL Activity"]
-    B["pg_stat_activity<br/>(Live queries, locks)"]
-    C["pg_stat_user_tables<br/>(Table access patterns)"]
+    B["pg_stat_activity<br/>(Live queries,<br/>locks)"]
+    C["pg_stat_user_tables<br/>(Table access<br/>patterns)"]
     D["pg_stat_user_indexes<br/>(Index usage)"]
     E["pg_stat_statements<br/>(Query performance)"]
     F["Performance Insights<br/>(Tuning decisions)"]
@@ -3970,12 +4032,18 @@ graph TD
     D --> F
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -4668,12 +4736,14 @@ Write-Ahead Logging ensures durability and enables point-in-time recovery - crit
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Transaction<br/>(INSERT/UPDATE/DELETE)"]
+    accTitle: Example 83: Write-Ahead Logging
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Transaction (INSERT/UPDATE/ DELETE), WAL Buffer (In-memory log), WAL Files (pg_wal/ on disk), Data Files (Heap/Indexes), Standby Server (Streaming replication), Point-in-Time Recovery (pg_restore + WAL replay). Connections: Transaction (INSERT/UPDATE/ DELETE) to WAL Buffer (In-memory log), WAL Buffer (In-memory log) to WAL Files (pg_wal/ on disk), WAL Files (pg_wal/ on disk) to Data Files (Heap/Indexes), WAL Files (pg_wal/ on disk) to Standby Server (Streaming replication), WAL Files (pg_wal/ on disk) to Point-in-Time Recovery (pg_restore + WAL replay).
+    A["Transaction<br/>(INSERT/UPDATE/<br/>DELETE)"]
     B["WAL Buffer<br/>(In-memory log)"]
     C["WAL Files<br/>(pg_wal/ on disk)"]
     D["Data Files<br/>(Heap/Indexes)"]
-    E["Standby Server<br/>(Streaming replication)"]
-    F["Point-in-Time Recovery<br/>(pg_restore + WAL replay)"]
+    E["Standby Server<br/>(Streaming<br/>replication)"]
+    F["Point-in-Time<br/>Recovery<br/>(pg_restore + WAL<br/>replay)"]
 
     A --> B
     B --> C
@@ -4681,12 +4751,18 @@ graph LR
     C --> E
     C --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CA9161,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql

@@ -562,8 +562,9 @@ export const test = base.extend({
 ## Fixture Scope and Lifecycle Diagram
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','background':'#fff','mainBkg':'#fff','secondaryBkg':'#f4f4f4','tertiaryBkg':'#f0f0f0'}}}%%
 sequenceDiagram
+    accTitle: Fixture Scope and Lifecycle Diagram
+    accDescr: Sequence diagram between Worker Process, Test-Scoped Fixture, Worker-Scoped Fixture, Test 1, Test 2. Messages: Worker Process to Worker-Scoped Fixture: Setup (once per worker); Worker-Scoped Fixture to Test 1: Provide shared resource; Test 1 to Test-Scoped Fixture: Setup (per test); Test-Scoped Fixture to Test 1: Run test; Test 1 to Test-Scoped Fixture: Teardown (per test); Worker-Scoped Fixture to Test 2: Provide shared resource; Test 2 to Test-Scoped Fixture: Setup (per test); Test-Scoped Fixture to Test 2: Run test; Test 2 to Test-Scoped Fixture: Teardown (per test); Worker Process to Worker-Scoped Fixture: Teardown (once per worker).
     participant Worker as Worker Process
     participant TestScope as Test-Scoped Fixture
     participant WorkerScope as Worker-Scoped Fixture

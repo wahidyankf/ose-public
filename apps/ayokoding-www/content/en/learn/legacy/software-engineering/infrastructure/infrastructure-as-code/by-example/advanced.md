@@ -115,18 +115,26 @@ Terraform Cloud provides remote state storage, plan history, and team collaborat
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 59: Terraform Cloud Workspace Configuration
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Local Terraform CLI, Terraform Cloud API, Remote State Storage, Remote Plan Execution, Policy Enforcement, Apply on Approval. Connections: Local Terraform CLI to Terraform Cloud API (terraform init), Terraform Cloud API to Remote State Storage, Terraform Cloud API to Remote Plan Execution, Terraform Cloud API to Policy Enforcement, Remote Plan Execution to Apply on Approval.
   A["Local Terraform CLI"] -->|terraform init| B["Terraform Cloud API"]
   B --> C["Remote State Storage"]
-  B --> D["Remote Plan Execution"]
+  B --> D["Remote Plan<br/>Execution"]
   B --> E["Policy Enforcement"]
   D --> F["Apply on Approval"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
-  style F fill:#0173B2,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  class F pal-0173B2
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -260,20 +268,28 @@ Sentinel is HashiCorp's policy-as-code framework embedded in Terraform Cloud/Ent
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 61: Sentinel Policy Enforcement
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: terraform plan, Sentinel Engine, Policy Check, terraform apply, Warning + Apply, Override Required, Apply Blocked. Connections: terraform plan to Sentinel Engine, Sentinel Engine to Policy Check, Policy Check to terraform apply (Pass), Policy Check to Warning + Apply (Fail (Advisory)), Policy Check to Override Required (Fail (Soft-Mandatory)), Policy Check to Apply Blocked (Fail (Hard-Mandatory)).
   A["terraform plan"] --> B["Sentinel Engine"]
   B --> C{Policy Check}
   C -->|"Pass"| D["terraform apply"]
   C -->|"Fail (Advisory)"| E["Warning + Apply"]
-  C -->|"Fail (Soft-Mandatory)"| F["Override Required"]
-  C -->|"Fail (Hard-Mandatory)"| G["Apply Blocked"]
+  C -->|"Fail<br/>(Soft-Mandatory)"| F["Override Required"]
+  C -->|"Fail<br/>(Hard-Mandatory)"| G["Apply Blocked"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#fff
-  style F fill:#DE8F05,stroke:#000,color:#fff
-  style G fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class E pal-CC78BC
+  class F pal-DE8F05
+  class G pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -551,6 +567,8 @@ Blue-green deployments maintain two identical environments, switching traffic be
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 65: Blue-Green Infrastructure Deployment
+  accDescr: Graph with 8 nodes and 6 connections. Nodes: Load Balancer, Blue Env v1.0, Green Env v1.1, Deploy v1.1, Switch Traffic, Load Balancer, Green Env v1.1, Blue Env v1.0. Connections: Load Balancer to Blue Env v1.0 (Active (100)), Load Balancer to Green Env v1.1 (Idle), Deploy v1.1 to Green Env v1.1, Switch Traffic to Load Balancer, Load Balancer to Green Env v1.1 (Active (100)), Load Balancer to Blue Env v1.0 (Idle).
   A["Load Balancer"] -->|"Active (100%)"| B["Blue Env v1.0"]
   A -.->|"Idle"| C["Green Env v1.1"]
   D["Deploy v1.1"] --> C
@@ -561,14 +579,20 @@ graph TD
     F -.->|"Idle"| H["Blue Env v1.0"]
   end
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
-  style F fill:#0173B2,stroke:#000,color:#fff
-  style G fill:#029E73,stroke:#000,color:#fff
-  style H fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  class B pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class D pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  class F pal-0173B2
+  class G pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class H pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -742,6 +766,8 @@ Atlantis is an open-source Terraform pull request automation server that impleme
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 67: GitOps Workflow with Atlantis
+  accDescr: Sequence diagram between Developer, GitHub, Atlantis, Terraform, Cloud Provider. Messages: Developer to GitHub: Push branch + open PR; GitHub to Atlantis: Webhook: PR opened; Atlantis to Terraform: terraform plan; Terraform to Cloud Provider: Read current state; Cloud Provider to Terraform: Current state; Terraform to Atlantis: Plan output; Atlantis to GitHub: Post plan as PR comment; Developer to GitHub: Comment atlantis apply; GitHub to Atlantis: Webhook: apply comment; Atlantis to Terraform: terraform apply; Terraform to Cloud Provider: Apply changes; Cloud Provider to Terraform: Applied; and 1 more.
   participant Dev as Developer
   participant GH as GitHub
   participant At as Atlantis
@@ -927,16 +953,23 @@ Terratest is a Go library that writes automated tests for Terraform infrastructu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 69: Terratest for Infrastructure Testing
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Test Code (Go), Deploy + Provision terraform apply, Real AWS/GCP/Azure Assertions run, terraform destroy, Log failure + destroy. Connections: Test Code (Go) to Deploy + Provision terraform apply, Deploy + Provision terraform apply to Real AWS/GCP/Azure Assertions run, Real AWS/GCP/Azure Assertions run to terraform destroy (Pass), Real AWS/GCP/Azure Assertions run to Log failure + destroy (Fail).
   A["Test Code (Go)"] --> B["Deploy + Provision<br/>terraform apply"]
   B --> C["Real AWS/GCP/Azure<br/>Assertions run"]
   C -- Pass --> D["terraform destroy"]
-  C -- Fail --> E["Log failure + destroy"]
+  C -- Fail --> E["Log failure +<br/>destroy"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  class E pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go
@@ -1119,18 +1152,25 @@ Vault provides secrets management for Terraform by injecting secrets at plan/app
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 71: HashiCorp Vault Integration
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Terraform, Vault, AWS STS Credentials, DB Password, AWS Resources, RDS Instance. Connections: Terraform to Vault (AppRole Auth), Vault to AWS STS Credentials (Dynamic Secret), Vault to DB Password (KV Secret), AWS STS Credentials to AWS Resources, DB Password to RDS Instance.
   A["Terraform"] -->|"AppRole Auth"| B["Vault"]
   B -->|"Dynamic Secret"| C["AWS STS Credentials"]
   B -->|"KV Secret"| D["DB Password"]
   C --> E["AWS Resources"]
   D --> F["RDS Instance"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
-  style F fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  class D pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  class F pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -1643,16 +1683,23 @@ Infrastructure as Code enables fully automated disaster recovery by defining rec
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Primary Region us-east-1"] -->|"RDS Replication"| B["DR Region us-west-2"]
+  accTitle: Example 77: Disaster Recovery Automation
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Primary Region us-east-1, DR Region us-west-2, DR Storage, DR Trigger: Runbook, Fully Operational DR. Connections: Primary Region us-east-1 to DR Region us-west-2 (RDS Replication), Primary Region us-east-1 to DR Storage (S3 Replication), DR Trigger: Runbook to DR Region us-west-2 (terraform apply), DR Region us-west-2 to Fully Operational DR.
+  A["Primary Region<br/>us-east-1"] -->|"RDS Replication"| B["DR Region us-west-2"]
   A -->|"S3 Replication"| C["DR Storage"]
   D["DR Trigger: Runbook"] -->|"terraform apply"| B
   B --> E["Fully Operational DR"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#029E73,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B pal-029E73
+  class C pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class D pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -1989,22 +2036,29 @@ Enterprise-scale infrastructure uses nested module composition to build complex,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 81: Large-Scale Module Composition
+  accDescr: Graph with 8 nodes and 7 connections. Nodes: Root Module, module.networking, module.compute, module.database, module.vpc, module.security- groups, module.asg + alb, module.rds + elasticache. Connections: Root Module to module.networking, Root Module to module.compute, Root Module to module.database, module.networking to module.vpc, module.networking to module.security- groups, module.compute to module.asg + alb, module.database to module.rds + elasticache.
   A["Root Module"] --> B["module.networking"]
   A --> C["module.compute"]
   A --> D["module.database"]
   B --> E["module.vpc"]
-  B --> F["module.security-groups"]
+  B --> F["module.security-<br/>groups"]
   C --> G["module.asg + alb"]
-  D --> H["module.rds + elasticache"]
+  D --> H["module.rds +<br/>elasticache"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#029E73,stroke:#000,color:#fff
-  style G fill:#029E73,stroke:#000,color:#fff
-  style H fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  class D pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  class F pal-029E73
+  class G pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class H pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -2349,28 +2403,36 @@ Advanced IaC practitioners choose between Terraform, Pulumi, Ansible, and cloud-
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Infrastructure Need"] --> B{Provisioning or Configuration?}
-  B -->|"Provision cloud resources"| C{Team preference}
-  B -->|"Configure existing servers"| D["Ansible / Chef / Puppet"]
-  C -->|"Declarative DSL preferred"| E["Terraform / OpenTofu"]
-  C -->|"Full programming language"| F{Ecosystem preference}
-  F -->|"Keep Terraform state/providers"| G["CDKTF"]
-  F -->|"New state system OK"| H["Pulumi"]
+  accTitle: Example 85: IaC Architecture Decision Framework
+  accDescr: Graph with 11 nodes and 10 connections. Nodes: Infrastructure Need, Provisioning or Configuration?, Team preference, Ansible /Chef / Puppet, Terraform / OpenTofu, Ecosystem preference, CDKTF, Pulumi, Scale, Terraform OSS, Terraform Cloud/Enterprise. Connections: Infrastructure Need to Provisioning or Configuration?, Provisioning or Configuration? to Team preference (Provision cloud resources), Provisioning or Configuration? to Ansible /Chef / Puppet (Configure existing servers), Team preference to Terraform / OpenTofu (Declarative DSL preferred), Team preference to Ecosystem preference (Full programming language), Ecosystem preference to CDKTF (Keep Terraform state/providers), Ecosystem preference to Pulumi (New state system OK), Terraform / OpenTofu to Scale, Scale to Terraform OSS (Single team, <500 resources), Scale to Terraform Cloud/Enterprise (Multiple teams, >500 resources).
+  A["Infrastructure Need"] --> B{Provisioning or<br/>Configuration?}
+  B -->|"Provision cloud<br/>resources"| C{Team preference}
+  B -->|"Configure existing<br/>servers"| D["Ansible /Chef /<br/>Puppet"]
+  C -->|"Declarative DSL<br/>preferred"| E["Terraform / OpenTofu"]
+  C -->|"Full programming<br/>language"| F{Ecosystem preference}
+  F -->|"Keep Terraform<br/>state/providers"| G["CDKTF"]
+  F -->|"New state system<br/>OK"| H["Pulumi"]
   E --> I{Scale}
-  I -->|"Single team, <500 resources"| J["Terraform OSS"]
-  I -->|"Multiple teams, >500 resources"| K["Terraform Cloud/Enterprise"]
+  I -->|"Single team, <500<br/>resources"| J["Terraform OSS"]
+  I -->|"Multiple teams,<br/>>500 resources"| K["Terraform<br/>Cloud/Enterprise"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#fff
-  style F fill:#CA9161,stroke:#000,color:#fff
-  style G fill:#0173B2,stroke:#000,color:#fff
-  style H fill:#0173B2,stroke:#000,color:#fff
-  style I fill:#DE8F05,stroke:#000,color:#fff
-  style J fill:#029E73,stroke:#000,color:#fff
-  style K fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class E pal-CC78BC
+  class F pal-CA9161
+  class G pal-0173B2
+  class H pal-0173B2
+  class I pal-DE8F05
+  class J pal-029E73
+  class K pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl

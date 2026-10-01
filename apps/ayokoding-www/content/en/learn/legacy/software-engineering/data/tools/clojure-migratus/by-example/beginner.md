@@ -25,16 +25,22 @@ Migratus is configured through a plain Clojure map passed to every API function.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Migratus config map structure
 graph TD
+    accTitle: Example 1: Migratus Config Map
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: migratus config map, :store :database, :migration-dir, :db connection map, :jdbcUrl or :connection-uri. Connections: migratus config map to :store :database, migratus config map to :migration-dir, migratus config map to :db connection map, :db connection map to :jdbcUrl or :connection-uri.
     A[migratus config map] --> B[:store :database]
     A --> C[:migration-dir]
     A --> D[:db connection map]
-    D --> E[:jdbcUrl or :connection-uri]
+    D --> E[:jdbcUrl or<br/>:connection-uri]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -68,12 +74,18 @@ Every Migratus migration consists of two SQL files: an `.up.sql` file that appli
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Migration pair relationship
 graph LR
-    A[001-create-users.up.sql] -->|applies| B[(Database)]
-    C[001-create-users.down.sql] -->|reverts| B
+    accTitle: Example 2: First Migration Pair
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: 001-create-users.up. sql, Database, 001-create-users. down.sql. Connections: 001-create-users.up. sql to Database (applies), 001-create-users. down.sql to Database (reverts).
+    A[001-create-users.up.<br/>sql] -->|applies| B[(Database)]
+    C[001-create-users.<br/>down.sql] -->|reverts| B
 
-    style A fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class B pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **File: `resources/migrations/001-create-users.up.sql`**
@@ -233,21 +245,30 @@ The `:migration-dir` value is resolved relative to the JVM classpath, not the fi
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% migrate execution flow
 graph TD
-    A[migratus/migrate] --> B[Query schema_migrations]
+    accTitle: Example 6: Running All Migrations
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: migratus/migrate, Query schema_migrations, Pending IDs?, Run *.up.sql in order, Return :no-pending, Insert ID into schema_migrations, Next pending migration. Connections: migratus/migrate to Query schema_migrations, Query schema_migrations to Pending IDs?, Pending IDs? to Run *.up.sql in order (Yes), Pending IDs? to Return :no-pending (No), Run *.up.sql in order to Insert ID into schema_migrations, Insert ID into schema_migrations to Next pending migration, Next pending migration to Pending IDs?.
+    A[migratus/migrate] --> B[Query<br/>schema_migrations]
     B --> C{Pending IDs?}
-    C -->|Yes| D[Run *.up.sql in order]
+    C -->|Yes| D[Run *.up.sql in<br/>order]
     C -->|No| E[Return :no-pending]
-    D --> F[Insert ID into schema_migrations]
-    F --> G[Next pending migration]
+    D --> F[Insert ID into<br/>schema_migrations]
+    F --> G[Next pending<br/>migration]
     G --> C
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style G fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-808080
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -681,19 +702,26 @@ Migratus uses next.jdbc under the hood and accepts any JDBC-compatible connectio
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Connection URI construction flow
 graph TD
-    A[Environment Variables] --> B[DB_HOST, DB_PORT, DB_NAME]
+    accTitle: Example 17: JDBC Connection String Setup
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Environment Variables, DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD, Build base URI, Append credentials as query params, Final connection-uri. Connections: Environment Variables to DB_HOST, DB_PORT, DB_NAME, Environment Variables to DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME to Build base URI, DB_USER, DB_PASSWORD to Append credentials as query params, Build base URI to Final connection-uri, Append credentials as query params to Final connection-uri.
+    A[Environment<br/>Variables] --> B[DB_HOST, DB_PORT,<br/>DB_NAME]
     A --> C[DB_USER, DB_PASSWORD]
     B --> D[Build base URI]
-    C --> E[Append credentials as query params]
+    C --> E[Append credentials<br/>as query params]
     D --> F[Final connection-uri]
     E --> F
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure

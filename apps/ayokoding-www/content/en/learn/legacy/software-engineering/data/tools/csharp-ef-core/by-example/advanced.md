@@ -24,14 +24,21 @@ A `MigrationOperation` subclass lets you model a database action as a typed obje
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Custom MigrationOperation] -->|registered| B[MigrationsSqlGenerator]
+    accTitle: Example 61: Custom Migration Operations
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Custom MigrationOperation, MigrationsSql Generator, Provider SQL, MigrationBuilder. Operations. Connections: Custom MigrationOperation to MigrationsSql Generator (registered), MigrationsSql Generator to Provider SQL (generates), Provider SQL to MigrationBuilder. Operations (applied by).
+    A[Custom<br/>MigrationOperation] -->|registered| B[MigrationsSql<br/>Generator]
     B -->|generates| C[Provider SQL]
-    C -->|applied by| D[MigrationBuilder.Operations]
+    C -->|applied by| D[MigrationBuilder.<br/>Operations]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -209,14 +216,21 @@ Adding a nullable column with a default value is inherently backward-compatible:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 63: Zero-Downtime Column Addition
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Deploy Migration, Column exists in DB, New code writes column, Zero Downtime Achieved. Connections: Deploy Migration to Column exists in DB (ADD COLUMN nullable), Column exists in DB to New code writes column (Deploy New App), New code writes column to Zero Downtime Achieved (Stable).
     A[Deploy Migration] -->|ADD COLUMN nullable| B[Column exists in DB]
-    B -->|Deploy New App| C[New code writes column]
-    C -->|Stable| D[Zero Downtime Achieved]
+    B -->|Deploy New App| C[New code writes<br/>column]
+    C -->|Stable| D[Zero Downtime<br/>Achieved]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -265,12 +279,18 @@ Removing a column safely requires three sequential deployments: stop writing to 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Phase 1: Stop Writing<br/>App ignores column] --> B[Phase 2: Drop EF Mapping<br/>Migration generated]
-    B --> C[Phase 3: Drop Column<br/>ALTER TABLE DROP COLUMN]
+    accTitle: Example 64: Zero-Downtime Column Removal
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Phase 1: Stop Writing App ignores column, Phase 2: Drop EF Mapping Migration generated, Phase 3: Drop Column ALTER TABLE DROP COLUMN. Connections: Phase 1: Stop Writing App ignores column to Phase 2: Drop EF Mapping Migration generated, Phase 2: Drop EF Mapping Migration generated to Phase 3: Drop Column ALTER TABLE DROP COLUMN.
+    A[Phase 1: Stop<br/>Writing<br/>App ignores column] --> B[Phase 2: Drop EF<br/>Mapping<br/>Migration generated]
+    B --> C[Phase 3: Drop Column<br/>ALTER TABLE DROP<br/>COLUMN]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -563,24 +583,32 @@ CI/CD pipelines should validate migrations at build time and apply them in a con
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 69: EF Core Migrations in CI/CD Pipeline
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: git push, B, Test, Generate Migration SQL Script, Store as Pipeline Artifact, Deploy to Staging, Apply SQL Script, Smoke Tests Pass?, Deploy to Production, Rollback. Connections: git push to B, git push to Test, B to Generate Migration SQL Script, Generate Migration SQL Script to Store as Pipeline Artifact, Store as Pipeline Artifact to Deploy to Staging, Deploy to Staging to Apply SQL Script, Apply SQL Script to Smoke Tests Pass?, Smoke Tests Pass? to Deploy to Production (Yes), Smoke Tests Pass? to Rollback (No).
     A[git push] --> B[CI: Build & Test]
-    B --> C[Generate Migration SQL Script]
-    C --> D[Store as Pipeline Artifact]
+    B --> C[Generate Migration<br/>SQL Script]
+    C --> D[Store as Pipeline<br/>Artifact]
     D --> E[Deploy to Staging]
     E --> F[Apply SQL Script]
     F --> G[Smoke Tests Pass?]
     G -->|Yes| H[Deploy to Production]
     G -->|No| I[Rollback]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class E pal-0173B2
+    class F pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-029E73
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -724,16 +752,24 @@ Blue-green deployments require that migrations applied for the green (new) versi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 71: Blue-Green Deployment Migrations
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Apply Migration to shared DB, Both Blue and Green handle requests, Shift traffic to Green, Blue drains and stops, Green is sole live version. Connections: Apply Migration to shared DB to Both Blue and Green handle requests, Both Blue and Green handle requests to Shift traffic to Green, Shift traffic to Green to Blue drains and stops, Blue drains and stops to Green is sole live version.
     A[Apply Migration<br/>to shared DB] --> B[Both Blue and Green<br/>handle requests]
     B --> C[Shift traffic<br/>to Green]
     C --> D[Blue drains<br/>and stops]
     D --> E[Green is sole<br/>live version]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp

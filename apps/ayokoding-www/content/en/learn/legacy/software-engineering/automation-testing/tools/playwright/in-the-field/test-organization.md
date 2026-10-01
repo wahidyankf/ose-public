@@ -428,19 +428,26 @@ tests/
 ## Organization Architecture Diagram
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','background':'#fff','mainBkg':'#fff','secondaryBkg':'#f4f4f4','tertiaryBkg':'#f0f0f0'}}}%%
 graph TD
+    accTitle: Organization Architecture Diagram
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Test Specifications, Page Objects, Fixtures, D, Test State. Connections: Test Specifications to Page Objects (use), Test Specifications to Fixtures (inject), Page Objects to D (encapsulate), Fixtures to Test State (setup), Fixtures to Page Objects (use).
     A[Test Specifications] -->|use| B[Page Objects]
     A -->|inject| C[Fixtures]
-    B -->|encapsulate| D[Selectors & Interactions]
+    B -->|encapsulate| D[Selectors &<br/>Interactions]
     C -->|setup| E[Test State]
     C -->|use| B
 
-    style A fill:#0173B2,stroke:#0173B2,color:#fff
-    style B fill:#029E73,stroke:#029E73,color:#fff
-    style C fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style D fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style E fill:#CA9161,stroke:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

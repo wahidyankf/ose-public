@@ -18,19 +18,26 @@ Datomic Free runs as an embedded peer library within your Clojure application. N
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Setting Up Datomic and First Connection
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Clojure REPL, Datomic Peer Library In-Process, In-Memory Database datomic:mem:// tutorial, Connection Object conn. Connections: Clojure REPL to Datomic Peer Library In-Process (require datomic.api), Datomic Peer Library In-Process to In-Memory Database datomic:mem:// tutorial (create-database), In-Memory Database datomic:mem:// tutorial to Connection Object conn (connect).
     A["Clojure REPL"]
     B["Datomic Peer Library<br/>In-Process"]
-    C["In-Memory Database<br/>datomic:mem://tutorial"]
+    C["In-Memory Database<br/>datomic:mem://<br/>tutorial"]
     D["Connection Object<br/>conn"]
 
     A -->|require datomic.api| B
     B -->|create-database| C
     C -->|connect| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -93,18 +100,26 @@ Datomic schema consists of attributes that describe what kinds of facts can be s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 2: Defining Schema with Attributes
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: :db/ident :person/name, Attribute Definition Map, :db/valueType :db.type/string, :db/cardinality :db.cardinality/one, :db/doc A person name, conn.transact() Schema is data!. Connections: :db/ident :person/name to Attribute Definition Map, :db/valueType :db.type/string to Attribute Definition Map, :db/cardinality :db.cardinality/one to Attribute Definition Map, :db/doc A person name to Attribute Definition Map, Attribute Definition Map to conn.transact() Schema is data!.
     A[":db/ident<br/>:person/name"] --> B["Attribute<br/>Definition Map"]
     C[":db/valueType<br/>:db.type/string"] --> B
     D[":db/cardinality<br/>:db.cardinality/one"] --> B
     E[":db/doc<br/>A person name"] --> B
     B --> F["conn.transact()<br/>Schema is data!"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style B fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -233,6 +248,8 @@ Transactions add facts to the database. Each fact is an entity-attribute-value t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 3: Asserting Facts with Transactions
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Transaction Data [:person/name ...], Transactor d/transact, New Database Value db-after, Transaction Result :tx-data .... Connections: Transaction Data [:person/name ...] to Transactor d/transact (Entity maps), Transactor d/transact to New Database Value db-after (Appends facts), Transactor d/transact to Transaction Result :tx-data ... (Returns).
     A["Transaction Data<br/>[{:person/name ...}]"]
     B["Transactor<br/>d/transact"]
     C["New Database Value<br/>db-after"]
@@ -242,10 +259,15 @@ graph TD
     B -->|Appends facts| C
     B -->|Returns| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -361,19 +383,27 @@ Datalog queries pattern-match against facts in the database. The `:find` clause 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["[:find ?name<br/>:where [?e :person/name ?name]]"] --> B["Query Engine<br/>Pattern Match"]
+    accTitle: Example 4: Querying with Datalog
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: [:find ?name :where [?e :person/name ?name]], Query Engine Pattern Match, ?e binds to entity IDs, ?name binds to name values, Unification joins patterns, [Alice Johnson]. Connections: [:find ?name :where [?e :person/name ?name]] to Query Engine Pattern Match, Query Engine Pattern Match to ?e binds to entity IDs, Query Engine Pattern Match to ?name binds to name values, ?e binds to entity IDs to Unification joins patterns, ?name binds to name values to Unification joins patterns, Unification joins patterns to [Alice Johnson].
+    A["[:find ?name<br/>:where [?e<br/>:person/name ?name]]"] --> B["Query Engine<br/>Pattern Match"]
     B --> C["?e binds to<br/>entity IDs"]
     B --> D["?name binds to<br/>name values"]
     C --> E["Unification<br/>joins patterns"]
     D --> E
     E --> F["#{ [Alice Johnson] }"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -535,16 +565,24 @@ The entity API provides map-like access to entities. Navigate attributes and ref
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 5: Using the Entity API
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Query [:find ?e :where...], Entity ID 17592186045418, db.entity(id) Entity Object, alice.get(:person/ name) Lazy fetch, alice.touch() Eager load all. Connections: Query [:find ?e :where...] to Entity ID 17592186045418, Entity ID 17592186045418 to db.entity(id) Entity Object, db.entity(id) Entity Object to alice.get(:person/ name) Lazy fetch, db.entity(id) Entity Object to alice.touch() Eager load all.
     A["Query<br/>[:find ?e :where...]"] --> B["Entity ID<br/>17592186045418"]
     B --> C["db.entity(id)<br/>Entity Object"]
-    C --> D["alice.get(:person/name)<br/>Lazy fetch"]
+    C --> D["alice.get(:person/<br/>name)<br/>Lazy fetch"]
     C --> E["alice.touch()<br/>Eager load all"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -653,15 +691,23 @@ Attributes with `:db.cardinality/many` store sets of values. Operations automati
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 6: Cardinality Many Attributes
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: :db.cardinality/one Single value, Latest value only, :db.cardinality/many Set of values, Accumulates values (no duplicates), Remove specific value from set. Connections: :db.cardinality/one Single value to Latest value only (replace on assert), :db.cardinality/many Set of values to Accumulates values (no duplicates) (add on assert), :db.cardinality/many Set of values to Remove specific value from set (:db/retract).
     A[":db.cardinality/one<br/>Single value"] -->|"replace on assert"| B["Latest value only"]
     C[":db.cardinality/many<br/>Set of values"] -->|"add on assert"| D["Accumulates values<br/>(no duplicates)"]
-    C -->|":db/retract"| E["Remove specific value<br/>from set"]
+    C -->|":db/retract"| E["Remove specific<br/>value<br/>from set"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -788,16 +834,24 @@ Retracting facts removes them from the current database value but preserves them
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 7: Retracting Facts
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Current DB Alice age=30, New DB Value Alice (no age), History DB Alice age=30, (empty), [30 false]. Connections: Current DB Alice age=30 to New DB Value Alice (no age) (:db/retract), Current DB Alice age=30 to History DB Alice age=30 (Preserved in), New DB Value Alice (no age) to (empty) (d/q current), History DB Alice age=30 to [30 false] (d/history query).
     A["Current DB<br/>Alice age=30"] -->|":db/retract"| B["New DB Value<br/>Alice (no age)"]
     A -->|"Preserved in"| C["History DB<br/>Alice age=30"]
     B -->|"d/q current"| D["#{}  (empty)"]
     C -->|"d/history query"| E["#{[30 false]}"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -911,16 +965,24 @@ Compare-and-swap (CAS) provides optimistic concurrency control. The transaction 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["[:db/cas entity attr expected new]"] --> B{"current == expected?"}
+    accTitle: Example 8: Transaction Functions with :db/cas
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: [:db/cas entity attr expected new], B, expected, Transaction commits value updated to new, Transaction aborted CAS exception thrown, New DB value with updated attribute. Connections: [:db/cas entity attr expected new] to B, B to expected, B to Transaction commits value updated to new (Yes), B to Transaction aborted CAS exception thrown (No), Transaction commits value updated to new to New DB value with updated attribute.
+    A["[:db/cas entity attr<br/>expected new]"] --> B{"current == expected?"}
     B -->|"Yes"| C["Transaction commits<br/>value updated to new"]
     B -->|"No"| D["Transaction aborted<br/>CAS exception thrown"]
     C --> E["New DB value with<br/>updated attribute"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -1060,14 +1122,21 @@ Lookup refs provide convenient entity identification using unique attributes wit
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 9: Lookup Refs for Entity Identification
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: [:person/email alice@example.com], Entity ID 12345, db.entity(12345), Entity attrs :person/name, :person/age.... Connections: [:person/email alice@example.com] to Entity ID 12345 (Datomic resolves), Entity ID 12345 to db.entity(12345), db.entity(12345) to Entity attrs :person/name, :person/age....
     A["[:person/email<br/>alice@example.com]"] -->|"Datomic resolves"| B["Entity ID 12345"]
     B --> C["db.entity(12345)"]
-    C --> D["Entity attrs<br/>:person/name, :person/age..."]
+    C --> D["Entity attrs<br/>:person/name,<br/>:person/age..."]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -1179,17 +1248,24 @@ The pull API fetches nested entity data in one operation using a declarative pat
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Pull Pattern<br/>[:name :email {:address [...]}]"] -->|"d/pull db"| B["Entity resolution"]
+    accTitle: Example 10: Pull API for Declarative Data Fetching
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Pull Pattern [:name :email :address [...]], Entity resolution, Flat attrs :name :email, Nested join :address entity, Result map. Connections: Pull Pattern [:name :email :address [...]] to Entity resolution (d/pull db), Entity resolution to Flat attrs :name :email, Entity resolution to Nested join :address entity, Flat attrs :name :email to Result map, Nested join :address entity to Result map.
+    A["Pull Pattern<br/>[:name :email<br/>{:address [...]}]"] -->|"d/pull db"| B["Entity resolution"]
     B --> C["Flat attrs<br/>:name :email"]
     B --> D["Nested join<br/>:address entity"]
     C --> E["Result map"]
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -1270,16 +1346,24 @@ Reference attributes (`:db.type/ref`) create relationships between entities. The
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Person Entity<br/>Bob Smith<br/>:person/address → ref"] --> B["Address Entity<br/>123 Main St<br/>Portland, 97201"]
+    accTitle: Example 11: Adding Reference Attributes
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Person Entity Bob Smith :person/address → ref, Address Entity 123 Main St Portland, 97201, Bob Smith, bob@example.com, Portland. Connections: Person Entity Bob Smith :person/address → ref to Address Entity 123 Main St Portland, 97201, Person Entity Bob Smith :person/address → ref to Bob Smith (:person/name), Person Entity Bob Smith :person/address → ref to bob@example.com (:person/email), Address Entity 123 Main St Portland, 97201 to Portland (:address/city).
+    A["Person Entity<br/>Bob Smith<br/>:person/address →<br/>ref"] --> B["Address Entity<br/>123 Main St<br/>Portland, 97201"]
     A -->|":person/name"| C["Bob Smith"]
     A -->|":person/email"| D["bob@example.com"]
     B -->|":address/city"| E["Portland"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -2152,6 +2236,8 @@ Query historical database states with `as-of`. Database values are immutable sna
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 21: Database Value as of Time
+    accDescr: Graph with 8 nodes and 5 connections. Nodes: Transaction T1 Alice age=30, Transaction T2 Alice age=32, Transaction T3 Bob created, Current DB (latest), d/as-of db T1, DB Snapshot at T1: age=30, d/as-of db T2, DB Snapshot at T2: age=32. Connections: Transaction T1 Alice age=30 to Transaction T2 Alice age=32, Transaction T2 Alice age=32 to Transaction T3 Bob created, Transaction T3 Bob created to Current DB (latest), d/as-of db T1 to DB Snapshot at T1: age=30, d/as-of db T2 to DB Snapshot at T2: age=32.
     A["Transaction T1<br/>Alice age=30"] --> B["Transaction T2<br/>Alice age=32"]
     B --> C["Transaction T3<br/>Bob created"]
     C --> D["Current DB<br/>(latest)"]
@@ -2159,14 +2245,20 @@ graph LR
     E["d/as-of db T1"] --> F["DB Snapshot<br/>at T1: age=30"]
     E2["d/as-of db T2"] --> G["DB Snapshot<br/>at T2: age=32"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style E2 fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class E2 pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:

@@ -18,6 +18,8 @@ Git performs a three-way merge when two branches have diverged from a common anc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 29: Three-Way Merge
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Common Ancestor commit C1, feature branch commit C2, main branch commit C3, Merge Commit C4 = merge C2+C3. Connections: Common Ancestor commit C1 to feature branch commit C2, Common Ancestor commit C1 to main branch commit C3, feature branch commit C2 to Merge Commit C4 = merge C2+C3, main branch commit C3 to Merge Commit C4 = merge C2+C3.
     A["Common Ancestor<br/>commit C1"]
     B["feature branch<br/>commit C2"]
     C["main branch<br/>commit C3"]
@@ -28,10 +30,15 @@ graph LR
     B --> D
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -131,6 +138,8 @@ git status                                # => Output: nothing to commit, workin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 31: git rebase
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: main: C1→C2→C3, feature before C1→C2→F1→F2, feature after rebase C1→C2→C3→F1→F2. Connections: main: C1→C2→C3 to feature before C1→C2→F1→F2 (git rebase main), feature before C1→C2→F1→F2 to feature after rebase C1→C2→C3→F1→F2.
     A["main: C1→C2→C3"]
     B["feature before<br/>C1→C2→F1→F2"]
     C["feature after rebase<br/>C1→C2→C3→F1'→F2'"]
@@ -138,9 +147,13 @@ graph LR
     A -->|git rebase main| B
     B --> C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -223,6 +236,8 @@ git log --oneline                         # => Shows:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 33: git stash save and pop
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Working Directory dirty changes, Stash Stack stash@0, Clean Working Dir ready for other work, Working Directory changes restored. Connections: Working Directory dirty changes to Stash Stack stash@0 (git stash), Working Directory dirty changes to Clean Working Dir ready for other work (git stash), Stash Stack stash@0 to Working Directory changes restored (git stash pop).
     A["Working Directory<br/>dirty changes"]
     B["Stash Stack<br/>stash@{0}"]
     C["Clean Working Dir<br/>ready for other work"]
@@ -232,10 +247,15 @@ graph TD
     A -->|git stash| C
     B -->|git stash pop| D
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -326,6 +346,8 @@ Git tags mark specific commits as significant, typically for release versions. L
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 35: git tag
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Commit C1, Lightweight Tag v1.0 → pointer only, Annotated Tag v2.0 → tag object +message +tagger. Connections: Commit C1 to Lightweight Tag v1.0 → pointer only, Commit C1 to Annotated Tag v2.0 → tag object +message +tagger.
     A["Commit C1"]
     B["Lightweight Tag<br/>v1.0 → pointer only"]
     C["Annotated Tag<br/>v2.0 → tag object<br/>+message +tagger"]
@@ -333,9 +355,13 @@ graph LR
     A --> B
     A --> C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -475,16 +501,22 @@ git branch -a                             # => Only live remote branches appear 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 38: git cherry-pick
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: feature branch C1→C2→C3(bugfix)→C4, main branch M1→M2, main after cherry-pick M1→M2→C3(bugfix copy). Connections: feature branch C1→C2→C3(bugfix)→C4 to main branch M1→M2 (cherry-pick C3), main branch M1→M2 to main after cherry-pick M1→M2→C3(bugfix copy).
     A["feature branch<br/>C1→C2→C3(bugfix)→C4"]
     B["main branch<br/>M1→M2"]
-    C["main after cherry-pick<br/>M1→M2→C3'(bugfix copy)"]
+    C["main after<br/>cherry-pick<br/>M1→M2→C3'(bugfix<br/>copy)"]
 
     A -->|cherry-pick C3| B
     B --> C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -570,10 +602,12 @@ git blame -w notes.txt                   # => Ignores whitespace changes when at
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 40: git reflog
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: A, 2, git reflog shows all HEAD movements, Find previous HEAD@2, D, Commits Recovered. Connections: A to 2, D to 2, A to git reflog shows all HEAD movements, git reflog shows all HEAD movements to Find previous HEAD@2, Find previous HEAD@2 to D, D to Commits Recovered.
     A["Accidental<br/>git reset --hard"]
-    B["git reflog<br/>shows all HEAD movements"]
+    B["git reflog<br/>shows all HEAD<br/>movements"]
     C["Find previous<br/>HEAD@{2}"]
-    D["git checkout HEAD@{2}<br/>or git reset --hard HEAD@{2}"]
+    D["git checkout<br/>HEAD@{2}<br/>or git reset --hard<br/>HEAD@{2}"]
     E["Commits Recovered"]
 
     A --> B
@@ -581,11 +615,17 @@ graph TD
     C --> D
     D --> E
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -630,19 +670,26 @@ git log --oneline                         # => C3 → C2 → C1 restored
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 41: git reset --soft, --mixed, --hard
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: git reset HEAD~1, B, soft, C, default) Index: unstaged Working dir: unchanged, D, hard. Connections: B to soft, C to default) Index: unstaged Working dir: unchanged, D to hard, git reset HEAD~1 to B, git reset HEAD~1 to C, git reset HEAD~1 to D.
     A["git reset HEAD~1"]
-    B["--soft<br/>Index: staged<br/>Working dir: unchanged"]
-    C["--mixed (default)<br/>Index: unstaged<br/>Working dir: unchanged"]
-    D["--hard<br/>Index: cleared<br/>Working dir: overwritten"]
+    B["--soft<br/>Index: staged<br/>Working dir:<br/>unchanged"]
+    C["--mixed (default)<br/>Index: unstaged<br/>Working dir:<br/>unchanged"]
+    D["--hard<br/>Index: cleared<br/>Working dir:<br/>overwritten"]
 
     A --> B
     A --> C
     A --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Soft reset — keeps changes staged**:
@@ -820,6 +867,8 @@ Git hooks are executable scripts in `.git/hooks/` that run automatically at spec
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 45: Git Hooks
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: git commit -m msg, pre-commit hook runs, Exit code 0?, Commit recorded Success, Commit aborted Error shown to user. Connections: git commit -m msg to pre-commit hook runs, pre-commit hook runs to Exit code 0?, Exit code 0? to Commit recorded Success (Yes), Exit code 0? to Commit aborted Error shown to user (No).
     A["git commit -m 'msg'"]
     B["pre-commit hook runs"]
     C{"Exit code 0?"}
@@ -831,11 +880,17 @@ graph TD
     C -->|Yes| D
     C -->|No| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1189,18 +1244,24 @@ A tracking branch is a local branch that has an upstream relationship with a rem
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 52: Tracking Branches and Upstream Configuration
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: Local: main, Remote-tracking: origin/main, Remote: origin main branch. Connections: Local: main to Remote-tracking: origin/main (tracks (upstream)), Remote-tracking: origin/main to Remote: origin main branch (reflects), Remote: origin main branch to Remote-tracking: origin/main (git fetch), Local: main to Remote: origin main branch (git push).
     A["Local: main"]
-    B["Remote-tracking: origin/main"]
-    C["Remote: origin main branch"]
+    B["Remote-tracking:<br/>origin/main"]
+    C["Remote: origin main<br/>branch"]
 
     A -->|"tracks (upstream)"| B
     B -->|"reflects"| C
     C -->|"git fetch"| B
     A -->|"git push"| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1347,6 +1408,8 @@ git diff --ignore-space-at-eol            # => Ignores trailing whitespace only
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 55: git bisect
+    accDescr: Graph with 5 nodes and 7 connections. Nodes: Start: bad=HEAD good=v1.0, Test midpoint commit M, M is bad: search earlier half, M is good: search later half, First bad commit found. Connections: Start: bad=HEAD good=v1.0 to Test midpoint commit M, Test midpoint commit M to M is bad: search earlier half (bug present), Test midpoint commit M to M is good: search later half (bug absent), M is bad: search earlier half to Test midpoint commit M, M is good: search later half to Test midpoint commit M, M is bad: search earlier half to First bad commit found, M is good: search later half to First bad commit found.
     A["Start: bad=HEAD<br/>good=v1.0"]
     B["Test midpoint<br/>commit M"]
     C["M is bad:<br/>search earlier half"]
@@ -1361,11 +1424,17 @@ graph LR
     C --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

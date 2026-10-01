@@ -27,26 +27,33 @@ This quick start covers 10 essential Docker touchpoints:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: 1. Container Basics, 2. Dockerfile, 3. Image Building, 4. Port Mapping, 5. Volumes, 6. Networks, 7. Environment Variables, 8. Docker Compose, 9. Multi-Stage Builds, 10. Health Checks. Connections: 1. Container Basics to 2. Dockerfile, 2. Dockerfile to 3. Image Building, 3. Image Building to 4. Port Mapping, 4. Port Mapping to 5. Volumes, 5. Volumes to 6. Networks, 6. Networks to 7. Environment Variables, 7. Environment Variables to 8. Docker Compose, 8. Docker Compose to 9. Multi-Stage Builds, 9. Multi-Stage Builds to 10. Health Checks.
     A["1. Container Basics"] --> B["2. Dockerfile"]
     B --> C["3. Image Building"]
     C --> D["4. Port Mapping"]
     D --> E["5. Volumes"]
     E --> F["6. Networks"]
-    F --> G["7. Environment Variables"]
+    F --> G["7. Environment<br/>Variables"]
     G --> H["8. Docker Compose"]
-    H --> I["9. Multi-Stage Builds"]
+    H --> I["9. Multi-Stage<br/>Builds"]
     I --> J["10. Health Checks"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#0173B2,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#0173B2,color:#fff
-    style J fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    class F pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-CC78BC
+    class I pal-0173B2
+    class J pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concept 1: Container Basics
@@ -753,16 +760,23 @@ You've completed 10 essential Docker touchpoints:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Learning Path Summary
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, D, E. Connections: A to B, B to C, C to D, D to E.
     A["Containers &<br/>Dockerfiles"] --> B["Images &<br/>Ports"]
     B --> C["Volumes &<br/>Networks"]
     C --> D["Env Vars &<br/>Compose"]
     D --> E["Multi-Stage &<br/>Health"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Next Steps

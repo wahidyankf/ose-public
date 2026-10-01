@@ -34,14 +34,21 @@ These examples assume you understand beginner concepts (DbContext setup, basic M
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[HasData in OnModelCreating] -->|dotnet ef migrations add| B[Generated Migration]
+    accTitle: Example 31: Data Seeding with HasData
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: HasData in OnModelCreating, Generated Migration, Seed Rows in DB, Data Present at Startup. Connections: HasData in OnModelCreating to Generated Migration (dotnet ef migrations add), Generated Migration to Seed Rows in DB (InsertData call), Seed Rows in DB to Data Present at Startup (dotnet ef database update).
+    A[HasData in<br/>OnModelCreating] -->|dotnet ef migrations<br/>add| B[Generated Migration]
     B -->|InsertData call| C[Seed Rows in DB]
-    C -->|dotnet ef database update| D[Data Present at Startup]
+    C -->|dotnet ef database<br/>update| D[Data Present at<br/>Startup]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -219,16 +226,24 @@ Large applications use separate `DbContext` classes to enforce bounded context b
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 34: Multiple DbContexts in One Project
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Single Project, identity schema, billing schema, Migrations/Identity/, Migrations/Billing/. Connections: Single Project to identity schema (IdentityDbContext), Single Project to billing schema (BillingDbContext), identity schema to Migrations/Identity/ (own migrations), billing schema to Migrations/Billing/ (own migrations).
     A[Single Project] -->|IdentityDbContext| B[identity schema]
     A -->|BillingDbContext| C[billing schema]
     B -->|own migrations| D[Migrations/Identity/]
     C -->|own migrations| E[Migrations/Billing/]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -461,18 +476,25 @@ Owned types map a C# value object directly into the owning entity's table as fla
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 38: Owned Types
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Order Entity, Address Value Object, shipping_street column, shipping_city column, shipping_country column, orders table. Connections: Order Entity to Address Value Object (owns), Address Value Object to shipping_street column (maps to), Address Value Object to shipping_city column (maps to), Address Value Object to shipping_country column (maps to), Order Entity to orders table (lives in).
     A[Order Entity] -->|owns| B[Address Value Object]
-    B -->|maps to| C[shipping_street column]
+    B -->|maps to| C[shipping_street<br/>column]
     B -->|maps to| D[shipping_city column]
-    B -->|maps to| E[shipping_country column]
+    B -->|maps to| E[shipping_country<br/>column]
     A -->|lives in| F[orders table]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -677,14 +699,21 @@ Table Per Hierarchy (TPH) stores all derived types in one table with a discrimin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[notifications table] -->|Discriminator = Email| B[EmailNotification]
+    accTitle: Example 41: TPH Inheritance
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: notifications table, EmailNotification, PushNotification, SmsNotification. Connections: notifications table to EmailNotification (Discriminator = Email), notifications table to PushNotification (Discriminator = Push), notifications table to SmsNotification (Discriminator = Sms).
+    A[notifications table] -->|Discriminator =<br/>Email| B[EmailNotification]
     A -->|Discriminator = Push| C[PushNotification]
     A -->|Discriminator = Sms| D[SmsNotification]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -1915,19 +1944,26 @@ A HiLo sequence pre-allocates blocks of IDs from a database sequence, reducing t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[EF Core App] -->|reserve block| B[DB Sequence: next=1001]
+    accTitle: Example 59: HiLo Sequence for ID Generation
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: EF Core App, DB Sequence: next=1001, ID 1001, ID 1002, ID 1020, DB Sequence: next=1021. Connections: EF Core App to DB Sequence: next=1001 (reserve block), DB Sequence: next=1001 to EF Core App (allocate 1001-1020), EF Core App to ID 1001 (local counter), EF Core App to ID 1002 (local counter), EF Core App to ID 1020 (exhaust block), EF Core App to DB Sequence: next=1021 (reserve next block).
+    A[EF Core App] -->|reserve block| B[DB Sequence:<br/>next=1001]
     B -->|allocate 1001-1020| A
     A -->|local counter| C[ID 1001]
     A -->|local counter| D[ID 1002]
     A -->|exhaust block| E[ID 1020]
-    A -->|reserve next block| F[DB Sequence: next=1021]
+    A -->|reserve next block| F[DB Sequence:<br/>next=1021]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp

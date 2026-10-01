@@ -18,7 +18,9 @@ Pull patterns can recursively traverse entity graphs. Essential for tree structu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Pull Request<br/>{:person/manager ...}"]
+    accTitle: Example 31: Pull API with Recursive Patterns
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Pull Request :person/manager ..., Entity: Grace manager: Frank, Entity: Frank manager: Eve, Entity: Eve manager: nil. Connections: Pull Request :person/manager ... to Entity: Grace manager: Frank (Recursive pull), Entity: Grace manager: Frank to Entity: Frank manager: Eve (Follow manager ref), Entity: Frank manager: Eve to Entity: Eve manager: nil (Follow manager ref).
+    A["Pull Request<br/>{:person/manager<br/>...}"]
     B["Entity: Grace<br/>manager: Frank"]
     C["Entity: Frank<br/>manager: Eve"]
     D["Entity: Eve<br/>manager: nil"]
@@ -27,10 +29,15 @@ graph TD
     B -->|Follow manager ref| C
     C -->|Follow manager ref| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -182,16 +189,24 @@ Define custom aggregates beyond built-in `count`, `sum`, etc. Implement domain-s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Datomic Query<br/>:find (std-dev ?age)"] --> B["Query Engine<br/>collects all ?age values"]
+    accTitle: Example 33: Custom Aggregate Functions
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Datomic Query :find (std-dev ?age), Query Engine collects all ?age values, Collection [30 28 32 ...], Custom Aggregate std-dev function, Result: 2.449.... Connections: Datomic Query :find (std-dev ?age) to Query Engine collects all ?age values, Query Engine collects all ?age values to Collection [30 28 32 ...], Collection [30 28 32 ...] to Custom Aggregate std-dev function, Custom Aggregate std-dev function to Result: 2.449....
+    A["Datomic Query<br/>:find (std-dev ?age)"] --> B["Query Engine<br/>collects all ?age<br/>values"]
     B --> C["Collection<br/>[30 28 32 ...]"]
     C --> D["Custom Aggregate<br/>std-dev function"]
     D --> E["Result: 2.449..."]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -361,16 +376,22 @@ Index-range queries efficiently find datoms within value ranges. Essential for n
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["AVET Index<br/>:person/age sorted by value"] --> B["Range [28, 32]"]
-    B --> C["Datom: e=101 a=:age v=28 t=Tx1"]
-    B --> D["Datom: e=102 a=:age v=30 t=Tx2"]
-    B --> E["Datom: e=103 a=:age v=32 t=Tx3"]
+    accTitle: Example 35: Index Range Queries
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: AVET Index :person/age sorted by value, Range [28, 32], Datom: e=101 a=:age v=28 t=Tx1, Datom: e=102 a=:age v=30 t=Tx2, Datom: e=103 a=:age v=32 t=Tx3. Connections: AVET Index :person/age sorted by value to Range [28, 32], Range [28, 32] to Datom: e=101 a=:age v=28 t=Tx1, Range [28, 32] to Datom: e=102 a=:age v=30 t=Tx2, Range [28, 32] to Datom: e=103 a=:age v=32 t=Tx3.
+    A["AVET Index<br/>:person/age sorted<br/>by value"] --> B["Range [28, 32]"]
+    B --> C["Datom: e=101 a=:age<br/>v=28 t=Tx1"]
+    B --> D["Datom: e=102 a=:age<br/>v=30 t=Tx2"]
+    B --> E["Datom: e=103 a=:age<br/>v=32 t=Tx3"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -431,17 +452,25 @@ Attributes marked `:db.unique/identity` enable upserts. Transactions automatical
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
-    A["Transact entity<br/>:person/email igor@..."] --> B{":db.unique/identity<br/>exists?"}
+    accTitle: Example 36: Upsert with :db/unique :db.unique/identity
+    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: Transact entity :person/email igor@..., :db.unique/identity exists?, Update existing entity (upsert), Create new entity, Single entity updated. Connections: Transact entity :person/email igor@... to :db.unique/identity exists?, :db.unique/identity exists? to Update existing entity (upsert) (Yes - found), :db.unique/identity exists? to Create new entity (No - not found), Update existing entity (upsert) to Single entity updated, Create new entity to Single entity updated.
+    A["Transact entity<br/>:person/email<br/>igor@..."] --> B{":db.unique/identity<br/>exists?"}
     B -->|"Yes - found"| C["Update existing<br/>entity (upsert)"]
     B -->|"No - not found"| D["Create new<br/>entity"]
     C --> E["Single entity<br/>updated"]
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -751,14 +780,21 @@ alice.get(":person/age");
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 40: with for Speculative Transactions
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Current DB (production), Speculative DB (in-memory only), Results from speculative state, Production data unchanged. Connections: Current DB (production) to Speculative DB (in-memory only) (d/with tx-data), Speculative DB (in-memory only) to Results from speculative state (Query), Current DB (production) to Production data unchanged (NOT affected).
     A["Current DB<br/>(production)"] -->|"d/with tx-data"| B["Speculative DB<br/>(in-memory only)"]
     B -->|"Query"| C["Results from<br/>speculative state"]
     A -->|"NOT affected"| D["Production data<br/>unchanged"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -1216,17 +1252,22 @@ Combine cardinality-many with ref attributes to model many-to-many relationships
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Project A"] -->|":project/members (cardinality/many ref)"| B["Person Alice"]
+    accTitle: Example 46: Cardinality-Many Refs for Many-to-Many
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Project A, Person Alice, Person Bob, Project B, Person Carol. Connections: Project A to Person Alice (:project/members (cardinality/many ref)), Project A to Person Bob (:project/members), Project B to Person Alice (:project/members), Project B to Person Bob (:project/members), Project B to Person Carol (:project/members).
+    A["Project A"] -->|":project/members<br/>(cardinality/many<br/>ref)"| B["Person Alice"]
     A -->|":project/members"| C["Person Bob"]
     D["Project B"] -->|":project/members"| B
     D -->|":project/members"| C
     D -->|":project/members"| E["Person Carol"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class D pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -1569,16 +1610,24 @@ Compare database states at different times using multiple database inputs.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 50: Querying Across Time with Multiple Database Values
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: DB at T1 (last week), Datalog Query :in $db1 $db2, DB at T2 (now), Entities in T2 but not T1, Changed values between T1 and T2. Connections: DB at T1 (last week) to Datalog Query :in $db1 $db2, DB at T2 (now) to Datalog Query :in $db1 $db2, Datalog Query :in $db1 $db2 to Entities in T2 but not T1, Datalog Query :in $db1 $db2 to Changed values between T1 and T2.
     A["DB at T1<br/>(last week)"] --> C["Datalog Query<br/>:in $db1 $db2"]
     B["DB at T2<br/>(now)"] --> C
     C --> D["Entities in T2<br/>but not T1"]
     C --> E["Changed values<br/>between T1 and T2"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -1904,16 +1953,24 @@ Database filters limit query visibility to subset of facts. Useful for multi-ten
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 54: Database Filters for Tenant Isolation
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Raw Database (all tenants), Tenant A View (filtered), Tenant B View (filtered), Queries for Tenant A only see Tenant A data, Queries for Tenant B only see Tenant B data. Connections: Raw Database (all tenants) to Tenant A View (filtered) (d/filter), Raw Database (all tenants) to Tenant B View (filtered) (d/filter), Tenant A View (filtered) to Queries for Tenant A only see Tenant A data, Tenant B View (filtered) to Queries for Tenant B only see Tenant B data.
     A["Raw Database<br/>(all tenants)"] -->|"d/filter"| B["Tenant A View<br/>(filtered)"]
     A -->|"d/filter"| C["Tenant B View<br/>(filtered)"]
-    B --> D["Queries for Tenant A<br/>only see Tenant A data"]
-    C --> E["Queries for Tenant B<br/>only see Tenant B data"]
+    B --> D["Queries for Tenant A<br/>only see Tenant A<br/>data"]
+    C --> E["Queries for Tenant B<br/>only see Tenant B<br/>data"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -2400,16 +2457,24 @@ Build domain-specific indexes incrementally using transaction listeners (Datomic
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 59: Incremental Index Building
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: New Transaction (basis-t N), Check basis-t vs checkpoint, Process changes since checkpoint, Update index (search/cache), Save checkpoint basis-t = N. Connections: New Transaction (basis-t N) to Check basis-t vs checkpoint, Check basis-t vs checkpoint to Process changes since checkpoint (New datoms), Process changes since checkpoint to Update index (search/cache), Update index (search/cache) to Save checkpoint basis-t = N.
     A["New Transaction<br/>(basis-t N)"] --> B["Check basis-t<br/>vs checkpoint"]
     B -->|"New datoms"| C["Process changes<br/>since checkpoint"]
     C --> D["Update index<br/>(search/cache)"]
     D --> E["Save checkpoint<br/>basis-t = N"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:

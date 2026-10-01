@@ -16,20 +16,26 @@ Page Object Model (POM) encapsulates page interactions in reusable classes. Adva
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 61: Page Object Model - Advanced Composition
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: BasePage, Navigation Component, LoginPage extends BasePage, DashboardPage extends BasePage. Connections: LoginPage extends BasePage to BasePage, DashboardPage extends BasePage to BasePage, LoginPage extends BasePage to Navigation Component, DashboardPage extends BasePage to Navigation Component.
     A[BasePage]
     B[Navigation Component]
-    C[LoginPage extends BasePage]
-    D[DashboardPage extends BasePage]
+    C[LoginPage extends<br/>BasePage]
+    D[DashboardPage<br/>extends BasePage]
 
     C --> A
     D --> A
     C --> B
     D --> B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -382,8 +388,10 @@ Custom fixtures provide reusable test setup and teardown. They inject dependenci
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 63: Custom Fixtures for Test Setup
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Test Function, authenticatedPage Fixture, apiClient Fixture, testData Fixture. Connections: Test Function to authenticatedPage Fixture, Test Function to apiClient Fixture, Test Function to testData Fixture.
     A[Test Function]
-    B[authenticatedPage Fixture]
+    B[authenticatedPage<br/>Fixture]
     C[apiClient Fixture]
     D[testData Fixture]
 
@@ -391,10 +399,13 @@ graph TD
     A --> C
     A --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1122,6 +1133,8 @@ Network interception captures and modifies network requests. Request mocking rep
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 68: Network Interception and Request Mocking
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Browser, Playwright Intercept, Mock Response, Real API. Connections: Browser to Playwright Intercept (Request), Playwright Intercept to Mock Response (Return mock), Playwright Intercept to Real API (Skip real API).
     A[Browser]
     B[Playwright Intercept]
     C[Mock Response]
@@ -1131,10 +1144,15 @@ graph TD
     B -->|Return mock| C
     B -.->|Skip real API| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2226,6 +2244,8 @@ Parallel execution runs tests simultaneously across multiple worker processes. D
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 76: Parallel Execution with Workers
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Test Suite 100 tests, Worker 1: 25 tests, Worker 2: 25 tests, Worker 3: 25 tests, Worker 4: 25 tests. Connections: Test Suite 100 tests to Worker 1: 25 tests, Test Suite 100 tests to Worker 2: 25 tests, Test Suite 100 tests to Worker 3: 25 tests, Test Suite 100 tests to Worker 4: 25 tests.
     A[Test Suite 100 tests]
     B[Worker 1: 25 tests]
     C[Worker 2: 25 tests]
@@ -2237,11 +2257,14 @@ graph TD
     A --> D
     A --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Configuration** (playwright.config.ts):
@@ -2871,6 +2894,8 @@ Login once pattern authenticates once and reuses session across tests. Dramatica
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 81: Authentication Flows - Login Once Pattern
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Global Setup, Login Once, Save Auth State, Test 1: Reuse State, Test 2: Reuse State, Test 3: Reuse State. Connections: Global Setup to Login Once, Login Once to Save Auth State, Save Auth State to Test 1: Reuse State, Save Auth State to Test 2: Reuse State, Save Auth State to Test 3: Reuse State.
     A[Global Setup]
     B[Login Once]
     C[Save Auth State]
@@ -2884,12 +2909,17 @@ graph TD
     C --> E
     C --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Global Setup** (global-setup.ts):

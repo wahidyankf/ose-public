@@ -21,18 +21,24 @@ Multi-stage builds use multiple FROM instructions to create optimized production
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Multi-stage build flow
 graph TD
- A["Builder Stage<br/>node:18-alpine"] --> B["Install all dependencies<br/>npm ci"]
+ accTitle: Example 28: Multi-Stage Build Basics
+ accDescr: Graph with 10 nodes and 9 connections. Nodes: Builder Stage node:18-alpine, Install all dependencies npm ci, Copy source code, Build production bundle npm run build, Production Stage node:18-alpine, F, nly, G, from, Final Image 120MB 4073 smaller41. Connections: Builder Stage node:18-alpine to Install all dependencies npm ci, Install all dependencies npm ci to Copy source code, Copy source code to Build production bundle npm run build, Build production bundle npm run build to Production Stage node:18-alpine, Production Stage node:18-alpine to F, F to nly, F to G, G to from, G to Final Image 120MB 4073 smaller41.
+ A["Builder Stage<br/>node:18-alpine"] --> B["Install all<br/>dependencies<br/>npm ci"]
  B --> C["Copy source code"]
- C --> D["Build production bundle<br/>npm run build"]
+ C --> D["Build production<br/>bundle<br/>npm run build"]
  D --> E["Production Stage<br/>node:18-alpine"]
- E --> F["Install prod dependencies<br/>npm ci --only=production"]
+ E --> F["Install prod<br/>dependencies<br/>npm ci<br/>--only=production"]
  F --> G["Copy built artifacts<br/>COPY --from=builder"]
- G --> H["Final Image<br/>120MB #40;73% smaller#41;"]
+ G --> H["Final Image<br/>120MB #40;73%<br/>smaller#41;"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ class E pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class H pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -255,20 +261,25 @@ Complex applications may need multiple languages or tools during build. Multi-st
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Polyglot multi-stage build
 graph TD
+ accTitle: Example 30: Multi-Stage with Multiple Runtimes
+ accDescr: Graph with 10 nodes and 9 connections. Nodes: Frontend Builder node:18-alpine, Production Stage nginx:alpine, Backend Builder golang:1.21-alpine, Docs Builder python:3.11-slim, npm run build React/Vue/Angular, go build API server binary, mkdocs build Static docs site, /usr/share/nginx/ html/, /usr/local/bin/ server, /usr/share/nginx/ html/docs/. Connections: Frontend Builder node:18-alpine to Production Stage nginx:alpine, Backend Builder golang:1.21-alpine to Production Stage nginx:alpine, Docs Builder python:3.11-slim to Production Stage nginx:alpine, Frontend Builder node:18-alpine to npm run build React/Vue/Angular, Backend Builder golang:1.21-alpine to go build API server binary, Docs Builder python:3.11-slim to mkdocs build Static docs site, npm run build React/Vue/Angular to /usr/share/nginx/ html/, go build API server binary to /usr/local/bin/ server, mkdocs build Static docs site to /usr/share/nginx/ html/docs/.
  A["Frontend Builder<br/>node:18-alpine"] --> D["Production Stage<br/>nginx:alpine"]
  B["Backend Builder<br/>golang:1.21-alpine"] --> D
  C["Docs Builder<br/>python:3.11-slim"] --> D
  A --> A1["npm run build<br/>React/Vue/Angular"]
  B --> B1["go build<br/>API server binary"]
  C --> C1["mkdocs build<br/>Static docs site"]
- A1 --> D1["/usr/share/nginx/html/"]
- B1 --> D2["/usr/local/bin/server"]
- C1 --> D3["/usr/share/nginx/html/docs/"]
+ A1 --> D1["/usr/share/nginx/<br/>html/"]
+ B1 --> D2["/usr/local/bin/<br/>server"]
+ C1 --> D3["/usr/share/nginx/<br/>html/docs/"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ class B pal-0173B2
+ class C pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -485,6 +496,8 @@ Build-time secrets (API keys, credentials) needed during build should never be c
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 31: Build-Time Secrets
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Host Secret File .npmrc, B, mount, Mounted in RUN, Secret Available /run/secrets/npmrc, npm ci executes, RUN completes, Secret Removed NOT in image layer. Connections: Host Secret File .npmrc to B, B to mount, B to Mounted in RUN, Mounted in RUN to Secret Available /run/secrets/npmrc, Secret Available /run/secrets/npmrc to npm ci executes, npm ci executes to RUN completes, RUN completes to Secret Removed NOT in image layer.
  A["Host Secret File<br/>.npmrc"] --> B["--mount=type=secret"]
  B --> C["Mounted in RUN"]
  C --> D["Secret Available<br/>/run/secrets/npmrc"]
@@ -492,9 +505,13 @@ graph TD
  E --> F["RUN completes"]
  F --> G["Secret Removed<br/>NOT in image layer"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -644,18 +661,24 @@ Optimize Docker Compose builds with caching strategies, parallel builds, and Bui
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Build caching flow
 graph TD
+ accTitle: Example 32: Docker Compose Build Optimization
+ accDescr: Graph with 7 nodes and 7 connections. Nodes: Local Build, Cache Hit?, Reuse Cached Layers 2 seconds, Pull Cache from Registry, Build with Remote Cache, Push New Layers to Registry, Final Image 15 seconds vs 2m30s. Connections: Local Build to Cache Hit?, Cache Hit? to Reuse Cached Layers 2 seconds (Yes), Cache Hit? to Pull Cache from Registry (No), Pull Cache from Registry to Build with Remote Cache, Build with Remote Cache to Push New Layers to Registry, Push New Layers to Registry to Final Image 15 seconds vs 2m30s, Reuse Cached Layers 2 seconds to Final Image 15 seconds vs 2m30s.
  A["Local Build"] --> B{Cache Hit?}
  B -->|Yes| C["Reuse Cached Layers<br/>2 seconds"]
- B -->|No| D["Pull Cache from Registry"]
- D --> E["Build with Remote Cache"]
- E --> F["Push New Layers to Registry"]
+ B -->|No| D["Pull Cache from<br/>Registry"]
+ D --> E["Build with Remote<br/>Cache"]
+ E --> F["Push New Layers to<br/>Registry"]
  F --> G["Final Image<br/>15 seconds vs 2m30s"]
  C --> G
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -801,6 +824,8 @@ Health checks determine when services are ready to receive traffic. They enable 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 33: Health Checks in Docker Compose
+ accDescr: Graph with 7 nodes and 8 connections. Nodes: Container Start, Starting start_period grace, Health Check, Healthy Service Ready, Retries Left?, Wait interval, Unhealthy Restart Container. Connections: Container Start to Starting start_period grace, Starting start_period grace to Health Check, Health Check to Healthy Service Ready (Pass), Health Check to Retries Left? (Fail), Retries Left? to Wait interval (Yes), Wait interval to Health Check, Retries Left? to Unhealthy Restart Container (No), Unhealthy Restart Container to Container Start.
  A["Container Start"] --> B["Starting<br/>start_period grace"]
  B --> C{Health Check}
  C -->|Pass| D["Healthy<br/>Service Ready"]
@@ -810,9 +835,13 @@ graph TD
  E -->|No| G["Unhealthy<br/>Restart Container"]
  G --> A
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1033,6 +1062,8 @@ Combine health checks, restart policies, and dependencies for resilient multi-se
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 34: Service Dependencies with Restart
+ accDescr: Graph with 10 nodes and 11 connections. Nodes: Database Starts, Health Check, Database Healthy, Queue Starts, Queue Health Check, Queue Healthy, Worker Starts, All Services Running, Restart Database restart: always, Restart Queue restart: unless-stopped. Connections: Database Starts to Health Check, Health Check to Database Healthy (Pass), Database Healthy to Queue Starts, Queue Starts to Queue Health Check, Queue Health Check to Queue Healthy (Pass), Queue Healthy to Worker Starts, Worker Starts to All Services Running, Health Check to Restart Database restart: always (Fail), Restart Database restart: always to Database Starts, Queue Health Check to Restart Queue restart: unless-stopped (Fail), Restart Queue restart: unless-stopped to Queue Starts.
  A["Database Starts"] --> B{Health Check}
  B -->|Pass| C["Database Healthy"]
  C --> D["Queue Starts"]
@@ -1043,14 +1074,18 @@ graph TD
 
  B -->|Fail| I["Restart Database<br/>restart: always"]
  I --> A
- E -->|Fail| J["Restart Queue<br/>restart: unless-stopped"]
+ E -->|Fail| J["Restart Queue<br/>restart:<br/>unless-stopped"]
  J --> D
 
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style I fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style J fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ class F pal-029E73
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class H pal-0173B2
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class I pal-CC78BC
+ class J pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1248,15 +1283,21 @@ CPU limits prevent containers from monopolizing host CPU resources. They ensure 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 35: Resource Limits - CPU
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Host CPU: 8 cores, video-encoder Limit: 2.0 cores Reserved: 0.5 cores, api Limit: 1.0 core Reserved: 0.25 cores, database Limit: 4.0 cores Reserved: 1.0 core, Remaining: 1.0 core Available for bursting. Connections: Host CPU: 8 cores to video-encoder Limit: 2.0 cores Reserved: 0.5 cores, Host CPU: 8 cores to api Limit: 1.0 core Reserved: 0.25 cores, Host CPU: 8 cores to database Limit: 4.0 cores Reserved: 1.0 core, Host CPU: 8 cores to Remaining: 1.0 core Available for bursting.
  A["Host CPU: 8 cores"] --> B["video-encoder<br/>Limit: 2.0 cores<br/>Reserved: 0.5 cores"]
  A --> C["api<br/>Limit: 1.0 core<br/>Reserved: 0.25 cores"]
  A --> D["database<br/>Limit: 4.0 cores<br/>Reserved: 1.0 core"]
- A --> E["Remaining: 1.0 core<br/>Available for bursting"]
+ A --> E["Remaining: 1.0 core<br/>Available for<br/>bursting"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ class D pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1403,16 +1444,22 @@ Memory limits prevent OOM (Out Of Memory) issues and ensure stable multi-contain
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
- A["Container Memory Usage"] --> B{Below Limit?}
+ accTitle: Example 36: Resource Limits - Memory
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Container Memory Usage, Below Limit?, Continue Running, Memory Limit Reached, OOM Killer, Container Terminated Exit Code 137, Use Swap Performance Degraded. Connections: Container Memory Usage to Below Limit?, Below Limit? to Continue Running (Yes), Below Limit? to Memory Limit Reached (No), Memory Limit Reached to OOM Killer, OOM Killer to Container Terminated Exit Code 137 (Kill Container), OOM Killer to Use Swap Performance Degraded (Swap Available).
+ A["Container Memory<br/>Usage"] --> B{Below Limit?}
  B -->|Yes| C["Continue Running"]
  B -->|No| D["Memory Limit Reached"]
  D --> E{OOM Killer}
  E -->|Kill Container| F["Container Terminated<br/>Exit Code 137"]
  E -->|Swap Available| G["Use Swap<br/>Performance Degraded"]
 
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1753,7 +1800,9 @@ Docker supports multiple logging drivers for centralized log aggregation. Choose
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Logging drivers flow
 graph TD
- A["Container App"] --> B["Docker Logging Driver"]
+ accTitle: Example 38: Logging Drivers
+ accDescr: Graph with 8 nodes and 8 connections. Nodes: Container App, Docker Logging Driver, json-file Local disk, syslog Remote syslog server, fluentd Fluentd forwarder, gelf Graylog/ELK, Elasticsearch, Kibana Visualization. Connections: Container App to Docker Logging Driver, Docker Logging Driver to json-file Local disk, Docker Logging Driver to syslog Remote syslog server, Docker Logging Driver to fluentd Fluentd forwarder, Docker Logging Driver to gelf Graylog/ELK, fluentd Fluentd forwarder to Elasticsearch, gelf Graylog/ELK to Elasticsearch, Elasticsearch to Kibana Visualization.
+ A["Container App"] --> B["Docker Logging<br/>Driver"]
  B --> C1["json-file<br/>Local disk"]
  B --> C2["syslog<br/>Remote syslog server"]
  B --> C3["fluentd<br/>Fluentd forwarder"]
@@ -1762,11 +1811,15 @@ graph TD
  C4 --> D
  D --> E["Kibana<br/>Visualization"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C3 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style C4 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C3 pal-029E73
+ class C4 pal-029E73
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2552,6 +2605,8 @@ Custom bridge networks provide network isolation, automatic DNS resolution, and 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 41: Custom Bridge Networks
+ accDescr: Graph with 5 nodes and 6 connections. Nodes: frontend-net 172.20/16, frontend 172.20.x.2, api 172.20.x.3, backend-net 172.21/16, database 172.21.x.2. Connections: frontend-net 172.20/16 to frontend 172.20.x.2, frontend-net 172.20/16 to api 172.20.x.3, backend-net 172.21/16 to api 172.20.x.3, backend-net 172.21/16 to database 172.21.x.2, frontend 172.20.x.2 to api 172.20.x.3 (Can access), api 172.20.x.3 to database 172.21.x.2 (Can access).
  A["frontend-net<br/>172.20/16"] --> B["frontend<br/>172.20.x.2"]
  A --> C["api<br/>172.20.x.3"]
 
@@ -2562,10 +2617,14 @@ graph TD
  B -.x->|Cannot access| E
  C -.->|Can access| E
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ class D pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2804,6 +2863,8 @@ Init containers run before main application containers to perform setup tasks li
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 43: Init Containers Pattern
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: database starts, Health Check, Database Healthy, db-migrate runs, Migrations Complete Exit 0, db-seed runs, Seeding Complete Exit 0, api starts, Application Running. Connections: database starts to Health Check, Health Check to Database Healthy (Pass), Database Healthy to db-migrate runs, db-migrate runs to Migrations Complete Exit 0, Migrations Complete Exit 0 to db-seed runs, db-seed runs to Seeding Complete Exit 0, Seeding Complete Exit 0 to api starts, api starts to Application Running.
  A["database starts"] --> B{Health Check}
  B -->|Pass| C["Database Healthy"]
  C --> D["db-migrate runs"]
@@ -2813,10 +2874,13 @@ graph TD
  G --> H["api starts"]
  H --> I["Application Running"]
 
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style I fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ class E pal-029E73
+ class G pal-029E73
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class I pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

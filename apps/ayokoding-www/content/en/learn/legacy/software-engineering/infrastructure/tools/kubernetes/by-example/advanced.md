@@ -35,18 +35,26 @@ ServiceAccounts provide identities for Pods while RBAC (Role-Based Access Contro
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% RBAC authorization flow
 graph TD
- A[Pod with ServiceAccount] --> B[API Request]
+ accTitle: Example 58: ServiceAccount and RBAC Basics
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Pod with ServiceAccount, API Request, RBAC Check, Role: pod-reader, Has Permission?, Allow: list pods, Deny: 403 Forbidden. Connections: Pod with ServiceAccount to API Request, API Request to RBAC Check, RBAC Check to Role: pod-reader, Role: pod-reader to Has Permission?, Has Permission? to Allow: list pods (Yes), Has Permission? to Deny: 403 Forbidden (No).
+ A[Pod with<br/>ServiceAccount] --> B[API Request]
  B --> C{RBAC Check}
  C --> D[Role: pod-reader]
  D --> E{Has Permission?}
  E -->|Yes| F[Allow: list pods]
  E -->|No| G[Deny: 403 Forbidden]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -962,14 +970,21 @@ NetworkPolicies control pod-to-pod traffic using label selectors and rules. By d
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% NetworkPolicy traffic control
 graph TD
+ accTitle: Example 64: Basic Network Policy
+ accDescr: Graph with 4 nodes and 3 connections. Nodes: Pod: frontend app=frontend, Pod: backend app=backend, Pod: external app=external, Pod: database app=database. Connections: Pod: frontend app=frontend to Pod: backend app=backend (Allowed), Pod: external app=external to Pod: backend app=backend (Denied), Pod: database app=database to Pod: backend app=backend (Allowed).
  A[Pod: frontend<br/>app=frontend] -->|Allowed| B[Pod: backend<br/>app=backend]
  C[Pod: external<br/>app=external] -->|Denied| B
  D[Pod: database<br/>app=database] -->|Allowed| B
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1141,17 +1156,23 @@ Default deny NetworkPolicies block all traffic to/from Pods, requiring explicit 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Default deny with explicit allow
 graph TD
- A[NetworkPolicy: Deny All] --> B[All Pods isolated]
+ accTitle: Example 65: Default Deny Network Policy
+ accDescr: Graph with 6 nodes and 6 connections. Nodes: NetworkPolicy: Deny All, All Pods isolated, Add allow rule frontend → backend, Traffic allowed?, Allowed, Denied. Connections: NetworkPolicy: Deny All to All Pods isolated, All Pods isolated to Add allow rule frontend → backend, Add allow rule frontend → backend to Traffic allowed?, Traffic allowed? to Allowed (frontend → backend), Traffic allowed? to Denied (external → backend), Traffic allowed? to Denied (frontend → database).
+ A[NetworkPolicy: Deny<br/>All] --> B[All Pods isolated]
  B --> C[Add allow rule<br/>frontend → backend]
  C --> D{Traffic allowed?}
  D -->|frontend → backend| E[Allowed]
  D -->|external → backend| F[Denied]
  D -->|frontend → database| F
 
- style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-029E73
+ class F pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1300,7 +1321,9 @@ NetworkPolicies can isolate namespaces, allowing traffic only from specific name
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Namespace isolation
 graph TD
- A[Namespace: backend-ns] --> B{NetworkPolicy}
+ accTitle: Example 66: Namespace Isolation with NetworkPolicy
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Namespace: backend-ns, NetworkPolicy, Allow from frontend-ns, Deny from dev-ns, frontend Pod environment=frontend, dev Pod environment=dev, Access granted, Access denied. Connections: Namespace: backend-ns to NetworkPolicy, NetworkPolicy to Allow from frontend-ns, NetworkPolicy to Deny from dev-ns, Allow from frontend-ns to frontend Pod environment=frontend, Deny from dev-ns to dev Pod environment=dev, frontend Pod environment=frontend to Access granted, dev Pod environment=dev to Access denied.
+ A[Namespace:<br/>backend-ns] --> B{NetworkPolicy}
  B --> C[Allow from<br/>frontend-ns]
  B --> D[Deny from<br/>dev-ns]
  C --> E[frontend Pod<br/>environment=frontend]
@@ -1308,11 +1331,15 @@ graph TD
  E --> G[Access granted]
  F --> H[Access denied]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-CC78BC
+ class G pal-029E73
+ class H pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1635,16 +1662,22 @@ CustomResourceDefinitions extend Kubernetes API with custom resource types. CRDs
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% CRD and custom resource relationship
 graph TD
- A[CRD: databases.example.com] --> B[Defines schema]
- B --> C[Custom Resource: Database]
- C --> D[Instance: production-db]
- D --> E[spec.engine: postgres<br/>spec.version: 15<br/>spec.replicas: 3]
+ accTitle: Example 69: Custom Resource Definition
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: CRD: databases. example.com, Defines schema, Custom Resource: Database, Instance: production-db, spec.engine: postgres spec.version: 15 spec.replicas: 3, Validation rules, Accepted by API server. Connections: CRD: databases. example.com to Defines schema, Defines schema to Custom Resource: Database, Custom Resource: Database to Instance: production-db, Instance: production-db to spec.engine: postgres spec.version: 15 spec.replicas: 3, CRD: databases. example.com to Validation rules, Validation rules to Accepted by API server.
+ A[CRD: databases.<br/>example.com] --> B[Defines schema]
+ B --> C[Custom Resource:<br/>Database]
+ C --> D[Instance:<br/>production-db]
+ D --> E[spec.engine:<br/>postgres<br/>spec.version: 15<br/>spec.replicas: 3]
  A --> F[Validation rules]
- F --> G[Accepted by API server]
+ F --> G[Accepted by API<br/>server]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2066,19 +2099,26 @@ Operators are custom controllers watching custom resources and reconciling actua
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Operator reconciliation loop
 graph TD
+ accTitle: Example 71: Operator Pattern with Controller
+ accDescr: Graph with 7 nodes and 8 connections. Nodes: Watch Database CR, Event?, Read desired state spec.replicas=3, Read actual state StatefulSet replicas=2, Reconcile needed?, Update StatefulSet replicas=3, Update status. Connections: Watch Database CR to Event?, Event? to Read desired state spec.replicas=3 (Create/Update), Read desired state spec.replicas=3 to Read actual state StatefulSet replicas=2, Read actual state StatefulSet replicas=2 to Reconcile needed?, Reconcile needed? to Update StatefulSet replicas=3 (Yes), Reconcile needed? to Update status (No), Update StatefulSet replicas=3 to Update status, Update status to Watch Database CR.
  A[Watch Database CR] --> B{Event?}
  B -->|Create/Update| C[Read desired state<br/>spec.replicas=3]
- C --> D[Read actual state<br/>StatefulSet replicas=2]
+ C --> D[Read actual state<br/>StatefulSet<br/>replicas=2]
  D --> E{Reconcile needed?}
  E -->|Yes| F[Update StatefulSet<br/>replicas=3]
  E -->|No| G[Update status]
  F --> G
  G --> A
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -2270,6 +2310,8 @@ Admission webhooks intercept API requests before persistence, enabling validatio
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Admission webhook flow
 graph TD
+ accTitle: Example 73: Admission Webhooks
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: kubectl create pod, API Server, Authentication, Authorization, Mutating Webhooks, Inject sidecar, Validating Webhooks, Persist to etcd, Reject: 403. Connections: kubectl create pod to API Server, API Server to Authentication, Authentication to Authorization, Authorization to Mutating Webhooks, Mutating Webhooks to Inject sidecar, Inject sidecar to Validating Webhooks, Validating Webhooks to Persist to etcd (Valid), Validating Webhooks to Reject: 403 (Invalid).
  A[kubectl create pod] --> B[API Server]
  B --> C[Authentication]
  C --> D[Authorization]
@@ -2279,11 +2321,17 @@ graph TD
  G -->|Valid| H[Persist to etcd]
  G -->|Invalid| I[Reject: 403]
 
- style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style I fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class B pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class H pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class I pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2467,6 +2515,8 @@ Helm packages Kubernetes manifests into charts with templating, versioning, and 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Helm chart structure
 graph TD
+ accTitle: Example 74: Basic Helm Chart Structure
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Helm Chart, Chart.yaml metadata, values.yaml defaults, templates/ manifests, deployment.yaml, service.yaml, ingress.yaml, charts/ dependencies. Connections: Helm Chart to Chart.yaml metadata, Helm Chart to values.yaml defaults, Helm Chart to templates/ manifests, templates/ manifests to deployment.yaml, templates/ manifests to service.yaml, templates/ manifests to ingress.yaml, Helm Chart to charts/ dependencies.
  A[Helm Chart] --> B[Chart.yaml<br/>metadata]
  A --> C[values.yaml<br/>defaults]
  A --> D[templates/<br/>manifests]
@@ -2475,10 +2525,15 @@ graph TD
  D --> G[ingress.yaml]
  A --> H[charts/<br/>dependencies]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2623,16 +2678,23 @@ Helm values provide hierarchical configuration with multiple override mechanisms
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Helm values precedence
 graph TD
+ accTitle: Example 75: Helm Values and Overrides
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: values.yaml defaults, Merge, values-dev.yaml -f flag, D, set, Final values, Template rendering. Connections: values.yaml defaults to Merge, values-dev.yaml -f flag to Merge, D to set, set to Merge, Merge to Final values, Final values to Template rendering.
  A[values.yaml<br/>defaults] --> B[Merge]
  C[values-dev.yaml<br/>-f flag] --> B
  D[--set replicaCount=5<br/>CLI flag] --> B
  B --> E[Final values]
  E --> F[Template rendering]
 
- style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-CA9161
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2782,19 +2844,27 @@ Helm hooks run Jobs at specific points in release lifecycle, enabling pre/post-i
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Helm hook execution
 graph TD
+ accTitle: Example 77: Helm Hooks
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: helm upgrade, pre-upgrade hook weight=1, Run migration Job, Migration success?, Deploy main resources, Upgrade fails, post-upgrade hook, Cleanup old resources. Connections: helm upgrade to pre-upgrade hook weight=1, pre-upgrade hook weight=1 to Run migration Job, Run migration Job to Migration success?, Migration success? to Deploy main resources (Yes), Migration success? to Upgrade fails (No), Deploy main resources to post-upgrade hook, post-upgrade hook to Cleanup old resources.
  A[helm upgrade] --> B[pre-upgrade hook<br/>weight=1]
  B --> C[Run migration Job]
  C --> D{Migration success?}
- D -->|Yes| E[Deploy main resources]
+ D -->|Yes| E[Deploy main<br/>resources]
  D -->|No| F[Upgrade fails]
  E --> G[post-upgrade hook]
- G --> H[Cleanup old resources]
+ G --> H[Cleanup old<br/>resources]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2904,17 +2974,24 @@ GitOps uses Git as single source of truth for declarative infrastructure and app
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% GitOps workflow
 graph TD
+ accTitle: Example 79: GitOps Principles and Repository Structure
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Developer commits to Git, CI builds image, CI updates manifest with new image tag, Push to Git repo, ArgoCD detects change, ArgoCD syncs cluster, Deployment updated. Connections: Developer commits to Git to CI builds image, CI builds image to CI updates manifest with new image tag, CI updates manifest with new image tag to Push to Git repo, Push to Git repo to ArgoCD detects change, ArgoCD detects change to ArgoCD syncs cluster, ArgoCD syncs cluster to Deployment updated.
  A[Developer commits<br/>to Git] --> B[CI builds image]
  B --> C[CI updates manifest<br/>with new image tag]
  C --> D[Push to Git repo]
- D --> E[ArgoCD detects change]
+ D --> E[ArgoCD detects<br/>change]
  E --> F[ArgoCD syncs cluster]
  F --> G[Deployment updated]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -3094,7 +3171,9 @@ ArgoCD supports multiple sync strategies controlling how and when applications s
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% ArgoCD sync with self-heal
 graph TD
- A[Git commit] --> B[ArgoCD detects change]
+ accTitle: Example 81: ArgoCD Sync Strategies
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: Git commit, ArgoCD detects change, Auto-sync enabled?, Sync to cluster, Wait for manual sync, Drift detected?, Auto-correct drift, Alert only, Cluster matches Git. Connections: Git commit to ArgoCD detects change, ArgoCD detects change to Auto-sync enabled?, Auto-sync enabled? to Sync to cluster (Yes), Auto-sync enabled? to Wait for manual sync (No), Sync to cluster to Drift detected?, Drift detected? to Auto-correct drift (Yes + selfHeal), Drift detected? to Alert only (No selfHeal), Auto-correct drift to Cluster matches Git.
+ A[Git commit] --> B[ArgoCD detects<br/>change]
  B --> C[Auto-sync enabled?]
  C -->|Yes| D[Sync to cluster]
  C -->|No| E[Wait for manual sync]
@@ -3103,10 +3182,14 @@ graph TD
  F -->|No selfHeal| H[Alert only]
  G --> I[Cluster matches Git]
 
- style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class B pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-029E73
+ class I pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -3349,19 +3432,25 @@ ApplicationSets generate multiple Applications from templates, enabling fleet ma
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% ApplicationSet multi-cluster deployment
 graph TD
+ accTitle: Example 83: ArgoCD ApplicationSets
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: ApplicationSet, Generator: list, Cluster: prod-us-west, Cluster: prod-eu-central, Cluster: staging, Application: prod-us-west-app, App: prod-eu-central, Application: staging-app. Connections: ApplicationSet to Generator: list, Generator: list to Cluster: prod-us-west, Generator: list to Cluster: prod-eu-central, Generator: list to Cluster: staging, Cluster: prod-us-west to Application: prod-us-west-app, Cluster: prod-eu-central to App: prod-eu-central, Cluster: staging to Application: staging-app.
  A[ApplicationSet] --> B[Generator: list]
- B --> C[Cluster: prod-us-west]
- B --> D[Cluster: prod-eu-central]
+ B --> C[Cluster:<br/>prod-us-west]
+ B --> D[Cluster:<br/>prod-eu-central]
  B --> E[Cluster: staging]
- C --> F[Application: prod-us-west-app]
+ C --> F[Application:<br/>prod-us-west-app]
  D --> G[App: prod-eu-central]
- E --> H[Application: staging-app]
+ E --> H[Application:<br/>staging-app]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-029E73
+ class G pal-029E73
+ class H pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -3497,8 +3586,10 @@ Production clusters require comprehensive monitoring, logging, and tracing for o
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Observability stack
 graph TD
- A[Application Pods] --> B[Metrics endpoint /metrics]
- A --> C[Logs to stdout/stderr]
+ accTitle: Example 84: Production Monitoring and Observability
+ accDescr: Graph with 8 nodes and 9 connections. Nodes: Application Pods, Metrics endpoint /metrics, Logs to stdout/stderr, Traces with context, Prometheus scrapes, Loki aggregates, Jaeger collects, Grafana dashboards. Connections: Application Pods to Metrics endpoint /metrics, Application Pods to Logs to stdout/stderr, Application Pods to Traces with context, Metrics endpoint /metrics to Prometheus scrapes, Logs to stdout/stderr to Loki aggregates, Traces with context to Jaeger collects, Prometheus scrapes to Grafana dashboards, Loki aggregates to Grafana dashboards, Jaeger collects to Grafana dashboards.
+ A[Application Pods] --> B[Metrics endpoint<br/>/metrics]
+ A --> C[Logs to<br/>stdout/stderr]
  A --> D[Traces with context]
  B --> E[Prometheus scrapes]
  C --> F[Loki aggregates]
@@ -3507,11 +3598,17 @@ graph TD
  F --> H
  G --> H
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-CA9161
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class H pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

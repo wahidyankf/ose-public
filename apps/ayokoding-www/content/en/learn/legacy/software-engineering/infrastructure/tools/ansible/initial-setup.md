@@ -430,18 +430,25 @@ Congratulations! You've executed your first Ansible playbook.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["ansible-playbook hello.yml"] --> B["Parse YAML"]
+    accTitle: Understanding Execution Flow
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: ansible-playbook hello.yml, Parse YAML, Connect to localhost, Execute debug task, Display message, PLAY RECAP: ok=1. Connections: ansible-playbook hello.yml to Parse YAML, Parse YAML to Connect to localhost, Connect to localhost to Execute debug task, Execute debug task to Display message, Display message to PLAY RECAP: ok=1.
+    A["ansible-playbook<br/>hello.yml"] --> B["Parse YAML"]
     B --> C["Connect to localhost"]
     C --> D["Execute debug task"]
     D --> E["Display message"]
     E --> F["PLAY RECAP: ok=1"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Understanding Localhost Targeting

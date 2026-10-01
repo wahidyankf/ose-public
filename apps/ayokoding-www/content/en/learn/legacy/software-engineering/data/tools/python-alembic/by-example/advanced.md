@@ -25,18 +25,26 @@ Alembic's operation system is extensible. You can define custom `MigrateOperatio
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Custom operation registration flow
 graph TD
-    A[Define MigrateOperation subclass] -->|@Operations.register| B[Registered op directive]
+    accTitle: Example 61: Custom Migration Operations
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Define MigrateOperation subclass, Registered op directive, invoke_for_target, Custom SQL / DDL, Rendered SQL string, Executed against DB. Connections: Define MigrateOperation subclass to Registered op directive (@Operations.register), Registered op directive to invoke_for_target (invoke directive), invoke_for_target to Custom SQL / DDL (calls), Custom SQL / DDL to Rendered SQL string (--sql mode), Custom SQL / DDL to Executed against DB (online mode).
+    A[Define<br/>MigrateOperation<br/>subclass] -->|@Operations.register| B[Registered op<br/>directive]
     B -->|invoke directive| C[invoke_for_target]
     C -->|calls| D[Custom SQL / DDL]
     D -->|--sql mode| E[Rendered SQL string]
     D -->|online mode| F[Executed against DB]
 
-    style A fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#ffffff,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#ffffff,stroke-width:2px
-    style F fill:#CA9161,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Define and register the custom operation**:
@@ -139,18 +147,26 @@ SQLAlchemy 1.4+ and 2.0 support async engines via `asyncpg`. Alembic's `env.py` 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Async migration flow
 graph TD
-    A[alembic upgrade head] -->|loads| B[env.py run_async_migrations]
-    B -->|creates| C[AsyncEngine via create_async_engine]
+    accTitle: Example 62: Alembic with Async Engines
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: alembic upgrade head, env.py run_async_migrations, AsyncEngine via create_async_engine, AsyncConnection, Alembic MigrationContext sync API, Database. Connections: alembic upgrade head to env.py run_async_migrations (loads), env.py run_async_migrations to AsyncEngine via create_async_engine (creates), AsyncEngine via create_async_engine to AsyncConnection (begins), AsyncConnection to Alembic MigrationContext sync API (run_sync callback), Alembic MigrationContext sync API to Database (executes DDL).
+    A[alembic upgrade head] -->|loads| B[env.py<br/>run_async_migrations]
+    B -->|creates| C[AsyncEngine via<br/>create_async_engine]
     C -->|begins| D[AsyncConnection]
-    D -->|run_sync callback| E[Alembic MigrationContext sync API]
+    D -->|run_sync callback| E[Alembic<br/>MigrationContext<br/>sync API]
     E -->|executes DDL| F[Database]
 
-    style A fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#ffffff,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#ffffff,stroke-width:2px
-    style F fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -308,12 +324,18 @@ Removing a column safely from a live system requires three coordinated deploymen
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Three-phase column removal
 graph TD
-    A["Phase 1: Deploy app code<br/>ignore column in ORM"] -->|confirm deployed| B["Phase 2: Alembic drop column<br/>in migration"]
-    B -->|confirm applied| C["Phase 3: Remove ignore<br/>annotation from ORM"]
+    accTitle: Example 64: Zero-Downtime Column Removal
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Phase 1: Deploy app code ignore column in ORM, Phase 2: Alembic drop column in migration, Phase 3: Remove ignore annotation from ORM. Connections: Phase 1: Deploy app code ignore column in ORM to Phase 2: Alembic drop column in migration (confirm deployed), Phase 2: Alembic drop column in migration to Phase 3: Remove ignore annotation from ORM (confirm applied).
+    A["Phase 1: Deploy app<br/>code<br/>ignore column in ORM"] -->|confirm deployed| B["Phase 2: Alembic<br/>drop column<br/>in migration"]
+    B -->|confirm applied| C["Phase 3: Remove<br/>ignore<br/>annotation from ORM"]
 
-    style A fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#ffffff,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Phase 1 — Make ORM ignore the column (deploy app first)**:
@@ -1275,14 +1297,21 @@ Blue-green deployments run two identical environments simultaneously during a sw
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Blue-green migration sequence
 graph TD
-    A["Blue env #40;v1 app#41;<br/>Schema v1"] -->|apply forward-compat migration| B["Schema v1+compat"]
-    B -->|switch traffic to green| C["Green env #40;v2 app#41;<br/>Schema v1+compat"]
-    C -->|cleanup migration after blue drains| D["Schema v2 #40;clean#41;"]
+    accTitle: Example 78: Blue-Green Deployment Migrations
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Blue env 40v1 app41 Schema v1, Schema v1+compat, Green env 40v2 app41 Schema v1+compat, Schema v2 40clean41. Connections: Blue env 40v1 app41 Schema v1 to Schema v1+compat (apply forward-compat migration), Schema v1+compat to Green env 40v2 app41 Schema v1+compat (switch traffic to green), Green env 40v2 app41 Schema v1+compat to Schema v2 40clean41 (cleanup migration after blue drains).
+    A["Blue env #40;v1<br/>app#41;<br/>Schema v1"] -->|apply forward-compat<br/>migration| B["Schema v1+compat"]
+    B -->|switch traffic to<br/>green| C["Green env #40;v2<br/>app#41;<br/>Schema v1+compat"]
+    C -->|cleanup migration<br/>after blue drains| D["Schema v2<br/>#40;clean#41;"]
 
-    style A fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#ffffff,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Migration 1 — forward-compatible change (apply before traffic switch)**:

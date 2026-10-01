@@ -27,7 +27,9 @@ This quick start covers 10 essential Ansible touchpoints:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["1. Playbook Structure"] --> B["2. Inventory Files"]
+    accTitle: Learning Path
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: 1. Playbook Structure, 2. Inventory Files, 3. Core Modules, 4. Variables, 5. Facts, 6. Handlers, 7. Conditionals, 8. Loops, 9. Roles, 10. Vault. Connections: 1. Playbook Structure to 2. Inventory Files, 2. Inventory Files to 3. Core Modules, 3. Core Modules to 4. Variables, 4. Variables to 5. Facts, 5. Facts to 6. Handlers, 6. Handlers to 7. Conditionals, 7. Conditionals to 8. Loops, 8. Loops to 9. Roles, 9. Roles to 10. Vault.
+    A["1. Playbook<br/>Structure"] --> B["2. Inventory Files"]
     B --> C["3. Core Modules"]
     C --> D["4. Variables"]
     D --> E["5. Facts"]
@@ -37,16 +39,21 @@ graph TD
     H --> I["9. Roles"]
     I --> J["10. Vault"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#0173B2,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#0173B2,color:#fff
-    style J fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    class F pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-CC78BC
+    class I pal-0173B2
+    class J pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concept 1: Playbook Structure
@@ -747,16 +754,23 @@ You've completed 10 essential Ansible touchpoints:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Learning Path Summary
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, D, E. Connections: A to B, B to C, C to D, D to E.
     A["Playbooks &<br/>Inventory"] --> B["Modules &<br/>Variables"]
     B --> C["Facts &<br/>Handlers"]
     C --> D["Conditionals &<br/>Loops"]
     D --> E["Roles &<br/>Vault"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Next Steps

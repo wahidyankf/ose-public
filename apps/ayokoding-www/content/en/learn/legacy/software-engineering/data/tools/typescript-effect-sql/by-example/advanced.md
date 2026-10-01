@@ -35,16 +35,24 @@ The built-in `PgMigrator.fromRecord` loader reads migrations from a static TypeS
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Custom Migration Provider
 graph TD
-    A[MigrationProvider interface] -->|implements| B[CustomProvider]
+    accTitle: Example 61: Custom Migration Provider
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: MigrationProvider interface, CustomProvider, SQL files on disk, Record, PgMigrator.layer. Connections: MigrationProvider interface to CustomProvider (implements), CustomProvider to SQL files on disk (reads), SQL files on disk to Record (returns), Record to PgMigrator.layer (consumed by).
+    A[MigrationProvider<br/>interface] -->|implements| B[CustomProvider]
     B -->|reads| C[SQL files on disk]
     C -->|returns| D["Record<id, Effect>"]
     D -->|consumed by| E[PgMigrator.layer]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -113,16 +121,24 @@ When a data migration must process millions of rows, loading all rows into memor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Stream pipeline for large data migration
 graph TD
+    accTitle: Example 62: Effect Stream for Large Data Migrations
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: SELECT rows, Stream of rows, Process chunks, Batch INSERT/UPDATE, Sink - drain. Connections: SELECT rows to Stream of rows (Stream.fromEffect), Stream of rows to Process chunks (Stream.mapChunks), Process chunks to Batch INSERT/UPDATE (Stream.mapEffect), Batch INSERT/UPDATE to Sink - drain (Stream.run).
     A[SELECT rows] -->|Stream.fromEffect| B[Stream of rows]
     B -->|Stream.mapChunks| C[Process chunks]
     C -->|Stream.mapEffect| D[Batch INSERT/UPDATE]
     D -->|Stream.run| E[Sink - drain]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -238,16 +254,24 @@ Removing a column safely requires three separate deployments to avoid breaking r
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Three-phase column removal
 graph TD
-    A[Phase 1: Remove code references] --> B[Deploy app without reading column]
-    B --> C[Phase 2: Drop column in migration]
+    accTitle: Example 64: Zero-Downtime Column Removal
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Phase 1: Remove code references, Deploy app without reading column, Phase 2: Drop column in migration, Deploy migration, Phase 3: Remove backcompat code. Connections: Phase 1: Remove code references to Deploy app without reading column, Deploy app without reading column to Phase 2: Drop column in migration, Phase 2: Drop column in migration to Deploy migration, Deploy migration to Phase 3: Remove backcompat code.
+    A[Phase 1: Remove code<br/>references] --> B[Deploy app without<br/>reading column]
+    B --> C[Phase 2: Drop column<br/>in migration]
     C --> D[Deploy migration]
-    D --> E[Phase 3: Remove backcompat code]
+    D --> E[Phase 3: Remove<br/>backcompat code]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -695,23 +719,32 @@ Blue-green deployments require that migrations run once and be compatible with b
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Blue-Green migration compatibility
 graph TD
-    A[Blue instances running] --> B{Run migration}
-    B -->|additive only| C[New column added nullable]
-    C --> D[Green instances start]
-    D --> E{Both blue and green run concurrently}
-    E -->|blue ignores new column| F[Blue queries still work]
-    E -->|green uses new column| G[Green queries work]
-    F --> H[Blue drains and stops]
+    accTitle: Example 72: Blue-Green Deployment Migrations
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Blue instances running, Run migration, New column added nullable, Green instances start, Both blue and green run concurrently, Blue queries still work, Green queries work, Blue drains and stops. Connections: Blue instances running to Run migration, Run migration to New column added nullable (additive only), New column added nullable to Green instances start, Green instances start to Both blue and green run concurrently, Both blue and green run concurrently to Blue queries still work (blue ignores new column), Both blue and green run concurrently to Green queries work (green uses new column), Blue queries still work to Blue drains and stops, Green queries work to Blue drains and stops.
+    A[Blue instances<br/>running] --> B{Run migration}
+    B -->|additive only| C[New column added<br/>nullable]
+    C --> D[Green instances<br/>start]
+    D --> E{Both blue and green<br/>run concurrently}
+    E -->|blue ignores new<br/>column| F[Blue queries still<br/>work]
+    E -->|green uses new<br/>column| G[Green queries work]
+    F --> H[Blue drains and<br/>stops]
     G --> H
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style G fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style H fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-029E73
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    class H pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1148,16 +1181,24 @@ Complex migration setups have dependencies: the migrator needs the database clie
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Effect Layer dependency graph for migrations
 graph TD
+    accTitle: Example 79: Migration Dependency Graph with Effect Layer
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: process.env, Config Layer, PgClient Layer, PgMigrator Layer, Migration Program. Connections: process.env to Config Layer (provides), Config Layer to PgClient Layer (provides url), PgClient Layer to PgMigrator Layer (provides SqlClient), PgMigrator Layer to Migration Program (provides PgMigrator).
     A[process.env] -->|provides| B[Config Layer]
     B -->|provides url| C[PgClient Layer]
     C -->|provides SqlClient| D[PgMigrator Layer]
     D -->|provides PgMigrator| E[Migration Program]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

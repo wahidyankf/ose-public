@@ -25,14 +25,21 @@ Every Effect SQL migration is a TypeScript module that exports a default `Effect
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Effect SQL Migration Lifecycle
 graph TD
-    A[Migration Module] -->|exports default| B[Effect.gen computation]
+    accTitle: Example 1: First Effect SQL Migration
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Migration Module, Effect.gen computation, SqlClient Service, Database Execution. Connections: Migration Module to Effect.gen computation (exports default), Effect.gen computation to SqlClient Service (yield* SqlClient), SqlClient Service to Database Execution (sql template literal).
+    A[Migration Module] -->|exports default| B[Effect.gen<br/>computation]
     B -->|yield* SqlClient| C[SqlClient Service]
     C -->|sql template literal| D[Database Execution]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -251,16 +258,24 @@ The migrator runs as an Effect `Layer`. `PgMigrator.layer` (or `SqliteMigrator.l
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Migration Layer Build Flow
 graph TD
+    accTitle: Example 7: Migration Layer Setup
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: migrations record, PgMigrator.layer, PgClient.layer, Run pending migrations, Migrator layer released. Connections: migrations record to PgMigrator.layer (fromRecord loader), PgClient.layer to PgMigrator.layer (Layer.provide), PgMigrator.layer to Run pending migrations (Layer.build), Run pending migrations to Migrator layer released (Effect.scoped).
     A[migrations record] -->|fromRecord loader| B[PgMigrator.layer]
     C[PgClient.layer] -->|Layer.provide| B
-    B -->|Layer.build| D[Run pending migrations]
-    D -->|Effect.scoped| E[Migrator layer released]
+    B -->|Layer.build| D[Run pending<br/>migrations]
+    D -->|Effect.scoped| E[Migrator layer<br/>released]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

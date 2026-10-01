@@ -215,8 +215,10 @@ test.describe("Checkout Flow", () => {
 
 ```mermaid
 graph TD
+    accTitle: Error Handling Architecture
+    accDescr: Graph with 15 nodes and 21 connections. Nodes: Test Execution, test.step: Navigate, test.step: Add to Cart, Error Boundary, test.step: Checkout, test.step: Payment, test.step: Confirmation, Test Passes, Screenshot, Console Logs, Network Trace, Diagnostic Report, and 3 more. Connections: Test Execution to test.step: Navigate (Step 1), test.step: Navigate to test.step: Add to Cart (Success), test.step: Navigate to Error Boundary (Failure), test.step: Add to Cart to test.step: Checkout (Success), test.step: Add to Cart to Error Boundary (Failure), test.step: Checkout to test.step: Payment (Success), test.step: Checkout to Error Boundary (Failure), test.step: Payment to test.step: Confirmation (Success), test.step: Payment to Error Boundary (Failure), test.step: Confirmation to Test Passes (Success), test.step: Confirmation to Error Boundary (Failure), Error Boundary to Screenshot (Capture), and 9 more.
     A[Test Execution] -->|Step 1| B[test.step: Navigate]
-    B -->|Success| C[test.step: Add to Cart]
+    B -->|Success| C[test.step: Add to<br/>Cart]
     B -->|Failure| D[Error Boundary]
 
     C -->|Success| E[test.step: Checkout]
@@ -225,7 +227,7 @@ graph TD
     E -->|Success| F[test.step: Payment]
     E -->|Failure| D
 
-    F -->|Success| G[test.step: Confirmation]
+    F -->|Success| G[test.step:<br/>Confirmation]
     F -->|Failure| D
 
     G -->|Success| H[Test Passes]
@@ -245,15 +247,21 @@ graph TD
 
     N -->|Attempt| B
 
-    style B fill:#0173B2
-    style C fill:#0173B2
-    style E fill:#0173B2
-    style F fill:#0173B2
-    style G fill:#0173B2
-    style D fill:#DE8F05
-    style L fill:#029E73
-    style M fill:#CC78BC
-    style O fill:#CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    class C pal-0173B2
+    class E pal-0173B2
+    class F pal-0173B2
+    class G pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class L pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class M pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class O pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

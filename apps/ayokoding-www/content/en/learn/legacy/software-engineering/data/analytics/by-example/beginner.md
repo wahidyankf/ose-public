@@ -141,13 +141,18 @@ Copy-on-Write (CoW) is the most important breaking change in pandas 3.0.2. Code 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["df#91;col#93; = value<br/>pandas 2.x: sometimes works<br/>pandas 3.x: ChainedAssignmentError"]
-    B["df.loc#91;row, col#93; = value<br/>Always correct in both versions<br/>Explicit, no ambiguity"]
+    accTitle: Example 4: Copy-on-Write in pandas 3.0.2 — ChainedAssignmentError
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: df91col93 = value pandas 2.x: sometimes works pandas 3.x: Chained AssignmentError, df.loc91row, col93 = value Always correct in both versions Explicit, no ambiguity. Connections: df91col93 = value pandas 2.x: sometimes works pandas 3.x: Chained AssignmentError to df.loc91row, col93 = value Always correct in both versions Explicit, no ambiguity (migrate to).
+    A["df#91;col#93; =<br/>value<br/>pandas 2.x:<br/>sometimes works<br/>pandas 3.x: Chained<br/>AssignmentError"]
+    B["df.loc#91;row,<br/>col#93; = value<br/>Always correct in<br/>both versions<br/>Explicit, no<br/>ambiguity"]
 
     A -->|"migrate to"| B
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -556,10 +561,12 @@ Merging combines two DataFrames on a common key, analogous to SQL JOIN. Understa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 12: Merging DataFrames — pd.merge Join Types
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Left DataFrame employees, Right DataFrame departments, inner join only matching rows, left join all left + matching right, outer join all rows from both. Connections: Left DataFrame employees to inner join only matching rows, Right DataFrame departments to inner join only matching rows, Left DataFrame employees to left join all left + matching right, Right DataFrame departments to left join all left + matching right, Left DataFrame employees to outer join all rows from both, Right DataFrame departments to outer join all rows from both.
     A["Left DataFrame<br/>employees"]
     B["Right DataFrame<br/>departments"]
     C["inner join<br/>only matching rows"]
-    D["left join<br/>all left + matching right"]
+    D["left join<br/>all left + matching<br/>right"]
     E["outer join<br/>all rows from both"]
 
     A --> C
@@ -569,11 +576,17 @@ graph LR
     A --> E
     B --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

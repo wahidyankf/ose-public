@@ -21,18 +21,23 @@ Docker Swarm enables orchestrating containers across multiple hosts with built-i
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Swarm cluster architecture
 graph TD
+ accTitle: Example 55: Docker Swarm Initialization
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Manager Node 192.0.2.10, Worker Node 1 192.0.2.11, Worker Node 2 192.0.2.12, Worker Node 3 192.0.2.13, Manager Node 2 192.0.2.14, Manager Node 3 192.0.2.15. Connections: Manager Node 192.0.2.10 to Worker Node 1 192.0.2.11, Manager Node 192.0.2.10 to Worker Node 2 192.0.2.12, Manager Node 192.0.2.10 to Worker Node 3 192.0.2.13, Manager Node 192.0.2.10 to Manager Node 2 192.0.2.14 (Raft consensus), Manager Node 192.0.2.10 to Manager Node 3 192.0.2.15 (Raft consensus).
  A["Manager Node<br/>192.0.2.10"] --> B["Worker Node 1<br/>192.0.2.11"]
  A --> C["Worker Node 2<br/>192.0.2.12"]
  A --> D["Worker Node 3<br/>192.0.2.13"]
  A -.->|"Raft consensus"| E["Manager Node 2<br/>192.0.2.14"]
  A -.->|"Raft consensus"| F["Manager Node 3<br/>192.0.2.15"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ class E pal-0173B2
+ class F pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-029E73
+ class C pal-029E73
+ class D pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -122,6 +127,8 @@ Swarm services define desired state for containerized applications. Swarm mainta
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Swarm service distribution
 graph TD
+ accTitle: Example 56: Docker Swarm Services
+ accDescr: Graph with 7 nodes and 8 connections. Nodes: Client Request worker1:8080, Ingress Routing Mesh, web.1 worker1, web.2 worker2, web.3 worker3, Backend API 5 replicas, Database 1 replica on worker1. Connections: Client Request worker1:8080 to Ingress Routing Mesh, Ingress Routing Mesh to web.1 worker1, Ingress Routing Mesh to web.2 worker2, Ingress Routing Mesh to web.3 worker3, web.1 worker1 to Backend API 5 replicas, web.2 worker2 to Backend API 5 replicas, web.3 worker3 to Backend API 5 replicas, Backend API 5 replicas to Database 1 replica on worker1.
  A["Client Request<br/>worker1:8080"] --> B["Ingress Routing Mesh"]
  B --> C1["web.1<br/>worker1"]
  B --> C2["web.2<br/>worker2"]
@@ -131,12 +138,17 @@ graph TD
  C3 --> D
  D --> E["Database<br/>1 replica on worker1"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C1 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style C2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style C3 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C1 pal-029E73
+ class C2 pal-029E73
+ class C3 pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -365,18 +377,24 @@ Docker secrets provide secure credential distribution to swarm services. Secrets
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Docker secrets flow
 graph TD
+ accTitle: Example 57: Docker Secrets Management
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Create Secret docker secret create, Raft Store Encrypted at rest, Swarm Manager Leader, Worker Node 1 TLS encrypted, Worker Node 2 TLS encrypted, Container /run/secrets/ db_password, Container /run/secrets/api_key. Connections: Create Secret docker secret create to Raft Store Encrypted at rest, Raft Store Encrypted at rest to Swarm Manager Leader, Swarm Manager Leader to Worker Node 1 TLS encrypted, Swarm Manager Leader to Worker Node 2 TLS encrypted, Worker Node 1 TLS encrypted to Container /run/secrets/ db_password, Worker Node 2 TLS encrypted to Container /run/secrets/api_key.
  A["Create Secret<br/>docker secret create"] --> B["Raft Store<br/>Encrypted at rest"]
  B --> C["Swarm Manager<br/>Leader"]
  C --> D1["Worker Node 1<br/>TLS encrypted"]
  C --> D2["Worker Node 2<br/>TLS encrypted"]
- D1 --> E1["Container<br/>/run/secrets/db_password"]
+ D1 --> E1["Container<br/>/run/secrets/<br/>db_password"]
  D2 --> E2["Container<br/>/run/secrets/api_key"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style E1 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ class C pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E1 pal-029E73
+ class E2 pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -847,17 +865,24 @@ Container image scanning detects known vulnerabilities in base images and depend
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Image scanning flow
 graph TD
+ accTitle: Example 60: Image Scanning for Vulnerabilities
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Build Image, Trivy Scan, Vulnerabilities?, Fail Build Exit code 1, Generate Report, Upload to GitHub Security, Deploy to Production. Connections: Build Image to Trivy Scan, Trivy Scan to Vulnerabilities?, Vulnerabilities? to Fail Build Exit code 1 (CRITICAL/HIGH), Vulnerabilities? to Generate Report (MEDIUM/LOW), Generate Report to Upload to GitHub Security, Upload to GitHub Security to Deploy to Production.
  A["Build Image"] --> B["Trivy Scan"]
  B --> C{Vulnerabilities?}
  C -->|CRITICAL/HIGH| D["Fail Build<br/>Exit code 1"]
  C -->|MEDIUM/LOW| E["Generate Report"]
- E --> F["Upload to GitHub Security"]
+ E --> F["Upload to GitHub<br/>Security"]
  F --> G["Deploy to Production"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1557,6 +1582,8 @@ Host private Docker registries for storing proprietary images and controlling ac
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Registry infrastructure
 graph TD
+ accTitle: Example 64: Private Docker Registry
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: Developer Push docker push, Registry Port 5000, Authentication htpasswd, TLS Encryption domain.crt, Storage Backend, Local Disk /data, S3 Bucket AWS, Redis Cache Blob descriptors, Registry UI Port 8080. Connections: Developer Push docker push to Registry Port 5000, Registry Port 5000 to Authentication htpasswd, Authentication htpasswd to TLS Encryption domain.crt, TLS Encryption domain.crt to Storage Backend, Storage Backend to Local Disk /data, Storage Backend to S3 Bucket AWS, Registry Port 5000 to Redis Cache Blob descriptors, Registry Port 5000 to Registry UI Port 8080.
  A["Developer Push<br/>docker push"] --> B["Registry<br/>Port 5000"]
  B --> C["Authentication<br/>htpasswd"]
  C --> D["TLS Encryption<br/>domain.crt"]
@@ -1566,11 +1593,16 @@ graph TD
  B --> F["Redis Cache<br/>Blob descriptors"]
  B --> G["Registry UI<br/>Port 8080"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style E2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-CC78BC
+ class D pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E2 pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1794,6 +1826,8 @@ Automate Docker image builds, tests, scans, and deployments using
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% CI/CD workflow
 graph TD
+ accTitle: Example 65: CI/CD with GitHub Actions
+ accDescr: Graph with 10 nodes and 9 connections. Nodes: Git Push, B, Test, Security Scan Trivy, Pass?, Fail Build, Branch?, Deploy Staging, Deploy Production, Create Release. Connections: Git Push to B, Git Push to Test, B to Security Scan Trivy, Security Scan Trivy to Pass?, Pass? to Fail Build (No), Pass? to Branch? (Yes), Branch? to Deploy Staging (develop), Branch? to Deploy Production (v tag), Deploy Production to Create Release.
  A["Git Push"] --> B["Build & Test"]
  B --> C["Security Scan<br/>Trivy"]
  C --> D{Pass?}
@@ -1803,11 +1837,16 @@ graph TD
  F -->|v tag| H["Deploy Production"]
  H --> I["Create Release"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-029E73
+ class H pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2097,6 +2136,8 @@ Docker Stack enables declarative multi-service deployment using Compose files wi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 66: Docker Stack Deployment
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: docker-compose.yml, docker stack deploy, Parse Services, Create Networks, Create Volumes, Create Services, Schedule Tasks, Pull Images on Nodes, Start Containers. Connections: docker-compose.yml to docker stack deploy, docker stack deploy to Parse Services, Parse Services to Create Networks, Parse Services to Create Volumes, Parse Services to Create Services, Create Services to Schedule Tasks, Schedule Tasks to Pull Images on Nodes, Pull Images on Nodes to Start Containers.
  A["docker-compose.yml"] --> B["docker stack deploy"]
  B --> C{Parse Services}
  C --> D["Create Networks"]
@@ -2106,9 +2147,13 @@ graph TD
  G --> H["Pull Images on Nodes"]
  H --> I["Start Containers"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class I pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2330,6 +2375,8 @@ Service constraints control task placement based on node attributes, enabling sp
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 67: Docker Swarm Service Constraints
+ accDescr: Graph with 9 nodes and 11 connections. Nodes: Service Definition, Constraints?, Manager vs Worker, Custom Labels, Specific Nodes, OS/Architecture, Schedule Tasks, Filter Nodes, Place Containers. Connections: Service Definition to Constraints?, Constraints? to Manager vs Worker (Node Role), Constraints? to Custom Labels (Node Label), Constraints? to Specific Nodes (Node ID), Constraints? to OS/Architecture (Engine Label), Manager vs Worker to Schedule Tasks, Custom Labels to Schedule Tasks, Specific Nodes to Schedule Tasks, OS/Architecture to Schedule Tasks, Schedule Tasks to Filter Nodes, Filter Nodes to Place Containers.
  A["Service Definition"] --> B{Constraints?}
  B -->|Node Role| C["Manager vs Worker"]
  B -->|Node Label| D["Custom Labels"]
@@ -2344,9 +2391,13 @@ graph TD
  G --> H["Filter Nodes"]
  H --> I["Place Containers"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class H pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class I pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -2508,7 +2559,9 @@ Swarm rolling updates enable zero-downtime deployments with automatic health-che
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
- A["docker service update"] --> B["Stop 1 Replica"]
+ accTitle: Example 68: Docker Swarm Rolling Updates and Rollback
+ accDescr: Graph with 9 nodes and 9 connections. Nodes: docker service update, Stop 1 Replica, Start New Version, Health Check, Wait Delay Period, Automatic Rollback, More Replicas?, Update Complete, Restore Previous Version. Connections: docker service update to Stop 1 Replica, Stop 1 Replica to Start New Version, Start New Version to Health Check, Health Check to Wait Delay Period (Pass), Health Check to Automatic Rollback (Fail), Wait Delay Period to More Replicas?, More Replicas? to Stop 1 Replica (Yes), More Replicas? to Update Complete (No), Automatic Rollback to Restore Previous Version.
+ A["docker service<br/>update"] --> B["Stop 1 Replica"]
  B --> C["Start New Version"]
  C --> D{Health Check}
  D -->|Pass| E["Wait Delay Period"]
@@ -2516,12 +2569,17 @@ graph TD
  E --> G{More Replicas?}
  G -->|Yes| B
  G -->|No| H["Update Complete"]
- F --> I["Restore Previous Version"]
+ F --> I["Restore Previous<br/>Version"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class H pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -2633,18 +2691,24 @@ Swarm services scale horizontally by adjusting replica count, with the scheduler
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["docker service scale"] --> B["Desired State: 10 replicas"]
-    B --> C["Scheduler Assigns Tasks"]
-    C --> D["Worker Node 1: 4 tasks"]
-    C --> E["Worker Node 2: 3 tasks"]
-    C --> F["Worker Node 3: 3 tasks"]
-    D --> G["Ingress Load Balancer"]
+    accTitle: Example 69: Docker Swarm Service Scaling
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: docker service scale, Desired State: 10 replicas, Scheduler Assigns Tasks, Worker Node 1: 4 tasks, Worker Node 2: 3 tasks, Worker Node 3: 3 tasks, Ingress Load Balancer. Connections: docker service scale to Desired State: 10 replicas, Desired State: 10 replicas to Scheduler Assigns Tasks, Scheduler Assigns Tasks to Worker Node 1: 4 tasks, Scheduler Assigns Tasks to Worker Node 2: 3 tasks, Scheduler Assigns Tasks to Worker Node 3: 3 tasks, Worker Node 1: 4 tasks to Ingress Load Balancer, Worker Node 2: 3 tasks to Ingress Load Balancer, Worker Node 3: 3 tasks to Ingress Load Balancer.
+    A["docker service scale"] --> B["Desired State: 10<br/>replicas"]
+    B --> C["Scheduler Assigns<br/>Tasks"]
+    C --> D["Worker Node 1: 4<br/>tasks"]
+    C --> E["Worker Node 2: 3<br/>tasks"]
+    C --> F["Worker Node 3: 3<br/>tasks"]
+    D --> G["Ingress Load<br/>Balancer"]
     E --> G
     F --> G
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -2762,16 +2826,23 @@ Swarm secrets store sensitive data encrypted in the Raft consensus store, delive
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Secret Created<br/>docker secret create"] --> B["Encrypted in Raft Store<br/>AES-256"]
+    accTitle: Example 71: Docker Swarm Secrets Management
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Secret Created docker secret create, Encrypted in Raft Store AES-256, Swarm Manager, Secure TLS Channel, Worker Node tmpfs, Container /run/secrets/. Connections: Secret Created docker secret create to Encrypted in Raft Store AES-256, Encrypted in Raft Store AES-256 to Swarm Manager, Swarm Manager to Secure TLS Channel, Secure TLS Channel to Worker Node tmpfs, Worker Node tmpfs to Container /run/secrets/.
+    A["Secret Created<br/>docker secret create"] --> B["Encrypted in Raft<br/>Store<br/>AES-256"]
     B --> C["Swarm Manager"]
     C --> D["Secure TLS Channel"]
     D --> E["Worker Node tmpfs"]
-    E --> F["Container /run/secrets/"]
+    E --> F["Container<br/>/run/secrets/"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-    style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -2957,6 +3028,8 @@ Implement distributed tracing to debug performance issues across microservices.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 74: Distributed Tracing with Jaeger
+ accDescr: Graph with 9 nodes and 7 connections. Nodes: Client Request, Web Service Span: /api/users, Auth Service Span: /auth/verify, User Service Span: /users/get, Database Span: SELECT, F, Jaeger Storage Elasticsearch/ Cassandra, H, Visualize. Connections: Client Request to Web Service Span: /api/users, Web Service Span: /api/users to Auth Service Span: /auth/verify, Web Service Span: /api/users to User Service Span: /users/get, User Service Span: /users/get to Database Span: SELECT, F to Jaeger Storage Elasticsearch/ Cassandra, Jaeger Storage Elasticsearch/ Cassandra to H, Jaeger Storage Elasticsearch/ Cassandra to Visualize.
  A["Client Request"] --> B["Web Service<br/>Span: /api/users"]
  B --> C["Auth Service<br/>Span: /auth/verify"]
  B --> D["User Service<br/>Span: /users/get"]
@@ -2967,12 +3040,16 @@ graph TD
  D -.Trace ID.-> F
  E -.Trace ID.-> F
 
- F --> G["Jaeger Storage<br/>Elasticsearch/Cassandra"]
+ F --> G["Jaeger Storage<br/>Elasticsearch/<br/>Cassandra"]
  G --> H["Jaeger UI<br/>Query & Visualize"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class H pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -4432,6 +4509,8 @@ Deploy fault-tolerant Docker registry with load balancing and shared storage.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 80: High Availability Docker Registry
+ accDescr: Graph with 7 nodes and 11 connections. Nodes: Clients docker push/pull, Load Balancer nginx/HAProxy, Registry 1 Read/Write, Registry 2 Read/Write, Registry 3 Read/Write, Shared Storage S3/Azure Blob/GCS, Redis Cache Metadata. Connections: Clients docker push/pull to Load Balancer nginx/HAProxy, Load Balancer nginx/HAProxy to Registry 1 Read/Write, Load Balancer nginx/HAProxy to Registry 2 Read/Write, Load Balancer nginx/HAProxy to Registry 3 Read/Write, Registry 1 Read/Write to Shared Storage S3/Azure Blob/GCS, Registry 2 Read/Write to Shared Storage S3/Azure Blob/GCS, Registry 3 Read/Write to Shared Storage S3/Azure Blob/GCS, Shared Storage S3/Azure Blob/GCS to Redis Cache Metadata, Registry 1 Read/Write to Redis Cache Metadata, Registry 2 Read/Write to Redis Cache Metadata, Registry 3 Read/Write to Redis Cache Metadata.
  A["Clients<br/>docker push/pull"] --> B["Load Balancer<br/>nginx/HAProxy"]
  B --> C["Registry 1<br/>Read/Write"]
  B --> D["Registry 2<br/>Read/Write"]
@@ -4446,9 +4525,13 @@ graph TD
  D --> G
  E --> G
 
- style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class B pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -5282,6 +5365,8 @@ Deploy comprehensive container resource monitoring for capacity planning and tro
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 83: Docker Resource Monitoring with cAdvisor and Prometheus
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: Containers, cAdvisor Metrics Collector, Prometheus Time Series DB, Grafana Dashboards, Alertmanager Notifications, Node Exporter Host Metrics, Slack, PagerDuty, Email. Connections: Containers to cAdvisor Metrics Collector, cAdvisor Metrics Collector to Prometheus Time Series DB, Prometheus Time Series DB to Grafana Dashboards, Prometheus Time Series DB to Alertmanager Notifications, Node Exporter Host Metrics to Prometheus Time Series DB, Alertmanager Notifications to Slack, Alertmanager Notifications to PagerDuty, Alertmanager Notifications to Email.
  A["Containers"] --> B["cAdvisor<br/>Metrics Collector"]
  B --> C["Prometheus<br/>Time Series DB"]
  C --> D["Grafana<br/>Dashboards"]
@@ -5293,10 +5378,15 @@ graph TD
  E --> H["PagerDuty"]
  E --> I["Email"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

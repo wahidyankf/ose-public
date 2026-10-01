@@ -408,8 +408,10 @@ The following diagram illustrates how Playwright Test framework manages browser 
 
 ```mermaid
 flowchart TB
+    accTitle: Test Isolation Architecture
+    accDescr: Flowchart with 9 nodes and 10 connections. Nodes: Test Runner (Playwright Test), Browser Process (Chromium/Firefox/ WebKit), Context 1 (Test A) 🔒 Isolated Cookies 🔒 Isolated Storage, Context 2 (Test B) 🔒 Isolated Cookies 🔒 Isolated Storage, Context 3 (Test C) 🔒 Isolated Cookies 🔒 Isolated Storage, Page 1, Page 2, Page 1, Page 1. Connections: Test Runner (Playwright Test) to Context 1 (Test A) 🔒 Isolated Cookies 🔒 Isolated Storage (Creates Context), Test Runner (Playwright Test) to Context 2 (Test B) 🔒 Isolated Cookies 🔒 Isolated Storage (Creates Context), Test Runner (Playwright Test) to Context 3 (Test C) 🔒 Isolated Cookies 🔒 Isolated Storage (Creates Context), Browser Process (Chromium/Firefox/ WebKit) to Context 1 (Test A) 🔒 Isolated Cookies 🔒 Isolated Storage (Hosts), Browser Process (Chromium/Firefox/ WebKit) to Context 2 (Test B) 🔒 Isolated Cookies 🔒 Isolated Storage (Hosts), Browser Process (Chromium/Firefox/ WebKit) to Context 3 (Test C) 🔒 Isolated Cookies 🔒 Isolated Storage (Hosts), Context 1 (Test A) 🔒 Isolated Cookies 🔒 Isolated Storage to Page 1 (Contains), Context 1 (Test A) 🔒 Isolated Cookies 🔒 Isolated Storage to Page 2 (Contains), Context 2 (Test B) 🔒 Isolated Cookies 🔒 Isolated Storage to Page 1 (Contains), Context 3 (Test C) 🔒 Isolated Cookies 🔒 Isolated Storage to Page 1 (Contains).
     TestRunner["Test Runner<br/>(Playwright Test)"]
-    Browser["Browser Process<br/>(Chromium/Firefox/WebKit)"]
+    Browser["Browser Process<br/>(Chromium/Firefox/<br/>WebKit)"]
     Context1["Context 1<br/>(Test A)<br/>🔒 Isolated Cookies<br/>🔒 Isolated Storage"]
     Context2["Context 2<br/>(Test B)<br/>🔒 Isolated Cookies<br/>🔒 Isolated Storage"]
     Context3["Context 3<br/>(Test C)<br/>🔒 Isolated Cookies<br/>🔒 Isolated Storage"]
@@ -429,15 +431,20 @@ flowchart TB
     Context2 -->|"Contains"| Page2
     Context3 -->|"Contains"| Page3
 
-    style TestRunner fill:#0173B2,stroke:#000,color:#fff
-    style Browser fill:#DE8F05,stroke:#000,color:#fff
-    style Context1 fill:#029E73,stroke:#000,color:#fff
-    style Context2 fill:#029E73,stroke:#000,color:#fff
-    style Context3 fill:#029E73,stroke:#000,color:#fff
-    style Page1A fill:#CC78BC,stroke:#000,color:#fff
-    style Page1B fill:#CC78BC,stroke:#000,color:#fff
-    style Page2 fill:#CC78BC,stroke:#000,color:#fff
-    style Page3 fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class TestRunner pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Browser pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Context1 pal-029E73
+    class Context2 pal-029E73
+    class Context3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Page1A pal-CC78BC
+    class Page1B pal-CC78BC
+    class Page2 pal-CC78BC
+    class Page3 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Architecture explanation**:

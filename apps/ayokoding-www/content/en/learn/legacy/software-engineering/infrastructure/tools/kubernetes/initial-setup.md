@@ -463,6 +463,8 @@ This shows comprehensive pod information:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Understanding Pod Lifecycle
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: kubectl apply, Pending, Pulling Image, Creating Container, Running, Terminating, Deleted. Connections: kubectl apply to Pending, Pending to Pulling Image, Pulling Image to Creating Container, Creating Container to Running, Running to Terminating, Terminating to Deleted.
     A["kubectl apply"] --> B["Pending"]
     B --> C["Pulling Image"]
     C --> D["Creating Container"]
@@ -470,13 +472,19 @@ graph TD
     E --> F["Terminating"]
     F --> G["Deleted"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Access nginx Pod

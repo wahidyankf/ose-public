@@ -32,15 +32,21 @@ Terraform modules group related resources into reusable units. A local module li
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 29: Local Module with Input Variables
+  accDescr: Graph with 4 nodes and 4 connections. Nodes: Root main.tf module caller, modules/network/ main.tf, aws_vpc resource, aws_subnet resource. Connections: Root main.tf module caller to modules/network/ main.tf, modules/network/ main.tf to aws_vpc resource, modules/network/ main.tf to aws_subnet resource, Root main.tf module caller to modules/network/ main.tf (var.vpc_cidr).
   A["Root main.tf<br/>module caller"] --> B["modules/network/<br/>main.tf"]
   B --> C["aws_vpc resource"]
   B --> D["aws_subnet resource"]
   A -->|"var.vpc_cidr"| B
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  class D pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`modules/network/variables.tf`**:
@@ -113,12 +119,18 @@ Module outputs expose resource attributes to the calling configuration, enabling
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 30: Module Output Values and Cross-Module Reference
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: module.network, Root config, module.compute. Connections: module.network to Root config (output: vpc_id), Root config to module.compute (module.network.vpc_ id).
   A["module.network"] -->|"output: vpc_id"| B["Root config"]
-  B -->|"module.network.vpc_id"| C["module.compute"]
+  B -->|"module.network.vpc_<br/>id"| C["module.compute"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`modules/network/outputs.tf`**:
@@ -225,6 +237,8 @@ Terraform state tracks the current infrastructure reality. By default it is stor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 32: Remote Backend with S3 and DynamoDB State Locking
+  accDescr: Sequence diagram between Engineer 1, Terraform CLI, DynamoDB Lock Table, S3 State Bucket. Messages: Engineer 1 to Terraform CLI: terraform apply; Terraform CLI to DynamoDB Lock Table: Acquire lock (LockID); DynamoDB Lock Table to Terraform CLI: Lock granted; Terraform CLI to S3 State Bucket: Read state; Terraform CLI to S3 State Bucket: Write updated state; Terraform CLI to DynamoDB Lock Table: Release lock.
   participant E1 as Engineer 1
   participant TF as Terraform CLI
   participant DY as DynamoDB Lock Table
@@ -374,12 +388,18 @@ Data sources query existing infrastructure or external systems without creating 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 35: Data Sources for Cross-Stack References
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: networking stack Owns VPC, data.aws_vpc.shared, compute stack Reads VPC ID. Connections: networking stack Owns VPC to data.aws_vpc.shared (AWS API), data.aws_vpc.shared to compute stack Reads VPC ID (data.aws_vpc. shared.id).
   A["networking stack<br/>Owns VPC"] -->|"AWS API"| B["data.aws_vpc.shared"]
-  B -->|"data.aws_vpc.shared.id"| C["compute stack<br/>Reads VPC ID"]
+  B -->|"data.aws_vpc.<br/>shared.id"| C["compute stack<br/>Reads VPC ID"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -836,12 +856,18 @@ resource "null_resource" "deploy_app" {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["networking stack<br/>Outputs: vpc_id, subnet_ids"] -->|"S3 state file"| B["terraform_remote_state.networking"]
+  accTitle: Example 44: terraformremotestate Data Source
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: networking stack Outputs: vpc_id, subnet_ids, terraform_remote_ state.networking, compute stack Uses VPC ID. Connections: networking stack Outputs: vpc_id, subnet_ids to terraform_remote_ state.networking (S3 state file), terraform_remote_ state.networking to compute stack Uses VPC ID (outputs.vpc_id).
+  A["networking stack<br/>Outputs: vpc_id,<br/>subnet_ids"] -->|"S3 state file"| B["terraform_remote_<br/>state.networking"]
   B -->|"outputs.vpc_id"| C["compute stack<br/>Uses VPC ID"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Networking stack `outputs.tf`** (separate Terraform root):
@@ -909,22 +935,30 @@ Ansible roles provide a standardized directory structure for grouping tasks, han
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 45: Role Structure and ansible-galaxy init
+  accDescr: Graph with 8 nodes and 7 connections. Nodes: roles/webserver/, tasks/main.yml Task list, handlers/main.yml Notification handlers, templates/ Jinja2 templates, files/ Static files, defaults/main.yml Default variables, vars/main.yml Role variables, meta/main.yml Dependencies. Connections: roles/webserver/ to tasks/main.yml Task list, roles/webserver/ to handlers/main.yml Notification handlers, roles/webserver/ to templates/ Jinja2 templates, roles/webserver/ to files/ Static files, roles/webserver/ to defaults/main.yml Default variables, roles/webserver/ to vars/main.yml Role variables, roles/webserver/ to meta/main.yml Dependencies.
   A["roles/webserver/"] --> B["tasks/main.yml<br/>Task list"]
-  A --> C["handlers/main.yml<br/>Notification handlers"]
+  A --> C["handlers/main.yml<br/>Notification<br/>handlers"]
   A --> D["templates/<br/>Jinja2 templates"]
   A --> E["files/<br/>Static files"]
   A --> F["defaults/main.yml<br/>Default variables"]
   A --> G["vars/main.yml<br/>Role variables"]
   A --> H["meta/main.yml<br/>Dependencies"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
-  style F fill:#DE8F05,stroke:#000,color:#fff
-  style G fill:#029E73,stroke:#000,color:#fff
-  style H fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  class F pal-DE8F05
+  class G pal-029E73
+  class H pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`roles/webserver/defaults/main.yml`**:
@@ -1002,6 +1036,8 @@ Handlers are tasks that run once at the end of a play when notified by other tas
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 46: Handlers and Notifications
+  accDescr: Sequence diagram between Task: Deploy config, Task: Deploy SSL cert, Handler Queue, Handler: restart nginx. Messages: Task: Deploy config to Handler Queue: notify restart nginx (changed); Task: Deploy SSL cert to Handler Queue: notify restart nginx (changed); Handler Queue to Handler: restart nginx: Execute once at end of play.
   participant T1 as Task: Deploy config
   participant T2 as Task: Deploy SSL cert
   participant HQ as Handler Queue
@@ -1357,19 +1393,25 @@ Production Terraform projects separate environments into distinct root modules s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 51: Directory Layout for Multi-Environment Terraform
+  accDescr: Graph with 5 nodes and 7 connections. Nodes: infrastructure/, modules/ Shared modules, environments/dev/, environments/ staging/, environments/prod/. Connections: infrastructure/ to modules/ Shared modules, infrastructure/ to environments/dev/, infrastructure/ to environments/ staging/, infrastructure/ to environments/prod/, environments/dev/ to modules/ Shared modules, environments/ staging/ to modules/ Shared modules, environments/prod/ to modules/ Shared modules.
   A["infrastructure/"] --> B["modules/<br/>Shared modules"]
   A --> C["environments/dev/"]
-  A --> D["environments/staging/"]
+  A --> D["environments/<br/>staging/"]
   A --> E["environments/prod/"]
   C --> B
   D --> B
   E --> B
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#029E73,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style E fill:#DE8F05,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Directory structure (not HCL)**:
@@ -1793,10 +1835,15 @@ The `moved` block tells Terraform that a resource has been renamed or moved to a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Old state address<br/>aws_instance.web_server"] -->|"moved block"| B["New state address<br/>module.compute.aws_instance.app"]
+  accTitle: Example 57: moved Block for State Refactoring Without Destroy
+  accDescr: Graph with 2 nodes and 1 connections. Nodes: Old state address aws_instance.web_ server, New state address module.compute.aws_ instance.app. Connections: Old state address aws_instance.web_ server to New state address module.compute.aws_ instance.app (moved block).
+  A["Old state address<br/>aws_instance.web_<br/>server"] -->|"moved block"| B["New state address<br/>module.compute.aws_<br/>instance.app"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before refactoring** (old `main.tf`):

@@ -25,16 +25,24 @@ These examples assume you understand beginner concepts (DeployChanges builder, e
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% IScriptFilter decision flow
 graph TD
-    A[All Discovered Scripts] -->|IScriptFilter.Filter| B{Include?}
+    accTitle: Example 31: Script Filtering with IScriptFilter
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: All Discovered Scripts, Include?, Pending Script Queue, Skipped, Executed Scripts. Connections: All Discovered Scripts to Include? (IScriptFilter.Filter), Include? to Pending Script Queue (true), Include? to Skipped (false), Pending Script Queue to Executed Scripts (PerformUpgrade).
+    A[All Discovered<br/>Scripts] -->|IScriptFilter.Filter| B{Include?}
     B -->|true| C[Pending Script Queue]
     B -->|false| D[Skipped]
     C -->|PerformUpgrade| E[Executed Scripts]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-808080
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp

@@ -25,16 +25,24 @@ Go-based migrations let you execute arbitrary Go code as part of a schema migrat
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Go migration registration flow
 graph TD
-    A[Go migration file] -->|init#40;#41;| B[goose.AddMigrationNoTxContext]
+    accTitle: Example 31: Go-Based Migrations
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Go migration file, goose.AddMigrationNo TxContext, upFn + downFn, upFn called with *sql.DB, downFn called with *sql.DB. Connections: Go migration file to goose.AddMigrationNo TxContext (init4041), goose.AddMigrationNo TxContext to upFn + downFn (registers), upFn + downFn to upFn called with *sql.DB (goose up), upFn + downFn to downFn called with *sql.DB (goose down).
+    A[Go migration file] -->|init#40;#41;| B[goose.AddMigrationNo<br/>TxContext]
     B -->|registers| C[upFn + downFn]
-    C -->|goose up| D[upFn called with *sql.DB]
-    C -->|goose down| E[downFn called with *sql.DB]
+    C -->|goose up| D[upFn called with<br/>*sql.DB]
+    C -->|goose down| E[downFn called with<br/>*sql.DB]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go
@@ -281,16 +289,24 @@ Go migrations using `goose.AddMigrationContext` (with transaction) receive a `*s
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Transaction migration vs no-transaction migration decision
 graph TD
-    A{DDL requires no-tx?} -->|Yes: CREATE INDEX CONCURRENTLY| B[AddMigrationNoTxContext]
-    A -->|No: standard DDL or DML| C[AddMigrationContext]
-    B --> D[*sql.DB handle - no wrapping]
-    C --> E[*sql.Tx handle - auto rollback on error]
+    accTitle: Example 35: Explicit Transaction Wrapping in Go Migrations
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: DDL requires no-tx?, AddMigrationNoTx Context, AddMigrationContext, *sql.DB handle - no wrapping, *sql.Tx handle - auto rollback on error. Connections: DDL requires no-tx? to AddMigrationNoTx Context (Yes: CREATE INDEX CONCURRENTLY), DDL requires no-tx? to AddMigrationContext (No: standard DDL or DML), AddMigrationNoTx Context to *sql.DB handle - no wrapping, AddMigrationContext to *sql.Tx handle - auto rollback on error.
+    A{DDL requires no-tx?} -->|Yes: CREATE INDEX<br/>CONCURRENTLY| B[AddMigrationNoTx<br/>Context]
+    A -->|No: standard DDL or<br/>DML| C[AddMigrationContext]
+    B --> D[*sql.DB handle - no<br/>wrapping]
+    C --> E[*sql.Tx handle -<br/>auto rollback on<br/>error]
 
-    style A fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class C pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go
@@ -547,20 +563,28 @@ Goose supports multiple SQL dialects from the same codebase. You can create two 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Multi-dialect provider setup
 graph TD
+    accTitle: Example 40: Multi-Dialect Support
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Application, PostgreSQL Provider, SQLite Provider, db/migrations/ postgres/, db/migrations/ sqlite/, database. DialectPostgres, database. DialectSQLite3. Connections: Application to PostgreSQL Provider (production), Application to SQLite Provider (testing), PostgreSQL Provider to db/migrations/ postgres/ (reads), SQLite Provider to db/migrations/ sqlite/ (reads), db/migrations/ postgres/ to database. DialectPostgres (dialect), db/migrations/ sqlite/ to database. DialectSQLite3 (dialect).
     A[Application] -->|production| B[PostgreSQL Provider]
     A -->|testing| C[SQLite Provider]
-    B -->|reads| D[db/migrations/postgres/]
-    C -->|reads| E[db/migrations/sqlite/]
-    D -->|dialect| F[database.DialectPostgres]
-    E -->|dialect| G[database.DialectSQLite3]
+    B -->|reads| D[db/migrations/<br/>postgres/]
+    C -->|reads| E[db/migrations/<br/>sqlite/]
+    D -->|dialect| F[database.<br/>DialectPostgres]
+    E -->|dialect| G[database.<br/>DialectSQLite3]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style G fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-DE8F05
+    class D pal-029E73
+    class E pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go

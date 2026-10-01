@@ -18,6 +18,8 @@ K3s supports high availability with an embedded etcd datastore. The first server
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 29: HA K3s Cluster — Embedded etcd
+    accDescr: Graph with 8 nodes and 11 connections. Nodes: Load Balancer VIP or kube-vip Port 6443, S1, cluster-init, S2, server, S3, Worker Node 1 k3s-agent, Worker Node 2 k3s-agent. Connections: S1 to cluster-init, S2 to server, S3 to server, Load Balancer VIP or kube-vip Port 6443 to S1, Load Balancer VIP or kube-vip Port 6443 to S2, Load Balancer VIP or kube-vip Port 6443 to S3, S1 to S2 (etcd raft), S2 to S3 (etcd raft), S1 to S3 (etcd raft), Worker Node 1 k3s-agent to Load Balancer VIP or kube-vip Port 6443 (K3S_URL), Worker Node 2 k3s-agent to Load Balancer VIP or kube-vip Port 6443 (K3S_URL).
     LB["Load Balancer<br/>VIP or kube-vip<br/>Port 6443"]
     S1["K3s Server 1<br/>--cluster-init<br/>etcd member"]
     S2["K3s Server 2<br/>--server<br/>etcd member"]
@@ -34,12 +36,16 @@ graph TD
     W1 -->|K3S_URL| LB
     W2 -->|K3S_URL| LB
 
-    style LB fill:#CA9161,stroke:#000,color:#fff
-    style S1 fill:#0173B2,stroke:#000,color:#fff
-    style S2 fill:#0173B2,stroke:#000,color:#fff
-    style S3 fill:#0173B2,stroke:#000,color:#fff
-    style W1 fill:#029E73,stroke:#000,color:#fff
-    style W2 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class LB pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S1 pal-0173B2
+    class S2 pal-0173B2
+    class S3 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class W1 pal-029E73
+    class W2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -104,16 +110,21 @@ Instead of embedded etcd, K3s can use an external PostgreSQL or MySQL database a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 30: HA K3s with External PostgreSQL Datastore
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: S1, datastore-endpoint, S2, PostgreSQL HA db.example.com:5432 (Patroni / RDS). Connections: S1 to datastore-endpoint, S2 to datastore-endpoint, S1 to PostgreSQL HA db.example.com:5432 (Patroni / RDS) (reads/writes cluster state), S2 to PostgreSQL HA db.example.com:5432 (Patroni / RDS) (reads/writes cluster state).
     S1["K3s Server 1<br/>--datastore-endpoint"]
     S2["K3s Server 2<br/>--datastore-endpoint"]
     PG["PostgreSQL HA<br/>db.example.com:5432<br/>(Patroni / RDS)"]
 
-    S1 -->|reads/writes cluster state| PG
-    S2 -->|reads/writes cluster state| PG
+    S1 -->|reads/writes cluster<br/>state| PG
+    S2 -->|reads/writes cluster<br/>state| PG
 
-    style S1 fill:#0173B2,stroke:#000,color:#fff
-    style S2 fill:#0173B2,stroke:#000,color:#fff
-    style PG fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S1 pal-0173B2
+    class S2 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PG pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -218,6 +229,8 @@ K3s uses Flannel for pod networking by default. Calico provides network policy e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 32: Replace Flannel with Calico CNI
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Pod A, Pod B, Pod A, Pod B, NetworkPolicy enforcement. Connections: Pod A to Pod B (VXLAN overlay), Pod A to Pod B (eBPF / BGP), NetworkPolicy enforcement to Pod A (enforces), NetworkPolicy enforcement to Pod B (enforces).
     subgraph Flannel["Flannel (default)"]
         F1["Pod A"] -->|VXLAN overlay| F2["Pod B"]
     end
@@ -227,11 +240,15 @@ graph LR
         NP -.->|enforces| C2
     end
 
-    style F1 fill:#CA9161,stroke:#000,color:#fff
-    style F2 fill:#CA9161,stroke:#000,color:#fff
-    style C1 fill:#0173B2,stroke:#000,color:#fff
-    style C2 fill:#0173B2,stroke:#000,color:#fff
-    style NP fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F1 pal-CA9161
+    class F2 pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C1 pal-0173B2
+    class C2 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class NP pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -603,9 +620,11 @@ A `ClusterIssuer` configures how cert-manager obtains certificates from a CA (Le
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 38: ClusterIssuer and Certificate with cert-manager
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Certificate resource example.com, ClusterIssuer letsencrypt-prod (HTTP-01 via Traefik), Lets Encrypt ACME acme-v02.api. letsencrypt.org, Secret: example-tls tls.crt + tls.key. Connections: Certificate resource example.com to ClusterIssuer letsencrypt-prod (HTTP-01 via Traefik) (requests via), ClusterIssuer letsencrypt-prod (HTTP-01 via Traefik) to Lets Encrypt ACME acme-v02.api. letsencrypt.org (HTTP-01 challenge), Lets Encrypt ACME acme-v02.api. letsencrypt.org to ClusterIssuer letsencrypt-prod (HTTP-01 via Traefik) (issues cert), ClusterIssuer letsencrypt-prod (HTTP-01 via Traefik) to Secret: example-tls tls.crt + tls.key (stores in).
     CERT["Certificate resource<br/>example.com"]
-    CI["ClusterIssuer<br/>letsencrypt-prod<br/>(HTTP-01 via Traefik)"]
-    LE["Let's Encrypt ACME<br/>acme-v02.api.letsencrypt.org"]
+    CI["ClusterIssuer<br/>letsencrypt-prod<br/>(HTTP-01 via<br/>Traefik)"]
+    LE["Let's Encrypt ACME<br/>acme-v02.api.<br/>letsencrypt.org"]
     SEC["Secret: example-tls<br/>tls.crt + tls.key"]
 
     CERT -->|"requests via"| CI
@@ -613,10 +632,15 @@ graph LR
     LE -->|"issues cert"| CI
     CI -->|"stores in"| SEC
 
-    style CERT fill:#DE8F05,stroke:#000,color:#000
-    style CI fill:#0173B2,stroke:#000,color:#fff
-    style LE fill:#CA9161,stroke:#000,color:#fff
-    style SEC fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CERT pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CI pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class LE pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class SEC pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -937,19 +961,26 @@ K3s on bare metal cannot provision cloud LoadBalancers. MetalLB fills this gap b
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 41: MetalLB for LoadBalancer Services on Bare Metal
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: External Client, MetalLB IPAddressPool 192.0.2.200-210, Service type: LoadBalancer EXTERNAL-IP: 192.0.2.200, Backend Pods. Connections: External Client to MetalLB IPAddressPool 192.0.2.200-210 (ARP → 192.0.2.200), MetalLB IPAddressPool 192.0.2.200-210 to Service type: LoadBalancer EXTERNAL-IP: 192.0.2.200 (routes via L2Advertisement), Service type: LoadBalancer EXTERNAL-IP: 192.0.2.200 to Backend Pods (iptables DNAT).
     CLI["External Client"]
-    POOL["MetalLB IPAddressPool<br/>192.0.2.200-210"]
-    SVC["Service type: LoadBalancer<br/>EXTERNAL-IP: 192.0.2.200"]
+    POOL["MetalLB<br/>IPAddressPool<br/>192.0.2.200-210"]
+    SVC["Service type:<br/>LoadBalancer<br/>EXTERNAL-IP:<br/>192.0.2.200"]
     POD["Backend Pods"]
 
     CLI -->|"ARP → 192.0.2.200"| POOL
-    POOL -->|"routes via L2Advertisement"| SVC
+    POOL -->|"routes via<br/>L2Advertisement"| SVC
     SVC -->|"iptables DNAT"| POD
 
-    style CLI fill:#CA9161,stroke:#000,color:#fff
-    style POOL fill:#0173B2,stroke:#000,color:#fff
-    style SVC fill:#DE8F05,stroke:#000,color:#000
-    style POD fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class CLI pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class POOL pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SVC pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class POD pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1264,20 +1295,27 @@ NetworkPolicies are Kubernetes API objects that use CNI plugins (Calico, Cilium)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 45: NetworkPolicy — Restrict Pod-to-Pod Traffic
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Frontend pod app=frontend, Backend pod app=backend, Database pod app=database, External /other pods. Connections: Frontend pod app=frontend to Backend pod app=backend (allowed: port 8080), Backend pod app=backend to Database pod app=database (allowed: port 5432), External /other pods to Backend pod app=backend (DENIED by default-deny), External /other pods to Database pod app=database (DENIED by default-deny).
     FE["Frontend pod<br/>app=frontend"]
     BE["Backend pod<br/>app=backend"]
     DB["Database pod<br/>app=database"]
-    EXT["External / other pods"]
+    EXT["External /other pods"]
 
     FE -->|"allowed: port 8080"| BE
     BE -->|"allowed: port 5432"| DB
-    EXT -->|"DENIED by default-deny"| BE
-    EXT -->|"DENIED by default-deny"| DB
+    EXT -->|"DENIED by<br/>default-deny"| BE
+    EXT -->|"DENIED by<br/>default-deny"| DB
 
-    style FE fill:#029E73,stroke:#000,color:#fff
-    style BE fill:#0173B2,stroke:#000,color:#fff
-    style DB fill:#CC78BC,stroke:#000,color:#000
-    style EXT fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class FE pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class BE pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class DB pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class EXT pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1569,7 +1607,9 @@ Longhorn provides distributed block storage for K3s clusters. Unlike local-path 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    PVC["PVC: my-vol<br/>StorageClass: longhorn<br/>replicas: 2"]
+    accTitle: Example 49: Longhorn Distributed Block Storage — Install and StorageClass
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: PVC: my-vol StorageClass: longhorn replicas: 2, Longhorn Manager (DaemonSet), Replica 1 Node A disk, Replica 2 Node B disk, Pod reads/writes. Connections: PVC: my-vol StorageClass: longhorn replicas: 2 to Longhorn Manager (DaemonSet) (provisions), Longhorn Manager (DaemonSet) to Replica 1 Node A disk (syncs data), Longhorn Manager (DaemonSet) to Replica 2 Node B disk (syncs data), Pod reads/writes to Longhorn Manager (DaemonSet) (mounts PVC).
+    PVC["PVC: my-vol<br/>StorageClass:<br/>longhorn<br/>replicas: 2"]
     LM["Longhorn Manager<br/>(DaemonSet)"]
     R1["Replica 1<br/>Node A disk"]
     R2["Replica 2<br/>Node B disk"]
@@ -1580,11 +1620,16 @@ graph TD
     LM -->|"syncs data"| R2
     POD -->|"mounts PVC"| LM
 
-    style PVC fill:#DE8F05,stroke:#000,color:#000
-    style LM fill:#0173B2,stroke:#000,color:#fff
-    style R1 fill:#029E73,stroke:#000,color:#fff
-    style R2 fill:#029E73,stroke:#000,color:#fff
-    style POD fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PVC pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class LM pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class R1 pal-029E73
+    class R2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class POD pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1859,22 +1904,29 @@ kube-vip provides a floating VIP (virtual IP) that moves between K3s server node
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    VIP["VIP: 192.0.2.100:6443<br/>(ARP leader election)"]
+    accTitle: Example 52: kube-vip for HA LoadBalancer on Bare Metal
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: VIP: 192.0.2.100:6443 (ARP leader election), Server 1 kube-vip leader (owns VIP), Server 2 kube-vip follower, Server 3 kube-vip follower, kubectl / workers connect to VIP. Connections: kubectl / workers connect to VIP to VIP: 192.0.2.100:6443 (ARP leader election) (API requests), VIP: 192.0.2.100:6443 (ARP leader election) to Server 1 kube-vip leader (owns VIP) (currently assigned to), Server 1 kube-vip leader (owns VIP) to Server 2 kube-vip follower (leader election), Server 1 kube-vip leader (owns VIP) to Server 3 kube-vip follower (leader election).
+    VIP["VIP:<br/>192.0.2.100:6443<br/>(ARP leader<br/>election)"]
     S1["Server 1<br/>kube-vip leader<br/>(owns VIP)"]
     S2["Server 2<br/>kube-vip follower"]
     S3["Server 3<br/>kube-vip follower"]
     CLI["kubectl / workers<br/>connect to VIP"]
 
     CLI -->|"API requests"| VIP
-    VIP -->|"currently assigned to"| S1
+    VIP -->|"currently assigned<br/>to"| S1
     S1 <-->|"leader election"| S2
     S1 <-->|"leader election"| S3
 
-    style VIP fill:#CA9161,stroke:#000,color:#fff
-    style S1 fill:#0173B2,stroke:#000,color:#fff
-    style S2 fill:#029E73,stroke:#000,color:#fff
-    style S3 fill:#029E73,stroke:#000,color:#fff
-    style CLI fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class VIP pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S1 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S2 pal-029E73
+    class S3 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CLI pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2147,19 +2199,26 @@ Taints repel pods from nodes unless the pod has a matching toleration. They are 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    N1["Node: db-node<br/>taint: workload=db:NoSchedule"]
+    accTitle: Example 56: Node Taints and Tolerations for Workload Placement
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Node: db-node taint: workload=db:No Schedule, Node: app-node (no taint), DB Pod toleration: workload=db, App Pod (no toleration). Connections: DB Pod toleration: workload=db to Node: db-node taint: workload=db:No Schedule (toleration matches → scheduled), App Pod (no toleration) to Node: db-node taint: workload=db:No Schedule (no toleration → REJECTED), App Pod (no toleration) to Node: app-node (no taint) (schedules normally).
+    N1["Node: db-node<br/>taint:<br/>workload=db:No<br/>Schedule"]
     N2["Node: app-node<br/>(no taint)"]
-    P1["DB Pod<br/>toleration: workload=db"]
+    P1["DB Pod<br/>toleration:<br/>workload=db"]
     P2["App Pod<br/>(no toleration)"]
 
-    P1 -->|"toleration matches → scheduled"| N1
-    P2 -->|"no toleration → REJECTED"| N1
+    P1 -->|"toleration matches<br/>→ scheduled"| N1
+    P2 -->|"no toleration →<br/>REJECTED"| N1
     P2 -->|"schedules normally"| N2
 
-    style N1 fill:#DE8F05,stroke:#000,color:#000
-    style N2 fill:#029E73,stroke:#000,color:#fff
-    style P1 fill:#0173B2,stroke:#000,color:#fff
-    style P2 fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class N1 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class N2 pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P1 pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class P2 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

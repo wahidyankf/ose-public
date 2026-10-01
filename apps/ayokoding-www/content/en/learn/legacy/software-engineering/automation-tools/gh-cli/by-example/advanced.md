@@ -1155,11 +1155,13 @@ use each path and how authentication flows through the system.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Example 82: Mermaid Diagram: gh API Data Flow
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: gh api /path REST Call, gh api graphql GraphQL Call, Authentication GH_TOKEN / keyring, GitHub REST API api.github.com/v3, GitHub GraphQL API api.github.com/ graphql, JSON Response Structured Data, G, jq, Shell Output Piped / Printed. Connections: G to jq, gh api /path REST Call to Authentication GH_TOKEN / keyring, gh api graphql GraphQL Call to Authentication GH_TOKEN / keyring, Authentication GH_TOKEN / keyring to GitHub REST API api.github.com/v3, Authentication GH_TOKEN / keyring to GitHub GraphQL API api.github.com/ graphql, GitHub REST API api.github.com/v3 to JSON Response Structured Data, GitHub GraphQL API api.github.com/ graphql to JSON Response Structured Data, JSON Response Structured Data to G, G to Shell Output Piped / Printed, JSON Response Structured Data to Shell Output Piped / Printed.
     A["gh api /path<br/>REST Call"]:::blue
     B["gh api graphql<br/>GraphQL Call"]:::orange
     C["Authentication<br/>GH_TOKEN / keyring"]:::teal
     D["GitHub REST API<br/>api.github.com/v3"]:::blue
-    E["GitHub GraphQL API<br/>api.github.com/graphql"]:::orange
+    E["GitHub GraphQL API<br/>api.github.com/<br/>graphql"]:::orange
     F["JSON Response<br/>Structured Data"]:::teal
     G["--jq Filter<br/>Inline Transform"]:::purple
     H["Shell Output<br/>Piped / Printed"]:::brown
@@ -1175,10 +1177,11 @@ graph TD
     F --> H
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 `gh api` routes calls through the same authentication layer regardless of whether the target
@@ -1220,12 +1223,14 @@ to each state transition in the workflow.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Example 83: Mermaid Diagram: PR Lifecycle with gh
+    accDescr: Graph with 11 nodes and 12 connections. Nodes: A, draft, B, watch, gh pr ready Ready for Review, D, approve, E, squash, F, request-changes. Connections: A to draft, B to watch, D to approve, E to squash, F to request-changes, A to B, B to gh pr ready Ready for Review (CI pass), B to A (CI fail), gh pr ready Ready for Review to D, gh pr ready Ready for Review to F, F to A, D to E.
     A["gh pr create --draft<br/>Draft PR"]:::orange
     B["gh pr checks --watch<br/>CI Running"]:::brown
     C["gh pr ready<br/>Ready for Review"]:::blue
-    D["gh pr review --approve<br/>Approved"]:::teal
+    D["gh pr review<br/>--approve<br/>Approved"]:::teal
     E["gh pr merge --squash<br/>Merged"]:::teal
-    F["gh pr review --request-changes<br/>Changes Requested"]:::purple
+    F["gh pr review<br/>--request-changes<br/>Changes Requested"]:::purple
 
     A --> B
     B -->|CI pass| C
@@ -1236,10 +1241,11 @@ graph LR
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Each state transition in the PR lifecycle maps directly to a `gh` command, enabling the entire

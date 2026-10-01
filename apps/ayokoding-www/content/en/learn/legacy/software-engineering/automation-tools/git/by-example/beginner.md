@@ -120,13 +120,19 @@ The staging area (also called the index) holds a snapshot of what will go into t
 
 ```mermaid
 graph LR
+    accTitle: Example 4: Stage Files with git add
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Working Directory Untracked / Modified, Staging Area Indexed / Ready, Repository Committed History. Connections: Working Directory Untracked / Modified to Staging Area Indexed / Ready (git add), Staging Area Indexed / Ready to Repository Committed History (git commit), Repository Committed History to Working Directory Untracked / Modified (git checkout).
     A["Working Directory<br/>Untracked / Modified"] -->|git add| B["Staging Area<br/>Indexed / Ready"]
     B -->|git commit| C["Repository<br/>Committed History"]
     C -->|git checkout| A
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -378,14 +384,21 @@ git diff --staged
 
 ```mermaid
 graph TD
+    accTitle: Example 10: Create a .gitignore File
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: git add ., Is file in .gitignore?, File ignored Never tracked, File staged Ready to commit. Connections: git add . to Is file in .gitignore?, Is file in .gitignore? to File ignored Never tracked (Yes), Is file in .gitignore? to File staged Ready to commit (No).
     A["git add ."] --> B{"Is file in<br/>.gitignore?"}
     B -->|Yes| C["File ignored<br/>Never tracked"]
     B -->|No| D["File staged<br/>Ready to commit"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -529,17 +542,23 @@ A branch is a lightweight movable pointer to a commit. Creating a branch costs n
 
 ```mermaid
 graph LR
+    accTitle: Example 13: Create and List Branches
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: a1b2c3d Initial commit, b2c3d4e Add feature, c3d4e5f Fix bug, main, feature/login. Connections: a1b2c3d Initial commit to b2c3d4e Add feature, b2c3d4e Add feature to c3d4e5f Fix bug, main to c3d4e5f Fix bug (points to), feature/login to b2c3d4e Add feature (points to).
     A["a1b2c3d<br/>Initial commit"] --> B["b2c3d4e<br/>Add feature"]
     B --> C["c3d4e5f<br/>Fix bug"]
 
     D["main"] -.->|points to| C
     E["feature/login"] -.->|points to| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    class C pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -664,14 +683,21 @@ ls fix.js 2>/dev/null || echo "fix.js does not exist on main"
 
 ```mermaid
 graph TD
-    A["Remote Repository<br/>github.com/org/repo"] -->|git clone| B["Local Copy<br/>.git/ + working files"]
+    accTitle: Example 16: Clone a Remote Repository
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Remote Repository github.com/org/repo, Local Copy .git/+ working files, Remote tracking origin/main, Local branch main. Connections: Remote Repository github.com/org/repo to Local Copy .git/+ working files (git clone), Local Copy .git/+ working files to Remote tracking origin/main, Local Copy .git/+ working files to Local branch main.
+    A["Remote Repository<br/>github.com/org/repo"] -->|git clone| B["Local Copy<br/>.git/+ working files"]
     B --> C["Remote tracking<br/>origin/main"]
     B --> D["Local branch<br/>main"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -877,16 +903,22 @@ HEAD is a special pointer that indicates your current position in the repository
 
 ```mermaid
 graph LR
+    accTitle: Example 21: Understanding HEAD
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: a1b2c3d init, b2c3d4e add login, c3d4e5f add tests, HEAD, main. Connections: a1b2c3d init to b2c3d4e add login, b2c3d4e add login to c3d4e5f add tests, HEAD to main (usually), main to c3d4e5f add tests (points to).
     A["a1b2c3d<br/>init"] --> B["b2c3d4e<br/>add login"] --> C["c3d4e5f<br/>add tests"]
 
     D["HEAD"] -.->|usually| E["main"]
     E -.->|points to| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1114,6 +1146,8 @@ A fast-forward merge occurs when the target branch has not diverged — Git simp
 
 ```mermaid
 graph LR
+    accTitle: Example 26: Fast-Forward Merge
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: a1b2c3d, b2c3d4e (feature commit), main, feature/x, main. Connections: a1b2c3d to b2c3d4e (feature commit), main to a1b2c3d (before merge), feature/x to b2c3d4e (feature commit) (points to), a1b2c3d to b2c3d4e (feature commit), main to b2c3d4e (feature commit) (after merge).
     A["a1b2c3d"] --> B["b2c3d4e<br/>(feature commit)"]
 
     C["main"] -.->|before merge| A
@@ -1122,11 +1156,16 @@ graph LR
     A --> B
     E["main"] -.->|after merge| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

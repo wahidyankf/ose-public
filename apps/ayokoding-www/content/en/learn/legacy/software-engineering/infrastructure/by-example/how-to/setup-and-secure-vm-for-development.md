@@ -21,35 +21,37 @@ The following diagram shows the complete setup process:
 
 ```mermaid
 flowchart TD
-    Start([Start Setup]) --> CreateDroplet[Create Ubuntu 24.04 LTS<br/>Droplet]
-    CreateDroplet --> UpdateSystem[Update System Packages]
+    accTitle: Setup Overview
+    accDescr: Flowchart with 28 nodes and 30 connections. Nodes: Start Setup, Create Ubuntu 24.04 LTS Droplet, Update System Packages, Configure SSH Access, Generate Ed25519 Keys, Harden SSH Config, Test SSH Configuration, Setup UFW Firewall, Create Development User, InstallFail2Ban, Configure, Install Mosh, and 16 more. Connections: Start Setup to Create Ubuntu 24.04 LTS Droplet, Create Ubuntu 24.04 LTS Droplet to Update System Packages, Update System Packages to Configure SSH Access, Configure SSH Access to Generate Ed25519 Keys, Configure SSH Access to Harden SSH Config, Configure SSH Access to Test SSH Configuration, Test SSH Configuration to Setup UFW Firewall, Setup UFW Firewall to Create Development User, Create Development User to InstallFail2Ban, Create Development User to Configure, InstallFail2Ban to Install Mosh, Install Mosh to Install Latest Neovim, and 18 more.
+    Start([Start Setup]) --> CreateDroplet[Create Ubuntu 24.04<br/>LTS<br/>Droplet]
+    CreateDroplet --> UpdateSystem[Update System<br/>Packages]
     UpdateSystem --> ConfigSSH[Configure SSH Access]
 
-    ConfigSSH --> GenKeys[Generate Ed25519 Keys]
+    ConfigSSH --> GenKeys[Generate Ed25519<br/>Keys]
     ConfigSSH --> HardenSSH[Harden SSH Config]
-    ConfigSSH --> TestSSH[Test SSH Configuration]
+    ConfigSSH --> TestSSH[Test SSH<br/>Configuration]
 
     TestSSH --> SetupFirewall[Setup UFW Firewall]
-    SetupFirewall --> CreateUser[Create Development User]
-    CreateUser --> InstallFail2Ban[Install & Configure Fail2Ban]
+    SetupFirewall --> CreateUser[Create Development<br/>User]
+    CreateUser --> InstallFail2Ban[Install & Configure<br/>Fail2Ban]
 
     InstallFail2Ban --> InstallMosh[Install Mosh]
-    InstallMosh --> InstallNvim[Install Latest Neovim]
-    InstallNvim --> InstallZsh[Install Zsh & Oh My Zsh]
+    InstallMosh --> InstallNvim[Install Latest<br/>Neovim]
+    InstallNvim --> InstallZsh[Install Zsh & Oh My<br/>Zsh]
     InstallZsh --> InstallVolta[Install Volta]
-    InstallVolta --> DevTools[Install Development Tools]
-    DevTools --> MountVolume[Mount External Storage]
+    InstallVolta --> DevTools[Install Development<br/>Tools]
+    DevTools --> MountVolume[Mount External<br/>Storage]
 
-    MountVolume --> AutoUpdates[Configure Automatic Updates]
-    AutoUpdates --> SecurityAudit[Setup Security Auditing]
+    MountVolume --> AutoUpdates[Configure Automatic<br/>Updates]
+    AutoUpdates --> SecurityAudit[Setup Security<br/>Auditing]
     SecurityAudit --> Monitoring[Setup Monitoring]
 
     Monitoring --> Backups[Configure Backups]
-    Backups --> Optional[Optional Security Layers]
+    Backups --> Optional[Optional Security<br/>Layers]
 
-    Optional --> CloudFW[DigitalOcean Cloud Firewall]
-    Optional --> SELinux[SELinux Advanced Security]
-    Optional --> TwoFA[Two-Factor Authentication]
+    Optional --> CloudFW[DigitalOcean Cloud<br/>Firewall]
+    Optional --> SELinux[SELinux Advanced<br/>Security]
+    Optional --> TwoFA[Two-Factor<br/>Authentication]
     Optional --> VPN[VPN Access]
 
     CloudFW --> Complete([Setup Complete])
@@ -57,12 +59,17 @@ flowchart TD
     TwoFA --> Complete
     VPN --> Complete
 
-    style Start fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style Complete fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style ConfigSSH fill:#DE8F05,stroke:#333,stroke-width:2px
-    style SetupFirewall fill:#DE8F05,stroke:#333,stroke-width:2px
-    style InstallFail2Ban fill:#DE8F05,stroke:#333,stroke-width:2px
-    style Optional fill:#CC78BC,stroke:#333,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Start pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Complete pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class ConfigSSH pal-DE8F05
+    class SetupFirewall pal-DE8F05
+    class InstallFail2Ban pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Optional pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Initial VM Setup

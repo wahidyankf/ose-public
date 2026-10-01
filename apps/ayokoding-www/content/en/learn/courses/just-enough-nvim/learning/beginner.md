@@ -801,7 +801,7 @@ _ex-22 &middot; exercises co-04_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 22: Delete Word
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Operator d c y gu gU =, Motion or text object w b e 0 36 iw i40 ..., Resulting command e.g. dw, ciw, y36. Connections: Operator d c y gu gU = to Resulting command e.g. dw, ciw, y36, Motion or text object w b e 0 36 iw i40 ... to Resulting command e.g. dw, ciw, y36.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Operator d c y gu gU =, Motion or text object w b e 0 $ iw i( ..., Resulting command e.g. dw, ciw, y$. Connections: Operator d c y gu gU = to Resulting command e.g. dw, ciw, y$, Motion or text object w b e 0 $ iw i( ... to Resulting command e.g. dw, ciw, y$.
     O["Operator<br/>d c y gu gU ="]:::blue
     M["Motion or text<br/>object<br/>w b e 0 #36; iw<br/>i#40; ..."]:::orange
     R["Resulting command<br/>e.g. dw, ciw, y#36;"]:::teal

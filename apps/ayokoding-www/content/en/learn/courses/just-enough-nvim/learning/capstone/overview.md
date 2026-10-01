@@ -17,7 +17,7 @@ in the Beginner, Intermediate, or Advanced tiers of this primer.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Seed 3 files under before47, Rename :vimgrep to :cdo, Reformat list macro + register + capture group, Terminal check :terminal python3, Save transcript code47transcript. md. Connections: Seed 3 files under before47 to Rename :vimgrep to :cdo, Rename :vimgrep to :cdo to Reformat list macro + register + capture group, Reformat list macro + register + capture group to Terminal check :terminal python3, Terminal check :terminal python3 to Save transcript code47transcript. md.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Seed 3 files under before/, Rename :vimgrep to :cdo, Reformat list macro + register + capture group, Terminal check :terminal python3, Save transcript code/transcript. md. Connections: Seed 3 files under before/ to Rename :vimgrep to :cdo, Rename :vimgrep to :cdo to Reformat list macro + register + capture group, Reformat list macro + register + capture group to Terminal check :terminal python3, Terminal check :terminal python3 to Save transcript code/transcript. md.
     A["Seed<br/>3 files under<br/>before#47;"]:::blue
     B["Rename<br/>:vimgrep to :cdo"]:::orange
     C["Reformat list<br/>macro + register +<br/>capture group"]:::teal

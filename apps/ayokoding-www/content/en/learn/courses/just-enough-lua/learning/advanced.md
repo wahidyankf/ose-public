@@ -247,7 +247,7 @@ Chaining a second `__index` link -- `Dog`'s metatable points at `Animal` -- exte
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 66: OOP -- an Inheritance Chain via setmetatable
-    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: Dog instance 123name = Fido125, Dog __index = Dog 40no speak of its own41, Animal __index = Animal, defines speak4041. Connections: Dog instance 123name = Fido125 to Dog __index = Dog 40no speak of its own41 (d:speak4041: not on the instance), Dog __index = Dog 40no speak of its own41 to Animal __index = Animal, defines speak4041 (not defined on Dog either), Animal __index = Animal, defines speak4041 to Dog instance 123name = Fido125 (found here, returned to caller).
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: Dog instance name = Fido, Dog __index = Dog (no speak of its own), Animal __index = Animal, defines speak(). Connections: Dog instance name = Fido to Dog __index = Dog (no speak of its own) (d:speak(): not on the instance), Dog __index = Dog (no speak of its own) to Animal __index = Animal, defines speak() (not defined on Dog either), Animal __index = Animal, defines speak() to Dog instance name = Fido (found here, returned to caller).
     Inst["Dog instance<br/>#123;name =<br/>Fido#125;"]:::blue
     DogClass["Dog<br/>__index = Dog #40;no<br/>speak of its own#41;"]:::orange
     AnimalClass["Animal<br/>__index = Animal,<br/>defines<br/>speak#40;#41;"]:::teal
@@ -712,7 +712,7 @@ _ex-78 &middot; exercises co-18_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 78: vim.tbldeepextend -- Recursively Merging Config Tables
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 123a=1, b=123c=2125125 first table, 123b=123c=3125125 second table 40force41, 123a=1, b=123c=3125125 merged result. Connections: 123a=1, b=123c=2125125 first table to 123a=1, b=123c=3125125 merged result (a survives untouched), 123b=123c=3125125 second table 40force41 to 123a=1, b=123c=3125125 merged result (b.c overrides, recursively merged).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: a=1, b=c=2 first table, b=c=3 second table (force), a=1, b=c=3 merged result. Connections: a=1, b=c=2 first table to a=1, b=c=3 merged result (a survives untouched), b=c=3 second table (force) to a=1, b=c=3 merged result (b.c overrides, recursively merged).
     A["#123;a=1,<br/>b=#123;c=2#125;#125;<br/>first table"]:::blue
     B["{b={c=3}}<br/>second table (force)"]:::orange
     C["#123;a=1,<br/>b=#123;c=3#125;#125;<br/>merged result"]:::teal

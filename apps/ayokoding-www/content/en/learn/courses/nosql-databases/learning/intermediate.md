@@ -1530,7 +1530,7 @@ them within it by `reading_time` -- Cassandra enforces the clustering order rega
 %% Color Palette: Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
     accTitle: Example 45: Cassandra Partition and Clustering Keys
-    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Partition: sensor-1, C1, newest), C2, 21.8, C3, oldest). Connections: Partition: sensor-1 to C1, C1 to newest), Partition: sensor-1 to C2, C2 to 21.8, Partition: sensor-1 to C3, C3 to oldest).
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Partition: sensor-1, 10:02:00 -- 22.1 (newest), 10:01:00 -- 21.8, 10:00:00 -- 21.5 (oldest). Connections: Partition: sensor-1 to 10:02:00 -- 22.1 (newest), Partition: sensor-1 to 10:01:00 -- 21.8, Partition: sensor-1 to 10:00:00 -- 21.5 (oldest).
     P["Partition: sensor-1"]:::orange
     P --> C1["10:02:00 -- 22.1<br/>(newest)"]:::teal
     P --> C2["10:01:00 -- 21.8"]:::teal

@@ -19,7 +19,7 @@ _ex-59 &middot; exercises co-11_
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
     accTitle: Example 59: Define an ABC Interface
-    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Shape40abc.ABC41 area4041 is abstract, Shape4041 raises TypeError. Connections: Shape40abc.ABC41 area4041 is abstract to Shape4041 raises TypeError.
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Shape(abc.ABC) area() is abstract, Shape() raises TypeError. Connections: Shape(abc.ABC) area() is abstract to Shape() raises TypeError.
     A["Shape#40;abc.ABC#41;<br/>area#40;#41; is<br/>abstract"]:::blue
     B["Shape#40;#41;<br/>raises TypeError"]:::orange
     A -.-> B
@@ -182,7 +182,7 @@ Once a subclass implements every abstract method, it instantiates normally -- th
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 61: Two Concrete Implementations of the Same ABC
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Shape40abc.ABC41 area4041 is abstract, Circle area4041 61 pi * r**2, Square area4041 61 side**2. Connections: Shape40abc.ABC41 area4041 is abstract to Circle area4041 61 pi * r**2, Shape40abc.ABC41 area4041 is abstract to Square area4041 61 side**2.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Shape(abc.ABC) area() is abstract, Circle area() = pi * r**2, Square area() = side**2. Connections: Shape(abc.ABC) area() is abstract to Circle area() = pi * r**2, Shape(abc.ABC) area() is abstract to Square area() = side**2.
     S["Shape#40;abc.ABC#41;<br/>area#40;#41; is<br/>abstract"]:::blue
     C["Circle<br/>area#40;#41; #61; pi<br/>* r**2"]:::orange
     Q["Square<br/>area#40;#41; #61;<br/>side**2"]:::teal
@@ -557,7 +557,7 @@ Subclassing `list` to get a `Stack` "for free" is-a a list, which means it inher
 %% Color Palette: Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 65: A Naive Stack Leaks the Wrong Interface
-    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Stack40list91int9341 is-a list, inherits EVERY list method insert4041 included, unwanted. Connections: Stack40list91int9341 is-a list to inherits EVERY list method insert4041 included, unwanted.
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Stack(list[int]) is-a list, inherits EVERY list method insert() included, unwanted. Connections: Stack(list[int]) is-a list to inherits EVERY list method insert() included, unwanted.
     S["Stack(list[int])<br/>is-a list"]:::orange
     L["inherits EVERY list<br/>method<br/>insert#40;#41;<br/>included, unwanted"]:::teal
     S --> L
@@ -648,7 +648,7 @@ Holding `self._items: list[int]` as a private collaborator, instead of subclassi
 %% Color Palette: Blue #0173B2, Teal #029E73
 flowchart LR
     accTitle: Example 66: Refactoring Stack to Composition
-    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Stack has-a self._items: list91int93, push4041/ pop4041/ peek4041 only insert4041 no longer exists. Connections: Stack has-a self._items: list91int93 to push4041/ pop4041/ peek4041 only insert4041 no longer exists.
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Stack has-a self._items: list[int], push()/ pop()/ peek() only insert() no longer exists. Connections: Stack has-a self._items: list[int] to push()/ pop()/ peek() only insert() no longer exists.
     A["Stack<br/>has-a self._items:<br/>list#91;int#93;"]:::blue
     B["push#40;#41;/<br/>pop#40;#41;/<br/>peek#40;#41; only<br/>insert#40;#41; no<br/>longer exists"]:::teal
     A --> B
@@ -954,7 +954,7 @@ _ex-69 &middot; exercises co-13, co-10_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 69: A Swappable Pricing Strategy via Composition
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Order40pricing41 has-a pricing strategy, RegularPricing total4041 61 subtotal, DiscountPricing total4041 61 subtotal * 0.9. Connections: Order40pricing41 has-a pricing strategy to RegularPricing total4041 61 subtotal (strategy 61 Regular Pricing4041), Order40pricing41 has-a pricing strategy to DiscountPricing total4041 61 subtotal * 0.9 (strategy swapped to).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Order(pricing) has-a pricing strategy, RegularPricing total() = subtotal, DiscountPricing total() = subtotal * 0.9. Connections: Order(pricing) has-a pricing strategy to RegularPricing total() = subtotal (strategy = Regular Pricing()), Order(pricing) has-a pricing strategy to DiscountPricing total() = subtotal * 0.9 (strategy swapped to).
     O["Order#40;pricing#41;<br/>has-a pricing<br/>strategy"]:::blue
     R["RegularPricing<br/>total#40;#41; #61;<br/>subtotal"]:::orange
     D["DiscountPricing<br/>total#40;#41; #61;<br/>subtotal * 0.9"]:::teal
@@ -1354,7 +1354,7 @@ A frozen dataclass's generated `__eq__` and `__hash__` work together automatical
 %% Color Palette: Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 73: Value Objects Deduplicate Inside a Set
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 123Money401041, Money401041, Money402041125 three constructed objects, set40...41 buckets by __hash__, checks __eq__, 123Money401041, Money402041125 duplicate collapsed. Connections: 123Money401041, Money401041, Money402041125 three constructed objects to set40...41 buckets by __hash__, checks __eq__, set40...41 buckets by __hash__, checks __eq__ to 123Money401041, Money402041125 duplicate collapsed.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Money(10), Money(10), Money(20) three constructed objects, set(...) buckets by __hash__, checks __eq__, Money(10), Money(20) duplicate collapsed. Connections: Money(10), Money(10), Money(20) three constructed objects to set(...) buckets by __hash__, checks __eq__, set(...) buckets by __hash__, checks __eq__ to Money(10), Money(20) duplicate collapsed.
     In["{Money(10),<br/>Money(10),<br/>Money(20)}<br/>three constructed<br/>objects"]:::orange
     S["set#40;...#41;<br/>buckets by __hash__,<br/>checks __eq__"]:::teal
     Out["{Money(10),<br/>Money(20)}<br/>duplicate collapsed"]:::teal
@@ -1525,7 +1525,7 @@ A base class can define a fixed algorithm (`build()`) that calls a mix of requir
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
     accTitle: Example 75: The Template Method Pattern
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: ReportBuilder. build4041 FIXED algorithm, never overridden, H1, REQUIRED, header4041 / footer4041 optional overridable hooks. Connections: H1 to REQUIRED, ReportBuilder. build4041 FIXED algorithm, never overridden to H1, ReportBuilder. build4041 FIXED algorithm, never overridden to header4041 / footer4041 optional overridable hooks.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: ReportBuilder. build() FIXED algorithm, never overridden, body() abstract -- REQUIRED hook, header() / footer() optional overridable hooks. Connections: ReportBuilder. build() FIXED algorithm, never overridden to body() abstract -- REQUIRED hook, ReportBuilder. build() FIXED algorithm, never overridden to header() / footer() optional overridable hooks.
     T["ReportBuilder.<br/>build#40;#41;<br/>FIXED algorithm,<br/>never overridden"]:::blue
     H1["body#40;#41;<br/>abstract -- REQUIRED<br/>hook"]:::orange
     H2["header#40;#41; /<br/>footer#40;#41;<br/>optional overridable<br/>hooks"]:::orange
@@ -1820,7 +1820,7 @@ _ex-78 &middot; exercises co-15, co-08_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 78: Auto-Registering Subclasses with initsubclass
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Shape.registry, empty at start __init_subclass__ fires per subclass, class Circle40Shape41 auto-added as registry91Circle93, class Square40Shape41 auto-added as registry91Square93. Connections: Shape.registry, empty at start __init_subclass__ fires per subclass to class Circle40Shape41 auto-added as registry91Circle93, Shape.registry, empty at start __init_subclass__ fires per subclass to class Square40Shape41 auto-added as registry91Square93.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Shape.registry, empty at start __init_subclass__ fires per subclass, class Circle(Shape) auto-added as registry[Circle], class Square(Shape) auto-added as registry[Square]. Connections: Shape.registry, empty at start __init_subclass__ fires per subclass to class Circle(Shape) auto-added as registry[Circle], Shape.registry, empty at start __init_subclass__ fires per subclass to class Square(Shape) auto-added as registry[Square].
     A["Shape.registry,<br/>empty at start<br/>__init_subclass__<br/>fires per subclass"]:::blue
     B["class Circle(Shape)<br/>auto-added as<br/>registry['Circle']"]:::orange
     C["class Square(Shape)<br/>auto-added as<br/>registry['Square']"]:::teal
@@ -1922,7 +1922,7 @@ This example assembles four ideas from across the topic into one small but compl
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
     accTitle: Example 79: A Full Domain Model in One Package
-    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: Money40frozen dataclass41 value object, Pricing Strategy40abc. ABC41 FlatPricing implements it, Invoice composes PricingStrategy 40co-1341, D, lt. Connections: Pricing Strategy40abc. ABC41 FlatPricing implements it to Invoice composes PricingStrategy 40co-1341, Money40frozen dataclass41 value object to Invoice composes PricingStrategy 40co-1341, Invoice composes PricingStrategy 40co-1341 to D.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Money(frozen dataclass) value object, Pricing Strategy(abc. ABC) FlatPricing implements it, Invoice composes PricingStrategy (co-13), add_item() rejects amount < 0 invariant (co-17). Connections: Pricing Strategy(abc. ABC) FlatPricing implements it to Invoice composes PricingStrategy (co-13), Money(frozen dataclass) value object to Invoice composes PricingStrategy (co-13), Invoice composes PricingStrategy (co-13) to add_item() rejects amount < 0 invariant (co-17).
     A["Money#40;frozen<br/>dataclass#41;<br/>value object"]:::blue
     B["Pricing<br/>Strategy#40;abc.<br/>ABC#41;<br/>FlatPricing<br/>implements it"]:::orange
     C["Invoice<br/>composes<br/>PricingStrategy<br/>#40;co-13#41;"]:::teal

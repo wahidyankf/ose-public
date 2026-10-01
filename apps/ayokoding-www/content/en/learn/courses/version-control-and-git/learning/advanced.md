@@ -648,7 +648,7 @@ refuses to let a push accidentally discard someone else's already-published comm
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Brown #CA9161
 graph LR
     accTitle: Example 71: Push Rejected
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: remote main (has ws2s commit), ws1 local main (stale, based on OLD tip), Reject. Connections: ws1 local main (stale, based on OLD tip) to remote main (has ws2s commit) (git push (REJECTED)), remote main (has ws2s commit) to Reject (reason).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: remote main (has ws2s commit), ws1 local main (stale, based on OLD tip), fetch first -- would discard ws2s work. Connections: ws1 local main (stale, based on OLD tip) to remote main (has ws2s commit) (git push (REJECTED)), remote main (has ws2s commit) to fetch first -- would discard ws2s work (reason).
     RemoteTip["remote main<br/>(has ws2's commit)"]:::orange
     LocalTip["ws1 local main<br/>(stale, based on OLD<br/>tip)"]:::blue
     LocalTip -.->|"git push<br/>(REJECTED)"| RemoteTip
@@ -1166,7 +1166,7 @@ what a hosted pull-request review's own "merge" button does underneath.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 79: A Pull-Request Branch Flow
-    accDescr: Graph with 5 nodes and 5 connections. Nodes: trunk: initial, add-greeting (pushed, reviewed), M, no-ff, remote trunk (identical graph). Connections: trunk: initial to add-greeting (pushed, reviewed), trunk: initial to M, M to no-ff, add-greeting (pushed, reviewed) to M, M to remote trunk (identical graph) (git push origin main).
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: trunk: initial, add-greeting (pushed, reviewed), Merge pull request (--no-ff), remote trunk (identical graph). Connections: trunk: initial to add-greeting (pushed, reviewed), trunk: initial to Merge pull request (--no-ff), add-greeting (pushed, reviewed) to Merge pull request (--no-ff), Merge pull request (--no-ff) to remote trunk (identical graph) (git push origin main).
     T1["trunk: initial"]:::blue --> B["add-greeting<br/>(pushed, reviewed)"]:::orange
     T1 --> M["Merge pull request<br/>(--no-ff)"]:::teal
     B --> M

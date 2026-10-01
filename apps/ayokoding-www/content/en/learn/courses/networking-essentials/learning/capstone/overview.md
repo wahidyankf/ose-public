@@ -20,7 +20,7 @@ Advanced tiers of this topic -- Example 81 in particular is this capstone's dire
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 6 nodes and 4 connections. Nodes: client.py PING / TIME, server.py bind/listen/accept thread per client, read_line4041 frames -delimited commands, handle_ command4041 PONG / epoch time, E, gt. Connections: client.py PING / TIME to server.py bind/listen/accept thread per client (TCP handshake), server.py bind/listen/accept thread per client to read_line4041 frames -delimited commands, read_line4041 frames -delimited commands to handle_ command4041 PONG / epoch time, handle_ command4041 PONG / epoch time to client.py PING / TIME (reply).
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: client.py PING / TIME, server.py bind/listen/accept thread per client, read_line() frames -delimited commands, handle_ command() PONG / epoch time, explore.py DNS -> TCP -> HTTP + UDP contrast note. Connections: client.py PING / TIME to server.py bind/listen/accept thread per client (TCP handshake), server.py bind/listen/accept thread per client to read_line() frames -delimited commands, read_line() frames -delimited commands to handle_ command() PONG / epoch time, handle_ command() PONG / epoch time to client.py PING / TIME (reply).
     A["client.py<br/>PING / TIME"]:::blue
     B["server.py<br/>bind/listen/accept<br/>thread per client"]:::orange
     C["read_line#40;#41;<br/>frames <br/>-delimited commands"]:::teal

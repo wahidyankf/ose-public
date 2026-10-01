@@ -261,7 +261,7 @@ An if/elif chain that branches on customer type must be edited every time a new 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Purple #CC78BC
 flowchart TD
     accTitle: Example 3: Replace an If/Elif Chain with Strategy Objects
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Checkout total40price41, DiscountStrategy Protocol, NoDiscount, LoyaltyDiscount, HolidayDiscount. Connections: Checkout total40price41 to DiscountStrategy Protocol, DiscountStrategy Protocol to NoDiscount, DiscountStrategy Protocol to LoyaltyDiscount, DiscountStrategy Protocol to HolidayDiscount.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Checkout total(price), DiscountStrategy Protocol, NoDiscount, LoyaltyDiscount, HolidayDiscount. Connections: Checkout total(price) to DiscountStrategy Protocol, DiscountStrategy Protocol to NoDiscount, DiscountStrategy Protocol to LoyaltyDiscount, DiscountStrategy Protocol to HolidayDiscount.
     C["Checkout<br/>total#40;price#41;"]:::blue
     S["DiscountStrategy<br/>Protocol"]:::orange
     N["NoDiscount"]:::purple
@@ -1865,7 +1865,7 @@ A caller that writes `Circle(2.0)` directly must import `Circle` and commit to t
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
     accTitle: Example 18: Factory Method: ShapeFactory Hides Concrete Types
-    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: ShapeFactory. create40kind, size41 a template, not an object, Circle or Square constructed internally. Connections: ShapeFactory. create40kind, size41 a template, not an object to Circle or Square constructed internally (returns Shape).
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: ShapeFactory. create(kind, size) a template, not an object, Circle or Square constructed internally. Connections: ShapeFactory. create(kind, size) a template, not an object to Circle or Square constructed internally (returns Shape).
     A["ShapeFactory.<br/>create#40;kind,<br/>size#41;<br/>a template, not an<br/>object"]:::blue
     B["Circle or Square<br/>constructed<br/>internally"]:::orange
     A -->|"returns Shape"| B
@@ -2212,7 +2212,7 @@ A `Newsletter` that calls out to specific subscriber functions by name would nee
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 21: Observer: Notify Subscribers on Publish
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Newsletter publish40headline41, log_subscriber, urgent_subscriber. Connections: Newsletter publish40headline41 to log_subscriber (notifies), Newsletter publish40headline41 to urgent_subscriber (notifies).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Newsletter publish(headline), log_subscriber, urgent_subscriber. Connections: Newsletter publish(headline) to log_subscriber (notifies), Newsletter publish(headline) to urgent_subscriber (notifies).
     N["Newsletter<br/>publish(headline)"]:::blue
     S1["log_subscriber"]:::orange
     S2["urgent_subscriber"]:::teal
@@ -2513,7 +2513,7 @@ A caller that has to coordinate `Inventory.reserve()`, `Payment.charge()`, and `
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 24: Facade: One Call Hides Three Subsystems
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: caller, CheckoutFacade checkout4041, Inventory, Payment, Shipping. Connections: caller to CheckoutFacade checkout4041 (one call), CheckoutFacade checkout4041 to Inventory, CheckoutFacade checkout4041 to Payment, CheckoutFacade checkout4041 to Shipping.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: caller, CheckoutFacade checkout(), Inventory, Payment, Shipping. Connections: caller to CheckoutFacade checkout() (one call), CheckoutFacade checkout() to Inventory, CheckoutFacade checkout() to Payment, CheckoutFacade checkout() to Shipping.
     Caller["caller"]:::blue
     F["CheckoutFacade<br/>checkout#40;#41;"]:::orange
     Inv["Inventory"]:::teal
@@ -2641,7 +2641,7 @@ _ex-25 &middot; exercises co-28_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 25: Template Method: One Skeleton, Many Subclasses
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Report. generate4041 the fixed skeleton, header4041 shared default, body4041 overridden per subclass, footer4041 shared default. Connections: Report. generate4041 the fixed skeleton to header4041 shared default, header4041 shared default to body4041 overridden per subclass, body4041 overridden per subclass to footer4041 shared default.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Report. generate() the fixed skeleton, header() shared default, body() overridden per subclass, footer() shared default. Connections: Report. generate() the fixed skeleton to header() shared default, header() shared default to body() overridden per subclass, body() overridden per subclass to footer() shared default.
     G["Report.<br/>generate#40;#41;<br/>the fixed skeleton"]:::blue
     H["header#40;#41;<br/>shared default"]:::teal
     Bd["body#40;#41;<br/>overridden per<br/>subclass"]:::orange

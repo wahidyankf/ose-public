@@ -438,7 +438,7 @@ payload is syntactically legal and returns secret rows disguised as search resul
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 5: SQL Injection -- UNION Data Exfiltration
-    accDescr: Graph with 4 nodes and 2 connections. Nodes: A, LIKE ... splice, products UNION users (2 cols each), LEAKED ROWS: alice/s3cret-pw, bob/hunter2. Connections: LIKE ... splice to products UNION users (2 cols each), products UNION users (2 cols each) to LEAKED ROWS: alice/s3cret-pw, bob/hunter2.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: term = zzz UNION SELECT username, password FROM users --, LIKE ... splice, products UNION users (2 cols each), LEAKED ROWS: alice/s3cret-pw, bob/hunter2. Connections: term = zzz UNION SELECT username, password FROM users -- to LIKE ... splice, LIKE ... splice to products UNION users (2 cols each), products UNION users (2 cols each) to LEAKED ROWS: alice/s3cret-pw, bob/hunter2.
     A["term = zzz' UNION<br/>SELECT<br/>username, password<br/>FROM users --"]:::orange --> B["LIKE '%...%' splice"]:::orange
     B --> C["products UNION users<br/>(2 cols each)"]:::orange
     C --> D["LEAKED ROWS:<br/>alice/s3cret-pw,<br/>bob/hunter2"]:::teal
@@ -546,7 +546,7 @@ injected command actually ran -- and `subprocess.run([...], shell=False)` closes
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 6: Command Injection -- Live
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: host = 127.0.0.1 touch injected_marker.txt, os.system40command41, /bin/sh -c runs BOTH commands, marker file CREATED. Connections: host = 127.0.0.1 touch injected_marker.txt to os.system40command41, os.system40command41 to /bin/sh -c runs BOTH commands, /bin/sh -c runs BOTH commands to marker file CREATED.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: host = 127.0.0.1 touch injected_marker.txt, os.system(command), /bin/sh -c runs BOTH commands, marker file CREATED. Connections: host = 127.0.0.1 touch injected_marker.txt to os.system(command), os.system(command) to /bin/sh -c runs BOTH commands, /bin/sh -c runs BOTH commands to marker file CREATED.
     A["host = 127.0.0.1;<br/>touch<br/>injected_marker.txt"]:::orange --> B["os.system(command)"]:::orange
     B --> C["/bin/sh -c<br/>runs BOTH commands"]:::orange
     C --> D["marker file<br/>CREATED"]:::teal
@@ -656,7 +656,7 @@ prefix check on the RESOLVED path -- not the raw string -- closes the same hole.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 7: Path Traversal -- File Read
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: filename = ../secret_config.txt, os.path. join40base, filename41, downloads/../ secret_config.txt, file read OUTSIDE sandbox. Connections: filename = ../secret_config.txt to os.path. join40base, filename41, os.path. join40base, filename41 to downloads/../ secret_config.txt, downloads/../ secret_config.txt to file read OUTSIDE sandbox.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: filename = ../secret_config.txt, os.path. join(base, filename), downloads/../ secret_config.txt, file read OUTSIDE sandbox. Connections: filename = ../secret_config.txt to os.path. join(base, filename), os.path. join(base, filename) to downloads/../ secret_config.txt, downloads/../ secret_config.txt to file read OUTSIDE sandbox.
     A["filename =<br/>../secret_config.txt"]:::orange --> B["os.path.<br/>join#40;base,<br/>filename#41;"]:::orange
     B --> C["downloads/../<br/>secret_config.txt"]:::orange
     C --> D["file read<br/>OUTSIDE sandbox"]:::teal
@@ -766,7 +766,7 @@ Requesting it with a `<script>` payload produces a response body containing the 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 8: Reflected XSS -- Live
-    accDescr: Graph with 5 nodes and 6 connections. Nodes: A, lt, gt, f-string splice NO encoding, C. Connections: A to f-string splice NO encoding, lt to f-string splice NO encoding, gt to f-string splice NO encoding, f-string splice NO encoding to C, f-string splice NO encoding to lt, f-string splice NO encoding to gt.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: ?name=<script>..., f-string splice NO encoding, response body: literal <script> tag. Connections: ?name=<script>... to f-string splice NO encoding, f-string splice NO encoding to response body: literal <script> tag.
     A["?name=&lt;script&gt;..."]:::orange --> B["f-string splice<br/>NO encoding"]:::orange
     B --> C["response body:<br/>literal &lt;script&gt; tag"]:::teal
 
@@ -1039,7 +1039,7 @@ contains none of the blocked characters and slips past the blocklist, but the al
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: Example 11: Allow-List vs. Deny-List
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: payload = ＵS (fullwidth U + S), in ALLOWED_COUNTRY_ CODES?, contains blocklisted char?, REJECTED, E, missed. Connections: payload = ＵS (fullwidth U + S) to in ALLOWED_COUNTRY_ CODES?, payload = ＵS (fullwidth U + S) to contains blocklisted char?, in ALLOWED_COUNTRY_ CODES? to REJECTED (no), contains blocklisted char? to E (no), E to missed.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: payload = ＵS (fullwidth U + S), in ALLOWED_COUNTRY_ CODES?, contains blocklisted char?, REJECTED, ACCEPTED -- missed!. Connections: payload = ＵS (fullwidth U + S) to in ALLOWED_COUNTRY_ CODES?, payload = ＵS (fullwidth U + S) to contains blocklisted char?, in ALLOWED_COUNTRY_ CODES? to REJECTED (no), contains blocklisted char? to ACCEPTED -- missed! (no).
     A["payload = ＵS<br/>(fullwidth U + S)"]:::orange --> B{"in ALLOWED_COUNTRY_<br/>CODES?"}:::purple
     A --> C{"contains blocklisted<br/>char?"}:::purple
     B -->|"no"| D["REJECTED"]:::teal
@@ -1285,7 +1285,7 @@ millisecond; the one genuinely random password survives because it is not in the
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 14: MD5 Password Store Is Broken
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: leaked MD5 hash, B, password RECOVERED, D, not. Connections: leaked MD5 hash to B, B to password RECOVERED (match), B to D (no match (carol)), D to not.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: leaked MD5 hash, for guess in dictionary: md5(guess) == hash?, password RECOVERED, survives -- not in dictionary. Connections: leaked MD5 hash to for guess in dictionary: md5(guess) == hash?, for guess in dictionary: md5(guess) == hash? to password RECOVERED (match), for guess in dictionary: md5(guess) == hash? to survives -- not in dictionary (no match (carol)).
     A["leaked MD5 hash"]:::orange --> B["for guess in<br/>dictionary:<br/>md5#40;guess#41; ==<br/>hash?"]:::orange
     B -->|"match"| C["password RECOVERED"]:::teal
     B -.->|"no match (carol)"| D["survives -- not in<br/>dictionary"]:::blue

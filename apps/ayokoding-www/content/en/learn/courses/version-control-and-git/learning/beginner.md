@@ -26,7 +26,7 @@ Before Git can track anything, a plain folder has to become a repository. `git i
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 1: Init a Repository
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: Plain folder no .git47, Repository .git47 exists, No commits yet. Connections: Plain folder no .git47 to Repository .git47 exists (git init), Repository .git47 exists to No commits yet (git status).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Plain folder no .git/, Repository .git/ exists, No commits yet. Connections: Plain folder no .git/ to Repository .git/ exists (git init), Repository .git/ exists to No commits yet (git status).
     A["Plain folder<br/>no .git#47;"]:::blue -->|"git init"| B["Repository<br/>.git#47; exists"]:::teal
     B -->|"git status"| C["No commits yet"]:::orange
 
@@ -736,7 +736,7 @@ snapshot, one line per entry.
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph TD
     accTitle: Example 15: Inspect a Tree Object
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: commit (HEAD), tree (root directory), blob file.txt, tree sub47, blob sub47inner.txt. Connections: commit (HEAD) to tree (root directory), tree (root directory) to blob file.txt, tree (root directory) to tree sub47, tree sub47 to blob sub47inner.txt.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: commit (HEAD), tree (root directory), blob file.txt, tree sub/, blob sub/inner.txt. Connections: commit (HEAD) to tree (root directory), tree (root directory) to blob file.txt, tree (root directory) to tree sub/, tree sub/ to blob sub/inner.txt.
     Commit["commit<br/>(HEAD)"]:::blue --> Tree["tree<br/>(root directory)"]:::teal
     Tree --> Blob["blob<br/>file.txt"]:::orange
     Tree --> SubTree["tree<br/>sub#47;"]:::teal

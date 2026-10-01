@@ -864,7 +864,7 @@ release, applied to a model swap.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 63: Staged Model Rollout
-    accDescr: Graph with 7 nodes and 7 connections. Nodes: Stage 0: 5 traffic, error_rate <= guardrail?, Stage 1: 25 traffic, D, stay, error_rate <= guardrail?, Stage 2: 100 traffic. Connections: Stage 0: 5 traffic to error_rate <= guardrail?, error_rate <= guardrail? to Stage 1: 25 traffic (yes), error_rate <= guardrail? to D (no), D to stay, Stage 1: 25 traffic to error_rate <= guardrail?, error_rate <= guardrail? to Stage 2: 100 traffic (yes), error_rate <= guardrail? to D (no).
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Stage 0: 5 traffic, error_rate <= guardrail?, Stage 1: 25 traffic, Halt -- stay at current stage, error_rate <= guardrail?, Stage 2: 100 traffic. Connections: Stage 0: 5 traffic to error_rate <= guardrail?, error_rate <= guardrail? to Stage 1: 25 traffic (yes), error_rate <= guardrail? to Halt -- stay at current stage (no), Stage 1: 25 traffic to error_rate <= guardrail?, error_rate <= guardrail? to Stage 2: 100 traffic (yes), error_rate <= guardrail? to Halt -- stay at current stage (no).
     A["Stage 0: 5% traffic"]:::blue --> B{"error_rate <=<br/>guardrail?"}:::orange
     B -->|yes| C["Stage 1: 25% traffic"]:::teal
     B -->|no| D["Halt -- stay at<br/>current stage"]:::orange
@@ -1600,7 +1600,7 @@ explain a serving problem without inspecting individual request traces.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Example 74: Full Observability Explains an Incident
-    accDescr: Graph with 8 nodes and 7 connections. Nodes: Dashboard metrics, preemption_rate > 0.3?, C, queue_depth > 15 AND occupancy < 0.5?, Undersized replica count, itl_p50 > 40ms?, Oversized batch for the configured SLO, No anomaly detected. Connections: Dashboard metrics to preemption_rate > 0.3?, preemption_rate > 0.3? to C (yes), preemption_rate > 0.3? to queue_depth > 15 AND occupancy < 0.5? (no), queue_depth > 15 AND occupancy < 0.5? to Undersized replica count (yes), queue_depth > 15 AND occupancy < 0.5? to itl_p50 > 40ms? (no), itl_p50 > 40ms? to Oversized batch for the configured SLO (yes), itl_p50 > 40ms? to No anomaly detected (no).
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Dashboard metrics, preemption_rate > 0.3?, Cache pressure -- check admission control, queue_depth > 15 AND occupancy < 0.5?, Undersized replica count, itl_p50 > 40ms?, Oversized batch for the configured SLO, No anomaly detected. Connections: Dashboard metrics to preemption_rate > 0.3?, preemption_rate > 0.3? to Cache pressure -- check admission control (yes), preemption_rate > 0.3? to queue_depth > 15 AND occupancy < 0.5? (no), queue_depth > 15 AND occupancy < 0.5? to Undersized replica count (yes), queue_depth > 15 AND occupancy < 0.5? to itl_p50 > 40ms? (no), itl_p50 > 40ms? to Oversized batch for the configured SLO (yes), itl_p50 > 40ms? to No anomaly detected (no).
     A["Dashboard metrics"]:::blue --> B{"preemption_rate<br/>> 0.3?"}:::orange
     B -->|yes| C["Cache pressure --<br/>check admission<br/>control"]:::teal
     B -->|no| D{"queue_depth > 15 AND<br/>occupancy < 0.5?"}:::orange

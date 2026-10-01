@@ -789,7 +789,7 @@ A naive per-field-score-then-sum approach applies BM25's saturation SEPARATELY t
 %% Color Palette: Blue #0173B2, Teal #029E73, Gray #808080
 flowchart TD
     accTitle: Example 66: BM25F vs Naive
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: per-field tf values, combine weighted tf FIRST then saturate once, naive: saturate EACH field then sum the scores, D, E. Connections: per-field tf values to combine weighted tf FIRST then saturate once, per-field tf values to naive: saturate EACH field then sum the scores, combine weighted tf FIRST then saturate once to D, naive: saturate EACH field then sum the scores to E.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: per-field tf values, combine weighted tf FIRST then saturate once, naive: saturate EACH field then sum the scores, consistent -- total weighted tf matters, inconsistent -- rewards term spreading. Connections: per-field tf values to combine weighted tf FIRST then saturate once, per-field tf values to naive: saturate EACH field then sum the scores, combine weighted tf FIRST then saturate once to consistent -- total weighted tf matters, naive: saturate EACH field then sum the scores to inconsistent -- rewards term spreading.
     A["per-field tf values"]:::blue --> B["combine weighted tf<br/>FIRST<br/>then saturate once"]:::teal
     A --> C["naive: saturate EACH<br/>field<br/>then sum the scores"]:::gray
     B --> D["consistent --<br/>total weighted tf<br/>matters"]:::teal

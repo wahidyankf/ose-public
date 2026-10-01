@@ -109,7 +109,7 @@ Every Lua variable is global unless explicitly declared `local`. This example cr
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 4: local vs global Shadowing
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Global x = 10 visible everywhere, do ... end block local x = 20, print40x41 inside block reads the local: 20, print40x41 after block reads the global: 10. Connections: Global x = 10 visible everywhere to do ... end block local x = 20, do ... end block local x = 20 to print40x41 inside block reads the local: 20, do ... end block local x = 20 to print40x41 after block reads the global: 10 (block ends, local gone).
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Global x = 10 visible everywhere, do ... end block local x = 20, print(x) inside block reads the local: 20, print(x) after block reads the global: 10. Connections: Global x = 10 visible everywhere to do ... end block local x = 20, do ... end block local x = 20 to print(x) inside block reads the local: 20, do ... end block local x = 20 to print(x) after block reads the global: 10 (block ends, local gone).
     A["Global x = 10<br/>visible everywhere"]:::blue
     B["do ... end block<br/>local x = 20"]:::orange
     C["print#40;x#41;<br/>inside block<br/>reads the local: 20"]:::teal

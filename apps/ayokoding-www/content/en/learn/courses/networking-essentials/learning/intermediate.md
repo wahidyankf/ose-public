@@ -293,7 +293,7 @@ TCP delivers a raw byte stream with NO built-in message boundaries -- the protoc
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 33: Line Framing with Delimiters
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: send40full line41, recv40441 chunk 1, recv40441 chunk 2..N, buffer accumulates until found, one complete line. Connections: send40full line41 to recv40441 chunk 1, recv40441 chunk 1 to recv40441 chunk 2..N, recv40441 chunk 2..N to buffer accumulates until found, buffer accumulates until found to one complete line.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: send(full line), recv(4) chunk 1, recv(4) chunk 2..N, buffer accumulates until found, one complete line. Connections: send(full line) to recv(4) chunk 1, recv(4) chunk 1 to recv(4) chunk 2..N, recv(4) chunk 2..N to buffer accumulates until found, buffer accumulates until found to one complete line.
     A["send#40;full<br/>line#41;"]:::blue --> B["recv#40;4#41;<br/>chunk 1"]:::orange
     B --> C["recv#40;4#41;<br/>chunk 2..N"]:::orange
     C --> D["buffer accumulates<br/>until <br/> found"]:::teal
@@ -395,7 +395,7 @@ For a FIXED-size payload (as opposed to a delimited line), the correct pattern i
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 34: Handle Partial recv -- Reassemble a Large Message
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: recv_ exact40500041 requested, recv4041 351 1500 bytes, recv4041 352 1500 bytes, recv4041 35N remaining bytes, exactly 5000 bytes assembled. Connections: recv_ exact40500041 requested to recv4041 351 1500 bytes, recv4041 351 1500 bytes to recv4041 352 1500 bytes, recv4041 352 1500 bytes to recv4041 35N remaining bytes, recv4041 35N remaining bytes to exactly 5000 bytes assembled.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: recv_ exact(5000) requested, recv() 1 1500 bytes, recv() 2 1500 bytes, recv() N remaining bytes, exactly 5000 bytes assembled. Connections: recv_ exact(5000) requested to recv() 1 1500 bytes, recv() 1 1500 bytes to recv() 2 1500 bytes, recv() 2 1500 bytes to recv() N remaining bytes, recv() N remaining bytes to exactly 5000 bytes assembled.
     A["recv_<br/>exact#40;5000#41;<br/>requested"]:::blue --> B["recv#40;#41; #35;1<br/>1500 bytes"]:::orange
     B --> C["recv#40;#41; #35;2<br/>1500 bytes"]:::orange
     C --> D["recv#40;#41; #35;N<br/>remaining bytes"]:::orange
@@ -793,7 +793,7 @@ Actively closing a listening socket's connection puts the local port into `TIME_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
     accTitle: Example 38: SOREUSEADDR -- Restarting a Server Without Address Already in Use
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: server actively closes conn.close4041, port enters TIME_WAIT, SO_REUSEADDR set before bind4041?, bind4041 fails: Address already in use, bind4041 succeeds immediately. Connections: server actively closes conn.close4041 to port enters TIME_WAIT, port enters TIME_WAIT to SO_REUSEADDR set before bind4041?, SO_REUSEADDR set before bind4041? to bind4041 fails: Address already in use (no), SO_REUSEADDR set before bind4041? to bind4041 succeeds immediately (yes).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: server actively closes conn.close(), port enters TIME_WAIT, SO_REUSEADDR set before bind()?, bind() fails: Address already in use, bind() succeeds immediately. Connections: server actively closes conn.close() to port enters TIME_WAIT, port enters TIME_WAIT to SO_REUSEADDR set before bind()?, SO_REUSEADDR set before bind()? to bind() fails: Address already in use (no), SO_REUSEADDR set before bind()? to bind() succeeds immediately (yes).
     A["server actively<br/>closes<br/>conn.close#40;#41;"]:::blue
     A --> B["port enters<br/>TIME_WAIT"]:::orange
     B --> C{"SO_REUSEADDR set<br/>before bind#40;#41;?"}
@@ -991,7 +991,7 @@ Spawning a new `threading.Thread` per accepted connection lets multiple clients 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
     accTitle: Example 40: A Thread per Client -- Serving Two Clients Simultaneously
-    accDescr: Graph with 4 nodes and 4 connections. Nodes: main thread accept4041 loop, Thread 1 client A, Thread 2 client B, join4041 all threads. Connections: main thread accept4041 loop to Thread 1 client A, main thread accept4041 loop to Thread 2 client B, Thread 1 client A to join4041 all threads, Thread 2 client B to join4041 all threads.
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: main thread accept() loop, Thread 1 client A, Thread 2 client B, join() all threads. Connections: main thread accept() loop to Thread 1 client A, main thread accept() loop to Thread 2 client B, Thread 1 client A to join() all threads, Thread 2 client B to join() all threads.
     S["main thread<br/>accept#40;#41; loop"]:::blue
     S --> T1["Thread 1<br/>client A"]:::orange
     S --> T2["Thread 2<br/>client B"]:::orange
@@ -1904,7 +1904,7 @@ Running a TCP server/client pair and a UDP server/client pair side by side, send
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
     accTitle: Example 57: TCP vs. UDP -- the Same Message, Two Different APIs
-    accDescr: Graph with 6 nodes and 4 connections. Nodes: bind4041, listen4041, accept4041 BLOCKS for handshake, recv4041 / sendall4041 on conn, bind4041, recvfrom4041 / sendto4041 on sock, no handshake. Connections: bind4041 to listen4041, listen4041 to accept4041 BLOCKS for handshake, accept4041 BLOCKS for handshake to recv4041 / sendall4041 on conn, bind4041 to recvfrom4041 / sendto4041 on sock, no handshake.
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: bind(), listen(), accept() BLOCKS for handshake, recv() / sendall() on conn, bind(), recvfrom() / sendto() on sock, no handshake. Connections: bind() to listen(), listen() to accept() BLOCKS for handshake, accept() BLOCKS for handshake to recv() / sendall() on conn, bind() to recvfrom() / sendto() on sock, no handshake.
     subgraph TCP["TCP --<br/>connection-oriented<br/>(co-07)"]
         T1["bind#40;#41;"]:::blue --> T2["listen#40;#41;"]:::blue --> T3["accept#40;#41;<br/>BLOCKS for handshake"]:::blue --> T4["recv#40;#41; /<br/>sendall#40;#41;<br/>on conn"]:::teal
     end
@@ -2161,7 +2161,7 @@ _ex-60 &middot; exercises co-03, co-10_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 60: Resolve a Hostname to an IP Address in Python
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: example.com, gethostbyname4041, getaddrinfo4041, 1 IPv4 address, N results: IPv4 + IPv6. Connections: example.com to gethostbyname4041, example.com to getaddrinfo4041, gethostbyname4041 to 1 IPv4 address, getaddrinfo4041 to N results: IPv4 + IPv6.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: example.com, gethostbyname (), getaddrinfo(), 1 IPv4 address, N results: IPv4 + IPv6. Connections: example.com to gethostbyname (), example.com to getaddrinfo(), gethostbyname () to 1 IPv4 address, getaddrinfo() to N results: IPv4 + IPv6.
     A["example.com"]:::blue --> B["gethostbyname<br/>#40;#41;"]:::orange
     A --> C["getaddrinfo#40;#41;"]:::orange
     B --> D["1 IPv4 address"]:::teal

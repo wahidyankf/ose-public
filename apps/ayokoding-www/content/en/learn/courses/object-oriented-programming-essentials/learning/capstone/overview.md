@@ -17,7 +17,7 @@ Advanced tiers of this topic.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
     accTitle: Goal
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Money40frozen dataclass41 value object, co-06/co-05, Account encapsulated invariant, co-02/co-17, Payment Method40abc. ABC41 CardPayment / BankTransferPayment, co-11/co-10, LedgerNaive -> Ledger composition refactor, co-13. Connections: Money40frozen dataclass41 value object, co-06/co-05 to Account encapsulated invariant, co-02/co-17, Account encapsulated invariant, co-02/co-17 to Payment Method40abc. ABC41 CardPayment / BankTransferPayment, co-11/co-10, Account encapsulated invariant, co-02/co-17 to LedgerNaive -> Ledger composition refactor, co-13.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Money(frozen dataclass) value object, co-06/co-05, Account encapsulated invariant, co-02/co-17, Payment Method(abc. ABC) CardPayment / BankTransferPayment, co-11/co-10, LedgerNaive -> Ledger composition refactor, co-13. Connections: Money(frozen dataclass) value object, co-06/co-05 to Account encapsulated invariant, co-02/co-17, Account encapsulated invariant, co-02/co-17 to Payment Method(abc. ABC) CardPayment / BankTransferPayment, co-11/co-10, Account encapsulated invariant, co-02/co-17 to LedgerNaive -> Ledger composition refactor, co-13.
     A["Money#40;frozen<br/>dataclass#41;<br/>value object,<br/>co-06/co-05"]:::blue
     B["Account<br/>encapsulated<br/>invariant,<br/>co-02/co-17"]:::orange
     C["Payment<br/>Method#40;abc.<br/>ABC#41;<br/>CardPayment /<br/>BankTransferPayment,<br/>co-11/co-10"]:::teal

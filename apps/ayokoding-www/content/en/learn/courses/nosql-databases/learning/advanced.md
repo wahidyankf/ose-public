@@ -1634,7 +1634,7 @@ partitions instead.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 70: DynamoDB Hot Partition, Diagnosed
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: 100 events, H, HOT, 10 partitions 10 items each. Connections: 100 events to H (date-only key), H to HOT, 100 events to 10 partitions 10 items each (date+user key).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 100 events, 1 partition 100 items -- HOT, 10 partitions 10 items each. Connections: 100 events to 1 partition 100 items -- HOT (date-only key), 100 events to 10 partitions 10 items each (date+user key).
     E["100 events"]:::orange
     E -->|"date-only key"| H["1 partition<br/>100 items -- HOT"]:::blue
     E -->|"date+user key"| S["10 partitions<br/>10 items each"]:::teal

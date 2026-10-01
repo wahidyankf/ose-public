@@ -598,7 +598,7 @@ Making a new edit after an undo does not erase the undone change -- it branches 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart TD
     accTitle: Example 77: Undo Tree Time Travel
-    accDescr: Flowchart with 5 nodes and 6 connections. Nodes: base line starting state, change 1 base line one, u undoes change 1, C2, a. Connections: C2 to a, base line starting state to change 1 base line one, change 1 base line one to u undoes change 1 (u), u undoes change 1 to C2 (new edit), C2 to u undoes change 1 (g-), u undoes change 1 to C2 (g+).
+    accDescr: Flowchart with 4 nodes and 5 connections. Nodes: base line starting state, change 1 base line one, u undoes change 1, change 2 base line two -- a NEW branch. Connections: base line starting state to change 1 base line one, change 1 base line one to u undoes change 1 (u), u undoes change 1 to change 2 base line two -- a NEW branch (new edit), change 2 base line two -- a NEW branch to u undoes change 1 (g-), u undoes change 1 to change 2 base line two -- a NEW branch (g+).
     Base["base line<br/>starting state"]:::blue
     C1["change 1<br/>base line one"]:::orange
     Undo["u undoes change 1"]:::gray
@@ -697,7 +697,7 @@ _ex-79 &middot; exercises co-12_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 79: Global Delete Matching Lines
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Range default: whole buffer, 47pattern47 find matching lines, command run on each match. Connections: Range default: whole buffer to 47pattern47 find matching lines, 47pattern47 find matching lines to command run on each match.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Range default: whole buffer, /pattern/ find matching lines, command run on each match. Connections: Range default: whole buffer to /pattern/ find matching lines, /pattern/ find matching lines to command run on each match.
     Range["Range<br/>default: whole<br/>buffer"]:::blue
     Pat["#47;pattern#47;<br/>find matching lines"]:::orange
     Cmd["command<br/>run on each match"]:::teal
@@ -915,7 +915,7 @@ _ex-84 &middot; exercises co-17_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 84: Populate Quickfix Vimgrep
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: :vimgrep 47pat47 **47* search across files, quickfix list populated with matches, :cnext 47 :cprevious jump to each match. Connections: :vimgrep 47pat47 **47* search across files to quickfix list populated with matches, quickfix list populated with matches to :cnext 47 :cprevious jump to each match.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: :vimgrep /pat/ **/* search across files, quickfix list populated with matches, :cnext / :cprevious jump to each match. Connections: :vimgrep /pat/ **/* search across files to quickfix list populated with matches, quickfix list populated with matches to :cnext / :cprevious jump to each match.
     VG[":vimgrep #47;pat#47;<br/>**#47;*<br/>search across files"]:::blue
     QL["quickfix list<br/>populated with<br/>matches"]:::orange
     Nav[":cnext #47;<br/>:cprevious<br/>jump to each match"]:::teal

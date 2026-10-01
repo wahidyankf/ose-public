@@ -172,7 +172,7 @@ value, flipping a real CLI into a hidden mode.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 29: Argument Injection -- Not Just Shell Injection
-    accDescr: Graph with 7 nodes and 5 connections. Nodes: A, dump-config, B, hidden branch fires, same input, D, literal filename, flag inert. Connections: A to dump-config, dump-config to B, B to hidden branch fires (seen as a flag), same input to D, D to literal filename, flag inert (seen as positional).
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: user input: --dump-config, argv, no [--] separator, hidden branch fires, same input, argv with [--] separator added, literal filename, flag inert. Connections: user input: --dump-config to argv, no [--] separator, argv, no [--] separator to hidden branch fires (seen as a flag), same input to argv with [--] separator added, argv with [--] separator added to literal filename, flag inert (seen as positional).
     A["user input:<br/>--dump-config"]:::blue --> B["argv, no #91;--#93;<br/>separator"]:::orange
     B -->|"seen as a flag"| C["hidden branch<br/>fires"]:::teal
     A2["same input"]:::blue --> D["argv with #91;--#93;<br/>separator added"]:::orange
@@ -1009,7 +1009,7 @@ login.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 36: Session Fixation
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: attacker visits site gets sid=X, attacker tricks victim into using sid=X, victim logs in sid=X now privileged, D, now, attackers old sid=X is dead. Connections: attacker visits site gets sid=X to attacker tricks victim into using sid=X, attacker tricks victim into using sid=X to victim logs in sid=X now privileged, victim logs in sid=X now privileged to D (sid unchanged), D to now, victim logs in sid=X now privileged to attackers old sid=X is dead (sid regenerated).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: attacker visits site gets sid=X, attacker tricks victim into using sid=X, victim logs in sid=X now privileged, attacker reuses sid=X -- now logged in as victim, attackers old sid=X is dead. Connections: attacker visits site gets sid=X to attacker tricks victim into using sid=X, attacker tricks victim into using sid=X to victim logs in sid=X now privileged, victim logs in sid=X now privileged to attacker reuses sid=X -- now logged in as victim (sid unchanged), victim logs in sid=X now privileged to attackers old sid=X is dead (sid regenerated).
     A["attacker visits site<br/>gets sid=X"]:::blue --> B["attacker tricks<br/>victim<br/>into using sid=X"]:::orange
     B --> C["victim logs in<br/>sid=X now privileged"]:::teal
     C -->|"sid unchanged"| D["attacker reuses<br/>sid=X<br/>-- now logged in as<br/>victim"]:::orange

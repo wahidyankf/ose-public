@@ -12,7 +12,7 @@ weight: 62
 %% Corrected container diagram: retry_queue added to match the prose
 graph TD
     accTitle: graph diagram
-    accDescr: Graph with 4 nodes and 4 connections. Nodes: Notification Worker, NotifyGate 40external41, Retry Queue SQS, Dead-Letter Log PostgreSQL. Connections: Notification Worker to Retry Queue SQS (send fails), Retry Queue SQS to Notification Worker (retry, up to 3x), Notification Worker to NotifyGate 40external41 (send succeeds), Retry Queue SQS to Dead-Letter Log PostgreSQL (exhausted retries).
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Notification Worker, NotifyGate (external), Retry Queue SQS, Dead-Letter Log PostgreSQL. Connections: Notification Worker to Retry Queue SQS (send fails), Retry Queue SQS to Notification Worker (retry, up to 3x), Notification Worker to NotifyGate (external) (send succeeds), Retry Queue SQS to Dead-Letter Log PostgreSQL (exhausted retries).
     Worker["Notification Worker"]:::blue
     NotifyGate["NotifyGate<br/>#40;external#41;"]:::brown
     RetryQ["Retry Queue<br/>SQS"]:::orange

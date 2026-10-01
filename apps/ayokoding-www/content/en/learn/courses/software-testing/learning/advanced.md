@@ -29,7 +29,7 @@ tests. This example builds one small `Cart`/`PricingService` suite with exactly 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 61: Organize a Suite in Pyramid Shape
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: 6 unit tests Cart methods alone, 2 integration tests Cart + PricingService, real, 1 e2e test full checkout4041 flow. Connections: 6 unit tests Cart methods alone to 2 integration tests Cart + PricingService, real, 2 integration tests Cart + PricingService, real to 1 e2e test full checkout4041 flow.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: 6 unit tests Cart methods alone, 2 integration tests Cart + PricingService, real, 1 e2e test full checkout() flow. Connections: 6 unit tests Cart methods alone to 2 integration tests Cart + PricingService, real, 2 integration tests Cart + PricingService, real to 1 e2e test full checkout() flow.
     A["6 unit tests<br/>Cart methods alone"]:::blue
     B["2 integration tests<br/>Cart +<br/>PricingService, real"]:::orange
     C["1 e2e test<br/>full<br/>checkout#40;#41;<br/>flow"]:::teal
@@ -179,7 +179,7 @@ same `Cart`/`PricingService` feature and reweights it: 2 unit, 5 integration, 1 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 62: Reweight the Same Suite Toward Integration -- the Testing Trophy
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: 2 unit tests Cart methods alone, 5 integration tests Cart + PricingService, real THICKEST layer, 1 e2e test full checkout4041 flow. Connections: 2 unit tests Cart methods alone to 5 integration tests Cart + PricingService, real THICKEST layer, 5 integration tests Cart + PricingService, real THICKEST layer to 1 e2e test full checkout4041 flow.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: 2 unit tests Cart methods alone, 5 integration tests Cart + PricingService, real THICKEST layer, 1 e2e test full checkout() flow. Connections: 2 unit tests Cart methods alone to 5 integration tests Cart + PricingService, real THICKEST layer, 5 integration tests Cart + PricingService, real THICKEST layer to 1 e2e test full checkout() flow.
     A["2 unit tests<br/>Cart methods alone"]:::blue
     B["5 integration tests<br/>Cart +<br/>PricingService, real<br/>THICKEST layer"]:::orange
     C["1 e2e test<br/>full<br/>checkout#40;#41;<br/>flow"]:::teal
@@ -639,7 +639,7 @@ instant the `with` block exits.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 66: Spin Up a Throwaway DB Container for a Test
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: DockerContainer40postgres:17-alpine41, waiting_for40Log MessageWait Strategy41, C, D. Connections: DockerContainer40postgres:17-alpine41 to waiting_for40Log MessageWait Strategy41, waiting_for40Log MessageWait Strategy41 to C, C to D.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: DockerContainer( postgres:17-alpine), waiting_for(Log MessageWait Strategy), with container: -- REAL container running, block exits -- container stopped + removed. Connections: DockerContainer( postgres:17-alpine) to waiting_for(Log MessageWait Strategy), waiting_for(Log MessageWait Strategy) to with container: -- REAL container running, with container: -- REAL container running to block exits -- container stopped + removed.
     A["DockerContainer(<br/>postgres:17-alpine)"]:::blue --> B["waiting_for(Log<br/>MessageWait<br/>Strategy)"]:::orange
     B --> C["with container: --<br/>REAL container<br/>running"]:::teal
     C --> D["block exits --<br/>container stopped +<br/>removed"]:::blue
@@ -742,7 +742,7 @@ real, on-disk pact file.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
     accTitle: Example 67: A Pact Consumer Test That Defines the Expected Interaction
-    accDescr: Sequence diagram between consumer test (ex-67), pact mock server, pact file. Messages: consumer test (ex-67) to pact mock server: upon_receiving4041.with_request4041.will_respond_with4041; consumer test (ex-67) to pact mock server: httpx.get4041 -- a REAL request to the mock; pact mock server to consumer test (ex-67): 200, the EXACT recorded response; consumer test (ex-67) to pact file: pact.write_file4041 -- captures the interaction.
+    accDescr: Sequence diagram between consumer test (ex-67), pact mock server, pact file. Messages: consumer test (ex-67) to pact mock server: upon_receiving().with_request().will_respond_with(); consumer test (ex-67) to pact mock server: httpx.get() -- a REAL request to the mock; pact mock server to consumer test (ex-67): 200, the EXACT recorded response; consumer test (ex-67) to pact file: pact.write_file() -- captures the interaction.
     participant Consumer as consumer test (ex-67)
     participant Mock as pact mock server
     participant File as pact file
@@ -1110,7 +1110,7 @@ the test suite against each mutant. If the suite still passes, the mutant SURVIV
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 70: A Well-Tested Function -- Run mutmut, Read the Surviving-Mutant Report
-    accDescr: Graph with 5 nodes and 8 connections. Nodes: A, gt, B, C, SURVIVED. Connections: A to B (mutate 406241), A to gt (mutate 406241), gt to B (mutate 406241), gt to gt (mutate 406241), A to C (mutate constant), A to gt (mutate constant), B to SURVIVED (tests still pass?), C to SURVIVED (tests still pass?).
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: age >= 18, age > 18, age >= 19, SURVIVED. Connections: age >= 18 to age > 18 (mutate (>)), age >= 18 to age >= 19 (mutate constant), age > 18 to SURVIVED (tests still pass?), age >= 19 to SURVIVED (tests still pass?).
     A["age &gt;= 18"]:::blue -->|"mutate<br/>#40;#62;#41;"| B["age &gt; 18"]:::orange
     A -->|"mutate constant"| C["age &gt;= 19"]:::orange
     B -->|"tests still pass?"| D["SURVIVED"]:::teal
@@ -1210,7 +1210,7 @@ from `19`.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 71: Add a Test to Kill a Surviving Mutant
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: mutmut_1: age > 18 SURVIVED, test_is_adult_ boundary asserts is_adult401841 is True, mutmut_2: age >= 19 SURVIVED, both mutants KILLED. Connections: mutmut_1: age > 18 SURVIVED to test_is_adult_ boundary asserts is_adult401841 is True, mutmut_2: age >= 19 SURVIVED to test_is_adult_ boundary asserts is_adult401841 is True, test_is_adult_ boundary asserts is_adult401841 is True to both mutants KILLED.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: mutmut_1: age > 18 SURVIVED, test_is_adult_ boundary asserts is_adult(18) is True, mutmut_2: age >= 19 SURVIVED, both mutants KILLED. Connections: mutmut_1: age > 18 SURVIVED to test_is_adult_ boundary asserts is_adult(18) is True, mutmut_2: age >= 19 SURVIVED to test_is_adult_ boundary asserts is_adult(18) is True, test_is_adult_ boundary asserts is_adult(18) is True to both mutants KILLED.
     A["mutmut_1: age > 18<br/>SURVIVED"]:::orange --> C["test_is_adult_<br/>boundary<br/>asserts<br/>is_adult#40;18#41;<br/>is True"]:::blue
     B["mutmut_2: age >= 19<br/>SURVIVED"]:::orange --> C
     C --> D["both mutants KILLED"]:::teal
@@ -1287,7 +1287,7 @@ mutation testing answer genuinely different questions.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 72: A Fully-Covered Function With Surviving Mutants
-    accDescr: Graph with 4 nodes and 4 connections. Nodes: is_adult4041 ONE line, coverage.py: 100 LINE coverage, mutmut: 2 mutants SURVIVE, different questions, both answered honestly. Connections: is_adult4041 ONE line to coverage.py: 100 LINE coverage, is_adult4041 ONE line to mutmut: 2 mutants SURVIVE, coverage.py: 100 LINE coverage to different questions, both answered honestly (answers: did this line RUN?), mutmut: 2 mutants SURVIVE to different questions, both answered honestly (answers: was this line TESTED?).
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: is_adult() ONE line, coverage.py: 100 LINE coverage, mutmut: 2 mutants SURVIVE, different questions, both answered honestly. Connections: is_adult() ONE line to coverage.py: 100 LINE coverage, is_adult() ONE line to mutmut: 2 mutants SURVIVE, coverage.py: 100 LINE coverage to different questions, both answered honestly (answers: did this line RUN?), mutmut: 2 mutants SURVIVE to different questions, both answered honestly (answers: was this line TESTED?).
     A["is_adult#40;#41; ONE<br/>line"]:::blue --> B["coverage.py:<br/>100% LINE coverage"]:::teal
     A --> C["mutmut:<br/>2 mutants SURVIVE"]:::orange
     B -.->|"answers: did this<br/>line RUN?"| D["different questions,<br/>both answered<br/>honestly"]
@@ -1710,7 +1710,7 @@ dummy that is passed but never touched.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 77: One Scenario, Five Doubles -- Dummy, Stub, Spy, Mock, and Fake
-    accDescr: Graph with 11 nodes and 10 connections. Nodes: OrderProcessor. process4041, B, STUB, C, MOCK, D, SPY, E, FAKE, F, DUMMY. Connections: OrderProcessor. process4041 to B, B to STUB, OrderProcessor. process4041 to C, C to MOCK, OrderProcessor. process4041 to D, D to SPY, OrderProcessor. process4041 to E, E to FAKE, OrderProcessor. process4041 to F, F to DUMMY.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: OrderProcessor. process(), price_lookup -- STUB canned return value, notifier -- MOCK call VERIFIED, audit_log -- SPY wraps a REAL object, repository -- FAKE real, working, lightweight, logger -- DUMMY never touched. Connections: OrderProcessor. process() to price_lookup -- STUB canned return value, OrderProcessor. process() to notifier -- MOCK call VERIFIED, OrderProcessor. process() to audit_log -- SPY wraps a REAL object, OrderProcessor. process() to repository -- FAKE real, working, lightweight, OrderProcessor. process() to logger -- DUMMY never touched.
     A["OrderProcessor.<br/>process#40;#41;"]:::blue
     A --> B["price_lookup -- STUB<br/>canned return value"]:::orange
     A --> C["notifier -- MOCK<br/>call VERIFIED"]:::teal
@@ -1862,7 +1862,7 @@ double would have been the wrong choice.
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
     accTitle: Example 78: Choose the Right Double for the Scenario
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Does the call return a useful value?, register_ user4041 send4041 has no return, price_after_ discount4041 rate_for4041 returns a rate, use a MOCK: assert_called_once_ with4041, use a STUB: canned return_value. Connections: Does the call return a useful value? to register_ user4041 send4041 has no return (no side effect only), Does the call return a useful value? to price_after_ discount4041 rate_for4041 returns a rate (yes, a computed result), register_ user4041 send4041 has no return to use a MOCK: assert_called_once_ with4041, price_after_ discount4041 rate_for4041 returns a rate to use a STUB: canned return_value.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Does the call return a useful value?, register_ user() send() has no return, price_after_ discount() rate_for() returns a rate, use a MOCK: assert_called_once_ with(), use a STUB: canned return_value. Connections: Does the call return a useful value? to register_ user() send() has no return (no side effect only), Does the call return a useful value? to price_after_ discount() rate_for() returns a rate (yes, a computed result), register_ user() send() has no return to use a MOCK: assert_called_once_ with(), price_after_ discount() rate_for() returns a rate to use a STUB: canned return_value.
     A["Does the call return<br/>a useful value?"]:::blue
     A -->|"no side effect<br/>only"| B["register_<br/>user#40;#41;<br/>send#40;#41; has no<br/>return"]:::orange
     A -->|"yes, a computed<br/>result"| C["price_after_<br/>discount#40;#41;<br/>rate_for#40;#41;<br/>returns a rate"]:::orange

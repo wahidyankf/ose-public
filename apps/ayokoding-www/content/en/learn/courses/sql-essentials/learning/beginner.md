@@ -908,7 +908,7 @@ to enforce it, and any write that would create a duplicate is rejected.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 19: Unique Constraint
-    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: INSERT ada@example.com row 1, UNIQUE index on email, C, first, D, REJECTED. Connections: C to first, D to REJECTED, INSERT ada@example.com row 1 to UNIQUE index on email, UNIQUE index on email to C, D to UNIQUE index on email.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: INSERT ada@example.com row 1, UNIQUE index on email, ACCEPTED -- first row, INSERT ada@example.com row 2 -- REJECTED. Connections: INSERT ada@example.com row 1 to UNIQUE index on email, UNIQUE index on email to ACCEPTED -- first row, INSERT ada@example.com row 2 -- REJECTED to UNIQUE index on email.
     A["INSERT<br/>'ada@example.com'<br/>row 1"]:::blue
     B["UNIQUE index<br/>on email"]:::orange
     C["ACCEPTED -- first<br/>row"]:::teal
@@ -1302,7 +1302,7 @@ enforcing it (Example 27).
 %% Color Palette: Blue #0173B2, Teal #029E73 -- color-blind friendly, WCAG AA
 graph LR
     accTitle: Example 26: Declare Foreign Key
-    accDescr: Graph with 2 nodes and 1 connections. Nodes: author id, name, book id, title, author_id. Connections: author id, name to book id, title, author_id (book.author_id REFERENCES author40id41).
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: author id, name, book id, title, author_id. Connections: author id, name to book id, title, author_id (book.author_id REFERENCES author(id)).
     A["author<br/>id, name"]:::blue -->|"book.author_id<br/>REFERENCES<br/>author#40;id#41;"| B["book<br/>id, title, author_id"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -1366,7 +1366,7 @@ demonstrated.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 27: Enforce Foreign Key
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: PRAGMA foreign_keys=ON, INSERT book author_id = 99 40orphan41, REJECTED FOREIGN KEY constraint failed. Connections: PRAGMA foreign_keys=ON to INSERT book author_id = 99 40orphan41, INSERT book author_id = 99 40orphan41 to REJECTED FOREIGN KEY constraint failed.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: PRAGMA foreign_keys=ON, INSERT book author_id = 99 (orphan), REJECTED FOREIGN KEY constraint failed. Connections: PRAGMA foreign_keys=ON to INSERT book author_id = 99 (orphan), INSERT book author_id = 99 (orphan) to REJECTED FOREIGN KEY constraint failed.
     A["PRAGMA<br/>foreign_keys=ON"]:::blue
     B["INSERT book<br/>author_id = 99<br/>#40;orphan#41;"]:::orange
     C["REJECTED<br/>FOREIGN KEY<br/>constraint failed"]:::teal
@@ -1443,7 +1443,7 @@ undoing normalization (co-05) at query time.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 graph LR
     accTitle: Example 28: Inner Join Two Tables
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: author 401, Ada Lovelace41 402, Grace Hopper41, book 40title, author_id: 141 40title, author_id: 241, JOIN result title + matching author name. Connections: author 401, Ada Lovelace41 402, Grace Hopper41 to JOIN result title + matching author name (author.id = book.author_id), book 40title, author_id: 141 40title, author_id: 241 to JOIN result title + matching author name (author.id = book.author_id).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: author (1, Ada Lovelace) (2, Grace Hopper), book (title, author_id: 1) (title, author_id: 2), JOIN result title + matching author name. Connections: author (1, Ada Lovelace) (2, Grace Hopper) to JOIN result title + matching author name (author.id = book.author_id), book (title, author_id: 1) (title, author_id: 2) to JOIN result title + matching author name (author.id = book.author_id).
     A["author<br/>#40;1, Ada<br/>Lovelace#41;<br/>#40;2, Grace<br/>Hopper#41;"]:::blue
     B["book<br/>#40;title,<br/>author_id: 1#41;<br/>#40;title,<br/>author_id: 2#41;"]:::orange
     C["JOIN result<br/>title + matching<br/>author name"]:::teal
@@ -1601,7 +1601,7 @@ as pure data, never parsed as SQL syntax.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 30: Python Parameterized Insert
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: name = Ada Lovelace, ? placeholder bound as DATA, INSERT ... VALUES 40?41 structure fixed, value opaque. Connections: name = Ada Lovelace to ? placeholder bound as DATA, ? placeholder bound as DATA to INSERT ... VALUES 40?41 structure fixed, value opaque.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: name = Ada Lovelace, ? placeholder bound as DATA, INSERT ... VALUES (?) structure fixed, value opaque. Connections: name = Ada Lovelace to ? placeholder bound as DATA, ? placeholder bound as DATA to INSERT ... VALUES (?) structure fixed, value opaque.
     A["name = 'Ada<br/>Lovelace'"]:::blue
     B["? placeholder<br/>bound as DATA"]:::orange
     C["INSERT ... VALUES<br/>#40;?#41;<br/>structure fixed,<br/>value opaque"]:::teal

@@ -43,8 +43,9 @@ surprised the same way; its fix may be documentation.
    the workaround.
 5. **Only when the defect blocks the work in hand and no workaround exists, fix it.** Write a
    [bug-fix plan](../../conventions/structure/plans/bug-fix-plan.md) in the owning repository, researching the cause and
-   the solution and citing every source. Land the plan alone on the owner's trunk through its route first, then execute
-   it through the owner's delivery, regression test first. Release where the owner releases, and repin every consumer.
+   the solution and citing every source. Land the plan alone on the owner's trunk through its route first, run the plan
+   quality gate on it, and on a passing verdict execute it through the owner's delivery, regression test first. Release
+   where the owner releases, and repin every consumer.
 
 A workaround is any route to the current work's outcome that does not edit the tool or its pin: another option or
 command, a documented manual step, or a retry that reliably succeeds. It is recorded beside the link or brief so the

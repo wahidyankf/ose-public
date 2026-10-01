@@ -15,7 +15,10 @@ when one of its three named callers invokes it:
 [plan-planning Step 6](./plan-planning/step-6-quality-gate.md),
 [plan-multi-repo-parity-planning Step 7](./plan-multi-repo-parity-planning/step-7-and-8-quality-gate-and-delivery.md),
 and [web-ux-test-fixing-planning Phase 5](../web/web-ux-test-fixing-planning/phase-5-and-6-quality-gate-and-push.md).
-That list is exhaustive; extending it is a rule change. Never infer authorization from creating,
+That list is exhaustive; extending it is a rule change. For a
+[Bug-Fix Plan](../../conventions/structure/plans/bug-fix-plan.md), an adopted
+[Upstream Tool Defects](../../development/workflow/upstream-tool-defects.md) standard is that user
+direction. Never infer authorization from creating,
 editing, reviewing, or executing a plan, from Plan mode, or from any other workflow. One instruction may authorize several named checkpoints;
 otherwise it authorizes one run. This gate never starts another gate run.
 

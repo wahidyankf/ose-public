@@ -1268,7 +1268,7 @@ intelligence engines. A SHA256 hash lookup takes seconds and requires no file up
 the hash — making it safe even for sensitive environments.
 
 **Scenario:** During malware triage on a compromised host, you found a suspicious executable at
-`C:\Users\bwilson\AppData\Local\Temp\svchost32.exe`. You extract its hash and check VirusTotal.
+`C:\Users\<name>\AppData\Local\Temp\svchost32.exe`. You extract its hash and check VirusTotal.
 
 ```bash
 # FILE HASH LOOKUP — VirusTotal API v3
@@ -1554,7 +1554,7 @@ PowerShell activity but the process command line was empty due to a logging gap.
 EventID:         4104
 TimeCreated:     2026-05-21T14:22:15Z
 Computer:        WKS-FIN-017.corp.example.com
-Path:            C:\Users\bwilson\AppData\Local\Temp\updater.ps1
+Path:            C:\Users\<name>\AppData\Local\Temp\updater.ps1
 # => Path: the script file path if run from file (or "<No file>" for inline commands)
 # => This path reveals the script was dropped to a world-writable temp location (suspicious)
 

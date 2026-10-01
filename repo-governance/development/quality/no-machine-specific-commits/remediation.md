@@ -5,7 +5,12 @@ when_to_use: "Use when machine-specific information has already been committed a
 
 # Remediation
 
-If machine-specific information has already been committed:
+If the commit has not been pushed, fix the history, not the tree: amend the commit or rebuild the
+unpushed range so no commit carries the value. A later deleting commit does not pass the
+[push leak review](../../../workflows/pr/pr-leak-review/push-review.md), because the commit that
+added the value would still be published.
+
+If machine-specific information has already been pushed:
 
 1. Remove the value from the current working tree and replace it with an environment variable reference or relative path.
 2. Commit the corrected version.
@@ -14,4 +19,5 @@ If machine-specific information has already been committed:
    [No Secrets in Git Convention](../../../conventions/security/no-secrets-in-committed-files.md) for the complete
    remediation procedure and the full definition of what counts as a system secret.
 
-For non-sensitive path leaks (e.g., a developer's home directory appeared in a test), a simple corrective commit is sufficient.
+For a pushed non-sensitive path leak (e.g., a developer's home directory appeared in a test), a corrective commit plus a
+report to the repository owner is sufficient unless the owner approves a history rewrite.

@@ -20,8 +20,10 @@ Changed reachable behaviour may also require a finite surface gate:
 | Other reachable behaviour | Its interface is exercised and the result recorded           |
 | No reachable behaviour    | An explicit exemption identifies why no surface gate applies |
 
-Every PR also runs one focused [`pr-leak-review`](../../../workflows/pr/pr-leak-review.md) against
-its exact current head. Only authenticated `ose-pr-leak-review:v1` `pass` evidence counts. Missing,
+Every push first passes the private push leak review of each outgoing commit, and every PR runs one
+focused [`pr-leak-review`](../../../workflows/pr/pr-leak-review.md) against its exact current head.
+Only authenticated `ose-pr-leak-review:v1` `pass` evidence counts, and the hosted
+`pr-leak-review.yml` publishes it as the required `leak-review` commit status on that head. Missing,
 stale, failed, or findings-bearing evidence blocks merge; a fix triggers one new pass, never a
 two-clean streak. Its scope is defined by the canonical
 [committed-secret](../../../conventions/security/secrets-and-env-standards/hard-iron-rule-no-secrets-in-committed-files.md),

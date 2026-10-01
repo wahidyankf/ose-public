@@ -300,7 +300,7 @@
     {
       "id": "agent/pr-review-security-maker",
       "path": ".agents/agents/pr-review-security-maker.md",
-      "digest": "c9594f945ce3ff5fef95b36d2e0984b329440015924a9b3c7f8f8985b757953c"
+      "digest": "529a9addc6ba15fdca9925ff9962978e364d0fc4eb480463b9e8c2058b731749"
     },
     {
       "id": "agent/pr-review-synthesis-maker",
@@ -785,7 +785,7 @@
     {
       "id": "instruction",
       "path": "AGENTS.md",
-      "digest": "a5b9dd5a101106aa303a295133b65ba0ad3a8ca82676e1c3315727a1cd7b9da8"
+      "digest": "01e673d359dfe54a2c783e9c47263e4c8d1f4cd33fa18f24fd6f046ef4d74c79"
     }
   ]
 }

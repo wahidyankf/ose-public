@@ -17,7 +17,7 @@ Paths rooted at a user's home directory or a tool's local installation prefix ar
 /Users/<name>/projects/open-sharia-enterprise
 /home/<name>/go/bin/golangci-lint
 /opt/homebrew/bin/node
-C:\Users\bob\AppData\Local\Programs\...
+C:\Users\<name>\AppData\Local\Programs\...
 ```
 
 **Acceptable alternatives:** relative paths, workspace-relative paths, or paths derived at runtime from environment variables such as `$HOME`, `$GOPATH`, or `$PROJECT_ROOT`.

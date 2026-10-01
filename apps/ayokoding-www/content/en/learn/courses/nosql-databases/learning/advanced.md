@@ -34,12 +34,15 @@ mechanism observable.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 55: LSM-Tree Write Path, Simulated
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: write(k1, v1) write(k2, v2), Memtable (mutable, in-memory), SSTable 0 (immutable, on disk). Connections: write(k1, v1) write(k2, v2) to Memtable (mutable, in-memory), Memtable (mutable, in-memory) to SSTable 0 (immutable, on disk) (flush).
     W["write(k1, v1)<br/>write(k2, v2)"]:::orange --> M["Memtable<br/>(mutable, in-memory)"]:::blue
     M -->|flush| S["SSTable 0<br/>(immutable, on disk)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-55-lsm-tree-write-path-sim/example.py`**
@@ -131,13 +134,16 @@ engine's raw per-write I/O cost.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 56: B-Tree vs. LSM Write Amplification
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 1 logical write, rewrite whole 4096-byte page amortized 4.1x lifetime amp, 100-byte sequential append 6.0x lifetime amp, compacted. Connections: 1 logical write to rewrite whole 4096-byte page amortized 4.1x lifetime amp (B-tree), 1 logical write to 100-byte sequential append 6.0x lifetime amp, compacted (LSM).
     W["1 logical write"]:::orange
-    W -->|B-tree| B["rewrite whole 4096-byte page<br/>amortized 4.1x lifetime amp"]:::blue
-    W -->|LSM| L["100-byte sequential append<br/>6.0x lifetime amp, compacted"]:::teal
+    W -->|B-tree| B["rewrite whole<br/>4096-byte page<br/>amortized 4.1x<br/>lifetime amp"]:::blue
+    W -->|LSM| L["100-byte sequential<br/>append<br/>6.0x lifetime amp,<br/>compacted"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-56-btree-vs-lsm-write-amplification/example.py`**
@@ -230,13 +236,16 @@ several SSTables into one, directly reducing that per-read file-check cost.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 57: LSM Read Amplification
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: read(k1), memtable + 3 SSTables 4 files checked, memtable + 1 SSTable 2 files checked. Connections: read(k1) to memtable + 3 SSTables 4 files checked (before compaction), read(k1) to memtable + 1 SSTable 2 files checked (after compaction).
     R["read(k1)"]:::orange
-    R -->|before compaction| B["memtable + 3 SSTables<br/>4 files checked"]:::blue
+    R -->|before compaction| B["memtable + 3<br/>SSTables<br/>4 files checked"]:::blue
     R -->|after compaction| A["memtable + 1 SSTable<br/>2 files checked"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-57-lsm-read-amplification/example.py`**
@@ -347,6 +356,8 @@ otherwise race to claim the same row.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 sequenceDiagram
+    accTitle: Example 58: Cassandra Lightweight Transaction
+    accDescr: Sequence diagram between Alice, Bob, Cassandra (Paxos). Messages: Alice to Cassandra (Paxos): INSERT seat-12A IF NOT EXISTS; Cassandra (Paxos) to Alice: applied = true; Bob to Cassandra (Paxos): INSERT seat-12A IF NOT EXISTS; Cassandra (Paxos) to Bob: applied = false (alice already holds it).
     participant Alice
     participant Bob
     participant C as Cassandra (Paxos)
@@ -441,15 +452,18 @@ query fans out to every node in the cluster.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    PK["WHERE customer_id = 7<br/>(partition key)"]:::orange --> N1(("node owning<br/>that partition")):::blue
+    accTitle: Example 59: Cassandra Secondary Index Cost
+    accDescr: Flowchart with 6 nodes and 4 connections. Nodes: WHERE customer_id = 7 (partition key), node owning that partition, WHERE status = shipped (secondary index), node A, node B, node C. Connections: WHERE customer_id = 7 (partition key) to node owning that partition, WHERE status = shipped (secondary index) to node A, WHERE status = shipped (secondary index) to node B, WHERE status = shipped (secondary index) to node C.
+    PK["WHERE customer_id =<br/>7<br/>(partition key)"]:::orange --> N1(("node owning<br/>that partition")):::blue
 
-    SI["WHERE status = 'shipped'<br/>(secondary index)"]:::orange --> A(("node A")):::teal
+    SI["WHERE status =<br/>'shipped'<br/>(secondary index)"]:::orange --> A(("node A")):::teal
     SI --> B(("node B")):::teal
     SI --> C(("node C")):::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-59-cassandra-secondary-index-cost/example.py`**
@@ -913,13 +927,16 @@ directly onto every order.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 63: Secondary Index vs. Denormalization
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: find orders by author name, 2 queries author lookup, order lookup, 1 query author_name on every order. Connections: find orders by author name to 2 queries author lookup, order lookup (secondary index), find orders by author name to 1 query author_name on every order (denormalize).
     Q["find orders<br/>by author name"]:::orange
-    Q -->|secondary index| I["2 queries<br/>author lookup, order lookup"]:::blue
-    Q -->|denormalize| D["1 query<br/>author_name on every order"]:::teal
+    Q -->|secondary index| I["2 queries<br/>author lookup, order<br/>lookup"]:::blue
+    Q -->|denormalize| D["1 query<br/>author_name on every<br/>order"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-63-secondary-index-vs-denormalization/example.py`**
@@ -1108,6 +1125,8 @@ contract they make is genuinely different on a real multi-node cluster.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 sequenceDiagram
+    accTitle: Example 65: MongoDB Write Concern Tuning
+    accDescr: Sequence diagram between App, Primary, Secondaries. Messages: App to Primary: insert (w=1); Primary to App: ack (primary applied); App to Primary: insert (w=majority); Primary to Secondaries: replicate; Secondaries to Primary: majority acked; Primary to App: ack (majority applied).
     participant App
     participant P as Primary
     participant S as Secondaries
@@ -1498,6 +1517,8 @@ compare-and-set lock-acquisition primitive -- a second, conflicting attempt fail
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 sequenceDiagram
+    accTitle: Example 69: DynamoDB Conditional Write
+    accDescr: Sequence diagram between worker-1, worker-2, DynamoDB. Messages: worker-1 to DynamoDB: PutItem IF attribute_not_exists(resource_id); DynamoDB to worker-1: succeeded; worker-2 to DynamoDB: PutItem IF attribute_not_exists(resource_id); DynamoDB to worker-2: ConditionalCheckFailedException.
     participant W1 as worker-1
     participant W2 as worker-2
     participant D as DynamoDB
@@ -1612,13 +1633,16 @@ partitions instead.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 70: DynamoDB Hot Partition, Diagnosed
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: 100 events, H, HOT, 10 partitions 10 items each. Connections: 100 events to H (date-only key), H to HOT, 100 events to 10 partitions 10 items each (date+user key).
     E["100 events"]:::orange
     E -->|"date-only key"| H["1 partition<br/>100 items -- HOT"]:::blue
     E -->|"date+user key"| S["10 partitions<br/>10 items each"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-70-dynamodb-hot-partition-diagnose/example.py`**
@@ -1732,13 +1756,16 @@ MongoDB document, which has a hard 16MB ceiling.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    F["unbounded activity feed"]:::orange
-    F -->|Cassandra| C["independent rows per event<br/>no size ceiling"]:::blue
-    F -->|MongoDB| M["growing embedded array<br/>hard 16MB ceiling"]:::teal
+    accTitle: Example 71: Wide-Column vs. Document Tradeoff
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: unbounded activity feed, independent rows per event no size ceiling, growing embedded array hard 16MB ceiling. Connections: unbounded activity feed to independent rows per event no size ceiling (Cassandra), unbounded activity feed to growing embedded array hard 16MB ceiling (MongoDB).
+    F["unbounded activity<br/>feed"]:::orange
+    F -->|Cassandra| C["independent rows per<br/>event<br/>no size ceiling"]:::blue
+    F -->|MongoDB| M["growing embedded<br/>array<br/>hard 16MB ceiling"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-wide-column-vs-document-tradeoff/example.py`**
@@ -2015,13 +2042,16 @@ merge policy.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 73: CRDT vs. Vector Clock Tradeoff
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: concurrent edit, merge auto-resolves zero app code, CONCURRENT detected app must write merge logic. Connections: concurrent edit to merge auto-resolves zero app code (CRDT G-Counter), concurrent edit to CONCURRENT detected app must write merge logic (Vector clock).
     E["concurrent edit"]:::orange
     E -->|CRDT G-Counter| G["merge auto-resolves<br/>zero app code"]:::blue
-    E -->|Vector clock| V["CONCURRENT detected<br/>app must write merge logic"]:::teal
+    E -->|Vector clock| V["CONCURRENT detected<br/>app must write merge<br/>logic"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-73-crdt-vs-vector-clock-tradeoff/example.py`**
@@ -2140,6 +2170,8 @@ can do without risking actual data loss.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 sequenceDiagram
+    accTitle: Example 74: Leader-Follower Failover
+    accDescr: Sequence diagram between Client, node-A (leader), node-B (follower). Messages: Client to node-A (leader): write(v1); node-A (leader) to node-B (follower): replicate(v1); Client to node-A (leader): write(v2-during-outage); node-A (leader) to Client: rejected, no leader; Client to node-B (follower): write(v3-after-failover); node-B (follower) to Client: succeeded.
     participant C as Client
     participant A as node-A (leader)
     participant B as node-B (follower)
@@ -2343,14 +2375,17 @@ separately provisioned Global Secondary Index.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 76: Secondary Indexes Across Stores
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: find orders WHERE customer_id=cust-1, in-collection index, per-node index cluster-wide fan-out, separately provisioned GSI. Connections: find orders WHERE customer_id=cust-1 to in-collection index (MongoDB), find orders WHERE customer_id=cust-1 to per-node index cluster-wide fan-out (Cassandra), find orders WHERE customer_id=cust-1 to separately provisioned GSI (DynamoDB).
     Q["find orders WHERE<br/>customer_id=cust-1"]:::orange
     Q -->|MongoDB| M["in-collection index"]:::blue
     Q -->|Cassandra| C["per-node index<br/>cluster-wide fan-out"]:::teal
-    Q -->|DynamoDB| D["separately provisioned GSI"]:::blue
+    Q -->|DynamoDB| D["separately<br/>provisioned GSI"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-76-secondary-indexes-cross-store-contrast/example.py`**

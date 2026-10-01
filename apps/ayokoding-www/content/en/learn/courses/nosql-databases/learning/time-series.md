@@ -220,14 +220,17 @@ while recent data survives.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 83: Retention Policy Drops Old Chunks
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: add_retention_policy drop_after 30 days, run_job(), chunk DROPPED, chunk RETAINED. Connections: add_retention_policy drop_after 30 days to run_job(), run_job() to chunk DROPPED (40 days old), run_job() to chunk RETAINED (1 hour old).
     P["add_retention_policy<br/>drop_after 30 days"]:::orange
     P --> J["run_job()"]:::blue
     J -->|"40 days old"| D["chunk DROPPED"]:::teal
     J -->|"1 hour old"| K["chunk RETAINED"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-83-retention-policy-drop-old/example.py`**
@@ -331,13 +334,16 @@ re-scanning every raw point.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 84: Continuous Aggregate Rollup
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: events_raw 500 raw rows, range query 500 rows scanned, events_hourly 5 pre-computed buckets, range query 5 rows scanned. Connections: events_raw 500 raw rows to range query 500 rows scanned (re-scan every row), events_raw 500 raw rows to events_hourly 5 pre-computed buckets (REFRESH continuous aggregate), events_hourly 5 pre-computed buckets to range query 5 rows scanned (read pre-aggregated buckets).
     R["events_raw<br/>500 raw rows"]:::orange -->|"re-scan every row"| Q1["range query<br/>500 rows scanned"]:::blue
-    R -->|"REFRESH continuous aggregate"| C["events_hourly<br/>5 pre-computed buckets"]:::teal
-    C -->|"read pre-aggregated buckets"| Q2["range query<br/>5 rows scanned"]:::blue
+    R -->|"REFRESH continuous<br/>aggregate"| C["events_hourly<br/>5 pre-computed<br/>buckets"]:::teal
+    C -->|"read pre-aggregated<br/>buckets"| Q2["range query<br/>5 rows scanned"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-84-continuous-aggregate-rollup/example.py`**

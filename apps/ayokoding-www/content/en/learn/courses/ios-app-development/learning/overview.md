@@ -45,15 +45,18 @@ an installed simulator name when needed.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    UI["SwiftUI view\nrenders observable state"]:::blue --> EVENT{{"User or scene event"}}:::orange
-    EVENT --> VM["@MainActor view model\nstate and decisions"]:::teal
-    VM --> SERVICE["Injected service\nURLSession, SwiftData, actor cache"]:::purple
+    accTitle: Architecture flow
+    accDescr: Flowchart with 4 nodes and 5 connections. Nodes: SwiftUI view renders observable state, User or scene event, @MainActor view model state and decisions, Injected service URLSession, SwiftData, actor cache. Connections: SwiftUI view renders observable state to User or scene event, User or scene event to @MainActor view model state and decisions, @MainActor view model state and decisions to Injected service URLSession, SwiftData, actor cache, Injected service URLSession, SwiftData, actor cache to @MainActor view model state and decisions, @MainActor view model state and decisions to SwiftUI view renders observable state.
+    UI["SwiftUI view<br/>renders observable<br/>state"]:::blue --> EVENT{{"User or scene<br/>event"}}:::orange
+    EVENT --> VM["@MainActor view<br/>model<br/>state and decisions"]:::teal
+    VM --> SERVICE["Injected service<br/>URLSession,<br/>SwiftData, actor<br/>cache"]:::purple
     SERVICE --> VM
     VM --> UI
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The diagram uses text, direction, shapes, and colour: state returns to the view, while events move

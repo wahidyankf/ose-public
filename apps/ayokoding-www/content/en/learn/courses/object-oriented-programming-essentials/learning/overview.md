@@ -27,11 +27,13 @@ Every one of this topic's 80 worked examples is a complete, self-contained `exam
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-17)
 graph TD
+    accTitle: How verification works in this topic
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Object basics co-01 to co-05, Dataclasses and properties co-06 to co-07, Inheritance and polymorphism co-08 to co-12, Composition and attribute scoping co-13 to co-16, Invariant enforcement co-17. Connections: Object basics co-01 to co-05 to Dataclasses and properties co-06 to co-07, Dataclasses and properties co-06 to co-07 to Inheritance and polymorphism co-08 to co-12, Inheritance and polymorphism co-08 to co-12 to Composition and attribute scoping co-13 to co-16, Composition and attribute scoping co-13 to co-16 to Invariant enforcement co-17.
     A["Object basics<br/>co-01 to co-05"]:::blue
-    B["Dataclasses and properties<br/>co-06 to co-07"]:::orange
-    C["Inheritance and polymorphism<br/>co-08 to co-12"]:::teal
-    D["Composition and attribute scoping<br/>co-13 to co-16"]:::purple
-    E["Invariant enforcement<br/>co-17"]:::brown
+    B["Dataclasses and<br/>properties<br/>co-06 to co-07"]:::orange
+    C["Inheritance and<br/>polymorphism<br/>co-08 to co-12"]:::teal
+    D["Composition and<br/>attribute scoping<br/>co-13 to co-16"]:::purple
+    E["Invariant<br/>enforcement<br/>co-17"]:::brown
 
     A --> B
     B --> C
@@ -39,10 +41,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

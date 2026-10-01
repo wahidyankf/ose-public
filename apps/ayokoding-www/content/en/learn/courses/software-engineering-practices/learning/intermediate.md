@@ -1064,6 +1064,8 @@ that order.
 
 ```mermaid
 timeline
+    accTitle: Example 42: Incident Timeline -- Detect, Mitigate, Root-Cause
+    accDescr: Timeline of incident INC-0104, a gift-card redemption outage. At 14:02 an alert fires on a redemption error rate above 5%, at 14:04 on-call detects that all redemption requests return 503, at 14:06 the kill switch is flipped back on to mitigate, and at 14:07 traffic recovers to 200 OK.
     title Incident INC-0104 -- gift-card redemption outage
     14:02 : Alert fires -- redemption error rate > 5%
     14:04 : Detect -- on-call confirms 100% of redemption requests return 503

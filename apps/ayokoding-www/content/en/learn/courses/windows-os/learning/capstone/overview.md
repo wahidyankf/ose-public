@@ -28,13 +28,16 @@ The child runs the same executable with --child. The parent waits on the child a
 
 ```mermaid
 flowchart LR
+  accTitle: Acceptance checks
+  accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Parent, Child image, Workers, counter = 2, completion event. Connections: Parent to Child image (CreateProcess), Parent to Workers (CreateThread twice), Workers to counter = 2 (mutex and critical section), Parent to completion event (overlapped HANDLE I/O).
   P["Parent"]:::blue -->|CreateProcess| C["Child image"]:::orange
   P -->|CreateThread twice| W["Workers"]:::teal
-  W -->|mutex and critical section| N["counter = 2"]:::purple
-  P -->|overlapped HANDLE I/O| F["completion event"]:::brown
+  W -->|mutex and critical<br/>section| N["counter = 2"]:::purple
+  P -->|overlapped HANDLE<br/>I/O| F["completion event"]:::brown
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

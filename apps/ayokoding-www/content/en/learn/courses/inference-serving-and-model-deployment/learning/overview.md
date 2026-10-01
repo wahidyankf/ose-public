@@ -60,10 +60,12 @@ figures are deliberately illustrative throughout -- see this course's
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-28)
 graph TD
-    A["Inference fundamentals:<br/>prefill, decode, KV cache<br/>co-01 to co-07"]:::blue
-    B["Memory and latency<br/>vocabulary<br/>co-08, co-16 to co-19"]:::orange
-    C["Batching, scheduling,<br/>and cache management<br/>co-09 to co-15, co-17"]:::teal
-    D["Capacity, parallelism,<br/>and autoscaling<br/>co-20 to co-23"]:::purple
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Inference fundamentals: prefill, decode, KV cache co-01 to co-07, Memory and latency vocabulary co-08, co-16 to co-19, Batching, scheduling, and cache management co-09 to co-15, co-17, Capacity, parallelism, and autoscaling co-20 to co-23, Deployment, rollout, and economics co-24 to co-28. Connections: Inference fundamentals: prefill, decode, KV cache co-01 to co-07 to Memory and latency vocabulary co-08, co-16 to co-19, Memory and latency vocabulary co-08, co-16 to co-19 to Batching, scheduling, and cache management co-09 to co-15, co-17, Batching, scheduling, and cache management co-09 to co-15, co-17 to Capacity, parallelism, and autoscaling co-20 to co-23, Capacity, parallelism, and autoscaling co-20 to co-23 to Deployment, rollout, and economics co-24 to co-28.
+    A["Inference<br/>fundamentals:<br/>prefill, decode, KV<br/>cache<br/>co-01 to co-07"]:::blue
+    B["Memory and latency<br/>vocabulary<br/>co-08, co-16 to<br/>co-19"]:::orange
+    C["Batching,<br/>scheduling,<br/>and cache management<br/>co-09 to co-15,<br/>co-17"]:::teal
+    D["Capacity,<br/>parallelism,<br/>and autoscaling<br/>co-20 to co-23"]:::purple
     E["Deployment, rollout,<br/>and economics<br/>co-24 to co-28"]:::brown
 
     A --> B
@@ -72,10 +74,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

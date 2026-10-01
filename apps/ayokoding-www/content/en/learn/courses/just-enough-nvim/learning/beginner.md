@@ -284,8 +284,10 @@ _ex-08 &middot; exercises co-02_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    N["Normal mode<br/>the default home state"]:::blue
-    I["Insert mode<br/>typed characters become text"]:::orange
+    accTitle: Example 8: Enter Insert Before Cursor
+    accDescr: Flowchart with 4 nodes and 6 connections. Nodes: Normal mode the default home state, Insert mode typed characters become text, Visual mode highlight a region, Command-line mode type a colon-command. Connections: Normal mode the default home state to Insert mode typed characters become text (i a A I o O), Insert mode typed characters become text to Normal mode the default home state (Esc), Normal mode the default home state to Visual mode highlight a region (v V Ctrl-v), Visual mode highlight a region to Normal mode the default home state (Esc), Normal mode the default home state to Command-line mode type a colon-command (colon), Command-line mode type a colon-command to Normal mode the default home state (Enter or Esc).
+    N["Normal mode<br/>the default home<br/>state"]:::blue
+    I["Insert mode<br/>typed characters<br/>become text"]:::orange
     V["Visual mode<br/>highlight a region"]:::teal
     C["Command-line mode<br/>type a colon-command"]:::purple
 
@@ -297,9 +299,10 @@ flowchart TD
     C -->|Enter or Esc| N
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**
@@ -797,16 +800,19 @@ _ex-22 &middot; exercises co-04_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 22: Delete Word
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Operator d c y gu gU =, Motion or text object w b e 0 36 iw i40 ..., Resulting command e.g. dw, ciw, y36. Connections: Operator d c y gu gU = to Resulting command e.g. dw, ciw, y36, Motion or text object w b e 0 36 iw i40 ... to Resulting command e.g. dw, ciw, y36.
     O["Operator<br/>d c y gu gU ="]:::blue
-    M["Motion or text object<br/>w b e 0 #36; iw i#40; ..."]:::orange
+    M["Motion or text<br/>object<br/>w b e 0 #36; iw<br/>i#40; ..."]:::orange
     R["Resulting command<br/>e.g. dw, ciw, y#36;"]:::teal
 
     O --> R
     M --> R
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**

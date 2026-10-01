@@ -32,14 +32,17 @@ env config + server secrets (co-12, co-13) [x] logs + health check (co-14) [x] b
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
-    A["Step 1<br/>01-setup.sh<br/>provision + harden + firewall<br/>co-02 to co-05"]:::blue --> B["Step 2<br/>02-service-and-proxy.sh<br/>systemd + TLS proxy + restart<br/>co-06 to co-10, co-15"]:::orange
-    B --> C["Step 3<br/>03-config-and-backup.sh<br/>env + secrets + backup + restore<br/>co-12, co-13, co-19"]:::teal
-    C --> D["Step 4<br/>04-paas-contrast.md<br/>git-push PaaS + trade-off<br/>co-16, co-20"]:::purple
+    accTitle: The capstone: a fully self-hosted service on one box
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Step 1 01-setup.sh provision + harden + firewall co-02 to co-05, Step 2 02-service-and- proxy.sh systemd + TLS proxy + restart co-06 to co-10, co-15, Step 3 03-config-and- backup.sh env + secrets + backup + restore co-12, co-13, co-19, Step 4 04-paas-contrast.md git-push PaaS + trade-off co-16, co-20. Connections: Step 1 01-setup.sh provision + harden + firewall co-02 to co-05 to Step 2 02-service-and- proxy.sh systemd + TLS proxy + restart co-06 to co-10, co-15, Step 2 02-service-and- proxy.sh systemd + TLS proxy + restart co-06 to co-10, co-15 to Step 3 03-config-and- backup.sh env + secrets + backup + restore co-12, co-13, co-19, Step 3 03-config-and- backup.sh env + secrets + backup + restore co-12, co-13, co-19 to Step 4 04-paas-contrast.md git-push PaaS + trade-off co-16, co-20.
+    A["Step 1<br/>01-setup.sh<br/>provision + harden +<br/>firewall<br/>co-02 to co-05"]:::blue --> B["Step 2<br/>02-service-and-<br/>proxy.sh<br/>systemd + TLS proxy<br/>+ restart<br/>co-06 to co-10,<br/>co-15"]:::orange
+    B --> C["Step 3<br/>03-config-and-<br/>backup.sh<br/>env + secrets +<br/>backup + restore<br/>co-12, co-13, co-19"]:::teal
+    C --> D["Step 4<br/>04-paas-contrast.md<br/>git-push PaaS +<br/>trade-off<br/>co-16, co-20"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ---

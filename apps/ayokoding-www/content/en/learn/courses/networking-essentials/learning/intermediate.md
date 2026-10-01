@@ -24,6 +24,8 @@ this file first, in the background, then run the client against it.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 29: TCP Echo Server
+    accDescr: Sequence diagram between client (Ex 30), server (Ex 29). Messages: server (Ex 29) to server (Ex 29): bind() + listen(); client (Ex 30) to server (Ex 29): connect() -- co-07 handshake; server (Ex 29) to client (Ex 30): accept() returns conn; client (Ex 30) to server (Ex 29): sendall(message); server (Ex 29) to client (Ex 30): sendall(echo).
     participant C as client (Ex 30)
     participant S as server (Ex 29)
     S->>S: bind() + listen()
@@ -290,14 +292,17 @@ TCP delivers a raw byte stream with NO built-in message boundaries -- the protoc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["send#40;full line#41;"]:::blue --> B["recv#40;4#41;<br/>chunk 1"]:::orange
+    accTitle: Example 33: Line Framing with Delimiters
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: send40full line41, recv40441 chunk 1, recv40441 chunk 2..N, buffer accumulates until found, one complete line. Connections: send40full line41 to recv40441 chunk 1, recv40441 chunk 1 to recv40441 chunk 2..N, recv40441 chunk 2..N to buffer accumulates until found, buffer accumulates until found to one complete line.
+    A["send#40;full<br/>line#41;"]:::blue --> B["recv#40;4#41;<br/>chunk 1"]:::orange
     B --> C["recv#40;4#41;<br/>chunk 2..N"]:::orange
-    C --> D["buffer accumulates<br/>until \n found"]:::teal
+    C --> D["buffer accumulates<br/>until <br/> found"]:::teal
     D --> E["one complete line"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -389,14 +394,17 @@ For a FIXED-size payload (as opposed to a delimited line), the correct pattern i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["recv_exact#40;5000#41;<br/>requested"]:::blue --> B["recv#40;#41; #35;1<br/>1500 bytes"]:::orange
+    accTitle: Example 34: Handle Partial recv -- Reassemble a Large Message
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: recv_ exact40500041 requested, recv4041 351 1500 bytes, recv4041 352 1500 bytes, recv4041 35N remaining bytes, exactly 5000 bytes assembled. Connections: recv_ exact40500041 requested to recv4041 351 1500 bytes, recv4041 351 1500 bytes to recv4041 352 1500 bytes, recv4041 352 1500 bytes to recv4041 35N remaining bytes, recv4041 35N remaining bytes to exactly 5000 bytes assembled.
+    A["recv_<br/>exact#40;5000#41;<br/>requested"]:::blue --> B["recv#40;#41; #35;1<br/>1500 bytes"]:::orange
     B --> C["recv#40;#41; #35;2<br/>1500 bytes"]:::orange
     C --> D["recv#40;#41; #35;N<br/>remaining bytes"]:::orange
     D --> E["exactly 5000 bytes<br/>assembled"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -485,6 +493,8 @@ TCP's byte-stream ordering guarantee (co-07) means multiple request/response pai
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 35: Multiple Messages, One Connection, In Order
+    accDescr: Sequence diagram between client, server (Ex 35). Messages: client to server (Ex 35): sendall(first); server (Ex 35) to client: reply: FIRST; client to server (Ex 35): sendall(second); server (Ex 35) to client: reply: SECOND; client to server (Ex 35): sendall(third); server (Ex 35) to client: reply: THIRD.
     participant C as client
     participant S as server (Ex 35)
     Note over C,S: ONE connection carries all three messages
@@ -591,6 +601,8 @@ A minimal application-level protocol built on top of line framing: the server re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 36: A Tiny Command Protocol -- PING/PONG and TIME
+    accDescr: Sequence diagram between client, server (Ex 36). Messages: client to server (Ex 36): PING; server (Ex 36) to client: PONG -- fixed reply; client to server (Ex 36): TIME; server (Ex 36) to client: epoch seconds -- dynamic reply.
     participant C as client
     participant S as server (Ex 36)
     C->>S: PING
@@ -780,15 +792,18 @@ Actively closing a listening socket's connection puts the local port into `TIME_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
-    A["server actively closes<br/>conn.close#40;#41;"]:::blue
-    A --> B["port enters TIME_WAIT"]:::orange
+    accTitle: Example 38: SOREUSEADDR -- Restarting a Server Without Address Already in Use
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: server actively closes conn.close4041, port enters TIME_WAIT, SO_REUSEADDR set before bind4041?, bind4041 fails: Address already in use, bind4041 succeeds immediately. Connections: server actively closes conn.close4041 to port enters TIME_WAIT, port enters TIME_WAIT to SO_REUSEADDR set before bind4041?, SO_REUSEADDR set before bind4041? to bind4041 fails: Address already in use (no), SO_REUSEADDR set before bind4041? to bind4041 succeeds immediately (yes).
+    A["server actively<br/>closes<br/>conn.close#40;#41;"]:::blue
+    A --> B["port enters<br/>TIME_WAIT"]:::orange
     B --> C{"SO_REUSEADDR set<br/>before bind#40;#41;?"}
-    C -->|"no"| D["bind#40;#41; fails:<br/>Address already in use"]:::teal
-    C -->|"yes"| E["bind#40;#41; succeeds<br/>immediately"]:::teal
+    C -->|"no"| D["bind#40;#41; fails:<br/>Address already in<br/>use"]:::teal
+    C -->|"yes"| E["bind#40;#41;<br/>succeeds<br/>immediately"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -863,6 +878,8 @@ A single-threaded server's `accept()`-then-`recv()` loop serves exactly one clie
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 39: A Sequential Accept Loop -- One Client at a Time
+    accDescr: Sequence diagram between client A, client B, server (Ex 39, single-threaded). Messages: client A to server (Ex 39, single-threaded): connect() -- then stalls 0.3s before sending; client B to server (Ex 39, single-threaded): connect() -- queues in the OS backlog; client A to server (Ex 39, single-threaded): sendall(A); server (Ex 39, single-threaded) to client A: reply; server (Ex 39, single-threaded) to client B: accept() -- B waited the whole time; client B to server (Ex 39, single-threaded): sendall(B); server (Ex 39, single-threaded) to client B: reply.
     participant A as client A
     participant B as client B
     participant S as server (Ex 39, single-threaded)
@@ -973,15 +990,18 @@ Spawning a new `threading.Thread` per accepted connection lets multiple clients 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
+    accTitle: Example 40: A Thread per Client -- Serving Two Clients Simultaneously
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: main thread accept4041 loop, Thread 1 client A, Thread 2 client B, join4041 all threads. Connections: main thread accept4041 loop to Thread 1 client A, main thread accept4041 loop to Thread 2 client B, Thread 1 client A to join4041 all threads, Thread 2 client B to join4041 all threads.
     S["main thread<br/>accept#40;#41; loop"]:::blue
     S --> T1["Thread 1<br/>client A"]:::orange
     S --> T2["Thread 2<br/>client B"]:::orange
-    T1 --> J["join#40;#41; all threads"]:::teal
+    T1 --> J["join#40;#41; all<br/>threads"]:::teal
     T2 --> J
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1246,14 +1266,17 @@ An HTTP/1.1 response's ONE universal, fixed boundary is the blank line (`\r\n\r\
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 44: Split a Raw HTTP Response into Status Line, Headers, and Body
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: raw response bytes, partition on the blank-line boundary, head: status line + headers, body, split head on CRLF -> status line + N headers. Connections: raw response bytes to partition on the blank-line boundary, partition on the blank-line boundary to head: status line + headers, partition on the blank-line boundary to body, head: status line + headers to split head on CRLF -> status line + N headers.
     A["raw response bytes"]:::blue --> B["partition on the<br/>blank-line boundary"]:::orange
-    B --> C["head:<br/>status line + headers"]:::teal
+    B --> C["head:<br/>status line +<br/>headers"]:::teal
     B --> D["body"]:::teal
-    C --> E["split head on CRLF<br/>-> status line + N headers"]:::teal
+    C --> E["split head on CRLF<br/>-> status line + N<br/>headers"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1529,6 +1552,8 @@ A hand-rolled server reads the request's `Accept` header and chooses its respons
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 51: Accept Header Negotiation -- Ask for JSON, Get JSON
+    accDescr: Sequence diagram between client, server (Ex 51). Messages: client to server (Ex 51): GET / -- Accept: application/json; server (Ex 51) to client: 200 OK -- Content-Type: application/json.
     participant C as client
     participant S as server (Ex 51)
     C->>S: GET / -- Accept: application/json
@@ -1677,13 +1702,16 @@ When a server doesn't know a response's total size in advance, it uses `Transfer
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 53: Chunked Transfer Encoding
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: server response body, total size known in advance?, Content-Length: N one fixed block, Transfer-Encoding: chunked size-prefixed chunks. Connections: server response body to total size known in advance?, total size known in advance? to Content-Length: N one fixed block (yes), total size known in advance? to Transfer-Encoding: chunked size-prefixed chunks (no).
     A["server response body"]:::blue --> B{"total size known<br/>in advance?"}
     B -->|"yes"| C["Content-Length: N<br/>one fixed block"]:::orange
-    B -->|"no"| D["Transfer-Encoding: chunked<br/>size-prefixed chunks"]:::teal
+    B -->|"no"| D["Transfer-Encoding:<br/>chunked<br/>size-prefixed chunks"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1714,6 +1742,8 @@ A UDP server needs no `bind`/`listen`/`accept` sequence -- just `bind`, then `re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 54: UDP Echo Server
+    accDescr: Sequence diagram between client (Ex 55), server (Ex 54). Messages: server (Ex 54) to server (Ex 54): bind() -- NO listen/accept; client (Ex 55) to server (Ex 54): sendto(datagram); server (Ex 54) to client (Ex 55): sendto(echo) -- via recvfrom()s address.
     participant C as client (Ex 55)
     participant S as server (Ex 54)
     S->>S: bind() -- NO listen/accept
@@ -1873,16 +1903,19 @@ Running a TCP server/client pair and a UDP server/client pair side by side, send
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
-    subgraph TCP["TCP -- connection-oriented (co-07)"]
-        T1["bind#40;#41;"]:::blue --> T2["listen#40;#41;"]:::blue --> T3["accept#40;#41;<br/>BLOCKS for handshake"]:::blue --> T4["recv#40;#41; / sendall#40;#41;<br/>on conn"]:::teal
+    accTitle: Example 57: TCP vs. UDP -- the Same Message, Two Different APIs
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: bind4041, listen4041, accept4041 BLOCKS for handshake, recv4041 / sendall4041 on conn, bind4041, recvfrom4041 / sendto4041 on sock, no handshake. Connections: bind4041 to listen4041, listen4041 to accept4041 BLOCKS for handshake, accept4041 BLOCKS for handshake to recv4041 / sendall4041 on conn, bind4041 to recvfrom4041 / sendto4041 on sock, no handshake.
+    subgraph TCP["TCP --<br/>connection-oriented<br/>(co-07)"]
+        T1["bind#40;#41;"]:::blue --> T2["listen#40;#41;"]:::blue --> T3["accept#40;#41;<br/>BLOCKS for handshake"]:::blue --> T4["recv#40;#41; /<br/>sendall#40;#41;<br/>on conn"]:::teal
     end
-    subgraph UDP["UDP -- connectionless (co-08)"]
-        U1["bind#40;#41;"]:::orange --> U2["recvfrom#40;#41; / sendto#40;#41;<br/>on sock, no handshake"]:::teal
+    subgraph UDP["UDP --<br/>connectionless<br/>(co-08)"]
+        U1["bind#40;#41;"]:::orange --> U2["recvfrom#40;#41; /<br/>sendto#40;#41;<br/>on sock, no<br/>handshake"]:::teal
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2127,14 +2160,17 @@ _ex-60 &middot; exercises co-03, co-10_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["example.com"]:::blue --> B["gethostbyname#40;#41;"]:::orange
+    accTitle: Example 60: Resolve a Hostname to an IP Address in Python
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: example.com, gethostbyname4041, getaddrinfo4041, 1 IPv4 address, N results: IPv4 + IPv6. Connections: example.com to gethostbyname4041, example.com to getaddrinfo4041, gethostbyname4041 to 1 IPv4 address, getaddrinfo4041 to N results: IPv4 + IPv6.
+    A["example.com"]:::blue --> B["gethostbyname<br/>#40;#41;"]:::orange
     A --> C["getaddrinfo#40;#41;"]:::orange
     B --> D["1 IPv4 address"]:::teal
     C --> E["N results:<br/>IPv4 + IPv6"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

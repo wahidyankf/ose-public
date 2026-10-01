@@ -232,17 +232,20 @@ Quoting doesn't just control expansion -- it controls whether Bash splits a valu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    A["words holds a b<br/>one string, one embedded space"]:::blue
-    B["quoted: for w in dbl-quoted words"]:::orange
+    accTitle: Example 8: Quoting Spaces
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: words holds a b one string, one embedded space, quoted: for w in dbl-quoted words, ONE word loop body runs once, unquoted: for w in words, word-split into TWO words loop body runs twice. Connections: words holds a b one string, one embedded space to quoted: for w in dbl-quoted words, quoted: for w in dbl-quoted words to ONE word loop body runs once, words holds a b one string, one embedded space to unquoted: for w in words, unquoted: for w in words to word-split into TWO words loop body runs twice.
+    A["words holds a b<br/>one string, one<br/>embedded space"]:::blue
+    B["quoted: for w in<br/>dbl-quoted words"]:::orange
     C["ONE word<br/>loop body runs once"]:::teal
-    D["unquoted: for w in words"]:::orange
-    E["word-split into TWO words<br/>loop body runs twice"]:::teal
+    D["unquoted: for w in<br/>words"]:::orange
+    E["word-split into TWO<br/>words<br/>loop body runs twice"]:::teal
     A --> B --> C
     A --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-08-quoting-spaces/example.sh`**
@@ -734,11 +737,13 @@ _ex-23 &middot; exercises co-12_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 23: Break Continue
+    accDescr: Flowchart with 6 nodes and 7 connections. Nodes: for i in 1..6, i equals 5?, break: loop stops entirely, i is even?, continue: skip to next i, echo i odd, less than 5. Connections: for i in 1..6 to i equals 5?, i equals 5? to break: loop stops entirely (yes), i equals 5? to i is even? (no), i is even? to continue: skip to next i (yes), i is even? to echo i odd, less than 5 (no), continue: skip to next i to for i in 1..6 (next iteration), echo i odd, less than 5 to for i in 1..6 (next iteration).
     A["for i in 1..6"]:::blue
     B{"i equals 5?"}:::orange
-    C["break: loop stops entirely"]:::teal
+    C["break: loop stops<br/>entirely"]:::teal
     D{"i is even?"}:::orange
-    E["continue: skip to next i"]:::teal
+    E["continue: skip to<br/>next i"]:::teal
     F["echo i<br/>odd, less than 5"]:::teal
     A --> B
     B -->|yes| C
@@ -749,8 +754,9 @@ flowchart TD
     F -.->|next iteration| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-23-break-continue/example.sh`**

@@ -21,13 +21,16 @@ _ex-61 &middot; exercises co-23, co-14_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 61: http.client -- a GET Request via the Standard Library
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: DNS lookup co-03, TCP handshake co-07, HTTPConnection. request4041 writes request line + headers, getresponse4041 parses status + headers. Connections: DNS lookup co-03 to TCP handshake co-07, TCP handshake co-07 to HTTPConnection. request4041 writes request line + headers, HTTPConnection. request4041 writes request line + headers to getresponse4041 parses status + headers.
     A["DNS lookup<br/>co-03"]:::blue --> B["TCP handshake<br/>co-07"]:::orange
-    B --> C["HTTPConnection.request#40;#41;<br/>writes request line + headers"]:::teal
-    C --> D["getresponse#40;#41;<br/>parses status + headers"]:::teal
+    B --> C["HTTPConnection.<br/>request#40;#41;<br/>writes request line<br/>+ headers"]:::teal
+    C --> D["getresponse#40;#41;<br/>parses status +<br/>headers"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -241,6 +244,8 @@ _ex-65 &middot; exercises co-17, co-19_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 65: Inspect a TLS Handshake with curl -v
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: ClientHello (ALPN offers h2, http/1.1); Server to Client: ServerHello (ALPN accepts h2); Server to Client: Certificate (subject, issuer); Client to Server: HTTP/2 request, over the now-encrypted connection.
     participant Client
     participant Server
     Client->>Server: ClientHello (ALPN offers h2, http/1.1)
@@ -282,14 +287,17 @@ _ex-66 &middot; exercises co-17_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["depth 2 -- root CA<br/>SSL.com Root CA ECC"]:::blue -->|"signs"| B["depth 1 -- intermediate CA<br/>Cloudflare TLS Issuing ECC CA 3"]:::orange
+    accTitle: Example 66: openssl sclient -- a Raw TLS Handshake
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: A, root, B, C, leaf. Connections: A to root, root to B (signs), B to C (signs), C to leaf, C to B (verify return:1), B to A (verify return:1).
+    A["depth 2 -- root CA<br/>SSL.com Root CA<br/>ECC"]:::blue -->|"signs"| B["depth 1 --<br/>intermediate CA<br/>Cloudflare TLS<br/>Issuing ECC CA 3"]:::orange
     B -->|"signs"| C["depth 0 -- leaf cert<br/>CN #61; example.com"]:::teal
     C -.->|"verify return:1"| B
     B -.->|"verify return:1"| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -413,6 +421,8 @@ Following a redirect by hand -- reading `Location` from a `3xx` response, then i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 68: Read a 301/302 Location Header, Then Request It Manually
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: GET /old-path; Server to Client: 301, Location: /new-path; Client to Server: GET /new-path; Server to Client: 200 OK.
     participant Client
     participant Server
     Client->>Server: GET /old-path
@@ -543,6 +553,8 @@ Timing each stage of a real request separately -- DNS resolution, TCP connect, t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
+    accTitle: Example 70: Narrate DNS -> TCP -> HTTP for a Real Request
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: DNS co-03, measured: N ms, TCP connect co-07, measured: N ms, HTTP exchange co-12, measured: N ms. Connections: DNS co-03 to measured: N ms, TCP connect co-07 to measured: N ms, HTTP exchange co-12 to measured: N ms, measured: N ms to TCP connect co-07, measured: N ms to HTTP exchange co-12.
     A["DNS<br/>co-03"]:::blue --> B["measured: N ms"]:::blue
     C["TCP connect<br/>co-07"]:::orange --> D["measured: N ms"]:::orange
     E["HTTP exchange<br/>co-12"]:::teal --> F["measured: N ms"]:::teal
@@ -550,8 +562,9 @@ graph TB
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -625,6 +638,8 @@ HTTP/1.1 defaults to keep-alive: one `http.client.HTTPConnection` object can car
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 71: Two Requests, One Keep-Alive Connection
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: TCP handshake (co-07) -- ONE connection opened; Client to Server: GET / (request 1); Server to Client: 200 OK (response 1); Client to Server: GET / (request 2); Server to Client: 200 OK (response 2); Client to Server: conn.close() -- only now does the socket close.
     participant Client
     participant Server
     Client->>Server: TCP handshake (co-07) -- ONE connection opened
@@ -945,6 +960,8 @@ Combining Example 36's PING/TIME command protocol with Example 40's thread-per-c
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 76: The Command Server, Extended to Serve Clients Concurrently
+    accDescr: Sequence diagram between client A, server, client B. Messages: client A to server: connect() -- gets own thread; client B to server: connect() -- gets own thread; server to client A: reply (0.3s simulated delay); server to client B: reply (fast).
     participant CA as client A
     participant S as server
     participant CB as client B
@@ -1303,16 +1320,19 @@ Using an RFC-2606-reserved `.invalid` domain (guaranteed to never resolve) versu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
-    A["classify_failure#40;host, port#41;"]:::blue
+    accTitle: Example 80: A DNS Failure and a TCP Failure Surface at DIFFERENT Layers
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: classify_ failure40host, port41, DNS resolves? co-03, failed at DNS layer, TCP connects? co-07, failed at TCP layer, connected successfully. Connections: classify_ failure40host, port41 to DNS resolves? co-03, DNS resolves? co-03 to failed at DNS layer (no), DNS resolves? co-03 to TCP connects? co-07 (yes), TCP connects? co-07 to failed at TCP layer (no), TCP connects? co-07 to connected successfully (yes).
+    A["classify_<br/>failure#40;host,<br/>port#41;"]:::blue
     A --> B{"DNS resolves?<br/>co-03"}
     B -->|"no"| C["failed at DNS layer"]:::orange
     B -->|"yes"| D{"TCP connects?<br/>co-07"}
     D -->|"no"| E["failed at TCP layer"]:::teal
-    D -->|"yes"| F["connected successfully"]:::teal
+    D -->|"yes"| F["connected<br/>successfully"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1383,6 +1403,8 @@ The most complete example before the capstone: a real, separate `server.py`/`cli
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 81: A Full Command Server, Multi-Client, Graceful Shutdown
+    accDescr: Sequence diagram between client.py (run 1), server.py, client.py (run 2). Messages: client.py (run 1) to server.py: connect() -- gets own thread (co-10); client.py (run 1) to server.py: PING; server.py to client.py (run 1): PONG; client.py (run 1) to server.py: TIME; server.py to client.py (run 1): epoch seconds; client.py (run 2) to server.py: connect() -- SECOND independent client; client.py (run 2) to server.py: PING / TIME; server.py to client.py (run 2): PONG / epoch seconds.
     participant C1 as client.py (run 1)
     participant S as server.py
     participant C2 as client.py (run 2)
@@ -1532,14 +1554,17 @@ The capstone-scale explorer, one level down: `dig` (an independent external tool
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
-    A["dig +short<br/>external tool (co-20)"]:::blue --> C["TCP connect<br/>co-07"]:::orange
-    B["gethostbyname#40;#41;<br/>Python resolver (co-03)"]:::blue --> C
+    accTitle: Example 82: A Full DNS -> TCP -> HTTP Explorer, with a UDP Contrast Note
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: dig +short external tool (co-20), TCP connect co-07, gethostbyname4041 Python resolver (co-03), HTTP GET co-12, UDP contrast note co-08, co-09. Connections: dig +short external tool (co-20) to TCP connect co-07, gethostbyname4041 Python resolver (co-03) to TCP connect co-07, TCP connect co-07 to HTTP GET co-12, HTTP GET co-12 to UDP contrast note co-08, co-09.
+    A["dig +short<br/>external tool<br/>(co-20)"]:::blue --> C["TCP connect<br/>co-07"]:::orange
+    B["gethostbyname<br/>#40;#41;<br/>Python resolver<br/>(co-03)"]:::blue --> C
     C --> D["HTTP GET<br/>co-12"]:::teal
     D --> E["UDP contrast note<br/>co-08, co-09"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

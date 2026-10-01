@@ -28,13 +28,16 @@ Build an app that satisfies all of the following:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A["Step 1\nview + observable model"]:::blue --> B{{"Step 2\nservice + actor cache"}}:::orange
-    B --> C["Step 3\nnavigation + SwiftData"]:::teal
-    C --> D["Step 4\nXCTest + XCUITest"]:::purple
+    accTitle: Goal and acceptance criteria
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Step 1 view + observable model, Step 2 service + actor cache, Step 3 navigation + SwiftData, Step 4 XCTest + XCUITest. Connections: Step 1 view + observable model to Step 2 service + actor cache, Step 2 service + actor cache to Step 3 navigation + SwiftData, Step 3 navigation + SwiftData to Step 4 XCTest + XCUITest.
+    A["Step 1<br/>view + observable<br/>model"]:::blue --> B{{"Step 2<br/>service + actor<br/>cache"}}:::orange
+    B --> C["Step 3<br/>navigation +<br/>SwiftData"]:::teal
+    C --> D["Step 4<br/>XCTest + XCUITest"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Build it

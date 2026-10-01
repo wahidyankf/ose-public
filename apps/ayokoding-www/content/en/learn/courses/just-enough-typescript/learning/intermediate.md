@@ -498,6 +498,8 @@ further).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 39: State Machine Union
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: status: loading no data field, status: success data: string, status: error msg: string. Connections: status: loading no data field to status: success data: string, status: loading no data field to status: error msg: string.
     A["status: loading<br/>no data field"]:::blue
     B["status: success<br/>data: string"]:::teal
     C["status: error<br/>msg: string"]:::brown
@@ -505,8 +507,9 @@ flowchart LR
     A --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-39-state-machine-union/example.ts`**

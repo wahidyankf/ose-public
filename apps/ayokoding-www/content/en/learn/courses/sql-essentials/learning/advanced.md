@@ -273,15 +273,18 @@ every query as it fires to make that cost visible.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["SELECT id, name FROM author<br/>query 1 -- the parents"]:::blue
-    A --> B["SELECT title FROM book<br/>WHERE author_id = 1<br/>query 2"]:::orange
-    A --> C["SELECT title FROM book<br/>WHERE author_id = 2<br/>query 3"]:::teal
-    B --> D["queries executed: 3<br/>1 parent query + N child queries"]:::purple
+    accTitle: Example 62: N+1 Query Problem Demonstrated
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: A, the, SELECT title FROM book WHERE author_id = 1 query 2, SELECT title FROM book WHERE author_id = 2 query 3, queries executed: 3 1 parent query + N child queries. Connections: A to the, A to SELECT title FROM book WHERE author_id = 1 query 2, A to SELECT title FROM book WHERE author_id = 2 query 3, SELECT title FROM book WHERE author_id = 1 query 2 to queries executed: 3 1 parent query + N child queries.
+    A["SELECT id, name FROM<br/>author<br/>query 1 -- the<br/>parents"]:::blue
+    A --> B["SELECT title FROM<br/>book<br/>WHERE author_id = 1<br/>query 2"]:::orange
+    A --> C["SELECT title FROM<br/>book<br/>WHERE author_id = 2<br/>query 3"]:::teal
+    B --> D["queries executed: 3<br/>1 parent query + N<br/>child queries"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-62-n-plus-1-demonstrated/example.py`**
@@ -380,12 +383,15 @@ SQL does the recombination work that Example 62's Python loop did manually, one 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["author JOIN book<br/>ONE query, ONE round trip"]:::blue
+    accTitle: Example 63: N+1 Fixed with a Single Join
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: author JOIN book ONE query, ONE round trip, queries executed: 1 not 1 + N. Connections: author JOIN book ONE query, ONE round trip to queries executed: 1 not 1 + N.
+    A["author JOIN book<br/>ONE query, ONE round<br/>trip"]:::blue
     B["queries executed: 1<br/>not 1 + N"]:::teal
     A --> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-63-n-plus-1-fixed-join/example.py`**
@@ -486,14 +492,17 @@ batched round trip -- 2 total queries, independent of how many authors there are
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["SELECT id, name FROM author<br/>query 1 -- every parent"]:::blue
-    B["collect ids: #91;1, 2#93;"]:::orange
-    C["SELECT ... WHERE author_id IN #40;1, 2#41;<br/>query 2 -- every child, batched"]:::teal
+    accTitle: Example 64: N+1 Fixed with a Batched Fetch
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: A, every, collect ids: 911, 293, C. Connections: A to every, C to every, A to collect ids: 911, 293, collect ids: 911, 293 to C.
+    A["SELECT id, name FROM<br/>author<br/>query 1 -- every<br/>parent"]:::blue
+    B["collect ids: #91;1,<br/>2#93;"]:::orange
+    C["SELECT ... WHERE<br/>author_id IN #40;1,<br/>2#41;<br/>query 2 -- every<br/>child, batched"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-64-n-plus-1-fixed-in/example.py`**
@@ -599,14 +608,17 @@ rejected by the engine itself.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["book_tag #40;book_id=1, tag_id=1#41;"]:::blue
-    B["PRIMARY KEY #40;book_id, tag_id#41;"]:::orange
-    C["duplicate pair<br/>REJECTED by the engine"]:::teal
+    accTitle: Example 65: Composite Primary Key
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: book_tag 40book_id=1, tag_id=141, PRIMARY KEY 40book_id, tag_id41, duplicate pair REJECTED by the engine. Connections: book_tag 40book_id=1, tag_id=141 to PRIMARY KEY 40book_id, tag_id41, PRIMARY KEY 40book_id, tag_id41 to duplicate pair REJECTED by the engine.
+    A["book_tag<br/>#40;book_id=1,<br/>tag_id=1#41;"]:::blue
+    B["PRIMARY KEY<br/>#40;book_id,<br/>tag_id#41;"]:::orange
+    C["duplicate pair<br/>REJECTED by the<br/>engine"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-composite-primary-key/example.sql`**
@@ -677,13 +689,16 @@ but only once `PRAGMA foreign_keys = ON` has actually turned on enforcement for 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 66: Cascade Delete
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: DELETE FROM author WHERE id = 1, ON DELETE CASCADE fires book rows author_id = 1, books_after: 0 authors_after: 0. Connections: DELETE FROM author WHERE id = 1 to ON DELETE CASCADE fires book rows author_id = 1, ON DELETE CASCADE fires book rows author_id = 1 to books_after: 0 authors_after: 0.
     A["DELETE FROM author<br/>WHERE id = 1"]:::blue
-    A --> B["ON DELETE CASCADE fires<br/>book rows author_id = 1"]:::orange
+    A --> B["ON DELETE CASCADE<br/>fires<br/>book rows author_id<br/>= 1"]:::orange
     B --> C["books_after: 0<br/>authors_after: 0"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-66-cascade-delete/example.sql`**
@@ -765,14 +780,17 @@ explicitly.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 67: Restrict Delete
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: DELETE FROM author WHERE id = 1, any book.author_id = 1?, REJECTED FOREIGN KEY constraint failed. Connections: DELETE FROM author WHERE id = 1 to any book.author_id = 1?, any book.author_id = 1? to REJECTED FOREIGN KEY constraint failed.
     A["DELETE FROM author<br/>WHERE id = 1"]:::blue
-    B{"any book.author_id = 1?"}:::orange
-    C["REJECTED<br/>FOREIGN KEY constraint failed"]:::teal
+    B{"any book.author_id =<br/>1?"}:::orange
+    C["REJECTED<br/>FOREIGN KEY<br/>constraint failed"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-67-restrict-delete/example.sql`**
@@ -834,16 +852,19 @@ the work done since it was set, while the outer transaction itself stays open an
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
-    A["BEGIN<br/>outer transaction opens"]:::blue
+    accTitle: Example 68: Savepoint Partial Rollback
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: BEGIN outer transaction opens, SAVEPOINT sp1, INSERT 40bad row41, ROLLBACK TO sp1 only the bad row undone. Connections: BEGIN outer transaction opens to SAVEPOINT sp1, SAVEPOINT sp1 to INSERT 40bad row41, INSERT 40bad row41 to ROLLBACK TO sp1 only the bad row undone.
+    A["BEGIN<br/>outer transaction<br/>opens"]:::blue
     B["SAVEPOINT sp1"]:::orange
-    C["INSERT #40;bad row#41;"]:::teal
-    D["ROLLBACK TO sp1<br/>only the bad row undone"]:::purple
+    C["INSERT #40;bad<br/>row#41;"]:::teal
+    D["ROLLBACK TO sp1<br/>only the bad row<br/>undone"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-savepoint-partial-rollback/example.sql`**
@@ -1062,17 +1083,20 @@ right" pattern -- an `INNER JOIN` would silently drop exactly the rows this quer
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
-    A["author LEFT JOIN book<br/>unmatched rows get NULL"]:::blue
-    B["WHERE book.id IS NULL"]:::orange
-    C["authors with ZERO books"]:::teal
-    D["INNER JOIN here would<br/>silently drop these rows"]:::purple
+    accTitle: Example 71: Anti-Join Missing Rows
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: author LEFT JOIN book unmatched rows get NULL, WHERE book.id IS NULL, authors with ZERO books, INNER JOIN here would silently drop these rows. Connections: author LEFT JOIN book unmatched rows get NULL to WHERE book.id IS NULL, WHERE book.id IS NULL to authors with ZERO books, author LEFT JOIN book unmatched rows get NULL to INNER JOIN here would silently drop these rows (NOT this).
+    A["author LEFT JOIN<br/>book<br/>unmatched rows get<br/>NULL"]:::blue
+    B["WHERE book.id IS<br/>NULL"]:::orange
+    C["authors with ZERO<br/>books"]:::teal
+    D["INNER JOIN here<br/>would<br/>silently drop these<br/>rows"]:::purple
     A --> B --> C
     A -.->|"NOT this"| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-anti-join-missing/example.sql`**
@@ -1138,15 +1162,18 @@ abandoned with `ROLLBACK` before either leg ever lands.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 72: Atomic Transfer
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: BEGIN, debit account A, credit account B, D, neither. Connections: BEGIN to debit account A, debit account A to credit account B, credit account B to D.
     A["BEGIN"]:::blue
     B["debit account A"]:::orange
     C["credit account B"]:::orange
-    D["commit#40;#41; -- both legs visible<br/>OR rollback#40;#41; -- neither leg visible"]:::purple
+    D["commit#40;#41; --<br/>both legs visible<br/>OR rollback#40;#41;<br/>-- neither leg<br/>visible"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-72-atomic-transfer/example.sql`**
@@ -1517,15 +1544,18 @@ violations -- neither one checks what the other checks.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 76: Integrity Checks
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: database file, PRAGMA integrity_check on-disk B-tree corruption, PRAGMA foreign_key_check FK reference violations. Connections: database file to PRAGMA integrity_check on-disk B-tree corruption, database file to PRAGMA foreign_key_check FK reference violations.
     A["database file"]:::blue
-    B["PRAGMA integrity_check<br/>on-disk B-tree corruption"]:::orange
-    C["PRAGMA foreign_key_check<br/>FK reference violations"]:::teal
+    B["PRAGMA<br/>integrity_check<br/>on-disk B-tree<br/>corruption"]:::orange
+    C["PRAGMA<br/>foreign_key_check<br/>FK reference<br/>violations"]:::teal
     A --> B
     A --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-76-integrity-checks/example.sql`**
@@ -1588,11 +1618,13 @@ with no transitive dependency anywhere in it.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 77: Design a 3NF Schema
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: author id, name, publisher id, name, city, book id, title, price, author_id FK, publisher_id FK, tag id, name UNIQUE, book_tag book_id FK, tag_id FK composite PRIMARY KEY. Connections: author id, name to book id, title, price, author_id FK, publisher_id FK, publisher id, name, city to book id, title, price, author_id FK, publisher_id FK, book id, title, price, author_id FK, publisher_id FK to book_tag book_id FK, tag_id FK composite PRIMARY KEY, tag id, name UNIQUE to book_tag book_id FK, tag_id FK composite PRIMARY KEY.
     author["author<br/>id, name"]:::blue
     publisher["publisher<br/>id, name, city"]:::orange
-    book["book<br/>id, title, price,<br/>author_id FK, publisher_id FK"]:::teal
+    book["book<br/>id, title, price,<br/>author_id FK,<br/>publisher_id FK"]:::teal
     tag["tag<br/>id, name UNIQUE"]:::purple
-    book_tag["book_tag<br/>book_id FK, tag_id FK<br/>composite PRIMARY KEY"]:::brown
+    book_tag["book_tag<br/>book_id FK, tag_id<br/>FK<br/>composite PRIMARY<br/>KEY"]:::brown
 
     author --> book
     publisher --> book
@@ -1600,10 +1632,11 @@ flowchart LR
     tag --> book_tag
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-77-design-3nf-schema/example.sql`**
@@ -1762,16 +1795,19 @@ not the raw rows -- down to authors with more than one book.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 79: Join, Group, and Having Report
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: author JOIN book, GROUP BY author.name, HAVING count40*41 > 1, authors with 2+ books. Connections: author JOIN book to GROUP BY author.name, GROUP BY author.name to HAVING count40*41 > 1, HAVING count40*41 > 1 to authors with 2+ books.
     A["author JOIN book"]:::blue
     B["GROUP BY author.name"]:::orange
-    C["HAVING count#40;*#41; > 1"]:::teal
-    D["authors with 2+ books"]:::purple
+    C["HAVING<br/>count#40;*#41; > 1"]:::teal
+    D["authors with 2+<br/>books"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-79-report-join-group-having/example.sql`**

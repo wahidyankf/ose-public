@@ -71,8 +71,10 @@ property, done.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Six concept clusters, in the order this page teaches them (co-01 through co-15)
 graph TD
-    A["Framing and methodology<br/>co-01 to co-02"]:::blue
-    B["Decomposition and scheduling<br/>co-03 to co-04"]:::orange
+    accTitle: How verification works in this topic
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Framing and methodology co-01 to co-02, Decomposition and scheduling co-03 to co-04, Estimation co-05 to co-06, Execution and flow co-07 to co-09, Risk and change co-10 to co-11, People and process co-12 to co-15. Connections: Framing and methodology co-01 to co-02 to Decomposition and scheduling co-03 to co-04, Decomposition and scheduling co-03 to co-04 to Estimation co-05 to co-06, Estimation co-05 to co-06 to Execution and flow co-07 to co-09, Execution and flow co-07 to co-09 to Risk and change co-10 to co-11, Risk and change co-10 to co-11 to People and process co-12 to co-15.
+    A["Framing and<br/>methodology<br/>co-01 to co-02"]:::blue
+    B["Decomposition and<br/>scheduling<br/>co-03 to co-04"]:::orange
     C["Estimation<br/>co-05 to co-06"]:::teal
     D["Execution and flow<br/>co-07 to co-09"]:::purple
     E["Risk and change<br/>co-10 to co-11"]:::brown
@@ -81,10 +83,11 @@ graph TD
     A --> B --> C --> D --> E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: the six concept clusters this topic teaches, in reading order -- from naming the

@@ -18,12 +18,15 @@ The smallest possible class is just a name and a body of `pass` -- Python still 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
-    A["class Dog:<br/>a template, not an object"]:::blue
-    B["Dog#40;#41;<br/>constructs an instance"]:::orange
-    A -->|"call like a function"| B
+    accTitle: Example 1: Define a Minimal Class
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: class Dog: a template, not an object, Dog4041 constructs an instance. Connections: class Dog: a template, not an object to Dog4041 constructs an instance (call like a function).
+    A["class Dog:<br/>a template, not an<br/>object"]:::blue
+    B["Dog#40;#41;<br/>constructs an<br/>instance"]:::orange
+    A -->|"call like a<br/>function"| B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-01-define-minimal-class/example.py`**
@@ -361,13 +364,16 @@ A method can reassign `self`'s own fields, permanently changing the object it wa
 ```mermaid
 %% Color Palette: Teal #029E73, Orange #DE8F05
 flowchart LR
-    A["d.name#61;#61;#34;Rex#34;<br/>before rename#40;#41;"]:::teal
-    B["d.rename#40;#34;Max#34;#41;<br/>mutates self.name in place"]:::orange
-    C["d.name#61;#61;#34;Max#34;<br/>SAME object, new state"]:::teal
+    accTitle: Example 6: A Method That Mutates Instance State
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: d.name616134Rex34 before rename4041, d.rename4034Max3441 mutates self.name in place, d.name616134Max34 SAME object, new state. Connections: d.name616134Rex34 before rename4041 to d.rename4034Max3441 mutates self.name in place, d.rename4034Max3441 mutates self.name in place to d.name616134Max34 SAME object, new state.
+    A["d.name=='Rex'<br/>before rename()"]:::teal
+    B["d.rename('Max')<br/>mutates self.name<br/>in place"]:::orange
+    C["d.name=='Max'<br/>SAME object,<br/>new state"]:::teal
     A --> B --> C
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-06-method-mutates-state/example.py`**
@@ -651,6 +657,8 @@ _ex-10 &middot; exercises co-03_
 ```mermaid
 %% Color Palette: Blue #0173B2, Purple #CC78BC
 flowchart LR
+    accTitle: Example 10: Identity with is
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: d1, d2, one Dog object in memory. Connections: d1 to one Dog object in memory (same reference), d2 to one Dog object in memory (same reference).
     d1["d1"]:::blue
     d2["d2"]:::blue
     obj["one Dog object<br/>in memory"]:::purple
@@ -659,6 +667,7 @@ flowchart LR
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-10-identity-with-is/example.py`**
@@ -800,14 +809,17 @@ Overriding `__eq__` lets a class define what "equal" means in terms of its own f
 ```mermaid
 %% Color Palette: Purple #CC78BC, Teal #029E73
 flowchart LR
-    A["a #61; Dog#40;#34;Rex#34;#41;<br/>b #61; Dog#40;#34;Rex#34;#41;"]:::purple
-    B["a is b<br/>#61;#61;#62; False #40;different objects#41;"]:::teal
-    C["a #61;#61; b<br/>#61;#61;#62; True #40;__eq__ compares fields#41;"]:::teal
+    accTitle: Example 12: Define eq for Value Comparison
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: a 61 Dog4034Rex3441 b 61 Dog4034Rex3441, a is b 616162 False 40different objects41, a 6161 b 616162 True 40__eq__ compares fields41. Connections: a 61 Dog4034Rex3441 b 61 Dog4034Rex3441 to a is b 616162 False 40different objects41, a 61 Dog4034Rex3441 b 61 Dog4034Rex3441 to a 6161 b 616162 True 40__eq__ compares fields41.
+    A["a = Dog('Rex')<br/>b = Dog('Rex')"]:::purple
+    B["a is b<br/>#61;#61;#62; False<br/>#40;different<br/>objects#41;"]:::teal
+    C["a #61;#61; b<br/>#61;#61;#62; True<br/>#40;__eq__ compares<br/>fields#41;"]:::teal
     A --> B
     A --> C
 
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-12-define-eq/example.py`**
@@ -891,14 +903,17 @@ An attribute declared directly in the class body, outside `__init__`, lives on t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
-    K["Dog.species #61; #34;Canine#34;<br/>ONE value on the class"]:::blue
-    A["a.species<br/>reads the class attribute"]:::orange
-    B["b.species<br/>reads the SAME class attribute"]:::orange
+    accTitle: Example 13: A Shared Class Attribute
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Dog.species 61 34Canine34 ONE value on the class, a.species reads the class attribute, b.species reads the SAME class attribute. Connections: Dog.species 61 34Canine34 ONE value on the class to a.species reads the class attribute, Dog.species 61 34Canine34 ONE value on the class to b.species reads the SAME class attribute.
+    K["Dog.species #61;<br/>#34;Canine#34;<br/>ONE value on the<br/>class"]:::blue
+    A["a.species<br/>reads the class<br/>attribute"]:::orange
+    B["b.species<br/>reads the SAME class<br/>attribute"]:::orange
     K --> A
     K --> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-13-class-attribute-shared/example.py`**
@@ -1048,14 +1063,17 @@ Bundling `_balance` with the only methods allowed to change it -- `deposit`, and
 ```mermaid
 %% Color Palette: Blue #0173B2, Purple #CC78BC
 flowchart TD
+    accTitle: Example 15: Encapsulate a Bank Balance
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: outside caller, deposit40amount41 the ONLY entry point, self._balance never touched directly. Connections: outside caller to deposit40amount41 the ONLY entry point (account. deposit405041), deposit40amount41 the ONLY entry point to self._balance never touched directly.
     Out["outside caller"]:::purple
-    D["deposit#40;amount#41;<br/>the ONLY entry point"]:::blue
-    Bal["self._balance<br/>never touched directly"]:::blue
-    Out -->|"account.deposit#40;50#41;"| D
+    D["deposit(amount)<br/>the ONLY entry point"]:::blue
+    Bal["self._balance<br/>never touched<br/>directly"]:::blue
+    Out -->|"account.<br/>deposit#40;50#41;"| D
     D --> Bal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-encapsulate-balance/example.py`**
@@ -1460,14 +1478,17 @@ _ex-20 &middot; exercises co-06_
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 flowchart LR
+    accTitle: Example 20: A Basic Dataclass
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: field declarations x: int, y: int, 64dataclass reads the declarations, generates __init__, __repr__, __eq__. Connections: field declarations x: int, y: int to 64dataclass reads the declarations, 64dataclass reads the declarations to generates __init__, __repr__, __eq__.
     F["field declarations<br/>x: int, y: int"]:::blue
-    D["#64;dataclass<br/>reads the declarations"]:::orange
+    D["#64;dataclass<br/>reads the<br/>declarations"]:::orange
     G["generates __init__,<br/>__repr__, __eq__"]:::teal
     F --> D --> G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-20-dataclass-basic/example.py`**
@@ -1747,15 +1768,18 @@ A plain mutable default (`tags: list[str] = []`) is forbidden outright by `@data
 ```mermaid
 %% Color Palette: Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 24: defaultfactory for a Mutable Default
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: a 61 Item4041, b 61 Item4041, list4041 called for a, list4041 called for b. Connections: a 61 Item4041 to list4041 called for a, b 61 Item4041 to list4041 called for b.
     A["a #61; Item#40;#41;"]:::orange
     B["b #61; Item#40;#41;"]:::orange
-    F1["list#40;#41; called for a"]:::teal
-    F2["list#40;#41; called for b"]:::teal
+    F1["list#40;#41; called<br/>for a"]:::teal
+    F2["list#40;#41; called<br/>for b"]:::teal
     A --> F1
     B --> F2
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-24-dataclass-default-factory/example.py`**
@@ -1924,15 +1948,18 @@ Two classes with no shared base at all can still be used interchangeably by any 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Purple #CC78BC
 flowchart LR
-    C["Circle<br/>#40;no shared base#41;"]:::blue
-    S["Square<br/>#40;no shared base#41;"]:::orange
-    F["describe#40;shape#41;<br/>calls shape.area#40;#41;"]:::purple
+    accTitle: Example 26: A Duck-Typed area Preview
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Circle 40no shared base41, Square 40no shared base41, describe40shape41 calls shape.area4041. Connections: Circle 40no shared base41 to describe40shape41 calls shape.area4041 (has area4041), Square 40no shared base41 to describe40shape41 calls shape.area4041 (has area4041).
+    C["Circle<br/>#40;no shared<br/>base#41;"]:::blue
+    S["Square<br/>#40;no shared<br/>base#41;"]:::orange
+    F["describe(shape)<br/>calls shape.area()"]:::purple
     C -->|"has area#40;#41;"| F
     S -->|"has area#40;#41;"| F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-26-duck-typed-area-preview/example.py`**

@@ -16,19 +16,22 @@ combined coverage report from the CLI, the way a reviewer actually would.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["Step 1: compute_subtotal#40;#41;<br/>TDD'd unit tests"]:::blue
+    accTitle: Goal
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Step 1: compute_ subtotal4041 TDDd unit tests, Step 2: TaxGateway stub/mock isolation, Step 3: order-independence property test 40Hypothesis + fast-check41, Step 4: app.py FastAPI integration test, E, cov. Connections: Step 1: compute_ subtotal4041 TDDd unit tests to Step 4: app.py FastAPI integration test, Step 2: TaxGateway stub/mock isolation to Step 4: app.py FastAPI integration test, Step 3: order-independence property test 40Hypothesis + fast-check41 to Step 4: app.py FastAPI integration test, Step 4: app.py FastAPI integration test to E, E to cov.
+    A["Step 1: compute_<br/>subtotal#40;#41;<br/>TDD'd unit tests"]:::blue
     B["Step 2: TaxGateway<br/>stub/mock isolation"]:::orange
-    C["Step 3: order-independence<br/>property test #40;Hypothesis + fast-check#41;"]:::teal
-    D["Step 4: app.py<br/>FastAPI integration test"]:::purple
+    C["Step 3:<br/>order-independence<br/>property test<br/>#40;Hypothesis +<br/>fast-check#41;"]:::teal
+    D["Step 4: app.py<br/>FastAPI integration<br/>test"]:::purple
     A --> D
     B --> D
     C --> D
-    D --> E["pytest --cov<br/>coverage read from the CLI"]:::blue
+    D --> E["pytest --cov<br/>coverage read from<br/>the CLI"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

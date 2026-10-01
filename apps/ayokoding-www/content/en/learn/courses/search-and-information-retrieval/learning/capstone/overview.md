@@ -15,17 +15,20 @@ Intermediate, or Advanced tiers.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["index.py<br/>InvertedIndex + persistence"]:::blue
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: index.py InvertedIndex + persistence, rank.py TF-IDF + BM25 top-k, evaluate.py precision@k, stemmed vs raw, incremental.py add without rebuild. Connections: index.py InvertedIndex + persistence to rank.py TF-IDF + BM25 top-k, rank.py TF-IDF + BM25 top-k to evaluate.py precision@k, stemmed vs raw, rank.py TF-IDF + BM25 top-k to incremental.py add without rebuild.
+    A["index.py<br/>InvertedIndex +<br/>persistence"]:::blue
     B["rank.py<br/>TF-IDF + BM25 top-k"]:::orange
-    C["evaluate.py<br/>precision@k, stemmed vs raw"]:::teal
+    C["evaluate.py<br/>precision@k, stemmed<br/>vs raw"]:::teal
     D["incremental.py<br/>add without rebuild"]:::purple
     A --> B --> C
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

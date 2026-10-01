@@ -32,13 +32,16 @@ via `EXPLAIN`'s own text plan, that a `GROUP BY` aggregate over 2 of those 6 col
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 86: DuckDB Columnar Scan
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: amounts table 6 columns, Projections: category, amount, noise1, noise2, noise3. Connections: amounts table 6 columns to Projections: category, amount (GROUP BY category, sum(amount)), amounts table 6 columns to noise1, noise2, noise3 (never touched).
     T[("amounts table<br/>6 columns")]:::orange
-    T -->|"GROUP BY category, sum(amount)"| P["Projections:<br/>category, amount"]:::teal
-    T -.->|never touched| N["noise1, noise2, noise3"]:::blue
+    T -->|"GROUP BY category,<br/>sum(amount)"| P["Projections:<br/>category, amount"]:::teal
+    T -.->|never touched| N["noise1, noise2,<br/>noise3"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-86-duckdb-columnar-scan/example.py`**
@@ -136,12 +139,15 @@ mirror image of Example 86's column-count-sensitive DuckDB projection.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 87: Row vs. Column Scan Contrast
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: Row store 1 page, 6 cols, hit = 15 blocks same either way, Column store 6 separate chunks, Projections: 2 of 6 cols. Connections: Row store 1 page, 6 cols to hit = 15 blocks same either way (SELECT reads whole row anyway), Column store 6 separate chunks to Projections: 2 of 6 cols (SELECT 2 cols projects 2 chunks).
     A["Row store<br/>1 page, 6 cols"]:::orange -->|"SELECT reads<br/>whole row anyway"| B["hit = 15 blocks<br/>same either way"]:::blue
     C["Column store<br/>6 separate chunks"]:::teal -->|"SELECT 2 cols<br/>projects 2 chunks"| D["Projections:<br/>2 of 6 cols"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-87-row-vs-column-scan-contrast/example.py`**
@@ -430,14 +436,17 @@ reading a single row within them.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 90: ClickHouse MergeTree Aggregate
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: WHERE order_date in February, Jan partition, Feb partition Parts: 1/3 read, Mar partition. Connections: WHERE order_date in February to Jan partition (pruned), WHERE order_date in February to Feb partition Parts: 1/3 read, WHERE order_date in February to Mar partition (pruned).
     Q["WHERE order_date<br/>in February"]:::orange
     Q -.->|pruned| J["Jan partition"]:::blue
     Q --> F["Feb partition<br/>Parts: 1/3 read"]:::teal
     Q -.->|pruned| M["Mar partition"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-90-clickhouse-mergetree-aggregate/example.sh`**

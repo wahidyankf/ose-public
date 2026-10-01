@@ -14,13 +14,16 @@ mode and the trade-off the team accepts.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["Requirements\nand load"]:::blue --> B["Estimate a\nbottleneck"]:::orange
-    B --> C["Choose a\nbuilding block"]:::teal
-    C --> D["Name failure\nand trade-off"]:::purple
+    accTitle: Mental model
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Requirements and load, Estimate a bottleneck, Choose a building block, Name failure and trade-off. Connections: Requirements and load to Estimate a bottleneck, Estimate a bottleneck to Choose a building block, Choose a building block to Name failure and trade-off.
+    A["Requirements<br/>and load"]:::blue --> B["Estimate a<br/>bottleneck"]:::orange
+    B --> C["Choose a<br/>building block"]:::teal
+    C --> D["Name failure<br/>and trade-off"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concept map

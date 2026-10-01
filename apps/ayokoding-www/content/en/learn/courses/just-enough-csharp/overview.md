@@ -23,12 +23,15 @@ lifecycle APIs, and desktop deployment belong to Windows App Development, not th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Learning path
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: CLI and null safety, Models and LINQ, Patterns and async, Ready for Windows apps. Connections: CLI and null safety to Models and LINQ, Models and LINQ to Patterns and async, Patterns and async to Ready for Windows apps.
     A["CLI and null safety"]:::blue --> B{"Models and LINQ"}:::orange
     B --> C["Patterns and async"]:::teal
-    C --> D["Ready for Windows apps"]:::blue
+    C --> D["Ready for Windows<br/>apps"]:::blue
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Scope boundary

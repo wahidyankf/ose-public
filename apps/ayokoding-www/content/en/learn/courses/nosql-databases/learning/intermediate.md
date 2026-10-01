@@ -458,13 +458,16 @@ stage's input, a data-flow model rather than nested subqueries.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 33: MongoDB Aggregation Pipeline Stages
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: 6 events 3 types, $match severity >= 2, $group + $sort avg severity DESC, error 4.5, login 3.0, logout 2.0. Connections: 6 events 3 types to $match severity >= 2, $match severity >= 2 to $group + $sort avg severity DESC, $group + $sort avg severity DESC to error 4.5, login 3.0, logout 2.0.
     E[("6 events<br/>3 types")]:::orange --> M["$match<br/>severity >= 2"]:::blue
     M --> GS["$group + $sort<br/>avg severity DESC"]:::blue
-    GS --> R["error 4.5, login 3.0,<br/>logout 2.0"]:::teal
+    GS --> R["error 4.5, login<br/>3.0,<br/>logout 2.0"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-33-mongo-aggregation-pipeline-stages/example.py`**
@@ -878,16 +881,19 @@ read quorum and a write quorum share at least one replica.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 38: Quorum Read/Write Math
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: N=3 replicas, W=2 write quorum replica-1, replica-2, R=2 read quorum replica-2, replica-3, replica-2 W+R=4 greater than N=3. Connections: N=3 replicas to W=2 write quorum replica-1, replica-2, N=3 replicas to R=2 read quorum replica-2, replica-3, W=2 write quorum replica-1, replica-2 to replica-2 W+R=4 greater than N=3 (overlaps at), R=2 read quorum replica-2, replica-3 to replica-2 W+R=4 greater than N=3 (overlaps at).
     N["N=3 replicas"]:::orange
     N --> W["W=2 write quorum<br/>replica-1, replica-2"]:::blue
     N --> R["R=2 read quorum<br/>replica-2, replica-3"]:::teal
-    W -.->|overlaps at| O["replica-2<br/>W+R=4 greater than N=3"]:::purple
+    W -.->|overlaps at| O["replica-2<br/>W+R=4 greater than<br/>N=3"]:::purple
     R -.->|overlaps at| O
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-38-quorum-read-write-math/example.py`**
@@ -1070,6 +1076,8 @@ replica objects here stand in directly for what a real Dynamo-style cluster's no
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 40: Leaderless Replication, Simulated
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: write(v1), replica-1, replica-2, replica-3 not written, read, R=2. Connections: write(v1) to replica-1 (W=2), write(v1) to replica-2 (W=2), replica-1 to read, R=2, replica-2 to read, R=2.
     W["write(v1)"]:::orange
     W -->|W=2| R1(("replica-1")):::blue
     W -->|W=2| R2(("replica-2")):::blue
@@ -1079,8 +1087,9 @@ flowchart LR
     R2 --> Rd
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-40-leaderless-replication-sim/example.py`**
@@ -1232,6 +1241,8 @@ never silently picks a winner; the application (or a human) must still decide.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 42: Vector Clock Conflict Detection
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: clock_from_a A:1, B:0, clock_from_b A:0, B:1, Compare, CONCURRENT app must merge. Connections: clock_from_a A:1, B:0 to Compare, clock_from_b A:0, B:1 to Compare, Compare to CONCURRENT app must merge (neither dominates).
     A["clock_from_a<br/>{A:1, B:0}"]:::blue
     B["clock_from_b<br/>{A:0, B:1}"]:::orange
     C{"Compare"}:::teal
@@ -1240,8 +1251,9 @@ flowchart TD
     C -->|neither dominates| D["CONCURRENT<br/>app must merge"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-42-vector-clock-detect-conflict/example.py`**
@@ -1334,6 +1346,8 @@ A grow-only counter CRDT merges deterministically from two replicas, regardless 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 43: CRDT G-Counter
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: replica-A A:2, replica-B B:1, max per slot A:2, B:1, value = 3 order-independent. Connections: replica-A A:2 to max per slot A:2, B:1 (merge), replica-B B:1 to max per slot A:2, B:1 (merge), max per slot A:2, B:1 to value = 3 order-independent.
     A["replica-A<br/>{A:2}"]:::orange
     B["replica-B<br/>{B:1}"]:::blue
     A -->|merge| M["max per slot<br/>{A:2, B:1}"]:::teal
@@ -1341,8 +1355,9 @@ flowchart LR
     M --> V["value = 3<br/>order-independent"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-43-crdt-g-counter/example.py`**
@@ -1429,14 +1444,17 @@ replicas converge to the identical state, regardless of merge direction.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    R1["replica-1<br/>cart:3-items, ts=500.0"]:::orange
-    R2["replica-2<br/>cart:5-items, ts=503.2"]:::blue
+    accTitle: Example 44: CRDT LWW-Register
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: replica-1 cart:3-items, ts=500.0, replica-2 cart:5-items, ts=503.2, later timestamp wins cart:5-items. Connections: replica-1 cart:3-items, ts=500.0 to later timestamp wins cart:5-items (merge), replica-2 cart:5-items, ts=503.2 to later timestamp wins cart:5-items (merge).
+    R1["replica-1<br/>cart:3-items,<br/>ts=500.0"]:::orange
+    R2["replica-2<br/>cart:5-items,<br/>ts=503.2"]:::blue
     R1 -->|merge| M["later timestamp wins<br/>cart:5-items"]:::teal
     R2 -->|merge| M
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-44-crdt-lww-register/example.py`**
@@ -1511,13 +1529,16 @@ them within it by `reading_time` -- Cassandra enforces the clustering order rega
 ```mermaid
 %% Color Palette: Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 45: Cassandra Partition and Clustering Keys
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Partition: sensor-1, C1, newest), C2, 21.8, C3, oldest). Connections: Partition: sensor-1 to C1, C1 to newest), Partition: sensor-1 to C2, C2 to 21.8, Partition: sensor-1 to C3, C3 to oldest).
     P["Partition: sensor-1"]:::orange
     P --> C1["10:02:00 -- 22.1<br/>(newest)"]:::teal
     P --> C2["10:01:00 -- 21.8"]:::teal
     P --> C3["10:00:00 -- 21.5<br/>(oldest)"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-45-cassandra-table-partition-clustering/example.py`**
@@ -2039,14 +2060,17 @@ sort-key prefix -- both entity types retrievable under the same partition key, i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 51: DynamoDB Single Table, Two Entities
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: PK = CUSTOMER42, SK = PROFILE name: Ada, SK = ORDER2026-01 amount: 50, SK = ORDER2026-02 amount: 75. Connections: PK = CUSTOMER42 to SK = PROFILE name: Ada, PK = CUSTOMER42 to SK = ORDER2026-01 amount: 50, PK = CUSTOMER42 to SK = ORDER2026-02 amount: 75.
     PK["PK = CUSTOMER#42"]:::orange
     PK --> SK1["SK = PROFILE<br/>name: Ada"]:::blue
     PK --> SK2["SK = ORDER#2026-01<br/>amount: 50"]:::teal
     PK --> SK3["SK = ORDER#2026-02<br/>amount: 75"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-51-dynamodb-single-table-two-entities/example.py`**
@@ -2139,14 +2163,17 @@ access pattern the base table's own key cannot answer at all.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 52: DynamoDB GSI Access Pattern
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Base table keyed by order_id, one order, GSI customer_id-index re-partitioned by customer_id, all of cust-9s orders. Connections: Base table keyed by order_id to one order (Query by order_id), Base table keyed by order_id to GSI customer_id-index re-partitioned by customer_id (projected into), GSI customer_id-index re-partitioned by customer_id to all of cust-9s orders (Query by customer_id).
     Base[("Base table<br/>keyed by order_id")]:::orange
     Base -->|"Query by order_id"| Q1["one order"]:::blue
-    Base -->|"projected into"| GSI[("GSI customer_id-index<br/>re-partitioned by customer_id")]:::teal
-    GSI -->|"Query by customer_id"| Q2["all of cust-9's orders"]:::teal
+    Base -->|"projected into"| GSI[("GSI<br/>customer_id-index<br/>re-partitioned by<br/>customer_id")]:::teal
+    GSI -->|"Query by<br/>customer_id"| Q2["all of cust-9's<br/>orders"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-52-dynamodb-gsi-access-pattern/example.py`**
@@ -2366,6 +2393,8 @@ suggest there is no difference at all.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 sequenceDiagram
+    accTitle: Example 54: DynamoDB ConsistentRead Toggle
+    accDescr: Sequence diagram between Application, Leader Replica, Lagging Replica. Messages: Application to Leader Replica: put_item(v1); Application to Lagging Replica: GetItem ConsistentRead=False; Lagging Replica to Application: v0 (stale); Application to Leader Replica: GetItem ConsistentRead=True; Leader Replica to Application: v1 (always fresh).
     participant App as Application
     participant L as Leader Replica
     participant F as Lagging Replica

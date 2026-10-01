@@ -11,6 +11,8 @@ pool to allocate the decoded frame; its cleanup label returns that slot and clos
 
 ```mermaid
 sequenceDiagram
+  accTitle: sequenceDiagram diagram
+  accDescr: Sequence diagram between parent/server, child/client. Messages: parent/server to parent/server: pool acquire frame; child/client to parent/server: connect send 4 network-order bytes; parent/server to parent/server: recv_all decode into owned frame; parent/server to child/client: encode send_all echo; parent/server to parent/server: pool release close accepted + listener.
   participant P as parent/server
   participant C as child/client
   P->>P: pool acquire frame

@@ -250,11 +250,14 @@ what `feature` adds beyond `main`, regardless of how many commits are behind eit
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
-    B["main tip"]:::blue -.->|"git diff main..feature"| F["feature tip"]:::orange
+    accTitle: Example 33: Diff Two Branches
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: main tip, feature tip, feature.txt added. Connections: main tip to feature tip (git diff main..feature), feature tip to feature.txt added (diff output).
+    B["main tip"]:::blue -.->|"git diff<br/>main..feature"| F["feature tip"]:::orange
     F -->|"diff output"| D["feature.txt added"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-33-diff-branches/setup.sh`**
@@ -390,12 +393,15 @@ other branch's tip -- no new commit is created, and history stays perfectly line
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
+    accTitle: Example 36: A Fast-Forward Merge
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: initial, feature change, main (before), main (after merge). Connections: initial to feature change, main (before) to initial, main (after merge) to feature change.
     A["initial"]:::blue --> B["feature change"]:::teal
     M1["main (before)"]:::blue -.-> A
     M2["main (after merge)"]:::teal -.-> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-36-fast-forward-merge/setup.sh`**
@@ -449,13 +455,16 @@ even when a fast-forward was possible -- preserving the feature branch as a visi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 37: Force a Merge Commit with --no-ff
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: initial, feature change, Merge commit (two parents). Connections: initial to feature change, initial to Merge commit (two parents), feature change to Merge commit (two parents).
     I["initial"]:::blue --> Fc["feature change"]:::orange
     I --> Merge["Merge commit<br/>(two parents)"]:::teal
     Fc --> Merge
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-37-no-ff-merge/setup.sh`**
@@ -511,15 +520,18 @@ automatically into one new commit with two parent lines -- a real three-way merg
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 38: A Clean Three-Way Merge
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: common ancestor, main: edit b.txt, feature: edit a.txt, merge commit combines both. Connections: common ancestor to main: edit b.txt, common ancestor to feature: edit a.txt, main: edit b.txt to merge commit combines both, feature: edit a.txt to merge commit combines both.
     Base["common ancestor"]:::blue --> MainTip["main: edit b.txt"]:::orange
     Base --> FeatTip["feature: edit a.txt"]:::purple
     MainTip --> Merge["merge commit<br/>combines both"]:::teal
     FeatTip --> Merge
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-38-three-way-merge-clean/setup.sh`**
@@ -582,14 +594,17 @@ automatically -- it reports a conflict and leaves the merge unfinished rather th
 ```mermaid
 %% Color Palette: Orange #DE8F05, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 39: Create a Merge Conflict
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: shared line, main: main version, feature: feature version, CONFLICT same line, two versions. Connections: shared line to main: main version, shared line to feature: feature version, main: main version to CONFLICT same line, two versions, feature: feature version to CONFLICT same line, two versions.
     Base["shared line"]:::brown --> MainEdit["main: main version"]:::orange
-    Base --> FeatEdit["feature: feature version"]:::purple
-    MainEdit --> Conflict["CONFLICT<br/>same line, two versions"]:::brown
+    Base --> FeatEdit["feature: feature<br/>version"]:::purple
+    MainEdit --> Conflict["CONFLICT<br/>same line, two<br/>versions"]:::brown
     FeatEdit --> Conflict
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-39-create-merge-conflict/setup.sh`**
@@ -809,12 +824,15 @@ brand-new hash, and the result is a single straight line instead of a fork.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 43: Rebase onto Main
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: initial, main commit 1, feature commit 1 (replayed, new hash), feature commit 2 (replayed, new hash). Connections: initial to main commit 1, main commit 1 to feature commit 1 (replayed, new hash), feature commit 1 (replayed, new hash) to feature commit 2 (replayed, new hash).
     I["initial"]:::blue --> M1["main commit 1"]:::blue
     M1 --> F1["feature commit 1'<br/>(replayed, new hash)"]:::teal
     F1 --> F2["feature commit 2'<br/>(replayed, new hash)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-43-rebase-onto-main/setup.sh`**
@@ -995,11 +1013,14 @@ into the commit directly above it -- turning several small commits into one comb
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph TD
-    T["rebase -i todo list<br/>pick / squash / squash"]:::blue --> R["replay in todo order"]:::blue
-    R --> C1["commit one<br/>(absorbs two + three)"]:::teal
+    accTitle: Example 46: Interactive Rebase -- Squash
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: rebase -i todo list pick /squash /squash, replay in todo order, commit one (absorbs two + three). Connections: rebase -i todo list pick /squash /squash to replay in todo order, replay in todo order to commit one (absorbs two + three).
+    T["rebase -i todo list<br/>pick /squash /squash"]:::blue --> R["replay in todo order"]:::blue
+    R --> C1["commit one<br/>(absorbs two +<br/>three)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-46-interactive-rebase-squash/setup.sh`**
@@ -1229,19 +1250,22 @@ different history shapes depending on whether it is done by merge or by rebase.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TB
-    subgraph Merge["By merge: fork + rejoin"]
+    accTitle: Example 50: Merge vs. Rebase -- Same Change, Different History
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: initial, main advances, merge commit, branch-a work, initial, main advances, branch-b work (replayed). Connections: initial to main advances, main advances to merge commit, initial to branch-a work, branch-a work to merge commit, initial to main advances, main advances to branch-b work (replayed).
+    subgraph Merge["By merge: fork +<br/>rejoin"]
         direction LR
         M1["initial"]:::blue --> M2["main advances"]:::blue --> MM["merge commit"]:::teal
         M1 --> MA["branch-a work"]:::orange --> MM
     end
-    subgraph Rebase["By rebase: single line"]
+    subgraph Rebase["By rebase: single<br/>line"]
         direction LR
         R1["initial"]:::blue --> R2["main advances"]:::blue --> R3["branch-b work'<br/>(replayed)"]:::teal
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-50-compare-merge-vs-rebase-history/setup.sh`**
@@ -1322,13 +1346,16 @@ working tree are left completely untouched, so the undone commit's change reappe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 51: Reset --soft
+    accDescr: Graph with 3 nodes and 0 connections. Nodes: HEAD moves back, index: UNCHANGED (change stays staged), working tree: UNCHANGED.
     HEAD["HEAD moves back"]:::blue
-    IDX["index: UNCHANGED<br/>(change stays staged)"]:::orange
-    WT["working tree: UNCHANGED"]:::teal
+    IDX["index: UNCHANGED<br/>(change stays<br/>staged)"]:::orange
+    WT["working tree:<br/>UNCHANGED"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-51-reset-soft/setup.sh`**
@@ -1525,12 +1552,15 @@ its effect while leaving the original commit fully intact in history.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 55: Revert a Commit
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: initial, buggy change, Revert buggy change (new, inverse commit). Connections: initial to buggy change, buggy change to Revert buggy change (new, inverse commit).
     A["initial"]:::blue --> B["buggy change"]:::orange
-    B --> C["Revert 'buggy change'<br/>(new, inverse commit)"]:::teal
+    B --> C["Revert 'buggy<br/>change'<br/>(new, inverse<br/>commit)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-55-revert-commit/setup.sh`**
@@ -1676,11 +1706,14 @@ match `HEAD` -- the edit is not lost, just set aside.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph TD
+    accTitle: Example 58: Stash Uncommitted Changes
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: working tree edit, stash stack stash@0, working tree (restored). Connections: working tree edit to stash stack stash@0 (git stash), stash stack stash@0 to working tree (restored) (git stash pop).
     WT["working tree edit"]:::blue -->|"git stash"| Stack["stash stack<br/>stash@{0}"]:::teal
     Stack -->|"git stash pop"| WT2["working tree<br/>(restored)"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-58-stash-changes/setup.sh`**

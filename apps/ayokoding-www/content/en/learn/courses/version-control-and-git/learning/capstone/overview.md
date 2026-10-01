@@ -18,16 +18,19 @@ would target.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["Step 1<br/>Hunk-staged commit history"]:::blue
-    B["Step 2<br/>Branch + forced conflict + merge"]:::orange
-    C["Step 3<br/>Interactive rebase + reflog recovery"]:::teal
-    D["Step 4<br/>Pre-commit hook + PR merge + push"]:::purple
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Step 1 Hunk-staged commit history, Step 2 Branch + forced conflict + merge, Step 3 Interactive rebase + reflog recovery, Step 4 Pre-commit hook + PR merge + push. Connections: Step 1 Hunk-staged commit history to Step 2 Branch + forced conflict + merge, Step 2 Branch + forced conflict + merge to Step 3 Interactive rebase + reflog recovery, Step 3 Interactive rebase + reflog recovery to Step 4 Pre-commit hook + PR merge + push.
+    A["Step 1<br/>Hunk-staged commit<br/>history"]:::blue
+    B["Step 2<br/>Branch + forced<br/>conflict + merge"]:::orange
+    C["Step 3<br/>Interactive rebase +<br/>reflog recovery"]:::teal
+    D["Step 4<br/>Pre-commit hook + PR<br/>merge + push"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

@@ -26,13 +26,16 @@ reconstruction error directly.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 51: Quantize a Model
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: fp16 weights 0.12, -0.45, 0.98..., Compute scale = max(abs)/127, Quantize: round(w/scale) -> INT8 codes, Dequantize: code*scale -> approximate float. Connections: fp16 weights 0.12, -0.45, 0.98... to Compute scale = max(abs)/127, Compute scale = max(abs)/127 to Quantize: round(w/scale) -> INT8 codes, Quantize: round(w/scale) -> INT8 codes to Dequantize: code*scale -> approximate float.
     A["fp16 weights<br/>0.12, -0.45, 0.98..."]:::blue --> B["Compute scale =<br/>max(abs)/127"]:::orange
-    B --> C["Quantize: round(w/scale)<br/>-> INT8 codes"]:::teal
-    C --> D["Dequantize: code*scale<br/>-> approximate float"]:::teal
+    B --> C["Quantize:<br/>round(w/scale)<br/>-> INT8 codes"]:::teal
+    C --> D["Dequantize:<br/>code*scale<br/>-> approximate float"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-51-quantize-a-model/example.py`**
@@ -233,15 +236,18 @@ every layer, and that exchange traffic grows with device count.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["14 GB model"]:::blue --> B["Device 0: 3.5 GB shard"]:::teal
-    A --> C["Device 1: 3.5 GB shard"]:::teal
-    A --> D["Device 2: 3.5 GB shard"]:::teal
-    A --> E["Device 3: 3.5 GB shard"]:::teal
-    B & C & D & E --> F["All-reduce: EVERY device<br/>exchanges partials EVERY layer"]:::orange
+    accTitle: Example 54: Model-Parallel Split
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: 14 GB model, Device 0: 3.5 GB shard, Device 1: 3.5 GB shard, Device 2: 3.5 GB shard, Device 3: 3.5 GB shard, All-reduce: EVERY device exchanges partials EVERY layer. Connections: 14 GB model to Device 0: 3.5 GB shard, 14 GB model to Device 1: 3.5 GB shard, 14 GB model to Device 2: 3.5 GB shard, 14 GB model to Device 3: 3.5 GB shard, Device 0: 3.5 GB shard to All-reduce: EVERY device exchanges partials EVERY layer, Device 1: 3.5 GB shard to All-reduce: EVERY device exchanges partials EVERY layer, Device 2: 3.5 GB shard to All-reduce: EVERY device exchanges partials EVERY layer, Device 3: 3.5 GB shard to All-reduce: EVERY device exchanges partials EVERY layer.
+    A["14 GB model"]:::blue --> B["Device 0: 3.5 GB<br/>shard"]:::teal
+    A --> C["Device 1: 3.5 GB<br/>shard"]:::teal
+    A --> D["Device 2: 3.5 GB<br/>shard"]:::teal
+    A --> E["Device 3: 3.5 GB<br/>shard"]:::teal
+    B & C & D & E --> F["All-reduce: EVERY<br/>device<br/>exchanges partials<br/>EVERY layer"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-54-model-parallel-split/example.py`**
@@ -587,14 +593,17 @@ over.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["GPU memory budget"]:::blue --> B["- weights - activations<br/>- framework overhead"]:::orange
+    accTitle: Example 59: Capacity Model
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: GPU memory budget, - weights - activations - framework overhead, = cache budget (co-18s remainder), /per-request cache size (co-06s formula), = max concurrency. Connections: GPU memory budget to - weights - activations - framework overhead, - weights - activations - framework overhead to = cache budget (co-18s remainder), = cache budget (co-18s remainder) to /per-request cache size (co-06s formula), /per-request cache size (co-06s formula) to = max concurrency.
+    A["GPU memory budget"]:::blue --> B["- weights -<br/>activations<br/>- framework overhead"]:::orange
     B --> C["= cache budget<br/>(co-18's remainder)"]:::teal
-    C --> D["/ per-request cache size<br/>(co-06's formula)"]:::teal
+    C --> D["/per-request cache<br/>size<br/>(co-06's formula)"]:::teal
     D --> E["= max concurrency"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-59-capacity-model/example.py`**
@@ -714,13 +723,16 @@ GPU-aware policy must project that growth and scale out earlier.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 61: Autoscaling Policy
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Queue depth: 8 threshold: 20, Naive: 8 hold, Proactive: project 7s cold start ahead, 8 + 2/sec * 7s = 22 22 > 20 -> scale out NOW. Connections: Queue depth: 8 threshold: 20 to Naive: 8 hold, Queue depth: 8 threshold: 20 to Proactive: project 7s cold start ahead, Proactive: project 7s cold start ahead to 8 + 2/sec * 7s = 22 22 > 20 -> scale out NOW.
     A["Queue depth: 8<br/>threshold: 20"]:::blue --> B["Naive: 8 < 20<br/>-> hold"]:::orange
-    A --> C["Proactive: project 7s<br/>cold start ahead"]:::teal
-    C --> D["8 + 2/sec * 7s = 22<br/>22 > 20 -> scale out NOW"]:::teal
+    A --> C["Proactive: project<br/>7s<br/>cold start ahead"]:::teal
+    C --> D["8 + 2/sec * 7s = 22<br/>22 > 20 -> scale out<br/>NOW"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-61-autoscaling-policy/example.py`**
@@ -851,16 +863,19 @@ release, applied to a model swap.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 63: Staged Model Rollout
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Stage 0: 5 traffic, error_rate <= guardrail?, Stage 1: 25 traffic, D, stay, error_rate <= guardrail?, Stage 2: 100 traffic. Connections: Stage 0: 5 traffic to error_rate <= guardrail?, error_rate <= guardrail? to Stage 1: 25 traffic (yes), error_rate <= guardrail? to D (no), D to stay, Stage 1: 25 traffic to error_rate <= guardrail?, error_rate <= guardrail? to Stage 2: 100 traffic (yes), error_rate <= guardrail? to D (no).
     A["Stage 0: 5% traffic"]:::blue --> B{"error_rate <=<br/>guardrail?"}:::orange
     B -->|yes| C["Stage 1: 25% traffic"]:::teal
     B -->|no| D["Halt -- stay at<br/>current stage"]:::orange
     C --> E{"error_rate <=<br/>guardrail?"}:::orange
-    E -->|yes| F["Stage 2: 100% traffic"]:::teal
+    E -->|yes| F["Stage 2: 100%<br/>traffic"]:::teal
     E -->|no| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-63-staged-model-rollout/example.py`**
@@ -1005,14 +1020,17 @@ sides using deliberately illustrative, round numbers.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 65: Build-vs-Buy Calculation
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: $2.00/GPU-hour at 800 tok/sec, = $0.6944 per million tokens, $0.000002/token hosted API, = $2.00 per million tokens, self-hosted < hosted API?. Connections: $2.00/GPU-hour at 800 tok/sec to = $0.6944 per million tokens, $0.000002/token hosted API to = $2.00 per million tokens, = $0.6944 per million tokens to self-hosted < hosted API?, = $2.00 per million tokens to self-hosted < hosted API?.
     A["$2.00/GPU-hour<br/>at 800 tok/sec"]:::blue --> B["= $0.6944<br/>per million tokens"]:::teal
     C["$0.000002/token<br/>hosted API"]:::orange --> D["= $2.00<br/>per million tokens"]:::orange
     B --> E{"self-hosted <<br/>hosted API?"}:::teal
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-build-vs-buy-calculation/example.py`**
@@ -1183,14 +1201,17 @@ only at stage boundaries -- the two strategies trade interconnect traffic agains
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 68: Tensor-Parallel vs Pipeline-Parallel
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: Tensor Parallel (4 devices), Exchange EVERY layer: 32 exchanges, Pipeline Parallel (4 stages), Exchange at stage boundaries: 3 exchanges, 384,000,000 bytes/step, 12,000,000 bytes/step + pipeline bubble idle time. Connections: Tensor Parallel (4 devices) to Exchange EVERY layer: 32 exchanges, Pipeline Parallel (4 stages) to Exchange at stage boundaries: 3 exchanges, Exchange EVERY layer: 32 exchanges to 384,000,000 bytes/step, Exchange at stage boundaries: 3 exchanges to 12,000,000 bytes/step + pipeline bubble idle time.
     A["Tensor Parallel<br/>(4 devices)"]:::blue --> B["Exchange EVERY<br/>layer: 32 exchanges"]:::orange
-    C["Pipeline Parallel<br/>(4 stages)"]:::blue --> D["Exchange at stage<br/>boundaries: 3 exchanges"]:::teal
-    B --> E["384,000,000 bytes/step"]:::orange
-    D --> F["12,000,000 bytes/step<br/>+ pipeline bubble idle time"]:::teal
+    C["Pipeline Parallel<br/>(4 stages)"]:::blue --> D["Exchange at stage<br/>boundaries: 3<br/>exchanges"]:::teal
+    B --> E["384,000,000<br/>bytes/step"]:::orange
+    D --> F["12,000,000<br/>bytes/step<br/>+ pipeline bubble<br/>idle time"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-tensor-parallel-vs-pipeline-parallel/example.py`**
@@ -1366,6 +1387,8 @@ action is the standard fix.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 71: Autoscaling Thrashing
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: 21 -> scale_out, 19 -> scale_in, 22 -> scale_out, 18 -> scale_in, 21 -> scale_out, With cooldown: 21 -> scale_out, 19 -> hold_cooldown, 22 -> scale_out. Connections: 21 -> scale_out to 19 -> scale_in, 19 -> scale_in to 22 -> scale_out, 22 -> scale_out to 18 -> scale_in, 18 -> scale_in to 21 -> scale_out, With cooldown: 21 -> scale_out to 19 -> hold_cooldown, 19 -> hold_cooldown to 22 -> scale_out.
     A["21 -> scale_out"]:::orange --> B["19 -> scale_in"]:::orange
     B --> C["22 -> scale_out"]:::orange
     C --> D["18 -> scale_in"]:::orange
@@ -1373,8 +1396,9 @@ graph TD
     F["With cooldown:<br/>21 -> scale_out"]:::teal --> G["19 -> hold_cooldown"]:::teal
     G --> H["22 -> scale_out"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-autoscaling-thrashing/example.py`**
@@ -1575,8 +1599,10 @@ explain a serving problem without inspecting individual request traces.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 74: Full Observability Explains an Incident
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Dashboard metrics, preemption_rate > 0.3?, C, queue_depth > 15 AND occupancy < 0.5?, Undersized replica count, itl_p50 > 40ms?, Oversized batch for the configured SLO, No anomaly detected. Connections: Dashboard metrics to preemption_rate > 0.3?, preemption_rate > 0.3? to C (yes), preemption_rate > 0.3? to queue_depth > 15 AND occupancy < 0.5? (no), queue_depth > 15 AND occupancy < 0.5? to Undersized replica count (yes), queue_depth > 15 AND occupancy < 0.5? to itl_p50 > 40ms? (no), itl_p50 > 40ms? to Oversized batch for the configured SLO (yes), itl_p50 > 40ms? to No anomaly detected (no).
     A["Dashboard metrics"]:::blue --> B{"preemption_rate<br/>> 0.3?"}:::orange
-    B -->|yes| C["Cache pressure --<br/>check admission control"]:::teal
+    B -->|yes| C["Cache pressure --<br/>check admission<br/>control"]:::teal
     B -->|no| D{"queue_depth > 15 AND<br/>occupancy < 0.5?"}:::orange
     D -->|yes| E["Undersized replica<br/>count"]:::teal
     D -->|no| F{"itl_p50 > 40ms?"}:::orange
@@ -1584,9 +1610,10 @@ graph TD
     F -->|no| H["No anomaly detected"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-74-full-observability-explains-an-incident/example.py`**
@@ -1656,12 +1683,15 @@ nearly 3.5x more, because idle GPU-hours still bill in full.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 75: TCO Sensitivity to Utilization
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: 90 utilization $0.7716/M tokens, vs hosted API $2.00/M tokens, 50 utilization $1.3889/M tokens, 10 utilization $6.9444/M tokens. Connections: 90 utilization $0.7716/M tokens to vs hosted API $2.00/M tokens, 50 utilization $1.3889/M tokens to vs hosted API $2.00/M tokens, 10 utilization $6.9444/M tokens to vs hosted API $2.00/M tokens.
     A["90% utilization<br/>$0.7716/M tokens"]:::teal --> D["vs hosted API<br/>$2.00/M tokens"]:::orange
     B["50% utilization<br/>$1.3889/M tokens"]:::orange --> D
     C["10% utilization<br/>$6.9444/M tokens"]:::orange --> D
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-75-tco-sensitivity-to-utilization/example.py`**

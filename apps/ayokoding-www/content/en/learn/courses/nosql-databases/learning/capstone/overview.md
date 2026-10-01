@@ -17,16 +17,19 @@ full CRUD, and `rationale.md` formalizes what Example 80 already drafted and ver
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: kv.py session CRUD + TTL, doc.py 2 access patterns + index, wide.py partition + clustering feed, rationale.md CAP/PACELC + license, x3. Connections: kv.py session CRUD + TTL to doc.py 2 access patterns + index, doc.py 2 access patterns + index to wide.py partition + clustering feed, wide.py partition + clustering feed to rationale.md CAP/PACELC + license, x3.
     A["kv.py<br/>session CRUD + TTL"]:::blue
-    B["doc.py<br/>2 access patterns + index"]:::orange
-    C["wide.py<br/>partition + clustering feed"]:::teal
-    D["rationale.md<br/>CAP/PACELC + license, x3"]:::purple
+    B["doc.py<br/>2 access patterns +<br/>index"]:::orange
+    C["wide.py<br/>partition +<br/>clustering feed"]:::teal
+    D["rationale.md<br/>CAP/PACELC +<br/>license, x3"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

@@ -60,11 +60,14 @@ and kubelet realizes assigned Pods. Diagnose the owner of a failed transition in
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC.
 flowchart LR
-    A["API server"]:::blue --> E["etcd"]:::orange --> S["scheduler/controllers"]:::teal --> K["kubelet"]:::purple
+    accTitle: Example 3: Control Plane Components
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: API server, etcd, scheduler/ controllers, kubelet. Connections: API server to etcd, etcd to scheduler/ controllers, scheduler/ controllers to kubelet.
+    A["API server"]:::blue --> E["etcd"]:::orange --> S["scheduler/<br/>controllers"]:::teal --> K["kubelet"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sh

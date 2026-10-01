@@ -73,12 +73,14 @@ what you should see when you run the accompanying verify command on your own box
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 %% Concept clusters in the order this topic teaches them (co-01 through co-22)
 graph TD
-    A["Provision + reach:<br/>VM, SSH keys, hardening,<br/>firewall<br/>co-02 to co-05"]:::blue
-    B["Run the service:<br/>systemd unit, lifecycle,<br/>restart-on-crash<br/>co-06 to co-08"]:::orange
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Provision + reach: VM, SSH keys, hardening, firewall co-02 to co-05, Run the service: systemd unit, lifecycle, restart-on-crash co-06 to co-08, Expose it: reverse proxy, TLS, DNS, env + secrets co-09 to co-13, Operate it: logs, health, resilience, PaaS git-push deploy co-14 to co-18, Protect the data: backups, reproducible setup scripts co-19, co-21, Decide the altitude: self-host vs managed, when to stay managed co-20, co-22. Connections: Provision + reach: VM, SSH keys, hardening, firewall co-02 to co-05 to Run the service: systemd unit, lifecycle, restart-on-crash co-06 to co-08, Run the service: systemd unit, lifecycle, restart-on-crash co-06 to co-08 to Expose it: reverse proxy, TLS, DNS, env + secrets co-09 to co-13, Expose it: reverse proxy, TLS, DNS, env + secrets co-09 to co-13 to Operate it: logs, health, resilience, PaaS git-push deploy co-14 to co-18, Operate it: logs, health, resilience, PaaS git-push deploy co-14 to co-18 to Protect the data: backups, reproducible setup scripts co-19, co-21, Protect the data: backups, reproducible setup scripts co-19, co-21 to Decide the altitude: self-host vs managed, when to stay managed co-20, co-22.
+    A["Provision + reach:<br/>VM, SSH keys,<br/>hardening,<br/>firewall<br/>co-02 to co-05"]:::blue
+    B["Run the service:<br/>systemd unit,<br/>lifecycle,<br/>restart-on-crash<br/>co-06 to co-08"]:::orange
     C["Expose it:<br/>reverse proxy, TLS,<br/>DNS, env + secrets<br/>co-09 to co-13"]:::teal
-    D["Operate it:<br/>logs, health, resilience,<br/>PaaS git-push deploy<br/>co-14 to co-18"]:::purple
-    E["Protect the data:<br/>backups, reproducible<br/>setup scripts<br/>co-19, co-21"]:::brown
-    F["Decide the altitude:<br/>self-host vs managed,<br/>when to stay managed<br/>co-20, co-22"]:::gray
+    D["Operate it:<br/>logs, health,<br/>resilience,<br/>PaaS git-push deploy<br/>co-14 to co-18"]:::purple
+    E["Protect the data:<br/>backups,<br/>reproducible<br/>setup scripts<br/>co-19, co-21"]:::brown
+    F["Decide the altitude:<br/>self-host vs<br/>managed,<br/>when to stay managed<br/>co-20, co-22"]:::gray
 
     A --> B
     B --> C
@@ -87,11 +89,12 @@ graph TD
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

@@ -58,14 +58,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 56: Cancel Button
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Cancel Button, Bound state, Visible result. Connections: User action to Cancel Button, Cancel Button to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Cancel Button"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-56-cancel-button/Program.cs`**
@@ -171,14 +174,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 59: Progress Bar
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Progress Bar, Bound state, Visible result. Connections: User action to Progress Bar, Progress Bar to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Progress Bar"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-59-progress-bar/Program.cs`**
@@ -284,14 +290,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 62: Non-Blocking Proof
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Non-Blocking Proof, Bound state, Visible result. Connections: User action to Non-Blocking Proof, Non-Blocking Proof to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Non-Blocking Proof"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-62-non-blocking-proof/Program.cs`**
@@ -397,14 +406,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 65: Lifecycle Suspend
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Lifecycle Suspend, Bound state, Visible result. Connections: User action to Lifecycle Suspend, Lifecycle Suspend to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Lifecycle Suspend"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-lifecycle-suspend/Program.cs`**
@@ -510,14 +522,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
-    A["User action"]:::blue --> B["Deploy Self-Contained"]:::orange
+    accTitle: Example 68: Deploy Self-Contained
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Deploy Self-Contained, Bound state, Visible result. Connections: User action to Deploy Self-Contained, Deploy Self-Contained to Bound state, Bound state to Visible result.
+    A["User action"]:::blue --> B["Deploy<br/>Self-Contained"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-deploy-self-contained/Program.cs`**
@@ -623,14 +638,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 71: DI Full App
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, DI Full App, Bound state, Visible result. Connections: User action to DI Full App, DI Full App to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["DI Full App"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-di-full-app/Program.cs`**
@@ -736,14 +754,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 74: Error Recovery
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Error Recovery, Bound state, Visible result. Connections: User action to Error Recovery, Error Recovery to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Error Recovery"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-74-error-recovery/Program.cs`**
@@ -849,14 +870,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
-    A["User action"]:::blue --> B["Integration Persistence Slice"]:::orange
+    accTitle: Example 77: Integration Persistence Slice
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Integration Persistence Slice, Bound state, Visible result. Connections: User action to Integration Persistence Slice, Integration Persistence Slice to Bound state, Bound state to Visible result.
+    A["User action"]:::blue --> B["Integration<br/>Persistence Slice"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-77-integration-persistence-slice/Program.cs`**
@@ -896,14 +920,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 78: Capstone Desktop App
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Capstone Desktop App, Bound state, Visible result. Connections: User action to Capstone Desktop App, Capstone Desktop App to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Capstone Desktop App"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-78-capstone-desktop-app/Program.cs`**

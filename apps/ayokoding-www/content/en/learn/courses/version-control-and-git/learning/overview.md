@@ -61,12 +61,14 @@ command this topic teaches.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Six concept clusters, in the order this page teaches them (co-01 through co-29)
 graph TD
-    A["Object model &amp; states<br/>co-01 to co-05"]:::blue
-    B["Staging, committing, history<br/>co-06 to co-10"]:::orange
+    accTitle: How verification works in this topic
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: A, amp, Staging, committing, history co-06 to co-10, C, D, Safety net: reflog co-22, Remotes, tags, hooks, flow co-23 to co-29. Connections: A to Staging, committing, history co-06 to co-10, Staging, committing, history co-06 to co-10 to C, C to D, D to Safety net: reflog co-22, Safety net: reflog co-22 to Remotes, tags, hooks, flow co-23 to co-29.
+    A["Object model &amp;<br/>states<br/>co-01 to co-05"]:::blue
+    B["Staging, committing,<br/>history<br/>co-06 to co-10"]:::orange
     C["Branching &amp; merging<br/>co-11 to co-14"]:::teal
-    D["Rebase &amp; the undo family<br/>co-15 to co-21"]:::purple
+    D["Rebase &amp; the undo<br/>family<br/>co-15 to co-21"]:::purple
     E["Safety net: reflog<br/>co-22"]:::brown
-    F["Remotes, tags, hooks, flow<br/>co-23 to co-29"]:::blue
+    F["Remotes, tags,<br/>hooks, flow<br/>co-23 to co-29"]:::blue
 
     A --> B
     B --> C
@@ -75,10 +77,11 @@ graph TD
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

@@ -452,15 +452,18 @@ A macro records an arbitrary keystroke sequence into a register, and replaying i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    Q["qa<br/>start recording into register a"]:::blue
-    E["perform an edit sequence"]:::orange
+    accTitle: Example 74: Record and Play Macro
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: qa start recording into register a, perform an edit sequence, q stop recording, @a replay the recorded sequence. Connections: qa start recording into register a to perform an edit sequence, perform an edit sequence to q stop recording, q stop recording to @a replay the recorded sequence.
+    Q["qa<br/>start recording into<br/>register a"]:::blue
+    E["perform an edit<br/>sequence"]:::orange
     S["q<br/>stop recording"]:::blue
-    P["@a<br/>replay the recorded sequence"]:::teal
+    P["@a<br/>replay the recorded<br/>sequence"]:::teal
     Q --> E --> S --> P
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**
@@ -594,10 +597,12 @@ Making a new edit after an undo does not erase the undone change -- it branches 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart TD
+    accTitle: Example 77: Undo Tree Time Travel
+    accDescr: Flowchart with 5 nodes and 6 connections. Nodes: base line starting state, change 1 base line one, u undoes change 1, C2, a. Connections: C2 to a, base line starting state to change 1 base line one, change 1 base line one to u undoes change 1 (u), u undoes change 1 to C2 (new edit), C2 to u undoes change 1 (g-), u undoes change 1 to C2 (g+).
     Base["base line<br/>starting state"]:::blue
     C1["change 1<br/>base line one"]:::orange
     Undo["u undoes change 1"]:::gray
-    C2["change 2<br/>base line two -- a NEW branch"]:::teal
+    C2["change 2<br/>base line two -- a<br/>NEW branch"]:::teal
     Base --> C1
     C1 -->|u| Undo
     Undo -->|new edit| C2
@@ -605,9 +610,10 @@ flowchart TD
     Undo -.->|g+| C2
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**
@@ -690,14 +696,17 @@ _ex-79 &middot; exercises co-12_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    Range["Range<br/>default: whole buffer"]:::blue
+    accTitle: Example 79: Global Delete Matching Lines
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Range default: whole buffer, 47pattern47 find matching lines, command run on each match. Connections: Range default: whole buffer to 47pattern47 find matching lines, 47pattern47 find matching lines to command run on each match.
+    Range["Range<br/>default: whole<br/>buffer"]:::blue
     Pat["#47;pattern#47;<br/>find matching lines"]:::orange
     Cmd["command<br/>run on each match"]:::teal
     Range --> Pat --> Cmd
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**
@@ -905,14 +914,17 @@ _ex-84 &middot; exercises co-17_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    VG[":vimgrep #47;pat#47; **#47;*<br/>search across files"]:::blue
-    QL["quickfix list<br/>populated with matches"]:::orange
-    Nav[":cnext #47; :cprevious<br/>jump to each match"]:::teal
+    accTitle: Example 84: Populate Quickfix Vimgrep
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: :vimgrep 47pat47 **47* search across files, quickfix list populated with matches, :cnext 47 :cprevious jump to each match. Connections: :vimgrep 47pat47 **47* search across files to quickfix list populated with matches, quickfix list populated with matches to :cnext 47 :cprevious jump to each match.
+    VG[":vimgrep #47;pat#47;<br/>**#47;*<br/>search across files"]:::blue
+    QL["quickfix list<br/>populated with<br/>matches"]:::orange
+    Nav[":cnext #47;<br/>:cprevious<br/>jump to each match"]:::teal
     VG --> QL --> Nav
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**

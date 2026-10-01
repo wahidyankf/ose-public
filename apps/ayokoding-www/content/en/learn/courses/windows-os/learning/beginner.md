@@ -13,10 +13,13 @@ _Exercises co-01._ This small experiment isolates **Win32 Hello** and leaves no 
 
 ```mermaid
 flowchart LR
+  accTitle: Example 1: Win32 Hello
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Win32 Hello, Observed state. Connections: Caller to Win32 Hello, Win32 Hello to Observed state.
   A["Caller"]:::blue --> B["Win32 Hello"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-01-win32-hello/example.c)
@@ -40,10 +43,13 @@ _Exercises co-02._ This small experiment isolates **CreateProcess Basics** and l
 
 ```mermaid
 flowchart LR
+  accTitle: Example 3: CreateProcess Basics
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, CreateProcess Basics, Observed state. Connections: Caller to CreateProcess Basics, CreateProcess Basics to Observed state.
   A["Caller"]:::blue --> B["CreateProcess Basics"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-03-createprocess-basics/example.c)
@@ -76,10 +82,13 @@ _Exercises co-03._ This small experiment isolates **PROCESS_INFORMATION Handles*
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["PROCESS_INFORMATION Handles"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 6: PROCESSINFORMATION Handles
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, PROCESS_INFORMATION Handles, Observed state. Connections: Caller to PROCESS_INFORMATION Handles, PROCESS_INFORMATION Handles to Observed state.
+  A["Caller"]:::blue --> B["PROCESS_INFORMATION<br/>Handles"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-06-process-information-handles/example.c)
@@ -112,10 +121,13 @@ _Exercises co-04._ This small experiment isolates **CreateThread Basics** and le
 
 ```mermaid
 flowchart LR
+  accTitle: Example 9: CreateThread Basics
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, CreateThread Basics, Observed state. Connections: Caller to CreateThread Basics, CreateThread Basics to Observed state.
   A["Caller"]:::blue --> B["CreateThread Basics"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-09-createthread-basics/example.c)
@@ -148,10 +160,13 @@ _Exercises co-05._ This small experiment isolates **Get-Process** and leaves no 
 
 ```mermaid
 flowchart LR
+  accTitle: Example 12: Get-Process
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Get-Process, Observed state. Connections: Caller to Get-Process, Get-Process to Observed state.
   A["Caller"]:::blue --> B["Get-Process"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.ps1](./code/ex-12-get-process/example.ps1)
@@ -184,10 +199,13 @@ _Exercises co-06._ This small experiment isolates **Task Manager Inspection** an
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Task Manager Inspection"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 15: Task Manager Inspection
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Task Manager Inspection, Observed state. Connections: Caller to Task Manager Inspection, Task Manager Inspection to Observed state.
+  A["Caller"]:::blue --> B["Task Manager<br/>Inspection"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.ps1](./code/ex-15-task-manager-inspection/example.ps1)
@@ -211,10 +229,13 @@ _Exercises co-07._ This small experiment isolates **CreateFile Opens a File** an
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["CreateFile Opens a File"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 17: CreateFile Opens a File
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, CreateFile Opens a File, Observed state. Connections: Caller to CreateFile Opens a File, CreateFile Opens a File to Observed state.
+  A["Caller"]:::blue --> B["CreateFile Opens a<br/>File"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-17-createfile-opens-a-file/example.c)
@@ -256,10 +277,13 @@ _Exercises co-09._ This small experiment isolates **VirtualAlloc Commit** and le
 
 ```mermaid
 flowchart LR
+  accTitle: Example 21: VirtualAlloc Commit
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, VirtualAlloc Commit, Observed state. Connections: Caller to VirtualAlloc Commit, VirtualAlloc Commit to Observed state.
   A["Caller"]:::blue --> B["VirtualAlloc Commit"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-21-virtualalloc-commit/example.c)

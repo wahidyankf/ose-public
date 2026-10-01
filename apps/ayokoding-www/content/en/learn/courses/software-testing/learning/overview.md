@@ -138,11 +138,13 @@ re-confirmed 2026-07-15.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Six concept clusters, in the order this page teaches them (co-01 through co-32)
 graph TD
-    A["pytest mechanics:<br/>discovery, assertions,<br/>fixtures, parametrization<br/>co-01 to co-09"]:::blue
-    B["Pyramid vs. trophy and<br/>the test-doubles taxonomy<br/>co-10 to co-16"]:::orange
-    C["TDD, property-based<br/>testing, and shrinking<br/>co-17 to co-20"]:::teal
-    D["Coverage, mutation, and<br/>integration/contract/e2e<br/>co-21 to co-27"]:::purple
-    E["BDD and Gherkin<br/>executable specifications<br/>co-28 to co-32"]:::brown
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: pytest mechanics: discovery, assertions, fixtures, parametrization co-01 to co-09, Pyramid vs. trophy and the test-doubles taxonomy co-10 to co-16, TDD, property-based testing, and shrinking co-17 to co-20, Coverage, mutation, and integration/ contract/e2e co-21 to co-27, BDD and Gherkin executable specifications co-28 to co-32. Connections: pytest mechanics: discovery, assertions, fixtures, parametrization co-01 to co-09 to Pyramid vs. trophy and the test-doubles taxonomy co-10 to co-16, Pyramid vs. trophy and the test-doubles taxonomy co-10 to co-16 to TDD, property-based testing, and shrinking co-17 to co-20, TDD, property-based testing, and shrinking co-17 to co-20 to Coverage, mutation, and integration/ contract/e2e co-21 to co-27, Coverage, mutation, and integration/ contract/e2e co-21 to co-27 to BDD and Gherkin executable specifications co-28 to co-32.
+    A["pytest mechanics:<br/>discovery,<br/>assertions,<br/>fixtures,<br/>parametrization<br/>co-01 to co-09"]:::blue
+    B["Pyramid vs. trophy<br/>and<br/>the test-doubles<br/>taxonomy<br/>co-10 to co-16"]:::orange
+    C["TDD, property-based<br/>testing, and<br/>shrinking<br/>co-17 to co-20"]:::teal
+    D["Coverage, mutation,<br/>and<br/>integration/<br/>contract/e2e<br/>co-21 to co-27"]:::purple
+    E["BDD and Gherkin<br/>executable<br/>specifications<br/>co-28 to co-32"]:::brown
 
     A --> B
     B --> C
@@ -150,10 +152,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

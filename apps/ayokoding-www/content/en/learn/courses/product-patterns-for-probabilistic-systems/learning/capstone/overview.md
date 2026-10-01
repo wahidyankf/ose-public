@@ -18,18 +18,21 @@ independently chosen new feature, at launch-review scale.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Failure catalogue<br/>+ silent-failure trace"]:::blue
-    B["Interface design<br/>expectations, uncertainty,<br/>provenance"]:::orange
-    C["Review + recovery<br/>friction + preview + undo"]:::teal
+    accTitle: Goal
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Failure catalogue + silent-failure trace, Interface design expectations, uncertainty, provenance, Review + recovery friction + preview + undo, Degradation fallback hierarchy, Launch criteria ship + guardrail + rollback. Connections: Failure catalogue + silent-failure trace to Interface design expectations, uncertainty, provenance, Interface design expectations, uncertainty, provenance to Review + recovery friction + preview + undo, Review + recovery friction + preview + undo to Degradation fallback hierarchy, Degradation fallback hierarchy to Launch criteria ship + guardrail + rollback.
+    A["Failure catalogue<br/>+ silent-failure<br/>trace"]:::blue
+    B["Interface design<br/>expectations,<br/>uncertainty,<br/>provenance"]:::orange
+    C["Review + recovery<br/>friction + preview +<br/>undo"]:::teal
     D["Degradation<br/>fallback hierarchy"]:::purple
-    E["Launch criteria<br/>ship + guardrail + rollback"]:::brown
+    E["Launch criteria<br/>ship + guardrail +<br/>rollback"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: the capstone's build order -- catalogue the failures, design the interface around them,

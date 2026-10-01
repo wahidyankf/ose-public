@@ -18,17 +18,20 @@ An abstract factory is a family of factory methods that together produce a match
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 28: An Abstract Factory for UI Widget Families
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: WidgetFactory abstract, DarkThemeFactory dark family, LightThemeFactory light family, DarkButton 43 DarkCheckbox, LightButton 43 LightCheckbox. Connections: WidgetFactory abstract to DarkThemeFactory dark family, WidgetFactory abstract to LightThemeFactory light family, DarkThemeFactory dark family to DarkButton 43 DarkCheckbox (produces), LightThemeFactory light family to LightButton 43 LightCheckbox (produces).
     F["WidgetFactory<br/>abstract"]:::blue
     D["DarkThemeFactory<br/>dark family"]:::orange
     L["LightThemeFactory<br/>light family"]:::teal
     F --> D
     F --> L
-    D -->|"produces"| DB["DarkButton #43; DarkCheckbox"]:::orange
-    L -->|"produces"| LB["LightButton #43; LightCheckbox"]:::teal
+    D -->|"produces"| DB["DarkButton #43;<br/>DarkCheckbox"]:::orange
+    L -->|"produces"| LB["LightButton #43;<br/>LightCheckbox"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-28-abstract-factory-ui-theme/example.py`**
@@ -463,16 +466,19 @@ A virtual proxy stands in for an expensive-to-construct real subject, deferring 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 32: A Virtual Proxy Defers an Expensive Load
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: ImageProxy cheap to construct, real image loaded yet?, RealImage expensive load. Connections: ImageProxy cheap to construct to real image loaded yet?, real image loaded yet? to RealImage expensive load (no -- first render4041), real image loaded yet? to ImageProxy cheap to construct (yes -- reuse cached).
     P["ImageProxy<br/>cheap to construct"]:::blue
-    C{"real image loaded yet?"}:::orange
+    C{"real image loaded<br/>yet?"}:::orange
     R["RealImage<br/>expensive load"]:::teal
     P --> C
-    C -->|"no -- first render#40;#41;"| R
-    C -->|"yes -- reuse cached"| P
+    C -->|"no -- first<br/>render#40;#41;"| R
+    C -->|"yes -- reuse<br/>cached"| P
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-32-proxy-lazy-load/example.py`**
@@ -672,6 +678,8 @@ Composite lets a `File` (leaf) and a `Directory` (composed of Files and other Di
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
+    accTitle: Example 34: Composite Treats File and Directory Uniformly for size
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Directory: project, File: readme.md 120 bytes, Directory: src, File: main.py 300 bytes, File: utils.py 180 bytes. Connections: Directory: project to File: readme.md 120 bytes, Directory: project to Directory: src, Directory: src to File: main.py 300 bytes, Directory: src to File: utils.py 180 bytes.
     R["Directory: project"]:::blue
     A["File: readme.md<br/>120 bytes"]:::orange
     S["Directory: src"]:::blue
@@ -683,7 +691,8 @@ flowchart TD
     S --> U
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-34-composite-file-tree/example.py`**
@@ -788,6 +797,8 @@ A second Composite example makes the pattern's shape more visible: `MenuItem` (l
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
+    accTitle: Example 35: Composite Renders Nested Menu Items Uniformly
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Menu: File, MenuItem: New, MenuItem: Open, Menu: Open Recent, MenuItem: project.py. Connections: Menu: File to MenuItem: New, Menu: File to MenuItem: Open, Menu: File to Menu: Open Recent, Menu: Open Recent to MenuItem: project.py.
     F["Menu: File"]:::blue
     N["MenuItem: New"]:::orange
     O["MenuItem: Open"]:::orange
@@ -799,7 +810,8 @@ flowchart TD
     R --> P
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-35-composite-menu/example.py`**
@@ -920,16 +932,19 @@ Command reifies a request as an object with both a forward action and its revers
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 36: Command Objects with execute/undo for an Editor
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: Editor receiver, AppendCommand execute4041 / undo4041, history stack. Connections: AppendCommand execute4041 / undo4041 to Editor receiver (execute4041), AppendCommand execute4041 / undo4041 to Editor receiver (undo4041), history stack to AppendCommand execute4041 / undo4041 (pop4041. undo4041).
     E["Editor<br/>receiver"]:::blue
-    C["AppendCommand<br/>execute#40;#41; / undo#40;#41;"]:::orange
+    C["AppendCommand<br/>execute#40;#41; /<br/>undo#40;#41;"]:::orange
     H["history stack"]:::teal
     C -->|"execute#40;#41;"| E
     C -->|"undo#40;#41;"| E
-    H -->|"pop#40;#41;.undo#40;#41;"| C
+    H -->|"pop#40;#41;.<br/>undo#40;#41;"| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-36-command-undo/example.py`**
@@ -1173,6 +1188,8 @@ State represents each state as its own object rather than a boolean flag or stri
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 stateDiagram-v2
+    accTitle: Example 38: A Vending Machine State Machine, Not Boolean Flags
+    accDescr: State diagram with 3 items: start or end, NoCoin, HasCoin. Relationships: start or end to NoCoin; NoCoin to HasCoin: insert_coin(); HasCoin to NoCoin: dispense(); NoCoin to NoCoin: dispense() rejected; HasCoin to HasCoin: insert_coin() rejected.
     [*] --> NoCoin
     NoCoin --> HasCoin: insert_coin()
     HasCoin --> NoCoin: dispense()
@@ -1306,6 +1323,8 @@ A second State example makes the transition-ownership idea concrete with a cycle
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 stateDiagram-v2
+    accTitle: Example 39: Cycling States via the State Pattern
+    accDescr: State diagram with 4 items: start or end, Red, Green, Yellow. Relationships: start or end to Red; Red to Green: next(); Green to Yellow: next(); Yellow to Red: next().
     [*] --> Red
     Red --> Green: next()
     Green --> Yellow: next()
@@ -1428,6 +1447,8 @@ Iterator exposes sequential access without revealing the underlying representati
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 40: A Custom iter Walks a Binary Tree In Order
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: 4, 2, 6, 1, 3, 7. Connections: 4 to 2, 4 to 6, 2 to 1, 2 to 3, 6 to 7.
     N4["4"]:::blue
     N2["2"]:::orange
     N6["6"]:::orange
@@ -1441,8 +1462,9 @@ flowchart TD
     N6 --> N7
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-40-iterator-custom-tree/example.py`**
@@ -1664,6 +1686,8 @@ Chain of Responsibility passes a request along a chain of handlers until one of 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 42: Escalating a Support Ticket Through a Handler Chain
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: ticket: severity, L1Handler severity 6061 1, L2Handler severity 6061 3, L3Handler severity 6061 5, unhandled. Connections: ticket: severity to L1Handler severity 6061 1, L1Handler severity 6061 1 to L2Handler severity 6061 3 (cant handle), L2Handler severity 6061 3 to L3Handler severity 6061 5 (cant handle), L3Handler severity 6061 5 to unhandled (cant handle).
     T["ticket: severity"]:::blue
     L1["L1Handler<br/>severity #60;#61; 1"]:::orange
     L2["L2Handler<br/>severity #60;#61; 3"]:::orange
@@ -1675,8 +1699,9 @@ flowchart LR
     L3 -->|"can't handle"| U
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-42-chain-of-responsibility-support/example.py`**
@@ -1928,6 +1953,8 @@ Observer lets subjects notify subscribers of change without knowing their concre
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 44: A Typed Event Bus with Unsubscribe
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: EventBus, log_handler subscribed, alert_handler unsubscribed. Connections: EventBus to log_handler subscribed (publish4041), EventBus to alert_handler unsubscribed (NOT called).
     B["EventBus"]:::blue
     L["log_handler<br/>subscribed"]:::orange
     A["alert_handler<br/>unsubscribed"]:::teal
@@ -1935,8 +1962,9 @@ flowchart LR
     B -.->|"NOT called"| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-44-observer-typed-events/example.py`**
@@ -2371,6 +2399,8 @@ GRASP's Indirection pattern inserts a mediator between two collaborators so neit
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 48: A Mediator Decouples Two Collaborators
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Participant: alice, ChatRoom mediator, Participant: bob. Connections: Participant: alice to ChatRoom mediator (send4041), ChatRoom mediator to Participant: bob (relay4041).
     A["Participant: alice"]:::orange
     R["ChatRoom<br/>mediator"]:::blue
     B["Participant: bob"]:::teal
@@ -2378,8 +2408,9 @@ flowchart LR
     R -->|"relay#40;#41;"| B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-48-grasp-indirection-mediator/example.py`**
@@ -2687,6 +2718,8 @@ Decorators compose: wrapping a `BaseFetcher` in `LoggingDecorator`, then `Cachin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 51: Stacking Retry + Cache + Log Decorators
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: RetryDecorator outermost, CachingDecorator, LoggingDecorator, BaseFetcher innermost. Connections: RetryDecorator outermost to CachingDecorator, CachingDecorator to LoggingDecorator, LoggingDecorator to BaseFetcher innermost.
     R["RetryDecorator<br/>outermost"]:::blue
     C["CachingDecorator"]:::orange
     L["LoggingDecorator"]:::teal
@@ -2694,9 +2727,10 @@ flowchart LR
     R --> C --> L --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-51-decorator-stacking/example.py`**
@@ -2966,13 +3000,16 @@ Factory Method and Abstract Factory both defer object creation, but they vary al
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
+    accTitle: Example 53: Factory Method vs Abstract Factory, Contrasted on One Example
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: Factory Method varies ONE product, Abstract Factory varies a MATCHED FAMILY, PdfDocument, PdfDocument 43 PdfToolbar. Connections: Factory Method varies ONE product to PdfDocument (PdfCreator), Abstract Factory varies a MATCHED FAMILY to PdfDocument 43 PdfToolbar (PdfSuiteFactory).
     FM["Factory Method<br/>varies ONE product"]:::blue
-    AF["Abstract Factory<br/>varies a MATCHED FAMILY"]:::orange
+    AF["Abstract Factory<br/>varies a MATCHED<br/>FAMILY"]:::orange
     FM -->|"PdfCreator"| D1["PdfDocument"]:::blue
-    AF -->|"PdfSuiteFactory"| D2["PdfDocument #43; PdfToolbar"]:::orange
+    AF -->|"PdfSuiteFactory"| D2["PdfDocument #43;<br/>PdfToolbar"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-53-factory-method-vs-abstract-factory/example.py`**
@@ -3253,6 +3290,8 @@ A direct `StockSubject` holds a typed `list[Observer]` and must import the `Obse
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 55: Direct Observer vs a Decoupling Pub/Sub Broker
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: StockSubject, Observer imported directly, StockPublisher, EventBroker, subscriber. Connections: StockSubject to Observer imported directly (typed reference), StockPublisher to EventBroker (only knows), EventBroker to subscriber (opaque callable).
     S1["StockSubject"]:::blue
     O1["Observer<br/>imported directly"]:::blue
     S1 -->|"typed reference"| O1
@@ -3262,8 +3301,9 @@ flowchart TD
     B -.->|"opaque callable"| SUB["subscriber"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-55-observer-vs-pubsub/example.py`**

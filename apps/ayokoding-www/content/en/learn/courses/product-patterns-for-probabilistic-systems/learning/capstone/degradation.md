@@ -20,22 +20,25 @@ weight: 5
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    R1["Rung 1: Full recommendation<br/>trigger: primary under 8s"]:::teal
-    R2["Rung 2: Fast-mode fallback<br/>trigger: primary 8-20s"]:::blue
-    R3["Rung 3: Recent draft<br/>trigger: no models, cache"]:::orange
-    R4["Rung 4: Raw policy link<br/>trigger: no model, no draft"]:::purple
-    R5["Rung 5: Unavailable<br/>trigger: raw lookup down"]:::brown
+    accTitle: Fallback hierarchy
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Rung 1: Full recommendation trigger: primary under 8s, Rung 2: Fast-mode fallback trigger: primary 8-20s, Rung 3: Recent draft trigger: no models, cache, Rung 4: Raw policy link trigger: no model, no draft, Rung 5: Unavailable trigger: raw lookup down. Connections: Rung 1: Full recommendation trigger: primary under 8s to Rung 2: Fast-mode fallback trigger: primary 8-20s (degrades to), Rung 2: Fast-mode fallback trigger: primary 8-20s to Rung 3: Recent draft trigger: no models, cache (degrades to), Rung 3: Recent draft trigger: no models, cache to Rung 4: Raw policy link trigger: no model, no draft (degrades to), Rung 4: Raw policy link trigger: no model, no draft to Rung 5: Unavailable trigger: raw lookup down (degrades to).
+    R1["Rung 1: Full<br/>recommendation<br/>trigger: primary<br/>under 8s"]:::teal
+    R2["Rung 2: Fast-mode<br/>fallback<br/>trigger: primary<br/>8-20s"]:::blue
+    R3["Rung 3: Recent draft<br/>trigger: no models,<br/>cache"]:::orange
+    R4["Rung 4: Raw policy<br/>link<br/>trigger: no model,<br/>no draft"]:::purple
+    R5["Rung 5: Unavailable<br/>trigger: raw lookup<br/>down"]:::brown
 
     R1 -->|degrades to| R2
     R2 -->|degrades to| R3
     R3 -->|degrades to| R4
     R4 -->|degrades to| R5
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: five rungs, each with an observable trigger condition, falling one at a time from a full

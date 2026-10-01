@@ -25,14 +25,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 1: Dotnet New WinUI
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Dotnet New WinUI, Bound state, Visible result. Connections: User action to Dotnet New WinUI, Dotnet New WinUI to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Dotnet New WinUI"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-01-dotnet-new-winui/Program.cs`**
@@ -138,14 +141,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 4: Add NuGet
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Add NuGet, Bound state, Visible result. Connections: User action to Add NuGet, Add NuGet to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Add NuGet"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-04-add-nuget/Program.cs`**
@@ -251,14 +257,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 7: XAML Window
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, XAML Window, Bound state, Visible result. Connections: User action to XAML Window, XAML Window to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["XAML Window"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-07-xaml-window/Program.cs`**
@@ -364,14 +373,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 10: Grid Layout
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Grid Layout, Bound state, Visible result. Connections: User action to Grid Layout, Grid Layout to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Grid Layout"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-10-grid-layout/Program.cs`**
@@ -477,14 +489,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 13: ListView
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, ListView, Bound state, Visible result. Connections: User action to ListView, ListView to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["ListView"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-13-listview/Program.cs`**
@@ -590,14 +605,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 16: XBind
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, XBind, Bound state, Visible result. Connections: User action to XBind, XBind to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["XBind"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-16-xbind/Program.cs`**
@@ -703,14 +721,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 19: Style
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Style, Bound state, Visible result. Connections: User action to Style, Style to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Style"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-19-style/Program.cs`**
@@ -816,14 +837,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 22: App Startup
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, App Startup, Bound state, Visible result. Connections: User action to App Startup, App Startup to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["App Startup"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-22-app-startup/Program.cs`**
@@ -929,14 +953,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 25: Error Dialog
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Error Dialog, Bound state, Visible result. Connections: User action to Error Dialog, Error Dialog to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Error Dialog"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-25-error-dialog/Program.cs`**
@@ -976,14 +1003,17 @@ example; the course intentionally assumes the C# syntax from Just Enough C# rath
 
 ```mermaid
 flowchart LR
+    accTitle: Example 26: Test Project
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: User action, Test Project, Bound state, Visible result. Connections: User action to Test Project, Test Project to Bound state, Bound state to Visible result.
     A["User action"]:::blue --> B["Test Project"]:::orange
     B --> C["Bound state"]:::teal
     C --> D["Visible result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-26-test-project/Program.cs`**

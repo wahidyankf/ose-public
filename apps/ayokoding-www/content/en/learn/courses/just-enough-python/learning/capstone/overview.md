@@ -15,18 +15,21 @@ taught, individually, somewhere in the Beginner, Intermediate, or Advanced tiers
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: in.json inventory records, app.__main__ argparse CLI, app.transform validate_records, app.transform summarize + grand_total, out.json summary + total. Connections: in.json inventory records to app.__main__ argparse CLI, app.__main__ argparse CLI to app.transform validate_records, app.transform validate_records to app.transform summarize + grand_total, app.transform summarize + grand_total to out.json summary + total.
     A["in.json<br/>inventory records"]:::blue
     B["app.__main__<br/>argparse CLI"]:::orange
     C["app.transform<br/>validate_records"]:::teal
-    D["app.transform<br/>summarize + grand_total"]:::purple
+    D["app.transform<br/>summarize +<br/>grand_total"]:::purple
     E["out.json<br/>summary + total"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

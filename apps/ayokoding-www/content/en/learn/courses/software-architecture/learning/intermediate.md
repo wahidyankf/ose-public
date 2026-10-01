@@ -17,13 +17,16 @@ collaborate to deliver that responsibility.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Worked Example 19: Draw a C4 container view
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: Web application, Order API, Order database. Connections: Web application to Order API, Order API to Order database, Web application to Order API.
     A["Web application"]:::blue --> B["Order API"]:::orange
     B --> C["Order database"]:::teal
     A --> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: A C4 container is an independently runnable or deployable technology boundary,
@@ -40,12 +43,15 @@ dependency direction.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Worked Example 20: Draw a C4 component view
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Order handler, Order service, Order port. Connections: Order handler to Order service, Order service to Order port.
     A["Order handler"]:::blue --> B["Order service"]:::orange
     B --> C["Order port"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: Components communicate responsibilities and allowed edges, not every helper file.
@@ -153,12 +159,15 @@ retry policy. A vague “high availability” requirement would hide all three.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Worked Example 26: Describe a monolith honestly
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Single deployable, Orders module, Catalog module. Connections: Single deployable to Orders module, Single deployable to Catalog module.
     A["Single deployable"]:::blue --> B["Orders module"]:::orange
     A --> C["Catalog module"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: A modular monolith can have strong internal boundaries while shipping as one unit.
@@ -174,12 +183,15 @@ team ownership that the system actually needs.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Worked Example 27: Describe a microservice split
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Orders service, Payments service, Payment store. Connections: Orders service to Payments service (API or event), Payments service to Payment store.
     A["Orders service"]:::blue -->|"API or event"| B["Payments service"]:::orange
     B --> C["Payment store"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: A service boundary introduces a network and an operational contract.
@@ -261,14 +273,17 @@ an explicit cost that preserves each model's integrity and exposes a real integr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A["Frameworks and drivers"]:::blue --> B["Interface adapters"]:::orange
+    accTitle: Worked Example 32: Draw clean architecture direction
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Frameworks and drivers, Interface adapters, Use cases, Entities. Connections: Frameworks and drivers to Interface adapters, Interface adapters to Use cases, Use cases to Entities.
+    A["Frameworks and<br/>drivers"]:::blue --> B["Interface adapters"]:::orange
     B --> C["Use cases"]:::teal
     C --> D["Entities"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: Source dependencies point toward policy, even when runtime control begins at an edge.

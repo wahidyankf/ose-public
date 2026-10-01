@@ -14,23 +14,26 @@ system or actor the postmortem names appears here.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% C4 Level 1 -- System Context: Notification Worker, at the time of the 2026-04-02 incident
 graph TD
+    accTitle: graph diagram
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Customer 40person41, On-call engineer 40person41, Shipment API 40external system, event producer41, Event Bus 40Kafka41 40external, at-least-once delivery41, NotifyGate 40external SMS47email provider41, Notification Worker 40this system41. Connections: Shipment API 40external system, event producer41 to Event Bus 40Kafka41 40external, at-least-once delivery41 (publishes shipment events), Event Bus 40Kafka41 40external, at-least-once delivery41 to Notification Worker 40this system41 (delivers events, at-least-once), Notification Worker 40this system41 to NotifyGate 40external SMS47email provider41 (sends notification), NotifyGate 40external SMS47email provider41 to Customer 40person41 (delivers SMS47email to), Customer 40person41 to On-call engineer 40person41 (reports duplicate via support ticket), On-call engineer 40person41 to Notification Worker 40this system41 (investigates send logs of).
     Customer["Customer<br/>#40;person#41;"]:::purple
     OnCall["On-call engineer<br/>#40;person#41;"]:::purple
-    ShipmentAPI["Shipment API<br/>#40;external system, event producer#41;"]:::brown
-    EventBus["Event Bus #40;Kafka#41;<br/>#40;external, at-least-once delivery#41;"]:::brown
-    NotifyGate["NotifyGate<br/>#40;external SMS#47;email provider#41;"]:::brown
+    ShipmentAPI["Shipment API<br/>#40;external system,<br/>event producer#41;"]:::brown
+    EventBus["Event Bus<br/>#40;Kafka#41;<br/>#40;external,<br/>at-least-once<br/>delivery#41;"]:::brown
+    NotifyGate["NotifyGate<br/>#40;external<br/>SMS#47;email<br/>provider#41;"]:::brown
     Worker["Notification Worker<br/>#40;this system#41;"]:::blue
 
-    ShipmentAPI -->|"publishes shipment events"| EventBus
-    EventBus -->|"delivers events, at-least-once"| Worker
+    ShipmentAPI -->|"publishes shipment<br/>events"| EventBus
+    EventBus -->|"delivers events,<br/>at-least-once"| Worker
     Worker -->|"sends notification"| NotifyGate
-    NotifyGate -->|"delivers SMS#47;email to"| Customer
-    Customer -->|"reports duplicate via support ticket"| OnCall
-    OnCall -->|"investigates send logs of"| Worker
+    NotifyGate -->|"delivers<br/>SMS#47;email to"| Customer
+    Customer -->|"reports duplicate<br/>via support ticket"| OnCall
+    OnCall -->|"investigates send<br/>logs of"| Worker
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: two people (Customer, On-call engineer) and three external systems (Shipment API, the

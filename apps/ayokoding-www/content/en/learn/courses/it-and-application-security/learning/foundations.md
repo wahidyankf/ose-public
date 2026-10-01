@@ -49,11 +49,14 @@ fallback branch. (co-01)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Worked Example 3: Draw defense in depth
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Untrusted request, Validation, Authorization, Audit and alert. Connections: Untrusted request to Validation, Validation to Authorization, Authorization to Audit and alert.
     A["Untrusted request"]:::orange --> B["Validation"]:::blue --> C["Authorization"]:::teal --> D["Audit and alert"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: Layers limit blast radius when an earlier control leaks.

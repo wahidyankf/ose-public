@@ -19,16 +19,19 @@ hardened code (it fails) -- with genuine, captured `curl` output for both.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Step 1 Fix SQL injection, Step 2 Argon2id auth, Step 3 Allow-list + escaping + headers, Step 4 Secrets in env + pip-audit. Connections: Step 1 Fix SQL injection to Step 2 Argon2id auth, Step 2 Argon2id auth to Step 3 Allow-list + escaping + headers, Step 3 Allow-list + escaping + headers to Step 4 Secrets in env + pip-audit.
     A["Step 1<br/>Fix SQL injection"]:::blue
     B["Step 2<br/>Argon2id auth"]:::orange
-    C["Step 3<br/>Allow-list + escaping + headers"]:::teal
-    D["Step 4<br/>Secrets in env + pip-audit"]:::purple
+    C["Step 3<br/>Allow-list +<br/>escaping + headers"]:::teal
+    D["Step 4<br/>Secrets in env +<br/>pip-audit"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

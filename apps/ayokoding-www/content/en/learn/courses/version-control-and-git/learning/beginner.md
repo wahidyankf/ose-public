@@ -25,12 +25,15 @@ Before Git can track anything, a plain folder has to become a repository. `git i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 1: Init a Repository
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Plain folder no .git47, Repository .git47 exists, No commits yet. Connections: Plain folder no .git47 to Repository .git47 exists (git init), Repository .git47 exists to No commits yet (git status).
     A["Plain folder<br/>no .git#47;"]:::blue -->|"git init"| B["Repository<br/>.git#47; exists"]:::teal
     B -->|"git status"| C["No commits yet"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-01-init-repository/setup.sh`**
@@ -128,11 +131,14 @@ does not consider it part of any snapshot yet.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
-    A["Working tree<br/>(file.txt on disk)"]:::orange -->|"git add (not yet run)"| B["Index<br/>(not staged yet)"]:::blue
-    B -->|"git commit (not yet run)"| C["History<br/>(no commit yet)"]:::blue
+    accTitle: Example 3: Create an Untracked File
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Working tree (file.txt on disk), Index (not staged yet), History (no commit yet). Connections: Working tree (file.txt on disk) to Index (not staged yet) (git add (not yet run)), Index (not staged yet) to History (no commit yet) (git commit (not yet run)).
+    A["Working tree<br/>(file.txt on disk)"]:::orange -->|"git add (not yet<br/>run)"| B["Index<br/>(not staged yet)"]:::blue
+    B -->|"git commit (not yet<br/>run)"| C["History<br/>(no commit yet)"]:::blue
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-03-create-untracked-file/setup.sh`**
@@ -183,11 +189,14 @@ three-states model, between the working tree and committed history.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
+    accTitle: Example 4: Stage a File
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Working tree, Index (staged), History (no commit yet). Connections: Working tree to Index (staged) (git add), Index (staged) to History (no commit yet) (git commit (not yet run)).
     A["Working tree"]:::blue -->|"git add"| B["Index<br/>(staged)"]:::teal
-    B -->|"git commit (not yet run)"| C["History<br/>(no commit yet)"]:::blue
+    B -->|"git commit (not yet<br/>run)"| C["History<br/>(no commit yet)"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-04-stage-a-file/setup.sh`**
@@ -388,10 +397,13 @@ the working-tree edit survives untouched either way.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
-    A["Index<br/>(staged)"]:::blue -->|"git restore --staged"| B["Working tree<br/>(back to untracked)"]:::teal
+    accTitle: Example 8: Unstage a File
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: Index (staged), Working tree (back to untracked). Connections: Index (staged) to Working tree (back to untracked) (git restore --staged).
+    A["Index<br/>(staged)"]:::blue -->|"git restore<br/>--staged"| B["Working tree<br/>(back to untracked)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-08-unstage-file/setup.sh`**
@@ -723,14 +735,17 @@ snapshot, one line per entry.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph TD
+    accTitle: Example 15: Inspect a Tree Object
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: commit (HEAD), tree (root directory), blob file.txt, tree sub47, blob sub47inner.txt. Connections: commit (HEAD) to tree (root directory), tree (root directory) to blob file.txt, tree (root directory) to tree sub47, tree sub47 to blob sub47inner.txt.
     Commit["commit<br/>(HEAD)"]:::blue --> Tree["tree<br/>(root directory)"]:::teal
     Tree --> Blob["blob<br/>file.txt"]:::orange
     Tree --> SubTree["tree<br/>sub#47;"]:::teal
     SubTree --> SubBlob["blob<br/>sub#47;inner.txt"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-inspect-tree-object/setup.sh`**
@@ -821,19 +836,22 @@ something new, but always a brand-new hash.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 17: Amend the Last Commit
+    accDescr: Graph with 5 nodes and 2 connections. Nodes: main, commit: iniital typo, main, commit: initial commit (new hash), commit: iniital typo (unreferenced). Connections: main to commit: iniital typo, main to commit: initial commit (new hash).
     subgraph Before["Before amend"]
         direction LR
         B1["main"]:::orange --> B2["commit: iniital typo"]:::orange
     end
     subgraph After["After amend"]
         direction LR
-        A1["main"]:::teal --> A2["commit: initial commit<br/>(new hash)"]:::teal
+        A1["main"]:::teal --> A2["commit: initial<br/>commit<br/>(new hash)"]:::teal
         A3["commit: iniital typo<br/>(unreferenced)"]:::blue
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-17-amend-last-commit/setup.sh`**
@@ -1042,12 +1060,15 @@ to it; the working tree stays exactly where it was.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
+    accTitle: Example 21: Create a Branch
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: commit: initial, main, feature (new pointer, same commit). Connections: main to commit: initial, feature (new pointer, same commit) to commit: initial.
     C["commit: initial"]:::blue
     Main["main"]:::teal --> C
-    Feature["feature<br/>(new pointer, same commit)"]:::teal --> C
+    Feature["feature<br/>(new pointer, same<br/>commit)"]:::teal --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-21-create-branch/setup.sh`**
@@ -1181,12 +1202,15 @@ branch name directly land on the identical commit.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph LR
+    accTitle: Example 24: HEAD Tracks the Branch
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: HEAD, hotfix (branch ref), commit (same hash either way). Connections: HEAD to hotfix (branch ref) (points to), hotfix (branch ref) to commit (same hash either way) (points to).
     HEAD["HEAD"]:::blue -->|"points to"| Branch["hotfix<br/>(branch ref)"]:::teal
-    Branch -->|"points to"| Commit["commit<br/>(same hash either way)"]:::orange
+    Branch -->|"points to"| Commit["commit<br/>(same hash either<br/>way)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-24-head-tracks-branch/setup.sh`**
@@ -1373,11 +1397,14 @@ tag object behind it (unlike an annotated tag, Example 73).
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
-    Tag["v1<br/>(tag, stays put)"]:::teal --> Commit["commit: initial release candidate"]:::blue
+    accTitle: Example 28: A Lightweight Tag
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: v1 (tag, stays put), commit: initial release candidate, main (keeps advancing), later commits. Connections: v1 (tag, stays put) to commit: initial release candidate, main (keeps advancing) to later commits (future commits).
+    Tag["v1<br/>(tag, stays put)"]:::teal --> Commit["commit: initial<br/>release candidate"]:::blue
     Main["main<br/>(keeps advancing)"]:::blue -.->|"future commits"| Future["later commits"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-28-tag-lightweight/setup.sh`**

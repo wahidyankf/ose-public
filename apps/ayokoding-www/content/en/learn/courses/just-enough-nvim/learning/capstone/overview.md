@@ -16,18 +16,21 @@ in the Beginner, Intermediate, or Advanced tiers of this primer.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["Seed<br/>3 files under before#47;"]:::blue
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Seed 3 files under before47, Rename :vimgrep to :cdo, Reformat list macro + register + capture group, Terminal check :terminal python3, Save transcript code47transcript. md. Connections: Seed 3 files under before47 to Rename :vimgrep to :cdo, Rename :vimgrep to :cdo to Reformat list macro + register + capture group, Reformat list macro + register + capture group to Terminal check :terminal python3, Terminal check :terminal python3 to Save transcript code47transcript. md.
+    A["Seed<br/>3 files under<br/>before#47;"]:::blue
     B["Rename<br/>:vimgrep to :cdo"]:::orange
-    C["Reformat list<br/>macro + register + capture group"]:::teal
+    C["Reformat list<br/>macro + register +<br/>capture group"]:::teal
     D["Terminal check<br/>:terminal python3"]:::purple
-    E["Save transcript<br/>code#47;transcript.md"]:::brown
+    E["Save transcript<br/>code#47;transcript.<br/>md"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

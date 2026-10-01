@@ -38,13 +38,16 @@ bounds the programmer’s responsibility. Compile every example with
 
 ```mermaid
 flowchart LR
+  accTitle: The big idea
+  accDescr: Flowchart with 5 nodes and 4 connections. Nodes: C source, compiler, object code, linker, executable. Connections: C source to compiler, compiler to object code, object code to linker, linker to executable.
   S["C source"] --> C["compiler"] --> O["object code"] --> L["linker"] --> B["executable"]
   classDef source fill:#0173B2,stroke:#000000,color:#FFFFFF
   classDef process fill:#DE8F05,stroke:#000000,color:#000000
-  classDef artifact fill:#029E73,stroke:#000000,color:#FFFFFF
+  classDef artifact fill:#029E73,stroke:#000000,color:#000000
   class S source
   class C,L process
   class O,B artifact
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The build loop keeps separate responsibilities visible: the compiler checks each translation unit,
@@ -52,15 +55,18 @@ while the linker joins their declared interfaces into one executable.
 
 ```mermaid
 flowchart LR
+  accTitle: The big idea
+  accDescr: Flowchart with 3 nodes and 3 connections. Nodes: value, pointer, never dereference. Connections: value to pointer (& takes address), pointer to value (* reads or writes valid object), pointer to never dereference (NULL /expired address).
   V["value"] -->|"& takes address"| P["pointer"]
-  P -->|"* reads or writes valid object"| V
-  P -->|"NULL / expired address"| X["never dereference"]
+  P -->|"* reads or writes<br/>valid object"| V
+  P -->|"NULL /expired<br/>address"| X["never dereference"]
   classDef value fill:#0173B2,stroke:#000000,color:#FFFFFF
   classDef pointer fill:#DE8F05,stroke:#000000,color:#000000
-  classDef forbidden fill:#CA9161,stroke:#000000,color:#000000,stroke-width:3px,stroke-dasharray: 6 4
+  classDef forbidden fill:#CA9161,stroke:#000000,color:#000000,stroke-width:3px,stroke-dasharray:6 4
   class V value
   class P pointer
   class X forbidden
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 This relationship is the prerequisite for reading buffers, records, file handles, and API arguments
@@ -68,16 +74,19 @@ in the systems courses without confusing an object with the address used to reac
 
 ```mermaid
 flowchart LR
-  H["header: declarations"] --> A["source A: definitions"]
-  H --> B["source B: uses declarations"]
+  accTitle: The big idea
+  accDescr: Flowchart with 4 nodes and 4 connections. Nodes: header: declarations, source A: definitions, source B: uses declarations, linker. Connections: header: declarations to source A: definitions, header: declarations to source B: uses declarations, source A: definitions to linker, source B: uses declarations to linker.
+  H["header: declarations"] --> A["source A:<br/>definitions"]
+  H --> B["source B: uses<br/>declarations"]
   A --> L["linker"]
   B --> L
   classDef header fill:#0173B2,stroke:#000000,color:#FFFFFF
-  classDef source fill:#029E73,stroke:#000000,color:#FFFFFF
+  classDef source fill:#029E73,stroke:#000000,color:#000000
   classDef linker fill:#DE8F05,stroke:#000000,color:#000000
   class H header
   class A,B source
   class L linker
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Guarded headers and the declaration/definition split let a small C program grow without hiding

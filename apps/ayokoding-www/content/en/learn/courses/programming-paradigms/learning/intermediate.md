@@ -436,13 +436,16 @@ returns a different state object rather than mutating a shared variable.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 34: State Machine -- OO
+    accDescr: Graph with 2 nodes and 4 connections. Nodes: Locked, Unlocked. Connections: Locked to Unlocked (on_coin()), Unlocked to Locked (on_push()), Locked to Locked (on_push() -> self), Unlocked to Unlocked (on_coin() -> self).
     L["Locked"]:::blue -->|"on_coin()"| U["Unlocked"]:::orange
     U -->|"on_push()"| L
     L -->|"on_push() -> self"| L
     U -->|"on_coin() -> self"| U
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -664,13 +667,16 @@ choice points and a `continue`-based backtrack, rather than a single comprehensi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["grandparent('alice')"]:::blue --> B["try Y = 'bob' (parent alice bob)"]:::orange
-    B --> C["try Z = 'carol' (parent bob carol)"]:::teal
+    accTitle: Example 36: Prolog-in-Python
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: grandparent(alice), try Y = bob (parent alice bob), try Z = carol (parent bob carol), unify! yield carol. Connections: grandparent(alice) to try Y = bob (parent alice bob), try Y = bob (parent alice bob) to try Z = carol (parent bob carol), try Z = carol (parent bob carol) to unify! yield carol.
+    A["grandparent('alice')"]:::blue --> B["try Y = 'bob'<br/>(parent alice bob)"]:::orange
+    B --> C["try Z = 'carol'<br/>(parent bob carol)"]:::teal
     C --> D["unify! yield 'carol'"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -770,13 +776,16 @@ pop the queen and try the next column.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["backtrack(row=0)"]:::blue --> B["try col=0: is_safe? place"]:::blue
+    accTitle: Example 37: Backtracking N-Queens
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: backtrack(row=0), try col=0: is_safe? place, backtrack(row=1), pop queen, try col=1 at row=0. Connections: backtrack(row=0) to try col=0: is_safe? place, try col=0: is_safe? place to backtrack(row=1), backtrack(row=1) to pop queen, try col=1 at row=0 (no safe column).
+    A["backtrack(row=0)"]:::blue --> B["try col=0: is_safe?<br/>place"]:::blue
     B --> C["backtrack(row=1)"]:::orange
-    C -->|"no safe column"| D["pop queen, try col=1 at row=0"]:::teal
+    C -->|"no safe column"| D["pop queen, try col=1<br/>at row=0"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -897,12 +906,15 @@ an assignment satisfying it -- with no graph-coloring algorithm hand-written for
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 38: Constraint Map Coloring
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: west, central, east. Connections: west to central (must differ), central to east (must differ).
     W["west"]:::blue ---|"must differ"| C["central"]:::orange
     C ---|"must differ"| E["east"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1152,13 +1164,16 @@ dictionary -- the event loop pattern underlying most event-driven frameworks.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    Q["queue: [login/alice, login/bob, logout/alice]"]:::blue -->|popleft| H1["on_login(alice)"]:::orange
+    accTitle: Example 40: Event-Driven Loop
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: queue: [login/alice, login/bob, logout/alice], on_login(alice), on_login(bob), on_logout(alice). Connections: queue: [login/alice, login/bob, logout/alice] to on_login(alice) (popleft), queue: [login/alice, login/bob, logout/alice] to on_login(bob) (popleft), queue: [login/alice, login/bob, logout/alice] to on_logout(alice) (popleft).
+    Q["queue: [login/alice,<br/>login/bob,<br/>logout/alice]"]:::blue -->|popleft| H1["on_login(alice)"]:::orange
     Q -->|popleft| H2["on_login(bob)"]:::orange
     Q -->|popleft| H3["on_logout(alice)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1283,12 +1298,15 @@ of them change -- no manual "update c" call needed anywhere.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 41: Reactive Derived Value
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Signal a, Computed c = a + b, Signal b. Connections: Signal a to Computed c = a + b (on_change), Signal b to Computed c = a + b (on_change).
     A["Signal a"]:::blue -->|"on_change"| C["Computed c = a + b"]:::teal
     B["Signal b"]:::orange -->|"on_change"| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1552,13 +1570,16 @@ every node it depends on has already been computed.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 43: Dataflow Topological Execute
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: a (no deps), b = a + 1, c = a + b. Connections: a (no deps) to b = a + 1, a (no deps) to c = a + b, b = a + 1 to c = a + b.
     A["a (no deps)"]:::blue --> B["b = a + 1"]:::orange
     A --> C["c = a + b"]:::teal
     B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1689,14 +1710,17 @@ pulls exactly as many source values as needed, and not one more.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 44: Generator Pull Pipeline
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: take(pipeline, 3), gen_filter (even), gen_map (square), source (1, 2, 3, ...). Connections: take(pipeline, 3) to gen_filter (even) (pulls), gen_filter (even) to gen_map (square) (pulls), gen_map (square) to source (1, 2, 3, ...) (pulls).
     T["take(pipeline, 3)"]:::purple -->|pulls| F["gen_filter (even)"]:::teal
     F -->|pulls| M["gen_map (square)"]:::orange
-    M -->|pulls| S["source (1, 2, 3, ...)"]:::blue
+    M -->|pulls| S["source (1, 2, 3,<br/>...)"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -2047,13 +2071,16 @@ one declares the relationship, the other spells out the matching mechanics.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    C["customers"]:::blue -->|"id = orders.customer_id"| J["JOIN"]:::teal
-    O["orders"]:::orange -->|"id = orders.customer_id"| J
+    accTitle: Example 47: Relational vs Nested-Loop Join
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: customers, JOIN, orders, (name, item) pairs. Connections: customers to JOIN (id = orders.customer_id), orders to JOIN (id = orders.customer_id), JOIN to (name, item) pairs.
+    C["customers"]:::blue -->|"id =<br/>orders.customer_id"| J["JOIN"]:::teal
+    O["orders"]:::orange -->|"id =<br/>orders.customer_id"| J
     J --> R["(name, item) pairs"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -2255,12 +2282,15 @@ a clean boundary; crossing it never mutates the tuple.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    F["functional_pipeline(raw_prices)"]:::blue -->|"immutable tuple"| B{"boundary"}:::teal
-    B --> S["InventoryService.record_batch()"]:::orange
+    accTitle: Example 49: Multi-Paradigm Boundary
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: functional_ pipeline(raw_prices), boundary, InventoryService. record_batch(). Connections: functional_ pipeline(raw_prices) to boundary (immutable tuple), boundary to InventoryService. record_batch().
+    F["functional_<br/>pipeline(raw_prices)"]:::blue -->|"immutable tuple"| B{"boundary"}:::teal
+    B --> S["InventoryService.<br/>record_batch()"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -2893,12 +2923,15 @@ A typed `EventBus` notifies every subscriber to a topic, independently -- two su
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    P["publish('order.created', payload)"]:::blue --> A["subscriber A"]:::orange
+    accTitle: Example 55: Event Bus Pub/Sub
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: publish(order. created, payload), subscriber A, subscriber B. Connections: publish(order. created, payload) to subscriber A, publish(order. created, payload) to subscriber B.
+    P["publish('order.<br/>created', payload)"]:::blue --> A["subscriber A"]:::orange
     P --> B["subscriber B"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -3128,12 +3161,15 @@ never triggers a wasted recompute of an unchanged node.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 57: Dataflow Memoized Nodes
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: source, derived = source * 2, unrelated. Connections: source to derived = source * 2, unrelated to derived = source * 2 (invalidate() -- no edge to derived).
     S["source"]:::blue --> D["derived = source * 2"]:::teal
-    U["unrelated"]:::orange -.->|"invalidate() -- no edge to derived"| D
+    U["unrelated"]:::orange -.->|"invalidate() -- no<br/>edge to derived"| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**

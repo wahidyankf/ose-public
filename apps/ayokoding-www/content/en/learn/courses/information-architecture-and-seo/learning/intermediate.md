@@ -14,11 +14,14 @@ These examples expose the technical signals around a well-organized page. A craw
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-  A["Sitemap"]:::blue --> B["Crawl policy"]:::orange --> C["Canonical and metadata"]:::teal --> D["Search candidate"]:::purple
+  accTitle: Discovery Signal Flow
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Sitemap, Crawl policy, Canonical and metadata, Search candidate. Connections: Sitemap to Crawl policy, Crawl policy to Canonical and metadata, Canonical and metadata to Search candidate.
+  A["Sitemap"]:::blue --> B["Crawl policy"]:::orange --> C["Canonical and<br/>metadata"]:::teal --> D["Search candidate"]:::purple
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 19: Publish a Valid XML Sitemap

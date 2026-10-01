@@ -17,18 +17,21 @@ Beginner, Intermediate, or Advanced tiers of this primer.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["store.lua module<br/>returns #123;new = ...#125;"]:::blue
-    B["new#40;#41; closure<br/>get#47;set share one store table"]:::orange
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: store.lua module returns 123new = ...125, new4041 closure get47set share one store table, defaults + __index metatable fallback, main.lua set47get, ipairs47pairs, pcall40get_ required41 nil, err printed cleanly. Connections: store.lua module returns 123new = ...125 to new4041 closure get47set share one store table, new4041 closure get47set share one store table to defaults + __index metatable fallback, defaults + __index metatable fallback to main.lua set47get, ipairs47pairs, main.lua set47get, ipairs47pairs to pcall40get_ required41 nil, err printed cleanly.
+    A["store.lua module<br/>returns #123;new =<br/>...#125;"]:::blue
+    B["new#40;#41; closure<br/>get#47;set share one<br/>store table"]:::orange
     C["defaults + __index<br/>metatable fallback"]:::teal
-    D["main.lua<br/>set#47;get, ipairs#47;pairs"]:::purple
-    E["pcall#40;get_required#41;<br/>nil, err printed cleanly"]:::brown
+    D["main.lua<br/>set#47;get,<br/>ipairs#47;pairs"]:::purple
+    E["pcall#40;get_<br/>required#41;<br/>nil, err printed<br/>cleanly"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

@@ -27,11 +27,13 @@ Every one of this topic's 84 worked examples is a complete, self-contained `exam
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-37)
 graph TD
+    accTitle: How verification works in this topic
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: SOLID co-01 to co-05, GRASP + Law of Demeter co-06 to co-15, Creational and structural patterns co-16 to co-24, Behavioral patterns co-25 to co-31, Gallery, refactoring, anti-patterns, and explicit state (FSM/statecharts) co-32 to co-37. Connections: SOLID co-01 to co-05 to GRASP + Law of Demeter co-06 to co-15, GRASP + Law of Demeter co-06 to co-15 to Creational and structural patterns co-16 to co-24, Creational and structural patterns co-16 to co-24 to Behavioral patterns co-25 to co-31, Behavioral patterns co-25 to co-31 to Gallery, refactoring, anti-patterns, and explicit state (FSM/statecharts) co-32 to co-37.
     A["SOLID<br/>co-01 to co-05"]:::blue
-    B["GRASP + Law of Demeter<br/>co-06 to co-15"]:::orange
-    C["Creational and structural patterns<br/>co-16 to co-24"]:::teal
+    B["GRASP + Law of<br/>Demeter<br/>co-06 to co-15"]:::orange
+    C["Creational and<br/>structural patterns<br/>co-16 to co-24"]:::teal
     D["Behavioral patterns<br/>co-25 to co-31"]:::purple
-    E["Gallery, refactoring, anti-patterns,<br/>and explicit state (FSM/statecharts)<br/>co-32 to co-37"]:::brown
+    E["Gallery,<br/>refactoring,<br/>anti-patterns,<br/>and explicit state<br/>(FSM/statecharts)<br/>co-32 to co-37"]:::brown
 
     A --> B
     B --> C
@@ -39,10 +41,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

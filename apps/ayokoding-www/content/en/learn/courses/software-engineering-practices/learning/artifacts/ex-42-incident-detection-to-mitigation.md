@@ -12,6 +12,8 @@ gift-card redemption to return `503` for every real customer starting at 14:02 U
 
 ```mermaid
 timeline
+    accTitle: timeline diagram
+    accDescr: Timeline of incident INC-0104, a gift-card redemption outage. At 14:02 an alert fires, at 14:04 on-call confirms every redemption returns 503, at 14:06 the kill switch is flipped back ON, at 14:07 traffic recovers, at 14:45 the root cause is found in a stale ops-toggle script, and at 15:30 a confirmation prompt fix is made and a postmortem is scheduled.
     title Incident INC-0104 -- gift-card redemption outage
     14:02 : Alert fires -- redemption error rate > 5%
     14:04 : Detect -- on-call confirms 100% of redemption requests return 503

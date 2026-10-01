@@ -16,18 +16,26 @@ prove the type checker is actually doing its job, not just present.
 
 ```mermaid
 flowchart TD
-    A[state.ts: union + guards] --> C[main.ts: runJob async flow]
-    B[util.ts: pluck generic utility] --> C
-    C --> D[main: run 3 jobs async]
-    D --> E[pluck: extract every job's id]
+    accTitle: Goal
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: state.ts: union + guards, main.ts: runJob async flow, util.ts: pluck generic utility, main: run 3 jobs async, pluck: extract every jobs id, filter + sum results. Connections: state.ts: union + guards to main.ts: runJob async flow, util.ts: pluck generic utility to main.ts: runJob async flow, main.ts: runJob async flow to main: run 3 jobs async, main: run 3 jobs async to pluck: extract every jobs id, main: run 3 jobs async to filter + sum results.
+    A[state.ts: union +<br/>guards] --> C[main.ts: runJob<br/>async flow]
+    B[util.ts: pluck<br/>generic utility] --> C
+    C --> D[main: run 3 jobs<br/>async]
+    D --> E[pluck: extract every<br/>job's id]
     D --> F[filter + sum results]
 
-    style A fill:#0173B2,color:#ffffff
-    style B fill:#DE8F05,color:#000000
-    style C fill:#029E73,color:#ffffff
-    style D fill:#CC78BC,color:#000000
-    style E fill:#CA9161,color:#000000
-    style F fill:#CA9161,color:#000000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

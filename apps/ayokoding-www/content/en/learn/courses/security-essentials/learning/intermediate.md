@@ -171,14 +171,17 @@ value, flipping a real CLI into a hidden mode.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 29: Argument Injection -- Not Just Shell Injection
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: A, dump-config, B, hidden branch fires, same input, D, literal filename, flag inert. Connections: A to dump-config, dump-config to B, B to hidden branch fires (seen as a flag), same input to D, D to literal filename, flag inert (seen as positional).
     A["user input:<br/>--dump-config"]:::blue --> B["argv, no #91;--#93;<br/>separator"]:::orange
     B -->|"seen as a flag"| C["hidden branch<br/>fires"]:::teal
     A2["same input"]:::blue --> D["argv with #91;--#93;<br/>separator added"]:::orange
     D -->|"seen as positional"| E["literal filename,<br/>flag inert"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1005,14 +1008,17 @@ login.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["attacker visits site<br/>gets sid=X"]:::blue --> B["attacker tricks victim<br/>into using sid=X"]:::orange
+    accTitle: Example 36: Session Fixation
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: attacker visits site gets sid=X, attacker tricks victim into using sid=X, victim logs in sid=X now privileged, D, now, attackers old sid=X is dead. Connections: attacker visits site gets sid=X to attacker tricks victim into using sid=X, attacker tricks victim into using sid=X to victim logs in sid=X now privileged, victim logs in sid=X now privileged to D (sid unchanged), D to now, victim logs in sid=X now privileged to attackers old sid=X is dead (sid regenerated).
+    A["attacker visits site<br/>gets sid=X"]:::blue --> B["attacker tricks<br/>victim<br/>into using sid=X"]:::orange
     B --> C["victim logs in<br/>sid=X now privileged"]:::teal
-    C -->|"sid unchanged"| D["attacker reuses sid=X<br/>-- now logged in as victim"]:::orange
+    C -->|"sid unchanged"| D["attacker reuses<br/>sid=X<br/>-- now logged in as<br/>victim"]:::orange
     C -->|"sid regenerated"| E["attacker's old sid=X<br/>is dead"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1586,13 +1592,15 @@ header (which a foreign page cannot read or set) blocks the identical forged req
 ```mermaid
 %% Color Palette: Blue #0173B2 victim/browser, Orange #DE8F05 attacker page, Teal #029E73 server
 sequenceDiagram
-    box Blue Victim
+    accTitle: Example 41: CSRF Live Exploit
+    accDescr: Sequence diagram between Victims browser, evil.example.com, app.py 127.0.0.1:5041. Messages: Victims browser to app.py 127.0.0.1:5041: POST /login real credentials; app.py 127.0.0.1:5041 to Victims browser: Set-Cookie sid plus csrf_token in body; Victims browser to evil.example.com: victim visits attackers page; evil.example.com to app.py 127.0.0.1:5041: forged POST /legacy/change-email cookie only; app.py 127.0.0.1:5041 to evil.example.com: 200 OK email changed VULNERABLE; evil.example.com to app.py 127.0.0.1:5041: forged POST /secure/change-email cookie only; app.py 127.0.0.1:5041 to evil.example.com: 403 csrf token mismatch FIXED.
+    box Victim
         participant V as Victim's browser
     end
-    box Orange Attacker
+    box Attacker
         participant E as evil.example.com
     end
-    box Teal Server
+    box Server
         participant S as app.py 127.0.0.1:5041
     end
     V->>S: POST /login real credentials
@@ -2176,6 +2184,8 @@ owner) the power to lock the real owner out entirely -- a genuine denial-of-serv
 ```mermaid
 %% Color Palette: Blue #0173B2 decision, Teal #029E73 backoff (safe), Orange #DE8F05 lockout (DoS risk)
 flowchart LR
+    accTitle: Example 47: Account Lockout vs. Throttle
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Wrong password attempt, Which policy?, Sleep grows each failure, Owner still logs in, just slower, 3+ failures?, Account locked for EVERYONE, owner too, Attempt proceeds. Connections: Wrong password attempt to Which policy?, Which policy? to Sleep grows each failure (Backoff), Sleep grows each failure to Owner still logs in, just slower, Which policy? to 3+ failures? (Hard lockout), 3+ failures? to Account locked for EVERYONE, owner too (Yes), 3+ failures? to Attempt proceeds (No).
     A["Wrong password<br/>attempt"]:::blue --> B{"Which<br/>policy?"}:::blue
     B -->|Backoff| C["Sleep grows<br/>each failure"]:::teal
     C --> D["Owner still logs in,<br/>just slower"]:::teal
@@ -2184,8 +2194,9 @@ flowchart LR
     E -->|No| G["Attempt<br/>proceeds"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

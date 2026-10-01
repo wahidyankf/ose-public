@@ -19,11 +19,14 @@ client: they parse static local fixtures and fail closed when the lab scope is i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["Written scope"]:::blue --> B["Isolated local evidence"]:::orange --> C["Bounded finding"]:::teal --> D["Remediation report"]:::purple
+    accTitle: How to use these examples
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Written scope, Isolated local evidence, Bounded finding, Remediation report. Connections: Written scope to Isolated local evidence, Isolated local evidence to Bounded finding, Bounded finding to Remediation report.
+    A["Written scope"]:::blue --> B["Isolated local<br/>evidence"]:::orange --> C["Bounded finding"]:::teal --> D["Remediation report"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

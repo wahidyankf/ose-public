@@ -9,13 +9,16 @@ Examples 1–24 establish the C++ toolchain and the highest-value delta over C: 
 
 ```mermaid
 flowchart LR
-  O["object enters scope"] --> R["RAII owner"] --> D["destructor releases resource"]
+  accTitle: flowchart diagram
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: object enters scope, RAII owner, destructor releases resource. Connections: object enters scope to RAII owner, RAII owner to destructor releases resource.
+  O["object enters scope"] --> R["RAII owner"] --> D["destructor releases<br/>resource"]
   classDef object fill:#0173B2,stroke:#000000,color:#FFFFFF
   classDef owner fill:#DE8F05,stroke:#000000,color:#000000
-  classDef result fill:#029E73,stroke:#000000,color:#FFFFFF
+  classDef result fill:#029E73,stroke:#000000,color:#000000
   class O object
   class R owner
   class D result
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 1: Compile with g++

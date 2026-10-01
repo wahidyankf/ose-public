@@ -51,14 +51,17 @@ Adding the `%` range and the `g` flag turns the same `:substitute` command into 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    Rg["Range<br/>. #36; % #39;#60;,#39;#62; 10,20"]:::blue
+    accTitle: Example 32: Substitute Whole File
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Range . 36 3960,3962 10,20, Command s g d w ..., Flags / arguments g c 47pat47repl47. Connections: Range . 36 3960,3962 10,20 to Command s g d w ..., Command s g d w ... to Flags / arguments g c 47pat47repl47.
+    Rg["Range<br/>. #36; %<br/>#39;#60;,#39;#62;<br/>10,20"]:::blue
     Cmd["Command<br/>s g d w ..."]:::orange
-    Fl["Flags / arguments<br/>g c #47;pat#47;repl#47;"]:::teal
+    Fl["Flags / arguments<br/>g c<br/>#47;pat#47;repl#47;"]:::teal
     Rg --> Cmd --> Fl
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**
@@ -312,16 +315,19 @@ _ex-39 &middot; exercises co-19_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A["Ctrl-v anchors a block"]:::blue
-    B["j j extends the block down 3 rows"]:::orange
-    C["I types once, Esc replays it"]:::teal
-    D["Every row in the block gets the same edit"]:::purple
+    accTitle: Example 39: Visual Block Insert
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Ctrl-v anchors a block, j j extends the block down 3 rows, I types once, Esc replays it, Every row in the block gets the same edit. Connections: Ctrl-v anchors a block to j j extends the block down 3 rows, j j extends the block down 3 rows to I types once, Esc replays it, I types once, Esc replays it to Every row in the block gets the same edit.
+    A["Ctrl-v anchors a<br/>block"]:::blue
+    B["j j extends the<br/>block down 3 rows"]:::orange
+    C["I types once, Esc<br/>replays it"]:::teal
+    D["Every row in the<br/>block gets the same<br/>edit"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**
@@ -367,15 +373,18 @@ Text objects target a semantic region regardless of exact cursor position within
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    Word["the word under the cursor"]:::blue
-    Inner["iw selects only the word"]:::teal
-    Around["aw selects the word plus one adjacent whitespace run"]:::orange
+    accTitle: Example 40: Text Object Inner Word
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: the word under the cursor, iw selects only the word, aw selects the word plus one adjacent whitespace run. Connections: the word under the cursor to iw selects only the word, the word under the cursor to aw selects the word plus one adjacent whitespace run.
+    Word["the word under the<br/>cursor"]:::blue
+    Inner["iw selects only the<br/>word"]:::teal
+    Around["aw selects the word<br/>plus one adjacent<br/>whitespace run"]:::orange
     Word --> Inner
     Word --> Around
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**
@@ -991,9 +1000,11 @@ _ex-56 &middot; exercises co-15_
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Purple #CC78BC
 flowchart TD
-    Tab["Tab page<br/>a numbered collection of windows"]:::purple
-    Win1["Window<br/>a viewport onto one buffer"]:::blue
-    Win2["Window<br/>a viewport onto one buffer"]:::blue
+    accTitle: Example 56: Horizontal Split Navigate
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Tab page a numbered collection of windows, Window a viewport onto one buffer, Window a viewport onto one buffer, Buffer in-memory file text, Buffer in-memory file text. Connections: Tab page a numbered collection of windows to Window a viewport onto one buffer, Tab page a numbered collection of windows to Window a viewport onto one buffer, Window a viewport onto one buffer to Buffer in-memory file text, Window a viewport onto one buffer to Buffer in-memory file text.
+    Tab["Tab page<br/>a numbered<br/>collection of<br/>windows"]:::purple
+    Win1["Window<br/>a viewport onto one<br/>buffer"]:::blue
+    Win2["Window<br/>a viewport onto one<br/>buffer"]:::blue
     Buf1["Buffer<br/>in-memory file text"]:::teal
     Buf2["Buffer<br/>in-memory file text"]:::teal
     Tab --> Win1
@@ -1001,9 +1012,10 @@ flowchart TD
     Win1 --> Buf1
     Win2 --> Buf2
 
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**

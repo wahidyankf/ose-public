@@ -47,12 +47,15 @@ Velero restore drill.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC; labels carry meaning.
 flowchart LR
+    accTitle: Acceptance criteria
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Three-server quorum, On-prem add-ons, Git desired state, Digest promotion, Backup and restore evidence. Connections: Three-server quorum to On-prem add-ons, On-prem add-ons to Git desired state, Git desired state to Digest promotion, Digest promotion to Backup and restore evidence.
     Q["Three-server quorum"]:::blue --> A["On-prem add-ons"]:::orange
     A --> D["Git desired state"]:::teal
     D --> P["Digest promotion"]:::purple
-    P --> B["Backup and restore evidence"]:::blue
+    P --> B["Backup and restore<br/>evidence"]:::blue
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

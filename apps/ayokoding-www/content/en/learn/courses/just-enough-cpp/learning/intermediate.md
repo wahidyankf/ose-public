@@ -9,14 +9,17 @@ Examples 25–50 move from generic code and algorithms into modern C++ ownership
 
 ```mermaid
 flowchart LR
+  accTitle: flowchart diagram
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: unique_ptr, resource, shared_ptr. Connections: unique_ptr to resource (single owner), shared_ptr to resource (shared owner).
   U["unique_ptr"] -->|"single owner"| R["resource"]
   S["shared_ptr"] -->|"shared owner"| R
   classDef unique fill:#0173B2,stroke:#000000,color:#FFFFFF
   classDef shared fill:#DE8F05,stroke:#000000,color:#000000
-  classDef resource fill:#029E73,stroke:#000000,color:#FFFFFF
+  classDef resource fill:#029E73,stroke:#000000,color:#000000
   class U unique
   class S shared
   class R resource
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 25: Write a function template

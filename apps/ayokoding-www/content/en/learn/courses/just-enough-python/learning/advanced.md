@@ -545,16 +545,19 @@ exact protocol `open()` itself implements, made visible by writing one from scra
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 71: Custom Context Manager
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: with Session(): starts the block, __enter__() runs prints enter, body runs prints body, __exit__() runs prints exit, guaranteed. Connections: with Session(): starts the block to __enter__() runs prints enter, __enter__() runs prints enter to body runs prints body, body runs prints body to __exit__() runs prints exit, guaranteed.
     A["with Session():<br/>starts the block"]:::blue
     B["__enter__() runs<br/>prints 'enter'"]:::orange
     C["body runs<br/>prints 'body'"]:::teal
-    D["__exit__() runs<br/>prints 'exit', guaranteed"]:::purple
+    D["__exit__() runs<br/>prints 'exit',<br/>guaranteed"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-context-manager-custom/example.py`**
@@ -616,18 +619,21 @@ Example 69's transforming pipeline.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["in.json<br/>3 records, mixed active flags"]:::blue
+    accTitle: Example 72: JSON File Roundtrip Pipeline
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: in.json 3 records, mixed active flags, json.load(f) parses into records, comprehension filter keeps only active records, json.dump(kept, f) writes out.json, out.json 2 active records. Connections: in.json 3 records, mixed active flags to json.load(f) parses into records, json.load(f) parses into records to comprehension filter keeps only active records, comprehension filter keeps only active records to json.dump(kept, f) writes out.json, json.dump(kept, f) writes out.json to out.json 2 active records.
+    A["in.json<br/>3 records, mixed<br/>active flags"]:::blue
     B["json.load(f)<br/>parses into records"]:::orange
-    C["comprehension filter<br/>keeps only active records"]:::teal
+    C["comprehension filter<br/>keeps only active<br/>records"]:::teal
     D["json.dump(kept, f)<br/>writes out.json"]:::purple
     E["out.json<br/>2 active records"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-72-json-file-roundtrip-pipeline/in.json`**
@@ -1237,17 +1243,20 @@ hints at runtime, so the script still runs to completion.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["repeat_label('3', 2)<br/>str passed where int is annotated"]:::blue
-    A --> B["python3 example.py<br/>runtime never checks hints"]:::orange
-    A --> C["pyright example.py<br/>static analysis checks hints"]:::purple
+    accTitle: Example 84: pyright Catches a Type Error
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: repeat_label(3, 2) str passed where int is annotated, python3 example.py runtime never checks hints, pyright example.py static analysis checks hints, exits 0 prints 3 3, 1 error reportArgumentType. Connections: repeat_label(3, 2) str passed where int is annotated to python3 example.py runtime never checks hints, repeat_label(3, 2) str passed where int is annotated to pyright example.py static analysis checks hints, python3 example.py runtime never checks hints to exits 0 prints 3 3, pyright example.py static analysis checks hints to 1 error reportArgumentType.
+    A["repeat_label('3', 2)<br/>str passed where int<br/>is annotated"]:::blue
+    A --> B["python3 example.py<br/>runtime never checks<br/>hints"]:::orange
+    A --> C["pyright example.py<br/>static analysis<br/>checks hints"]:::purple
     B --> D["exits 0<br/>prints '3 3'"]:::teal
     C --> E["1 error<br/>reportArgumentType"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-84-pyright-catches-type-error/example.py`**

@@ -153,11 +153,14 @@ an owner and documented disposition. (co-12)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["Change"]:::blue --> B["Secret and dependency checks"]:::orange --> C["Tests and SAST"]:::teal --> D["Deploy review"]:::purple
+    accTitle: Worked Example 48: Place secure-SDLC gates
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Change, Secret and dependency checks, Tests and SAST, Deploy review. Connections: Change to Secret and dependency checks, Secret and dependency checks to Tests and SAST, Tests and SAST to Deploy review.
+    A["Change"]:::blue --> B["Secret and<br/>dependency checks"]:::orange --> C["Tests and SAST"]:::teal --> D["Deploy review"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: SAST, DAST, dependency checks, and review have different signals and complementary places.

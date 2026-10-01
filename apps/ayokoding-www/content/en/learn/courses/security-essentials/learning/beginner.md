@@ -31,6 +31,8 @@ one attacker-controlled or not -- the mapping exercise every later exploit in th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 1: Trust-Boundary Map -- Tainted Input
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: FORM_BODY username, Handler, QUERY_STRING remember, HTTP_HEADER User-Agent, COOKIE session_id, PATH_PARAM order_id, SERVER_CONSTANT app_version. Connections: FORM_BODY username to Handler, QUERY_STRING remember to Handler, HTTP_HEADER User-Agent to Handler, COOKIE session_id to Handler, PATH_PARAM order_id to Handler, SERVER_CONSTANT app_version to Handler.
     A["FORM_BODY<br/>username"]:::orange --> Z["Handler"]:::blue
     B["QUERY_STRING<br/>remember"]:::orange --> Z
     C["HTTP_HEADER<br/>User-Agent"]:::orange --> Z
@@ -39,8 +41,9 @@ graph TD
     F["SERVER_CONSTANT<br/>app_version"]:::teal --> Z
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -270,12 +273,15 @@ at all, and the printed query text shows exactly how the string was rewritten.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["username = alice' OR '1'='1"]:::orange --> B["f-string concatenation"]:::orange
-    B --> C["...WHERE username = 'alice' OR '1'='1' AND ..."]:::orange
+    accTitle: Example 3: SQL Injection -- Live Exploit
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: username = alice OR 1=1, f-string concatenation, ...WHERE username = alice OR 1=1 AND ..., row found login success: True. Connections: username = alice OR 1=1 to f-string concatenation, f-string concatenation to ...WHERE username = alice OR 1=1 AND ..., ...WHERE username = alice OR 1=1 AND ... to row found login success: True.
+    A["username = alice' OR<br/>'1'='1"]:::orange --> B["f-string<br/>concatenation"]:::orange
+    B --> C["...WHERE username =<br/>'alice' OR '1'='1'<br/>AND ..."]:::orange
     C --> D["row found<br/>login success: True"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -431,12 +437,15 @@ payload is syntactically legal and returns secret rows disguised as search resul
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["term = zzz' UNION SELECT<br/>username, password FROM users --"]:::orange --> B["LIKE '%...%' splice"]:::orange
+    accTitle: Example 5: SQL Injection -- UNION Data Exfiltration
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: A, LIKE ... splice, products UNION users (2 cols each), LEAKED ROWS: alice/s3cret-pw, bob/hunter2. Connections: LIKE ... splice to products UNION users (2 cols each), products UNION users (2 cols each) to LEAKED ROWS: alice/s3cret-pw, bob/hunter2.
+    A["term = zzz' UNION<br/>SELECT<br/>username, password<br/>FROM users --"]:::orange --> B["LIKE '%...%' splice"]:::orange
     B --> C["products UNION users<br/>(2 cols each)"]:::orange
-    C --> D["LEAKED ROWS:<br/>alice/s3cret-pw, bob/hunter2"]:::teal
+    C --> D["LEAKED ROWS:<br/>alice/s3cret-pw,<br/>bob/hunter2"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -536,12 +545,15 @@ injected command actually ran -- and `subprocess.run([...], shell=False)` closes
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["host = 127.0.0.1;<br/>touch injected_marker.txt"]:::orange --> B["os.system#40;command#41;"]:::orange
+    accTitle: Example 6: Command Injection -- Live
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: host = 127.0.0.1 touch injected_marker.txt, os.system40command41, /bin/sh -c runs BOTH commands, marker file CREATED. Connections: host = 127.0.0.1 touch injected_marker.txt to os.system40command41, os.system40command41 to /bin/sh -c runs BOTH commands, /bin/sh -c runs BOTH commands to marker file CREATED.
+    A["host = 127.0.0.1;<br/>touch<br/>injected_marker.txt"]:::orange --> B["os.system(command)"]:::orange
     B --> C["/bin/sh -c<br/>runs BOTH commands"]:::orange
     C --> D["marker file<br/>CREATED"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -643,12 +655,15 @@ prefix check on the RESOLVED path -- not the raw string -- closes the same hole.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["filename =<br/>../secret_config.txt"]:::orange --> B["os.path.join#40;base, filename#41;"]:::orange
-    B --> C["downloads/../secret_config.txt"]:::orange
+    accTitle: Example 7: Path Traversal -- File Read
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: filename = ../secret_config.txt, os.path. join40base, filename41, downloads/../ secret_config.txt, file read OUTSIDE sandbox. Connections: filename = ../secret_config.txt to os.path. join40base, filename41, os.path. join40base, filename41 to downloads/../ secret_config.txt, downloads/../ secret_config.txt to file read OUTSIDE sandbox.
+    A["filename =<br/>../secret_config.txt"]:::orange --> B["os.path.<br/>join#40;base,<br/>filename#41;"]:::orange
+    B --> C["downloads/../<br/>secret_config.txt"]:::orange
     C --> D["file read<br/>OUTSIDE sandbox"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -750,11 +765,14 @@ Requesting it with a `<script>` payload produces a response body containing the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 8: Reflected XSS -- Live
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: A, lt, gt, f-string splice NO encoding, C. Connections: A to f-string splice NO encoding, lt to f-string splice NO encoding, gt to f-string splice NO encoding, f-string splice NO encoding to C, f-string splice NO encoding to lt, f-string splice NO encoding to gt.
     A["?name=&lt;script&gt;..."]:::orange --> B["f-string splice<br/>NO encoding"]:::orange
     B --> C["response body:<br/>literal &lt;script&gt; tag"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1020,14 +1038,17 @@ contains none of the blocked characters and slips past the blocklist, but the al
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
-    A["payload = ＵS<br/>(fullwidth U + S)"]:::orange --> B{"in ALLOWED_COUNTRY_CODES?"}:::purple
-    A --> C{"contains blocklisted char?"}:::purple
+    accTitle: Example 11: Allow-List vs. Deny-List
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: payload = ＵS (fullwidth U + S), in ALLOWED_COUNTRY_ CODES?, contains blocklisted char?, REJECTED, E, missed. Connections: payload = ＵS (fullwidth U + S) to in ALLOWED_COUNTRY_ CODES?, payload = ＵS (fullwidth U + S) to contains blocklisted char?, in ALLOWED_COUNTRY_ CODES? to REJECTED (no), contains blocklisted char? to E (no), E to missed.
+    A["payload = ＵS<br/>(fullwidth U + S)"]:::orange --> B{"in ALLOWED_COUNTRY_<br/>CODES?"}:::purple
+    A --> C{"contains blocklisted<br/>char?"}:::purple
     B -->|"no"| D["REJECTED"]:::teal
     C -->|"no"| E["ACCEPTED<br/>-- missed!"]:::orange
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1263,13 +1284,16 @@ millisecond; the one genuinely random password survives because it is not in the
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["leaked MD5 hash"]:::orange --> B["for guess in dictionary:<br/>md5#40;guess#41; == hash?"]:::orange
+    accTitle: Example 14: MD5 Password Store Is Broken
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: leaked MD5 hash, B, password RECOVERED, D, not. Connections: leaked MD5 hash to B, B to password RECOVERED (match), B to D (no match (carol)), D to not.
+    A["leaked MD5 hash"]:::orange --> B["for guess in<br/>dictionary:<br/>md5#40;guess#41; ==<br/>hash?"]:::orange
     B -->|"match"| C["password RECOVERED"]:::teal
-    B -.->|"no match (carol)"| D["survives -- not in dictionary"]:::blue
+    B -.->|"no match (carol)"| D["survives -- not in<br/>dictionary"]:::blue
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2167,14 +2191,17 @@ message.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 25: Safe Error Message
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Unhandled exception, errorhandler, traceback.format_ exc() sent to CLIENT, logger.exception() sent to SERVER LOG, generic message sent to CLIENT. Connections: Unhandled exception to errorhandler, errorhandler to traceback.format_ exc() sent to CLIENT (VULNERABLE), errorhandler to logger.exception() sent to SERVER LOG (FIXED), logger.exception() sent to SERVER LOG to generic message sent to CLIENT.
     A["Unhandled exception"]:::orange --> B{"errorhandler"}:::blue
-    B -->|VULNERABLE| C["traceback.format_exc()<br/>sent to CLIENT"]:::orange
+    B -->|VULNERABLE| C["traceback.format_<br/>exc()<br/>sent to CLIENT"]:::orange
     B -->|FIXED| D["logger.exception()<br/>sent to SERVER LOG"]:::teal
     D --> E["generic message<br/>sent to CLIENT"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2293,14 +2320,17 @@ second query with an f-string (unsafe) -- the injection fires on the _second_, l
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["payload"]:::orange -->|"parameterized INSERT<br/>(safe)"| B[("users table")]:::blue
+    accTitle: Example 26: Second-Order SQL Injection
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: payload, users table, second query, UNION SELECT fires, treated as literal. Connections: payload to users table (parameterized INSERT (safe)), users table to second query (read back), second query to UNION SELECT fires (f-string (VULNERABLE)), second query to treated as literal (bound ? (FIXED)).
+    A["payload"]:::orange -->|"parameterized<br/>INSERT<br/>(safe)"| B[("users table")]:::blue
     B -->|"read back"| C{"second query"}:::blue
     C -->|"f-string<br/>(VULNERABLE)"| D["UNION SELECT fires"]:::orange
     C -->|"bound '?'<br/>(FIXED)"| E["treated as literal"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

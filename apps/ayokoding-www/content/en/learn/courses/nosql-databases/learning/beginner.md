@@ -296,13 +296,16 @@ reads members back already sorted, with no client-side sort step required.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    Z["ZADD leaderboard:weekly<br/>120 alice, 95 bob, 150 carol"]:::orange --> S[("Sorted Set<br/>ordered by score")]:::blue
-    S -->|ZRANGE 0 -1| L["bob 95, alice 120, carol 150<br/>(ascending)"]:::teal
+    accTitle: Example 6: Redis Sorted Set Leaderboard
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: ZADD leaderboard:weekly 120 alice, 95 bob, 150 carol, Sorted Set ordered by score, bob 95, alice 120, carol 150 (ascending), carol 150 (top entry). Connections: ZADD leaderboard:weekly 120 alice, 95 bob, 150 carol to Sorted Set ordered by score, Sorted Set ordered by score to bob 95, alice 120, carol 150 (ascending) (ZRANGE 0 -1), Sorted Set ordered by score to carol 150 (top entry) (ZREVRANGE 0 0).
+    Z["ZADD<br/>leaderboard:weekly<br/>120 alice, 95 bob,<br/>150 carol"]:::orange --> S[("Sorted Set<br/>ordered by score")]:::blue
+    S -->|ZRANGE 0 -1| L["bob 95, alice 120,<br/>carol 150<br/>(ascending)"]:::teal
     S -->|ZREVRANGE 0 0| T["carol 150<br/>(top entry)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-06-redis-sorted-set-leaderboard/example.sh`**
@@ -459,6 +462,8 @@ different product.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 9: Redis as Cache vs. Store
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Same Redis/Valkey engine, Cache mode cache:page:home, Store mode store:user:1:balance, key LOST no disk copy, key SURVIVES AOF replayed. Connections: Same Redis/Valkey engine to Cache mode cache:page:home (save appendonly no), Same Redis/Valkey engine to Store mode store:user:1:balance (appendonly yes), Cache mode cache:page:home to key LOST no disk copy (restart), Store mode store:user:1:balance to key SURVIVES AOF replayed (restart).
     E[("Same Redis/Valkey<br/>engine")]:::orange
     E -->|"save ''<br/>appendonly no"| C["Cache mode<br/>cache:page:home"]:::blue
     E -->|"appendonly yes"| D["Store mode<br/>store:user:1:balance"]:::teal
@@ -466,8 +471,9 @@ flowchart LR
     D -->|restart| D2["key SURVIVES<br/>AOF replayed"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-09-redis-as-cache-vs-store/example.sh`**
@@ -675,15 +681,18 @@ collection, joined by a stored id).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 12: MongoDB Embedded vs. Referenced
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Embedded 1 document, 1 query, Referenced 2 collections, 2 queries, Same logical data, different read cost. Connections: Embedded 1 document, 1 query to Same logical data, different read cost, Referenced 2 collections, 2 queries to Same logical data, different read cost.
     A["Embedded<br/>1 document, 1 query"]:::blue
-    B["Referenced<br/>2 collections, 2 queries"]:::orange
+    B["Referenced<br/>2 collections, 2<br/>queries"]:::orange
     C["Same logical data,<br/>different read cost"]:::teal
     A --> C
     B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Embedded approach (`learning/code/ex-12-mongo-embedded-vs-referenced/embedded.py`)**:
@@ -1136,13 +1145,16 @@ Classify three specifically configured stores as CP-leaning (refuses under parti
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 17: Classify by CAP Theorem
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Network partition occurs, CP: Consistent MongoDB majority write, Cassandra QUORUM/QUORUM, AP: Available DynamoDB eventually- consistent reads. Connections: Network partition occurs to CP: Consistent MongoDB majority write, Cassandra QUORUM/QUORUM (refuse request), Network partition occurs to AP: Available DynamoDB eventually- consistent reads (answer anyway, possibly stale).
     A{"Network partition<br/>occurs"}:::orange
-    A -->|refuse request| B["CP: Consistent<br/>MongoDB majority write,<br/>Cassandra QUORUM/QUORUM"]:::blue
+    A -->|refuse request| B["CP: Consistent<br/>MongoDB majority<br/>write,<br/>Cassandra<br/>QUORUM/QUORUM"]:::blue
     A -->|answer anyway,<br/>possibly stale| C["AP: Available<br/>DynamoDB eventually-<br/>consistent reads"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-17-cap-theorem-classify/example.py`**
@@ -1381,6 +1393,8 @@ read, after replication settles, converges to the leader's latest value.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 sequenceDiagram
+    accTitle: Example 20: Simulate Eventual Consistency
+    accDescr: Sequence diagram between Leader, Follower-A. Messages: Leader to Leader: write(v1); Leader to Follower-A: replicate(v1) (delayed).
     participant L as Leader
     participant F as Follower-A
     L->>L: write("v1")
@@ -1471,6 +1485,8 @@ scheme, and roughly even, though not perfectly so, at this small a sample.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 21: Partition Key Hash Distribution
+    accDescr: Flowchart with 10 nodes and 9 connections. Nodes: user:1, sha256(key) 4, user:2, user:3, user:4, user:5, bucket 0, bucket 1, bucket 2, bucket 3. Connections: user:1 to sha256(key) 4, user:2 to sha256(key) 4, user:3 to sha256(key) 4, user:4 to sha256(key) 4, user:5 to sha256(key) 4, sha256(key) 4 to bucket 0, sha256(key) 4 to bucket 1, sha256(key) 4 to bucket 2, sha256(key) 4 to bucket 3.
     K1["user:1"]:::orange --> H["sha256(key) % 4"]:::blue
     K2["user:2"]:::orange --> H
     K3["user:3"]:::orange --> H
@@ -1482,8 +1498,9 @@ flowchart LR
     H --> B3["bucket 3"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-21-partition-key-hash-distribute/example.py`**
@@ -1557,9 +1574,12 @@ consistent hashing's promise is roughly `1/N` keys move, not all of them.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart LR
-    A(("node-A")):::blue --> B(("node-B")):::blue --> C(("node-C")):::blue --> D(("node-D")):::blue -->|"node-E inserted here"| A
+    accTitle: Example 22: Consistent Hashing Ring
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: node-A, node-B, node-C, node-D. Connections: node-A to node-B, node-B to node-C, node-C to node-D, node-D to node-A (node-E inserted here).
+    A(("node-A")):::blue --> B(("node-B")):::blue --> C(("node-C")):::blue --> D(("node-D")):::blue -->|"node-E inserted<br/>here"| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-22-consistent-hashing-ring/example.py`**
@@ -1649,15 +1669,18 @@ same order the leader chose -- never a different order of their own.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 23: Leader-Follower Replication, Simulated
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Leader orders: v1, v2, v3, Follower-A replicates: v1, v2, v3, Follower-B replicates: v1, v2, v3. Connections: Leader orders: v1, v2, v3 to Follower-A replicates: v1, v2, v3, Leader orders: v1, v2, v3 to Follower-B replicates: v1, v2, v3.
     L["Leader<br/>orders: v1, v2, v3"]:::blue
-    A["Follower-A<br/>replicates: v1, v2, v3"]:::orange
-    B["Follower-B<br/>replicates: v1, v2, v3"]:::teal
+    A["Follower-A<br/>replicates: v1, v2,<br/>v3"]:::orange
+    B["Follower-B<br/>replicates: v1, v2,<br/>v3"]:::teal
     L --> A
     L --> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-23-replication-leader-follower-sim/example.py`**

@@ -498,6 +498,8 @@ _exercises co-33_
 
 ```mermaid
 classDiagram
+    accTitle: Step 4: before &rarr after design
+    accDescr: Class diagram with 9 items: OrderEngineSmelly, DiscountStrategy, NoDiscount, TenPercentOff, BuyOneGetOneFree, OrderPlacedObserver, NotificationLog, OrderEngine, LoggingOrderEngine. Relationships: OrderEngine to DiscountStrategy: depends on (co-05); OrderEngine to OrderPlacedObserver: notifies (co-26); LoggingOrderEngine to OrderEngine: wraps (co-21, co-09).
     class OrderEngineSmelly {
         +items dict
         +notifications list
@@ -542,6 +544,7 @@ classDiagram
     OrderEngine ..> OrderPlacedObserver : notifies (co-26)
     LoggingOrderEngine o-- OrderEngine : wraps (co-21, co-09)
     note for OrderEngine "AFTER: SRP-compliant.\nStrategy + factory + Observer +\nDecorator, composed cohesively."
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The diagram matches the code exactly: `OrderEngineSmelly` (Step 1) has no arrows out to any strategy

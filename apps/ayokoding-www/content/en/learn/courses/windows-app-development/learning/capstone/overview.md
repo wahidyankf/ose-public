@@ -24,6 +24,8 @@ progress (co-16, co-17) [x] settings and SQLite persistence (co-19, co-20) [x] h
 
 ```mermaid
 flowchart LR
+    accTitle: The capstone: Windows Tasks
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: XAML view, TaskViewModel, SQLite repository, JSON settings, xUnit tests. Connections: XAML view to TaskViewModel, TaskViewModel to SQLite repository, TaskViewModel to JSON settings, TaskViewModel to xUnit tests.
     A["XAML view"]:::blue --> B["TaskViewModel"]:::orange
     B --> C["SQLite repository"]:::teal
     B --> D["JSON settings"]:::purple
@@ -31,9 +33,10 @@ flowchart LR
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Step 1: restore, test, and run

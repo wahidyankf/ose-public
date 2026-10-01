@@ -23,17 +23,20 @@ from the commit graph, and the foundation of Git's undo-of-last-resort.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph TD
-    subgraph Graph["Commit graph (what git log shows)"]
+    accTitle: Example 61: Inspect the Reflog
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: initial, c1, c2, c3, HEAD@0: commit c3, HEAD@1: commit c2, HEAD@2: commit c1, HEAD@3: commit initial. Connections: initial to c1, c1 to c2, c2 to c3, HEAD@0: commit c3 to HEAD@1: commit c2, HEAD@1: commit c2 to HEAD@2: commit c1, HEAD@2: commit c1 to HEAD@3: commit initial.
+    subgraph Graph["Commit graph (what<br/>git log shows)"]
         direction LR
         A["initial"]:::blue --> B["c1"]:::blue --> C["c2"]:::blue --> D["c3"]:::blue
     end
-    subgraph Reflog["Reflog (what git reflog shows)"]
+    subgraph Reflog["Reflog (what git<br/>reflog shows)"]
         direction LR
-        R0["HEAD@{0}: commit c3"]:::teal --> R1["HEAD@{1}: commit c2"]:::teal --> R2["HEAD@{2}: commit c1"]:::teal --> R3["HEAD@{3}: commit initial"]:::teal
+        R0["HEAD@{0}: commit c3"]:::teal --> R1["HEAD@{1}: commit c2"]:::teal --> R2["HEAD@{2}: commit c1"]:::teal --> R3["HEAD@{3}: commit<br/>initial"]:::teal
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-61-reflog-inspect/setup.sh`**
@@ -207,10 +210,13 @@ exact same mechanism as an `ssh://` or `https://` URL to a real hosted remote.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
-    W["work/<br/>(local repo)"]:::blue -->|"git remote add origin"| R["remote.git<br/>(bare repo)"]:::orange
+    accTitle: Example 64: Add a Remote
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: work/ (local repo), remote.git (bare repo). Connections: work/ (local repo) to remote.git (bare repo) (git remote add origin).
+    W["work/<br/>(local repo)"]:::blue -->|"git remote add<br/>origin"| R["remote.git<br/>(bare repo)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-64-add-remote/setup.sh`**
@@ -313,10 +319,13 @@ _ex-66 &middot; exercises co-23_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
-    L["local main<br/>(has new commits)"]:::blue -->|"git push origin main"| RR["remote main<br/>(ref moves to match)"]:::orange
+    accTitle: Example 66: Push to a Remote
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: local main (has new commits), remote main (ref moves to match). Connections: local main (has new commits) to remote main (ref moves to match) (git push origin main).
+    L["local main<br/>(has new commits)"]:::blue -->|"git push origin<br/>main"| RR["remote main<br/>(ref moves to match)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-66-push-to-remote/setup.sh`**
@@ -369,12 +378,15 @@ tracks the matching remote-tracking ref for future push/pull.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph LR
-    Local["local feature"]:::blue -->|"tracks"| Tracking["origin/feature<br/>(remote-tracking ref)"]:::teal
+    accTitle: Example 67: Set Upstream Tracking
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: local feature, origin/feature (remote-tracking ref), remote feature (on origin). Connections: local feature to origin/feature (remote-tracking ref) (tracks), origin/feature (remote-tracking ref) to remote feature (on origin) (mirrors).
+    Local["local feature"]:::blue -->|"tracks"| Tracking["origin/feature<br/>(remote-tracking<br/>ref)"]:::teal
     Tracking -.->|"mirrors"| Remote["remote feature<br/>(on origin)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-67-set-upstream-tracking/setup.sh`**
@@ -431,12 +443,15 @@ the local branch (`main`) or working tree at all.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 68: Fetch Updates
+    accDescr: Graph with 3 nodes and 1 connections. Nodes: remote main (2 commits), origin/main (updated: 2 commits), local main (UNCHANGED: 1 commit). Connections: remote main (2 commits) to origin/main (updated: 2 commits) (git fetch).
     Remote["remote main<br/>(2 commits)"]:::orange -->|"git fetch"| Track["origin/main<br/>(updated: 2 commits)"]:::teal
-    Local["local main<br/>(UNCHANGED: 1 commit)"]:::blue
+    Local["local main<br/>(UNCHANGED: 1<br/>commit)"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-fetch-updates/setup.sh`**
@@ -558,12 +573,15 @@ instead of merging -- keeping history linear even when both sides diverged.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 70: Pull with Rebase
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: initial, remote change (fetched), local change (replayed on top). Connections: initial to remote change (fetched), remote change (fetched) to local change (replayed on top).
     Base["initial"]:::blue --> Remote["remote change<br/>(fetched)"]:::orange
     Remote --> Local["local change'<br/>(replayed on top)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-70-pull-rebase/setup.sh`**
@@ -629,14 +647,17 @@ refuses to let a push accidentally discard someone else's already-published comm
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Brown #CA9161
 graph LR
+    accTitle: Example 71: Push Rejected
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: remote main (has ws2s commit), ws1 local main (stale, based on OLD tip), Reject. Connections: ws1 local main (stale, based on OLD tip) to remote main (has ws2s commit) (git push (REJECTED)), remote main (has ws2s commit) to Reject (reason).
     RemoteTip["remote main<br/>(has ws2's commit)"]:::orange
-    LocalTip["ws1 local main<br/>(stale, based on OLD tip)"]:::blue
-    LocalTip -.->|"git push (REJECTED)"| RemoteTip
-    RemoteTip -->|"reason"| Reject["fetch first --<br/>would discard ws2's work"]:::brown
+    LocalTip["ws1 local main<br/>(stale, based on OLD<br/>tip)"]:::blue
+    LocalTip -.->|"git push<br/>(REJECTED)"| RemoteTip
+    RemoteTip -->|"reason"| Reject["fetch first --<br/>would discard ws2's<br/>work"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-push-rejected-non-fast-forward/setup.sh`**
@@ -755,10 +776,13 @@ message, tagger name/email, and timestamp, separately from the commit it points 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
-    Tag["tag object v1.0<br/>(tagger, date, message)"]:::teal --> Commit["commit: release candidate"]:::blue
+    accTitle: Example 73: Create an Annotated Tag
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: tag object v1.0 (tagger, date, message), commit: release candidate. Connections: tag object v1.0 (tagger, date, message) to commit: release candidate.
+    Tag["tag object v1.0<br/>(tagger, date,<br/>message)"]:::teal --> Commit["commit: release<br/>candidate"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-73-annotated-tag/setup.sh`**
@@ -874,13 +898,16 @@ with a different hash, but the same author, message, and content change.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 75: Cherry-Pick a Commit
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: main tip, feature: handy bugfix, main: handy bugfix (new commit, same diff). Connections: feature: handy bugfix to main: handy bugfix (new commit, same diff) (git cherry-pick), main tip to main: handy bugfix (new commit, same diff).
     Main["main tip"]:::blue
-    Feature["feature: handy bugfix"]:::orange -->|"git cherry-pick"| New["main: handy bugfix'<br/>(new commit, same diff)"]:::teal
+    Feature["feature: handy<br/>bugfix"]:::orange -->|"git cherry-pick"| New["main: handy bugfix'<br/>(new commit, same<br/>diff)"]:::teal
     Main --> New
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-75-cherry-pick-commit/setup.sh`**
@@ -1012,12 +1039,15 @@ creating the commit object, and aborts entirely if the hook refuses.
 ```mermaid
 %% Color Palette: Blue #0173B2, Brown #CA9161
 graph LR
+    accTitle: Example 77: Install a Pre-Commit Hook
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: git add + git commit, pre-commit hook exit code?, commit created, commit BLOCKED. Connections: git add + git commit to pre-commit hook exit code?, pre-commit hook exit code? to commit created (0), pre-commit hook exit code? to commit BLOCKED (nonzero).
     Stage["git add + git commit"]:::blue --> Hook{"pre-commit hook<br/>exit code?"}:::blue
     Hook -->|"0"| Success["commit created"]:::blue
     Hook -->|"nonzero"| Block["commit BLOCKED"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-77-install-pre-commit-hook/setup.sh`**
@@ -1135,14 +1165,17 @@ what a hosted pull-request review's own "merge" button does underneath.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 79: A Pull-Request Branch Flow
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: trunk: initial, add-greeting (pushed, reviewed), M, no-ff, remote trunk (identical graph). Connections: trunk: initial to add-greeting (pushed, reviewed), trunk: initial to M, M to no-ff, add-greeting (pushed, reviewed) to M, M to remote trunk (identical graph) (git push origin main).
     T1["trunk: initial"]:::blue --> B["add-greeting<br/>(pushed, reviewed)"]:::orange
     T1 --> M["Merge pull request<br/>(--no-ff)"]:::teal
     B --> M
-    M -->|"git push origin main"| Shared["remote trunk<br/>(identical graph)"]:::teal
+    M -->|"git push origin<br/>main"| Shared["remote trunk<br/>(identical graph)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-79-pr-branch-flow/setup.sh`**
@@ -1217,10 +1250,13 @@ almost immediately, then deleted -- never accumulating drift from trunk.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
-    T["main: initial"]:::blue -->|"branch, commit, FF-merge, delete"| T2["main: quick trunk fix<br/>(quick-fix branch gone)"]:::teal
+    accTitle: Example 80: A Trunk-Based Short-Lived Branch
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: main: initial, main: quick trunk fix (quick-fix branch gone). Connections: main: initial to main: quick trunk fix (quick-fix branch gone) (branch, commit, FF-merge, delete).
+    T["main: initial"]:::blue -->|"branch, commit,<br/>FF-merge, delete"| T2["main: quick trunk<br/>fix<br/>(quick-fix branch<br/>gone)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-80-trunk-based-short-branch/setup.sh`**

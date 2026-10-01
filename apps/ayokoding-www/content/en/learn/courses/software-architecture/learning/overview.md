@@ -15,14 +15,17 @@ change without forcing unrelated code or teams to change with it.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: Mental model
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Change pressure, Choose a boundary, Protect a quality attribute, Verify with a fitness function. Connections: Change pressure to Choose a boundary, Choose a boundary to Protect a quality attribute, Protect a quality attribute to Verify with a fitness function.
     A["Change pressure"]:::blue --> B{"Choose a boundary"}:::orange
-    B --> C["Protect a quality attribute"]:::teal
-    C --> D["Verify with a fitness function"]:::purple
+    B --> C["Protect a quality<br/>attribute"]:::teal
+    C --> D["Verify with a<br/>fitness function"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concept map

@@ -19,20 +19,23 @@ Advanced tiers of this topic -- Example 81 in particular is this capstone's dire
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 6 nodes and 4 connections. Nodes: client.py PING / TIME, server.py bind/listen/accept thread per client, read_line4041 frames -delimited commands, handle_ command4041 PONG / epoch time, E, gt. Connections: client.py PING / TIME to server.py bind/listen/accept thread per client (TCP handshake), server.py bind/listen/accept thread per client to read_line4041 frames -delimited commands, read_line4041 frames -delimited commands to handle_ command4041 PONG / epoch time, handle_ command4041 PONG / epoch time to client.py PING / TIME (reply).
     A["client.py<br/>PING / TIME"]:::blue
     B["server.py<br/>bind/listen/accept<br/>thread per client"]:::orange
-    C["read_line#40;#41;<br/>frames \n-delimited commands"]:::teal
-    D["handle_command#40;#41;<br/>PONG / epoch time"]:::purple
+    C["read_line#40;#41;<br/>frames <br/>-delimited commands"]:::teal
+    D["handle_<br/>command#40;#41;<br/>PONG / epoch time"]:::purple
     E["explore.py<br/>DNS -&gt; TCP -&gt; HTTP<br/>+ UDP contrast note"]:::brown
     A -->|TCP handshake| B --> C --> D
     D -->|reply| A
     E -.independent script.-> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

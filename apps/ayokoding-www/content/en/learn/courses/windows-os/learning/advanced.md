@@ -13,10 +13,13 @@ _Exercises co-22._ This small experiment isolates **Process and Two Threads** an
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Process and Two Threads"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 55: Process and Two Threads
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Process and Two Threads, Observed state. Connections: Caller to Process and Two Threads, Process and Two Threads to Observed state.
+  A["Caller"]:::blue --> B["Process and Two<br/>Threads"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-55-process-and-two-threads/example.c)
@@ -31,10 +34,13 @@ _Exercises co-22._ This small experiment isolates **Producer Consumer with Event
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Producer Consumer with Events"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 56: Producer Consumer with Events
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Producer Consumer with Events, Observed state. Connections: Caller to Producer Consumer with Events, Producer Consumer with Events to Observed state.
+  A["Caller"]:::blue --> B["Producer Consumer<br/>with Events"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-56-producer-consumer-with-events/example.c)
@@ -49,10 +55,13 @@ _Exercises co-22._ This small experiment isolates **Shared Memory Mapping** and 
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Shared Memory Mapping"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 57: Shared Memory Mapping
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Shared Memory Mapping, Observed state. Connections: Caller to Shared Memory Mapping, Shared Memory Mapping to Observed state.
+  A["Caller"]:::blue --> B["Shared Memory<br/>Mapping"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-57-shared-memory-mapping/example.c)
@@ -67,10 +76,13 @@ _Exercises co-23._ This small experiment isolates **Overlapped Completion Event*
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Overlapped Completion Event"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 58: Overlapped Completion Event
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Overlapped Completion Event, Observed state. Connections: Caller to Overlapped Completion Event, Overlapped Completion Event to Observed state.
+  A["Caller"]:::blue --> B["Overlapped<br/>Completion Event"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-58-overlapped-completion-event/example.c)
@@ -94,10 +106,13 @@ _Exercises co-24._ This small experiment isolates **Race Then Critical-Section F
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Race Then Critical-Section Fix"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 60: Race Then Critical-Section Fix
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Race Then Critical-Section Fix, Observed state. Connections: Caller to Race Then Critical-Section Fix, Race Then Critical-Section Fix to Observed state.
+  A["Caller"]:::blue --> B["Race Then<br/>Critical-Section Fix"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-60-race-then-critical-section-fix/example.c)
@@ -112,10 +127,13 @@ _Exercises co-24._ This small experiment isolates **Named Synchronization Betwee
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Named Synchronization Between Processes"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 61: Named Synchronization Between Processes
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Named Synchronization Between Processes, Observed state. Connections: Caller to Named Synchronization Between Processes, Named Synchronization Between Processes to Observed state.
+  A["Caller"]:::blue --> B["Named<br/>Synchronization<br/>Between Processes"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-61-named-synchronization-between-processes/example.c)
@@ -148,10 +166,13 @@ _Exercises co-25._ This small experiment isolates **Handle File Round Trip** and
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Handle File Round Trip"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 64: Handle File Round Trip
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Handle File Round Trip, Observed state. Connections: Caller to Handle File Round Trip, Handle File Round Trip to Observed state.
+  A["Caller"]:::blue --> B["Handle File Round<br/>Trip"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-64-handle-file-round-trip/example.c)
@@ -193,10 +214,13 @@ _Exercises co-27._ This small experiment isolates **HANDLE and File Descriptor C
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["HANDLE and File Descriptor Contrast"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 68: HANDLE and File Descriptor Contrast
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, HANDLE and File Descriptor Contrast, Observed state. Connections: Caller to HANDLE and File Descriptor Contrast, HANDLE and File Descriptor Contrast to Observed state.
+  A["Caller"]:::blue --> B["HANDLE and File<br/>Descriptor Contrast"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-68-handle-and-file-descriptor-contrast/example.c)
@@ -211,10 +235,13 @@ _Exercises co-27._ This small experiment isolates **CreateProcess and fork/exec 
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["CreateProcess and fork/exec Contrast"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 69: CreateProcess and fork/exec Contrast
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, CreateProcess and fork/exec Contrast, Observed state. Connections: Caller to CreateProcess and fork/exec Contrast, CreateProcess and fork/exec Contrast to Observed state.
+  A["Caller"]:::blue --> B["CreateProcess and<br/>fork/exec Contrast"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-69-createprocess-and-fork-exec-contrast/example.c)
@@ -238,10 +265,13 @@ _Exercises co-28._ This small experiment isolates **Uniform Waitable Objects** a
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Uniform Waitable Objects"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 71: Uniform Waitable Objects
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Uniform Waitable Objects, Observed state. Connections: Caller to Uniform Waitable Objects, Uniform Waitable Objects to Observed state.
+  A["Caller"]:::blue --> B["Uniform Waitable<br/>Objects"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-71-uniform-waitable-objects/example.c)
@@ -265,10 +295,13 @@ _Exercises co-29._ This small experiment isolates **Concurrent Overlapped I/O** 
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Concurrent Overlapped I/O"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 73: Concurrent Overlapped I/O
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Concurrent Overlapped I/O, Observed state. Connections: Caller to Concurrent Overlapped I/O, Concurrent Overlapped I/O to Observed state.
+  A["Caller"]:::blue --> B["Concurrent<br/>Overlapped I/O"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-73-concurrent-overlapped-i-o/example.c)

@@ -19,7 +19,7 @@ A query builder's first move is representing a piece of SQL as a small immutable
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
     accTitle: Example 1: Clause as Data, Not a String
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Column Ref40name=id41 a data value, node.render4041 called lazily, id SQL text, only now. Connections: Column Ref40name=id41 a data value to node.render4041 called lazily (render), node.render4041 called lazily to id SQL text, only now.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Column Ref(name=id) a data value, node.render() called lazily, id SQL text, only now. Connections: Column Ref(name=id) a data value to node.render() called lazily (render), node.render() called lazily to id SQL text, only now.
     A["Column<br/>Ref#40;name='id'#41;<br/>a data value"]:::blue
     B["node.render#40;#41;<br/>called lazily"]:::orange
     C["'id'<br/>SQL text, only now"]:::blue
@@ -211,7 +211,7 @@ This is the one non-negotiable safety rule of the whole builder: a bound value a
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 3: Bind a Value as a Placeholder, Never Interpolate It
-    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Param40value=hostile_string41, render4041, C, SQL, D, params. Connections: C to SQL, D to params, Param40value=hostile_string41 to render4041, render4041 to C, render4041 to D.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Param(value= hostile_string), render(), ? -- SQL text, [hostile_ string] -- params list. Connections: Param(value= hostile_string) to render(), render() to ? -- SQL text, render() to [hostile_ string] -- params list.
     A["Param(value=<br/>hostile_string)"]:::blue
     B["render#40;#41;"]:::orange
     C["'?' -- SQL text"]:::teal
@@ -418,7 +418,7 @@ _ex-05 &middot; exercises co-03_
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
     accTitle: Example 5: A Builder Method Returns a NEW Instance, Never Mutates
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: base wheres=4041, .where40age > 1841, filtered wheres=40age > 1841. Connections: base wheres=4041 to .where40age > 1841 (calls, returns NEW), .where40age > 1841 to filtered wheres=40age > 1841.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: base wheres=(), .where(age > 18), filtered wheres=(age > 18). Connections: base wheres=() to .where(age > 18) (calls, returns NEW), .where(age > 18) to filtered wheres=(age > 18).
     A["base<br/>wheres=#40;#41;"]:::blue
     B[".where#40;'age ><br/>18'#41;"]:::orange
     C["filtered<br/>wheres=#40;'age ><br/>18'#41;"]:::blue
@@ -921,7 +921,7 @@ _ex-10 &middot; exercises co-04_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 10: .join Adds a JOIN Fragment With an ON Predicate
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: select40...41, .from_ 40users41, .join40orders, on=...41, compile4041 SELECT ... FROM users JOIN orders ON .... Connections: select40...41 to .from_ 40users41, .from_ 40users41 to .join40orders, on=...41, .join40orders, on=...41 to compile4041 SELECT ... FROM users JOIN orders ON ....
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: select(...), .from_ (users), .join(orders, on=...), compile() SELECT ... FROM users JOIN orders ON .... Connections: select(...) to .from_ (users), .from_ (users) to .join(orders, on=...), .join(orders, on=...) to compile() SELECT ... FROM users JOIN orders ON ....
     A["select#40;...#41;"]:::blue
     B[".from_<br/>#40;'users'#41;"]:::orange
     C[".join#40;'orders',<br/>on=...#41;"]:::teal
@@ -1297,7 +1297,7 @@ _ex-13 &middot; exercises co-05_
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
     accTitle: Example 13: Combine Two Predicates With OR, Parenthesized
-    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Or40left, right41, 40left OR right41 ALWAYS parenthesized. Connections: Or40left, right41 to 40left OR right41 ALWAYS parenthesized.
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Or(left, right), (left OR right) ALWAYS parenthesized. Connections: Or(left, right) to (left OR right) ALWAYS parenthesized.
     A["Or#40;left,<br/>right#41;"]:::blue
     B["#40;left OR<br/>right#41;<br/>ALWAYS parenthesized"]:::orange
     A --> B
@@ -1588,7 +1588,7 @@ _ex-15 &middot; exercises co-05, co-08_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 15: Nest And Inside Or Inside And -- a Real Boolean Tree
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: And, region = west 40Eq leaf41, Or, status = open 40Eq leaf41, status = pending 40Eq leaf41. Connections: And to region = west 40Eq leaf41, And to Or, Or to status = open 40Eq leaf41, Or to status = pending 40Eq leaf41.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: And, region = west (Eq leaf), Or, status = open (Eq leaf), status = pending (Eq leaf). Connections: And to region = west (Eq leaf), And to Or, Or to status = open (Eq leaf), Or to status = pending (Eq leaf).
     A["And"]:::blue
     B["region = 'west'<br/>#40;Eq leaf#41;"]:::teal
     C["Or"]:::orange
@@ -2026,7 +2026,7 @@ The clause-as-data approach extends past SELECT: `insert("users").values(id=1, n
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 19: insert.values Compiles a Parameterized INSERT
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: insert40users41, .values40id=1, name=Alice41, INSERT INTO users 40id, name41 VALUES 40?, ?41 params: 911, Alice93. Connections: insert40users41 to .values40id=1, name=Alice41, .values40id=1, name=Alice41 to INSERT INTO users 40id, name41 VALUES 40?, ?41 params: 911, Alice93.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: insert(users), .values(id=1, name=Alice), INSERT INTO users (id, name) VALUES (?, ?) params: [1, Alice]. Connections: insert(users) to .values(id=1, name=Alice), .values(id=1, name=Alice) to INSERT INTO users (id, name) VALUES (?, ?) params: [1, Alice].
     A["insert('users')"]:::blue
     B[".values#40;id=1,<br/>name='Alice'#41;"]:::orange
     C["INSERT INTO users<br/>#40;id, name#41;<br/>VALUES #40;?, ?#41;<br/>params: #91;1,<br/>'Alice'#93;"]:::teal
@@ -2699,7 +2699,7 @@ _ex-25 &middot; exercises co-23_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Example 25: The Full PEP 249 Lifecycle -- Connect, Cursor, Execute, Fetch, Close
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: connect4041, cursor4041, execute4041, fetchone4041 / fetchall4041, close4041. Connections: connect4041 to cursor4041, cursor4041 to execute4041, execute4041 to fetchone4041 / fetchall4041, fetchone4041 / fetchall4041 to close4041.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: connect(), cursor(), execute(), fetchone() / fetchall(), close(). Connections: connect() to cursor(), cursor() to execute(), execute() to fetchone() / fetchall(), fetchone() / fetchall() to close().
     A["connect#40;#41;"]:::blue
     B["cursor#40;#41;"]:::orange
     C["execute#40;#41;"]:::teal

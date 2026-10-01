@@ -32,7 +32,7 @@ appends to an in-memory list and issues zero SQL, deferring every write until a 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 55: UnitOfWork.registernew -- Tracking a Brand-New, Not-Yet-Saved Object
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: uow.register_ new40obj41, appended to _new list, zero SQL issued yet. Connections: uow.register_ new40obj41 to appended to _new list, appended to _new list to zero SQL issued yet.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: uow.register_ new(obj), appended to _new list, zero SQL issued yet. Connections: uow.register_ new(obj) to appended to _new list, appended to _new list to zero SQL issued yet.
     A["uow.register_<br/>new#40;obj#41;"]:::blue
     B["appended to<br/>_new list"]:::orange
     C["zero SQL<br/>issued yet"]:::teal
@@ -145,7 +145,7 @@ database-assigned primary key is written back onto the same Python object the ca
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 56: Flushing the New Set Issues Real INSERTs and Assigns Primary Keys
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: register_ new40user41 co-16, flush4041 co-20, INSERT ... user.id 61 cursor.lastrowid. Connections: register_ new40user41 co-16 to flush4041 co-20, flush4041 co-20 to INSERT ... user.id 61 cursor.lastrowid.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: register_ new(user) co-16, flush() co-20, INSERT ... user.id = cursor.lastrowid. Connections: register_ new(user) co-16 to flush() co-20, flush() co-20 to INSERT ... user.id = cursor.lastrowid.
     A["register_<br/>new#40;user#41;<br/>co-16"]:::blue
     B["flush#40;#41;<br/>co-20"]:::orange
     C["INSERT ... user.id<br/>#61;<br/>cursor.lastrowid"]:::teal
@@ -696,7 +696,7 @@ object produces a real `DELETE FROM ... WHERE id = ?`, and the row is genuinely 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 61: Flushing the Deleted Set Issues Real DELETE Statements
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: _deleted list 91obj1, obj293, flush4041, DELETE FROM ... WHERE id = ? per object, rows genuinely gone. Connections: _deleted list 91obj1, obj293 to flush4041, flush4041 to DELETE FROM ... WHERE id = ? per object, DELETE FROM ... WHERE id = ? per object to rows genuinely gone.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: _deleted list [obj1, obj2], flush(), DELETE FROM ... WHERE id = ? per object, rows genuinely gone. Connections: _deleted list [obj1, obj2] to flush(), flush() to DELETE FROM ... WHERE id = ? per object, DELETE FROM ... WHERE id = ? per object to rows genuinely gone.
     A["_deleted list<br/>#91;obj1, obj2#93;"]:::blue
     B["flush#40;#41;"]:::orange
     C["DELETE FROM ...<br/>WHERE id = ?<br/>per object"]:::teal
@@ -993,7 +993,7 @@ parent's own `DELETE` violates the same foreign-key constraint that insert order
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 63: Flush Ordering -- a Childs DELETE Runs Before Its Parents
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: DELETE child 40order41, DELETE parent 40customer41, FK constraint never violated. Connections: DELETE child 40order41 to DELETE parent 40customer41, DELETE parent 40customer41 to FK constraint never violated.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: DELETE child (order), DELETE parent (customer), FK constraint never violated. Connections: DELETE child (order) to DELETE parent (customer), DELETE parent (customer) to FK constraint never violated.
     A["DELETE child<br/>#40;order#41;"]:::blue
     B["DELETE parent<br/>#40;customer#41;"]:::orange
     C["FK constraint<br/>never violated"]:::teal
@@ -1270,7 +1270,7 @@ transaction -- including writes that individually would have succeeded, because 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
     accTitle: Example 65: A Flush Failure Rolls Back EVERY Write in the Batch, Not Just the Failing One
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: INSERT Alice succeeds, INSERT Bob VIOLATES constraint, except: rollback4041, Alices row ALSO gone. Connections: INSERT Alice succeeds to INSERT Bob VIOLATES constraint, INSERT Bob VIOLATES constraint to except: rollback4041, except: rollback4041 to Alices row ALSO gone.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: INSERT Alice succeeds, INSERT Bob VIOLATES constraint, except: rollback(), Alices row ALSO gone. Connections: INSERT Alice succeeds to INSERT Bob VIOLATES constraint, INSERT Bob VIOLATES constraint to except: rollback(), except: rollback() to Alices row ALSO gone.
     A["INSERT Alice<br/>succeeds"]:::blue
     B["INSERT Bob<br/>VIOLATES constraint"]:::orange
     C["except:<br/>rollback#40;#41;"]:::purple
@@ -1537,7 +1537,7 @@ right after construction.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 67: A Lazy-Loading Descriptor Defers Its Query Until First Attribute Access
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Customer40name61Alice41 construction, customer.orders accessed?, loader4041 runs co-21. Connections: Customer40name61Alice41 construction to customer.orders accessed?, customer.orders accessed? to loader4041 runs co-21 (first access).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Customer( name=Alice) construction, customer.orders accessed?, loader() runs co-21. Connections: Customer( name=Alice) construction to customer.orders accessed?, customer.orders accessed? to loader() runs co-21 (first access).
     A["Customer#40;<br/>name#61;'Alice'#41;<br/>construction"]:::blue
     B{"customer.orders<br/>accessed?"}:::orange
     C["loader#40;#41; runs<br/>co-21"]:::teal
@@ -1676,7 +1676,7 @@ the cached value on each instance separately.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
     accTitle: Example 68: setname Lets a Descriptor Cache Per-Instance, Not Per-Descriptor
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: descriptor4041 class-level, ONE object, alice.orders, bob.orders, alice.__dict__91_ orders93, bob.__dict__91_ orders93. Connections: descriptor4041 class-level, ONE object to alice.orders, alice.orders to alice.__dict__91_ orders93, descriptor4041 class-level, ONE object to bob.orders, bob.orders to bob.__dict__91_ orders93.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: descriptor() class-level, ONE object, alice.orders, bob.orders, alice.__dict__[_ orders], bob.__dict__[_ orders]. Connections: descriptor() class-level, ONE object to alice.orders, alice.orders to alice.__dict__[_ orders], descriptor() class-level, ONE object to bob.orders, bob.orders to bob.__dict__[_ orders].
     A["descriptor#40;#41;<br/>class-level, ONE<br/>object"]:::blue
     B["alice.orders"]:::orange
     C["bob.orders"]:::orange
@@ -1951,7 +1951,7 @@ separate query per customer -- a logged, countable N+1 pattern, not a theoretica
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
     accTitle: Example 70: Naive Lazy Loading Over a List Produces N+1 Queries, Observably
-    accDescr: Flowchart with 2 nodes and 2 connections. Nodes: list_ customers4041 1 query, for customer in customers: orders_ for40customer. id41. Connections: list_ customers4041 1 query to for customer in customers: orders_ for40customer. id41, for customer in customers: orders_ for40customer. id41 to for customer in customers: orders_ for40customer. id41 (N times).
+    accDescr: Flowchart with 2 nodes and 2 connections. Nodes: list_ customers() 1 query, for customer in customers: orders_ for(customer. id). Connections: list_ customers() 1 query to for customer in customers: orders_ for(customer. id), for customer in customers: orders_ for(customer. id) to for customer in customers: orders_ for(customer. id) (N times).
     A["list_<br/>customers#40;#41;<br/>1 query"]:::blue
     B["for customer in<br/>customers:<br/>orders_<br/>for#40;customer.<br/>id#41;"]:::orange
     A --> B
@@ -2088,7 +2088,7 @@ customer_id IN (...)` query, then group the results in memory -- total query cou
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 71: Fixing N+1 by Batch-Loading All Children in One Extra Query
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: 1 query: load N customers, 1 query: WHERE customer_id IN 40...41, group results in memory, total: 2 queries always. Connections: 1 query: load N customers to 1 query: WHERE customer_id IN 40...41, 1 query: WHERE customer_id IN 40...41 to group results in memory, group results in memory to total: 2 queries always.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: 1 query: load N customers, 1 query: WHERE customer_id IN (...), group results in memory, total: 2 queries always. Connections: 1 query: load N customers to 1 query: WHERE customer_id IN (...), 1 query: WHERE customer_id IN (...) to group results in memory, group results in memory to total: 2 queries always.
     A["1 query:<br/>load N customers"]:::blue
     B["1 query:<br/>WHERE customer_id IN<br/>#40;...#41;"]:::orange
     C["group results<br/>in memory"]:::teal
@@ -2565,7 +2565,7 @@ one class: two DIFFERENT compiled queries that both touch the same row return th
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
     accTitle: Example 75: Wiring the Full Read Stack -- Builder, Driver, Identity Map, Mapper
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Select. compile4041 co-08, conn.execute4041 co-23, row_to_User4041 co-10, identity map co-13. Connections: Select. compile4041 co-08 to conn.execute4041 co-23, conn.execute4041 co-23 to row_to_User4041 co-10, row_to_User4041 co-10 to identity map co-13.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Select. compile() co-08, conn.execute() co-23, row_to_User() co-10, identity map co-13. Connections: Select. compile() co-08 to conn.execute() co-23, conn.execute() co-23 to row_to_User() co-10, row_to_User() co-10 to identity map co-13.
     A["Select.<br/>compile#40;#41;<br/>co-08"]:::blue
     B["conn.execute#40;#41;<br/>co-23"]:::orange
     C["row_to_User#40;#41;<br/>co-10"]:::teal
@@ -2997,7 +2997,7 @@ loaded objects by pk, and a batch query avoids N+1 when loading each customer's 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
     accTitle: Example 78: A Mini-ORM Preview -- Migrations, UnitOfWork, Identity Map, Eager Loading
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: migrate4041 co-24, orm.add4041 43 flush4041 co-20, orm.all_with_ orders4041 co-22, identity_ of40pk41 co-13. Connections: migrate4041 co-24 to orm.add4041 43 flush4041 co-20, orm.add4041 43 flush4041 co-20 to orm.all_with_ orders4041 co-22, orm.all_with_ orders4041 co-22 to identity_ of40pk41 co-13.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: migrate() co-24, orm.add() + flush() co-20, orm.all_with_ orders() co-22, identity_ of(pk) co-13. Connections: migrate() co-24 to orm.add() + flush() co-20, orm.add() + flush() co-20 to orm.all_with_ orders() co-22, orm.all_with_ orders() co-22 to identity_ of(pk) co-13.
     A["migrate#40;#41;<br/>co-24"]:::blue
     B["orm.add#40;#41; #43;<br/>flush#40;#41;<br/>co-20"]:::orange
     C["orm.all_with_<br/>orders#40;#41;<br/>co-22"]:::teal

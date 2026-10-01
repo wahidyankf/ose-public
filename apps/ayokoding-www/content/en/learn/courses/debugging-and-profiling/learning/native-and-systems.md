@@ -1250,7 +1250,7 @@ ex-29/ex-71).
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 76: Lock Contention Under Load
-    accDescr: Graph with 6 nodes and 4 connections. Nodes: single caller handle_request(), B, work, N concurrent callers ALL want _coarse_lock, serialized, one at a time, wall time N x work time most of it WAITING. Connections: single caller handle_request() to B, B to work, N concurrent callers ALL want _coarse_lock to serialized, one at a time, serialized, one at a time to wall time N x work time most of it WAITING.
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: single caller handle_request(), wall time == work time, N concurrent callers ALL want _coarse_lock, serialized, one at a time, wall time N x work time most of it WAITING. Connections: single caller handle_request() to wall time == work time, N concurrent callers ALL want _coarse_lock to serialized, one at a time, serialized, one at a time to wall time N x work time most of it WAITING.
     A["single caller<br/>handle_request()"]:::blue --> B["wall time == work<br/>time"]:::blue
     C["N concurrent callers<br/>ALL want<br/>_coarse_lock"]:::orange --> D["serialized, one at a<br/>time"]:::orange
     D --> E["wall time N x work<br/>time<br/>most of it WAITING"]:::teal

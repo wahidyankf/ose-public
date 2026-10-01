@@ -169,7 +169,7 @@ _ex-58 &middot; exercises co-17, co-18_
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
     accTitle: Example 58: Issue a Token
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: POST /login username, password, credentials match?, 200 + a bearer token string, D. Connections: POST /login username, password to credentials match?, credentials match? to 200 + a bearer token string (yes), credentials match? to D (no).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: POST /login username, password, credentials match?, 200 + a bearer token string, 401 -- no token issued. Connections: POST /login username, password to credentials match?, credentials match? to 200 + a bearer token string (yes), credentials match? to 401 -- no token issued (no).
     A["POST /login<br/>{username, password}"]:::blue --> B{"credentials<br/>match?"}:::blue
     B -->|yes| C["200 + a bearer<br/>token string"]:::teal
     B -->|no| D["401 --<br/>no token issued"]:::blue
@@ -277,7 +277,7 @@ A middleware function wraps every single request before routing ever decides whi
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 59: Token-Check Middleware
-    accDescr: Graph with 9 nodes and 5 connections. Nodes: request arrives, B, call_next(, handler, D, matches, E, F, ) runs. Connections: request arrives to B, B to call_next( (no), B to D (yes), D to E (no), D to F (yes).
+    accDescr: Graph with 9 nodes and 5 connections. Nodes: request arrives, B, C, handler, D, matches, E, F, ) runs. Connections: request arrives to B, B to C (no), B to D (yes), D to E (no), D to F (yes).
     A["request arrives"]:::blue --> B{"path starts with
 /protected?"}:::blue
     B -->|no| C["call_next() --
@@ -416,7 +416,7 @@ This is the first of three 401 scenarios (Examples 60, 61, 62) that all reuse th
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
     accTitle: Example 60: Missing Token
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: request with NO Authorization header, require_token: credentials is None, C. Connections: request with NO Authorization header to require_token: credentials is None, require_token: credentials is None to C.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: request with NO Authorization header, require_token: credentials is None, 401 -- handler never runs. Connections: request with NO Authorization header to require_token: credentials is None, require_token: credentials is None to 401 -- handler never runs.
     A["request with NO<br/>Authorization header"]:::blue --> B["require_token:<br/>credentials is None"]:::orange
     B --> C["401 --<br/>handler never runs"]:::orange
 
@@ -731,7 +731,7 @@ A very common real-world policy: anyone can read the catalog, but only an authen
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
     accTitle: Example 63: Protect Writes Only
-    accDescr: Graph with 9 nodes and 6 connections. Nodes: GET /items, B, open, POST /items, valid token?, DELETE /items/id, F, write, write proceeds. Connections: GET /items to B, POST /items to valid token?, DELETE /items/id to valid token?, valid token? to F (no), F to write, valid token? to write proceeds (yes).
+    accDescr: Graph with 8 nodes and 5 connections. Nodes: GET /items, B, open, POST /items, valid token?, DELETE /items/id, 401 -- write rejected, write proceeds. Connections: GET /items to B, POST /items to valid token?, DELETE /items/id to valid token?, valid token? to 401 -- write rejected (no), valid token? to write proceeds (yes).
     A["GET /items"]:::blue --> B["no auth check --
 open to everyone"]:::blue
     C["POST /items"]:::orange --> D{"valid token?"}:::orange
@@ -1024,7 +1024,7 @@ _ex-65 &middot; exercises co-19_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 65: Pagination limit/offset
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: A, offset, SQL: LIMIT 5 OFFSET 10, rows 11-15, in id order. Connections: A to SQL: LIMIT 5 OFFSET 10, offset to SQL: LIMIT 5 OFFSET 10, SQL: LIMIT 5 OFFSET 10 to rows 11-15, in id order.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: GET /tasks? limit=5&offset=10, SQL: LIMIT 5 OFFSET 10, rows 11-15, in id order. Connections: GET /tasks? limit=5&offset=10 to SQL: LIMIT 5 OFFSET 10, SQL: LIMIT 5 OFFSET 10 to rows 11-15, in id order.
     A["GET /tasks?<br/>limit=5&offset=10"]:::blue --> B["SQL: LIMIT 5<br/>OFFSET 10"]:::orange
     B --> C["rows 11-15,<br/>in id order"]:::teal
 
@@ -1356,7 +1356,7 @@ Example 65 proved limit/offset slices the list; this example proves a client can
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
     accTitle: Example 67: Pagination Metadata
-    accDescr: Graph with 9 nodes and 6 connections. Nodes: A, offset, B, total, C, this, D, items, E. Connections: A to B, offset to B, A to C, B to D, C to D, D to E.
+    accDescr: Graph with 8 nodes and 5 connections. Nodes: GET /tasks? limit=10&offset=0, B, total, C, this, D, items, E. Connections: GET /tasks? limit=10&offset=0 to B, GET /tasks? limit=10&offset=0 to C, B to D, C to D, D to E.
     A["GET /tasks?<br/>limit=10&offset=0"]:::blue --> B["COUNT(*) query --
 total = 25"]:::blue
     A --> C["LIMIT/OFFSET query --
@@ -1540,7 +1540,7 @@ Example 65's `ge=1` stopped a limit too SMALL; this example adds `le=MAX_LIMIT` 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 68: Pagination Bounds
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: limit=1000 (client requests too many), Query(..., le=MAX_LIMIT)?, C, handler runs normally. Connections: limit=1000 (client requests too many) to Query(..., le=MAX_LIMIT)?, Query(..., le=MAX_LIMIT)? to C (exceeds ge/le), Query(..., le=MAX_LIMIT)? to handler runs normally (within bounds).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: limit=1000 (client requests too many), Query(..., le=MAX_LIMIT)?, 422 -- bounds enforced before the handler, handler runs normally. Connections: limit=1000 (client requests too many) to Query(..., le=MAX_LIMIT)?, Query(..., le=MAX_LIMIT)? to 422 -- bounds enforced before the handler (exceeds ge/le), Query(..., le=MAX_LIMIT)? to handler runs normally (within bounds).
     A["limit=1000<br/>(client requests too<br/>many)"]:::blue --> B{"Query(...,<br/>le=MAX_LIMIT)?"}:::orange
     B -->|"exceeds ge/le"| C["422 --<br/>bounds enforced<br/>before the handler"]:::orange
     B -->|"within bounds"| D["handler runs<br/>normally"]:::teal
@@ -2036,7 +2036,7 @@ Every other pagination/filter example in this topic already parameterizes its SQ
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 71: Filter Parameterized SQL
-    accDescr: Graph with 6 nodes and 4 connections. Nodes: status=done OR 1=1 (malicious input), WHERE status = ? parameterized, C, no, string-formatted query (the vulnerable twin), would let this input alter the SQL itself. Connections: status=done OR 1=1 (malicious input) to WHERE status = ? parameterized, WHERE status = ? parameterized to C, C to no, string-formatted query (the vulnerable twin) to would let this input alter the SQL itself (never wired to the route).
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: status=done OR 1=1 (malicious input), WHERE status = ? parameterized, treated as ONE literal string value -- no injection, string-formatted query (the vulnerable twin), would let this input alter the SQL itself. Connections: status=done OR 1=1 (malicious input) to WHERE status = ? parameterized, WHERE status = ? parameterized to treated as ONE literal string value -- no injection, string-formatted query (the vulnerable twin) to would let this input alter the SQL itself (never wired to the route).
     A["status=done' OR<br/>'1'='1<br/>(malicious input)"]:::blue --> B{"WHERE status = ?<br/>parameterized"}:::orange
     B --> C["treated as ONE<br/>literal<br/>string value -- no<br/>injection"]:::teal
     D["string-formatted<br/>query<br/>(the vulnerable<br/>twin)"]:::orange -.->|"never wired to the<br/>route"| E["would let this input<br/>alter the SQL itself"]:::orange
@@ -2381,7 +2381,7 @@ Examples 65-72 built pagination, filtering, and sorting SEPARATELY; this is the 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 73: Combined List Query
-    accDescr: Graph with 9 nodes and 4 connections. Nodes: A, limit, offset, sort, B, C, D, E, next. Connections: A to B, B to C, C to D, D to E.
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: A, B, C, D, E, next. Connections: A to B, B to C, C to D, D to E.
     A["?status=done&limit=3
 &offset=0&sort=-created_at"]:::blue
     A --> B["WHERE status = ?
@@ -2590,7 +2590,7 @@ RFC 9110 classifies PUT as idempotent, but a classification is only a promise. T
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
     accTitle: Example 74: Idempotent PUT, Verified
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: PUT /tasks/1 call 1, row state: title, status, PUT /tasks/1 call 2, SAME body, D. Connections: PUT /tasks/1 call 1 to row state: title, status, PUT /tasks/1 call 2, SAME body to row state: title, status, row state: title, status to D.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: PUT /tasks/1 call 1, row state: title, status, PUT /tasks/1 call 2, SAME body, row count stays at 1 -- verified, not just assumed. Connections: PUT /tasks/1 call 1 to row state: title, status, PUT /tasks/1 call 2, SAME body to row state: title, status, row state: title, status to row count stays at 1 -- verified, not just assumed.
     A["PUT /tasks/1<br/>call #1"]:::blue --> C["row state:<br/>{title, status}"]:::teal
     B["PUT /tasks/1<br/>call #2, SAME body"]:::blue --> C
     C --> D["row count stays at 1<br/>--<br/>verified, not just<br/>assumed"]:::teal
@@ -3177,7 +3177,7 @@ A documented, executable shell script (`crud_auth.sh`) exercises full CRUD plus 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 78: curl CRUD + Auth Script
-    accDescr: Graph with 5 nodes and 3 connections. Nodes: A, B, C, D, E. Connections: B to C, C to D, D to E.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: create without token -- expect 401, create with token -- expect 201, read -- GET, no token needed, update -- PUT with token, delete -- DELETE with token, verify 404 after. Connections: create without token -- expect 401 to create with token -- expect 201, create with token -- expect 201 to read -- GET, no token needed, read -- GET, no token needed to update -- PUT with token, update -- PUT with token to delete -- DELETE with token, verify 404 after.
     A["create without token<br/>--<br/>expect 401"]:::blue --> B["create with token --<br/>expect 201"]:::orange
     B --> C["read --<br/>GET, no token needed"]:::orange
     C --> D["update --<br/>PUT with token"]:::orange

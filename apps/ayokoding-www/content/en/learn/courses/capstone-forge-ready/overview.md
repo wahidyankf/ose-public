@@ -18,7 +18,7 @@ journey, starting with the very next topic (Just Enough Python).
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Bootstrap vim.pack. add40pinned41, Open sample LSP + Treesitter, Mouse-free refactor vimgrep + macro + cdo, :terminal check beside the source, Healthcheck :checkhealth, zero missing dep. Connections: Bootstrap vim.pack. add40pinned41 to Open sample LSP + Treesitter, Open sample LSP + Treesitter to Mouse-free refactor vimgrep + macro + cdo, Mouse-free refactor vimgrep + macro + cdo to :terminal check beside the source, :terminal check beside the source to Healthcheck :checkhealth, zero missing dep.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Bootstrap vim.pack. add(pinned), Open sample LSP + Treesitter, Mouse-free refactor vimgrep + macro + cdo, :terminal check beside the source, Healthcheck :checkhealth, zero missing dep. Connections: Bootstrap vim.pack. add(pinned) to Open sample LSP + Treesitter, Open sample LSP + Treesitter to Mouse-free refactor vimgrep + macro + cdo, Mouse-free refactor vimgrep + macro + cdo to :terminal check beside the source, :terminal check beside the source to Healthcheck :checkhealth, zero missing dep.
     A["Bootstrap<br/>vim.pack.<br/>add#40;pinned#41;"]:::blue
     B["Open sample<br/>LSP + Treesitter"]:::orange
     C["Mouse-free refactor<br/>vimgrep + macro +<br/>cdo"]:::teal

@@ -835,7 +835,7 @@ independent closure remembering its own `n`.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 11: A Function Returning a Closure
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: multiplier40341, closure remembers n=3, 12. Connections: multiplier40341 to closure remembers n=3 (returns), closure remembers n=3 to 12 (call40441).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: multiplier(3), closure remembers n=3, 12. Connections: multiplier(3) to closure remembers n=3 (returns), closure remembers n=3 to 12 (call(4)).
     M["multiplier#40;3#41;"]:::blue -->|returns| C["closure<br/>remembers n=3"]:::orange
     C -->|"call#40;4#41;"| R["12"]:::teal
 
@@ -1573,7 +1573,7 @@ counter and confirms only the values actually pulled are ever computed.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
     accTitle: Example 21: A Generator Yields on Demand
-    accDescr: Sequence diagram between Caller, counter401041. Messages: Caller to counter401041: next40gen41; counter401041 to Caller: 10; Caller to counter401041: next40gen41; counter401041 to Caller: 11; Caller to counter401041: next40gen41; counter401041 to Caller: 12.
+    accDescr: Sequence diagram between Caller, counter(10). Messages: Caller to counter(10): next(gen); counter(10) to Caller: 10; Caller to counter(10): next(gen); counter(10) to Caller: 11; Caller to counter(10): next(gen); counter(10) to Caller: 12.
     participant Caller
     participant Gen as counter#40;10#41;
     Caller->>Gen: next#40;gen#41;
@@ -1731,7 +1731,7 @@ confirms the underlying source resumes right where `islice` stopped.
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
     accTitle: Example 23: islice Over an Infinite count
-    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: count400, 241 infinite: 0, 2, 4, ..., [0, 2, 4, 6, 8]. Connections: count400, 241 infinite: 0, 2, 4, ... to [0, 2, 4, 6, 8] (islice40..., 541).
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: count(0, 2) infinite: 0, 2, 4, ..., [0, 2, 4, 6, 8]. Connections: count(0, 2) infinite: 0, 2, 4, ... to [0, 2, 4, 6, 8] (islice(..., 5)).
     S["count#40;0, 2#41;<br/>infinite: 0, 2, 4,<br/>..."]:::blue -->|"islice#40;...,<br/>5#41;"| F["[0, 2, 4, 6, 8]"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -1883,7 +1883,7 @@ recursive Fibonacci and confirms `cache_info()` shows a hit on the second identi
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 25: @lrucache on a Recursive fib
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: fib403041 first call, 832040 cached, fib403041 second call. Connections: fib403041 first call to 832040 cached (cache MISS full recursion), fib403041 second call to 832040 cached (cache HIT no recursion).
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: fib(30) first call, 832040 cached, fib(30) second call. Connections: fib(30) first call to 832040 cached (cache MISS full recursion), fib(30) second call to 832040 cached (cache HIT no recursion).
     A["fib#40;30#41;<br/>first call"]:::blue -->|"cache MISS<br/>full recursion"| B["832040<br/>cached"]:::orange
     C["fib#40;30#41;<br/>second call"]:::blue -->|"cache HIT<br/>no recursion"| B
 
@@ -1974,7 +1974,7 @@ example wraps `add` with logging and confirms the wrapped result is unchanged.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 26: A Logging Decorator Wraps a Function
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: add402, 341 callers call, wrapper402, 341 logs BEFORE, original add402, 341 = 5, wrapper logs AFTER returns 5. Connections: add402, 341 callers call to wrapper402, 341 logs BEFORE, wrapper402, 341 logs BEFORE to original add402, 341 = 5, original add402, 341 = 5 to wrapper logs AFTER returns 5.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: add(2, 3) callers call, wrapper(2, 3) logs BEFORE, original add(2, 3) = 5, wrapper logs AFTER returns 5. Connections: add(2, 3) callers call to wrapper(2, 3) logs BEFORE, wrapper(2, 3) logs BEFORE to original add(2, 3) = 5, original add(2, 3) = 5 to wrapper logs AFTER returns 5.
     A["add#40;2, 3#41;<br/>caller's call"]:::blue --> W["wrapper#40;2, 3#41;<br/>logs BEFORE"]:::orange
     W --> F["original add#40;2,<br/>3#41;<br/>= 5"]:::teal
     F --> W2["wrapper logs AFTER<br/>returns 5"]:::orange
@@ -2135,7 +2135,7 @@ explicitly by the same guard pattern.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 28: Guarding a None-Returning Function
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: find_user_age40... 41, result is not None?, use the age, handle absence. Connections: find_user_age40... 41 to result is not None?, result is not None? to use the age (Yes: hit), result is not None? to handle absence (No: miss).
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: find_user_age(... ), result is not None?, use the age, handle absence. Connections: find_user_age(... ) to result is not None?, result is not None? to use the age (Yes: hit), result is not None? to handle absence (No: miss).
     L["find_user_age#40;...<br/>#41;"]:::blue --> Q{"result is<br/>not None?"}:::orange
     Q -->|Yes: hit| H["use the age"]:::teal
     Q -->|No: miss| M["handle absence"]:::teal

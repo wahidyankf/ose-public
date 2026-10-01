@@ -76,7 +76,7 @@ total wall-clock time is approximately the sum of both waits.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 2: Sequential Awaits Add Up
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: await pause 0.10s, await pause 0.10s, C, the. Connections: await pause 0.10s to await pause 0.10s, await pause 0.10s to C, C to the.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: await pause 0.10s, await pause 0.10s, total ~0.20s -- the SUM. Connections: await pause 0.10s to await pause 0.10s, await pause 0.10s to total ~0.20s -- the SUM.
     A["await pause 0.10s"]:::blue --> B["await pause 0.10s"]:::blue
     B --> C["total ~0.20s -- the<br/>SUM"]:::orange
 
@@ -146,7 +146,7 @@ loop and the total time is approximately the slower one, not the sum.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 3: Concurrent Awaits with gather
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: pause 0.10s, C, the, pause 0.10s. Connections: pause 0.10s to C (overlap on one loop), C to the, pause 0.10s to C (overlap on one loop).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: pause 0.10s, total ~0.10s -- the MAX, pause 0.10s. Connections: pause 0.10s to total ~0.10s -- the MAX (overlap on one loop), pause 0.10s to total ~0.10s -- the MAX (overlap on one loop).
     A["pause 0.10s"]:::blue -.->|overlap on one loop| C["total ~0.10s -- the<br/>MAX"]:::teal
     B["pause 0.10s"]:::blue -.->|overlap on one loop| C
 
@@ -375,7 +375,7 @@ the stall, then shows the fix -- an async-native call, or offloading to an execu
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 7: A Blocking Call Stalls the Loop
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, BLOCKING, loop CANNOT switch, every other coroutine queues behind A, fix: asyncio.sleep OR run_in_executor. Connections: A to BLOCKING, A to loop CANNOT switch, loop CANNOT switch to every other coroutine queues behind A, every other coroutine queues behind A to fix: asyncio.sleep OR run_in_executor (contrast).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: coroutine A calls time.sleep() -- BLOCKING, loop CANNOT switch, every other coroutine queues behind A, fix: asyncio.sleep OR run_in_executor. Connections: coroutine A calls time.sleep() -- BLOCKING to loop CANNOT switch, loop CANNOT switch to every other coroutine queues behind A, every other coroutine queues behind A to fix: asyncio.sleep OR run_in_executor (contrast).
     A["coroutine A calls<br/>time.sleep#40;#41;<br/>-- BLOCKING"]:::orange
     B["loop CANNOT switch"]:::orange
     C["every other<br/>coroutine<br/>queues behind A"]:::orange

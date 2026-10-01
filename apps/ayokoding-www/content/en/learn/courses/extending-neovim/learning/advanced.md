@@ -670,7 +670,7 @@ Calling `vim.notify` (or any `vim.api` function) directly inside a `vim.uv` call
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
     accTitle: Example 75: Schedule Safety Inside a Fast-Event Callback
-    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: vim.uv timer callback fires FAST-EVENT context, Unwrapped: pcall(vim.notify, ...), C, E5560, Wrapped: vim. schedule(function() vim.notify(...) end), E, deferred. Connections: C to E5560, E to deferred, vim.uv timer callback fires FAST-EVENT context to Unwrapped: pcall(vim.notify, ...), Unwrapped: pcall(vim.notify, ...) to C, vim.uv timer callback fires FAST-EVENT context to Wrapped: vim. schedule(function() vim.notify(...) end), Wrapped: vim. schedule(function() vim.notify(...) end) to E.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: vim.uv timer callback fires FAST-EVENT context, Unwrapped: pcall(vim.notify, ...), FAILS -- E5560 nvim_echo must not be called in a fast event context, Wrapped: vim. schedule(function() vim.notify(...) end), SUCCEEDS -- deferred onto Neovims main event loop. Connections: vim.uv timer callback fires FAST-EVENT context to Unwrapped: pcall(vim.notify, ...), Unwrapped: pcall(vim.notify, ...) to FAILS -- E5560 nvim_echo must not be called in a fast event context, vim.uv timer callback fires FAST-EVENT context to Wrapped: vim. schedule(function() vim.notify(...) end), Wrapped: vim. schedule(function() vim.notify(...) end) to SUCCEEDS -- deferred onto Neovims main event loop.
     A["vim.uv timer<br/>callback fires<br/>FAST-EVENT context"]:::blue
     B["Unwrapped:<br/>pcall(vim.notify,<br/>...)"]:::orange
     C["FAILS -- E5560<br/>nvim_echo must not<br/>be called in a fast<br/>event context"]:::purple

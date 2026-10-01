@@ -54,7 +54,7 @@ teaching artifact meant to keep working unmodified for years.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: Step 1 Backend: hardened service + CORS-safe read endpoint, Step 2 Frontend: typed UI, loading/error/empty states, C, gt, Step 4 Testing-Library UI test + API integration test. Connections: Step 1 Backend: hardened service + CORS-safe read endpoint to Step 2 Frontend: typed UI, loading/error/empty states, Step 2 Frontend: typed UI, loading/error/empty states to C, C to Step 4 Testing-Library UI test + API integration test.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Step 1 Backend: hardened service + CORS-safe read endpoint, Step 2 Frontend: typed UI, loading/error/empty states, Step 3 Create/update form -> API -> SQLite, list reflects on refetch, Step 4 Testing-Library UI test + API integration test. Connections: Step 1 Backend: hardened service + CORS-safe read endpoint to Step 2 Frontend: typed UI, loading/error/empty states, Step 2 Frontend: typed UI, loading/error/empty states to Step 3 Create/update form -> API -> SQLite, list reflects on refetch, Step 3 Create/update form -> API -> SQLite, list reflects on refetch to Step 4 Testing-Library UI test + API integration test.
     A["Step 1<br/>Backend: hardened<br/>service + CORS-safe<br/>read endpoint"]:::blue
     B["Step 2<br/>Frontend: typed UI,<br/>loading/error/empty<br/>states"]:::orange
     C["Step 3<br/>Create/update form<br/>-&gt; API -&gt; SQLite,<br/>list reflects on<br/>refetch"]:::teal

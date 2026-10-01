@@ -70,7 +70,7 @@ _ex-02 &middot; exercises co-02_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: Example 2: Semantic Page Landmarks
-    accDescr: Graph with 10 nodes and 12 connections. Nodes: A, lt, gt, role: banner, C, role: navigation, E, role: main, G, role: contentinfo. Connections: A to role: banner, lt to role: banner, gt to role: banner, C to role: navigation, lt to role: navigation, gt to role: navigation, E to role: main, lt to role: main, gt to role: main, G to role: contentinfo, lt to role: contentinfo, gt to role: contentinfo.
+    accDescr: Graph with 8 nodes and 4 connections. Nodes: <header>, role: banner, <nav>, role: navigation, <main>, role: main, <footer>, role: contentinfo. Connections: <header> to role: banner, <nav> to role: navigation, <main> to role: main, <footer> to role: contentinfo.
     A["&lt;header&gt;"]:::blue --> B["role: banner"]:::blue
     C["&lt;nav&gt;"]:::orange --> D["role: navigation"]:::orange
     E["&lt;main&gt;"]:::teal --> F["role: main"]:::teal
@@ -740,7 +740,7 @@ By default (`box-sizing: content-box`), a declared `width` sizes only the conten
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161
 flowchart LR
     accTitle: Example 12: Box Model: Padding, Border, Margin
-    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: content: 200px, offsetWidth: 230px, B, times, C, E. Connections: content: 200px to offsetWidth: 230px, B to offsetWidth: 230px, times to offsetWidth: 230px, C to offsetWidth: 230px, times to offsetWidth: 230px.
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: content: 200px, offsetWidth: 230px, padding: 10px &times 2 sides, border: 5px &times 2 sides, E. Connections: content: 200px to offsetWidth: 230px, padding: 10px &times 2 sides to offsetWidth: 230px, border: 5px &times 2 sides to offsetWidth: 230px.
     A["content: 200px"]:::blue --> D["offsetWidth: 230px"]:::blue
     B["padding: 10px<br/>&times; 2 sides"]:::orange --> D
     C["border: 5px &times;<br/>2 sides"]:::teal --> D
@@ -818,7 +818,7 @@ _ex-13 &middot; exercises co-07_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 13: box-sizing: border-box
-    accDescr: Flowchart with 5 nodes and 1 connections. Nodes: width: 200px (the declared AND final width), border-box folds padding+border INSIDE, C, times, D. Connections: width: 200px (the declared AND final width) to border-box folds padding+border INSIDE.
+    accDescr: Flowchart with 4 nodes and 1 connections. Nodes: width: 200px (the declared AND final width), border-box folds padding+border INSIDE, C, D. Connections: width: 200px (the declared AND final width) to border-box folds padding+border INSIDE.
     A["width: 200px<br/>(the declared AND<br/>final width)"]:::blue --> B["border-box folds<br/>padding+border<br/>INSIDE"]:::teal
     C["padding: 10px<br/>&times; 2 sides"]:::orange -.inside.-> A
     D["border: 5px &times;<br/>2 sides"]:::orange -.inside.-> A
@@ -1125,7 +1125,7 @@ _ex-17 &middot; exercises co-12_
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
     accTitle: Example 17: Select a Single Node
-    accDescr: Graph with 4 nodes and 4 connections. Nodes: body, H1, quot, querySelector(. title). Connections: body to H1, body to quot, body to quot, querySelector(. title) to H1 (returns).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: body, h1.title Dashboard, querySelector(. title). Connections: body to h1.title Dashboard, querySelector(. title) to h1.title Dashboard (returns).
     Body["body"]:::orange --> H1["h1.title<br/>&quot;Dashboard&quot;"]:::blue
     Q["querySelector('.<br/>title')"]:::orange -.->|"returns"| H1
 

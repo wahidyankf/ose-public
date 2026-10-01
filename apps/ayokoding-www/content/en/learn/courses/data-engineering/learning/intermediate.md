@@ -893,7 +893,7 @@ decision, not a purely technical one.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
     accTitle: Three stream-window shapes, side by side
-    accDescr: Graph with 10 nodes and 8 connections. Nodes: [0,10), [10,20), [20,30), [0,10), [5,15), [10,20), burst: 0,5,12, SE2, ge, burst: 50,55. Connections: [0,10) to [10,20), [10,20) to [20,30), [0,10) to [5,15), [5,15) to [10,20), burst: 0,5,12 to SE2, burst: 0,5,12 to ge, SE2 to burst: 50,55, ge to burst: 50,55.
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: [0,10), [10,20), [20,30), [0,10), [5,15), [10,20), burst: 0,5,12, gap &ge 30s, burst: 50,55. Connections: [0,10) to [10,20), [10,20) to [20,30), [0,10) to [5,15), [5,15) to [10,20), burst: 0,5,12 to gap &ge 30s, gap &ge 30s to burst: 50,55.
     subgraph T["Tumbling -- fixed,<br/>non-overlapping,<br/>co-14"]
         T1["[0,10)"]:::blue --> T2["[10,20)"]:::blue --> T3["[20,30)"]:::blue
     end

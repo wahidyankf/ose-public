@@ -38,7 +38,7 @@ literal, while `run_shell` is the one function that touches `print`.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Gray #808080
 flowchart LR
     accTitle: Example 57: A CSV Analyzer Split into a Pure Core and an I/O Shell
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: csv_text, parse_sales4041 PURE, total_by_ product4041 PURE, format_ report4041 PURE, run_shell4041 print only. Connections: csv_text to parse_sales4041 PURE, parse_sales4041 PURE to total_by_ product4041 PURE, total_by_ product4041 PURE to format_ report4041 PURE, format_ report4041 PURE to run_shell4041 print only.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: csv_text, parse_sales() PURE, total_by_ product() PURE, format_ report() PURE, run_shell() print only. Connections: csv_text to parse_sales() PURE, parse_sales() PURE to total_by_ product() PURE, total_by_ product() PURE to format_ report() PURE, format_ report() PURE to run_shell() print only.
     T["csv_text"]:::blue --> P["parse_sales#40;#41;<br/>PURE"]:::blue
     P --> A["total_by_<br/>product#40;#41;<br/>PURE"]:::blue
     A --> R["format_<br/>report#40;#41;<br/>PURE"]:::blue
@@ -225,7 +225,7 @@ new leaf -- every untouched sibling subtree is the exact same object as before t
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
     accTitle: Example 59: A Persistent Binary Tree With a Structural-Sharing Update
-    accDescr: Flowchart with 7 nodes and 5 connections. Nodes: 5, 3, 8, 5 40new41, 3 40new41, 8 40SAME node41, 1 40new leaf41. Connections: 5 to 3, 5 to 8, 5 40new41 to 3 40new41, 5 40new41 to 8 40SAME node41, 3 40new41 to 1 40new leaf41.
+    accDescr: Flowchart with 7 nodes and 5 connections. Nodes: 5, 3, 8, 5 (new), 3 (new), 8 (SAME node), 1 (new leaf). Connections: 5 to 3, 5 to 8, 5 (new) to 3 (new), 5 (new) to 8 (SAME node), 3 (new) to 1 (new leaf).
     R1["5"]:::blue --> L1["3"]:::blue
     R1 --> RR1["8"]:::blue
 
@@ -334,7 +334,7 @@ equal, proving the reducer has no hidden dependency on anything but its own two 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 60: A Redux-Style Pure -> state Reducer
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: CartState items=4041, total=0, items=40apple41 total=2.0, items=40apple,bread41 total=5.5, items=4041 total=0, items=40milk41 total=4.0. Connections: CartState items=4041, total=0 to items=40apple41 total=2.0 (AddItem apple), items=40apple41 total=2.0 to items=40apple,bread41 total=5.5 (AddItem bread), items=40apple,bread41 total=5.5 to items=4041 total=0 (ClearCart), items=4041 total=0 to items=40milk41 total=4.0 (AddItem milk).
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: CartState items=(), total=0, items=(apple) total=2.0, items=( apple,bread) total=5.5, items=() total=0, items=(milk) total=4.0. Connections: CartState items=(), total=0 to items=(apple) total=2.0 (AddItem apple), items=(apple) total=2.0 to items=( apple,bread) total=5.5 (AddItem bread), items=( apple,bread) total=5.5 to items=() total=0 (ClearCart), items=() total=0 to items=(milk) total=4.0 (AddItem milk).
     S0["CartState<br/>items=#40;#41;,<br/>total=0"]:::blue -->|AddItem apple| S1["items=#40;apple#41;<br/>total=2.0"]:::orange
     S1 -->|AddItem bread| S2["items=#40;<br/>apple,bread#41;<br/>total=5.5"]:::orange
     S2 -->|ClearCart| S3["items=#40;#41;<br/>total=0"]:::teal
@@ -461,7 +461,7 @@ checks `isinstance(first, Err)` between steps instead of calling the next functi
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Gray #808080
 flowchart LR
     accTitle: Example 61: Composing Result-Returning Functions
-    accDescr: Flowchart with 14 nodes and 11 connections. Nodes: 1, parse_int, Ok40141, reciprocal, Ok40141, 0, parse_int, Ok40041, reciprocal, Err: zero, x, parse_int, and 2 more. Connections: 1 to parse_int, parse_int to Ok40141, Ok40141 to reciprocal, reciprocal to Ok40141, 0 to parse_int, parse_int to Ok40041, Ok40041 to reciprocal, reciprocal to Err: zero, x to parse_int, parse_int to Err: not an int, Err: not an int to Err propagates (Re never runs).
+    accDescr: Flowchart with 14 nodes and 11 connections. Nodes: 1, parse_int, Ok(1), reciprocal, Ok(1), 0, parse_int, Ok(0), reciprocal, Err: zero, x, parse_int, and 2 more. Connections: 1 to parse_int, parse_int to Ok(1), Ok(1) to reciprocal, reciprocal to Ok(1), 0 to parse_int, parse_int to Ok(0), Ok(0) to reciprocal, reciprocal to Err: zero, x to parse_int, parse_int to Err: not an int, Err: not an int to Err propagates (Re never runs).
     T["'1'"]:::blue --> P["parse_int"]:::blue --> R1["Ok#40;1#41;"]:::blue --> Re["reciprocal"]:::blue --> O1["Ok#40;1#41;"]:::blue
     T2["'0'"]:::blue --> P2["parse_int"]:::blue --> R2["Ok#40;0#41;"]:::blue --> Re2["reciprocal"]:::blue --> O2["Err: zero"]:::gray
     T3["'x'"]:::blue --> P3["parse_int"]:::blue --> R3["Err: not an int"]:::gray -.->|Re never runs| O3["Err propagates"]:::gray
@@ -675,7 +675,7 @@ consumer actually pulls.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 63: A Lazy Prime Sieve Over an Infinite Generator
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: count40241 2, 3, 4, 5, ..., sieve: first=2 filter n 2 != 0, sieve: first=3 filter n 3 != 0, sieve: first=5 ..., 2, 3, 5, 7, 11, .... Connections: count40241 2, 3, 4, 5, ... to sieve: first=2 filter n 2 != 0, sieve: first=2 filter n 2 != 0 to sieve: first=3 filter n 3 != 0, sieve: first=3 filter n 3 != 0 to sieve: first=5 ..., sieve: first=5 ... to 2, 3, 5, 7, 11, ... (islice pulls 10).
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: count(2) 2, 3, 4, 5, ..., sieve: first=2 filter n 2 != 0, sieve: first=3 filter n 3 != 0, sieve: first=5 ..., 2, 3, 5, 7, 11, .... Connections: count(2) 2, 3, 4, 5, ... to sieve: first=2 filter n 2 != 0, sieve: first=2 filter n 2 != 0 to sieve: first=3 filter n 3 != 0, sieve: first=3 filter n 3 != 0 to sieve: first=5 ..., sieve: first=5 ... to 2, 3, 5, 7, 11, ... (islice pulls 10).
     N["count#40;2#41;<br/>2, 3, 4, 5, ..."]:::blue --> S2["sieve: first=2<br/>filter n % 2 != 0"]:::orange
     S2 --> S3["sieve: first=3<br/>filter n % 3 != 0"]:::orange
     S3 --> S5["sieve: first=5<br/>..."]:::teal
@@ -765,7 +765,7 @@ before the next starts.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 64: A Pull Pipeline of yield Stages
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: read_ lines40text41, strip_blank, uppercase, [HELLO, WORLD, FP]. Connections: read_ lines40text41 to strip_blank (pulled one line at a time), strip_blank to uppercase (pulled one line at a time), uppercase to [HELLO, WORLD, FP] (pulled by list4041).
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: read_ lines(text), strip_blank, uppercase, [HELLO, WORLD, FP]. Connections: read_ lines(text) to strip_blank (pulled one line at a time), strip_blank to uppercase (pulled one line at a time), uppercase to [HELLO, WORLD, FP] (pulled by list()).
     R["read_<br/>lines#40;text#41;"]:::blue -->|pulled one line at a<br/>time| Sb["strip_blank"]:::orange
     Sb -->|pulled one line at a<br/>time| U["uppercase"]:::teal
     U -->|pulled by<br/>list#40;#41;| Out["['HELLO', 'WORLD',<br/>'FP']"]:::blue
@@ -964,7 +964,7 @@ loop repeatedly calls that step in a single stack frame, however many "recursive
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
     accTitle: Example 66: A Trampoline Simulating Tail-Call Optimization
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: trampoline4041 ONE stack frame, Bounce n=50000, Bounce n=49999, Bounce n=1, 1250025000. Connections: trampoline4041 ONE stack frame to Bounce n=50000 (calls thunk), Bounce n=50000 to Bounce n=49999 (result.thunk4041), Bounce n=49999 to Bounce n=1 (... 50,000 bounces ...), Bounce n=1 to 1250025000 (returns plain int).
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: trampoline() ONE stack frame, Bounce n=50000, Bounce n=49999, Bounce n=1, 1250025000. Connections: trampoline() ONE stack frame to Bounce n=50000 (calls thunk), Bounce n=50000 to Bounce n=49999 (result.thunk()), Bounce n=49999 to Bounce n=1 (... 50,000 bounces ...), Bounce n=1 to 1250025000 (returns plain int).
     T["trampoline#40;#41;<br/>ONE stack frame"]:::blue -->|calls thunk| B1["Bounce n=50000"]:::orange
     B1 -->|result.thunk#40;#41;| B2["Bounce n=49999"]:::orange
     B2 -.->|... 50,000 bounces<br/>...| B3["Bounce n=1"]:::orange
@@ -1060,7 +1060,7 @@ statement, one `case` per node type -- the canonical shape of a tree-walking int
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 67: An Expression AST as an ADT With a match Evaluator
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Add, Num40241, Mul, Num40341, Num40441. Connections: Add to Num40241, Add to Mul, Mul to Num40341, Mul to Num40441.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Add, Num(2), Mul, Num(3), Num(4). Connections: Add to Num(2), Add to Mul, Mul to Num(3), Mul to Num(4).
     Add1["Add"]:::blue --> Num1["Num#40;2#41;"]:::orange
     Add1 --> Mul1["Mul"]:::teal
     Mul1 --> Num2["Num#40;3#41;"]:::orange
@@ -1168,7 +1168,7 @@ called.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Gray #808080
 flowchart LR
     accTitle: Example 68: Sequencing Option Computations, Do-Style
-    accDescr: Flowchart with 9 nodes and 6 connections. Nodes: safe_div40100, 441, safe_sqrt, x100, Some40500.041, safe_div40100, 041, and_then skipped, safe_div40-100, 441, safe_sqrt, and_then skipped. Connections: safe_div40100, 441 to safe_sqrt (Some 25.0), safe_sqrt to x100 (Some 5.0), x100 to Some40500.041 (Some 500.0), safe_div40100, 041 to and_then skipped (Nothing), safe_div40-100, 441 to safe_sqrt (Some -25.0), safe_sqrt to and_then skipped (Nothing: negative).
+    accDescr: Flowchart with 9 nodes and 6 connections. Nodes: safe_div(100, 4), safe_sqrt, x100, Some(500.0), safe_div(100, 0), and_then skipped, safe_div(-100, 4), safe_sqrt, and_then skipped. Connections: safe_div(100, 4) to safe_sqrt (Some 25.0), safe_sqrt to x100 (Some 5.0), x100 to Some(500.0) (Some 500.0), safe_div(100, 0) to and_then skipped (Nothing), safe_div(-100, 4) to safe_sqrt (Some -25.0), safe_sqrt to and_then skipped (Nothing: negative).
     A["safe_div#40;100,<br/>4#41;"]:::blue -->|Some 25.0| B["safe_sqrt"]:::blue -->|Some 5.0| C["x100"]:::blue -->|Some 500.0| Ok["Some#40;500.0#41;"]:::blue
     A2["safe_div#40;100,<br/>0#41;"]:::blue -->|Nothing| Skip1["and_then skipped"]:::gray
     A3["safe_div#40;-100,<br/>4#41;"]:::blue -->|Some -25.0| B3["safe_sqrt"]:::blue -->|Nothing: negative| Skip2["and_then skipped"]:::gray
@@ -1522,7 +1522,7 @@ once instead of fixing them one at a time.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 71: An Applicative Validation That Accumulates All Errors
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: validate_ username40an41 Invalid, combine3, validate_password40short41 Invalid, validate_ age401041 Invalid, Invalid: ALL 3 errors merged. Connections: validate_ username40an41 Invalid to combine3, validate_password40short41 Invalid to combine3, validate_ age401041 Invalid to combine3, combine3 to Invalid: ALL 3 errors merged.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: validate_ username(an) Invalid, combine3, validate_ password( short) Invalid, validate_ age(10) Invalid, Invalid: ALL 3 errors merged. Connections: validate_ username(an) Invalid to combine3, validate_ password( short) Invalid to combine3, validate_ age(10) Invalid to combine3, combine3 to Invalid: ALL 3 errors merged.
     U["validate_<br/>username#40;'an'#41;<br/>Invalid"]:::orange --> C["combine3"]:::blue
     P["validate_<br/>password#40;<br/>'short'#41;<br/>Invalid"]:::orange --> C
     A["validate_<br/>age#40;10#41;<br/>Invalid"]:::orange --> C
@@ -1644,7 +1644,7 @@ three-step `bind` chain agree, which is associativity.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 72: Left-Identity, Right-Identity, and Associativity for Result
-    accDescr: Flowchart with 4 nodes and 1 connections. Nodes: L, R, m, A. Connections: R to m.
+    accDescr: Flowchart with 3 nodes and 0 connections. Nodes: Left identity unit(x). bind(f) == f(x), Right identity m.bind(unit) == m, Associativity (m. bind(f)). bind(g) == m.bind(x -> f(x). bind(g)).
     L["Left identity<br/>unit#40;x#41;.<br/>bind#40;f#41; ==<br/>f#40;x#41;"]:::blue
     R["Right identity<br/>m.bind#40;unit#41;<br/>== m"]:::orange
     A["Associativity<br/>#40;m.<br/>bind#40;f#41;#41;.<br/>bind#40;g#41; ==<br/>m.bind#40;x -><br/>f#40;x#41;.<br/>bind#40;g#41;#41;"]:::teal
@@ -1884,7 +1884,7 @@ purely on readability grounds: `nested_result` must be read from the innermost c
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
     accTitle: Example 74: A Deep pipe vs. Nested Calls on Real Data
-    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: count_words40 split_words40 to_lowercase40 strip_whitespace40raw41414141, strip_whitespace, to_lowercase, split_words, count_words. Connections: strip_whitespace to to_lowercase, to_lowercase to split_words, split_words to count_words.
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: count_words( split_words( to_lowercase( strip_whitespace( raw)))), strip_whitespace, to_lowercase, split_words, count_words. Connections: strip_whitespace to to_lowercase, to_lowercase to split_words, split_words to count_words.
     subgraph Nested["Nested calls -- read<br/>INSIDE-OUT"]
         N4["count_words#40;<br/>split_words#40;<br/>to_lowercase#40;<br/>strip_whitespace#40;<br/>raw#41;#41;#41;#41;"]:::orange
     end
@@ -2171,7 +2171,7 @@ the same nesting order `compose(outer, inner)` would produce.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 77: Stacking Multiple Decorators and Reasoning About Order
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: outer enter, inner enter, double40541 = 10, inner exit, outer exit. Connections: outer enter to inner enter, inner enter to double40541 = 10, double40541 = 10 to inner exit, inner exit to outer exit.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: outer enter, inner enter, double(5) = 10, inner exit, outer exit. Connections: outer enter to inner enter, inner enter to double(5) = 10, double(5) = 10 to inner exit, inner exit to outer exit.
     O1["outer enter"]:::blue --> I1["inner enter"]:::orange --> D["double#40;5#41; = 10"]:::teal --> I2["inner exit"]:::orange --> O2["outer exit"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -2270,7 +2270,7 @@ nothing at all, with no error to signal the mistake.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Gray #808080
 flowchart LR
     accTitle: Example 78: A Case Where Laziness Saves Work, and One Where It Hides a Cost
-    accDescr: Flowchart with 6 nodes and 4 connections. Nodes: lazy_squares401.. 99941, ~8 computed, not 999, lazy_squares401.. 341, [1, 4, 9], [, silently. Connections: lazy_squares401.. 99941 to ~8 computed, not 999 (stops at first 62 50), lazy_squares401.. 341 to [1, 4, 9] (first pass: 3 computed), lazy_squares401.. 341 to [ (second pass: EXHAUSTED), [ to silently.
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: lazy_squares(1.. 999), ~8 computed, not 999, lazy_squares(1.. 3), [1, 4, 9], [] -- silently empty. Connections: lazy_squares(1.. 999) to ~8 computed, not 999 (stops at first > 50), lazy_squares(1.. 3) to [1, 4, 9] (first pass: 3 computed), lazy_squares(1.. 3) to [] -- silently empty (second pass: EXHAUSTED).
     subgraph Case1["Case 1: laziness<br/>SAVES work"]
         L1["lazy_squares#40;1..<br/>999#41;"]:::blue -->|stops at first #62;<br/>50| Done1["~8 computed, not 999"]:::orange
     end
@@ -2388,7 +2388,7 @@ otherwise the two pipelines are structurally identical.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Gray #808080
 flowchart LR
     accTitle: Example 79: The Same Pipeline in Option vs. Result
-    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: parse_ option40bad41, Nothing4041 NO reason attached, parse_ result40bad41, Err40bad is not a digit string41 reason attached. Connections: parse_ option40bad41 to Nothing4041 NO reason attached, parse_ result40bad41 to Err40bad is not a digit string41 reason attached.
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: parse_ option(bad), Nothing() NO reason attached, parse_ result(bad), Err(bad is not a digit string) reason attached. Connections: parse_ option(bad) to Nothing() NO reason attached, parse_ result(bad) to Err(bad is not a digit string) reason attached.
     O["parse_<br/>option#40;'bad'#41;"]:::blue --> N["Nothing#40;#41;<br/>NO reason attached"]:::gray
     R["parse_<br/>result#40;'bad'#41;"]:::orange --> E["Err#40;'bad' is not<br/>a digit string'#41;<br/>reason attached"]:::gray
 
@@ -2539,7 +2539,7 @@ rather than stopping at the first one, and `run_shell` is still the only functio
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart TD
     accTitle: Example 80: A Functional-Core Log Analyzer With Result Errors and an Applicative Combine
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: raw_text lines, parse_all4041 PURE, accumulates ALL errors, count_by_ level4041 PURE, run_shell prints every error, run_shell prints counts. Connections: raw_text lines to parse_all4041 PURE, accumulates ALL errors, parse_all4041 PURE, accumulates ALL errors to count_by_ level4041 PURE (Ok), parse_all4041 PURE, accumulates ALL errors to run_shell prints every error (Err: all bad lines), count_by_ level4041 PURE to run_shell prints counts.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: raw_text lines, parse_all() PURE, accumulates ALL errors, count_by_ level() PURE, run_shell prints every error, run_shell prints counts. Connections: raw_text lines to parse_all() PURE, accumulates ALL errors, parse_all() PURE, accumulates ALL errors to count_by_ level() PURE (Ok), parse_all() PURE, accumulates ALL errors to run_shell prints every error (Err: all bad lines), count_by_ level() PURE to run_shell prints counts.
     T["raw_text lines"]:::blue --> P["parse_all#40;#41;<br/>PURE, accumulates<br/>ALL errors"]:::blue
     P -->|Ok| C["count_by_<br/>level#40;#41;<br/>PURE"]:::teal
     P -->|Err: all bad lines| Report["run_shell prints<br/>every error"]:::orange

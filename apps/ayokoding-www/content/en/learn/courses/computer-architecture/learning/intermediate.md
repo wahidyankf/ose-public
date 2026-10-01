@@ -2003,7 +2003,7 @@ Touching one element from each of many widely-scattered pages forces a TLB looku
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 41: TLB Pressure from Random Pages
-    accDescr: Graph with 8 nodes and 6 connections. Nodes: page 1, page 2, page N (far apart), TLB (small, fixed entries), page 1, page 2, TLB2, working. Connections: page 1 to TLB (small, fixed entries) (lookup, likely MISS), page 2 to TLB (small, fixed entries) (lookup, likely MISS), page N (far apart) to TLB (small, fixed entries) (lookup, likely MISS), TLB2 to working, page 1 to TLB2 (lookup, HIT), page 2 to TLB2 (lookup, HIT).
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: page 1, page 2, page N (far apart), TLB (small, fixed entries), page 1, page 2, TLB -- working set fits and stays resident. Connections: page 1 to TLB (small, fixed entries) (lookup, likely MISS), page 2 to TLB (small, fixed entries) (lookup, likely MISS), page N (far apart) to TLB (small, fixed entries) (lookup, likely MISS), page 1 to TLB -- working set fits and stays resident (lookup, HIT), page 2 to TLB -- working set fits and stays resident (lookup, HIT).
     subgraph Scattered["many scattered pages"]
         direction LR
         P1["page 1"]:::orange
@@ -2169,7 +2169,7 @@ A fresh anonymous `mmap` region has no backing physical pages until first touche
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 42: Page Faults via mmap
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: mmap() anonymous region no physical pages yet, first touch to a page, minor page fault traps to the kernel, kernel allocates + zeroes a physical page, E. Connections: mmap() anonymous region no physical pages yet to first touch to a page, first touch to a page to minor page fault traps to the kernel, minor page fault traps to the kernel to kernel allocates + zeroes a physical page, kernel allocates + zeroes a physical page to E.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: mmap() anonymous region no physical pages yet, first touch to a page, minor page fault traps to the kernel, kernel allocates + zeroes a physical page, mapping installed -- later touches to this page are free. Connections: mmap() anonymous region no physical pages yet to first touch to a page, first touch to a page to minor page fault traps to the kernel, minor page fault traps to the kernel to kernel allocates + zeroes a physical page, kernel allocates + zeroes a physical page to mapping installed -- later touches to this page are free.
     A["mmap() anonymous<br/>region<br/>no physical pages<br/>yet"]:::blue --> B["first touch to a<br/>page"]:::orange
     B --> C["minor page fault<br/>traps to the kernel"]:::brown
     C --> D["kernel allocates +<br/>zeroes<br/>a physical page"]:::teal
@@ -2742,7 +2742,7 @@ Accessing memory at a power-of-two stride concentrates many addresses onto the S
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 46: Cache-Associativity Conflict Stride
-    accDescr: Graph with 10 nodes and 6 connections. Nodes: addr 0, S, addr + stride, addr + 2*stride, addr 0, set 0, addr + stride, set 5, addr + 2*stride, set 11. Connections: addr 0 to S, addr + stride to S, addr + 2*stride to S, addr 0 to set 0, addr + stride to set 5, addr + 2*stride to set 11.
+    accDescr: Graph with 10 nodes and 6 connections. Nodes: addr 0, SAME cache set every access -- conflict misses, addr + stride, addr + 2*stride, addr 0, set 0, addr + stride, set 5, addr + 2*stride, set 11. Connections: addr 0 to SAME cache set every access -- conflict misses, addr + stride to SAME cache set every access -- conflict misses, addr + 2*stride to SAME cache set every access -- conflict misses, addr 0 to set 0, addr + stride to set 5, addr + 2*stride to set 11.
     subgraph P2["power-of-two stride"]
         direction LR
         A1["addr 0"]:::orange --> S["SAME cache set<br/>every access --<br/>conflict misses"]:::brown

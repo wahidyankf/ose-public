@@ -19,7 +19,7 @@ Backtracking places queens column by column, checking safety against every previ
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 53: N-Queens by Backtracking
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: place queen, col 0, col 1: safe spot, C. Connections: place queen, col 0 to col 1: safe spot, place queen, col 0 to C.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: place queen, col 0, col 1: safe spot, col 1: UNSAFE -- prune. Connections: place queen, col 0 to col 1: safe spot, place queen, col 0 to col 1: UNSAFE -- prune.
     A["place queen, col 0"]:::blue
     B["col 1: safe spot"]:::orange
     C["col 1: UNSAFE --<br/>prune"]:::teal

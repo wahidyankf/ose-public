@@ -18,7 +18,7 @@ always means "matches `workload.py`'s own answer", never a re-derived copy.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Goal
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Step 1: workload.py serial baseline + timing harness, B, C, threads, Step 4: race_demo.py race + lock fix, deadlock + ordering fix. Connections: C to threads, Step 1: workload.py serial baseline + timing harness to B, B to C, C to Step 4: race_demo.py race + lock fix, deadlock + ordering fix.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Step 1: workload.py serial baseline + timing harness, Step 2: pool_threads.py + async_run.py I/O-bound fetch -- threads vs asyncio, Step 3: pool_process.py CPU-bound aggregate -- threads vs processes, Step 4: race_demo.py race + lock fix, deadlock + ordering fix. Connections: Step 1: workload.py serial baseline + timing harness to Step 2: pool_threads.py + async_run.py I/O-bound fetch -- threads vs asyncio, Step 2: pool_threads.py + async_run.py I/O-bound fetch -- threads vs asyncio to Step 3: pool_process.py CPU-bound aggregate -- threads vs processes, Step 3: pool_process.py CPU-bound aggregate -- threads vs processes to Step 4: race_demo.py race + lock fix, deadlock + ordering fix.
     A["Step 1: workload.py<br/>serial baseline +<br/>timing harness"]:::blue
     B["Step 2:<br/>pool_threads.py +<br/>async_run.py<br/>I/O-bound fetch --<br/>threads vs asyncio"]:::orange
     C["Step 3:<br/>pool_process.py<br/>CPU-bound aggregate<br/>-- threads vs<br/>processes"]:::teal

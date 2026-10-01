@@ -655,7 +655,7 @@ it -- there is no live session left to run the lazy query through.
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart TD
     accTitle: Example 35: Lazy Loading Detached Error
-    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: session.close() ada is now DETACHED, read ada.name already loaded, read ada.orders never touched before close, D, no, DetachedInstance Error no session left to query. Connections: session.close() ada is now DETACHED to read ada.name already loaded, session.close() ada is now DETACHED to read ada.orders never touched before close, read ada.name already loaded to D, D to no, read ada.orders never touched before close to DetachedInstance Error no session left to query.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: session.close() ada is now DETACHED, read ada.name already loaded, read ada.orders never touched before close, OK -- no query needed, DetachedInstance Error no session left to query. Connections: session.close() ada is now DETACHED to read ada.name already loaded, session.close() ada is now DETACHED to read ada.orders never touched before close, read ada.name already loaded to OK -- no query needed, read ada.orders never touched before close to DetachedInstance Error no session left to query.
     A["session.close()<br/>ada is now DETACHED"]:::blue
     A --> B["read ada.name<br/>already loaded"]:::teal
     A --> C["read ada.orders<br/>never touched before<br/>close"]:::orange
@@ -1374,7 +1374,7 @@ remain perfectly readable -- only the guarded relationship refuses to load impli
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 41: Raiseload Guard
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: select(Customer) .options(raiseload(Customer. orders)), read ada.name covered by SELECT, read ada.orders guarded relationship, OK, InvalidRequestError loud, immediate, catchable by tests. Connections: select(Customer) .options(raiseload(Customer. orders)) to read ada.name covered by SELECT, select(Customer) .options(raiseload(Customer. orders)) to read ada.orders guarded relationship, read ada.name covered by SELECT to OK, read ada.orders guarded relationship to InvalidRequestError loud, immediate, catchable by tests.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: select(Customer) .options( raiseload(Customer. orders)), read ada.name covered by SELECT, read ada.orders guarded relationship, OK, InvalidRequestError loud, immediate, catchable by tests. Connections: select(Customer) .options( raiseload(Customer. orders)) to read ada.name covered by SELECT, select(Customer) .options( raiseload(Customer. orders)) to read ada.orders guarded relationship, read ada.name covered by SELECT to OK, read ada.orders guarded relationship to InvalidRequestError loud, immediate, catchable by tests.
     A["select(Customer)<br/>.options(<br/>raiseload(Customer.<br/>orders))"]:::blue
     A --> B["read ada.name<br/>covered by SELECT"]:::teal
     A --> C["read ada.orders<br/>guarded relationship"]:::orange

@@ -166,7 +166,7 @@ Binary search halves a sorted range on every step: check the midpoint, and disca
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 31: Iterative Binary Search
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: range 911..1393 mid=7, too low, range 919..1393 mid=11, too high, range 919..993 mid=9, match. Connections: range 911..1393 mid=7, too low to range 919..1393 mid=11, too high, range 919..1393 mid=11, too high to range 919..993 mid=9, match.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: range [1..13] mid=7, too low, range [9..13] mid=11, too high, range [9..9] mid=9, match. Connections: range [1..13] mid=7, too low to range [9..13] mid=11, too high, range [9..13] mid=11, too high to range [9..9] mid=9, match.
     A["range #91;1..13#93;<br/>mid=7, too low"]:::blue
     B["range #91;9..13#93;<br/>mid=11, too high"]:::orange
     C["range #91;9..9#93;<br/>mid=9, match"]:::teal
@@ -491,7 +491,7 @@ _ex-37 &middot; exercises co-12_
 %% TD required: heap parent must appear above its children to show the tree order encoded in the array
 graph TD
     accTitle: Example 37: Min-Heap with heapq.heappush and heappop
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: index 0: 1 40root, min41, index 1: 3 40left child41, index 2: 8 40right child41, index 3: 5 40child of index 141. Connections: index 0: 1 40root, min41 to index 1: 3 40left child41, index 0: 1 40root, min41 to index 2: 8 40right child41, index 1: 3 40left child41 to index 3: 5 40child of index 141.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: index 0: 1 (root, min), index 1: 3 (left child), index 2: 8 (right child), index 3: 5 (child of index 1). Connections: index 0: 1 (root, min) to index 1: 3 (left child), index 0: 1 (root, min) to index 2: 8 (right child), index 1: 3 (left child) to index 3: 5 (child of index 1).
     A["index 0: 1<br/>#40;root, min#41;"]:::blue
     B["index 1: 3<br/>#40;left child#41;"]:::orange
     C["index 2: 8<br/>#40;right child#41;"]:::orange
@@ -1092,7 +1092,7 @@ A binary tree is a node with up to two children (`left` and `right`). This examp
 %% TD required: parent nodes must appear above child nodes to show tree structure
 graph TD
     accTitle: Example 48: Build a Binary Tree
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: 4 40root41, 2, 6, 1, 3. Connections: 4 40root41 to 2, 4 40root41 to 6, 2 to 1, 2 to 3.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 4 (root), 2, 6, 1, 3. Connections: 4 (root) to 2, 4 (root) to 6, 2 to 1, 2 to 3.
     A["4 #40;root#41;"]:::blue
     B["2"]:::orange
     C["6"]:::orange
@@ -1854,7 +1854,7 @@ Breadth-first search (BFS) explores a graph level by level, using a `deque`-back
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: Example 57: Breadth-First Search over a Graph
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: visit a frontier: 91b,c93, visit b frontier: 91c,d93, visit c frontier: 91d93, visit d frontier empty. Connections: visit a frontier: 91b,c93 to visit b frontier: 91c,d93, visit b frontier: 91c,d93 to visit c frontier: 91d93, visit c frontier: 91d93 to visit d frontier empty.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: visit a frontier: [b,c], visit b frontier: [c,d], visit c frontier: [d], visit d frontier empty. Connections: visit a frontier: [b,c] to visit b frontier: [c,d], visit b frontier: [c,d] to visit c frontier: [d], visit c frontier: [d] to visit d frontier empty.
     A["visit a<br/>frontier:<br/>#91;b,c#93;"]:::blue
     B["visit b<br/>frontier:<br/>#91;c,d#93;"]:::orange
     C["visit c<br/>frontier: #91;d#93;"]:::teal

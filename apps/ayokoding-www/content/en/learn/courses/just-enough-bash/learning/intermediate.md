@@ -1094,16 +1094,19 @@ blocks from Examples 41-52, composed into one pipeline.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["find logs -name '*.log'<br/>locate every log file"]:::blue
-    B["xargs grep ERROR<br/>keep only ERROR lines"]:::orange
-    C["awk '#123;print $3#125;'<br/>extract the service name"]:::teal
-    D["sort -u<br/>de-duplicate, alphabetize"]:::purple
+    accTitle: Example 53: A Multi-Stage find | grep | awk | sort Pipeline
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: find logs -name *.log locate every log file, xargs grep ERROR keep only ERROR lines, awk 123print $3125 extract the service name, sort -u de-duplicate, alphabetize. Connections: find logs -name *.log locate every log file to xargs grep ERROR keep only ERROR lines, xargs grep ERROR keep only ERROR lines to awk 123print $3125 extract the service name, awk 123print $3125 extract the service name to sort -u de-duplicate, alphabetize.
+    A["find logs -name<br/>'*.log'<br/>locate every log<br/>file"]:::blue
+    B["xargs grep ERROR<br/>keep only ERROR<br/>lines"]:::orange
+    C["awk '#123;print<br/>$3#125;'<br/>extract the service<br/>name"]:::teal
+    D["sort -u<br/>de-duplicate,<br/>alphabetize"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-53-pipeline-chore/example.sh`**

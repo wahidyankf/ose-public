@@ -18,12 +18,15 @@ _ex-59 &middot; exercises co-11_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
-    A["Shape#40;abc.ABC#41;<br/>area#40;#41; is abstract"]:::blue
+    accTitle: Example 59: Define an ABC Interface
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Shape40abc.ABC41 area4041 is abstract, Shape4041 raises TypeError. Connections: Shape40abc.ABC41 area4041 is abstract to Shape4041 raises TypeError.
+    A["Shape#40;abc.ABC#41;<br/>area#40;#41; is<br/>abstract"]:::blue
     B["Shape#40;#41;<br/>raises TypeError"]:::orange
     A -.-> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-59-define-abc-interface/example.py`**
@@ -178,15 +181,18 @@ Once a subclass implements every abstract method, it instantiates normally -- th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    S["Shape#40;abc.ABC#41;<br/>area#40;#41; is abstract"]:::blue
-    C["Circle<br/>area#40;#41; #61; pi * r**2"]:::orange
-    Q["Square<br/>area#40;#41; #61; side**2"]:::teal
+    accTitle: Example 61: Two Concrete Implementations of the Same ABC
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Shape40abc.ABC41 area4041 is abstract, Circle area4041 61 pi * r**2, Square area4041 61 side**2. Connections: Shape40abc.ABC41 area4041 is abstract to Circle area4041 61 pi * r**2, Shape40abc.ABC41 area4041 is abstract to Square area4041 61 side**2.
+    S["Shape#40;abc.ABC#41;<br/>area#40;#41; is<br/>abstract"]:::blue
+    C["Circle<br/>area#40;#41; #61; pi<br/>* r**2"]:::orange
+    Q["Square<br/>area#40;#41; #61;<br/>side**2"]:::teal
     S --> C
     S --> Q
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-61-abc-concrete-implementations/example.py`**
@@ -550,12 +556,15 @@ Subclassing `list` to get a `Stack` "for free" is-a a list, which means it inher
 ```mermaid
 %% Color Palette: Orange #DE8F05, Teal #029E73
 flowchart TD
-    S["Stack#40;list#91;int#93;#41;<br/>is-a list"]:::orange
-    L["inherits EVERY list method<br/>insert#40;#41; included, unwanted"]:::teal
+    accTitle: Example 65: A Naive Stack Leaks the Wrong Interface
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Stack40list91int9341 is-a list, inherits EVERY list method insert4041 included, unwanted. Connections: Stack40list91int9341 is-a list to inherits EVERY list method insert4041 included, unwanted.
+    S["Stack(list[int])<br/>is-a list"]:::orange
+    L["inherits EVERY list<br/>method<br/>insert#40;#41;<br/>included, unwanted"]:::teal
     S --> L
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-65-naive-inheritance-smell/example.py`**
@@ -638,12 +647,15 @@ Holding `self._items: list[int]` as a private collaborator, instead of subclassi
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 flowchart LR
-    A["Stack<br/>has-a self._items: list#91;int#93;"]:::blue
-    B["push#40;#41;/pop#40;#41;/peek#40;#41; only<br/>insert#40;#41; no longer exists"]:::teal
+    accTitle: Example 66: Refactoring Stack to Composition
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Stack has-a self._items: list91int93, push4041/ pop4041/ peek4041 only insert4041 no longer exists. Connections: Stack has-a self._items: list91int93 to push4041/ pop4041/ peek4041 only insert4041 no longer exists.
+    A["Stack<br/>has-a self._items:<br/>list#91;int#93;"]:::blue
+    B["push#40;#41;/<br/>pop#40;#41;/<br/>peek#40;#41; only<br/>insert#40;#41; no<br/>longer exists"]:::teal
     A --> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-66-refactor-to-composition/example.py`**
@@ -749,6 +761,8 @@ _ex-67 &middot; exercises co-13_
 ```mermaid
 %% Color Palette: Blue #0173B2, Purple #CC78BC
 flowchart LR
+    accTitle: Example 67: A Service Delegates to a Logger Collaborator
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Service has-a self._logger, PrintLogger writes to console, SilentLogger writes nothing. Connections: Service has-a self._logger to PrintLogger writes to console (holds either), Service has-a self._logger to SilentLogger writes nothing (or swapped for).
     Svc["Service<br/>has-a self._logger"]:::blue
     L1["PrintLogger<br/>writes to console"]:::purple
     L2["SilentLogger<br/>writes nothing"]:::purple
@@ -757,6 +771,7 @@ flowchart LR
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-67-composition-delegates/example.py`**
@@ -938,15 +953,18 @@ _ex-69 &middot; exercises co-13, co-10_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    O["Order#40;pricing#41;<br/>has-a pricing strategy"]:::blue
-    R["RegularPricing<br/>total#40;#41; #61; subtotal"]:::orange
-    D["DiscountPricing<br/>total#40;#41; #61; subtotal * 0.9"]:::teal
-    O -->|"strategy #61; RegularPricing#40;#41;"| R
-    O -.->|"strategy swapped to"| D
+    accTitle: Example 69: A Swappable Pricing Strategy via Composition
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Order40pricing41 has-a pricing strategy, RegularPricing total4041 61 subtotal, DiscountPricing total4041 61 subtotal * 0.9. Connections: Order40pricing41 has-a pricing strategy to RegularPricing total4041 61 subtotal (strategy 61 Regular Pricing4041), Order40pricing41 has-a pricing strategy to DiscountPricing total4041 61 subtotal * 0.9 (strategy swapped to).
+    O["Order#40;pricing#41;<br/>has-a pricing<br/>strategy"]:::blue
+    R["RegularPricing<br/>total#40;#41; #61;<br/>subtotal"]:::orange
+    D["DiscountPricing<br/>total#40;#41; #61;<br/>subtotal * 0.9"]:::teal
+    O -->|"strategy #61;<br/>Regular<br/>Pricing#40;#41;"| R
+    O -.->|"strategy swapped<br/>to"| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-69-strategy-via-composition/example.py`**
@@ -1138,15 +1156,18 @@ _ex-71 &middot; exercises co-02, co-17_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161
 flowchart LR
+    accTitle: Example 71: An Order Enforcing Legal Status Transitions
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: pending, shipped, delivered, cancelled. Connections: pending to shipped, shipped to delivered, pending to cancelled, shipped to cancelled.
     A["pending"]:::blue --> B["shipped"]:::orange
     B --> C["delivered"]:::teal
     A --> D["cancelled"]:::brown
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-encapsulated-state-machine/example.py`**
@@ -1332,13 +1353,16 @@ A frozen dataclass's generated `__eq__` and `__hash__` work together automatical
 ```mermaid
 %% Color Palette: Orange #DE8F05, Teal #029E73
 flowchart LR
-    In["#123;Money#40;10#41;, Money#40;10#41;, Money#40;20#41;#125;<br/>three constructed objects"]:::orange
-    S["set#40;...#41;<br/>buckets by __hash__, checks __eq__"]:::teal
-    Out["#123;Money#40;10#41;, Money#40;20#41;#125;<br/>duplicate collapsed"]:::teal
+    accTitle: Example 73: Value Objects Deduplicate Inside a Set
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 123Money401041, Money401041, Money402041125 three constructed objects, set40...41 buckets by __hash__, checks __eq__, 123Money401041, Money402041125 duplicate collapsed. Connections: 123Money401041, Money401041, Money402041125 three constructed objects to set40...41 buckets by __hash__, checks __eq__, set40...41 buckets by __hash__, checks __eq__ to 123Money401041, Money402041125 duplicate collapsed.
+    In["{Money(10),<br/>Money(10),<br/>Money(20)}<br/>three constructed<br/>objects"]:::orange
+    S["set#40;...#41;<br/>buckets by __hash__,<br/>checks __eq__"]:::teal
+    Out["{Money(10),<br/>Money(20)}<br/>duplicate collapsed"]:::teal
     In --> S --> Out
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-73-value-objects-set-dedup/example.py`**
@@ -1500,14 +1524,17 @@ A base class can define a fixed algorithm (`build()`) that calls a mix of requir
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart TD
-    T["ReportBuilder.build#40;#41;<br/>FIXED algorithm, never overridden"]:::blue
-    H1["body#40;#41;<br/>abstract -- REQUIRED hook"]:::orange
-    H2["header#40;#41; / footer#40;#41;<br/>optional overridable hooks"]:::orange
+    accTitle: Example 75: The Template Method Pattern
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: ReportBuilder. build4041 FIXED algorithm, never overridden, H1, REQUIRED, header4041 / footer4041 optional overridable hooks. Connections: H1 to REQUIRED, ReportBuilder. build4041 FIXED algorithm, never overridden to H1, ReportBuilder. build4041 FIXED algorithm, never overridden to header4041 / footer4041 optional overridable hooks.
+    T["ReportBuilder.<br/>build#40;#41;<br/>FIXED algorithm,<br/>never overridden"]:::blue
+    H1["body#40;#41;<br/>abstract -- REQUIRED<br/>hook"]:::orange
+    H2["header#40;#41; /<br/>footer#40;#41;<br/>optional overridable<br/>hooks"]:::orange
     T --> H1
     T --> H2
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-75-template-method-pattern/example.py`**
@@ -1681,15 +1708,18 @@ Moving an invariant check out of `BankAccount` and into a dedicated `Validator` 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 flowchart LR
-    Before["BankAccount<br/>checks the invariant itself"]:::blue
+    accTitle: Example 77: An Invariant Still Holds After a Composition Refactor
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: BankAccount checks the invariant itself, BankAccount has-a Validator, Validator runs the SAME rule. Connections: BankAccount checks the invariant itself to BankAccount has-a Validator (refactor), BankAccount has-a Validator to Validator runs the SAME rule.
+    Before["BankAccount<br/>checks the invariant<br/>itself"]:::blue
     After["BankAccount<br/>has-a Validator"]:::teal
     V["Validator<br/>runs the SAME rule"]:::orange
     Before -.->|"refactor"| After
     After --> V
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-77-invariant-survives-refactor/example.py`**
@@ -1789,15 +1819,18 @@ _ex-78 &middot; exercises co-15, co-08_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    A["Shape.registry, empty at start<br/>__init_subclass__ fires per subclass"]:::blue
-    B["class Circle#40;Shape#41;<br/>auto-added as registry#91;'Circle'#93;"]:::orange
-    C["class Square#40;Shape#41;<br/>auto-added as registry#91;'Square'#93;"]:::teal
+    accTitle: Example 78: Auto-Registering Subclasses with initsubclass
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Shape.registry, empty at start __init_subclass__ fires per subclass, class Circle40Shape41 auto-added as registry91Circle93, class Square40Shape41 auto-added as registry91Square93. Connections: Shape.registry, empty at start __init_subclass__ fires per subclass to class Circle40Shape41 auto-added as registry91Circle93, Shape.registry, empty at start __init_subclass__ fires per subclass to class Square40Shape41 auto-added as registry91Square93.
+    A["Shape.registry,<br/>empty at start<br/>__init_subclass__<br/>fires per subclass"]:::blue
+    B["class Circle(Shape)<br/>auto-added as<br/>registry['Circle']"]:::orange
+    C["class Square(Shape)<br/>auto-added as<br/>registry['Square']"]:::teal
     A --> B
     A --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-78-subclass-registry/example.py`**
@@ -1888,18 +1921,21 @@ This example assembles four ideas from across the topic into one small but compl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A["Money#40;frozen dataclass#41;<br/>value object"]:::blue
-    B["PricingStrategy#40;abc.ABC#41;<br/>FlatPricing implements it"]:::orange
-    C["Invoice<br/>composes PricingStrategy #40;co-13#41;"]:::teal
-    D["add_item#40;#41; rejects amount &lt; 0<br/>invariant #40;co-17#41;"]:::purple
+    accTitle: Example 79: A Full Domain Model in One Package
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: Money40frozen dataclass41 value object, Pricing Strategy40abc. ABC41 FlatPricing implements it, Invoice composes PricingStrategy 40co-1341, D, lt. Connections: Pricing Strategy40abc. ABC41 FlatPricing implements it to Invoice composes PricingStrategy 40co-1341, Money40frozen dataclass41 value object to Invoice composes PricingStrategy 40co-1341, Invoice composes PricingStrategy 40co-1341 to D.
+    A["Money#40;frozen<br/>dataclass#41;<br/>value object"]:::blue
+    B["Pricing<br/>Strategy#40;abc.<br/>ABC#41;<br/>FlatPricing<br/>implements it"]:::orange
+    C["Invoice<br/>composes<br/>PricingStrategy<br/>#40;co-13#41;"]:::teal
+    D["add_item#40;#41;<br/>rejects amount &lt; 0<br/>invariant<br/>#40;co-17#41;"]:::purple
     B --> C
     A --> C
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-79-full-domain-model/example.py`**

@@ -31,12 +31,15 @@ co-11).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["calculate_total#40;#41;"]:::blue --> B["StubTaxRateProvider<br/>get_rate returns 0.10"]:::orange
+    accTitle: Example 29: A Stub Returns a Canned Value
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: calculate_ total4041, StubTaxRateProvider get_rate returns 0.10, always 0.10, regardless of region. Connections: calculate_ total4041 to StubTaxRateProvider get_rate returns 0.10, StubTaxRateProvider get_rate returns 0.10 to always 0.10, regardless of region.
+    A["calculate_<br/>total#40;#41;"]:::blue --> B["StubTaxRateProvider<br/>get_rate returns<br/>0.10"]:::orange
     B --> C["always 0.10,<br/>regardless of region"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -151,6 +154,8 @@ into a checkable assertion (co-13).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 31: A Mock Records a Call
+    accDescr: Sequence diagram between Test, notify(), mock_observer. Messages: Test to notify(): notify(mock_observer); notify() to mock_observer: on_event(started); Test to mock_observer: assert .called / .call_count == 1.
     participant T as Test
     participant N as notify()
     participant M as mock_observer
@@ -369,6 +374,8 @@ namespace), not where it happens to be defined (co-14).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 35: Patching a Dependency
+    accDescr: Sequence diagram between test, mock.patch, format_greeting. Messages: test to mock.patch: enter with block; mock.patch to mock.patch: swap get_current_time; test to format_greeting: call format_greeting(); format_greeting to mock.patch: sees the PATCHED function; test to mock.patch: exit with block; mock.patch to mock.patch: restore the REAL function.
     participant T as test
     participant M as mock.patch
     participant F as format_greeting
@@ -549,12 +556,15 @@ entirely (co-15).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 38: A Spy Wraps the Real Object
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: spy.add402, 341, records the call (like a mock), forwards to real_calculator (genuine computation). Connections: spy.add402, 341 to records the call (like a mock), spy.add402, 341 to forwards to real_calculator (genuine computation).
     A["spy.add#40;2, 3#41;"]:::blue --> B["records the call<br/>(like a mock)"]:::orange
-    A --> C["forwards to real_calculator<br/>(genuine computation)"]:::teal
+    A --> C["forwards to<br/>real_calculator<br/>(genuine<br/>computation)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -678,14 +688,17 @@ versus mockist/London-style testing, made concrete (co-16, co-13).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["UserService.register(1, 'Ada')"]:::blue --> B["repo.save(1, 'Ada')"]:::orange
-    B --> C["Fake: assert repo._users == {1: 'Ada'}<br/>(checks STATE)"]:::teal
-    B --> D["Mock: assert save.assert_called_once_with(1, 'Ada')<br/>(checks INTERACTION)"]:::purple
+    accTitle: Example 40: Fake vs. Mock -- Two Ways to Check the Same Thing
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: UserService. register(1, Ada), repo.save(1, Ada), C, Mock: assert save. assert_called_once_ with(1, Ada) (checks INTERACTION). Connections: UserService. register(1, Ada) to repo.save(1, Ada), repo.save(1, Ada) to C, repo.save(1, Ada) to Mock: assert save. assert_called_once_ with(1, Ada) (checks INTERACTION).
+    A["UserService.<br/>register(1, 'Ada')"]:::blue --> B["repo.save(1, 'Ada')"]:::orange
+    B --> C["Fake: assert<br/>repo._users == {1:<br/>'Ada'}<br/>(checks STATE)"]:::teal
+    B --> D["Mock: assert save.<br/>assert_called_once_<br/>with(1, 'Ada')<br/>(checks INTERACTION)"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -871,12 +884,15 @@ equal applying it once, for every generated integer (co-18, co-20).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["st.integers#40;#41;<br/>generates 100+ values"]:::blue --> B["normalize_sign#40;x#41;"]:::orange
-    B --> C["normalize_sign#40;normalize_sign#40;x#41;#41;<br/>must be EQUAL"]:::teal
+    accTitle: Example 43: Property -- Idempotence
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: st.integers4041 generates 100+ values, normalize_ sign40x41, normalize_ sign40normalize_ sign40x4141 must be EQUAL. Connections: st.integers4041 generates 100+ values to normalize_ sign40x41, normalize_ sign40x41 to normalize_ sign40normalize_ sign40x4141 must be EQUAL.
+    A["st.integers#40;#41;<br/>generates 100+<br/>values"]:::blue --> B["normalize_<br/>sign#40;x#41;"]:::orange
+    B --> C["normalize_<br/>sign#40;normalize_<br/>sign#40;x#41;#41;<br/>must be EQUAL"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -938,13 +954,16 @@ non-ASCII Unicode (co-18, co-20).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["st.text#40;#41;<br/>generates original"]:::blue --> B["encode#40;original#41;"]:::orange
+    accTitle: Example 44: Property -- Round-Trip
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: st.text4041 generates original, encode40original41, decode40bytes41, D. Connections: st.text4041 generates original to encode40original41, encode40original41 to decode40bytes41, decode40bytes41 to D.
+    A["st.text()<br/>generates original"]:::blue --> B["encode(original)"]:::orange
     B --> C["decode#40;bytes#41;"]:::orange
-    C --> D["round_tripped == original?"]:::teal
+    C --> D["round_tripped ==<br/>original?"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1107,12 +1126,15 @@ rather than reporting whatever large, hard-to-read input it happened to generate
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["Hypothesis finds<br/>a failing input"]:::blue --> B["shrinks it repeatedly"]:::orange
+    accTitle: Example 47: Shrinking to a Minimal Counterexample
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Hypothesis finds a failing input, shrinks it repeatedly, reports the MINIMAL failing example: [1]. Connections: Hypothesis finds a failing input to shrinks it repeatedly, shrinks it repeatedly to reports the MINIMAL failing example: [1].
+    A["Hypothesis finds<br/>a failing input"]:::blue --> B["shrinks it<br/>repeatedly"]:::orange
     B --> C["reports the MINIMAL<br/>failing example: [1]"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1202,14 +1224,17 @@ where both dimensions are constrained to be positive -- by combining simpler str
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
-    A["draw#40;st.integers#40;1,1000#41;#41;<br/>width"]:::blue --> C["rectangles#40;#41;<br/>@st.composite"]:::purple
-    B["draw#40;st.integers#40;1,1000#41;#41;<br/>height"]:::orange --> C
-    C --> D["#40;width, height#41;<br/>domain object"]:::teal
+    accTitle: Example 48: A Custom Composite Strategy
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: draw40st.integers401,10004141 width, rectangles4041 @st.composite, draw40st.integers401,10004141 height, 40width, height41 domain object. Connections: draw40st.integers401,10004141 width to rectangles4041 @st.composite, draw40st.integers401,10004141 height to rectangles4041 @st.composite, rectangles4041 @st.composite to 40width, height41 domain object.
+    A["draw(<br/>st.integers(1,1000))<br/>width"]:::blue --> C["rectangles()<br/>@st.composite"]:::purple
+    B["draw(<br/>st.integers(1,1000))<br/>height"]:::orange --> C
+    C --> D["#40;width,<br/>height#41;<br/>domain object"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1503,12 +1528,15 @@ itself executed -- a stricter, more informative measurement than plain line cove
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 53: Branch Coverage
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: if n > 0:, TRUE branch tested, FALSE branch (else) UNTESTED. Connections: if n > 0: to TRUE branch tested, if n > 0: to FALSE branch (else) UNTESTED.
     A["if n > 0:"]:::blue --> B["TRUE branch<br/>tested"]:::teal
     A --> C["FALSE branch<br/>(else) UNTESTED"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1756,16 +1784,19 @@ the fixture runs once per param value (co-05, co-06).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["sample_number<br/>params=[1, 2, 3]"]:::blue --> B["test_number_is_positive[1]"]:::orange
-    A --> C["test_number_is_positive[2]"]:::orange
-    A --> D["test_number_is_positive[3]"]:::orange
-    A --> E["test_number_squared...[1]"]:::teal
-    A --> F["test_number_squared...[2]"]:::teal
-    A --> G["test_number_squared...[3]"]:::teal
+    accTitle: Example 56: A Parametrized Fixture
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: sample_number params=[1, 2, 3], test_number_is_ positive[1], test_number_is_ positive[2], test_number_is_ positive[3], test_number_squared. ..[1], test_number_squared. ..[2], test_number_squared. ..[3]. Connections: sample_number params=[1, 2, 3] to test_number_is_ positive[1], sample_number params=[1, 2, 3] to test_number_is_ positive[2], sample_number params=[1, 2, 3] to test_number_is_ positive[3], sample_number params=[1, 2, 3] to test_number_squared. ..[1], sample_number params=[1, 2, 3] to test_number_squared. ..[2], sample_number params=[1, 2, 3] to test_number_squared. ..[3].
+    A["sample_number<br/>params=[1, 2, 3]"]:::blue --> B["test_number_is_<br/>positive[1]"]:::orange
+    A --> C["test_number_is_<br/>positive[2]"]:::orange
+    A --> D["test_number_is_<br/>positive[3]"]:::orange
+    A --> E["test_number_squared.<br/>..[1]"]:::teal
+    A --> F["test_number_squared.<br/>..[2]"]:::teal
+    A --> G["test_number_squared.<br/>..[3]"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

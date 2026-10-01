@@ -28,14 +28,17 @@ tests. This example builds one small `Cart`/`PricingService` suite with exactly 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 61: Organize a Suite in Pyramid Shape
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: 6 unit tests Cart methods alone, 2 integration tests Cart + PricingService, real, 1 e2e test full checkout4041 flow. Connections: 6 unit tests Cart methods alone to 2 integration tests Cart + PricingService, real, 2 integration tests Cart + PricingService, real to 1 e2e test full checkout4041 flow.
     A["6 unit tests<br/>Cart methods alone"]:::blue
-    B["2 integration tests<br/>Cart + PricingService, real"]:::orange
-    C["1 e2e test<br/>full checkout#40;#41; flow"]:::teal
+    B["2 integration tests<br/>Cart +<br/>PricingService, real"]:::orange
+    C["1 e2e test<br/>full<br/>checkout#40;#41;<br/>flow"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -175,14 +178,17 @@ same `Cart`/`PricingService` feature and reweights it: 2 unit, 5 integration, 1 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 62: Reweight the Same Suite Toward Integration -- the Testing Trophy
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: 2 unit tests Cart methods alone, 5 integration tests Cart + PricingService, real THICKEST layer, 1 e2e test full checkout4041 flow. Connections: 2 unit tests Cart methods alone to 5 integration tests Cart + PricingService, real THICKEST layer, 5 integration tests Cart + PricingService, real THICKEST layer to 1 e2e test full checkout4041 flow.
     A["2 unit tests<br/>Cart methods alone"]:::blue
-    B["5 integration tests<br/>Cart + PricingService, real<br/>THICKEST layer"]:::orange
-    C["1 e2e test<br/>full checkout#40;#41; flow"]:::teal
+    B["5 integration tests<br/>Cart +<br/>PricingService, real<br/>THICKEST layer"]:::orange
+    C["1 e2e test<br/>full<br/>checkout#40;#41;<br/>flow"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -319,6 +325,8 @@ checks the cross-module behavior, including a real side effect landing in the ot
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 63: Test Two Real Collaborating Modules Together
+    accDescr: Sequence diagram between Test, OrderService (real), InventoryService (real). Messages: Test to OrderService (real): place_order(sku, qty); OrderService (real) to InventoryService (real): reserve(sku, qty); InventoryService (real) to OrderService (real): True (confirmed) or False (rejected); OrderService (real) to Test: confirmed / rejected: insufficient stock; Test to InventoryService (real): assert available(sku) reflects the reservation.
     participant T as Test
     participant O as OrderService (real)
     participant I as InventoryService (real)
@@ -630,13 +638,16 @@ instant the `with` block exits.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["DockerContainer#40;postgres:17-alpine#41;"]:::blue --> B["waiting_for#40;LogMessageWaitStrategy#41;"]:::orange
-    B --> C["with container: -- REAL container running"]:::teal
-    C --> D["block exits -- container stopped + removed"]:::blue
+    accTitle: Example 66: Spin Up a Throwaway DB Container for a Test
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: DockerContainer40postgres:17-alpine41, waiting_for40Log MessageWait Strategy41, C, D. Connections: DockerContainer40postgres:17-alpine41 to waiting_for40Log MessageWait Strategy41, waiting_for40Log MessageWait Strategy41 to C, C to D.
+    A["DockerContainer(<br/>postgres:17-alpine)"]:::blue --> B["waiting_for(Log<br/>MessageWait<br/>Strategy)"]:::orange
+    B --> C["with container: --<br/>REAL container<br/>running"]:::teal
+    C --> D["block exits --<br/>container stopped +<br/>removed"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -730,6 +741,8 @@ real, on-disk pact file.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 67: A Pact Consumer Test That Defines the Expected Interaction
+    accDescr: Sequence diagram between consumer test (ex-67), pact mock server, pact file. Messages: consumer test (ex-67) to pact mock server: upon_receiving4041.with_request4041.will_respond_with4041; consumer test (ex-67) to pact mock server: httpx.get4041 -- a REAL request to the mock; pact mock server to consumer test (ex-67): 200, the EXACT recorded response; consumer test (ex-67) to pact file: pact.write_file4041 -- captures the interaction.
     participant Consumer as consumer test (ex-67)
     participant Mock as pact mock server
     participant File as pact file
@@ -973,15 +986,18 @@ just each individual response.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 69: Drive a Whole Small System Through a Multi-Step Flow
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 1. POST /items add_item, 2. POST /items add_item, 3. GET /total read running total, 4. POST /checkout clears the cart, 5. GET /total confirms end-state: 0. Connections: 1. POST /items add_item to 2. POST /items add_item, 2. POST /items add_item to 3. GET /total read running total, 3. GET /total read running total to 4. POST /checkout clears the cart, 4. POST /checkout clears the cart to 5. GET /total confirms end-state: 0.
     A["1. POST /items<br/>add_item"]:::blue --> B["2. POST /items<br/>add_item"]:::blue
     B --> C["3. GET /total<br/>read running total"]:::orange
     C --> D["4. POST /checkout<br/>clears the cart"]:::purple
-    D --> E["5. GET /total<br/>confirms end-state: 0"]:::brown
+    D --> E["5. GET /total<br/>confirms end-state:<br/>0"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1093,14 +1109,17 @@ the test suite against each mutant. If the suite still passes, the mutant SURVIV
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["age &gt;= 18"]:::blue -->|"mutate #40;#62;#41;"| B["age &gt; 18"]:::orange
+    accTitle: Example 70: A Well-Tested Function -- Run mutmut, Read the Surviving-Mutant Report
+    accDescr: Graph with 5 nodes and 8 connections. Nodes: A, gt, B, C, SURVIVED. Connections: A to B (mutate 406241), A to gt (mutate 406241), gt to B (mutate 406241), gt to gt (mutate 406241), A to C (mutate constant), A to gt (mutate constant), B to SURVIVED (tests still pass?), C to SURVIVED (tests still pass?).
+    A["age &gt;= 18"]:::blue -->|"mutate<br/>#40;#62;#41;"| B["age &gt; 18"]:::orange
     A -->|"mutate constant"| C["age &gt;= 19"]:::orange
     B -->|"tests still pass?"| D["SURVIVED"]:::teal
     C -->|"tests still pass?"| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1190,13 +1209,16 @@ from `19`.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["mutmut_1: age > 18<br/>SURVIVED"]:::orange --> C["test_is_adult_boundary<br/>asserts is_adult#40;18#41; is True"]:::blue
+    accTitle: Example 71: Add a Test to Kill a Surviving Mutant
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: mutmut_1: age > 18 SURVIVED, test_is_adult_ boundary asserts is_adult401841 is True, mutmut_2: age >= 19 SURVIVED, both mutants KILLED. Connections: mutmut_1: age > 18 SURVIVED to test_is_adult_ boundary asserts is_adult401841 is True, mutmut_2: age >= 19 SURVIVED to test_is_adult_ boundary asserts is_adult401841 is True, test_is_adult_ boundary asserts is_adult401841 is True to both mutants KILLED.
+    A["mutmut_1: age > 18<br/>SURVIVED"]:::orange --> C["test_is_adult_<br/>boundary<br/>asserts<br/>is_adult#40;18#41;<br/>is True"]:::blue
     B["mutmut_2: age >= 19<br/>SURVIVED"]:::orange --> C
     C --> D["both mutants KILLED"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1264,14 +1286,17 @@ mutation testing answer genuinely different questions.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["is_adult#40;#41; ONE line"]:::blue --> B["coverage.py:<br/>100% LINE coverage"]:::teal
+    accTitle: Example 72: A Fully-Covered Function With Surviving Mutants
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: is_adult4041 ONE line, coverage.py: 100 LINE coverage, mutmut: 2 mutants SURVIVE, different questions, both answered honestly. Connections: is_adult4041 ONE line to coverage.py: 100 LINE coverage, is_adult4041 ONE line to mutmut: 2 mutants SURVIVE, coverage.py: 100 LINE coverage to different questions, both answered honestly (answers: did this line RUN?), mutmut: 2 mutants SURVIVE to different questions, both answered honestly (answers: was this line TESTED?).
+    A["is_adult#40;#41; ONE<br/>line"]:::blue --> B["coverage.py:<br/>100% LINE coverage"]:::teal
     A --> C["mutmut:<br/>2 mutants SURVIVE"]:::orange
-    B -.->|"answers: did this line RUN?"| D["different questions,<br/>both answered honestly"]
-    C -.->|"answers: was this line TESTED?"| D
+    B -.->|"answers: did this<br/>line RUN?"| D["different questions,<br/>both answered<br/>honestly"]
+    C -.->|"answers: was this<br/>line TESTED?"| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1684,18 +1709,21 @@ dummy that is passed but never touched.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["OrderProcessor.process#40;#41;"]:::blue
+    accTitle: Example 77: One Scenario, Five Doubles -- Dummy, Stub, Spy, Mock, and Fake
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: OrderProcessor. process4041, B, STUB, C, MOCK, D, SPY, E, FAKE, F, DUMMY. Connections: OrderProcessor. process4041 to B, B to STUB, OrderProcessor. process4041 to C, C to MOCK, OrderProcessor. process4041 to D, D to SPY, OrderProcessor. process4041 to E, E to FAKE, OrderProcessor. process4041 to F, F to DUMMY.
+    A["OrderProcessor.<br/>process#40;#41;"]:::blue
     A --> B["price_lookup -- STUB<br/>canned return value"]:::orange
     A --> C["notifier -- MOCK<br/>call VERIFIED"]:::teal
     A --> D["audit_log -- SPY<br/>wraps a REAL object"]:::purple
-    A --> E["repository -- FAKE<br/>real, working, lightweight"]:::brown
+    A --> E["repository -- FAKE<br/>real, working,<br/>lightweight"]:::brown
     A --> F["logger -- DUMMY<br/>never touched"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1833,14 +1861,17 @@ double would have been the wrong choice.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
+    accTitle: Example 78: Choose the Right Double for the Scenario
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Does the call return a useful value?, register_ user4041 send4041 has no return, price_after_ discount4041 rate_for4041 returns a rate, use a MOCK: assert_called_once_ with4041, use a STUB: canned return_value. Connections: Does the call return a useful value? to register_ user4041 send4041 has no return (no side effect only), Does the call return a useful value? to price_after_ discount4041 rate_for4041 returns a rate (yes, a computed result), register_ user4041 send4041 has no return to use a MOCK: assert_called_once_ with4041, price_after_ discount4041 rate_for4041 returns a rate to use a STUB: canned return_value.
     A["Does the call return<br/>a useful value?"]:::blue
-    A -->|"no side effect only"| B["register_user#40;#41;<br/>send#40;#41; has no return"]:::orange
-    A -->|"yes, a computed result"| C["price_after_discount#40;#41;<br/>rate_for#40;#41; returns a rate"]:::orange
-    B --> D["use a MOCK:<br/>assert_called_once_with#40;#41;"]:::blue
+    A -->|"no side effect<br/>only"| B["register_<br/>user#40;#41;<br/>send#40;#41; has no<br/>return"]:::orange
+    A -->|"yes, a computed<br/>result"| C["price_after_<br/>discount#40;#41;<br/>rate_for#40;#41;<br/>returns a rate"]:::orange
+    B --> D["use a MOCK:<br/>assert_called_once_<br/>with#40;#41;"]:::blue
     C --> E["use a STUB:<br/>canned return_value"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

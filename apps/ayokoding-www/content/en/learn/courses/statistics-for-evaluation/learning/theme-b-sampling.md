@@ -496,18 +496,21 @@ worked example that demonstrates the failure at each stage.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph LR
-    P["Population<br/>every real case, co-07"]:::blue --> F["Frame<br/>what you can sample, co-07"]:::orange
+    accTitle: Worked Example 19: The Sampling Pipeline, End to End
+    accDescr: Graph with 4 nodes and 6 connections. Nodes: Population every real case, co-07, Frame what you can sample, co-07, Sample random/stratified/ convenience, co-07, Estimate rate + interval, co-24. Connections: Population every real case, co-07 to Frame what you can sample, co-07, Frame what you can sample, co-07 to Sample random/stratified/ convenience, co-07, Sample random/stratified/ convenience, co-07 to Estimate rate + interval, co-24, Population every real case, co-07 to Frame what you can sample, co-07 (frame mismatch, ex-18: frame excludes real cases (e.g. timeouts)), Frame what you can sample, co-07 to Sample random/stratified/ convenience, co-07 (strategy bias, ex-14: convenience sampling is not random sampling), Sample random/stratified/ convenience, co-07 to Estimate rate + interval, co-24 (sampling error + rare-mode miss, ex-03 /ex-17: reweight if stratified, ex-16).
+    P["Population<br/>every real case,<br/>co-07"]:::blue --> F["Frame<br/>what you can sample,<br/>co-07"]:::orange
     F --> S["Sample<br/>random/stratified/<br/>convenience, co-07"]:::teal
-    S --> E["Estimate<br/>rate + interval, co-24"]:::purple
+    S --> E["Estimate<br/>rate + interval,<br/>co-24"]:::purple
 
-    P -.->|"frame mismatch, ex-18:<br/>frame excludes real cases (e.g. timeouts)"| F
-    F -.->|"strategy bias, ex-14:<br/>convenience sampling is not random sampling"| S
-    S -.->|"sampling error + rare-mode miss, ex-03 / ex-17:<br/>reweight if stratified, ex-16"| E
+    P -.->|"frame mismatch,<br/>ex-18:<br/>frame excludes real<br/>cases (e.g.<br/>timeouts)"| F
+    F -.->|"strategy bias,<br/>ex-14:<br/>convenience sampling<br/>is not random<br/>sampling"| S
+    S -.->|"sampling error +<br/>rare-mode miss,<br/>ex-03 /ex-17:<br/>reweight if<br/>stratified, ex-16"| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the sampling pipeline every technique in this theme sits on. The dashed labels name the

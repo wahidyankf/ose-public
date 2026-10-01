@@ -26,6 +26,8 @@ Success means the output names the reaped child, the pipe message, the shared-me
 
 ```mermaid
 sequenceDiagram
+  accTitle: Proof checklist
+  accDescr: Sequence diagram between Parent, Child. Messages: Parent to Parent: mmap + pipe + sigaction; Parent to Child: fork; Child to Child: exec child action; Child to Parent: pipe write shared page update SIGUSR1; Parent to Parent: pipe read waitpid munmap.
   participant P as Parent
   participant C as Child
   P->>P: mmap + pipe + sigaction

@@ -45,14 +45,17 @@ _ex-02 &middot; exercises co-19, co-13_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 2: curl Verbose -- See the Protocol Underneath
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: * Connect + TLS info lines, 62 request lines SENT by curl, 60 response lines RECEIVED by curl. Connections: * Connect + TLS info lines to 62 request lines SENT by curl, 62 request lines SENT by curl to 60 response lines RECEIVED by curl.
     A["* Connect + TLS<br/>info lines"]:::blue
     B["#62; request lines<br/>SENT by curl"]:::orange
     C["#60; response lines<br/>RECEIVED by curl"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -124,12 +127,15 @@ _ex-03 &middot; exercises co-19, co-16_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["HEAD request<br/>(curl -I)"]:::blue --> B["Server runs identical<br/>logic to a GET request"]:::orange
-    B --> C["Response: status line<br/>+ headers, body omitted"]:::teal
+    accTitle: Example 3: curl Headers Only, No Body
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: HEAD request (curl -I), Server runs identical logic to a GET request, Response: status line + headers, body omitted. Connections: HEAD request (curl -I) to Server runs identical logic to a GET request, Server runs identical logic to a GET request to Response: status line + headers, body omitted.
+    A["HEAD request<br/>(curl -I)"]:::blue --> B["Server runs<br/>identical<br/>logic to a GET<br/>request"]:::orange
+    B --> C["Response: status<br/>line<br/>+ headers, body<br/>omitted"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -246,17 +252,20 @@ A URL decomposes into five parts: scheme, host, optional port, path, and query s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["https://host:443/path?q=1"]:::blue --> B["scheme: https"]:::orange
+    accTitle: Example 7: URL Anatomy Breakdown
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: https://host:443/ path?q=1, scheme: https, host: host, port: 443, path: /path, query: q=1. Connections: https://host:443/ path?q=1 to scheme: https, https://host:443/ path?q=1 to host: host, https://host:443/ path?q=1 to port: 443, https://host:443/ path?q=1 to path: /path, https://host:443/ path?q=1 to query: q=1.
+    A["https://host:443/<br/>path?q=1"]:::blue --> B["scheme: https"]:::orange
     A --> C["host: host"]:::teal
     A --> D["port: 443"]:::purple
     A --> E["path: /path"]:::brown
     A --> F["query: q=1"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -298,12 +307,15 @@ When a URL omits an explicit port, the scheme silently supplies a default: `80` 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 8: Default Ports -- HTTP 80, HTTPS 443
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: http://example.com no port given, default port 80, https://example.com no port given, default port 443. Connections: http://example.com no port given to default port 80, https://example.com no port given to default port 443.
     A["http://example.com<br/>no port given"]:::blue --> B["default port 80"]:::orange
     C["https://example.com<br/>no port given"]:::blue --> D["default port 443"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -379,12 +391,15 @@ Before `ping` can send a single ICMP packet, it must resolve the hostname to an 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["ping example.com"]:::blue --> B["DNS resolves hostname<br/>to an IP address first"]:::orange
-    B --> C["ICMP Echo Request/Reply<br/>sent to that IP"]:::teal
+    accTitle: Example 10: ping Shows the Resolved IP
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: ping example.com, DNS resolves hostname to an IP address first, ICMP Echo Request/Reply sent to that IP. Connections: ping example.com to DNS resolves hostname to an IP address first, DNS resolves hostname to an IP address first to ICMP Echo Request/Reply sent to that IP.
+    A["ping example.com"]:::blue --> B["DNS resolves<br/>hostname<br/>to an IP address<br/>first"]:::orange
+    B --> C["ICMP Echo<br/>Request/Reply<br/>sent to that IP"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -609,12 +624,15 @@ _ex-16 &middot; exercises co-04, co-03_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["www.github.com"]:::blue --> B["CNAME alias points to<br/>github.com"]:::orange
+    accTitle: Example 16: dig a CNAME Record
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: www.github.com, CNAME alias points to github.com, github.com resolved to its own A records. Connections: www.github.com to CNAME alias points to github.com, CNAME alias points to github.com to github.com resolved to its own A records.
+    A["www.github.com"]:::blue --> B["CNAME alias points<br/>to<br/>github.com"]:::orange
     B --> C["github.com resolved<br/>to its own A records"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -686,12 +704,15 @@ _ex-18 &middot; exercises co-20, co-03_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["nslookup example.com"]:::blue --> B["Local resolver checks<br/>its own cache first"]:::orange
-    B --> C["Non-authoritative answer<br/>returned from cache"]:::teal
+    accTitle: Example 18: nslookup Basics
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: nslookup example.com, Local resolver checks its own cache first, Non-authoritative answer returned from cache. Connections: nslookup example.com to Local resolver checks its own cache first, Local resolver checks its own cache first to Non-authoritative answer returned from cache.
+    A["nslookup example.com"]:::blue --> B["Local resolver<br/>checks<br/>its own cache first"]:::orange
+    B --> C["Non-authoritative<br/>answer<br/>returned from cache"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -730,13 +751,16 @@ _ex-19 &middot; exercises co-20, co-04_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 19: The host Command
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: host example.com, A records (IPv4), AAAA records (IPv6), MX record (mail). Connections: host example.com to A records (IPv4), host example.com to AAAA records (IPv6), host example.com to MX record (mail).
     A["host example.com"]:::blue --> B["A records (IPv4)"]:::orange
     A --> C["AAAA records (IPv6)"]:::teal
     A --> D["MX record (mail)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -773,12 +797,15 @@ _ex-20 &middot; exercises co-20, co-03_
 %% Intended full resolution path on an unrestricted network -- see prose above
 %% for how this sandbox's network policy truncates the walk in practice
 graph LR
+    accTitle: Example 20: dig +trace -- Root to Authoritative
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Root nameservers, .com TLD nameservers, example.com authoritative nameservers. Connections: Root nameservers to .com TLD nameservers, .com TLD nameservers to example.com authoritative nameservers.
     A["Root nameservers"]:::blue --> B[".com TLD nameservers"]:::orange
-    B --> C["example.com authoritative<br/>nameservers"]:::teal
+    B --> C["example.com<br/>authoritative<br/>nameservers"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -813,6 +840,8 @@ _ex-21 &middot; exercises co-18, co-19_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 21: curl Follows a Redirect
+    accDescr: Sequence diagram between curl, go.dev. Messages: curl to go.dev: GET / HTTP/1.1; go.dev to curl: 302 Found, Location: https://go.dev/; curl to go.dev: GET / HTTP/1.1 (to new Location); go.dev to curl: 200 OK.
     participant C as curl
     participant S as go.dev
     C->>S: GET / HTTP/1.1
@@ -1041,12 +1070,15 @@ Once a hostname resolves to an IP address, you can `curl` that IP DIRECTLY -- by
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["dig +short example.com"]:::blue --> B["Resolved IP address"]:::orange
-    B --> C["curl -H Host:example.com<br/>http://IP (DNS bypassed)"]:::teal
+    accTitle: Example 28: Resolve, Then curl by IP
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: dig +short example.com, Resolved IP address, curl -H Host:example.com http://IP (DNS bypassed). Connections: dig +short example.com to Resolved IP address, Resolved IP address to curl -H Host:example.com http://IP (DNS bypassed).
+    A["dig +short<br/>example.com"]:::blue --> B["Resolved IP address"]:::orange
+    B --> C["curl -H<br/>Host:example.com<br/>http://IP (DNS<br/>bypassed)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

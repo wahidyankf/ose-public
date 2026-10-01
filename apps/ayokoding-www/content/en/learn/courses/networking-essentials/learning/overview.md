@@ -98,11 +98,13 @@ re-confirmed 2026-07-14.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-23)
 graph TD
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client-server basics and URL/DNS/ports co-01 to co-06, TCP, UDP, and the sockets API co-07 to co-11, HTTP request/response structure and semantics co-12 to co-18, Terminal tooling for HTTP, DNS, and raw TCP co-19 to co-21, Content negotiation and the stdlib HTTP client co-22 to co-23. Connections: Client-server basics and URL/DNS/ports co-01 to co-06 to TCP, UDP, and the sockets API co-07 to co-11, TCP, UDP, and the sockets API co-07 to co-11 to HTTP request/response structure and semantics co-12 to co-18, HTTP request/response structure and semantics co-12 to co-18 to Terminal tooling for HTTP, DNS, and raw TCP co-19 to co-21, Terminal tooling for HTTP, DNS, and raw TCP co-19 to co-21 to Content negotiation and the stdlib HTTP client co-22 to co-23.
     A["Client-server basics<br/>and URL/DNS/ports<br/>co-01 to co-06"]:::blue
     B["TCP, UDP, and the<br/>sockets API<br/>co-07 to co-11"]:::orange
-    C["HTTP request/response<br/>structure and semantics<br/>co-12 to co-18"]:::teal
-    D["Terminal tooling for<br/>HTTP, DNS, and raw TCP<br/>co-19 to co-21"]:::purple
-    E["Content negotiation and<br/>the stdlib HTTP client<br/>co-22 to co-23"]:::brown
+    C["HTTP<br/>request/response<br/>structure and<br/>semantics<br/>co-12 to co-18"]:::teal
+    D["Terminal tooling for<br/>HTTP, DNS, and raw<br/>TCP<br/>co-19 to co-21"]:::purple
+    E["Content negotiation<br/>and<br/>the stdlib HTTP<br/>client<br/>co-22 to co-23"]:::brown
 
     A --> B
     B --> C
@@ -110,10 +112,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

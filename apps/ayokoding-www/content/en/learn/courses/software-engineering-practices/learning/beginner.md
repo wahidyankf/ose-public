@@ -305,11 +305,14 @@ release cadence.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
+    accTitle: Example 7: Trunk-Based vs. Feature-Branch Decision
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Team A: 2 engineers ships to prod daily, Trunk-based dev short-lived branches, Team B: 5 engineers quarterly release train, Feature branches release-scoped integration. Connections: Team A: 2 engineers ships to prod daily to Trunk-based dev short-lived branches, Team B: 5 engineers quarterly release train to Feature branches release-scoped integration.
     A["Team A: 2 engineers<br/>ships to prod daily"]:::blue --> B["Trunk-based dev<br/>short-lived branches"]:::blue
-    C["Team B: 5 engineers<br/>quarterly release train"]:::orange --> D["Feature branches<br/>release-scoped integration"]:::orange
+    C["Team B: 5 engineers<br/>quarterly release<br/>train"]:::orange --> D["Feature branches<br/>release-scoped<br/>integration"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: two teams, two branching models -- each driven by its own cadence/team-size property, not
@@ -737,12 +740,15 @@ jobs: # => co-08: three ordered, GATED stages follow, cheapest first
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: ex-14: a minimal 3-stage pipeline -- lint, then test, then build, as ordered, GATED stages
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: lint ruff check + format, test pytest, build python -m build. Connections: lint ruff check + format to test pytest (needs), test pytest to build python -m build (needs).
     A["lint<br/>ruff check + format"]:::blue -->|needs| B["test<br/>pytest"]:::orange
     B -->|needs| C["build<br/>python -m build"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the diagram's left-to-right order matches `ci.yml`'s own `needs:` chain exactly -- lint,

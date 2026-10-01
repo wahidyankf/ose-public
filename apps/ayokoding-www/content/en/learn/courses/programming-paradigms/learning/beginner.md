@@ -408,15 +408,18 @@ early `return`.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
-    A["while True + manual index"]:::blue --> B["bounds check: break"]:::blue
-    B --> C["condition check: break"]:::blue
-    C --> D["index += 1, loop again"]:::blue
+    accTitle: Example 5: Goto-Free Loop
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: while True + manual index, bounds check: break, condition check: break, index += 1, loop again, for n in numbers, n > 10?, return n. Connections: while True + manual index to bounds check: break, bounds check: break to condition check: break, condition check: break to index += 1, loop again, for n in numbers to n > 10?, n > 10? to return n (yes), n > 10? to for n in numbers (no).
+    A["while True + manual<br/>index"]:::blue --> B["bounds check: break"]:::blue
+    B --> C["condition check:<br/>break"]:::blue
+    C --> D["index += 1, loop<br/>again"]:::blue
     E["for n in numbers"]:::orange --> F{"n > 10?"}:::orange
     F -->|yes| G["return n"]:::orange
     F -->|no| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -727,13 +730,16 @@ message via structural typing (a `Protocol`), and each responds in its own way.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 8: Method Call As Message
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: announce(speaker), which object?, Quack, Woof. Connections: announce(speaker) to which object? (speaker.speak()), which object? to Quack (Duck), which object? to Woof (Dog).
     A["announce(speaker)"]:::blue -->|"speaker.speak()"| B{"which object?"}:::blue
     B -->|Duck| C["'Quack'"]:::orange
     B -->|Dog| D["'Woof'"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1399,15 +1405,18 @@ An in-memory SQLite query states "top 3 words by frequency" declaratively via
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 15: SQL Declarative Query
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: words table, per-word groups, (word, count) pairs, ranked pairs, top 3. Connections: words table to per-word groups (GROUP BY word), per-word groups to (word, count) pairs (COUNT(*)), (word, count) pairs to ranked pairs (ORDER BY count DESC, word), ranked pairs to top 3 (LIMIT 3).
     A["words table"]:::blue -->|"GROUP BY word"| B["per-word groups"]:::orange
     B -->|"COUNT(*)"| C["(word, count) pairs"]:::teal
-    C -->|"ORDER BY count DESC, word"| D["ranked pairs"]:::purple
+    C -->|"ORDER BY count<br/>DESC, word"| D["ranked pairs"]:::purple
     D -->|"LIMIT 3"| E["top 3"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1518,12 +1527,15 @@ A minimal `Dispatcher`: register a handler with `on()`, and nothing runs until `
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["dispatcher.on('user_created', handler)"]:::blue --> B["handler registered, NOT called"]:::blue
-    C["dispatcher.fire('user_created', payload)"]:::orange --> D["dispatcher calls handler(payload)"]:::teal
+    accTitle: Example 16: Event-Driven Callback
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: dispatcher.on(user_ created, handler), handler registered, NOT called, dispatcher. fire(user_created, payload), dispatcher calls handler(payload). Connections: dispatcher.on(user_ created, handler) to handler registered, NOT called, dispatcher. fire(user_created, payload) to dispatcher calls handler(payload).
+    A["dispatcher.on('user_<br/>created', handler)"]:::blue --> B["handler registered,<br/>NOT called"]:::blue
+    C["dispatcher.<br/>fire('user_created',<br/>payload)"]:::orange --> D["dispatcher calls<br/>handler(payload)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1636,11 +1648,14 @@ for changes.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
-    A["counter.set(1)"]:::blue --> B["for fn in subscribers: fn(1)"]:::blue
-    C["counter.set(2)"]:::orange --> D["for fn in subscribers: fn(2)"]:::orange
+    accTitle: Example 17: Reactive Counter
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: counter.set(1), for fn in subscribers: fn(1), counter.set(2), for fn in subscribers: fn(2). Connections: counter.set(1) to for fn in subscribers: fn(1), counter.set(2) to for fn in subscribers: fn(2).
+    A["counter.set(1)"]:::blue --> B["for fn in<br/>subscribers: fn(1)"]:::blue
+    C["counter.set(2)"]:::orange --> D["for fn in<br/>subscribers: fn(2)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1749,13 +1764,16 @@ that depends on it -- `recompute()` must be called explicitly to fire the datafl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 18: Dataflow Two Cells
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Cell a = 1, Cell b = a.value + 1, a.value = 10 (write directly), b.recompute(). Connections: Cell a = 1 to Cell b = a.value + 1 (depends on), a.value = 10 (write directly) to Cell b = a.value + 1 (b NOT refreshed yet), b.recompute() to Cell b = a.value + 1 (reads a.value NOW).
     A["Cell a = 1"]:::blue -->|"depends on"| B["Cell b = a.value + 1"]:::orange
-    C["a.value = 10 (write directly)"]:::teal -.->|"b NOT refreshed yet"| B
+    C["a.value = 10 (write<br/>directly)"]:::teal -.->|"b NOT refreshed<br/>yet"| B
     D["b.recompute()"]:::orange -->|"reads a.value NOW"| B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1863,13 +1881,16 @@ facts inside a comprehension acting as a search.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 19: Logic Family Facts
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: alice, bob, carol. Connections: alice to bob (parent), bob to carol (parent), alice to carol (inferred: grandparent).
     A["alice"]:::blue -->|parent| B["bob"]:::orange
     B -->|parent| C["carol"]:::teal
-    A -.->|"inferred: grandparent"| C
+    A -.->|"inferred:<br/>grandparent"| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -2551,14 +2572,17 @@ indentation level.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
+    accTitle: Example 26: Structured Guard Clauses
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: not is_member?, return cart_total, cart_total <= 100?, return cart_total - 10, has_coupon?, return cart_total - 30, return cart_total - 20. Connections: not is_member? to return cart_total (yes), not is_member? to cart_total <= 100? (no), cart_total <= 100? to return cart_total - 10 (yes), cart_total <= 100? to has_coupon? (no), has_coupon? to return cart_total - 30 (yes), has_coupon? to return cart_total - 20 (no).
     A["not is_member?"]:::orange -->|yes| B["return cart_total"]:::orange
     A -->|no| C["cart_total <= 100?"]:::orange
-    C -->|yes| D["return cart_total - 10"]:::orange
+    C -->|yes| D["return cart_total -<br/>10"]:::orange
     C -->|no| E["has_coupon?"]:::orange
-    E -->|yes| F["return cart_total - 30"]:::orange
-    E -->|no| G["return cart_total - 20"]:::orange
+    E -->|yes| F["return cart_total -<br/>30"]:::orange
+    E -->|no| G["return cart_total -<br/>20"]:::orange
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -2678,14 +2702,17 @@ procedural function dispatching on an external `"kind"` tag.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["Circle(2.0).area()"]:::blue -->|"polymorphic dispatch"| B["pi * radius**2"]:::blue
-    C["area_via_tag({'kind': 0, ...})"]:::orange -->|"explicit if kind == 0"| B
-    D["Square(3.0).area()"]:::teal -->|"polymorphic dispatch"| E["side**2"]:::teal
-    F["area_via_tag({'kind': 1, ...})"]:::orange -->|"explicit elif kind == 1"| E
+    accTitle: Example 27: OO vs Procedural Area
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: Circle(2.0).area(), pi * radius**2, area_via_ tag(kind: 0, ...), Square(3.0).area(), side**2, area_via_ tag(kind: 1, ...). Connections: Circle(2.0).area() to pi * radius**2 (polymorphic dispatch), area_via_ tag(kind: 0, ...) to pi * radius**2 (explicit if kind == 0), Square(3.0).area() to side**2 (polymorphic dispatch), area_via_ tag(kind: 1, ...) to side**2 (explicit elif kind == 1).
+    A["Circle(2.0).area()"]:::blue -->|"polymorphic<br/>dispatch"| B["pi * radius**2"]:::blue
+    C["area_via_<br/>tag({'kind': 0,<br/>...})"]:::orange -->|"explicit if kind ==<br/>0"| B
+    D["Square(3.0).area()"]:::teal -->|"polymorphic<br/>dispatch"| E["side**2"]:::teal
+    F["area_via_<br/>tag({'kind': 1,<br/>...})"]:::orange -->|"explicit elif kind<br/>== 1"| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**

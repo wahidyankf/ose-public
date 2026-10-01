@@ -9,14 +9,17 @@ Examples 51–75 consolidate the bounded modern-C++ surface: CMake targets, reus
 
 ```mermaid
 flowchart LR
+  accTitle: flowchart diagram
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: C++ header, C++ source, linked target, C ABI header. Connections: C++ header to C++ source, C++ source to linked target, C ABI header to C++ source.
   H["C++ header"] --> C["C++ source"] --> L["linked target"]
   F["C ABI header"] --> C
   classDef header fill:#0173B2,stroke:#000000,color:#FFFFFF
   classDef source fill:#DE8F05,stroke:#000000,color:#000000
-  classDef target fill:#029E73,stroke:#000000,color:#FFFFFF
+  classDef target fill:#029E73,stroke:#000000,color:#000000
   class H,F header
   class C source
   class L target
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 51: Build a library and executable with CMake

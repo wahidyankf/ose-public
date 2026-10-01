@@ -23,16 +23,19 @@ postmortem's own follow-ups as the owned fix.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["RFC<br/>options + trade-off + review"]:::blue
-    B["ADR<br/>decision + status + consequences"]:::orange
-    C["PR description<br/>what#47;why#47;verified#47;where-to-look"]:::teal
-    D["Postmortem + C4 context<br/>timeline + root cause + follow-ups"]:::purple
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: RFC options + trade-off + review, ADR decision + status + consequences, PR description what47why47verified47where-to-look, Postmortem + C4 context timeline + root cause + follow-ups. Connections: RFC options + trade-off + review to ADR decision + status + consequences, ADR decision + status + consequences to PR description what47why47verified47where-to-look, PR description what47why47verified47where-to-look to Postmortem + C4 context timeline + root cause + follow-ups.
+    A["RFC<br/>options + trade-off<br/>+ review"]:::blue
+    B["ADR<br/>decision + status +<br/>consequences"]:::orange
+    C["PR description<br/>what#47;why#47;<br/>verified#47;<br/>where-to-look"]:::teal
+    D["Postmortem + C4<br/>context<br/>timeline + root<br/>cause + follow-ups"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: the capstone's build order -- deliberate the fix in an RFC, decide it in an ADR, implement

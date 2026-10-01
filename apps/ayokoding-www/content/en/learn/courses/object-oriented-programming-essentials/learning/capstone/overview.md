@@ -16,18 +16,21 @@ Advanced tiers of this topic.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
-    A["Money#40;frozen dataclass#41;<br/>value object, co-06/co-05"]:::blue
-    B["Account<br/>encapsulated invariant, co-02/co-17"]:::orange
-    C["PaymentMethod#40;abc.ABC#41;<br/>CardPayment / BankTransferPayment, co-11/co-10"]:::teal
-    D["LedgerNaive -> Ledger<br/>composition refactor, co-13"]:::purple
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Money40frozen dataclass41 value object, co-06/co-05, Account encapsulated invariant, co-02/co-17, Payment Method40abc. ABC41 CardPayment / BankTransferPayment, co-11/co-10, LedgerNaive -> Ledger composition refactor, co-13. Connections: Money40frozen dataclass41 value object, co-06/co-05 to Account encapsulated invariant, co-02/co-17, Account encapsulated invariant, co-02/co-17 to Payment Method40abc. ABC41 CardPayment / BankTransferPayment, co-11/co-10, Account encapsulated invariant, co-02/co-17 to LedgerNaive -> Ledger composition refactor, co-13.
+    A["Money#40;frozen<br/>dataclass#41;<br/>value object,<br/>co-06/co-05"]:::blue
+    B["Account<br/>encapsulated<br/>invariant,<br/>co-02/co-17"]:::orange
+    C["Payment<br/>Method#40;abc.<br/>ABC#41;<br/>CardPayment /<br/>BankTransferPayment,<br/>co-11/co-10"]:::teal
+    D["LedgerNaive -><br/>Ledger<br/>composition<br/>refactor, co-13"]:::purple
     A --> B
     B --> C
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

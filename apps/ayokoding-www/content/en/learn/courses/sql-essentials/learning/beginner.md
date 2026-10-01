@@ -684,14 +684,17 @@ page size 2 with `OFFSET 2` skips exactly the first page's rows.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 15: Limit Offset Paging
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 4 rows, ORDER BY id, OFFSET 2 skips ids 1-2, LIMIT 2 returns ids 3-4. Connections: 4 rows, ORDER BY id to OFFSET 2 skips ids 1-2, OFFSET 2 skips ids 1-2 to LIMIT 2 returns ids 3-4.
     A["4 rows, ORDER BY id"]:::blue
     B["OFFSET 2<br/>skips ids 1-2"]:::orange
     C["LIMIT 2<br/>returns ids 3-4"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-limit-offset-paging/example.sql`**
@@ -839,14 +842,17 @@ _ex-18 &middot; exercises co-04_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 18: Not Null Constraint
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: INSERT name = NULL, NOT NULL check, REJECTED row never written. Connections: INSERT name = NULL to NOT NULL check, NOT NULL check to REJECTED row never written.
     A["INSERT name = NULL"]:::blue
     B{"NOT NULL check"}:::orange
     C["REJECTED<br/>row never written"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-18-not-null-constraint/example.sql`**
@@ -901,17 +907,20 @@ to enforce it, and any write that would create a duplicate is rejected.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
-    A["INSERT 'ada@example.com'<br/>row 1"]:::blue
+    accTitle: Example 19: Unique Constraint
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: INSERT ada@example.com row 1, UNIQUE index on email, C, first, D, REJECTED. Connections: C to first, D to REJECTED, INSERT ada@example.com row 1 to UNIQUE index on email, UNIQUE index on email to C, D to UNIQUE index on email.
+    A["INSERT<br/>'ada@example.com'<br/>row 1"]:::blue
     B["UNIQUE index<br/>on email"]:::orange
-    C["ACCEPTED -- first row"]:::teal
-    D["INSERT 'ada@example.com'<br/>row 2 -- REJECTED"]:::purple
+    C["ACCEPTED -- first<br/>row"]:::teal
+    D["INSERT<br/>'ada@example.com'<br/>row 2 -- REJECTED"]:::purple
     A --> B --> C
     D --> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-19-unique-constraint/example.sql`**
@@ -1012,14 +1021,17 @@ _ex-21 &middot; exercises co-04_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 21: Check Constraint
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: INSERT price = -5, CHECK price >= 0, REJECTED row never written. Connections: INSERT price = -5 to CHECK price >= 0, CHECK price >= 0 to REJECTED row never written.
     A["INSERT price = -5"]:::blue
     B{"CHECK price >= 0"}:::orange
     C["REJECTED<br/>row never written"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-21-check-constraint/example.sql`**
@@ -1072,6 +1084,8 @@ engine pick the next value automatically, one higher than the current maximum.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 22: Autoincrement Rowid
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: INSERT (Ada) no id supplied, engine picks id = 1, INSERT (Grace) no id supplied, engine picks id = 2. Connections: INSERT (Ada) no id supplied to engine picks id = 1, INSERT (Grace) no id supplied to engine picks id = 2.
     A["INSERT ('Ada')<br/>no id supplied"]:::blue
     B["engine picks<br/>id = 1"]:::orange
     C["INSERT ('Grace')<br/>no id supplied"]:::blue
@@ -1080,8 +1094,9 @@ flowchart LR
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-22-autoincrement-rowid/example.sql`**
@@ -1286,10 +1301,13 @@ enforcing it (Example 27).
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73 -- color-blind friendly, WCAG AA
 graph LR
-    A["author<br/>id, name"]:::blue -->|"book.author_id<br/>REFERENCES author#40;id#41;"| B["book<br/>id, title, author_id"]:::teal
+    accTitle: Example 26: Declare Foreign Key
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: author id, name, book id, title, author_id. Connections: author id, name to book id, title, author_id (book.author_id REFERENCES author40id41).
+    A["author<br/>id, name"]:::blue -->|"book.author_id<br/>REFERENCES<br/>author#40;id#41;"| B["book<br/>id, title, author_id"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-26-declare-foreign-key/example.sql`**
@@ -1347,14 +1365,17 @@ demonstrated.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["PRAGMA foreign_keys=ON"]:::blue
-    B["INSERT book<br/>author_id = 99 #40;orphan#41;"]:::orange
-    C["REJECTED<br/>FOREIGN KEY constraint failed"]:::teal
+    accTitle: Example 27: Enforce Foreign Key
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: PRAGMA foreign_keys=ON, INSERT book author_id = 99 40orphan41, REJECTED FOREIGN KEY constraint failed. Connections: PRAGMA foreign_keys=ON to INSERT book author_id = 99 40orphan41, INSERT book author_id = 99 40orphan41 to REJECTED FOREIGN KEY constraint failed.
+    A["PRAGMA<br/>foreign_keys=ON"]:::blue
+    B["INSERT book<br/>author_id = 99<br/>#40;orphan#41;"]:::orange
+    C["REJECTED<br/>FOREIGN KEY<br/>constraint failed"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-27-enforce-foreign-key/example.sql`**
@@ -1421,16 +1442,19 @@ undoing normalization (co-05) at query time.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 graph LR
-    A["author<br/>#40;1, Ada Lovelace#41;<br/>#40;2, Grace Hopper#41;"]:::blue
-    B["book<br/>#40;title, author_id: 1#41;<br/>#40;title, author_id: 2#41;"]:::orange
-    C["JOIN result<br/>title + matching author name"]:::teal
+    accTitle: Example 28: Inner Join Two Tables
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: author 401, Ada Lovelace41 402, Grace Hopper41, book 40title, author_id: 141 40title, author_id: 241, JOIN result title + matching author name. Connections: author 401, Ada Lovelace41 402, Grace Hopper41 to JOIN result title + matching author name (author.id = book.author_id), book 40title, author_id: 141 40title, author_id: 241 to JOIN result title + matching author name (author.id = book.author_id).
+    A["author<br/>#40;1, Ada<br/>Lovelace#41;<br/>#40;2, Grace<br/>Hopper#41;"]:::blue
+    B["book<br/>#40;title,<br/>author_id: 1#41;<br/>#40;title,<br/>author_id: 2#41;"]:::orange
+    C["JOIN result<br/>title + matching<br/>author name"]:::teal
 
-    A -->|"author.id = book.author_id"| C
-    B -->|"author.id = book.author_id"| C
+    A -->|"author.id =<br/>book.author_id"| C
+    B -->|"author.id =<br/>book.author_id"| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-28-inner-join-two-tables/example.sql`**
@@ -1576,14 +1600,17 @@ as pure data, never parsed as SQL syntax.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["name = 'Ada Lovelace'"]:::blue
+    accTitle: Example 30: Python Parameterized Insert
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: name = Ada Lovelace, ? placeholder bound as DATA, INSERT ... VALUES 40?41 structure fixed, value opaque. Connections: name = Ada Lovelace to ? placeholder bound as DATA, ? placeholder bound as DATA to INSERT ... VALUES 40?41 structure fixed, value opaque.
+    A["name = 'Ada<br/>Lovelace'"]:::blue
     B["? placeholder<br/>bound as DATA"]:::orange
-    C["INSERT ... VALUES #40;?#41;<br/>structure fixed, value opaque"]:::teal
+    C["INSERT ... VALUES<br/>#40;?#41;<br/>structure fixed,<br/>value opaque"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-30-python-parameterized-insert/example.py`**

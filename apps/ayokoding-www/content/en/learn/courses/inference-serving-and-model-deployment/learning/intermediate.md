@@ -161,18 +161,21 @@ close to full throughout. This example simulates it and tracks occupancy at ever
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 31: Continuous Batching
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: Step begins, Free slot?, Admit next queued request, Run one decode step on every active request, Any finished?, Retire immediately slot freed for NEXT step. Connections: Step begins to Free slot?, Free slot? to Admit next queued request (yes), Free slot? to Run one decode step on every active request (no), Admit next queued request to Run one decode step on every active request, Run one decode step on every active request to Any finished?, Any finished? to Retire immediately slot freed for NEXT step (yes), Any finished? to Step begins (no), Retire immediately slot freed for NEXT step to Step begins.
     A["Step begins"]:::blue --> B{"Free slot?"}:::orange
-    B -->|yes| C["Admit next queued request"]:::teal
-    B -->|no| D["Run one decode step<br/>on every active request"]:::teal
+    B -->|yes| C["Admit next queued<br/>request"]:::teal
+    B -->|no| D["Run one decode step<br/>on every active<br/>request"]:::teal
     C --> D
     D --> E{"Any finished?"}:::orange
-    E -->|yes| F["Retire immediately<br/>slot freed for NEXT step"]:::teal
+    E -->|yes| F["Retire immediately<br/>slot freed for NEXT<br/>step"]:::teal
     E -->|no| A
     F --> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-31-continuous-batching/example.py`**
@@ -377,14 +380,17 @@ genuine trade, never a free win.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
-    A["batch=1<br/>62.5 tok/s, 16ms ITL"]:::blue --> B["batch=8<br/>347.8 tok/s, 23ms ITL"]:::orange
-    B --> C["batch=32<br/>680.9 tok/s, 47ms ITL"]:::teal
-    C --> D["batch=64<br/>810.1 tok/s, 79ms ITL"]:::purple
+    accTitle: Example 34: The Throughput/Latency Frontier
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: batch=1 62.5 tok/s, 16ms ITL, batch=8 347.8 tok/s, 23ms ITL, batch=32 680.9 tok/s, 47ms ITL, batch=64 810.1 tok/s, 79ms ITL. Connections: batch=1 62.5 tok/s, 16ms ITL to batch=8 347.8 tok/s, 23ms ITL, batch=8 347.8 tok/s, 23ms ITL to batch=32 680.9 tok/s, 47ms ITL, batch=32 680.9 tok/s, 47ms ITL to batch=64 810.1 tok/s, 79ms ITL.
+    A["batch=1<br/>62.5 tok/s, 16ms ITL"]:::blue --> B["batch=8<br/>347.8 tok/s, 23ms<br/>ITL"]:::orange
+    B --> C["batch=32<br/>680.9 tok/s, 47ms<br/>ITL"]:::teal
+    C --> D["batch=64<br/>810.1 tok/s, 79ms<br/>ITL"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-34-throughput-latency-frontier/example.py`**
@@ -514,11 +520,14 @@ This example measures the difference directly on one mixed workload.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 36: Scheduling Policy Affects Tails
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: FCFS: big(100) first, small3 waits 102, SRPT: small jobs first, small3 waits 2. Connections: FCFS: big(100) first to small3 waits 102, SRPT: small jobs first to small3 waits 2.
     A["FCFS: big(100) first"]:::orange --> B["small3 waits 102"]:::orange
-    C["SRPT: small jobs first"]:::teal --> D["small3 waits 2"]:::teal
+    C["SRPT: small jobs<br/>first"]:::teal --> D["small3 waits 2"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-36-scheduling-policy-affects-tails/example.py`**
@@ -715,11 +724,14 @@ example compares the naive and chunked worst-case stalls directly.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["Naive: one 1000ms<br/>prefill block"]:::orange --> B["Every in-flight decode<br/>stalls 1000ms"]:::orange
-    C["Chunked: ten<br/>100ms chunks"]:::teal --> D["Worst stall: 100ms<br/>decode runs BETWEEN chunks"]:::teal
+    accTitle: Example 39: Chunked Prefill
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Naive: one 1000ms prefill block, Every in-flight decode stalls 1000ms, Chunked: ten 100ms chunks, Worst stall: 100ms decode runs BETWEEN chunks. Connections: Naive: one 1000ms prefill block to Every in-flight decode stalls 1000ms, Chunked: ten 100ms chunks to Worst stall: 100ms decode runs BETWEEN chunks.
+    A["Naive: one 1000ms<br/>prefill block"]:::orange --> B["Every in-flight<br/>decode<br/>stalls 1000ms"]:::orange
+    C["Chunked: ten<br/>100ms chunks"]:::teal --> D["Worst stall: 100ms<br/>decode runs BETWEEN<br/>chunks"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-39-chunked-prefill/example.py`**
@@ -839,11 +851,14 @@ allocator stranded. This example runs the identical workload through a block-bas
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["Contiguous:<br/>8,000,000 bytes reserved"]:::orange --> B["2,120,000 used<br/>5,880,000 stranded"]:::orange
-    C["Paged:<br/>2,144,000 bytes reserved"]:::teal --> D["at most ONE block<br/>wasted per request"]:::teal
+    accTitle: Example 41: Paged Cache Allocation
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Contiguous: 8,000,000 bytes reserved, 2,120,000 used 5,880,000 stranded, Paged: 2,144,000 bytes reserved, at most ONE block wasted per request. Connections: Contiguous: 8,000,000 bytes reserved to 2,120,000 used 5,880,000 stranded, Paged: 2,144,000 bytes reserved to at most ONE block wasted per request.
+    A["Contiguous:<br/>8,000,000 bytes<br/>reserved"]:::orange --> B["2,120,000 used<br/>5,880,000 stranded"]:::orange
+    C["Paged:<br/>2,144,000 bytes<br/>reserved"]:::teal --> D["at most ONE block<br/>wasted per request"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-41-paged-cache-allocation/example.py`**
@@ -966,14 +981,17 @@ of recomputing it. This example prices the saving directly.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["Shared system prompt<br/>200 tokens, 13 blocks"]:::blue --> B["Request A's blocks<br/>REFERENCE, not copy"]:::teal
+    accTitle: Example 43: Prefix Sharing
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Shared system prompt 200 tokens, 13 blocks, Request As blocks REFERENCE, not copy, Request Bs blocks REFERENCE, not copy, +2 blocks unique to A, +3 blocks unique to B. Connections: Shared system prompt 200 tokens, 13 blocks to Request As blocks REFERENCE, not copy, Shared system prompt 200 tokens, 13 blocks to Request Bs blocks REFERENCE, not copy, Request As blocks REFERENCE, not copy to +2 blocks unique to A, Request Bs blocks REFERENCE, not copy to +3 blocks unique to B.
+    A["Shared system prompt<br/>200 tokens, 13<br/>blocks"]:::blue --> B["Request A's blocks<br/>REFERENCE, not copy"]:::teal
     A --> C["Request B's blocks<br/>REFERENCE, not copy"]:::teal
-    B --> D["+2 blocks unique to A"]:::orange
-    C --> E["+3 blocks unique to B"]:::orange
+    B --> D["+2 blocks unique to<br/>A"]:::orange
+    C --> E["+3 blocks unique to<br/>B"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-43-prefix-sharing/example.py`**
@@ -1197,12 +1215,15 @@ protected progress before it becomes preemptible again.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 46: Preemption Thrashing
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: Round 1: 10 tokens preempted, Round 2: 10 tokens preempted AGAIN, ... 5 rounds, 50 tokens total wasted, Min-progress guard: protected at 20 tokens, 0 tokens wasted after protection. Connections: Round 1: 10 tokens preempted to Round 2: 10 tokens preempted AGAIN, Round 2: 10 tokens preempted AGAIN to ... 5 rounds, 50 tokens total wasted, Min-progress guard: protected at 20 tokens to 0 tokens wasted after protection.
     A["Round 1: 10 tokens<br/>preempted"]:::orange --> B["Round 2: 10 tokens<br/>preempted AGAIN"]:::orange
     B --> C["... 5 rounds, 50<br/>tokens total wasted"]:::orange
-    D["Min-progress guard:<br/>protected at 20 tokens"]:::teal --> E["0 tokens wasted<br/>after protection"]:::teal
+    D["Min-progress guard:<br/>protected at 20<br/>tokens"]:::teal --> E["0 tokens wasted<br/>after protection"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-46-preemption-thrashing/example.py`**
@@ -1329,11 +1350,14 @@ start finishing.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 48: Batch Occupancy Over Time -- Static vs Continuous
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Static occupancy always 3.0, reports full even while idling, Continuous occupancy avg 1.5, reflects REAL, declining demand. Connections: Static occupancy always 3.0 to reports full even while idling, Continuous occupancy avg 1.5 to reflects REAL, declining demand.
     A["Static occupancy<br/>always 3.0"]:::orange --> B["reports 'full'<br/>even while idling"]:::orange
     C["Continuous occupancy<br/>avg 1.5"]:::teal --> D["reflects REAL,<br/>declining demand"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-48-batch-occupancy-over-time/example.py`**

@@ -18,13 +18,16 @@ A 4-level inheritance hierarchy (`Notifier` to `LoggingNotifier` to `RetryingLog
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph TD
-    A["Notifier"]:::blue --> B["LoggingNotifier"]:::blue --> C["RetryingLoggingNotifier"]:::blue --> D["ThrottledRetryingLoggingNotifier<br/>(depth 4)"]:::blue
+    accTitle: Example 58: Refactor Inheritance to Composition
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: Notifier, LoggingNotifier, RetryingLogging Notifier, ThrottledRetrying LoggingNotifier (depth 4), ComposedNotifier (depth 1), LoggingBehavior, RetryBehavior, ThrottleBehavior. Connections: Notifier to LoggingNotifier, LoggingNotifier to RetryingLogging Notifier, RetryingLogging Notifier to ThrottledRetrying LoggingNotifier (depth 4), ComposedNotifier (depth 1) to LoggingBehavior (composed with), ComposedNotifier (depth 1) to RetryBehavior (composed with), ComposedNotifier (depth 1) to ThrottleBehavior (composed with).
+    A["Notifier"]:::blue --> B["LoggingNotifier"]:::blue --> C["RetryingLogging<br/>Notifier"]:::blue --> D["ThrottledRetrying<br/>LoggingNotifier<br/>(depth 4)"]:::blue
     E["ComposedNotifier<br/>(depth 1)"]:::teal -->|composed with| F["LoggingBehavior"]:::teal
     E -->|composed with| G["RetryBehavior"]:::teal
     E -->|composed with| H["ThrottleBehavior"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-58-refactor-inheritance-to-composition/example.py`**
@@ -383,6 +386,8 @@ A boolean-flag implementation of order lifecycle (`is_paid`, `is_shipped`, `is_c
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 stateDiagram-v2
+    accTitle: Example 60: Refactor to State
+    accDescr: State diagram with 4 items: start or end, Created, Paid, Shipped. Relationships: start or end to Created; Created to Paid: pay(); Paid to Shipped: ship(); Created to Created: ship() rejected; Paid to Paid: pay() rejected.
     [*] --> Created
     Created --> Paid: pay()
     Paid --> Shipped: ship()
@@ -1350,15 +1355,18 @@ A single-file tour of the four essential creational patterns -- factory method, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 67: GoF Gallery -- Creational Patterns
+    accDescr: Graph with 4 nodes and 0 connections. Nodes: Factory Method shape_factory(), Abstract Factory DarkWidgetFactory, Builder RequestBuilder, Singleton AppConfig.
     A["Factory Method<br/>shape_factory()"]:::blue
     B["Abstract Factory<br/>DarkWidgetFactory"]:::orange
     C["Builder<br/>RequestBuilder"]:::teal
     D["Singleton<br/>AppConfig"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-67-gof-gallery-creational/example.py`**
@@ -2091,17 +2099,20 @@ All five SOLID principles applied together to one small order engine, each at it
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 70: SOLID -- Full Order Engine
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: OrderService, Repository protocol, OrderCalculator, DiscountStrategy, InMemoryRepository, ReceiptFormatter. Connections: OrderService to Repository protocol (DIP: depends on), OrderService to OrderCalculator (delegates pricing), OrderCalculator to DiscountStrategy (OCP/LSP: takes any), Repository protocol to InMemoryRepository (ISP: one narrow method), OrderService to ReceiptFormatter (SRP: separate class).
     A["OrderService"]:::blue -->|DIP: depends on| B["Repository protocol"]:::orange
     A -->|delegates pricing| C["OrderCalculator"]:::teal
     C -->|OCP/LSP: takes any| D["DiscountStrategy"]:::purple
-    B -.->|ISP: one narrow method| E["InMemoryRepository"]:::brown
+    B -.->|ISP: one narrow<br/>method| E["InMemoryRepository"]:::brown
     A -->|SRP: separate class| F["ReceiptFormatter"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-70-solid-full-order-engine/example.py`**
@@ -2294,17 +2305,20 @@ All nine GRASP patterns assigned across one small library-checkout domain: `Loan
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["LibraryController<br/>(controller)"]:::blue --> B["Library<br/>(creator, low coupling)"]:::orange
-    B -->|creates| C["Loan<br/>(information expert, high cohesion)"]:::teal
-    C -->|depends on| D["FeePolicy<br/>(protected variations, polymorphism)"]:::purple
-    B -->|delegates persistence| E["LoanRepository<br/>(pure fabrication)"]:::brown
-    B -.->|indirection: callback list| F["overdue notifier"]:::brown
+    accTitle: Example 71: GRASP -- Full Assignment
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: LibraryController (controller), Library (creator, low coupling), Loan (information expert, high cohesion), FeePolicy (protected variations, polymorphism), LoanRepository (pure fabrication), overdue notifier. Connections: LibraryController (controller) to Library (creator, low coupling), Library (creator, low coupling) to Loan (information expert, high cohesion) (creates), Loan (information expert, high cohesion) to FeePolicy (protected variations, polymorphism) (depends on), Library (creator, low coupling) to LoanRepository (pure fabrication) (delegates persistence), Library (creator, low coupling) to overdue notifier (indirection: callback list).
+    A["LibraryController<br/>(controller)"]:::blue --> B["Library<br/>(creator, low<br/>coupling)"]:::orange
+    B -->|creates| C["Loan<br/>(information expert,<br/>high cohesion)"]:::teal
+    C -->|depends on| D["FeePolicy<br/>(protected<br/>variations,<br/>polymorphism)"]:::purple
+    B -->|delegates<br/>persistence| E["LoanRepository<br/>(pure fabrication)"]:::brown
+    B -.->|indirection:<br/>callback list| F["overdue notifier"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-grasp-full-assignment/example.py`**
@@ -2876,14 +2890,17 @@ Ports-and-adapters wiring a domain to infrastructure: `OrderDomain` depends only
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["OrderDomain<br/>(depends only on the port)"]:::blue --> B["NotificationPort<br/>(interface, owned by domain)"]:::orange
+    accTitle: Example 74: DIP -- Hexagonal Ports
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: OrderDomain (depends only on the port), NotificationPort (interface, owned by domain), EmailAdapter (infrastructure), SmsAdapter (infrastructure). Connections: OrderDomain (depends only on the port) to NotificationPort (interface, owned by domain), EmailAdapter (infrastructure) to NotificationPort (interface, owned by domain) (implements), SmsAdapter (infrastructure) to NotificationPort (interface, owned by domain) (implements).
+    A["OrderDomain<br/>(depends only on the<br/>port)"]:::blue --> B["NotificationPort<br/>(interface, owned by<br/>domain)"]:::orange
     C["EmailAdapter<br/>(infrastructure)"]:::teal -->|implements| B
     D["SmsAdapter<br/>(infrastructure)"]:::purple -->|implements| B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-74-dip-hexagonal-ports/example.py`**
@@ -3342,14 +3359,17 @@ _ex-77 &middot; exercises co-25, co-02_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["checkout()<br/>(core)"]:::blue --> B["PricingStrategyRegistry<br/>(name -> strategy)"]:::orange
+    accTitle: Example 77: Strategy -- Registry-Driven Plugin System
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: checkout() (core), PricingStrategy Registry (name -> strategy), StandardPricing (core, built-in), BlackFridayPricing (third-party plugin). Connections: checkout() (core) to PricingStrategy Registry (name -> strategy), StandardPricing (core, built-in) to PricingStrategy Registry (name -> strategy) (registers into), BlackFridayPricing (third-party plugin) to PricingStrategy Registry (name -> strategy) (registers into).
+    A["checkout()<br/>(core)"]:::blue --> B["PricingStrategy<br/>Registry<br/>(name -> strategy)"]:::orange
     C["StandardPricing<br/>(core, built-in)"]:::teal -->|registers into| B
     D["BlackFridayPricing<br/>(third-party plugin)"]:::purple -->|registers into| B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-77-strategy-registry-plugin/example.py`**
@@ -3776,16 +3796,19 @@ A small order/pricing engine combining four patterns cohesively: Strategy for pl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["LoggingPricingEngine<br/>(Decorator)"]:::brown --> B["PricingEngine<br/>(closed for modification)"]:::blue
+    accTitle: Example 80: Clean Design Preview -- Strategy + Factory + Observer + Decorator, Under SOLID
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: LoggingPricingEngine (Decorator), PricingEngine (closed for modification), PricingStrategy (Strategy), make_pricing_ strategy() (Factory), OrderListener (Observer). Connections: LoggingPricingEngine (Decorator) to PricingEngine (closed for modification), PricingEngine (closed for modification) to PricingStrategy (Strategy) (delegates pricing), make_pricing_ strategy() (Factory) to PricingStrategy (Strategy) (creates), PricingEngine (closed for modification) to OrderListener (Observer) (notifies).
+    A["LoggingPricingEngine<br/>(Decorator)"]:::brown --> B["PricingEngine<br/>(closed for<br/>modification)"]:::blue
     B -->|delegates pricing| C["PricingStrategy<br/>(Strategy)"]:::orange
-    D["make_pricing_strategy()<br/>(Factory)"]:::teal -->|creates| C
+    D["make_pricing_<br/>strategy()<br/>(Factory)"]:::teal -->|creates| C
     B -->|notifies| E["OrderListener<br/>(Observer)"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-80-clean-design-preview/example.py`**
@@ -3999,6 +4022,8 @@ An order lifecycle (created &rarr; paid &rarr; shipped &rarr; delivered, with ca
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 81: Transition-Table FSM -- Order Lifecycle
+    accDescr: State diagram with 6 items: start or end, created, paid, cancelled, shipped, delivered. Relationships: start or end to created; created to paid: pay; created to cancelled: cancel; paid to shipped: ship; paid to cancelled: cancel; shipped to delivered: deliver; delivered to start or end; cancelled to start or end.
     [*] --> created
     created --> paid: pay
     created --> cancelled: cancel
@@ -4151,6 +4176,8 @@ A Harel statechart for a media player: `playing` is a PARENT state with two nest
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 82: Hierarchical Statechart -- Media Player
+    accDescr: State diagram with 5 items: start or end, stopped, playing, normal, shuffle. Relationships: start or end to stopped; stopped to playing: play; start or end to normal; normal to shuffle: toggle_shuffle; shuffle to normal: toggle_shuffle; playing to stopped: stop.
     [*] --> stopped
     stopped --> playing: play
     state playing {
@@ -4525,20 +4552,23 @@ Places the transition-table FSM (ex-81) side by side with the boolean-flag order
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    subgraph FlagOrder["Boolean flags: 8 representable combinations"]
-        F1["is_paid=False, is_shipped=True<br/>(illegal, yet representable)"]:::brown
+    accTitle: Example 84: Transition-Table FSM vs. Boolean-Flag Soup -- a Direct Contrast
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: is_paid=False, is_shipped=True (illegal, yet representable), created, paid, shipped, delivered. Connections: created to paid, paid to shipped, shipped to delivered.
+    subgraph FlagOrder["Boolean flags: 8<br/>representable<br/>combinations"]
+        F1["is_paid=False,<br/>is_shipped=True<br/>(illegal, yet<br/>representable)"]:::brown
     end
-    subgraph FSM["Transition-table FSM: 5 reachable states"]
+    subgraph FSM["Transition-table<br/>FSM: 5 reachable<br/>states"]
         S1["created"]:::blue --> S2["paid"]:::orange
         S2 --> S3["shipped"]:::teal
         S3 --> S4["delivered"]:::purple
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-84-fsm-vs-boolean-flags-contrast/example.py`**

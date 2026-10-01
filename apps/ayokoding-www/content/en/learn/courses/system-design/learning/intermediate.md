@@ -234,12 +234,15 @@ with the side effect. An in-memory set demonstrates the rule but not crash-safe 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Worked Example 38: Trace an edge-cache hit
+    accDescr: Flowchart with 3 nodes and 4 connections. Nodes: User, Edge cache, Origin. Connections: User to Edge cache, Edge cache to User (hit), Edge cache to Origin (miss), Origin to Edge cache.
     U["User"]:::blue --> E{"Edge cache"}:::orange
     E -->|hit| U
     E -->|miss| O["Origin"]:::teal --> E
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: A cache hit skips the origin; a miss must still be safe and bounded.

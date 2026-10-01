@@ -14,11 +14,14 @@ Advanced implementation is consistency across localized versions, redirect behav
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-  A["Visible page"]:::blue --> B["Canonical and locale"]:::orange --> C["Structured data and links"]:::teal --> D["Measured experience"]:::purple
+  accTitle: Public-Page Consistency Flow
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Visible page, Canonical and locale, Structured data and links, Measured experience. Connections: Visible page to Canonical and locale, Canonical and locale to Structured data and links, Structured data and links to Measured experience.
+  A["Visible page"]:::blue --> B["Canonical and locale"]:::orange --> C["Structured data and<br/>links"]:::teal --> D["Measured experience"]:::purple
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 39: Model an Article in JSON-LD

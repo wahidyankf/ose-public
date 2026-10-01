@@ -37,15 +37,17 @@ skill area.
 %% Nimbus Notification Service dependency graph, durations in working days.
 %% Orange nodes and the thicker labelled edges mark the critical path.
 graph LR
+    accTitle: 2. Dependency graph and critical path
+    accDescr: Graph with 9 nodes and 9 connections. Nodes: 1.1 Email adapter 3d, 1.2 SMS adapter 3d, 1.3 Push adapter 2d, 2.1 Request API 3d (critical), 2.2 Template engine 4d (critical), 2.3 Status tracking + retry 3d, 3.1 Integration test suite 5d (critical), 3.2 Rate-limit/load test 3d (critical), 3.3 Observability dashboard 2d (critical). Connections: 2.1 Request API 3d (critical) to 2.2 Template engine 4d (critical) (critical), 2.1 Request API 3d (critical) to 2.3 Status tracking + retry 3d, 2.2 Template engine 4d (critical) to 3.1 Integration test suite 5d (critical) (critical), 2.3 Status tracking + retry 3d to 3.1 Integration test suite 5d (critical), 1.1 Email adapter 3d to 3.1 Integration test suite 5d (critical), 1.2 SMS adapter 3d to 3.1 Integration test suite 5d (critical), 1.3 Push adapter 2d to 3.1 Integration test suite 5d (critical), 3.1 Integration test suite 5d (critical) to 3.2 Rate-limit/load test 3d (critical) (critical), 3.2 Rate-limit/load test 3d (critical) to 3.3 Observability dashboard 2d (critical) (critical).
     A1["1.1 Email adapter<br/>3d"]:::blue
     A2["1.2 SMS adapter<br/>3d"]:::blue
     A3["1.3 Push adapter<br/>2d"]:::blue
     B1["2.1 Request API<br/>3d (critical)"]:::orange
     B2["2.2 Template engine<br/>4d (critical)"]:::orange
-    B3["2.3 Status tracking + retry<br/>3d"]:::blue
-    C1["3.1 Integration test suite<br/>5d (critical)"]:::orange
-    C2["3.2 Rate-limit/load test<br/>3d (critical)"]:::orange
-    C3["3.3 Observability dashboard<br/>2d (critical)"]:::orange
+    B3["2.3 Status tracking<br/>+ retry<br/>3d"]:::blue
+    C1["3.1 Integration test<br/>suite<br/>5d (critical)"]:::orange
+    C2["3.2 Rate-limit/load<br/>test<br/>3d (critical)"]:::orange
+    C3["3.3 Observability<br/>dashboard<br/>2d (critical)"]:::orange
 
     B1 -->|critical| B2
     B1 --> B3
@@ -59,6 +61,7 @@ graph LR
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:3px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: nine tasks and every genuine "must finish before" relation between them. The five

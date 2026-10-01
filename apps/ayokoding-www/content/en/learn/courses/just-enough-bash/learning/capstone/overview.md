@@ -16,18 +16,21 @@ taught, individually, somewhere in the Beginner, Intermediate, or Advanced tiers
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: getopts parses -i, -o, -h, validate required args + input file, mktemp scratch trap EXIT rm -f, tr124grep124sort124uniq pipeline -> scratch, mv scratch -o atomic publish. Connections: getopts parses -i, -o, -h to validate required args + input file, validate required args + input file to mktemp scratch trap EXIT rm -f, mktemp scratch trap EXIT rm -f to tr124grep124sort124uniq pipeline -> scratch, tr124grep124sort124uniq pipeline -> scratch to mv scratch -o atomic publish.
     A["getopts parses<br/>-i, -o, -h"]:::blue
     B["validate required<br/>args + input file"]:::orange
     C["mktemp scratch<br/>trap EXIT rm -f"]:::teal
-    D["tr#124;grep#124;sort#124;uniq<br/>pipeline -> scratch"]:::purple
+    D["tr#124;grep#124;<br/>sort#124;uniq<br/>pipeline -> scratch"]:::purple
     E["mv scratch -o<br/>atomic publish"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

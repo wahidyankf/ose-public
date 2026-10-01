@@ -171,6 +171,8 @@ Printing BM25's term score as `tf` climbs from 1 to 20 (with `k1 = 1.2`) traces 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 xychart-beta
+    accTitle: Example 31: BM25 Saturation Curve
+    accDescr: Line chart of BM25 term score against term frequency tf from 1 to 20 with k1=1.2, rising steeply at first and then flattening from 0.60 at tf=1 to 1.79 at tf=20, showing saturation.
     title "BM25 term score vs tf (k1=1.2, B=1)"
     x-axis "tf" [1, 5, 10, 15, 20]
     y-axis "score" 0 --> 2
@@ -379,13 +381,16 @@ Two documents with the _same_ term count but different lengths get different BM2
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["doc length dl vs avgdl"]:::blue --> B["B = (1-b) + b*(dl/avgdl)"]:::orange
-    B --> C["B grows with document length"]:::teal
-    C --> D["longer doc's score penalized<br/>in the denominator"]:::teal
+    accTitle: Example 33: BM25 Length Normalization
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: doc length dl vs avgdl, B = (1-b) + b*(dl/avgdl), B grows with document length, longer docs score penalized in the denominator. Connections: doc length dl vs avgdl to B = (1-b) + b*(dl/avgdl), B = (1-b) + b*(dl/avgdl) to B grows with document length, B grows with document length to longer docs score penalized in the denominator.
+    A["doc length dl vs<br/>avgdl"]:::blue --> B["B = (1-b) +<br/>b*(dl/avgdl)"]:::orange
+    B --> C["B grows with<br/>document length"]:::teal
+    C --> D["longer doc's score<br/>penalized<br/>in the denominator"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-33-bm25-length-norm/bm25_length_norm.py`**
@@ -887,15 +892,18 @@ A size-k min-heap keeps only the k highest-scoring documents seen so far, discar
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 38: Top-K Heap
+    accDescr: Flowchart with 8 nodes and 7 connections. Nodes: new (score, doc_id), heap has < k items?, C, always, score beats heap min?, replace the current minimum, F, not. Connections: new (score, doc_id) to heap has < k items?, heap has < k items? to C (yes), C to always, heap has < k items? to score beats heap min? (no), score beats heap min? to replace the current minimum (yes), score beats heap min? to F (no), F to not.
     A["new (score, doc_id)"]:::blue --> B{"heap has < k items?"}:::orange
-    B -->|"yes"| C["push -- always keep it"]:::teal
-    B -->|"no"| D{"score beats heap min?"}:::orange
-    D -->|"yes"| E["replace the current minimum"]:::teal
-    D -->|"no"| F["discard -- not in the top k"]:::blue
+    B -->|"yes"| C["push -- always keep<br/>it"]:::teal
+    B -->|"no"| D{"score beats heap<br/>min?"}:::orange
+    D -->|"yes"| E["replace the current<br/>minimum"]:::teal
+    D -->|"no"| F["discard -- not in<br/>the top k"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-38-topk-heap/topk_heap.py`**
@@ -1039,14 +1047,17 @@ Precision (`|rel ∩ ret| / |ret|`) and recall (`|rel ∩ ret| / |rel|`) are com
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["retrieved set"]:::blue --> C["intersection<br/>relevant AND retrieved"]:::teal
+    accTitle: Example 40: Precision/Recall Compute
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: retrieved set, intersection relevant AND retrieved, relevant set, precision = intersection / retrieved, recall = intersection / relevant. Connections: retrieved set to intersection relevant AND retrieved, relevant set to intersection relevant AND retrieved, intersection relevant AND retrieved to precision = intersection / retrieved, intersection relevant AND retrieved to recall = intersection / relevant.
+    A["retrieved set"]:::blue --> C["intersection<br/>relevant AND<br/>retrieved"]:::teal
     B["relevant set"]:::orange --> C
-    C --> D["precision =<br/>intersection / retrieved"]:::blue
-    C --> E["recall =<br/>intersection / relevant"]:::orange
+    C --> D["precision =<br/>intersection /<br/>retrieved"]:::blue
+    C --> E["recall =<br/>intersection /<br/>relevant"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-40-precision-recall-compute/precision_recall_compute.py`**
@@ -1490,15 +1501,18 @@ Average Precision (AP) for one query averages precision@k computed at every rank
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart LR
-    A["ranked results"]:::blue --> B{"relevant at this rank?"}:::orange
-    B -->|"yes"| C["compute precision@this-rank<br/>add to running sum"]:::teal
-    B -->|"no"| D["skip -- no contribution"]:::gray
-    C --> E["AP = sum / relevant count"]:::teal
+    accTitle: Example 46: Average Precision
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: ranked results, relevant at this rank?, compute precision@this-rank add to running sum, D, no, AP = sum /relevant count. Connections: ranked results to relevant at this rank?, relevant at this rank? to compute precision@this-rank add to running sum (yes), relevant at this rank? to D (no), D to no, compute precision@this-rank add to running sum to AP = sum /relevant count.
+    A["ranked results"]:::blue --> B{"relevant at this<br/>rank?"}:::orange
+    B -->|"yes"| C["compute<br/>precision@this-rank<br/>add to running sum"]:::teal
+    B -->|"no"| D["skip -- no<br/>contribution"]:::gray
+    C --> E["AP = sum /relevant<br/>count"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-46-average-precision/average_precision.py`**
@@ -1721,15 +1735,18 @@ A Lucene-family analyzer is modeled as three typed stages -- char filters, exact
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% TD: chain depth is 5, over LR's MaxWidth=4 -- TD keeps depth as the unchecked vertical axis
 flowchart TD
+    accTitle: Example 49: Analyzer Pipeline Model
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: raw text, char filters 0 or more, ONE tokenizer, token filters 0 or more, in order, index terms. Connections: raw text to char filters 0 or more, char filters 0 or more to ONE tokenizer, ONE tokenizer to token filters 0 or more, in order, token filters 0 or more, in order to index terms.
     A["raw text"]:::blue --> B["char filters<br/>0 or more"]:::orange
     B --> C["ONE tokenizer"]:::teal
     C --> D["token filters<br/>0 or more, in order"]:::purple
     D --> E["index terms"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-49-analyzer-pipeline-model/analyzer_pipeline_model.py`**
@@ -2130,17 +2147,20 @@ Executing a parsed `BoolQuery` tree against an inverted index intersects the `mu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: Example 52: Query DSL Execute
+    accDescr: Flowchart with 5 nodes and 6 connections. Nodes: BoolQuery tree, must clauses intersect postings, should clauses union postings, must_not clauses subtract postings, combine: AND, OR, subtract. Connections: BoolQuery tree to must clauses intersect postings, BoolQuery tree to should clauses union postings, BoolQuery tree to must_not clauses subtract postings, must clauses intersect postings to combine: AND, OR, subtract, should clauses union postings to combine: AND, OR, subtract, must_not clauses subtract postings to combine: AND, OR, subtract.
     A["BoolQuery tree"]:::blue --> B["must clauses<br/>intersect postings"]:::orange
     A --> C["should clauses<br/>union postings"]:::teal
     A --> D["must_not clauses<br/>subtract postings"]:::purple
-    B --> E["combine: AND, OR, subtract"]:::blue
+    B --> E["combine: AND, OR,<br/>subtract"]:::blue
     C --> E
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-52-query-dsl-execute/query_dsl_execute.py`**
@@ -2226,12 +2246,15 @@ A positional index stores every occurrence's _position_ within a document, not j
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["document text"]:::blue --> B["tokenize<br/>track position per occurrence"]:::orange
-    B --> C["term -> {doc_id: [positions]}"]:::teal
+    accTitle: Example 53: Positional Index Build
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: document text, tokenize track position per occurrence, term -> doc_id: [positions]. Connections: document text to tokenize track position per occurrence, tokenize track position per occurrence to term -> doc_id: [positions].
+    A["document text"]:::blue --> B["tokenize<br/>track position per<br/>occurrence"]:::orange
+    B --> C["term -> {doc_id:<br/>[positions]}"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-53-positional-index-build/positional_index_build.py`**
@@ -2296,15 +2319,18 @@ A phrase query for `"quick brown"` matches only documents where the two words ap
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart LR
+    accTitle: Example 54: Phrase Query
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: positions of quick, position(brown, positions of brown, phrase match, not a phrase match. Connections: positions of quick to position(brown, positions of brown to position(brown, position(brown to phrase match (yes), position(brown to not a phrase match (no).
     A["positions of 'quick'"]:::blue --> C{"position(brown) ==<br/>position(quick) + 1?"}:::orange
     B["positions of 'brown'"]:::blue --> C
     C -->|"yes"| D["phrase match"]:::teal
     C -->|"no"| E["not a phrase match"]:::gray
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-54-phrase-query/phrase_query.py`**
@@ -2378,14 +2404,17 @@ A proximity query relaxes phrase matching to "within N positions of each other" 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart LR
-    A["distance between positions"]:::blue --> B{"distance <= max_distance?"}:::orange
+    accTitle: Example 55: Proximity Query
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: distance between positions, distance <= max_distance?, C, match, D, excluded. Connections: distance between positions to distance <= max_distance?, distance <= max_distance? to C (yes), C to match, distance <= max_distance? to D (no), D to excluded.
+    A["distance between<br/>positions"]:::blue --> B{"distance <=<br/>max_distance?"}:::orange
     B -->|"yes"| C["within N -- match"]:::teal
     B -->|"no"| D["beyond N -- excluded"]:::gray
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-55-proximity-query/proximity_query.py`**
@@ -2461,13 +2490,16 @@ Two immutable segments -- each built once, over disjoint document ranges -- merg
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 56: Segment Merge Model
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Segment 1 docs 0-2, immutable, merge, Segment 2 docs 3-5, immutable, merged index docs 0-5. Connections: Segment 1 docs 0-2, immutable to merge, Segment 2 docs 3-5, immutable to merge, merge to merged index docs 0-5.
     A["Segment 1<br/>docs 0-2, immutable"]:::blue --> C["merge"]:::orange
     B["Segment 2<br/>docs 3-5, immutable"]:::blue --> C
     C --> D["merged index<br/>docs 0-5"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-56-segment-merge-model/segment_merge_model.py`**

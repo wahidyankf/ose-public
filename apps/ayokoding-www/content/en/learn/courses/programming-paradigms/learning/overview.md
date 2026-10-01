@@ -52,11 +52,13 @@ independently run against Python 3.13.12, and every code/test pair is fully type
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-25)
 graph TD
-    A["Imperative, procedural, structured<br/>co-01 to co-04"]:::blue
-    B["OO and declarative/functional<br/>co-05 to co-12"]:::orange
-    C["Logic, constraint, event, reactive, dataflow<br/>co-13 to co-18"]:::teal
-    D["Relational and multi-paradigm<br/>co-19 to co-20"]:::purple
-    E["Paradigm as a design decision<br/>co-21 to co-25"]:::brown
+    accTitle: How verification works in this topic
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Imperative, procedural, structured co-01 to co-04, OO and declarative/ functional co-05 to co-12, Logic, constraint, event, reactive, dataflow co-13 to co-18, Relational and multi-paradigm co-19 to co-20, Paradigm as a design decision co-21 to co-25. Connections: Imperative, procedural, structured co-01 to co-04 to OO and declarative/ functional co-05 to co-12, OO and declarative/ functional co-05 to co-12 to Logic, constraint, event, reactive, dataflow co-13 to co-18, Logic, constraint, event, reactive, dataflow co-13 to co-18 to Relational and multi-paradigm co-19 to co-20, Relational and multi-paradigm co-19 to co-20 to Paradigm as a design decision co-21 to co-25.
+    A["Imperative,<br/>procedural,<br/>structured<br/>co-01 to co-04"]:::blue
+    B["OO and declarative/<br/>functional<br/>co-05 to co-12"]:::orange
+    C["Logic, constraint,<br/>event, reactive,<br/>dataflow<br/>co-13 to co-18"]:::teal
+    D["Relational and<br/>multi-paradigm<br/>co-19 to co-20"]:::purple
+    E["Paradigm as a design<br/>decision<br/>co-21 to co-25"]:::brown
 
     A --> B
     B --> C
@@ -64,10 +66,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

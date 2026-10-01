@@ -62,17 +62,20 @@ rule in exactly this observable-property form.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Four concept clusters, in the order this course teaches them (co-01 through co-24)
 graph TD
-    A["The wrong answer is coming<br/>co-01 to co-05, co-19, co-20"]:::blue
-    B["Uncertainty, confidence,<br/>and provenance (co-06-10)"]:::orange
-    C["Humans in the loop,<br/>friction, recovery<br/>co-11 to co-15, co-24"]:::teal
-    D["Degradation, latency,<br/>and launch decision<br/>co-16-18, co-21-23"]:::purple
+    accTitle: How verification works in this course
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: The wrong answer is coming co-01 to co-05, co-19, co-20, Uncertainty, confidence, and provenance (co-06-10), Humans in the loop, friction, recovery co-11 to co-15, co-24, Degradation, latency, and launch decision co-16-18, co-21-23. Connections: The wrong answer is coming co-01 to co-05, co-19, co-20 to Uncertainty, confidence, and provenance (co-06-10), Uncertainty, confidence, and provenance (co-06-10) to Humans in the loop, friction, recovery co-11 to co-15, co-24, Humans in the loop, friction, recovery co-11 to co-15, co-24 to Degradation, latency, and launch decision co-16-18, co-21-23.
+    A["The wrong answer is<br/>coming<br/>co-01 to co-05,<br/>co-19, co-20"]:::blue
+    B["Uncertainty,<br/>confidence,<br/>and provenance<br/>(co-06-10)"]:::orange
+    C["Humans in the loop,<br/>friction, recovery<br/>co-11 to co-15,<br/>co-24"]:::teal
+    D["Degradation,<br/>latency,<br/>and launch decision<br/>co-16-18, co-21-23"]:::purple
 
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: the four theme clusters this course teaches, in reading order -- from naming why a

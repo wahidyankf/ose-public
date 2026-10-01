@@ -143,18 +143,21 @@ _ex-64 &middot; exercises co-21_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 64: trap ... INT Handles SIGINT
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: script starts trap installed, sleep 2 waiting..., SIGINT arrives kill -INT, trap fires echo interrupted exit 0, no signal sleep completes. Connections: script starts trap installed to sleep 2 waiting..., sleep 2 waiting... to SIGINT arrives kill -INT (signaled), SIGINT arrives kill -INT to trap fires echo interrupted exit 0, sleep 2 waiting... to no signal sleep completes (not signaled).
     A["script starts<br/>trap installed"]:::blue
     B["sleep 2<br/>waiting..."]:::orange
     C["SIGINT arrives<br/>kill -INT"]:::orange
-    D["trap fires<br/>echo interrupted; exit 0"]:::teal
+    D["trap fires<br/>echo interrupted;<br/>exit 0"]:::teal
     E["no signal<br/>sleep completes"]:::teal
     A --> B
     B -->|signaled| C --> D
     B -->|not signaled| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-64-trap-signal-int/example.sh`**
@@ -738,6 +741,8 @@ echo "input: $input" # => reached only when -i was provided with a real value
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: => Output : input:
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: getopts loop consumes flags, input set?, exit 1 -i is required, print input exit 0. Connections: getopts loop consumes flags to input set?, input set? to exit 1 -i is required (no), input set? to print input exit 0 (yes).
     A["getopts loop<br/>consumes flags"]:::blue
     B{"input set?"}:::orange
     C["exit 1<br/>-i is required"]:::orange
@@ -747,8 +752,9 @@ flowchart TD
     B -->|yes| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Run (no `-i`)**: `bash example.sh`
@@ -1034,10 +1040,12 @@ _ex-83 &middot; exercises co-26, co-18_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 83: Process Substitution -- Diffing Two Live Pipelines
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: a.txt, b.txt, sort 40process substitution41, sort 40process substitution41, diff, identical result to temp-file staging. Connections: a.txt to sort 40process substitution41, sort 40process substitution41 to diff, b.txt to sort 40process substitution41, sort 40process substitution41 to diff, diff to identical result to temp-file staging.
     A["a.txt"]:::blue
     B["b.txt"]:::blue
-    C["sort<br/>#40;process substitution#41;"]:::orange
-    D["sort<br/>#40;process substitution#41;"]:::orange
+    C["sort<br/>#40;process<br/>substitution#41;"]:::orange
+    D["sort<br/>#40;process<br/>substitution#41;"]:::orange
     E["diff"]:::teal
     F["identical result to<br/>temp-file staging"]:::purple
     A --> C --> E
@@ -1045,9 +1053,10 @@ flowchart LR
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-83-process-substitution-diff/example.sh`**

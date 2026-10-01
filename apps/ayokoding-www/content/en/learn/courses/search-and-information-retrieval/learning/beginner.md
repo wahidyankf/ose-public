@@ -184,12 +184,15 @@ The inverted index at its simplest is a `dict[str, set[int]]`: every term maps t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 4: Build Term-Doc Map
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 3 documents already tokenized, scan each doc, each term, term -> doc-id set the inverted index. Connections: 3 documents already tokenized to scan each doc, each term, scan each doc, each term to term -> doc-id set the inverted index.
     A["3 documents<br/>already tokenized"]:::blue --> B{"scan each doc,<br/>each term"}:::orange
     B --> C["term -> doc-id set<br/>the inverted index"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-04-build-term-doc-map/build_term_doc_map.py`**
@@ -484,6 +487,8 @@ The AND merge in Example 6 used Python's `set &`, hiding the actual algorithm. H
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart TD
+    accTitle: Example 9: Merge Two Pointer
+    accDescr: Flowchart with 5 nodes and 7 connections. Nodes: cursor i on list a cursor j on list b, a[i] vs b[j], record match advance BOTH i, j, advance i only, advance j only. Connections: cursor i on list a cursor j on list b to a[i] vs b[j], a[i] vs b[j] to record match advance BOTH i, j (equal), a[i] vs b[j] to advance i only (a[i] smaller), a[i] vs b[j] to advance j only (b[j] smaller), record match advance BOTH i, j to a[i] vs b[j], advance i only to a[i] vs b[j], advance j only to a[i] vs b[j].
     A["cursor i on list a<br/>cursor j on list b"]:::blue --> B{"a[i] vs b[j]"}:::orange
     B -->|"equal"| C["record match<br/>advance BOTH i, j"]:::teal
     B -->|"a[i] smaller"| D["advance i only"]:::gray
@@ -493,9 +498,10 @@ flowchart TD
     E --> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-09-merge-two-pointer/merge_two_pointer.py`**
@@ -1050,16 +1056,19 @@ The Porter (1980) stemmer strips suffixes through a fixed sequence of rule steps
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart TD
-    A["raw word<br/>e.g. running"]:::blue --> B{"matches a Step 1 suffix rule,<br/>measure check passes?"}:::orange
+    accTitle: Example 17: Porter Stem
+    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: raw word e.g. running, matches a Step 1 suffix rule, measure check passes?, strip suffix apply replacement, leave word unchanged, stem e.g. run. Connections: raw word e.g. running to matches a Step 1 suffix rule, measure check passes?, matches a Step 1 suffix rule, measure check passes? to strip suffix apply replacement (yes), matches a Step 1 suffix rule, measure check passes? to leave word unchanged (no match), strip suffix apply replacement to stem e.g. run, leave word unchanged to stem e.g. run.
+    A["raw word<br/>e.g. running"]:::blue --> B{"matches a Step 1<br/>suffix rule,<br/>measure check<br/>passes?"}:::orange
     B -->|"yes"| C["strip suffix<br/>apply replacement"]:::teal
     B -->|"no match"| D["leave word unchanged"]:::gray
     C --> E["stem<br/>e.g. run"]:::teal
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-17-porter-stem/porter_stem.py`**
@@ -1503,15 +1512,18 @@ Lemmatization uses a dictionary to reduce a word to its canonical form (`better 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 19: Lemmatize vs Stem
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: word: better, stemmer suffix rules only, lemmatizer dictionary lookup, better no suffix rule fires, good irregular form resolved. Connections: word: better to stemmer suffix rules only, word: better to lemmatizer dictionary lookup, stemmer suffix rules only to better no suffix rule fires, lemmatizer dictionary lookup to good irregular form resolved.
     A["word: better"]:::blue --> B["stemmer<br/>suffix rules only"]:::orange
     A --> C["lemmatizer<br/>dictionary lookup"]:::purple
     B --> D["better<br/>no suffix rule fires"]:::orange
-    C --> E["good<br/>irregular form resolved"]:::teal
+    C --> E["good<br/>irregular form<br/>resolved"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-19-lemmatize-vs-stem/lemmatize_vs_stem.py`**
@@ -1736,14 +1748,17 @@ Running the same query with and without stemming quantifies the recall-precision
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["same query"]:::blue --> B["no stemming<br/>exact-term match only"]:::orange
-    A --> C["with stemming<br/>morphological variants match"]:::teal
+    accTitle: Example 20: Normalization Recall Delta
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: same query, no stemming exact-term match only, with stemming morphological variants match, fewer hits, strictly more hits. Connections: same query to no stemming exact-term match only, same query to with stemming morphological variants match, no stemming exact-term match only to fewer hits, with stemming morphological variants match to strictly more hits.
+    A["same query"]:::blue --> B["no stemming<br/>exact-term match<br/>only"]:::orange
+    A --> C["with stemming<br/>morphological<br/>variants match"]:::teal
     B --> D["fewer hits"]:::orange
     C --> E["strictly more hits"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-20-normalization-recall-delta/normalization_recall_delta.py`**
@@ -2093,12 +2108,15 @@ A skip-pointer posting list adds evenly-spaced shortcuts, roughly every `sqrt(P)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 23: Skip-Pointer Build
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: sorted posting list P entries, compute spacing ~sqrt(P), attach a skip pointer every ~sqrt(P) entries. Connections: sorted posting list P entries to compute spacing ~sqrt(P), compute spacing ~sqrt(P) to attach a skip pointer every ~sqrt(P) entries.
     A["sorted posting list<br/>P entries"]:::blue --> B["compute spacing<br/>~sqrt(P)"]:::orange
-    B --> C["attach a skip pointer<br/>every ~sqrt(P) entries"]:::teal
+    B --> C["attach a skip<br/>pointer<br/>every ~sqrt(P)<br/>entries"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-23-skip-pointer-build/skip_pointer_build.py`**
@@ -2169,14 +2187,17 @@ Intersecting with skip pointers uses the shortcuts from Example 23 to bypass non
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart TD
-    A["cursor at skip entry"]:::blue --> B{"skip target in range?"}:::orange
+    accTitle: Example 24: Skip-Pointer Merge
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: cursor at skip entry, skip target in range?, jump to skip target, advance one entry at a time. Connections: cursor at skip entry to skip target in range?, skip target in range? to jump to skip target (yes), skip target in range? to advance one entry at a time (no).
+    A["cursor at skip entry"]:::blue --> B{"skip target in<br/>range?"}:::orange
     B -->|"yes"| C["jump to skip target"]:::teal
-    B -->|"no"| D["advance one entry at a time"]:::gray
+    B -->|"no"| D["advance one entry at<br/>a time"]:::gray
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-24-skip-pointer-merge/skip_pointer_merge.py`**
@@ -2528,6 +2549,8 @@ The four normalization stages built so far -- tokenize, case-fold, drop stop wor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% TD: chain depth is 6, over LR's MaxWidth=4 -- TD keeps depth as the unchecked vertical axis
 flowchart TD
+    accTitle: Example 28: Analyzer Order
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: raw text, tokenize (co-06), case-fold (co-07), stop-word drop (co-08), stem (co-09), final index terms. Connections: raw text to tokenize (co-06), tokenize (co-06) to case-fold (co-07), case-fold (co-07) to stop-word drop (co-08), stop-word drop (co-08) to stem (co-09), stem (co-09) to final index terms.
     A["raw text"]:::blue --> B["tokenize<br/>(co-06)"]:::orange
     B --> C["case-fold<br/>(co-07)"]:::teal
     C --> D["stop-word drop<br/>(co-08)"]:::purple
@@ -2535,9 +2558,10 @@ flowchart TD
     E --> F["final index terms"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-28-analyzer-order/analyzer_order.py`**

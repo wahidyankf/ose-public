@@ -26,13 +26,16 @@ capacity and queue lag alerts. Retention and payload size remain explicit assump
 ```mermaid
 %% Constructed reminder-service walkthrough; labels describe responsibilities, not vendor products.
 flowchart LR
+    accTitle: High-level flow
+    accDescr: Flowchart with 8 nodes and 7 connections. Nodes: Client, Reminder API, Appointment and reminder state, Durable scheduled work, Delivery worker, Notification provider, Delivery attempt record, Read model for status. Connections: Client to Reminder API, Reminder API to Appointment and reminder state, Reminder API to Durable scheduled work, Durable scheduled work to Delivery worker, Delivery worker to Notification provider, Delivery worker to Delivery attempt record, Appointment and reminder state to Read model for status.
     A[Client] --> B[Reminder API]
-    B --> C[(Appointment and reminder state)]
-    B --> D[Durable scheduled work]
+    B --> C[(Appointment and<br/>reminder state)]
+    B --> D[Durable scheduled<br/>work]
     D --> E[Delivery worker]
-    E --> F[Notification provider]
-    E --> G[Delivery attempt record]
-    C --> H[Read model for status]
+    E --> F[Notification<br/>provider]
+    E --> G[Delivery attempt<br/>record]
+    C --> H[Read model for<br/>status]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The API owns idempotent create, update, and cancel operations. Scheduled work separates request

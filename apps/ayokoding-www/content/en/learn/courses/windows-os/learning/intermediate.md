@@ -13,10 +13,13 @@ _Exercises co-11._ This small experiment isolates **Create a Mutex** and leaves 
 
 ```mermaid
 flowchart LR
+  accTitle: Example 27: Create a Mutex
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Create a Mutex, Observed state. Connections: Caller to Create a Mutex, Create a Mutex to Observed state.
   A["Caller"]:::blue --> B["Create a Mutex"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-27-create-a-mutex/example.c)
@@ -40,10 +43,13 @@ _Exercises co-12._ This small experiment isolates **Two Threads with a Mutex** a
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Two Threads with a Mutex"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 29: Two Threads with a Mutex
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Two Threads with a Mutex, Observed state. Connections: Caller to Two Threads with a Mutex, Two Threads with a Mutex to Observed state.
+  A["Caller"]:::blue --> B["Two Threads with a<br/>Mutex"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-29-two-threads-with-a-mutex/example.c)
@@ -67,10 +73,13 @@ _Exercises co-12._ This small experiment isolates **Initialize a Critical Sectio
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Initialize a Critical Section"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 31: Initialize a Critical Section
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Initialize a Critical Section, Observed state. Connections: Caller to Initialize a Critical Section, Initialize a Critical Section to Observed state.
+  A["Caller"]:::blue --> B["Initialize a<br/>Critical Section"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-31-initialize-a-critical-section/example.c)
@@ -94,10 +103,13 @@ _Exercises co-13._ This small experiment isolates **Create an Event** and leaves
 
 ```mermaid
 flowchart LR
+  accTitle: Example 33: Create an Event
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Create an Event, Observed state. Connections: Caller to Create an Event, Create an Event to Observed state.
   A["Caller"]:::blue --> B["Create an Event"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-33-create-an-event/example.c)
@@ -130,10 +142,13 @@ _Exercises co-14._ This small experiment isolates **Wait for Multiple Objects** 
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Wait for Multiple Objects"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 36: Wait for Multiple Objects
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Wait for Multiple Objects, Observed state. Connections: Caller to Wait for Multiple Objects, Wait for Multiple Objects to Observed state.
+  A["Caller"]:::blue --> B["Wait for Multiple<br/>Objects"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-36-wait-for-multiple-objects/example.c)
@@ -148,10 +163,13 @@ _Exercises co-15._ This small experiment isolates **Reserve Then Commit** and le
 
 ```mermaid
 flowchart LR
+  accTitle: Example 37: Reserve Then Commit
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Reserve Then Commit, Observed state. Connections: Caller to Reserve Then Commit, Reserve Then Commit to Observed state.
   A["Caller"]:::blue --> B["Reserve Then Commit"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-37-reserve-then-commit/example.c)
@@ -193,10 +211,13 @@ _Exercises co-16._ This small experiment isolates **Overlapped Read** and leaves
 
 ```mermaid
 flowchart LR
+  accTitle: Example 41: Overlapped Read
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Overlapped Read, Observed state. Connections: Caller to Overlapped Read, Overlapped Read to Observed state.
   A["Caller"]:::blue --> B["Overlapped Read"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-41-overlapped-read/example.c)
@@ -211,10 +232,13 @@ _Exercises co-17._ This small experiment isolates **Synchronous and Overlapped I
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["Synchronous and Overlapped I/O"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 42: Synchronous and Overlapped I/O
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Synchronous and Overlapped I/O, Observed state. Connections: Caller to Synchronous and Overlapped I/O, Synchronous and Overlapped I/O to Observed state.
+  A["Caller"]:::blue --> B["Synchronous and<br/>Overlapped I/O"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-42-synchronous-and-overlapped-i-o/example.c)
@@ -247,10 +271,13 @@ _Exercises co-18._ This small experiment isolates **CreateProcess Command Line**
 
 ```mermaid
 flowchart LR
-  A["Caller"]:::blue --> B["CreateProcess Command Line"]:::orange --> C["Observed state"]:::teal
+  accTitle: Example 45: CreateProcess Command Line
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, CreateProcess Command Line, Observed state. Connections: Caller to CreateProcess Command Line, CreateProcess Command Line to Observed state.
+  A["Caller"]:::blue --> B["CreateProcess<br/>Command Line"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-45-createprocess-command-line/example.c)
@@ -283,10 +310,13 @@ _Exercises co-19._ This small experiment isolates **Thread Priority** and leaves
 
 ```mermaid
 flowchart LR
+  accTitle: Example 48: Thread Priority
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, Thread Priority, Observed state. Connections: Caller to Thread Priority, Thread Priority to Observed state.
   A["Caller"]:::blue --> B["Thread Priority"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-48-thread-priority/example.c)
@@ -328,10 +358,13 @@ _Exercises co-20._ This small experiment isolates **DuplicateHandle** and leaves
 
 ```mermaid
 flowchart LR
+  accTitle: Example 52: DuplicateHandle
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Caller, DuplicateHandle, Observed state. Connections: Caller to DuplicateHandle, DuplicateHandle to Observed state.
   A["Caller"]:::blue --> B["DuplicateHandle"]:::orange --> C["Observed state"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Runnable source**: [example.c](./code/ex-52-duplicatehandle/example.c)

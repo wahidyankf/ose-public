@@ -17,13 +17,16 @@ ownership, failure modes, and the user-facing outcome of a compromise.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Worked Example 39: Design a URL shortener
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Browser, Load balancer, Redirect service, Cache, Code → URL store. Connections: Browser to Load balancer, Load balancer to Redirect service, Redirect service to Cache, Cache to Code → URL store (miss).
     U["Browser"]:::blue --> L["Load balancer"]:::orange --> A["Redirect service"]:::teal
     A --> C{"Cache"}:::purple
     C -->|miss| D["Code → URL store"]:::orange
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The design uses `GET /{code}` and an indexed `code → URL` record. At 1,160 peak reads/s, a 99%
@@ -168,10 +171,13 @@ Timeouts, partial responses, and API version ownership must be explicit before a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    P["Producer key=user-7"]:::blue --> T["Topic partition 1\noffsets 19,20,21"]:::orange --> C["Consumer group member"]:::teal
+    accTitle: Worked Example 50: Preserve ordering only within a stream partition
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Producer key=user-7, Topic partition 1 offsets 19,20,21, Consumer group member. Connections: Producer key=user-7 to Topic partition 1 offsets 19,20,21, Topic partition 1 offsets 19,20,21 to Consumer group member.
+    P["Producer key=user-7"]:::blue --> T["Topic partition 1<br/>offsets 19,20,21"]:::orange --> C["Consumer group<br/>member"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: Ordering applies within a partition, so related events need a stable partition key.

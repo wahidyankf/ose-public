@@ -64,14 +64,17 @@ Name the stable concept or integration contract that both sides are trying to ow
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Worked Example 42: Plan a strangler migration
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Caller, Facade, Legacy path, New path. Connections: Caller to Facade, Facade to Legacy path, Facade to New path.
     A["Caller"]:::blue --> B["Facade"]:::orange
     B --> C["Legacy path"]:::purple
     B --> D["New path"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: The facade provides a controlled seam for incremental replacement.

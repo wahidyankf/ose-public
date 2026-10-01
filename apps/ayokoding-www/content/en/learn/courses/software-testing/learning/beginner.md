@@ -26,12 +26,15 @@ or any registration step -- pytest's discovery rule alone is enough (co-02).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 1: First Passing Test
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: test_example.py matches test_*.py, test_adds matches test_*, pytest runs it, reports pass/fail. Connections: test_example.py matches test_*.py to test_adds matches test_*, test_adds matches test_* to pytest runs it, reports pass/fail.
     A["test_example.py<br/>matches test_*.py"]:::blue --> B["test_adds<br/>matches test_*"]:::orange
     B --> C["pytest runs it,<br/>reports pass/fail"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -145,12 +148,15 @@ convention, not a pytest feature -- nothing here is pytest-specific syntax (co-0
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 3: Arrange-Act-Assert
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Arrange build inputs, Act call the unit, Assert compare result. Connections: Arrange build inputs to Act call the unit, Act call the unit to Assert compare result.
     A["Arrange<br/>build inputs"]:::blue --> B["Act<br/>call the unit"]:::orange
     B --> C["Assert<br/>compare result"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -589,12 +595,15 @@ value in (co-05).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 11: A Simple Fixture
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: @pytest.fixture def sample_user, parameter name sample_user, pytest calls the fixture, injects result. Connections: @pytest.fixture def sample_user to parameter name sample_user, parameter name sample_user to pytest calls the fixture, injects result.
     A["@pytest.fixture<br/>def sample_user"]:::blue --> B["parameter name<br/>sample_user"]:::orange
-    B --> C["pytest calls the<br/>fixture, injects result"]:::teal
+    B --> C["pytest calls the<br/>fixture, injects<br/>result"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -658,6 +667,8 @@ the test finishes (co-05).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 12: Fixture Teardown with yield
+    accDescr: Sequence diagram between fixture, test body. Messages: fixture to fixture: setup (before yield); fixture to test body: yield resource; test body to test body: assertions run; test body to fixture: test returns; fixture to fixture: teardown (after yield).
     participant F as fixture
     participant T as test body
     F->>F: setup (before yield)
@@ -791,14 +802,17 @@ manual loop (co-06).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 14: Parametrize Three Cases
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: @parametrize 3 rows, test_double[1-2], test_double[2-4], test_double[10-20]. Connections: @parametrize 3 rows to test_double[1-2], @parametrize 3 rows to test_double[2-4], @parametrize 3 rows to test_double[10-20].
     A["@parametrize<br/>3 rows"]:::blue --> B["test_double[1-2]"]:::orange
     A --> C["test_double[2-4]"]:::teal
     A --> D["test_double[10-20]"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -980,12 +994,15 @@ executes the decorated function's body, reporting it as `skipped` before a singl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["@pytest.mark.skip"]:::blue --> B["pytest sees the marker<br/>BEFORE running the body"]:::orange
+    accTitle: Example 17: Mark a Test skip
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: @pytest.mark.skip, pytest sees the marker BEFORE running the body, reported: skipped body never executes. Connections: @pytest.mark.skip to pytest sees the marker BEFORE running the body, pytest sees the marker BEFORE running the body to reported: skipped body never executes.
+    A["@pytest.mark.skip"]:::blue --> B["pytest sees the<br/>marker<br/>BEFORE running the<br/>body"]:::orange
     B --> C["reported: skipped<br/>body never executes"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1299,12 +1316,15 @@ name, to EVERY test file in the same directory (and below), with no explicit imp
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["conftest.py<br/>shared_greeting fixture"]:::blue --> B["test_example.py<br/>uses it, no import"]:::orange
-    A --> C["test_more.py<br/>uses it too, no import"]:::teal
+    accTitle: Example 22: A Shared Fixture in conftest.py
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: conftest.py shared_greeting fixture, test_example.py uses it, no import, test_more.py uses it too, no import. Connections: conftest.py shared_greeting fixture to test_example.py uses it, no import, conftest.py shared_greeting fixture to test_more.py uses it too, no import.
+    A["conftest.py<br/>shared_greeting<br/>fixture"]:::blue --> B["test_example.py<br/>uses it, no import"]:::orange
+    A --> C["test_more.py<br/>uses it too, no<br/>import"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1377,13 +1397,16 @@ defined nowhere in this file -- the test is genuinely red, failing with a real, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 23: TDD Step 1 -- Red
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: RED Example 23, GREEN Example 24, REFACTOR Example 25. Connections: RED Example 23 to GREEN Example 24, GREEN Example 24 to REFACTOR Example 25, REFACTOR Example 25 to RED Example 23 (next feature).
     A["RED<br/>Example 23"]:::orange --> B["GREEN<br/>Example 24"]:::teal
     B --> C["REFACTOR<br/>Example 25"]:::blue
     C -.->|next feature| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

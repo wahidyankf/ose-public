@@ -18,12 +18,15 @@ Near-real-time (NRT) search means a newly added document is buffered but NOT yet
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 57: NRT Refresh Model
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: add(doc), pending buffer NOT searchable, committed index searchable. Connections: add(doc) to pending buffer NOT searchable, pending buffer NOT searchable to committed index searchable (refresh()).
     A["add(doc)"]:::blue --> B["pending buffer<br/>NOT searchable"]:::orange
     B -->|"refresh()"| C["committed index<br/>searchable"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-57-nrt-refresh-model/nrt_refresh_model.py`**
@@ -178,13 +181,16 @@ Adding a document to an already-built `InvertedIndex` (Example 58) requires no r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["existing InvertedIndex<br/>N documents"]:::blue --> B["add(new_doc)"]:::orange
-    B --> C["new doc's terms merged<br/>into existing postings only"]:::teal
-    C --> D["N+1 documents<br/>no rebuild of the other N"]:::teal
+    accTitle: Example 59: Incremental Add
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: existing InvertedIndex N documents, add(new_doc), new docs terms merged into existing postings only, N+1 documents no rebuild of the other N. Connections: existing InvertedIndex N documents to add(new_doc), add(new_doc) to new docs terms merged into existing postings only, new docs terms merged into existing postings only to N+1 documents no rebuild of the other N.
+    A["existing<br/>InvertedIndex<br/>N documents"]:::blue --> B["add(new_doc)"]:::orange
+    B --> C["new doc's terms<br/>merged<br/>into existing<br/>postings only"]:::teal
+    C --> D["N+1 documents<br/>no rebuild of the<br/>other N"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-59-incremental-add/incremental_add.py`**
@@ -354,15 +360,18 @@ Serializing postings to JSON requires converting integer doc-ids to strings (JSO
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% TD: chain depth is 5, over LR's MaxWidth=4 -- TD keeps depth as the unchecked vertical axis
 flowchart TD
+    accTitle: Example 61: Persist JSON
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: in-memory index int doc-ids, serialize int keys -> str keys, JSON file on disk, deserialize str keys -> int keys, reconstructed index int doc-ids. Connections: in-memory index int doc-ids to serialize int keys -> str keys, serialize int keys -> str keys to JSON file on disk, JSON file on disk to deserialize str keys -> int keys, deserialize str keys -> int keys to reconstructed index int doc-ids.
     A["in-memory index<br/>int doc-ids"]:::blue --> B["serialize<br/>int keys -> str keys"]:::orange
     B --> C["JSON file on disk"]:::teal
     C --> D["deserialize<br/>str keys -> int keys"]:::purple
     D --> E["reconstructed index<br/>int doc-ids"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-61-persist-json/persist_json.py`**
@@ -526,12 +535,15 @@ Delta-encoding stores each sorted doc-id as the DIFFERENCE from the previous one
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["sorted doc-ids<br/>e.g. 5, 8, 9, 20"]:::blue --> B["store gap from previous id<br/>5, 3, 1, 11"]:::orange
-    B --> C["small gaps -> fewer bytes"]:::teal
+    accTitle: Example 63: Delta-Encode Postings
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: sorted doc-ids e.g. 5, 8, 9, 20, store gap from previous id 5, 3, 1, 11, small gaps -> fewer bytes. Connections: sorted doc-ids e.g. 5, 8, 9, 20 to store gap from previous id 5, 3, 1, 11, store gap from previous id 5, 3, 1, 11 to small gaps -> fewer bytes.
+    A["sorted doc-ids<br/>e.g. 5, 8, 9, 20"]:::blue --> B["store gap from<br/>previous id<br/>5, 3, 1, 11"]:::orange
+    B --> C["small gaps -> fewer<br/>bytes"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-63-delta-encode-postings/delta_encode_postings.py`**
@@ -698,14 +710,17 @@ BM25F scores multiple fields (`title`, `body`) as WEIGHTED streams: each field's
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["title field tf"]:::blue --> C["weighted sum<br/>title_w*tf + body_w*tf"]:::orange
+    accTitle: Example 65: BM25F: Fields
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: title field tf, weighted sum title_w*tf + body_w*tf, body field tf, ONE saturation + idf step on the combined weighted tf. Connections: title field tf to weighted sum title_w*tf + body_w*tf, body field tf to weighted sum title_w*tf + body_w*tf, weighted sum title_w*tf + body_w*tf to ONE saturation + idf step on the combined weighted tf.
+    A["title field tf"]:::blue --> C["weighted sum<br/>title_w*tf +<br/>body_w*tf"]:::orange
     B["body field tf"]:::purple --> C
-    C --> D["ONE saturation + idf step<br/>on the combined weighted tf"]:::teal
+    C --> D["ONE saturation + idf<br/>step<br/>on the combined<br/>weighted tf"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-bm25f-fields/bm25f_fields.py`**
@@ -773,14 +788,17 @@ A naive per-field-score-then-sum approach applies BM25's saturation SEPARATELY t
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Gray #808080
 flowchart TD
-    A["per-field tf values"]:::blue --> B["combine weighted tf FIRST<br/>then saturate once"]:::teal
-    A --> C["naive: saturate EACH field<br/>then sum the scores"]:::gray
-    B --> D["consistent --<br/>total weighted tf matters"]:::teal
-    C --> E["inconsistent --<br/>rewards term spreading"]:::gray
+    accTitle: Example 66: BM25F vs Naive
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: per-field tf values, combine weighted tf FIRST then saturate once, naive: saturate EACH field then sum the scores, D, E. Connections: per-field tf values to combine weighted tf FIRST then saturate once, per-field tf values to naive: saturate EACH field then sum the scores, combine weighted tf FIRST then saturate once to D, naive: saturate EACH field then sum the scores to E.
+    A["per-field tf values"]:::blue --> B["combine weighted tf<br/>FIRST<br/>then saturate once"]:::teal
+    A --> C["naive: saturate EACH<br/>field<br/>then sum the scores"]:::gray
+    B --> D["consistent --<br/>total weighted tf<br/>matters"]:::teal
+    C --> E["inconsistent --<br/>rewards term<br/>spreading"]:::gray
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-66-bm25f-vs-naive/bm25f_vs_naive.py`**
@@ -861,13 +879,16 @@ Levenshtein edit distance -- the minimum number of single-character insertions, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["source string"]:::blue --> C["dynamic-programming edit table"]:::orange
+    accTitle: Example 67: Fuzzy: Levenshtein
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: source string, dynamic-programming edit table, target string, min insert/delete/sub count. Connections: source string to dynamic-programming edit table, target string to dynamic-programming edit table, dynamic-programming edit table to min insert/delete/sub count.
+    A["source string"]:::blue --> C["dynamic-programming<br/>edit table"]:::orange
     B["target string"]:::blue --> C
-    C --> D["min insert/delete/sub count"]:::teal
+    C --> D["min<br/>insert/delete/sub<br/>count"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-67-fuzzy-levenshtein/fuzzy_levenshtein.py`**
@@ -1118,13 +1139,16 @@ Edge n-grams index every PREFIX of a term (`s`, `se`, `sea`, `sear`, ...), so a 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["term: search"]:::blue --> B["every prefix<br/>s, se, sea, sear, ..."]:::orange
+    accTitle: Example 70: Edge N-Gram Autocomplete
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: term: search, every prefix s, se, sea, sear, ..., each prefix indexed at build time, partial query sea = single O(1) lookup. Connections: term: search to every prefix s, se, sea, sear, ..., every prefix s, se, sea, sear, ... to each prefix indexed at build time, each prefix indexed at build time to partial query sea = single O(1) lookup.
+    A["term: search"]:::blue --> B["every prefix<br/>s, se, sea, sear,<br/>..."]:::orange
     B --> C["each prefix indexed<br/>at build time"]:::teal
     C --> D["partial query 'sea'<br/>= single O(1) lookup"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-70-edge-ngram-autocomplete/edge_ngram_autocomplete.py`**
@@ -1193,15 +1217,18 @@ Character n-grams covering the WHOLE word (not just its prefix) enable substring
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 71: Char N-Gram Substring
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: term: engine, edge n-grams e, en, eng, ..., whole-word n-grams e, en, eng, ngi, gin, ine, ..., prefix match only, match anywhere inside the term. Connections: term: engine to edge n-grams e, en, eng, ..., term: engine to whole-word n-grams e, en, eng, ngi, gin, ine, ..., edge n-grams e, en, eng, ... to prefix match only, whole-word n-grams e, en, eng, ngi, gin, ine, ... to match anywhere inside the term.
     A["term: engine"]:::blue --> B["edge n-grams<br/>e, en, eng, ..."]:::orange
-    A --> C["whole-word n-grams<br/>e, en, eng, ngi, gin, ine, ..."]:::purple
+    A --> C["whole-word n-grams<br/>e, en, eng, ngi,<br/>gin, ine, ..."]:::purple
     B --> D["prefix match only"]:::orange
-    C --> E["match anywhere inside the term"]:::teal
+    C --> E["match anywhere<br/>inside the term"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-char-ngram-substring/char_ngram_substring.py`**
@@ -1415,15 +1442,18 @@ Comparing brute-force exact k-nearest-neighbor search against a toy approximate 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
 flowchart TD
-    A["query vector"]:::blue --> B["exact kNN<br/>compare against EVERY vector"]:::teal
-    A --> C["approximate kNN<br/>sample candidates first"]:::orange
+    accTitle: Example 74: ANN vs Exact kNN
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: query vector, exact kNN compare against EVERY vector, approximate kNN sample candidates first, always correct slower at scale, may miss a true neighbor much faster. Connections: query vector to exact kNN compare against EVERY vector, query vector to approximate kNN sample candidates first, exact kNN compare against EVERY vector to always correct slower at scale, approximate kNN sample candidates first to may miss a true neighbor much faster.
+    A["query vector"]:::blue --> B["exact kNN<br/>compare against<br/>EVERY vector"]:::teal
+    A --> C["approximate kNN<br/>sample candidates<br/>first"]:::orange
     B --> D["always correct<br/>slower at scale"]:::teal
-    C --> E["may miss a true neighbor<br/>much faster"]:::gray
+    C --> E["may miss a true<br/>neighbor<br/>much faster"]:::gray
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-74-ann-vs-exact-knn/ann_vs_exact_knn.py`**
@@ -1527,14 +1557,17 @@ Blending a normalized BM25 score with a vector cosine score into one hybrid rank
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["BM25 score<br/>normalized"]:::blue --> C["hybrid = alpha*BM25 +<br/>(1-alpha)*cosine"]:::orange
+    accTitle: Example 75: Hybrid Lexical + Vector
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: BM25 score normalized, hybrid = alpha*BM25 + (1-alpha)*cosine, vector cosine score normalized, final hybrid rank. Connections: BM25 score normalized to hybrid = alpha*BM25 + (1-alpha)*cosine, vector cosine score normalized to hybrid = alpha*BM25 + (1-alpha)*cosine, hybrid = alpha*BM25 + (1-alpha)*cosine to final hybrid rank.
+    A["BM25 score<br/>normalized"]:::blue --> C["hybrid = alpha*BM25<br/>+<br/>(1-alpha)*cosine"]:::orange
     B["vector cosine score<br/>normalized"]:::purple --> C
     C --> D["final hybrid rank"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-75-hybrid-lexical-vector/hybrid_lexical_vector.py`**
@@ -1680,15 +1713,18 @@ Power-iterating PageRank on a tiny 4-node link graph until convergence verifies 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 77: PageRank Toy
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: A, B, C, D. Connections: A to B, A to C, B to C, D to C.
     A((A)):::blue --> B((B)):::orange
     A --> C((C)):::teal
     B --> C
     D((D)):::purple --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-77-pagerank-toy/pagerank_toy.py`**
@@ -1772,14 +1808,17 @@ Combining a PageRank link-authority score with a BM25 term-relevance score into 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 78: PageRank + BM25
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: PageRank score link authority, final = pr_w*PR + text_w*BM25, BM25 score term relevance, final web-style rank. Connections: PageRank score link authority to final = pr_w*PR + text_w*BM25, BM25 score term relevance to final = pr_w*PR + text_w*BM25, final = pr_w*PR + text_w*BM25 to final web-style rank.
     A["PageRank score<br/>link authority"]:::blue --> C["final = pr_w*PR +<br/>text_w*BM25"]:::orange
     B["BM25 score<br/>term relevance"]:::purple --> C
     C --> D["final web-style rank"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-78-pagerank-plus-bm25/pagerank_plus_bm25.py`**
@@ -1953,6 +1992,8 @@ Assembling an analyzer, an inverted index, BM25 scoring, top-k selection, and JS
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% TD: chain depth is 7, over LR's MaxWidth=4 -- TD keeps depth as the unchecked vertical axis
 flowchart TD
+    accTitle: Example 80: Mini Search Engine
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: raw docs, analyzer (co-25), inverted index (co-01), persist to disk, reload, BM25 + top-k (co-16, co-20), ranked results. Connections: raw docs to analyzer (co-25), analyzer (co-25) to inverted index (co-01), inverted index (co-01) to persist to disk, persist to disk to reload, reload to BM25 + top-k (co-16, co-20), BM25 + top-k (co-16, co-20) to ranked results.
     A["raw docs"]:::blue --> B["analyzer<br/>(co-25)"]:::orange
     B --> C["inverted index<br/>(co-01)"]:::teal
     C --> D["persist to disk"]:::purple
@@ -1961,9 +2002,10 @@ flowchart TD
     F --> G["ranked results"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-80-mini-search-engine/mini_search_engine.py`**

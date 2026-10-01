@@ -18,6 +18,8 @@ A single class that parses raw text, formats a report, and writes it to a file h
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 1: Split a God Class by Responsibility
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: DataParser parses text, ReportFormatter formats rows, ReportWriter saves report. Connections: DataParser parses text to ReportFormatter formats rows (rows), ReportFormatter formats rows to ReportWriter saves report (report).
     A["DataParser<br/>parses text"]:::blue
     B["ReportFormatter<br/>formats rows"]:::orange
     C["ReportWriter<br/>saves report"]:::teal
@@ -25,8 +27,9 @@ flowchart LR
     B -->|report| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-01-srp-split-god-class/example.py`**
@@ -257,6 +260,8 @@ An if/elif chain that branches on customer type must be edited every time a new 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Purple #CC78BC
 flowchart TD
+    accTitle: Example 3: Replace an If/Elif Chain with Strategy Objects
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Checkout total40price41, DiscountStrategy Protocol, NoDiscount, LoyaltyDiscount, HolidayDiscount. Connections: Checkout total40price41 to DiscountStrategy Protocol, DiscountStrategy Protocol to NoDiscount, DiscountStrategy Protocol to LoyaltyDiscount, DiscountStrategy Protocol to HolidayDiscount.
     C["Checkout<br/>total#40;price#41;"]:::blue
     S["DiscountStrategy<br/>Protocol"]:::orange
     N["NoDiscount"]:::purple
@@ -268,8 +273,9 @@ flowchart TD
     S --- H
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-03-ocp-strategy-for-discount/example.py`**
@@ -498,6 +504,8 @@ Making `Square` inherit from `Rectangle` looks reasonable until a client resizes
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 5: Square Breaks Liskov Substitution
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: Rectangle resize to 5x4, area is 20.0 correct, BrokenSquare resize to 5x4, area is 16.0 WRONG. Connections: Rectangle resize to 5x4 to area is 20.0 correct, BrokenSquare resize to 5x4 to area is 16.0 WRONG.
     R["Rectangle<br/>resize to 5x4"]:::blue
     RA["area is 20.0<br/>correct"]:::teal
     S["BrokenSquare<br/>resize to 5x4"]:::orange
@@ -506,8 +514,9 @@ flowchart LR
     S --> SA
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-05-lsp-rectangle-square/example.py`**
@@ -924,15 +933,18 @@ A `UserService` that constructs its own `MySQLRepository` internally cannot be t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Purple #CC78BC
 flowchart TD
+    accTitle: Example 9: Invert a Service to Depend on a Repository Protocol
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: UserService high-level policy, Repository Protocol, the abstraction, InMemoryRepository low-level detail. Connections: UserService high-level policy to Repository Protocol, the abstraction (depends on), InMemoryRepository low-level detail to Repository Protocol, the abstraction (implements).
     U["UserService<br/>high-level policy"]:::blue
-    R["Repository<br/>Protocol, the abstraction"]:::orange
+    R["Repository<br/>Protocol, the<br/>abstraction"]:::orange
     I["InMemoryRepository<br/>low-level detail"]:::purple
     U -->|depends on| R
     I -->|implements| R
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-09-dip-inject-repository/example.py`**
@@ -1137,16 +1149,19 @@ Calling `driver.car.engine.ignite()` reaches through two objects `Driver` does n
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 11: Replace a Train Wreck with Tell, Dont Ask
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: Driver, Car, Engine. Connections: Driver to Engine (train wreck, two dots), Driver to Car (tell-dont-ask, one dot), Car to Engine.
     D["Driver"]:::blue
     C["Car"]:::orange
     E["Engine"]:::teal
-    D -->|train wreck, two dots| E
-    D -->|tell-dont-ask, one dot| C
+    D -->|train wreck, two<br/>dots| E
+    D -->|tell-dont-ask, one<br/>dot| C
     C --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-11-lod-avoid-train-wreck/example.py`**
@@ -1718,15 +1733,18 @@ _ex-17 &middot; exercises co-09_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Purple #CC78BC
 flowchart LR
+    accTitle: Example 17: Low Coupling: Decouple via an Event Bus
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: OrderModule, EventBus the only shared dependency, InventoryModule. Connections: OrderModule to EventBus the only shared dependency (publish order_placed), EventBus the only shared dependency to InventoryModule (notify subscriber).
     O["OrderModule"]:::blue
-    B["EventBus<br/>the only shared dependency"]:::purple
+    B["EventBus<br/>the only shared<br/>dependency"]:::purple
     I["InventoryModule"]:::orange
     O -->|publish order_placed| B
     B -->|notify subscriber| I
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-17-grasp-low-coupling-event/example.py`**
@@ -1846,12 +1864,15 @@ A caller that writes `Circle(2.0)` directly must import `Circle` and commit to t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
-    A["ShapeFactory.create#40;kind, size#41;<br/>a template, not an object"]:::blue
-    B["Circle or Square<br/>constructed internally"]:::orange
+    accTitle: Example 18: Factory Method: ShapeFactory Hides Concrete Types
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: ShapeFactory. create40kind, size41 a template, not an object, Circle or Square constructed internally. Connections: ShapeFactory. create40kind, size41 a template, not an object to Circle or Square constructed internally (returns Shape).
+    A["ShapeFactory.<br/>create#40;kind,<br/>size#41;<br/>a template, not an<br/>object"]:::blue
+    B["Circle or Square<br/>constructed<br/>internally"]:::orange
     A -->|"returns Shape"| B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-18-factory-method-shape/example.py`**
@@ -2190,15 +2211,18 @@ A `Newsletter` that calls out to specific subscriber functions by name would nee
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    N["Newsletter<br/>publish#40;headline#41;"]:::blue
+    accTitle: Example 21: Observer: Notify Subscribers on Publish
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Newsletter publish40headline41, log_subscriber, urgent_subscriber. Connections: Newsletter publish40headline41 to log_subscriber (notifies), Newsletter publish40headline41 to urgent_subscriber (notifies).
+    N["Newsletter<br/>publish(headline)"]:::blue
     S1["log_subscriber"]:::orange
     S2["urgent_subscriber"]:::teal
     N -->|notifies| S1
     N -->|notifies| S2
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-21-observer-newsletter/example.py`**
@@ -2488,6 +2512,8 @@ A caller that has to coordinate `Inventory.reserve()`, `Payment.charge()`, and `
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 24: Facade: One Call Hides Three Subsystems
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: caller, CheckoutFacade checkout4041, Inventory, Payment, Shipping. Connections: caller to CheckoutFacade checkout4041 (one call), CheckoutFacade checkout4041 to Inventory, CheckoutFacade checkout4041 to Payment, CheckoutFacade checkout4041 to Shipping.
     Caller["caller"]:::blue
     F["CheckoutFacade<br/>checkout#40;#41;"]:::orange
     Inv["Inventory"]:::teal
@@ -2499,8 +2525,9 @@ flowchart TD
     F --> Ship
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-24-facade-checkout/example.py`**
@@ -2613,15 +2640,18 @@ _ex-25 &middot; exercises co-28_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    G["Report.generate#40;#41;<br/>the fixed skeleton"]:::blue
+    accTitle: Example 25: Template Method: One Skeleton, Many Subclasses
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Report. generate4041 the fixed skeleton, header4041 shared default, body4041 overridden per subclass, footer4041 shared default. Connections: Report. generate4041 the fixed skeleton to header4041 shared default, header4041 shared default to body4041 overridden per subclass, body4041 overridden per subclass to footer4041 shared default.
+    G["Report.<br/>generate#40;#41;<br/>the fixed skeleton"]:::blue
     H["header#40;#41;<br/>shared default"]:::teal
-    Bd["body#40;#41;<br/>overridden per subclass"]:::orange
+    Bd["body#40;#41;<br/>overridden per<br/>subclass"]:::orange
     F["footer#40;#41;<br/>shared default"]:::teal
     G --> H --> Bd --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-25-template-method-report/example.py`**

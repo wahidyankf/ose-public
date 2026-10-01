@@ -25,6 +25,8 @@ incidents by 30%" outcome, and this capstone is where that opportunity's solutio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Problem + JTBD evidence, MVP scope + explicit non-goals, RICE-ranked backlog, North-star + metrics + A47B experiment, One internally consistent brief.md. Connections: Problem + JTBD evidence to MVP scope + explicit non-goals, MVP scope + explicit non-goals to RICE-ranked backlog, RICE-ranked backlog to North-star + metrics + A47B experiment, North-star + metrics + A47B experiment to One internally consistent brief.md.
     A["Problem + JTBD<br/>evidence"]:::blue
     B["MVP scope<br/>+ explicit non-goals"]:::orange
     C["RICE-ranked<br/>backlog"]:::teal
@@ -33,10 +35,11 @@ flowchart LR
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: the capstone's build order -- frame the problem, scope the MVP, rank the backlog, define

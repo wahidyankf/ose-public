@@ -156,16 +156,19 @@ prompts that look equally sized on arrival but diverge by 50x in actual tokens e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 3: Unknown Cost on Arrival
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Request arrives max_tokens = 500, Prompt A: closed-ended stops at 10 tokens, Prompt B: open-ended runs to 500 tokens, True cost: KNOWN only after the fact. Connections: Request arrives max_tokens = 500 to Prompt A: closed-ended stops at 10 tokens, Request arrives max_tokens = 500 to Prompt B: open-ended runs to 500 tokens, Prompt A: closed-ended stops at 10 tokens to True cost: KNOWN only after the fact, Prompt B: open-ended runs to 500 tokens to True cost: KNOWN only after the fact.
     A["Request arrives<br/>max_tokens = 500"]:::blue
-    A --> B["Prompt A: closed-ended<br/>stops at 10 tokens"]:::teal
+    A --> B["Prompt A:<br/>closed-ended<br/>stops at 10 tokens"]:::teal
     A --> C["Prompt B: open-ended<br/>runs to 500 tokens"]:::orange
     B --> D["True cost: KNOWN<br/>only after the fact"]:::purple
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-03-unknown-cost-on-arrival/example.py`**
@@ -349,12 +352,15 @@ depends on the other.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["Prompt<br/>200 tokens"]:::blue -->|"prefill: compute-bound<br/>0.5 ms/token"| B["100 ms"]:::teal
-    C["Reply<br/>50 tokens"]:::blue -->|"decode: bandwidth-bound<br/>20 ms/token"| D["1000 ms"]:::orange
+    accTitle: Example 6: Prefill vs Decode Profile
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Prompt 200 tokens, 100 ms, Reply 50 tokens, 1000 ms. Connections: Prompt 200 tokens to 100 ms (prefill: compute-bound 0.5 ms/token), Reply 50 tokens to 1000 ms (decode: bandwidth-bound 20 ms/token).
+    A["Prompt<br/>200 tokens"]:::blue -->|"prefill:<br/>compute-bound<br/>0.5 ms/token"| B["100 ms"]:::teal
+    C["Reply<br/>50 tokens"]:::blue -->|"decode:<br/>bandwidth-bound<br/>20 ms/token"| D["1000 ms"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-06-prefill-vs-decode-profile/example.py`**
@@ -468,6 +474,8 @@ phases explicitly and confirms the cache is populated before decode ever begins.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 8: Request Lifecycle -- the Phase Diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Request arrives, Prefill process whole prompt, KV cache WRITTEN, Decode step 1 emit token, Decode step 2..N read + append cache, Generation complete. Connections: Request arrives to Prefill process whole prompt, Prefill process whole prompt to KV cache WRITTEN, KV cache WRITTEN to Decode step 1 emit token, Decode step 1 emit token to Decode step 2..N read + append cache, Decode step 2..N read + append cache to Generation complete.
     A["Request arrives"]:::blue --> B["Prefill<br/>process whole prompt"]:::orange
     B --> C["KV cache WRITTEN"]:::teal
     C --> D["Decode step 1<br/>emit token"]:::orange
@@ -475,8 +483,9 @@ graph TD
     E --> F["Generation complete"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-08-phase-diagram/example.py`**
@@ -725,13 +734,16 @@ generation and confirms the growth rate is constant.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph TD
+    accTitle: Example 12: Cache Growth Over a Generation
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: step 0 0 bytes, step 100 9.4 MiB, step 500 46.9 MiB, step 1000 93.8 MiB, step 2000 187.5 MiB. Connections: step 0 0 bytes to step 100 9.4 MiB, step 100 9.4 MiB to step 500 46.9 MiB, step 500 46.9 MiB to step 1000 93.8 MiB, step 1000 93.8 MiB to step 2000 187.5 MiB.
     A["step 0<br/>0 bytes"]:::blue --> B["step 100<br/>9.4 MiB"]:::teal
     B --> C["step 500<br/>46.9 MiB"]:::teal
     C --> D["step 1000<br/>93.8 MiB"]:::teal
     D --> E["step 2000<br/>187.5 MiB"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-12-cache-growth-over-a-generation/example.py`**
@@ -915,6 +927,8 @@ the cache share grows disproportionately.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 15: The Memory Budget Diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Total GPU memory, Weights FIXED, Activations FIXED, Framework overhead FIXED, KV cache everything left over, Concurrency. Connections: Total GPU memory to Weights FIXED, Total GPU memory to Activations FIXED, Total GPU memory to Framework overhead FIXED, Total GPU memory to KV cache everything left over, KV cache everything left over to Concurrency.
     A["Total GPU memory"]:::blue --> B["Weights<br/>FIXED"]:::orange
     A --> C["Activations<br/>FIXED"]:::orange
     A --> D["Framework overhead<br/>FIXED"]:::orange
@@ -922,9 +936,10 @@ graph TD
     E --> F["Concurrency"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-budget-diagram/example.py`**
@@ -1268,14 +1283,17 @@ abstract average.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 21: A Single Requests Timeline
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: t=0 prefill starts, t=100ms first token (TTFT), t=120ms token 2, t=140ms token 3, t=160ms token 4. Connections: t=0 prefill starts to t=100ms first token (TTFT), t=100ms first token (TTFT) to t=120ms token 2, t=120ms token 2 to t=140ms token 3, t=140ms token 3 to t=160ms token 4.
     A["t=0<br/>prefill starts"]:::blue --> B["t=100ms<br/>first token (TTFT)"]:::teal
     B --> C["t=120ms<br/>token 2"]:::orange
     C --> D["t=140ms<br/>token 3"]:::orange
     D --> E["t=160ms<br/>token 4"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-21-single-request-timeline-diagram/example.py`**
@@ -1458,14 +1476,17 @@ memory. This example compares the estimate on two GPU sizes.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 24: Estimate Max Concurrency
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Total GPU bytes, minus weights, remaining bytes, divide by bytes-per-request, max concurrency. Connections: Total GPU bytes to minus weights, minus weights to remaining bytes, remaining bytes to divide by bytes-per-request, divide by bytes-per-request to max concurrency.
     A["Total GPU bytes"]:::blue --> B["minus weights"]:::orange
     B --> C["remaining bytes"]:::teal
     C --> D["divide by<br/>bytes-per-request"]:::orange
     D --> E["max concurrency"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-24-estimate-max-concurrency-simple/example.py`**
@@ -1693,6 +1714,8 @@ latency is the prefill/decode split from Example 6.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 28: Beginner Recap -- the End-to-End Admission Pipeline
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Request arrives, Cache budget check (co-07/co-18), Prefill (co-02), Decode (co-03), Response served, Refused. Connections: Request arrives to Cache budget check (co-07/co-18), Cache budget check (co-07/co-18) to Prefill (co-02) (fits), Prefill (co-02) to Decode (co-03), Decode (co-03) to Response served, Cache budget check (co-07/co-18) to Refused (does not fit).
     A["Request arrives"]:::blue --> B{"Cache budget<br/>check (co-07/co-18)"}:::orange
     B -->|fits| C["Prefill (co-02)"]:::teal
     C --> D["Decode (co-03)"]:::teal
@@ -1700,9 +1723,10 @@ graph TD
     B -->|does not fit| F["Refused"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-28-beginner-recap-pipeline-diagram/example.py`**

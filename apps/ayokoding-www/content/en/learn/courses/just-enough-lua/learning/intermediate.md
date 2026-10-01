@@ -624,16 +624,19 @@ A function defined inside another function, referencing a `local` from the enclo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    M["makeCounter#40;#41;<br/>creates local n = 0, then returns"]:::blue
-    C["the returned closure<br/>keeps n alive as an upvalue"]:::orange
+    accTitle: Example 47: Closures -- a Counter Factory
+    accDescr: Flowchart with 6 nodes and 7 connections. Nodes: makeCounter4041 creates local n = 0, then returns, the returned closure keeps n alive as an upvalue, N1, call, N2, N3. Connections: N1 to call, N2 to call, N3 to call, makeCounter4041 creates local n = 0, then returns to the returned closure keeps n alive as an upvalue, the returned closure keeps n alive as an upvalue to N1, N1 to N2, N2 to N3.
+    M["makeCounter#40;#41;<br/>creates local n = 0,<br/>then returns"]:::blue
+    C["the returned closure<br/>keeps n alive as an<br/>upvalue"]:::orange
     N1["c#40;#41; -- call 1<br/>n becomes 1"]:::teal
     N2["c#40;#41; -- call 2<br/>n becomes 2"]:::teal
     N3["c#40;#41; -- call 3<br/>n becomes 3"]:::teal
     M --> C --> N1 --> N2 --> N3
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-47-closures-counter-factory/example.lua`**
@@ -875,16 +878,19 @@ When `__index` is a table instead of a function, a failed lookup redirects to th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 54: Metatable index as a Table -- Inheritance-Style Fallback
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: t 123125 empty table, ts metatable __index = defaults, defaults inherited_field = .... Connections: t 123125 empty table to ts metatable __index = defaults (t.inherited_field: missing, so check), ts metatable __index = defaults to defaults inherited_field = ... (redirects the lookup to), defaults inherited_field = ... to t 123125 empty table (value found here, returned to caller).
     T["t #123;#125;<br/>empty table"]:::blue
     MT["t's metatable<br/>__index = defaults"]:::orange
-    D["defaults<br/>inherited_field = ..."]:::teal
-    T -->|t.inherited_field: missing, so check| MT
-    MT -->|redirects the lookup to| D
-    D -->|value found here, returned to caller| T
+    D["defaults<br/>inherited_field =<br/>..."]:::teal
+    T -->|t.inherited_field:<br/>missing, so check| MT
+    MT -->|redirects the lookup<br/>to| D
+    D -->|value found here,<br/>returned to caller| T
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-54-metatable-index-table-inheritance/example.lua`**
@@ -989,18 +995,21 @@ _ex-57 &middot; exercises co-14_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    R1["require#40;mymodule#41;<br/>first call"]:::blue
-    F["mymodule.lua<br/>runs once, returns a table"]:::orange
-    L["package.loaded<br/>caches the return value"]:::teal
-    R2["require#40;mymodule#41;<br/>second call"]:::blue
-    R1 -->|not cached yet, runs the file| F
+    accTitle: Example 57: Modules -- require Returns and Caches the Modules Table
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: require40mymodule41 first call, mymodule.lua runs once, returns a table, package.loaded caches the return value, require40mymodule41 second call. Connections: require40mymodule41 first call to mymodule.lua runs once, returns a table (not cached yet, runs the file), mymodule.lua runs once, returns a table to package.loaded caches the return value (caches the result), require40mymodule41 second call to package.loaded caches the return value (already cached, file NOT re-run), package.loaded caches the return value to require40mymodule41 first call (returns the SAME table both times).
+    R1["require#40;<br/>mymodule#41;<br/>first call"]:::blue
+    F["mymodule.lua<br/>runs once, returns a<br/>table"]:::orange
+    L["package.loaded<br/>caches the return<br/>value"]:::teal
+    R2["require#40;<br/>mymodule#41;<br/>second call"]:::blue
+    R1 -->|not cached yet, runs<br/>the file| F
     F -->|caches the result| L
-    R2 -->|already cached, file NOT re-run| L
-    L -->|returns the SAME table both times| R1
+    R2 -->|already cached, file<br/>NOT re-run| L
+    L -->|returns the SAME<br/>table both times| R1
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-57-modules-require-return-table-and-caching/mymodule.lua`**

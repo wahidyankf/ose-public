@@ -50,111 +50,174 @@ the companion safe code remains runnable.
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 6 nodes and 5 connections. Nodes: allocate/open/socket, owner assigned?, design bug, use, goto cleanup, release once. Connections: allocate/open/socket to owner assigned?, owner assigned? to design bug (no), owner assigned? to use (yes), use to goto cleanup, goto cleanup to release once.
   A[allocate/open/socket] --> B{owner assigned?}
   B -- no --> X[design bug]
   B -- yes --> C[use]
   C --> D[goto cleanup]
   D --> E[release once]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Each small diagram below is an executable mental model, one per concept.
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: stack scope, return releases] H[heap allocation, free by owner. Connections: stack scope to return releases] H[heap allocation, return releases] H[heap allocation to free by owner.
   S[stack scope] --> R[return releases]; H[heap allocation] --> F[free by owner]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
-  P[pointer] --> L[live object] --> D[dereference in bounds]
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: pointer, live object, dereference in bounds. Connections: pointer to live object, live object to dereference in bounds.
+  P[pointer] --> L[live object] --> D[dereference in<br/>bounds]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: malloc success, owner, free once. Connections: malloc success to owner, owner to free once.
   M[malloc success] --> O[owner] --> F[free once]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 6 nodes and 5 connections. Nodes: realloc, Q, yes, N, no, old pointer remains. Connections: realloc to Q, Q to yes, yes to N, N to no, no to old pointer remains.
   R[realloc] --> Q{success?}; Q--yes-->N[new pointer]; Q--no-->O[old pointer remains]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: count, checked multiply, calloc zeroed cells. Connections: count to checked multiply, checked multiply to calloc zeroed cells.
   N[count] --> C[checked multiply] --> Z[calloc zeroed cells]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: type alignment, aligned address, valid access. Connections: type alignment to aligned address, aligned address to valid access.
   T[type alignment] --> A[aligned address] --> V[valid access]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: one owner, explicit transfer, one release. Connections: one owner to explicit transfer, explicit transfer to one release.
   O[one owner] --> T[explicit transfer] --> R[one release]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: free or scope exit, dangling alias, never dereference. Connections: free or scope exit to dangling alias, dangling alias to never dereference.
   F[free or scope exit] --> D[dangling alias] --> X[never dereference]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
-  C[C rule] --> W[well-defined program] --> O[optimizer assumptions valid]
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: C rule, well-defined program, optimizer assumptions valid. Connections: C rule to well-defined program, well-defined program to optimizer assumptions valid.
+  C[C rule] --> W[well-defined program] --> O[optimizer<br/>assumptions valid]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: buffer, capacity check, write in bounds. Connections: buffer to capacity check, capacity check to write in bounds.
   B[buffer] --> C[capacity check] --> W[write in bounds]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: use, free, no later use. Connections: use to free, free to no later use.
   U[use] --> F[free] --> X[no later use]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: owning slot, free, set NULL. Connections: owning slot to free, free to set NULL.
   O[owning slot] --> F[free] --> N[set NULL]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: a * b, SIZE_MAX / b check, malloc. Connections: a * b to SIZE_MAX / b check, SIZE_MAX / b check to malloc.
   A[a * b] --> C[SIZE_MAX / b check] --> M[malloc]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: open, use fd, close once. Connections: open to use fd, use fd to close once.
   O[open] --> U[use fd] --> C[close once]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: acquire A, acquire B, error, release B then A. Connections: acquire A to acquire B, acquire B to error, error to release B then A.
   A[acquire A] --> B[acquire B] --> E[error] --> RB[release B then A]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: GCC/Clang extension, scope cleanup, not portable ISO C. Connections: GCC/Clang extension to scope cleanup, scope cleanup to not portable ISO C.
   G[GCC/Clang extension] --> S[scope cleanup] --> P[not portable ISO C]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: failing call, errno now, report or save. Connections: failing call to errno now, errno now to report or save.
   F[failing call] --> E[errno now] --> R[report or save]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: value, mask/shift, flag field. Connections: value to mask/shift, mask/shift to flag field.
   V[value] --> M[mask/shift] --> F[flag field]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: struct fields, compiler padding, host layout. Connections: struct fields to compiler padding, compiler padding to host layout.
   F[struct fields] --> P[compiler padding] --> L[host layout]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
-  U[union storage] --> O[one active representation] --> N[not wire bytes]
+  accTitle: Ownership visual field guide
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: union storage, one active representation, not wire bytes. Connections: union storage to one active representation, one active representation to not wire bytes.
+  U[union storage] --> O[one active<br/>representation] --> N[not wire bytes]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```

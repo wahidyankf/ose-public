@@ -16,11 +16,14 @@ without publishing a page.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-  A["Content"]:::blue --> B["Organization and labels"]:::orange --> C["Navigation"]:::teal --> D["Findability"]:::purple
+  accTitle: Information Architecture Flow
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Content, Organization and labels, Navigation, Findability. Connections: Content to Organization and labels, Organization and labels to Navigation, Navigation to Findability.
+  A["Content"]:::blue --> B["Organization and<br/>labels"]:::orange --> C["Navigation"]:::teal --> D["Findability"]:::purple
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Semantic Page Flow
@@ -28,10 +31,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Semantic Page Flow
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Semantic HTML, Browser, crawler, AT, Shared outline. Connections: Semantic HTML to Browser, crawler, AT, Browser, crawler, AT to Shared outline.
   A["Semantic HTML"]:::blue --> B["Browser, crawler, AT"]:::orange --> C["Shared outline"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 1: Name the Four IA Systems

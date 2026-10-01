@@ -16,20 +16,23 @@ already taught, individually, somewhere in this topic's Beginner, Intermediate, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["schema.sql + seed.sql<br/>4-table 3NF design"]:::blue
-    B["dal.py<br/>parameterized CRUD + report"]:::orange
-    C["pytest -q<br/>9 tests, seeded fixture DB"]:::teal
-    D["bulk_update_prices()<br/>rolls back on CHECK failure"]:::purple
-    E["migrate_add_column.sql<br/>additive ALTER TABLE"]:::brown
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: schema.sql + seed.sql 4-table 3NF design, dal.py parameterized CRUD + report, pytest -q 9 tests, seeded fixture DB, bulk_update_prices() rolls back on CHECK failure, migrate_add_column. sql additive ALTER TABLE. Connections: schema.sql + seed.sql 4-table 3NF design to dal.py parameterized CRUD + report, dal.py parameterized CRUD + report to pytest -q 9 tests, seeded fixture DB, dal.py parameterized CRUD + report to bulk_update_prices() rolls back on CHECK failure, schema.sql + seed.sql 4-table 3NF design to migrate_add_column. sql additive ALTER TABLE.
+    A["schema.sql +<br/>seed.sql<br/>4-table 3NF design"]:::blue
+    B["dal.py<br/>parameterized CRUD +<br/>report"]:::orange
+    C["pytest -q<br/>9 tests, seeded<br/>fixture DB"]:::teal
+    D["bulk_update_prices()<br/>rolls back on CHECK<br/>failure"]:::purple
+    E["migrate_add_column.<br/>sql<br/>additive ALTER TABLE"]:::brown
     A --> B --> C
     B --> D
     A --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

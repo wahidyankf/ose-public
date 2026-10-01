@@ -350,14 +350,17 @@ HTTP on the main thread.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 52: HSTS and the HTTP → HTTPS Redirect
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: browser request http://…, HTTP app port 5052, browser retries over HTTPS, HTTPS app port 5053, browser remembers: HTTPS-only for 1 year. Connections: browser request http://… to HTTP app port 5052, HTTP app port 5052 to browser retries over HTTPS (301 + Location: https://…), browser retries over HTTPS to HTTPS app port 5053, HTTPS app port 5053 to browser remembers: HTTPS-only for 1 year (Strict-Transport- Security header attached).
     A["browser request<br/>http://…"]:::blue --> B["HTTP app<br/>port 5052"]:::orange
     B -->|"301 + Location:<br/>https://…"| C["browser retries<br/>over HTTPS"]:::blue
     C --> D["HTTPS app<br/>port 5053"]:::orange
-    D -->|"Strict-Transport-Security<br/>header attached"| E["browser remembers:<br/>HTTPS-only for 1 year"]:::teal
+    D -->|"Strict-Transport-<br/>Security<br/>header attached"| E["browser remembers:<br/>HTTPS-only for 1<br/>year"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1325,17 +1328,20 @@ each concrete threat to a control this curriculum already implements.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 60: Threat-Modeling a Feature with STRIDE
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Login endpoint, Spoofing co-12, Tampering co-14, Repudiation co-22, Info Disclosure co-11, Denial of Service co-27, Elevation of Privilege co-16. Connections: Login endpoint to Spoofing co-12, Login endpoint to Tampering co-14, Login endpoint to Repudiation co-22, Login endpoint to Info Disclosure co-11, Login endpoint to Denial of Service co-27, Login endpoint to Elevation of Privilege co-16.
     F["Login endpoint"]:::blue --> S["Spoofing<br/>co-12"]:::orange
     F --> T["Tampering<br/>co-14"]:::orange
     F --> R["Repudiation<br/>co-22"]:::teal
     F --> I["Info Disclosure<br/>co-11"]:::teal
     F --> D["Denial of Service<br/>co-27"]:::purple
-    F --> E["Elevation of Privilege<br/>co-16"]:::purple
+    F --> E["Elevation of<br/>Privilege<br/>co-16"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2028,14 +2034,17 @@ minted, bounding the blast radius to the current access token's short remaining 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["POST /login"]:::blue --> B["access_token (JWT, 5min)<br/>+ refresh_token (opaque)"]:::orange
+    accTitle: Example 65: A Token Revocation Strategy
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: POST /login, access_token (JWT, 5min) + refresh_token (opaque), POST /refresh with refresh_token, new access_token, 401 rejected. Connections: POST /login to access_token (JWT, 5min) + refresh_token (opaque), access_token (JWT, 5min) + refresh_token (opaque) to POST /refresh with refresh_token, POST /refresh with refresh_token to new access_token (not revoked), POST /refresh with refresh_token to 401 rejected (POST /admin/revoke then /refresh again).
+    A["POST /login"]:::blue --> B["access_token (JWT,<br/>5min)<br/>+ refresh_token<br/>(opaque)"]:::orange
     B --> C["POST /refresh<br/>with refresh_token"]:::blue
     C -->|"not revoked"| D["new access_token"]:::teal
     C -->|"POST /admin/revoke<br/>then /refresh again"| E["401 rejected"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2186,14 +2195,17 @@ resource_ is being accessed.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["bob (editor)<br/>requests doc-1<br/>(owned by alice)"]:::blue --> B{"RBAC:<br/>role == editor/admin?"}:::orange
+    accTitle: Example 66: RBAC vs. ABAC Authorization
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: bob (editor) requests doc-1 (owned by alice), B, C, bob, admin, ALLOWED, DENIED. Connections: bob (editor) requests doc-1 (owned by alice) to B, bob (editor) requests doc-1 (owned by alice) to C, C to bob, bob to admin, B to ALLOWED (yes), C to DENIED (no).
+    A["bob (editor)<br/>requests doc-1<br/>(owned by alice)"]:::blue --> B{"RBAC:<br/>role ==<br/>editor/admin?"}:::orange
     A --> C{"ABAC:<br/>owner == bob OR<br/>role == admin?"}:::orange
     B -->|"yes"| D["ALLOWED"]:::teal
     C -->|"no"| E["DENIED"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -3102,15 +3114,18 @@ production) restores a single, correctly-enforced global limit.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 73: Distributed Rate Limiting
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: client requests (10 total), worker 1 local limiter, worker 2 local limiter, 5 allowed, R2, BUG. Connections: client requests (10 total) to worker 1 local limiter, client requests (10 total) to worker 2 local limiter, worker 1 local limiter to 5 allowed (own count: 5/5), worker 2 local limiter to R2 (own count: 5/5), R2 to BUG.
     C1["client requests<br/>(10 total)"]:::blue --> W1["worker 1<br/>local limiter"]:::orange
     C1 --> W2["worker 2<br/>local limiter"]:::purple
     W1 -->|"own count: 5/5"| R1["5 allowed"]:::teal
     W2 -->|"own count: 5/5"| R2["5 allowed<br/>(10 total -- BUG)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -3212,13 +3227,16 @@ that point forward, and `verify()` pinpoints the exact index that was tampered w
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph LR
+    accTitle: Example 74: Audit Log Integrity via Hash Chaining
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: entry 0 hash: 917e30..., entry 1 prev=917e30 hash: ae145f..., entry 2 prev=ae145f hash: 46d811..., entry 3 prev=46d811 hash: bcec0b..., verify() detects break at index 2. Connections: entry 0 hash: 917e30... to entry 1 prev=917e30 hash: ae145f..., entry 1 prev=917e30 hash: ae145f... to entry 2 prev=ae145f hash: 46d811..., entry 2 prev=ae145f hash: 46d811... to entry 3 prev=46d811 hash: bcec0b..., entry 2 prev=ae145f hash: 46d811... to verify() detects break at index 2 (content edited, hash NOT recomputed).
     E0["entry 0<br/>hash: 917e30..."]:::blue --> E1["entry 1<br/>prev=917e30<br/>hash: ae145f..."]:::blue
     E1 --> E2["entry 2<br/>prev=ae145f<br/>hash: 46d811..."]:::blue
     E2 --> E3["entry 3<br/>prev=46d811<br/>hash: bcec0b..."]:::blue
-    E2 -.->|"content edited,<br/>hash NOT recomputed"| TAMPER["verify() detects break<br/>at index 2"]:::orange
+    E2 -.->|"content edited,<br/>hash NOT recomputed"| TAMPER["verify() detects<br/>break<br/>at index 2"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

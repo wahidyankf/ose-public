@@ -246,16 +246,19 @@ Chaining a second `__index` link -- `Dog`'s metatable points at `Animal` -- exte
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    Inst["Dog instance<br/>#123;name = Fido#125;"]:::blue
-    DogClass["Dog<br/>__index = Dog #40;no speak of its own#41;"]:::orange
-    AnimalClass["Animal<br/>__index = Animal, defines speak#40;#41;"]:::teal
-    Inst -->|d:speak#40;#41;: not on the instance| DogClass
-    DogClass -->|not defined on Dog either| AnimalClass
-    AnimalClass -->|found here, returned to caller| Inst
+    accTitle: Example 66: OOP -- an Inheritance Chain via setmetatable
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: Dog instance 123name = Fido125, Dog __index = Dog 40no speak of its own41, Animal __index = Animal, defines speak4041. Connections: Dog instance 123name = Fido125 to Dog __index = Dog 40no speak of its own41 (d:speak4041: not on the instance), Dog __index = Dog 40no speak of its own41 to Animal __index = Animal, defines speak4041 (not defined on Dog either), Animal __index = Animal, defines speak4041 to Dog instance 123name = Fido125 (found here, returned to caller).
+    Inst["Dog instance<br/>#123;name =<br/>Fido#125;"]:::blue
+    DogClass["Dog<br/>__index = Dog #40;no<br/>speak of its own#41;"]:::orange
+    AnimalClass["Animal<br/>__index = Animal,<br/>defines<br/>speak#40;#41;"]:::teal
+    Inst -->|d:speak#40;#41;: not<br/>on the instance| DogClass
+    DogClass -->|not defined on Dog<br/>either| AnimalClass
+    AnimalClass -->|found here, returned<br/>to caller| Inst
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-66-oop-inheritance-chain-setmetatable/example.lua`**
@@ -447,16 +450,19 @@ A coroutine moves through a small set of states over its lifetime: `suspended` (
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    S["suspended<br/>created, not yet run, or paused at yield"]:::blue
-    R["running<br/>executing between yields"]:::orange
-    D["dead<br/>the coroutine's function has returned"]:::teal
+    accTitle: Example 71: coroutine.status -- the Suspended/Running/Dead Lifecycle
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: suspended created, not yet run, or paused at yield, running executing between yields, dead the coroutines function has returned. Connections: suspended created, not yet run, or paused at yield to running executing between yields (coroutine.resume), running executing between yields to suspended created, not yet run, or paused at yield (coroutine.yield), running executing between yields to dead the coroutines function has returned (function returns).
+    S["suspended<br/>created, not yet<br/>run, or paused at<br/>yield"]:::blue
+    R["running<br/>executing between<br/>yields"]:::orange
+    D["dead<br/>the coroutine's<br/>function has<br/>returned"]:::teal
     S -->|coroutine.resume| R
     R -->|coroutine.yield| S
     R -->|function returns| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-coroutine-status-transitions/example.lua`**
@@ -705,15 +711,18 @@ _ex-78 &middot; exercises co-18_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["#123;a=1, b=#123;c=2#125;#125;<br/>first table"]:::blue
-    B["#123;b=#123;c=3#125;#125;<br/>second table #40;force#41;"]:::orange
-    C["#123;a=1, b=#123;c=3#125;#125;<br/>merged result"]:::teal
+    accTitle: Example 78: vim.tbldeepextend -- Recursively Merging Config Tables
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 123a=1, b=123c=2125125 first table, 123b=123c=3125125 second table 40force41, 123a=1, b=123c=3125125 merged result. Connections: 123a=1, b=123c=2125125 first table to 123a=1, b=123c=3125125 merged result (a survives untouched), 123b=123c=3125125 second table 40force41 to 123a=1, b=123c=3125125 merged result (b.c overrides, recursively merged).
+    A["#123;a=1,<br/>b=#123;c=2#125;#125;<br/>first table"]:::blue
+    B["{b={c=3}}<br/>second table (force)"]:::orange
+    C["#123;a=1,<br/>b=#123;c=3#125;#125;<br/>merged result"]:::teal
     A -->|a survives untouched| C
-    B -->|b.c overrides, recursively merged| C
+    B -->|b.c overrides,<br/>recursively merged| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-78-neovim-vim-tbl-deep-extend-merge/example.lua`**

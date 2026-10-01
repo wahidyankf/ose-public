@@ -164,14 +164,17 @@ A small `LogicEngine` stores base `edge` facts and answers `query_path()` -- a t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 60: Mini Logic Engine
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: a, b, c, d. Connections: a to b (edge), b to c (edge), c to d (edge), d to a (edge (cycle back)).
     A["a"]:::blue -->|edge| B["b"]:::orange
     B -->|edge| C["c"]:::teal
     C -->|edge| D["d"]:::blue
     D -.->|"edge (cycle back)"| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -289,12 +292,15 @@ point.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["CSPSolver(variables, domains, constraints)"]:::blue --> B["solve_map_coloring()"]:::orange
-    A --> C["2x2 Latin square (test)"]:::teal
+    accTitle: Example 61: Generic CSP Solver
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: CSPSolver(variables, domains, constraints), solve_map_coloring(), 2x2 Latin square (test). Connections: CSPSolver(variables, domains, constraints) to solve_map_coloring(), CSPSolver(variables, domains, constraints) to 2x2 Latin square (test).
+    A["CSPSolver(variables,<br/>domains,<br/>constraints)"]:::blue --> B["solve_map_coloring()"]:::orange
+    A --> C["2x2 Latin square<br/>(test)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -459,15 +465,18 @@ shared bottom node exactly once per source update, not once per incoming edge.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 62: Reactive Graph Diamond
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Signal a, Computed b = a + 1, Computed c = a + 2, Computed d = b + c. Connections: Signal a to Computed b = a + 1, Signal a to Computed c = a + 2, Computed b = a + 1 to Computed d = b + c, Computed c = a + 2 to Computed d = b + c.
     A["Signal a"]:::blue --> B["Computed b = a + 1"]:::orange
     A --> C["Computed c = a + 2"]:::teal
     B --> D["Computed d = b + c"]:::purple
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -610,14 +619,17 @@ dependency on any other node in that same wave, so the whole wave could run in p
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 63: Dataflow Scheduler
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: wave 1: a, wave 2: b, wave 2: c, wave 3: d. Connections: wave 1: a to wave 2: b, wave 1: a to wave 2: c, wave 2: b to wave 3: d, wave 2: c to wave 3: d.
     A["wave 1: a"]:::blue --> B["wave 2: b"]:::orange
     A --> C["wave 2: c"]:::orange
     B --> D["wave 3: d"]:::teal
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -849,12 +861,15 @@ A `CounterActor`'s private `_count` is only reachable by sending messages into i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    S["send('increment')"]:::blue --> M["mailbox: [increment, increment, decrement]"]:::orange
-    M -->|"process_all()"| P["private _count mutated, one message at a time"]:::teal
+    accTitle: Example 65: Actor Mailbox
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: send(increment), mailbox: [increment, increment, decrement], private _count mutated, one message at a time. Connections: send(increment) to mailbox: [increment, increment, decrement], mailbox: [increment, increment, decrement] to private _count mutated, one message at a time (process_all()).
+    S["send('increment')"]:::blue --> M["mailbox: [increment,<br/>increment,<br/>decrement]"]:::orange
+    M -->|"process_all()"| P["private _count<br/>mutated, one message<br/>at a time"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1420,13 +1435,16 @@ inference rules rather than a single lookup table.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    I["If(cond, then, else)"]:::blue --> C["cond: BoolLit(True) -> bool"]:::orange
-    I --> T["then: Add(IntLit(1), IntLit(2)) -> int"]:::teal
-    I --> E["else: IntLit(0) -> int"]:::teal
+    accTitle: Example 70: Logic Type-Inference Toy
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: If(cond, then, else), cond: BoolLit(True) -> bool, then: Add(IntLit(1), IntLit(2)) -> int, else: IntLit(0) -> int. Connections: If(cond, then, else) to cond: BoolLit(True) -> bool, If(cond, then, else) to then: Add(IntLit(1), IntLit(2)) -> int, If(cond, then, else) to else: IntLit(0) -> int.
+    I["If(cond, then, else)"]:::blue --> C["cond: BoolLit(True)<br/>-> bool"]:::orange
+    I --> T["then: Add(IntLit(1),<br/>IntLit(2)) -> int"]:::teal
+    I --> E["else: IntLit(0) -><br/>int"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1819,12 +1837,15 @@ An OO `Order` domain model, a pure `compute_summary()` functional core, and an e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    R["RequestRouter.handle(event)"]:::blue -->|"OO mutation"| O["Order.mark_shipped()"]:::orange
-    R -->|"pure read"| C["compute_summary(order)"]:::teal
+    accTitle: Example 73: Multi-Paradigm Request Handler
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: RequestRouter. handle(event), Order.mark_shipped(), compute_ summary(order). Connections: RequestRouter. handle(event) to Order.mark_shipped() (OO mutation), RequestRouter. handle(event) to compute_ summary(order) (pure read).
+    R["RequestRouter.<br/>handle(event)"]:::blue -->|"OO mutation"| O["Order.mark_shipped()"]:::orange
+    R -->|"pure read"| C["compute_<br/>summary(order)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -1950,13 +1971,16 @@ shared target to race on at all.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 74: State Fault-Line Case Study
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: thread A: read 0, signal read_done, thread B: read 0, signal read_done, thread A: write 0+1=1, thread B: write 0+1=1 (LOST UPDATE). Connections: thread A: read 0 to signal read_done, thread B: read 0 to signal read_done, signal read_done to thread A: write 0+1=1, signal read_done to thread B: write 0+1=1 (LOST UPDATE).
     A["thread A: read 0"]:::blue --> B["signal read_done"]:::blue
     C["thread B: read 0"]:::orange --> D["signal read_done"]:::orange
-    B --> E["thread A: write 0+1=1"]:::blue
-    D --> F["thread B: write 0+1=1 (LOST UPDATE)"]:::orange
+    B --> E["thread A: write<br/>0+1=1"]:::blue
+    D --> F["thread B: write<br/>0+1=1 (LOST UPDATE)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**
@@ -2348,15 +2372,18 @@ at the call site.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 77: Relational Algebra Engine
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: employees, joined rows, departments, projected rows, final result. Connections: employees to joined rows (join(on=dept_id)), departments to joined rows (join(on=dept_id)), joined rows to projected rows (project(name, dept_name)), projected rows to final result (select(dept_ name==engineering)).
     E["employees"]:::blue -->|"join(on=dept_id)"| J["joined rows"]:::orange
     D["departments"]:::blue -->|"join(on=dept_id)"| J
-    J -->|"project(name, dept_name)"| P["projected rows"]:::teal
-    P -->|"select(dept_name==engineering)"| R["final result"]:::purple
+    J -->|"project(name,<br/>dept_name)"| P["projected rows"]:::teal
+    P -->|"select(dept_<br/>name==engineering)"| R["final result"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`example.py`**

@@ -101,19 +101,22 @@ done.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-26)
 graph TD
+    accTitle: How verification works in this topic
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Problem framing co-01 to co-06, Prioritization co-07 to co-11, Validated learning + delivery co-12 to co-16, Metrics co-17 to co-22, Craft and collaboration co-23 to co-26. Connections: Problem framing co-01 to co-06 to Prioritization co-07 to co-11, Prioritization co-07 to co-11 to Validated learning + delivery co-12 to co-16, Validated learning + delivery co-12 to co-16 to Metrics co-17 to co-22, Metrics co-17 to co-22 to Craft and collaboration co-23 to co-26.
     A["Problem framing<br/>co-01 to co-06"]:::blue
     B["Prioritization<br/>co-07 to co-11"]:::orange
-    C["Validated learning + delivery<br/>co-12 to co-16"]:::teal
+    C["Validated learning +<br/>delivery<br/>co-12 to co-16"]:::teal
     D["Metrics<br/>co-17 to co-22"]:::purple
-    E["Craft and collaboration<br/>co-23 to co-26"]:::brown
+    E["Craft and<br/>collaboration<br/>co-23 to co-26"]:::brown
 
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: the five concept clusters this topic teaches, in reading order -- from framing the right

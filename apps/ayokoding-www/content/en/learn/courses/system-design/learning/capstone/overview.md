@@ -23,14 +23,17 @@ degradation. Implement the two mechanisms that make its scale claims concrete.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Design artifact
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Client, Gateway / limiter, Service, Cache, Durable store, Event queue, Analytics. Connections: Client to Gateway / limiter, Gateway / limiter to Service, Service to Cache, Cache to Durable store (miss), Service to Event queue, Event queue to Analytics.
     C["Client"]:::blue --> G["Gateway / limiter"]:::orange --> S["Service"]:::teal
     S --> K{"Cache"}:::purple
     K -->|miss| D["Durable store"]:::orange
     S --> Q["Event queue"]:::teal --> A["Analytics"]:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Runnable components

@@ -19,18 +19,21 @@ together on one new project, at a larger and more realistic scale than any singl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["WBS + dependency graph<br/>critical path marked"]:::blue
-    B["Velocity estimate<br/>sprint#47;backlog plan"]:::orange
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: WBS + dependency graph critical path marked, Velocity estimate sprint47backlog plan, Risk register likelihood x impact, Metrics plan burndown + cycle time, One internally consistent plan.md. Connections: WBS + dependency graph critical path marked to Velocity estimate sprint47backlog plan, Velocity estimate sprint47backlog plan to Risk register likelihood x impact, Risk register likelihood x impact to Metrics plan burndown + cycle time, Metrics plan burndown + cycle time to One internally consistent plan.md.
+    A["WBS + dependency<br/>graph<br/>critical path marked"]:::blue
+    B["Velocity estimate<br/>sprint#47;backlog<br/>plan"]:::orange
     C["Risk register<br/>likelihood x impact"]:::teal
-    D["Metrics plan<br/>burndown + cycle time"]:::purple
+    D["Metrics plan<br/>burndown + cycle<br/>time"]:::purple
     E["One internally<br/>consistent plan.md"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: the capstone's build order -- schedule the work, estimate and plan the sprints, register

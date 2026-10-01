@@ -465,18 +465,21 @@ scope has returned -- `nonlocal` is required to **mutate** (not just read) an en
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 41: Closure Counter
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: make_counter() call creates count = 0, increment (closure) captures count BY REFERENCE, counter() call 1 count becomes 1, counter() call 2 count becomes 2, counter() call 3 count becomes 3. Connections: make_counter() call creates count = 0 to increment (closure) captures count BY REFERENCE, increment (closure) captures count BY REFERENCE to counter() call 1 count becomes 1, counter() call 1 count becomes 1 to counter() call 2 count becomes 2, counter() call 2 count becomes 2 to counter() call 3 count becomes 3.
     A["make_counter() call<br/>creates count = 0"]:::blue
-    B["increment (closure)<br/>captures count BY REFERENCE"]:::orange
+    B["increment (closure)<br/>captures count BY<br/>REFERENCE"]:::orange
     C["counter() call 1<br/>count becomes 1"]:::teal
     D["counter() call 2<br/>count becomes 2"]:::purple
     E["counter() call 3<br/>count becomes 3"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-41-closure-counter/example.py`**

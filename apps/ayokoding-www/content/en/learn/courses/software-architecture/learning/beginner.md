@@ -116,15 +116,18 @@ the distinction visible.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["Layered\nvertical calls"]:::blue
-    B["Hexagonal\nports around a core"]:::orange
-    C["Event-driven\nmessages between handlers"]:::teal
-    D["Microkernel\ncore plus plugins"]:::purple
+    accTitle: Worked Example 6: Compare style shapes
+    accDescr: Flowchart with 4 nodes and 0 connections. Nodes: Layered vertical calls, Hexagonal ports around a core, Event-driven messages between handlers, Microkernel core plus plugins.
+    A["Layered<br/>vertical calls"]:::blue
+    B["Hexagonal<br/>ports around a core"]:::orange
+    C["Event-driven<br/>messages between<br/>handlers"]:::teal
+    D["Microkernel<br/>core plus plugins"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: A style is a reusable arrangement with explicit benefits and costs.
@@ -140,14 +143,17 @@ dependency direction is enforced.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: Worked Example 7: Make layer direction explicit
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Presentation, Application, Domain, Infrastructure. Connections: Presentation to Application, Application to Domain, Domain to Infrastructure.
     A["Presentation"]:::blue --> B["Application"]:::orange
     B --> C["Domain"]:::teal
     C --> D["Infrastructure"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: Layers isolate change only when callers do not skip across them.
@@ -227,12 +233,15 @@ production code, while preserving the fact that durability and concurrency seman
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["HTTP adapter"]:::blue --> B["Input port\napplication core"]:::orange
-    B --> C["Output port\nstorage adapter"]:::teal
+    accTitle: Worked Example 12: Place ports around the core
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: HTTP adapter, Input port application core, Output port storage adapter. Connections: HTTP adapter to Input port application core, Input port application core to Output port storage adapter.
+    A["HTTP adapter"]:::blue --> B["Input port<br/>application core"]:::orange
+    B --> C["Output port<br/>storage adapter"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: Ports define the core's boundary; adapters plug into it from outside.
@@ -325,12 +334,15 @@ without prematurely showing implementation details.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Worked Example 18: Draw a C4 context boundary
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Customer, Ordering system, Payment provider. Connections: Customer to Ordering system, Ordering system to Payment provider.
     A["Customer"]:::blue --> B["Ordering system"]:::orange
     B --> C["Payment provider"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: Start documentation at the level where responsibility and external dependencies

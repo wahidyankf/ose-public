@@ -14,17 +14,20 @@ takes a user to independently check a claim, from cheapest (top) to most expensi
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% Ranked top-to-bottom: cheapest verification cost first
 graph TD
-    A["Structured, per-field cite<br/>~5s per field -- ex-20"]:::teal
-    B["Free text, clause link<br/>~10s -- ex-18"]:::blue
-    C["Free text, doc-only cite<br/>several min -- ex-19"]:::orange
-    D["Free text, no citation<br/>unverifiable, no check"]:::purple
+    accTitle: graph diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: A, B, ex-18, C, ex-19, Free text, no citation unverifiable, no check. Connections: B to ex-18, C to ex-19, A to B (cheaper), B to C (cheaper), C to Free text, no citation unverifiable, no check (cheaper).
+    A["Structured,<br/>per-field cite<br/>~5s per field --<br/>ex-20"]:::teal
+    B["Free text, clause<br/>link<br/>~10s -- ex-18"]:::blue
+    C["Free text, doc-only<br/>cite<br/>several min -- ex-19"]:::orange
+    D["Free text, no<br/>citation<br/>unverifiable, no<br/>check"]:::purple
 
     A -->|cheaper| B -->|cheaper| C -->|cheaper| D
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: four output structures, ordered by measured or estimated verification cost. The arrows

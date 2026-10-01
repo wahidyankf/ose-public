@@ -21,22 +21,34 @@ Examples 27–52 make failure paths, descriptor ownership, and byte boundaries e
 
 ```mermaid
 flowchart LR
+  accTitle: flowchart diagram
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: operation fails, save errno, format diagnostic, cleanup. Connections: operation fails to save errno, save errno to format diagnostic, format diagnostic to cleanup.
   A[operation fails] --> B[save errno] --> C[format diagnostic] --> D[cleanup]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: flowchart diagram
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: open fd, read/write, close on all exits. Connections: open fd to read/write, read/write to close on all exits.
   A[open fd] --> B[read/write] --> C[close on all exits]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
-  H[host uint32] --> E[explicit big-endian bytes] --> W[wire] --> D[decode uint32]
+  accTitle: flowchart diagram
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: host uint32, explicit big-endian bytes, wire, decode uint32. Connections: host uint32 to explicit big-endian bytes, explicit big-endian bytes to wire, wire to decode uint32.
+  H[host uint32] --> E[explicit big-endian<br/>bytes] --> W[wire] --> D[decode uint32]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```mermaid
 flowchart LR
+  accTitle: flowchart diagram
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: head owner, node next, tail, free each node. Connections: head owner to node next, node next to tail, tail to free each node.
   H[head owner] --> N[node next] --> T[tail] --> F[free each node]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The source for examples 37–38 is intentionally marked extension-only. The reusable course pattern is

@@ -1,55 +1,73 @@
 ---
-description: "Run the mandatory focused leak review once for an exact current PR head."
-when_to_use: "Use for every open pull request before merge and again whenever its head changes."
+description: "Defines a leak and reviews every commit bound for the remote for one: privately before each push, and as one sanitized record posted for each PR head before merge."
+when_to_use: "Use before every push to the remote, and for every open pull request before merge and again whenever its head changes."
 ---
 
-# Focused PR Leak Review Workflow
+# PR Leak Review Workflow
 
-Run one mandatory, narrow review for every PR's exact current head. It detects only real
-secrets/private values, protected production or staging properties that belong outside git, and
-real machine-specific absolute paths. It performs no broad security or semantic review, fixer
-pass, CI wait, retry, or consecutive-clean confirmation.
+A **leak** is anything in outbound history that a reader of the remote could use to reach an
+environment or identify the machine it came from. [Scope and Exclusions](./pr-leak-review/scope-and-exclusions.md)
+defines the three classes and what is not one. History is the subject, not the final tree: a value
+one commit adds and a later commit deletes is still in every clone. The review binds from adoption
+onward; history published before it is out of scope.
 
-Run [`pr-review-security-maker`](../../../.agents/agents/pr-review-security-maker.md) in
-**exact leak-only mode**. Its ordinary security charter is disabled for this invocation.
+It performs no broad security or semantic review, fixer pass, CI wait, retry, or
+consecutive-clean confirmation. Run [`pr-review-security-maker`](../../../.agents/agents/pr-review-security-maker.md)
+in **exact leak-only mode**; its ordinary security charter is disabled for this invocation.
+
+## Entry
+
+Two entry points share one judgement:
+
+- **Push.** Before any push to the remote, review the outgoing range privately per
+  [Push Review](./pr-leak-review/push-review.md). Nothing is posted; a finding blocks the push.
+- **Merge.** A pull request is open and no `pass` record posted by the repository owner exists for
+  its current head. Run [Execution](./pr-leak-review/execution.md), then
+  [Evidence and Outcomes](./pr-leak-review/evidence-and-outcomes.md).
 
 ## Goal and Termination
 
-**Goal**: Detect real sensitive values, protected environment properties, and machine-specific absolute paths without broad semantic review
+**Goal**: Detect real sensitive values, protected environment properties, and machine-specific values in every outbound commit without broad semantic review
 
-**Termination**: Return pass/findings after one authenticated current-head review, or stale/failed without retrying inside the run
+**Termination**: Push entry: push or remediate. Merge entry: return pass/findings after one authenticated current-head review, or stale/failed without retrying inside the run
 
 ## Inputs
 
-- **`pr`** (string, required) — Open PR number or URL
+- **`pr`** (string, required for the merge entry) — Open PR number or URL
+- **`range`** (string, required for the push entry) — The outgoing range of each ref the push updates
 
 ## Outputs
 
-- **`final-status`** (enum: pass, findings, stale, failed) — Focused leak-review result for the pinned head
+- **`final-status`** (enum: pass, findings, stale, failed) — Leak-review result for the pinned head
 - **`reviewed-head`** (string) — Exact PR head SHA reviewed
 - **`review-id`** (string) — Authenticated GitHub review ID, or null before posting
-- **`finding-counts`** (string) — Sanitized counts by leak category
-- **`evidence`** (string) — Authenticated ose-pr-leak-review:v1 current-head evidence
+- **`finding-counts`** (string) — Sanitized counts by leak class
+- **`evidence`** (string) — Authenticated `ose-pr-leak-review:v1` current-head evidence
 
 ## Contents
 
-- [Scope and Exclusions](./pr-leak-review/scope-and-exclusions.md) — Defines the three leak
-  categories, exclusions, and canonical rule sources. Use when deciding whether a candidate is a
-  real leak.
-- [Execution](./pr-leak-review/execution.md) — Defines the pinned-head inspection and sanitized
-  review phases. Use when running or implementing the focused review.
-- [Evidence and Outcomes](./pr-leak-review/evidence-and-outcomes.md) — Defines authenticated
-  current-head evidence and terminal states. Use when posting, authenticating, or consuming a leak
-  result.
+Read in order; the [module index](./pr-leak-review/README.md) carries it.
 
-Merge verification requires one authenticated `ose-pr-leak-review:v1` `pass` whose repository,
-base, and head equal the PR's exact current coordinates. A changed head needs one new pass, never a
-clean streak.
+- [Scope and Exclusions](./pr-leak-review/scope-and-exclusions.md) — the three leak classes, what
+  is not a leak, and why history is the subject.
+- [Push Review](./pr-leak-review/push-review.md) — the private review of each outgoing range, and
+  remediation before and after a push.
+- [Execution](./pr-leak-review/execution.md) — pinning the head, reading every commit, and
+  producing the sanitized review.
+- [Evidence and Outcomes](./pr-leak-review/evidence-and-outcomes.md) — the posted record, its
+  read-back, and the terminal states.
+- [Enforcement](./pr-leak-review/enforcement.md) — the history screen, hosted checks, the required
+  `leak-review` status, and this repository's adopter decisions.
+
+Merge requires one authenticated `ose-pr-leak-review:v1` `pass` whose repository, base, and head
+equal the PR's exact current coordinates, published as the `leak-review` commit status. A moved head
+needs one new pass, never a clean streak.
 
 ## Example Usage
 
 ```text
 Run pr-leak-review for the exact current head of PR 412.
+Run the push leak review for the commits this branch is about to push.
 ```
 
 ## Related Workflows
@@ -63,14 +81,22 @@ Run pr-leak-review for the exact current head of PR 412.
 ```gherkin
 Scenario: Current head contains no leak
   Given an open pull request at a pinned head
-  When exact leak-only review finds no real leak
+  When exact leak-only review of every commit finds no real leak
   Then it posts one sanitized COMMENT review
   And authenticated current-head ose-pr-leak-review:v1 evidence reports pass
+  And the leak-review commit status on that head is success
+
+Scenario: A commit adds a value a later commit deletes
+  Given an outgoing range whose final files are clean
+  And one commit in it added a real machine-specific absolute path
+  When the push review runs
+  Then the push is blocked
+  And the unpushed history is rewritten so no commit carries the value
 
 Scenario: Current head contains a protected value
-  Given a tracked PR hunk contains a real production credential
+  Given a commit in the PR adds a real production credential
   When exact leak-only review reports it
-  Then the finding names only category, location, and remediation
+  Then the finding names only class, commit, location, and remediation
   And no output repeats or transforms the credential
 
 Scenario: Head moves during review

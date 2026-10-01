@@ -35,6 +35,7 @@ execute:
 | `quality-gate`      | The PR quality gate: `typecheck`, `lint`, and `test:quick` (Unit runtime plus every applicable static `test:coverage:*` validator), with cross-language lint jobs. No Integration or E2E runtime. |
 | `validate`          | A repo-wide validation job (markdown, links, heading hierarchy, Mermaid).                                                                                                                         |
 | `env-validate`      | Validate `.env.example` contracts and the `env-injection:` manifest (in `repo-config.yml`) for internal consistency.                                                                              |
+| `leak-review`       | Publish the `leak-review` commit status on a pull request's live head from the designated reviewer's posted leak-review record.                                                                   |
 | `audit`             | Run a dependency-vulnerability audit outside the PR and registry gate surfaces.                                                                                                                   |
 | `release`           | Build the artifact for an annotated `{domain}/vX.Y.Z` tag and publish it as a GitHub release with its `checksums.txt`. Force-pushes nothing and touches no branch.                                |
 

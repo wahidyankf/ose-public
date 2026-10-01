@@ -20,6 +20,7 @@ runs `git`.
 
 ```bash
 RHINO_GATE_SURFACE=<commit-msg|pre-commit|pre-push|pull-request> scripts/public-safety/check.sh [hook arguments]
+RHINO_GATE_SURFACE=<pre-push|pull-request> PUBLIC_SAFETY_BASE=<commit> PUBLIC_SAFETY_HEAD=<commit> scripts/public-safety/check.sh
 ```
 
 The surface arrives in the environment and nowhere else. A missing or unknown value is a protocol failure, not a
@@ -30,12 +31,20 @@ inferring is expensive.
 to the leaf's `commit` surface; `RHINO_GATE_SURFACE=pull-request` maps the declared immutable-range messages to the
 leaf's `pull-request` surface. It never screens Git's local message-file path as outbound material.
 
-| Surface        | Outbound at that moment                                              |
-| -------------- | -------------------------------------------------------------------- |
-| `commit-msg`   | the message being written, and the current ref name                  |
-| `pre-commit`   | the tracked tree and its names, then the staged additions            |
-| `pre-push`     | the refs being pushed, the outgoing commit messages, and the tree    |
-| `pull-request` | the ref, the head commit message, and the checked-out range snapshot |
+| Surface        | Outbound at that moment                                                            |
+| -------------- | ---------------------------------------------------------------------------------- |
+| `commit-msg`   | the message being written, and the current ref name                                |
+| `pre-commit`   | the tracked tree and its names, then the staged additions                          |
+| `pre-push`     | the refs being pushed, the outgoing commit messages, and the tree                  |
+| `pull-request` | the ref, the head commit message, and the checked-out range snapshot               |
+| declared range | on `pre-push` or `pull-request`: IDs, messages, names, and each commit's additions |
+
+A declared range arrives as `PUBLIC_SAFETY_BASE` and `PUBLIC_SAFETY_HEAD` from the `public-safety-range` gate, bound to
+the pushed updates (falling back to `refs/remotes/origin/main`) and to the pull request's base..head. Half a range is a
+scan error. A range is screened commit by commit, never as its final files: a value one commit adds and the next deletes
+is still in every clone. Each commit contributes only the lines it added, at the line numbers they occupy, labelled
+`<commit>/<path>:<line>`; a merge contributes what it resolved beyond the automatic merge. Content the range did not add
+is not screened again. The tree screen still runs beside it.
 
 `pre-commit` screens the whole tracked tree, not only the change. A leak that is already committed does not become safe
 because this particular commit did not introduce it.
@@ -143,6 +152,7 @@ bash scripts/public-safety/tests/run.sh 080        # one case by name fragment
 | `140-cidr-network-prefix`                | a CIDR network prefix passes; host forms in every private range still block    |
 | `150-hostname-trailing-underscore`       | an underscore continues a hostname token; real hostnames still block           |
 | `160-typed-commit-message-adapter`       | typed hook/PR messages are screened without publishing a hook path             |
+| `170-range-history`                      | a range is screened per commit; added-then-deleted values and halves block     |
 
 Every probe value is assembled at run time from fragments, so no string this repository's own gate would flag exists in
 any test file — a test that hardcoded one would block the commit that added it. `assert_absent` reports only a length on

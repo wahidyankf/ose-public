@@ -14,12 +14,12 @@ PR #42: feat(auth): add email validation
 
 Quality gates:
   Quality gate:  PASSED (current head/base)
-  leak review:   PASSED (current head)
+  leak-review:   PASSED (current-head status)
   surface gates: PASSED / explicitly exempt
 
 Preconditions:
   (a) PR CI:             exact current head/base green
-  (b) leak review:       authenticated current-head pass
+  (b) leak review:       pushes reviewed; current-head pass
   (c) branch vs main:    up to date (non-destructive update)
   (d) conversations:     resolved
   (e) surface gates:     passed / explicitly exempt

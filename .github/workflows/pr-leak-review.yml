@@ -1,0 +1,36 @@
+name: pr-leak-review
+
+# The leak review's merge precondition, made mechanical: a `pass` record posted
+# by the designated reviewer for the pull request's current head. The verdict is
+# published as the `leak-review` commit status on that head, which branch
+# protection requires. It runs on review events too, so posting the record turns
+# the status green without a new commit.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+permissions:
+  contents: read
+  pull-requests: read
+  statuses: write
+
+concurrency:
+  group: leak-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Publish the leak-review status for the live head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LEAK_REVIEW_REPOSITORY: ${{ github.repository }}
+          LEAK_REVIEW_PULL_REQUEST: ${{ github.event.pull_request.number }}
+          LEAK_REVIEW_MARKER: ose-pr-leak-review
+          LEAK_REVIEW_REVIEWER: ${{ github.repository_owner }}
+        run: bash scripts/leak-review/record-status.sh

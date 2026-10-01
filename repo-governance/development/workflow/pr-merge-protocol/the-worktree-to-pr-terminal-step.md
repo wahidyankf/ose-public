@@ -13,7 +13,8 @@ is:
 
 1. Confirm the **done-definition** is met:
    - The `Quality gate` check is green for the exact current PR head and base.
-   - One authenticated `ose-pr-leak-review:v1` record passes for that exact head.
+   - Every push passed the push leak review, and one authenticated `ose-pr-leak-review:v1` record
+     passes for that exact head, with the `leak-review` commit status `success` on it.
    - Every review conversation is resolved or explicitly dismissed by the user.
    - Every applicable finite surface gate passed, with an explicit exemption when no reachable
      surface exists.

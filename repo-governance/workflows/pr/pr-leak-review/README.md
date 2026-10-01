@@ -1,13 +1,20 @@
 ---
-description: "Index of focused leak-review scope, execution, and evidence."
-when_to_use: "Use to locate the normative mechanics of pr-leak-review."
+description: "Index of the PR leak review's modules: leak classes, push review, merge execution, evidence, and enforcement."
+when_to_use: "Use to locate the normative mechanics of pr-leak-review, in reading order."
 ---
 
-# Focused PR Leak Review Workflow
+# PR Leak Review Modules
 
-- [Scope and Exclusions](./scope-and-exclusions.md) — Defines the three leak categories,
-  exclusions, and canonical rule sources. Use when deciding whether a candidate is a real leak.
-- [Execution](./execution.md) — Defines the pinned-head inspection and sanitized review phases.
-  Use when running or implementing the focused review.
-- [Evidence and Outcomes](./evidence-and-outcomes.md) — Defines authenticated current-head evidence
-  and terminal states. Use when posting, authenticating, or consuming a leak result.
+Read in order. Together these hold the rules the [PR Leak Review](../pr-leak-review.md) entrypoint
+applies.
+
+- [Scope and Exclusions](./scope-and-exclusions.md) — Defines the three leak classes, what is not a
+  leak, and why history is the subject. Use when deciding whether a candidate is a real leak.
+- [Push Review](./push-review.md) — Reviews each outgoing range privately before a push, with
+  remediation before and after it. Use immediately before every push.
+- [Execution](./execution.md) — Defines the merge review's pinned-head, commit-by-commit inspection
+  and sanitized review phases. Use when running the merge review.
+- [Evidence and Outcomes](./evidence-and-outcomes.md) — Defines the posted current-head record,
+  its read-back, and terminal states. Use when posting, authenticating, or consuming a leak result.
+- [Enforcement](./enforcement.md) — Defines the history screen, hosted checks, required
+  `leak-review` status, and adopter decisions. Use when wiring or tracing enforcement.

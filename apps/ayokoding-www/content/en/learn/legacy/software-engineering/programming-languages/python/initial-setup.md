@@ -542,7 +542,7 @@ source myenv/bin/activate
 **Activated prompt**:
 
 ```
-(myenv) C:\Users\username\python-projects\hello>
+(myenv) C:\Users\<name>\python-projects\hello>
 ```
 
 (Notice `(myenv)` prefix - indicates virtual environment is active)

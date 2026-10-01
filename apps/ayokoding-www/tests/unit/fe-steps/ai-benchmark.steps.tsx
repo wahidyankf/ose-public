@@ -30,12 +30,15 @@ import "./helpers/test-setup";
 import AiBenchmarkPage from "@/app/[locale]/tools/ai-benchmark/page";
 import {
   BENCHMARK_SPECS,
+  FRONTIER_VENDORS,
+  HARNESS_IN_HOUSE_LINES,
   METHOD_EXAMPLE,
   MIN_SCORED_BENCHMARKS,
   NEAREST_OPTION_COUNT,
   SUBSTITUTE_HARNESS,
   TIERS,
   TIER_ANCHORS,
+  rosterScopeParams,
 } from "@/features/ai-benchmark/core/data/benchmarks";
 import { dataset } from "@/features/ai-benchmark/core/data/models";
 import { OPERATORS, operatorById } from "@/features/ai-benchmark/core/data/operators";
@@ -295,6 +298,28 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
           (m) => m.vendor === a.vendor && m.releaseDate !== undefined && m.releaseDate > a.releaseDate!,
         );
         expect(newer.length, a.id).toBeGreaterThan(0);
+      }
+    });
+  });
+
+  Scenario("Every listed harness's in-house model line is in the roster", ({ Given, When, Then, And }) => {
+    let lines: Array<{ line: (typeof HARNESS_IN_HOUSE_LINES)[number]; models: Model[] }> = [];
+    Given("the full roster is loaded", () => {
+      expect(full.models.length).toBeGreaterThan(0);
+    });
+    When("the in-house model lines of the listed harnesses are inspected", () => {
+      lines = HARNESS_IN_HOUSE_LINES.map((line) => ({
+        line,
+        models: full.models.filter((m) => m.vendor === line.vendor && m.line === line.line),
+      }));
+    });
+    Then("each in-house model line has at least one model in the roster", () => {
+      expect(lines.length).toBeGreaterThan(0);
+      for (const { line, models } of lines) expect(models.length, `${line.vendor} ${line.line}`).toBeGreaterThan(0);
+    });
+    And("each of those models is offered in its own harness", () => {
+      for (const { line, models } of lines) {
+        for (const m of models) expect(m.harnesses, m.id).toContain(line.harness);
       }
     });
   });
@@ -779,6 +804,12 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
         expect(items[i]!.textContent).toContain(tf("en", "aiBenchMethodVersion", { version: b.version }));
         expect(items[i]!.textContent).toContain(tf("en", "aiBenchMethodWeight", { weight: b.weight }));
       });
+    });
+    And("it states which models the roster covers", () => {
+      const roster = within(details).getByTestId("ai-bench-method-roster").textContent;
+      expect(roster).toBe(tf("en", "aiBenchMethodRoster", rosterScopeParams()));
+      for (const vendor of FRONTIER_VENDORS) expect(roster).toContain(vendor);
+      for (const l of HARNESS_IN_HOUSE_LINES) expect(roster).toContain(`${l.vendor} ${l.line}`);
     });
     And("it states the operator order used to pick each figure", () => {
       const orders = within(details).getAllByTestId("ai-bench-method-operator-order");

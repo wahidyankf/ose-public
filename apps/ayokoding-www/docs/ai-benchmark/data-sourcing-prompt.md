@@ -28,8 +28,9 @@ a summarizing fetch can drop rows or digits.
 
 These are enforced by the dataset invariant tests (`tests/unit/features/ai-benchmark/core/data/models.unit.test.ts`).
 
-- **Roster**: every model from Anthropic, OpenAI, Google, and xAI, plus every model listed on
-  OpenCode Go whose vendor is identified. Keep up to three generations of each line (the latest and
+- **Roster**: every model from Anthropic, OpenAI, Google, and xAI, every model listed on OpenCode
+  Go whose vendor is identified, and each listed harness's own in-house models (Cursor Composer;
+  `HARNESS_IN_HOUSE_LINES` in `core/data/benchmarks.ts`). Keep up to three generations of each line (the latest and
   the two before it), as long as the vendor's API or one of the five harnesses still serves them.
   Tier anchors (`TIER_ANCHORS` in `core/data/benchmarks.ts`) stay in the roster even when they fall
   out of that window. Invitation-only or staged-rollout models are kept with `access: "limited"` and
@@ -67,7 +68,10 @@ You are a coding-model roster researcher. As of today, list:
    and the two before it) that the vendor's API or a harness still serves,
    with API id, release date, standard API input/output price per 1M tokens, and whether access is
    general or limited (invitation-only or staged rollout). Cite the vendor's models and pricing pages.
-3. For every model above, whether it is selectable in Claude Code, Codex CLI, Cursor, and OpenCode
+3. Each listed harness's own in-house models (Cursor Composer today): up to three generations of
+   each line still served, with release date, the harness vendor's own per-1M-token price, and
+   where the model can be used. Cite the harness's models and pricing page.
+4. For every model above, whether it is selectable in Claude Code, Codex CLI, Cursor, and OpenCode
    Zen (https://opencode.ai/docs/zen/), citing each harness's docs.
 State the date each page says it was last updated. Do not invent entries; say when a page could not
 be fetched.

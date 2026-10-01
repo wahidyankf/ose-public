@@ -112,6 +112,8 @@ const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodVersion: "version {version}",
     aiBenchMethodWeight: "weight {weight}",
     aiBenchMethodSourceOrderIntro: "Sources, in order of preference:",
+    aiBenchMethodRoster:
+      "Roster: models from the frontier vendors ({frontier}), every {substitute} model with a named vendor, and each listed harness's own in-house models ({inHouse}), up to three generations per model line.",
     aiBenchMethodIndex:
       "Index: the average of a model's scores on the benchmarks it has. A model needs at least {min} to get an index and a tier.",
     aiBenchMethodTiers:
@@ -496,6 +498,8 @@ const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodVersion: "versi {version}",
     aiBenchMethodWeight: "bobot {weight}",
     aiBenchMethodSourceOrderIntro: "Sumber, urut prioritas:",
+    aiBenchMethodRoster:
+      "Daftar model: model dari vendor frontier ({frontier}), semua model {substitute} yang vendornya jelas, dan model buatan sendiri tiap harness yang tercantum ({inHouse}), hingga tiga generasi per lini model.",
     aiBenchMethodIndex:
       "Indeks: rata-rata skor model pada benchmark yang dimilikinya. Model butuh setidaknya {min} benchmark untuk mendapat indeks dan tingkat.",
     aiBenchMethodTiers:

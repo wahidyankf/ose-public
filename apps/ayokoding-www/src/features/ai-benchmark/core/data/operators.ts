@@ -73,6 +73,7 @@ export const PRICE_SOURCES: readonly PriceSource[] = [
   { name: "OpenAI", url: "https://developers.openai.com/api/docs/pricing", checkedOn: "2026-10-01" },
   { name: "Google", url: "https://ai.google.dev/gemini-api/docs/pricing", checkedOn: "2026-10-01" },
   { name: "xAI", url: "https://docs.x.ai/docs/models", checkedOn: "2026-10-01" },
+  { name: "Cursor", url: "https://cursor.com/docs/models-and-pricing", checkedOn: "2026-10-01" },
   { name: "Z.ai", url: "https://docs.z.ai/guides/overview/pricing", checkedOn: "2026-10-01" },
   { name: "Moonshot AI", url: "https://platform.kimi.ai/docs/pricing/chat", checkedOn: "2026-10-01" },
   { name: "DeepSeek", url: "https://api-docs.deepseek.com/quick_start/pricing", checkedOn: "2026-10-01" },

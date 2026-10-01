@@ -41,6 +41,12 @@ describe("roster invariants", () => {
     expect(models.filter((m) => m.harnesses.includes("opencode-go"))).toHaveLength(29);
   });
 
+  it("includes Cursor Composer 2.5 as a Cursor-only model with Cursor's API price (as of 2026-10-01)", () => {
+    const composer = models.find((m) => m.id === "composer-2.5");
+    expect(composer).toMatchObject({ vendor: "Cursor", line: "Composer", access: "general", harnesses: ["cursor"] });
+    expect(composer?.price).toMatchObject({ input: 0.5, output: 2.5, listedBy: "vendor" });
+  });
+
   it("explains every limited-access model in a note", () => {
     for (const m of models.filter((x) => x.access === "limited")) expect(m.note).toBeTruthy();
   });

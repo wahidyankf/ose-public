@@ -463,7 +463,7 @@ With modules, create projects anywhere:
 ~/projects/myapp
 ~/dev/go/myapp
 /home/<user>/code/myapp
-C:\Users\username\projects\myapp
+C:\Users\<name>\projects\myapp
 ```
 
 No need to place projects inside `~/go/src` anymore.

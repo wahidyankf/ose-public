@@ -15,11 +15,13 @@
 # Each entry below matches a form that is true of any maintainer's machine, not
 # of one particular machine.
 
-# Absolute home directories. A path under /Users or /home names an account and
-# a machine layout, and it does not work on anyone else's checkout. The
-# repository-relative form or a documented placeholder is always available.
+# Absolute home directories. A path under /Users, /home, or a Windows drive's
+# Users directory names an account and a machine layout, and it does not work
+# on anyone else's checkout. The repository-relative form, a `~/` path, or a
+# documented placeholder is always available.
 maintainer-path	regex	(^|[^A-Za-z0-9_.-])/Users/[a-z][a-z0-9._-]*/
 maintainer-path	regex	(^|[^A-Za-z0-9_.-])/home/[a-z][a-z0-9._-]*/
+maintainer-path	regex	(^|[^A-Za-z0-9_.-])[A-Za-z]:[\\/]Users[\\/][A-Za-z][A-Za-z0-9._-]*[\\/]
 
 # Private address ranges: RFC 1918 and the CGNAT range mesh VPNs allocate from.
 # Matching by range rather than by address is the whole point — an address list

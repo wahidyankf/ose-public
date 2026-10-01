@@ -62,9 +62,10 @@ merges, so the table stays the lookup for whether a filename already exists. Thi
 **unenforced by decision**: the README-completeness gate checks annotated indexes under the
 documentation trees, not this table, and no check reads `.github/workflows/` against it.
 
-| Filename                 | Domain       | Purpose                                                                       |
-| ------------------------ | ------------ | ----------------------------------------------------------------------------- |
-| `ferret-cli-release.yml` | `ferret-cli` | Tag-triggered: build the zipapp and publish the GitHub release with checksums |
+| Filename                 | Domain       | Purpose                                                                            |
+| ------------------------ | ------------ | ---------------------------------------------------------------------------------- |
+| `ferret-cli-release.yml` | `ferret-cli` | Tag-triggered: build the zipapp and publish the GitHub release with checksums      |
+| `pr-leak-review.yml`     | `pr`         | Pull-request and review events: publish the `leak-review` status for the live head |
 
 Workflows predating this section that the set above omits are a separate backlog item; adding one
 here is not a licence to backfill them in an unrelated change.

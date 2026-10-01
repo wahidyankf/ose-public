@@ -44,8 +44,8 @@ belong to the focused mode below.
 ### Exact Leak-Only Mode
 
 For [`pr-leak-review`](../../repo-governance/workflows/pr/pr-leak-review.md), replace the ordinary
-charter with its exact three categories. Inspect the aggregate diff and delivery-controlled PR
-metadata. Exclude documented public values, placeholders, synthetic fixtures, and portable paths.
+charter with its exact three categories. Inspect every commit's additions, file names, and message
+in the range, never only the final diff, plus delivery-controlled PR metadata. Exclude documented public values, placeholders, synthetic fixtures, and portable paths.
 Use the workflow's canonical definitions and sanitized-output contract; emit only category,
 location, and remediation, never the value or a fingerprint. Raise no other finding in this mode.
 

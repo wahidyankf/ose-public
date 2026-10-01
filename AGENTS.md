@@ -65,8 +65,9 @@ assumptions, ledger, and verification before acting.
 
 ### Delivery Mode
 
-`worktree-to-pr` is mandatory. Every PR requires current-head/base `pr-quality-gate.yml` and one
-current-head `pr-leak-review`; semantic review runs only when explicitly requested.
+`worktree-to-pr` is mandatory. Every push first passes a per-commit push leak review; every PR needs
+current-head/base `pr-quality-gate.yml` and an exact-head posted `pr-leak-review` `pass` (`leak-review`
+status); semantic review runs only when explicitly requested.
 Applicable UI/API surface gates still bind.
 `[AI]` merges by default. At most one worktree per repo per plan; Phase 0 opens none.
 Create it only at `{repository location}/worktrees/<task>`; sibling `*-worktrees/` directories are forbidden.

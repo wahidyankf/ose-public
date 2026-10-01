@@ -36,6 +36,7 @@ in-charter for this discipline before it is postable.
 ## Focused Leak-Only Invocation
 
 `pr-leak-review` bypasses the ordinary semantic scope guard only to inspect its exact three leak
-predicates across the aggregate diff and delivery-controlled metadata. It never broadens into the
+predicates across every commit's additions, names, and messages and delivery-controlled metadata,
+never only the aggregate diff. It never broadens into the
 security agent's other charter. Broad passes consume authenticated current-head leak evidence and
 suppress those predicates rather than repeating them.

@@ -57,15 +57,20 @@ Throughout this tutorial, we'll follow **"Tech Haven"**, a small computer repair
 
 ```mermaid
 flowchart TD
+ accTitle: 🏗️ What Were Building
+ accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Business Transaction, Analyze Transaction, Record in Journal, Post to Ledger, Prepare Trial Balance, Create Financial Statements, Analyze Financial Health. Connections: Business Transaction to Analyze Transaction, Analyze Transaction to Record in Journal, Record in Journal to Post to Ledger, Post to Ledger to Prepare Trial Balance, Prepare Trial Balance to Create Financial Statements, Create Financial Statements to Analyze Financial Health.
  A[Business Transaction] --> B[Analyze Transaction]
  B --> C[Record in Journal]
  C --> D[Post to Ledger]
- D --> E[Prepare Trial Balance]
- E --> F[Create Financial Statements]
- F --> G[Analyze Financial Health]
+ D --> E[Prepare Trial<br/>Balance]
+ E --> F[Create Financial<br/>Statements]
+ F --> G[Analyze Financial<br/>Health]
 
- style A fill:#0173B2,stroke:#000000,color:#FFFFFF
- style G fill:#029E73,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The diagram above shows the complete accounting cycle we'll master in this tutorial.
@@ -140,6 +145,8 @@ Check: $15,000 = $5,000 + $10,000 ✓
 
 ```mermaid
 flowchart TD
+ accTitle: Visual Representation
+ accDescr: Flowchart with 4 nodes and 2 connections. Nodes: Assets $15,000, Liabilities $5,000, Equity $10,000, Sum. Connections: Liabilities $5,000 to Sum, Equity $10,000 to Sum.
  subgraph "The Accounting Equation"
   A[Assets<br/>$15,000]
   L[Liabilities<br/>$5,000]
@@ -150,10 +157,14 @@ flowchart TD
  L --> Sum
  E --> Sum
 
- style A fill:#0173B2,stroke:#000000,color:#FFFFFF
- style L fill:#DE8F05,stroke:#000000,color:#FFFFFF
- style E fill:#029E73,stroke:#000000,color:#FFFFFF
- style Sum fill:#DE8F05,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class L pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class E pal-029E73
+ class Sum pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### ✓ Checkpoint
@@ -199,6 +210,8 @@ Different types of accounts increase and decrease differently:
 
 ```mermaid
 flowchart LR
+ accTitle: Account Types and Their Normal Balances
+ accDescr: Flowchart with 10 nodes and 5 connections. Nodes: Debit = Increase, Credit = Decrease, Credit = Increase, Debit = Decrease, Credit = Increase, Debit = Decrease, Credit = Increase, Debit = Decrease, Debit = Increase, Credit = Decrease. Connections: Debit = Increase to Credit = Decrease, Credit = Increase to Debit = Decrease, Credit = Increase to Debit = Decrease, Credit = Increase to Debit = Decrease, Debit = Increase to Credit = Decrease.
  subgraph "Asset Accounts"
   A1[Debit = Increase]
   A2[Credit = Decrease]
@@ -229,11 +242,16 @@ flowchart LR
   X1 --> X2
  end
 
- style A1 fill:#0173B2,stroke:#000000,color:#FFFFFF
- style L1 fill:#DE8F05,stroke:#000000,color:#FFFFFF
- style E1 fill:#029E73,stroke:#000000,color:#FFFFFF
- style R1 fill:#CC78BC,stroke:#000000,color:#FFFFFF
- style X1 fill:#DE8F05,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A1 pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class L1 pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class E1 pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class R1 pal-CC78BC
+ class X1 pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Memory aid:**
@@ -390,20 +408,22 @@ EXPENSES (5000-5999)
 
 ```mermaid
 flowchart LR
+ accTitle: Visual Organization
+ accDescr: Flowchart with 12 nodes and 0 connections. Nodes: 1000 Cash, 1100 Accounts Receivable, 1500 Equipment, 2000 Accounts Payable, 2100 Bank Loan, 3000 Owners Capital, 3900 Retained Earnings, 4000 Service Revenue, 4100 Parts Sales, 5000 Rent, 5200 Wages, 5400 Depreciation.
  subgraph "1000: Assets"
   A1[1000 Cash]
-  A2[1100 Accounts Receivable]
+  A2[1100 Accounts<br/>Receivable]
   A3[1500 Equipment]
  end
 
  subgraph "2000: Liabilities"
-  L1[2000 Accounts Payable]
+  L1[2000 Accounts<br/>Payable]
   L2[2100 Bank Loan]
  end
 
  subgraph "3000: Equity"
   E1[3000 Owner's Capital]
-  E2[3900 Retained Earnings]
+  E2[3900 Retained<br/>Earnings]
  end
 
  subgraph "4000: Revenue"
@@ -417,11 +437,16 @@ flowchart LR
   X3[5400 Depreciation]
  end
 
- style A1 fill:#0173B2,stroke:#000000,color:#FFFFFF
- style L1 fill:#DE8F05,stroke:#000000,color:#FFFFFF
- style E1 fill:#029E73,stroke:#000000,color:#FFFFFF
- style R1 fill:#CC78BC,stroke:#000000,color:#FFFFFF
- style X1 fill:#DE8F05,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A1 pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class L1 pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class E1 pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class R1 pal-CC78BC
+ class X1 pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Why Numbering Matters
@@ -647,6 +672,8 @@ Account                 Debit      Credit
 
 ```mermaid
 sequenceDiagram
+ accTitle: Transaction Summary
+ accDescr: Sequence diagram between Transaction, Journal, Ledger. Messages: Transaction to Journal: 1. Record entry; Journal to Ledger: 2. Post to accounts.
  participant Transaction
  participant Journal
  participant Ledger
@@ -776,6 +803,8 @@ Final Balance: $450 (Credit)
 
 ```mermaid
 flowchart LR
+ accTitle: Ledger Organization
+ accDescr: Flowchart with 8 nodes and 11 connections. Nodes: Journal Entries Chronological, Post to Ledger, Asset Accounts, Liability Accounts, Equity Accounts, Revenue Accounts, Expense Accounts, Trial Balance. Connections: Journal Entries Chronological to Post to Ledger, Post to Ledger to Asset Accounts, Post to Ledger to Liability Accounts, Post to Ledger to Equity Accounts, Post to Ledger to Revenue Accounts, Post to Ledger to Expense Accounts, Asset Accounts to Trial Balance, Liability Accounts to Trial Balance, Equity Accounts to Trial Balance, Revenue Accounts to Trial Balance, Expense Accounts to Trial Balance.
  J[Journal Entries<br/>Chronological] --> L{Post to Ledger}
 
  L --> A[Asset Accounts]
@@ -790,8 +819,11 @@ flowchart LR
  R --> TB
  X --> TB
 
- style J fill:#0173B2,stroke:#000000,color:#FFFFFF
- style TB fill:#029E73,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class J pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class TB pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### ✓ Checkpoint
@@ -900,6 +932,8 @@ Now we transform accounting records into meaningful financial reports.
 
 ```mermaid
 flowchart TD
+ accTitle: The Three Core Financial Statements
+ accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Trial Balance, Income Statement, Balance Sheet, Cash Flow Statement, Shows: Profitability, Shows: Financial Position, Shows: Cash Movement. Connections: Trial Balance to Income Statement, Trial Balance to Balance Sheet, Trial Balance to Cash Flow Statement, Income Statement to Shows: Profitability, Balance Sheet to Shows: Financial Position, Cash Flow Statement to Shows: Cash Movement.
  TB[Trial Balance] --> IS[Income Statement]
  TB --> BS[Balance Sheet]
  TB --> CF[Cash Flow Statement]
@@ -910,10 +944,15 @@ flowchart TD
  BS --> D2[Shows:<br/>Financial Position]
  CF --> D3[Shows:<br/>Cash Movement]
 
- style TB fill:#0173B2,stroke:#000000,color:#FFFFFF
- style IS fill:#DE8F05,stroke:#000000,color:#FFFFFF
- style BS fill:#029E73,stroke:#000000,color:#FFFFFF
- style CF fill:#CC78BC,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class TB pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class IS pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class BS pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class CF pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Statement 1: Income Statement
@@ -1181,6 +1220,8 @@ Jan 25: Cash 300 / Accounts Receivable 300
 
 ```mermaid
 flowchart LR
+ accTitle: Principles Summary
+ accDescr: Flowchart with 8 nodes and 7 connections. Nodes: Accrual Basis, Quality Financial Information, Matching, Revenue Recognition, Going Concern, Consistency, Materiality, Better Decisions. Connections: Accrual Basis to Quality Financial Information, Matching to Quality Financial Information, Revenue Recognition to Quality Financial Information, Going Concern to Quality Financial Information, Consistency to Quality Financial Information, Materiality to Quality Financial Information, Quality Financial Information to Better Decisions.
  A[Accrual Basis] --> Q[Quality<br/>Financial<br/>Information]
  M[Matching] --> Q
  R[Revenue Recognition] --> Q
@@ -1190,8 +1231,11 @@ flowchart LR
 
  Q --> D[Better<br/>Decisions]
 
- style Q fill:#029E73,stroke:#000000,color:#FFFFFF
- style D fill:#0173B2,stroke:#000000,color:#FFFFFF
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class Q pal-029E73
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class D pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### ✓ Checkpoint

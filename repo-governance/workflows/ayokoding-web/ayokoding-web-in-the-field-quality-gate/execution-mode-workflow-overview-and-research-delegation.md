@@ -46,7 +46,6 @@ context — use this when agent delegation is unavailable.
 ## Workflow Overview
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'14px'}}}%%
 graph TB
     accTitle: Workflow Overview
     accDescr: Maker: Create/Update Guides leads to Checker: Validate Quality via maker or manual; Checker: Validate Quality leads to User Review via checker; User Review leads to Fixer: Apply Fixes via Issues found; and 4 more links.

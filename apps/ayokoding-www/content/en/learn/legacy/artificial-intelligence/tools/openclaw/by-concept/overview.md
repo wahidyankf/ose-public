@@ -20,27 +20,29 @@ architectural extensibility.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 15 nodes and 14 connections. Nodes: Beginner 18 sections Concepts 1–18, Intermediate 13 sections Concepts 19–31, Advanced 11 sections Concepts 32–42, What is OpenClaw?, Local-First Architecture, Seven Core Components, Installation and First Run, LLM Provider Configuration, Your First Channel: Telegram, Writing Your First Skill, Selective Skill Injection, Multi-Channel Routing, and 3 more. Connections: Beginner 18 sections Concepts 1–18 to Intermediate 13 sections Concepts 19–31 (understand core concepts), Intermediate 13 sections Concepts 19–31 to Advanced 11 sections Concepts 32–42 (build custom workflows), Beginner 18 sections Concepts 1–18 to What is OpenClaw?, Beginner 18 sections Concepts 1–18 to Local-First Architecture, Beginner 18 sections Concepts 1–18 to Seven Core Components, Beginner 18 sections Concepts 1–18 to Installation and First Run, Beginner 18 sections Concepts 1–18 to LLM Provider Configuration, Beginner 18 sections Concepts 1–18 to Your First Channel: Telegram, Intermediate 13 sections Concepts 19–31 to Writing Your First Skill, Intermediate 13 sections Concepts 19–31 to Selective Skill Injection, Intermediate 13 sections Concepts 19–31 to Multi-Channel Routing, Advanced 11 sections Concepts 32–42 to Custom LLM Provider Integration, and 2 more.
     B["Beginner<br/>18 sections<br/>Concepts 1–18"]:::blue
     I["Intermediate<br/>13 sections<br/>Concepts 19–31"]:::orange
     A["Advanced<br/>11 sections<br/>Concepts 32–42"]:::teal
 
-    B -->|"understand core concepts"| I
-    I -->|"build custom workflows"| A
+    B -->|"understand core<br/>concepts"| I
+    I -->|"build custom<br/>workflows"| A
 
     B1["What is OpenClaw?"]:::blue
-    B2["Local-First Architecture"]:::blue
-    B3["Seven Core Components"]:::blue
-    B4["Installation and First Run"]:::blue
-    B5["LLM Provider Configuration"]:::blue
-    B6["Your First Channel: Telegram"]:::blue
+    B2["Local-First<br/>Architecture"]:::blue
+    B3["Seven Core<br/>Components"]:::blue
+    B4["Installation and<br/>First Run"]:::blue
+    B5["LLM Provider<br/>Configuration"]:::blue
+    B6["Your First Channel:<br/>Telegram"]:::blue
 
-    I1["Writing Your First Skill"]:::orange
-    I2["Selective Skill Injection"]:::orange
-    I3["Multi-Channel Routing"]:::orange
+    I1["Writing Your First<br/>Skill"]:::orange
+    I2["Selective Skill<br/>Injection"]:::orange
+    I3["Multi-Channel<br/>Routing"]:::orange
 
-    A1["Custom LLM Provider Integration"]:::teal
+    A1["Custom LLM Provider<br/>Integration"]:::teal
     A2["Security Hardening"]:::teal
-    A3["Production Deployment"]:::teal
+    A3["Production<br/>Deployment"]:::teal
 
     B --- B1
     B --- B2
@@ -58,8 +60,9 @@ graph TD
     A --- A3
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## What Each Level Covers

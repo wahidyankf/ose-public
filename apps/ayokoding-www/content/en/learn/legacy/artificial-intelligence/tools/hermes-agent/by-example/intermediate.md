@@ -18,26 +18,32 @@ Skills are Hermes Agent's procedural memory — reusable instructions the agent 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TB
-    subgraph L0["Level 0: Skills List (~3k tokens)"]
-        style L0 fill:#0173B2,color:#fff
+    accTitle: Example 28: Skills System Overview
+    accDescr: Flowchart with 9 nodes and 5 connections. Nodes: skills_list(), name, description, version for ALL skills, skill_view(name), Complete SKILL.md + file listing, skill_view(name, path), Single reference file or template content, L0, L1, L2. Connections: skills_list() to name, description, version for ALL skills (Returns), skill_view(name) to Complete SKILL.md + file listing (Returns), skill_view(name, path) to Single reference file or template content (Returns), L0 to L1 (Agent needs details), L1 to L2 (Agent needs file).
+    subgraph L0["Level 0: Skills List<br/>(~3k tokens)"]
         SL["skills_list()"]
-        SL -->|"Returns"| META["name, description, version\nfor ALL skills"]
+        SL -->|"Returns"| META["name, description,<br/>version<br/>for ALL skills"]
     end
 
-    subgraph L1["Level 1: Full Skill View"]
-        style L1 fill:#DE8F05,color:#fff
+    subgraph L1["Level 1: Full Skill<br/>View"]
         SV1["skill_view(name)"]
-        SV1 -->|"Returns"| FULL["Complete SKILL.md\n+ file listing"]
+        SV1 -->|"Returns"| FULL["Complete SKILL.md<br/>+ file listing"]
     end
 
-    subgraph L2["Level 2: Specific File"]
-        style L2 fill:#029E73,color:#fff
-        SV2["skill_view(name, path)"]
-        SV2 -->|"Returns"| FILE["Single reference file\nor template content"]
+    subgraph L2["Level 2: Specific<br/>File"]
+        SV2["skill_view(name,<br/>path)"]
+        SV2 -->|"Returns"| FILE["Single reference<br/>file<br/>or template content"]
     end
 
-    L0 -->|"Agent needs details"| L1
+    L0 -->|"Agent needs<br/>details"| L1
     L1 -->|"Agent needs file"| L2
+        classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+        class L0 pal-0173B2
+        classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+        class L1 pal-DE8F05
+        classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+        class L2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -317,26 +323,24 @@ Hermes Agent automatically creates skills when it detects reusable patterns duri
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 32: Autonomous Skill Creation
+    accDescr: Flowchart with 8 nodes and 6 connections. Nodes: 5+ tool calls, Error recovery, User correction, Agent detects reusable pattern, SKILL.md written to ~/.hermes/skills/, Skill refined in later sessions, Persist, Improve. Connections: 5+ tool calls to Agent detects reusable pattern, Error recovery to Agent detects reusable pattern, User correction to Agent detects reusable pattern, Agent detects reusable pattern to Persist, Persist to Improve, Improve to Persist (Next use).
     subgraph Session["Current Session"]
-        style Session fill:#0173B2,color:#fff
         T1["5+ tool calls"]
         T2["Error recovery"]
         T3["User correction"]
     end
 
-    subgraph Trigger["Skill Creation Trigger"]
-        style Trigger fill:#DE8F05,color:#fff
-        D["Agent detects\nreusable pattern"]
+    subgraph Trigger["Skill Creation<br/>Trigger"]
+        D["Agent detects<br/>reusable pattern"]
     end
 
     subgraph Persist["Skill Persisted"]
-        style Persist fill:#029E73,color:#fff
-        S["SKILL.md written\nto ~/.hermes/skills/"]
+        S["SKILL.md written<br/>to ~/.hermes/skills/"]
     end
 
     subgraph Improve["Self-Improvement"]
-        style Improve fill:#CC78BC,color:#fff
-        I["Skill refined\nin later sessions"]
+        I["Skill refined<br/>in later sessions"]
     end
 
     T1 --> D
@@ -345,6 +349,15 @@ flowchart LR
     D --> Persist
     Persist --> Improve
     Improve -->|"Next use"| Persist
+        classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+        class Session pal-0173B2
+        classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+        class Trigger pal-DE8F05
+        classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+        class Persist pal-029E73
+        classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+        class Improve pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trigger autonomous skill creation** (runnable — first-time deployment generates 7+ tool calls):
@@ -534,8 +547,9 @@ The Hermes gateway is a persistent process that bridges messaging platforms to t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TB
+    accTitle: Example 35: Gateway Architecture
+    accDescr: Flowchart with 12 nodes and 15 connections. Nodes: Telegram, Discord, Slack, WhatsApp, Signal, Email, Router, Auth / ACL, Session Manager, LLM Provider, Tool Execution, Memory. Connections: Telegram to Router, Discord to Router, Slack to Router, WhatsApp to Router, Signal to Router, Email to Router, Router to Auth / ACL, Auth / ACL to Session Manager, Session Manager to LLM Provider, LLM Provider to Tool Execution, Tool Execution to Memory, Session Manager to Router (Response), and 3 more.
     subgraph Platforms["Messaging Platforms"]
-        style Platforms fill:#0173B2,color:#fff
         TG["Telegram"]
         DC["Discord"]
         SL["Slack"]
@@ -545,14 +559,12 @@ flowchart TB
     end
 
     subgraph Gateway["hermes gateway"]
-        style Gateway fill:#DE8F05,color:#fff
         RT["Router"]
         AUTH["Auth / ACL"]
         SM["Session Manager"]
     end
 
     subgraph Agent["Hermes Agent"]
-        style Agent fill:#029E73,color:#fff
         LLM["LLM Provider"]
         TOOLS["Tool Execution"]
         MEM["Memory"]
@@ -573,6 +585,13 @@ flowchart TB
     RT -->|"Reply"| TG
     RT -->|"Reply"| DC
     RT -->|"Reply"| SL
+        classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+        class Platforms pal-0173B2
+        classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+        class Gateway pal-DE8F05
+        classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+        class Agent pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -927,25 +946,33 @@ Hermes Agent enforces layered access control for messaging channels. Each platfo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TB
-    MSG["Incoming Message"] --> PLATFORM{"Platform\nConfigured?"}
-    style MSG fill:#0173B2,color:#fff
+    accTitle: Example 42: DM Policies and Access Control
+    accDescr: Flowchart with 11 nodes and 10 connections. Nodes: Incoming Message, Platform Configured?, Drop, User in Allowlist?, Route to Session, DM Policy?, Send Pairing Request to Admin, Silently Drop, Per-User Sessions?, Own Session (isolated context), Shared Session (group context). Connections: Incoming Message to Platform Configured?, Platform Configured? to Drop (No), Platform Configured? to User in Allowlist? (Yes), User in Allowlist? to Route to Session (Yes), User in Allowlist? to DM Policy? (No), DM Policy? to Send Pairing Request to Admin (pair), DM Policy? to Silently Drop (ignore), Route to Session to Per-User Sessions?, Per-User Sessions? to Own Session (isolated context) (Yes), Per-User Sessions? to Shared Session (group context) (No).
+    MSG["Incoming Message"] --> PLATFORM{"Platform<br/>Configured?"}
 
     PLATFORM -->|"No"| DROP1["Drop"]
-    PLATFORM -->|"Yes"| ALLOW{"User in\nAllowlist?"}
-    style ALLOW fill:#DE8F05,color:#fff
+    PLATFORM -->|"Yes"| ALLOW{"User in<br/>Allowlist?"}
 
-    ALLOW -->|"Yes"| SESSION["Route to\nSession"]
-    style SESSION fill:#029E73,color:#fff
+    ALLOW -->|"Yes"| SESSION["Route to<br/>Session"]
     ALLOW -->|"No"| POLICY{"DM Policy?"}
-    style POLICY fill:#CC78BC,color:#fff
 
-    POLICY -->|"pair"| PAIR["Send Pairing\nRequest to Admin"]
+    POLICY -->|"pair"| PAIR["Send Pairing<br/>Request to Admin"]
     POLICY -->|"ignore"| DROP2["Silently Drop"]
-    style PAIR fill:#CA9161,color:#fff
 
-    SESSION --> ISOLATE{"Per-User\nSessions?"}
-    ISOLATE -->|"Yes"| OWN["Own Session\n(isolated context)"]
-    ISOLATE -->|"No"| SHARED["Shared Session\n(group context)"]
+    SESSION --> ISOLATE{"Per-User<br/>Sessions?"}
+    ISOLATE -->|"Yes"| OWN["Own Session<br/>(isolated context)"]
+    ISOLATE -->|"No"| SHARED["Shared Session<br/>(group context)"]
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class MSG pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ALLOW pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class SESSION pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class POLICY pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PAIR pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1021,21 +1048,20 @@ The `delegate_task` tool spawns isolated subagents to handle focused subtasks. T
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TB
-    subgraph Parent["Parent Agent (full tools)"]
-        style Parent fill:#0173B2,color:#fff
+    accTitle: Example 43: Subagent Delegation
+    accDescr: Flowchart with 7 nodes and 7 connections. Nodes: Orchestrates tasks, Child 1: Research task, Child 2: Code review, Child 3: Test execution, Cannot use: - delegate_task - clarify - memory tools - send_message - execute_code, Children, Restricted. Connections: Orchestrates tasks to Child 1: Research task (delegate_task()), Orchestrates tasks to Child 2: Code review (delegate_task()), Orchestrates tasks to Child 3: Test execution (delegate_task()), Child 1: Research task to Orchestrates tasks (Result JSON), Child 2: Code review to Orchestrates tasks (Result JSON), Child 3: Test execution to Orchestrates tasks (Result JSON), Children to Restricted.
+    subgraph Parent["Parent Agent (full<br/>tools)"]
         PA["Orchestrates tasks"]
     end
 
-    subgraph Children["Child Agents (restricted)"]
-        style Children fill:#DE8F05,color:#fff
-        C1["Child 1:\nResearch task"]
-        C2["Child 2:\nCode review"]
-        C3["Child 3:\nTest execution"]
+    subgraph Children["Child Agents<br/>(restricted)"]
+        C1["Child 1:<br/>Research task"]
+        C2["Child 2:<br/>Code review"]
+        C3["Child 3:<br/>Test execution"]
     end
 
     subgraph Restricted["Restricted Tools"]
-        style Restricted fill:#CC78BC,color:#fff
-        NO["Cannot use:\n- delegate_task\n- clarify\n- memory tools\n- send_message\n- execute_code"]
+        NO["Cannot use:<br/>- delegate_task<br/>- clarify<br/>- memory tools<br/>- send_message<br/>- execute_code"]
     end
 
     PA -->|"delegate_task()"| C1
@@ -1045,6 +1071,13 @@ flowchart TB
     C2 -->|"Result JSON"| PA
     C3 -->|"Result JSON"| PA
     Children --- Restricted
+        classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+        class Parent pal-0173B2
+        classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+        class Children pal-DE8F05
+        classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+        class Restricted pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1304,27 +1337,33 @@ Hermes Agent's browser toolset provides programmatic control of a headless brows
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 49: Browser Navigation
+    accDescr: Flowchart with 6 nodes and 4 connections. Nodes: browser_navigate, browser_snapshot, Web Page, DOM / A11y Tree, Accessibility Tree (structured text), Agent. Connections: browser_navigate to Web Page (URL), browser_snapshot to DOM / A11y Tree (Capture), DOM / A11y Tree to Accessibility Tree (structured text), Accessibility Tree (structured text) to Agent.
     subgraph Agent["Hermes Agent"]
-        style Agent fill:#0173B2,color:#fff
         NAV["browser_navigate"]
         SNAP["browser_snapshot"]
     end
 
     subgraph Browser["Headless Browser"]
-        style Browser fill:#DE8F05,color:#fff
         PAGE["Web Page"]
         DOM["DOM / A11y Tree"]
     end
 
     subgraph Output["Agent Receives"]
-        style Output fill:#029E73,color:#fff
-        TREE["Accessibility Tree\n(structured text)"]
+        TREE["Accessibility Tree<br/>(structured text)"]
     end
 
     NAV -->|"URL"| PAGE
     SNAP -->|"Capture"| DOM
     DOM --> TREE
     TREE --> Agent
+        classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+        class Agent pal-0173B2
+        classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+        class Browser pal-DE8F05
+        classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+        class Output pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1492,20 +1531,19 @@ The `execute_code` tool runs Python scripts in an isolated environment with acce
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TB
+    accTitle: Example 52: Code Execution Tool
+    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: execute_code(script), Python Script, RPC Tools: - web_search - web_extract - read_file - write_file - search_files - patch - terminal, stdout + stderr (compact result), Agent. Connections: execute_code(script) to Python Script (Script), Python Script to RPC Tools: - web_search - web_extract - read_file - write_file - search_files - patch - terminal (Tool calls), RPC Tools: - web_search - web_extract - read_file - write_file - search_files - patch - terminal to Python Script (Results), Python Script to stdout + stderr (compact result) (Output), stdout + stderr (compact result) to Agent.
     subgraph Agent["Agent Context Window"]
-        style Agent fill:#0173B2,color:#fff
         PROMPT["execute_code(script)"]
     end
 
-    subgraph Sandbox["Python Sandbox (zero context cost)"]
-        style Sandbox fill:#DE8F05,color:#fff
+    subgraph Sandbox["Python Sandbox (zero<br/>context cost)"]
         SCRIPT["Python Script"]
-        RPC["RPC Tools:\n- web_search\n- web_extract\n- read_file\n- write_file\n- search_files\n- patch\n- terminal"]
+        RPC["RPC Tools:<br/>- web_search<br/>- web_extract<br/>- read_file<br/>- write_file<br/>- search_files<br/>- patch<br/>- terminal"]
     end
 
     subgraph Result["Returns to Agent"]
-        style Result fill:#029E73,color:#fff
-        OUT["stdout + stderr\n(compact result)"]
+        OUT["stdout + stderr<br/>(compact result)"]
     end
 
     PROMPT -->|"Script"| SCRIPT
@@ -1513,6 +1551,13 @@ flowchart TB
     RPC -->|"Results"| SCRIPT
     SCRIPT -->|"Output"| OUT
     OUT --> Agent
+        classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+        class Agent pal-0173B2
+        classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+        class Sandbox pal-DE8F05
+        classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+        class Result pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1621,24 +1666,31 @@ The Mixture of Agents (MoA) toolset generates diverse responses from 4 reference
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TB
-    Q["User Question"] --> R1["Reference Model 1\n(e.g., Claude)"]
-    Q --> R2["Reference Model 2\n(e.g., GPT-4)"]
-    Q --> R3["Reference Model 3\n(e.g., Gemini)"]
-    Q --> R4["Reference Model 4\n(e.g., Llama)"]
-    style Q fill:#0173B2,color:#fff
-    style R1 fill:#DE8F05,color:#fff
-    style R2 fill:#DE8F05,color:#fff
-    style R3 fill:#DE8F05,color:#fff
-    style R4 fill:#DE8F05,color:#fff
+    accTitle: Example 54: Mixture of Agents
+    accDescr: Flowchart with 7 nodes and 9 connections. Nodes: User Question, Reference Model 1 (e.g., Claude), Reference Model 2 (e.g., GPT-4), Reference Model 3 (e.g., Gemini), Reference Model 4 (e.g., Llama), Aggregator Model (synthesizes best from all 4), Final Answer (higher quality than any single model). Connections: User Question to Reference Model 1 (e.g., Claude), User Question to Reference Model 2 (e.g., GPT-4), User Question to Reference Model 3 (e.g., Gemini), User Question to Reference Model 4 (e.g., Llama), Reference Model 1 (e.g., Claude) to Aggregator Model (synthesizes best from all 4), Reference Model 2 (e.g., GPT-4) to Aggregator Model (synthesizes best from all 4), Reference Model 3 (e.g., Gemini) to Aggregator Model (synthesizes best from all 4), Reference Model 4 (e.g., Llama) to Aggregator Model (synthesizes best from all 4), Aggregator Model (synthesizes best from all 4) to Final Answer (higher quality than any single model).
+    Q["User Question"] --> R1["Reference Model 1<br/>(e.g., Claude)"]
+    Q --> R2["Reference Model 2<br/>(e.g., GPT-4)"]
+    Q --> R3["Reference Model 3<br/>(e.g., Gemini)"]
+    Q --> R4["Reference Model 4<br/>(e.g., Llama)"]
 
-    R1 --> AGG["Aggregator Model\n(synthesizes best\nfrom all 4)"]
+    R1 --> AGG["Aggregator Model<br/>(synthesizes best<br/>from all 4)"]
     R2 --> AGG
     R3 --> AGG
     R4 --> AGG
-    style AGG fill:#029E73,color:#fff
 
-    AGG --> FINAL["Final Answer\n(higher quality than\nany single model)"]
-    style FINAL fill:#CC78BC,color:#fff
+    AGG --> FINAL["Final Answer<br/>(higher quality than<br/>any single model)"]
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Q pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class R1 pal-DE8F05
+    class R2 pal-DE8F05
+    class R3 pal-DE8F05
+    class R4 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class AGG pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class FINAL pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

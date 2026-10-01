@@ -28,9 +28,6 @@ sequenceDiagram
     Ch->>Main: Returns 42
     Note over Main: Goroutine completes
 
-    style Main fill:#0173B2,color:#fff
-    style Ch fill:#DE8F05,color:#000
-    style Worker fill:#029E73,color:#fff
 ```
 
 Goroutines are functions that run concurrently with other functions. To start a goroutine, use the `go` keyword before a function call. The Go runtime multiplexes goroutines onto OS threads, handling scheduling and context switching automatically.

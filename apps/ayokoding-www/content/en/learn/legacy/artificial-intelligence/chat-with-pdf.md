@@ -40,6 +40,8 @@ Let's start with the big picture. A PDF chat system has two main phases: **Inges
 
 ```mermaid
 graph TD
+ accTitle: 🏗️ System Architecture
+ accDescr: Graph with 12 nodes and 11 connections. Nodes: 📄 PDF Upload, Text Extraction, Document Chunking, Generate Embeddings, Store in Vector DB, ❓ User Question, Generate Query Embedding, Semantic Search, Retrieve Relevant Chunks, Build Context, LLM Generation, 📝 Answer. Connections: 📄 PDF Upload to Text Extraction, Text Extraction to Document Chunking, Document Chunking to Generate Embeddings, Generate Embeddings to Store in Vector DB, ❓ User Question to Generate Query Embedding, Generate Query Embedding to Semantic Search, Store in Vector DB to Semantic Search, Semantic Search to Retrieve Relevant Chunks, Retrieve Relevant Chunks to Build Context, Build Context to LLM Generation, LLM Generation to 📝 Answer.
  subgraph "Phase 1: Document Ingestion (One-time)"
   A[📄 PDF Upload] --> B[Text Extraction]
   B --> C[Document Chunking]
@@ -48,18 +50,22 @@ graph TD
  end
 
  subgraph "Phase 2: Query Processing (Per Question)"
-  F[❓ User Question] --> G[Generate Query Embedding]
+  F[❓ User Question] --> G[Generate Query<br/>Embedding]
   G --> H[Semantic Search]
   E --> H
-  H --> I[Retrieve Relevant Chunks]
+  H --> I[Retrieve Relevant<br/>Chunks]
   I --> J[Build Context]
   J --> K[LLM Generation]
   K --> L[📝 Answer]
  end
 
- style A fill:#0173B2,stroke:#000000,color:#FFFFFF
- style F fill:#DE8F05,stroke:#000000,color:#FFFFFF
- style L fill:#029E73,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class F pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class L pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Insight**: The document is processed **once** during ingestion, but queries happen **many times**. This asymmetry is crucial for performance—we do expensive processing upfront so queries can be fast.
@@ -111,6 +117,8 @@ User uploads "Company_Report_2024.pdf"
 
 ```mermaid
 graph TD
+ accTitle: 2. Text Extraction
+ accDescr: Graph with 7 nodes and 7 connections. Nodes: PDF File, Is it searchable?, Direct Text Extraction, OCR Required, Image Processing, Tesseract/ Cloud OCR, Text Output. Connections: PDF File to Is it searchable?, Is it searchable? to Direct Text Extraction (Yes), Is it searchable? to OCR Required (No), OCR Required to Image Processing, Image Processing to Tesseract/ Cloud OCR, Tesseract/ Cloud OCR to Text Output, Direct Text Extraction to Text Output.
  A[PDF File] --> B{Is it<br/>searchable?}
  B -->|Yes| C[Direct Text<br/>Extraction]
  B -->|No| D[OCR Required]
@@ -119,8 +127,11 @@ graph TD
  F --> G[Text Output]
  C --> G
 
- style C fill:#029E73,stroke:#000000,color:#FFFFFF
- style D fill:#DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class D pal-DE8F05
+ classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Example Output**:
@@ -242,12 +253,17 @@ Similar words cluster together in vector space!
 
 ```mermaid
 graph TD
+ accTitle: 4. Embeddings Generation
+ accDescr: Graph with 4 nodes and 3 connections. Nodes: Text Chunk, Embedding Model OpenAI/Cohere/etc, Vector 1536 dimensions, Stored with Chunk ID. Connections: Text Chunk to Embedding Model OpenAI/Cohere/etc, Embedding Model OpenAI/Cohere/etc to Vector 1536 dimensions, Vector 1536 dimensions to Stored with Chunk ID.
  A[Text Chunk] --> B[Embedding Model<br/>OpenAI/Cohere/etc]
  B --> C[Vector<br/>1536 dimensions]
  C --> D[Stored with Chunk ID]
 
- style B fill:#0173B2,stroke:#000000,color:#FFFFFF
- style C fill:#029E73
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class B pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Real Example**:
@@ -301,16 +317,21 @@ Find top 5 chunks most similar to:
 
 ```mermaid
 graph TD
+ accTitle: 5. Vector Database
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: New Embedding, Indexing Algorithm HNSW/IVF, Add to Index Structure, Vector Store, Query Vector, Approximate Nearest Neighbor Search, Top K Similar Vectors. Connections: New Embedding to Indexing Algorithm HNSW/IVF, Indexing Algorithm HNSW/IVF to Add to Index Structure, Add to Index Structure to Vector Store, Query Vector to Approximate Nearest Neighbor Search, Vector Store to Approximate Nearest Neighbor Search, Approximate Nearest Neighbor Search to Top K Similar Vectors.
  A[New Embedding] --> B{Indexing Algorithm<br/>HNSW/IVF}
- B --> C[Add to Index Structure]
+ B --> C[Add to Index<br/>Structure]
  C --> D[(Vector Store)]
 
  E[Query Vector] --> F[Approximate<br/>Nearest Neighbor<br/>Search]
  D --> F
  F --> G[Top K Similar<br/>Vectors]
 
- style D fill:#DE8F05
- style G fill:#029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class D pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class G pal-029E73
+ classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Storage Format**:
@@ -341,6 +362,8 @@ chunk_003   | [0.23, 0.89, ..., 0.45]   | {page: 2, doc: "Q4_Report"}
 
 ```mermaid
 sequenceDiagram
+ accTitle: 6. Query Processing
+ accDescr: Sequence diagram between User, API, Embedder, VectorDB. Messages: User to API: What was Q4 revenue?; API to API: Validate & sanitize; API to Embedder: Generate embedding; Embedder to API: [0.2, 0.8, ..., 0.5]; API to VectorDB: Find top 5 similar chunks; VectorDB to API: [chunk_023, chunk_024, ...]; API to API: Retrieve full text; API to User: (Continue to next step...).
  participant User
  participant API
  participant Embedder
@@ -396,12 +419,16 @@ Chunk C: [-0.5, 0.2, 0.8] → Similarity: 0.23   Not similar
 
 ```mermaid
 graph TD
+ accTitle: 7. Semantic Search
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Query Embedding, Calculate Similarity to All Chunks, Rank by Similarity, Return Top K default K=5, Chunk 1: 0.94 Chunk 2: 0.91 Chunk 3: 0.87 Chunk 4: 0.82 Chunk 5: 0.79. Connections: Query Embedding to Calculate Similarity to All Chunks, Calculate Similarity to All Chunks to Rank by Similarity, Rank by Similarity to Return Top K default K=5, Return Top K default K=5 to Chunk 1: 0.94 Chunk 2: 0.91 Chunk 3: 0.87 Chunk 4: 0.82 Chunk 5: 0.79.
  A[Query Embedding] --> B[Calculate Similarity<br/>to All Chunks]
  B --> C[Rank by Similarity]
  C --> D[Return Top K<br/>default K=5]
  D --> E[Chunk 1: 0.94<br/>Chunk 2: 0.91<br/>Chunk 3: 0.87<br/>Chunk 4: 0.82<br/>Chunk 5: 0.79]
 
- style E fill:#029E73,stroke:#000000,color:#FFFFFF
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class E pal-029E73
+ classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Result Example**:
@@ -453,6 +480,8 @@ User Question:
 
 ```mermaid
 graph TD
+ accTitle: 8. Context Building
+ accDescr: Graph with 7 nodes and 9 connections. Nodes: Retrieved Chunks, Optimization, Rerank by Relevance, Remove Duplicates, Add Metadata, Truncate if Needed, Final Context. Connections: Retrieved Chunks to Optimization, Optimization to Rerank by Relevance, Optimization to Remove Duplicates, Optimization to Add Metadata, Optimization to Truncate if Needed, Rerank by Relevance to Final Context, Remove Duplicates to Final Context, Add Metadata to Final Context, Truncate if Needed to Final Context.
  A[Retrieved Chunks] --> B{Optimization}
  B --> C[Rerank by Relevance]
  B --> D[Remove Duplicates]
@@ -463,7 +492,9 @@ graph TD
  E --> G
  F --> G
 
- style G fill:#0173B2,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class G pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Token Budget Example**:
@@ -519,13 +550,18 @@ What was Q4 revenue?
 
 ```mermaid
 graph TD
+ accTitle: 9. Answer Generation
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Prompt, LLM GPT-4/Claude/etc, Quality Check, Final Answer, Retry or Error. Connections: Prompt to LLM GPT-4/Claude/etc, LLM GPT-4/Claude/etc to Quality Check, Quality Check to Final Answer (✓ Grounded), Quality Check to Retry or Error (✗ Hallucination).
  A[Prompt] --> B[LLM<br/>GPT-4/Claude/etc]
  B --> C{Quality Check}
  C -->|✓ Grounded| D[Final Answer]
  C -->|✗ Hallucination| E[Retry or Error]
 
- style D fill:#029E73,stroke:#000000,color:#FFFFFF
- style E fill:#DE8F05,stroke:#000000,color:#FFFFFF
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class E pal-DE8F05
+ classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Generated Answer**:

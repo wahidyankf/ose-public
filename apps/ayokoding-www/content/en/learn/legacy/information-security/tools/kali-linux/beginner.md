@@ -45,32 +45,40 @@ Understanding where each tool fits in a structured workflow prevents wasted effo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
-    A[Scope Definition] --> B[Passive Reconnaissance]
-    B --> C[Active Reconnaissance]
+    accTitle: Kali Linux Penetration Testing Workflow
+    accDescr: Flowchart with 12 nodes and 13 connections. Nodes: Scope Definition, Passive Reconnaissance, Active Reconnaissance, Open Ports?, Service Enumeration, Adjust Scan Strategy, Vulnerability Analysis, Web Services?, Web App Testing, Exploitation Research, Password Auditing, Documentation. Connections: Scope Definition to Passive Reconnaissance, Passive Reconnaissance to Active Reconnaissance, Active Reconnaissance to Open Ports?, Open Ports? to Service Enumeration (Yes), Open Ports? to Adjust Scan Strategy (No), Adjust Scan Strategy to Active Reconnaissance, Service Enumeration to Vulnerability Analysis, Vulnerability Analysis to Web Services?, Web Services? to Web App Testing (Yes), Web Services? to Exploitation Research (No), Web App Testing to Exploitation Research, Exploitation Research to Password Auditing, and 1 more.
+    A[Scope Definition] --> B[Passive<br/>Reconnaissance]
+    B --> C[Active<br/>Reconnaissance]
     C --> D{Open Ports?}
     D -->|Yes| E[Service Enumeration]
     D -->|No| F[Adjust Scan Strategy]
     F --> C
-    E --> G[Vulnerability Analysis]
+    E --> G[Vulnerability<br/>Analysis]
     G --> H{Web Services?}
     H -->|Yes| I[Web App Testing]
-    H -->|No| J[Exploitation Research]
+    H -->|No| J[Exploitation<br/>Research]
     I --> J
     J --> K[Password Auditing]
     K --> L[Documentation]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#CC78BC,stroke:#000,color:#000
-    style J fill:#CA9161,stroke:#000,color:#000
-    style K fill:#0173B2,stroke:#000,color:#fff
-    style L fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    class H pal-029E73
+    class I pal-CC78BC
+    class J pal-CA9161
+    class K pal-0173B2
+    class L pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Workflow Phases**:
@@ -94,29 +102,37 @@ depends on accurate nmap output — understanding its scan types determines resu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Scan Types Compared
+    accDescr: Flowchart with 11 nodes and 10 connections. Nodes: nmap Scan Types, TCP Connect -sT, SYN Stealth -sS, UDP Scan -sU, Version Detection -sV, Script Scan -sC, Full 3-way handshake Logged by target No root needed, Half-open SYN Less logging Requires root, Stateless UDP probes Slow - no ACK Requires root, Banner grabbing Version identification, NSE Lua scripts Advanced enumeration. Connections: nmap Scan Types to TCP Connect -sT, nmap Scan Types to SYN Stealth -sS, nmap Scan Types to UDP Scan -sU, nmap Scan Types to Version Detection -sV, nmap Scan Types to Script Scan -sC, TCP Connect -sT to Full 3-way handshake Logged by target No root needed, SYN Stealth -sS to Half-open SYN Less logging Requires root, UDP Scan -sU to Stateless UDP probes Slow - no ACK Requires root, Version Detection -sV to Banner grabbing Version identification, Script Scan -sC to NSE Lua scripts Advanced enumeration.
     A[nmap Scan Types] --> B[TCP Connect -sT]
     A --> C[SYN Stealth -sS]
     A --> D[UDP Scan -sU]
-    A --> E[Version Detection -sV]
+    A --> E[Version Detection<br/>-sV]
     A --> F[Script Scan -sC]
 
-    B --> G[Full 3-way handshake\nLogged by target\nNo root needed]
-    C --> H[Half-open SYN\nLess logging\nRequires root]
-    D --> I[Stateless UDP probes\nSlow - no ACK\nRequires root]
-    E --> J[Banner grabbing\nVersion identification]
-    F --> K[NSE Lua scripts\nAdvanced enumeration]
+    B --> G[Full 3-way handshake<br/>Logged by target<br/>No root needed]
+    C --> H[Half-open SYN<br/>Less logging<br/>Requires root]
+    D --> I[Stateless UDP probes<br/>Slow - no ACK<br/>Requires root]
+    E --> J[Banner grabbing<br/>Version<br/>identification]
+    F --> K[NSE Lua scripts<br/>Advanced enumeration]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#CC78BC,stroke:#000,color:#000
-    style J fill:#CA9161,stroke:#000,color:#000
-    style K fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    class H pal-029E73
+    class I pal-CC78BC
+    class J pal-CA9161
+    class K pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 1: Host Discovery Scan
@@ -357,28 +373,36 @@ running online attacks, and use rate limiting flags accordingly.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
-    A[Password Auditing] --> B[Online Attack\nHydra, Medusa]
-    A --> C[Offline Attack\nJohn, Hashcat]
+    accTitle: Password Attack Taxonomy
+    accDescr: Flowchart with 13 nodes and 12 connections. Nodes: Password Auditing, Online Attack Hydra, Medusa, Offline Attack John, Hashcat, Dictionary Attack Try known passwords, Brute Force All combinations, Obtain Hash Database dump / file, G, list, H, wordlist, I, rules, and 1 more. Connections: Password Auditing to Online Attack Hydra, Medusa, Password Auditing to Offline Attack John, Hashcat, Online Attack Hydra, Medusa to Dictionary Attack Try known passwords, Online Attack Hydra, Medusa to Brute Force All combinations, Offline Attack John, Hashcat to Obtain Hash Database dump / file, Obtain Hash Database dump / file to G, G to list, G to H, H to wordlist, G to I, I to rules, G to Incremental Mode Pure brute force.
+    A[Password Auditing] --> B[Online Attack<br/>Hydra, Medusa]
+    A --> C[Offline Attack<br/>John, Hashcat]
 
-    B --> D[Dictionary Attack\nTry known passwords]
-    B --> E[Brute Force\nAll combinations]
+    B --> D[Dictionary Attack<br/>Try known passwords]
+    B --> E[Brute Force<br/>All combinations]
 
-    C --> F[Obtain Hash\nDatabase dump / file]
-    F --> G[Identify Hash Type\nhashid / john --list]
-    G --> H[Dictionary Mode\njohn --wordlist]
-    G --> I[Rules Mode\njohn --rules]
-    G --> J[Incremental Mode\nPure brute force]
+    C --> F[Obtain Hash<br/>Database dump / file]
+    F --> G[Identify Hash Type<br/>hashid / john --list]
+    G --> H[Dictionary Mode<br/>john --wordlist]
+    G --> I[Rules Mode<br/>john --rules]
+    G --> J[Incremental Mode<br/>Pure brute force]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#CC78BC,stroke:#000,color:#000
-    style J fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    class H pal-029E73
+    class I pal-CC78BC
+    class J pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 11: Hydra SSH Dictionary Attack

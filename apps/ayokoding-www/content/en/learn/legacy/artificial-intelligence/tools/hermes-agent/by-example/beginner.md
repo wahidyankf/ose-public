@@ -18,8 +18,10 @@ Hermes Agent installs via a single `curl` command that bootstraps the entire too
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 1: Installing Hermes Agent
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: curl install script, Auto-install deps Python 3.11, Node v22, uv, ripgrep, ffmpeg, hermes CLI, hermes doctor. Connections: curl install script to Auto-install deps Python 3.11, Node v22, uv, ripgrep, ffmpeg (bootstrap), Auto-install deps Python 3.11, Node v22, uv, ripgrep, ffmpeg to hermes CLI (provisions), hermes CLI to hermes doctor (verify).
     A["curl install script"]
-    B["Auto-install deps<br/>Python 3.11, Node v22,<br/>uv, ripgrep, ffmpeg"]
+    B["Auto-install deps<br/>Python 3.11, Node<br/>v22,<br/>uv, ripgrep, ffmpeg"]
     C["hermes CLI"]
     D["hermes doctor"]
 
@@ -27,10 +29,15 @@ graph LR
     B -->|provisions| C
     C -->|verify| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -60,19 +67,27 @@ The `hermes setup` command launches an interactive wizard that configures your m
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 2: First-Time Setup Wizard
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: hermes setup (interactive wizard), Step 1: Provider (anthropic, openrouter, ...), Step 2: API Key (validated live), Step 3: Default Model, ~/.hermes/ config.yaml + .env. Connections: hermes setup (interactive wizard) to Step 1: Provider (anthropic, openrouter, ...), Step 1: Provider (anthropic, openrouter, ...) to Step 2: API Key (validated live), Step 2: API Key (validated live) to Step 3: Default Model, Step 3: Default Model to ~/.hermes/ config.yaml + .env.
     A["hermes setup<br/>(interactive wizard)"]
-    B["Step 1: Provider<br/>(anthropic, openrouter, ...)"]
+    B["Step 1: Provider<br/>(anthropic,<br/>openrouter, ...)"]
     C["Step 2: API Key<br/>(validated live)"]
-    D["Step 3: Default Model"]
+    D["Step 3: Default<br/>Model"]
     E["~/.hermes/<br/>config.yaml + .env"]
 
     A --> B --> C --> D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -182,11 +197,13 @@ The `hermes doctor` command validates your entire installation — checking depe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 6: Doctor and Diagnostics
+    accDescr: Graph with 9 nodes and 12 connections. Nodes: hermes doctor, Python 3.11, Node.js v22, uv /ripgrep /ffmpeg, ~/.hermes/ config.yaml, API key auth, All pass?, Ready, Fix reported check. Connections: hermes doctor to Python 3.11, hermes doctor to Node.js v22, hermes doctor to uv /ripgrep /ffmpeg, hermes doctor to ~/.hermes/ config.yaml, hermes doctor to API key auth, Python 3.11 to All pass?, Node.js v22 to All pass?, uv /ripgrep /ffmpeg to All pass?, ~/.hermes/ config.yaml to All pass?, API key auth to All pass?, All pass? to Ready (yes), All pass? to Fix reported check (no).
     A["hermes doctor"]
     B["Python 3.11"]
     C["Node.js v22"]
-    D["uv / ripgrep / ffmpeg"]
-    E["~/.hermes/config.yaml"]
+    D["uv /ripgrep /ffmpeg"]
+    E["~/.hermes/<br/>config.yaml"]
     F["API key auth"]
     G{"All pass?"}
     H["Ready"]
@@ -196,10 +213,15 @@ graph TD
     G -->|"yes"| H
     G -->|"no"| I
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class G pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class H pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class I pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -231,6 +253,8 @@ Hermes Agent uses `~/.hermes/config.yaml` as the main configuration file, `~/.he
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 7: Configuration File Structure
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: ~/.hermes/, config.yaml Main configuration, C, secrets, auth.json OAuth tokens, memories/ MEMORY.md, USER.md, SOUL.md Agent personality. Connections: ~/.hermes/ to config.yaml Main configuration, ~/.hermes/ to C, ~/.hermes/ to auth.json OAuth tokens, ~/.hermes/ to memories/ MEMORY.md, USER.md, ~/.hermes/ to SOUL.md Agent personality.
     A["~/.hermes/"]
     B["config.yaml<br/>Main configuration"]
     C[".env<br/>API keys & secrets"]
@@ -244,12 +268,18 @@ graph TD
     A --> E
     A --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Directory structure**:
@@ -583,6 +613,8 @@ Hermes Agent provides four file tools for reading, creating, editing, and search
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 15: File Operations
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: read_file Read contents, write_file Create/overwrite, patch Targeted edits, search_files Find content, Agent Decision. Connections: read_file Read contents to Agent Decision (inspect), search_files Find content to Agent Decision (locate), Agent Decision to patch Targeted edits (modify), Agent Decision to write_file Create/overwrite (create).
     A["read_file<br/>Read contents"]
     B["write_file<br/>Create/overwrite"]
     C["patch<br/>Targeted edits"]
@@ -593,11 +625,17 @@ graph LR
     E -->|modify| C
     E -->|create| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Tools**:
@@ -729,22 +767,30 @@ The vision tools let Hermes Agent analyze images and generate new ones. Vision a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 19: Vision and Image Analysis
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: Image / Screenshot (user provides), vision_analyze (via models native vision), Text description (text prompt), image_generate (via fal.ai), Analysis result (error, layout, content), Generated image (saved locally). Connections: Image / Screenshot (user provides) to vision_analyze (via models native vision), vision_analyze (via models native vision) to Analysis result (error, layout, content), Text description (text prompt) to image_generate (via fal.ai), image_generate (via fal.ai) to Generated image (saved locally).
     A["Image / Screenshot<br/>(user provides)"]
-    B["vision_analyze<br/>(via model's native vision)"]
+    B["vision_analyze<br/>(via model's native<br/>vision)"]
     C["Text description<br/>(text prompt)"]
     D["image_generate<br/>(via fal.ai)"]
-    E["Analysis result<br/>(error, layout, content)"]
+    E["Analysis result<br/>(error, layout,<br/>content)"]
     F["Generated image<br/>(saved locally)"]
 
     A --> B --> E
     C --> D --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -918,21 +964,29 @@ The memory tool provides three actions — `add`, `replace`, and `remove` — fo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 23: Memory Operations
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Session Starts (snapshot injected), memory.add(text) Append new fact, memory.replace(old, new) Substring match + update, memory.remove(text) Delete matched text, MEMORY.md updated on disk, Next Session Loads updated snapshot. Connections: Session Starts (snapshot injected) to memory.add(text) Append new fact, Session Starts (snapshot injected) to memory.replace(old, new) Substring match + update, Session Starts (snapshot injected) to memory.remove(text) Delete matched text, memory.add(text) Append new fact to MEMORY.md updated on disk, memory.replace(old, new) Substring match + update to MEMORY.md updated on disk, memory.remove(text) Delete matched text to MEMORY.md updated on disk, MEMORY.md updated on disk to Next Session Loads updated snapshot.
     A["Session Starts<br/>(snapshot injected)"]
     B["memory.add(text)<br/>Append new fact"]
-    C["memory.replace(old, new)<br/>Substring match + update"]
+    C["memory.replace(old,<br/>new)<br/>Substring match +<br/>update"]
     D["memory.remove(text)<br/>Delete matched text"]
     E["MEMORY.md updated<br/>on disk"]
-    F["Next Session<br/>Loads updated snapshot"]
+    F["Next Session<br/>Loads updated<br/>snapshot"]
 
     A --> B & C & D --> E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1095,6 +1149,8 @@ Hermes Agent provides a built-in migration tool for OpenClaw users. The `hermes 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 27: Migrating from OpenClaw
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: ~/.openclaw/ JSON5 config, hermes claw migrate, ~/.hermes/ YAML config. Connections: ~/.openclaw/ JSON5 config to hermes claw migrate (--dry-run (preview)), hermes claw migrate to ~/.hermes/ YAML config (converts).
     A["~/.openclaw/<br/>JSON5 config"]
     B["hermes claw migrate"]
     C["~/.hermes/<br/>YAML config"]
@@ -1102,9 +1158,13 @@ graph LR
     A -->|"--dry-run<br/>(preview)"| B
     B -->|converts| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:

@@ -27,6 +27,8 @@ Claude Code is a command-line tool that brings Claude AI's capabilities directly
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: How Claude Code Works
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Developer Request (Natural Language), Claude Code Analyzes Codebase, AI Generates Solution, Executes Operations (Read/Write/Bash), E, Iteration. Connections: Developer Request (Natural Language) to Claude Code Analyzes Codebase, Claude Code Analyzes Codebase to AI Generates Solution, AI Generates Solution to Executes Operations (Read/Write/Bash), Executes Operations (Read/Write/Bash) to E, E to Developer Request (Natural Language) (Refine).
     A["Developer Request<br/>(Natural Language)"]
     B["Claude Code<br/>Analyzes Codebase"]
     C["AI Generates<br/>Solution"]
@@ -39,11 +41,17 @@ graph TD
     D --> E
     E -->|Refine| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Example workflow**:
@@ -284,10 +292,12 @@ Before using Claude Code, ensure you have:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, Basic Commands (Ask, Read, Write), File Operations (Edit, Create), Advanced Workflows (Multi-file, Debugging), Best Practices (Prompting, Review). Connections: A to Basic Commands (Ask, Read, Write), Basic Commands (Ask, Read, Write) to File Operations (Edit, Create), File Operations (Edit, Create) to Advanced Workflows (Multi-file, Debugging), Advanced Workflows (Multi-file, Debugging) to Best Practices (Prompting, Review).
     A["Installation &<br/>Setup"]
     B["Basic Commands<br/>(Ask, Read, Write)"]
     C["File Operations<br/>(Edit, Create)"]
-    D["Advanced Workflows<br/>(Multi-file, Debugging)"]
+    D["Advanced Workflows<br/>(Multi-file,<br/>Debugging)"]
     E["Best Practices<br/>(Prompting, Review)"]
 
     A --> B
@@ -295,11 +305,17 @@ graph TD
     C --> D
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## What You'll Learn

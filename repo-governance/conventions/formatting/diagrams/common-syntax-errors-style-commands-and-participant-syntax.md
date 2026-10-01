@@ -31,10 +31,10 @@ For sequence diagrams, use `box` syntax for grouping and coloring instead:
 sequenceDiagram
     accTitle: Error 4: Style Commands in Sequence Diagrams
     accDescr: User sends Request to System; System sends Response to User.
-    box Blue User Side
+    box User Side
         participant User
     end
-    box Orange System Side
+    box System Side
         participant System
     end
 

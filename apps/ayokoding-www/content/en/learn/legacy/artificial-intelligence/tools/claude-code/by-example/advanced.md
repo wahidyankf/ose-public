@@ -49,21 +49,29 @@ Main Claude session delegates specialized tasks to subagents, which work autonom
 
 ```mermaid
 graph TD
-    A[Main Claude Session] -->|Delegate| B[security-scanner agent]
-    A -->|Delegate| C[performance-analyzer agent]
-    B -->|Tools: Read Grep Glob| D[Security Report]
+    accTitle: Example 62: Subagent Delegation Patterns
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Main Claude Session, security-scanner agent, performance-analyzer agent, Security Report, Performance Report, Consolidated Report, Actionable Summary. Connections: Main Claude Session to security-scanner agent (Delegate), Main Claude Session to performance-analyzer agent (Delegate), security-scanner agent to Security Report (Tools: Read Grep Glob), performance-analyzer agent to Performance Report (Tools: Read Bash), Security Report to Consolidated Report (Return to main), Performance Report to Consolidated Report (Return to main), Consolidated Report to Actionable Summary (Prioritized findings).
+    A[Main Claude Session] -->|Delegate| B[security-scanner<br/>agent]
+    A -->|Delegate| C[performance-analyzer<br/>agent]
+    B -->|Tools: Read Grep<br/>Glob| D[Security Report]
     C -->|Tools: Read Bash| E[Performance Report]
     D -->|Return to main| F[Consolidated Report]
     E -->|Return to main| F
     F -->|Prioritized findings| G[Actionable Summary]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -107,21 +115,29 @@ Integrate Model Context Protocol (MCP) servers to extend Claude's capabilities w
 
 ```mermaid
 graph TD
+    accTitle: Example 63: MCP Server Integration
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Claude CLI, github MCP server, database MCP server, GitHub API: Issues PRs, Production DB: Error logs, Claude Analysis, Cross-referenced Insights. Connections: Claude CLI to github MCP server (Load config), Claude CLI to database MCP server (Load config), github MCP server to GitHub API: Issues PRs (Query), database MCP server to Production DB: Error logs (Query), GitHub API: Issues PRs to Claude Analysis (Data), Production DB: Error logs to Claude Analysis (Data), Claude Analysis to Cross-referenced Insights (Correlates).
     A[Claude CLI] -->|Load config| B[github MCP server]
     A -->|Load config| C[database MCP server]
-    B -->|Query| D[GitHub API: Issues PRs]
-    C -->|Query| E[Production DB: Error logs]
+    B -->|Query| D[GitHub API: Issues<br/>PRs]
+    C -->|Query| E[Production DB: Error<br/>logs]
     D -->|Data| F[Claude Analysis]
     E -->|Data| F
-    F -->|Correlates| G[Cross-referenced Insights]
+    F -->|Correlates| G[Cross-referenced<br/>Insights]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -255,18 +271,26 @@ Orchestrate multiple Claude invocations in sequence, each building on previous r
 
 ```mermaid
 graph TD
-    A[Agent 1: Architecture Analysis] -->|JSON| B[Agent 2: Migration Planning]
-    B -->|JSON| C[Agent 3: Risk Assessment]
+    accTitle: Example 66: Complex Multi-Agent Workflows
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Agent 1: Architecture Analysis, Agent 2: Migration Planning, Agent 3: Risk Assessment, jq consolidate all, Claude Agent 4: Prioritization, Final Roadmap. Connections: Agent 1: Architecture Analysis to Agent 2: Migration Planning (JSON), Agent 2: Migration Planning to Agent 3: Risk Assessment (JSON), Agent 3: Risk Assessment to jq consolidate all (JSON), jq consolidate all to Claude Agent 4: Prioritization (Combined JSON), Claude Agent 4: Prioritization to Final Roadmap (Markdown).
+    A[Agent 1:<br/>Architecture<br/>Analysis] -->|JSON| B[Agent 2: Migration<br/>Planning]
+    B -->|JSON| C[Agent 3: Risk<br/>Assessment]
     C -->|JSON| D[jq consolidate all]
-    D -->|Combined JSON| E[Claude Agent 4: Prioritization]
+    D -->|Combined JSON| E[Claude Agent 4:<br/>Prioritization]
     E -->|Markdown| F[Final Roadmap]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -312,20 +336,28 @@ Fork sessions to explore multiple approaches from same starting context without 
 
 ```mermaid
 graph TD
-    A[auth-analysis-main session] -->|fork-session| B[auth-experiment-jwt]
-    A -->|fork-session| C[auth-experiment-session]
-    A -->|fork-session| D[auth-experiment-oauth]
+    accTitle: Example 67: Session Forking for Parallel Experiments
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: auth-analysis-main session, auth-experiment-jwt, auth-experiment- session, auth-experiment- oauth, Compare Approaches, Original analysis preserved. Connections: auth-analysis-main session to auth-experiment-jwt (fork-session), auth-analysis-main session to auth-experiment- session (fork-session), auth-analysis-main session to auth-experiment- oauth (fork-session), auth-experiment-jwt to Compare Approaches (jwt-design.md), auth-experiment- session to Compare Approaches (session-design.md), auth-experiment- oauth to Compare Approaches (oauth-design.md), auth-analysis-main session to Original analysis preserved (unchanged).
+    A[auth-analysis-main<br/>session] -->|fork-session| B[auth-experiment-jwt]
+    A -->|fork-session| C[auth-experiment-<br/>session]
+    A -->|fork-session| D[auth-experiment-<br/>oauth]
     B -->|jwt-design.md| E[Compare Approaches]
     C -->|session-design.md| E
     D -->|oauth-design.md| E
-    A -->|unchanged| F[Original analysis preserved]
+    A -->|unchanged| F[Original analysis<br/>preserved]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -424,22 +456,29 @@ Handle Claude errors gracefully in automation with retries, fallbacks, and degra
 
 ```mermaid
 graph TD
+    accTitle: Example 69: Error Recovery Patterns in Automation
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: Call Claude, Return Output, Wait 5s backoff, Call Claude attempt 2, Wait 10s backoff, Call Claude attempt 3, Fallback: cached result. Connections: Call Claude to Return Output (Success), Call Claude to Wait 5s backoff (Fail attempt 1), Wait 5s backoff to Call Claude attempt 2 (Retry), Call Claude attempt 2 to Return Output (Success), Call Claude attempt 2 to Wait 10s backoff (Fail attempt 2), Wait 10s backoff to Call Claude attempt 3 (Retry), Call Claude attempt 3 to Return Output (Success), Call Claude attempt 3 to Fallback: cached result (All retries failed).
     A[Call Claude] -->|Success| B[Return Output]
     A -->|Fail attempt 1| C[Wait 5s backoff]
-    C -->|Retry| D[Call Claude attempt 2]
+    C -->|Retry| D[Call Claude attempt<br/>2]
     D -->|Success| B
     D -->|Fail attempt 2| E[Wait 10s backoff]
-    E -->|Retry| F[Call Claude attempt 3]
+    E -->|Retry| F[Call Claude attempt<br/>3]
     F -->|Success| B
-    F -->|All retries failed| G[Fallback: cached result]
+    F -->|All retries failed| G[Fallback: cached<br/>result]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#0173B2,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-0173B2
+    class E pal-DE8F05
+    class F pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -500,20 +539,28 @@ Manage Claude configuration across environments (dev/staging/prod) with profiles
 
 ```mermaid
 graph TD
-    A[DEPLOY_ENV variable] -->|dev| B[claude-dev: haiku write $1]
-    A -->|staging| C[claude-staging: sonnet RO $5]
-    A -->|prod| D[claude-prod: sonnet strict $10]
+    accTitle: Example 70: Advanced Configuration Management for Production
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: DEPLOY_ENV variable, claude-dev: haiku write $1, claude-staging: sonnet RO $5, claude-prod: sonnet strict $10, Development Analysis, Staging Validation, Production Analysis. Connections: DEPLOY_ENV variable to claude-dev: haiku write $1 (dev), DEPLOY_ENV variable to claude-staging: sonnet RO $5 (staging), DEPLOY_ENV variable to claude-prod: sonnet strict $10 (prod), claude-dev: haiku write $1 to Development Analysis (Fast flexible), claude-staging: sonnet RO $5 to Staging Validation (Thorough safe), claude-prod: sonnet strict $10 to Production Analysis (Maximum safety).
+    A[DEPLOY_ENV variable] -->|dev| B[claude-dev: haiku<br/>write $1]
+    A -->|staging| C[claude-staging:<br/>sonnet RO $5]
+    A -->|prod| D[claude-prod: sonnet<br/>strict $10]
     B -->|Fast flexible| E[Development Analysis]
     C -->|Thorough safe| F[Staging Validation]
     D -->|Maximum safety| G[Production Analysis]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -715,6 +762,8 @@ Optimize existing CI/CD pipelines for faster builds. Claude analyzes workflows a
 
 ```mermaid
 graph TD
+    accTitle: Example 73: CI/CD Pipeline Optimization
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Original Pipeline, Identify Bottlenecks, Parallel Jobs, Smart Caching, Dependency Pruning, Faster Pipeline. Connections: Original Pipeline to Identify Bottlenecks (Analyze), Identify Bottlenecks to Parallel Jobs (Optimize), Identify Bottlenecks to Smart Caching (Optimize), Identify Bottlenecks to Dependency Pruning (Optimize), Parallel Jobs to Faster Pipeline (Results), Smart Caching to Faster Pipeline (Results), Dependency Pruning to Faster Pipeline (Results).
     A[Original Pipeline] -->|Analyze| B[Identify Bottlenecks]
     B -->|Optimize| C[Parallel Jobs]
     B -->|Optimize| D[Smart Caching]
@@ -723,12 +772,17 @@ graph TD
     D -->|Results| F
     E -->|Results| F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -787,25 +841,33 @@ Generate Terraform configurations for cloud resources. Claude creates modules fo
 
 ```mermaid
 graph TD
-    A[Request: VPC + RDS + ECS] -->|Generate| B[modules/vpc/main.tf]
+    accTitle: Example 74: Infrastructure as Code with Terraform
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: Request: VPC + RDS + ECS, modules/vpc/main.tf, modules/rds/main.tf, modules/ecs/main.tf, main.tf: root module, variables.tf + outputs.tf, Public AZ-1 + AZ-2, Private DB subnets. Connections: Request: VPC + RDS + ECS to modules/vpc/main.tf (Generate), Request: VPC + RDS + ECS to modules/rds/main.tf (Generate), Request: VPC + RDS + ECS to modules/ecs/main.tf (Generate), Request: VPC + RDS + ECS to main.tf: root module (Generate), Request: VPC + RDS + ECS to variables.tf + outputs.tf (Generate), main.tf: root module to variables.tf + outputs.tf (Declares), modules/vpc/main.tf to Public AZ-1 + AZ-2 (Public subnets), modules/vpc/main.tf to Private DB subnets (Private subnets), modules/rds/main.tf to Private DB subnets (Uses), modules/ecs/main.tf to Public AZ-1 + AZ-2 (Uses).
+    A[Request: VPC + RDS +<br/>ECS] -->|Generate| B[modules/vpc/main.tf]
     A -->|Generate| C[modules/rds/main.tf]
     A -->|Generate| D[modules/ecs/main.tf]
     A -->|Generate| E[main.tf: root module]
-    A -->|Generate| F[variables.tf + outputs.tf]
+    A -->|Generate| F[variables.tf +<br/>outputs.tf]
     E -->|Declares| F
     B -->|Public subnets| G[Public AZ-1 + AZ-2]
     B -->|Private subnets| H[Private DB subnets]
     C -->|Uses| H
     D -->|Uses| G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-0173B2
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -934,22 +996,30 @@ Create custom Claude agents with project-specific knowledge and tools. Agents re
 
 ```mermaid
 graph TD
+    accTitle: Example 76: Custom Agent Configuration for Project-Specific Workflows
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: Project Codebase, Detect Conventions, Route patterns: src/api/, Error class: ApiError, Auth: authMiddleware, .claude/agents/ api-developer, All team members via claude. Connections: Project Codebase to Detect Conventions (Analyze), Detect Conventions to Route patterns: src/api/ (Extract), Detect Conventions to Error class: ApiError (Extract), Detect Conventions to Auth: authMiddleware (Extract), Route patterns: src/api/ to .claude/agents/ api-developer (Generate), Error class: ApiError to .claude/agents/ api-developer (Include), Auth: authMiddleware to .claude/agents/ api-developer (Include), .claude/agents/ api-developer to All team members via claude (Used by).
     A[Project Codebase] -->|Analyze| B[Detect Conventions]
-    B -->|Extract| C[Route patterns: src/api/]
-    B -->|Extract| D[Error class: ApiError]
+    B -->|Extract| C[Route patterns:<br/>src/api/]
+    B -->|Extract| D[Error class:<br/>ApiError]
     B -->|Extract| E[Auth: authMiddleware]
-    C -->|Generate| F[.claude/agents/api-developer]
+    C -->|Generate| F[.claude/agents/<br/>api-developer]
     D -->|Include| F
     E -->|Include| F
-    F -->|Used by| G[All team members via claude]
+    F -->|Used by| G[All team members via<br/>claude]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -1050,6 +1120,8 @@ Scan code for security vulnerabilities. Claude identifies SQL injection, XSS, se
 
 ```mermaid
 graph TD
+    accTitle: Example 78: Security Audit Automation
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: Security Audit, SQL Injection, XSS Vulnerabilities, Hardcoded Secrets, Dependency Vulns, Findings. Connections: Security Audit to SQL Injection (Scan), Security Audit to XSS Vulnerabilities (Scan), Security Audit to Hardcoded Secrets (Scan), Security Audit to Dependency Vulns (Scan), SQL Injection to Findings (Report), XSS Vulnerabilities to Findings (Report), Hardcoded Secrets to Findings (Report), Dependency Vulns to Findings (Report).
     A[Security Audit] -->|Scan| B[SQL Injection]
     A -->|Scan| C[XSS Vulnerabilities]
     A -->|Scan| D[Hardcoded Secrets]
@@ -1059,12 +1131,16 @@ graph TD
     D -->|Report| F
     E -->|Report| F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -1231,26 +1307,34 @@ Integrate performance profiling into development workflow. Claude analyzes profi
 
 ```mermaid
 graph TD
+    accTitle: Example 81: Performance Profiling Integration
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: Profile Data, CPU Samples: 10,000, JSON.parse 23.45, bcrypt.hash 18.90, db.query 12.34, Body Size Limit + Streaming, Reduce Rounds + Background Job, JOIN Queries + DataLoader, 45 Faster Response Times. Connections: Profile Data to CPU Samples: 10,000 (Parse), CPU Samples: 10,000 to JSON.parse 23.45 (Analyze), CPU Samples: 10,000 to bcrypt.hash 18.90 (Analyze), CPU Samples: 10,000 to db.query 12.34 (Analyze), JSON.parse 23.45 to Body Size Limit + Streaming (Optimize), bcrypt.hash 18.90 to Reduce Rounds + Background Job (Optimize), db.query 12.34 to JOIN Queries + DataLoader (Optimize), Body Size Limit + Streaming to 45 Faster Response Times (Result), Reduce Rounds + Background Job to 45 Faster Response Times (Result), JOIN Queries + DataLoader to 45 Faster Response Times (Result).
     A[Profile Data] -->|Parse| B[CPU Samples: 10,000]
     B -->|Analyze| C[JSON.parse 23.45%]
     B -->|Analyze| D[bcrypt.hash 18.90%]
     B -->|Analyze| E[db.query 12.34%]
-    C -->|Optimize| F[Body Size Limit + Streaming]
-    D -->|Optimize| G[Reduce Rounds + Background Job]
-    E -->|Optimize| H[JOIN Queries + DataLoader]
-    F -->|Result| I[45% Faster Response Times]
+    C -->|Optimize| F[Body Size Limit +<br/>Streaming]
+    D -->|Optimize| G[Reduce Rounds +<br/>Background Job]
+    E -->|Optimize| H[JOIN Queries +<br/>DataLoader]
+    F -->|Result| I[45% Faster Response<br/>Times]
     G -->|Result| I
     H -->|Result| I
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-CC78BC
+    class H pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -1295,6 +1379,8 @@ Implement API versioning across microservices. Claude designs versioning scheme 
 
 ```mermaid
 graph TD
+    accTitle: Example 82: API Versioning Strategies for Microservices
+    accDescr: Graph with 10 nodes and 11 connections. Nodes: Versioning Strategy, URL Versioning, Header Versioning, Query Parameter, Implementation, Routing Middleware, v1 Handlers, v2 Handlers, Deprecation Headers, Clients of Sunset. Connections: Versioning Strategy to URL Versioning (Option 1), Versioning Strategy to Header Versioning (Option 2), Versioning Strategy to Query Parameter (Option 3), URL Versioning to Implementation (Selected), Implementation to Routing Middleware (Generate), Implementation to v1 Handlers (Generate), Implementation to v2 Handlers (Generate), Implementation to Deprecation Headers (Add), Routing Middleware to v1 Handlers (Routes to), Routing Middleware to v2 Handlers (Routes to), Deprecation Headers to Clients of Sunset (Notifies).
     A[Versioning Strategy] -->|Option 1| B[URL Versioning]
     A -->|Option 2| C[Header Versioning]
     A -->|Option 3| D[Query Parameter]
@@ -1307,16 +1393,22 @@ graph TD
     F -->|Routes to| H
     I -->|Notifies| J[Clients of Sunset]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
-    style J fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-CA9161
+    class H pal-CA9161
+    class I pal-CA9161
+    class J pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -1430,6 +1522,8 @@ Generate release notes from git commits and PR descriptions. Claude categorizes 
 
 ```mermaid
 graph TD
+    accTitle: Example 84: Automated Release Notes Generation
+    accDescr: Graph with 8 nodes and 12 connections. Nodes: Git Commits, 47 Commits, feat: 12, fix: 23, docs: 5, perf: 2, BREAKING: 1, Release Notes. Connections: Git Commits to 47 Commits (Analyze), 47 Commits to feat: 12 (Categorize), 47 Commits to fix: 23 (Categorize), 47 Commits to docs: 5 (Categorize), 47 Commits to perf: 2 (Categorize), 47 Commits to BREAKING: 1 (Categorize), BREAKING: 1 to docs: 5 (Needs migration docs), feat: 12 to Release Notes (Format), fix: 23 to Release Notes (Format), docs: 5 to Release Notes (Format), perf: 2 to Release Notes (Format), BREAKING: 1 to Release Notes (Add Migration Guide).
     A[Git Commits] -->|Analyze| B[47 Commits]
     B -->|Categorize| C[feat: 12]
     B -->|Categorize| D[fix: 23]
@@ -1443,14 +1537,20 @@ graph TD
     F -->|Format| H
     G -->|Add Migration Guide| H
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -1512,6 +1612,8 @@ Configure Claude for monorepo workflows with workspace-aware context. Claude und
 
 ```mermaid
 graph TD
+    accTitle: Example 85: Advanced Configuration and Customization - Monorepo Workspace Setup
+    accDescr: Graph with 7 nodes and 13 connections. Nodes: Nx Monorepo, @company/core, @company/auth, @company/ui, @company/web, @company/api, @company/mobile. Connections: Nx Monorepo to @company/core (Libraries), Nx Monorepo to @company/auth (Libraries), Nx Monorepo to @company/ui (Libraries), Nx Monorepo to @company/web (Apps), Nx Monorepo to @company/api (Apps), Nx Monorepo to @company/mobile (Apps), @company/web to @company/core (imports), @company/web to @company/auth (imports), @company/web to @company/ui (imports), @company/api to @company/core (imports), @company/api to @company/auth (imports), @company/mobile to @company/core (imports), and 1 more.
     A[Nx Monorepo] -->|Libraries| B["@company/core"]
     A -->|Libraries| C["@company/auth"]
     A -->|Libraries| D["@company/ui"]
@@ -1526,13 +1628,17 @@ graph TD
     G -->|imports| B
     G -->|imports| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:

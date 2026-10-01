@@ -33,18 +33,26 @@ When security incidents occur, defensive teams follow structured response proces
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Incident Response
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Detection, B, Analysis, Containment, Eradication, Recovery, Post-Incident Review. Connections: Detection to B, Detection to Analysis, B to Containment, Containment to Eradication, Eradication to Recovery, Recovery to Post-Incident Review.
     A[Detection] --> B[Triage & Analysis]
     B --> C[Containment]
     C --> D[Eradication]
     D --> E[Recovery]
     E --> F[Post-Incident Review]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Threat Intelligence
@@ -96,16 +104,24 @@ Effective defensive security implements multiple layers of protection, ensuring 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Defense-in-Depth Framework
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Perimeter Security, Network Security, Host Security, Application Security, Data Security. Connections: Perimeter Security to Network Security, Network Security to Host Security, Host Security to Application Security, Application Security to Data Security.
     A[Perimeter Security] --> B[Network Security]
     B --> C[Host Security]
     C --> D[Application Security]
     D --> E[Data Security]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Perimeter Defense
@@ -209,21 +225,29 @@ A Security Operations Centre (SOC) provides centralized 24/7 monitoring, detecti
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: SOC Structure and Three-Tier Model
+    accDescr: Flowchart with 11 nodes and 10 connections. Nodes: Security Alerts, Tier 1: Alert Triage, Escalation Needed?, D, Close, Tier 2: Investigation, Major Incident?, G, Tier 3: Advanced Response, I, Post-Incident Review. Connections: Security Alerts to Tier 1: Alert Triage, Tier 1: Alert Triage to Escalation Needed?, Escalation Needed? to D (No), Escalation Needed? to Close (No), Escalation Needed? to Tier 2: Investigation (Yes), Tier 2: Investigation to Major Incident?, Major Incident? to G (No), Major Incident? to Tier 3: Advanced Response (Yes), Tier 3: Advanced Response to I, I to Post-Incident Review.
     A[Security Alerts] --> B[Tier 1: Alert Triage]
     B --> C{Escalation Needed?}
     C -->|No| D[Document & Close]
-    C -->|Yes| E[Tier 2: Investigation]
+    C -->|Yes| E[Tier 2:<br/>Investigation]
     E --> F{Major Incident?}
-    F -->|No| G[Remediation & Documentation]
-    F -->|Yes| H[Tier 3: Advanced Response]
-    H --> I[Forensics & Eradication]
+    F -->|No| G[Remediation &<br/>Documentation]
+    F -->|Yes| H[Tier 3: Advanced<br/>Response]
+    H --> I[Forensics &<br/>Eradication]
     I --> J[Post-Incident Review]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#000
-    style I fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Tier 1 - Alert Triage**: Monitor SIEM dashboards, perform initial classification, handle routine incidents, escalate complex cases, maintain documentation.

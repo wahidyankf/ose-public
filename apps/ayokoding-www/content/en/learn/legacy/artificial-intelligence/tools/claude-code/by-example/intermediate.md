@@ -17,6 +17,8 @@ Run Claude Code in GitHub Actions for automated code analysis, generation, or va
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 31: Basic GitHub Actions Workflow with Claude
+    accDescr: Sequence diagram between Developer Push, GitHub Actions, Claude CLI, Codebase. Messages: Developer Push to GitHub Actions: git push (trigger); GitHub Actions to Codebase: actions/checkout@v3; GitHub Actions to Claude CLI: anthropics/claude-code-action@v1; Claude CLI to Codebase: Analyze security issues; Claude CLI to GitHub Actions: analysis.json (JSON output); GitHub Actions to GitHub Actions: jq parse critical count; GitHub Actions to Developer Push: Build pass/fail result.
     participant Dev as Developer Push
     participant GH as GitHub Actions
     participant Claude as Claude CLI
@@ -148,18 +150,26 @@ Secure Claude API keys using GitHub Secrets, environment variables, and permissi
 
 ```mermaid
 graph TD
+    accTitle: Example 34: Secret Management for Claude API Keys
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: GitHub Secret Store, ANTHROPIC_API_KEY, Claude Code Action, Claude CLI, vulnerabilities.json, Environment Protection. Connections: GitHub Secret Store to ANTHROPIC_API_KEY (Encrypted), ANTHROPIC_API_KEY to Claude Code Action (Masked in logs), Claude Code Action to Claude CLI (Budget limit set), Claude CLI to vulnerabilities.json (Analysis), Environment Protection to Claude Code Action (Manual approval).
     A[GitHub Secret Store] -->|Encrypted| B[ANTHROPIC_API_KEY]
     B -->|Masked in logs| C[Claude Code Action]
     C -->|Budget limit set| D[Claude CLI]
     D -->|Analysis| E[vulnerabilities.json]
-    F[Environment Protection] -->|Manual approval| C
+    F[Environment<br/>Protection] -->|Manual approval| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -251,6 +261,8 @@ Orchestrate multi-stage pipeline where each stage depends on previous success. C
 
 ```mermaid
 graph LR
+    accTitle: Example 36: Multi-Stage Pipeline
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Lint, Test, Claude Analysis, Deploy, Block. Connections: Lint to Test (pass), Test to Claude Analysis (pass), Claude Analysis to Deploy (pass), Lint to Block (fail), Test to Block (fail), Claude Analysis to Block (fail).
     A[Lint] -->|pass| B[Test]
     B -->|pass| C[Claude Analysis]
     C -->|pass| D[Deploy]
@@ -258,11 +270,17 @@ graph LR
     B -->|fail| X
     C -->|fail| X
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style X fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class X pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -499,6 +517,8 @@ Monitor deployment health with Claude analyzing logs, trigger automatic rollback
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 40: Automated Rollback with Claude Failure Detection
+    accDescr: Sequence diagram between Deploy Job, Production App, Health Monitor, Claude CLI, Rollback Script. Messages: Deploy Job to Production App: Deploy new version; Health Monitor to Production App: Fetch production logs (after 2min); Production App to Health Monitor: Log output; Health Monitor to Claude CLI: Analyze logs for issues; Claude CLI to Health Monitor: JSON: healthy: bool, issues: []; Health Monitor to Health Monitor: Log healthy status; Health Monitor to Rollback Script: Trigger rollback; Rollback Script to Production App: Restore previous version.
     participant Deploy as Deploy Job
     participant App as Production App
     participant Monitor as Health Monitor
@@ -907,14 +927,21 @@ Convert callback-based async code to async/await. Claude identifies callback pat
 
 ```mermaid
 graph LR
+    accTitle: Example 46: Async/Await Migration from Callbacks
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Callback Pattern, Nested Callbacks, Promise Wrapping, Async/Await. Connections: Callback Pattern to Nested Callbacks (Identify), Nested Callbacks to Promise Wrapping (Refactor), Promise Wrapping to Async/Await (Convert).
     A[Callback Pattern] -->|Identify| B[Nested Callbacks]
     B -->|Refactor| C[Promise Wrapping]
     C -->|Convert| D[Async/Await]
 
-    style A fill:#DE8F05,stroke:#000,color:#000
-    style B fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before - callback approach**:
@@ -982,7 +1009,9 @@ Standardize error handling across codebase. Claude identifies inconsistent patte
 
 ```mermaid
 graph TD
-    A[Scan API Codebase] -->|Find| B[Inconsistent Patterns]
+    accTitle: Example 47: Error Handling Pattern Standardization
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Scan API Codebase, Inconsistent Patterns, throw Error, res.status 500, Custom Objects, ApiError Class. Connections: Scan API Codebase to Inconsistent Patterns (Find), Inconsistent Patterns to throw Error (Classify), Inconsistent Patterns to res.status 500 (Classify), Inconsistent Patterns to Custom Objects (Classify), throw Error to ApiError Class (Standardize), res.status 500 to ApiError Class (Standardize), Custom Objects to ApiError Class (Standardize).
+    A[Scan API Codebase] -->|Find| B[Inconsistent<br/>Patterns]
     B -->|Classify| C[throw Error]
     B -->|Classify| D[res.status 500]
     B -->|Classify| E[Custom Objects]
@@ -990,12 +1019,17 @@ graph TD
     D -->|Standardize| F
     E -->|Standardize| F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    class D pal-CA9161
+    class E pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -1061,6 +1095,8 @@ Implement design patterns to improve code structure. Claude refactors procedural
 
 ```mermaid
 classDiagram
+    accTitle: Example 49: Design Pattern Implementation - Strategy Pattern
+    accDescr: Class diagram with 5 items: PaymentStrategy, CreditCardStrategy, PaypalStrategy, CryptoStrategy, PaymentProcessor. Relationships: PaymentStrategy to CreditCardStrategy; PaymentStrategy to PaypalStrategy; PaymentStrategy to CryptoStrategy; PaymentProcessor to PaymentStrategy.
     class PaymentStrategy {
         <<interface>>
         +process(data) Result
@@ -1082,6 +1118,7 @@ classDiagram
     PaymentStrategy <|-- PaypalStrategy
     PaymentStrategy <|-- CryptoStrategy
     PaymentProcessor --> PaymentStrategy
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Commands**:
@@ -1119,16 +1156,24 @@ Identify and remove unused code. Claude analyzes imports, function calls, and ex
 
 ```mermaid
 graph TD
+    accTitle: Example 50: Dead Code Elimination
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Scan Exports, Identify Dead Code, Verify Unreferenced, Delete Code, Keep Code. Connections: Scan Exports to Identify Dead Code (Find Unused), Identify Dead Code to Verify Unreferenced (Check Imports), Verify Unreferenced to Delete Code (Safe to Remove), Verify Unreferenced to Keep Code (Still Used).
     A[Scan Exports] -->|Find Unused| B[Identify Dead Code]
     B -->|Check Imports| C[Verify Unreferenced]
     C -->|Safe to Remove| D[Delete Code]
     C -->|Still Used| E[Keep Code]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -1163,6 +1208,8 @@ Automate git operations through conversation. Claude creates branches, stages ch
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 51: Automated Git Workflow - Branch Creation and Commits
+    accDescr: Sequence diagram between User, Claude, Git. Messages: User to Claude: Create feature branch + commit; Claude to Git: git checkout -b feature/rate-limiting; Git to Claude: Branch created; Claude to Git: git status; Git to Claude: 3 modified files; Claude to Git: git add (specific files); Git to Claude: Files staged; Claude to Claude: Generate conventional commit message; Claude to Git: git commit -m feat(api): ...; Git to Claude: Commit created; Claude to User: Branch + commit confirmed.
     participant User as User
     participant Claude as Claude
     participant Git as Git
@@ -1216,22 +1263,30 @@ Generate descriptive commit messages by analyzing staged changes. Claude reads d
 
 ```mermaid
 graph TD
+    accTitle: Example 52: Commit Message Generation from Changes
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: A, staged, Claude Analysis, Type: feat/fix/docs, Scope: api/utils/tests, Breaking changes?, Conventional Commit Message, Version Control History. Connections: A to staged, staged to Claude Analysis (Changed files), Claude Analysis to Type: feat/fix/docs (Categorizes), Claude Analysis to Scope: api/utils/tests (Identifies), Claude Analysis to Breaking changes? (Summarizes), Type: feat/fix/docs to Conventional Commit Message (Formats), Scope: api/utils/tests to Conventional Commit Message (Formats), Breaking changes? to Conventional Commit Message (Includes), Conventional Commit Message to Version Control History (git commit).
     A[git diff --staged] -->|Changed files| B[Claude Analysis]
     B -->|Categorizes| C[Type: feat/fix/docs]
-    B -->|Identifies| D[Scope: api/utils/tests]
+    B -->|Identifies| D[Scope:<br/>api/utils/tests]
     B -->|Summarizes| E[Breaking changes?]
-    C -->|Formats| F[Conventional Commit Message]
+    C -->|Formats| F[Conventional Commit<br/>Message]
     D -->|Formats| F
     E -->|Includes| F
-    F -->|git commit| G[Version Control History]
+    F -->|git commit| G[Version Control<br/>History]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -1267,10 +1322,12 @@ Generate comprehensive PR descriptions from branch commits. Claude analyzes comm
 
 ```mermaid
 graph TD
+    accTitle: Example 53: Pull Request Description Generation
+    accDescr: Graph with 10 nodes and 10 connections. Nodes: Branch Commits, 5 Commits, 12 Files Changed, Features + Fixes, 450 Insertions, 120 Deletions, PR Description, Summary, Changes, Testing, Breaking Changes. Connections: Branch Commits to 5 Commits (Analyze), Branch Commits to 12 Files Changed (Diff), 5 Commits to Features + Fixes (Categorize), 12 Files Changed to 450 Insertions, 120 Deletions (Measure), Features + Fixes to PR Description (Generate), 450 Insertions, 120 Deletions to PR Description (Include), PR Description to Summary (Sections), PR Description to Changes (Sections), PR Description to Testing (Sections), PR Description to Breaking Changes (Sections).
     A[Branch Commits] -->|Analyze| B[5 Commits]
     A -->|Diff| C[12 Files Changed]
     B -->|Categorize| D[Features + Fixes]
-    C -->|Measure| E[450 Insertions, 120 Deletions]
+    C -->|Measure| E[450 Insertions, 120<br/>Deletions]
     D -->|Generate| F[PR Description]
     E -->|Include| F
     F -->|Sections| G[Summary]
@@ -1278,16 +1335,22 @@ graph TD
     F -->|Sections| I[Testing]
     F -->|Sections| J[Breaking Changes]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
-    style J fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-CA9161
+    class I pal-CA9161
+    class J pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -1369,23 +1432,31 @@ Generate CI/CD pipeline configs. Claude creates GitHub Actions, GitLab CI, or ot
 
 ```mermaid
 graph TD
-    A[Analyze Project] -->|Detects| B[Node 20.x from package.json]
+    accTitle: Example 55: CI/CD Configuration Generation
+    accDescr: Graph with 7 nodes and 9 connections. Nodes: Analyze Project, Node 20.x from package.json, Jest from scripts, TypeScript tsconfig.json, Generated CI Workflow, Test Job, Deploy Job: main only. Connections: Analyze Project to Node 20.x from package.json (Detects), Analyze Project to Jest from scripts (Detects), Analyze Project to TypeScript tsconfig.json (Detects), Node 20.x from package.json to Generated CI Workflow (Configure), Jest from scripts to Generated CI Workflow (Configure), TypeScript tsconfig.json to Generated CI Workflow (Configure), Generated CI Workflow to Test Job (Jobs), Generated CI Workflow to Deploy Job: main only (Jobs), Test Job to Deploy Job: main only (Gates).
+    A[Analyze Project] -->|Detects| B[Node 20.x from<br/>package.json]
     A -->|Detects| C[Jest from scripts]
-    A -->|Detects| D[TypeScript tsconfig.json]
-    B -->|Configure| E[Generated CI Workflow]
+    A -->|Detects| D[TypeScript<br/>tsconfig.json]
+    B -->|Configure| E[Generated CI<br/>Workflow]
     C -->|Configure| E
     D -->|Configure| E
     E -->|Jobs| F[Test Job]
-    E -->|Jobs| G[Deploy Job: main only]
+    E -->|Jobs| G[Deploy Job: main<br/>only]
     F -->|Gates| G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -1577,6 +1648,8 @@ Audit frontend code for accessibility issues. Claude identifies WCAG violations 
 
 ```mermaid
 graph TD
+    accTitle: Example 60: Accessibility Audit and Improvements
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Scan Components, Keyboard Nav, ARIA Labels, Color Contrast, Accessible Code. Connections: Scan Components to Keyboard Nav (Identify Issues), Scan Components to ARIA Labels (Identify Issues), Scan Components to Color Contrast (Identify Issues), Keyboard Nav to Accessible Code (Generate Fixes), ARIA Labels to Accessible Code (Generate Fixes), Color Contrast to Accessible Code (Generate Fixes).
     A[Scan Components] -->|Identify Issues| B[Keyboard Nav]
     A -->|Identify Issues| C[ARIA Labels]
     A -->|Identify Issues| D[Color Contrast]
@@ -1584,11 +1657,17 @@ graph TD
     C -->|Generate Fixes| E
     D -->|Generate Fixes| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:

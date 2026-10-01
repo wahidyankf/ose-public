@@ -18,6 +18,8 @@ Run agent commands inside isolated Docker containers instead of the host system.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 55: Docker Terminal Backend
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Hermes Agent CLI, Docker Backend, Docker Container, Host Filesystem (bind mounts), Container Filesystem (isolated), Resource Limits CPU / Memory / Disk. Connections: Hermes Agent CLI to Docker Backend (sends command), Docker Backend to Docker Container (creates/reuses), Docker Container to Container Filesystem (isolated), Host Filesystem (bind mounts) to Docker Container (docker_volumes), Resource Limits CPU / Memory / Disk to Docker Container (enforced on).
     A["Hermes Agent CLI"]
     B["Docker Backend"]
     C["Docker Container"]
@@ -31,12 +33,18 @@ graph TD
     D -->|"docker_volumes"| C
     F -->|"enforced on"| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -364,26 +372,33 @@ The OWASP Top 10 for LLM Applications 2025 and the OWASP Top 10 for Agentic Appl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Untrusted input<br/>(user, MCP, web, file)"]
+    accTitle: Security Threat Model: OWASP LLM Top 10 Mapping
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Untrusted input (user, MCP, web, file), LLM reasoning, Terminal backend (Docker, SSH, Modal, Daytona), Host + cloud resources (secrets, OAuth, cost, data), Layer 1 Approvals + profile isolation, Layer 2 Secret redaction + Tirith scan, Layer 3 Sandbox + egress allowlist, Layer 4 Audit + checkpoint + rollback. Connections: Untrusted input (user, MCP, web, file) to Layer 1 Approvals + profile isolation, Layer 1 Approvals + profile isolation to LLM reasoning, LLM reasoning to Layer 2 Secret redaction + Tirith scan, Layer 2 Secret redaction + Tirith scan to Terminal backend (Docker, SSH, Modal, Daytona), Terminal backend (Docker, SSH, Modal, Daytona) to Layer 3 Sandbox + egress allowlist, Layer 3 Sandbox + egress allowlist to Host + cloud resources (secrets, OAuth, cost, data), Host + cloud resources (secrets, OAuth, cost, data) to Layer 4 Audit + checkpoint + rollback.
+    A["Untrusted input<br/>(user, MCP, web,<br/>file)"]
     B["LLM reasoning"]
-    C["Terminal backend<br/>(Docker, SSH, Modal, Daytona)"]
-    D["Host + cloud resources<br/>(secrets, OAuth, cost, data)"]
-    E["Layer 1<br/>Approvals + profile isolation"]
-    F["Layer 2<br/>Secret redaction + Tirith scan"]
-    G["Layer 3<br/>Sandbox + egress allowlist"]
-    H["Layer 4<br/>Audit + checkpoint + rollback"]
+    C["Terminal backend<br/>(Docker, SSH, Modal,<br/>Daytona)"]
+    D["Host + cloud<br/>resources<br/>(secrets, OAuth,<br/>cost, data)"]
+    E["Layer 1<br/>Approvals + profile<br/>isolation"]
+    F["Layer 2<br/>Secret redaction +<br/>Tirith scan"]
+    G["Layer 3<br/>Sandbox + egress<br/>allowlist"]
+    H["Layer 4<br/>Audit + checkpoint +<br/>rollback"]
 
     A --> E --> B --> F --> C --> G --> D
     D --> H
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    class C pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Threat-to-example mapping**:
@@ -412,7 +427,9 @@ Control whether the agent can execute commands autonomously or requires human ap
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Agent Generates Command"]
+    accTitle: Example 61: Approval Modes
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Agent Generates Command, Approval Mode?, Manual Mode, Smart Mode, Off Mode, Human Reviews Every Command, Auxiliary LLM Assesses Danger, Command Executes Immediately, Dangerous?, Human Reviews, Auto-Approved. Connections: Agent Generates Command to Approval Mode?, Approval Mode? to Manual Mode (manual), Approval Mode? to Smart Mode (smart), Approval Mode? to Off Mode (off), Manual Mode to Human Reviews Every Command, Smart Mode to Auxiliary LLM Assesses Danger, Off Mode to Command Executes Immediately, Auxiliary LLM Assesses Danger to Dangerous?, Dangerous? to Human Reviews (yes), Dangerous? to Auto-Approved (no).
+    A["Agent Generates<br/>Command"]
     B{"Approval Mode?"}
     C["Manual Mode"]
     D["Smart Mode"]
@@ -435,17 +452,23 @@ graph TD
     I -->|"yes"| J
     I -->|"no"| K
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
-    style I fill:#DE8F05,stroke:#000,color:#fff
-    style J fill:#CC78BC,stroke:#000,color:#fff
-    style K fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CC78BC
+    class G pal-029E73
+    class H pal-CA9161
+    class I pal-DE8F05
+    class J pal-CC78BC
+    class K pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -491,19 +514,27 @@ Automatically detect and redact API keys, tokens, passwords, and other secrets f
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 62: Secret Redaction
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Command executes (e.g. env, cat .env), Raw output (contains secrets), Redaction engine (regex + entropy scan), Redacted output GITHUB_ TOKEN=[REDACTED], Agent context (never sees plaintext). Connections: Command executes (e.g. env, cat .env) to Raw output (contains secrets), Raw output (contains secrets) to Redaction engine (regex + entropy scan), Redaction engine (regex + entropy scan) to Redacted output GITHUB_ TOKEN=[REDACTED], Redacted output GITHUB_ TOKEN=[REDACTED] to Agent context (never sees plaintext).
     A["Command executes<br/>(e.g. env, cat .env)"]
     B["Raw output<br/>(contains secrets)"]
-    C["Redaction engine<br/>(regex + entropy scan)"]
-    D["Redacted output<br/>GITHUB_TOKEN=[REDACTED]"]
-    E["Agent context<br/>(never sees plaintext)"]
+    C["Redaction engine<br/>(regex + entropy<br/>scan)"]
+    D["Redacted output<br/>GITHUB_<br/>TOKEN=[REDACTED]"]
+    E["Agent context<br/>(never sees<br/>plaintext)"]
 
     A --> B --> C --> D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -565,7 +596,9 @@ Pre-scan agent commands with Tirith, a policy-as-code engine that evaluates comm
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Agent proposes command"]
+    accTitle: Example 63: Tirith Security Scanning
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Agent proposes command, Tirith policy engine (rule evaluation), Rule match?, BLOCKED (with reason), ALLOWED (command executes). Connections: Agent proposes command to Tirith policy engine (rule evaluation), Tirith policy engine (rule evaluation) to Rule match?, Rule match? to BLOCKED (with reason) (yes — dangerous), Rule match? to ALLOWED (command executes) (no match).
+    A["Agent proposes<br/>command"]
     B["Tirith policy engine<br/>(rule evaluation)"]
     C{"Rule match?"}
     D["BLOCKED<br/>(with reason)"]
@@ -575,11 +608,16 @@ graph LR
     C -->|"yes — dangerous"| D
     C -->|"no match"| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -696,9 +734,11 @@ Automatically snapshot file state before destructive operations, enabling rollba
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Agent: write_file / patch / delete"]
-    B["Checkpoint auto-created<br/>(snapshot ID generated)"]
-    C["File operation executes"]
+    accTitle: Example 65: Checkpoint and Rollback
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Agent: write_file / patch /delete, Checkpoint auto-created (snapshot ID generated), File operation executes, Result OK?, Continue work, User: /rollback, Files restored to snapshot state. Connections: Agent: write_file / patch /delete to Checkpoint auto-created (snapshot ID generated), Checkpoint auto-created (snapshot ID generated) to File operation executes, File operation executes to Result OK?, Result OK? to Continue work (yes), Result OK? to User: /rollback (unexpected result), User: /rollback to Files restored to snapshot state.
+    A["Agent: write_file /<br/>patch /delete"]
+    B["Checkpoint<br/>auto-created<br/>(snapshot ID<br/>generated)"]
+    C["File operation<br/>executes"]
     D{"Result OK?"}
     E["Continue work"]
     F["User: /rollback <ID>"]
@@ -708,13 +748,19 @@ graph TD
     D -->|"yes"| E
     D -->|"unexpected result"| F --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    class F pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -761,21 +807,29 @@ Limit the maximum characters the agent reads from any single file, preventing co
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 66: File Read Limits
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: read_file request, File size ≤ 100K chars?, Full content returned to agent context, First 100K chars returned + truncation notice, Agent offers chunked read strategy. Connections: read_file request to File size ≤ 100K chars?, File size ≤ 100K chars? to Full content returned to agent context (yes), File size ≤ 100K chars? to First 100K chars returned + truncation notice (no), First 100K chars returned + truncation notice to Agent offers chunked read strategy.
     A["read_file request"]
-    B{"File size\n≤ 100K chars?"}
-    C["Full content returned<br/>to agent context"]
-    D["First 100K chars returned<br/>+ truncation notice"]
-    E["Agent offers<br/>chunked read strategy"]
+    B{"File size<br/>≤ 100K chars?"}
+    C["Full content<br/>returned<br/>to agent context"]
+    D["First 100K chars<br/>returned<br/>+ truncation notice"]
+    E["Agent offers<br/>chunked read<br/>strategy"]
 
     A --> B
     B -->|"yes"| C
     B -->|"no"| D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1195,6 +1249,8 @@ Connect Hermes Agent to external tools via the Model Context Protocol (MCP). MCP
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 68: MCP Server Configuration
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Hermes Agent (MCP Client), MCP Server A (stdio), MCP Server B (HTTP/SSE), Tools from A, Tools from B. Connections: Hermes Agent (MCP Client) to MCP Server A (stdio) (stdio pipe), Hermes Agent (MCP Client) to MCP Server B (HTTP/SSE) (HTTP/SSE), MCP Server A (stdio) to Tools from A, MCP Server B (HTTP/SSE) to Tools from B.
     A["Hermes Agent<br/>(MCP Client)"]
     B["MCP Server A<br/>(stdio)"]
     C["MCP Server B<br/>(HTTP/SSE)"]
@@ -1206,11 +1262,17 @@ graph LR
     B --> D
     C --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1366,23 +1428,31 @@ Enable voice interaction with Hermes Agent using configurable Text-to-Speech (TT
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 71: Voice Mode Setup
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Hold Ctrl+B (push-to-talk), Audio captured (mic input), STT provider (local/groq/openai), Text query, Agent processes + responds, TTS provider (edge/elevenlabs/ openai), Audio playback (auto_tts: true). Connections: Hold Ctrl+B (push-to-talk) to Audio captured (mic input), Audio captured (mic input) to STT provider (local/groq/openai), STT provider (local/groq/openai) to Text query, Text query to Agent processes + responds, Agent processes + responds to TTS provider (edge/elevenlabs/ openai), TTS provider (edge/elevenlabs/ openai) to Audio playback (auto_tts: true).
     A["Hold Ctrl+B<br/>(push-to-talk)"]
     B["Audio captured<br/>(mic input)"]
     C["STT provider<br/>(local/groq/openai)"]
     D["Text query"]
     E["Agent processes<br/>+ responds"]
-    F["TTS provider<br/>(edge/elevenlabs/openai)"]
+    F["TTS provider<br/>(edge/elevenlabs/<br/>openai)"]
     G["Audio playback<br/>(auto_tts: true)"]
 
     A --> B --> C --> D --> E --> F --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1513,9 +1583,11 @@ Customize the agent's communication style using built-in or custom personalities
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["SOUL.md<br/>(persistent identity)"]
-    B["Personality overlay<br/>(/personality concise)"]
-    C["Combined system prompt"]
+    accTitle: Example 73: Personality System
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: SOUL.md (persistent identity), Personality overlay (/personality concise), Combined system prompt, LLM response (styled output), Session ends, SOUL.md persists Overlay resets. Connections: SOUL.md (persistent identity) to Combined system prompt, Personality overlay (/personality concise) to Combined system prompt, Combined system prompt to LLM response (styled output), LLM response (styled output) to Session ends, Session ends to SOUL.md persists Overlay resets.
+    A["SOUL.md<br/>(persistent<br/>identity)"]
+    B["Personality overlay<br/>(/personality<br/>concise)"]
+    C["Combined system<br/>prompt"]
     D["LLM response<br/>(styled output)"]
     E["Session ends"]
     F["SOUL.md persists<br/>Overlay resets"]
@@ -1524,12 +1596,18 @@ graph TD
     B --> C
     C --> D --> E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1608,6 +1686,8 @@ Run Hermes Agent gateway as a persistent background service that starts automati
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 74: Daemon Installation
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: System Boot, Service Manager (systemd / launchd), Hermes Gateway Background Process, Telegram, Discord, Slack, Process Crashes?, Auto-Restart. Connections: System Boot to Service Manager (systemd / launchd), Service Manager (systemd / launchd) to Hermes Gateway Background Process (starts), Hermes Gateway Background Process to Telegram, Hermes Gateway Background Process to Discord, Hermes Gateway Background Process to Slack, Hermes Gateway Background Process to Process Crashes?, Process Crashes? to Auto-Restart (yes), Auto-Restart to Hermes Gateway Background Process.
     A["System Boot"]
     B["Service Manager<br/>(systemd / launchd)"]
     C["Hermes Gateway<br/>Background Process"]
@@ -1626,14 +1706,20 @@ graph TD
     G -->|"yes"| H
     H --> C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1851,7 +1937,9 @@ Manage long conversations by automatically compressing the context window when i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Context Window<br/>Approaching Threshold"]
+    accTitle: Example 76: Context Compression
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Context Window Approaching Threshold, Phase 1: Tool Result Pruning, Phase 2: Head Protection, Phase 3: Tail Protection, Phase 4: Middle Summarization, Compressed Context Ready for Next Turn. Connections: Context Window Approaching Threshold to Phase 1: Tool Result Pruning, Phase 1: Tool Result Pruning to Phase 2: Head Protection (remove verbose tool outputs), Phase 2: Head Protection to Phase 3: Tail Protection (preserve system prompt + early context), Phase 3: Tail Protection to Phase 4: Middle Summarization (preserve last N messages), Phase 4: Middle Summarization to Compressed Context Ready for Next Turn (summarize middle via aux model).
+    A["Context Window<br/>Approaching<br/>Threshold"]
     B["Phase 1: Tool Result<br/>Pruning"]
     C["Phase 2: Head<br/>Protection"]
     D["Phase 3: Tail<br/>Protection"]
@@ -1860,16 +1948,22 @@ graph TD
 
     A --> B
     B -->|"remove verbose<br/>tool outputs"| C
-    C -->|"preserve system<br/>prompt + early context"| D
+    C -->|"preserve system<br/>prompt + early<br/>context"| D
     D -->|"preserve last N<br/>messages"| E
     E -->|"summarize middle<br/>via aux model"| F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1941,25 +2035,33 @@ Automatically route messages between expensive primary models and cheaper fallba
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 77: Smart Model Routing
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Incoming message, Routing engine (complexity check), Complex indicators (code_gen, debug, arch), Simple query (list, status, read), Primary model (claude-sonnet-4-6), Fallback model (claude-haiku-4, 10x cheaper), Response to user. Connections: Incoming message to Routing engine (complexity check), Routing engine (complexity check) to Complex indicators (code_gen, debug, arch) (complex), Complex indicators (code_gen, debug, arch) to Primary model (claude-sonnet-4-6), Primary model (claude-sonnet-4-6) to Response to user, Routing engine (complexity check) to Simple query (list, status, read) (simple), Simple query (list, status, read) to Fallback model (claude-haiku-4, 10x cheaper), Fallback model (claude-haiku-4, 10x cheaper) to Response to user.
     A["Incoming message"]
     B{"Routing engine<br/>(complexity check)"}
-    C["Complex indicators<br/>(code_gen, debug, arch)"]
+    C["Complex indicators<br/>(code_gen, debug,<br/>arch)"]
     D["Simple query<br/>(list, status, read)"]
     E["Primary model<br/>(claude-sonnet-4-6)"]
-    F["Fallback model<br/>(claude-haiku-4, 10x cheaper)"]
+    F["Fallback model<br/>(claude-haiku-4, 10x<br/>cheaper)"]
     G["Response to user"]
 
     A --> B
     B -->|"complex"| C --> E --> G
     B -->|"simple"| D --> F --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class E pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2106,21 +2208,29 @@ Create dynamic webhook subscriptions that trigger agent actions based on externa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["External system<br/>(CI, monitoring, etc.)"]
+    accTitle: Example 79: Webhook Subscriptions
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: External system (CI, monitoring, etc.), POST to webhook URL + JSON payload, Gateway (filter check), Template rendered (variables filled), Agent processes + skill loaded, Response delivered (Slack, Telegram, ...). Connections: External system (CI, monitoring, etc.) to POST to webhook URL + JSON payload, POST to webhook URL + JSON payload to Gateway (filter check), Gateway (filter check) to Template rendered (variables filled) (filter match), Template rendered (variables filled) to Agent processes + skill loaded, Agent processes + skill loaded to Response delivered (Slack, Telegram, ...).
+    A["External system<br/>(CI, monitoring,<br/>etc.)"]
     B["POST to webhook<br/>URL + JSON payload"]
     C["Gateway<br/>(filter check)"]
-    D["Template rendered<br/>({{variables}} filled)"]
+    D["Template rendered<br/>({{variables}}<br/>filled)"]
     E["Agent processes<br/>+ skill loaded"]
-    F["Response delivered<br/>(Slack, Telegram, ...)"]
+    F["Response delivered<br/>(Slack, Telegram,<br/>...)"]
 
     A --> B --> C -->|"filter match"| D --> E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

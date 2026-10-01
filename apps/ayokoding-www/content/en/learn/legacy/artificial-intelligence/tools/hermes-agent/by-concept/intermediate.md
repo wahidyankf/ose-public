@@ -197,19 +197,21 @@ websites in parallel, or running different experimental configurations of the sa
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Section 19: Subagent Delegation
+    accDescr: Graph with 10 nodes and 11 connections. Nodes: Parent Hermes Agent (coordinator), Complex parallel task, Subagent 1 (restricted toolset A), Subagent 2 (restricted toolset B), Subagent 3 (restricted toolset C), Result 1, Result 2, Result 3, Parent synthesizes results, Final response to user. Connections: Complex parallel task to Parent Hermes Agent (coordinator), Parent Hermes Agent (coordinator) to Subagent 1 (restricted toolset A), Parent Hermes Agent (coordinator) to Subagent 2 (restricted toolset B), Parent Hermes Agent (coordinator) to Subagent 3 (restricted toolset C), Subagent 1 (restricted toolset A) to Result 1, Subagent 2 (restricted toolset B) to Result 2, Subagent 3 (restricted toolset C) to Result 3, Result 1 to Parent synthesizes results, Result 2 to Parent synthesizes results, Result 3 to Parent synthesizes results, Parent synthesizes results to Final response to user.
     PARENT["Parent Hermes Agent<br/>(coordinator)"]:::blue
-    TASK["Complex parallel task"]:::teal
+    TASK["Complex parallel<br/>task"]:::teal
 
-    SUB1["Subagent 1<br/>(restricted toolset A)"]:::orange
-    SUB2["Subagent 2<br/>(restricted toolset B)"]:::orange
-    SUB3["Subagent 3<br/>(restricted toolset C)"]:::orange
+    SUB1["Subagent 1<br/>(restricted toolset<br/>A)"]:::orange
+    SUB2["Subagent 2<br/>(restricted toolset<br/>B)"]:::orange
+    SUB3["Subagent 3<br/>(restricted toolset<br/>C)"]:::orange
 
     RESULT1["Result 1"]:::purple
     RESULT2["Result 2"]:::purple
     RESULT3["Result 3"]:::purple
 
-    SYNTH["Parent synthesizes results"]:::blue
-    DONE["Final response to user"]:::teal
+    SYNTH["Parent synthesizes<br/>results"]:::blue
+    DONE["Final response to<br/>user"]:::teal
 
     TASK --> PARENT
     PARENT --> SUB1
@@ -223,10 +225,11 @@ graph TD
     RESULT3 --> SYNTH
     SYNTH --> DONE
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The `delegate` tool is available in the `delegation` toolset. The parent agent calls it
@@ -370,14 +373,16 @@ span a range from local shell to fully managed cloud containers.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Section 21: Terminal Backends
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Hermes Agent (tool call: bash), Local Your shell, your filesystem, Docker Isolated container, shared filesystem optional, SSH Remote host, any OS, Daytona Managed dev environment, Singularity HPC clusters, no root required, Modal Serverless cloud containers. Connections: Hermes Agent (tool call: bash) to Local Your shell, your filesystem, Hermes Agent (tool call: bash) to Docker Isolated container, shared filesystem optional, Hermes Agent (tool call: bash) to SSH Remote host, any OS, Hermes Agent (tool call: bash) to Daytona Managed dev environment, Hermes Agent (tool call: bash) to Singularity HPC clusters, no root required, Hermes Agent (tool call: bash) to Modal Serverless cloud containers.
     HERMES["Hermes Agent<br/>(tool call: bash)"]:::blue
 
-    LOCAL["Local<br/>Your shell, your filesystem"]:::teal
-    DOCKER["Docker<br/>Isolated container, shared filesystem optional"]:::orange
+    LOCAL["Local<br/>Your shell, your<br/>filesystem"]:::teal
+    DOCKER["Docker<br/>Isolated container,<br/>shared filesystem<br/>optional"]:::orange
     SSH["SSH<br/>Remote host, any OS"]:::orange
-    DAYTONA["Daytona<br/>Managed dev environment"]:::purple
-    SINGULARITY["Singularity<br/>HPC clusters, no root required"]:::purple
-    MODAL["Modal<br/>Serverless cloud containers"]:::brown
+    DAYTONA["Daytona<br/>Managed dev<br/>environment"]:::purple
+    SINGULARITY["Singularity<br/>HPC clusters, no<br/>root required"]:::purple
+    MODAL["Modal<br/>Serverless cloud<br/>containers"]:::brown
 
     HERMES --> LOCAL
     HERMES --> DOCKER
@@ -387,10 +392,11 @@ graph LR
     HERMES --> MODAL
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

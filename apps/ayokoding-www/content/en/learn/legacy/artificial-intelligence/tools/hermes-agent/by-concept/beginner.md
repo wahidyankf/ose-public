@@ -35,27 +35,30 @@ organized into 19 pluggable toolsets.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    USER["You<br/>(task, correction, question)"]:::teal
-    HERMES["Hermes Agent<br/>(LLM + closed learning loop)"]:::blue
-    TOOLS["60+ Tools<br/>(19 pluggable toolsets)"]:::orange
-    MEMORY["Persistent Memory<br/>(MEMORY.md + USER.md)"]:::purple
-    SKILLS["Self-Improving Skills<br/>(procedural knowledge)"]:::brown
-    LLM["Any LLM<br/>(Claude, GPT, Gemini, 200+ via OpenRouter)"]:::blue
+    accTitle: Section 1: What is Hermes Agent?
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: You (task, correction, question), Hermes Agent (LLM + closed learning loop), 60+ Tools (19 pluggable toolsets), Persistent Memory (MEMORY.md + USER.md), Self-Improving Skills (procedural knowledge), Any LLM (Claude, GPT, Gemini, 200+ via OpenRouter). Connections: You (task, correction, question) to Hermes Agent (LLM + closed learning loop) (natural language task), Hermes Agent (LLM + closed learning loop) to 60+ Tools (19 pluggable toolsets) (tool calls), Hermes Agent (LLM + closed learning loop) to Persistent Memory (MEMORY.md + USER.md) (reads / updates), Hermes Agent (LLM + closed learning loop) to Self-Improving Skills (procedural knowledge) (reads / improves), Hermes Agent (LLM + closed learning loop) to Any LLM (Claude, GPT, Gemini, 200+ via OpenRouter) (API call), Any LLM (Claude, GPT, Gemini, 200+ via OpenRouter) to Hermes Agent (LLM + closed learning loop) (completion + tool decisions), 60+ Tools (19 pluggable toolsets) to Hermes Agent (LLM + closed learning loop) (results), Hermes Agent (LLM + closed learning loop) to You (task, correction, question) (response + learned skill).
+    USER["You<br/>(task, correction,<br/>question)"]:::teal
+    HERMES["Hermes Agent<br/>(LLM + closed<br/>learning loop)"]:::blue
+    TOOLS["60+ Tools<br/>(19 pluggable<br/>toolsets)"]:::orange
+    MEMORY["Persistent Memory<br/>(MEMORY.md +<br/>USER.md)"]:::purple
+    SKILLS["Self-Improving<br/>Skills<br/>(procedural<br/>knowledge)"]:::brown
+    LLM["Any LLM<br/>(Claude, GPT,<br/>Gemini, 200+ via<br/>OpenRouter)"]:::blue
 
-    USER -->|"natural language task"| HERMES
+    USER -->|"natural language<br/>task"| HERMES
     HERMES -->|"tool calls"| TOOLS
     HERMES -->|"reads / updates"| MEMORY
     HERMES -->|"reads / improves"| SKILLS
     HERMES -->|"API call"| LLM
-    LLM -->|"completion + tool decisions"| HERMES
+    LLM -->|"completion + tool<br/>decisions"| HERMES
     TOOLS -->|"results"| HERMES
-    HERMES -->|"response + learned skill"| USER
+    HERMES -->|"response + learned<br/>skill"| USER
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The practical consequence of this architecture is that your agent becomes more capable and
@@ -97,14 +100,16 @@ converge toward accuracy and conciseness as they accumulate evidence.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart TD
+    accTitle: Section 2: The Learning Loop
+    accDescr: Flowchart with 9 nodes and 10 connections. Nodes: Task from user, Hermes executes (tools, LLM turns), Trigger condition? 5+ tools /error recovery / user correction, Existing skill available?, Apply existing skill, Create new skill, Refine skill (outcome feedback), Persist to skills store, Task complete. Connections: Task from user to Hermes executes (tools, LLM turns), Hermes executes (tools, LLM turns) to Trigger condition? 5+ tools /error recovery / user correction, Trigger condition? 5+ tools /error recovery / user correction to Task complete (No), Trigger condition? 5+ tools /error recovery / user correction to Existing skill available? (Yes), Existing skill available? to Apply existing skill (Yes), Existing skill available? to Create new skill (No), Apply existing skill to Refine skill (outcome feedback), Create new skill to Persist to skills store, Refine skill (outcome feedback) to Persist to skills store, Persist to skills store to Task complete.
     TASK["Task from user"]:::teal
     EXEC["Hermes executes<br/>(tools, LLM turns)"]:::blue
-    CHECK{"Trigger condition?<br/>5+ tools / error recovery<br/>/ user correction"}:::orange
+    CHECK{"Trigger condition?<br/>5+ tools /error<br/>recovery<br/>/ user correction"}:::orange
     APPLY{"Existing skill<br/>available?"}:::blue
     USE["Apply existing skill"]:::blue
     NEW["Create new skill"]:::purple
     IMPROVE["Refine skill<br/>(outcome feedback)"]:::purple
-    PERSIST["Persist to skills store"]:::brown
+    PERSIST["Persist to skills<br/>store"]:::brown
     DONE["Task complete"]:::teal
 
     TASK --> EXEC
@@ -118,11 +123,12 @@ flowchart TD
     IMPROVE --> PERSIST
     PERSIST --> DONE
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The loop has one important characteristic: it is fully transparent. Skills are written as

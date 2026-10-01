@@ -75,26 +75,29 @@ in ways worth understanding before you rely on OpenClaw for sensitive workloads.
 %% All colors meet WCAG AA contrast standards
 
 graph LR
-    MSG["Messaging App<br/>Telegram / Slack / WhatsApp"]:::blue
+    accTitle: 2. Local-First Architecture
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: Messaging App Telegram /Slack / WhatsApp, Gateway localhost:7432 YOUR DEVICE, Agent Runtime YOUR DEVICE, Memory Store ~/.openclaw/memory YOUR DEVICE, LLM API Anthropic / OpenAI EXTERNAL, Tool Targets Calendar /Email / Shell YOUR DEVICE or LAN. Connections: Messaging App Telegram /Slack / WhatsApp to Gateway localhost:7432 YOUR DEVICE (message over internet), Gateway localhost:7432 YOUR DEVICE to Agent Runtime YOUR DEVICE, Agent Runtime YOUR DEVICE to Memory Store ~/.openclaw/memory YOUR DEVICE, Agent Runtime YOUR DEVICE to LLM API Anthropic / OpenAI EXTERNAL (API call with message only), LLM API Anthropic / OpenAI EXTERNAL to Agent Runtime YOUR DEVICE (completion), Agent Runtime YOUR DEVICE to Tool Targets Calendar /Email / Shell YOUR DEVICE or LAN, Agent Runtime YOUR DEVICE to Gateway localhost:7432 YOUR DEVICE (response), Gateway localhost:7432 YOUR DEVICE to Messaging App Telegram /Slack / WhatsApp (reply over internet).
+    MSG["Messaging App<br/>Telegram /Slack /<br/>WhatsApp"]:::blue
     GW["Gateway<br/>localhost:7432<br/>YOUR DEVICE"]:::orange
     AR["Agent Runtime<br/>YOUR DEVICE"]:::orange
     MEM["Memory Store<br/>~/.openclaw/memory<br/>YOUR DEVICE"]:::orange
     LLM["LLM API<br/>Anthropic / OpenAI<br/>EXTERNAL"]:::teal
-    TOOLS["Tool Targets<br/>Calendar / Email / Shell<br/>YOUR DEVICE or LAN"]:::brown
+    TOOLS["Tool Targets<br/>Calendar /Email /<br/>Shell<br/>YOUR DEVICE or LAN"]:::brown
 
-    MSG -->|"message over internet"| GW
+    MSG -->|"message over<br/>internet"| GW
     GW --> AR
     AR --> MEM
-    AR -->|"API call with message only"| LLM
+    AR -->|"API call with<br/>message only"| LLM
     LLM -->|"completion"| AR
     AR --> TOOLS
     AR -->|"response"| GW
-    GW -->|"reply over internet"| MSG
+    GW -->|"reply over<br/>internet"| MSG
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The diagram above shows where each component lives. Everything in the orange boxes runs on
@@ -167,8 +170,10 @@ does — and what it does not do — prevents debugging time spent in the wrong 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 
 graph TD
+    accTitle: 3. The Seven Core Components
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Channel System Platform integrations, Gateway Control plane, Skills System Context injection, Agent Runtime Agentic loop, Memory and Knowledge Retrieval, LLM Provider Model calls, Local Execution Device compute. Connections: Channel System Platform integrations to Gateway Control plane (messages), Gateway Control plane to Agent Runtime Agentic loop (request), Skills System Context injection to Agent Runtime Agentic loop (injected context), Memory and Knowledge Retrieval to Agent Runtime Agentic loop (retrieved memories), Agent Runtime Agentic loop to LLM Provider Model calls (completions), Local Execution Device compute to Gateway Control plane (underpins all), Local Execution Device compute to Agent Runtime Agentic loop (underpins all).
     subgraph "Input/Output Layer"
-        CH["Channel System<br/>Platform integrations"]:::blue
+        CH["Channel System<br/>Platform<br/>integrations"]:::blue
     end
     subgraph "Routing Layer"
         GW["Gateway<br/>Control plane"]:::orange
@@ -194,10 +199,11 @@ graph TD
     LE -.->|"underpins all"| AR
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Channel System** handles the mechanics of connecting to each messaging platform: OAuth
@@ -1102,10 +1108,12 @@ needed until the LLM produces a final response with no pending tool calls.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 
 graph TD
-    A["1. Context Assembly<br/>AGENTS.md + SOUL.md +<br/>injected skills + memories +<br/>conversation history"]:::blue
-    B["2. LLM Call<br/>Send assembled context<br/>to configured provider"]:::orange
+    accTitle: 15. The Agent Runtime Loop
+    accDescr: Graph with 7 nodes and 9 connections. Nodes: 1. Context Assembly AGENTS.md + SOUL.md + injected skills + memories + conversation history, 2. LLM Call Send assembled context to configured provider, 3. Parse Completion Did LLM request a tool call?, 4. Execute Tool Validate params, check permissions, run tool, capture result, 5. Append Result Add tool result to conversation context, 6. Deliver Response Send final text back via Gateway, Handle Error Retry or report to user. Connections: 1. Context Assembly AGENTS.md + SOUL.md + injected skills + memories + conversation history to 2. LLM Call Send assembled context to configured provider, 2. LLM Call Send assembled context to configured provider to 3. Parse Completion Did LLM request a tool call?, 3. Parse Completion Did LLM request a tool call? to 4. Execute Tool Validate params, check permissions, run tool, capture result (yes — tool call), 3. Parse Completion Did LLM request a tool call? to 6. Deliver Response Send final text back via Gateway (no — final response), 4. Execute Tool Validate params, check permissions, run tool, capture result to 5. Append Result Add tool result to conversation context (success), 4. Execute Tool Validate params, check permissions, run tool, capture result to Handle Error Retry or report to user (error), 5. Append Result Add tool result to conversation context to 2. LLM Call Send assembled context to configured provider (loop: call LLM again), Handle Error Retry or report to user to 2. LLM Call Send assembled context to configured provider (after retry), Handle Error Retry or report to user to 6. Deliver Response Send final text back via Gateway (max retries hit).
+    A["1. Context Assembly<br/>AGENTS.md + SOUL.md<br/>+<br/>injected skills +<br/>memories +<br/>conversation history"]:::blue
+    B["2. LLM Call<br/>Send assembled<br/>context<br/>to configured<br/>provider"]:::orange
     C["3. Parse Completion<br/>Did LLM request<br/>a tool call?"]:::orange
-    D["4. Execute Tool<br/>Validate params, check permissions,<br/>run tool, capture result"]:::teal
+    D["4. Execute Tool<br/>Validate params,<br/>check permissions,<br/>run tool, capture<br/>result"]:::teal
     E["5. Append Result<br/>Add tool result to<br/>conversation context"]:::teal
     F["6. Deliver Response<br/>Send final text<br/>back via Gateway"]:::blue
     ERR["Handle Error<br/>Retry or<br/>report to user"]:::purple
@@ -1113,17 +1121,18 @@ graph TD
     A --> B
     B --> C
     C -->|"yes — tool call"| D
-    C -->|"no — final response"| F
+    C -->|"no — final<br/>response"| F
     D -->|"success"| E
     D -->|"error"| ERR
-    E -->|"loop: call LLM again"| B
+    E -->|"loop: call LLM<br/>again"| B
     ERR -->|"after retry"| B
     ERR -->|"max retries hit"| F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

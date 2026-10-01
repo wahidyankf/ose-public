@@ -23,6 +23,8 @@ results, and making targeted edits — the same workflow a developer would use, 
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 sequenceDiagram
+    accTitle: Section 30: Self-Extensibility
+    accDescr: Sequence diagram between Developer, Pi Agent, File System, TypeScript Compiler, Live Session. Messages: Developer to Pi Agent: Add a tool that queries our Postgres database; Pi Agent to File System: Write(~/.pi/extensions/pi-ext-db/index.ts); Pi Agent to File System: Write(~/.pi/extensions/pi-ext-db/package.json); Pi Agent to TypeScript Compiler: Bash(cd ~/.pi/extensions/pi-ext-db && npm run build); TypeScript Compiler to Pi Agent: Compilation success; Pi Agent to Live Session: Bash(pi reload pi-ext-db); Live Session to Pi Agent: Extension reloaded — 1 new tool: query_db; Pi Agent to Pi Agent: Bash(pi run test query_db with SELECT 1); Pi Agent to Developer: I created and loaded the query_db tool. Here is a test result: ....
     participant YOU as Developer
     participant PI as Pi Agent
     participant FS as File System
@@ -857,16 +859,18 @@ and the agent execution layer.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
-    MSG["Messaging Channels<br/>(WhatsApp, Telegram, Slack, 24+ more)"]:::teal
-    GW["OpenClaw Gateway<br/>Channel abstraction + routing"]:::orange
-    SKILL["OpenClaw Skills<br/>(SKILL.md files, same format as Pi)"]:::purple
-    PICORE["Pi-inspired Agent Runtime<br/>(agentic loop, tool calling)"]:::blue
-    TOOLS["Tools: Read, Write, Edit, Bash<br/>+ domain-specific extensions"]:::blue
-    LLM["LLM Provider<br/>(Claude, GPT, DeepSeek, Ollama)"]:::brown
+    accTitle: Section 36: OpenClaw + Pi: The Architectural Relationship
+    accDescr: Graph with 6 nodes and 9 connections. Nodes: Messaging Channels (WhatsApp, Telegram, Slack, 24+ more), OpenClaw Gateway Channel abstraction + routing, OpenClaw Skills (SKILL.md files, same format as Pi), Pi-inspired Agent Runtime (agentic loop, tool calling), Tools: Read, Write, Edit, Bash + domain-specific extensions, LLM Provider (Claude, GPT, DeepSeek, Ollama). Connections: Messaging Channels (WhatsApp, Telegram, Slack, 24+ more) to OpenClaw Gateway Channel abstraction + routing (inbound message), OpenClaw Gateway Channel abstraction + routing to Pi-inspired Agent Runtime (agentic loop, tool calling) (routed task), OpenClaw Skills (SKILL.md files, same format as Pi) to Pi-inspired Agent Runtime (agentic loop, tool calling) (selective injection (same relevance scoring)), Pi-inspired Agent Runtime (agentic loop, tool calling) to Tools: Read, Write, Edit, Bash + domain-specific extensions (tool calls), Pi-inspired Agent Runtime (agentic loop, tool calling) to LLM Provider (Claude, GPT, DeepSeek, Ollama) (LLM API call), LLM Provider (Claude, GPT, DeepSeek, Ollama) to Pi-inspired Agent Runtime (agentic loop, tool calling) (completion), Tools: Read, Write, Edit, Bash + domain-specific extensions to Pi-inspired Agent Runtime (agentic loop, tool calling) (tool results), Pi-inspired Agent Runtime (agentic loop, tool calling) to OpenClaw Gateway Channel abstraction + routing (response), OpenClaw Gateway Channel abstraction + routing to Messaging Channels (WhatsApp, Telegram, Slack, 24+ more) (outbound message).
+    MSG["Messaging Channels<br/>(WhatsApp, Telegram,<br/>Slack, 24+ more)"]:::teal
+    GW["OpenClaw Gateway<br/>Channel abstraction<br/>+ routing"]:::orange
+    SKILL["OpenClaw Skills<br/>(SKILL.md files,<br/>same format as Pi)"]:::purple
+    PICORE["Pi-inspired Agent<br/>Runtime<br/>(agentic loop, tool<br/>calling)"]:::blue
+    TOOLS["Tools: Read, Write,<br/>Edit, Bash<br/>+ domain-specific<br/>extensions"]:::blue
+    LLM["LLM Provider<br/>(Claude, GPT,<br/>DeepSeek, Ollama)"]:::brown
 
     MSG -->|"inbound message"| GW
     GW -->|"routed task"| PICORE
-    SKILL -->|"selective injection<br/>(same relevance scoring)"| PICORE
+    SKILL -->|"selective injection<br/>(same relevance<br/>scoring)"| PICORE
     PICORE -->|"tool calls"| TOOLS
     PICORE -->|"LLM API call"| LLM
     LLM -->|"completion"| PICORE
@@ -874,11 +878,12 @@ graph TB
     PICORE -->|"response"| GW
     GW -->|"outbound message"| MSG
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The shared design elements between Pi and OpenClaw are:
@@ -1327,23 +1332,26 @@ vetted extensions with install-in-one-click support from the Pi TUI (`/ext insta
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Section 40: Future of Pi
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Pi v0.75.4 (current), MCP Integration (protocol compatibility), Extension Registry (extensions.pi.dev), GUI Mode (exploration), pi-agent-core v2 (async streaming API). Connections: Pi v0.75.4 (current) to MCP Integration (protocol compatibility) (active discussion), Pi v0.75.4 (current) to Extension Registry (extensions.pi.dev) (near-term), Pi v0.75.4 (current) to GUI Mode (exploration) (long-term exploration), Pi v0.75.4 (current) to pi-agent-core v2 (async streaming API) (planned).
     CURRENT["Pi v0.75.4<br/>(current)"]:::blue
 
-    MCP["MCP Integration<br/>(protocol compatibility)"]:::teal
+    MCP["MCP Integration<br/>(protocol<br/>compatibility)"]:::teal
     REG["Extension Registry<br/>(extensions.pi.dev)"]:::orange
     GUI["GUI Mode<br/>(exploration)"]:::purple
-    SDK2["pi-agent-core v2<br/>(async streaming API)"]:::brown
+    SDK2["pi-agent-core v2<br/>(async streaming<br/>API)"]:::brown
 
     CURRENT -->|"active discussion"| MCP
     CURRENT -->|"near-term"| REG
-    CURRENT -->|"long-term exploration"| GUI
+    CURRENT -->|"long-term<br/>exploration"| GUI
     CURRENT -->|"planned"| SDK2
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The `pi-agent-core` v2 API is a planned internal change that replaces the current

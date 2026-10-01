@@ -45,18 +45,26 @@ Gobuster is a high-performance brute-forcing tool written in Go. It helps securi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Learning Path
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Installation, Basic Directory Scan, Understanding Output, Using Wordlists, DNS Enumeration, Next: Beginner Tutorial. Connections: Installation to Basic Directory Scan, Basic Directory Scan to Understanding Output, Understanding Output to Using Wordlists, Using Wordlists to DNS Enumeration, DNS Enumeration to Next: Beginner Tutorial.
     A[Installation] --> B[Basic Directory Scan]
     B --> C[Understanding Output]
     C --> D[Using Wordlists]
     D --> E[DNS Enumeration]
-    E --> F[Next: Beginner Tutorial]
+    E --> F[Next: Beginner<br/>Tutorial]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Installing Gobuster
@@ -181,6 +189,8 @@ Finished
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Understanding the Output
+    accDescr: Flowchart with 9 nodes and 6 connections. Nodes: Path: /admin, Status: 301, Redirect to /admin/, Path: /images, Status: 301, Redirect to /images/, Path: /login, Status: 200, Page Found. Connections: Path: /admin to Status: 301, Status: 301 to Redirect to /admin/, Path: /images to Status: 301, Status: 301 to Redirect to /images/, Path: /login to Status: 200, Status: 200 to Page Found.
     A["Path: /admin"] --> B["Status: 301"]
     B --> C["Redirect to /admin/"]
 
@@ -190,15 +200,19 @@ flowchart LR
     G["Path: /login"] --> H["Status: 200"]
     H --> I["Page Found"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
-    style H fill:#DE8F05,stroke:#000,color:#000
-    style I fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-0173B2
+    class E pal-DE8F05
+    class F pal-029E73
+    class G pal-0173B2
+    class H pal-DE8F05
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Status Codes**:

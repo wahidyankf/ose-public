@@ -25,22 +25,25 @@ component.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    PKG["package.json<br/>pi-extension field declares entry point"]:::brown
-    ENTRY["index.ts<br/>Extension entry point"]:::blue
-    REG["register() call<br/>Declares tools / commands / components"]:::orange
-    PI["Pi session<br/>Loads extension at startup"]:::teal
-    LLM["LLM tool schema<br/>Sees your tool in function-calling"]:::purple
+    accTitle: Section 17: Writing a Custom TypeScript Extension
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: package.json pi-extension field declares entry point, index.ts Extension entry point, register() call Declares tools / commands /components, Pi session Loads extension at startup, LLM tool schema Sees your tool in function-calling. Connections: package.json pi-extension field declares entry point to index.ts Extension entry point (points to), index.ts Extension entry point to register() call Declares tools / commands /components (calls), register() call Declares tools / commands /components to Pi session Loads extension at startup (injects into), Pi session Loads extension at startup to LLM tool schema Sees your tool in function-calling (exposes to).
+    PKG["package.json<br/>pi-extension field<br/>declares entry point"]:::brown
+    ENTRY["index.ts<br/>Extension entry<br/>point"]:::blue
+    REG["register() call<br/>Declares tools /<br/>commands /components"]:::orange
+    PI["Pi session<br/>Loads extension at<br/>startup"]:::teal
+    LLM["LLM tool schema<br/>Sees your tool in<br/>function-calling"]:::purple
 
     PKG -->|"points to"| ENTRY
     ENTRY -->|"calls"| REG
     REG -->|"injects into"| PI
     PI -->|"exposes to"| LLM
 
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The minimal extension has three files: `package.json`, `index.ts`, and optionally a
@@ -397,12 +400,14 @@ context for that turn; skills below the threshold are not. The threshold is conf
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Section 20: Dynamic Skill Injection
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Current user message + recent history, Relevance scorer (embedding similarity), All discovered skills (titles + excerpts), Threshold filter (configurable), Injected skills (added to context this turn), Skipped skills (not in context this turn). Connections: Current user message + recent history to Relevance scorer (embedding similarity) (query), All discovered skills (titles + excerpts) to Relevance scorer (embedding similarity) (candidates), Relevance scorer (embedding similarity) to Threshold filter (configurable) (scores), Threshold filter (configurable) to Injected skills (added to context this turn) (above threshold), Threshold filter (configurable) to Skipped skills (not in context this turn) (below threshold), Injected skills (added to context this turn) to Current user message + recent history (prepended to).
     MSG["Current user message<br/>+ recent history"]:::teal
-    SCORE["Relevance scorer<br/>(embedding similarity)"]:::blue
-    SKILLS["All discovered skills<br/>(titles + excerpts)"]:::brown
+    SCORE["Relevance scorer<br/>(embedding<br/>similarity)"]:::blue
+    SKILLS["All discovered<br/>skills<br/>(titles + excerpts)"]:::brown
     THRESH["Threshold filter<br/>(configurable)"]:::orange
-    INJECT["Injected skills<br/>(added to context this turn)"]:::purple
-    SKIP["Skipped skills<br/>(not in context this turn)"]:::orange
+    INJECT["Injected skills<br/>(added to context<br/>this turn)"]:::purple
+    SKIP["Skipped skills<br/>(not in context this<br/>turn)"]:::orange
 
     MSG -->|"query"| SCORE
     SKILLS -->|"candidates"| SCORE
@@ -411,11 +416,12 @@ graph LR
     THRESH -->|"below threshold"| SKIP
     INJECT -->|"prepended to"| MSG
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The scoring mechanism is embedding-based similarity by default. Pi computes an embedding
@@ -662,6 +668,8 @@ while driving it from a different language (Python, Go, Rust) or a different pro
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 sequenceDiagram
+    accTitle: Section 23: RPC Protocol Mode
+    accDescr: Sequence diagram between Caller Process (Python / Go / shell), Pi RPC Process (stdin/stdout), LLM Provider. Messages: Caller Process (Python / Go / shell) to Pi RPC Process (stdin/stdout): JSON-RPC: method: run, params: message: ...; Pi RPC Process (stdin/stdout) to LLM Provider: LLM API call with tools; LLM Provider to Pi RPC Process (stdin/stdout): Tool call: Bash(ls src/); Pi RPC Process (stdin/stdout) to Pi RPC Process (stdin/stdout): Execute Bash tool; Pi RPC Process (stdin/stdout) to LLM Provider: Tool result: auth.ts router.ts ...; LLM Provider to Pi RPC Process (stdin/stdout): Final text response; Pi RPC Process (stdin/stdout) to Caller Process (Python / Go / shell): JSON-RPC response: result: response: ..., tool_calls: [...].
     participant CALLER as Caller Process<br/>(Python / Go / shell)
     participant PI as Pi RPC Process<br/>(stdin/stdout)
     participant LLM as LLM Provider

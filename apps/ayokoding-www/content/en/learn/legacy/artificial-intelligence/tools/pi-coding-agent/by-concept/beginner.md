@@ -30,26 +30,29 @@ Pi gives you the agentic loop in its simplest possible form and trusts you to ex
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    USER["Developer<br/>(experienced, wants control)"]:::teal
-    PI["Pi Harness<br/>(25-line visible system prompt)"]:::blue
-    TOOLS["Four Primitive Tools<br/>Read · Write · Edit · Bash"]:::orange
-    EXT["Your TypeScript Extensions<br/>(register exactly what you need)"]:::purple
+    accTitle: Section 1: What is Pi?
+    accDescr: Graph with 5 nodes and 8 connections. Nodes: Developer (experienced, wants control), Pi Harness (25-line visible system prompt), Four Primitive Tools Read · Write · Edit · Bash, Your TypeScript Extensions (register exactly what you need), Any LLM Provider (15+ supported). Connections: Developer (experienced, wants control) to Pi Harness (25-line visible system prompt) (natural language task), Pi Harness (25-line visible system prompt) to Four Primitive Tools Read · Write · Edit · Bash (tool calls), Pi Harness (25-line visible system prompt) to Your TypeScript Extensions (register exactly what you need) (tool calls), Pi Harness (25-line visible system prompt) to Any LLM Provider (15+ supported) (LLM API call), Any LLM Provider (15+ supported) to Pi Harness (25-line visible system prompt) (completion + tool decisions), Four Primitive Tools Read · Write · Edit · Bash to Pi Harness (25-line visible system prompt) (tool results), Your TypeScript Extensions (register exactly what you need) to Pi Harness (25-line visible system prompt) (tool results), Pi Harness (25-line visible system prompt) to Developer (experienced, wants control) (response).
+    USER["Developer<br/>(experienced, wants<br/>control)"]:::teal
+    PI["Pi Harness<br/>(25-line visible<br/>system prompt)"]:::blue
+    TOOLS["Four Primitive Tools<br/>Read · Write · Edit<br/>· Bash"]:::orange
+    EXT["Your TypeScript<br/>Extensions<br/>(register exactly<br/>what you need)"]:::purple
     LLM["Any LLM Provider<br/>(15+ supported)"]:::brown
 
-    USER -->|"natural language task"| PI
+    USER -->|"natural language<br/>task"| PI
     PI -->|"tool calls"| TOOLS
     PI -->|"tool calls"| EXT
     PI -->|"LLM API call"| LLM
-    LLM -->|"completion + tool decisions"| PI
+    LLM -->|"completion + tool<br/>decisions"| PI
     TOOLS -->|"tool results"| PI
     EXT -->|"tool results"| PI
     PI -->|"response"| USER
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Pi's design philosophy can be summarized as primitives, not features. Where other agents add
@@ -87,10 +90,12 @@ operating system without wrapping it in abstractions that obscure what is actual
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Section 2: The Four Primitive Tools
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Read Read file contents, Write Create or overwrite file, Edit Diff-based partial edit, Bash Execute shell command, File System, Shell / OS. Connections: Read Read file contents to File System (reads from), Write Create or overwrite file to File System (writes to), Edit Diff-based partial edit to File System (patches), Bash Execute shell command to Shell / OS (executes via), Shell / OS to Bash Execute shell command (stdout / stderr).
     READ["Read<br/>Read file contents"]:::blue
-    WRITE["Write<br/>Create or overwrite file"]:::orange
-    EDIT["Edit<br/>Diff-based partial edit"]:::teal
-    BASH["Bash<br/>Execute shell command"]:::purple
+    WRITE["Write<br/>Create or overwrite<br/>file"]:::orange
+    EDIT["Edit<br/>Diff-based partial<br/>edit"]:::teal
+    BASH["Bash<br/>Execute shell<br/>command"]:::purple
 
     FS["File System"]:::brown
     SHELL["Shell / OS"]:::brown
@@ -102,10 +107,11 @@ graph LR
     SHELL -->|"stdout / stderr"| BASH
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Read** reads file contents and returns them as a string. The LLM uses Read to inspect
@@ -289,12 +295,14 @@ it means Pi works correctly in slow or narrow terminal connections.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
-    TUI["Terminal UI (full screen)"]:::blue
+    accTitle: Section 4: Interactive TUI Mode
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Terminal UI (full screen), Conversation Pane Scrollable message history, Tool Output Pane Read/Write/Edit/Bash results, Input Area Your message (multiline), Status Bar Provider · Model · Token count. Connections: Terminal UI (full screen) to Conversation Pane Scrollable message history, Terminal UI (full screen) to Tool Output Pane Read/Write/Edit/Bash results, Terminal UI (full screen) to Input Area Your message (multiline), Terminal UI (full screen) to Status Bar Provider · Model · Token count.
+    TUI["Terminal UI (full<br/>screen)"]:::blue
 
-    CONV["Conversation Pane<br/>Scrollable message history"]:::teal
-    TOOL["Tool Output Pane<br/>Read/Write/Edit/Bash results"]:::orange
-    INPUT["Input Area<br/>Your message (multiline)"]:::purple
-    STATUS["Status Bar<br/>Provider · Model · Token count"]:::brown
+    CONV["Conversation Pane<br/>Scrollable message<br/>history"]:::teal
+    TOOL["Tool Output Pane<br/>Read/Write/Edit/Bash<br/>results"]:::orange
+    INPUT["Input Area<br/>Your message<br/>(multiline)"]:::purple
+    STATUS["Status Bar<br/>Provider · Model ·<br/>Token count"]:::brown
 
     TUI --> CONV
     TUI --> TOOL
@@ -302,10 +310,11 @@ graph TB
     TUI --> STATUS
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The TUI has four visual regions. The **conversation pane** occupies most of the screen and
@@ -721,10 +730,12 @@ from the session directory.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    ROOT["Session: refactor-auth<br/>Turns 1–18"]:::blue
-    B1["Branch: explore-approach-b<br/>(from turn 18)"]:::orange
-    B2["Branch: alternative-jwt<br/>(from turn 12)"]:::teal
-    B3["Branch: security-audit<br/>(from turn 6)"]:::purple
+    accTitle: => Context: 2,891 tokens
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Session: refactor-auth Turns 1–18, Branch: explore-approach-b (from turn 18), Branch: alternative-jwt (from turn 12), Branch: security-audit (from turn 6), Accepted result merged back manually. Connections: Session: refactor-auth Turns 1–18 to Branch: explore-approach-b (from turn 18), Session: refactor-auth Turns 1–18 to Branch: alternative-jwt (from turn 12), Session: refactor-auth Turns 1–18 to Branch: security-audit (from turn 6), Branch: explore-approach-b (from turn 18) to Accepted result merged back manually (turned out better).
+    ROOT["Session:<br/>refactor-auth<br/>Turns 1–18"]:::blue
+    B1["Branch:<br/>explore-approach-b<br/>(from turn 18)"]:::orange
+    B2["Branch:<br/>alternative-jwt<br/>(from turn 12)"]:::teal
+    B3["Branch:<br/>security-audit<br/>(from turn 6)"]:::purple
 
     ROOT --> B1
     ROOT --> B2
@@ -732,10 +743,11 @@ graph TD
     B1 -->|"turned out better"| RESULT["Accepted result<br/>merged back manually"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Branching is not limited to decision points within a session. You can branch any session
@@ -1176,23 +1188,26 @@ not more, not less.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
-    SYSTEM["System prompt<br/>(25 lines or SYSTEM.md)"]:::blue
+    accTitle: Section 16: Basic Context Engineering
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: System prompt (25 lines or SYSTEM.md), AGENTS.md (project context), Conversation history (all previous turns), Injected skills (per-turn, relevant only), Current user message, Context window (sent to LLM each turn). Connections: System prompt (25 lines or SYSTEM.md) to Context window (sent to LLM each turn) (always present), AGENTS.md (project context) to Context window (sent to LLM each turn) (always present), Conversation history (all previous turns) to Context window (sent to LLM each turn) (grows each turn), Injected skills (per-turn, relevant only) to Context window (sent to LLM each turn) (selective injection), Current user message to Context window (sent to LLM each turn) (new each turn).
+    SYSTEM["System prompt<br/>(25 lines or<br/>SYSTEM.md)"]:::blue
     AGENTS["AGENTS.md<br/>(project context)"]:::teal
     HISTORY["Conversation history<br/>(all previous turns)"]:::orange
-    SKILLS["Injected skills<br/>(per-turn, relevant only)"]:::purple
+    SKILLS["Injected skills<br/>(per-turn, relevant<br/>only)"]:::purple
     USER["Current user message"]:::brown
 
-    SYSTEM -->|"always present"| CTX["Context window<br/>(sent to LLM each turn)"]:::blue
+    SYSTEM -->|"always present"| CTX["Context window<br/>(sent to LLM each<br/>turn)"]:::blue
     AGENTS -->|"always present"| CTX
     HISTORY -->|"grows each turn"| CTX
-    SKILLS -->|"selective injection"| CTX
+    SKILLS -->|"selective<br/>injection"| CTX
     USER -->|"new each turn"| CTX
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The most common context engineering mistakes:

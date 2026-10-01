@@ -149,28 +149,31 @@ reliability without over-injecting unrelated skills.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 
 graph TD
+    accTitle: 2. Selective Skill Injection
+    accDescr: Graph with 7 nodes and 9 connections. Nodes: Incoming message from user, Trigger matching Check each skills trigger phrases, Semantic scoring Embed message, compare to skill descriptions, Token budget check Can this skill fit within remaining budget?, Inject skill Add SKILL.md content to context window, Skip skill Not relevant or budget exhausted, LLM call with assembled context. Connections: Incoming message from user to Trigger matching Check each skills trigger phrases, Trigger matching Check each skills trigger phrases to Token budget check Can this skill fit within remaining budget? (trigger matched), Trigger matching Check each skills trigger phrases to Semantic scoring Embed message, compare to skill descriptions (no trigger match), Semantic scoring Embed message, compare to skill descriptions to Token budget check Can this skill fit within remaining budget? (similarity >= threshold), Semantic scoring Embed message, compare to skill descriptions to Skip skill Not relevant or budget exhausted (similarity < threshold), Token budget check Can this skill fit within remaining budget? to Inject skill Add SKILL.md content to context window (budget available), Token budget check Can this skill fit within remaining budget? to Skip skill Not relevant or budget exhausted (budget exhausted), Inject skill Add SKILL.md content to context window to LLM call with assembled context, Skip skill Not relevant or budget exhausted to LLM call with assembled context.
     MSG["Incoming message<br/>from user"]:::blue
     TR["Trigger matching<br/>Check each skill's<br/>trigger phrases"]:::orange
-    SEM["Semantic scoring<br/>Embed message,<br/>compare to skill descriptions"]:::orange
-    BUD["Token budget check<br/>Can this skill fit<br/>within remaining budget?"]:::teal
+    SEM["Semantic scoring<br/>Embed message,<br/>compare to skill<br/>descriptions"]:::orange
+    BUD["Token budget check<br/>Can this skill fit<br/>within remaining<br/>budget?"]:::teal
     INJ["Inject skill<br/>Add SKILL.md content<br/>to context window"]:::teal
     SKIP["Skip skill<br/>Not relevant or<br/>budget exhausted"]:::purple
-    LLM["LLM call<br/>with assembled context"]:::blue
+    LLM["LLM call<br/>with assembled<br/>context"]:::blue
 
     MSG --> TR
     TR -->|"trigger matched"| BUD
     TR -->|"no trigger match"| SEM
-    SEM -->|"similarity >= threshold"| BUD
-    SEM -->|"similarity < threshold"| SKIP
+    SEM -->|"similarity >=<br/>threshold"| BUD
+    SEM -->|"similarity <<br/>threshold"| SKIP
     BUD -->|"budget available"| INJ
     BUD -->|"budget exhausted"| SKIP
     INJ --> LLM
     SKIP --> LLM
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -463,17 +466,19 @@ interaction.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 
 graph TD
+    accTitle: 5. Memory System Deep Dive
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: Message received, Session history Last 20 turns In-memory, instant, Long-term memory Semantic vector search ~10-50ms, Knowledge base Document chunk retrieval ~20-100ms, Save assistant turn to session history, Embed and store in long-term memory if importance threshold met, LLM context assembly. Connections: Message received to Session history Last 20 turns In-memory, instant, Message received to Long-term memory Semantic vector search ~10-50ms, Message received to Knowledge base Document chunk retrieval ~20-100ms, Session history Last 20 turns In-memory, instant to LLM context assembly, Long-term memory Semantic vector search ~10-50ms to LLM context assembly, Knowledge base Document chunk retrieval ~20-100ms to LLM context assembly, LLM context assembly to Save assistant turn to session history, LLM context assembly to Embed and store in long-term memory if importance threshold met.
     M["Message received"]:::blue
 
     subgraph "Read path — context assembly"
         SH["Session history<br/>Last 20 turns<br/>In-memory, instant"]:::orange
-        LTM["Long-term memory<br/>Semantic vector search<br/>~10-50ms"]:::orange
-        KB["Knowledge base<br/>Document chunk retrieval<br/>~20-100ms"]:::orange
+        LTM["Long-term memory<br/>Semantic vector<br/>search<br/>~10-50ms"]:::orange
+        KB["Knowledge base<br/>Document chunk<br/>retrieval<br/>~20-100ms"]:::orange
     end
 
     subgraph "Write path — after response"
         SA["Save assistant turn<br/>to session history"]:::teal
-        EM["Embed and store<br/>in long-term memory<br/>if importance threshold met"]:::teal
+        EM["Embed and store<br/>in long-term memory<br/>if importance<br/>threshold met"]:::teal
     end
 
     M --> SH
@@ -486,8 +491,9 @@ graph TD
     LLM --> EM
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -828,14 +834,16 @@ HTTP tool call — the secondary agent processes its own agentic loop and return
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 
 graph TD
+    accTitle: 8. Multi-Agent Orchestration
+    accDescr: Graph with 5 nodes and 8 connections. Nodes: User message via Telegram, Orchestrator Agent Decomposes task delegates to specialists, Research Agent web_search + web_fetch Port 7433, Writer Agent Drafts structured output Port 7434, CRM Agent crm_get_contact + crm_create_note Port 7435. Connections: User message via Telegram to Orchestrator Agent Decomposes task delegates to specialists, Orchestrator Agent Decomposes task delegates to specialists to Research Agent web_search + web_fetch Port 7433 (agent_call: research), Orchestrator Agent Decomposes task delegates to specialists to Writer Agent Drafts structured output Port 7434 (agent_call: write), Orchestrator Agent Decomposes task delegates to specialists to CRM Agent crm_get_contact + crm_create_note Port 7435 (agent_call: crm), Research Agent web_search + web_fetch Port 7433 to Orchestrator Agent Decomposes task delegates to specialists (research results), Writer Agent Drafts structured output Port 7434 to Orchestrator Agent Decomposes task delegates to specialists (drafted content), CRM Agent crm_get_contact + crm_create_note Port 7435 to Orchestrator Agent Decomposes task delegates to specialists (CRM confirmation), Orchestrator Agent Decomposes task delegates to specialists to User message via Telegram (composed response).
     U["User message<br/>via Telegram"]:::blue
-    ORC["Orchestrator Agent<br/>Decomposes task<br/>delegates to specialists"]:::orange
-    R["Research Agent<br/>web_search + web_fetch<br/>Port 7433"]:::teal
-    W["Writer Agent<br/>Drafts structured output<br/>Port 7434"]:::teal
-    CRM["CRM Agent<br/>crm_get_contact + crm_create_note<br/>Port 7435"]:::purple
+    ORC["Orchestrator Agent<br/>Decomposes task<br/>delegates to<br/>specialists"]:::orange
+    R["Research Agent<br/>web_search +<br/>web_fetch<br/>Port 7433"]:::teal
+    W["Writer Agent<br/>Drafts structured<br/>output<br/>Port 7434"]:::teal
+    CRM["CRM Agent<br/>crm_get_contact +<br/>crm_create_note<br/>Port 7435"]:::purple
 
     U --> ORC
-    ORC -->|"agent_call: research"| R
+    ORC -->|"agent_call:<br/>research"| R
     ORC -->|"agent_call: write"| W
     ORC -->|"agent_call: crm"| CRM
     R -->|"research results"| ORC
@@ -844,9 +852,10 @@ graph TD
     ORC -->|"composed response"| U
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

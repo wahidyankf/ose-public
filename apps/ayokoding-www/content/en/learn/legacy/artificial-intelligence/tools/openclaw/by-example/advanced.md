@@ -18,6 +18,8 @@ Plugins extend OpenClaw's capabilities by registering new tools, channels, model
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 55: Plugin Architecture Overview
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Plugin Package, openclaw-plugin.json Manifest, Tools, Channels, Model Providers, Skills. Connections: Plugin Package to openclaw-plugin.json Manifest, openclaw-plugin.json Manifest to Tools, openclaw-plugin.json Manifest to Channels, openclaw-plugin.json Manifest to Model Providers, openclaw-plugin.json Manifest to Skills.
     A["Plugin Package"]
     B["openclaw-plugin.json<br/>Manifest"]
     C["Tools"]
@@ -31,12 +33,18 @@ graph TD
     B --> E
     B --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Plugin directory structure**:
@@ -422,26 +430,33 @@ Treat OpenClaw like a remote-code-execution service with persistent credentials 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Untrusted input<br/>(channel, web, file, skill)"]
+    accTitle: Security Threat Model: OWASP LLM Top 10 Mapping
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Untrusted input (channel, web, file, skill), LLM reasoning, Tool invocations (exec, fs, browser, network), Host resources (secrets, files, OAuth, money), Defense layer 1 Input filters + channel allowlist, Defense layer 2 Tool allow/deny + approval gates, Defense layer 3 Sandbox + egress isolation, Defense layer 4 Output redaction + audit. Connections: Untrusted input (channel, web, file, skill) to Defense layer 1 Input filters + channel allowlist, Defense layer 1 Input filters + channel allowlist to LLM reasoning, LLM reasoning to Defense layer 2 Tool allow/deny + approval gates, Defense layer 2 Tool allow/deny + approval gates to Tool invocations (exec, fs, browser, network), Tool invocations (exec, fs, browser, network) to Defense layer 3 Sandbox + egress isolation, Defense layer 3 Sandbox + egress isolation to Host resources (secrets, files, OAuth, money), Host resources (secrets, files, OAuth, money) to Defense layer 4 Output redaction + audit.
+    A["Untrusted input<br/>(channel, web, file,<br/>skill)"]
     B["LLM reasoning"]
-    C["Tool invocations<br/>(exec, fs, browser, network)"]
-    D["Host resources<br/>(secrets, files, OAuth, money)"]
-    E["Defense layer 1<br/>Input filters + channel allowlist"]
-    F["Defense layer 2<br/>Tool allow/deny + approval gates"]
-    G["Defense layer 3<br/>Sandbox + egress isolation"]
-    H["Defense layer 4<br/>Output redaction + audit"]
+    C["Tool invocations<br/>(exec, fs, browser,<br/>network)"]
+    D["Host resources<br/>(secrets, files,<br/>OAuth, money)"]
+    E["Defense layer 1<br/>Input filters +<br/>channel allowlist"]
+    F["Defense layer 2<br/>Tool allow/deny +<br/>approval gates"]
+    G["Defense layer 3<br/>Sandbox + egress<br/>isolation"]
+    H["Defense layer 4<br/>Output redaction +<br/>audit"]
 
     A --> E --> B --> F --> C --> G --> D
     D --> H
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    class C pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Threat-to-example mapping**:
@@ -1542,10 +1557,12 @@ A comprehensive checklist combining all security, reliability, and monitoring pa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Security<br/>Sandbox, ACLs, Filtering"]
-    B["Reliability<br/>Daemon, Health, Backup"]
-    C["Monitoring<br/>Metrics, Logs, Alerts"]
-    D["Cost Control<br/>Rate Limits, Model Selection"]
+    accTitle: Example 80: Production Deployment Checklist
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Security Sandbox, ACLs, Filtering, Reliability Daemon, Health, Backup, Monitoring Metrics, Logs, Alerts, Cost Control Rate Limits, Model Selection, Production Ready. Connections: Security Sandbox, ACLs, Filtering to Production Ready, Reliability Daemon, Health, Backup to Production Ready, Monitoring Metrics, Logs, Alerts to Production Ready, Cost Control Rate Limits, Model Selection to Production Ready.
+    A["Security<br/>Sandbox, ACLs,<br/>Filtering"]
+    B["Reliability<br/>Daemon, Health,<br/>Backup"]
+    C["Monitoring<br/>Metrics, Logs,<br/>Alerts"]
+    D["Cost Control<br/>Rate Limits, Model<br/>Selection"]
     E["Production Ready"]
 
     A --> E
@@ -1553,11 +1570,17 @@ graph TD
     C --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Checklist configuration**:

@@ -69,15 +69,20 @@ Throughout this tutorial, we'll follow **"CloudTech Solutions"**, a growing clou
 
 ```mermaid
 flowchart TD
+ accTitle: 🏗️ What Were Building
+ accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Business Decision, Analyze Cash Flows, Apply Time Value of Money, Calculate NPV/IRR, Determine Cost of Capital, Make Investment Decision, Create Value. Connections: Business Decision to Analyze Cash Flows, Analyze Cash Flows to Apply Time Value of Money, Apply Time Value of Money to Calculate NPV/IRR, Calculate NPV/IRR to Determine Cost of Capital, Determine Cost of Capital to Make Investment Decision, Make Investment Decision to Create Value.
  A[Business Decision] --> B[Analyze Cash Flows]
- B --> C[Apply Time Value of Money]
+ B --> C[Apply Time Value of<br/>Money]
  C --> D[Calculate NPV/IRR]
- D --> E[Determine Cost of Capital]
- E --> F[Make Investment Decision]
+ D --> E[Determine Cost of<br/>Capital]
+ E --> F[Make Investment<br/>Decision]
  F --> G[Create Value]
 
- style A fill:#0173B2,stroke:#000000,color:#FFFFFF
- style G fill:#029E73,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The diagram above shows the corporate finance decision-making framework we'll master.
@@ -182,6 +187,8 @@ $$
 
 ```mermaid
 flowchart TD
+ accTitle: Visualizing Time Value
+ accDescr: Flowchart with 4 nodes and 2 connections. Nodes: $1,000 Today, $1,469 in 5 years @ 8 interest, $10,000 in 5 years, $7,473 Today @ 6 discount rate. Connections: $1,000 Today to $1,469 in 5 years @ 8 interest, $10,000 in 5 years to $7,473 Today @ 6 discount rate.
  subgraph "Future Value (Growing Money)"
   PV1[$1,000 Today] --> FV1[$1,469 in 5 years<br/>@ 8% interest]
  end
@@ -190,10 +197,14 @@ flowchart TD
   FV2[$10,000 in 5 years] --> PV2[$7,473 Today<br/>@ 6% discount rate]
  end
 
- style PV1 fill:#0173B2,stroke:#000000,color:#FFFFFF
- style FV1 fill:#029E73,stroke:#000000,color:#FFFFFF
- style FV2 fill:#DE8F05,stroke:#000000,color:#FFFFFF
- style PV2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class PV1 pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class FV1 pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class FV2 pal-DE8F05
+ class PV2 pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Discount Rate: The Key Number
@@ -212,17 +223,22 @@ Different investments require different discount rates based on risk:
 
 ```mermaid
 flowchart TD
- A[Investment Risk Categories] --> B[Low Risk<br/>Discount Rate: 4-6%]
+ accTitle: Risk and Required Return
+ accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Investment Risk Categories, Low Risk Discount Rate: 4-6, Medium Risk Discount Rate: 8-12, High Risk Discount Rate: 15-25, Examples: • Government bonds • Stable utilities • Blue-chip stocks, Examples: • Established companies • Real estate • Corporate bonds, Examples: • Startups • Emerging markets • Speculative ventures. Connections: Investment Risk Categories to Low Risk Discount Rate: 4-6, Investment Risk Categories to Medium Risk Discount Rate: 8-12, Investment Risk Categories to High Risk Discount Rate: 15-25, Low Risk Discount Rate: 4-6 to Examples: • Government bonds • Stable utilities • Blue-chip stocks, Medium Risk Discount Rate: 8-12 to Examples: • Established companies • Real estate • Corporate bonds, High Risk Discount Rate: 15-25 to Examples: • Startups • Emerging markets • Speculative ventures.
+ A[Investment Risk<br/>Categories] --> B[Low Risk<br/>Discount Rate: 4-6%]
  A --> C[Medium Risk<br/>Discount Rate: 8-12%]
- A --> D[High Risk<br/>Discount Rate: 15-25%]
+ A --> D[High Risk<br/>Discount Rate:<br/>15-25%]
 
  B --> B1[Examples:<br/>• Government bonds<br/>• Stable utilities<br/>• Blue-chip stocks]
- C --> C1[Examples:<br/>• Established companies<br/>• Real estate<br/>• Corporate bonds]
- D --> D1[Examples:<br/>• Startups<br/>• Emerging markets<br/>• Speculative ventures]
+ C --> C1[Examples:<br/>• Established<br/>companies<br/>• Real estate<br/>• Corporate bonds]
+ D --> D1[Examples:<br/>• Startups<br/>• Emerging markets<br/>• Speculative<br/>ventures]
 
- style B fill:#029E73,stroke:#000000,color:#FFFFFF
- style C fill:#DE8F05,stroke:#000000,color:#FFFFFF
- style D fill:#DE8F05,stroke:#000000,color:#FFFFFF
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class B pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class C pal-DE8F05
+ class D pal-DE8F05
+ classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Rule:** Higher risk = Higher required return = Higher discount rate
@@ -384,9 +400,11 @@ TOTAL LIABILITIES + EQUITY        $35,000,000
 
 ```mermaid
 flowchart LR
+ accTitle: Financial Statement Relationships
+ accDescr: Flowchart with 8 nodes and 5 connections. Nodes: Income Statement Shows: Profitability, Net Income, Balance Sheet Shows: Financial Position, Assets: $35M, Debt: $11M, Equity: $20M, Cash Flow Statement Shows: Cash Movement, Cash: $5M. Connections: Income Statement Shows: Profitability to Net Income, Balance Sheet Shows: Financial Position to Assets: $35M, Balance Sheet Shows: Financial Position to Debt: $11M, Balance Sheet Shows: Financial Position to Equity: $20M, Cash Flow Statement Shows: Cash Movement to Cash: $5M.
  IS[Income Statement<br/>Shows: Profitability] --> NI[Net Income]
 
- BS[Balance Sheet<br/>Shows: Financial Position] --> Assets[Assets: $35M]
+ BS[Balance Sheet<br/>Shows: Financial<br/>Position] --> Assets[Assets: $35M]
  BS --> Debt[Debt: $11M]
  BS --> Equity[Equity: $20M]
 
@@ -395,9 +413,13 @@ flowchart LR
  NI -.Flows to.-> Equity
  Cash -.Matches.-> Assets
 
- style IS fill:#DE8F05,stroke:#000000,color:#FFFFFF
- style BS fill:#029E73,stroke:#000000,color:#FFFFFF
- style CF fill:#CC78BC,stroke:#000000,color:#FFFFFF
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class IS pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class BS pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class CF pal-CC78BC
+ classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ### ✓ Checkpoint
@@ -535,6 +557,8 @@ The **cash conversion cycle** shows how long cash is tied up in operations:
 
 ```mermaid
 flowchart TD
+ accTitle: Working Capital and Cash Conversion Cycle
+ accDescr: Flowchart with 8 nodes and 6 connections. Nodes: Cash, Purchase Inventory, Inventory 24 days, Sell to Customers, Accounts Receivable 58 days, Collect Cash, G, Cash Conversion Cycle = 24 + 58 - 48 = 34 days. Connections: Cash to Purchase Inventory, Purchase Inventory to Inventory 24 days, Inventory 24 days to Sell to Customers, Sell to Customers to Accounts Receivable 58 days, Accounts Receivable 58 days to Collect Cash, Collect Cash to Cash.
  A[Cash] --> B[Purchase Inventory]
  B --> C[Inventory<br/>24 days]
  C --> D[Sell to Customers]
@@ -542,13 +566,17 @@ flowchart TD
  E --> F[Collect Cash]
  F --> A
 
- G[Accounts Payable<br/>48 days delay payment] -.Reduces cycle.-> C
+ G[Accounts Payable<br/>48 days delay<br/>payment] -.Reduces cycle.-> C
 
- H[Cash Conversion Cycle<br/>= 24 + 58 - 48 = 34 days]
+ H[Cash Conversion<br/>Cycle<br/>= 24 + 58 - 48 = 34<br/>days]
 
- style A fill:#029E73,stroke:#000000,color:#FFFFFF
- style H fill:#0173B2,stroke:#000000,color:#FFFFFF
- style G fill:#DE8F05,stroke:#000000,color:#FFFFFF
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class A pal-029E73
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class H pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class G pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **CloudTech's cash is tied up for 34 days** from paying suppliers to collecting from customers.
@@ -559,6 +587,8 @@ flowchart TD
 
 ```mermaid
 flowchart LR
+ accTitle: Ratio Analysis Summary
+ accDescr: Flowchart with 8 nodes and 0 connections. Nodes: ROA: 16.07 Good, ROE: 28.13 Excellent, Current Ratio: 3.0 Very Healthy, Quick Ratio: 2.6 Strong, Debt/Equity: 0.55 Moderate, Debt/Assets: 31.4 Conservative, Asset Turnover: 1.43 Good, Inventory Turnover: 15 Efficient.
  subgraph "Profitability"
   ROA[ROA: 16.07%<br/>Good]
   ROE[ROE: 28.13%<br/>Excellent]
@@ -576,13 +606,17 @@ flowchart LR
 
  subgraph "Efficiency"
   AT[Asset Turnover: 1.43<br/>Good]
-  IT[Inventory Turnover: 15<br/>Efficient]
+  IT[Inventory Turnover:<br/>15<br/>Efficient]
  end
 
- style ROA fill:#029E73,stroke:#000000,color:#FFFFFF
- style ROE fill:#029E73,stroke:#000000,color:#FFFFFF
- style CR fill:#0173B2,stroke:#000000,color:#FFFFFF
- style DE fill:#DE8F05,stroke:#000000,color:#FFFFFF
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class ROA pal-029E73
+ class ROE pal-029E73
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class CR pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class DE pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### ✓ Checkpoint
@@ -738,8 +772,10 @@ Payback period **ignores**:
 
 ```mermaid
 flowchart TD
- A[Investment Opportunity] --> B[Estimate Cash Flows]
- B --> C[Determine Discount Rate]
+ accTitle: Capital Budgeting Process
+ accDescr: Flowchart with 9 nodes and 10 connections. Nodes: Investment Opportunity, Estimate Cash Flows, Determine Discount Rate, Calculate NPV, NPV > 0?, ✓ Accept Project Creates Value, ✗ Reject Project Destroys Value, Calculate IRR, IRR > Required Return?. Connections: Investment Opportunity to Estimate Cash Flows, Estimate Cash Flows to Determine Discount Rate, Determine Discount Rate to Calculate NPV, Calculate NPV to NPV > 0?, NPV > 0? to ✓ Accept Project Creates Value (Yes), NPV > 0? to ✗ Reject Project Destroys Value (No), Determine Discount Rate to Calculate IRR, Calculate IRR to IRR > Required Return?, IRR > Required Return? to ✓ Accept Project Creates Value (Yes), IRR > Required Return? to ✗ Reject Project Destroys Value (No).
+ A[Investment<br/>Opportunity] --> B[Estimate Cash Flows]
+ B --> C[Determine Discount<br/>Rate]
  C --> D[Calculate NPV]
  D --> E{NPV > 0?}
 
@@ -747,13 +783,17 @@ flowchart TD
  E -->|No| G[✗ Reject Project<br/>Destroys Value]
 
  C --> H[Calculate IRR]
- H --> I{IRR > Required Return?}
+ H --> I{IRR > Required<br/>Return?}
  I -->|Yes| F
  I -->|No| G
 
- style A fill:#0173B2,stroke:#000000,color:#FFFFFF
- style F fill:#029E73,stroke:#000000,color:#FFFFFF
- style G fill:#DE8F05,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class F pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class G pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Practice Exercise
@@ -981,17 +1021,23 @@ The project earns more than the cost of capital, creating value.
 
 ```mermaid
 flowchart TD
- WACC[WACC: 8.56%<br/>Weighted Average] --> Debt[Debt Component<br/>35.5% × 3.41% = 1.21%]
- WACC --> Equity[Equity Component<br/>64.5% × 11.4% = 7.35%]
+ accTitle: Cost of Capital Breakdown
+ accDescr: Flowchart with 6 nodes and 5 connections. Nodes: WACC: 8.56 Weighted Average, Debt Component 35.5 × 3.41 = 1.21, Equity Component 64.5 × 11.4 = 7.35, Cost of Debt 4.55 pre-tax 3.41 after-tax, Cost of Equity 11.4 via CAPM, rf + β × Risk Premium 3 + 1.2 × 7 = 11.4. Connections: WACC: 8.56 Weighted Average to Debt Component 35.5 × 3.41 = 1.21, WACC: 8.56 Weighted Average to Equity Component 64.5 × 11.4 = 7.35, Debt Component 35.5 × 3.41 = 1.21 to Cost of Debt 4.55 pre-tax 3.41 after-tax, Equity Component 64.5 × 11.4 = 7.35 to Cost of Equity 11.4 via CAPM, Cost of Equity 11.4 via CAPM to rf + β × Risk Premium 3 + 1.2 × 7 = 11.4.
+ WACC[WACC: 8.56%<br/>Weighted Average] --> Debt[Debt Component<br/>35.5% × 3.41% =<br/>1.21%]
+ WACC --> Equity[Equity Component<br/>64.5% × 11.4% =<br/>7.35%]
 
  Debt --> RD[Cost of Debt<br/>4.55% pre-tax<br/>3.41% after-tax]
  Equity --> RE[Cost of Equity<br/>11.4% via CAPM]
 
- RE --> CAPM[rf + β × Risk Premium<br/>3% + 1.2 × 7% = 11.4%]
+ RE --> CAPM[rf + β × Risk<br/>Premium<br/>3% + 1.2 × 7% =<br/>11.4%]
 
- style WACC fill:#029E73,stroke:#000000,color:#FFFFFF
- style Debt fill:#DE8F05,stroke:#000000,color:#FFFFFF
- style Equity fill:#0173B2,stroke:#000000,color:#FFFFFF
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class WACC pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class Debt pal-DE8F05
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class Equity pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### ✓ Checkpoint
@@ -1161,6 +1207,8 @@ While debt has tax benefits and lower cost than equity, **too much debt is dange
 
 ```mermaid
 flowchart TD
+ accTitle: Capital Structure Impact
+ accDescr: Flowchart with 7 nodes and 9 connections. Nodes: Financing Decision, Debt or Equity?, Advantages: • Tax shield • No dilution, Disadvantages: • Fixed payments • Bankruptcy risk, Advantages: • Flexible • No bankruptcy risk, Disadvantages: • Expensive • Dilution, Find Optimal Balance. Connections: Financing Decision to Debt or Equity?, Debt or Equity? to Advantages: • Tax shield • No dilution (More Debt), Debt or Equity? to Disadvantages: • Fixed payments • Bankruptcy risk (More Debt), Debt or Equity? to Advantages: • Flexible • No bankruptcy risk (More Equity), Debt or Equity? to Disadvantages: • Expensive • Dilution (More Equity), Advantages: • Tax shield • No dilution to Find Optimal Balance, Disadvantages: • Fixed payments • Bankruptcy risk to Find Optimal Balance, Advantages: • Flexible • No bankruptcy risk to Find Optimal Balance, Disadvantages: • Expensive • Dilution to Find Optimal Balance.
  A[Financing Decision] --> B{Debt or Equity?}
 
  B -->|More Debt| C[Advantages:<br/>• Tax shield<br/>• No dilution]
@@ -1174,8 +1222,11 @@ flowchart TD
  E --> G
  F --> G
 
- style A fill:#0173B2,stroke:#000000,color:#FFFFFF
- style G fill:#029E73,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### ✓ Checkpoint
@@ -1204,18 +1255,25 @@ We'll focus on **DCF** - the fundamental approach.
 
 ```mermaid
 flowchart TD
+ accTitle: Valuation Methods
+ accDescr: Flowchart with 7 nodes and 7 connections. Nodes: Valuation Methods, DCF Analysis Intrinsic Value, Comparable Companies Market Value, D, ✓ Cash flow based ✓ Fundamental analysis ✗ Assumption sensitive, ✓ Quick market check ✓ Easy to understand ✗ Needs comparable firms, ✓ Real transaction data ✓ Control premiums ✗ Limited data availability. Connections: Valuation Methods to DCF Analysis Intrinsic Value, Valuation Methods to Comparable Companies Market Value, Valuation Methods to D, Valuation Methods to Valuation Methods, DCF Analysis Intrinsic Value to ✓ Cash flow based ✓ Fundamental analysis ✗ Assumption sensitive, Comparable Companies Market Value to ✓ Quick market check ✓ Easy to understand ✗ Needs comparable firms, D to ✓ Real transaction data ✓ Control premiums ✗ Limited data availability.
  A[Valuation Methods] --> B[DCF Analysis<br/>Intrinsic Value]
  A --> C[Comparable Companies<br/>Market Value]
- A --> D[Precedent Transactions<br/>M&A Prices]
+ A --> D[Precedent<br/>Transactions<br/>M&A Prices]
 
- B --> B1[✓ Cash flow based<br/>✓ Fundamental analysis<br/>✗ Assumption sensitive]
- C --> C1[✓ Quick market check<br/>✓ Easy to understand<br/>✗ Needs comparable firms]
- D --> D1[✓ Real transaction data<br/>✓ Control premiums<br/>✗ Limited data availability]
+ B --> B1[✓ Cash flow based<br/>✓ Fundamental<br/>analysis<br/>✗ Assumption<br/>sensitive]
+ C --> C1[✓ Quick market check<br/>✓ Easy to understand<br/>✗ Needs comparable<br/>firms]
+ D --> D1[✓ Real transaction<br/>data<br/>✓ Control premiums<br/>✗ Limited data<br/>availability]
 
- style A fill:#0173B2,stroke:#000000,color:#FFFFFF
- style B fill:#029E73,stroke:#000000,color:#FFFFFF
- style C fill:#DE8F05,stroke:#000000,color:#FFFFFF
- style D fill:#CC78BC,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class B pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class C pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Discounted Cash Flow (DCF) Valuation
@@ -1240,19 +1298,25 @@ FCF is cash available to all investors (debt and equity).
 
 ```mermaid
 flowchart TD
- A[Start DCF Valuation] --> B[Step 1:<br/>Project Free Cash Flows<br/>5-10 years]
- B --> C[Step 2:<br/>Calculate Terminal Value<br/>Gordon Growth Model]
- C --> D[Step 3:<br/>Determine Discount Rate<br/>Use WACC]
- D --> E[Step 4:<br/>Discount All Cash Flows<br/>to Present Value]
- E --> F[Step 5:<br/>Sum = Enterprise Value]
+ accTitle: DCF Valuation Process
+ accDescr: Flowchart with 9 nodes and 7 connections. Nodes: Start DCF Valuation, Step 1: Project Free Cash Flows 5-10 years, Step 2: Calculate Terminal Value Gordon Growth Model, Step 3: Determine Discount Rate Use WACC, Step 4: Discount All Cash Flows to Present Value, Step 5: Sum = Enterprise Value, Step 6: Subtract Net Debt, Equity Value What shareholders own, I. Connections: Start DCF Valuation to Step 1: Project Free Cash Flows 5-10 years, Step 1: Project Free Cash Flows 5-10 years to Step 2: Calculate Terminal Value Gordon Growth Model, Step 2: Calculate Terminal Value Gordon Growth Model to Step 3: Determine Discount Rate Use WACC, Step 3: Determine Discount Rate Use WACC to Step 4: Discount All Cash Flows to Present Value, Step 4: Discount All Cash Flows to Present Value to Step 5: Sum = Enterprise Value, Step 5: Sum = Enterprise Value to Step 6: Subtract Net Debt, Step 6: Subtract Net Debt to Equity Value What shareholders own.
+ A[Start DCF Valuation] --> B[Step 1:<br/>Project Free Cash<br/>Flows<br/>5-10 years]
+ B --> C[Step 2:<br/>Calculate Terminal<br/>Value<br/>Gordon Growth Model]
+ C --> D[Step 3:<br/>Determine Discount<br/>Rate<br/>Use WACC]
+ D --> E[Step 4:<br/>Discount All Cash<br/>Flows<br/>to Present Value]
+ E --> F[Step 5:<br/>Sum = Enterprise<br/>Value]
  F --> G[Step 6:<br/>Subtract Net Debt]
- G --> H[Equity Value<br/>What shareholders own]
+ G --> H[Equity Value<br/>What shareholders<br/>own]
 
  I[Sensitivity Analysis<br/>Test assumptions] -.Validate.-> H
 
- style A fill:#0173B2,stroke:#000000,color:#FFFFFF
- style H fill:#029E73,stroke:#000000,color:#FFFFFF
- style I fill:#DE8F05,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class H pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class I pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### CloudTech DCF Valuation
@@ -1351,14 +1415,19 @@ $$
 
 ```mermaid
 flowchart TD
- A[Project Free Cash Flows<br/>5 years] --> B[Calculate Terminal Value<br/>Value after Year 5]
- B --> C[Discount All Cash Flows<br/>to Present Value]
- C --> D[Sum = Enterprise Value<br/>$137.7M]
+ accTitle: DCF Valuation Flow
+ accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Project Free Cash Flows 5 years, Calculate Terminal Value Value after Year 5, Discount All Cash Flows to Present Value, Sum = Enterprise Value $137.7M, Subtract Net Debt -$6M, Equity Value $131.7M. Connections: Project Free Cash Flows 5 years to Calculate Terminal Value Value after Year 5, Calculate Terminal Value Value after Year 5 to Discount All Cash Flows to Present Value, Discount All Cash Flows to Present Value to Sum = Enterprise Value $137.7M, Sum = Enterprise Value $137.7M to Subtract Net Debt -$6M, Subtract Net Debt -$6M to Equity Value $131.7M.
+ A[Project Free Cash<br/>Flows<br/>5 years] --> B[Calculate Terminal<br/>Value<br/>Value after Year 5]
+ B --> C[Discount All Cash<br/>Flows<br/>to Present Value]
+ C --> D[Sum = Enterprise<br/>Value<br/>$137.7M]
  D --> E[Subtract Net Debt<br/>-$6M]
  E --> F[Equity Value<br/>$131.7M]
 
- style A fill:#0173B2,stroke:#000000,color:#FFFFFF
- style F fill:#029E73,stroke:#000000,color:#FFFFFF
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class F pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Sensitivity Analysis

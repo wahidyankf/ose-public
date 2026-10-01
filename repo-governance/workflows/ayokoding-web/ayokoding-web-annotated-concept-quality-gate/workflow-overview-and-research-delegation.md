@@ -8,7 +8,6 @@ when_to_use: Use when you need a visual summary of the quality-gate flow or want
 ## Workflow Overview
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'14px'}}}%%
 graph TB
     accTitle: Workflow Overview
     accDescr: Maker: Create/Update Worked Examples leads to Checker: Detect Mode + Validate Quality via maker or manual; Checker: Detect Mode + Validate Quality leads to User Review via checker; and 5 more links.

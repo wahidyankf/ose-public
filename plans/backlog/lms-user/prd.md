@@ -56,7 +56,6 @@ BFF, creates its own opaque browser session after validation, and calls the LMS 
 token whose audience and context are revalidated by the resource server.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#E3F2FD", "primaryTextColor": "#0D47A1", "primaryBorderColor": "#1565C0", "lineColor": "#455A64", "secondaryColor": "#E8F5E9", "tertiaryColor": "#FFF3E0"}}}%%
 sequenceDiagram
   accTitle: LMS sign-in sequence
   accDescr: A user starts in LMS, authenticates and chooses context in OSE ID, then returns to an LMS session and protected API.

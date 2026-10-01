@@ -42,9 +42,9 @@ flowchart TD
     A --> C[Integration Tests<br/>Vitest or native<br/>runner<br/>Real local · no<br/>remote calls]
     A --> D[E2E Tests<br/>Playwright or public<br/>process<br/>Real public boundary]
 
-    B --> B1[Domain logic\nValue objects\nPure functions]
+    B --> B1[Domain logic<br/>Value objects<br/>Pure functions]
     C --> C1[Filesystem<br/>Environment<br/>Embedded local<br/>database]
-    D --> D1[Real browser\nReal HTTP/API\nPublished executable]
+    D --> D1[Real browser<br/>Real HTTP/API<br/>Published executable]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef teal fill:#029E73,stroke:#000000,color:#000000
@@ -65,7 +65,7 @@ flowchart TD
     accDescr: E2E Tests Real public boundary Impacted manual + scheduled leads to Integration Tests Real local · no remote calls Impacted manual + scheduled; and 1 more links.
     A[E2E Tests<br/>Real public boundary<br/>Impacted manual +<br/>scheduled]
     B[Integration Tests<br/>Real local · no<br/>remote calls<br/>Impacted manual +<br/>scheduled]
-    C[Unit Tests\nIn process\nEvery quick gate]
+    C[Unit Tests<br/>In process<br/>Every quick gate]
 
     A --> B
     B --> C

@@ -411,16 +411,21 @@ spec:
 ```mermaid
 %% Diagram showing Ingress to Service to Pod traffic flow
 graph TD
+    accTitle: Color-Blind Friendly Palette
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Ingress, Service: web-service, Pod: web-1, Pod: web-2, Pod: web-3. Connections: Ingress to Service: web-service, Service: web-service to Pod: web-1, Service: web-service to Pod: web-2, Service: web-service to Pod: web-3.
     A[Ingress] --> B[Service: web-service]
     B --> C[Pod: web-1]
     B --> D[Pod: web-2]
     B --> E[Pod: web-3]
 
-    style A fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    class B pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class C pal-0173B2
+    class D pal-0173B2
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Quality Checklist

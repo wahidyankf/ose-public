@@ -25,17 +25,20 @@ The simplest Flyway migration is a SQL file placed in `src/main/resources/db/mig
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Flyway discovers and executes V1 migration file
 graph TD
-    A["Migration File\nV1__create_products.sql"]:::blue
-    B["Flyway Scans\ndb/migration classpath"]:::orange
-    C["Executes SQL\nCREATE TABLE products"]:::teal
-    D["Records in\nflyway_schema_history"]:::purple
+    accTitle: Example 1: First Versioned Migration
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Migration File V1__create_products. sql, Flyway Scans db/migration classpath, Executes SQL CREATE TABLE products, Records in flyway_schema_ history. Connections: Migration File V1__create_products. sql to Flyway Scans db/migration classpath, Flyway Scans db/migration classpath to Executes SQL CREATE TABLE products, Executes SQL CREATE TABLE products to Records in flyway_schema_ history.
+    A["Migration File<br/>V1__create_products.<br/>sql"]:::blue
+    B["Flyway Scans<br/>db/migration<br/>classpath"]:::orange
+    C["Executes SQL<br/>CREATE TABLE<br/>products"]:::teal
+    D["Records in<br/>flyway_schema_<br/>history"]:::purple
 
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -109,17 +112,20 @@ The Kotlin API configures Flyway programmatically. `Flyway.configure()` returns 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Flyway Kotlin configuration builder chain
 graph LR
+    accTitle: Example 3: Flyway.configure.dataSource Setup
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Flyway.configure(), .dataSource(url, user, pw), .load(), Flyway instance ready to use. Connections: Flyway.configure() to .dataSource(url, user, pw), .dataSource(url, user, pw) to .load(), .load() to Flyway instance ready to use.
     A["Flyway.configure()"]:::blue
-    B[".dataSource(url, user, pw)"]:::orange
+    B[".dataSource(url,<br/>user, pw)"]:::orange
     C[".load()"]:::teal
-    D["Flyway instance\nready to use"]:::purple
+    D["Flyway instance<br/>ready to use"]:::purple
 
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -1191,20 +1197,23 @@ Ktor applications initialize Flyway at startup in a `DatabaseFactory` object bef
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Ktor startup sequence: Flyway migrates before accepting traffic
 graph TD
-    A["Ktor Application\nStartup"]:::blue
-    B["DatabaseFactory.init()"]:::orange
-    C["Flyway.configure()\n.dataSource()\n.load()\n.migrate()"]:::teal
-    D["Database.connect()\nExposed ORM"]:::purple
-    E["HTTP Server Binds\nPort 8080"]:::brown
-    F["Application Ready\nAccepts Traffic"]:::teal
+    accTitle: Example 30: Ktor Integration Pattern
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Ktor Application Startup, DatabaseFactory. init(), Flyway.configure() .dataSource() .load() .migrate(), Database.connect() Exposed ORM, HTTP Server Binds Port 8080, Application Ready Accepts Traffic. Connections: Ktor Application Startup to DatabaseFactory. init(), DatabaseFactory. init() to Flyway.configure() .dataSource() .load() .migrate(), Flyway.configure() .dataSource() .load() .migrate() to Database.connect() Exposed ORM, Database.connect() Exposed ORM to HTTP Server Binds Port 8080, HTTP Server Binds Port 8080 to Application Ready Accepts Traffic.
+    A["Ktor Application<br/>Startup"]:::blue
+    B["DatabaseFactory.<br/>init()"]:::orange
+    C["Flyway.configure()<br/>.dataSource()<br/>.load()<br/>.migrate()"]:::teal
+    D["Database.connect()<br/>Exposed ORM"]:::purple
+    E["HTTP Server Binds<br/>Port 8080"]:::brown
+    F["Application Ready<br/>Accepts Traffic"]:::teal
 
     A --> B --> C --> D --> E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin

@@ -353,8 +353,9 @@ jobs:
 ## Production CI/CD Architecture Diagram
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','background':'#fff','mainBkg':'#fff','secondaryBkg':'#f4f4f4','tertiaryBkg':'#f0f0f0'}}}%%
 graph LR
+    accTitle: Production CI/CD Architecture Diagram
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Git Push, GitHub Actions, Checkout Code, Install Dependencies, Install Browsers, Run Tests Parallel, Tests Pass?, Deploy, Upload Artifacts, Notify Team. Connections: Git Push to GitHub Actions, GitHub Actions to Checkout Code, Checkout Code to Install Dependencies, Install Dependencies to Install Browsers, Install Browsers to Run Tests Parallel, Run Tests Parallel to Tests Pass?, Tests Pass? to Deploy (Yes), Tests Pass? to Upload Artifacts (No), Upload Artifacts to Notify Team.
     A[Git Push] --> B[GitHub Actions]
     B --> C[Checkout Code]
     C --> D[Install Dependencies]
@@ -365,12 +366,18 @@ graph LR
     G -->|No| I[Upload Artifacts]
     I --> J[Notify Team]
 
-    style A fill:#0173B2,stroke:#0173B2,color:#fff
-    style B fill:#029E73,stroke:#029E73,color:#fff
-    style F fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style G fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style H fill:#0173B2,stroke:#0173B2,color:#fff
-    style I fill:#CA9161,stroke:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

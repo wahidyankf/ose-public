@@ -18,19 +18,26 @@ CTEs improve query readability by naming subqueries - the WITH clause defines te
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["WITH high_value_orders AS (...)"]
+    accTitle: Example 31: Common Table Expressions
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: WITH high_value_orders AS (...), Temporary Result Set, Main Query SELECT FROM high_value_orders, Final Results. Connections: WITH high_value_orders AS (...) to Temporary Result Set, Temporary Result Set to Main Query SELECT FROM high_value_orders, Main Query SELECT FROM high_value_orders to Final Results.
+    A["WITH<br/>high_value_orders AS<br/>(...)"]
     B["Temporary Result Set"]
-    C["Main Query<br/>SELECT FROM high_value_orders"]
+    C["Main Query<br/>SELECT FROM<br/>high_value_orders"]
     D["Final Results"]
 
     A --> B
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -179,7 +186,9 @@ Window functions compute values across sets of rows related to the current row w
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Dataset: Sales with Amounts<br/>Eve: 8000, Bob: 7000,<br/>Charlie: 6000, Diana: 6000, Alice: 5000"]
+    accTitle: Example 32: Window Functions
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Dataset: Sales with Amounts Eve: 8000, Bob: 7000, Charlie: 6000, Diana: 6000, Alice: 5000, ROW_NUMBER() Sequential Numbering, RANK() Skips After Ties, DENSE_RANK() No Skips After Ties, Results ROW_NUMBER: 1,2,3,4,5 (No ties), Results RANK: 1,2,3,3,5 (Skip to 5), Results DENSE_RANK: 1,2,3,3,4 (No skip). Connections: Dataset: Sales with Amounts Eve: 8000, Bob: 7000, Charlie: 6000, Diana: 6000, Alice: 5000 to ROW_NUMBER() Sequential Numbering, Dataset: Sales with Amounts Eve: 8000, Bob: 7000, Charlie: 6000, Diana: 6000, Alice: 5000 to RANK() Skips After Ties, Dataset: Sales with Amounts Eve: 8000, Bob: 7000, Charlie: 6000, Diana: 6000, Alice: 5000 to DENSE_RANK() No Skips After Ties, ROW_NUMBER() Sequential Numbering to Results ROW_NUMBER: 1,2,3,4,5 (No ties), RANK() Skips After Ties to Results RANK: 1,2,3,3,5 (Skip to 5), DENSE_RANK() No Skips After Ties to Results DENSE_RANK: 1,2,3,3,4 (No skip).
+    A["Dataset: Sales with<br/>Amounts<br/>Eve: 8000, Bob:<br/>7000,<br/>Charlie: 6000,<br/>Diana: 6000, Alice:<br/>5000"]
     B["ROW_NUMBER()<br/>Sequential Numbering"]
     C["RANK()<br/>Skips After Ties"]
     D["DENSE_RANK()<br/>No Skips After Ties"]
@@ -194,13 +203,19 @@ graph TD
     C --> F
     D --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -344,12 +359,14 @@ PARTITION BY divides result sets into groups before applying window functions - 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 33: Window Functions with Partitioning
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: All Sales Data, PARTITION BY region, North Partition (Alice, Bob, Eve), South Partition (Charlie, Diana), Window Function (SUM, AVG, RANK), Results with Partition Calculations. Connections: All Sales Data to PARTITION BY region, PARTITION BY region to North Partition (Alice, Bob, Eve), PARTITION BY region to South Partition (Charlie, Diana), North Partition (Alice, Bob, Eve) to Window Function (SUM, AVG, RANK), South Partition (Charlie, Diana) to Window Function (SUM, AVG, RANK), Window Function (SUM, AVG, RANK) to Results with Partition Calculations.
     A["All Sales Data"]
     B["PARTITION BY region"]
     C["North Partition<br/>(Alice, Bob, Eve)"]
     D["South Partition<br/>(Charlie, Diana)"]
     E["Window Function<br/>(SUM, AVG, RANK)"]
-    F["Results with<br/>Partition Calculations"]
+    F["Results with<br/>Partition<br/>Calculations"]
 
     A --> B
     B --> C
@@ -358,12 +375,18 @@ graph TD
     D --> E
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -780,9 +803,11 @@ B-tree indexes (default) speed up lookups, range queries, and sorting. Create in
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["B-tree Index Root<br/>#40;Balanced Tree#41;"]
-    B["Branch Node<br/>#40;category = 'A-M'#41;"]
-    C["Branch Node<br/>#40;category = 'N-Z'#41;"]
+    accTitle: Example 36: Creating B-tree Indexes
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: B-tree Index Root 40Balanced Tree41, Branch Node 40category = A-M41, Branch Node 40category = N-Z41, Leaf: Electronics 403,333 rows41, Leaf: Furniture 403,333 rows41, Leaf: Kitchen 403,334 rows41, Fast Lookup O40log n41. Connections: B-tree Index Root 40Balanced Tree41 to Branch Node 40category = A-M41, B-tree Index Root 40Balanced Tree41 to Branch Node 40category = N-Z41, Branch Node 40category = A-M41 to Leaf: Electronics 403,333 rows41, Branch Node 40category = A-M41 to Leaf: Furniture 403,333 rows41, Branch Node 40category = N-Z41 to Leaf: Kitchen 403,334 rows41, Leaf: Electronics 403,333 rows41 to Fast Lookup O40log n41, Leaf: Furniture 403,333 rows41 to Fast Lookup O40log n41, Leaf: Kitchen 403,334 rows41 to Fast Lookup O40log n41.
+    A["B-tree Index Root<br/>#40;Balanced<br/>Tree#41;"]
+    B["Branch Node<br/>#40;category =<br/>'A-M'#41;"]
+    C["Branch Node<br/>#40;category =<br/>'N-Z'#41;"]
     D["Leaf: Electronics<br/>#40;3,333 rows#41;"]
     E["Leaf: Furniture<br/>#40;3,333 rows#41;"]
     F["Leaf: Kitchen<br/>#40;3,334 rows#41;"]
@@ -797,13 +822,18 @@ graph TD
     E --> G
     F --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1026,11 +1056,13 @@ Multi-column indexes speed up queries filtering on multiple columns. Column orde
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Multi-Column Index<br/>(customer_id, status)"]
+    accTitle: Example 38: Multi-Column Indexes
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Multi-Column Index (customer_id, status), Level 1: customer_id (42, 50, 75, ...), Level 2: status per customer_id, Customer 42 (pending, completed, cancelled), Query Uses Index: customer_id = 42 AND status = pending, Query Uses Index: customer_id = 42 (leftmost column), Query SKIPS Index: status = pending (not leftmost). Connections: Multi-Column Index (customer_id, status) to Level 1: customer_id (42, 50, 75, ...), Level 1: customer_id (42, 50, 75, ...) to Level 2: status per customer_id, Level 2: status per customer_id to Customer 42 (pending, completed, cancelled), Customer 42 (pending, completed, cancelled) to Query Uses Index: customer_id = 42 AND status = pending, Level 1: customer_id (42, 50, 75, ...) to Query Uses Index: customer_id = 42 (leftmost column), Multi-Column Index (customer_id, status) to Query SKIPS Index: status = pending (not leftmost) (Cannot use).
+    A["Multi-Column Index<br/>(customer_id,<br/>status)"]
     B["Level 1: customer_id<br/>(42, 50, 75, ...)"]
     C["Level 2: status<br/>per customer_id"]
-    D["Customer 42<br/>(pending, completed, cancelled)"]
-    E["Query Uses Index:<br/>customer_id = 42<br/>AND status = 'pending'"]
+    D["Customer 42<br/>(pending, completed,<br/>cancelled)"]
+    E["Query Uses Index:<br/>customer_id = 42<br/>AND status =<br/>'pending'"]
     F["Query Uses Index:<br/>customer_id = 42<br/>(leftmost column)"]
     G["Query SKIPS Index:<br/>status = 'pending'<br/>(not leftmost)"]
 
@@ -1041,13 +1073,19 @@ graph TD
     B --> F
     A -.->|Cannot use| G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1307,6 +1345,8 @@ EXPLAIN shows query execution plans - how PostgreSQL retrieves data. EXPLAIN ANA
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 40: Using EXPLAIN to Analyze Queries
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Query, EXPLAIN (Plan Only), EXPLAIN ANALYZE (Execute + Timing), Execution Plan, Actual Performance Metrics. Connections: Query to EXPLAIN (Plan Only), Query to EXPLAIN ANALYZE (Execute + Timing), EXPLAIN (Plan Only) to Execution Plan, EXPLAIN ANALYZE (Execute + Timing) to Actual Performance Metrics.
     A["Query"]
     B["EXPLAIN<br/>(Plan Only)"]
     C["EXPLAIN ANALYZE<br/>(Execute + Timing)"]
@@ -1318,11 +1358,17 @@ graph TD
     B --> D
     C --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1808,8 +1854,10 @@ JSONB supports operators for containment, existence checks, and set operations. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["JSONB Data<br/>{location: 'NYC', attendees: 500}"]
-    B["Containment @><br/>Does data contain value?"]
+    accTitle: Example 44: JSONB Operators and Functions
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: JSONB Data location: NYC, attendees: 500, Containment @> Does data contain value?, Existence ? Does key exist?, Access -> Get JSON value, Access ->> Get text value, Update || Merge objects. Connections: JSONB Data location: NYC, attendees: 500 to Containment @> Does data contain value?, JSONB Data location: NYC, attendees: 500 to Existence ? Does key exist?, JSONB Data location: NYC, attendees: 500 to Access -> Get JSON value, JSONB Data location: NYC, attendees: 500 to Access ->> Get text value, JSONB Data location: NYC, attendees: 500 to Update || Merge objects.
+    A["JSONB Data<br/>{location: 'NYC',<br/>attendees: 500}"]
+    B["Containment @><br/>Does data contain<br/>value?"]
     C["Existence ?<br/>Does key exist?"]
     D["Access -><br/>Get JSON value"]
     E["Access ->><br/>Get text value"]
@@ -1821,12 +1869,18 @@ graph TD
     A --> E
     A --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2121,6 +2175,8 @@ Transactions group multiple statements into atomic units - either all succeed (C
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 46: BEGIN, COMMIT, ROLLBACK
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: BEGIN, Statement 1 (UPDATE), Statement 2 (INSERT), Success?, COMMIT (Save All), ROLLBACK (Undo All). Connections: BEGIN to Statement 1 (UPDATE), Statement 1 (UPDATE) to Statement 2 (INSERT), Statement 2 (INSERT) to Success?, Success? to COMMIT (Save All) (Yes), Success? to ROLLBACK (Undo All) (No).
     A["BEGIN"]
     B["Statement 1<br/>(UPDATE)"]
     C["Statement 2<br/>(INSERT)"]
@@ -2134,12 +2190,18 @@ graph TD
     D -->|Yes| E
     D -->|No| F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2236,13 +2298,15 @@ Isolation levels control what transactions see of concurrent changes. READ COMMI
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Transaction Isolation Levels"]
+    accTitle: Example 47: Transaction Isolation Levels
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Transaction Isolation Levels, READ COMMITTED (Default), REPEATABLE READ (Snapshot Isolation), SERIALIZABLE (Strictest), Sees committed changes from other transactions, Sees snapshot at transaction start only, Prevents all anomalies (may cause errors). Connections: Transaction Isolation Levels to READ COMMITTED (Default), Transaction Isolation Levels to REPEATABLE READ (Snapshot Isolation), Transaction Isolation Levels to SERIALIZABLE (Strictest), READ COMMITTED (Default) to Sees committed changes from other transactions, REPEATABLE READ (Snapshot Isolation) to Sees snapshot at transaction start only, SERIALIZABLE (Strictest) to Prevents all anomalies (may cause errors).
+    A["Transaction<br/>Isolation Levels"]
     B["READ COMMITTED<br/>(Default)"]
     C["REPEATABLE READ<br/>(Snapshot Isolation)"]
     D["SERIALIZABLE<br/>(Strictest)"]
-    E["Sees committed changes<br/>from other transactions"]
-    F["Sees snapshot at<br/>transaction start only"]
-    G["Prevents all anomalies<br/>(may cause errors)"]
+    E["Sees committed<br/>changes<br/>from other<br/>transactions"]
+    F["Sees snapshot at<br/>transaction start<br/>only"]
+    G["Prevents all<br/>anomalies<br/>(may cause errors)"]
 
     A --> B
     A --> C
@@ -2251,13 +2315,19 @@ graph TD
     C --> F
     D --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2825,11 +2895,13 @@ Materialized views store query results physically - faster than regular views bu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 52: Materialized Views
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Base Tables (orders, products), CREATE MATERIALIZED VIEW (Snapshot at creation), Materialized View (Cached Results), Fast SELECT (No re-computation), REFRESH MATERIALIZED VIEW (Update cache), New Snapshot. Connections: Base Tables (orders, products) to CREATE MATERIALIZED VIEW (Snapshot at creation), CREATE MATERIALIZED VIEW (Snapshot at creation) to Materialized View (Cached Results), Materialized View (Cached Results) to Fast SELECT (No re-computation), REFRESH MATERIALIZED VIEW (Update cache) to New Snapshot, New Snapshot to Materialized View (Cached Results), Base Tables (orders, products) to REFRESH MATERIALIZED VIEW (Update cache) (Data changes).
     A["Base Tables<br/>(orders, products)"]
-    B["CREATE MATERIALIZED VIEW<br/>(Snapshot at creation)"]
+    B["CREATE MATERIALIZED<br/>VIEW<br/>(Snapshot at<br/>creation)"]
     C["Materialized View<br/>(Cached Results)"]
     D["Fast SELECT<br/>(No re-computation)"]
-    E["REFRESH MATERIALIZED VIEW<br/>(Update cache)"]
+    E["REFRESH MATERIALIZED<br/>VIEW<br/>(Update cache)"]
     F["New Snapshot"]
 
     A --> B
@@ -2839,12 +2911,18 @@ graph TD
     F --> C
     A -.->|Data changes| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3301,7 +3379,9 @@ Triggers automatically execute functions before or after INSERT, UPDATE, or DELE
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Data Modification<br/>(INSERT/UPDATE/DELETE)"]
+    accTitle: Example 55: Triggers
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Data Modification (INSERT/UPDATE/ DELETE), BEFORE Trigger, Actual Operation, AFTER Trigger, Final State. Connections: Data Modification (INSERT/UPDATE/ DELETE) to BEFORE Trigger, BEFORE Trigger to Actual Operation, Actual Operation to AFTER Trigger, AFTER Trigger to Final State.
+    A["Data Modification<br/>(INSERT/UPDATE/<br/>DELETE)"]
     B["BEFORE Trigger"]
     C["Actual Operation"]
     D["AFTER Trigger"]
@@ -3312,11 +3392,17 @@ graph TD
     C --> D
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3595,7 +3681,9 @@ COPY imports data from files or stdin - much faster than individual INSERTs for 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["INSERT Statements<br/>(One transaction per row)"]
+    accTitle: Example 57: Bulk Insert with COPY
+    accDescr: Graph with 10 nodes and 12 connections. Nodes: INSERT Statements (One transaction per row), COPY Command (Bulk operation), Parse + Plan (Per INSERT), Write WAL (Per INSERT), Commit (Per INSERT), Parse Once, Bulk Write WAL, Single Commit, Slow (Many round-trips), Fast (Optimized path). Connections: INSERT Statements (One transaction per row) to Parse + Plan (Per INSERT), INSERT Statements (One transaction per row) to Write WAL (Per INSERT), INSERT Statements (One transaction per row) to Commit (Per INSERT), Parse + Plan (Per INSERT) to Slow (Many round-trips), Write WAL (Per INSERT) to Slow (Many round-trips), Commit (Per INSERT) to Slow (Many round-trips), COPY Command (Bulk operation) to Parse Once, COPY Command (Bulk operation) to Bulk Write WAL, COPY Command (Bulk operation) to Single Commit, Parse Once to Fast (Optimized path), Bulk Write WAL to Fast (Optimized path), Single Commit to Fast (Optimized path).
+    A["INSERT Statements<br/>(One transaction per<br/>row)"]
     B["COPY Command<br/>(Bulk operation)"]
     C["Parse + Plan<br/>(Per INSERT)"]
     D["Write WAL<br/>(Per INSERT)"]
@@ -3620,16 +3708,21 @@ graph TD
     G --> J
     H --> J
 
-    style A fill:#CA9161,stroke:#000,color:#000
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
-    style E fill:#0173B2,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#000
-    style G fill:#DE8F05,stroke:#000,color:#000
-    style H fill:#DE8F05,stroke:#000,color:#000
-    style I fill:#CA9161,stroke:#000,color:#000
-    style J fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    class D pal-0173B2
+    class E pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    class G pal-DE8F05
+    class H pal-DE8F05
+    class I pal-CA9161
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

@@ -18,6 +18,8 @@ PostgreSQL runs in a Docker container for isolated, reproducible environments ac
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Installing PostgreSQL and First Query
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Docker Host, PostgreSQL Container postgres:16, psql Client Connected, Query Execution Results. Connections: Docker Host to PostgreSQL Container postgres:16 (docker run), PostgreSQL Container postgres:16 to psql Client Connected (docker exec), psql Client Connected to Query Execution Results (SQL statements).
     A["Docker Host"]
     B["PostgreSQL Container<br/>postgres:16"]
     C["psql Client<br/>Connected"]
@@ -27,10 +29,15 @@ graph TD
     B -->|docker exec| C
     C -->|SQL statements| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -193,6 +200,8 @@ INSERT adds new rows to tables. You can insert single rows, multiple rows at onc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 4: Inserting Data with INSERT
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: INSERT Statement, Specify Columns (id, name, age), Provide Values (1, Alice, 30), Row Added to Table. Connections: INSERT Statement to Specify Columns (id, name, age), Specify Columns (id, name, age) to Provide Values (1, Alice, 30), Provide Values (1, Alice, 30) to Row Added to Table.
     A["INSERT Statement"]
     B["Specify Columns<br/>(id, name, age)"]
     C["Provide Values<br/>(1, 'Alice', 30)"]
@@ -202,10 +211,15 @@ graph TD
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -507,11 +521,13 @@ PostgreSQL has separate types for dates, times, and timestamps. TIMESTAMP stores
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 8: Date and Time Types
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Temporal Types, DATE 2025-12-29, TIME 08:08:50, TIMESTAMP 2025-12-29 08:08:50, TIMESTAMPTZ 2025-12-29 08:08:50+07, INTERVAL 3 days 2 hours. Connections: Temporal Types to DATE 2025-12-29, Temporal Types to TIME 08:08:50, Temporal Types to TIMESTAMP 2025-12-29 08:08:50, Temporal Types to TIMESTAMPTZ 2025-12-29 08:08:50+07, Temporal Types to INTERVAL 3 days 2 hours.
     A["Temporal Types"]
     B["DATE<br/>2025-12-29"]
     C["TIME<br/>08:08:50"]
     D["TIMESTAMP<br/>2025-12-29 08:08:50"]
-    E["TIMESTAMPTZ<br/>2025-12-29 08:08:50+07"]
+    E["TIMESTAMPTZ<br/>2025-12-29<br/>08:08:50+07"]
     F["INTERVAL<br/>3 days 2 hours"]
 
     A --> B
@@ -520,12 +536,18 @@ graph TD
     A --> E
     A --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1016,6 +1038,8 @@ LIMIT restricts the number of rows returned. OFFSET skips rows before returning 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 13: Limiting Results with LIMIT and OFFSET
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: All Rows (100 total), OFFSET 20 (Skip 20), LIMIT 10 (Take 10), Result (Rows 21-30). Connections: All Rows (100 total) to OFFSET 20 (Skip 20), OFFSET 20 (Skip 20) to LIMIT 10 (Take 10), LIMIT 10 (Take 10) to Result (Rows 21-30).
     A["All Rows<br/>(100 total)"]
     B["OFFSET 20<br/>(Skip 20)"]
     C["LIMIT 10<br/>(Take 10)"]
@@ -1025,10 +1049,15 @@ graph TD
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1250,6 +1279,8 @@ GROUP BY splits rows into groups based on column values, then applies aggregate 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 15: Grouping Data with GROUP BY
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: All Sales Rows, GROUP BY product, Laptop Group (2 rows), Mouse Group (1 row), Keyboard Group (1 row), Aggregate Each Group (SUM, COUNT, AVG), Final Results (3 rows). Connections: All Sales Rows to GROUP BY product, GROUP BY product to Laptop Group (2 rows), GROUP BY product to Mouse Group (1 row), GROUP BY product to Keyboard Group (1 row), Laptop Group (2 rows) to Aggregate Each Group (SUM, COUNT, AVG), Mouse Group (1 row) to Aggregate Each Group (SUM, COUNT, AVG), Keyboard Group (1 row) to Aggregate Each Group (SUM, COUNT, AVG), Aggregate Each Group (SUM, COUNT, AVG) to Final Results (3 rows).
     A["All Sales Rows"]
     B["GROUP BY product"]
     C["Laptop Group<br/>(2 rows)"]
@@ -1267,13 +1298,19 @@ graph TD
     E --> F
     F --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1563,16 +1600,22 @@ Foreign keys enforce relationships between tables - they ensure referenced rows 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 18: Foreign Keys and Referential Integrity
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: orders table id | customer_id, customers table id | name, Foreign Key customer_id REFERENCES customers(id). Connections: orders table id | customer_id to Foreign Key customer_id REFERENCES customers(id) (customer_id), Foreign Key customer_id REFERENCES customers(id) to customers table id | name (must exist in).
     A["orders table<br/>id | customer_id"]
     B["customers table<br/>id | name"]
-    C["Foreign Key<br/>customer_id REFERENCES customers(id)"]
+    C["Foreign Key<br/>customer_id<br/>REFERENCES<br/>customers(id)"]
 
     A -->|customer_id| C
     C -->|must exist in| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1871,6 +1914,8 @@ INNER JOIN returns rows where the join condition matches in both tables. Non-mat
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 21: Inner Joins
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: customers table Alice, Bob, Charlie, orders table Order 1 (Alice) Order 2 (Bob) Order 3 (Alice), INNER JOIN customer_id = id, Result Alice + Order 1 Bob + Order 2 Alice + Order 3. Connections: customers table Alice, Bob, Charlie to INNER JOIN customer_id = id, orders table Order 1 (Alice) Order 2 (Bob) Order 3 (Alice) to INNER JOIN customer_id = id, INNER JOIN customer_id = id to Result Alice + Order 1 Bob + Order 2 Alice + Order 3.
     A["customers table<br/>Alice, Bob, Charlie"]
     B["orders table<br/>Order 1 (Alice)<br/>Order 2 (Bob)<br/>Order 3 (Alice)"]
     C["INNER JOIN<br/>customer_id = id"]
@@ -1880,10 +1925,15 @@ graph TD
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2310,6 +2360,8 @@ Self joins join a table to itself - useful for hierarchical data (employees and 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 25: Self Joins
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Employee: Alice manager_id: NULL, Employee: Bob manager_id: 1, Employee: Charlie manager_id: 1, Employee: Diana manager_id: 2. Connections: Employee: Bob manager_id: 1 to Employee: Alice manager_id: NULL (reports to), Employee: Charlie manager_id: 1 to Employee: Alice manager_id: NULL (reports to), Employee: Diana manager_id: 2 to Employee: Bob manager_id: 1 (reports to).
     A["Employee: Alice<br/>manager_id: NULL"]
     B["Employee: Bob<br/>manager_id: 1"]
     C["Employee: Charlie<br/>manager_id: 1"]
@@ -2319,10 +2371,15 @@ graph TD
     C -->|reports to| A
     D -->|reports to| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

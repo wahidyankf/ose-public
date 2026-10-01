@@ -71,9 +71,11 @@ narrowly scoped. Inner scopes shadow outer scopes when names clash.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 30: Environment Variables at Workflow, Job, and Step Level
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Workflow env: APP_ENV=staging, Job env: DB_HOST=localhost, Step 1 env: inherits workflow + job, Step 2 env: LOG_LEVEL=debug overrides nothing, Step 3 env: APP_ENV=production shadows workflow env. Connections: Workflow env: APP_ENV=staging to Job env: DB_HOST=localhost, Job env: DB_HOST=localhost to Step 1 env: inherits workflow + job, Job env: DB_HOST=localhost to Step 2 env: LOG_LEVEL=debug overrides nothing, Job env: DB_HOST=localhost to Step 3 env: APP_ENV=production shadows workflow env.
     WF["Workflow env:<br/>APP_ENV=staging"]
     JOB["Job env:<br/>DB_HOST=localhost"]
-    S1["Step 1 env:<br/>inherits workflow + job"]
+    S1["Step 1 env:<br/>inherits workflow +<br/>job"]
     S2["Step 2 env:<br/>LOG_LEVEL=debug<br/>overrides nothing"]
     S3["Step 3 env:<br/>APP_ENV=production<br/>shadows workflow env"]
 
@@ -82,11 +84,16 @@ graph TD
     JOB --> S2
     JOB --> S3
 
-    style WF fill:#0173B2,stroke:#000,color:#fff
-    style JOB fill:#DE8F05,stroke:#000,color:#fff
-    style S1 fill:#029E73,stroke:#000,color:#fff
-    style S2 fill:#029E73,stroke:#000,color:#fff
-    style S3 fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class WF pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class JOB pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S1 pal-029E73
+    class S2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class S3 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -148,6 +155,8 @@ profiles without duplicating workflow code.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 31: strategy.matrix for Cross-Platform Builds
+    accDescr: Graph with 7 nodes and 9 connections. Nodes: push trigger, matrix expand, ubuntu-22.04 node 18, ubuntu-22.04 node 20, windows-latest node 18, windows-latest node 20, all pass → merge. Connections: push trigger to matrix expand, matrix expand to ubuntu-22.04 node 18, matrix expand to ubuntu-22.04 node 20, matrix expand to windows-latest node 18, matrix expand to windows-latest node 20, ubuntu-22.04 node 18 to all pass → merge, ubuntu-22.04 node 20 to all pass → merge, windows-latest node 18 to all pass → merge, windows-latest node 20 to all pass → merge.
     TRIGGER["push trigger"] --> MATRIX["matrix expand"]
     MATRIX --> J1["ubuntu-22.04<br/>node 18"]
     MATRIX --> J2["ubuntu-22.04<br/>node 20"]
@@ -158,13 +167,19 @@ graph LR
     J3 --> DONE
     J4 --> DONE
 
-    style TRIGGER fill:#0173B2,stroke:#000,color:#fff
-    style MATRIX fill:#DE8F05,stroke:#000,color:#fff
-    style J1 fill:#029E73,stroke:#000,color:#fff
-    style J2 fill:#029E73,stroke:#000,color:#fff
-    style J3 fill:#CC78BC,stroke:#000,color:#fff
-    style J4 fill:#CC78BC,stroke:#000,color:#fff
-    style DONE fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class TRIGGER pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class MATRIX pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class J1 pal-029E73
+    class J2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class J3 pal-CC78BC
+    class J4 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class DONE pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -293,6 +308,8 @@ reducing job run time from minutes to seconds.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 33: actions/cache for Build Dependencies
+    accDescr: Sequence diagram between Runner, Cache Storage, npm registry. Messages: Runner to Cache Storage: Look up key node-modules-hash; Cache Storage to Runner: Restore node_modules/; Cache Storage to Runner: Not found; Runner to npm registry: npm ci (download packages); npm registry to Runner: node_modules/ populated; Runner to Cache Storage: Save node_modules/ with key; Runner to Runner: Run build/tests.
     participant R as Runner
     participant C as Cache Storage
     participant N as npm registry
@@ -422,22 +439,29 @@ retrieves them in a later job.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 35: actions/upload-artifact and download-artifact
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: build job compile source, upload-artifact saves dist/, test job needs: build, download-artifact restores dist/, run integration tests against dist/. Connections: build job compile source to upload-artifact saves dist/, upload-artifact saves dist/ to test job needs: build, test job needs: build to download-artifact restores dist/, download-artifact restores dist/ to run integration tests against dist/.
     BUILD["build job<br/>compile source"]
     UP["upload-artifact<br/>saves dist/"]
     TEST["test job<br/>needs: build"]
     DOWN["download-artifact<br/>restores dist/"]
-    RUN["run integration tests<br/>against dist/"]
+    RUN["run integration<br/>tests<br/>against dist/"]
 
     BUILD --> UP
     UP --> TEST
     TEST --> DOWN
     DOWN --> RUN
 
-    style BUILD fill:#0173B2,stroke:#000,color:#fff
-    style UP fill:#DE8F05,stroke:#000,color:#fff
-    style TEST fill:#029E73,stroke:#000,color:#fff
-    style DOWN fill:#029E73,stroke:#000,color:#fff
-    style RUN fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class BUILD pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class UP pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class TEST pal-029E73
+    class DOWN pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class RUN pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -580,15 +604,22 @@ only when specific upstream conditions are met.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 37: needs with Conditional Execution
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: test job, deploy if: success(), notify-failure if: failure(), cleanup if: always(). Connections: test job to deploy if: success(), test job to notify-failure if: failure(), deploy if: success() to cleanup if: always(), notify-failure if: failure() to cleanup if: always().
     TEST["test job"] --> DEPLOY["deploy<br/>if: success()"]
     TEST --> NOTIFY_FAIL["notify-failure<br/>if: failure()"]
     DEPLOY --> CLEANUP["cleanup<br/>if: always()"]
     NOTIFY_FAIL --> CLEANUP
 
-    style TEST fill:#0173B2,stroke:#000,color:#fff
-    style DEPLOY fill:#029E73,stroke:#000,color:#fff
-    style NOTIFY_FAIL fill:#DE8F05,stroke:#000,color:#fff
-    style CLEANUP fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class TEST pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DEPLOY pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class NOTIFY_FAIL pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class CLEANUP pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1173,11 +1204,13 @@ before any steps run and stop after the job completes.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 46: Services
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: integration-test job, postgres:15 service port 5432 mapped, redis:7 service port 6379 mapped, checkout + setup, run integration tests connects to localhost:5432 and localhost:6379. Connections: integration-test job to postgres:15 service port 5432 mapped, integration-test job to redis:7 service port 6379 mapped, integration-test job to checkout + setup, checkout + setup to run integration tests connects to localhost:5432 and localhost:6379, postgres:15 service port 5432 mapped to run integration tests connects to localhost:5432 and localhost:6379 (available at), redis:7 service port 6379 mapped to run integration tests connects to localhost:5432 and localhost:6379 (available at).
     JOB["integration-test job"]
     PG["postgres:15 service<br/>port 5432 mapped"]
     REDIS["redis:7 service<br/>port 6379 mapped"]
     STEP1["checkout + setup"]
-    STEP2["run integration tests<br/>connects to localhost:5432<br/>and localhost:6379"]
+    STEP2["run integration<br/>tests<br/>connects to<br/>localhost:5432<br/>and localhost:6379"]
 
     JOB --> PG
     JOB --> REDIS
@@ -1186,11 +1219,17 @@ graph TD
     PG -.->|available at| STEP2
     REDIS -.->|available at| STEP2
 
-    style JOB fill:#0173B2,stroke:#000,color:#fff
-    style PG fill:#DE8F05,stroke:#000,color:#fff
-    style REDIS fill:#CC78BC,stroke:#000,color:#fff
-    style STEP1 fill:#029E73,stroke:#000,color:#fff
-    style STEP2 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class JOB pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PG pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class REDIS pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class STEP1 pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class STEP2 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1424,20 +1463,27 @@ to the caller.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 49: workflowcall Trigger
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: caller workflow (deploy.yml), reusable workflow (build.yml), inputs: environment, version, outputs: image-tag. Connections: caller workflow (deploy.yml) to reusable workflow (build.yml) (uses: ./.github/ workflows/build.yml), inputs: environment, version to reusable workflow (build.yml), reusable workflow (build.yml) to outputs: image-tag, outputs: image-tag to caller workflow (deploy.yml).
     CALLER["caller workflow<br/>(deploy.yml)"]
     CALLED["reusable workflow<br/>(build.yml)"]
     INP["inputs:<br/>environment, version"]
     OUT["outputs:<br/>image-tag"]
 
-    CALLER -->|uses: ./.github/workflows/build.yml| CALLED
+    CALLER -->|uses: ./.github/<br/>workflows/build.yml| CALLED
     INP --> CALLED
     CALLED --> OUT
     OUT --> CALLER
 
-    style CALLER fill:#0173B2,stroke:#000,color:#fff
-    style CALLED fill:#DE8F05,stroke:#000,color:#fff
-    style INP fill:#029E73,stroke:#000,color:#fff
-    style OUT fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CALLER pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CALLED pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class INP pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class OUT pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1676,6 +1722,8 @@ rules before its steps execute.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 52: Environment Protection Rules
+    accDescr: State diagram with 5 items: start or end, Queued, WaitingReview, WaitingTimer, Running. Relationships: start or end to Queued: job targets production environment; Queued to WaitingReview: required reviewers configured; WaitingReview to WaitingTimer: reviewer approved; WaitingTimer to Running: wait timer elapsed; Running to start or end: deployment completes; WaitingReview to start or end: reviewer rejected.
     [*] --> Queued: job targets production environment
     Queued --> WaitingReview: required reviewers configured
     WaitingReview --> WaitingTimer: reviewer approved
@@ -2059,6 +2107,8 @@ test reports.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 57: Combining Services, Containers, and Artifacts
+    accDescr: Sequence diagram between GitHub Actions, postgres service, test container, artifact storage. Messages: GitHub Actions to postgres service: Start postgres:15 (health check); postgres service to GitHub Actions: Healthy; GitHub Actions to test container: Start python:3.12 container; test container to postgres service: Run migrations via DATABASE_URL; test container to postgres service: Execute integration test suite; postgres service to test container: Query results; test container to GitHub Actions: Write test-results/; GitHub Actions to artifact storage: Upload test-report artifact; GitHub Actions to postgres service: Stop postgres service.
     participant GH as GitHub Actions
     participant DB as postgres service
     participant C as test container

@@ -35,20 +35,28 @@ Effect SQL achieves database portability by separating the `SqlClient` interface
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Multi-database Layer composition
 graph TD
-    A[Migration Files] -->|import SqlClient only| B[SqlClient Interface]
+    accTitle: Example 31: Multi-Database Support
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Migration Files, SqlClient Interface, Database URL?, PgClient.layer, SqliteClient.layer, PgMigrator.layer, SqliteMigrator.layer. Connections: Migration Files to SqlClient Interface (import SqlClient only), SqlClient Interface to Database URL? (Layer.provide), Database URL? to PgClient.layer (postgresql://), Database URL? to SqliteClient.layer (sqlite://or :memory:), PgClient.layer to PgMigrator.layer, SqliteClient.layer to SqliteMigrator.layer.
+    A[Migration Files] -->|import SqlClient<br/>only| B[SqlClient Interface]
     B -->|Layer.provide| C{Database URL?}
     C -->|postgresql://| D[PgClient.layer]
-    C -->|sqlite:// or :memory:| E[SqliteClient.layer]
+    C -->|sqlite://or :memory:| E[SqliteClient.layer]
     D --> F[PgMigrator.layer]
     E --> G[SqliteMigrator.layer]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style G fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -958,20 +966,28 @@ Effect Layers compose through `Layer.provide` and `Layer.mergeAll`. Complex appl
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Layer composition for application startup
 graph TD
+    accTitle: Example 47: Layer Composition for Migrations
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: NodeContext.layer, PgClient.layer, PgMigrator.layer, MigratorLive, UserRepositoryLive, ExpenseRepository Live, DatabaseLive. Connections: NodeContext.layer to PgClient.layer, PgClient.layer to PgMigrator.layer, PgMigrator.layer to MigratorLive (Layer.provide), PgClient.layer to UserRepositoryLive (Layer.provide), PgClient.layer to ExpenseRepository Live (Layer.provide), MigratorLive to DatabaseLive (Layer.mergeAll), UserRepositoryLive to DatabaseLive (Layer.mergeAll), ExpenseRepository Live to DatabaseLive (Layer.mergeAll).
     A[NodeContext.layer] --> B[PgClient.layer]
     B --> C[PgMigrator.layer]
     C -->|Layer.provide| D[MigratorLive]
     B -->|Layer.provide| E[UserRepositoryLive]
-    B -->|Layer.provide| F[ExpenseRepositoryLive]
+    B -->|Layer.provide| F[ExpenseRepository<br/>Live]
     D & E & F -->|Layer.mergeAll| G[DatabaseLive]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style G fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

@@ -612,36 +612,43 @@ test.describe("Production Security Testing with ZAP", () => {
 
 ```mermaid
 flowchart TB
+    accTitle: Production Framework: Integrating OWASP ZAP
+    accDescr: Flowchart with 5 nodes and 9 connections. Nodes: Playwright Tests Browser Automation, OWASP ZAP Proxy Security Scanner, Application Under Test localhost:3000, ZAP REST API Scan Control, Security Reports Vulnerabilities + CVEs. Connections: Playwright Tests Browser Automation to OWASP ZAP Proxy Security Scanner (1. HTTP/HTTPS Traffic), OWASP ZAP Proxy Security Scanner to Application Under Test localhost:3000 (2. Proxied Requests), Application Under Test localhost:3000 to OWASP ZAP Proxy Security Scanner (3. Responses), OWASP ZAP Proxy Security Scanner to Playwright Tests Browser Automation (4. Analyzed Responses), Playwright Tests Browser Automation to ZAP REST API Scan Control (5. Trigger Scan), ZAP REST API Scan Control to OWASP ZAP Proxy Security Scanner (6. Execute Attacks), OWASP ZAP Proxy Security Scanner to ZAP REST API Scan Control (7. Security Findings), ZAP REST API Scan Control to Security Reports Vulnerabilities + CVEs (8. Alerts), Security Reports Vulnerabilities + CVEs to Playwright Tests Browser Automation (9. Fail Tests).
     subgraph "Security Testing Architecture"
         direction TB
 
         PW["<b>Playwright Tests</b><br/>Browser Automation"]
-        style PW fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
 
         ZAP["<b>OWASP ZAP Proxy</b><br/>Security Scanner"]
-        style ZAP fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
 
-        APP["<b>Application Under Test</b><br/>localhost:3000"]
-        style APP fill:#DE8F05,stroke:#000,stroke-width:2px,color:#000
+        APP["<b>Application Under<br/>Test</b><br/>localhost:3000"]
 
         API["<b>ZAP REST API</b><br/>Scan Control"]
-        style API fill:#CC78BC,stroke:#000,stroke-width:2px,color:#fff
 
-        REPORT["<b>Security Reports</b><br/>Vulnerabilities + CVEs"]
-        style REPORT fill:#CA9161,stroke:#000,stroke-width:2px,color:#fff
+        REPORT["<b>Security Reports</b><br/>Vulnerabilities<br/>+ CVEs"]
     end
 
-    PW -->|"1. HTTP/HTTPS Traffic"| ZAP
-    ZAP -->|"2. Proxied Requests"| APP
+    PW -->|"1. HTTP/HTTPS<br/>Traffic"| ZAP
+    ZAP -->|"2. Proxied<br/>Requests"| APP
     APP -->|"3. Responses"| ZAP
-    ZAP -->|"4. Analyzed Responses"| PW
+    ZAP -->|"4. Analyzed<br/>Responses"| PW
     PW -->|"5. Trigger Scan"| API
     API -->|"6. Execute Attacks"| ZAP
-    ZAP -->|"7. Security Findings"| API
+    ZAP -->|"7. Security<br/>Findings"| API
     API -->|"8. Alerts"| REPORT
     REPORT -->|"9. Fail Tests"| PW
 
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px
+    classDef default fill:#CC78BC,stroke:#000000,stroke-width:1px,color:#000000
+        classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+        class PW pal-0173B2
+        classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+        class ZAP pal-029E73
+        classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+        class APP pal-DE8F05
+        classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+        class API pal-CC78BC
+        classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+        class REPORT pal-CA9161
 ```
 
 ## Production Patterns and Best Practices

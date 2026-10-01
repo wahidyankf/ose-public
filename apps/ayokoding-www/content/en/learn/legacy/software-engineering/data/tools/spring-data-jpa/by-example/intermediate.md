@@ -16,20 +16,28 @@ The @Query annotation enables custom JPQL queries directly in repository interfa
 ```mermaid
 %% JPQL query execution flow
 graph TD
-    A[Repository Method Call] --> B[@Query Annotation]
+    accTitle: Example 31: @Query with JPQL
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Repository Method Call, @Query Annotation, JPQL Parser, SQL Generator, Database Query, Result Mapping, Return Entity. Connections: Repository Method Call to @Query Annotation, @Query Annotation to JPQL Parser, JPQL Parser to SQL Generator, SQL Generator to Database Query, Database Query to Result Mapping, Result Mapping to Return Entity.
+    A[Repository Method<br/>Call] --> B[@Query Annotation]
     B --> C[JPQL Parser]
     C --> D[SQL Generator]
     D --> E[Database Query]
     E --> F[Result Mapping]
     F --> G[Return Entity]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -170,20 +178,28 @@ public class ProductService {                                 // => Service laye
 ```mermaid
 %% Modifying query execution
 graph TD
-    A[@Modifying Query] --> B[@Transactional Required]
-    B --> C[Execute UPDATE/DELETE]
+    accTitle: Example 33: @Modifying Queries
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: @Modifying Query, @Transactional Required, Execute UPDATE/DELETE, Rows Affected Count, clearAutomatically?, Clear EntityManager, Keep Cache. Connections: @Modifying Query to @Transactional Required, @Transactional Required to Execute UPDATE/DELETE, Execute UPDATE/DELETE to Rows Affected Count, Rows Affected Count to clearAutomatically?, clearAutomatically? to Clear EntityManager (true), clearAutomatically? to Keep Cache (false).
+    A[@Modifying Query] --> B[@Transactional<br/>Required]
+    B --> C[Execute<br/>UPDATE/DELETE]
     C --> D[Rows Affected Count]
     D --> E{clearAutomatically?}
     E -->|true| F[Clear EntityManager]
     E -->|false| G[Keep Cache]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -250,22 +266,30 @@ Constructor expressions in JPQL enable direct DTO mapping without fetching full 
 ```mermaid
 %% DTO projection vs entity loading
 graph TD
+    accTitle: Example 34: Constructor Expressions
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: JPQL Query, Projection Type?, Load All Columns, Load Selected Columns, Map to Entity, Call DTO Constructor, Managed Entity, Unmanaged DTO. Connections: JPQL Query to Projection Type?, Projection Type? to Load All Columns (Entity), Projection Type? to Load Selected Columns (DTO), Load All Columns to Map to Entity, Load Selected Columns to Call DTO Constructor, Map to Entity to Managed Entity, Call DTO Constructor to Unmanaged DTO.
     A[JPQL Query] --> B{Projection Type?}
     B -->|Entity| C[Load All Columns]
-    B -->|DTO| D[Load Selected Columns]
+    B -->|DTO| D[Load Selected<br/>Columns]
     C --> E[Map to Entity]
     D --> F[Call DTO Constructor]
     E --> G[Managed Entity]
     F --> H[Unmanaged DTO]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-DE8F05
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -516,6 +540,8 @@ Specifications enable type-safe dynamic query building using JPA Criteria API. U
 ```mermaid
 %% Specification composition pattern
 graph TD
+    accTitle: Example 38: Dynamic Queries with Specifications
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: Client Request, Build Specifications, Spec 1: Name Filter, Spec 2: Age Range, Spec 3: Status, Compose with AND, Criteria Query, SQL Generation, Execute Query. Connections: Client Request to Build Specifications, Build Specifications to Spec 1: Name Filter, Build Specifications to Spec 2: Age Range, Build Specifications to Spec 3: Status, Spec 1: Name Filter to Compose with AND, Spec 2: Age Range to Compose with AND, Spec 3: Status to Compose with AND, Compose with AND to Criteria Query, Criteria Query to SQL Generation, SQL Generation to Execute Query.
     A[Client Request] --> B[Build Specifications]
     B --> C[Spec 1: Name Filter]
     B --> D[Spec 2: Age Range]
@@ -527,15 +553,21 @@ graph TD
     G --> H[SQL Generation]
     H --> I[Execute Query]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-029E73
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -642,20 +674,28 @@ PageRequest enables offset-based pagination through page number and size paramet
 ```mermaid
 %% Pagination request flow
 graph TD
-    A[Request: Page 2, Size 10] --> B[Calculate Offset]
+    accTitle: Example 39: Basic Pagination with PageRequest
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Request: Page 2, Size 10, Calculate Offset, Offset = 2 * 10 = 20, Execute Query, LIMIT 10 OFFSET 20, Count Total Records, Return Page Object. Connections: Request: Page 2, Size 10 to Calculate Offset, Calculate Offset to Offset = 2 * 10 = 20, Offset = 2 * 10 = 20 to Execute Query, Execute Query to LIMIT 10 OFFSET 20, LIMIT 10 OFFSET 20 to Count Total Records, Count Total Records to Return Page Object.
+    A[Request: Page 2,<br/>Size 10] --> B[Calculate Offset]
     B --> C[Offset = 2 * 10 = 20]
     C --> D[Execute Query]
     D --> E[LIMIT 10 OFFSET 20]
     E --> F[Count Total Records]
     F --> G[Return Page Object]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -978,21 +1018,29 @@ Implement infinite scroll UI pattern using Slice for efficient pagination withou
 ```mermaid
 %% Infinite scroll implementation
 graph TD
+    accTitle: Example 44: Infinite Scroll with Slice
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Initial Request, Load Page 0, Return 20 items + hasNext, User Scrolls Down?, Load Next Page, Append to List, End of Data. Connections: Initial Request to Load Page 0, Load Page 0 to Return 20 items + hasNext, Return 20 items + hasNext to User Scrolls Down?, User Scrolls Down? to Load Next Page (Yes), Load Next Page to Append to List, Append to List to User Scrolls Down?, User Scrolls Down? to End of Data (hasNext = false).
     A[Initial Request] --> B[Load Page 0]
-    B --> C[Return 20 items + hasNext]
+    B --> C[Return 20 items +<br/>hasNext]
     C --> D{User Scrolls Down?}
     D -->|Yes| E[Load Next Page]
     E --> F[Append to List]
     F --> D
     D -->|hasNext = false| G[End of Data]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -1085,14 +1133,21 @@ public class ProductController {
 ```mermaid
 %% Many-to-many relationship structure
 graph TD
-    A[Student Entity] --> B[student_courses Join Table]
+    accTitle: Example 45: @ManyToMany Relationships
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Student Entity, student_courses Join Table, Course Entity, student_id, course_id. Connections: Student Entity to student_courses Join Table, Course Entity to student_courses Join Table, student_courses Join Table to student_id, course_id.
+    A[Student Entity] --> B[student_courses Join<br/>Table]
     C[Course Entity] --> B
-    B --> D[student_id, course_id]
+    B --> D[student_id,<br/>course_id]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -1336,24 +1391,32 @@ The N+1 problem occurs when fetching a collection triggers 1 query for the paren
 ```mermaid
 %% N+1 problem visualization
 graph TD
-    A[Load 100 Orders] --> B[Query 1: SELECT orders]
+    accTitle: Example 47: N+1 Query Problem Demonstration
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Load 100 Orders, Query 1: SELECT orders, Process Order 1, SQL: items WHERE order_id=1, Process Order 2, SQL: items WHERE order_id=2, Process Order 100, SQL: items WHERE order_id=100, Total: 101 Queries. Connections: Load 100 Orders to Query 1: SELECT orders, Query 1: SELECT orders to Process Order 1, Process Order 1 to SQL: items WHERE order_id=1, Query 1: SELECT orders to Process Order 2, Process Order 2 to SQL: items WHERE order_id=2, Query 1: SELECT orders to Process Order 100, Process Order 100 to SQL: items WHERE order_id=100, SQL: items WHERE order_id=100 to Total: 101 Queries.
+    A[Load 100 Orders] --> B[Query 1: SELECT<br/>orders]
     B --> C[Process Order 1]
-    C --> D[SQL: items WHERE order_id=1]
+    C --> D[SQL: items WHERE<br/>order_id=1]
     B --> E[Process Order 2]
-    E --> F[SQL: items WHERE order_id=2]
+    E --> F[SQL: items WHERE<br/>order_id=2]
     B --> G[Process Order 100]
-    G --> H[SQL: items WHERE order_id=100]
+    G --> H[SQL: items WHERE<br/>order_id=100]
     H --> I[Total: 101 Queries]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
-    style I fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class E pal-DE8F05
+    class F pal-CA9161
+    class G pal-DE8F05
+    class H pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -1541,22 +1604,30 @@ Cascade types define which operations propagate from parent to child entities. S
 ```mermaid
 %% Cascade operation flow
 graph TD
+    accTitle: Example 49: Cascading Operations
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: Parent.save, CascadeType.PERSIST, Child Auto-Saved, Parent.delete, CascadeType.REMOVE, Child Auto-Deleted, Remove from Collection, orphanRemoval=true, Child Deleted. Connections: Parent.save to CascadeType.PERSIST, CascadeType.PERSIST to Child Auto-Saved, Parent.delete to CascadeType.REMOVE, CascadeType.REMOVE to Child Auto-Deleted, Remove from Collection to orphanRemoval=true, orphanRemoval=true to Child Deleted.
     A[Parent.save] --> B[CascadeType.PERSIST]
     B --> C[Child Auto-Saved]
     D[Parent.delete] --> E[CascadeType.REMOVE]
     E --> F[Child Auto-Deleted]
-    G[Remove from Collection] --> H[orphanRemoval=true]
+    G[Remove from<br/>Collection] --> H[orphanRemoval=true]
     H --> I[Child Deleted]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#0173B2,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#fff
-    style I fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    class G pal-0173B2
+    class H pal-CC78BC
+    class I pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -1792,19 +1863,27 @@ Propagation defines how transactions behave when a transactional method calls an
 ```mermaid
 %% Transaction propagation flow
 graph TD
+    accTitle: Example 51: @Transactional Propagation
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: Method A: REQUIRED, Existing TX?, Join Existing TX, Create New TX, Method B: REQUIRES_NEW, Always Create New TX, Suspend Outer TX. Connections: Method A: REQUIRED to Existing TX?, Existing TX? to Join Existing TX (Yes), Existing TX? to Create New TX (No), Method B: REQUIRES_NEW to Always Create New TX, Always Create New TX to Suspend Outer TX.
     A[Method A: REQUIRED] --> B{Existing TX?}
     B -->|Yes| C[Join Existing TX]
     B -->|No| D[Create New TX]
-    E[Method B: REQUIRES_NEW] --> F[Always Create New TX]
+    E[Method B:<br/>REQUIRES_NEW] --> F[Always Create New TX]
     F --> G[Suspend Outer TX]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#0173B2,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    class E pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -2409,23 +2488,31 @@ NESTED propagation creates savepoints within outer transaction, enabling partial
 ```mermaid
 %% Nested transaction with savepoints
 graph TD
+    accTitle: Example 56: Nested Transactions with NESTED Propagation
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Outer TX Starts, Savepoint Created, Nested TX Executes, Success?, Savepoint Released, Rollback to Savepoint, Outer TX Continues, Outer TX Commits. Connections: Outer TX Starts to Savepoint Created, Savepoint Created to Nested TX Executes, Nested TX Executes to Success?, Success? to Savepoint Released (Success), Success? to Rollback to Savepoint (Failure), Savepoint Released to Outer TX Continues, Rollback to Savepoint to Outer TX Continues, Outer TX Continues to Outer TX Commits.
     A[Outer TX Starts] --> B[Savepoint Created]
     B --> C[Nested TX Executes]
     C --> D{Success?}
     D -->|Success| E[Savepoint Released]
-    D -->|Failure| F[Rollback to Savepoint]
+    D -->|Failure| F[Rollback to<br/>Savepoint]
     E --> G[Outer TX Continues]
     F --> G
     G --> H[Outer TX Commits]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-029E73
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -2647,7 +2734,9 @@ Pessimistic locking acquires database locks to prevent concurrent modifications.
 ```mermaid
 %% Pessimistic locking flow
 graph TD
-    A[TX1: Acquire READ Lock] --> B[Database Row Locked]
+    accTitle: Example 58: Pessimistic Locking
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: TX1: Acquire READ Lock, Database Row Locked, TX2: Read Allowed, TX2: Write Blocked, TX2 Waits, TX1 Completes, Lock Released, TX2 Write Proceeds. Connections: TX1: Acquire READ Lock to Database Row Locked, Database Row Locked to TX2: Read Allowed, Database Row Locked to TX2: Write Blocked, TX2: Write Blocked to TX2 Waits, TX1: Acquire READ Lock to TX1 Completes, TX1 Completes to Lock Released, Lock Released to TX2 Write Proceeds.
+    A[TX1: Acquire READ<br/>Lock] --> B[Database Row Locked]
     B --> C[TX2: Read Allowed]
     B --> D[TX2: Write Blocked]
     D --> E[TX2 Waits]
@@ -2655,14 +2744,20 @@ graph TD
     F --> G[Lock Released]
     G --> H[TX2 Write Proceeds]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-029E73
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java

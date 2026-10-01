@@ -359,8 +359,9 @@ test("test 2 creates user", async ({ page }) => {
 ## Production Parallel Execution Architecture
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','background':'#fff','mainBkg':'#fff','secondaryBkg':'#f4f4f4','tertiaryBkg':'#f0f0f0'}}}%%
 graph TD
+    accTitle: Production Parallel Execution Architecture
+    accDescr: Graph with 13 nodes and 12 connections. Nodes: Test Queue, Worker 1, Worker 2, Worker 3, Worker 4, Test 1, Test 5, Test 2, Test 6, Test 3, Test 7, Test 4, and 1 more. Connections: Test Queue to Worker 1, Test Queue to Worker 2, Test Queue to Worker 3, Test Queue to Worker 4, Worker 1 to Test 1, Worker 1 to Test 5, Worker 2 to Test 2, Worker 2 to Test 6, Worker 3 to Test 3, Worker 3 to Test 7, Worker 4 to Test 4, Worker 4 to Test 8.
     TQ[Test Queue] --> W1[Worker 1]
     TQ --> W2[Worker 2]
     TQ --> W3[Worker 3]
@@ -374,15 +375,19 @@ graph TD
     W4 --> T4[Test 4]
     W4 --> T8[Test 8]
 
-    style TQ fill:#0173B2,color:#fff
-    style W1 fill:#DE8F05,color:#fff
-    style W2 fill:#DE8F05,color:#fff
-    style W3 fill:#DE8F05,color:#fff
-    style W4 fill:#DE8F05,color:#fff
-    style T1 fill:#029E73,color:#fff
-    style T2 fill:#029E73,color:#fff
-    style T3 fill:#029E73,color:#fff
-    style T4 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class TQ pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class W1 pal-DE8F05
+    class W2 pal-DE8F05
+    class W3 pal-DE8F05
+    class W4 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class T1 pal-029E73
+    class T2 pal-029E73
+    class T3 pal-029E73
+    class T4 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

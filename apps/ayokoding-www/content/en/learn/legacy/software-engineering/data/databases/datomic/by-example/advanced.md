@@ -18,6 +18,8 @@ The client API provides remote database access via HTTP or gRPC. Lighter-weight 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 61: Client API for Remote Access
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Application Client API, Datomic Cloud or Peer Server, Storage (DynamoDB, etc), Transactor (writes). Connections: Application Client API to Datomic Cloud or Peer Server (HTTP/gRPC), Datomic Cloud or Peer Server to Storage (DynamoDB, etc) (Reads), Datomic Cloud or Peer Server to Transactor (writes) (Writes), Transactor (writes) to Storage (DynamoDB, etc) (Commits).
     A["Application<br/>Client API"]
     B["Datomic Cloud<br/>or Peer Server"]
     C["Storage<br/>(DynamoDB, etc)"]
@@ -28,10 +30,15 @@ graph TD
     B -->|Writes| D
     D -->|Commits| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -121,16 +128,24 @@ Excision permanently removes data from database history. Use for legal requireme
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 62: Excision for Data Deletion
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Datomic DB (with history), Excision transaction, Segments rewritten by storage reindexer, DB without excised datoms (all time), WARNING: Irreversible Use only for GDPR/legal. Connections: Datomic DB (with history) to Excision transaction (datomic.excise), Excision transaction to Segments rewritten by storage reindexer, Segments rewritten by storage reindexer to DB without excised datoms (all time), WARNING: Irreversible Use only for GDPR/legal to Excision transaction (caution).
     A["Datomic DB<br/>(with history)"] -->|"datomic.excise"| B["Excision transaction"]
     B --> C["Segments rewritten<br/>by storage reindexer"]
     C --> D["DB without excised<br/>datoms (all time)"]
-    E["WARNING: Irreversible<br/>Use only for GDPR/legal"] -.->|"caution"| B
+    E["WARNING:<br/>Irreversible<br/>Use only for<br/>GDPR/legal"] -.->|"caution"| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -227,17 +242,24 @@ Combine multiple aggregates and grouping for analytical workloads.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Datoms<br/>(all persons)"] -->|":find ?tenant (count) (avg ?age)"| B["Group by tenant"]
-    B --> C["Acme: count=15 avg=32.5"]
-    B --> D["Globex: count=12 avg=29.3"]
-    C --> E["Analytical result set"]
+    accTitle: Example 63: Analytical Queries with Aggregates
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Datoms (all persons), Group by tenant, Acme: count=15 avg=32.5, Globex: count=12 avg=29.3, Analytical result set. Connections: Datoms (all persons) to Group by tenant (:find ?tenant (count) (avg ?age)), Group by tenant to Acme: count=15 avg=32.5, Group by tenant to Globex: count=12 avg=29.3, Acme: count=15 avg=32.5 to Analytical result set, Globex: count=12 avg=29.3 to Analytical result set.
+    A["Datoms<br/>(all persons)"] -->|":find ?tenant<br/>(count) (avg ?age)"| B["Group by tenant"]
+    B --> C["Acme: count=15<br/>avg=32.5"]
+    B --> D["Globex: count=12<br/>avg=29.3"]
+    C --> E["Analytical result<br/>set"]
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -507,19 +529,27 @@ Coordinate transactions across multiple Datomic databases using application-leve
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 66: Distributed Transactions Across Databases
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: App (Peer), Transactor DB1, Transactor DB2, Both committed?, Cross-DB consistency, App-level compensation (saga / rollback). Connections: App (Peer) to Transactor DB1 (d/transact), App (Peer) to Transactor DB2 (d/transact), Transactor DB1 to Both committed? (commit or fail), Transactor DB2 to Both committed? (commit or fail), Both committed? to Cross-DB consistency (Yes), Both committed? to App-level compensation (saga / rollback) (No).
     A["App (Peer)"] -->|"d/transact"| B["Transactor DB1"]
     A -->|"d/transact"| C["Transactor DB2"]
     B -->|"commit or fail"| D{"Both committed?"}
     C -->|"commit or fail"| D
     D -->|"Yes"| E["Cross-DB consistency"]
-    D -->|"No"| F["App-level compensation<br/>(saga / rollback)"]
+    D -->|"No"| F["App-level<br/>compensation<br/>(saga / rollback)"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -760,16 +790,24 @@ Manage schema evolution across versions using additive schema changes and migrat
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 68: Schema Versioning and Migration
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Schema v1 :person/name, Schema v2 + :person/email, Schema v3 + :person/status, Old entities get :person/status, Instant availability to all peers. Connections: Schema v1 :person/name to Schema v2 + :person/email (Add attribute), Schema v2 + :person/email to Schema v3 + :person/status (Add attribute), Schema v3 + :person/status to Old entities get :person/status (Lazy migration), Schema v2 + :person/email to Instant availability to all peers (No downtime No ALTER TABLE).
     A["Schema v1<br/>:person/name"] -->|"Add attribute"| B["Schema v2<br/>+ :person/email"]
     B -->|"Add attribute"| C["Schema v3<br/>+ :person/status"]
     C -->|"Lazy migration"| D["Old entities<br/>get :person/status"]
     B -->|"No downtime<br/>No ALTER TABLE"| E["Instant availability<br/>to all peers"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -1118,16 +1156,24 @@ Create backups and restore to specific points in time.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 70: Backup and Point-in-Time Recovery
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Datomic DB (immutable log), Backup storage (S3 / local), Restored DB, Point-in-time DB value (no backup needed), Historical query result. Connections: Datomic DB (immutable log) to Backup storage (S3 / local) (backupDb), Backup storage (S3 / local) to Restored DB (restoreDb), Datomic DB (immutable log) to Point-in-time DB value (no backup needed) (as-of T1), Point-in-time DB value (no backup needed) to Historical query result (d/q).
     A["Datomic DB<br/>(immutable log)"] -->|"backupDb"| B["Backup storage<br/>(S3 / local)"]
     B -->|"restoreDb"| C["Restored DB"]
-    A -->|"as-of T1"| D["Point-in-time DB value<br/>(no backup needed)"]
-    D -->|"d/q"| E["Historical query result"]
+    A -->|"as-of T1"| D["Point-in-time DB<br/>value<br/>(no backup needed)"]
+    D -->|"d/q"| E["Historical query<br/>result"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -1212,6 +1258,8 @@ Publish database changes to message queues for downstream processing.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 71: Integration with Message Queues
+    accDescr: Sequence diagram between App, Datomic, Message Queue. Messages: App to Datomic: transact [data + outbox-event]; Datomic to App: tx-result (atomic commit); App to Message Queue: publish event from tx-data; Message Queue to App: ack.
     participant App
     participant Datomic
     participant Queue as Message Queue
@@ -1331,19 +1379,27 @@ Understand Datomic's MVCC model: reads never block writes, writes never block re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 72: Multi-Version Concurrency Control
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: Writer Transact T1, Transactor (serializes writes), Reader 1 d/db at basis T0, Consistent Read no blocking, Reader 2 d/db at basis T0, New DB Value basis T1, Same results regardless of T1. Connections: Writer Transact T1 to Transactor (serializes writes), Reader 1 d/db at basis T0 to Consistent Read no blocking, Reader 2 d/db at basis T0 to Consistent Read no blocking, Transactor (serializes writes) to New DB Value basis T1, Consistent Read no blocking to Same results regardless of T1 (Still valid T0 snapshot).
     A["Writer<br/>Transact T1"] --> B["Transactor<br/>(serializes writes)"]
     C["Reader 1<br/>d/db at basis T0"] --> D["Consistent Read<br/>no blocking"]
     E["Reader 2<br/>d/db at basis T0"] --> D
     B --> F["New DB Value<br/>basis T1"]
-    D -->|"Still valid T0 snapshot"| G["Same results<br/>regardless of T1"]
+    D -->|"Still valid T0<br/>snapshot"| G["Same results<br/>regardless of T1"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:
@@ -1956,6 +2012,8 @@ Use Datomic's immutable log as event store for event sourcing architecture.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 78: Building Event Sourcing Systems
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Command (user action), Transaction (Datomic commit), Transaction Log (IS the event log), Event Replay projection rebuild, Incremental projection update, Read Model (derived view). Connections: Command (user action) to Transaction (Datomic commit), Transaction (Datomic commit) to Transaction Log (IS the event log), Transaction Log (IS the event log) to Event Replay projection rebuild (d/tx-range), Transaction Log (IS the event log) to Incremental projection update (d/since), Event Replay projection rebuild to Read Model (derived view), Incremental projection update to Read Model (derived view).
     A["Command<br/>(user action)"] --> B["Transaction<br/>(Datomic commit)"]
     B --> C["Transaction Log<br/>(IS the event log)"]
     C -->|"d/tx-range"| D["Event Replay<br/>projection rebuild"]
@@ -1963,12 +2021,18 @@ graph LR
     D --> F["Read Model<br/>(derived view)"]
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Java Code**:

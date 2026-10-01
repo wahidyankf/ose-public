@@ -147,19 +147,25 @@ Proper dependency installation leverages Docker's layer caching mechanism. By co
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 4: Installing Dependencies in Dockerfile
+ accDescr: Graph with 6 nodes and 7 connections. Nodes: FROM node:18-alpine, WORKDIR /app, COPY package*.json ./, RUN npm ci, COPY ., CMD node app.js. Connections: FROM node:18-alpine to WORKDIR /app, WORKDIR /app to COPY package*.json ./, COPY package*.json ./ to RUN npm ci, RUN npm ci to COPY ., COPY . to CMD node app.js, COPY package*.json ./ to RUN npm ci (Cached if package.json unchanged), RUN npm ci to COPY . (Reuses cached layer).
  A["FROM node:18-alpine"] --> B["WORKDIR /app"]
- B --> C["COPY package*.json ./"]
+ B --> C["COPY package*.json<br/>./"]
  C --> D["RUN npm ci"]
  D --> E["COPY ."]
  E --> F["CMD node app.js"]
 
- C -.->|Cached if package.json unchanged| D
+ C -.->|Cached if<br/>package.json<br/>unchanged| D
  D -.->|Reuses cached layer| E
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ class D pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -358,17 +364,23 @@ ENV instructions set environment variables that persist in the container at runt
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 6: ENV for Runtime Variables
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Dockerfile ENV, Build Time, Image Layer, Container Runtime, Application Reads ENV, npm ci uses NODE_ENV, process.env.PORT. Connections: Dockerfile ENV to Build Time, Build Time to Image Layer, Image Layer to Container Runtime, Container Runtime to Application Reads ENV, Build Time to npm ci uses NODE_ENV (Available during RUN), Container Runtime to process.env.PORT (Available in container).
  A["Dockerfile ENV"] --> B["Build Time"]
  B --> C["Image Layer"]
  C --> D["Container Runtime"]
- D --> E["Application Reads ENV"]
+ D --> E["Application Reads<br/>ENV"]
 
  B -.->|Available during RUN| F["npm ci uses NODE_ENV"]
- D -.->|Available in container| G["process.env.PORT"]
+ D -.->|Available in<br/>container| G["process.env.PORT"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -645,6 +657,8 @@ Understanding container states and lifecycle commands is fundamental for debuggi
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Container lifecycle state transitions
 stateDiagram-v2
+ accTitle: Example 9: Container Lifecycle Management
+ accDescr: State diagram with 5 items: start or end, Created, Running, Paused, Stopped. Relationships: start or end to Created: docker create; Created to Running: docker start; Running to Paused: docker pause; Paused to Running: docker unpause; Running to Stopped: docker stop; Stopped to Running: docker start; Created to start or end: docker rm; Stopped to start or end: docker rm; Running to start or end: docker rm -f.
  [*] --> Created: docker create
  Created --> Running: docker start
  Running --> Paused: docker pause
@@ -655,10 +669,14 @@ stateDiagram-v2
  Stopped --> [*]: docker rm
  Running --> [*]: docker rm -f
 
- style Created fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style Running fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style Paused fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style Stopped fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class Created pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class Running pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class Paused pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class Stopped pal-CC78BC
 ```
 
 ```bash
@@ -853,12 +871,18 @@ Port mapping exposes container services to the host network. Docker supports TCP
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Port mapping flow
 graph TD
+ accTitle: Example 12: Container Port Mapping
+ accDescr: Graph with 3 nodes and 2 connections. Nodes: Host localhost:8080, Docker Bridge 172.17.x.1, Container 172.17.x.2:80. Connections: Host localhost:8080 to Docker Bridge 172.17.x.1, Docker Bridge 172.17.x.1 to Container 172.17.x.2:80.
  A["Host<br/>localhost:8080"] --> B["Docker Bridge<br/>172.17.x.1"]
  B --> C["Container<br/>172.17.x.2:80"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -934,14 +958,20 @@ Named volumes provide persistent storage managed by Docker. Data survives contai
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Volume architecture
 graph TD
+ accTitle: Example 13: Named Volumes for Data Persistence
+ accDescr: Graph with 4 nodes and 3 connections. Nodes: Container 1 /app/data, Named Volume my-data, Container 2 /backup/data, Host Filesystem /var/lib/docker/ volumes/my-data. Connections: Container 1 /app/data to Named Volume my-data, Container 2 /backup/data to Named Volume my-data, Named Volume my-data to Host Filesystem /var/lib/docker/ volumes/my-data.
  A["Container 1<br/>/app/data"] --> B["Named Volume<br/>my-data"]
  C["Container 2<br/>/backup/data"] --> B
- B --> D["Host Filesystem<br/>/var/lib/docker/volumes/my-data"]
+ B --> D["Host Filesystem<br/>/var/lib/docker/<br/>volumes/my-data"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ class C pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1051,13 +1081,19 @@ Bind mounts map host directories into containers, enabling live code reloading d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 14: Bind Mounts for Development
+ accDescr: Graph with 4 nodes and 3 connections. Nodes: Host Directory ~/myapp, Container Path /app, server.js message.txt package.json, Live Updates File changes sync instantly. Connections: Host Directory ~/myapp to Container Path /app, Host Directory ~/myapp to server.js message.txt package.json, Container Path /app to Live Updates File changes sync instantly.
  A["Host Directory<br/>~/myapp"] <--> B["Container Path<br/>/app"]
  A --> C["server.js<br/>message.txt<br/>package.json"]
- B --> D["Live Updates<br/>File changes sync instantly"]
+ B --> D["Live Updates<br/>File changes sync<br/>instantly"]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1279,6 +1315,8 @@ Docker's default bridge network enables container-to-container communication. Co
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Bridge network topology
 graph TD
+ accTitle: Example 16: Bridge Network Basics
+ accDescr: Graph with 5 nodes and 6 connections. Nodes: Host eth0: 192.168.x.10, Docker Bridge docker0: 172.17.x.1, Container 1 web: 172.17.x.2, Container 2 api: 172.17.x.3, Container 3 db: 172.17.x.4. Connections: Host eth0: 192.168.x.10 to Docker Bridge docker0: 172.17.x.1, Docker Bridge docker0: 172.17.x.1 to Container 1 web: 172.17.x.2, Docker Bridge docker0: 172.17.x.1 to Container 2 api: 172.17.x.3, Docker Bridge docker0: 172.17.x.1 to Container 3 db: 172.17.x.4, Container 1 web: 172.17.x.2 to Container 2 api: 172.17.x.3 (DNS: api), Container 2 api: 172.17.x.3 to Container 3 db: 172.17.x.4 (DNS: db).
  A["Host<br/>eth0: 192.168.x.10"] --> B["Docker Bridge<br/>docker0: 172.17.x.1"]
  B --> C["Container 1<br/>web: 172.17.x.2"]
  B --> D["Container 2<br/>api: 172.17.x.3"]
@@ -1286,11 +1324,15 @@ graph TD
  C -.->|"DNS: api"| D
  D -.->|"DNS: db"| E
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ class D pal-029E73
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -2554,17 +2596,24 @@ networks:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Network segmentation topology
 graph TD
+ accTitle: => pgAdmin connects to db on backend network using db hostname
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Internet, Host Port 8080, web frontend network, api frontend + backend, db backend network, admin backend network. Connections: Internet to Host Port 8080, Host Port 8080 to web frontend network, web frontend network to api frontend + backend, api frontend + backend to db backend network, admin backend network to db backend network.
  A["Internet"] --> B["Host Port 8080"]
  B --> C["web<br/>frontend network"]
  C --> D["api<br/>frontend + backend"]
  D --> E["db<br/>backend network"]
  F["admin<br/>backend network"] --> E
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CC78BC
+ class F pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

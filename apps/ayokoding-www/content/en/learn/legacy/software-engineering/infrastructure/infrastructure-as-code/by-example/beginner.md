@@ -42,7 +42,9 @@ A provider is a plugin that Terraform uses to interact with a cloud platform, Sa
 
 ```mermaid
 graph TD
-    A["Terraform Configuration<br/>main.tf"]
+    accTitle: Example 2: Terraform Provider Block
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Terraform Configuration main.tf, Provider Plugin hashicorp/aws, AWS API us-east-1, Real Infrastructure EC2, S3, VPC.... Connections: Terraform Configuration main.tf to Provider Plugin hashicorp/aws (declares), Provider Plugin hashicorp/aws to AWS API us-east-1 (authenticates), AWS API us-east-1 to Real Infrastructure EC2, S3, VPC... (provisions).
+    A["Terraform<br/>Configuration<br/>main.tf"]
     B["Provider Plugin<br/>hashicorp/aws"]
     C["AWS API<br/>us-east-1"]
     D["Real Infrastructure<br/>EC2, S3, VPC..."]
@@ -51,10 +53,15 @@ graph TD
     B -->|authenticates| C
     C -->|provisions| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -179,6 +186,8 @@ resource "aws_s3_bucket" "logs" {
 
 ```mermaid
 graph LR
+    accTitle: Example 5: Terraform Init and the Lock File
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Working Directory main.tf, terraform init, .terraform/ providers/, .terraform.lock.hcl exact versions. Connections: Working Directory main.tf to terraform init (run), terraform init to .terraform/ providers/ (downloads), terraform init to .terraform.lock.hcl exact versions (creates).
     A["Working Directory<br/>main.tf"]
     B["terraform init"]
     C[".terraform/<br/>providers/"]
@@ -188,10 +197,15 @@ graph LR
     B -->|downloads| C
     B -->|creates| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -274,13 +288,18 @@ Resource references allow one resource to read attributes from another. Terrafor
 
 ```mermaid
 graph LR
+    accTitle: Example 7: Resource References and Interpolation
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: aws_vpc.main creates VPC, aws_subnet.public reads vpc_id. Connections: aws_vpc.main creates VPC to aws_subnet.public reads vpc_id (vpc_id attribute).
     A["aws_vpc.main<br/>creates VPC"]
     B["aws_subnet.public<br/>reads vpc_id"]
 
     A -->|vpc_id attribute| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -383,7 +402,9 @@ Input variables are the parameters of a Terraform configuration. They allow you 
 
 ```mermaid
 graph TD
-    A["variables.tf<br/>variable declarations"]
+    accTitle: Example 9: Input Variables with Type Constraints
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: variables.tf variable declarations, terraform.tfvars or CLI flags, main.tf var.instance_type, AWS EC2 actual instance. Connections: variables.tf variable declarations to main.tf var.instance_type (defines schema), terraform.tfvars or CLI flags to main.tf var.instance_type (provides values), main.tf var.instance_type to AWS EC2 actual instance (creates).
+    A["variables.tf<br/>variable<br/>declarations"]
     B["terraform.tfvars<br/>or CLI flags"]
     C["main.tf<br/>var.instance_type"]
     D["AWS EC2<br/>actual instance"]
@@ -392,10 +413,15 @@ graph TD
     B -->|provides values| C
     C -->|creates| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -660,6 +686,8 @@ Data sources allow Terraform to read information from existing infrastructure or
 
 ```mermaid
 graph LR
+    accTitle: Example 15: Data Sources
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: data source block data.aws_ami.latest, AWS API describe-images, Existing AMI ami-0abc123, resource aws_instance.web. Connections: data source block data.aws_ami.latest to AWS API describe-images (queries), AWS API describe-images to Existing AMI ami-0abc123 (returns), Existing AMI ami-0abc123 to resource aws_instance.web (value used by).
     A["data source block<br/>data.aws_ami.latest"]
     B["AWS API<br/>describe-images"]
     C["Existing AMI<br/>ami-0abc123"]
@@ -669,10 +697,15 @@ graph LR
     B -->|returns| C
     C -->|value used by| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -875,6 +908,8 @@ resource "aws_s3_bucket" "artifacts" {
 
 ```mermaid
 graph TD
+    accTitle: Example 19: terraform plan — The Dry-Run
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Configuration Files .tf files, State File terraform.tfstate, terraform plan, Execution Plan what will change. Connections: Configuration Files .tf files to terraform plan (reads desired state), State File terraform.tfstate to terraform plan (reads current state), terraform plan to Execution Plan what will change (compares and produces).
     A["Configuration Files<br/>.tf files"]
     B["State File<br/>terraform.tfstate"]
     C["terraform plan"]
@@ -882,12 +917,17 @@ graph TD
 
     A -->|reads desired state| C
     B -->|reads current state| C
-    C -->|compares and produces| D
+    C -->|compares and<br/>produces| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -1015,7 +1055,9 @@ Terraform state is a JSON file that records the mapping between your configurati
 
 ```mermaid
 graph TD
-    A["Configuration<br/>resource aws_instance.web"]
+    accTitle: Example 22: Understanding Terraform State
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Configuration resource aws_instance.web, State File terraform.tfstate, Real Infrastructure i-0abc123 in AWS. Connections: Configuration resource aws_instance.web to State File terraform.tfstate (declares), State File terraform.tfstate to Real Infrastructure i-0abc123 in AWS (tracks), Configuration resource aws_instance.web to Real Infrastructure i-0abc123 in AWS (compared against).
+    A["Configuration<br/>resource<br/>aws_instance.web"]
     B["State File<br/>terraform.tfstate"]
     C["Real Infrastructure<br/>i-0abc123 in AWS"]
 
@@ -1023,9 +1065,13 @@ graph TD
     B -->|tracks| C
     A -->|compared against| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -1125,19 +1171,26 @@ Terraform supports two kinds of resource dependencies: implicit (inferred from r
 
 ```mermaid
 graph TD
+    accTitle: Example 24: Implicit vs Explicit Dependencies
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: aws_vpc.main creates first, aws_subnet.public references vpc_id, aws_instance.web depends_on subnet, aws_s3_bucket.logs explicit dependency. Connections: aws_vpc.main creates first to aws_subnet.public references vpc_id (implicit via reference), aws_subnet.public references vpc_id to aws_instance.web depends_on subnet (implicit via reference), aws_instance.web depends_on subnet to aws_s3_bucket.logs explicit dependency (explicit via depends_on).
     A["aws_vpc.main<br/>creates first"]
     B["aws_subnet.public<br/>references vpc_id"]
     C["aws_instance.web<br/>depends_on subnet"]
     D["aws_s3_bucket.logs<br/>explicit dependency"]
 
-    A -->|implicit via reference| B
-    B -->|implicit via reference| C
-    C -->|explicit via depends_on| D
+    A -->|implicit via<br/>reference| B
+    B -->|implicit via<br/>reference| C
+    C -->|explicit via<br/>depends_on| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -1276,6 +1329,8 @@ Ansible is an agentless configuration management tool that uses YAML playbooks t
 
 ```mermaid
 graph LR
+    accTitle: Example 27: Ansible Playbook Structure
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Ansible Control Node your workstation, Inventory hosts.ini, Playbook site.yml, Managed Host web-server-01. Connections: Ansible Control Node your workstation to Inventory hosts.ini (reads), Ansible Control Node your workstation to Playbook site.yml (executes), Playbook site.yml to Managed Host web-server-01 (connects via SSH).
     A["Ansible Control Node<br/>your workstation"]
     B["Inventory<br/>hosts.ini"]
     C["Playbook<br/>site.yml"]
@@ -1285,10 +1340,15 @@ graph LR
     A -->|executes| C
     C -->|connects via SSH| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

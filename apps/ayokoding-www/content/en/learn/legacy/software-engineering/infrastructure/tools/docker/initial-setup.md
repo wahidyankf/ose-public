@@ -437,18 +437,26 @@ Congratulations! You've run your first Docker container.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["docker run hello-world"] --> B["Pull Image"]
+    accTitle: Understanding Container Lifecycle
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: docker run hello-world, Pull Image, Create Container, Start Container, Execute Process, Container Exits. Connections: docker run hello-world to Pull Image, Pull Image to Create Container, Create Container to Start Container, Start Container to Execute Process, Execute Process to Container Exits.
+    A["docker run<br/>hello-world"] --> B["Pull Image"]
     B --> C["Create Container"]
     C --> D["Start Container"]
     D --> E["Execute Process"]
     E --> F["Container Exits"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### List Containers

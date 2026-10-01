@@ -25,20 +25,28 @@ The `Migrator` struct gives you fine-grained control over which migrations run a
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Migrator API: inspect, filter, and apply migrations programmatically
 graph TD
-    A["sqlx::migrate! macro"] -->|"embeds files at compile time"| B["Migrator struct"]
-    B -->|"migrations()"| C["List of Migration objects"]
-    C -->|"inspect version/description"| D["Filtered subset"]
+    accTitle: Example 61: Programmatic Migration with Migrator
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: sqlx::migrate! macro, Migrator struct, List of Migration objects, Filtered subset, Apply to database, _sqlx_migrations updated, Error returned to caller. Connections: sqlx::migrate! macro to Migrator struct (embeds files at compile time), Migrator struct to List of Migration objects (migrations()), List of Migration objects to Filtered subset (inspect version/description), Filtered subset to Apply to database (run_direct on pool), Apply to database to _sqlx_migrations updated (success), Apply to database to Error returned to caller (failure).
+    A["sqlx::migrate! macro"] -->|"embeds files at<br/>compile time"| B["Migrator struct"]
+    B -->|"migrations()"| C["List of Migration<br/>objects"]
+    C -->|"inspect<br/>version/description"| D["Filtered subset"]
     D -->|"run_direct on pool"| E["Apply to database"]
-    E -->|"success"| F["_sqlx_migrations updated"]
-    E -->|"failure"| G["Error returned to caller"]
+    E -->|"success"| F["_sqlx_migrations<br/>updated"]
+    E -->|"failure"| G["Error returned to<br/>caller"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style G fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -209,12 +217,18 @@ Removing a column safely requires three deployment cycles to avoid errors when o
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% 3-phase zero-downtime column removal
 graph LR
-    A["Deploy 1:<br/>App ignores column"] -->|"no reads/writes"| B["Deploy 2:<br/>Migration drops column"]
+    accTitle: Example 64: Zero-Downtime Column Removal
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Deploy 1: App ignores column, Deploy 2: Migration drops column, Deploy 3: Cleanup code. Connections: Deploy 1: App ignores column to Deploy 2: Migration drops column (no reads/writes), Deploy 2: Migration drops column to Deploy 3: Cleanup code (column gone).
+    A["Deploy 1:<br/>App ignores column"] -->|"no reads/writes"| B["Deploy 2:<br/>Migration drops<br/>column"]
     B -->|"column gone"| C["Deploy 3:<br/>Cleanup code"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Phase 1 migration: mark column as deprecated in a comment (no SQL change yet)**
@@ -607,16 +621,24 @@ Blue-green deployments run two identical production environments (blue and green
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Blue-green migration: schema must be compatible with both versions simultaneously
 graph TD
-    A["Blue env: old app code"] -->|"reads/writes"| DB["Shared database"]
-    B["Green env: new app code"] -->|"reads/writes"| DB
-    C["Migration applied to DB"] -->|"before traffic switch"| DB
+    accTitle: Example 72: Blue-Green Deployment Migrations
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Blue env: old app code, Shared database, Green env: new app code, Migration applied to DB, Load balancer. Connections: Blue env: old app code to Shared database (reads/writes), Green env: new app code to Shared database (reads/writes), Migration applied to DB to Shared database (before traffic switch), Load balancer to Green env: new app code (switch traffic).
+    A["Blue env: old app<br/>code"] -->|"reads/writes"| DB["Shared database"]
+    B["Green env: new app<br/>code"] -->|"reads/writes"| DB
+    C["Migration applied to<br/>DB"] -->|"before traffic<br/>switch"| DB
     D["Load balancer"] -->|"switch traffic"| B
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style DB fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class DB pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql

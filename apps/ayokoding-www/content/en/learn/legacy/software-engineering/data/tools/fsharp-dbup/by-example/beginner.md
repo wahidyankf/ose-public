@@ -55,18 +55,26 @@ The `DeployChanges.To` static class is the entry point for DbUp's fluent configu
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% DeployChanges builder pipeline
 graph TD
+    accTitle: Example 2: DeployChanges Builder Setup
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: DeployChanges.To, Database Target, Script Source, Logging Sink, UpgradeEngine, DatabaseUpgrade Result. Connections: DeployChanges.To to Database Target (.PostgresqlDatabase), Database Target to Script Source (.WithScriptsEmbedded InAssembly), Script Source to Logging Sink (.LogToConsole), Logging Sink to UpgradeEngine (.Build), UpgradeEngine to DatabaseUpgrade Result (.PerformUpgrade).
     A[DeployChanges.To] -->|.PostgresqlDatabase| B[Database Target]
-    B -->|.WithScriptsEmbeddedInAssembly| C[Script Source]
+    B -->|.WithScriptsEmbedded<br/>InAssembly| C[Script Source]
     C -->|.LogToConsole| D[Logging Sink]
     D -->|.Build| E[UpgradeEngine]
-    E -->|.PerformUpgrade| F[DatabaseUpgradeResult]
+    E -->|.PerformUpgrade| F[DatabaseUpgrade<br/>Result]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp
@@ -232,19 +240,28 @@ DbUp automatically creates and maintains a `schemaversions` table in the target 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% SchemaVersions journal tracking
 graph TD
-    A[PerformUpgrade called] --> B{Query schemaversions}
-    B -->|Script not in journal| C[Execute script]
+    accTitle: Example 6: SchemaVersions Journal Table
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: PerformUpgrade called, Query schemaversions, Execute script, Skip script, Insert row into schemaversions, Move to next script. Connections: PerformUpgrade called to Query schemaversions, Query schemaversions to Execute script (Script not in journal), Query schemaversions to Skip script (Script in journal), Execute script to Insert row into schemaversions, Insert row into schemaversions to Move to next script, Skip script to Move to next script.
+    A[PerformUpgrade<br/>called] --> B{Query schemaversions}
+    B -->|Script not in<br/>journal| C[Execute script]
     B -->|Script in journal| D[Skip script]
-    C --> E[Insert row into schemaversions]
+    C --> E[Insert row into<br/>schemaversions]
     E --> F[Move to next script]
     D --> F
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-808080
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql

@@ -18,18 +18,26 @@ Playwright tests are asynchronous functions that receive a `page` object represe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Hello World - Your First Playwright Test
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Test Function, Browser Launch, Browser Context (Isolated Session), Page Object (Browser Tab), Test Actions, Automatic Cleanup. Connections: Test Function to Browser Launch, Browser Launch to Browser Context (Isolated Session), Browser Context (Isolated Session) to Page Object (Browser Tab), Page Object (Browser Tab) to Test Actions, Test Actions to Automatic Cleanup.
     Test["Test Function"] --> Browser["Browser Launch"]
     Browser --> Context["Browser Context<br/>(Isolated Session)"]
     Context --> Page["Page Object<br/>(Browser Tab)"]
     Page --> Actions["Test Actions"]
     Actions --> Cleanup["Automatic Cleanup"]
 
-    style Test fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Browser fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Context fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Page fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-    style Actions fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Cleanup fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Test pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Browser pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Context pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Page pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Actions pal-CA9161
+    class Cleanup pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -75,18 +83,24 @@ Playwright supports multiple browsers (Chromium, Firefox, WebKit) and launch opt
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Browser["Browser Instance<br/>(chromium/firefox/webkit)"] --> Context1["BrowserContext 1<br/>(isolated cookies/storage)"]
-    Browser --> Context2["BrowserContext 2<br/>(isolated cookies/storage)"]
+    accTitle: Example 2: Browser Launch Configuration
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Browser Instance (chromium/firefox/ webkit), BrowserContext 1 (isolated cookies/storage), BrowserContext 2 (isolated cookies/storage), Page (Tab), Page (Tab), Page (Tab). Connections: Browser Instance (chromium/firefox/ webkit) to BrowserContext 1 (isolated cookies/storage), Browser Instance (chromium/firefox/ webkit) to BrowserContext 2 (isolated cookies/storage), BrowserContext 1 (isolated cookies/storage) to Page (Tab), BrowserContext 1 (isolated cookies/storage) to Page (Tab), BrowserContext 2 (isolated cookies/storage) to Page (Tab).
+    Browser["Browser Instance<br/>(chromium/firefox/<br/>webkit)"] --> Context1["BrowserContext 1<br/>(isolated<br/>cookies/storage)"]
+    Browser --> Context2["BrowserContext 2<br/>(isolated<br/>cookies/storage)"]
     Context1 --> Page1["Page (Tab)"]
     Context1 --> Page2["Page (Tab)"]
     Context2 --> Page3["Page (Tab)"]
 
-    style Browser fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Context1 fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Context2 fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Page1 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Page2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Page3 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Browser pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Context1 pal-DE8F05
+    class Context2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Page1 pal-029E73
+    class Page2 pal-029E73
+    class Page3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -140,20 +154,28 @@ Playwright automatically waits for navigation to complete. Understanding navigat
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 3: Basic Navigation and Waiting
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: page.goto(url), waitUntil strategy?, Wait for DOMContentLoaded, Wait for ≤2 active requests for 500ms, Wait for HTTP response headers, Page Ready for Interactions. Connections: page.goto(url) to waitUntil strategy?, waitUntil strategy? to Wait for DOMContentLoaded (load (default)), waitUntil strategy? to Wait for ≤2 active requests for 500ms (networkidle), waitUntil strategy? to Wait for HTTP response headers (commit), Wait for DOMContentLoaded to Page Ready for Interactions, Wait for ≤2 active requests for 500ms to Page Ready for Interactions, Wait for HTTP response headers to Page Ready for Interactions.
     Nav["page.goto(url)"] --> Decision{"waitUntil<br/>strategy?"}
     Decision -->|"load (default)"| Load["Wait for<br/>DOMContentLoaded"]
     Decision -->|"networkidle"| Idle["Wait for ≤2 active<br/>requests for 500ms"]
-    Decision -->|"commit"| Commit["Wait for<br/>HTTP response headers"]
+    Decision -->|"commit"| Commit["Wait for<br/>HTTP response<br/>headers"]
     Load --> Ready["Page Ready<br/>for Interactions"]
     Idle --> Ready
     Commit --> Ready
 
-    style Nav fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Decision fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Load fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Idle fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Commit fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Ready fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Nav pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Decision pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Load pal-029E73
+    class Idle pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Commit pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Ready pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -208,16 +230,24 @@ test("navigation with waiting", async ({ page }) => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    Code["page.getByRole(<br/>'button', { name: 'Submit' })"] --> Query["DOM Query<br/>(on action/assertion)"]
+    accTitle: Example 4: Basic Locators - getByRole
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: page.getByRole( button, name: Submit ), DOM Query (on action/assertion), Scan ARIA roles in DOM tree, Match accessible name / aria-label, Locator Object (lazy, re-queryable). Connections: page.getByRole( button, name: Submit ) to DOM Query (on action/assertion), DOM Query (on action/assertion) to Scan ARIA roles in DOM tree, Scan ARIA roles in DOM tree to Match accessible name / aria-label, Match accessible name / aria-label to Locator Object (lazy, re-queryable).
+    Code["page.getByRole(<br/>'button', { name:<br/>'Submit' })"] --> Query["DOM Query<br/>(on<br/>action/assertion)"]
     Query --> ARIA["Scan ARIA roles<br/>in DOM tree"]
     ARIA --> Match["Match accessible<br/>name / aria-label"]
     Match --> Locator["Locator Object<br/>(lazy, re-queryable)"]
 
-    style Code fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Query fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style ARIA fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Match fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Locator fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Code pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Query pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class ARIA pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Match pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Locator pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -271,27 +301,34 @@ Playwright waits for actionability before performing actions—elements must be 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 5: Clicking Elements and Action Auto-Wait
+    accDescr: Graph with 8 nodes and 12 connections. Nodes: locator.click(), 1. Attached to DOM?, Retry every 100ms (up to timeout), 2. Visible?, 3. Stable (no animation)?, 4. Enabled?, 5. Receives pointer events?, Perform Click. Connections: locator.click() to 1. Attached to DOM?, 1. Attached to DOM? to Retry every 100ms (up to timeout) (no), Retry every 100ms (up to timeout) to 1. Attached to DOM?, 1. Attached to DOM? to 2. Visible? (yes), 2. Visible? to Retry every 100ms (up to timeout) (no), 2. Visible? to 3. Stable (no animation)? (yes), 3. Stable (no animation)? to Retry every 100ms (up to timeout) (no), 3. Stable (no animation)? to 4. Enabled? (yes), 4. Enabled? to Retry every 100ms (up to timeout) (no), 4. Enabled? to 5. Receives pointer events? (yes), 5. Receives pointer events? to Retry every 100ms (up to timeout) (no), 5. Receives pointer events? to Perform Click (yes).
     Click["locator.click()"] --> Attached["1. Attached to DOM?"]
     Attached -->|no| Retry["Retry every 100ms<br/>(up to timeout)"]
     Retry --> Attached
     Attached -->|yes| Visible["2. Visible?"]
     Visible -->|no| Retry
-    Visible -->|yes| Stable["3. Stable (no animation)?"]
+    Visible -->|yes| Stable["3. Stable (no<br/>animation)?"]
     Stable -->|no| Retry
     Stable -->|yes| Enabled["4. Enabled?"]
     Enabled -->|no| Retry
-    Enabled -->|yes| Pointer["5. Receives pointer events?"]
+    Enabled -->|yes| Pointer["5. Receives pointer<br/>events?"]
     Pointer -->|no| Retry
     Pointer -->|yes| Perform["Perform Click"]
 
-    style Click fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Retry fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Perform fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Attached fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Visible fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Stable fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Enabled fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Pointer fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Click pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Retry pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Perform pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Attached pal-CA9161
+    class Visible pal-CA9161
+    class Stable pal-CA9161
+    class Enabled pal-CA9161
+    class Pointer pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -404,22 +441,30 @@ Playwright's `expect` provides auto-retrying assertions that wait for conditions
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Assert["expect(locator).toBeVisible()"] --> Check["Evaluate condition<br/>immediately"]
+    accTitle: Example 7: Basic Assertions with expect
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: expect(locator). toBeVisible(), Evaluate condition immediately, Assertion Passes, Wait 100ms, Re-evaluate condition, Timeout reached?, TimeoutError: assertion failed. Connections: expect(locator). toBeVisible() to Evaluate condition immediately, Evaluate condition immediately to Assertion Passes (passes), Evaluate condition immediately to Wait 100ms (fails), Wait 100ms to Re-evaluate condition, Re-evaluate condition to Assertion Passes (passes), Re-evaluate condition to Timeout reached? (still fails), Timeout reached? to Wait 100ms (no), Timeout reached? to TimeoutError: assertion failed (yes).
+    Assert["expect(locator).<br/>toBeVisible()"] --> Check["Evaluate condition<br/>immediately"]
     Check -->|"passes"| Pass["Assertion Passes"]
     Check -->|"fails"| Wait["Wait 100ms"]
-    Wait --> Retry["Re-evaluate condition"]
+    Wait --> Retry["Re-evaluate<br/>condition"]
     Retry -->|"passes"| Pass
     Retry -->|"still fails"| Timeout{"Timeout<br/>reached?"}
     Timeout -->|"no"| Wait
     Timeout -->|"yes"| Fail["TimeoutError:<br/>assertion failed"]
 
-    style Assert fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Check fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Pass fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Wait fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Retry fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Timeout fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Fail fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Assert pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Check pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Pass pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Wait pal-CA9161
+    class Retry pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Timeout pal-CC78BC
+    class Fail pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -483,6 +528,8 @@ Playwright captures screenshots for debugging and visual regression testing. Scr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 8: Screenshots and Visual Verification
+    accDescr: Sequence diagram between Test Code, Playwright, Browser, File System. Messages: Test Code to Playwright: page.screenshot( path: shot.png ); Playwright to Browser: Capture viewport pixels; Browser to Playwright: Image buffer (PNG); Playwright to File System: Write shot.png; Playwright to Test Code: Buffer returned; Test Code to Playwright: expect(el).toHaveScreenshot(baseline.png); Playwright to Browser: Capture element pixels; Browser to Playwright: Current image buffer; Playwright to File System: Load baseline.png (or create on first run); Playwright to Playwright: Pixel diff comparison; Playwright to Test Code: Pass or fail with diff image.
     participant Test as Test Code
     participant PW as Playwright
     participant Browser as Browser
@@ -565,19 +612,27 @@ Organizing tests into logical groups with `test.describe` enables shared setup, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Suite["test.describe('Suite')"] --> BeforeEach["test.beforeEach()<br/>(runs before each test)"]
+    accTitle: Example 9: Test Structure with describe Blocks
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: test. describe(Suite), test.beforeEach() (runs before each test), test(case 1), test(case 2), test.afterEach() (runs after each test), Test Report (grouped by suite). Connections: test. describe(Suite) to test.beforeEach() (runs before each test), test.beforeEach() (runs before each test) to test(case 1), test.beforeEach() (runs before each test) to test(case 2), test(case 1) to test.afterEach() (runs after each test), test(case 2) to test.afterEach() (runs after each test), test.afterEach() (runs after each test) to Test Report (grouped by suite).
+    Suite["test.<br/>describe('Suite')"] --> BeforeEach["test.beforeEach()<br/>(runs before each<br/>test)"]
     BeforeEach --> T1["test('case 1')"]
     BeforeEach --> T2["test('case 2')"]
-    T1 --> AfterEach["test.afterEach()<br/>(runs after each test)"]
+    T1 --> AfterEach["test.afterEach()<br/>(runs after each<br/>test)"]
     T2 --> AfterEach
     AfterEach --> Report["Test Report<br/>(grouped by suite)"]
 
-    style Suite fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style BeforeEach fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style T1 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style T2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style AfterEach fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Report fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Suite pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class BeforeEach pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class T1 pal-029E73
+    class T2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class AfterEach pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Report pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -661,7 +716,9 @@ Playwright tests run in Chromium by default, but you can test across Chrome, Fir
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    Config["playwright.config.ts<br/>projects: [chromium, firefox, webkit]"] --> Runner["Test Runner"]
+    accTitle: Example 10: Multiple Browser Testing
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: playwright.config.ts projects: [chromium, firefox, webkit], Test Runner, Worker 1 Chromium, Worker 2 Firefox, Worker 3 WebKit, Aggregated Test Results. Connections: playwright.config.ts projects: [chromium, firefox, webkit] to Test Runner, Test Runner to Worker 1 Chromium, Test Runner to Worker 2 Firefox, Test Runner to Worker 3 WebKit, Worker 1 Chromium to Aggregated Test Results, Worker 2 Firefox to Aggregated Test Results, Worker 3 WebKit to Aggregated Test Results.
+    Config["playwright.config.ts<br/>projects: [chromium,<br/>firefox, webkit]"] --> Runner["Test Runner"]
     Runner --> W1["Worker 1<br/>Chromium"]
     Runner --> W2["Worker 2<br/>Firefox"]
     Runner --> W3["Worker 3<br/>WebKit"]
@@ -669,12 +726,17 @@ graph LR
     W2 --> Results
     W3 --> Results
 
-    style Config fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Runner fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style W1 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style W2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style W3 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Results fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Config pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Runner pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class W1 pal-029E73
+    class W2 pal-029E73
+    class W3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Results pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -985,20 +1047,28 @@ Chaining locators narrows search scope to specific page regions, preventing fals
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    Page["page"] --> Nav["page.locator('nav.navbar')"]
-    Nav --> ScopedLink["nav.getByRole('link')"]
-    Nav --> ScopedBtn["nav.getByRole('button')"]
-    Page --> Sidebar["page.locator('.sidebar')"]
-    Sidebar --> Section["sidebar.locator('section').first()"]
-    Section --> Heading["section.getByRole('heading')"]
+    accTitle: Example 16: Chaining Locators for Scoped Searches
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: page, page.locator(nav. navbar), nav. getByRole(link), nav. getByRole(button), page.locator(. sidebar), sidebar. locator(section). first(), section. getByRole(heading). Connections: page to page.locator(nav. navbar), page.locator(nav. navbar) to nav. getByRole(link), page.locator(nav. navbar) to nav. getByRole(button), page to page.locator(. sidebar), page.locator(. sidebar) to sidebar. locator(section). first(), sidebar. locator(section). first() to section. getByRole(heading).
+    Page["page"] --> Nav["page.locator('nav.<br/>navbar')"]
+    Nav --> ScopedLink["nav.<br/>getByRole('link')"]
+    Nav --> ScopedBtn["nav.<br/>getByRole('button')"]
+    Page --> Sidebar["page.locator('.<br/>sidebar')"]
+    Sidebar --> Section["sidebar.<br/>locator('section').<br/>first()"]
+    Section --> Heading["section.<br/>getByRole('heading')"]
 
-    style Page fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Nav fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Sidebar fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style ScopedLink fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style ScopedBtn fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Section fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Heading fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Page pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Nav pal-DE8F05
+    class Sidebar pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class ScopedLink pal-029E73
+    class ScopedBtn pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Section pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Heading pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1340,6 +1410,8 @@ Playwright provides specialized methods for checkbox and radio button interactio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 21: Checkboxes and Radio Buttons
+    accDescr: State diagram with 3 items: start or end, Unchecked, Checked. Relationships: start or end to Unchecked: initial state; Unchecked to Checked: check() / setChecked(true); Checked to Unchecked: uncheck() / setChecked(false); Checked to Checked: check() (idempotent); Unchecked to Unchecked: uncheck() (idempotent).
     [*] --> Unchecked: initial state
     Unchecked --> Checked: check() / setChecked(true)
     Checked --> Unchecked: uncheck() / setChecked(false)
@@ -1422,25 +1494,33 @@ Playwright handles `<select>` dropdowns with methods that accept values, labels,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 22: Select Dropdowns
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: selectOption(input), Input type?, Match by option value attr, Match by visible text, Match by position (0-based), Multi-select: select all listed options, Update DOM selected state, Fire change /input events. Connections: selectOption(input) to Input type?, Input type? to Match by option value attr (string value), Input type? to Match by visible text (label: ...), Input type? to Match by position (0-based) (index: N), Input type? to Multi-select: select all listed options (array), Match by option value attr to Update DOM selected state, Match by visible text to Update DOM selected state, Match by position (0-based) to Update DOM selected state, Multi-select: select all listed options to Update DOM selected state, Update DOM selected state to Fire change /input events.
     Call["selectOption(input)"] --> Type{"Input type?"}
     Type -->|"string value"| ByVal["Match by<br/>option value attr"]
     Type -->|"{ label: '...' }"| ByLabel["Match by<br/>visible text"]
     Type -->|"{ index: N }"| ByIdx["Match by<br/>position (0-based)"]
-    Type -->|"array"| Multi["Multi-select:<br/>select all listed options"]
+    Type -->|"array"| Multi["Multi-select:<br/>select all listed<br/>options"]
     ByVal --> DOM["Update DOM<br/>selected state"]
     ByLabel --> DOM
     ByIdx --> DOM
     Multi --> DOM
-    DOM --> Events["Fire change / input events"]
+    DOM --> Events["Fire change /input<br/>events"]
 
-    style Call fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Type fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style ByVal fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style ByLabel fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style ByIdx fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Multi fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style DOM fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Events fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Call pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Type pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class ByVal pal-029E73
+    class ByLabel pal-029E73
+    class ByIdx pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Multi pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class DOM pal-CA9161
+    class Events pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1695,24 +1775,32 @@ Playwright simulates keyboard input with single keys, key combinations, and modi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Input["Keyboard Input Method"] --> PressKey["locator.press('Key')"]
-    Input --> TypeStr["locator.type('text', { delay })"]
+    accTitle: Example 26: Keyboard Input and Shortcuts
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: Keyboard Input Method, locator.press(Key), locator.type(text, delay ), locator.fill(text), page.keyboard. press(Key), Fires: keydown + keypress + keyup events, Directly sets value (no key events), Browser event handler (shortcuts, validation). Connections: Keyboard Input Method to locator.press(Key), Keyboard Input Method to locator.type(text, delay ), Keyboard Input Method to locator.fill(text), Keyboard Input Method to page.keyboard. press(Key), locator.press(Key) to Fires: keydown + keypress + keyup events, locator.type(text, delay ) to Fires: keydown + keypress + keyup events, locator.fill(text) to Directly sets value (no key events), page.keyboard. press(Key) to Fires: keydown + keypress + keyup events, Fires: keydown + keypress + keyup events to Browser event handler (shortcuts, validation).
+    Input["Keyboard Input<br/>Method"] --> PressKey["locator.press('Key')"]
+    Input --> TypeStr["locator.type('text',<br/>{ delay })"]
     Input --> FillStr["locator.fill('text')"]
-    Input --> PageKey["page.keyboard.press('Key')"]
-    PressKey --> Events["Fires: keydown + keypress<br/>+ keyup events"]
+    Input --> PageKey["page.keyboard.<br/>press('Key')"]
+    PressKey --> Events["Fires: keydown +<br/>keypress<br/>+ keyup events"]
     TypeStr --> Events
     FillStr --> SetVal["Directly sets value<br/>(no key events)"]
     PageKey --> Events
-    Events --> Handler["Browser event handler<br/>(shortcuts, validation)"]
+    Events --> Handler["Browser event<br/>handler<br/>(shortcuts,<br/>validation)"]
 
-    style Input fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style PressKey fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style TypeStr fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style FillStr fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style PageKey fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style Events fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style SetVal fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Handler fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Input pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class PressKey pal-DE8F05
+    class TypeStr pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class FillStr pal-CC78BC
+    class PageKey pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Events pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class SetVal pal-CA9161
+    class Handler pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1851,6 +1939,8 @@ While Playwright auto-waits for most actions, explicit waits are sometimes neede
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 28: Waiting for Specific Conditions
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Need to wait for..., Element state?, Network response?, URL change?, Custom condition?, waitForSelector() state: attached, waitForSelector() state: visible, locator.waitFor() state: hidden, waitForResponse() with URL filter, waitForURL(pattern), waitForFunction() with JS condition. Connections: Need to wait for... to Element state?, Need to wait for... to Network response?, Need to wait for... to URL change?, Need to wait for... to Custom condition?, Element state? to waitForSelector() state: attached (in DOM), Element state? to waitForSelector() state: visible (visible), Element state? to locator.waitFor() state: hidden (gone), Network response? to waitForResponse() with URL filter, URL change? to waitForURL(pattern), Custom condition? to waitForFunction() with JS condition.
     Need["Need to wait for..."] --> ElementQ{"Element<br/>state?"}
     Need --> NetworkQ{"Network<br/>response?"}
     Need --> URLQ{"URL<br/>change?"}
@@ -1862,17 +1952,23 @@ graph TD
     URLQ --> WaitURL["waitForURL(pattern)"]
     CustomQ --> WaitFn["waitForFunction()<br/>with JS condition"]
 
-    style Need fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style ElementQ fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style NetworkQ fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style URLQ fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style CustomQ fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style WaitSel fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style WaitVis fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style WaitHid fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style WaitResp fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style WaitURL fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style WaitFn fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Need pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class ElementQ pal-DE8F05
+    class NetworkQ pal-DE8F05
+    class URLQ pal-DE8F05
+    class CustomQ pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class WaitSel pal-029E73
+    class WaitVis pal-029E73
+    class WaitHid pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class WaitResp pal-CA9161
+    class WaitURL pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class WaitFn pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1941,16 +2037,24 @@ Understanding auto-waiting prevents confusion about when and how long Playwright
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    Actions["Actions<br/>(click, fill, etc.)"] -->|"auto-wait for<br/>actionability"| ActionWait["Retries every 100ms<br/>up to action timeout (30s default)"]
-    Assertions["Assertions<br/>(expect().toBeVisible())"] -->|"auto-retry<br/>condition check"| AssertWait["Retries every 100ms<br/>up to assertion timeout (5s default)"]
-    StateChecks["State Checks<br/>(isVisible(), isEnabled())"] -->|"NO auto-wait"| Immediate["Returns current<br/>state immediately"]
+    accTitle: Example 29: Auto-Waiting Behavior Deep Dive
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: Actions (click, fill, etc.), Retries every 100ms up to action timeout (30s default), Assertions (expect(). toBeVisible()), Retries every 100ms up to assertion timeout (5s default), State Checks (isVisible(), isEnabled()), Returns current state immediately. Connections: Actions (click, fill, etc.) to Retries every 100ms up to action timeout (30s default) (auto-wait for actionability), Assertions (expect(). toBeVisible()) to Retries every 100ms up to assertion timeout (5s default) (auto-retry condition check), State Checks (isVisible(), isEnabled()) to Returns current state immediately (NO auto-wait).
+    Actions["Actions<br/>(click, fill, etc.)"] -->|"auto-wait for<br/>actionability"| ActionWait["Retries every 100ms<br/>up to action timeout<br/>(30s default)"]
+    Assertions["Assertions<br/>(expect().<br/>toBeVisible())"] -->|"auto-retry<br/>condition check"| AssertWait["Retries every 100ms<br/>up to assertion<br/>timeout (5s default)"]
+    StateChecks["State Checks<br/>(isVisible(),<br/>isEnabled())"] -->|"NO auto-wait"| Immediate["Returns current<br/>state immediately"]
 
-    style Actions fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Assertions fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-    style StateChecks fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style ActionWait fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style AssertWait fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Immediate fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Actions pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Assertions pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class StateChecks pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class ActionWait pal-029E73
+    class AssertWait pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Immediate pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

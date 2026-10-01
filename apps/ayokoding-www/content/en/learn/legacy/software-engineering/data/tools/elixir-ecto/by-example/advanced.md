@@ -25,6 +25,8 @@ Dynamic queries allow you to build WHERE clauses conditionally based on runtime 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Dynamic Query Building
 graph TD
+    accTitle: Example 61: Building Dynamic Queries
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Base Query, Filter Present?, Add Name Filter, Add Age Filter, No Filter, Execute Query. Connections: Base Query to Filter Present?, Filter Present? to Add Name Filter (Name), Filter Present? to Add Age Filter (Age), Filter Present? to No Filter (None), Add Name Filter to Execute Query, Add Age Filter to Execute Query, No Filter to Execute Query.
     A[Base Query] --> B{Filter Present?}
     B -->|Name| C[Add Name Filter]
     B -->|Age| D[Add Age Filter]
@@ -33,12 +35,18 @@ graph TD
     D --> F
     E --> F
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -159,6 +167,8 @@ Dynamic sorting allows users to control result ordering at runtime, common in ta
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Dynamic Order By Flow
 graph TD
+    accTitle: Example 62: Dynamic Order By
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: User Input: sort_by, direction, Build Dynamic Clause, Direction?, dynamic asc field, dynamic desc field, order_by Query, Sorted Results. Connections: User Input: sort_by, direction to Build Dynamic Clause, Build Dynamic Clause to Direction?, Direction? to dynamic asc field (:asc), Direction? to dynamic desc field (:desc), dynamic asc field to order_by Query, dynamic desc field to order_by Query, order_by Query to Sorted Results.
     A[User Input:<br/>sort_by, direction] --> B[Build Dynamic Clause]
     B --> C{Direction?}
     C -->|:asc| D[dynamic asc field]
@@ -167,13 +177,18 @@ graph TD
     E --> F
     F --> G[Sorted Results]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-DE8F05
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -275,17 +290,23 @@ Custom types allow you to define how Elixir values are converted to/from databas
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Ecto.Type Conversion Cycle
 graph TD
+    accTitle: Example 63: Implementing Custom Ecto.Type
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Elixir Value, cast/1 User Input, dump/1 To Database, Database Storage, load/1 From Database. Connections: Elixir Value to cast/1 User Input, cast/1 User Input to dump/1 To Database, dump/1 To Database to Database Storage, Database Storage to load/1 From Database, load/1 From Database to Elixir Value.
     A[Elixir Value] --> B[cast/1<br/>User Input]
     B --> C[dump/1<br/>To Database]
     C --> D[Database Storage]
     D --> E[load/1<br/>From Database]
     E --> A
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -448,18 +469,26 @@ Optimistic locking uses a version field to detect concurrent updates, raising on
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Optimistic Locking Flow
 graph TD
+    accTitle: Example 65: Optimistic Locking with :version
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Read Record v1, Modify Record, Update WHERE version = 1, Version Match?, Update Success, version = 2, Raise StaleEntryError. Connections: Read Record v1 to Modify Record, Modify Record to Update WHERE version = 1, Update WHERE version = 1 to Version Match?, Version Match? to Update Success, version = 2 (Yes), Version Match? to Raise StaleEntryError (No).
     A[Read Record v1] --> B[Modify Record]
-    B --> C[Update WHERE version = 1]
+    B --> C[Update WHERE version<br/>= 1]
     C --> D{Version Match?}
-    D -->|Yes| E[Update Success, version = 2]
-    D -->|No| F[Raise StaleEntryError]
+    D -->|Yes| E[Update Success,<br/>version = 2]
+    D -->|No| F[Raise<br/>StaleEntryError]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -549,6 +578,8 @@ Ecto supports multiple preloading strategies with different performance characte
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Preloading Strategy Comparison
 graph TD
+    accTitle: Example 66: Association Preloading Strategies
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Strategy Choice, Which?, 1 User Query + N Post Queries, 1 User Query + 1 Post Query, 1 Combined Query with LEFT JOIN, Performance: Worst, Performance: Good, Performance: Best but duplicates data. Connections: Strategy Choice to Which?, Which? to 1 User Query + N Post Queries (N+1), Which? to 1 User Query + 1 Post Query (Preload), Which? to 1 Combined Query with LEFT JOIN (Join), 1 User Query + N Post Queries to Performance: Worst, 1 User Query + 1 Post Query to Performance: Good, 1 Combined Query with LEFT JOIN to Performance: Best but duplicates data.
     A[Strategy Choice] --> B{Which?}
     B -->|N+1| C[1 User Query<br/>+ N Post Queries]
     B -->|Preload| D[1 User Query<br/>+ 1 Post Query]
@@ -557,14 +588,19 @@ graph TD
     D --> G[Performance: Good]
     E --> H[Performance: Best<br/>but duplicates data]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#CC78BC,color:#fff
-    style C fill:#CA9161,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-CA9161
+    class G pal-029E73
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -652,6 +688,8 @@ While not built-in to Ecto, understanding the N+1 problem is critical. Here's ho
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Dataloader Batching
 graph TD
+    accTitle: Example 67: Preventing N+1 Queries with Dataloader
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: GraphQL Request 1 User + Posts, Dataloader, GraphQL Request 2 User + Posts, GraphQL Request N User + Posts, Batch User IDs, Single Query: WHERE id IN ..., Distribute Results to Requests. Connections: GraphQL Request 1 User + Posts to Dataloader, GraphQL Request 2 User + Posts to Dataloader, GraphQL Request N User + Posts to Dataloader, Dataloader to Batch User IDs, Batch User IDs to Single Query: WHERE id IN ..., Single Query: WHERE id IN ... to Distribute Results to Requests.
     A[GraphQL Request 1<br/>User + Posts] --> B[Dataloader]
     C[GraphQL Request 2<br/>User + Posts] --> B
     D[GraphQL Request N<br/>User + Posts] --> B
@@ -659,13 +697,18 @@ graph TD
     E --> F[Single Query:<br/>WHERE id IN ...]
     F --> G[Distribute Results<br/>to Requests]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#0173B2,color:#fff
-    style D fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class C pal-0173B2
+    class D pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -756,20 +799,28 @@ Understanding when Ecto loads data helps optimize queries and avoid unnecessary 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Loading Strategy Timing
 graph TD
+    accTitle: Example 68: Lazy vs Eager Loading
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Fetch Parent Record, Strategy?, Return Parent Only, Fetch Associations Now, Access Association Later, Additional Query at Access Time, Return Parent + Associations. Connections: Fetch Parent Record to Strategy?, Strategy? to Return Parent Only (Lazy), Strategy? to Fetch Associations Now (Eager), Return Parent Only to Access Association Later, Access Association Later to Additional Query at Access Time, Fetch Associations Now to Return Parent + Associations.
     A[Fetch Parent Record] --> B{Strategy?}
     B -->|Lazy| C[Return Parent Only]
-    B -->|Eager| D[Fetch Associations Now]
+    B -->|Eager| D[Fetch Associations<br/>Now]
     C --> E[Access Association<br/>Later]
     E --> F[Additional Query<br/>at Access Time]
-    D --> G[Return Parent + Associations]
+    D --> G[Return Parent +<br/>Associations]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#CC78BC,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -859,6 +910,8 @@ Repo.stream/1 streams query results one at a time instead of loading all into me
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Stream Processing Flow
 graph TD
+    accTitle: Example 69: Repo.stream for Large Result Sets
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Large Table 1M Records, Repo.stream, Open Cursor, Fetch Chunk 1 500 records, Process Chunk, More Records?, Fetch Next Chunk, Close Cursor. Connections: Large Table 1M Records to Repo.stream, Repo.stream to Open Cursor, Open Cursor to Fetch Chunk 1 500 records, Fetch Chunk 1 500 records to Process Chunk, Process Chunk to More Records?, More Records? to Fetch Next Chunk (Yes), More Records? to Close Cursor (No), Fetch Next Chunk to Process Chunk.
     A[Large Table<br/>1M Records] --> B[Repo.stream]
     B --> C[Open Cursor]
     C --> D[Fetch Chunk 1<br/>500 records]
@@ -868,14 +921,19 @@ graph TD
     F -->|No| H[Close Cursor]
     G --> E
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-DE8F05
+    class F pal-CC78BC
+    class G pal-029E73
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -947,16 +1005,23 @@ Repo.prepare_query/2 compiles queries once and reuses the prepared statement, im
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Query Preparation Pattern
 graph TD
+    accTitle: Example 70: Preparing Queries for Performance
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Query Definition, prepare_query/2, Compile + Cache, Execute Prepared × N, Skip Recompilation. Connections: Query Definition to prepare_query/2, prepare_query/2 to Compile + Cache, Compile + Cache to Execute Prepared × N, Execute Prepared × N to Skip Recompilation.
     A[Query Definition] --> B[prepare_query/2]
     B --> C[Compile + Cache]
     C --> D[Execute Prepared × N]
     D --> E[Skip Recompilation]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1190,27 +1255,34 @@ Savepoints allow you to create nested transaction checkpoints, enabling partial 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Transaction Savepoints
 graph TD
+    accTitle: Example 73: Transactions with Savepoints
+    accDescr: Graph with 10 nodes and 10 connections. Nodes: Begin Transaction, Operation 1, Savepoint A, Operation 2, Success?, Rollback to Savepoint A, Savepoint B, Operation 2 Alternate, Operation 3, Commit Transaction. Connections: Begin Transaction to Operation 1, Operation 1 to Savepoint A, Savepoint A to Operation 2, Operation 2 to Success?, Success? to Rollback to Savepoint A (No), Success? to Savepoint B (Yes), Rollback to Savepoint A to Operation 2 Alternate, Operation 2 Alternate to Savepoint B, Savepoint B to Operation 3, Operation 3 to Commit Transaction.
     A[Begin Transaction] --> B[Operation 1]
     B --> C[Savepoint A]
     C --> D[Operation 2]
     D --> E{Success?}
-    E -->|No| F[Rollback to Savepoint A]
+    E -->|No| F[Rollback to<br/>Savepoint A]
     E -->|Yes| G[Savepoint B]
-    F --> H[Operation 2 Alternate]
+    F --> H[Operation 2<br/>Alternate]
     H --> G
     G --> I[Operation 3]
     I --> J[Commit Transaction]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    class D pal-029E73
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-CC78BC
+    class H pal-029E73
+    class I pal-029E73
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1535,12 +1607,17 @@ Polymorphic associations allow a record to belong to multiple parent types via a
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Polymorphic Association
 graph TD
-    A[Comment] -->|commentable_type = Post| B[Post]
-    A -->|commentable_type = Video| C[Video]
+    accTitle: Example 77: Polymorphic Associations with Type Field
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Comment, Post, Video. Connections: Comment to Post (commentable_type = Post), Comment to Video (commentable_type = Video).
+    A[Comment] -->|commentable_type =<br/>Post| B[Post]
+    A -->|commentable_type =<br/>Video| C[Video]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1921,6 +1998,8 @@ Repo.update_all/3 supports complex update expressions including conditionals, en
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Conditional Update Pattern
 graph TD
+    accTitle: Example 82: Conditional Updates with Repo.updateall and Expressions
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: All Records, Filter Expression, Condition Met?, Apply Update, Skip Record, Updated Records, Unchanged Records. Connections: All Records to Filter Expression, Filter Expression to Condition Met?, Condition Met? to Apply Update (Yes), Condition Met? to Skip Record (No), Apply Update to Updated Records, Skip Record to Unchanged Records.
     A[All Records] --> B[Filter Expression]
     B --> C{Condition Met?}
     C -->|Yes| D[Apply Update]
@@ -1928,13 +2007,19 @@ graph TD
     D --> F[Updated Records]
     E --> G[Unchanged Records]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir

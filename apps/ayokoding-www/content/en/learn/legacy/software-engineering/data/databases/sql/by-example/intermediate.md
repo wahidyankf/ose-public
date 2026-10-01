@@ -16,6 +16,8 @@ Common Table Expressions (CTEs) create temporary named result sets that exist on
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 31: Basic CTEs with WITH
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: WITH clause Define CTE, CTE Result Set Temporary table, Main Query Reference CTE, Final Result. Connections: WITH clause Define CTE to CTE Result Set Temporary table, CTE Result Set Temporary table to Main Query Reference CTE, Main Query Reference CTE to Final Result.
     A["WITH clause<br/>Define CTE"]
     B["CTE Result Set<br/>Temporary table"]
     C["Main Query<br/>Reference CTE"]
@@ -25,10 +27,15 @@ graph TD
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -146,6 +153,8 @@ Recursive CTEs call themselves to traverse hierarchical data structures like org
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 32: Recursive CTEs for Hierarchical Data
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: Recursive CTE, Base Case Initial rows No recursion, UNION ALL, Recursive Case Reference CTE itself, Iteration 1 Process base, Iteration 2 Join with CTE, Iteration N Until no rows, Final Result. Connections: Recursive CTE to Base Case Initial rows No recursion, Recursive CTE to UNION ALL, Recursive CTE to Recursive Case Reference CTE itself, Base Case Initial rows No recursion to Iteration 1 Process base, Iteration 1 Process base to Iteration 2 Join with CTE, Iteration 2 Join with CTE to Iteration N Until no rows, Iteration N Until no rows to Final Result, Recursive Case Reference CTE itself to Iteration 2 Join with CTE (Self-reference), Recursive Case Reference CTE itself to Iteration N Until no rows (Self-reference).
     A["Recursive CTE"]
     B["Base Case<br/>Initial rows<br/>No recursion"]
     C["UNION ALL"]
@@ -165,14 +174,20 @@ graph TD
     D -.->|Self-reference| F
     D -.->|Self-reference| G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-CA9161
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -315,6 +330,8 @@ CTEs simplify multi-step aggregations by breaking logic into readable stages. Ea
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 33: CTEs for Complex Aggregations
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: CTE 1: Base Data Raw aggregations, CTE 2: Calculations Derived metrics, CTE 3: Rankings RANK() over results, Final SELECT Filter top results. Connections: CTE 1: Base Data Raw aggregations to CTE 2: Calculations Derived metrics, CTE 2: Calculations Derived metrics to CTE 3: Rankings RANK() over results, CTE 3: Rankings RANK() over results to Final SELECT Filter top results.
     A["CTE 1: Base Data<br/>Raw aggregations"]
     B["CTE 2: Calculations<br/>Derived metrics"]
     C["CTE 3: Rankings<br/>RANK() over results"]
@@ -324,10 +341,15 @@ graph TD
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -417,19 +439,26 @@ ROW_NUMBER assigns sequential numbers to rows within partitions. Unlike regular 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Partition by Category"]
-    B["Order within Partition"]
+    accTitle: Example 34: ROWNUMBER for Sequential Numbering
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Partition by Category, Order within Partition, Assign Row Numbers, Result: Numbered Rows. Connections: Partition by Category to Order within Partition, Order within Partition to Assign Row Numbers, Assign Row Numbers to Result: Numbered Rows.
+    A["Partition by<br/>Category"]
+    B["Order within<br/>Partition"]
     C["Assign Row Numbers"]
-    D["Result: Numbered Rows"]
+    D["Result: Numbered<br/>Rows"]
 
     A --> B
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -674,6 +703,8 @@ LAG accesses previous row values, LEAD accesses next row values. Useful for comp
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 36: LAG and LEAD for Accessing Adjacent Rows
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Row 1, Row 2 Current, Row 3. Connections: Row 1 to Row 2 Current (LAG Previous), Row 2 Current to Row 3 (LEAD Next).
     A["Row 1"]
     B["Row 2<br/>Current"]
     C["Row 3"]
@@ -681,9 +712,13 @@ graph TD
     A -.->|LAG<br/>Previous| B
     B -.->|LEAD<br/>Next| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -928,12 +963,14 @@ PARTITION BY divides data into independent groups for window function computatio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 38: PARTITION BY with Window Functions
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Full Dataset, PARTITION BY region, Partition: North Independent calculation, Partition: South Independent calculation, Partition: East Independent calculation, Combined Result Window function per partition. Connections: Full Dataset to PARTITION BY region, PARTITION BY region to Partition: North Independent calculation, PARTITION BY region to Partition: South Independent calculation, PARTITION BY region to Partition: East Independent calculation, Partition: North Independent calculation to Combined Result Window function per partition, Partition: South Independent calculation to Combined Result Window function per partition, Partition: East Independent calculation to Combined Result Window function per partition.
     A["Full Dataset"]
     B["PARTITION BY region"]
-    C["Partition: North<br/>Independent calculation"]
-    D["Partition: South<br/>Independent calculation"]
-    E["Partition: East<br/>Independent calculation"]
-    F["Combined Result<br/>Window function per partition"]
+    C["Partition: North<br/>Independent<br/>calculation"]
+    D["Partition: South<br/>Independent<br/>calculation"]
+    E["Partition: East<br/>Independent<br/>calculation"]
+    F["Combined Result<br/>Window function per<br/>partition"]
 
     A --> B
     B --> C
@@ -943,12 +980,17 @@ graph TD
     D --> F
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1458,6 +1500,8 @@ UNION combines results from multiple queries, removing duplicates. UNION ALL kee
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 42: UNION and UNION ALL
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Query 1 Result Set, Query 2 Result Set, UNION Remove Duplicates, UNION ALL Keep Duplicates, Combined Result. Connections: Query 1 Result Set to UNION Remove Duplicates, Query 2 Result Set to UNION Remove Duplicates, Query 1 Result Set to UNION ALL Keep Duplicates, Query 2 Result Set to UNION ALL Keep Duplicates, UNION Remove Duplicates to Combined Result, UNION ALL Keep Duplicates to Combined Result.
     A["Query 1<br/>Result Set"]
     B["Query 2<br/>Result Set"]
     C["UNION<br/>Remove Duplicates"]
@@ -1471,11 +1515,17 @@ graph TD
     C --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1636,6 +1686,8 @@ INTERSECT returns rows present in both queries. EXCEPT returns rows in first que
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 43: INTERSECT and EXCEPT
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Query A results, Query B results, INTERSECT Rows in both A and B, EXCEPT A minus B In A but not B, UNION ALL All rows combined. Connections: Query A results to INTERSECT Rows in both A and B, Query B results to INTERSECT Rows in both A and B, Query A results to EXCEPT A minus B In A but not B, Query B results to EXCEPT A minus B In A but not B, Query A results to UNION ALL All rows combined, Query B results to UNION ALL All rows combined.
     A["Query A results"]
     B["Query B results"]
     C["INTERSECT<br/>Rows in both A and B"]
@@ -1649,11 +1701,17 @@ graph LR
     A --> E
     B --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2330,9 +2388,11 @@ SQLite's JSON1 extension provides JSON creation, extraction, and manipulation fu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 47: JSON Creation and Extraction
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: A, Columns, JSON Functions json_object, json_array, JSON Text Stored in TEXT column, JSON Extraction json_extract, ->, Relational Values Scalar results. Connections: A to JSON Functions json_object, json_array, JSON Functions json_object, json_array to JSON Text Stored in TEXT column, JSON Text Stored in TEXT column to JSON Extraction json_extract, ->, JSON Extraction json_extract, -> to Relational Values Scalar results.
     A["Relational Data<br/>Tables & Columns"]
-    B["JSON Functions<br/>json_object, json_array"]
-    C["JSON Text<br/>Stored in TEXT column"]
+    B["JSON Functions<br/>json_object,<br/>json_array"]
+    C["JSON Text<br/>Stored in TEXT<br/>column"]
     D["JSON Extraction<br/>json_extract, ->"]
     E["Relational Values<br/>Scalar results"]
 
@@ -2341,11 +2401,17 @@ graph TD
     C --> D
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2950,6 +3016,8 @@ EXPLAIN QUERY PLAN shows how SQLite executes a query. Use it to identify table s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 51: EXPLAIN QUERY PLAN Analysis
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Query, EXPLAIN QUERY PLAN, Query Plan Output, Identify Bottlenecks, Optimize Query. Connections: Query to EXPLAIN QUERY PLAN, EXPLAIN QUERY PLAN to Query Plan Output, Query Plan Output to Identify Bottlenecks, Identify Bottlenecks to Optimize Query, Optimize Query to Query.
     A["Query"]
     B["EXPLAIN QUERY PLAN"]
     C["Query Plan Output"]
@@ -2962,11 +3030,17 @@ graph TD
     D --> E
     E --> A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3711,19 +3785,26 @@ Window functions with frame specifications compute running totals and moving ave
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 57: Running Totals and Moving Averages
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Daily values 10, 15, 8, 20, 5, Running Total SUM OVER ORDER BY date 10, 25, 33, 53, 58, 7-Day Moving Avg ROWS BETWEEN 6 PRECEDING AND CURRENT ROW, Trend Visualization Smoothed data. Connections: Daily values 10, 15, 8, 20, 5 to Running Total SUM OVER ORDER BY date 10, 25, 33, 53, 58, Daily values 10, 15, 8, 20, 5 to 7-Day Moving Avg ROWS BETWEEN 6 PRECEDING AND CURRENT ROW, 7-Day Moving Avg ROWS BETWEEN 6 PRECEDING AND CURRENT ROW to Trend Visualization Smoothed data.
     A["Daily values<br/>10, 15, 8, 20, 5"]
-    B["Running Total<br/>SUM OVER ORDER BY date<br/>10, 25, 33, 53, 58"]
-    C["7-Day Moving Avg<br/>ROWS BETWEEN 6 PRECEDING<br/>AND CURRENT ROW"]
+    B["Running Total<br/>SUM OVER ORDER BY<br/>date<br/>10, 25, 33, 53, 58"]
+    C["7-Day Moving Avg<br/>ROWS BETWEEN 6<br/>PRECEDING<br/>AND CURRENT ROW"]
     D["Trend Visualization<br/>Smoothed data"]
 
     A --> B
     A --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

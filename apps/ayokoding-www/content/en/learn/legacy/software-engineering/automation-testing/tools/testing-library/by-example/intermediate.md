@@ -18,23 +18,31 @@ Build on Testing Library fundamentals through 27 annotated examples covering asy
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Action["User Action / State Update"] --> React["React schedules re-render"]
+    accTitle: Example 29: waitFor - Waiting for DOM Updates
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: User Action /State Update, React schedules re-render, Async batched update, DOM updates, Assertion passes, wait For40callback41, Retries callback every 50ms, Assertion passes?, Test continues, Test fails with last error. Connections: User Action /State Update to React schedules re-render, React schedules re-render to Async batched update, Async batched update to DOM updates, DOM updates to Assertion passes, wait For40callback41 to Retries callback every 50ms, Retries callback every 50ms to Assertion passes?, Assertion passes? to Retries callback every 50ms (No), Assertion passes? to Test continues (Yes), Assertion passes? to Test fails with last error (Timeout).
+    Action["User Action /State<br/>Update"] --> React["React schedules<br/>re-render"]
     React --> Async["Async batched update"]
     Async --> DOM["DOM updates"]
     DOM --> Assert["Assertion passes"]
 
-    WaitFor["waitFor#40;callback#41;"] --> Retry["Retries callback<br/>every 50ms"]
+    WaitFor["wait<br/>For#40;callback#41;"] --> Retry["Retries callback<br/>every 50ms"]
     Retry --> Check{"Assertion<br/>passes?"}
     Check -->|No| Retry
     Check -->|Yes| Done["Test continues"]
     Check -->|Timeout| Fail["Test fails with<br/>last error"]
 
-    style Action fill:#0173B2,color:#fff
-    style WaitFor fill:#DE8F05,color:#fff
-    style Retry fill:#029E73,color:#fff
-    style Check fill:#CC78BC,color:#fff
-    style Done fill:#CA9161,color:#fff
-    style Fail fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Action pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class WaitFor pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Retry pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Check pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Done pal-CA9161
+    class Fail pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -554,7 +562,9 @@ Most production React apps require context providers (theme, auth, router). A cu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Custom["customRender#40;UI, options#41;"] --> Wrap["Wraps with Providers"]
+    accTitle: Example 36: Custom render with Context Providers
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: customRender40UI, options41, Wraps with Providers, ThemeProvider, AuthProvider, RouterProvider, Test Component, screen queries. Connections: customRender40UI, options41 to Wraps with Providers, Wraps with Providers to ThemeProvider, Wraps with Providers to AuthProvider, Wraps with Providers to RouterProvider, ThemeProvider to Test Component, AuthProvider to Test Component, RouterProvider to Test Component, Test Component to screen queries.
+    Custom["customRender#40;UI,<br/>options#41;"] --> Wrap["Wraps with Providers"]
     Wrap --> ThemeProvider["ThemeProvider"]
     Wrap --> AuthProvider["AuthProvider"]
     Wrap --> RouterProvider["RouterProvider"]
@@ -563,13 +573,19 @@ graph TD
     RouterProvider --> Component
     Component --> Screen["screen queries"]
 
-    style Custom fill:#0173B2,color:#fff
-    style Wrap fill:#DE8F05,color:#fff
-    style ThemeProvider fill:#029E73,color:#fff
-    style AuthProvider fill:#CC78BC,color:#fff
-    style RouterProvider fill:#CA9161,color:#fff
-    style Component fill:#0173B2,color:#fff
-    style Screen fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Custom pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Wrap pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ThemeProvider pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class AuthProvider pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class RouterProvider pal-CA9161
+    class Component pal-0173B2
+    class Screen pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

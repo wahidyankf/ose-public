@@ -19,16 +19,24 @@ Contexts let you tag a changeset so it executes only when a matching context is 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 31: Contexts for Environment-Specific Changes
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Liquibase Run, Context Active?, Seed dev data changeset, Skip seed changeset, Run context-free changesets. Connections: Liquibase Run to Context Active?, Context Active? to Seed dev data changeset (dev context), Context Active? to Skip seed changeset (prod context), Context Active? to Run context-free changesets (no context filter).
     A[Liquibase Run] --> B{Context Active?}
-    B -->|dev context| C[Seed dev data changeset]
+    B -->|dev context| C[Seed dev data<br/>changeset]
     B -->|prod context| D[Skip seed changeset]
-    B -->|no context filter| E[Run context-free changesets]
+    B -->|no context filter| E[Run context-free<br/>changesets]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -208,26 +216,34 @@ databaseChangeLog:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 34: Precondition onFail/onError Strategies
+    accDescr: Graph with 8 nodes and 11 connections. Nodes: Precondition Check, Execute Changeset, onFail Strategy, onError Strategy, Stop Liquibase - exit non-zero, Skip changeset - not recorded, Record as executed - no SQL run, Log warning - execute changeset anyway. Connections: Precondition Check to Execute Changeset (passes), Precondition Check to onFail Strategy (fails), Precondition Check to onError Strategy (error), onFail Strategy to Stop Liquibase - exit non-zero (HALT), onFail Strategy to Skip changeset - not recorded (CONTINUE), onFail Strategy to Record as executed - no SQL run (MARK_RAN), onFail Strategy to Log warning - execute changeset anyway (WARN), onError Strategy to Stop Liquibase - exit non-zero (HALT), onError Strategy to Skip changeset - not recorded (CONTINUE), onError Strategy to Record as executed - no SQL run (MARK_RAN), onError Strategy to Log warning - execute changeset anyway (WARN).
     A[Precondition Check] -->|passes| B[Execute Changeset]
     A -->|fails| C{onFail Strategy}
     A -->|error| D{onError Strategy}
-    C -->|HALT| E[Stop Liquibase - exit non-zero]
-    C -->|CONTINUE| F[Skip changeset - not recorded]
-    C -->|MARK_RAN| G[Record as executed - no SQL run]
-    C -->|WARN| H[Log warning - execute changeset anyway]
+    C -->|HALT| E[Stop Liquibase -<br/>exit non-zero]
+    C -->|CONTINUE| F[Skip changeset - not<br/>recorded]
+    C -->|MARK_RAN| G[Record as executed -<br/>no SQL run]
+    C -->|WARN| H[Log warning -<br/>execute changeset<br/>anyway]
     D -->|HALT| E
     D -->|CONTINUE| F
     D -->|MARK_RAN| G
     D -->|WARN| H
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-029E73
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -692,14 +708,21 @@ databaseChangeLog:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Existing Database - Manually Created] -->|changeLogSync| B[DATABASECHANGELOG Populated]
-    B -->|liquibase update| C[New Changesets Only Execute]
-    C --> D[No Duplicate Table Creation Errors]
+    accTitle: Example 42: changeLogSync Command
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Existing Database - Manually Created, DATABASECHANGELOG Populated, New Changesets Only Execute, No Duplicate Table Creation Errors. Connections: Existing Database - Manually Created to DATABASECHANGELOG Populated (changeLogSync), DATABASECHANGELOG Populated to New Changesets Only Execute (liquibase update), New Changesets Only Execute to No Duplicate Table Creation Errors.
+    A[Existing Database -<br/>Manually Created] -->|changeLogSync| B[DATABASECHANGELOG<br/>Populated]
+    B -->|liquibase update| C[New Changesets Only<br/>Execute]
+    C --> D[No Duplicate Table<br/>Creation Errors]
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -754,20 +777,27 @@ The `diff` command compares two database schemas and reports structural differen
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A[Reference DB - Production] --> C[diff Command]
+    accTitle: Example 43: diff Command
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Reference DB - Production, diff Command, Target DB - Staging, Missing Tables, Extra Columns, Index Differences, Constraint Differences. Connections: Reference DB - Production to diff Command, Target DB - Staging to diff Command, diff Command to Missing Tables, diff Command to Extra Columns, diff Command to Index Differences, diff Command to Constraint Differences.
+    A[Reference DB -<br/>Production] --> C[diff Command]
     B[Target DB - Staging] --> C
     C --> D[Missing Tables]
     C --> E[Extra Columns]
     C --> F[Index Differences]
-    C --> G[Constraint Differences]
+    C --> G[Constraint<br/>Differences]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1879,24 +1909,32 @@ Liquibase's `validate` command checks all changesets for syntax errors, MD5 chec
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Developer Pushes Code] --> B[CI Pipeline]
+    accTitle: Example 60: Changelog Validation and Best Practices
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: Developer Pushes Code, CI Pipeline, liquibase validate, liquibase updateSQL - dry run, liquibase update - staging, Integration Tests, Promote to Production, Block Merge - Fix Changelog. Connections: Developer Pushes Code to CI Pipeline, CI Pipeline to liquibase validate, liquibase validate to liquibase updateSQL - dry run (passes), liquibase updateSQL - dry run to liquibase update - staging (passes), liquibase update - staging to Integration Tests (passes), Integration Tests to Promote to Production (passes), liquibase validate to Block Merge - Fix Changelog (fails), liquibase updateSQL - dry run to Block Merge - Fix Changelog (fails), liquibase update - staging to Block Merge - Fix Changelog (fails).
+    A[Developer Pushes<br/>Code] --> B[CI Pipeline]
     B --> C[liquibase validate]
-    C -->|passes| D[liquibase updateSQL - dry run]
-    D -->|passes| E[liquibase update - staging]
+    C -->|passes| D[liquibase updateSQL<br/>- dry run]
+    D -->|passes| E[liquibase update -<br/>staging]
     E -->|passes| F[Integration Tests]
-    F -->|passes| G[Promote to Production]
-    C -->|fails| H[Block Merge - Fix Changelog]
+    F -->|passes| G[Promote to<br/>Production]
+    C -->|fails| H[Block Merge - Fix<br/>Changelog]
     D -->|fails| H
     E -->|fails| H
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

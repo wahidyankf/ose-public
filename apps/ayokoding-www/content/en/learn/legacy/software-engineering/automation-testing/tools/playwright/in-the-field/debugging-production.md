@@ -741,6 +741,8 @@ jobs:
 
 ```mermaid
 graph TB
+    accTitle: Debugging Architecture
+    accDescr: Graph with 15 nodes and 19 connections. Nodes: Playwright Test, Screenshot, Video, Trace, HAR File, Structured Logs, test-results/, test-results/logs/, HTML Report, Trace Viewer, DOM Snapshots, Network Activity, and 3 more. Connections: Playwright Test to Screenshot (Captures), Playwright Test to Video (Records), Playwright Test to Trace (Generates), Playwright Test to HAR File (Logs), Playwright Test to Structured Logs (Writes), Screenshot to HAR File, Video to Structured Logs, Screenshot to test-results/, Video to test-results/, Trace to test-results/, HAR File to test-results/, Structured Logs to test-results/logs/, and 7 more.
     subgraph "Test Execution"
         A[Playwright Test] -->|Captures| B[Screenshot]
         A -->|Records| C[Video]
@@ -769,11 +771,17 @@ graph TB
         F -->|Query| O[Log Analysis]
     end
 
-    style A fill:#0173B2
-    style I fill:#029E73
-    style J fill:#DE8F05
-    style N fill:#CC78BC
-    style O fill:#CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class I pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class J pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class N pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class O pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

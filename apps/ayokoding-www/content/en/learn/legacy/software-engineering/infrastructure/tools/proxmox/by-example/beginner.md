@@ -80,22 +80,30 @@ The Proxmox VE graphical installer presents a step-by-step wizard. This example 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Boot from USB<br/>Select: Install Proxmox VE"] --> B["Accept EULA<br/>Click 'I agree'"]
-    B --> C["Select Target Disk<br/>ext4 / zfs / xfs / btrfs"]
+    accTitle: Example 3: Run the Graphical PVE Installer
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Boot from USB Select: Install Proxmox VE, Accept EULA Click I agree, Select Target Disk ext4 /zfs /xfs / btrfs, D, Keyboard, E, Admin, Configure Network IP/Mask/GW/DNS, Review Summary Click Install, Reboot Remove USB. Connections: Boot from USB Select: Install Proxmox VE to Accept EULA Click I agree, Accept EULA Click I agree to Select Target Disk ext4 /zfs /xfs / btrfs, Select Target Disk ext4 /zfs /xfs / btrfs to D, Select Target Disk ext4 /zfs /xfs / btrfs to Keyboard, D to E, D to Admin, E to Configure Network IP/Mask/GW/DNS, Configure Network IP/Mask/GW/DNS to Review Summary Click Install, Review Summary Click Install to Reboot Remove USB.
+    A["Boot from USB<br/>Select: Install<br/>Proxmox VE"] --> B["Accept EULA<br/>Click 'I agree'"]
+    B --> C["Select Target Disk<br/>ext4 /zfs /xfs /<br/>btrfs"]
     C --> D["Set Country/Timezone<br/>& Keyboard Layout"]
     D --> E["Set Root Password<br/>& Admin Email"]
     E --> F["Configure Network<br/>IP/Mask/GW/DNS"]
     F --> G["Review Summary<br/>Click 'Install'"]
     G --> H["Reboot<br/>Remove USB"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#fff,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#fff,stroke:#000
-    style E fill:#CA9161,color:#fff,stroke:#000
-    style F fill:#0173B2,color:#fff,stroke:#000
-    style G fill:#DE8F05,color:#fff,stroke:#000
-    style H fill:#029E73,color:#fff,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -310,16 +318,24 @@ The `qm create` command creates a VM with specified hardware configuration. This
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 8: Create a Basic KVM VM from ISO
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Guest OS (Ubuntu 24.04), VirtIO Drivers NIC + SCSI + Balloon, C, Memory, Linux Host Kernel KVM Module, Physical Hardware CPU /RAM /Disk /NIC. Connections: Guest OS (Ubuntu 24.04) to VirtIO Drivers NIC + SCSI + Balloon, VirtIO Drivers NIC + SCSI + Balloon to C, VirtIO Drivers NIC + SCSI + Balloon to Memory, C to Linux Host Kernel KVM Module, Linux Host Kernel KVM Module to Physical Hardware CPU /RAM /Disk /NIC.
     A["Guest OS<br/>(Ubuntu 24.04)"] --> B["VirtIO Drivers<br/>NIC + SCSI + Balloon"]
-    B --> C["QEMU/KVM Layer<br/>CPU & Memory Emulation"]
+    B --> C["QEMU/KVM Layer<br/>CPU & Memory<br/>Emulation"]
     C --> D["Linux Host Kernel<br/>KVM Module"]
-    D --> E["Physical Hardware<br/>CPU / RAM / Disk / NIC"]
+    D --> E["Physical Hardware<br/>CPU /RAM /Disk /NIC"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#000,stroke:#000
-    style E fill:#CA9161,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -362,6 +378,8 @@ VM lifecycle management uses `qm start`, `qm stop`, and `qm reset`. Each has dif
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 9: Start, Stop, and Force-Kill a VM
+    accDescr: State diagram with 7 items: start or end, stopped, running, suspended, stopped blueState, running greenState, suspended orangeState. Relationships: start or end to stopped: qm create; stopped to running: qm start; running to stopped: qm shutdown (ACPI graceful); running to stopped: qm stop (force kill); running to suspended: qm suspend; suspended to running: qm resume; running to running: qm reset (hard reboot).
     [*] --> stopped : qm create
     stopped --> running : qm start
     running --> stopped : qm shutdown (ACPI graceful)
@@ -370,9 +388,9 @@ stateDiagram-v2
     suspended --> running : qm resume
     running --> running : qm reset (hard reboot)
 
-    classDef blueState fill:#0173B2,color:#fff,stroke:#000
-    classDef greenState fill:#029E73,color:#fff,stroke:#000
-    classDef orangeState fill:#DE8F05,color:#000,stroke:#000
+    classDef blueState fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef greenState fill:#029E73,color:#000000,stroke:#000000
+    classDef orangeState fill:#DE8F05,color:#000000,stroke:#000000
 
     class stopped blueState
     class running greenState
@@ -497,14 +515,21 @@ VM disks can grow but cannot shrink without risk. `qm disk resize` extends the b
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 12: Resize a VM Disk
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Step 1: Hypervisor qm disk resize +20G (block device grows), Step 2: Guest growpart /dev/sda 3 (partition extends), Step 3: Guest pvresize + lvextend (LVM expands), Step 4: Guest resize2fs (filesystem fills LV). Connections: Step 1: Hypervisor qm disk resize +20G (block device grows) to Step 2: Guest growpart /dev/sda 3 (partition extends), Step 2: Guest growpart /dev/sda 3 (partition extends) to Step 3: Guest pvresize + lvextend (LVM expands), Step 3: Guest pvresize + lvextend (LVM expands) to Step 4: Guest resize2fs (filesystem fills LV).
     A["Step 1: Hypervisor<br/>qm disk resize +20G<br/>(block device grows)"] --> B["Step 2: Guest<br/>growpart /dev/sda 3<br/>(partition extends)"]
     B --> C["Step 3: Guest<br/>pvresize + lvextend<br/>(LVM expands)"]
-    C --> D["Step 4: Guest<br/>resize2fs<br/>(filesystem fills LV)"]
+    C --> D["Step 4: Guest<br/>resize2fs<br/>(filesystem fills<br/>LV)"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -878,14 +903,21 @@ Proxmox supports multiple storage backends simultaneously. This example configur
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Proxmox VE Storage Layer"] --> B["local (Dir)<br/>ISO, Templates, Backups<br/>/var/lib/vz"]
+    accTitle: Example 20: Set Up Local Storage: Directory, LVM, ZFS Pool
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Proxmox VE Storage Layer, local (Dir) ISO, Templates, Backups /var/lib/vz, local-lvm (LVMthin) VM Disks, CT Rootfs Thin provisioned, tank-zfs (ZFSpool) VM Images, CT Rootfs Snapshots + Checksums. Connections: Proxmox VE Storage Layer to local (Dir) ISO, Templates, Backups /var/lib/vz, Proxmox VE Storage Layer to local-lvm (LVMthin) VM Disks, CT Rootfs Thin provisioned, Proxmox VE Storage Layer to tank-zfs (ZFSpool) VM Images, CT Rootfs Snapshots + Checksums.
+    A["Proxmox VE Storage<br/>Layer"] --> B["local (Dir)<br/>ISO, Templates,<br/>Backups<br/>/var/lib/vz"]
     A --> C["local-lvm (LVMthin)<br/>VM Disks, CT Rootfs<br/>Thin provisioned"]
-    A --> D["tank-zfs (ZFSpool)<br/>VM Images, CT Rootfs<br/>Snapshots + Checksums"]
+    A --> D["tank-zfs (ZFSpool)<br/>VM Images, CT Rootfs<br/>Snapshots +<br/>Checksums"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -932,19 +964,27 @@ Proxmox uses Linux bridges to connect VMs and containers to physical networks. T
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Physical NIC eno1<br/>(no IP, manual mode)"] --> B["vmbr0 (public bridge)<br/>192.0.2.100/24<br/>bridge-ports eno1"]
+    accTitle: Example 21: Configure Network Bridges
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: Physical NIC eno1 (no IP, manual mode), vmbr0 (public bridge) 192.0.2.100/24 bridge-ports eno1, VM 100 tap public network, VM 101 tap public network, vmbr1 (private bridge) 198.51.100.1/24 bridge-ports none + NAT, VM 102 tap isolated + NAT, VM 103 tap isolated + NAT. Connections: Physical NIC eno1 (no IP, manual mode) to vmbr0 (public bridge) 192.0.2.100/24 bridge-ports eno1, vmbr0 (public bridge) 192.0.2.100/24 bridge-ports eno1 to VM 100 tap public network, vmbr0 (public bridge) 192.0.2.100/24 bridge-ports eno1 to VM 101 tap public network, vmbr1 (private bridge) 198.51.100.1/24 bridge-ports none + NAT to VM 102 tap isolated + NAT, vmbr1 (private bridge) 198.51.100.1/24 bridge-ports none + NAT to VM 103 tap isolated + NAT.
+    A["Physical NIC eno1<br/>(no IP, manual mode)"] --> B["vmbr0 (public<br/>bridge)<br/>192.0.2.100/24<br/>bridge-ports eno1"]
     B --> C["VM 100 tap<br/>public network"]
     B --> D["VM 101 tap<br/>public network"]
-    E["vmbr1 (private bridge)<br/>198.51.100.1/24<br/>bridge-ports none + NAT"] --> F["VM 102 tap<br/>isolated + NAT"]
+    E["vmbr1 (private<br/>bridge)<br/>198.51.100.1/24<br/>bridge-ports none +<br/>NAT"] --> F["VM 102 tap<br/>isolated + NAT"]
     E --> G["VM 103 tap<br/>isolated + NAT"]
 
-    style A fill:#CA9161,color:#000,stroke:#000
-    style B fill:#0173B2,color:#fff,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#029E73,color:#fff,stroke:#000
-    style E fill:#DE8F05,color:#000,stroke:#000
-    style F fill:#CC78BC,color:#000,stroke:#000
-    style G fill:#CC78BC,color:#000,stroke:#000
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1058,15 +1098,22 @@ Proxmox provides a zone-based iptables firewall with rules at datacenter, host, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Datacenter Firewall<br/>Global rules all nodes"] --> B["Host Firewall<br/>Node-level rules<br/>(port 8006, SSH)"]
+    accTitle: Example 23: Enable and Configure the Proxmox Firewall
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Datacenter Firewall Global rules all nodes, Host Firewall Node-level rules (port 8006, SSH), VM/CT Firewall Per-workload rules (port 80, 443), IP Sets management-nets 192.0.2.0/24. Connections: Datacenter Firewall Global rules all nodes to Host Firewall Node-level rules (port 8006, SSH), Host Firewall Node-level rules (port 8006, SSH) to VM/CT Firewall Per-workload rules (port 80, 443), Datacenter Firewall Global rules all nodes to IP Sets management-nets 192.0.2.0/24, IP Sets management-nets 192.0.2.0/24 to Datacenter Firewall Global rules all nodes.
+    A["Datacenter Firewall<br/>Global rules all<br/>nodes"] --> B["Host Firewall<br/>Node-level rules<br/>(port 8006, SSH)"]
     B --> C["VM/CT Firewall<br/>Per-workload rules<br/>(port 80, 443)"]
     A --> D["IP Sets<br/>management-nets<br/>192.0.2.0/24"]
     D --> A
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1154,6 +1201,8 @@ Proxmox backup uses `vzdump` internally to create consistent backups of VMs and 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 24: Schedule Automated Backups
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Cron Schedule 02:00 daily, Backup Mode, Disk Snapshot VM stays running (zero downtime), VM Shutdown Backup VM Restart, vzdump Archive .vma.zst Local Storage, Retention Pruning 7 daily, 4 weekly 3 monthly. Connections: Cron Schedule 02:00 daily to Backup Mode, Backup Mode to Disk Snapshot VM stays running (zero downtime) (snapshot), Backup Mode to VM Shutdown Backup VM Restart (stop), Disk Snapshot VM stays running (zero downtime) to vzdump Archive .vma.zst Local Storage, VM Shutdown Backup VM Restart to vzdump Archive .vma.zst Local Storage, vzdump Archive .vma.zst Local Storage to Retention Pruning 7 daily, 4 weekly 3 monthly.
     A["Cron Schedule<br/>02:00 daily"] --> B{"Backup Mode"}
     B -->|snapshot| C["Disk Snapshot<br/>VM stays running<br/>(zero downtime)"]
     B -->|stop| D["VM Shutdown<br/>Backup<br/>VM Restart"]
@@ -1161,12 +1210,18 @@ graph TD
     D --> E
     E --> F["Retention Pruning<br/>7 daily, 4 weekly<br/>3 monthly"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#000,stroke:#000
-    style E fill:#CA9161,color:#000,stroke:#000
-    style F fill:#0173B2,color:#fff,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1253,14 +1308,20 @@ VM cloning creates new VMs from existing templates or running VMs. Full clones a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Template VM 100<br/>(read-only base disk)"] -->|Full Clone| B["VM 110<br/>Full independent copy<br/>32 GB copied"]
+    accTitle: Example 26: Clone a VM — Full Clone vs Linked Clone
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Template VM 100 (read-only base disk), VM 110 Full independent copy 32 GB copied, VM 111 Shared base disk + COW delta layer, VM 112 Shared base disk + COW delta layer. Connections: Template VM 100 (read-only base disk) to VM 110 Full independent copy 32 GB copied (Full Clone), Template VM 100 (read-only base disk) to VM 111 Shared base disk + COW delta layer (Linked Clone), Template VM 100 (read-only base disk) to VM 112 Shared base disk + COW delta layer (Linked Clone).
+    A["Template VM 100<br/>(read-only base<br/>disk)"] -->|Full Clone| B["VM 110<br/>Full independent<br/>copy<br/>32 GB copied"]
     A -->|Linked Clone| C["VM 111<br/>Shared base disk<br/>+ COW delta layer"]
     A -->|Linked Clone| D["VM 112<br/>Shared base disk<br/>+ COW delta layer"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#029E73,color:#fff,stroke:#000
-    style C fill:#DE8F05,color:#000,stroke:#000
-    style D fill:#DE8F05,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

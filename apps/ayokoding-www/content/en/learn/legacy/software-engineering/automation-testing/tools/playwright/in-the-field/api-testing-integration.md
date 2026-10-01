@@ -480,22 +480,29 @@ test("successful payment with mocked API", async ({ page }) => {
 ## API Testing Architecture Diagram
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','background':'#fff','mainBkg':'#fff','secondaryBkg':'#f4f4f4','tertiaryBkg':'#f0f0f0'}}}%%
 graph TD
+    accTitle: API Testing Architecture Diagram
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Test Suite, API Helpers, Page Objects, Route Interception, Authenticated Request Fixture, External APIs, UI Components. Connections: Test Suite to API Helpers (setup via API), Test Suite to Page Objects (verify via UI), Test Suite to Route Interception (mock external), API Helpers to Authenticated Request Fixture (use), Route Interception to External APIs (intercept), Page Objects to UI Components (render).
     A[Test Suite] -->|setup via API| B[API Helpers]
     A -->|verify via UI| C[Page Objects]
     A -->|mock external| D[Route Interception]
-    B -->|use| E[Authenticated Request Fixture]
+    B -->|use| E[Authenticated<br/>Request Fixture]
     D -->|intercept| F[External APIs]
     C -->|render| G[UI Components]
 
-    style A fill:#0173B2,stroke:#0173B2,color:#fff
-    style B fill:#029E73,stroke:#029E73,color:#fff
-    style C fill:#029E73,stroke:#029E73,color:#fff
-    style D fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style E fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style F fill:#CA9161,stroke:#CA9161,color:#fff
-    style G fill:#CA9161,stroke:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

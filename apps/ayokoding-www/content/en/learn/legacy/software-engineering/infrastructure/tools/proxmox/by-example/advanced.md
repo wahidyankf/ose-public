@@ -19,16 +19,24 @@ The Proxmox HA Manager monitors VMs and containers and automatically restarts th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 58: Enable and Configure the HA Manager for VM Failover
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: HA Manager Monitors heartbeat, pve01 fails?, Fencing IPMI power off pve01, Migrate VM 100 to pve02 or pve03, VM 100 Running on surviving node. Connections: HA Manager Monitors heartbeat to pve01 fails?, pve01 fails? to Fencing IPMI power off pve01 (Node down), Fencing IPMI power off pve01 to Migrate VM 100 to pve02 or pve03, Migrate VM 100 to pve02 or pve03 to VM 100 Running on surviving node.
     A["HA Manager<br/>Monitors heartbeat"] --> B{"pve01 fails?"}
     B -->|Node down| C["Fencing<br/>IPMI power off pve01"]
     C --> D["Migrate VM 100<br/>to pve02 or pve03"]
     D --> E["VM 100 Running<br/>on surviving node"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#fff,stroke:#000
-    style C fill:#CC78BC,color:#fff,stroke:#000
-    style D fill:#029E73,color:#fff,stroke:#000
-    style E fill:#CA9161,color:#fff,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -143,18 +151,26 @@ Proxmox includes a built-in HA simulator that validates cluster configuration wi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["t=0: pve01 powers off<br/>(simulated failure)"] --> B["t=10: CRM detects<br/>quorum loss on pve01"]
+    accTitle: Example 60: Test HA Failover Using the HA Simulator
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: t=0: pve01 powers off (simulated failure), t=10: CRM detects quorum loss on pve01, t=15: IPMI Fencing pve01 confirmed off, t=20: CRM schedules VM 100 on pve02, t=24: LRM starts VM 100 on pve02, Recovery complete 28 seconds total. Connections: t=0: pve01 powers off (simulated failure) to t=10: CRM detects quorum loss on pve01, t=10: CRM detects quorum loss on pve01 to t=15: IPMI Fencing pve01 confirmed off, t=15: IPMI Fencing pve01 confirmed off to t=20: CRM schedules VM 100 on pve02, t=20: CRM schedules VM 100 on pve02 to t=24: LRM starts VM 100 on pve02, t=24: LRM starts VM 100 on pve02 to Recovery complete 28 seconds total.
+    A["t=0: pve01 powers<br/>off<br/>(simulated failure)"] --> B["t=10: CRM detects<br/>quorum loss on pve01"]
     B --> C["t=15: IPMI Fencing<br/>pve01 confirmed off"]
     C --> D["t=20: CRM schedules<br/>VM 100 on pve02"]
     D --> E["t=24: LRM starts<br/>VM 100 on pve02"]
     E --> F["Recovery complete<br/>28 seconds total"]
 
-    style A fill:#CC78BC,color:#000,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#CA9161,color:#000,stroke:#000
-    style D fill:#0173B2,color:#fff,stroke:#000
-    style E fill:#029E73,color:#fff,stroke:#000
-    style F fill:#029E73,color:#fff,stroke:#000
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -241,15 +257,22 @@ Cross-cluster migration moves VMs between independent Proxmox clusters—require
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Source Cluster<br/>pve01 (DC1)"] -->|"1. Export config<br/>/etc/pve/qemu-server/100.conf"| B["Transfer"]
+    accTitle: Example 62: Set Up Cross-Cluster VM Migration
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Source Cluster pve01 (DC1), Transfer, Destination Cluster pve-dr-01 (DC2), VM 100 Running on DR cluster. Connections: Source Cluster pve01 (DC1) to Transfer (1. Export config /etc/pve/ qemu-server/ 100.conf), Source Cluster pve01 (DC1) to Transfer (2. Copy disk (scp qcow2)), Transfer to Destination Cluster pve-dr-01 (DC2) (3. Import disk qm importdisk), Destination Cluster pve-dr-01 (DC2) to VM 100 Running on DR cluster (4. Create config qm start 100).
+    A["Source Cluster<br/>pve01 (DC1)"] -->|"1. Export config<br/>/etc/pve/<br/>qemu-server/<br/>100.conf"| B["Transfer"]
     A -->|"2. Copy disk<br/>(scp qcow2)"| B
     B -->|"3. Import disk<br/>qm importdisk"| C["Destination Cluster<br/>pve-dr-01 (DC2)"]
     C -->|"4. Create config<br/>qm start 100"| D["VM 100 Running<br/>on DR cluster"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CA9161,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1135,16 +1158,24 @@ This example demonstrates the complete infrastructure-as-code pipeline that prod
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Git Commit<br/>ubuntu-packer.pkr.hcl"] -->|"CI trigger"| B["Packer Build<br/>Install OS + Harden"]
+    accTitle: Example 68: Full IaC Pipeline: Packer → PVE Template → Terraform Clone
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Git Commit ubuntu-packer.pkr. hcl, Packer Build Install OS + Harden, PVE Template VMID 9000 ubuntu-24-04-server, VM Fleet 300, 301, 302 cloud-init configured, Production VMs Running + Accessible. Connections: Git Commit ubuntu-packer.pkr. hcl to Packer Build Install OS + Harden (CI trigger), Packer Build Install OS + Harden to PVE Template VMID 9000 ubuntu-24-04-server (qm template), PVE Template VMID 9000 ubuntu-24-04-server to VM Fleet 300, 301, 302 cloud-init configured (terraform apply), VM Fleet 300, 301, 302 cloud-init configured to Production VMs Running + Accessible.
+    A["Git Commit<br/>ubuntu-packer.pkr.<br/>hcl"] -->|"CI trigger"| B["Packer Build<br/>Install OS + Harden"]
     B -->|"qm template"| C["PVE Template<br/>VMID 9000<br/>ubuntu-24-04-server"]
-    C -->|"terraform apply"| D["VM Fleet<br/>300, 301, 302<br/>cloud-init configured"]
+    C -->|"terraform apply"| D["VM Fleet<br/>300, 301, 302<br/>cloud-init<br/>configured"]
     D --> E["Production VMs<br/>Running + Accessible"]
 
-    style A fill:#CA9161,color:#000,stroke:#000
-    style B fill:#0173B2,color:#fff,stroke:#000
-    style C fill:#DE8F05,color:#000,stroke:#000
-    style D fill:#029E73,color:#fff,stroke:#000
-    style E fill:#CC78BC,color:#000,stroke:#000
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1385,16 +1416,24 @@ PCIe passthrough gives a VM direct access to a physical PCI device, bypassing th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["BIOS: IOMMU enabled<br/>(Intel VT-d / AMD-Vi)"] --> B["Kernel: iommu=pt<br/>VFIO modules loaded"]
-    B --> C["GPU bound to vfio-pci<br/>(not nvidia driver)"]
+    accTitle: Example 71: Configure PCIe Passthrough
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: BIOS: IOMMU enabled (Intel VT-d /AMD-Vi), Kernel: iommu=pt VFIO modules loaded, GPU bound to vfio-pci (not nvidia driver), D, hostpci0, machine, bios, Guest VM Sees real GPU CUDA available. Connections: BIOS: IOMMU enabled (Intel VT-d /AMD-Vi) to Kernel: iommu=pt VFIO modules loaded, Kernel: iommu=pt VFIO modules loaded to GPU bound to vfio-pci (not nvidia driver), GPU bound to vfio-pci (not nvidia driver) to D, D to hostpci0, hostpci0 to machine, machine to bios, D to Guest VM Sees real GPU CUDA available.
+    A["BIOS: IOMMU enabled<br/>(Intel VT-d /AMD-Vi)"] --> B["Kernel: iommu=pt<br/>VFIO modules loaded"]
+    B --> C["GPU bound to<br/>vfio-pci<br/>(not nvidia driver)"]
     C --> D["VM Config<br/>--hostpci0 01:00.0<br/>--machine q35<br/>--bios ovmf"]
     D --> E["Guest VM<br/>Sees real GPU<br/>CUDA available"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#CC78BC,color:#000,stroke:#000
-    style D fill:#029E73,color:#fff,stroke:#000
-    style E fill:#CA9161,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1558,14 +1597,21 @@ Nested virtualization allows VMs to run their own hypervisors (VMware ESXi, Hype
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 74: Enable and Manage Nested Virtualization
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: PVE Host KVM + nested=Y, Outer VM cpu: host, nested=on, Inner Hypervisor (VMware ESXi / KVM), Inner VMs (dev/test workloads). Connections: PVE Host KVM + nested=Y to Outer VM cpu: host, nested=on, Outer VM cpu: host, nested=on to Inner Hypervisor (VMware ESXi / KVM), Inner Hypervisor (VMware ESXi / KVM) to Inner VMs (dev/test workloads).
     A["PVE Host<br/>KVM + nested=Y"] --> B["Outer VM<br/>cpu: host, nested=on"]
     B --> C["Inner Hypervisor<br/>(VMware ESXi / KVM)"]
     C --> D["Inner VMs<br/>(dev/test workloads)"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1719,18 +1765,25 @@ Ceph must be upgraded to Squid (19.2.x) before upgrading PVE to version 9. Faili
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Current: Ceph Reef 18.2.x<br/>(or Quincy 17.2.x)"] --> B["Step 1: Enable Squid repo<br/>on all cluster nodes"]
-    B --> C["Step 2: Upgrade MONs<br/>pve01 → pve02 → pve03"]
+    accTitle: Example 77: Upgrade Ceph from Quincy/Reef to Squid Before PVE 9
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Current: Ceph Reef 18.2.x (or Quincy 17.2.x), Step 1: Enable Squid repo on all cluster nodes, Step 2: Upgrade MONs pve01 → pve02 → pve03, Step 3: Upgrade MGRs one at a time, Step 4: Upgrade OSDs rolling, one OSD at a time, Result: Ceph Squid 19.2.x HEALTH_OK. Connections: Current: Ceph Reef 18.2.x (or Quincy 17.2.x) to Step 1: Enable Squid repo on all cluster nodes, Step 1: Enable Squid repo on all cluster nodes to Step 2: Upgrade MONs pve01 → pve02 → pve03, Step 2: Upgrade MONs pve01 → pve02 → pve03 to Step 3: Upgrade MGRs one at a time, Step 3: Upgrade MGRs one at a time to Step 4: Upgrade OSDs rolling, one OSD at a time, Step 4: Upgrade OSDs rolling, one OSD at a time to Result: Ceph Squid 19.2.x HEALTH_OK.
+    A["Current: Ceph Reef<br/>18.2.x<br/>(or Quincy 17.2.x)"] --> B["Step 1: Enable Squid<br/>repo<br/>on all cluster nodes"]
+    B --> C["Step 2: Upgrade MONs<br/>pve01 → pve02 →<br/>pve03"]
     C --> D["Step 3: Upgrade MGRs<br/>one at a time"]
-    D --> E["Step 4: Upgrade OSDs<br/>rolling, one OSD at a time"]
-    E --> F["Result: Ceph Squid 19.2.x<br/>HEALTH_OK"]
+    D --> E["Step 4: Upgrade OSDs<br/>rolling, one OSD at<br/>a time"]
+    E --> F["Result: Ceph Squid<br/>19.2.x<br/>HEALTH_OK"]
 
-    style A fill:#CC78BC,color:#000,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#0173B2,color:#fff,stroke:#000
-    style D fill:#0173B2,color:#fff,stroke:#000
-    style E fill:#0173B2,color:#fff,stroke:#000
-    style F fill:#029E73,color:#fff,stroke:#000
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    class D pal-0173B2
+    class E pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1799,12 +1852,17 @@ Proxmox storage replication uses ZFS `zfs send | zfs recv` to keep VM disk repli
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["pve01 (source)<br/>VM 100 running<br/>ZFS tank/vm-100"] -->|"zfs send incremental<br/>every 15 minutes"| B["pve02 (replica)<br/>ZFS tank/vm-100<br/>(synchronized copy)"]
-    A -->|"zfs send incremental"| C["pve03 (replica)<br/>ZFS tank/vm-100<br/>(synchronized copy)"]
+    accTitle: Example 78: Configure Storage Replication Between Cluster Nodes
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: pve01 (source) VM 100 running ZFS tank/vm-100, pve02 (replica) ZFS tank/vm-100 (synchronized copy), pve03 (replica) ZFS tank/vm-100 (synchronized copy). Connections: pve01 (source) VM 100 running ZFS tank/vm-100 to pve02 (replica) ZFS tank/vm-100 (synchronized copy) (zfs send incremental every 15 minutes), pve01 (source) VM 100 running ZFS tank/vm-100 to pve03 (replica) ZFS tank/vm-100 (synchronized copy) (zfs send incremental).
+    A["pve01 (source)<br/>VM 100 running<br/>ZFS tank/vm-100"] -->|"zfs send<br/>incremental<br/>every 15 minutes"| B["pve02 (replica)<br/>ZFS tank/vm-100<br/>(synchronized copy)"]
+    A -->|"zfs send<br/>incremental"| C["pve03 (replica)<br/>ZFS tank/vm-100<br/>(synchronized copy)"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#029E73,color:#fff,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1912,13 +1970,19 @@ Ceph RBD mirroring asynchronously replicates block device images between two Cep
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 80: Set Up Ceph RBD Mirroring for Cross-Cluster Disaster Recovery
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Primary Ceph Cluster (DC1) rbd-mirror daemon, DR Ceph Cluster (DC2) rbd-mirror daemon, DR VMs Start on DC2. Connections: Primary Ceph Cluster (DC1) rbd-mirror daemon to DR Ceph Cluster (DC2) rbd-mirror daemon (Async RBD mirroring (journal-based)), Primary Ceph Cluster (DC1) rbd-mirror daemon to Primary Ceph Cluster (DC1) rbd-mirror daemon (VM disk writes (synchronous to local OSDs)), DR Ceph Cluster (DC2) rbd-mirror daemon to DR VMs Start on DC2 (On failover: rbd mirror image promote).
     A["Primary Ceph Cluster<br/>(DC1)<br/>rbd-mirror daemon"] -->|"Async RBD mirroring<br/>(journal-based)"| B["DR Ceph Cluster<br/>(DC2)<br/>rbd-mirror daemon"]
-    A -->|"VM disk writes<br/>(synchronous to local OSDs)"| A
-    B -->|"On failover:<br/>rbd mirror image promote"| C["DR VMs<br/>Start on DC2"]
+    A -->|"VM disk writes<br/>(synchronous to<br/>local OSDs)"| A
+    B -->|"On failover:<br/>rbd mirror image<br/>promote"| C["DR VMs<br/>Start on DC2"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#029E73,color:#fff,stroke:#000
-    style C fill:#CA9161,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2039,15 +2103,22 @@ PBS 4.2 (required for PVE 9 compatibility) adds S3-compatible object storage as 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["PBS Local Datastore<br/>(primary site)"] -->|"Sync job<br/>04:00 daily"| B["S3 Remote<br/>(AWS / MinIO / Wasabi)"]
+    accTitle: Example 82: Configure S3-Compatible Backup Target in PBS 4.2
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: PBS Local Datastore (primary site), S3 Remote (AWS /MinIO /Wasabi), PVE Node Backups incremental + dedup, Recovery New PBS server. Connections: PBS Local Datastore (primary site) to S3 Remote (AWS /MinIO /Wasabi) (Sync job 04:00 daily), PBS Local Datastore (primary site) to PVE Node Backups incremental + dedup, PVE Node Backups incremental + dedup to PBS Local Datastore (primary site), S3 Remote (AWS /MinIO /Wasabi) to Recovery New PBS server (On disaster: restore from S3).
+    A["PBS Local Datastore<br/>(primary site)"] -->|"Sync job<br/>04:00 daily"| B["S3 Remote<br/>(AWS /MinIO /Wasabi)"]
     A --> C["PVE Node Backups<br/>incremental + dedup"]
     C --> A
     B -->|"On disaster:<br/>restore from S3"| D["Recovery<br/>New PBS server"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CA9161,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2117,6 +2188,8 @@ A comprehensive retention policy balances storage cost against recovery window. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 83: Implement Full Backup Rotation Strategy with PBS
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Daily Backup (Son), 7 daily backups last 7 days, Weekly Backup (Father), 4 weekly backups last 4 weeks, Monthly Backup (Grandfather), 12 monthly backups last 12 months, Prune Job PBS removes expired. Connections: Daily Backup (Son) to 7 daily backups last 7 days (keep-daily=7), Weekly Backup (Father) to 4 weekly backups last 4 weeks (keep-weekly=4), Monthly Backup (Grandfather) to 12 monthly backups last 12 months (keep-monthly=12), 7 daily backups last 7 days to Prune Job PBS removes expired, 4 weekly backups last 4 weeks to Prune Job PBS removes expired, 12 monthly backups last 12 months to Prune Job PBS removes expired.
     A["Daily Backup<br/>(Son)"] -->|"keep-daily=7"| B["7 daily backups<br/>last 7 days"]
     C["Weekly Backup<br/>(Father)"] -->|"keep-weekly=4"| D["4 weekly backups<br/>last 4 weeks"]
     E["Monthly Backup<br/>(Grandfather)"] -->|"keep-monthly=12"| F["12 monthly backups<br/>last 12 months"]
@@ -2124,13 +2197,18 @@ graph TD
     D --> G
     F --> G
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#0173B2,color:#fff,stroke:#000
-    style C fill:#DE8F05,color:#000,stroke:#000
-    style D fill:#DE8F05,color:#000,stroke:#000
-    style E fill:#029E73,color:#fff,stroke:#000
-    style F fill:#029E73,color:#fff,stroke:#000
-    style G fill:#CA9161,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2190,15 +2268,22 @@ SDN DHCP integration uses dnsmasq to provide automatic IP assignment to VMs conn
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 84: Configure SDN with DHCP IP Management
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: VM boots (no IP configured), dnsmasq on PVE node (SDN subnet DHCP), DNS registration vm-name.web. internal.example, IP Tracking /cluster/sdn/vnets/ ips. Connections: VM boots (no IP configured) to dnsmasq on PVE node (SDN subnet DHCP) (DHCP Discover), dnsmasq on PVE node (SDN subnet DHCP) to VM boots (no IP configured) (DHCP Offer 198.51.100.101/24), dnsmasq on PVE node (SDN subnet DHCP) to DNS registration vm-name.web. internal.example, dnsmasq on PVE node (SDN subnet DHCP) to IP Tracking /cluster/sdn/vnets/ ips.
     A["VM boots<br/>(no IP configured)"] -->|"DHCP Discover"| B["dnsmasq on PVE node<br/>(SDN subnet DHCP)"]
     B -->|"DHCP Offer<br/>198.51.100.101/24"| A
-    B --> C["DNS registration<br/>vm-name.web.internal.example"]
-    B --> D["IP Tracking<br/>/cluster/sdn/vnets/ips"]
+    B --> C["DNS registration<br/>vm-name.web.<br/>internal.example"]
+    B --> D["IP Tracking<br/>/cluster/sdn/vnets/<br/>ips"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

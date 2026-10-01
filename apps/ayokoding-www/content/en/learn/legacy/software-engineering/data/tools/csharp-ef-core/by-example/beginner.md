@@ -35,14 +35,20 @@ A `DbContext` is the entry point for all EF Core database operations. It holds `
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: DbContext Setup
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: AppDbContext, Users Table, Products Table, Schema Configuration. Connections: AppDbContext to Users Table (DbSet), AppDbContext to Products Table (DbSet), AppDbContext to Schema Configuration (OnModelCreating).
     A[AppDbContext] -->|DbSet| B[Users Table]
     A -->|DbSet| C[Products Table]
     A -->|OnModelCreating| D[Schema Configuration]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -93,14 +99,21 @@ The `dotnet ef migrations add` command generates a migration class by comparing 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[DbContext and Entities] -->|dotnet ef migrations add| B[Diff Engine]
+    accTitle: Example 2: First Migration
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: DbContext and Entities, Diff Engine, Model Snapshot, Migration Class. Connections: DbContext and Entities to Diff Engine (dotnet ef migrations add), Diff Engine to Model Snapshot (compares against), Diff Engine to Migration Class (generates).
+    A[DbContext and<br/>Entities] -->|dotnet ef migrations<br/>add| B[Diff Engine]
     B -->|compares against| C[Model Snapshot]
     B -->|generates| D[Migration Class]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

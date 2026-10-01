@@ -365,14 +365,16 @@ export class CatalogPage {
 
 ```mermaid
 graph TD
+    accTitle: Architecture: Component-Based Page Objects
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: Test Suite, CatalogPage, CheckoutPage, ProductPage, NavigationBar Component, ProductCard Component, FormValidator Component, Modal Component. Connections: Test Suite to CatalogPage (composes), Test Suite to CheckoutPage (composes), Test Suite to ProductPage (composes), CatalogPage to NavigationBar Component (reuses), CatalogPage to ProductCard Component (creates multiple), CheckoutPage to NavigationBar Component (reuses), CheckoutPage to FormValidator Component (reuses), CheckoutPage to Modal Component (reuses), ProductPage to NavigationBar Component (reuses), ProductPage to Modal Component (reuses).
     TestSuite["Test Suite"]
     CatalogPage["CatalogPage"]
     CheckoutPage["CheckoutPage"]
     ProductPage["ProductPage"]
 
-    NavBar["NavigationBar Component"]
-    ProductCard["ProductCard Component"]
-    FormValidator["FormValidator Component"]
+    NavBar["NavigationBar<br/>Component"]
+    ProductCard["ProductCard<br/>Component"]
+    FormValidator["FormValidator<br/>Component"]
     Modal["Modal Component"]
 
     TestSuite -->|"composes"| CatalogPage
@@ -389,18 +391,22 @@ graph TD
     ProductPage -->|"reuses"| NavBar
     ProductPage -->|"reuses"| Modal
 
-    style TestSuite fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    style CatalogPage fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-    style CheckoutPage fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-    style ProductPage fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-    style NavBar fill:#DE8F05,stroke:#000,stroke-width:2px,color:#000
-    style ProductCard fill:#DE8F05,stroke:#000,stroke-width:2px,color:#000
-    style FormValidator fill:#DE8F05,stroke:#000,stroke-width:2px,color:#000
-    style Modal fill:#DE8F05,stroke:#000,stroke-width:2px,color:#000
 
-    classDef testClass fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    classDef pageClass fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-    classDef componentClass fill:#DE8F05,stroke:#000,stroke-width:2px,color:#000
+    classDef testClass fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef pageClass fill:#029E73,stroke:#000000,stroke-width:2px,color:#000000
+    classDef componentClass fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class TestSuite pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class CatalogPage pal-029E73
+    class CheckoutPage pal-029E73
+    class ProductPage pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class NavBar pal-DE8F05
+    class ProductCard pal-DE8F05
+    class FormValidator pal-DE8F05
+    class Modal pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Accessibility Note**: Diagram uses color-blind friendly palette—blue for tests, teal for pages, orange for components.

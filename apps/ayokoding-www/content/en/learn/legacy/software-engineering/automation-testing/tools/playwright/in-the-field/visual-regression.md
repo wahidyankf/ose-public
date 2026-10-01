@@ -427,8 +427,9 @@ test("article page with dynamic elements", async ({ page }) => {
 ## Visual Regression Testing Workflow
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','background':'#fff','mainBkg':'#fff','secondaryBkg':'#f4f4f4','tertiaryBkg':'#f0f0f0'}}}%%
 sequenceDiagram
+    accTitle: Visual Regression Testing Workflow
+    accDescr: Sequence diagram between Developer, Playwright Test, Percy Platform, CI/CD Pipeline, Team Reviewer. Messages: Developer to Playwright Test: Run visual tests locally; Playwright Test to Percy Platform: Upload screenshots; Percy Platform to Percy Platform: Compare vs baselines; Percy Platform to Developer: Show diffs in browser; Developer to Developer: Review changes locally; Developer to CI/CD Pipeline: Push code to PR; CI/CD Pipeline to Playwright Test: Run visual tests; Playwright Test to Percy Platform: Upload PR screenshots; Percy Platform to Percy Platform: Compare vs main baselines; Percy Platform to CI/CD Pipeline: Post status check; CI/CD Pipeline to Team Reviewer: Notify: visual changes detected; Team Reviewer to Percy Platform: Review diffs in dashboard; and 3 more.
     participant Dev as Developer
     participant Test as Playwright Test
     participant Percy as Percy Platform
@@ -453,11 +454,6 @@ sequenceDiagram
     Percy-->>CI: Update status check
     CI->>CI: Merge if approved
 
-    style Dev fill:#0173B2,stroke:#0173B2,color:#fff
-    style Test fill:#029E73,stroke:#029E73,color:#fff
-    style Percy fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style CI fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style Review fill:#CA9161,stroke:#CA9161,color:#fff
 ```
 
 ## Production Patterns and Best Practices

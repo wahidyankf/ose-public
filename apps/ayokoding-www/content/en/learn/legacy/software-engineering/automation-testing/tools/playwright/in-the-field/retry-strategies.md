@@ -335,26 +335,34 @@ test("checkout with smart retries", async ({ page }) => {
 
 ```mermaid
 flowchart TD
+    accTitle: Mermaid Diagram: Retry Decision Flow
+    accDescr: Flowchart with 10 nodes and 11 connections. Nodes: Execute Operation, Return Result, Should Retry?, Throw Error, Attempts < Max?, All Retries Exhausted, Calculate Backoff Delay, delay = min(init*mult^n, max, Wait for Delay, Log Retry Attempt. Connections: Execute Operation to Return Result (Success), Execute Operation to Should Retry? (Error), Should Retry? to Throw Error (No - Non-retriable), Should Retry? to Attempts < Max? (Yes - Check Attempts), Attempts < Max? to All Retries Exhausted (No), All Retries Exhausted to Throw Error, Attempts < Max? to Calculate Backoff Delay (Yes), Calculate Backoff Delay to delay = min(init*mult^n, max, delay = min(init*mult^n, max to Wait for Delay, Wait for Delay to Log Retry Attempt, Log Retry Attempt to Execute Operation.
     A[Execute Operation] -->|Success| B[Return Result]
     A -->|Error| C{Should Retry?}
 
     C -->|No - Non-retriable| D[Throw Error]
     C -->|Yes - Check Attempts| E{Attempts < Max?}
 
-    E -->|No| F[All Retries Exhausted]
+    E -->|No| F[All Retries<br/>Exhausted]
     F --> D
 
-    E -->|Yes| G[Calculate Backoff Delay]
-    G --> H[delay = min(init*mult^n, max)]
+    E -->|Yes| G[Calculate Backoff<br/>Delay]
+    G --> H[delay =<br/>min(init*mult^n,<br/>max)]
     H --> I[Wait for Delay]
     I --> J[Log Retry Attempt]
     J --> A
 
-    style A fill:#0173B2,stroke:#014d7a,color:#fff
-    style B fill:#029E73,stroke:#017a52,color:#fff
-    style D fill:#DE8F05,stroke:#b67304,color:#fff
-    style G fill:#CC78BC,stroke:#a35f97,color:#fff
-    style H fill:#CA9161,stroke:#a3714d,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram explanation**:

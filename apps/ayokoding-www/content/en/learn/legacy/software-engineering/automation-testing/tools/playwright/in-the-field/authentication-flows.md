@@ -447,8 +447,9 @@ test("guest cannot access protected resources", async ({ guestPage }) => {
 ## Production Authentication Architecture Diagram
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','background':'#fff','mainBkg':'#fff','secondaryBkg':'#f4f4f4','tertiaryBkg':'#f0f0f0'}}}%%
 sequenceDiagram
+    accTitle: Production Authentication Architecture Diagram
+    accDescr: Sequence diagram between Test, Setup, Browser, Auth API. Messages: Setup to Auth API: Login with credentials; Auth API to Setup: Return session/token; Setup to Browser: Save storage state; Browser to Setup: State saved to file; Test to Browser: Load storage state; Browser to Test: Authenticated context; Test to Auth API: Request protected resource; Auth API to Test: Authorized response.
     participant T as Test
     participant S as Setup
     participant B as Browser

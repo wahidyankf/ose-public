@@ -18,16 +18,24 @@ MSW's `server.use()` overrides specific handlers for individual tests. This enab
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    BaseHandlers["Base Handlers<br/>#40;setupServer#41;"] --> DefaultBehavior["Default: 200 OK responses"]
-    TestOverride["server.use#40;override#41;"] --> PerTestBehavior["Per-test: error / edge case"]
-    PerTestBehavior --> Reset["afterEach: server.resetHandlers#40;#41;"]
+    accTitle: Example 56: MSW Handler Overrides Per Test
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Base Handlers 40setupServer41, Default: 200 OK responses, server. use40override41, Per-test: error / edge case, afterEach: server. reset Handlers4041. Connections: Base Handlers 40setupServer41 to Default: 200 OK responses, server. use40override41 to Per-test: error / edge case, Per-test: error / edge case to afterEach: server. reset Handlers4041, afterEach: server. reset Handlers4041 to Default: 200 OK responses.
+    BaseHandlers["Base Handlers<br/>#40;setupServer#41;"] --> DefaultBehavior["Default: 200 OK<br/>responses"]
+    TestOverride["server.<br/>use#40;override#41;"] --> PerTestBehavior["Per-test: error /<br/>edge case"]
+    PerTestBehavior --> Reset["afterEach: server.<br/>reset<br/>Handlers#40;#41;"]
     Reset --> DefaultBehavior
 
-    style BaseHandlers fill:#0173B2,color:#fff
-    style DefaultBehavior fill:#029E73,color:#fff
-    style TestOverride fill:#DE8F05,color:#fff
-    style PerTestBehavior fill:#CC78BC,color:#fff
-    style Reset fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class BaseHandlers pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DefaultBehavior pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class TestOverride pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PerTestBehavior pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Reset pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2523,14 +2531,21 @@ The testing trophy model guides how to allocate tests across testing levels for 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    E2E["E2E Tests<br/>Small quantity<br/>Complete user journeys<br/>Playwright/Cypress"] --> Integration["Integration Tests<br/>Medium quantity<br/>Component + API + State<br/>Testing Library + MSW"]
-    Integration --> Unit["Unit Tests<br/>Focused quantity<br/>Hooks + Utils + Reducers<br/>renderHook + jest"]
-    Unit --> Static["Static Analysis<br/>Always<br/>TypeScript + ESLint + axe"]
+    accTitle: Example 80: Testing Patterns Summary - The Testing Trophy
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: E2E Tests Small quantity Complete user journeys Playwright/Cypress, Integration Tests Medium quantity Component + API + State Testing Library + MSW, Unit Tests Focused quantity Hooks + Utils + Reducers renderHook + jest, Static Analysis Always TypeScript + ESLint + axe. Connections: E2E Tests Small quantity Complete user journeys Playwright/Cypress to Integration Tests Medium quantity Component + API + State Testing Library + MSW, Integration Tests Medium quantity Component + API + State Testing Library + MSW to Unit Tests Focused quantity Hooks + Utils + Reducers renderHook + jest, Unit Tests Focused quantity Hooks + Utils + Reducers renderHook + jest to Static Analysis Always TypeScript + ESLint + axe.
+    E2E["E2E Tests<br/>Small quantity<br/>Complete user<br/>journeys<br/>Playwright/Cypress"] --> Integration["Integration Tests<br/>Medium quantity<br/>Component + API +<br/>State<br/>Testing Library +<br/>MSW"]
+    Integration --> Unit["Unit Tests<br/>Focused quantity<br/>Hooks + Utils +<br/>Reducers<br/>renderHook + jest"]
+    Unit --> Static["Static Analysis<br/>Always<br/>TypeScript + ESLint<br/>+ axe"]
 
-    style E2E fill:#CC78BC,color:#fff
-    style Integration fill:#0173B2,color:#fff
-    style Unit fill:#DE8F05,color:#fff
-    style Static fill:#029E73,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E2E pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Integration pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Unit pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Static pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

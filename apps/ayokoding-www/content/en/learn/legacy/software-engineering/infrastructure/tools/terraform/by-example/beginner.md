@@ -18,16 +18,24 @@ Terraform configurations are HCL files describing infrastructure resources. Ever
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 1: Hello World - Minimal Configuration
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: main.tf Configuration, terraform init Download Providers, terraform plan Preview Changes, terraform apply Create Resources, terraform.tfstate State File. Connections: main.tf Configuration to terraform init Download Providers, terraform init Download Providers to terraform plan Preview Changes, terraform plan Preview Changes to terraform apply Create Resources, terraform apply Create Resources to terraform.tfstate State File.
  A["main.tf<br/>Configuration"] --> B["terraform init<br/>Download Providers"]
  B --> C["terraform plan<br/>Preview Changes"]
  C --> D["terraform apply<br/>Create Resources"]
  D --> E["terraform.tfstate<br/>State File"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -513,6 +521,8 @@ Terraform provides 100+ built-in functions for string manipulation, collection o
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 6: HCL Functions
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: Input String: Hello, Terraform!, trimspace4041 Remove whitespace, Trimmed: Hello, Terraform!, lower4041 To lowercase, upper4041 To uppercase, replace4041 Substitute text, hello, terraform!, HELLO, TERRAFORM!, Hello, HCL!. Connections: Input String: Hello, Terraform! to trimspace4041 Remove whitespace, trimspace4041 Remove whitespace to Trimmed: Hello, Terraform!, Trimmed: Hello, Terraform! to lower4041 To lowercase, Trimmed: Hello, Terraform! to upper4041 To uppercase, Trimmed: Hello, Terraform! to replace4041 Substitute text, lower4041 To lowercase to hello, terraform!, upper4041 To uppercase to HELLO, TERRAFORM!, replace4041 Substitute text to Hello, HCL!.
  A["Input String:<br/> Hello, Terraform! "] --> B["trimspace#40;#41;<br/>Remove whitespace"]
  B --> C["Trimmed:<br/>Hello, Terraform!"]
  C --> D1["lower#40;#41;<br/>To lowercase"]
@@ -522,15 +532,21 @@ graph TD
  D2 --> E2["HELLO, TERRAFORM!"]
  D3 --> E3["Hello, HCL!"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D1 fill:#CC78BC,color:#fff
- style D2 fill:#CC78BC,color:#fff
- style D3 fill:#CC78BC,color:#fff
- style E1 fill:#CA9161,color:#fff
- style E2 fill:#CA9161,color:#fff
- style E3 fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D1 pal-CC78BC
+ class D2 pal-CC78BC
+ class D3 pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E1 pal-CA9161
+ class E2 pal-CA9161
+ class E3 pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -950,15 +966,22 @@ Terraform automatically determines resource creation order based on references. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
- A["local_file.base"] --> B["local_file.depends_implicit"]
- A --> C["local_file.depends_explicit"]
+ accTitle: Example 9: Resource Dependencies
+ accDescr: Graph with 4 nodes and 4 connections. Nodes: local_file.base, local_file.depends_ implicit, local_file.depends_ explicit, local_file.final. Connections: local_file.base to local_file.depends_ implicit, local_file.base to local_file.depends_ explicit, local_file.depends_ implicit to local_file.final, local_file.depends_ explicit to local_file.final.
+ A["local_file.base"] --> B["local_file.depends_<br/>implicit"]
+ A --> C["local_file.depends_<br/>explicit"]
  B --> D["local_file.final"]
  C --> D
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1183,6 +1206,8 @@ Input variables make Terraform configurations reusable and environment-agnostic.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 11: Input Variables
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Variable Input 40CLI/File/Env41, Type Check, Type Valid?, Error: Type mismatch, Validation Rules, Validation Passes?, Error: Custom message, Variable Available in Configuration. Connections: Variable Input 40CLI/File/Env41 to Type Check, Type Check to Type Valid?, Type Valid? to Error: Type mismatch (No), Type Valid? to Validation Rules (Yes), Validation Rules to Validation Passes?, Validation Passes? to Error: Custom message (No), Validation Passes? to Variable Available in Configuration (Yes).
  A["Variable Input<br/>#40;CLI/File/Env#41;"] --> B["Type Check"]
  B --> C{"Type Valid?"}
  C -->|No| D["Error:<br/>Type mismatch"]
@@ -1191,14 +1216,20 @@ graph TD
  F -->|No| G["Error:<br/>Custom message"]
  F -->|Yes| H["Variable Available<br/>in Configuration"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#DE8F05,color:#fff
- style F fill:#029E73,color:#fff
- style G fill:#CC78BC,color:#fff
- style H fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-DE8F05
+ class F pal-029E73
+ class G pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class H pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1613,6 +1644,8 @@ Local values (locals) are named expressions computed once and reused throughout 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 13: Local Values
+ accDescr: Graph with 8 nodes and 8 connections. Nodes: Variables project, environment, Computed Local: prefix, Computed Local: is_production, Computed Local: backup_enabled, Computed Local: common_tags, Computed Local: config, Computed Local: resource_names, Resources 40for_each41. Connections: Variables project, environment to Computed Local: prefix, Variables project, environment to Computed Local: is_production, Computed Local: is_production to Computed Local: backup_enabled, Computed Local: prefix to Computed Local: common_tags, Computed Local: is_production to Computed Local: config, Computed Local: prefix to Computed Local: resource_names, Computed Local: config to Computed Local: resource_names, Computed Local: resource_names to Resources 40for_each41.
  A["Variables<br/>project, environment"] --> B["Computed Local:<br/>prefix"]
  A --> C["Computed Local:<br/>is_production"]
  C --> D["Computed Local:<br/>backup_enabled"]
@@ -1622,14 +1655,20 @@ graph TD
  F --> G
  G --> H["Resources<br/>#40;for_each#41;"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#DE8F05,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#029E73,color:#fff
- style F fill:#029E73,color:#fff
- style G fill:#CC78BC,color:#fff
- style H fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class E pal-029E73
+ class F pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class G pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class H pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2405,18 +2444,24 @@ backend "s3" {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
- A["State: Unlocked"] --> B["User 1: terraform apply"]
- B --> C["State: Locked by User 1"]
- C --> D["User 2: terraform apply"]
+ accTitle: => Backend type for state storage
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: State: Unlocked, User 1: terraform apply, State: Locked by User 1, User 2: terraform apply, User 2: Waits.., User 1: Apply Complete, State: Unlocked, User 2: Acquires Lock. Connections: State: Unlocked to User 1: terraform apply, User 1: terraform apply to State: Locked by User 1, State: Locked by User 1 to User 2: terraform apply, User 2: terraform apply to User 2: Waits.., State: Locked by User 1 to User 1: Apply Complete, User 1: Apply Complete to State: Unlocked, State: Unlocked to User 2: Acquires Lock.
+ A["State: Unlocked"] --> B["User 1: terraform<br/>apply"]
+ B --> C["State: Locked by<br/>User 1"]
+ C --> D["User 2: terraform<br/>apply"]
  D --> E["User 2: Waits.."]
- C --> F["User 1: Apply Complete"]
+ C --> F["User 1: Apply<br/>Complete"]
  F --> G["State: Unlocked"]
- G --> H["User 2: Acquires Lock"]
+ G --> H["User 2: Acquires<br/>Lock"]
 
- style A fill:#029E73,color:#fff
- style C fill:#DE8F05,color:#fff
- style E fill:#CC78BC,color:#fff
- style G fill:#029E73,color:#fff
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class A pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class C pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class E pal-CC78BC
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Takeaway**: State locking prevents race conditions in team environments. Local backend doesn't support locking—use remote backends (S3+DynamoDB, Terraform Cloud, Azure Blob) for teams. Locks are acquired automatically during state-modifying operations (apply, destroy).

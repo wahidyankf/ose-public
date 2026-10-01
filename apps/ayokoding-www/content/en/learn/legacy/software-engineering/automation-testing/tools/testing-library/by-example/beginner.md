@@ -18,16 +18,24 @@ The `render()` function mounts a React component into a jsdom environment. The `
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: First Test with render and screen
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: React Component, render4041, jsdom Document 40document. body41, screen object 40query methods41, Test Assertions. Connections: React Component to render4041, render4041 to jsdom Document 40document. body41, jsdom Document 40document. body41 to screen object 40query methods41, screen object 40query methods41 to Test Assertions.
     Component["React Component"] --> Render["render#40;#41;"]
-    Render --> JSDOM["jsdom Document<br/>#40;document.body#41;"]
-    JSDOM --> Screen["screen object<br/>#40;query methods#41;"]
+    Render --> JSDOM["jsdom Document<br/>#40;document.<br/>body#41;"]
+    JSDOM --> Screen["screen object<br/>#40;query<br/>methods#41;"]
     Screen --> Assertions["Test Assertions"]
 
-    style Component fill:#0173B2,color:#fff
-    style Render fill:#DE8F05,color:#fff
-    style JSDOM fill:#029E73,color:#fff
-    style Screen fill:#CC78BC,color:#fff
-    style Assertions fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Component pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Render pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class JSDOM pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Screen pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Assertions pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -286,18 +294,26 @@ test("renders all list items", () => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Query["getByRole#40;role, options#41;"] --> Roles["ARIA Role Types"]
-    Roles --> Button["button<br/>#40;<button>, role=button#41;"]
+    accTitle: Example 6: getByRole - Buttons and Links
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: getByRole40role, options41, ARIA Role Types, button 40, role=button41, link 4041, heading 40-41, textbox 4041. Connections: getByRole40role, options41 to ARIA Role Types, ARIA Role Types to button 40, role=button41, ARIA Role Types to link 4041, ARIA Role Types to heading 40-41, ARIA Role Types to textbox 4041.
+    Query["getByRole#40;role,<br/>options#41;"] --> Roles["ARIA Role Types"]
+    Roles --> Button["button<br/>#40;<button>,<br/>role=button#41;"]
     Roles --> Link["link<br/>#40;<a href=...>#41;"]
     Roles --> Heading["heading<br/>#40;<h1>-<h6>#41;"]
     Roles --> TextBox["textbox<br/>#40;<input type=text>#41;"]
 
-    style Query fill:#0173B2,color:#fff
-    style Roles fill:#DE8F05,color:#fff
-    style Button fill:#029E73,color:#fff
-    style Link fill:#CC78BC,color:#fff
-    style Heading fill:#CA9161,color:#fff
-    style TextBox fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Query pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Roles pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Button pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Link pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Heading pal-CA9161
+    class TextBox pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1040,21 +1056,29 @@ The three query variant families serve different purposes: `getBy*` for elements
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 17: queryByand findBy Introduction
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Query Variants, getBy* Throws if not found Synchronous, queryBy* Returns null Synchronous, findBy* Returns Promise Async - waits, Use when: element MUST exist, Use when: element MIGHT not exist, Use when: element appears async. Connections: Query Variants to getBy* Throws if not found Synchronous, Query Variants to queryBy* Returns null Synchronous, Query Variants to findBy* Returns Promise Async - waits, getBy* Throws if not found Synchronous to Use when: element MUST exist, queryBy* Returns null Synchronous to Use when: element MIGHT not exist, findBy* Returns Promise Async - waits to Use when: element appears async.
     Query["Query Variants"] --> GetBy["getBy*<br/>Throws if not found<br/>Synchronous"]
     Query --> QueryBy["queryBy*<br/>Returns null<br/>Synchronous"]
     Query --> FindBy["findBy*<br/>Returns Promise<br/>Async - waits"]
 
-    GetBy --> UseWhen1["Use when: element MUST exist"]
-    QueryBy --> UseWhen2["Use when: element MIGHT not exist"]
-    FindBy --> UseWhen3["Use when: element appears async"]
+    GetBy --> UseWhen1["Use when: element<br/>MUST exist"]
+    QueryBy --> UseWhen2["Use when: element<br/>MIGHT not exist"]
+    FindBy --> UseWhen3["Use when: element<br/>appears async"]
 
-    style Query fill:#0173B2,color:#fff
-    style GetBy fill:#029E73,color:#fff
-    style QueryBy fill:#DE8F05,color:#fff
-    style FindBy fill:#CC78BC,color:#fff
-    style UseWhen1 fill:#CA9161,color:#fff
-    style UseWhen2 fill:#CA9161,color:#fff
-    style UseWhen3 fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Query pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GetBy pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class QueryBy pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class FindBy pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class UseWhen1 pal-CA9161
+    class UseWhen2 pal-CA9161
+    class UseWhen3 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

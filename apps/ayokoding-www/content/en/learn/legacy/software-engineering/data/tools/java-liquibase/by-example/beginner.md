@@ -19,16 +19,22 @@ The master changelog is the entry point Liquibase reads first. It does not defin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Liquibase CLI / Plugin] -->|reads| B[db.changelog-master.yaml]
-    B -->|includeAll| C[changes/001-create-users.sql]
-    B -->|includeAll| D[changes/002-alter-users.sql]
-    B -->|includeAll| E[changes/003-create-products.sql]
+    accTitle: Example 1: Master Changelog File
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Liquibase CLI / Plugin, db.changelog-master. yaml, changes/ 001-create-users.sql, changes/ 002-alter-users.sql, changes/003-create- products.sql. Connections: Liquibase CLI / Plugin to db.changelog-master. yaml (reads), db.changelog-master. yaml to changes/ 001-create-users.sql (includeAll), db.changelog-master. yaml to changes/ 002-alter-users.sql (includeAll), db.changelog-master. yaml to changes/003-create- products.sql (includeAll).
+    A[Liquibase CLI /<br/>Plugin] -->|reads| B[db.changelog-master.<br/>yaml]
+    B -->|includeAll| C[changes/<br/>001-create-users.sql]
+    B -->|includeAll| D[changes/<br/>002-alter-users.sql]
+    B -->|includeAll| E[changes/003-create-<br/>products.sql]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -389,22 +395,31 @@ The `liquibase update` command applies all pending changesets from the changelog
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[liquibase update] -->|reads| B[db.changelog-master.yaml]
-    B -->|scans| C[DATABASECHANGELOG table]
+    accTitle: Example 9: Running Liquibase Update
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: liquibase update, db.changelog-master. yaml, DATABASECHANGELOG table, Pending changesets?, Execute changeset SQL, Nothing to do, Insert row into DATABASECHANGELOG, Rollback transaction /stop. Connections: liquibase update to db.changelog-master. yaml (reads), db.changelog-master. yaml to DATABASECHANGELOG table (scans), DATABASECHANGELOG table to Pending changesets? (find unapplied), Pending changesets? to Execute changeset SQL (yes), Pending changesets? to Nothing to do (no), Execute changeset SQL to Insert row into DATABASECHANGELOG (success), Execute changeset SQL to Rollback transaction /stop (failure).
+    A[liquibase update] -->|reads| B[db.changelog-master.<br/>yaml]
+    B -->|scans| C[DATABASECHANGELOG<br/>table]
     C -->|find unapplied| D{Pending changesets?}
-    D -->|yes| E[Execute changeset SQL]
+    D -->|yes| E[Execute changeset<br/>SQL]
     D -->|no| F[Nothing to do]
-    E -->|success| G[Insert row into DATABASECHANGELOG]
-    E -->|failure| H[Rollback transaction / stop]
+    E -->|success| G[Insert row into<br/>DATABASECHANGELOG]
+    E -->|failure| H[Rollback transaction<br/>/stop]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#808080,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class F pal-808080
+    class G pal-029E73
+    class H pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

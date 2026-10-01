@@ -18,17 +18,24 @@ Modules are reusable Terraform configurations called from root configurations. M
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 29: Basic Module Structure
+ accDescr: Graph with 5 nodes and 5 connections. Nodes: Root Configuration main.tf, Module: network modules/network, Module: compute modules/compute, VPC Resources, Instance Resources. Connections: Root Configuration main.tf to Module: network modules/network, Root Configuration main.tf to Module: compute modules/compute, Module: network modules/network to VPC Resources, Module: compute modules/compute to Instance Resources, Module: compute modules/compute to Module: network modules/network.
  A["Root Configuration<br/>main.tf"] --> B["Module: network<br/>modules/network"]
  A --> C["Module: compute<br/>modules/compute"]
  B --> D["VPC Resources"]
  C --> E["Instance Resources"]
  C --> B
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Module structure**:
@@ -498,15 +505,22 @@ Modules can depend on other module outputs, creating composition patterns where 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 32: Module Composition with Dependencies
+ accDescr: Graph with 4 nodes and 4 connections. Nodes: Module: network, Module: compute, Module: database, Module: monitoring. Connections: Module: network to Module: compute, Module: network to Module: database, Module: compute to Module: monitoring, Module: database to Module: monitoring.
  A["Module: network"] --> B["Module: compute"]
  A --> C["Module: database"]
  B --> D["Module: monitoring"]
  C --> D
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1023,16 +1037,24 @@ Terraform state tracks resource metadata and enables change detection. Local bac
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 36: Local Backend with State File
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: terraform apply, Create Resources, terraform.tfstate Local File, Next terraform plan, Compare Config vs State. Connections: terraform apply to Create Resources, Create Resources to terraform.tfstate Local File, terraform.tfstate Local File to Next terraform plan, Next terraform plan to Compare Config vs State.
  A["terraform apply"] --> B["Create Resources"]
  B --> C["terraform.tfstate<br/>Local File"]
  C --> D["Next terraform plan"]
- D --> E["Compare Config vs State"]
+ D --> E["Compare Config vs<br/>State"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1113,18 +1135,25 @@ S3 backend stores Terraform state in AWS S3 bucket with DynamoDB table for state
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 37: S3 Backend with State Locking
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Terraform Apply, Acquire Lock DynamoDB, Read State S3 Bucket, Execute Changes, Write State S3 Bucket, Release Lock DynamoDB. Connections: Terraform Apply to Acquire Lock DynamoDB, Acquire Lock DynamoDB to Read State S3 Bucket, Read State S3 Bucket to Execute Changes, Execute Changes to Write State S3 Bucket, Write State S3 Bucket to Release Lock DynamoDB.
  A["Terraform Apply"] --> B["Acquire Lock<br/>DynamoDB"]
  B --> C["Read State<br/>S3 Bucket"]
  C --> D["Execute Changes"]
  D --> E["Write State<br/>S3 Bucket"]
  E --> F["Release Lock<br/>DynamoDB"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#029E73,color:#fff
- style F fill:#DE8F05,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-029E73
+ class F pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -1233,18 +1262,25 @@ Backend configuration can be partially specified in HCL and completed via CLI fl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 38: Backend Configuration with Partial Config
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: main.tf Static Config, region, encrypt dynamodb_table, backend-prod.hcl Environment Config, bucket, key, terraform init -backend-config, Merged Backend Config. Connections: main.tf Static Config to region, encrypt dynamodb_table, backend-prod.hcl Environment Config to bucket, key, region, encrypt dynamodb_table to terraform init -backend-config, bucket, key to terraform init -backend-config, terraform init -backend-config to Merged Backend Config.
  A["main.tf<br/>Static Config"] --> B["region, encrypt<br/>dynamodb_table"]
  C["backend-prod.hcl<br/>Environment Config"] --> D["bucket, key"]
  B --> E["terraform init<br/>-backend-config"]
  D --> E
  E --> F["Merged<br/>Backend Config"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#0173B2,color:#fff
- style F fill:#029E73,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-0173B2
+ class F pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -1366,14 +1402,21 @@ Terraform can read outputs from other state files using `terraform_remote_state`
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 39: Remote State Data Sources
+ accDescr: Graph with 4 nodes and 3 connections. Nodes: Network Stack terraform.tfstate, VPC ID Output, Application Stack Reads Remote State, Uses VPC ID. Connections: Network Stack terraform.tfstate to VPC ID Output, VPC ID Output to Application Stack Reads Remote State, Application Stack Reads Remote State to Uses VPC ID.
  A["Network Stack<br/>terraform.tfstate"] --> B["VPC ID Output"]
  B --> C["Application Stack<br/>Reads Remote State"]
  C --> D["Uses VPC ID"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Network stack** - `network/main.tf`:
@@ -1511,16 +1554,23 @@ Moving state from local to remote backend or between different remote backends r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 40: State Migration Between Backends
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Local Backend terraform.tfstate, terraform init -migrate-state, Copy State, S3 Backend Remote State, Delete Local State. Connections: Local Backend terraform.tfstate to terraform init -migrate-state, terraform init -migrate-state to Copy State, Copy State to S3 Backend Remote State, terraform init -migrate-state to Delete Local State.
  A["Local Backend<br/>terraform.tfstate"] --> B["terraform init<br/>-migrate-state"]
  B --> C["Copy State"]
  C --> D["S3 Backend<br/>Remote State"]
  B --> E["Delete Local<br/>State"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class E pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Initial configuration** - Local backend:
@@ -1658,14 +1708,21 @@ Workspaces enable managing multiple environments (dev, staging, prod) using same
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
- A["main.tf<br/>Shared Config"] --> B["dev Workspace<br/>terraform.tfstate.d/dev"]
- A --> C["staging Workspace<br/>terraform.tfstate.d/staging"]
- A --> D["prod Workspace<br/>terraform.tfstate.d/prod"]
+ accTitle: Example 41: Workspace Basics for Environment Management
+ accDescr: Graph with 4 nodes and 3 connections. Nodes: main.tf Shared Config, dev Workspace terraform.tfstate.d/ dev, staging Workspace terraform.tfstate.d/ staging, prod Workspace terraform.tfstate.d/ prod. Connections: main.tf Shared Config to dev Workspace terraform.tfstate.d/ dev, main.tf Shared Config to staging Workspace terraform.tfstate.d/ staging, main.tf Shared Config to prod Workspace terraform.tfstate.d/ prod.
+ A["main.tf<br/>Shared Config"] --> B["dev Workspace<br/>terraform.tfstate.d/<br/>dev"]
+ A --> C["staging Workspace<br/>terraform.tfstate.d/<br/>staging"]
+ A --> D["prod Workspace<br/>terraform.tfstate.d/<br/>prod"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -2046,16 +2103,23 @@ backend "s3" {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 44: Local-Exec Provisioner for External Commands
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Resource Created, local-exec Provisioner, Execute Command on Local Machine, Script/API Call, Resource Complete. Connections: Resource Created to local-exec Provisioner, local-exec Provisioner to Execute Command on Local Machine, Execute Command on Local Machine to Script/API Call, Script/API Call to Resource Complete.
  A["Resource Created"] --> B["local-exec<br/>Provisioner"]
  B --> C["Execute Command<br/>on Local Machine"]
  C --> D["Script/API Call"]
  D --> E["Resource Complete"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class E pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -2647,16 +2711,22 @@ Dynamic blocks generate repeated nested blocks from collections. This eliminates
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 48: Dynamic Blocks for Repeated Nested Configuration
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Variable ingress_rules list, dynamic block for_each, Generate Block 1 Port 80, Generate Block 2 Port 443, Generate Block 3 Port 22. Connections: Variable ingress_rules list to dynamic block for_each, dynamic block for_each to Generate Block 1 Port 80, dynamic block for_each to Generate Block 2 Port 443, dynamic block for_each to Generate Block 3 Port 22.
  A["Variable<br/>ingress_rules list"] --> B["dynamic block<br/>for_each"]
  B --> C["Generate Block 1<br/>Port 80"]
  B --> D["Generate Block 2<br/>Port 443"]
  B --> E["Generate Block 3<br/>Port 22"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#029E73,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ class D pal-029E73
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -3334,16 +3404,23 @@ resource "local_file" "logging_alt" {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 51: Terraform Import for Existing Resources
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Existing Resource manually created, Write Terraform Configuration, terraform import ADDR ID, Add to State, terraform plan verify no changes. Connections: Existing Resource manually created to Write Terraform Configuration, Write Terraform Configuration to terraform import ADDR ID, terraform import ADDR ID to Add to State, Add to State to terraform plan verify no changes.
  A["Existing Resource<br/>manually created"] --> B["Write Terraform<br/>Configuration"]
  B --> C["terraform import<br/>ADDR ID"]
  C --> D["Add to State"]
  D --> E["terraform plan<br/>verify no changes"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class E pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl

@@ -16,6 +16,8 @@ SQLite runs in a Docker container for isolated, reproducible environments across
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Installing SQLite and First Query
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Docker Host, SQLite Container nouchka/sqlite3, sqlite3 Client Connected, Query Execution Results. Connections: Docker Host to SQLite Container nouchka/sqlite3 (docker run), SQLite Container nouchka/sqlite3 to sqlite3 Client Connected (docker exec), sqlite3 Client Connected to Query Execution Results (SQL statements).
     A["Docker Host"]
     B["SQLite Container<br/>nouchka/sqlite3"]
     C["sqlite3 Client<br/>Connected"]
@@ -25,10 +27,15 @@ graph TD
     B -->|docker exec| C
     C -->|SQL statements| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -191,19 +198,26 @@ INSERT adds new rows to tables. You can insert single rows, multiple rows at onc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 4: Inserting Data with INSERT
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: INSERT Statement, Specify Columns (id, name, price), Provide Values (1, Laptop, 999.99), Row Added to Table. Connections: INSERT Statement to Specify Columns (id, name, price), Specify Columns (id, name, price) to Provide Values (1, Laptop, 999.99), Provide Values (1, Laptop, 999.99) to Row Added to Table.
     A["INSERT Statement"]
     B["Specify Columns<br/>(id, name, price)"]
-    C["Provide Values<br/>(1, 'Laptop', 999.99)"]
+    C["Provide Values<br/>(1, 'Laptop',<br/>999.99)"]
     D["Row Added to Table"]
 
     A --> B
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -374,6 +388,8 @@ SQLite uses dynamic typing with type affinity. INTEGER stores whole numbers, REA
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 6: Numeric Types
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Data Types, INTEGER Whole numbers -9.2e18 to 9.2e18, REAL Floating point IEEE 754 double, TEXT Character data, Type Conversion CAST function, Result. Connections: Data Types to INTEGER Whole numbers -9.2e18 to 9.2e18, Data Types to REAL Floating point IEEE 754 double, Data Types to TEXT Character data, INTEGER Whole numbers -9.2e18 to 9.2e18 to Type Conversion CAST function (CAST AS REAL), REAL Floating point IEEE 754 double to Type Conversion CAST function (CAST AS INTEGER), INTEGER Whole numbers -9.2e18 to 9.2e18 to Type Conversion CAST function (CAST AS TEXT), Type Conversion CAST function to Result.
     A["Data Types"]
     B["INTEGER<br/>Whole numbers<br/>-9.2e18 to 9.2e18"]
     C["REAL<br/>Floating point<br/>IEEE 754 double"]
@@ -389,12 +405,18 @@ graph TD
     B -->|"CAST AS TEXT"| E
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -550,11 +572,13 @@ NULL represents missing or unknown data. NULL is NOT equal to anything, includin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 8: NULL Handling
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Test for NULL, WHERE column = NULL ❌ WRONG Always FALSE, WHERE column IS NULL ✅ CORRECT Returns NULL rows, WHERE column IS NOT NULL ✅ CORRECT Returns non-NULL rows, COALESCE function Provide default value, NULL in arithmetic Result is NULL. Connections: Test for NULL to WHERE column = NULL ❌ WRONG Always FALSE, Test for NULL to WHERE column IS NULL ✅ CORRECT Returns NULL rows, Test for NULL to WHERE column IS NOT NULL ✅ CORRECT Returns non-NULL rows, Test for NULL to COALESCE function Provide default value, Test for NULL to NULL in arithmetic Result is NULL.
     A["Test for NULL"]
     B["WHERE column = NULL<br/>❌ WRONG<br/>Always FALSE"]
     C["WHERE column IS NULL<br/>✅ CORRECT<br/>Returns NULL rows"]
-    D["WHERE column IS NOT NULL<br/>✅ CORRECT<br/>Returns non-NULL rows"]
-    E["COALESCE function<br/>Provide default value"]
+    D["WHERE column IS NOT<br/>NULL<br/>✅ CORRECT<br/>Returns non-NULL<br/>rows"]
+    E["COALESCE function<br/>Provide default<br/>value"]
     F["NULL in arithmetic<br/>Result is NULL"]
 
     A --> B
@@ -563,12 +587,18 @@ graph TD
     A --> E
     A --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -672,6 +702,8 @@ SQLite stores dates and times as TEXT (ISO8601), REAL (Julian day), or INTEGER (
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 9: Date and Time Types
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Date Storage Formats, TEXT ISO8601 strings, REAL Julian days, INTEGER Unix timestamps, E, Format. Connections: Date Storage Formats to TEXT ISO8601 strings, Date Storage Formats to REAL Julian days, Date Storage Formats to INTEGER Unix timestamps, TEXT ISO8601 strings to E, REAL Julian days to E, INTEGER Unix timestamps to E.
     A["Date Storage Formats"]
     B["TEXT<br/>ISO8601 strings"]
     C["REAL<br/>Julian days"]
@@ -685,11 +717,17 @@ graph TD
     C --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1410,16 +1448,22 @@ Aggregate functions compute single values from multiple rows. COUNT counts rows,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 16: COUNT, SUM, AVG, MIN, MAX
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Multiple Rows, Aggregate Function COUNT/SUM/AVG/MIN/ MAX, Single Result. Connections: Multiple Rows to Aggregate Function COUNT/SUM/AVG/MIN/ MAX (Process all rows), Aggregate Function COUNT/SUM/AVG/MIN/ MAX to Single Result (Compute).
     A["Multiple Rows"]
-    B["Aggregate Function<br/>COUNT/SUM/AVG/MIN/MAX"]
+    B["Aggregate Function<br/>COUNT/SUM/AVG/MIN/<br/>MAX"]
     C["Single Result"]
 
     A -->|Process all rows| B
     B -->|Compute| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1763,6 +1807,8 @@ INNER JOIN combines rows from two tables where the join condition matches. Only 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 19: INNER JOIN for Matching Rows
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Table A Orders, Table B Customers, INNER JOIN ON condition, Matched Rows Result. Connections: Table A Orders to INNER JOIN ON condition, Table B Customers to INNER JOIN ON condition, INNER JOIN ON condition to Matched Rows Result.
     A["Table A<br/>Orders"]
     B["Table B<br/>Customers"]
     C["INNER JOIN<br/>ON condition"]
@@ -1772,10 +1818,15 @@ graph TD
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1901,6 +1952,8 @@ LEFT JOIN returns all rows from the left table, with matched rows from the right
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 20: LEFT JOIN for Optional Matches
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: LEFT Table Departments (All rows), RIGHT Table Employees (Matching rows), LEFT JOIN ON condition, Result All LEFT rows + matched RIGHT + NULLs. Connections: LEFT Table Departments (All rows) to LEFT JOIN ON condition, RIGHT Table Employees (Matching rows) to LEFT JOIN ON condition, LEFT JOIN ON condition to Result All LEFT rows + matched RIGHT + NULLs.
     A["LEFT Table<br/>Departments<br/>(All rows)"]
     B["RIGHT Table<br/>Employees<br/>(Matching rows)"]
     C["LEFT JOIN<br/>ON condition"]
@@ -1910,10 +1963,15 @@ graph TD
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2500,17 +2558,24 @@ Indexes speed up queries by creating sorted lookup structures. B-tree indexes (d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 26: Indexes for Query Performance
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Table Scan Check every row, Index Scan Use sorted structure, Fast Lookup O40log n41 time, Slow for large tables. Connections: Table Scan Check every row to Slow for large tables (Without index), Index Scan Use sorted structure to Fast Lookup O40log n41 time (With index).
     A["Table Scan<br/>Check every row"]
     B["Index Scan<br/>Use sorted structure"]
     C["Fast Lookup<br/>O#40;log n#41; time"]
 
-    A -->|Without index| D["Slow for large tables"]
+    A -->|Without index| D["Slow for large<br/>tables"]
     B -->|With index| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

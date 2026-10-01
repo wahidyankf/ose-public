@@ -106,16 +106,19 @@ The `on` key is the entry point for all GitHub Actions triggers. At its simplest
 
 ```mermaid
 graph TD
-    A["Developer pushes commit"]:::blue --> B["GitHub detects push event"]:::orange
+    accTitle: Example 3: The on Key with a Single Event
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Developer pushes commit, GitHub detects push event, on: push matches, Workflow queued, Runner executes jobs. Connections: Developer pushes commit to GitHub detects push event, GitHub detects push event to on: push matches, on: push matches to Workflow queued, Workflow queued to Runner executes jobs.
+    A["Developer pushes<br/>commit"]:::blue --> B["GitHub detects push<br/>event"]:::orange
     B --> C["on: push matches"]:::teal
     C --> D["Workflow queued"]:::purple
     D --> E["Runner executes jobs"]:::brown
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -200,16 +203,19 @@ The `pull_request` event fires when a PR is opened, synchronized (new commits), 
 
 ```mermaid
 graph TD
-    A["PR opened / new commit pushed"]:::blue --> B["pull_request event fires"]:::orange
-    B --> C["Workflow runs on PR branch"]:::teal
+    accTitle: Example 5: The pullrequest Trigger
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: PR opened /new commit pushed, pull_request event fires, Workflow runs on PR branch, Checks pass?, Merge allowed, Merge blocked. Connections: PR opened /new commit pushed to pull_request event fires, pull_request event fires to Workflow runs on PR branch, Workflow runs on PR branch to Checks pass?, Checks pass? to Merge allowed (Yes), Checks pass? to Merge blocked (No).
+    A["PR opened /new<br/>commit pushed"]:::blue --> B["pull_request event<br/>fires"]:::orange
+    B --> C["Workflow runs on PR<br/>branch"]:::teal
     C --> D{"Checks pass?"}:::orange
     D -->|Yes| E["Merge allowed"]:::teal
     D -->|No| F["Merge blocked"]:::purple
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -383,14 +389,17 @@ The `schedule` trigger runs workflows on a time-based schedule using cron syntax
 
 ```mermaid
 graph TD
-    A["Scheduled time reached"]:::blue --> B["GitHub queues scheduled run"]:::orange
-    B --> C["No commit needed — time-based"]:::teal
-    C --> D["Runs on default branch"]:::purple
+    accTitle: Example 9: The schedule Trigger
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Scheduled time reached, GitHub queues scheduled run, No commit needed — time-based, Runs on default branch. Connections: Scheduled time reached to GitHub queues scheduled run, GitHub queues scheduled run to No commit needed — time-based, No commit needed — time-based to Runs on default branch.
+    A["Scheduled time<br/>reached"]:::blue --> B["GitHub queues<br/>scheduled run"]:::orange
+    B --> C["No commit needed —<br/>time-based"]:::teal
+    C --> D["Runs on default<br/>branch"]:::purple
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -666,14 +675,17 @@ jobs:
 
 ```mermaid
 graph LR
-    A["Job starts on runner"]:::blue --> B["actions/checkout runs"]:::orange
-    B --> C["Repo cloned to workspace"]:::teal
-    C --> D["Steps access source code"]:::purple
+    accTitle: Example 14: The uses Step with actions/checkout
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Job starts on runner, actions/checkout runs, Repo cloned to workspace, Steps access source code. Connections: Job starts on runner to actions/checkout runs, actions/checkout runs to Repo cloned to workspace, Repo cloned to workspace to Steps access source code.
+    A["Job starts on runner"]:::blue --> B["actions/checkout<br/>runs"]:::orange
+    B --> C["Repo cloned to<br/>workspace"]:::teal
+    C --> D["Steps access source<br/>code"]:::purple
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -885,14 +897,17 @@ Workflow-level `env` defines environment variables available to all jobs and ste
 
 ```mermaid
 graph TD
+    accTitle: Example 18: Setting env at the Workflow Level
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Workflow-level env, Job 1 inherits env, Job 2 inherits env, All steps in Job 1 see env, All steps in Job 2 see env. Connections: Workflow-level env to Job 1 inherits env, Workflow-level env to Job 2 inherits env, Job 1 inherits env to All steps in Job 1 see env, Job 2 inherits env to All steps in Job 2 see env.
     A["Workflow-level env"]:::blue --> B["Job 1 inherits env"]:::teal
     A --> C["Job 2 inherits env"]:::teal
-    B --> D["All steps in Job 1 see env"]:::purple
-    C --> E["All steps in Job 2 see env"]:::purple
+    B --> D["All steps in Job 1<br/>see env"]:::purple
+    C --> E["All steps in Job 2<br/>see env"]:::purple
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1126,14 +1141,17 @@ jobs:
 
 ```mermaid
 graph TD
-    A["Step evaluates if condition"]:::blue --> B{"Condition true?"}:::orange
+    accTitle: Example 22: Skipping Steps with if Conditionals
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Step evaluates if condition, Condition true?, Step executes, Step skipped — shown in UI. Connections: Step evaluates if condition to Condition true?, Condition true? to Step executes (Yes), Condition true? to Step skipped — shown in UI (No).
+    A["Step evaluates if<br/>condition"]:::blue --> B{"Condition true?"}:::orange
     B -->|Yes| C["Step executes"]:::teal
-    B -->|No| D["Step skipped — shown in UI"]:::brown
+    B -->|No| D["Step skipped — shown<br/>in UI"]:::brown
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1248,12 +1266,15 @@ By default, all jobs in a workflow run in parallel. `needs` declares a dependenc
 
 ```mermaid
 graph LR
+    accTitle: Example 24: Sequential Jobs with needs
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: test job, deploy job, lint job. Connections: test job to deploy job (needs), lint job to deploy job (needs).
     A["test job"]:::blue -->|needs| C["deploy job"]:::teal
     B["lint job"]:::orange -->|needs| C
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1471,16 +1492,19 @@ A realistic beginner-level workflow combines multiple triggers, environment vari
 
 ```mermaid
 graph TD
-    A["push or pull_request event"]:::blue --> B["lint job"]:::orange
+    accTitle: Example 28: Combining Triggers, Env, Needs, and Conditionals
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: push or pull_request event, lint job, test job, needs: lint, test, deploy job — main branch only. Connections: push or pull_request event to lint job, push or pull_request event to test job, lint job to needs: lint, test, test job to needs: lint, test, needs: lint, test to deploy job — main branch only.
+    A["push or pull_request<br/>event"]:::blue --> B["lint job"]:::orange
     A --> C["test job"]:::orange
     B --> D{"needs: lint, test"}:::teal
     C --> D
-    D --> E["deploy job — main branch only"]:::purple
+    D --> E["deploy job — main<br/>branch only"]:::purple
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

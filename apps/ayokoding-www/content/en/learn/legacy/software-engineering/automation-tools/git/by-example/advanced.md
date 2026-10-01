@@ -18,6 +18,8 @@ Interactive rebase rewrites a sequence of commits by applying a series of named 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 58: Interactive Rebase — Squash, Fixup, Reword, Edit, Drop
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Original commits HEAD~4..HEAD, Rebase TODO list editor opens, pick / squash / fixup / reword / edit / drop, Rewritten history force-push required. Connections: Original commits HEAD~4..HEAD to Rebase TODO list editor opens (git rebase -i HEAD~4), Rebase TODO list editor opens to pick / squash / fixup / reword / edit / drop (user edits actions), pick / squash / fixup / reword / edit / drop to Rewritten history force-push required (git applies replays).
     A["Original commits<br/>HEAD~4..HEAD"]
     B["Rebase TODO list<br/>editor opens"]
     C["pick / squash /<br/>fixup / reword /<br/>edit / drop"]
@@ -27,10 +29,15 @@ graph TD
     B -->|user edits actions| C
     C -->|git applies replays| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -137,6 +144,8 @@ git show HEAD~1:config.txt
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 60: Git Worktree — Parallel Working Directories
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: .git object store (shared), worktree: main /repo (primary), worktree: hotfix /repo-hotfix, worktree: experiment /repo-exp. Connections: .git object store (shared) to worktree: main /repo (primary), .git object store (shared) to worktree: hotfix /repo-hotfix, .git object store (shared) to worktree: experiment /repo-exp.
     G[".git object store<br/>(shared)"]
     W1["worktree: main<br/>/repo (primary)"]
     W2["worktree: hotfix<br/>/repo-hotfix"]
@@ -146,10 +155,15 @@ graph LR
     G --- W2
     G --- W3
 
-    style G fill:#0173B2,stroke:#000,color:#fff
-    style W1 fill:#029E73,stroke:#000,color:#fff
-    style W2 fill:#DE8F05,stroke:#000,color:#fff
-    style W3 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class G pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class W1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class W2 pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class W3 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -200,6 +214,8 @@ Long-lived worktrees risk accidental removal by `git worktree prune` or a teamma
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 61: Git Worktree — Lock, Unlock, and Move
+    accDescr: State diagram with 5 items: start or end, Active, Locked, Moved, Removed. Relationships: start or end to Active: worktree add; Active to Locked: worktree lock; Locked to Active: worktree unlock; Active to Moved: worktree move; Moved to Active: (continues as normal); Active to Removed: worktree remove; Locked to Locked: prune skips.
     [*] --> Active : worktree add
     Active --> Locked : worktree lock
     Locked --> Active : worktree unlock
@@ -267,6 +283,8 @@ A bare repository has no primary working tree. Combined with `git worktree add`,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 62: Git Worktree — Bare Repository Workflow
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: bare repo ~/project/.bare, worktree: main ~/project/main, worktree: develop ~/project/develop, worktree: release ~/project/release. Connections: bare repo ~/project/.bare to worktree: main ~/project/main, bare repo ~/project/.bare to worktree: develop ~/project/develop, bare repo ~/project/.bare to worktree: release ~/project/release.
     B["bare repo<br/>~/project/.bare"]
     W1["worktree: main<br/>~/project/main"]
     W2["worktree: develop<br/>~/project/develop"]
@@ -276,10 +294,15 @@ graph TD
     B --- W2
     B --- W3
 
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style W1 fill:#029E73,stroke:#000,color:#fff
-    style W2 fill:#DE8F05,stroke:#000,color:#fff
-    style W3 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class W1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class W2 pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class W3 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -339,6 +362,8 @@ This example demonstrates a realistic development workflow: you are mid-feature 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 63: Git Worktree — Practical Multi-Task Development
+    accDescr: Sequence diagram between Feature Worktree (~/repo), Hotfix Worktree (~/repo-hotfix), Remote. Messages: Feature Worktree (~/repo) to Hotfix Worktree (~/repo-hotfix): git worktree add (hotfix/login-crash); Hotfix Worktree (~/repo-hotfix) to Remote: git push (hotfix branch); Hotfix Worktree (~/repo-hotfix) to Feature Worktree (~/repo): git worktree remove.
     participant F as Feature Worktree<br/>(~/repo)
     participant H as Hotfix Worktree<br/>(~/repo-hotfix)
     participant R as Remote
@@ -418,6 +443,8 @@ git worktree list
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 64: Git Bisect — Manual Binary Search for a Regression
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Known good v1.0.0, Bisect mid 1 test → good, Bisect mid 2 test → bad, Culprit commit found!. Connections: Known good v1.0.0 to Bisect mid 1 test → good (git bisect good), Bisect mid 1 test → good to Bisect mid 2 test → bad (git bisect bad), Bisect mid 2 test → bad to Culprit commit found! (git bisect bad).
     A["Known good<br/>v1.0.0"]
     B["Bisect mid 1<br/>test → good"]
     C["Bisect mid 2<br/>test → bad"]
@@ -427,10 +454,14 @@ graph LR
     B -->|git bisect bad| C
     C -->|git bisect bad| D
 
-    style A fill:#029E73,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class A pal-029E73
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -539,16 +570,22 @@ Submodules embed a pinned reference to another Git repository inside your reposi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    P["Parent repo<br/>.gitmodules stores URL + SHA"]
-    S1["Submodule: lib-common<br/>pinned to commit abc123"]
-    S2["Submodule: lib-ui<br/>pinned to commit def456"]
+    accTitle: Example 66: Git Submodule — Add, Clone, Update, foreach, deinit
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Parent repo .gitmodules stores URL + SHA, Submodule: lib-common pinned to commit abc123, Submodule: lib-ui pinned to commit def456. Connections: Parent repo .gitmodules stores URL + SHA to Submodule: lib-common pinned to commit abc123 (git submodule add), Parent repo .gitmodules stores URL + SHA to Submodule: lib-ui pinned to commit def456 (git submodule add).
+    P["Parent repo<br/>.gitmodules stores<br/>URL + SHA"]
+    S1["Submodule:<br/>lib-common<br/>pinned to commit<br/>abc123"]
+    S2["Submodule: lib-ui<br/>pinned to commit<br/>def456"]
 
     P -->|git submodule add| S1
     P -->|git submodule add| S2
 
-    style P fill:#0173B2,stroke:#000,color:#fff
-    style S1 fill:#029E73,stroke:#000,color:#fff
-    style S2 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S1 pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class S2 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -816,6 +853,8 @@ git notes --ref=review add -m "LGTM: approved by alice@example.com" HEAD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 71: Git Bundle — Offline Transfer of Repository Data
+    accDescr: Sequence diagram between Machine A (online), Bundle file (USB), Machine C (air-gapped). Messages: Machine A (online) to Bundle file (USB): git bundle create repo.bundle --all; Bundle file (USB) to Machine C (air-gapped): physical transfer; Machine C (air-gapped) to Machine C (air-gapped): git clone repo.bundle cloned-repo; Machine A (online) to Bundle file (USB): git bundle create update.bundle origin/main ^abc123; Bundle file (USB) to Machine C (air-gapped): physical transfer; Machine C (air-gapped) to Machine C (air-gapped): git fetch repo.bundle refs/heads/main:refs/heads/main.
     participant A as Machine A (online)
     participant B as Bundle file (USB)
     participant C as Machine C (air-gapped)
@@ -923,7 +962,9 @@ Sparse checkout allows you to work with a subset of the working tree, leaving th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    R["Full repo objects<br/>(all services in .git)"]
+    accTitle: Example 73: Git Sparse-Checkout — Check Out Only a Subdirectory
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Full repo objects (all services in .git), Sparse working tree only services/auth/, services/auth/ files on disk, services/billing/ (absent from disk). Connections: Full repo objects (all services in .git) to Sparse working tree only services/auth/ (sparse-checkout set), Sparse working tree only services/auth/ to services/auth/ files on disk (materialised), Sparse working tree only services/auth/ to services/billing/ (absent from disk) (skipped).
+    R["Full repo objects<br/>(all services in<br/>.git)"]
     S["Sparse working tree<br/>only services/auth/"]
     H["services/auth/ files<br/>on disk"]
     M["services/billing/<br/>(absent from disk)"]
@@ -932,10 +973,15 @@ graph TD
     S -->|materialised| H
     S -->|skipped| M
 
-    style R fill:#0173B2,stroke:#000,color:#fff
-    style S fill:#DE8F05,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
-    style M fill:#808080,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class R pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class S pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class H pal-029E73
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class M pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1043,6 +1089,8 @@ Every piece of data Git stores is one of four immutable object types: blobs (fil
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 75: The Git Object Model — Blobs, Trees, Commits, Tags
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Tag object v1.0 (annotated), Commit object SHA: a1b2c3d, Tree object root /, Blob object README.md contents, Blob object main.go contents, Tree object src/, Blob object src/app.go contents, Parent commit SHA: 9f8e7d6. Connections: Tag object v1.0 (annotated) to Commit object SHA: a1b2c3d (points to), Commit object SHA: a1b2c3d to Tree object root / (tree), Commit object SHA: a1b2c3d to Parent commit SHA: 9f8e7d6 (parent), Tree object root / to Blob object README.md contents (blob README.md), Tree object root / to Blob object main.go contents (blob main.go), Tree object root / to Tree object src/ (tree src/), Tree object src/ to Blob object src/app.go contents (blob app.go).
     TAG["Tag object<br/>v1.0 (annotated)"]
     COMMIT["Commit object<br/>SHA: a1b2c3d"]
     TREE["Tree object<br/>root /"]
@@ -1060,14 +1108,20 @@ graph TD
     TREE -- tree src/ --> SUBTREE
     SUBTREE -- blob app.go --> BLOB3
 
-    style TAG fill:#CC78BC,stroke:#000,color:#fff
-    style COMMIT fill:#0173B2,stroke:#000,color:#fff
-    style TREE fill:#DE8F05,stroke:#000,color:#fff
-    style BLOB1 fill:#029E73,stroke:#000,color:#fff
-    style BLOB2 fill:#029E73,stroke:#000,color:#fff
-    style SUBTREE fill:#DE8F05,stroke:#000,color:#fff
-    style BLOB3 fill:#029E73,stroke:#000,color:#fff
-    style PARENT fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class TAG pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class COMMIT pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class TREE pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class BLOB1 pal-029E73
+    class BLOB2 pal-029E73
+    class SUBTREE pal-DE8F05
+    class BLOB3 pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PARENT pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1187,19 +1241,26 @@ Shallow clones (`--depth N`) and partial clones (`--filter=blob:none` or `--filt
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    FULL["Full clone<br/>all objects, all history"]
+    accTitle: Example 77: Shallow Clone and Partial Clone — Fast CI Checkouts
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Full clone all objects, all history, Shallow clone last N commits only, Blobless clone commits + trees no blobs, Treeless clone commits only no trees/blobs. Connections: Full clone all objects, all history to Shallow clone last N commits only (--depth N), Full clone all objects, all history to Blobless clone commits + trees no blobs (--filter=blob:none), Full clone all objects, all history to Treeless clone commits only no trees/blobs (--filter=tree:0).
+    FULL["Full clone<br/>all objects, all<br/>history"]
     SHALLOW["Shallow clone<br/>last N commits only"]
-    BLOBLESS["Blobless clone<br/>commits + trees; no blobs"]
-    TREELESS["Treeless clone<br/>commits only; no trees/blobs"]
+    BLOBLESS["Blobless clone<br/>commits + trees; no<br/>blobs"]
+    TREELESS["Treeless clone<br/>commits only; no<br/>trees/blobs"]
 
     FULL -->|--depth N| SHALLOW
     FULL -->|--filter=blob:none| BLOBLESS
     FULL -->|--filter=tree:0| TREELESS
 
-    style FULL fill:#0173B2,stroke:#000,color:#fff
-    style SHALLOW fill:#DE8F05,stroke:#000,color:#fff
-    style BLOBLESS fill:#029E73,stroke:#000,color:#fff
-    style TREELESS fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class FULL pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SHALLOW pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class BLOBLESS pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class TREELESS pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1591,22 +1652,30 @@ Large monorepos require deliberate Git strategies to remain fast and maintainabl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 84: Monorepo Strategies with Git — Nx, Sparse Checkout, and CODEOWNERS
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Monorepo root (Git repository), Nx workspace affected task graph, Sparse checkout per-service working tree, CODEOWNERS per-path ownership, CI pipeline only affected projects. Connections: Monorepo root (Git repository) to Nx workspace affected task graph (nx affected), Monorepo root (Git repository) to Sparse checkout per-service working tree (git sparse-checkout), Monorepo root (Git repository) to CODEOWNERS per-path ownership (GitHub PR review), Nx workspace affected task graph to CI pipeline only affected projects.
     MONO["Monorepo root<br/>(Git repository)"]
     NX["Nx workspace<br/>affected task graph"]
-    SPARSE["Sparse checkout<br/>per-service working tree"]
+    SPARSE["Sparse checkout<br/>per-service working<br/>tree"]
     OWNERS["CODEOWNERS<br/>per-path ownership"]
-    CI["CI pipeline<br/>only affected projects"]
+    CI["CI pipeline<br/>only affected<br/>projects"]
 
     MONO -->|nx affected| NX
     MONO -->|git sparse-checkout| SPARSE
     MONO -->|GitHub PR review| OWNERS
     NX --> CI
 
-    style MONO fill:#0173B2,stroke:#000,color:#fff
-    style NX fill:#029E73,stroke:#000,color:#fff
-    style SPARSE fill:#DE8F05,stroke:#000,color:#fff
-    style OWNERS fill:#CC78BC,stroke:#000,color:#fff
-    style CI fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class MONO pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class NX pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SPARSE pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class OWNERS pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class CI pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1728,6 +1797,8 @@ Git hooks execute scripts at specific lifecycle events (pre-commit, commit-msg, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 86: Git Hooks in a Team — Husky, lint-staged, and Commit-msg Validation
+    accDescr: Sequence diagram between Developer, Husky hooks, lint-staged, CI Pipeline. Messages: Developer to Husky hooks: git commit -m feat: add feature; Husky hooks to lint-staged: pre-commit hook fires; lint-staged to lint-staged: format + lint staged files only; lint-staged to Husky hooks: exit 0 (pass) or exit 1 (block); Husky hooks to Husky hooks: commit-msg hook validates format; Husky hooks to Developer: commit created or rejected; Developer to CI Pipeline: git push; CI Pipeline to CI Pipeline: full test suite (pre-push hook optional).
     participant D as Developer
     participant H as Husky hooks
     participant LS as lint-staged
@@ -1880,24 +1951,32 @@ git log --notes --all --pretty=format:"%H %s %N" | grep -i "regression"
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 88: Git Reflog — Recovering Lost Commits and Branches
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: reflog (all HEAD movements), HEAD@0: current commit, C2, hard, HEAD@2: before rebase, HEAD@5: lost feature work, recovered branch. Connections: C2 to hard, reflog (all HEAD movements) to HEAD@0: current commit, reflog (all HEAD movements) to C2, reflog (all HEAD movements) to HEAD@2: before rebase, reflog (all HEAD movements) to HEAD@5: lost feature work, HEAD@5: lost feature work to recovered branch (git checkout -b recovered).
     R["reflog<br/>(all HEAD movements)"]
-    C1["HEAD@{0}: current commit"]
-    C2["HEAD@{1}: before reset --hard"]
-    C3["HEAD@{2}: before rebase"]
-    C4["HEAD@{5}: lost feature work"]
+    C1["HEAD@{0}: current<br/>commit"]
+    C2["HEAD@{1}: before<br/>reset --hard"]
+    C3["HEAD@{2}: before<br/>rebase"]
+    C4["HEAD@{5}: lost<br/>feature work"]
 
     R --> C1
     R --> C2
     R --> C3
     R --> C4
-    C4 -->|git checkout -b recovered| REC["recovered branch"]
+    C4 -->|git checkout -b<br/>recovered| REC["recovered branch"]
 
-    style R fill:#0173B2,stroke:#000,color:#fff
-    style C1 fill:#029E73,stroke:#000,color:#fff
-    style C2 fill:#DE8F05,stroke:#000,color:#fff
-    style C3 fill:#DE8F05,stroke:#000,color:#fff
-    style C4 fill:#CC78BC,stroke:#000,color:#fff
-    style REC fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class R pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C2 pal-DE8F05
+    class C3 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C4 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class REC pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

@@ -387,10 +387,12 @@ test.describe("Accessibility Compliance", () => {
 
 ```mermaid
 flowchart TD
+    accTitle: Accessibility Testing Architecture
+    accDescr: Flowchart with 18 nodes and 20 connections. Nodes: Test Starts, Navigate to Page, Inject axe-core, Configure Rules, Run Accessibility Scan, Violations?, Test Passes, Extract Violations, Classify by Impact, Critical?, Serious?, Moderate?, and 6 more. Connections: Test Starts to Navigate to Page, Navigate to Page to Inject axe-core, Inject axe-core to Configure Rules, Configure Rules to Run Accessibility Scan, Run Accessibility Scan to Violations?, Violations? to Test Passes (No), Violations? to Extract Violations (Yes), Extract Violations to Classify by Impact, Classify by Impact to Critical?, Classify by Impact to Serious?, Classify by Impact to Moderate?, Critical? to Log Critical Violations (Yes), and 8 more.
     Start[Test Starts] --> Navigate[Navigate to Page]
     Navigate --> Inject[Inject axe-core]
     Inject --> Configure[Configure Rules]
-    Configure --> Scan[Run Accessibility Scan]
+    Configure --> Scan[Run Accessibility<br/>Scan]
 
     Scan --> Check{Violations?}
     Check -->|No| Pass[Test Passes]
@@ -401,9 +403,9 @@ flowchart TD
     Classify --> Serious{Serious?}
     Classify --> Moderate{Moderate?}
 
-    Critical -->|Yes| Log1[Log Critical Violations]
-    Serious -->|Yes| Log2[Log Serious Violations]
-    Moderate -->|Yes| Log3[Log Moderate Violations]
+    Critical -->|Yes| Log1[Log Critical<br/>Violations]
+    Serious -->|Yes| Log2[Log Serious<br/>Violations]
+    Moderate -->|Yes| Log3[Log Moderate<br/>Violations]
 
     Log1 --> Report[Generate Report]
     Log2 --> Report
@@ -413,14 +415,20 @@ flowchart TD
     Pass --> End[End]
     Fail --> End
 
-    style Start fill:#0173B2,color:#fff
-    style Navigate fill:#029E73,color:#fff
-    style Inject fill:#DE8F05,color:#000
-    style Scan fill:#CC78BC,color:#fff
-    style Check fill:#CA9161,color:#fff
-    style Pass fill:#029E73,color:#fff
-    style Fail fill:#DE8F05,color:#000
-    style End fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Navigate pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Inject pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Scan pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Check pal-CA9161
+    class Pass pal-029E73
+    class Fail pal-DE8F05
+    class End pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

@@ -18,17 +18,24 @@ Proxmox clustering uses Corosync for distributed state and quorum. All cluster n
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["pve01 (first node)<br/>pvecm create mycluster"] --> B["Corosync Ring<br/>UDP 5405-5412"]
+    accTitle: Example 29: Create and Join a Multi-Node Cluster
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: pve01 (first node) pvecm create mycluster, Corosync Ring UDP 5405-5412, pve02 joins pvecm add pve01, pve03 joins pvecm add pve01, PMXCFS shared /etc/pve/ synced. Connections: pve01 (first node) pvecm create mycluster to Corosync Ring UDP 5405-5412, Corosync Ring UDP 5405-5412 to pve02 joins pvecm add pve01, Corosync Ring UDP 5405-5412 to pve03 joins pvecm add pve01, pve02 joins pvecm add pve01 to PMXCFS shared /etc/pve/ synced, pve03 joins pvecm add pve01 to PMXCFS shared /etc/pve/ synced.
+    A["pve01 (first node)<br/>pvecm create<br/>mycluster"] --> B["Corosync Ring<br/>UDP 5405-5412"]
     B --> C["pve02 joins<br/>pvecm add pve01"]
     B --> D["pve03 joins<br/>pvecm add pve01"]
     C --> E["PMXCFS shared<br/>/etc/pve/ synced"]
     D --> E
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#fff,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#029E73,color:#fff,stroke:#000
-    style E fill:#CC78BC,color:#fff,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -70,16 +77,23 @@ Quorum determines whether a cluster partition can make decisions. Understanding 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 30: Inspect Cluster Membership and Quorum Status
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 3-node cluster 3 votes total quorum = 2, Nodes online?, QUORATE: Yes All operations allowed, QUORATE: Yes Majority maintained, QUORATE: No Write ops frozen (split-brain prevention). Connections: 3-node cluster 3 votes total quorum = 2 to Nodes online?, Nodes online? to QUORATE: Yes All operations allowed (3 of 3 online), Nodes online? to QUORATE: Yes Majority maintained (2 of 3 online), Nodes online? to QUORATE: No Write ops frozen (split-brain prevention) (1 of 3 online).
     A["3-node cluster<br/>3 votes total<br/>quorum = 2"] --> B{"Nodes online?"}
-    B -->|"3 of 3 online"| C["QUORATE: Yes<br/>All operations allowed"]
+    B -->|"3 of 3 online"| C["QUORATE: Yes<br/>All operations<br/>allowed"]
     B -->|"2 of 3 online"| D["QUORATE: Yes<br/>Majority maintained"]
-    B -->|"1 of 3 online"| E["QUORATE: No<br/>Write ops frozen<br/>(split-brain prevention)"]
+    B -->|"1 of 3 online"| E["QUORATE: No<br/>Write ops frozen<br/>(split-brain<br/>prevention)"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#029E73,color:#fff,stroke:#000
-    style E fill:#CC78BC,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -154,14 +168,20 @@ Online migration moves a running VM between cluster nodes without downtime. It r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["pve01<br/>VM 100 running"] -->|"1. Pre-copy dirty pages<br/>(VM still running)"| B["pve02<br/>(destination)"]
+    accTitle: Example 32: Perform Live Online VM Migration Between Nodes
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: pve01 VM 100 running, pve02 (destination), pve02 VM 100 running. Connections: pve01 VM 100 running to pve02 (destination) (1. Pre-copy dirty pages (VM still running)), pve01 VM 100 running to pve02 (destination) (2. Final sync (<100ms pause)), pve02 (destination) to pve02 VM 100 running (3. VM resumes on pve02), pve01 VM 100 running to pve02 VM 100 running (Shared Ceph/NFS disk (no disk copy needed)).
+    A["pve01<br/>VM 100 running"] -->|"1. Pre-copy dirty<br/>pages<br/>(VM still running)"| B["pve02<br/>(destination)"]
     A -->|"2. Final sync<br/>(<100ms pause)"| B
     B -->|"3. VM resumes<br/>on pve02"| C["pve02<br/>VM 100 running"]
-    A -->|"Shared Ceph/NFS disk<br/>(no disk copy needed)"| C
+    A -->|"Shared Ceph/NFS<br/>disk<br/>(no disk copy<br/>needed)"| C
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -559,16 +579,24 @@ Ceph is a distributed, self-healing storage system integrated directly into Prox
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 39: Initialise and Deploy a Ceph Cluster
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: pveceph init network 10.0.0.0/24, Add Monitors pve01, pve02, pve03, Add Managers pve01, pve02, Add OSDs One per disk per node, Create Pool pveceph pool create. Connections: pveceph init network 10.0.0.0/24 to Add Monitors pve01, pve02, pve03, Add Monitors pve01, pve02, pve03 to Add Managers pve01, pve02, Add Managers pve01, pve02 to Add OSDs One per disk per node, Add OSDs One per disk per node to Create Pool pveceph pool create.
     A["pveceph init<br/>network 10.0.0.0/24"] --> B["Add Monitors<br/>pve01, pve02, pve03"]
     B --> C["Add Managers<br/>pve01, pve02"]
-    C --> D["Add OSDs<br/>One per disk per node"]
+    C --> D["Add OSDs<br/>One per disk per<br/>node"]
     D --> E["Create Pool<br/>pveceph pool create"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#fff,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#fff,stroke:#000
-    style E fill:#CA9161,color:#fff,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -631,18 +659,25 @@ Ceph pools are named storage containers with configurable replication, placement
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 40: Create and Configure Ceph Storage Pools
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: VM Disk Write (RBD object), Ceph Pool size=3, min_size=2, OSD on pve01 Primary replica, OSD on pve02 Replica 2, OSD on pve03 Replica 3, Write Confirmed to Client. Connections: VM Disk Write (RBD object) to Ceph Pool size=3, min_size=2, Ceph Pool size=3, min_size=2 to OSD on pve01 Primary replica, Ceph Pool size=3, min_size=2 to OSD on pve02 Replica 2, Ceph Pool size=3, min_size=2 to OSD on pve03 Replica 3, OSD on pve01 Primary replica to Write Confirmed to Client (ACK: 2 of 3).
     A["VM Disk Write<br/>(RBD object)"] --> B["Ceph Pool<br/>size=3, min_size=2"]
     B --> C["OSD on pve01<br/>Primary replica"]
     B --> D["OSD on pve02<br/>Replica 2"]
     B --> E["OSD on pve03<br/>Replica 3"]
     C -->|"ACK: 2 of 3"| F["Write Confirmed<br/>to Client"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#029E73,color:#fff,stroke:#000
-    style E fill:#029E73,color:#fff,stroke:#000
-    style F fill:#CA9161,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -786,18 +821,26 @@ Proxmox SDN (Software-Defined Networking) provides declarative L2/L3 overlay net
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["SDN Zone<br/>(transport: Simple/VXLAN/EVPN)"] --> B["VNet: web-net<br/>198.51.100.0/24"]
+    accTitle: Example 43: Configure SDN: Zone, VNet, and Subnet
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: SDN Zone (transport: Simple/VXLAN/EVPN), VNet: web-net 198.51.100.0/24, VNet: db-net 203.0.113.0/24, VM 100 (web) IP: 198.51.100.10, VM 101 (app) IP: 198.51.100.11, VM 200 (db) IP: 203.0.113.10. Connections: SDN Zone (transport: Simple/VXLAN/EVPN) to VNet: web-net 198.51.100.0/24, SDN Zone (transport: Simple/VXLAN/EVPN) to VNet: db-net 203.0.113.0/24, VNet: web-net 198.51.100.0/24 to VM 100 (web) IP: 198.51.100.10, VNet: web-net 198.51.100.0/24 to VM 101 (app) IP: 198.51.100.11, VNet: db-net 203.0.113.0/24 to VM 200 (db) IP: 203.0.113.10.
+    A["SDN Zone<br/>(transport:<br/>Simple/VXLAN/EVPN)"] --> B["VNet: web-net<br/>198.51.100.0/24"]
     A --> C["VNet: db-net<br/>203.0.113.0/24"]
     B --> D["VM 100 (web)<br/>IP: 198.51.100.10"]
     B --> E["VM 101 (app)<br/>IP: 198.51.100.11"]
     C --> F["VM 200 (db)<br/>IP: 203.0.113.10"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#CC78BC,color:#000,stroke:#000
-    style D fill:#029E73,color:#fff,stroke:#000
-    style E fill:#029E73,color:#fff,stroke:#000
-    style F fill:#CA9161,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -911,17 +954,23 @@ BGP-EVPN (Border Gateway Protocol with Ethernet VPN) provides L3 routing between
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 45: Configure BGP-EVPN Zone for Routed L3 SDN
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: pve01 FRR BGP AS 65000, pve02 FRR BGP AS 65000, pve03 FRR BGP AS 65000, VNet: web-net VXLAN VNI 10000, VNet: db-net VXLAN VNI 10001. Connections: pve01 FRR BGP AS 65000 to pve02 FRR BGP AS 65000 (EVPN Type-5 routes), pve01 FRR BGP AS 65000 to pve03 FRR BGP AS 65000 (EVPN Type-5 routes), pve02 FRR BGP AS 65000 to VNet: web-net VXLAN VNI 10000, pve03 FRR BGP AS 65000 to VNet: db-net VXLAN VNI 10001, VNet: web-net VXLAN VNI 10000 to VNet: db-net VXLAN VNI 10001 (L3 routing via BGP-EVPN).
     A["pve01 FRR<br/>BGP AS 65000"] -->|EVPN Type-5 routes| B["pve02 FRR<br/>BGP AS 65000"]
     A -->|EVPN Type-5 routes| C["pve03 FRR<br/>BGP AS 65000"]
     B --> D["VNet: web-net<br/>VXLAN VNI 10000"]
     C --> E["VNet: db-net<br/>VXLAN VNI 10001"]
-    D -->|"L3 routing via BGP-EVPN"| E
+    D -->|"L3 routing via<br/>BGP-EVPN"| E
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#0173B2,color:#fff,stroke:#000
-    style C fill:#0173B2,color:#fff,stroke:#000
-    style D fill:#DE8F05,color:#000,stroke:#000
-    style E fill:#029E73,color:#fff,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1134,15 +1183,22 @@ Proxmox Backup Server provides incremental, deduplicated backups with significan
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["PVE Node<br/>vzdump client"] -->|"Incremental chunks<br/>(only changed blocks)"| B["PBS 4.2 Server<br/>:8007"]
-    B --> C["Datastore<br/>Deduplication + Verify"]
+    accTitle: Example 48: Integrate Proxmox Backup Server
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: PVE Node vzdump client, PBS 4.2 Server :8007, Datastore Deduplication + Verify, Tape / S3 Offsite copy. Connections: PVE Node vzdump client to PBS 4.2 Server :8007 (Incremental chunks (only changed blocks)), PBS 4.2 Server :8007 to Datastore Deduplication + Verify, Datastore Deduplication + Verify to Tape / S3 Offsite copy, PVE Node vzdump client to PBS 4.2 Server :8007 (API token auth).
+    A["PVE Node<br/>vzdump client"] -->|"Incremental chunks<br/>(only changed<br/>blocks)"| B["PBS 4.2 Server<br/>:8007"]
+    B --> C["Datastore<br/>Deduplication +<br/>Verify"]
     C --> D["Tape / S3<br/>Offsite copy"]
     A -->|"API token auth"| B
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1248,16 +1304,24 @@ PBS's live-restore feature starts VMs immediately during restore, making restore
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["PBS Backup Archive<br/>(on PBS server)"] --> B["t=0: VM Boots<br/>(metadata + kernel loaded)"]
+    accTitle: Example 50: Restore a VM Backup with Live-Restore from PBS
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: PBS Backup Archive (on PBS server), t=0: VM Boots (metadata + kernel loaded), t=5s: VM Running (serving requests), Background Transfer Remaining disk blocks, t=5min: Restore Complete (full disk on local storage). Connections: PBS Backup Archive (on PBS server) to t=0: VM Boots (metadata + kernel loaded), t=0: VM Boots (metadata + kernel loaded) to t=5s: VM Running (serving requests), t=5s: VM Running (serving requests) to Background Transfer Remaining disk blocks, Background Transfer Remaining disk blocks to t=5min: Restore Complete (full disk on local storage).
+    A["PBS Backup Archive<br/>(on PBS server)"] --> B["t=0: VM Boots<br/>(metadata + kernel<br/>loaded)"]
     B --> C["t=5s: VM Running<br/>(serving requests)"]
-    C --> D["Background Transfer<br/>Remaining disk blocks"]
-    D --> E["t=5min: Restore Complete<br/>(full disk on local storage)"]
+    C --> D["Background Transfer<br/>Remaining disk<br/>blocks"]
+    D --> E["t=5min: Restore<br/>Complete<br/>(full disk on local<br/>storage)"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#000,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
-    style D fill:#CC78BC,color:#000,stroke:#000
-    style E fill:#CA9161,color:#000,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

@@ -18,16 +18,24 @@ Custom providers extend Terraform to manage resources not covered by official pr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+ accTitle: Example 57: Provider Development Basics
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Terraform Core, Provider Plugin, Resource Schema, CRUD Operations, External API. Connections: Terraform Core to Provider Plugin, Provider Plugin to Resource Schema, Provider Plugin to CRUD Operations, CRUD Operations to External API.
  A["Terraform Core"] --> B["Provider Plugin"]
  B --> C["Resource Schema"]
  B --> D["CRUD Operations"]
  D --> E["External API"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Provider structure** (Go):
@@ -561,18 +569,25 @@ Test providers using SDK's acceptance testing framework. Tests provision real in
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 59: Provider Testing with Terraform Plugin SDK
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Test Start, Apply Test Config, Verify Resource Created, Check Attributes, Destroy Resources, Test Complete. Connections: Test Start to Apply Test Config, Apply Test Config to Verify Resource Created, Verify Resource Created to Check Attributes, Check Attributes to Destroy Resources, Destroy Resources to Test Complete.
  A["Test Start"] --> B["Apply Test Config"]
  B --> C["Verify Resource<br/>Created"]
  C --> D["Check Attributes"]
  D --> E["Destroy Resources"]
  E --> F["Test Complete"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#DE8F05,color:#fff
- style F fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-DE8F05
+ class F pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go
@@ -1062,18 +1077,25 @@ Terratest enables Go-based integration tests that provision infrastructure, vali
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
- A["Test Starts"] --> B["terraform.InitAndApply"]
+ accTitle: Example 62: Automated Testing with Terratest
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Test Starts, terraform. InitAndApply, Infrastructure Provisioned, Assertions Validate Behavior, defer terraform.Destroy, Cleanup Complete. Connections: Test Starts to terraform. InitAndApply, terraform. InitAndApply to Infrastructure Provisioned, Infrastructure Provisioned to Assertions Validate Behavior, Assertions Validate Behavior to defer terraform.Destroy, defer terraform.Destroy to Cleanup Complete.
+ A["Test Starts"] --> B["terraform.<br/>InitAndApply"]
  B --> C["Infrastructure<br/>Provisioned"]
  C --> D["Assertions<br/>Validate Behavior"]
- D --> E["defer terraform.Destroy"]
+ D --> E["defer<br/>terraform.Destroy"]
  E --> F["Cleanup Complete"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#DE8F05,color:#fff
- style F fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-DE8F05
+ class F pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Why This External Tool**: Terraform's built-in testing (`terraform validate`, `terraform plan -detailed-exitcode`) validates syntax and previews changes but cannot verify that infrastructure actually works after deployment—it cannot confirm "EC2 instance is reachable on port 443" or "RDS accepts connections from application subnet." Terratest fills this gap by provisioning real infrastructure, running assertions against live endpoints, then destroying everything. The Go testing framework provides test parallelism, retry logic for eventual consistency, and structured assertions unavailable in shell scripts. For production modules used across dozens of teams, automated integration tests catch regressions that code review cannot detect.
@@ -1278,16 +1300,23 @@ Policy as Code enforces organizational standards on infrastructure before apply.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 63: Policy as Code with Sentinel and OPA
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: terraform plan, Policy Checks Sentinel/OPA, Policy Pass?, Proceed to Apply, Block Apply Show Violations. Connections: terraform plan to Policy Checks Sentinel/OPA, Policy Checks Sentinel/OPA to Policy Pass?, Policy Pass? to Proceed to Apply (Yes), Policy Pass? to Block Apply Show Violations (No).
  A["terraform plan"] --> B["Policy Checks<br/>Sentinel/OPA"]
  B --> C{Policy Pass?}
  C -->|Yes| D["Proceed to Apply"]
  C -->|No| E["Block Apply<br/>Show Violations"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#DE8F05,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class E pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Sentinel policy** - `require-tags.sentinel`:
@@ -1511,16 +1540,23 @@ Contract tests verify modules honor their input/output contracts: given specific
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 64: Contract Testing for Modules
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Test Inputs, Module Apply, Verify Outputs Exist, Test Updates, Verify Idempotence. Connections: Test Inputs to Module Apply, Module Apply to Verify Outputs Exist, Verify Outputs Exist to Test Updates, Test Updates to Verify Idempotence.
  A["Test Inputs"] --> B["Module Apply"]
  B --> C["Verify Outputs<br/>Exist"]
  C --> D["Test Updates"]
  D --> E["Verify Idempotence"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#029E73,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Module under test** - `modules/web-server/main.tf`:
@@ -1978,6 +2014,8 @@ Deploy infrastructure across multiple regions for high availability, disaster re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 66: Multi-Region Infrastructure Patterns
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Primary Region us-east-1, Application, Secondary Region us-west-2, Application Replica, Tertiary Region eu-west-1, Application Replica, Global Load Balancer. Connections: Primary Region us-east-1 to Application, Secondary Region us-west-2 to Application Replica, Tertiary Region eu-west-1 to Application Replica, Application to Global Load Balancer, Application Replica to Global Load Balancer, Application Replica to Global Load Balancer.
  A["Primary Region<br/>us-east-1"] --> B["Application"]
  C["Secondary Region<br/>us-west-2"] --> D["Application Replica"]
  E["Tertiary Region<br/>eu-west-1"] --> F["Application Replica"]
@@ -1985,10 +2023,15 @@ graph TD
  D --> G
  F --> G
 
- style A fill:#0173B2,color:#fff
- style C fill:#DE8F05,color:#fff
- style E fill:#029E73,color:#fff
- style G fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class E pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class G pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -2252,16 +2295,24 @@ Blue-green deployments enable zero-downtime updates by maintaining two identical
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
- A["Route53/Load Balancer"] --> B["Blue Environment<br/>v1.0 ACTIVE"]
+ accTitle: Example 67: Blue-Green Deployment Pattern
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Route53/Load Balancer, Blue Environment v1.0 ACTIVE, Green Environment v2.0 STANDBY, Traffic: 100, Traffic: 0. Connections: Route53/Load Balancer to Blue Environment v1.0 ACTIVE, Route53/Load Balancer to Green Environment v2.0 STANDBY, Blue Environment v1.0 ACTIVE to Traffic: 100, Green Environment v2.0 STANDBY to Traffic: 0.
+ A["Route53/Load<br/>Balancer"] --> B["Blue Environment<br/>v1.0 ACTIVE"]
  A -.-> C["Green Environment<br/>v2.0 STANDBY"]
  B --> D["Traffic: 100%"]
  C -.-> E["Traffic: 0%"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#029E73,color:#fff
- style C fill:#DE8F05,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#CA9161,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class B pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class C pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+ class E pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2610,16 +2661,23 @@ Never store secrets in Terraform code or state. Use external secret stores (AWS 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 69: Secrets Management with External Secret Stores
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Secrets Manager, Terraform Reads Secret at Runtime, Use in Resources, State Contains Secret Value, Encrypt State S3 + KMS. Connections: Secrets Manager to Terraform Reads Secret at Runtime, Terraform Reads Secret at Runtime to Use in Resources, Use in Resources to State Contains Secret Value, State Contains Secret Value to Encrypt State S3 + KMS.
  A["Secrets Manager"] --> B["Terraform Reads<br/>Secret at Runtime"]
  B --> C["Use in Resources"]
  C --> D["State Contains<br/>Secret Value"]
  D --> E["Encrypt State<br/>S3 + KMS"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class E pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Anti-pattern (DO NOT DO)**:
@@ -2811,16 +2869,23 @@ Grant Terraform minimal permissions required for infrastructure operations. Sepa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 70: Least Privilege IAM Roles for Terraform
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: CI/CD Pipeline, Operation?, TerraformPlan Role Read-Only, TerraformApply Role Write Access, Safe Read, Controlled Write. Connections: CI/CD Pipeline to Operation?, Operation? to TerraformPlan Role Read-Only (Plan), Operation? to TerraformApply Role Write Access (Apply), TerraformPlan Role Read-Only to Safe Read, TerraformApply Role Write Access to Controlled Write.
  A["CI/CD Pipeline"] --> B{Operation?}
  B -->|Plan| C["TerraformPlan Role<br/>Read-Only"]
  B -->|Apply| D["TerraformApply Role<br/>Write Access"]
  C --> E["Safe Read"]
  D --> F["Controlled Write"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Terraform execution role (apply permissions)**:
@@ -3223,18 +3288,25 @@ Detect configuration drift (manual changes outside Terraform) and remediate to r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 71: Drift Detection and Remediation
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: Desired State Terraform Config, terraform plan -refresh-only, Actual State Cloud Resources, Drift Detected?, terraform apply Remediate, No Drift. Connections: Desired State Terraform Config to terraform plan -refresh-only, Actual State Cloud Resources to terraform plan -refresh-only, terraform plan -refresh-only to Drift Detected?, Drift Detected? to terraform apply Remediate (Yes), Drift Detected? to No Drift (No).
  A["Desired State<br/>Terraform Config"] --> B["terraform plan<br/>-refresh-only"]
  C["Actual State<br/>Cloud Resources"] --> B
  B --> D{Drift Detected?}
  D -->|Yes| E["terraform apply<br/>Remediate"]
  D -->|No| F["No Drift"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#CC78BC,color:#fff
- style E fill:#DE8F05,color:#fff
- style F fill:#029E73,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class D pal-CC78BC
+ class E pal-DE8F05
+ class F pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -3423,6 +3495,8 @@ Automate Terraform workflow with
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 72: GitHub Actions CI/CD Pipeline
+ accDescr: Graph with 8 nodes and 6 connections. Nodes: Pull Request, Validate + Lint, terraform plan, Comment on PR, Push to main, Manual Approval, terraform apply, Notify Slack. Connections: Pull Request to Validate + Lint, Validate + Lint to terraform plan, terraform plan to Comment on PR, Push to main to Manual Approval, Manual Approval to terraform apply, terraform apply to Notify Slack.
  A["Pull Request"] --> B["Validate + Lint"]
  B --> C["terraform plan"]
  C --> D["Comment on PR"]
@@ -3430,12 +3504,17 @@ graph TD
  F --> G["terraform apply"]
  G --> H["Notify Slack"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#029E73,color:#fff
- style F fill:#DE8F05,color:#fff
- style G fill:#CC78BC,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class F pal-DE8F05
+ class G pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Workflow** - `.github/workflows/terraform.yml`:
@@ -3970,18 +4049,25 @@ Atlantis automates Terraform workflow in pull requests: runs plan automatically,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 74: Atlantis for Pull Request Automation
+ accDescr: Graph with 7 nodes and 5 connections. Nodes: Open PR, Atlantis Plan Auto-Run, Comment Plan on PR, Approve PR, atlantis apply Comment, Run Apply, Merge PR. Connections: Open PR to Atlantis Plan Auto-Run, Atlantis Plan Auto-Run to Comment Plan on PR, Approve PR to atlantis apply Comment, atlantis apply Comment to Run Apply, Run Apply to Merge PR.
  A["Open PR"] --> B["Atlantis Plan<br/>Auto-Run"]
  B --> C["Comment Plan<br/>on PR"]
  D["Approve PR"] --> E["atlantis apply<br/>Comment"]
  E --> F["Run Apply"]
  F --> G["Merge PR"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style E fill:#CC78BC,color:#fff
- style F fill:#DE8F05,color:#fff
- style G fill:#029E73,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class E pal-CC78BC
+ class F pal-DE8F05
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Atlantis deployment** - `atlantis.yaml`:
@@ -4314,16 +4400,22 @@ Large state files (10,000+ resources) slow Terraform operations. Optimize with s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 76: State File Performance and Optimization
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Monolithic State 10000+ Resources, Split by Layer, Network State 100 Resources, Compute State 500 Resources, Database State 200 Resources. Connections: Monolithic State 10000+ Resources to Split by Layer, Split by Layer to Network State 100 Resources, Split by Layer to Compute State 500 Resources, Split by Layer to Database State 200 Resources.
  A["Monolithic State<br/>10000+ Resources"] --> B["Split by Layer"]
  B --> C["Network State<br/>100 Resources"]
  B --> D["Compute State<br/>500 Resources"]
  B --> E["Database State<br/>200 Resources"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#029E73,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#029E73,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class C pal-029E73
+ class D pal-029E73
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl
@@ -5677,16 +5769,23 @@ Kitchen-Terraform integrates with Test Kitchen framework for automated infrastru
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 82: Kitchen-Terraform for Integration Testing
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: kitchen create, terraform apply Provision, kitchen verify Run Tests, InSpec Tests Validate, kitchen destroy Cleanup. Connections: kitchen create to terraform apply Provision, terraform apply Provision to kitchen verify Run Tests, kitchen verify Run Tests to InSpec Tests Validate, InSpec Tests Validate to kitchen destroy Cleanup.
  A["kitchen create"] --> B["terraform apply<br/>Provision"]
  B --> C["kitchen verify<br/>Run Tests"]
  C --> D["InSpec Tests<br/>Validate"]
  D --> E["kitchen destroy<br/>Cleanup"]
 
- style A fill:#0173B2,color:#fff
- style B fill:#DE8F05,color:#fff
- style C fill:#CC78BC,color:#fff
- style D fill:#029E73,color:#fff
- style E fill:#0173B2,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class B pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class C pal-CC78BC
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ class E pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Why This External Tool**: Terratest (Example 62) is the Go-based testing standard for Terraform, but Kitchen-Terraform provides an alternative Ruby/InSpec-based approach better suited for teams already using InSpec for compliance testing. While Terratest requires Go knowledge, Kitchen-Terraform integrates with the InSpec compliance framework, enabling the same test suite to validate both infrastructure correctness and security compliance requirements. Teams with existing InSpec profiles for regulatory compliance (SOC 2, PCI-DSS, HIPAA) can reuse those controls for Terraform infrastructure testing, avoiding duplicate effort. The trade-off: Kitchen-Terraform has broader language support (Ruby) but higher operational complexity than Terratest's single-binary Go approach.
@@ -6257,6 +6356,8 @@ Implement cost optimization strategies: auto-shutdown for non-prod, spot instanc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+ accTitle: Example 84: Terraform Cost Optimization Patterns
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Environment?, Production, Non-Production, On-Demand High Availability, Workload?, Spot Instances 80 savings, Scheduled Shutdown nights/weekends. Connections: Environment? to Production, Environment? to Non-Production, Production to On-Demand High Availability, Non-Production to Workload?, Workload? to Spot Instances 80 savings (Stateless), Workload? to Scheduled Shutdown nights/weekends (Stateful).
  A{Environment?} --> B[Production]
  A --> C[Non-Production]
  B --> D["On-Demand<br/>High Availability"]
@@ -6264,10 +6365,15 @@ graph TD
  E -->|Stateless| F["Spot Instances<br/>80% savings"]
  E -->|Stateful| G["Scheduled Shutdown<br/>nights/weekends"]
 
- style A fill:#0173B2,color:#fff
- style D fill:#029E73,color:#fff
- style F fill:#CC78BC,color:#fff
- style G fill:#DE8F05,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+ class F pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+ class G pal-DE8F05
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```hcl

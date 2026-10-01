@@ -610,16 +610,19 @@ Processing a GitHub API response to extract pull request data into a structured 
 
 ```mermaid
 graph TD
+    accTitle: Example 81: GitHub API Response Processing
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: GitHub API JSON, Each PR Object, Open PRs Only, Report Objects, Sorted Report. Connections: GitHub API JSON to Each PR Object (.[]), Each PR Object to Open PRs Only (select), Open PRs Only to Report Objects (Object Construction), Report Objects to Sorted Report (sort_by).
     A["GitHub API JSON"]:::blue -->|".[]"| B["Each PR Object"]:::orange
     B -->|"select"| C["Open PRs Only"]:::teal
-    C -->|"Object Construction"| D["Report Objects"]:::purple
+    C -->|"Object<br/>Construction"| D["Report Objects"]:::purple
     D -->|"sort_by"| E["Sorted Report"]:::brown
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

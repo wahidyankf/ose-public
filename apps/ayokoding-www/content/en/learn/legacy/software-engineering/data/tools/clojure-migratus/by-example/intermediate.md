@@ -35,18 +35,26 @@ Migratus supports Clojure namespace files as migrations alongside SQL files. A `
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Clojure migration file structure
 graph TD
+    accTitle: Example 31: Clojure-Based Migrations
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Migratus scan, File type?, Execute SQL string, Load namespace, Call up fn, Call down fn. Connections: Migratus scan to File type?, File type? to Execute SQL string (.up.sql), File type? to Load namespace (.clj), Load namespace to Call up fn, Load namespace to Call down fn.
     A[Migratus scan] --> B{File type?}
     B -->|.up.sql| C[Execute SQL string]
     B -->|.clj| D[Load namespace]
     D --> E[Call up fn]
     D --> F[Call down fn]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **File: `resources/migrations/006-seed-roles.clj`**
@@ -140,13 +148,19 @@ DROP INDEX CONCURRENTLY IF EXISTS idx_products_name;
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Rollback: reverts one migration
 graph LR
-    A[schema_migrations table] -->|find max applied id| B[Migration N]
+    accTitle: Example 33: Rollback Command
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: schema_migrations table, Migration N, Database reverted. Connections: schema_migrations table to Migration N (find max applied id), Migration N to Database reverted (execute N.down.sql), Database reverted to schema_migrations table (delete row id=N).
+    A[schema_migrations<br/>table] -->|find max applied id| B[Migration N]
     B -->|execute N.down.sql| C[(Database reverted)]
     C -->|delete row id=N| A
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure

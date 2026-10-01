@@ -18,14 +18,21 @@ JPA repositories provide database operations without writing SQL. Extend `JpaRep
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: First JPA Repository
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Application, UserRepository, JpaRepository, Database. Connections: Application to UserRepository, UserRepository to JpaRepository, JpaRepository to Database.
     A[Application] --> B[UserRepository]
     B --> C[JpaRepository]
     C --> D[Database]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -218,14 +225,21 @@ public class UserPersistenceService {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 3: Find by ID
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: findById Request, ID Exists?, Optional.of Entity, Optional.empty. Connections: findById Request to ID Exists?, ID Exists? to Optional.of Entity (Yes), ID Exists? to Optional.empty (No).
     A[findById Request] --> B{ID Exists?}
     B -->|Yes| C[Optional.of Entity]
     B -->|No| D[Optional.empty]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -371,16 +385,24 @@ JPA provides three deletion methods: `deleteById()` (by primary key), `delete()`
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 5: Delete Operations
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Delete Request, Method?, SELECT + DELETE, DELETE by ID, SELECT + DELETE each. Connections: Delete Request to Method?, Method? to SELECT + DELETE (deleteById), Method? to DELETE by ID (delete), Method? to SELECT + DELETE each (deleteAll).
     A[Delete Request] --> B{Method?}
     B -->|deleteById| C[SELECT + DELETE]
     B -->|delete| D[DELETE by ID]
     B -->|deleteAll| E[SELECT + DELETE each]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -596,16 +618,24 @@ public class UserBatchService {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 8: Flush and Transaction Management
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: save, Dirty Checking, flush, SQL Execution, Transaction Commit. Connections: save to Dirty Checking, Dirty Checking to flush, flush to SQL Execution, SQL Execution to Transaction Commit.
     A[save] --> B[Dirty Checking]
     B --> C[flush]
     C --> D[SQL Execution]
     D --> E[Transaction Commit]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -700,14 +730,21 @@ Query derivation creates SQL from method names. `findByPropertyName` generates `
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 9: Find By Single Property
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: findByName, Parse Method, Generate WHERE, Execute Query. Connections: findByName to Parse Method, Parse Method to Generate WHERE, Generate WHERE to Execute Query.
     A[findByName] --> B[Parse Method]
     B --> C[Generate WHERE]
     C --> D[Execute Query]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1052,16 +1089,24 @@ public class ProductQueryService {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 12: String Matching
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: String Query, Keyword?, name LIKE value, name LIKE value, name LIKE value. Connections: String Query to Keyword?, Keyword? to name LIKE value (StartingWith), Keyword? to name LIKE value (EndingWith), Keyword? to name LIKE value (Containing).
     A[String Query] --> B{Keyword?}
     B -->|StartingWith| C[name LIKE 'value%']
     B -->|EndingWith| D[name LIKE '%value']
     B -->|Containing| E[name LIKE '%value%']
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1572,14 +1617,21 @@ public class UserNullService {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 16: Case-Insensitive Queries
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: findByNameIgnoreCase, Convert to SQL, UPPER/LOWER Function, Case-Insensitive Match. Connections: findByNameIgnoreCase to Convert to SQL, Convert to SQL to UPPER/LOWER Function, UPPER/LOWER Function to Case-Insensitive Match.
     A[findByNameIgnoreCase] --> B[Convert to SQL]
     B --> C[UPPER/LOWER Function]
-    C --> D[Case-Insensitive Match]
+    C --> D[Case-Insensitive<br/>Match]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1711,15 +1763,20 @@ public class UserCaseService {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    D1[Department: Engineering] --> E1[Employee: Alice]
+    accTitle: Example 17: One-to-Many Relationship Basics
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: Department: Engineering, Employee: Alice, Employee: Bob, Department: Sales, Employee: Charlie. Connections: Department: Engineering to Employee: Alice, Department: Engineering to Employee: Bob, Department: Sales to Employee: Charlie.
+    D1[Department:<br/>Engineering] --> E1[Employee: Alice]
     D1 --> E2[Employee: Bob]
     D2[Department: Sales] --> E3[Employee: Charlie]
 
-    style D1 fill:#0173B2,color:#fff
-    style D2 fill:#0173B2,color:#fff
-    style E1 fill:#029E73,color:#fff
-    style E2 fill:#029E73,color:#fff
-    style E3 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D1 pal-0173B2
+    class D2 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E1 pal-029E73
+    class E2 pal-029E73
+    class E3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2115,14 +2172,21 @@ Cascade operations propagate parent actions to children. `CascadeType.ALL` casca
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 20: Cascade Types
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Save Department, CascadeType.ALL?, Auto-save Employees, Manual save needed. Connections: Save Department to CascadeType.ALL?, CascadeType.ALL? to Auto-save Employees (Yes), CascadeType.ALL? to Manual save needed (No).
     A[Save Department] --> B{CascadeType.ALL?}
     B -->|Yes| C[Auto-save Employees]
     B -->|No| D[Manual save needed]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2400,12 +2464,17 @@ Bidirectional relationships require keeping both sides in sync. Helper methods e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 22: Bidirectional Relationship Synchronization
+    accDescr: Graph with 2 nodes and 3 connections. Nodes: Department, Employee. Connections: Department to Employee (Bidirectional), Department to Employee (employees list), Employee to Department (department ref).
     D[Department] <-->|Bidirectional| E[Employee]
     D -->|employees list| E
     E -->|department ref| D
 
-    style D fill:#0173B2,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2823,16 +2892,24 @@ public class CollectionTypeService {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 25: Column Mapping and Constraints
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Entity Field, @Column, Column Name, Constraints, Type/Length. Connections: Entity Field to @Column, @Column to Column Name, @Column to Constraints, @Column to Type/Length.
     A[Entity Field] --> B[@Column]
     B --> C[Column Name]
     B --> D[Constraints]
     B --> E[Type/Length]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3521,6 +3598,8 @@ JPA provides lifecycle annotations to hook into entity state changes. Use for au
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 30: Entity Lifecycle Callbacks
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: New Entity, @PrePersist, INSERT SQL, @PostPersist, Persistent State, @PreUpdate, UPDATE SQL, @PostUpdate, @PreRemove, DELETE SQL, @PostRemove. Connections: New Entity to @PrePersist, @PrePersist to INSERT SQL, INSERT SQL to @PostPersist, @PostPersist to Persistent State, Persistent State to @PreUpdate, @PreUpdate to UPDATE SQL, UPDATE SQL to @PostUpdate, Persistent State to @PreRemove, @PreRemove to DELETE SQL, DELETE SQL to @PostRemove.
     A[New Entity] --> B[@PrePersist]
     B --> C[INSERT SQL]
     C --> D[@PostPersist]
@@ -3532,17 +3611,23 @@ graph TD
     I --> J[DELETE SQL]
     J --> K[@PostRemove]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#0173B2,color:#fff
-    style G fill:#DE8F05,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#CC78BC,color:#fff
-    style J fill:#CA9161,color:#fff
-    style K fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    class H pal-029E73
+    class I pal-CC78BC
+    class J pal-CA9161
+    class K pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

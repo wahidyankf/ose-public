@@ -449,8 +449,9 @@ jobs:
 ## Production Allure Reporting Architecture
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','background':'#fff','mainBkg':'#fff','secondaryBkg':'#f4f4f4','tertiaryBkg':'#f0f0f0'}}}%%
 graph TD
+    accTitle: Production Allure Reporting Architecture
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Playwright Tests, allure-results/, Allure CLI, allure-report/, GitHub Pages, Slack Notification, Custom Dashboard, Previous History, Updated History. Connections: Playwright Tests to allure-results/, allure-results/ to Allure CLI, Allure CLI to allure-report/, allure-report/ to GitHub Pages, allure-report/ to Slack Notification, allure-report/ to Custom Dashboard, Previous History to Allure CLI, Allure CLI to Updated History.
     Tests[Playwright Tests] --> Results[allure-results/]
     Results --> Generator[Allure CLI]
     Generator --> Report[allure-report/]
@@ -460,13 +461,19 @@ graph TD
     History[Previous History] --> Generator
     Generator --> NewHistory[Updated History]
 
-    style Tests fill:#0173B2,color:#fff
-    style Results fill:#029E73,color:#fff
-    style Generator fill:#DE8F05,color:#fff
-    style Report fill:#CC78BC,color:#fff
-    style Pages fill:#CA9161,color:#fff
-    style Slack fill:#CA9161,color:#fff
-    style Dashboard fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Tests pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Results pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Generator pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Report pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Pages pal-CA9161
+    class Slack pal-CA9161
+    class Dashboard pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

@@ -18,16 +18,24 @@ Vitest tests use `test` or `it` functions to define test cases. The test runner 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["vitest run"] --> B["Discover Test Files<br/>#42;.test.ts / #42;.spec.ts"]
-    B --> C["Vite Transform<br/>#40;TypeScript, ESM#41;"]
+    accTitle: Example 1: Hello World - Your First Vitest Test
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vitest run, Discover Test Files 42.test.ts / 42.spec.ts, Vite Transform 40TypeScript, ESM41, Execute Tests, Report Results. Connections: vitest run to Discover Test Files 42.test.ts / 42.spec.ts, Discover Test Files 42.test.ts / 42.spec.ts to Vite Transform 40TypeScript, ESM41, Vite Transform 40TypeScript, ESM41 to Execute Tests, Execute Tests to Report Results.
+    A["vitest run"] --> B["Discover Test Files<br/>#42;.test.ts /<br/>#42;.spec.ts"]
+    B --> C["Vite Transform<br/>#40;TypeScript,<br/>ESM#41;"]
     C --> D["Execute Tests"]
     D --> E["Report Results"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -118,16 +126,24 @@ Vitest configuration extends Vite's config. You can define test-specific setting
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 3: Test Configuration with vitest.config.ts
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vite.config.ts Build Config, vitest.config.ts Test Config, Test Environment 40node/happy-dom/ jsdom41, Coverage Provider 40v8/istanbul41, Include/Exclude Patterns. Connections: vite.config.ts Build Config to vitest.config.ts Test Config, vitest.config.ts Test Config to Test Environment 40node/happy-dom/ jsdom41, vitest.config.ts Test Config to Coverage Provider 40v8/istanbul41, vitest.config.ts Test Config to Include/Exclude Patterns.
     A["vite.config.ts<br/>Build Config"] --> B["vitest.config.ts<br/>Test Config"]
-    B --> C["Test Environment<br/>#40;node/happy-dom/jsdom#41;"]
+    B --> C["Test Environment<br/>#40;node/happy-dom/<br/>jsdom#41;"]
     B --> D["Coverage Provider<br/>#40;v8/istanbul#41;"]
     B --> E["Include/Exclude<br/>Patterns"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -271,13 +287,18 @@ describe("CLI demonstration", () => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 6: Equality Matchers - toBe vs toEqual
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: toBe4041, Object.is4041 Reference Equality, toEqual4041, Deep Comparison Structural Equality. Connections: toBe4041 to Object.is4041 Reference Equality, toEqual4041 to Deep Comparison Structural Equality.
     A["toBe#40;#41;"] --> B["Object.is#40;#41;<br/>Reference Equality"]
     C["toEqual#40;#41;"] --> D["Deep Comparison<br/>Structural Equality"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -622,23 +643,31 @@ Snapshot testing captures a value's serialized representation and compares futur
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 12: Snapshot Testing
+    accDescr: Graph with 9 nodes and 7 connections. Nodes: First Run: No Snapshot Exists, Serialize Value, Save to __snapshots__/ file.test.ts.snap, Subsequent Runs: Snapshot Exists, Serialize Value, Match Snapshot?, Test Passes, Test Fails Show Diff, npx vitest run -u to Update. Connections: First Run: No Snapshot Exists to Serialize Value, Serialize Value to Save to __snapshots__/ file.test.ts.snap, Subsequent Runs: Snapshot Exists to Serialize Value, Serialize Value to Match Snapshot?, Match Snapshot? to Test Passes (Yes), Match Snapshot? to Test Fails Show Diff (No), Test Fails Show Diff to npx vitest run -u to Update.
     A["First Run:<br/>No Snapshot Exists"] --> B["Serialize Value"]
-    B --> C["Save to __snapshots__/<br/>file.test.ts.snap"]
+    B --> C["Save to<br/>__snapshots__/<br/>file.test.ts.snap"]
     D["Subsequent Runs:<br/>Snapshot Exists"] --> E["Serialize Value"]
     E --> F{"Match<br/>Snapshot?"}
     F -->|Yes| G["Test Passes"]
     F -->|No| H["Test Fails<br/>Show Diff"]
     H --> I["npx vitest run -u<br/>to Update"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style I fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    class D pal-0173B2
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CC78BC
+    class G pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class H pal-CA9161
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -859,18 +888,24 @@ Lifecycle hooks run setup and teardown code around each test. `beforeEach` runs 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 16: beforeEach and afterEach Hooks
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: beforeEach, Test 1, afterEach, beforeEach, Test 2, afterEach. Connections: beforeEach to Test 1, Test 1 to afterEach, afterEach to beforeEach, beforeEach to Test 2, Test 2 to afterEach.
     A["beforeEach"] --> B["Test 1"]
     B --> C["afterEach"]
     C --> D["beforeEach"]
     D --> E["Test 2"]
     E --> F["afterEach"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    class D pal-0173B2
+    class E pal-DE8F05
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1248,14 +1283,21 @@ describe("todo tests", () => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["test.each#40;data#41;"] --> B["Test with Input 1"]
+    accTitle: Example 23: test.each - Parameterized Tests
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: test. each40data41, Test with Input 1, Test with Input 2, Test with Input N. Connections: test. each40data41 to Test with Input 1, test. each40data41 to Test with Input 2, test. each40data41 to Test with Input N.
+    A["test.<br/>each#40;data#41;"] --> B["Test with Input 1"]
     A --> C["Test with Input 2"]
     A --> D["Test with Input N"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1519,18 +1561,26 @@ test("event emitter", () => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 27: vi.fn - Creating Mock Functions
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: vi.fn4041, Mock Function, Tracks Calls, Tracks Arguments, Tracks Return Values, Custom Implementation. Connections: vi.fn4041 to Mock Function, Mock Function to Tracks Calls, Mock Function to Tracks Arguments, Mock Function to Tracks Return Values, Mock Function to Custom Implementation.
     A["vi.fn#40;#41;"] --> B["Mock Function"]
     B --> C["Tracks Calls"]
     B --> D["Tracks Arguments"]
     B --> E["Tracks Return Values"]
-    B --> F["Custom Implementation"]
+    B --> F["Custom<br/>Implementation"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1745,17 +1795,25 @@ test("spyOn console.log", () => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["vi.useFakeTimers#40;#41;"] --> B["Replace setTimeout<br/>setInterval, Date"]
-    B --> C["vi.advanceTimersByTime#40;ms#41;<br/>Fast-forward time"]
-    B --> D["vi.runAllTimers#40;#41;<br/>Execute all pending"]
+    accTitle: Example 30: Timer Mocks - vi.useFakeTimers
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: vi.useFake Timers4041, Replace setTimeout setInterval, Date, vi.advanceTimersBy Time40ms41 Fast-forward time, vi. runAllTimers4041 Execute all pending, Callbacks Execute Instantly. Connections: vi.useFake Timers4041 to Replace setTimeout setInterval, Date, Replace setTimeout setInterval, Date to vi.advanceTimersBy Time40ms41 Fast-forward time, Replace setTimeout setInterval, Date to vi. runAllTimers4041 Execute all pending, vi.advanceTimersBy Time40ms41 Fast-forward time to Callbacks Execute Instantly, vi. runAllTimers4041 Execute all pending to Callbacks Execute Instantly.
+    A["vi.useFake<br/>Timers#40;#41;"] --> B["Replace setTimeout<br/>setInterval, Date"]
+    B --> C["vi.advanceTimersBy<br/>Time#40;ms#41;<br/>Fast-forward time"]
+    B --> D["vi.<br/>runAllTimers#40;#41;<br/>Execute all pending"]
     C --> E["Callbacks Execute<br/>Instantly"]
     D --> E
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

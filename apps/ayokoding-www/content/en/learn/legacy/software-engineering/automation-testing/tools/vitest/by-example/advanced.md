@@ -18,16 +18,24 @@ Vitest includes a built-in benchmarking API that measures function performance w
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["bench#40;name, fn#41;"] --> B["Warm-up Runs"]
-    B --> C["Measurement Runs<br/>#40;configurable iterations#41;"]
-    C --> D["Statistical Analysis<br/>ops/sec, margin, p75/p99"]
+    accTitle: Example 59: Basic Benchmarking with bench
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: bench40name, fn41, Warm-up Runs, Measurement Runs 40configurable iterations41, Statistical Analysis ops/sec, margin, p75/p99, Benchmark Report. Connections: bench40name, fn41 to Warm-up Runs, Warm-up Runs to Measurement Runs 40configurable iterations41, Measurement Runs 40configurable iterations41 to Statistical Analysis ops/sec, margin, p75/p99, Statistical Analysis ops/sec, margin, p75/p99 to Benchmark Report.
+    A["bench#40;name,<br/>fn#41;"] --> B["Warm-up Runs"]
+    B --> C["Measurement Runs<br/>#40;configurable<br/>iterations#41;"]
+    C --> D["Statistical Analysis<br/>ops/sec, margin,<br/>p75/p99"]
     D --> E["Benchmark Report"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -235,17 +243,25 @@ Vitest can run tests in a real browser (Chromium, Firefox, WebKit) instead of a 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 62: Browser Mode Configuration
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: vitest.config.ts browser: true, Browser Provider?, Playwright 40Chromium/ Firefox/WebKit41, WebDriver 40Chrome/ Firefox41, Tests Run in Real Browser. Connections: vitest.config.ts browser: true to Browser Provider?, Browser Provider? to Playwright 40Chromium/ Firefox/WebKit41 (playwright), Browser Provider? to WebDriver 40Chrome/ Firefox41 (webdriverio), Playwright 40Chromium/ Firefox/WebKit41 to Tests Run in Real Browser, WebDriver 40Chrome/ Firefox41 to Tests Run in Real Browser.
     A["vitest.config.ts<br/>browser: true"] --> B{"Browser<br/>Provider?"}
-    B -->|playwright| C["Playwright<br/>#40;Chromium/Firefox/WebKit#41;"]
-    B -->|webdriverio| D["WebDriver<br/>#40;Chrome/Firefox#41;"]
+    B -->|playwright| C["Playwright<br/>#40;Chromium/<br/>Firefox/WebKit#41;"]
+    B -->|webdriverio| D["WebDriver<br/>#40;Chrome/<br/>Firefox#41;"]
     C --> E["Tests Run in<br/>Real Browser"]
     D --> E
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -400,6 +416,8 @@ Vitest supports test sharding to distribute tests across multiple CI runners, re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 64: Test Sharding for CI
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Total Test Suite 300 tests, Shard 1/3 100 tests, Shard 2/3 100 tests, Shard 3/3 100 tests, CI Runner 1, CI Runner 2, CI Runner 3. Connections: Total Test Suite 300 tests to Shard 1/3 100 tests, Total Test Suite 300 tests to Shard 2/3 100 tests, Total Test Suite 300 tests to Shard 3/3 100 tests, Shard 1/3 100 tests to CI Runner 1, Shard 2/3 100 tests to CI Runner 2, Shard 3/3 100 tests to CI Runner 3.
     A["Total Test Suite<br/>300 tests"] --> B["Shard 1/3<br/>100 tests"]
     A --> C["Shard 2/3<br/>100 tests"]
     A --> D["Shard 3/3<br/>100 tests"]
@@ -407,13 +425,19 @@ graph TD
     C --> F["CI Runner 2"]
     D --> G["CI Runner 3"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -484,20 +508,27 @@ Vitest supports multiple worker pool types for test execution, each with differe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Pool Type"] --> B["threads<br/>#40;Worker Threads#41;"]
-    A --> C["forks<br/>#40;Child Processes#41;"]
+    accTitle: Example 65: Pool Configuration
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Pool Type, threads 40Worker Threads41, forks 40Child Processes41, vmThreads 40VM Modules41, Shared Memory Fast, Less Isolated, Full Isolation Slower, Safer, Module Isolation Moderate Speed. Connections: Pool Type to threads 40Worker Threads41, Pool Type to forks 40Child Processes41, Pool Type to vmThreads 40VM Modules41, threads 40Worker Threads41 to Shared Memory Fast, Less Isolated, forks 40Child Processes41 to Full Isolation Slower, Safer, vmThreads 40VM Modules41 to Module Isolation Moderate Speed.
+    A["Pool Type"] --> B["threads<br/>#40;Worker<br/>Threads#41;"]
+    A --> C["forks<br/>#40;Child<br/>Processes#41;"]
     A --> D["vmThreads<br/>#40;VM Modules#41;"]
     B --> E["Shared Memory<br/>Fast, Less Isolated"]
     C --> F["Full Isolation<br/>Slower, Safer"]
     D --> G["Module Isolation<br/>Moderate Speed"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style G fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    class E pal-DE8F05
+    class F pal-029E73
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1089,6 +1120,8 @@ Configure Vitest for GitHub Actions with proper caching, parallel execution, and
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 73: GitHub Actions Integration
+    accDescr: Graph with 7 nodes and 9 connections. Nodes: GitHub Actions Matrix Strategy, Shard 1/4, Shard 2/4, Shard 3/4, Shard 4/4, JUnit XML Report, PR Check Results. Connections: GitHub Actions Matrix Strategy to Shard 1/4, GitHub Actions Matrix Strategy to Shard 2/4, GitHub Actions Matrix Strategy to Shard 3/4, GitHub Actions Matrix Strategy to Shard 4/4, Shard 1/4 to JUnit XML Report, Shard 2/4 to JUnit XML Report, Shard 3/4 to JUnit XML Report, Shard 4/4 to JUnit XML Report, JUnit XML Report to PR Check Results.
     A["GitHub Actions<br/>Matrix Strategy"] --> B["Shard 1/4"]
     A --> C["Shard 2/4"]
     A --> D["Shard 3/4"]
@@ -1099,13 +1132,18 @@ graph TD
     E --> F
     F --> G["PR Check Results"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style G fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1184,16 +1222,24 @@ Configure CI to block merges when test coverage drops below thresholds.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["npx vitest run --coverage"] --> B["Collect Coverage Data"]
+    accTitle: Example 74: Coverage Enforcement in CI
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: A, coverage, Collect Coverage Data, Meets Thresholds?, Exit Code 0 CI Passes, Exit Code 1 CI Fails. Connections: A to coverage, coverage to Collect Coverage Data, Collect Coverage Data to Meets Thresholds?, Meets Thresholds? to Exit Code 0 CI Passes (Yes), Meets Thresholds? to Exit Code 1 CI Fails (No).
+    A["npx vitest run<br/>--coverage"] --> B["Collect Coverage<br/>Data"]
     B --> C{"Meets<br/>Thresholds?"}
     C -->|Yes| D["Exit Code 0<br/>CI Passes"]
     C -->|No| E["Exit Code 1<br/>CI Fails"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1489,16 +1535,24 @@ Test code that behaves differently based on environment variables without modify
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["vi.stubEnv#40;key, value#41;"] --> B["process.env Modified"]
+    accTitle: Example 78: Mocking Environment Variables
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vi.stubEnv40key, value41, process.env Modified, Test Reads env, vi.unstubAll Envs4041, Original env Restored. Connections: vi.stubEnv40key, value41 to process.env Modified, process.env Modified to Test Reads env, Test Reads env to vi.unstubAll Envs4041, vi.unstubAll Envs4041 to Original env Restored.
+    A["vi.stubEnv#40;key,<br/>value#41;"] --> B["process.env Modified"]
     B --> C["Test Reads env"]
-    C --> D["vi.unstubAllEnvs#40;#41;"]
-    D --> E["Original env Restored"]
+    C --> D["vi.unstubAll<br/>Envs#40;#41;"]
+    D --> E["Original env<br/>Restored"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1658,16 +1712,24 @@ MSW intercepts HTTP requests at the network level, enabling integration tests wi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 80: Integration Testing with MSW
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Code calls fetch40url41, MSW Intercepts at Network Layer, Match Handler, Return Mock Response, Code receives Response. Connections: Code calls fetch40url41 to MSW Intercepts at Network Layer, MSW Intercepts at Network Layer to Match Handler, Match Handler to Return Mock Response, Return Mock Response to Code receives Response.
     A["Code calls<br/>fetch#40;url#41;"] --> B["MSW Intercepts<br/>at Network Layer"]
     B --> C["Match Handler"]
     C --> D["Return Mock<br/>Response"]
     D --> E["Code receives<br/>Response"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2058,16 +2120,24 @@ Advanced patterns for ensuring complete test isolation in complex applications w
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Test Isolation<br/>Strategies"] --> B["Module Reset<br/>vi.resetModules#40;#41;"]
-    A --> C["Mock Restore<br/>vi.restoreAllMocks#40;#41;"]
-    A --> D["Timer Reset<br/>vi.useRealTimers#40;#41;"]
-    A --> E["Env Reset<br/>vi.unstubAllEnvs#40;#41;"]
+    accTitle: Example 85: Test Isolation Patterns - Preventing State Leaks
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Test Isolation Strategies, Module Reset vi. resetModules4041, Mock Restore vi.restoreAll Mocks4041, Timer Reset vi.useReal Timers4041, Env Reset vi.unstubAll Envs4041. Connections: Test Isolation Strategies to Module Reset vi. resetModules4041, Test Isolation Strategies to Mock Restore vi.restoreAll Mocks4041, Test Isolation Strategies to Timer Reset vi.useReal Timers4041, Test Isolation Strategies to Env Reset vi.unstubAll Envs4041.
+    A["Test Isolation<br/>Strategies"] --> B["Module Reset<br/>vi.<br/>resetModules#40;#41;"]
+    A --> C["Mock Restore<br/>vi.restoreAll<br/>Mocks#40;#41;"]
+    A --> D["Timer Reset<br/>vi.useReal<br/>Timers#40;#41;"]
+    A --> E["Env Reset<br/>vi.unstubAll<br/>Envs#40;#41;"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

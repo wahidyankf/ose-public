@@ -27,16 +27,23 @@ A custom change class extends `AbstractChange` to implement migration logic that
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[YAML Changelog] -->|references name| B[CustomChange: encrypt-column]
-    B --> C[AbstractChange subclass]
+    accTitle: Example 61: Custom Change Class
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: YAML Changelog, CustomChange: encrypt-column, AbstractChange subclass, SqlStatement array, Liquibase Engine. Connections: YAML Changelog to CustomChange: encrypt-column (references name), CustomChange: encrypt-column to AbstractChange subclass, AbstractChange subclass to SqlStatement array (generateStatements), SqlStatement array to Liquibase Engine (executed by).
+    A[YAML Changelog] -->|references name| B[CustomChange:<br/>encrypt-column]
+    B --> C[AbstractChange<br/>subclass]
     C -->|generateStatements| D[SqlStatement array]
     D -->|executed by| E[Liquibase Engine]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -204,16 +211,23 @@ Adding a nullable column to a busy PostgreSQL table is safe and instant—Postgr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Phase 1: Add nullable column] --> B[Application writes new + old columns]
-    B --> C[Phase 2: Backfill existing rows]
-    C --> D[Phase 3: Add NOT NULL constraint]
-    D --> E[Phase 4: Remove old code path]
+    accTitle: Example 63: Zero-Downtime Column Addition
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Phase 1: Add nullable column, Application writes new + old columns, Phase 2: Backfill existing rows, Phase 3: Add NOT NULL constraint, Phase 4: Remove old code path. Connections: Phase 1: Add nullable column to Application writes new + old columns, Application writes new + old columns to Phase 2: Backfill existing rows, Phase 2: Backfill existing rows to Phase 3: Add NOT NULL constraint, Phase 3: Add NOT NULL constraint to Phase 4: Remove old code path.
+    A[Phase 1: Add<br/>nullable column] --> B[Application writes<br/>new + old columns]
+    B --> C[Phase 2: Backfill<br/>existing rows]
+    C --> D[Phase 3: Add NOT<br/>NULL constraint]
+    D --> E[Phase 4: Remove old<br/>code path]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -269,14 +283,21 @@ Removing a column safely requires the application to stop reading and writing it
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 64: Zero-Downtime Column Removal
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Phase 1 Ignore column in app, Phase 2 Deploy phase 1 app, Phase 3 Drop column in DB, Phase 4 Remove ignore code. Connections: Phase 1 Ignore column in app to Phase 2 Deploy phase 1 app, Phase 2 Deploy phase 1 app to Phase 3 Drop column in DB, Phase 3 Drop column in DB to Phase 4 Remove ignore code.
     A[Phase 1<br/>Ignore column in app] --> B[Phase 2<br/>Deploy phase 1 app]
     B --> C[Phase 3<br/>Drop column in DB]
     C --> D[Phase 4<br/>Remove ignore code]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -400,19 +421,27 @@ Updating every row in a 50-million-row table in a single transaction fills the W
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 66: Large Table Migration with Batched Updates
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Start: offset = 0, Rows in batch?, UPDATE batch of 10000 rows, COMMIT transaction, offset += 10000, Migration complete. Connections: Start: offset = 0 to Rows in batch?, Rows in batch? to UPDATE batch of 10000 rows (Yes), UPDATE batch of 10000 rows to COMMIT transaction, COMMIT transaction to offset += 10000, offset += 10000 to Rows in batch?, Rows in batch? to Migration complete (No).
     A[Start: offset = 0] --> B{Rows in batch?}
-    B -->|Yes| C[UPDATE batch of 10000 rows]
+    B -->|Yes| C[UPDATE batch of<br/>10000 rows]
     C --> D[COMMIT transaction]
     D --> E[offset += 10000]
     E --> B
     B -->|No| F[Migration complete]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -559,26 +588,34 @@ Integrating Liquibase into a CI/CD pipeline requires distinct stages: status che
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[CI Trigger] --> B[liquibase status --verbose]
+    accTitle: Example 69: Liquibase in CI/CD Pipeline
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: CI Trigger, B, verbose, Pending changes?, liquibase update, Skip mark success, Update success?, Run integration tests, liquibase rollback, Alert + fail pipeline, Deploy to next stage. Connections: CI Trigger to B, B to verbose, B to Pending changes?, Pending changes? to liquibase update (Yes), Pending changes? to Skip mark success (No), liquibase update to Update success?, Update success? to Run integration tests (Yes), Update success? to liquibase rollback (No), liquibase rollback to Alert + fail pipeline, Run integration tests to Deploy to next stage.
+    A[CI Trigger] --> B[liquibase status<br/>--verbose]
     B --> C{Pending changes?}
     C -->|Yes| D[liquibase update]
     C -->|No| E[Skip; mark success]
     D --> F{Update success?}
-    F -->|Yes| G[Run integration tests]
+    F -->|Yes| G[Run integration<br/>tests]
     F -->|No| H[liquibase rollback]
-    H --> I[Alert + fail pipeline]
+    H --> I[Alert + fail<br/>pipeline]
     G --> J[Deploy to next stage]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
-    style J fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-DE8F05
+    class G pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    class I pal-CA9161
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -801,22 +838,30 @@ Blue-green deployments run two identical environments simultaneously—blue (cur
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Blue: v1 app + DB v1] --> B[Run migration to DB v1.1]
-    B --> C[Green: v2 app + DB v1.1]
-    C --> D{Both blue and green compatible with DB v1.1?}
-    D -->|Yes| E[Switch traffic to green]
+    accTitle: Example 72: Blue-Green Deployment Migrations
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Blue: v1 app + DB v1, Run migration to DB v1.1, Green: v2 app + DB v1.1, Both blue and green compatible with DB v1.1?, Switch traffic to green, Fix migration retry, Drain blue connections, Run cleanup migration to DB v2. Connections: Blue: v1 app + DB v1 to Run migration to DB v1.1, Run migration to DB v1.1 to Green: v2 app + DB v1.1, Green: v2 app + DB v1.1 to Both blue and green compatible with DB v1.1?, Both blue and green compatible with DB v1.1? to Switch traffic to green (Yes), Both blue and green compatible with DB v1.1? to Fix migration retry (No), Switch traffic to green to Drain blue connections, Drain blue connections to Run cleanup migration to DB v2.
+    A[Blue: v1 app + DB v1] --> B[Run migration to DB<br/>v1.1]
+    B --> C[Green: v2 app + DB<br/>v1.1]
+    C --> D{Both blue and green<br/>compatible with DB<br/>v1.1?}
+    D -->|Yes| E[Switch traffic to<br/>green]
     D -->|No| F[Fix migration; retry]
-    E --> G[Drain blue connections]
-    G --> H[Run cleanup migration to DB v2]
+    E --> G[Drain blue<br/>connections]
+    G --> H[Run cleanup<br/>migration to DB v2]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql
@@ -901,19 +946,26 @@ Multi-tenant systems isolate tenant data using separate schemas per tenant (sche
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Migration Run] --> B[For each tenant schema]
-    B --> C[Set defaultSchemaName = tenant_X]
+    accTitle: Example 74: Multi-Tenant Migrations
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Migration Run, For each tenant schema, Set defaultSchemaName = tenant_X, Run shared changelog, More tenants?, All tenants migrated. Connections: Migration Run to For each tenant schema, For each tenant schema to Set defaultSchemaName = tenant_X, Set defaultSchemaName = tenant_X to Run shared changelog, Run shared changelog to More tenants?, More tenants? to For each tenant schema (Yes), More tenants? to All tenants migrated (No).
+    A[Migration Run] --> B[For each tenant<br/>schema]
+    B --> C[Set<br/>defaultSchemaName =<br/>tenant_X]
     C --> D[Run shared changelog]
     D --> E{More tenants?}
     E -->|Yes| B
     E -->|No| F[All tenants migrated]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-DE8F05
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -1578,20 +1630,28 @@ Production monitoring for Liquibase migrations detects when a migration runs une
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Liquibase Update] --> B[Write to DATABASECHANGELOG]
-    B --> C[Application: query DATABASECHANGELOG]
+    accTitle: Example 85: Migration Monitoring and Alerting
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Liquibase Update, Write to DATABASECHANGELOG, Application: query DATABASECHANGELOG, Export to metrics, Migration duration > threshold?, Alert: PagerDuty / Slack, Metrics dashboard. Connections: Liquibase Update to Write to DATABASECHANGELOG, Write to DATABASECHANGELOG to Application: query DATABASECHANGELOG, Application: query DATABASECHANGELOG to Export to metrics, Export to metrics to Migration duration > threshold?, Migration duration > threshold? to Alert: PagerDuty / Slack (Yes), Migration duration > threshold? to Metrics dashboard (No).
+    A[Liquibase Update] --> B[Write to<br/>DATABASECHANGELOG]
+    B --> C[Application: query<br/>DATABASECHANGELOG]
     C --> D[Export to metrics]
-    D --> E{Migration duration > threshold?}
-    E -->|Yes| F[Alert: PagerDuty / Slack]
+    D --> E{Migration duration ><br/>threshold?}
+    E -->|Yes| F[Alert: PagerDuty /<br/>Slack]
     E -->|No| G[Metrics dashboard]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```sql

@@ -390,8 +390,9 @@ RUN npx playwright test --reporter=json
 ## Production Docker Architecture
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','background':'#fff','mainBkg':'#fff','secondaryBkg':'#f4f4f4','tertiaryBkg':'#f0f0f0'}}}%%
 graph TD
+    accTitle: Production Docker Architecture
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: Dockerfile, Docker Image, Container 1, Container 2, Container 3, Test Suite 1, Test Suite 2, Test Suite 3, Test Results. Connections: Dockerfile to Docker Image (builds), Docker Image to Container 1 (creates), Docker Image to Container 2 (creates), Docker Image to Container 3 (creates), Container 1 to Test Suite 1 (runs), Container 2 to Test Suite 2 (runs), Container 3 to Test Suite 3 (runs), Test Suite 1 to Test Results (outputs), Test Suite 2 to Test Results (outputs), Test Suite 3 to Test Results (outputs).
     D[Dockerfile] -->|builds| I[Docker Image]
     I -->|creates| C1[Container 1]
     I -->|creates| C2[Container 2]
@@ -403,12 +404,17 @@ graph TD
     T2 -->|outputs| R
     T3 -->|outputs| R
 
-    style D fill:#0173B2,color:#fff
-    style I fill:#DE8F05,color:#fff
-    style C1 fill:#029E73,color:#fff
-    style C2 fill:#029E73,color:#fff
-    style C3 fill:#029E73,color:#fff
-    style R fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class D pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class I pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C1 pal-029E73
+    class C2 pal-029E73
+    class C3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class R pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

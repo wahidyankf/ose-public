@@ -18,16 +18,24 @@ This tutorial covers intermediate Vitest techniques including module mocking, ma
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["vi.mock#40;'./module'#41;"] --> B["Hoisted to Top<br/>of File"]
+    accTitle: Example 31: vi.mock - Mocking Entire Modules
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vi.mock40./ module41, Hoisted to Top of File, Module Imports Receive Mock, All Exports Auto-Mocked, Functions return undefined by default. Connections: vi.mock40./ module41 to Hoisted to Top of File, Hoisted to Top of File to Module Imports Receive Mock, Module Imports Receive Mock to All Exports Auto-Mocked, All Exports Auto-Mocked to Functions return undefined by default.
+    A["vi.mock#40;'./<br/>module'#41;"] --> B["Hoisted to Top<br/>of File"]
     B --> C["Module Imports<br/>Receive Mock"]
     C --> D["All Exports<br/>Auto-Mocked"]
     D --> E["Functions return<br/>undefined by default"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -93,16 +101,24 @@ When `vi.mock` is called without a factory function, Vitest auto-mocks all expor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["vi.mock#40;'./module'#41;<br/>No Factory"] --> B["Auto-Mock Engine"]
-    B --> C["Functions -> vi.fn#40;#41;"]
+    accTitle: Example 32: vi.mock with Auto-Mocking
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vi.mock40./ module41 No Factory, Auto-Mock Engine, Functions -> vi.fn4041, Objects -> Deep Mock, Classes -> Mock Constructor. Connections: vi.mock40./ module41 No Factory to Auto-Mock Engine, Auto-Mock Engine to Functions -> vi.fn4041, Auto-Mock Engine to Objects -> Deep Mock, Auto-Mock Engine to Classes -> Mock Constructor.
+    A["vi.mock#40;'./<br/>module'#41;<br/>No Factory"] --> B["Auto-Mock Engine"]
+    B --> C["Functions -><br/>vi.fn#40;#41;"]
     B --> D["Objects -> Deep Mock"]
-    B --> E["Classes -> Mock Constructor"]
+    B --> E["Classes -> Mock<br/>Constructor"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -239,18 +255,25 @@ Sometimes you need to mock some exports while keeping others real. `vi.importAct
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["vi.importActual#40;#41;"] --> B["Real Module Exports"]
+    accTitle: Example 34: Mocking Module Factories with Partial Mocking
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: vi. importActual4041, Real Module Exports, Spread ...actual, vi.fn4041, Mock Override, Partial Mock Real + Mock. Connections: vi. importActual4041 to Real Module Exports, Real Module Exports to Spread ...actual, vi.fn4041 to Mock Override, Spread ...actual to Partial Mock Real + Mock, Mock Override to Partial Mock Real + Mock.
+    A["vi.<br/>importActual#40;#41;"] --> B["Real Module Exports"]
     B --> C["Spread ...actual"]
     D["vi.fn#40;#41;"] --> E["Mock Override"]
     C --> F["Partial Mock<br/>Real + Mock"]
     E --> F
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -456,18 +479,26 @@ Mocking global functions like `fetch` enables testing HTTP-dependent code withou
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Code calls fetch#40;#41;"] --> B["global.fetch = vi.fn#40;#41;"]
+    accTitle: Example 37: Mocking Global Functions - fetch
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Code calls fetch4041, global.fetch = vi.fn4041, Mock Response, Success Path, Error Path, Network Error. Connections: Code calls fetch4041 to global.fetch = vi.fn4041, global.fetch = vi.fn4041 to Mock Response, Mock Response to Success Path (ok: true), Mock Response to Error Path (ok: false), Mock Response to Network Error (reject).
+    A["Code calls<br/>fetch#40;#41;"] --> B["global.fetch =<br/>vi.fn#40;#41;"]
     B --> C{"Mock Response"}
     C -->|ok: true| D["Success Path"]
     C -->|ok: false| E["Error Path"]
     C -->|reject| F["Network Error"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -615,16 +646,24 @@ Vitest supports DOM environments through `happy-dom` or `jsdom`. Configure the e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["vitest.config.ts<br/>environment: happy-dom"] --> B["DOM APIs Available<br/>document, window"]
+    accTitle: Example 39: DOM Testing with happy-dom
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vitest.config.ts environment: happy-dom, DOM APIs Available document, window, Test DOM Manipulation, Test Event Handlers, Test Browser APIs. Connections: vitest.config.ts environment: happy-dom to DOM APIs Available document, window, DOM APIs Available document, window to Test DOM Manipulation, DOM APIs Available document, window to Test Event Handlers, DOM APIs Available document, window to Test Browser APIs.
+    A["vitest.config.ts<br/>environment:<br/>happy-dom"] --> B["DOM APIs Available<br/>document, window"]
     B --> C["Test DOM<br/>Manipulation"]
     B --> D["Test Event<br/>Handlers"]
     B --> E["Test Browser<br/>APIs"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1125,17 +1164,25 @@ Vitest supports code coverage through v8 (default, fast) or istanbul (traditiona
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 46: Coverage Configuration
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: vitest.config.ts coverage config, Provider?, V8 Built-in Coverage 40Fast, native41, Istanbul Instrumentation 40Detailed, traditional41, Reports: text, lcov, html. Connections: vitest.config.ts coverage config to Provider?, Provider? to V8 Built-in Coverage 40Fast, native41 (v8), Provider? to Istanbul Instrumentation 40Detailed, traditional41 (istanbul), V8 Built-in Coverage 40Fast, native41 to Reports: text, lcov, html, Istanbul Instrumentation 40Detailed, traditional41 to Reports: text, lcov, html.
     A["vitest.config.ts<br/>coverage config"] --> B{"Provider?"}
     B -->|v8| C["V8 Built-in Coverage<br/>#40;Fast, native#41;"]
-    B -->|istanbul| D["Istanbul Instrumentation<br/>#40;Detailed, traditional#41;"]
+    B -->|istanbul| D["Istanbul<br/>Instrumentation<br/>#40;Detailed,<br/>traditional#41;"]
     C --> E["Reports:<br/>text, lcov, html"]
     D --> E
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1221,14 +1268,21 @@ Vitest supports defining tests directly in source files, co-locating tests with 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 47: In-Source Testing
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: source.ts Code + Tests, import.meta.vitest?, Tests Execute, Tree-Shaken 40Tests Removed41. Connections: source.ts Code + Tests to import.meta.vitest?, import.meta.vitest? to Tests Execute (Vitest), import.meta.vitest? to Tree-Shaken 40Tests Removed41 (Production Build).
     A["source.ts<br/>Code + Tests"] --> B{"import.meta.vitest?"}
     B -->|Vitest| C["Tests Execute"]
-    B -->|Production Build| D["Tree-Shaken<br/>#40;Tests Removed#41;"]
+    B -->|Production Build| D["Tree-Shaken<br/>#40;Tests<br/>Removed#41;"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1445,14 +1499,21 @@ describe("reporter demonstration", () => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 50: Concurrent Tests
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: describe.concurrent, Test 1 40parallel41, Test 2 40parallel41, Test 3 40parallel41. Connections: describe.concurrent to Test 1 40parallel41, describe.concurrent to Test 2 40parallel41, describe.concurrent to Test 3 40parallel41.
     A["describe.concurrent"] --> B["Test 1<br/>#40;parallel#41;"]
     A --> C["Test 2<br/>#40;parallel#41;"]
     A --> D["Test 3<br/>#40;parallel#41;"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1517,18 +1578,25 @@ Vitest provides `expectTypeOf` for testing TypeScript types at compile time. The
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["expectTypeOf#40;value#41;"] --> B["Compile-Time<br/>Type Check"]
+    accTitle: Example 51: expectTypeOf - Compile-Time Type Assertions
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: expectType Of40value41, Compile-Time Type Check, toBeString4041, toBeNumber4041, toEqualType Of60T624041, toHave Property4041. Connections: expectType Of40value41 to Compile-Time Type Check, Compile-Time Type Check to toBeString4041, Compile-Time Type Check to toBeNumber4041, Compile-Time Type Check to toEqualType Of60T624041, Compile-Time Type Check to toHave Property4041.
+    A["expectType<br/>Of#40;value#41;"] --> B["Compile-Time<br/>Type Check"]
     B --> C["toBeString#40;#41;"]
     B --> D["toBeNumber#40;#41;"]
-    B --> E["toEqualTypeOf#60;T#62;#40;#41;"]
-    B --> F["toHaveProperty#40;#41;"]
+    B --> E["toEqualType<br/>Of#60;T#62;#40;#41;"]
+    B --> F["toHave<br/>Property#40;#41;"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

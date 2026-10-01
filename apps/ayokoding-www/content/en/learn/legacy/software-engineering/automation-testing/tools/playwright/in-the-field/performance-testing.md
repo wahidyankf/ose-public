@@ -315,9 +315,11 @@ test.describe("Production Performance Audits", () => {
 
 ```mermaid
 graph TB
+    accTitle: Performance Testing Architecture
+    accDescr: Graph with 11 nodes and 14 connections. Nodes: Playwright Test, Chrome DevTools Protocol, Lighthouse Engine, Navigation Timing, Resource Timing, Paint Timing, Core Web Vitals, Performance Score, Metrics Report, Optimization Suggestions, Threshold Validation. Connections: Playwright Test to Chrome DevTools Protocol (launches), Chrome DevTools Protocol to Lighthouse Engine (instruments), Lighthouse Engine to Navigation Timing (collects), Lighthouse Engine to Resource Timing (collects), Lighthouse Engine to Paint Timing (collects), Lighthouse Engine to Core Web Vitals (calculates), Navigation Timing to Performance Score, Resource Timing to Performance Score, Paint Timing to Performance Score, Core Web Vitals to Performance Score, Performance Score to Metrics Report, Performance Score to Optimization Suggestions, and 2 more.
     subgraph "Test Execution"
         PW[Playwright Test]
-        CDP[Chrome DevTools Protocol]
+        CDP[Chrome DevTools<br/>Protocol]
         LH[Lighthouse Engine]
     end
 
@@ -331,7 +333,7 @@ graph TB
     subgraph "Analysis & Reporting"
         SCORE[Performance Score]
         METRICS[Metrics Report]
-        SUGG[Optimization Suggestions]
+        SUGG[Optimization<br/>Suggestions]
         THRESH[Threshold Validation]
     end
 
@@ -352,13 +354,14 @@ graph TB
     METRICS --> THRESH
     THRESH -->|pass/fail| PW
 
-    classDef execution fill:#0173B2,stroke:#0173B2,stroke-width:2px,color:#fff
-    classDef collection fill:#029E73,stroke:#029E73,stroke-width:2px,color:#fff
-    classDef analysis fill:#DE8F05,stroke:#DE8F05,stroke-width:2px,color:#000
+    classDef execution fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef collection fill:#029E73,stroke:#000000,stroke-width:2px,color:#000000
+    classDef analysis fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000000
 
     class PW,CDP,LH execution
     class NAV,RES,PAINT,CWV collection
     class SCORE,METRICS,SUGG,THRESH analysis
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

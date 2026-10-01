@@ -25,14 +25,20 @@ Ecto schemas map Elixir structs to database tables, providing type safety and va
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Schema to Table Mapping
 graph TD
+    accTitle: Example 1: Defining a Basic Schema
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Ecto Schema, Database Table, Column: name, Column: age. Connections: Ecto Schema to Database Table (maps to), Ecto Schema to Column: name (field :name), Ecto Schema to Column: age (field :age).
     A[Ecto Schema] -->|maps to| B[Database Table]
     A -->|field :name| C[Column: name]
     A -->|field :age| D[Column: age]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -401,6 +407,8 @@ Changesets validate and filter data before persisting to the database. The cast/
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Changeset Creation Flow
 graph TD
+    accTitle: Example 9: Creating a Changeset with cast/3
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Input Params, cast/3, Field Allowed?, Add to Changes, Ignore Field, Changeset. Connections: Input Params to cast/3, cast/3 to Field Allowed?, Field Allowed? to Add to Changes (Yes), Field Allowed? to Ignore Field (No), Add to Changes to Changeset, Ignore Field to Changeset.
     A[Input Params] --> B[cast/3]
     B --> C{Field Allowed?}
     C -->|Yes| D[Add to Changes]
@@ -408,12 +416,18 @@ graph TD
     D --> F[Changeset]
     E --> F
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -476,22 +490,30 @@ validate_required/2 ensures specified fields are present in the changeset, addin
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Validation Pipeline
 graph TD
+    accTitle: Example 10: Validating Required Fields
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Changeset, validate_required/2, All Required Present?, Valid Changeset, Add Errors, Invalid Changeset, Repo Operation, Return Error Tuple. Connections: Changeset to validate_required/2, validate_required/2 to All Required Present?, All Required Present? to Valid Changeset (Yes), All Required Present? to Add Errors (No), Add Errors to Invalid Changeset, Valid Changeset to Repo Operation, Invalid Changeset to Return Error Tuple.
     A[Changeset] --> B[validate_required/2]
-    B --> C{All Required Present?}
+    B --> C{All Required<br/>Present?}
     C -->|Yes| D[Valid Changeset]
     C -->|No| E[Add Errors]
     E --> F[Invalid Changeset]
     D --> G[Repo Operation]
     F --> H[Return Error Tuple]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-DE8F05
+    class G pal-029E73
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -752,20 +774,28 @@ unique_constraint/2 validates database-level unique constraints, converting data
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Unique Constraint Flow
 graph TD
+    accTitle: Example 14: Unique Constraint with uniqueconstraint/2
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Insert Attempt, Database Check, Unique Index Violation?, Insert Success, Database Error, Ecto Converts to Changeset Error, Return Error Tuple. Connections: Insert Attempt to Database Check, Database Check to Unique Index Violation?, Unique Index Violation? to Insert Success (No), Unique Index Violation? to Database Error (Yes), Database Error to Ecto Converts to Changeset Error, Ecto Converts to Changeset Error to Return Error Tuple.
     A[Insert Attempt] --> B[Database Check]
-    B --> C{Unique Index Violation?}
+    B --> C{Unique Index<br/>Violation?}
     C -->|No| D[Insert Success]
     C -->|Yes| E[Database Error]
-    E --> F[Ecto Converts to Changeset Error]
+    E --> F[Ecto Converts to<br/>Changeset Error]
     F --> G[Return Error Tuple]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-DE8F05
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -832,18 +862,25 @@ The from/2 macro builds queries using Ecto's query DSL, providing a composable a
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Query Composition Flow
 graph TD
+    accTitle: Example 15: Basic Query with from/2
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: User Schema, from/2, Add where Clause, Add select Clause, Repo.all, Results List. Connections: User Schema to from/2, from/2 to Add where Clause, Add where Clause to Add select Clause, Add select Clause to Repo.all, Repo.all to Results List.
     A[User Schema] --> B[from/2]
     B --> C[Add where Clause]
     C --> D[Add select Clause]
     D --> E[Repo.all]
     E --> F[Results List]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    class D pal-CC78BC
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -907,16 +944,23 @@ The select clause in queries allows you to fetch only specific fields instead of
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Field Selection
 graph TD
-    A[Full Schema<br/>name, age, email, timestamps] --> B[select Clause]
+    accTitle: Example 16: Selecting Specific Fields
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Full Schema name, age, email, timestamps, select Clause, Project Fields name, age only, Return Tuples not Structs, Reduced Memory. Connections: Full Schema name, age, email, timestamps to select Clause, select Clause to Project Fields name, age only, Project Fields name, age only to Return Tuples not Structs, Return Tuples not Structs to Reduced Memory.
+    A[Full Schema<br/>name, age, email,<br/>timestamps] --> B[select Clause]
     B --> C[Project Fields<br/>name, age only]
     C --> D[Return Tuples<br/>not Structs]
     D --> E[Reduced Memory]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1232,11 +1276,16 @@ belongs_to creates a foreign key relationship where this schema references anoth
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  belongs_to Relationship
 graph TD
+    accTitle: Example 21: Defining belongsto Association
+    accDescr: Graph with 2 nodes and 2 connections. Nodes: Post Table, User Table. Connections: Post Table to User Table (user_id FK), Post Table to User Table (belongs_to :user).
     A[Post Table] -->|user_id FK| B[User Table]
     A -->|belongs_to :user| B
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1302,11 +1351,16 @@ has_many creates a one-to-many relationship where this schema is referenced by m
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  has_many Relationship
 graph TD
+    accTitle: Example 22: Defining hasmany Association
+    accDescr: Graph with 2 nodes and 2 connections. Nodes: User Table, Posts Table. Connections: User Table to Posts Table (has_many :posts), Posts Table to User Table (user_id FK points back).
     A[User Table] -->|has_many :posts| B[Posts Table]
-    B -->|user_id FK points back| A
+    B -->|user_id FK points<br/>back| A
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1378,12 +1432,18 @@ Repo.preload/2 loads associated data after fetching the parent record, preventin
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Preloading Flow
 graph TD
-    A[Fetch User] --> B[Load Associated Posts]
-    B --> C[Return User with Posts]
+    accTitle: Example 23: Preloading Associations with Repo.preload/2
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Fetch User, Load Associated Posts, Return User with Posts. Connections: Fetch User to Load Associated Posts, Load Associated Posts to Return User with Posts.
+    A[Fetch User] --> B[Load Associated<br/>Posts]
+    B --> C[Return User with<br/>Posts]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1810,17 +1870,24 @@ Repo.insert/2 with on_conflict option performs upserts (insert or update if exis
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %%  Upsert Flow
 graph TD
+    accTitle: Example 30: Upserting with Repo.insert/2 and onconflict
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Attempt Insert, Conflict?, Insert Record, Update Existing, Return Result. Connections: Attempt Insert to Conflict?, Conflict? to Insert Record (No), Conflict? to Update Existing (Yes), Insert Record to Return Result, Update Existing to Return Result.
     A[Attempt Insert] --> B{Conflict?}
     B -->|No| C[Insert Record]
     B -->|Yes| D[Update Existing]
     C --> E[Return Result]
     D --> E
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir

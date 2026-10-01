@@ -25,18 +25,25 @@ These examples cover the fundamentals needed to manage production database schem
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Alembic init output structure
 graph TD
+    accTitle: Example 1: Initializing Alembic
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: alembic init alembic, alembic.ini, alembic/, env.py, script.py.mako, versions/. Connections: alembic init alembic to alembic.ini (creates), alembic init alembic to alembic/ (creates), alembic/ to env.py (contains), alembic/ to script.py.mako (contains), alembic/ to versions/ (contains).
     A[alembic init alembic] -->|creates| B[alembic.ini]
     A -->|creates| C[alembic/]
     C -->|contains| D[env.py]
     C -->|contains| E[script.py.mako]
     C -->|contains| F[versions/]
 
-    style A fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#ffffff,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -159,26 +166,35 @@ datefmt = %H:%M:%S
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% env.py execution flow
 graph TD
+    accTitle: Example 3: env.py Structure and Purpose
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: alembic upgrade head, env.py, config.set_main_ option, Base.metadata, is_offline_mode, run_migrations_ offline, run_migrations_ online, stdout / file, PostgreSQL, alembic_version updated. Connections: alembic upgrade head to env.py (loads), env.py to config.set_main_ option (reads DATABASE_URL), env.py to Base.metadata (imports), env.py to is_offline_mode (offline?), is_offline_mode to run_migrations_ offline (Yes), is_offline_mode to run_migrations_ online (No), run_migrations_ offline to stdout / file (emits SQL), run_migrations_ online to PostgreSQL (connects), PostgreSQL to alembic_version updated (runs DDL).
     A[alembic upgrade head] -->|loads| B[env.py]
-    B -->|reads DATABASE_URL| C[config.set_main_option]
+    B -->|reads DATABASE_URL| C[config.set_main_<br/>option]
     B -->|imports| D[Base.metadata]
     B -->|offline?| E{is_offline_mode}
-    E -->|Yes| F[run_migrations_offline]
-    E -->|No| G[run_migrations_online]
+    E -->|Yes| F[run_migrations_<br/>offline]
+    E -->|No| G[run_migrations_<br/>online]
     F -->|emits SQL| H[stdout / file]
     G -->|connects| I[PostgreSQL]
-    I -->|runs DDL| J[alembic_version updated]
+    I -->|runs DDL| J[alembic_version<br/>updated]
 
-    style A fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#ffffff,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#ffffff,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
-    style G fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
-    style H fill:#808080,stroke:#000000,color:#ffffff,stroke-width:2px
-    style I fill:#808080,stroke:#000000,color:#ffffff,stroke-width:2px
-    style J fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    class H pal-808080
+    class I pal-808080
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

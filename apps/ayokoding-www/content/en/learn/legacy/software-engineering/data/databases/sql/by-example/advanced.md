@@ -16,19 +16,26 @@ Percentiles divide data into 100 equal parts, quartiles into 4 parts. Use NTILE 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 61: Percentile and Quartile Calculations
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Dataset, Sort Values, NTILE(4) Divide into Quartiles, Q1, Q2, Q3, Q4 Quartile Groups. Connections: Dataset to Sort Values, Sort Values to NTILE(4) Divide into Quartiles, NTILE(4) Divide into Quartiles to Q1, Q2, Q3, Q4 Quartile Groups.
     A["Dataset"]
     B["Sort Values"]
-    C["NTILE(4)<br/>Divide into Quartiles"]
+    C["NTILE(4)<br/>Divide into<br/>Quartiles"]
     D["Q1, Q2, Q3, Q4<br/>Quartile Groups"]
 
     A --> B
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -156,6 +163,8 @@ Cohort analysis groups users by shared characteristics (signup date) and tracks 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 62: Cohort Analysis
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Users Table signup_date, Cohort Assignment Group by week, Purchases Table purchase_date, Weeks Since Signup JULIANDAY diff, Retention Table Week 0, 1, 2, 3. Connections: Users Table signup_date to Cohort Assignment Group by week, Users Table signup_date to Weeks Since Signup JULIANDAY diff, Purchases Table purchase_date to Weeks Since Signup JULIANDAY diff, Cohort Assignment Group by week to Retention Table Week 0, 1, 2, 3, Weeks Since Signup JULIANDAY diff to Retention Table Week 0, 1, 2, 3.
     A["Users Table<br/>signup_date"]
     B["Cohort Assignment<br/>Group by week"]
     C["Purchases Table<br/>purchase_date"]
@@ -168,11 +177,17 @@ graph LR
     B --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -318,22 +333,30 @@ Funnel analysis tracks conversion through multi-step processes. Calculate drop-o
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 63: Funnel Analysis
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Visit 100 users, Signup 80 users 80 conversion, Purchase 50 users 62.5 conversion, Drop-off: 20 Never signed up, Drop-off: 30 Signed up, no purchase. Connections: Visit 100 users to Signup 80 users 80 conversion, Visit 100 users to Drop-off: 20 Never signed up, Signup 80 users 80 conversion to Purchase 50 users 62.5 conversion, Signup 80 users 80 conversion to Drop-off: 30 Signed up, no purchase.
     A["Visit<br/>100 users"]
     B["Signup<br/>80 users<br/>80% conversion"]
     C["Purchase<br/>50 users<br/>62.5% conversion"]
     D["Drop-off: 20<br/>Never signed up"]
-    E["Drop-off: 30<br/>Signed up, no purchase"]
+    E["Drop-off: 30<br/>Signed up, no<br/>purchase"]
 
     A --> B
     A --> D
     B --> C
     B --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -486,9 +509,11 @@ Sessionization groups events into sessions using time-based windows. Essential f
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 64: Sessionization
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Event Stream timestamps, LAG Window Previous event time, Gap Calculation minutes between events, Gap > 30 min?, New Session session_id + 1, Same Session session_id continues, Session Metrics duration, page count. Connections: Event Stream timestamps to LAG Window Previous event time, LAG Window Previous event time to Gap Calculation minutes between events, Gap Calculation minutes between events to Gap > 30 min?, Gap > 30 min? to New Session session_id + 1 (Yes), Gap > 30 min? to Same Session session_id continues (No), New Session session_id + 1 to Session Metrics duration, page count, Same Session session_id continues to Session Metrics duration, page count.
     A["Event Stream<br/>timestamps"]
     B["LAG Window<br/>Previous event time"]
-    C["Gap Calculation<br/>minutes between events"]
+    C["Gap Calculation<br/>minutes between<br/>events"]
     D{"Gap > 30 min?"}
     E["New Session<br/>session_id + 1"]
     F["Same Session<br/>session_id continues"]
@@ -502,13 +527,19 @@ graph LR
     E --> G
     F --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -642,22 +673,30 @@ Survival analysis tracks how long entities (customers, products) remain active. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 65: Survival Analysis
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Customer signup_date, COALESCE churn_date or now(), lifetime_days end - start, 30-day Buckets NTILE grouping, Survival Curve surviving at each point. Connections: Customer signup_date to lifetime_days end - start, COALESCE churn_date or now() to lifetime_days end - start, lifetime_days end - start to 30-day Buckets NTILE grouping, 30-day Buckets NTILE grouping to Survival Curve surviving at each point.
     A["Customer signup_date"]
     B["COALESCE<br/>churn_date or now()"]
     C["lifetime_days<br/>end - start"]
     D["30-day Buckets<br/>NTILE grouping"]
-    E["Survival Curve<br/>% surviving at each point"]
+    E["Survival Curve<br/>% surviving at each<br/>point"]
 
     A --> C
     B --> C
     C --> D
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -798,6 +837,8 @@ One-to-many relationships link one parent record to multiple child records. Use 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 66: One-to-Many Relationship Modeling
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: authors id, name, email (Parent - ONE), books id, title, author_id (Child 1), books id, title, author_id (Child 2), books id, title, author_id (Child 3). Connections: authors id, name, email (Parent - ONE) to books id, title, author_id (Child 1) (author_id FK), authors id, name, email (Parent - ONE) to books id, title, author_id (Child 2) (author_id FK), authors id, name, email (Parent - ONE) to books id, title, author_id (Child 3) (author_id FK).
     A["authors<br/>id, name, email<br/>(Parent - ONE)"]
     B["books<br/>id, title, author_id<br/>(Child 1)"]
     C["books<br/>id, title, author_id<br/>(Child 2)"]
@@ -807,10 +848,13 @@ graph TD
     A -->|author_id FK| C
     A -->|author_id FK| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -926,6 +970,8 @@ Many-to-many relationships require junction tables (also called bridge or associ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 67: Many-to-Many Relationship with Junction Table
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Students Table, Junction Table enrollments, Courses Table. Connections: Students Table to Junction Table enrollments (student_id), Courses Table to Junction Table enrollments (course_id).
     A["Students Table"]
     B["Junction Table<br/>enrollments"]
     C["Courses Table"]
@@ -933,9 +979,13 @@ graph TD
     A -->|student_id| B
     C -->|course_id| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1099,8 +1149,10 @@ Self-referencing tables model hierarchical relationships (employees/managers, ca
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 68: Self-Referencing Foreign Keys
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: CEO (id=1) manager_id=NULL, VP Engineering (id=2) manager_id=1, VP Sales (id=3) manager_id=1, Sr Engineer (id=4) manager_id=2, Engineer (id=5) manager_id=4. Connections: CEO (id=1) manager_id=NULL to VP Engineering (id=2) manager_id=1, CEO (id=1) manager_id=NULL to VP Sales (id=3) manager_id=1, VP Engineering (id=2) manager_id=1 to Sr Engineer (id=4) manager_id=2, Sr Engineer (id=4) manager_id=2 to Engineer (id=5) manager_id=4.
     A["CEO (id=1)<br/>manager_id=NULL"]
-    B["VP Engineering (id=2)<br/>manager_id=1"]
+    B["VP Engineering<br/>(id=2)<br/>manager_id=1"]
     C["VP Sales (id=3)<br/>manager_id=1"]
     D["Sr Engineer (id=4)<br/>manager_id=2"]
     E["Engineer (id=5)<br/>manager_id=4"]
@@ -1110,11 +1162,16 @@ graph TD
     B --> D
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2500,20 +2557,27 @@ Audit logs track who changed what and when. Essential for compliance, debugging,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 77: Audit Logging
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Application INSERT/UPDATE/DELETE, products table Current state only, Trigger or App Code Capture change, products_audit action, old_values, new_values, changed_by. Connections: Application INSERT/UPDATE/DELETE to products table Current state only, products table Current state only to Trigger or App Code Capture change, Application INSERT/UPDATE/DELETE to Trigger or App Code Capture change, Trigger or App Code Capture change to products_audit action, old_values, new_values, changed_by.
     A["Application<br/>INSERT/UPDATE/DELETE"]
     B["products table<br/>Current state only"]
     C["Trigger or App Code<br/>Capture change"]
-    D["products_audit<br/>action, old_values,<br/>new_values, changed_by"]
+    D["products_audit<br/>action, old_values,<br/>new_values,<br/>changed_by"]
 
     A --> B
     B --> C
     A --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3422,6 +3486,8 @@ Partition time-series data by time period for efficient queries and data retenti
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 82: Time-Series Data Partitioning
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: events_all VIEW Unified access, events_2025_01 Jan partition, events_2025_02 Feb partition, events_2025_03 Mar partition, Query: Jan only Scan 1 partition, DROP TABLE Instant retention. Connections: events_all VIEW Unified access to events_2025_01 Jan partition (UNION ALL), events_all VIEW Unified access to events_2025_02 Feb partition (UNION ALL), events_all VIEW Unified access to events_2025_03 Mar partition (UNION ALL), events_2025_01 Jan partition to Query: Jan only Scan 1 partition, events_2025_01 Jan partition to DROP TABLE Instant retention.
     A["events_all VIEW<br/>Unified access"]
     B["events_2025_01<br/>Jan partition"]
     C["events_2025_02<br/>Feb partition"]
@@ -3435,12 +3501,18 @@ graph TD
     B --> E
     B --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

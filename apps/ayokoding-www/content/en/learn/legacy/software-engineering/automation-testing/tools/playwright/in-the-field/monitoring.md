@@ -501,24 +501,32 @@ scrape_configs:
 
 ```mermaid
 flowchart TD
+    accTitle: Metrics Collection Architecture
+    accDescr: Flowchart with 11 nodes and 12 connections. Nodes: Playwright Test Run, PrometheusReporter, Test Execution Metrics, Duration Metrics, Flakiness Scores, Prometheus Exporter :9464, Prometheus Server, Grafana Dashboard, Alert Notifications, Test Health Visibility, Team Notifications. Connections: Playwright Test Run to PrometheusReporter (Lifecycle Hooks), PrometheusReporter to Test Execution Metrics (Counter.inc), PrometheusReporter to Duration Metrics (Histogram.observe), PrometheusReporter to Flakiness Scores (Gauge.set), Test Execution Metrics to Prometheus Exporter :9464, Duration Metrics to Prometheus Exporter :9464, Flakiness Scores to Prometheus Exporter :9464, Prometheus Exporter :9464 to Prometheus Server (HTTP Scrape 15s), Prometheus Server to Grafana Dashboard (Query API), Prometheus Server to Alert Notifications (Alertmanager), Grafana Dashboard to Test Health Visibility (Operators), Alert Notifications to Team Notifications (Slack/Email).
     A[Playwright Test Run] -->|Lifecycle Hooks| B[PrometheusReporter]
-    B -->|Counter.inc| C[Test Execution Metrics]
+    B -->|Counter.inc| C[Test Execution<br/>Metrics]
     B -->|Histogram.observe| D[Duration Metrics]
     B -->|Gauge.set| E[Flakiness Scores]
-    C --> F[Prometheus Exporter :9464]
+    C --> F[Prometheus Exporter<br/>:9464]
     D --> F
     E --> F
     F -->|HTTP Scrape 15s| G[Prometheus Server]
     G -->|Query API| H[Grafana Dashboard]
     G -->|Alertmanager| I[Alert Notifications]
-    H -->|Operators| J[Test Health Visibility]
+    H -->|Operators| J[Test Health<br/>Visibility]
     I -->|Slack/Email| K[Team Notifications]
 
-    style A fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style G fill:#DE8F05,stroke:#333,stroke-width:2px,color:#000
-    style H fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
-    style I fill:#CA9161,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class G pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class H pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

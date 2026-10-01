@@ -35,14 +35,21 @@ These examples assume you understand beginner concepts (initialization, basic DD
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Autogenerate diff flow
 graph LR
+    accTitle: Example 31: Autogenerate with --autogenerate
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: SQLAlchemy Models, Autogenerate Differ, Live Database, Generated upgrade/downgrade. Connections: SQLAlchemy Models to Autogenerate Differ (Base.metadata), Live Database to Autogenerate Differ (INFORMATION_SCHEMA), Autogenerate Differ to Generated upgrade/downgrade (computes diff).
     A[SQLAlchemy Models] -->|Base.metadata| B[Autogenerate Differ]
     C[Live Database] -->|INFORMATION_SCHEMA| B
-    B -->|computes diff| D[Generated upgrade/downgrade]
+    B -->|computes diff| D[Generated<br/>upgrade/downgrade]
 
-    style A fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style C fill:#DE8F05,stroke:#000000,color:#ffffff,stroke-width:2px
-    style B fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **env.py prerequisite — wire target_metadata**:
@@ -143,16 +150,24 @@ SQLite does not support `ALTER TABLE ... DROP COLUMN` or `ALTER TABLE ... ADD CO
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Batch operation internal steps
 graph TD
-    A[op.batch_alter_table] -->|1 CREATE new_table| B[New table with desired schema]
-    B -->|2 INSERT INTO new_table SELECT ...| C[Copy existing rows]
-    C -->|3 DROP TABLE old_table| D[Remove original]
-    D -->|4 RENAME new_table TO old_table| E[Restore original name]
+    accTitle: Example 33: Batch Operations for SQLite
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: op.batch_alter_table, New table with desired schema, Copy existing rows, Remove original, Restore original name. Connections: op.batch_alter_table to New table with desired schema (1 CREATE new_table), New table with desired schema to Copy existing rows (2 INSERT INTO new_table SELECT ...), Copy existing rows to Remove original (3 DROP TABLE old_table), Remove original to Restore original name (4 RENAME new_table TO old_table).
+    A[op.batch_alter_table] -->|1 CREATE new_table| B[New table with<br/>desired schema]
+    B -->|2 INSERT INTO<br/>new_table SELECT ...| C[Copy existing rows]
+    C -->|3 DROP TABLE<br/>old_table| D[Remove original]
+    D -->|4 RENAME new_table<br/>TO old_table| E[Restore original<br/>name]
 
-    style A fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#ffffff,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -320,6 +335,8 @@ Alembic supports multiple independent revision lines (branches). Branches are cr
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Branch topology
 graph TD
+    accTitle: Example 36: Branching Revisions
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: base, 001_initial_schema, 002_add_users, 003_feature_a_branch, 003_feature_b_branch, merge point. Connections: base to 001_initial_schema, 001_initial_schema to 002_add_users, 002_add_users to 003_feature_a_branch, 002_add_users to 003_feature_b_branch, 003_feature_a_branch to merge point, 003_feature_b_branch to merge point.
     A[base] --> B[001_initial_schema]
     B --> C[002_add_users]
     C --> D[003_feature_a_branch]
@@ -327,12 +344,17 @@ graph TD
     D --> F[merge point]
     E --> F
 
-    style A fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style B fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style C fill:#0173B2,stroke:#000000,color:#ffffff,stroke-width:2px
-    style D fill:#DE8F05,stroke:#000000,color:#ffffff,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#ffffff,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    class B pal-0173B2
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Create a named branch explicitly**:

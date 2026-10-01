@@ -27,6 +27,8 @@ This quick start covers 10 essential Terraform touchpoints:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: 1. Resources, 2. Variables, 3. Outputs, 4. Data Sources, 5. Provisioners, 6. Modules, 7. State Management, 8. Workspaces, 9. Remote Backends, 10. Import. Connections: 1. Resources to 2. Variables, 2. Variables to 3. Outputs, 3. Outputs to 4. Data Sources, 4. Data Sources to 5. Provisioners, 5. Provisioners to 6. Modules, 6. Modules to 7. State Management, 7. State Management to 8. Workspaces, 8. Workspaces to 9. Remote Backends, 9. Remote Backends to 10. Import.
     A["1. Resources"] --> B["2. Variables"]
     B --> C["3. Outputs"]
     C --> D["4. Data Sources"]
@@ -37,16 +39,21 @@ graph TD
     H --> I["9. Remote Backends"]
     I --> J["10. Import"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#0173B2,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#0173B2,color:#fff
-    style J fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    class F pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-CC78BC
+    class I pal-0173B2
+    class J pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concept 1: Resources
@@ -1096,16 +1103,23 @@ You've completed 10 essential Terraform touchpoints:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Learning Path Summary
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, D, E. Connections: A to B, B to C, C to D, D to E.
     A["Resources &<br/>Variables"] --> B["Outputs &<br/>Data"]
     B --> C["Provisioners &<br/>Modules"]
     C --> D["State &<br/>Workspaces"]
     D --> E["Backends &<br/>Import"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Next Steps

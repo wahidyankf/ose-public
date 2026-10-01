@@ -532,6 +532,8 @@ jobs:
 
 ```mermaid
 graph TB
+    accTitle: Production Pattern Diagram
+    accDescr: Graph with 14 nodes and 16 connections. Nodes: .env.example (Template), .env.development (Local), .env.staging (Cloud Test), .env.production (Live), .env.vault (Encrypted Secrets), playwright.config.ts (Config Loader), loadEnvironment Config() (Validation), EnvironmentConfig (Type-Safe Object), CI/CD Secrets (DOTENV_KEY), dotenv-vault (Decryption), process.env (Runtime Values), tests/*.spec.ts (Test Files), and 2 more. Connections: .env.example (Template) to .env.development (Local) (Copy to create), .env.example (Template) to .env.staging (Cloud Test) (Copy to create), .env.example (Template) to .env.production (Live) (Copy to create), .env.development (Local) to playwright.config.ts (Config Loader), .env.staging (Cloud Test) to playwright.config.ts (Config Loader), .env.production (Live) to playwright.config.ts (Config Loader), .env.vault (Encrypted Secrets) to dotenv-vault (Decryption), CI/CD Secrets (DOTENV_KEY) to dotenv-vault (Decryption), dotenv-vault (Decryption) to process.env (Runtime Values), process.env (Runtime Values) to playwright.config.ts (Config Loader), playwright.config.ts (Config Loader) to loadEnvironment Config() (Validation), loadEnvironment Config() (Validation) to EnvironmentConfig (Type-Safe Object), and 4 more.
     subgraph "Environment Configuration Hierarchy"
         A[".env.example<br/>(Template)"]
         B[".env.development<br/>(Local)"]
@@ -542,7 +544,7 @@ graph TB
 
     subgraph "Configuration Loading"
         F["playwright.config.ts<br/>(Config Loader)"]
-        G["loadEnvironmentConfig()<br/>(Validation)"]
+        G["loadEnvironment<br/>Config()<br/>(Validation)"]
         H["EnvironmentConfig<br/>(Type-Safe Object)"]
     end
 
@@ -575,20 +577,26 @@ graph TB
     M --> L
     N --> L
 
-    style A fill:#029E73
-    style B fill:#0173B2
-    style C fill:#DE8F05
-    style D fill:#CC78BC
-    style E fill:#CA9161
-    style F fill:#029E73
-    style G fill:#0173B2
-    style H fill:#DE8F05
-    style I fill:#CC78BC
-    style J fill:#CA9161
-    style K fill:#029E73
-    style L fill:#0173B2
-    style M fill:#DE8F05
-    style N fill:#CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class A pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-0173B2
+    class H pal-DE8F05
+    class I pal-CC78BC
+    class J pal-CA9161
+    class K pal-029E73
+    class L pal-0173B2
+    class M pal-DE8F05
+    class N pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram explanation**:

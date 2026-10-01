@@ -401,35 +401,43 @@ test("user downloads report with integrity verification", async ({ page, testFil
 
 ```mermaid
 flowchart TD
-    A[User Action: File Selection] --> B{Upload or Download?}
-    B -->|Upload| C[Select Files from Disk]
-    B -->|Download| D[Trigger Download Link/Button]
+    accTitle: Production Framework: File Fixtures and Validation
+    accDescr: Flowchart with 21 nodes and 20 connections. Nodes: User Action: File Selection, Upload or Download?, Select Files from Disk, Trigger Download Link/Button, Browser: File Input Element, Calculate File Hash, Submit Form with Files, Server: Validate MIME, Size, Validation Passed?, Return Error Response, Store Files on Server, Calculate Server Hash, and 9 more. Connections: User Action: File Selection to Upload or Download?, Upload or Download? to Select Files from Disk (Upload), Upload or Download? to Trigger Download Link/Button (Download), Select Files from Disk to Browser: File Input Element, Browser: File Input Element to Calculate File Hash, Calculate File Hash to Submit Form with Files, Submit Form with Files to Server: Validate MIME, Size, Server: Validate MIME, Size to Validation Passed?, Validation Passed? to Return Error Response (No), Validation Passed? to Store Files on Server (Yes), Store Files on Server to Calculate Server Hash, Calculate Server Hash to Return Success with Hash, and 8 more.
+    A[User Action: File<br/>Selection] --> B{Upload or Download?}
+    B -->|Upload| C[Select Files from<br/>Disk]
+    B -->|Download| D[Trigger Download<br/>Link/Button]
 
-    C --> E[Browser: File Input Element]
+    C --> E[Browser: File Input<br/>Element]
     E --> F[Calculate File Hash]
-    F --> G[Submit Form with Files]
-    G --> H[Server: Validate MIME, Size]
+    F --> G[Submit Form with<br/>Files]
+    G --> H[Server: Validate<br/>MIME, Size]
     H --> I{Validation Passed?}
-    I -->|No| J[Return Error Response]
-    I -->|Yes| K[Store Files on Server]
-    K --> L[Calculate Server Hash]
-    L --> M[Return Success with Hash]
-    M --> N[Test: Verify Hash Match]
+    I -->|No| J[Return Error<br/>Response]
+    I -->|Yes| K[Store Files on<br/>Server]
+    K --> L[Calculate Server<br/>Hash]
+    L --> M[Return Success with<br/>Hash]
+    M --> N[Test: Verify Hash<br/>Match]
 
     D --> O[Server: Prepare File]
     O --> P[Calculate File Hash]
-    P --> Q[Send File with Hash Header]
-    Q --> R[Browser: Download to Disk]
-    R --> S[Test: Read Downloaded File]
-    S --> T[Calculate Downloaded Hash]
+    P --> Q[Send File with Hash<br/>Header]
+    Q --> R[Browser: Download to<br/>Disk]
+    R --> S[Test: Read<br/>Downloaded File]
+    S --> T[Calculate Downloaded<br/>Hash]
     T --> U[Verify Hash Match]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#DE8F05,stroke:#000,color:#fff
-    style J fill:#CC78BC,stroke:#000,color:#fff
-    style N fill:#CA9161,stroke:#000,color:#fff
-    style U fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class H pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class I pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class J pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class N pal-CA9161
+    class U pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

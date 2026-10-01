@@ -25,18 +25,27 @@ These examples assume you understand beginner and intermediate concepts (DeployC
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% IScriptProvider data flow
 graph TD
-    A[Custom IScriptProvider] -->|GetScripts| B[seq of SqlScript]
+    accTitle: Example 61: Custom IScriptProvider
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Custom IScriptProvider, seq of SqlScript, Already in journal?, Execute Script, Skip Script, Record in Journal. Connections: Custom IScriptProvider to seq of SqlScript (GetScripts), seq of SqlScript to Already in journal? (DbUp engine), Already in journal? to Execute Script (No), Already in journal? to Skip Script (Yes), Execute Script to Record in Journal (Success).
+    A[Custom<br/>IScriptProvider] -->|GetScripts| B[seq of SqlScript]
     B -->|DbUp engine| C{Already in journal?}
     C -->|No| D[Execute Script]
     C -->|Yes| E[Skip Script]
     D -->|Success| F[Record in Journal]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-808080
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp
@@ -419,19 +428,27 @@ Running DbUp as part of a CI/CD pipeline requires dry-run detection, error handl
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% CI/CD migration pipeline
 graph LR
+    accTitle: Example 69: DbUp in CI/CD Pipeline
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: CI/CD Pipeline, DbUp Console App, LogScriptOutput, PerformUpgrade, Pipeline Continues, exit 1 — Pipeline Fails. Connections: CI/CD Pipeline to DbUp Console App (migrate job), DbUp Console App to LogScriptOutput (dry-run flag), DbUp Console App to PerformUpgrade (execute flag), LogScriptOutput to Pipeline Continues (exit 0), PerformUpgrade to Pipeline Continues (Successful), PerformUpgrade to exit 1 — Pipeline Fails (Error).
     A[CI/CD Pipeline] -->|migrate job| B[DbUp Console App]
     B -->|dry-run flag| C[LogScriptOutput]
     B -->|execute flag| D[PerformUpgrade]
     C -->|exit 0| E[Pipeline Continues]
     D -->|Successful| E
-    D -->|Error| F[exit 1 — Pipeline Fails]
+    D -->|Error| F[exit 1 — Pipeline<br/>Fails]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp

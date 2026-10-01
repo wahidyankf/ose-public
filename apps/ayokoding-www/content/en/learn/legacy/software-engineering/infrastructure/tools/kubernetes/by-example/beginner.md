@@ -34,16 +34,22 @@ A Pod is the smallest deployable unit in Kubernetes, representing one or more co
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Simple Pod creation flow
 graph TD
+ accTitle: Example 1: Hello World Pod
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: kubectl apply, API Server, Scheduler, kubelet on Node, Pod Running. Connections: kubectl apply to API Server, API Server to Scheduler, Scheduler to kubelet on Node, kubelet on Node to Pod Running.
  A[kubectl apply] --> B[API Server]
  B --> C[Scheduler]
  C --> D[kubelet on Node]
  D --> E[Pod Running]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-029E73
+ class E pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -123,6 +129,8 @@ Pods can run multiple containers that share the same network namespace and stora
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Multi-container Pod architecture
 graph TD
+ accTitle: Example 3: Multi-Container Pod
+ accDescr: Graph with 5 nodes and 6 connections. Nodes: Pod: multi-app, Container: nginx, Container: busybox, Shared Network localhost, Shared Volume /shared-data. Connections: Pod: multi-app to Container: nginx, Pod: multi-app to Container: busybox, Container: nginx to Shared Network localhost, Container: busybox to Shared Network localhost, Container: nginx to Shared Volume /shared-data, Container: busybox to Shared Volume /shared-data.
  A[Pod: multi-app] --> B[Container: nginx]
  A --> C[Container: busybox]
  B --> D[Shared Network<br/>localhost]
@@ -130,11 +138,16 @@ graph TD
  B --> E[Shared Volume<br/>/shared-data]
  C --> E
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-029E73
+ class C pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-DE8F05
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -371,6 +384,8 @@ Init containers run sequentially before application containers start, ensuring p
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Init container execution flow
 graph TD
+ accTitle: Example 7: Pod Init Containers
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Pod Created, Init Container 1, Success?, Init Container 2, Restart Init 1, Success?, App Containers Start, Restart Init 2. Connections: Pod Created to Init Container 1, Init Container 1 to Success?, Success? to Init Container 2 (Yes), Success? to Restart Init 1 (No), Init Container 2 to Success?, Success? to App Containers Start (Yes), Success? to Restart Init 2 (No).
  A[Pod Created] --> B[Init Container 1]
  B --> C{Success?}
  C -->|Yes| D[Init Container 2]
@@ -379,12 +394,17 @@ graph TD
  F -->|Yes| G[App Containers Start]
  F -->|No| H[Restart Init 2]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ class D pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CC78BC
+ class H pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -508,16 +528,22 @@ Deployments manage ReplicaSets to maintain desired Pod replicas with automatic r
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Deployment hierarchy
 graph TD
- A[Deployment: web-app] --> B[ReplicaSet: web-app-xxxxx]
+ accTitle: Example 8: Basic Deployment
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Deployment: web-app, ReplicaSet: web-app-xxxxx, Pod: web-app-xxxxx-1, Pod: web-app-xxxxx-2, Pod: web-app-xxxxx-3. Connections: Deployment: web-app to ReplicaSet: web-app-xxxxx, ReplicaSet: web-app-xxxxx to Pod: web-app-xxxxx-1, ReplicaSet: web-app-xxxxx to Pod: web-app-xxxxx-2, ReplicaSet: web-app-xxxxx to Pod: web-app-xxxxx-3.
+ A[Deployment: web-app] --> B[ReplicaSet:<br/>web-app-xxxxx]
  B --> C[Pod: web-app-xxxxx-1]
  B --> D[Pod: web-app-xxxxx-2]
  B --> E[Pod: web-app-xxxxx-3]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ class D pal-029E73
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -664,19 +690,27 @@ Rolling updates gradually replace old Pods with new ones, ensuring zero downtime
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Rolling update process
 graph TD
+ accTitle: Example 10: Rolling Update Strategy
+ accDescr: Graph with 7 nodes and 7 connections. Nodes: Old ReplicaSet 3 Pods v1.23, Update to v1.24, New ReplicaSet Created 0 Pods, Scale Up: +1 Pod v1.24, Scale Down: -1 Pod v1.23, All Updated?, Old ReplicaSet 0 Pods, kept for rollback. Connections: Old ReplicaSet 3 Pods v1.23 to Update to v1.24, Update to v1.24 to New ReplicaSet Created 0 Pods, New ReplicaSet Created 0 Pods to Scale Up: +1 Pod v1.24, Scale Up: +1 Pod v1.24 to Scale Down: -1 Pod v1.23, Scale Down: -1 Pod v1.23 to All Updated?, All Updated? to Scale Up: +1 Pod v1.24 (No), All Updated? to Old ReplicaSet 0 Pods, kept for rollback (Yes).
  A[Old ReplicaSet<br/>3 Pods v1.23] --> B{Update to v1.24}
- B --> C[New ReplicaSet Created<br/>0 Pods]
- C --> D[Scale Up: +1 Pod v1.24]
- D --> E[Scale Down: -1 Pod v1.23]
+ B --> C[New ReplicaSet<br/>Created<br/>0 Pods]
+ C --> D[Scale Up: +1 Pod<br/>v1.24]
+ D --> E[Scale Down: -1 Pod<br/>v1.23]
  E --> F{All Updated?}
  F -->|No| D
- F -->|Yes| G[Old ReplicaSet<br/>0 Pods, kept for rollback]
+ F -->|Yes| G[Old ReplicaSet<br/>0 Pods, kept for<br/>rollback]
 
- style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-CC78BC
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class C pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-029E73
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-CA9161
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -901,16 +935,22 @@ ClusterIP is the default Service type that exposes Pods on an internal cluster I
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% ClusterIP Service architecture
 graph TD
+ accTitle: Example 13: ClusterIP Service
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: ClusterIP Service 10.96.x.10:80, Pod: web-1 10.244.x.5:8080, Pod: web-2 10.244.y.6:8080, Pod: web-3 10.244.z.7:8080, Client Pod in cluster. Connections: ClusterIP Service 10.96.x.10:80 to Pod: web-1 10.244.x.5:8080, ClusterIP Service 10.96.x.10:80 to Pod: web-2 10.244.y.6:8080, ClusterIP Service 10.96.x.10:80 to Pod: web-3 10.244.z.7:8080, Client Pod in cluster to ClusterIP Service 10.96.x.10:80.
  A[ClusterIP Service<br/>10.96.x.10:80] --> B[Pod: web-1<br/>10.244.x.5:8080]
  A --> C[Pod: web-2<br/>10.244.y.6:8080]
  A --> D[Pod: web-3<br/>10.244.z.7:8080]
  E[Client Pod<br/>in cluster] --> A
 
- style A fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-DE8F05
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class B pal-0173B2
+ class C pal-0173B2
+ class D pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -964,18 +1004,24 @@ NodePort exposes Services on each node's IP at a static port (30000-32767 range)
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% NodePort Service access flow
 graph TD
+ accTitle: Example 14: NodePort Service
+ accDescr: Graph with 6 nodes and 5 connections. Nodes: External Client, Node IP:31000, NodePort Service, Pod: app-1, Pod: app-2, Another Node IP:31000. Connections: External Client to Node IP:31000, Node IP:31000 to NodePort Service, NodePort Service to Pod: app-1, NodePort Service to Pod: app-2, Another Node IP:31000 to NodePort Service.
  A[External Client] --> B[Node IP:31000]
  B --> C[NodePort Service]
  C --> D[Pod: app-1]
  C --> E[Pod: app-2]
- F[Another Node IP:31000] --> C
+ F[Another Node<br/>IP:31000] --> C
 
- style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ class F pal-DE8F05
+ class C pal-DE8F05
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class D pal-0173B2
+ class E pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1312,14 +1358,21 @@ ConfigMaps mounted as volumes create files where each key becomes a filename and
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% ConfigMap volume mount
 graph TD
- A[ConfigMap: nginx-config] --> B[Volume Mount<br/>/etc/nginx/conf.d]
- B --> C[File: default.conf<br/>Contains nginx config]
- C --> D[nginx Container<br/>Reads config from file]
+ accTitle: Example 19: ConfigMap as Volume
+ accDescr: Graph with 4 nodes and 3 connections. Nodes: ConfigMap: nginx-config, Volume Mount /etc/nginx/conf.d, File: default.conf Contains nginx config, nginx Container Reads config from file. Connections: ConfigMap: nginx-config to Volume Mount /etc/nginx/conf.d, Volume Mount /etc/nginx/conf.d to File: default.conf Contains nginx config, File: default.conf Contains nginx config to nginx Container Reads config from file.
+ A[ConfigMap:<br/>nginx-config] --> B[Volume Mount<br/>/etc/nginx/conf.d]
+ B --> C[File: default.conf<br/>Contains nginx<br/>config]
+ C --> D[nginx Container<br/>Reads config from<br/>file]
 
- style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class D pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1735,15 +1788,21 @@ Labels are key-value pairs attached to objects for identification and selection.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Label selector matching
 graph TD
+ accTitle: Example 24: Labels and Selectors
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: Service Selector app=web, env=prod, Match Labels?, Pod: web-1 app=web, env=prod, Pod: web-2 app=web, env=prod, Pod: api-1 app=api, env=prod. Connections: Service Selector app=web, env=prod to Match Labels?, Match Labels? to Pod: web-1 app=web, env=prod (Yes), Match Labels? to Pod: web-2 app=web, env=prod (Yes), Match Labels? to Pod: api-1 app=api, env=prod (No).
  A[Service Selector<br/>app=web, env=prod] --> B{Match Labels?}
  B -->|Yes| C[Pod: web-1<br/>app=web, env=prod]
  B -->|Yes| D[Pod: web-2<br/>app=web, env=prod]
  B -->|No| E[Pod: api-1<br/>app=api, env=prod]
 
- style A fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

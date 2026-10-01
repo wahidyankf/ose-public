@@ -42,12 +42,18 @@ Unlike narrative tutorials that build understanding through explanation and stor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner<br/>Examples 1-28<br/>Install, VMs, LXC, Storage<br/>Basic Operations"] --> B["Intermediate<br/>Examples 29-57<br/>Clustering, Ceph, SDN<br/>Backup & Automation"]
-    B --> C["Advanced<br/>Examples 58-85<br/>HA, IaC, GPU Passthrough<br/>Upgrades & Tuning"]
+    accTitle: Learning Path
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Examples 1-28 Install, VMs, LXC, Storage Basic Operations, B, Automation, C, Tuning. Connections: Beginner Examples 1-28 Install, VMs, LXC, Storage Basic Operations to B, Beginner Examples 1-28 Install, VMs, LXC, Storage Basic Operations to Automation, B to C, B to Tuning.
+    A["Beginner<br/>Examples 1-28<br/>Install, VMs, LXC,<br/>Storage<br/>Basic Operations"] --> B["Intermediate<br/>Examples 29-57<br/>Clustering, Ceph,<br/>SDN<br/>Backup & Automation"]
+    B --> C["Advanced<br/>Examples 58-85<br/>HA, IaC, GPU<br/>Passthrough<br/>Upgrades & Tuning"]
 
-    style A fill:#0173B2,color:#fff,stroke:#000
-    style B fill:#DE8F05,color:#fff,stroke:#000
-    style C fill:#029E73,color:#fff,stroke:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Progress from Proxmox fundamentals (installation, basic VM/container management, local storage) through production cluster operations (Ceph, SDN, backup to PBS) to advanced infrastructure automation (Terraform, Ansible, Packer, HA, GPU passthrough, PVE 8→9 upgrades).

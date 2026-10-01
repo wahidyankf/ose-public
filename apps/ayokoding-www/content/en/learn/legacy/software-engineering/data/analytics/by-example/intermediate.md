@@ -1194,14 +1194,21 @@ Pipelines chain preprocessing steps and a final estimator into a single object t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 48: scikit-learn Pipeline — Preprocessing + Model in One Object
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Raw Features mixed types, ColumnTransformer scale numeric encode categorical, LogisticRegression final estimator, Predictions probabilities. Connections: Raw Features mixed types to ColumnTransformer scale numeric encode categorical, ColumnTransformer scale numeric encode categorical to LogisticRegression final estimator, LogisticRegression final estimator to Predictions probabilities.
     A["Raw Features<br/>mixed types"] --> B["ColumnTransformer<br/>scale numeric<br/>encode categorical"]
     B --> C["LogisticRegression<br/>final estimator"]
     C --> D["Predictions<br/>probabilities"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

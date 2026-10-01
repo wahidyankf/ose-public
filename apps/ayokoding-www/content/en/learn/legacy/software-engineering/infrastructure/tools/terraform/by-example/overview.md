@@ -40,12 +40,18 @@ Unlike narrative tutorials that build understanding through explanation and stor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner<br/>Examples 1-28<br/>HCL & Resources"] --> B["Intermediate<br/>Examples 29+<br/>Modules & State<br/>#40;in development#41;"]
-    B --> C["Advanced<br/>Examples 57+<br/>Testing & CI/CD<br/>#40;in development#41;"]
+    accTitle: Learning Path
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: A, Resources, B, State, C, CI. Connections: A to B, A to State, Resources to B, Resources to State, B to C, B to CI.
+    A["Beginner<br/>Examples 1-28<br/>HCL & Resources"] --> B["Intermediate<br/>Examples 29+<br/>Modules & State<br/>#40;in<br/>development#41;"]
+    B --> C["Advanced<br/>Examples 57+<br/>Testing & CI/CD<br/>#40;in<br/>development#41;"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Progress from Terraform fundamentals (HCL syntax, providers, resources, variables) through production patterns (modules, remote state, workspaces) to advanced infrastructure (custom providers, testing, multi-environment deployments). Each level builds on the previous, introducing more sophisticated Terraform features and real-world patterns.

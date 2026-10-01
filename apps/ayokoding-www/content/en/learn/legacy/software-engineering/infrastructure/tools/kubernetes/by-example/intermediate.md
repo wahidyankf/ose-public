@@ -34,20 +34,26 @@ StatefulSets manage stateful applications requiring stable network identities, p
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% StatefulSet architecture with persistent storage
 graph TD
- A[StatefulSet: database] --> B[Pod: database-0]
+ accTitle: Example 29: Basic StatefulSet
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: StatefulSet: database, Pod: database-0, Pod: database-1, Pod: database-2, PVC: data-database-0, PVC: data-database-1, PVC: data-database-2. Connections: StatefulSet: database to Pod: database-0, StatefulSet: database to Pod: database-1, StatefulSet: database to Pod: database-2, Pod: database-0 to PVC: data-database-0, Pod: database-1 to PVC: data-database-1, Pod: database-2 to PVC: data-database-2.
+ A[StatefulSet:<br/>database] --> B[Pod: database-0]
  A --> C[Pod: database-1]
  A --> D[Pod: database-2]
  B --> E[PVC: data-database-0]
  C --> F[PVC: data-database-1]
  D --> G[PVC: data-database-2]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-029E73
+ class C pal-029E73
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CC78BC
+ class F pal-CC78BC
+ class G pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -583,17 +589,22 @@ DaemonSets ensure a Pod runs on every node (or a subset of nodes), suitable for 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% DaemonSet on all nodes
 graph TD
+ accTitle: Example 34: Basic DaemonSet
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: DaemonSet: log-agent, Pod on Node 1, Pod on Node 2, Pod on Node 3, Collect logs from Node 1, Collect logs from Node 2, Collect logs from Node 3. Connections: DaemonSet: log-agent to Pod on Node 1, DaemonSet: log-agent to Pod on Node 2, DaemonSet: log-agent to Pod on Node 3, Pod on Node 1 to Collect logs from Node 1, Pod on Node 2 to Collect logs from Node 2, Pod on Node 3 to Collect logs from Node 3.
  A[DaemonSet: log-agent] --> B[Pod on Node 1]
  A --> C[Pod on Node 2]
  A --> D[Pod on Node 3]
- B --> E[Collect logs from Node 1]
- C --> F[Collect logs from Node 2]
- D --> G[Collect logs from Node 3]
+ B --> E[Collect logs from<br/>Node 1]
+ C --> F[Collect logs from<br/>Node 2]
+ D --> G[Collect logs from<br/>Node 3]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-029E73
+ class C pal-029E73
+ class D pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -717,18 +728,24 @@ DaemonSets can target specific nodes using nodeSelector or node affinity, enabli
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% DaemonSet with node selector
 graph TD
- A[DaemonSet: gpu-monitor] --> B{Node Selector}
- B -->|Match| C[Node 1<br/>accelerator=nvidia-gpu]
- B -->|Match| D[Node 2<br/>accelerator=nvidia-gpu]
+ accTitle: Example 35: DaemonSet with Node Selector
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: DaemonSet: gpu-monitor, Node Selector, Node 1 accelerator=nvidia- gpu, Node 2 accelerator=nvidia- gpu, Node 3 No label, Pod created, Pod created, No Pod. Connections: DaemonSet: gpu-monitor to Node Selector, Node Selector to Node 1 accelerator=nvidia- gpu (Match), Node Selector to Node 2 accelerator=nvidia- gpu (Match), Node Selector to Node 3 No label (No Match), Node 1 accelerator=nvidia- gpu to Pod created, Node 2 accelerator=nvidia- gpu to Pod created, Node 3 No label to No Pod.
+ A[DaemonSet:<br/>gpu-monitor] --> B{Node Selector}
+ B -->|Match| C[Node 1<br/>accelerator=nvidia-<br/>gpu]
+ B -->|Match| D[Node 2<br/>accelerator=nvidia-<br/>gpu]
  B -->|No Match| E[Node 3<br/>No label]
  C --> F[Pod created]
  D --> G[Pod created]
  E --> H[No Pod]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ class D pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -919,6 +936,8 @@ Parallel Jobs run multiple Pods simultaneously to process distributed workloads 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Parallel job execution
 graph TD
+ accTitle: Example 37: Parallel Jobs
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: Job: completions=10 parallelism=3, Wave 1: Pods 1-3, 3 complete?, Wave 2: Pods 4-6, 6 complete?, Wave 3: Pods 7-9, 9 complete?, Wave 4: Pod 10, Job Complete. Connections: Job: completions=10 parallelism=3 to Wave 1: Pods 1-3, Wave 1: Pods 1-3 to 3 complete?, 3 complete? to Wave 2: Pods 4-6 (Yes), Wave 2: Pods 4-6 to 6 complete?, 6 complete? to Wave 3: Pods 7-9 (Yes), Wave 3: Pods 7-9 to 9 complete?, 9 complete? to Wave 4: Pod 10 (Yes), Wave 4: Pod 10 to Job Complete.
  A[Job: completions=10<br/>parallelism=3] --> B[Wave 1: Pods 1-3]
  B --> C{3 complete?}
  C -->|Yes| D[Wave 2: Pods 4-6]
@@ -928,12 +947,16 @@ graph TD
  G -->|Yes| H[Wave 4: Pod 10]
  H --> I[Job Complete]
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style H fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ class D pal-DE8F05
+ class F pal-DE8F05
+ class H pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class I pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1010,20 +1033,28 @@ CronJobs create Jobs on a schedule using cron syntax, suitable for periodic back
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% CronJob scheduling
 graph TD
+ accTitle: Example 38: CronJob for Scheduled Tasks
+ accDescr: Graph with 7 nodes and 8 connections. Nodes: CronJob: 0 2 * * *, 2:00 AM: Create Job, Job creates Pod, Pod success?, Keep in success history limit: 3, Keep in failure history limit: 1, Wait for next schedule. Connections: CronJob: 0 2 * * * to 2:00 AM: Create Job, 2:00 AM: Create Job to Job creates Pod, Job creates Pod to Pod success?, Pod success? to Keep in success history limit: 3 (Yes), Pod success? to Keep in failure history limit: 1 (No), Keep in success history limit: 3 to Wait for next schedule, Keep in failure history limit: 1 to Wait for next schedule, Wait for next schedule to CronJob: 0 2 * * *.
  A[CronJob: 0 2 * * *] --> B[2:00 AM: Create Job]
  B --> C[Job creates Pod]
  C --> D{Pod success?}
- D -->|Yes| E[Keep in success history<br/>limit: 3]
- D -->|No| F[Keep in failure history<br/>limit: 1]
- E --> G[Wait for next schedule]
+ D -->|Yes| E[Keep in success<br/>history<br/>limit: 3]
+ D -->|No| F[Keep in failure<br/>history<br/>limit: 1]
+ E --> G[Wait for next<br/>schedule]
  F --> G
  G --> A
 
- style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class A pal-0173B2
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class F pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1115,6 +1146,8 @@ Ingress manages external HTTP/HTTPS access to Services, providing host-based and
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Ingress routing
 graph TD
+ accTitle: Example 39: Basic Ingress
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Client Request app.example.com/api, Ingress Controller, Host + Path Match?, Service: api-service, Service: web-service, Pod: api-1, Pod: api-2. Connections: Client Request app.example.com/api to Ingress Controller, Ingress Controller to Host + Path Match?, Host + Path Match? to Service: api-service (app.example.com/api), Host + Path Match? to Service: web-service (app.example.com/web), Service: api-service to Pod: api-1, Service: api-service to Pod: api-2.
  A[Client Request<br/>app.example.com/api] --> B[Ingress Controller]
  B --> C{Host + Path Match?}
  C -->|app.example.com/api| D[Service: api-service]
@@ -1122,12 +1155,17 @@ graph TD
  D --> F[Pod: api-1]
  D --> G[Pod: api-2]
 
- style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-029E73
+ class E pal-029E73
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class F pal-0173B2
+ class G pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1579,15 +1617,22 @@ PersistentVolumes (PV) represent cluster storage resources while PersistentVolum
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% PV and PVC binding
 graph TD
+ accTitle: Example 44: PersistentVolume and PersistentVolumeClaim
+ accDescr: Graph with 5 nodes and 4 connections. Nodes: PersistentVolume 10Gi, ReadWriteOnce, Binding, PersistentVolume Claim 5Gi, ReadWriteOnce, Bound State, Pod Mounts PVC. Connections: PersistentVolume 10Gi, ReadWriteOnce to Binding, PersistentVolume Claim 5Gi, ReadWriteOnce to Binding, Binding to Bound State, Bound State to Pod Mounts PVC.
  A[PersistentVolume<br/>10Gi, ReadWriteOnce] --> B{Binding}
- C[PersistentVolumeClaim<br/>5Gi, ReadWriteOnce] --> B
+ C[PersistentVolume<br/>Claim<br/>5Gi, ReadWriteOnce] --> B
  B --> D[Bound State]
  D --> E[Pod Mounts PVC]
 
- style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-029E73
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class E pal-0173B2
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1759,18 +1804,26 @@ PersistentVolumeClaims support volume expansion when StorageClass allows it. Exp
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Volume expansion workflow
 graph TD
+ accTitle: Example 46: Volume Expansion
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: PVC: 10Gi, Edit PVC → 20Gi, Volume controller resizes PV, Status: FileSystem ResizePending, Restart Pod, kubelet resizes filesystem, PVC: 20Gi available. Connections: PVC: 10Gi to Edit PVC → 20Gi, Edit PVC → 20Gi to Volume controller resizes PV, Volume controller resizes PV to Status: FileSystem ResizePending, Status: FileSystem ResizePending to Restart Pod, Restart Pod to kubelet resizes filesystem, kubelet resizes filesystem to PVC: 20Gi available.
  A[PVC: 10Gi] --> B[Edit PVC → 20Gi]
  B --> C[Volume controller<br/>resizes PV]
- C --> D[Status: FileSystemResizePending]
+ C --> D[Status: FileSystem<br/>ResizePending]
  D --> E[Restart Pod]
- E --> F[kubelet resizes filesystem]
+ E --> F[kubelet resizes<br/>filesystem]
  F --> G[PVC: 20Gi available]
 
- style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class C pal-0173B2
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2012,6 +2065,8 @@ Kubernetes assigns Quality of Service (QoS) classes based on resource requests a
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% QoS eviction priority
 graph TD
+ accTitle: Example 49: QoS Classes
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Node memory pressure, Eviction order, 1. BestEffort Pods No requests/limits, 2. Burstable Pods requests < limits, 3. Guaranteed Pods requests = limits, Evicted first, Evicted second, Evicted last. Connections: Node memory pressure to Eviction order, Eviction order to 1. BestEffort Pods No requests/limits, Eviction order to 2. Burstable Pods requests < limits, Eviction order to 3. Guaranteed Pods requests = limits, 1. BestEffort Pods No requests/limits to Evicted first, 2. Burstable Pods requests < limits to Evicted second, 3. Guaranteed Pods requests = limits to Evicted last.
  A[Node memory pressure] --> B{Eviction order}
  B --> C[1. BestEffort Pods<br/>No requests/limits]
  B --> D[2. Burstable Pods<br/>requests < limits]
@@ -2020,10 +2075,15 @@ graph TD
  D --> G[Evicted second]
  E --> H[Evicted last]
 
- style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-DE8F05
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2163,18 +2223,25 @@ HorizontalPodAutoscaler (HPA) automatically scales Deployment/ReplicaSet replica
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% HPA scaling decision
 graph TD
+ accTitle: Example 51: Horizontal Pod Autoscaler
+ accDescr: Graph with 7 nodes and 7 connections. Nodes: HPA checks metrics every 15s, CPU > 70?, Calculate replicas ceil402 × 85/7041 = 3, Calculate replicas ceil403 × 50/7041 = 3, Scale up: 2 → 3, No change, Wait for stabilization. Connections: HPA checks metrics every 15s to CPU > 70?, CPU > 70? to Calculate replicas ceil402 × 85/7041 = 3 (Yes: 85), CPU > 70? to Calculate replicas ceil403 × 50/7041 = 3 (No: 50), Calculate replicas ceil402 × 85/7041 = 3 to Scale up: 2 → 3, Calculate replicas ceil403 × 50/7041 = 3 to No change, Scale up: 2 → 3 to Wait for stabilization, No change to HPA checks metrics every 15s.
  A[HPA checks metrics<br/>every 15s] --> B{CPU > 70%?}
- B -->|Yes: 85%| C[Calculate replicas<br/>ceil#40;2 × 85/70#41; = 3]
- B -->|No: 50%| D[Calculate replicas<br/>ceil#40;3 × 50/70#41; = 3]
+ B -->|Yes: 85%| C[Calculate replicas<br/>ceil#40;2 ×<br/>85/70#41; = 3]
+ B -->|No: 50%| D[Calculate replicas<br/>ceil#40;3 ×<br/>50/70#41; = 3]
  C --> E[Scale up: 2 → 3]
  D --> F[No change]
- E --> G[Wait for stabilization]
+ E --> G[Wait for<br/>stabilization]
  F --> A
 
- style A fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-DE8F05
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class B pal-0173B2
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class E pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2343,13 +2410,19 @@ Readiness probes determine when Pods are ready to receive traffic. Failed readin
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Readiness probe traffic control
 graph TD
+ accTitle: Example 54: Readiness Probe
+ accDescr: Graph with 4 nodes and 3 connections. Nodes: Service: web-service, Readiness Probe, Pod: web-1 Receives Traffic, Pod: web-2 No Traffic. Connections: Service: web-service to Readiness Probe, Readiness Probe to Pod: web-1 Receives Traffic (Pass), Readiness Probe to Pod: web-2 No Traffic (Fail).
  A[Service: web-service] --> B{Readiness Probe}
  B -->|Pass| C[Pod: web-1<br/>Receives Traffic]
  B -->|Fail| D[Pod: web-2<br/>No Traffic]
 
- style A fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
- style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-DE8F05
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class C pal-029E73
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class D pal-CC78BC
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -2406,10 +2479,12 @@ Startup probes give slow-starting containers extra time to initialize before liv
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Probe execution sequence
 graph TD
+ accTitle: Example 55: Startup Probe
+ accDescr: Graph with 10 nodes and 10 connections. Nodes: Container starts, Startup probe begins, Startup success?, Restart container, Liveness probe begins, Liveness success?, Readiness probe runs, Ready?, Receive traffic, No traffic. Connections: Container starts to Startup probe begins, Startup probe begins to Startup success?, Startup success? to Restart container (Fail × 30), Startup success? to Liveness probe begins (Success), Liveness probe begins to Liveness success?, Liveness success? to Restart container (Fail × 3), Liveness success? to Readiness probe runs (Success), Readiness probe runs to Ready?, Ready? to Receive traffic (Yes), Ready? to No traffic (No).
  A[Container starts] --> B[Startup probe begins]
  B --> C{Startup success?}
  C -->|Fail × 30| D[Restart container]
- C -->|Success| E[Liveness probe begins]
+ C -->|Success| E[Liveness probe<br/>begins]
  E --> F{Liveness success?}
  F -->|Fail × 3| D
  F -->|Success| G[Readiness probe runs]
@@ -2417,11 +2492,17 @@ graph TD
  H -->|Yes| I[Receive traffic]
  H -->|No| J[No traffic]
 
- style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
- style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
- style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
- style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
- style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+ classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ class A pal-CC78BC
+ classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ class B pal-DE8F05
+ classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ class E pal-0173B2
+ classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class G pal-CA9161
+ classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ class I pal-029E73
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

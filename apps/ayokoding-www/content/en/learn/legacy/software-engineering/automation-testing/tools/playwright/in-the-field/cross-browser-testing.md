@@ -437,19 +437,16 @@ CI_BUILD_ID=local
 
 ```mermaid
 graph LR
+    accTitle: Cross-Browser Testing Progression Architecture
+    accDescr: Graph with 16 nodes and 21 connections. Nodes: Local Browser Versions, Chromium 125, Firefox 124, WebKit Safari 17, Test Results, Cloud Infrastructure, Chrome Win 11, Firefox macOS, Safari macOS, Edge Win 11, Mobile Safari iOS, Chrome Android, and 4 more. Connections: Local Browser Versions to Chromium 125 (Sequential Execution), Local Browser Versions to Firefox 124 (Sequential Execution), Local Browser Versions to WebKit Safari 17 (Sequential Execution), Chromium 125 to Test Results, Firefox 124 to Test Results, WebKit Safari 17 to Test Results, Cloud Infrastructure to Chrome Win 11 (Parallel), Cloud Infrastructure to Firefox macOS (Parallel), Cloud Infrastructure to Safari macOS (Parallel), Cloud Infrastructure to Edge Win 11 (Parallel), Cloud Infrastructure to Mobile Safari iOS (Parallel), Cloud Infrastructure to Chrome Android (Parallel), and 9 more.
     subgraph "Standard: Playwright Projects"
-        A[Local Browser Versions] -->|Sequential Execution| B[Chromium 125]
+        A[Local Browser<br/>Versions] -->|Sequential Execution| B[Chromium 125]
         A -->|Sequential Execution| C[Firefox 124]
         A -->|Sequential Execution| D[WebKit Safari 17]
         B --> E[Test Results]
         C --> E
         D --> E
 
-        style A fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-        style B fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-        style C fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-        style D fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-        style E fill:#DE8F05,stroke:#000,stroke-width:2px,color:#000
     end
 
     subgraph "Production: BrowserStack Cloud"
@@ -471,20 +468,30 @@ graph LR
         M --> O[Videos]
         M --> P[Traces]
 
-        style F fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-        style G fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-        style H fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-        style I fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-        style J fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-        style K fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-        style L fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-        style M fill:#DE8F05,stroke:#000,stroke-width:2px,color:#000
-        style N fill:#CC78BC,stroke:#000,stroke-width:2px,color:#fff
-        style O fill:#CC78BC,stroke:#000,stroke-width:2px,color:#fff
-        style P fill:#CC78BC,stroke:#000,stroke-width:2px,color:#fff
     end
 
     E -.Upgrade Path.-> F
+        classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+        class A pal-0173B2
+        classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+        class B pal-029E73
+        class C pal-029E73
+        class D pal-029E73
+        classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+        class E pal-DE8F05
+        class F pal-0173B2
+        class G pal-029E73
+        class H pal-029E73
+        class I pal-029E73
+        class J pal-029E73
+        class K pal-029E73
+        class L pal-029E73
+        class M pal-DE8F05
+        classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+        class N pal-CC78BC
+        class O pal-CC78BC
+        class P pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

@@ -7,6 +7,9 @@
 import type { Locale } from "@/features/i18n/core/config";
 
 export const ID_NOTES: Readonly<Record<string, string>> = {
+  "Fast mode: $3 / $15.": "Mode Fast: US$3 / US$15.",
+  "Cursor only (app, CLI, and SDK); Composer 2 now runs as 2.5.":
+    "Hanya di Cursor (aplikasi, CLI, dan SDK); Composer 2 kini dijalankan sebagai 2.5.",
   "Invitation only (Project Glasswing).": "Hanya lewat undangan (Project Glasswing).",
   "Limited rollout in Codex; check your plan.": "Dirilis terbatas di Codex; cek paket Anda.",
   "Prompts over 272K tokens: 2× input, 1.5× output.": "Prompt di atas 272K token: input 2×, output 1,5×.",

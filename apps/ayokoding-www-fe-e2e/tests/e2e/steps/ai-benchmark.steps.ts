@@ -3,12 +3,14 @@ import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import {
   BENCHMARK_SPECS,
+  HARNESS_IN_HOUSE_LINES,
   METHOD_EXAMPLE,
   MIN_SCORED_BENCHMARKS,
   NEAREST_OPTION_COUNT,
   SUBSTITUTE_HARNESS,
   TIER_ANCHORS,
   TIERS,
+  rosterScopeParams,
 } from "../../../../ayokoding-www/src/features/ai-benchmark/core/data/benchmarks";
 import { dataset } from "../../../../ayokoding-www/src/features/ai-benchmark/core/data/models";
 import { OPERATORS, operatorById } from "../../../../ayokoding-www/src/features/ai-benchmark/core/data/operators";
@@ -498,6 +500,12 @@ Then("it lists every composite benchmark with its version and weight", async ({ 
     await expect(items.nth(i)).toContainText(fill(t("en", "aiBenchMethodVersion"), { version: b.version }));
     await expect(items.nth(i)).toContainText(fill(t("en", "aiBenchMethodWeight"), { weight: b.weight }));
   }
+});
+
+Then("it states which models the roster covers", async ({ page }) => {
+  const roster = page.getByTestId("ai-bench-method-roster");
+  await expect(roster).toHaveText(fill(t("en", "aiBenchMethodRoster"), rosterScopeParams()));
+  for (const l of HARNESS_IN_HOUSE_LINES) await expect(roster).toContainText(`${l.vendor} ${l.line}`);
 });
 
 Then("it states the operator order used to pick each figure", async ({ page }) => {

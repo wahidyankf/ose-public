@@ -81,6 +81,14 @@ export const TIERS: readonly Tier[] = ["ultra", "planning", "execution", "fast",
 /** Vendors treated as frontier labs; their models are the substitute finder's targets. */
 export const FRONTIER_VENDORS: readonly string[] = ["Anthropic", "OpenAI", "Google", "xAI"];
 
+/**
+ * In-house model lines of the listed harnesses: a harness vendor's own models, served only in its
+ * harness. The roster carries every served generation of each line, up to three.
+ */
+export const HARNESS_IN_HOUSE_LINES: readonly { harness: HarnessId; vendor: string; line: string }[] = [
+  { harness: "cursor", vendor: "Cursor", line: "Composer" },
+];
+
 /** The harness whose models the substitute finder suggests. */
 export const SUBSTITUTE_HARNESS: HarnessId = "opencode-go";
 
@@ -105,6 +113,15 @@ export const HARNESS_DISPLAY_NAMES: Readonly<Record<HarnessId, string>> = {
   "opencode-go": "OpenCode Go",
   "opencode-zen": "OpenCode Zen",
 };
+
+/** Values for the methodology's roster sentence, read from the constants that define the roster. */
+export function rosterScopeParams(): { frontier: string; substitute: string; inHouse: string } {
+  return {
+    frontier: FRONTIER_VENDORS.join(", "),
+    substitute: HARNESS_DISPLAY_NAMES[SUBSTITUTE_HARNESS],
+    inHouse: HARNESS_IN_HOUSE_LINES.map((l) => `${l.vendor} ${l.line}`).join(", "),
+  };
+}
 
 /** Blended price weighting: three input tokens for every output token. */
 export const BLEND_INPUT_SHARE = 3;

@@ -780,6 +780,7 @@ disagree, the generated block below is authoritative.
 | Grok 4.6                                | xAI         | $2     | $6     | $3      | vendor    | Prompts of 200K tokens or more: $4 / $12.                                                 |
 | Grok 4.5                                | xAI         | $2     | $6     | $3      | vendor    | Prompts of 200K tokens or more: $4 / $12.                                                 |
 | Grok Build 0.1                          | xAI         | $1     | $2     | $1.25   | vendor    |                                                                                           |
+| Composer 2.5                            | Cursor      | $0.5   | $2.5   | $1      | vendor    | Fast mode: $3 / $15.                                                                      |
 | GLM-5.3                                 | Z.ai        | $1.4   | $4.4   | $2.15   | vendor    |                                                                                           |
 | GLM-5.2                                 | Z.ai        | $1.4   | $4.4   | $2.15   | vendor    |                                                                                           |
 | GLM-5.1                                 | Z.ai        | $1.4   | $4.4   | $2.15   | vendor    |                                                                                           |
@@ -916,6 +917,7 @@ Terminal-Bench board, Vals = Vals AI, Scale = Scale AI.
 | Grok 4.6                                | xAI         | 64.90% (AA)        | 17.68% (AA)          | 58.33% (AA)    | 46.97 | execution    | $3.57     |
 | Grok 4.5                                | xAI         | 53.76% (Datacurve) | 12.42% (TB official) | —              | 33.09 | fast         | —         |
 | Grok Build 0.1                          | xAI         | —                  | —                    | —              | —     | insufficient | —         |
+| Composer 2.5                            | Cursor      | —                  | —                    | —              | —     | insufficient | —         |
 | GLM-5.3                                 | Z.ai        | 61.36% (AA)        | 39.90% (AA)          | 59.41% (AA)    | 53.56 | execution    | $4.24     |
 | GLM-5.2                                 | Z.ai        | 43.78% (Datacurve) | —                    | 48.12% (Scale) | 45.95 | execution    | —         |
 | GLM-5.1                                 | Z.ai        | —                  | 2.00% (AA)           | —              | —     | insufficient | —         |

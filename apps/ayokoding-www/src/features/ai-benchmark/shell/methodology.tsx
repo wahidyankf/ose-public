@@ -10,6 +10,7 @@ import {
   METHOD_EXAMPLE,
   MIN_SCORED_BENCHMARKS,
   TIER_ANCHORS,
+  rosterScopeParams,
 } from "../core/data/benchmarks";
 import { operatorById } from "../core/data/operators";
 import type { BenchmarkId, Dataset } from "../core/data/types";
@@ -89,6 +90,7 @@ export function Methodology({ dataset, locale }: { dataset: Dataset; locale: Loc
             ))}
           </ul>
         </div>
+        <p data-testid="ai-bench-method-roster">{tf(locale, "aiBenchMethodRoster", rosterScopeParams())}</p>
         <p data-testid="ai-bench-method-index">{tf(locale, "aiBenchMethodIndex", { min: MIN_SCORED_BENCHMARKS })}</p>
         <p>{t(locale, "aiBenchMethodTiers")}</p>
         <div>

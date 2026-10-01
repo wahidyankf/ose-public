@@ -29,6 +29,7 @@ environment variables. The three prior docs that covered overlapping ground now 
 - [GitHub Environment Key Registry](./secrets-and-env-standards/github-environment-key-registry.md) — vars./secrets. per environment
 - [`env-injection:` Manifest](./secrets-and-env-standards/env-injection-section-value-less-injection-manifest.md) — Per-app, per-stage injection homes
 - [Secret-Surface Census](./secrets-and-env-standards/secret-surface-census.md) — Inventory of secret-bearing surfaces
+- [Secret-Manager Item Naming](./secrets-and-env-standards/secret-manager-item-naming.md) — How secret-manager (Bitwarden) items are named
 - [`guard-env-file-access` Policy](./secrets-and-env-standards/guard-env-file-access-policy.md) — Which .env\* files agents may open
 - [Tiered Env Files — the `APP_ENV` Contract](./secrets-and-env-standards/tiered-env-files-the-app-env-contract.md) — The tier-file loading contract
 - [Content-Fixture Exclusion](./secrets-and-env-standards/content-fixture-exclusion.md) — Rule for course env fixtures

@@ -19,15 +19,18 @@ with Docker and `kubectl`; Kubernetes examples are declarative files that you ca
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: What you will build
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Build an image, Run a local stack, Declare cluster state, Reconcile health, Scale safely. Connections: Build an image to Run a local stack, Run a local stack to Declare cluster state, Declare cluster state to Reconcile health, Reconcile health to Scale safely.
     A["Build an image"]:::blue --> B["Run a local stack"]:::orange
-    B --> C["Declare cluster state"]:::teal
+    B --> C["Declare cluster<br/>state"]:::teal
     C --> D["Reconcile health"]:::purple
     D --> E["Scale safely"]:::brown
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts
@@ -113,15 +116,18 @@ Registries distribute images; tags are mutable names while digests identify immu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: co-13 · Registries, tags, and digests
+    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: Build image manifest, Tag is mutable, Digest is exact, Registry tag may move, Pinned deploy repeats. Connections: Build image manifest to Tag is mutable, Build image manifest to Digest is exact, Tag is mutable to Registry tag may move, Registry tag may move to Pinned deploy repeats, Digest is exact to Pinned deploy repeats.
     A["Build image manifest"]:::blue --> B["Tag is mutable"]:::orange
     A --> C["Digest is exact"]:::teal
-    B --> D{"Registry tag may move"}:::purple
-    D --> E["Pinned deploy repeats"]:::teal
+    B --> D{"Registry tag may<br/>move"}:::purple
+    D --> E["Pinned deploy<br/>repeats"]:::teal
     C --> E
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### co-14 · Digest pinning
@@ -157,16 +163,19 @@ The control plane stores, schedules, and reconciles desired state while node age
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A["Manifest submitted"]:::blue --> B["API checks desired state"]:::blue
-    B --> C[("etcd stores cluster state")]:::orange
-    C --> D{"Scheduler selects a node"}:::purple
+    accTitle: co-18 · Kubernetes architecture
+    accDescr: Flowchart with 6 nodes and 6 connections. Nodes: Manifest submitted, API checks desired state, etcd stores cluster state, Scheduler selects a node, Kubelet runs the Pod, Controller reconciles. Connections: Manifest submitted to API checks desired state, API checks desired state to etcd stores cluster state, etcd stores cluster state to Scheduler selects a node, Scheduler selects a node to Kubelet runs the Pod, Kubelet runs the Pod to Controller reconciles, Controller reconciles to API checks desired state.
+    A["Manifest submitted"]:::blue --> B["API checks desired<br/>state"]:::blue
+    B --> C[("etcd stores<br/>cluster state")]:::orange
+    C --> D{"Scheduler selects a<br/>node"}:::purple
     D --> E["Kubelet runs the Pod"]:::teal
-    E --> F["Controller reconciles"]:::orange
+    E --> F["Controller<br/>reconciles"]:::orange
     F --> B
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### co-19 · Pods

@@ -18,17 +18,20 @@ _ex-59 &middot; exercises co-10_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    A["vim.lsp.config('*', { capabilities = caps })"]:::blue
-    B["vim.lsp.enable('lua_ls')"]:::orange
-    C["vim.lsp.enable('pyright')"]:::orange
-    D["lua_ls attach: snippetSupport = true"]:::teal
-    E["pyright attach: snippetSupport = true"]:::teal
+    accTitle: Example 59: Merge Shared Capabilities via the LSP Wildcard
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: vim.lsp.config(*, capabilities = caps ), vim.lsp.enable(lua_ ls), vim.lsp. enable(pyright), lua_ls attach: snippetSupport = true, pyright attach: snippetSupport = true. Connections: vim.lsp.config(*, capabilities = caps ) to vim.lsp.enable(lua_ ls), vim.lsp.enable(lua_ ls) to lua_ls attach: snippetSupport = true, vim.lsp.config(*, capabilities = caps ) to vim.lsp. enable(pyright), vim.lsp. enable(pyright) to pyright attach: snippetSupport = true.
+    A["vim.lsp.config('*',<br/>{ capabilities =<br/>caps })"]:::blue
+    B["vim.lsp.enable('lua_<br/>ls')"]:::orange
+    C["vim.lsp.<br/>enable('pyright')"]:::orange
+    D["lua_ls attach:<br/>snippetSupport =<br/>true"]:::teal
+    E["pyright attach:<br/>snippetSupport =<br/>true"]:::teal
     A --> B --> D
     A --> C --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-59-lsp-capabilities-merge/after/init.lua`**
@@ -100,16 +103,19 @@ Enabling two servers that share one filetype attaches both simultaneously to any
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 61: Multiple LSP Clients on One Buffer
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: scratch.lua opened filetype = lua, lua_ls attaches client id 1, extra_lua_checker attaches client id 2, vim.lsp.get_ clients(bufnr=0) returns BOTH, 2 distinct clients. Connections: scratch.lua opened filetype = lua to lua_ls attaches client id 1, lua_ls attaches client id 1 to vim.lsp.get_ clients(bufnr=0) returns BOTH, 2 distinct clients, scratch.lua opened filetype = lua to extra_lua_checker attaches client id 2, extra_lua_checker attaches client id 2 to vim.lsp.get_ clients(bufnr=0) returns BOTH, 2 distinct clients.
     A["scratch.lua opened<br/>filetype = lua"]:::blue
     B["lua_ls attaches<br/>client id 1"]:::orange
-    C["extra_lua_checker attaches<br/>client id 2"]:::orange
-    D["vim.lsp.get_clients({bufnr=0})<br/>returns BOTH, 2 distinct clients"]:::teal
+    C["extra_lua_checker<br/>attaches<br/>client id 2"]:::orange
+    D["vim.lsp.get_<br/>clients({bufnr=0})<br/>returns BOTH, 2<br/>distinct clients"]:::teal
     A --> B --> D
     A --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-61-lsp-multiple-clients-one-buffer/after/init.lua`**
@@ -149,6 +155,8 @@ _ex-62 &middot; exercises co-12_
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 62: Stop and Reattach an LSP Client
+    accDescr: State diagram with 3 items: start or end, Attached, Detached. Relationships: start or end to Attached: vim.lsp.enable + open .lua; Attached to Detached: Client:stop(); Detached to Attached: :edit! re-reads the buffer.
     [*] --> Attached: vim.lsp.enable + open .lua
     Attached --> Detached: Client:stop()
     Detached --> Attached: :edit! re-reads the buffer
@@ -186,16 +194,19 @@ _ex-63 &middot; exercises co-12, co-05_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 63: Enable and Run Codelens
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: LspAttach fires, codelens. enable(true, bufnr), Server advertises codeLensProvider, grx (co-13 default) runs the lens with no error. Connections: LspAttach fires to codelens. enable(true, bufnr), codelens. enable(true, bufnr) to Server advertises codeLensProvider, Server advertises codeLensProvider to grx (co-13 default) runs the lens with no error.
     A["LspAttach fires"]:::blue
-    B["codelens.enable(true, {bufnr})"]:::orange
+    B["codelens.<br/>enable(true,<br/>{bufnr})"]:::orange
     C["Server advertises<br/>codeLensProvider"]:::orange
-    D["grx (co-13 default)<br/>runs the lens with no error"]:::teal
+    D["grx (co-13 default)<br/>runs the lens with<br/>no error"]:::teal
     A --> B
     B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-63-lsp-codelens-enable-and-run/after/init.lua`**
@@ -268,14 +279,17 @@ _ex-65 &middot; exercises co-12_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 65: Toggle LSP Inlay Hints
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: LspAttach fires, inlay_hint. enable(true, bufnr = args.buf), inlay_hint.is_ enabled(bufnr=0) reads back true. Connections: LspAttach fires to inlay_hint. enable(true, bufnr = args.buf), inlay_hint. enable(true, bufnr = args.buf) to inlay_hint.is_ enabled(bufnr=0) reads back true.
     A["LspAttach fires"]:::blue
-    B["inlay_hint.enable(true, {bufnr = args.buf})"]:::orange
-    C["inlay_hint.is_enabled({bufnr=0})<br/>reads back true"]:::teal
+    B["inlay_hint.<br/>enable(true, {bufnr<br/>= args.buf})"]:::orange
+    C["inlay_hint.is_<br/>enabled({bufnr=0})<br/>reads back true"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-lsp-inlay-hints-toggle/after/init.lua`**
@@ -454,15 +468,18 @@ A `lua/<name>/health.lua` module exposing `M.check()` integrates with `:checkhea
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    A[":checkhealth myplugin"]:::blue
-    B["Discovers lua/myplugin/health.lua<br/>on the runtimepath"]:::orange
+    accTitle: Example 71: Plugin Health Check
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: :checkhealth myplugin, Discovers lua/ myplugin/health.lua on the runtimepath, Calls M.check(), vim.health.start/ok/ error renders the report section. Connections: :checkhealth myplugin to Discovers lua/ myplugin/health.lua on the runtimepath, Discovers lua/ myplugin/health.lua on the runtimepath to Calls M.check(), Calls M.check() to vim.health.start/ok/ error renders the report section.
+    A[":checkhealth<br/>myplugin"]:::blue
+    B["Discovers lua/<br/>myplugin/health.lua<br/>on the runtimepath"]:::orange
     C["Calls M.check()"]:::orange
-    D["vim.health.start/ok/error<br/>renders the report section"]:::teal
+    D["vim.health.start/ok/<br/>error<br/>renders the report<br/>section"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-plugin-health-check/after/lua/myplugin/health.lua`**
@@ -543,15 +560,18 @@ A guarded file under `plugin/` runs automatically at Neovim startup, with no exp
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 73: Autoload a Plugin via plugin/
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Neovim startup, Every plugin/*.lua sourced automatically, plugin/myplugin.lua runs guard flag checked, then set, require(myplugin). setup() MyPluginCmd exists, zero init.lua calls. Connections: Neovim startup to Every plugin/*.lua sourced automatically, Every plugin/*.lua sourced automatically to plugin/myplugin.lua runs guard flag checked, then set, plugin/myplugin.lua runs guard flag checked, then set to require(myplugin). setup() MyPluginCmd exists, zero init.lua calls.
     A["Neovim startup"]:::blue
-    B["Every plugin/*.lua<br/>sourced automatically"]:::orange
-    C["plugin/myplugin.lua runs<br/>guard flag checked, then set"]:::orange
-    D["require('myplugin').setup()<br/>MyPluginCmd exists, zero init.lua calls"]:::teal
+    B["Every plugin/*.lua<br/>sourced<br/>automatically"]:::orange
+    C["plugin/myplugin.lua<br/>runs<br/>guard flag checked,<br/>then set"]:::orange
+    D["require('myplugin').<br/>setup()<br/>MyPluginCmd exists,<br/>zero init.lua calls"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-73-plugin-autoload-via-plugin-dir/after/plugin/myplugin.lua`**
@@ -587,6 +607,8 @@ _ex-74 &middot; exercises co-18_
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 74: Run an Async Job with vim.uv.spawn
+    accDescr: Sequence diagram between :RunFormat (main loop), child process, exit callback (fast-event). Messages: :RunFormat (main loop) to child process: vim.uv.spawn(echo, ...); child process to exit callback (fast-event): process exits, code = 0; exit callback (fast-event) to exit callback (fast-event): vim.schedule(function() ... end); exit callback (fast-event) to :RunFormat (main loop): buffer write + vim.g flags happen on the MAIN loop.
     participant U as :RunFormat (main loop)
     participant C as child process
     participant X as exit callback (fast-event)
@@ -647,18 +669,21 @@ Calling `vim.notify` (or any `vim.api` function) directly inside a `vim.uv` call
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A["vim.uv timer callback fires<br/>FAST-EVENT context"]:::blue
-    B["Unwrapped: pcall(vim.notify, ...)"]:::orange
-    C["FAILS -- E5560 nvim_echo must not<br/>be called in a fast event context"]:::purple
-    D["Wrapped: vim.schedule(function()<br/>vim.notify(...) end)"]:::orange
-    E["SUCCEEDS -- deferred onto<br/>Neovim's main event loop"]:::teal
+    accTitle: Example 75: Schedule Safety Inside a Fast-Event Callback
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: vim.uv timer callback fires FAST-EVENT context, Unwrapped: pcall(vim.notify, ...), C, E5560, Wrapped: vim. schedule(function() vim.notify(...) end), E, deferred. Connections: C to E5560, E to deferred, vim.uv timer callback fires FAST-EVENT context to Unwrapped: pcall(vim.notify, ...), Unwrapped: pcall(vim.notify, ...) to C, vim.uv timer callback fires FAST-EVENT context to Wrapped: vim. schedule(function() vim.notify(...) end), Wrapped: vim. schedule(function() vim.notify(...) end) to E.
+    A["vim.uv timer<br/>callback fires<br/>FAST-EVENT context"]:::blue
+    B["Unwrapped:<br/>pcall(vim.notify,<br/>...)"]:::orange
+    C["FAILS -- E5560<br/>nvim_echo must not<br/>be called in a fast<br/>event context"]:::purple
+    D["Wrapped: vim.<br/>schedule(function()<br/>vim.notify(...) end)"]:::orange
+    E["SUCCEEDS -- deferred<br/>onto<br/>Neovim's main event<br/>loop"]:::teal
     A --> B --> C
     A --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-75-plugin-schedule-safety/before/init.lua`**
@@ -691,16 +716,19 @@ _ex-76 &middot; exercises co-18, co-02_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 76: Custom Statusline Component Driven by Lua
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Statusline redraw, v:lua. MyStatusFn() calls the GLOBAL function, Before attach: renders scratch.lua, After lua_ls attaches: renders scratch.lua lua_ls. Connections: Statusline redraw to v:lua. MyStatusFn() calls the GLOBAL function, v:lua. MyStatusFn() calls the GLOBAL function to Before attach: renders scratch.lua, v:lua. MyStatusFn() calls the GLOBAL function to After lua_ls attaches: renders scratch.lua lua_ls.
     A["Statusline redraw"]:::blue
-    B["%{v:lua.MyStatusFn()}<br/>calls the GLOBAL function"]:::orange
-    C["Before attach:<br/>renders 'scratch.lua'"]:::teal
-    D["After lua_ls attaches:<br/>renders 'scratch.lua lua_ls'"]:::teal
+    B["%{v:lua.<br/>MyStatusFn()}<br/>calls the GLOBAL<br/>function"]:::orange
+    C["Before attach:<br/>renders<br/>'scratch.lua'"]:::teal
+    D["After lua_ls<br/>attaches:<br/>renders 'scratch.lua<br/>lua_ls'"]:::teal
     A --> B --> C
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-76-custom-statusline-lua-component/after/init.lua`**
@@ -773,6 +801,8 @@ Overriding an entry in `vim.lsp.handlers` changes what happens with a request's 
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 78: Override the References Handler to Use Quickfix
+    accDescr: Sequence diagram between grr keymap (co-13, unchanged), attached server, vim.lsp.handlers override, quickfix list. Messages: grr keymap (co-13, unchanged) to attached server: textDocument/references request; attached server to vim.lsp.handlers override: result (locations); vim.lsp.handlers override to quickfix list: setqflist(, , items = ...); vim.lsp.handlers override to vim.lsp.handlers override: vim.cmd(copen).
     participant K as grr keymap (co-13, unchanged)
     participant S as attached server
     participant H as vim.lsp.handlers override
@@ -826,17 +856,20 @@ _ex-79 &middot; exercises co-14_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["Diagnostic set on buffer"]:::blue
-    B["vim.diagnostic.setloclist()"]:::orange
-    C["Per-window LOCATION list<br/>getloclist(0)"]:::teal
-    D["Example 78's setqflist targets<br/>the GLOBAL quickfix list instead"]:::purple
+    accTitle: Example 79: Populate the Location List from Diagnostics
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: Diagnostic set on buffer, vim.diagnostic. setloclist(), Per-window LOCATION list getloclist(0), Example 78s setqflist targets the GLOBAL quickfix list instead. Connections: Diagnostic set on buffer to vim.diagnostic. setloclist(), vim.diagnostic. setloclist() to Per-window LOCATION list getloclist(0).
+    A["Diagnostic set on<br/>buffer"]:::blue
+    B["vim.diagnostic.<br/>setloclist()"]:::orange
+    C["Per-window LOCATION<br/>list<br/>getloclist(0)"]:::teal
+    D["Example 78's<br/>setqflist targets<br/>the GLOBAL quickfix<br/>list instead"]:::purple
     A --> B --> C
     C -.contrast.-> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-79-diagnostic-setloclist/after/init.lua`**
@@ -870,19 +903,22 @@ After assembling a plugin manager, an LSP server, and Treesitter -- everything t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
-    A[":checkhealth vim.pack"]:::blue
+    accTitle: Example 80: Full Config Healthcheck
+    accDescr: Flowchart with 6 nodes and 3 connections. Nodes: :checkhealth vim.pack, :checkhealth vim.lsp, :checkhealth vim.treesitter, Git, lockfile, plugin dir OK, lua_ls attached, 1 buffer OK, Every bundled parser + query OK. Connections: :checkhealth vim.pack to Git, lockfile, plugin dir OK, :checkhealth vim.lsp to lua_ls attached, 1 buffer OK, :checkhealth vim.treesitter to Every bundled parser + query OK.
+    A[":checkhealth<br/>vim.pack"]:::blue
     B[":checkhealth vim.lsp"]:::orange
-    C[":checkhealth vim.treesitter"]:::orange
-    D["Git, lockfile, plugin dir OK"]:::teal
-    E["lua_ls attached, 1 buffer OK"]:::teal
-    F["Every bundled parser + query OK"]:::teal
+    C[":checkhealth<br/>vim.treesitter"]:::orange
+    D["Git, lockfile,<br/>plugin dir OK"]:::teal
+    E["lua_ls attached, 1<br/>buffer OK"]:::teal
+    F["Every bundled parser<br/>+ query OK"]:::teal
     A --> D
     B --> E
     C --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-80-full-config-healthcheck/after/init.lua`**

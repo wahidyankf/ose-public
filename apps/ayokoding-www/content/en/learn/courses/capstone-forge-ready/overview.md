@@ -17,18 +17,21 @@ journey, starting with the very next topic (Just Enough Python).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["Bootstrap<br/>vim.pack.add#40;pinned#41;"]:::blue
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Bootstrap vim.pack. add40pinned41, Open sample LSP + Treesitter, Mouse-free refactor vimgrep + macro + cdo, :terminal check beside the source, Healthcheck :checkhealth, zero missing dep. Connections: Bootstrap vim.pack. add40pinned41 to Open sample LSP + Treesitter, Open sample LSP + Treesitter to Mouse-free refactor vimgrep + macro + cdo, Mouse-free refactor vimgrep + macro + cdo to :terminal check beside the source, :terminal check beside the source to Healthcheck :checkhealth, zero missing dep.
+    A["Bootstrap<br/>vim.pack.<br/>add#40;pinned#41;"]:::blue
     B["Open sample<br/>LSP + Treesitter"]:::orange
-    C["Mouse-free refactor<br/>vimgrep + macro + cdo"]:::teal
+    C["Mouse-free refactor<br/>vimgrep + macro +<br/>cdo"]:::teal
     D[":terminal check<br/>beside the source"]:::purple
-    E["Healthcheck<br/>:checkhealth, zero missing dep"]:::brown
+    E["Healthcheck<br/>:checkhealth, zero<br/>missing dep"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

@@ -18,15 +18,18 @@ Backtracking places queens column by column, checking safety against every previ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 53: N-Queens by Backtracking
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: place queen, col 0, col 1: safe spot, C. Connections: place queen, col 0 to col 1: safe spot, place queen, col 0 to C.
     A["place queen, col 0"]:::blue
     B["col 1: safe spot"]:::orange
-    C["col 1: UNSAFE -- prune"]:::teal
+    C["col 1: UNSAFE --<br/>prune"]:::teal
     A --> B
     A --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-53-backtracking-n-queens/example.py`**
@@ -1435,11 +1438,14 @@ A\* is Dijkstra plus a heuristic: it orders the frontier by g+h (cost-so-far plu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
-    A["Dijkstra<br/>expands EVERY direction equally"]:::blue
-    B["A*<br/>expands TOWARD the goal only"]:::orange
+    accTitle: Example 64: A Search with an Admissible Heuristic
+    accDescr: Flowchart with 2 nodes and 0 connections. Nodes: Dijkstra expands EVERY direction equally, A* expands TOWARD the goal only.
+    A["Dijkstra<br/>expands EVERY<br/>direction equally"]:::blue
+    B["A*<br/>expands TOWARD the<br/>goal only"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-64-a-star-heuristic/example.py`**
@@ -1634,14 +1640,17 @@ The critical path (longest path through a DAG) combines two ideas: process tasks
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 65: Critical Path via DP over a Topological Order
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: design 0-3, build_a 3-8, build_b 3-5, test 8-12. Connections: design 0-3 to build_a 3-8, design 0-3 to build_b 3-5, build_a 3-8 to test 8-12, build_b 3-5 to test 8-12.
     D["design<br/>0-3"]:::blue --> A["build_a<br/>3-8"]:::orange
     D --> B["build_b<br/>3-5"]:::orange
     A --> T["test<br/>8-12"]:::teal
     B --> T
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-topo-sort-critical-path/example.py`**
@@ -2180,6 +2189,8 @@ An AVL tree is a BST that additionally enforces every node's two subtree heights
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 68: AVL Tree Insert with Rotations
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: 10 balanced, 5, 15, 3, 7. Connections: 10 balanced to 5, 10 balanced to 15, 5 to 3, 5 to 7.
     A["10<br/>balanced"]:::blue
     B["5"]:::orange
     C["15"]:::orange
@@ -2191,8 +2202,9 @@ flowchart TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-avl-rotations/example.py`**
@@ -4214,13 +4226,16 @@ A realistic scheduler needs three algorithms at once: topological order sequence
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 80: Capstone Preview -- a Threaded Mini Scheduler
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Topo Sort Ex 35-36, Critical-Path DP Ex 65, Dijkstra Ex 38, Feasibility Check. Connections: Topo Sort Ex 35-36 to Critical-Path DP Ex 65, Dijkstra Ex 38 to Feasibility Check, Critical-Path DP Ex 65 to Feasibility Check.
     T["Topo Sort<br/>Ex 35-36"]:::blue --> C["Critical-Path DP<br/>Ex 65"]:::orange
     D["Dijkstra<br/>Ex 38"]:::teal --> F["Feasibility Check"]:::orange
     C --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-80-capstone-preview-scheduler/example.py`**

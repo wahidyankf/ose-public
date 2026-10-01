@@ -19,14 +19,17 @@ Focus Shelf is a deliberately small reader app for saved articles. It turns the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: Goal and acceptance criteria
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Composed screens, Provider state, Adaptive detail route, Method channel or fallback. Connections: Composed screens to Provider state, Provider state to Adaptive detail route, Adaptive detail route to Method channel or fallback.
 A[Composed screens]:::blue --> B{Provider state}:::orange
-B --> C[Adaptive detail route]:::teal
-C --> D[Method channel or fallback]:::purple
+B --> C[Adaptive detail<br/>route]:::teal
+C --> D[Method channel or<br/>fallback]:::purple
 classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Build it

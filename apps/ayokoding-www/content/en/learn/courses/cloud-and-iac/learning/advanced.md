@@ -61,11 +61,14 @@ Complete serverless artifact: [`ex-39-lambda/template.yaml`](./code/ex-39-lambda
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; labels and shapes convey meaning without color.
 graph TD
-    P["Provider-managed control plane"]:::blue --> N["Cluster nodes and networking"]:::orange
-    T["Team workloads and policy"]:::teal --> N
+    accTitle: Worked Example 42: Managed Kubernetes control plane
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Provider-managed control plane, Cluster nodes and networking, Team workloads and policy. Connections: Provider-managed control plane to Cluster nodes and networking, Team workloads and policy to Cluster nodes and networking.
+    P["Provider-managed<br/>control plane"]:::blue --> N["Cluster nodes and<br/>networking"]:::orange
+    T["Team workloads and<br/>policy"]:::teal --> N
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: Managed Kubernetes is a control-plane service, not an application-operations outsourcing contract.
@@ -208,16 +211,19 @@ Complete tag artifact: [`ex-47-tagging-strategy/main.tf`](./code/ex-47-tagging-s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC; labels and shapes convey meaning without color.
 graph TD
-    G["Reviewed Git revision"]:::blue --> R["Pull-based reconciler"]:::teal
-    R --> L["Live desired resources"]:::orange
+    accTitle: Worked Example 51: Continuous reconciliation
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: Reviewed Git revision, Pull-based reconciler, Live desired resources, Observed drift?. Connections: Reviewed Git revision to Pull-based reconciler, Pull-based reconciler to Live desired resources, Live desired resources to Observed drift?, Observed drift? to Pull-based reconciler (Yes: converge), Observed drift? to Live desired resources (No: observe).
+    G["Reviewed Git<br/>revision"]:::blue --> R["Pull-based<br/>reconciler"]:::teal
+    R --> L["Live desired<br/>resources"]:::orange
     D{"Observed drift?"}:::purple
     L --> D
     D -->|"Yes: converge"| R
     D -->|"No: observe"| L
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: Reconciliation is a repeated comparison loop, not a one-time deployment.

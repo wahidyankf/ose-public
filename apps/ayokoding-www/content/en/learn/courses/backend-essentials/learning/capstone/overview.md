@@ -17,16 +17,19 @@ Advanced tiers of this topic; this capstone is where they all run together in on
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Step 1 Liveness + readiness, Step 2 Full CRUD round trip, Step 3 Token-check middleware, Step 4 Pagination + filtering. Connections: Step 1 Liveness + readiness to Step 2 Full CRUD round trip, Step 2 Full CRUD round trip to Step 3 Token-check middleware, Step 3 Token-check middleware to Step 4 Pagination + filtering.
     A["Step 1<br/>Liveness + readiness"]:::blue
     B["Step 2<br/>Full CRUD round trip"]:::orange
-    C["Step 3<br/>Token-check middleware"]:::teal
-    D["Step 4<br/>Pagination + filtering"]:::purple
+    C["Step 3<br/>Token-check<br/>middleware"]:::teal
+    D["Step 4<br/>Pagination +<br/>filtering"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

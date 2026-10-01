@@ -519,63 +519,87 @@ These diagrams are accessible relationship summaries; their text labels communic
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Advanced architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Packer image, Reusable template. Connections: Packer image to Reusable template.
   A["Packer image"]:::blue --> B["Reusable template"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Advanced architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Template, Cloud-init intent. Connections: Template to Cloud-init intent.
   A["Template"]:::blue --> B["Cloud-init intent"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Advanced architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: IaC provision, Ansible configure. Connections: IaC provision to Ansible configure.
   A["IaC provision"]:::blue --> B["Ansible configure"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Advanced architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: PXE DHCP hint, Approved installer. Connections: PXE DHCP hint to Approved installer.
   A["PXE DHCP hint"]:::blue --> B["Approved installer"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Advanced architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: PBS backup, Disposable restore. Connections: PBS backup to Disposable restore.
   A["PBS backup"]:::blue --> B["Disposable restore"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Advanced architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Control quorum, Safe state changes. Connections: Control quorum to Safe state changes.
   A["Control quorum"]:::blue --> B["Safe state changes"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Advanced architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: CRUSH domains, Durable replicas. Connections: CRUSH domains to Durable replicas.
   A["CRUSH domains"]:::blue --> B["Durable replicas"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Advanced architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: External secret, Protected state. Connections: External secret to Protected state.
   A["External secret"]:::blue --> B["Protected state"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

@@ -31,16 +31,19 @@ not yet flushed (pending), flushed and committed (persistent), and left behind o
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
-    A["Transient<br/>constructed, no session"]:::blue
+    accTitle: Example 29: Session States Transient Pending
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Transient constructed, no session, Pending session.add(ada), Persistent flushed + committed, Detached session closed. Connections: Transient constructed, no session to Pending session.add(ada), Pending session.add(ada) to Persistent flushed + committed, Persistent flushed + committed to Detached session closed.
+    A["Transient<br/>constructed, no<br/>session"]:::blue
     B["Pending<br/>session.add(ada)"]:::orange
     C["Persistent<br/>flushed + committed"]:::teal
     D["Detached<br/>session closed"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-29-session-states-transient-pending/example.py`**
@@ -236,6 +239,8 @@ happened in.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05 -- color-blind friendly, WCAG AA
 sequenceDiagram
+    accTitle: Example 31: Unit Of Work Flush Order
+    accDescr: Sequence diagram between application code, unit of work, PostgreSQL. Messages: application code to unit of work: add(order) -- child, added FIRST; application code to unit of work: add(customer) -- parent, added SECOND; application code to unit of work: commit(); unit of work to PostgreSQL: INSERT INTO customer (parent first, by FK dependency); unit of work to PostgreSQL: INSERT INTO customer_order (child second).
     participant Code as application code
     participant UoW as unit of work
     participant DB as PostgreSQL
@@ -649,15 +654,18 @@ it -- there is no live session left to run the lazy query through.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 35: Lazy Loading Detached Error
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: session.close() ada is now DETACHED, read ada.name already loaded, read ada.orders never touched before close, D, no, DetachedInstance Error no session left to query. Connections: session.close() ada is now DETACHED to read ada.name already loaded, session.close() ada is now DETACHED to read ada.orders never touched before close, read ada.name already loaded to D, D to no, read ada.orders never touched before close to DetachedInstance Error no session left to query.
     A["session.close()<br/>ada is now DETACHED"]:::blue
     A --> B["read ada.name<br/>already loaded"]:::teal
-    A --> C["read ada.orders<br/>never touched before close"]:::orange
-    B --> D["OK -- no query needed"]:::teal
-    C --> E["DetachedInstanceError<br/>no session left to query"]:::orange
+    A --> C["read ada.orders<br/>never touched before<br/>close"]:::orange
+    B --> D["OK -- no query<br/>needed"]:::teal
+    C --> E["DetachedInstance<br/>Error<br/>no session left to<br/>query"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-35-lazy-loading-detached-error/example.py`**
@@ -766,14 +774,17 @@ described.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart TD
-    A["1 parent query<br/>SELECT * FROM customer"]:::blue
+    accTitle: Example 36: N Plus 1 Reproduce
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: 1 parent query SELECT * FROM customer, child query 1 customer_id=1, child query 2 customer_id=2, child query 3 customer_id=3, ...N child queries total. Connections: 1 parent query SELECT * FROM customer to child query 1 customer_id=1, 1 parent query SELECT * FROM customer to child query 2 customer_id=2, 1 parent query SELECT * FROM customer to child query 3 customer_id=3, 1 parent query SELECT * FROM customer to ...N child queries total.
+    A["1 parent query<br/>SELECT * FROM<br/>customer"]:::blue
     A --> B1["child query 1<br/>customer_id=1"]:::orange
     A --> B2["child query 2<br/>customer_id=2"]:::orange
     A --> B3["child query 3<br/>customer_id=3"]:::orange
-    A --> B4["...N child queries total"]:::orange
+    A --> B4["...N child queries<br/>total"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-36-n-plus-1-reproduce/example.py`**
@@ -1217,13 +1228,16 @@ side on one page.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["selectinload()<br/>2 queries, narrow IN list"]:::blue
+    accTitle: Example 40: Eager Strategy Contrast
+    accDescr: Flowchart with 3 nodes and 0 connections. Nodes: selectinload() 2 queries, narrow IN list, joinedload() 1 query, wider JOIN, subqueryload() 2 queries, legacy subquery.
+    A["selectinload()<br/>2 queries, narrow IN<br/>list"]:::blue
     B["joinedload()<br/>1 query, wider JOIN"]:::orange
-    C["subqueryload()<br/>2 queries, legacy subquery"]:::teal
+    C["subqueryload()<br/>2 queries, legacy<br/>subquery"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-40-eager-strategy-contrast/example.py`**
@@ -1359,15 +1373,18 @@ remain perfectly readable -- only the guarded relationship refuses to load impli
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["select(Customer)<br/>.options(raiseload(Customer.orders))"]:::blue
+    accTitle: Example 41: Raiseload Guard
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: select(Customer) .options(raiseload(Customer. orders)), read ada.name covered by SELECT, read ada.orders guarded relationship, OK, InvalidRequestError loud, immediate, catchable by tests. Connections: select(Customer) .options(raiseload(Customer. orders)) to read ada.name covered by SELECT, select(Customer) .options(raiseload(Customer. orders)) to read ada.orders guarded relationship, read ada.name covered by SELECT to OK, read ada.orders guarded relationship to InvalidRequestError loud, immediate, catchable by tests.
+    A["select(Customer)<br/>.options(<br/>raiseload(Customer.<br/>orders))"]:::blue
     A --> B["read ada.name<br/>covered by SELECT"]:::teal
     A --> C["read ada.orders<br/>guarded relationship"]:::orange
     B --> D["OK"]:::teal
-    C --> E["InvalidRequestError<br/>loud, immediate, catchable by tests"]:::orange
+    C --> E["InvalidRequestError<br/>loud, immediate,<br/>catchable by tests"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-41-raiseload-guard/example.py`**
@@ -1785,14 +1802,17 @@ Two connections open simultaneously (two real Postgres backend processes); once 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 45: Connection Pool Basics
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: pool: idle checkedout=0, conn1, conn2 open checkedout=2, conn1, conn2 close returned to pool, conn3 requested REUSES a pooled connection. Connections: pool: idle checkedout=0 to conn1, conn2 open checkedout=2, conn1, conn2 open checkedout=2 to conn1, conn2 close returned to pool, conn1, conn2 close returned to pool to conn3 requested REUSES a pooled connection.
     A["pool: idle<br/>checkedout=0"]:::blue
     A --> B["conn1, conn2 open<br/>checkedout=2"]:::orange
     B --> C["conn1, conn2 close<br/>returned to pool"]:::teal
-    C --> D["conn3 requested<br/>REUSES a pooled connection"]:::blue
+    C --> D["conn3 requested<br/>REUSES a pooled<br/>connection"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-45-connection-pool-basics/example.py`**
@@ -2038,14 +2058,17 @@ builds on.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["alembic init<br/>scaffold env.py + versions/"]:::blue
-    B["alembic revision<br/>write upgrade()/downgrade()"]:::orange
-    C["alembic upgrade head<br/>apply to the database"]:::teal
+    accTitle: Example 48: Alembic Init
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: alembic init scaffold env.py + versions/, alembic revision write upgrade()/ downgrade(), alembic upgrade head apply to the database. Connections: alembic init scaffold env.py + versions/ to alembic revision write upgrade()/ downgrade(), alembic revision write upgrade()/ downgrade() to alembic upgrade head apply to the database.
+    A["alembic init<br/>scaffold env.py +<br/>versions/"]:::blue
+    B["alembic revision<br/>write upgrade()/<br/>downgrade()"]:::orange
+    C["alembic upgrade head<br/>apply to the<br/>database"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-48-alembic-init/example.py`**
@@ -2250,12 +2273,15 @@ untested guess.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 50: Alembic Upgrade Downgrade
+    accDescr: Flowchart with 2 nodes and 2 connections. Nodes: empty schema base, widget table exists. Connections: empty schema base to widget table exists (command. upgrade(head)), widget table exists to empty schema base (command. downgrade(base)).
     A["empty schema<br/>base"]:::blue
-    A -->|"command.upgrade(head)"| B["widget table exists"]:::teal
-    B -->|"command.downgrade(base)"| A
+    A -->|"command.<br/>upgrade(head)"| B["widget table exists"]:::teal
+    B -->|"command.<br/>downgrade(base)"| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-50-alembic-upgrade-downgrade/example.py`**
@@ -2949,13 +2975,16 @@ in one transaction, and a fresh read confirms both the children and the parent a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart TD
-    A["session.delete(customer)<br/>cascade=all, delete-orphan"]:::blue
-    A --> B["DELETE customer_order<br/>child 1"]:::orange
-    A --> C["DELETE customer_order<br/>child 2"]:::orange
+    accTitle: Example 55: Cascade Delete ORM
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: session. delete(customer) cascade=all, delete-orphan, DELETE customer_order child 1, DELETE customer_order child 2, DELETE customer parent, last. Connections: session. delete(customer) cascade=all, delete-orphan to DELETE customer_order child 1, session. delete(customer) cascade=all, delete-orphan to DELETE customer_order child 2, session. delete(customer) cascade=all, delete-orphan to DELETE customer parent, last.
+    A["session.<br/>delete(customer)<br/>cascade=all,<br/>delete-orphan"]:::blue
+    A --> B["DELETE<br/>customer_order<br/>child 1"]:::orange
+    A --> C["DELETE<br/>customer_order<br/>child 2"]:::orange
     A --> D["DELETE customer<br/>parent, last"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-55-cascade-delete-orm/example.py`**

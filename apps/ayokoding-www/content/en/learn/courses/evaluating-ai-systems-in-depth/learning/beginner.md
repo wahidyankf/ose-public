@@ -253,12 +253,15 @@ This example contrasts two paths side by side: coding failures against a taxonom
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 4: Premature Taxonomy Backfires
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Failures read first, Taxonomy built FROM the failures, Taxonomy guessed first, Failures forced into wrong buckets. Connections: Failures read first to Taxonomy built FROM the failures, Taxonomy guessed first to Failures forced into wrong buckets.
     A["Failures read first"]:::blue --> B["Taxonomy built<br/>FROM the failures"]:::teal
-    C["Taxonomy guessed first"]:::orange --> D["Failures forced<br/>into wrong buckets"]:::orange
+    C["Taxonomy guessed<br/>first"]:::orange --> D["Failures forced<br/>into wrong buckets"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

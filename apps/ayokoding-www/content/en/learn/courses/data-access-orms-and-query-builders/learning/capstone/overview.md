@@ -28,18 +28,21 @@ Example 78's narrower preview tables.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
-    A["seed.py<br/>2 teams, 5 members,<br/>5 tasks, 6 assignments"]:::blue
-    B["report_three_tiers.py<br/>raw SQL + PyPika + ORM agree"]:::orange
-    C["relationships_and_n_plus_1.py<br/>identity map, N+1 fix, 2 cascade flavors"]:::teal
-    D["migration_and_bulk.py<br/>Alembic round trip + bulk insert/update"]:::purple
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: seed.py 2 teams, 5 members, 5 tasks, 6 assignments, report_three_tiers. py raw SQL + PyPika + ORM agree, relationships_and_n_ plus_1.py identity map, N+1 fix, 2 cascade flavors, migration_and_bulk. py Alembic round trip + bulk insert/update. Connections: seed.py 2 teams, 5 members, 5 tasks, 6 assignments to report_three_tiers. py raw SQL + PyPika + ORM agree, seed.py 2 teams, 5 members, 5 tasks, 6 assignments to relationships_and_n_ plus_1.py identity map, N+1 fix, 2 cascade flavors, seed.py 2 teams, 5 members, 5 tasks, 6 assignments to migration_and_bulk. py Alembic round trip + bulk insert/update.
+    A["seed.py<br/>2 teams, 5 members,<br/>5 tasks, 6<br/>assignments"]:::blue
+    B["report_three_tiers.<br/>py<br/>raw SQL + PyPika +<br/>ORM agree"]:::orange
+    C["relationships_and_n_<br/>plus_1.py<br/>identity map, N+1<br/>fix, 2 cascade<br/>flavors"]:::teal
+    D["migration_and_bulk.<br/>py<br/>Alembic round trip +<br/>bulk insert/update"]:::purple
     A --> B
     A --> C
     A --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

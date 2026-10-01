@@ -33,12 +33,15 @@ ints, each touch becomes a fresh miss instead of reusing a line already pulled i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["stride = 1 int<br/>reuses the line already pulled in"]:::blue --> B["stride = 32 ints<br/>= 128 B line boundary"]:::orange
-    B --> C["stride > 32 ints<br/>every touch is a fresh line"]:::brown
+    accTitle: Example 28: Cache-Miss Stride Sweep
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: stride = 1 int reuses the line already pulled in, stride = 32 ints = 128 B line boundary, stride > 32 ints every touch is a fresh line. Connections: stride = 1 int reuses the line already pulled in to stride = 32 ints = 128 B line boundary, stride = 32 ints = 128 B line boundary to stride > 32 ints every touch is a fresh line.
+    A["stride = 1 int<br/>reuses the line<br/>already pulled in"]:::blue --> B["stride = 32 ints<br/>= 128 B line<br/>boundary"]:::orange
+    B --> C["stride > 32 ints<br/>every touch is a<br/>fresh line"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: sweeping the stride from 1 to 1024 ints crosses the 128 B cache-line boundary (32 ints on this
@@ -177,17 +180,20 @@ Summing a row-major-stored 2-D matrix in `[i][j]` order walks memory sequentiall
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    subgraph IJ["[i][j] order -- row-major walk"]
+    accTitle: Example 29: Matrix Traversal: ij vs ji
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: row 0: 0,1,2,3..., row 1: next line, row 2: next line, col 0, row 0, col 0, row 1, col 0, row 2. Connections: row 0: 0,1,2,3... to row 1: next line, row 1: next line to row 2: next line, col 0, row 0 to col 0, row 1 (+N stride), col 0, row 1 to col 0, row 2 (+N stride).
+    subgraph IJ["[i][j] order --<br/>row-major walk"]
         direction LR
         A1["row 0: 0,1,2,3..."]:::blue --> A2["row 1: next line"]:::blue --> A3["row 2: next line"]:::blue
     end
-    subgraph JI["[j][i] order -- column-major walk"]
+    subgraph JI["[j][i] order --<br/>column-major walk"]
         direction LR
         B1["col 0, row 0"]:::orange -->|"+N stride"| B2["col 0, row 1"]:::orange -->|"+N stride"| B3["col 0, row 2"]:::orange
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: `[i][j]` order walks each row's elements consecutively (sequential, cache-friendly); `[j][i]`
@@ -804,15 +810,18 @@ Two threads each incrementing their own counter should scale cleanly, but if bot
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    L["one 128 B cache line<br/>counter_a AND counter_b live here"]:::orange
-    T1["thread 1<br/>increments counter_a"]:::blue -->|"writes, invalidates the line"| L
-    T2["thread 2<br/>increments counter_b"]:::teal -->|"writes, invalidates the line"| L
-    L -.->|"forces a coherence refetch"| T1
-    L -.->|"forces a coherence refetch"| T2
+    accTitle: Example 33: False Sharing Between Threads
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: one 128 B cache line counter_a AND counter_b live here, thread 1 increments counter_a, thread 2 increments counter_b. Connections: thread 1 increments counter_a to one 128 B cache line counter_a AND counter_b live here (writes, invalidates the line), thread 2 increments counter_b to one 128 B cache line counter_a AND counter_b live here (writes, invalidates the line), one 128 B cache line counter_a AND counter_b live here to thread 1 increments counter_a (forces a coherence refetch), one 128 B cache line counter_a AND counter_b live here to thread 2 increments counter_b (forces a coherence refetch).
+    L["one 128 B cache line<br/>counter_a AND<br/>counter_b live here"]:::orange
+    T1["thread 1<br/>increments counter_a"]:::blue -->|"writes, invalidates<br/>the line"| L
+    T2["thread 2<br/>increments counter_b"]:::teal -->|"writes, invalidates<br/>the line"| L
+    L -.->|"forces a coherence<br/>refetch"| T1
+    L -.->|"forces a coherence<br/>refetch"| T2
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: counter_a and counter_b share one cache line, so every increment on either core invalidates
@@ -943,13 +952,16 @@ Padding each thread's counter out to a full cache line's width removes the coher
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 34: Padding Fixes False Sharing
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: thread 1 increments counter_a, own 128 B line (padded), thread 2 increments counter_b, own 128 B line (padded). Connections: thread 1 increments counter_a to own 128 B line (padded), thread 2 increments counter_b to own 128 B line (padded).
     T1["thread 1<br/>increments counter_a"]:::blue --> L1["own 128 B line<br/>(padded)"]:::teal
     T2["thread 2<br/>increments counter_b"]:::orange --> L2["own 128 B line<br/>(padded)"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: padding each counter out to a full 128 B cache line removes the shared line ex-33 had --
@@ -1260,19 +1272,22 @@ A branch inside a hot loop that follows a predictable (sorted) pattern lets the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 36: Branch Prediction: Sorted vs Shuffled
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: branch, predictor learns the pattern, near-zero mispredicts, same branch, no learnable pattern, pipeline flush on every miss. Connections: branch to predictor learns the pattern, predictor learns the pattern to near-zero mispredicts, same branch to no learnable pattern, no learnable pattern to pipeline flush on every miss.
     subgraph Sorted["sorted data"]
         direction LR
-        S1["branch"]:::blue --> S2["predictor learns\nthe pattern"]:::teal --> S3["near-zero\nmispredicts"]:::teal
+        S1["branch"]:::blue --> S2["predictor learns<br/>the pattern"]:::teal --> S3["near-zero<br/>mispredicts"]:::teal
     end
     subgraph Shuffled["shuffled data"]
         direction LR
-        H1["same branch"]:::blue --> H2["no learnable\npattern"]:::orange --> H3["pipeline flush\non every miss"]:::brown
+        H1["same branch"]:::blue --> H2["no learnable<br/>pattern"]:::orange --> H3["pipeline flush<br/>on every miss"]:::brown
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the identical comparison, over sorted vs shuffled data -- the predictor learns a repeating
@@ -1587,10 +1602,13 @@ A chain of additions where each one depends on the previous result forces the co
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 38: Pipeline Dependency Chains
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: acc += x1, acc += x2 (waits for A1), acc += x3 (waits for A2), acc += x4 (waits for A3). Connections: acc += x1 to acc += x2 (waits for A1), acc += x2 (waits for A1) to acc += x3 (waits for A2), acc += x3 (waits for A2) to acc += x4 (waits for A3).
     A1["acc += x1"]:::blue --> A2["acc += x2<br/>(waits for A1)"]:::orange --> A3["acc += x3<br/>(waits for A2)"]:::orange --> A4["acc += x4<br/>(waits for A3)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: one dependency chain -- each add needs the PREVIOUS add's result, so the core executes them
@@ -1831,23 +1849,26 @@ Splitting one long dependency chain into several independent accumulators (then 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    subgraph Chains["4 independent chains, issued in parallel"]
+    accTitle: Example 40: ILP via Multiple Accumulators
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: acc0 += x0, x4, x8..., acc1 += x1, x5, x9..., acc2 += x2, x6, x10..., acc3 += x3, x7, x11..., final = acc0+acc1+acc2+acc3. Connections: acc0 += x0, x4, x8... to final = acc0+acc1+acc2+acc3, acc1 += x1, x5, x9... to final = acc0+acc1+acc2+acc3, acc2 += x2, x6, x10... to final = acc0+acc1+acc2+acc3, acc3 += x3, x7, x11... to final = acc0+acc1+acc2+acc3.
+    subgraph Chains["4 independent<br/>chains, issued in<br/>parallel"]
         direction LR
-        C1["acc0 += x0, x4, x8..."]:::blue
-        C2["acc1 += x1, x5, x9..."]:::teal
-        C3["acc2 += x2, x6, x10..."]:::orange
-        C4["acc3 += x3, x7, x11..."]:::purple
+        C1["acc0 += x0, x4,<br/>x8..."]:::blue
+        C2["acc1 += x1, x5,<br/>x9..."]:::teal
+        C3["acc2 += x2, x6,<br/>x10..."]:::orange
+        C4["acc3 += x3, x7,<br/>x11..."]:::purple
     end
-    C1 --> S["final = acc0+acc1+acc2+acc3"]:::brown
+    C1 --> S["final =<br/>acc0+acc1+acc2+acc3"]:::brown
     C2 --> S
     C3 --> S
     C4 --> S
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the SAME total work as ex-38's single chain, split into 4 independent accumulators the
@@ -1981,30 +2002,33 @@ Touching one element from each of many widely-scattered pages forces a TLB looku
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 41: TLB Pressure from Random Pages
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: page 1, page 2, page N (far apart), TLB (small, fixed entries), page 1, page 2, TLB2, working. Connections: page 1 to TLB (small, fixed entries) (lookup, likely MISS), page 2 to TLB (small, fixed entries) (lookup, likely MISS), page N (far apart) to TLB (small, fixed entries) (lookup, likely MISS), TLB2 to working, page 1 to TLB2 (lookup, HIT), page 2 to TLB2 (lookup, HIT).
     subgraph Scattered["many scattered pages"]
         direction LR
         P1["page 1"]:::orange
         P2["page 2"]:::orange
         P3["page N (far apart)"]:::orange
     end
-    TLB1["TLB (small, fixed # entries)"]:::brown
-    P1 -.->|"lookup, likely MISS"| TLB1
-    P2 -.->|"lookup, likely MISS"| TLB1
-    P3 -.->|"lookup, likely MISS"| TLB1
+    TLB1["TLB (small, fixed #<br/>entries)"]:::brown
+    P1 -.->|"lookup, likely<br/>MISS"| TLB1
+    P2 -.->|"lookup, likely<br/>MISS"| TLB1
+    P3 -.->|"lookup, likely<br/>MISS"| TLB1
 
     subgraph Compact["a handful of pages"]
         direction LR
         Q1["page 1"]:::teal
         Q2["page 2"]:::teal
     end
-    TLB2["TLB -- working set fits and stays resident"]:::blue
+    TLB2["TLB -- working set<br/>fits and stays<br/>resident"]:::blue
     Q1 -.->|"lookup, HIT"| TLB2
     Q2 -.->|"lookup, HIT"| TLB2
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: touching one element from each of many widely-scattered pages forces a TLB lookup (and often a
@@ -2144,16 +2168,19 @@ A fresh anonymous `mmap` region has no backing physical pages until first touche
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["mmap() anonymous region<br/>no physical pages yet"]:::blue --> B["first touch to a page"]:::orange
+    accTitle: Example 42: Page Faults via mmap
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: mmap() anonymous region no physical pages yet, first touch to a page, minor page fault traps to the kernel, kernel allocates + zeroes a physical page, E. Connections: mmap() anonymous region no physical pages yet to first touch to a page, first touch to a page to minor page fault traps to the kernel, minor page fault traps to the kernel to kernel allocates + zeroes a physical page, kernel allocates + zeroes a physical page to E.
+    A["mmap() anonymous<br/>region<br/>no physical pages<br/>yet"]:::blue --> B["first touch to a<br/>page"]:::orange
     B --> C["minor page fault<br/>traps to the kernel"]:::brown
-    C --> D["kernel allocates + zeroes<br/>a physical page"]:::teal
-    D --> E["mapping installed --<br/>later touches to this page are free"]:::purple
+    C --> D["kernel allocates +<br/>zeroes<br/>a physical page"]:::teal
+    D --> E["mapping installed --<br/>later touches to<br/>this page are free"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: a fresh anonymous `mmap` region is backed by nothing until first touched -- each first touch
@@ -2305,17 +2332,20 @@ A parent process and its `fork()`ed child can both map the identical virtual add
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    VA["SAME virtual address<br/>0x200000000, in both processes"]:::orange
+    accTitle: Example 43: Virtual Addresses Across Processes
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: SAME virtual address 0x200000000, in both processes, parents page table, childs page table (independent, from fork), physical page A value = 111, physical page B value = 222. Connections: SAME virtual address 0x200000000, in both processes to parents page table, parents page table to physical page A value = 111, SAME virtual address 0x200000000, in both processes to childs page table (independent, from fork), childs page table (independent, from fork) to physical page B value = 222.
+    VA["SAME virtual address<br/>0x200000000, in both<br/>processes"]:::orange
     PT1["parent's page table"]:::blue
-    PT2["child's page table<br/>(independent, from fork)"]:::teal
+    PT2["child's page table<br/>(independent, from<br/>fork)"]:::teal
     VA --> PT1 --> PA1["physical page A<br/>value = 111"]:::purple
     VA --> PT2 --> PA2["physical page B<br/>value = 222"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: parent and child both map the IDENTICAL virtual address, but each process's own page table
@@ -2711,13 +2741,15 @@ Accessing memory at a power-of-two stride concentrates many addresses onto the S
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 46: Cache-Associativity Conflict Stride
+    accDescr: Graph with 10 nodes and 6 connections. Nodes: addr 0, S, addr + stride, addr + 2*stride, addr 0, set 0, addr + stride, set 5, addr + 2*stride, set 11. Connections: addr 0 to S, addr + stride to S, addr + 2*stride to S, addr 0 to set 0, addr + stride to set 5, addr + 2*stride to set 11.
     subgraph P2["power-of-two stride"]
         direction LR
-        A1["addr 0"]:::orange --> S["SAME cache set<br/>every access -- conflict misses"]:::brown
+        A1["addr 0"]:::orange --> S["SAME cache set<br/>every access --<br/>conflict misses"]:::brown
         A2["addr + stride"]:::orange --> S
         A3["addr + 2*stride"]:::orange --> S
     end
-    subgraph Padded["stride + a few extra bytes"]
+    subgraph Padded["stride + a few extra<br/>bytes"]
         direction LR
         B1["addr 0"]:::blue --> D1["set 0"]:::teal
         B2["addr + stride'"]:::blue --> D2["set 5"]:::teal
@@ -2725,9 +2757,10 @@ graph TD
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: a power-of-two stride concentrates every access onto the SAME cache set (conflict misses,
@@ -3577,6 +3610,8 @@ A release-store/acquire-load handshake between two threads gives C11's memory mo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 53: Memory-Barrier Ordering
+    accDescr: Sequence diagram between Producer, flag (_Atomic), Consumer. Messages: Producer to Producer: data = i (plain write); Producer to flag (_Atomic): store(flag, 1, RELEASE); Consumer to flag (_Atomic): load(flag, ACQUIRE) observes 1; Consumer to Consumer: reads data (sees i).
     participant P as Producer
     participant F as flag (_Atomic)
     participant C as Consumer

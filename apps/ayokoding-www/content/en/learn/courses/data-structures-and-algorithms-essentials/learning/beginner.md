@@ -186,14 +186,17 @@ A stack is last-in-first-out (LIFO): the most recently pushed element is the fir
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 5: Stack with Push and Pop
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: push first 91first93, push second 91first,second93, push third 91first,second,third93, pop returns third 91first,second93. Connections: push first 91first93 to push second 91first,second93, push second 91first,second93 to push third 91first,second,third93, push third 91first,second,third93 to pop returns third 91first,second93.
     A["push first<br/>#91;first#93;"]:::blue
     B["push second<br/>#91;first,second#93;"]:::blue
-    C["push third<br/>#91;first,second,third#93;"]:::blue
+    C["push third<br/>[first,second,third]"]:::blue
     D["pop returns third<br/>#91;first,second#93;"]:::orange
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-05-stack-push-pop/example.py`**
@@ -243,6 +246,8 @@ Checking whether brackets are balanced is a classic stack application: push ever
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 6: Balanced Parentheses via Stack
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: see 40 push, stack: 1 item, see 40 push, stack: 2 items, see 41 pop, stack: 1 item, see 41 pop, stack empty. Connections: see 40 push, stack: 1 item to see 40 push, stack: 2 items, see 40 push, stack: 2 items to see 41 pop, stack: 1 item, see 41 pop, stack: 1 item to see 41 pop, stack empty.
     A["see #40;<br/>push, stack: 1 item"]:::blue
     B["see #40;<br/>push, stack: 2 items"]:::blue
     C["see #41;<br/>pop, stack: 1 item"]:::orange
@@ -250,8 +255,9 @@ graph LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-06-balanced-parentheses/example.py`**
@@ -309,15 +315,18 @@ A queue is first-in-first-out (FIFO): the first element enqueued is the first on
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 7: Queue with collections.deque
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: enqueue first 91first93, enqueue second, third 91first,second,third93, dequeue front returns first, remaining: 91second,third93. Connections: enqueue first 91first93 to enqueue second, third 91first,second,third93, enqueue second, third 91first,second,third93 to dequeue front returns first, dequeue front returns first to remaining: 91second,third93.
     A["enqueue first<br/>#91;first#93;"]:::blue
-    B["enqueue second, third<br/>#91;first,second,third#93;"]:::blue
+    B["enqueue second,<br/>third<br/>[first,second,third]"]:::blue
     C["dequeue front<br/>returns first"]:::orange
     D["remaining:<br/>#91;second,third#93;"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-07-queue-with-deque/example.py`**
@@ -368,16 +377,19 @@ _ex-08 &middot; exercises co-06_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 8: Deque Operations at Both Ends
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: start: 912,393, appendleft 1, append 4 911,2,3,493, pop4041 from right: 4 911,2,393, popleft4041 from left: 1 912,393. Connections: start: 912,393 to appendleft 1, append 4 911,2,3,493, appendleft 1, append 4 911,2,3,493 to pop4041 from right: 4 911,2,393, pop4041 from right: 4 911,2,393 to popleft4041 from left: 1 912,393.
     A["start: #91;2,3#93;"]:::blue
-    B["appendleft 1, append 4<br/>#91;1,2,3,4#93;"]:::orange
-    C["pop#40;#41; from right: 4<br/>#91;1,2,3#93;"]:::teal
-    D["popleft#40;#41; from left: 1<br/>#91;2,3#93;"]:::purple
+    B["appendleft 1, append<br/>4<br/>#91;1,2,3,4#93;"]:::orange
+    C["pop#40;#41; from<br/>right: 4<br/>#91;1,2,3#93;"]:::teal
+    D["popleft#40;#41; from<br/>left: 1<br/>#91;2,3#93;"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-08-deque-both-ends/example.py`**
@@ -430,17 +442,20 @@ _ex-09 &middot; exercises co-05, co-01_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 9: list.pop vs deque.popleft -- Same Result, Different Cost
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: 91a,b,c93, list.pop40041 shifts b,c left: O40n41, deque. popleft4041 moves head ptr: O40141, both return a 91b,c93 remains. Connections: 91a,b,c93 to list.pop40041 shifts b,c left: O40n41, list.pop40041 shifts b,c left: O40n41 to both return a 91b,c93 remains, 91a,b,c93 to deque. popleft4041 moves head ptr: O40141, deque. popleft4041 moves head ptr: O40141 to both return a 91b,c93 remains.
     S["#91;a,b,c#93;"]:::blue
-    L["list.pop#40;0#41;<br/>shifts b,c left: O#40;n#41;"]:::orange
-    D["deque.popleft#40;#41;<br/>moves head ptr: O#40;1#41;"]:::teal
+    L["list.pop#40;0#41;<br/>shifts b,c left:<br/>O#40;n#41;"]:::orange
+    D["deque.<br/>popleft#40;#41;<br/>moves head ptr:<br/>O#40;1#41;"]:::teal
     R["both return a<br/>#91;b,c#93; remains"]:::purple
     S --> L --> R
     S --> D --> R
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-09-list-front-pop-is-slow/example.py`**
@@ -707,14 +722,17 @@ Linear search scans a sequence one element at a time until it finds a match, in 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 15: Linear Search -- Value Found
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: check 8, 3 no match, check 5, 1 no match, check 9 match at index 4. Connections: check 8, 3 no match to check 5, 1 no match, check 5, 1 no match to check 9 match at index 4.
     A["check 8, 3<br/>no match"]:::blue
     B["check 5, 1<br/>no match"]:::orange
     C["check 9<br/>match at index 4"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-linear-search-found/example.py`**
@@ -956,16 +974,19 @@ Factorial is the simplest classic recursive function: `factorial(n) = n * factor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
-    A["factorial#40;5#41;<br/>calls factorial#40;4#41;"]:::blue
-    B["...<br/>calls down to factorial#40;0#41;"]:::orange
-    C["factorial#40;0#41; returns 1<br/>base case"]:::teal
+    accTitle: Example 21: Recursive Factorial
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: factorial40541 calls factorial40441, ... calls down to factorial40041, factorial40041 returns 1 base case, unwinds: 5*4*3*2*1 result 120. Connections: factorial40541 calls factorial40441 to ... calls down to factorial40041, ... calls down to factorial40041 to factorial40041 returns 1 base case, factorial40041 returns 1 base case to unwinds: 5*4*3*2*1 result 120.
+    A["factorial#40;5#41;<br/>calls<br/>factorial#40;4#41;"]:::blue
+    B["...<br/>calls down to<br/>factorial#40;0#41;"]:::orange
+    C["factorial#40;0#41;<br/>returns 1<br/>base case"]:::teal
     D["unwinds: 5*4*3*2*1<br/>result 120"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-21-factorial-recursive/example.py`**
@@ -1114,14 +1135,17 @@ This example makes Big-O concrete by _measuring_ it: a `dict` lookup takes exact
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 24: Big-O in Practice -- O Dict Lookup vs O List Scan
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: n=10 dict:1 list:10, n=100 dict:1 list:100, n=1000 dict:1 list:1000. Connections: n=10 dict:1 list:10 to n=100 dict:1 list:100, n=100 dict:1 list:100 to n=1000 dict:1 list:1000.
     A["n=10<br/>dict:1 list:10"]:::blue
     B["n=100<br/>dict:1 list:100"]:::orange
     C["n=1000<br/>dict:1 list:1000"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-24-big-o-constant-vs-linear/example.py`**
@@ -1282,14 +1306,17 @@ A singly linked list is built from `Node` objects, each holding a value and a re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 27: Build a Singly Linked List
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Node: val=1 head, Node: val=2, Node: val=3 next=None. Connections: Node: val=1 head to Node: val=2, Node: val=2 to Node: val=3 next=None.
     A["Node: val=1<br/>head"]:::blue
     B["Node: val=2"]:::orange
     C["Node: val=3<br/>next=None"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-27-singly-linked-list-build/example.py`**

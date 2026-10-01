@@ -18,6 +18,8 @@ A session and a bearer token both answer the same question -- who is this caller
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 57: Sessions vs Tokens
+    accDescr: Graph with 10 nodes and 4 connections. Nodes: POST /login-session, B, gets, C, an, POST /login-token, E, credential, F, NO. Connections: POST /login-session to B, B to C, POST /login-token to E, E to F.
     A["POST /login-session"]:::blue --> B["SESSIONS dict
 gets a new entry"]:::blue
     B --> C["client holds only
@@ -28,7 +30,8 @@ credential itself"]:::orange
 NO record at all"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-57-sessions-vs-tokens/app.py`**
@@ -165,12 +168,15 @@ _ex-58 &middot; exercises co-17, co-18_
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
+    accTitle: Example 58: Issue a Token
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: POST /login username, password, credentials match?, 200 + a bearer token string, D. Connections: POST /login username, password to credentials match?, credentials match? to 200 + a bearer token string (yes), credentials match? to D (no).
     A["POST /login<br/>{username, password}"]:::blue --> B{"credentials<br/>match?"}:::blue
     B -->|yes| C["200 + a bearer<br/>token string"]:::teal
     B -->|no| D["401 --<br/>no token issued"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-58-issue-token/app.py`**
@@ -270,6 +276,8 @@ A middleware function wraps every single request before routing ever decides whi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 59: Token-Check Middleware
+    accDescr: Graph with 9 nodes and 5 connections. Nodes: request arrives, B, call_next(, handler, D, matches, E, F, ) runs. Connections: request arrives to B, B to call_next( (no), B to D (yes), D to E (no), D to F (yes).
     A["request arrives"]:::blue --> B{"path starts with
 /protected?"}:::blue
     B -->|no| C["call_next() --
@@ -282,8 +290,9 @@ handler NEVER runs"]:::orange
 call_next() runs"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-59-token-check-middleware/app.py`**
@@ -406,11 +415,14 @@ This is the first of three 401 scenarios (Examples 60, 61, 62) that all reuse th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 60: Missing Token
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: request with NO Authorization header, require_token: credentials is None, C. Connections: request with NO Authorization header to require_token: credentials is None, require_token: credentials is None to C.
     A["request with NO<br/>Authorization header"]:::blue --> B["require_token:<br/>credentials is None"]:::orange
     B --> C["401 --<br/>handler never runs"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-60-missing-token-401/app.py`**
@@ -718,15 +730,18 @@ A very common real-world policy: anyone can read the catalog, but only an authen
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 63: Protect Writes Only
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: GET /items, B, open, POST /items, valid token?, DELETE /items/id, F, write, write proceeds. Connections: GET /items to B, POST /items to valid token?, DELETE /items/id to valid token?, valid token? to F (no), F to write, valid token? to write proceeds (yes).
     A["GET /items"]:::blue --> B["no auth check --
 open to everyone"]:::blue
     C["POST /items"]:::orange --> D{"valid token?"}:::orange
     E["DELETE /items/id"]:::orange --> D
-    D -->|no| F["401 -- write rejected"]:::orange
+    D -->|no| F["401 -- write<br/>rejected"]:::orange
     D -->|yes| G["write proceeds"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-63-protect-writes-only/app.py`**
@@ -1008,12 +1023,15 @@ _ex-65 &middot; exercises co-19_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 65: Pagination limit/offset
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: A, offset, SQL: LIMIT 5 OFFSET 10, rows 11-15, in id order. Connections: A to SQL: LIMIT 5 OFFSET 10, offset to SQL: LIMIT 5 OFFSET 10, SQL: LIMIT 5 OFFSET 10 to rows 11-15, in id order.
     A["GET /tasks?<br/>limit=5&offset=10"]:::blue --> B["SQL: LIMIT 5<br/>OFFSET 10"]:::orange
     B --> C["rows 11-15,<br/>in id order"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-pagination-limit-offset/app.py`**
@@ -1337,7 +1355,9 @@ Example 65 proved limit/offset slices the list; this example proves a client can
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
-    A["GET /tasks?limit=10&offset=0"]:::blue --> B["COUNT(*) query --
+    accTitle: Example 67: Pagination Metadata
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: A, offset, B, total, C, this, D, items, E. Connections: A to B, offset to B, A to C, B to D, C to D, D to E.
+    A["GET /tasks?<br/>limit=10&offset=0"]:::blue --> B["COUNT(*) query --
 total = 25"]:::blue
     A --> C["LIMIT/OFFSET query --
 this page's 10 rows"]:::blue
@@ -1348,7 +1368,8 @@ items, total, next"]:::teal
 (there IS a next page)"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-67-pagination-metadata/app.py`**
@@ -1518,13 +1539,16 @@ Example 65's `ge=1` stopped a limit too SMALL; this example adds `le=MAX_LIMIT` 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["limit=1000<br/>(client requests too many)"]:::blue --> B{"Query(...,<br/>le=MAX_LIMIT)?"}:::orange
-    B -->|"exceeds ge/le"| C["422 --<br/>bounds enforced before the handler"]:::orange
+    accTitle: Example 68: Pagination Bounds
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: limit=1000 (client requests too many), Query(..., le=MAX_LIMIT)?, C, handler runs normally. Connections: limit=1000 (client requests too many) to Query(..., le=MAX_LIMIT)?, Query(..., le=MAX_LIMIT)? to C (exceeds ge/le), Query(..., le=MAX_LIMIT)? to handler runs normally (within bounds).
+    A["limit=1000<br/>(client requests too<br/>many)"]:::blue --> B{"Query(...,<br/>le=MAX_LIMIT)?"}:::orange
+    B -->|"exceeds ge/le"| C["422 --<br/>bounds enforced<br/>before the handler"]:::orange
     B -->|"within bounds"| D["handler runs<br/>normally"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-pagination-bounds/app.py`**
@@ -1689,12 +1713,15 @@ Builds on Example 65's list endpoint by adding a narrowing dimension alongside p
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["GET /tasks?<br/>status=done"]:::blue --> B["WHERE status = ?<br/>appended to the query"]:::orange
-    B --> C["only matching rows<br/>returned, total reflects filter"]:::teal
+    accTitle: Example 69: Filter by Field
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: GET /tasks? status=done, WHERE status = ? appended to the query, only matching rows returned, total reflects filter. Connections: GET /tasks? status=done to WHERE status = ? appended to the query, WHERE status = ? appended to the query to only matching rows returned, total reflects filter.
+    A["GET /tasks?<br/>status=done"]:::blue --> B["WHERE status = ?<br/>appended to the<br/>query"]:::orange
+    B --> C["only matching rows<br/>returned, total<br/>reflects filter"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-69-filter-by-field/app.py`**
@@ -2008,13 +2035,16 @@ Every other pagination/filter example in this topic already parameterizes its SQ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["status=done' OR '1'='1<br/>(malicious input)"]:::blue --> B{"WHERE status = ?<br/>parameterized"}:::orange
-    B --> C["treated as ONE literal<br/>string value -- no injection"]:::teal
-    D["string-formatted query<br/>(the vulnerable twin)"]:::orange -.->|"never wired to the route"| E["would let this input<br/>alter the SQL itself"]:::orange
+    accTitle: Example 71: Filter Parameterized SQL
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: status=done OR 1=1 (malicious input), WHERE status = ? parameterized, C, no, string-formatted query (the vulnerable twin), would let this input alter the SQL itself. Connections: status=done OR 1=1 (malicious input) to WHERE status = ? parameterized, WHERE status = ? parameterized to C, C to no, string-formatted query (the vulnerable twin) to would let this input alter the SQL itself (never wired to the route).
+    A["status=done' OR<br/>'1'='1<br/>(malicious input)"]:::blue --> B{"WHERE status = ?<br/>parameterized"}:::orange
+    B --> C["treated as ONE<br/>literal<br/>string value -- no<br/>injection"]:::teal
+    D["string-formatted<br/>query<br/>(the vulnerable<br/>twin)"]:::orange -.->|"never wired to the<br/>route"| E["would let this input<br/>alter the SQL itself"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-filter-parameterized-sql/app.py`**
@@ -2180,13 +2210,16 @@ _ex-72 &middot; exercises co-20_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 72: Sort Param
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: GET /tasks? sort=-created_at, leading - present?, ORDER BY created_at DESC, ORDER BY created_at ASC. Connections: GET /tasks? sort=-created_at to leading - present?, leading - present? to ORDER BY created_at DESC (yes), leading - present? to ORDER BY created_at ASC (no).
     A["GET /tasks?<br/>sort=-created_at"]:::blue --> B{"leading '-'<br/>present?"}:::orange
     B -->|yes| C["ORDER BY created_at<br/>DESC"]:::teal
     B -->|no| D["ORDER BY created_at<br/>ASC"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-72-sort-param/app.py`**
@@ -2347,6 +2380,8 @@ Examples 65-72 built pagination, filtering, and sorting SEPARATELY; this is the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 73: Combined List Query
+    accDescr: Graph with 9 nodes and 4 connections. Nodes: A, limit, offset, sort, B, C, D, E, next. Connections: A to B, B to C, C to D, D to E.
     A["?status=done&limit=3
 &offset=0&sort=-created_at"]:::blue
     A --> B["WHERE status = ?
@@ -2359,8 +2394,9 @@ graph LR
 next=3"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-73-combined-list-query/app.py`**
@@ -2553,12 +2589,15 @@ RFC 9110 classifies PUT as idempotent, but a classification is only a promise. T
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
+    accTitle: Example 74: Idempotent PUT, Verified
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: PUT /tasks/1 call 1, row state: title, status, PUT /tasks/1 call 2, SAME body, D. Connections: PUT /tasks/1 call 1 to row state: title, status, PUT /tasks/1 call 2, SAME body to row state: title, status, row state: title, status to D.
     A["PUT /tasks/1<br/>call #1"]:::blue --> C["row state:<br/>{title, status}"]:::teal
     B["PUT /tasks/1<br/>call #2, SAME body"]:::blue --> C
-    C --> D["row count stays at 1 --<br/>verified, not just assumed"]:::teal
+    C --> D["row count stays at 1<br/>--<br/>verified, not just<br/>assumed"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-74-idempotent-put-verified/app.py`**
@@ -2813,6 +2852,8 @@ Two different questions that sound similar: `/health` asks "is the process itsel
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 76: Health vs Readiness
+    accDescr: Graph with 9 nodes and 4 connections. Nodes: GET /health, B, no, GET /ready, D, against, 200 ready, F, pulled. Connections: GET /health to B, GET /ready to D, D to 200 ready (succeeds), D to F (fails).
     A["GET /health"]:::blue --> B["always 200 --
 no DB call at all"]:::blue
     C["GET /ready"]:::orange --> D{"SELECT 1
@@ -2822,7 +2863,8 @@ against the DB?"}:::orange
 pulled from rotation"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-76-health-vs-readiness/app.py`**
@@ -3134,14 +3176,17 @@ A documented, executable shell script (`crud_auth.sh`) exercises full CRUD plus 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["create without token --<br/>expect 401"]:::blue --> B["create with token --<br/>expect 201"]:::orange
+    accTitle: Example 78: curl CRUD + Auth Script
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: A, B, C, D, E. Connections: B to C, C to D, D to E.
+    A["create without token<br/>--<br/>expect 401"]:::blue --> B["create with token --<br/>expect 201"]:::orange
     B --> C["read --<br/>GET, no token needed"]:::orange
     C --> D["update --<br/>PUT with token"]:::orange
     D --> E["delete --<br/>DELETE with token,<br/>verify 404 after"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-78-curl-crud-auth-script/app.py`**
@@ -3444,6 +3489,8 @@ This app combines every major mechanism from the advanced tier -- CRUD, token au
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 79: pytest Full Integration
+    accDescr: Graph with 8 nodes and 3 connections. Nodes: A, create, B, missing, C, seeded, D, all. Connections: A to D, B to D, C to D.
     A["TestCrud --
 create/read/update/delete"]:::blue
     B["TestTokenAuth --
@@ -3456,8 +3503,9 @@ all three, ONE test"]
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-79-pytest-full-integration/app.py`**
@@ -3870,19 +3918,22 @@ The culmination of every earlier "co-05 caveat" note scattered across this topic
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["curl POST :8003/tasks"]:::blue --> B["Worker A process
+    accTitle: Example 80: Stateless, Two Workers
+    accDescr: Graph with 10 nodes and 5 connections. Nodes: curl POST :8003/tasks, B, writes, C, the, D, reads, curl GET :8004/tasks/id, F, same. Connections: curl POST :8003/tasks to B, B to C, C to D, curl GET :8004/tasks/id to D, D to F.
+    A["curl POST<br/>:8003/tasks"]:::blue --> B["Worker A process
 writes to tasks.db"]:::blue
     B --> C[("tasks.db --
 the ONLY shared state")]:::teal
     C --> D["Worker B process
 reads from tasks.db"]:::orange
-    E["curl GET :8004/tasks/id"]:::orange --> D
+    E["curl GET<br/>:8004/tasks/id"]:::orange --> D
     D --> F["IDENTICAL row --
 same id, title, handled_by"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-80-stateless-two-workers/app.py`**

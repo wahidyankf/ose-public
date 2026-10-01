@@ -18,16 +18,19 @@ TWO independent profilers and fixed with a measured, regression-free speedup.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["Step 1: git bisect run<br/>+ delta-debug to 1 order"]:::blue
-    B["Step 2: pdb post-mortem<br/>+ test-first fix, RED to GREEN"]:::orange
-    C["Step 3: cProfile + mini_sampler<br/>independently agree: dedupe_customers"]:::teal
-    D["Step 4: fix + re-measure<br/>138.2x, zero regressions"]:::purple
+    accTitle: Goal
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Step 1: git bisect run + delta-debug to 1 order, Step 2: pdb post-mortem + test-first fix, RED to GREEN, Step 3: cProfile + mini_sampler independently agree: dedupe_customers, Step 4: fix + re-measure 138.2x, zero regressions. Connections: Step 1: git bisect run + delta-debug to 1 order to Step 2: pdb post-mortem + test-first fix, RED to GREEN, Step 2: pdb post-mortem + test-first fix, RED to GREEN to Step 3: cProfile + mini_sampler independently agree: dedupe_customers, Step 3: cProfile + mini_sampler independently agree: dedupe_customers to Step 4: fix + re-measure 138.2x, zero regressions.
+    A["Step 1: git bisect<br/>run<br/>+ delta-debug to 1<br/>order"]:::blue
+    B["Step 2: pdb<br/>post-mortem<br/>+ test-first fix,<br/>RED to GREEN"]:::orange
+    C["Step 3: cProfile +<br/>mini_sampler<br/>independently agree:<br/>dedupe_customers"]:::teal
+    D["Step 4: fix +<br/>re-measure<br/>138.2x, zero<br/>regressions"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

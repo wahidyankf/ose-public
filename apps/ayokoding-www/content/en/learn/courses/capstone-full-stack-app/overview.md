@@ -53,16 +53,19 @@ teaching artifact meant to keep working unmodified for years.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: Step 1 Backend: hardened service + CORS-safe read endpoint, Step 2 Frontend: typed UI, loading/error/empty states, C, gt, Step 4 Testing-Library UI test + API integration test. Connections: Step 1 Backend: hardened service + CORS-safe read endpoint to Step 2 Frontend: typed UI, loading/error/empty states, Step 2 Frontend: typed UI, loading/error/empty states to C, C to Step 4 Testing-Library UI test + API integration test.
     A["Step 1<br/>Backend: hardened<br/>service + CORS-safe<br/>read endpoint"]:::blue
     B["Step 2<br/>Frontend: typed UI,<br/>loading/error/empty<br/>states"]:::orange
-    C["Step 3<br/>Create/update form<br/>-&gt; API -&gt; SQLite,<br/>list reflects on refetch"]:::teal
-    D["Step 4<br/>Testing-Library UI test<br/>+ API integration test"]:::purple
+    C["Step 3<br/>Create/update form<br/>-&gt; API -&gt; SQLite,<br/>list reflects on<br/>refetch"]:::teal
+    D["Step 4<br/>Testing-Library UI<br/>test<br/>+ API integration<br/>test"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

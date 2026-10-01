@@ -60,15 +60,18 @@ Use this course to decide which state a widget owns, which state the app owns, h
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Architecture flow
+    accDescr: Flowchart with 4 nodes and 5 connections. Nodes: Widget tree, User event, State owner, Service or platform edge. Connections: Widget tree to User event, User event to State owner, State owner to Service or platform edge, Service or platform edge to State owner, State owner to Widget tree.
     A[Widget tree]:::blue --> B{User event}:::orange
     B --> C[State owner]:::teal
-    C --> D[Service or platform edge]:::purple
+    C --> D[Service or platform<br/>edge]:::purple
     D --> C
     C --> A
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The shapes and arrows carry the meaning as well as colour: the widget tree renders state, events cross upward to an owner, and changing external work stays behind a named boundary.

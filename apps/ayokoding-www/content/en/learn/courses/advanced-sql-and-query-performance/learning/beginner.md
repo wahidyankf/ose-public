@@ -29,14 +29,17 @@ equivalent join-based rewrite.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 1: Uncorrelated Subquery
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: book rows 3 rows, B, WHERE price > 29.83 keeps 2 rows. Connections: book rows 3 rows to B, B to WHERE price > 29.83 keeps 2 rows.
     A["book rows<br/>3 rows"]:::blue
-    B["#40;SELECT AVG#40;price#41;#41;<br/>evaluated ONCE -- 29.83"]:::orange
+    B["#40;SELECT<br/>AVG#40;price#41;#41;<br/>evaluated ONCE --<br/>29.83"]:::orange
     C["WHERE price > 29.83<br/>keeps 2 rows"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-01-uncorrelated-subquery/example.sql`**
@@ -191,15 +194,18 @@ the engine re-evaluates it once per outer row.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly
 flowchart TD
+    accTitle: Example 2: Correlated Subquery
+    accDescr: Flowchart with 6 nodes and 4 connections. Nodes: author row: Ada, EXISTS book WHERE author_id = Ada.id AND price > 30?, kept, author row: Turing, EXISTS book WHERE author_id = Turing.id AND price > 30?, dropped. Connections: author row: Ada to EXISTS book WHERE author_id = Ada.id AND price > 30?, EXISTS book WHERE author_id = Ada.id AND price > 30? to kept (true, 34.99 exists), author row: Turing to EXISTS book WHERE author_id = Turing.id AND price > 30?, EXISTS book WHERE author_id = Turing.id AND price > 30? to dropped (false, zero books).
     A["author row: Ada"]:::blue --> B{"EXISTS book WHERE<br/>author_id = Ada.id<br/>AND price > 30?"}:::orange
     B -->|true, 34.99 exists| C["kept"]:::teal
-    D["author row: Turing"]:::blue --> E{"EXISTS book WHERE<br/>author_id = Turing.id<br/>AND price > 30?"}:::orange
+    D["author row: Turing"]:::blue --> E{"EXISTS book WHERE<br/>author_id =<br/>Turing.id<br/>AND price > 30?"}:::orange
     E -->|false, zero books| F["dropped"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-02-correlated-subquery/example.sql`**
@@ -568,12 +574,15 @@ which then filters down to only the above-average authors.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["book_totals<br/>per-author avg"]:::blue --> C["above_average_authors<br/>compare the two"]:::teal
+    accTitle: Example 5: Multi-Step CTE
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: book_totals per-author avg, above_average_ authors compare the two, overall_avg one row. Connections: book_totals per-author avg to above_average_ authors compare the two, overall_avg one row to above_average_ authors compare the two.
+    A["book_totals<br/>per-author avg"]:::blue --> C["above_average_<br/>authors<br/>compare the two"]:::teal
     B["overall_avg<br/>one row"]:::orange --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-05-multi-step-cte/example.sql`**
@@ -734,13 +743,16 @@ until it returns zero new rows, generating a number sequence here as the simples
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 6: Recursive CTE Counter
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: anchor: n = 1, recursive: n+1 while n < 10, stops: n = 10 10 rows total. Connections: anchor: n = 1 to recursive: n+1 while n < 10, recursive: n+1 while n < 10 to recursive: n+1 while n < 10 (repeats), recursive: n+1 while n < 10 to stops: n = 10 10 rows total.
     A["anchor: n = 1"]:::blue --> B["recursive: n+1<br/>while n < 10"]:::orange
     B -->|repeats| B
     B --> C["stops: n = 10<br/>10 rows total"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-06-recursive-cte-counter/example.sql`**
@@ -841,15 +853,18 @@ the CTE's own growing result set to walk one level down per pass.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly
 flowchart TD
+    accTitle: Example 7: Recursive CTE Tree
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Grace (CTO) depth 0, Ada (VP Eng) depth 1, Alan (VP Data) depth 1, Linus (Eng Lead) depth 2, Barbara (Eng) depth 3. Connections: Grace (CTO) depth 0 to Ada (VP Eng) depth 1, Grace (CTO) depth 0 to Alan (VP Data) depth 1, Ada (VP Eng) depth 1 to Linus (Eng Lead) depth 2, Linus (Eng Lead) depth 2 to Barbara (Eng) depth 3.
     A["Grace (CTO)<br/>depth 0"]:::blue --> B["Ada (VP Eng)<br/>depth 1"]:::orange
     A --> C["Alan (VP Data)<br/>depth 1"]:::orange
     B --> D["Linus (Eng Lead)<br/>depth 2"]:::teal
     D --> E["Barbara (Eng)<br/>depth 3"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-07-recursive-cte-tree/example.sql`**
@@ -993,13 +1008,16 @@ window function: sum everything from the start of the ordering up to the current
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 8: Window Running Total
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Jan 1: 100, Jan 2: 50 total 150, Jan 3: 75 total 225, Jan 4: 120 total 345. Connections: Jan 1: 100 to Jan 2: 50 total 150, Jan 2: 50 total 150 to Jan 3: 75 total 225, Jan 3: 75 total 225 to Jan 4: 120 total 345.
     A["Jan 1: 100"]:::blue --> B["Jan 2: 50<br/>total 150"]:::orange
     B --> C["Jan 3: 75<br/>total 225"]:::teal
     C --> D["Jan 4: 120<br/>total 345"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-08-window-running-total/example.sql`**
@@ -1212,14 +1230,17 @@ happens at a tie -- and Ada and Barbara below tie on salary, making the disagree
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly
 flowchart TD
+    accTitle: Example 10: Row Number vs Rank vs Dense Rank
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Ada: 95000 Barbara: 95000 (tie), ROW_NUMBER: 2, 3 arbitrary among ties, RANK: 2, 2 next row jumps to 4, DENSE_RANK: 2, 2 next row is 3, no gap. Connections: Ada: 95000 Barbara: 95000 (tie) to ROW_NUMBER: 2, 3 arbitrary among ties, Ada: 95000 Barbara: 95000 (tie) to RANK: 2, 2 next row jumps to 4, Ada: 95000 Barbara: 95000 (tie) to DENSE_RANK: 2, 2 next row is 3, no gap.
     A["Ada: 95000<br/>Barbara: 95000 (tie)"]:::blue --> B["ROW_NUMBER: 2, 3<br/>arbitrary among ties"]:::orange
     A --> C["RANK: 2, 2<br/>next row jumps to 4"]:::teal
-    A --> D["DENSE_RANK: 2, 2<br/>next row is 3, no gap"]:::purple
+    A --> D["DENSE_RANK: 2, 2<br/>next row is 3, no<br/>gap"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-10-row-number-rank/example.sql`**
@@ -1549,13 +1570,16 @@ signed up for both programs.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["newsletter: ada, grace"]:::blue --> C{"UNION"}:::orange
+    accTitle: Example 13: UNION vs UNION ALL
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: newsletter: ada, grace, UNION, loyalty: grace, alan, 3 rows: ada, alan, grace grace de-duplicated. Connections: newsletter: ada, grace to UNION, loyalty: grace, alan to UNION, UNION to 3 rows: ada, alan, grace grace de-duplicated.
+    A["newsletter: ada,<br/>grace"]:::blue --> C{"UNION"}:::orange
     B["loyalty: grace, alan"]:::blue --> C
-    C --> D["3 rows: ada, alan, grace<br/>grace de-duplicated"]:::teal
+    C --> D["3 rows: ada, alan,<br/>grace<br/>grace de-duplicated"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-13-union-vs-union-all/example.sql`**
@@ -1807,12 +1831,15 @@ separate queries `UNION`'d together.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 15: GROUP BY ROLLUP
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: 4 detail rows region + category, 2 region subtotals category = NULL, 1 grand total both NULL. Connections: 4 detail rows region + category to 2 region subtotals category = NULL, 2 region subtotals category = NULL to 1 grand total both NULL.
     A["4 detail rows<br/>region + category"]:::blue --> B["2 region subtotals<br/>category = NULL"]:::orange
     B --> C["1 grand total<br/>both NULL"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-group-by-rollup/example.sql`**
@@ -2233,15 +2260,18 @@ ever run.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly
 flowchart LR
+    accTitle: Example 19: BEGIN, COMMIT, and ROLLBACK
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: BEGIN, UPDATE balance -100, INSERT savings account, ROLLBACK, balance unchanged savings never existed. Connections: BEGIN to UPDATE balance -100, UPDATE balance -100 to INSERT savings account, INSERT savings account to ROLLBACK, ROLLBACK to balance unchanged savings never existed.
     A["BEGIN"]:::blue --> B["UPDATE balance -100"]:::orange
-    B --> C["INSERT savings account"]:::orange
+    B --> C["INSERT savings<br/>account"]:::orange
     C --> D["ROLLBACK"]:::purple
-    D --> E["balance unchanged<br/>savings never existed"]:::teal
+    D --> E["balance unchanged<br/>savings never<br/>existed"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-19-begin-commit-rollback/example.sql`**
@@ -2583,12 +2613,15 @@ meaningful instead of trivial.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["SELECT ... WHERE isbn = ?"]:::blue --> B["planner chooses<br/>NO execution yet"]:::orange
-    B --> C["EXPLAIN output:<br/>Seq Scan, cost, est. rows"]:::teal
+    accTitle: Example 22: EXPLAIN Basic
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: SELECT ... WHERE isbn = ?, planner chooses NO execution yet, EXPLAIN output: Seq Scan, cost, est. rows. Connections: SELECT ... WHERE isbn = ? to planner chooses NO execution yet, planner chooses NO execution yet to EXPLAIN output: Seq Scan, cost, est. rows.
+    A["SELECT ... WHERE<br/>isbn = ?"]:::blue --> B["planner chooses<br/>NO execution yet"]:::orange
+    B --> C["EXPLAIN output:<br/>Seq Scan, cost, est.<br/>rows"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-22-explain-basic/example.sql`**
@@ -2721,14 +2754,17 @@ index -- the planner switches strategy entirely on its own, with no query rewrit
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly
 flowchart LR
+    accTitle: Example 24: Seq Scan vs Index Scan
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: WHERE isbn = ? no index, Seq Scan cost 0.00..1986.00, CREATE INDEX on isbn, WHERE isbn = ? same query, Index Scan cost 0.42..8.44. Connections: WHERE isbn = ? no index to Seq Scan cost 0.00..1986.00, CREATE INDEX on isbn to WHERE isbn = ? same query, WHERE isbn = ? same query to Index Scan cost 0.42..8.44.
     A["WHERE isbn = ?<br/>no index"]:::blue --> B["Seq Scan<br/>cost 0.00..1986.00"]:::orange
     C["CREATE INDEX<br/>on isbn"]:::purple --> D["WHERE isbn = ?<br/>same query"]:::blue
     D --> E["Index Scan<br/>cost 0.42..8.44"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-24-seq-scan-vs-index-scan/example.sql`**
@@ -2883,6 +2919,8 @@ instead.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly
 sequenceDiagram
+    accTitle: Example 26: FOR UPDATE Row Lock
+    accDescr: Sequence diagram between Session A, PostgreSQL, Session B. Messages: Session A to PostgreSQL: SELECT ... FOR UPDATE (id=1); PostgreSQL to Session A: row locked; Session B to PostgreSQL: SELECT ... FOR UPDATE (id=1); PostgreSQL to Session B: BLOCKED (lock_timeout fires); Session A to PostgreSQL: COMMIT; PostgreSQL to Session A: lock released; Session B to PostgreSQL: SELECT ... FOR UPDATE (id=1); PostgreSQL to Session B: row locked, succeeds.
     participant A as Session A
     participant DB as PostgreSQL
     participant B as Session B
@@ -3050,6 +3088,8 @@ between, and the two reads can genuinely disagree.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 sequenceDiagram
+    accTitle: Example 27: Read Committed Default
+    accDescr: Sequence diagram between Session A (open txn), PostgreSQL, Session B. Messages: Session A (open txn) to PostgreSQL: SELECT balance (1st read); PostgreSQL to Session A (open txn): 500.00; Session B to PostgreSQL: UPDATE balance = 400, COMMIT; Session A (open txn) to PostgreSQL: SELECT balance (2nd read, SAME txn); PostgreSQL to Session A (open txn): 400.00 (changed!).
     participant A as Session A (open txn)
     participant DB as PostgreSQL
     participant B as Session B

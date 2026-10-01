@@ -115,14 +115,17 @@ The write-ahead-log rule requires a log record to reach stable storage before th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 30: WAL-Before-Page Ordering Guard
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: log record written, log fsyncd to disk, page flush now allowed. Connections: log record written to log fsyncd to disk, log fsyncd to disk to page flush now allowed.
     A["log record<br/>written"]:::blue
     B["log fsync'd<br/>to disk"]:::orange
     C["page flush<br/>now allowed"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-30-wal-before-page-guard/example.py`**
@@ -396,14 +399,17 @@ After a simulated crash, replaying the log must restore every committed write, s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 33: WAL Redo Replays Committed Writes
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: crash state lost, replay log start to end, committed writes restored. Connections: crash state lost to replay log start to end, replay log start to end to committed writes restored.
     A["crash<br/>state lost"]:::blue
     B["replay log<br/>start to end"]:::orange
     C["committed writes<br/>restored"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-33-wal-redo-committed/example.py`**
@@ -595,14 +601,17 @@ A checkpoint record marks a point after which recovery only needs to scan forwar
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 35: A Checkpoint Bounds Redo Replay
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: log start skipped, checkpoint record, redo scans from here. Connections: log start skipped to checkpoint record (not read), checkpoint record to redo scans from here.
     A["log start<br/>skipped"]:::blue
     B["checkpoint<br/>record"]:::orange
     C["redo scans<br/>from here"]:::teal
     A -.->|not read| B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-35-checkpoint-bounds-replay/example.py`**
@@ -788,6 +797,8 @@ A snapshot sees exactly the versions committed before it was taken and not yet d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 37: Snapshot Visibility Rule
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: v1 xmin=1, v2 xmin=5, snapshot taken at tx=3, sees v1 not v2. Connections: v1 xmin=1 to snapshot taken at tx=3, v2 xmin=5 to snapshot taken at tx=3 (invisible), snapshot taken at tx=3 to sees v1 not v2.
     A["v1<br/>xmin=1"]:::blue
     B["v2<br/>xmin=5"]:::orange
     C["snapshot<br/>taken at tx=3"]:::teal
@@ -797,9 +808,10 @@ graph LR
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-37-snapshot-visibility-rule/example.py`**
@@ -1105,6 +1117,8 @@ Versions superseded by every currently-possible reader are dead weight that must
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 40: Vacuum Reclaims Dead Versions
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: v1, v2, v3 version chain, older than oldest snapshot?, vacuum, reclaim slot. Connections: v1, v2, v3 version chain to older than oldest snapshot?, older than oldest snapshot? to vacuum, reclaim slot (yes).
     A["v1, v2, v3<br/>version chain"]:::blue
     B{"older than<br/>oldest snapshot?"}:::orange
     C["vacuum,<br/>reclaim slot"]:::teal
@@ -1112,8 +1126,9 @@ graph LR
     B -->|yes| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-40-dead-version-gc-vacuum/example.py`**
@@ -1538,6 +1553,8 @@ A split that overflows an internal node propagates upward, and when it reaches a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 44: Force B-Tree Splits Up to the Root
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: full root splits, new root height + 1, old root left child, new sibling right child. Connections: full root splits to new root height + 1 (propagate up), new root height + 1 to old root left child, new root height + 1 to new sibling right child.
     A["full root<br/>splits"]:::blue
     B["new root<br/>height + 1"]:::purple
     C["old root<br/>left child"]:::orange
@@ -1547,9 +1564,10 @@ graph TD
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-44-btree-internal-split-propagate/example.py`**
@@ -1694,6 +1712,8 @@ Deleting a key can drop a leaf below its minimum occupancy, which must be repair
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 45: B-Tree Leaf Underflow: Merge or Borrow
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: leaf underflows, sibling has spare key?, borrow from sibling, merge with sibling. Connections: leaf underflows to sibling has spare key?, sibling has spare key? to borrow from sibling (yes), sibling has spare key? to merge with sibling (no).
     A["leaf<br/>underflows"]:::blue
     B{"sibling has<br/>spare key?"}:::orange
     C["borrow<br/>from sibling"]:::teal
@@ -1703,8 +1723,9 @@ graph LR
     B -->|no| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-45-btree-delete-underflow/example.py`**
@@ -1913,14 +1934,17 @@ In a heap-organized table, a secondary index stores a `(page, slot)` pointer ins
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 47: Heap Table + Secondary Index via Pointer
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: secondary index key lookup, (page, slot) pointer, heap fetch actual row. Connections: secondary index key lookup to (page, slot) pointer, (page, slot) pointer to heap fetch actual row.
     A["secondary index<br/>key lookup"]:::blue
     B["(page, slot)<br/>pointer"]:::orange
     C["heap fetch<br/>actual row"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-47-heap-secondary-index-pointer/example.py`**
@@ -2017,6 +2041,8 @@ Size-tiered compaction merges several same-size SSTables into one larger table, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
+    accTitle: Example 48: LSM Size-Tiered Compaction
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: SSTable 1, SSTable 2, SSTable 3, merged SSTable. Connections: SSTable 1 to merged SSTable, SSTable 2 to merged SSTable, SSTable 3 to merged SSTable.
     A["SSTable 1"]:::blue
     B["SSTable 2"]:::blue
     C["SSTable 3"]:::blue
@@ -2026,7 +2052,8 @@ graph LR
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-48-lsm-size-tiered-compaction/example.py`**
@@ -2125,6 +2152,8 @@ Leveled compaction pushes an SSTable down into the next level, merging it with a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 49: LSM Leveled Compaction
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: L0 overlapping, L1 overlapping table, L1 merged, no overlap. Connections: L0 overlapping to L1 overlapping table (push down), L1 overlapping table to L1 merged, no overlap.
     A["L0<br/>overlapping"]:::blue
     B["L1<br/>overlapping table"]:::orange
     C["L1<br/>merged, no overlap"]:::teal
@@ -2132,8 +2161,9 @@ graph TD
     B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-49-lsm-leveled-compaction/example.py`**
@@ -2799,6 +2829,8 @@ Scanning one column in each layout makes the row-vs-column trade-off concrete: t
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph TB
+    accTitle: Example 56: A Column Scan Reads Fewer Bytes for a Single-Column Aggregate
+    accDescr: Graph with 5 nodes and 2 connections. Nodes: row 1: id,name,age, row 2: id,name,age, age column only, slow scan, fast scan. Connections: row 1: id,name,age to slow scan (reads all fields), age column only to fast scan (reads one field).
     subgraph Row store
     A["row 1: id,name,age"]:::blue
     B["row 2: id,name,age"]:::blue
@@ -2810,7 +2842,8 @@ graph TB
     C -->|reads one field| Y["fast scan"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-56-column-scan-fewer-bytes/example.py`**

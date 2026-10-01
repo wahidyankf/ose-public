@@ -482,14 +482,17 @@ A page write is not atomic across a crash, so a crash mid-write can leave a page
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 62: Torn-Page Simulation Detected by Checksum
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: write starts half old, half new, crash mid-write, checksum mismatch. Connections: write starts half old, half new to crash mid-write, crash mid-write to checksum mismatch.
     A["write starts<br/>half old, half new"]:::blue
     B["crash<br/>mid-write"]:::orange
     C["checksum<br/>mismatch"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-62-torn-page-simulation/example.py`**
@@ -588,14 +591,17 @@ Logging a full-page image on the first write after a checkpoint gives recovery a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 63: Full-Page-Write Recovery Repairs a Torn Page
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: torn page detected, full-page image in the log, page restored exact. Connections: torn page detected to full-page image in the log, full-page image in the log to page restored exact.
     A["torn page<br/>detected"]:::blue
     B["full-page image<br/>in the log"]:::orange
     C["page<br/>restored exact"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-63-full-page-write-recovery/example.py`**
@@ -694,6 +700,8 @@ The analysis phase scans forward from the checkpoint to rebuild which transactio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 64: ARIES Analysis Phase Reconstructs the Transaction and Dirty-Page Tables
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: checkpoint, Analysis scan forward, Redo, Undo. Connections: checkpoint to Analysis scan forward, Analysis scan forward to Redo, Redo to Undo.
     A["checkpoint"]:::blue
     B["Analysis<br/>scan forward"]:::orange
     C["Redo"]:::teal
@@ -701,9 +709,10 @@ graph LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-64-aries-analysis-phase/example.py`**
@@ -819,6 +828,8 @@ ARIES's redo phase replays every logged change from the dirty-page table forward
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 graph LR
+    accTitle: Example 65: ARIES Redo Repeats History Regardless of Commit Status
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: committed write, uncommitted write, redo replays both, no check. Connections: committed write to redo replays both, no check, uncommitted write to redo replays both, no check.
     A["committed<br/>write"]:::blue
     B["uncommitted<br/>write"]:::blue
     C["redo replays<br/>both, no check"]:::teal
@@ -826,7 +837,8 @@ graph LR
     B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-aries-redo-repeat-history/example.py`**
@@ -922,14 +934,17 @@ Undo writes a compensation log record for every rollback step, so a second crash
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 66: ARIES Undo Writes Compensation Log Records
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: rollback step, write CLR, re-crash resumes safely. Connections: rollback step to write CLR, write CLR to re-crash resumes safely.
     A["rollback step"]:::blue
     B["write CLR"]:::orange
     C["re-crash<br/>resumes safely"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-66-aries-undo-with-clr/example.py`**
@@ -1043,15 +1058,18 @@ Running analysis, redo, and undo in sequence against a crashed log is the comple
 ```mermaid
 %% Color Palette: Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 67: Crash Recovery End-to-End: Analysis, Redo, Undo
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: crashed log, Analysis find losers, Redo repeat history, Undo remove losers. Connections: crashed log to Analysis find losers, Analysis find losers to Redo repeat history, Redo repeat history to Undo remove losers.
     A["crashed log"]:::orange
     B["Analysis<br/>find losers"]:::teal
     C["Redo<br/>repeat history"]:::teal
     D["Undo<br/>remove losers"]:::purple
     A --> B --> C --> D
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-67-crash-recovery-end-to-end/example.py`**
@@ -1163,6 +1181,8 @@ Two-phase locking splits a transaction into a growing phase that only acquires l
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 stateDiagram-v2
+    accTitle: Example 68: Two-Phase Locking: Growing and Shrinking Phases
+    accDescr: State diagram with 3 items: start or end, Growing, Shrinking. Relationships: start or end to Growing; Growing to Growing: acquire lock; Growing to Shrinking: first release; Shrinking to Shrinking: release lock; Shrinking to start or end.
     [*] --> Growing
     Growing --> Growing : acquire lock
     Growing --> Shrinking : first release
@@ -1373,6 +1393,8 @@ Optimistic concurrency control lets transactions read and compute freely, then v
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 70: Optimistic Concurrency Control: Read, Validate, Write
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Read no locks, Compute locally, Validate at commit, Write commits, abort, retry. Connections: Read no locks to Compute locally, Compute locally to Validate at commit, Validate at commit to Write commits (ok), Validate at commit to abort, retry (conflict).
     A["Read<br/>no locks"]:::blue
     B["Compute<br/>locally"]:::orange
     C{"Validate<br/>at commit"}:::teal
@@ -1383,9 +1405,10 @@ graph LR
     C -->|conflict| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-70-occ-read-validate-write/example.py`**
@@ -1486,13 +1509,16 @@ A wait-for graph tracks which transaction is waiting on which other transaction'
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 71: Deadlock Detection via a Wait-For Graph
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: T1 waits on T2, T2 waits on T3, T3 waits on T1. Connections: T1 waits on T2 to T2 waits on T3, T2 waits on T3 to T3 waits on T1, T3 waits on T1 to T1 waits on T2.
     T1["T1<br/>waits on T2"]:::blue
     T2["T2<br/>waits on T3"]:::blue
     T3["T3<br/>waits on T1"]:::orange
     T1 --> T2 --> T3 --> T1
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-deadlock-detection-waitfor/example.py`**
@@ -1766,14 +1792,17 @@ A phantom read happens when re-running a range query within one transaction retu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 74: Phantom Read: a New Row Appears Under Repeatable-Read
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: T1: range query 3 rows, T2: inserts matching row, C, phantom. Connections: C to phantom, T1: range query 3 rows to T2: inserts matching row, T2: inserts matching row to C.
     A["T1: range query<br/>3 rows"]:::blue
     B["T2: inserts<br/>matching row"]:::orange
     C["T1: re-query<br/>4 rows -- phantom"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-74-phantom-read-demo/example.py`**
@@ -1972,6 +2001,8 @@ True serializable isolation detects the cross-row dependency snapshot isolation 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 76: Serializable Isolation Prevents Write Skew
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: T1 reads row B writes row A, T2 reads row A writes row B, rw-cycle detected?, one aborts. Connections: T1 reads row B writes row A to rw-cycle detected?, T2 reads row A writes row B to rw-cycle detected?, rw-cycle detected? to one aborts (yes).
     A["T1 reads row B<br/>writes row A"]:::blue
     B["T2 reads row A<br/>writes row B"]:::blue
     C{"rw-cycle<br/>detected?"}:::orange
@@ -1981,8 +2012,9 @@ graph LR
     C -->|yes| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-76-serializable-prevents-write-skew/example.py`**
@@ -2075,6 +2107,8 @@ Random inserts cost a B-tree a page write per key but cost an LSM engine only an
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 77: B-Tree vs LSM: Measured Write Throughput
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: insert key, B-tree: page write per key, LSM: append to memtable. Connections: insert key to B-tree: page write per key, insert key to LSM: append to memtable.
     A["insert key"]:::blue
     B["B-tree: page<br/>write per key"]:::orange
     C["LSM: append<br/>to memtable"]:::blue
@@ -2082,7 +2116,8 @@ graph LR
     A --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-77-btree-vs-lsm-write-throughput/example.py`**
@@ -2256,6 +2291,8 @@ Given a workload's read/write ratio, a simple chooser can recommend the engine t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 79: A Workload Chooser Selects LSM Then B-Tree
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: workload write fraction, write-heavy?, choose LSM, choose B-tree. Connections: workload write fraction to write-heavy?, write-heavy? to choose LSM (yes), write-heavy? to choose B-tree (no).
     A["workload<br/>write fraction"]:::blue
     B{"write-heavy?"}:::orange
     C["choose LSM"]:::teal
@@ -2265,8 +2302,9 @@ graph LR
     B -->|no| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-79-workload-picks-engine/example.py`**
@@ -2347,6 +2385,8 @@ Wiring pages, a B-tree index, a WAL, and an MVCC snapshot read together into one
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 80: A Mini Storage Engine: Pages + B-Tree Index + WAL + Snapshot Read
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Pages storage unit, B-tree index, WAL durability, MVCC snapshot read. Connections: Pages storage unit to B-tree index, B-tree index to WAL durability, WAL durability to MVCC snapshot read.
     A["Pages<br/>storage unit"]:::blue
     B["B-tree<br/>index"]:::orange
     C["WAL<br/>durability"]:::teal
@@ -2354,9 +2394,10 @@ graph LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-80-mini-storage-engine-integration/example.py`**

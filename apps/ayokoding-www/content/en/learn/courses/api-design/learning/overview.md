@@ -80,12 +80,14 @@ never a fabricated transcript.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 %% Six concept clusters, in the order this page teaches them (co-01 through co-34)
 graph TD
-    A["REST foundations:<br/>contract, constraints, RMM,<br/>methods, status codes, errors<br/>co-01 to co-08"]:::blue
-    B["The OpenAPI contract:<br/>schema, codegen, mocks,<br/>request/response validation<br/>co-09 to co-12"]:::orange
-    C["Evolving the contract:<br/>versioning, backward compat,<br/>deprecation, sunset<br/>co-13 to co-15"]:::teal
-    D["Production concerns:<br/>pagination, idempotency,<br/>rate limits, caching, auth<br/>co-16 to co-23"]:::purple
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: REST foundations: contract, constraints, RMM, methods, status codes, errors co-01 to co-08, The OpenAPI contract: schema, codegen, mocks, request/response validation co-09 to co-12, Evolving the contract: versioning, backward compat, deprecation, sunset co-13 to co-15, Production concerns: pagination, idempotency, rate limits, caching, auth co-16 to co-23, Alternative styles: GraphQL, gRPC, style selection co-24 to co-27, Advanced contract patterns: hypermedia, envelopes, batch, webhooks, security co-28 to co-34. Connections: REST foundations: contract, constraints, RMM, methods, status codes, errors co-01 to co-08 to The OpenAPI contract: schema, codegen, mocks, request/response validation co-09 to co-12, The OpenAPI contract: schema, codegen, mocks, request/response validation co-09 to co-12 to Evolving the contract: versioning, backward compat, deprecation, sunset co-13 to co-15, Evolving the contract: versioning, backward compat, deprecation, sunset co-13 to co-15 to Production concerns: pagination, idempotency, rate limits, caching, auth co-16 to co-23, Production concerns: pagination, idempotency, rate limits, caching, auth co-16 to co-23 to Alternative styles: GraphQL, gRPC, style selection co-24 to co-27, Alternative styles: GraphQL, gRPC, style selection co-24 to co-27 to Advanced contract patterns: hypermedia, envelopes, batch, webhooks, security co-28 to co-34.
+    A["REST foundations:<br/>contract,<br/>constraints, RMM,<br/>methods, status<br/>codes, errors<br/>co-01 to co-08"]:::blue
+    B["The OpenAPI<br/>contract:<br/>schema, codegen,<br/>mocks,<br/>request/response<br/>validation<br/>co-09 to co-12"]:::orange
+    C["Evolving the<br/>contract:<br/>versioning, backward<br/>compat,<br/>deprecation, sunset<br/>co-13 to co-15"]:::teal
+    D["Production concerns:<br/>pagination,<br/>idempotency,<br/>rate limits,<br/>caching, auth<br/>co-16 to co-23"]:::purple
     E["Alternative styles:<br/>GraphQL, gRPC,<br/>style selection<br/>co-24 to co-27"]:::brown
-    F["Advanced contract patterns:<br/>hypermedia, envelopes,<br/>batch, webhooks, security<br/>co-28 to co-34"]:::gray
+    F["Advanced contract<br/>patterns:<br/>hypermedia,<br/>envelopes,<br/>batch, webhooks,<br/>security<br/>co-28 to co-34"]:::gray
 
     A --> B
     B --> C
@@ -94,11 +96,12 @@ graph TD
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

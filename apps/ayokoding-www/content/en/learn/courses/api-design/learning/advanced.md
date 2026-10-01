@@ -33,6 +33,8 @@ and every operation later queries a subset of them.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 57: Defining a GraphQL Schema and Types
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Query, Article, Scalar, Scalar, Author, Scalar, Scalar. Connections: Query to Article (article id: ID!), Article to Scalar (id: ID!), Article to Scalar (title: String!), Article to Author (author: Author!), Author to Scalar (id: ID!), Author to Scalar (name: String!).
     Q[Query] -->|article id: ID!| A[Article]
     A -->|id: ID!| S1[Scalar]
     A -->|title: String!| S2[Scalar]
@@ -42,12 +44,13 @@ graph LR
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     class Q blue
     class A orange
     class B teal
     class S1,S2,S3,S4 purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-57-graphql-schema-def/example.py`**
@@ -194,17 +197,19 @@ example puts both side by side against the identical record.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 59: The Same Data via REST vs GraphQL
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: GET /articles/1, ALL 4 fields (fixed shape), query id title, ONLY 2 fields (client-selected), Over-fetched: body, views. Connections: GET /articles/1 to ALL 4 fields (fixed shape), query id title to ONLY 2 fields (client-selected), ALL 4 fields (fixed shape) to Over-fetched: body, views (2 fields wasted).
     subgraph REST
         R1[GET /articles/1] --> R2["ALL 4 fields<br/>(fixed shape)"]
     end
     subgraph GraphQL
         G1["query { id title }"] --> G2["ONLY 2 fields<br/>(client-selected)"]
     end
-    R2 -.->|2 fields wasted| W[Over-fetched: body, views]
+    R2 -.->|2 fields wasted| W[Over-fetched: body,<br/>views]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     class R1 blue
@@ -212,6 +217,7 @@ graph LR
     class G1 teal
     class G2 orange
     class W purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-59-graphql-overfetch-contrast/example.py`**
@@ -360,23 +366,26 @@ measures the author lookups alone and reads N -> 1 rather than (N+1) -> 2.
 ```mermaid
 %% Color Palette: Teal #029E73, Brown #CA9161
 graph LR
+    accTitle: Example 61: An N+1 Resolver, Then a DataLoader Batch
+    accDescr: Graph with 10 nodes and 11 connections. Nodes: 3 articles, query articles: 1, fetch author a1: 1, fetch author a2: 1, fetch author a1 AGAIN: 1, 4 queries total, 3 articles, query articles: 1, batch-fetch authors: 1, 2 queries total. Connections: 3 articles to query articles: 1, 3 articles to fetch author a1: 1, 3 articles to fetch author a2: 1, 3 articles to fetch author a1 AGAIN: 1, fetch author a1: 1 to 4 queries total, fetch author a2: 1 to 4 queries total, fetch author a1 AGAIN: 1 to 4 queries total, 3 articles to query articles: 1, 3 articles to batch-fetch authors: 1, query articles: 1 to 2 queries total, batch-fetch authors: 1 to 2 queries total.
     subgraph "Naive (N+1)"
         A1[3 articles] --> Q1[query articles: 1]
         A1 --> Q2[fetch author a1: 1]
         A1 --> Q3[fetch author a2: 1]
-        A1 --> Q4[fetch author a1 AGAIN: 1]
+        A1 --> Q4[fetch author a1<br/>AGAIN: 1]
         Q2 & Q3 & Q4 --> T1["4 queries total"]
     end
     subgraph "DataLoader (batched)"
         A2[3 articles] --> Q5[query articles: 1]
-        A2 --> Q6["batch-fetch authors: 1"]
+        A2 --> Q6["batch-fetch authors:<br/>1"]
         Q5 & Q6 --> T2["2 queries total"]
     end
 
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class T1 brown
     class T2 teal
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-61-graphql-n1-dataloader/example.py`**
@@ -602,6 +611,8 @@ plain in-process call rather than an actual network round trip.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 64: A Unary RPC
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: 1 request, 1 response, 1 request, N responses, N requests, N responses, interleaved. Connections: 1 request to 1 response, 1 request to N responses, N requests to N responses, interleaved.
     subgraph "Example 64: Unary"
         A1[1 request] --> A2[1 response]
     end
@@ -609,15 +620,16 @@ graph LR
         B1[1 request] --> B2[N responses]
     end
     subgraph "Example 66: Bidirectional"
-        C1[N requests] --> C2[N responses, interleaved]
+        C1[N requests] --> C2[N responses,<br/>interleaved]
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class A1,A2 blue
     class B1,B2 orange
     class C1,C2 teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-64-grpc-unary/example.py`**
@@ -688,6 +700,8 @@ client makes one call, then iterates over a stream of results.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 65: A Server-Streaming RPC
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: ListArticlesRequest(author_id=a1); Server to Client: yield ArticleTitle(Hello); Server to Client: yield ArticleTitle(World); Server to Client: yield ArticleTitle(gRPC Streaming).
     participant Client
     participant Server
 
@@ -774,6 +788,8 @@ connection.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 66: A Bidirectional-Streaming RPC
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: ChatMessage(hello); Server to Client: ChatMessage(HELLO); Client to Server: ChatMessage(from); Server to Client: ChatMessage(FROM); Client to Server: ChatMessage(grpc); Server to Client: ChatMessage(GRPC).
     participant Client
     participant Server
 
@@ -1103,15 +1119,18 @@ later WRITTEN TO MATCH it, not the other way around.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["Example 70:<br/>Write spec FIRST"] --> B["Example 71:<br/>Write handler TO MATCH"]
-    B --> C["Example 72:<br/>Assert live response conforms"]
+    accTitle: Example 70: Writing the OpenAPI Spec Before Any Code
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Example 70: Write spec FIRST, Example 71: Write handler TO MATCH, Example 72: Assert live response conforms. Connections: Example 70: Write spec FIRST to Example 71: Write handler TO MATCH, Example 71: Write handler TO MATCH to Example 72: Assert live response conforms.
+    A["Example 70:<br/>Write spec FIRST"] --> B["Example 71:<br/>Write handler TO<br/>MATCH"]
+    B --> C["Example 72:<br/>Assert live response<br/>conforms"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class A blue
     class B orange
     class C teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-70-contract-first-openapi/example.py`**
@@ -1573,6 +1592,8 @@ object naming whether more pages exist -- a fixed, reusable shape every paginate
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 76: Relay-Style Cursor Connections in GraphQL
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Connection, edges: [Edge], node: Article, cursor: String, pageInfo: PageInfo, hasNextPage: Boolean, endCursor: String. Connections: Connection to edges: [Edge], edges: [Edge] to node: Article, edges: [Edge] to cursor: String, Connection to pageInfo: PageInfo, pageInfo: PageInfo to hasNextPage: Boolean, pageInfo: PageInfo to endCursor: String.
     A[Connection] --> B["edges: [Edge]"]
     B --> C["node: Article"]
     B --> D["cursor: String"]
@@ -1582,10 +1603,11 @@ graph TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class A blue
     class B orange
     class E teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-76-pagination-graphql-connections/example.py`**
@@ -1665,15 +1687,18 @@ links in a browser instead of typing every URL from memory.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["/ (hardcoded root)"] -->|follow _links.articles| B["/articles/1"]
+    accTitle: Example 77: A Client That Follows Links Instead of Hardcoded URLs
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: / (hardcoded root), /articles/1, /authors/7. Connections: / (hardcoded root) to /articles/1 (follow _links.articles), /articles/1 to /authors/7 (follow _links.author).
+    A["/ (hardcoded root)"] -->|follow<br/>_links.articles| B["/articles/1"]
     B -->|follow _links.author| C["/authors/7"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class A blue
     class B orange
     class C teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-77-hateoas-driven-client/example.py`**
@@ -1906,23 +1931,26 @@ whole thing conforms to its own spec (co-09), end to end.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["/v1/articles (co-13)"] --> B["list: cursor page (co-17)"]
-    A --> C["create: idempotent (co-18)"]
-    A --> D["get: problem+json 404 (co-30)"]
-    B & C & D --> E["rate-limit gate first (co-27)"]
-    E --> F["GraphQL/gRPC facade (co-27)"]
-    F --> G["e2e conformance (co-09)"]
+    accTitle: Example 80: A Versioned REST API From an OpenAPI Spec, End to End
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: /v1/articles (co-13), list: cursor page (co-17), create: idempotent (co-18), get: problem+json 404 (co-30), rate-limit gate first (co-27), GraphQL/gRPC facade (co-27), e2e conformance (co-09). Connections: /v1/articles (co-13) to list: cursor page (co-17), /v1/articles (co-13) to create: idempotent (co-18), /v1/articles (co-13) to get: problem+json 404 (co-30), list: cursor page (co-17) to rate-limit gate first (co-27), create: idempotent (co-18) to rate-limit gate first (co-27), get: problem+json 404 (co-30) to rate-limit gate first (co-27), rate-limit gate first (co-27) to GraphQL/gRPC facade (co-27), GraphQL/gRPC facade (co-27) to e2e conformance (co-09).
+    A["/v1/articles (co-13)"] --> B["list: cursor page<br/>(co-17)"]
+    A --> C["create: idempotent<br/>(co-18)"]
+    A --> D["get: problem+json<br/>404 (co-30)"]
+    B & C & D --> E["rate-limit gate<br/>first (co-27)"]
+    E --> F["GraphQL/gRPC facade<br/>(co-27)"]
+    F --> G["e2e conformance<br/>(co-09)"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     class A blue
     class B,F orange
     class C,G teal
     class D purple
     class E brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-80-contract-first-api/example.py`**

@@ -12,10 +12,13 @@ clock. Keep names and sensitive details appropriately generalized, but never inv
 
 ```mermaid
 flowchart LR
+  accTitle: flowchart diagram
+  accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Situation, Task, My action, Result, Learning and next time. Connections: Situation to Task, Task to My action, My action to Result, Result to Learning and next time.
   S[Situation] --> T[Task]
   T --> A[My action]
   A --> R[Result]
-  R --> L[Learning and next time]
+  R --> L[Learning and next<br/>time]
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Concepts

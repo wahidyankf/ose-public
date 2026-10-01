@@ -37,14 +37,17 @@ just the hot field into a dense array (struct-of-arrays).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["step 1: profile\nAoS, 132 B/record"]:::blue --> B["step 2: hypothesis\nonly 1 hot field is touched"]:::orange
-    B --> C["step 3: fix\nextract hot field to SoA"]:::teal
-    C --> D["step 4: re-measure\nsame stopwatch, same data"]:::purple
+    accTitle: Example 58: Optimize a Kernel End to End
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: step 1: profile AoS, 132 B/record, step 2: hypothesis only 1 hot field is touched, step 3: fix extract hot field to SoA, step 4: re-measure same stopwatch, same data. Connections: step 1: profile AoS, 132 B/record to step 2: hypothesis only 1 hot field is touched, step 2: hypothesis only 1 hot field is touched to step 3: fix extract hot field to SoA, step 3: fix extract hot field to SoA to step 4: re-measure same stopwatch, same data.
+    A["step 1: profile<br/>AoS, 132 B/record"]:::blue --> B["step 2: hypothesis<br/>only 1 hot field is<br/>touched"]:::orange
+    B --> C["step 3: fix<br/>extract hot field to<br/>SoA"]:::teal
+    C --> D["step 4: re-measure<br/>same stopwatch, same<br/>data"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the full profile-hypothesis-fix-remeasure workflow this whole topic has been building toward,
@@ -233,20 +236,23 @@ L1d instead of streaming through the whole matrix.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 59: Blocked Transpose
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: read src row-major (sequential), write dst column-major (stride N*4 bytes), read a BLOCK-tile of src, write the matching tile of dst. Connections: read src row-major (sequential) to write dst column-major (stride N*4 bytes), read a BLOCK-tile of src to write the matching tile of dst, write the matching tile of dst to read a BLOCK-tile of src (tile stays hot in L1d).
     subgraph Naive["naive transpose"]
         direction LR
-        N1["read src row-major\n(sequential)"]:::teal --> N2["write dst column-major\n(stride N*4 bytes)"]:::brown
+        N1["read src row-major<br/>(sequential)"]:::teal --> N2["write dst<br/>column-major<br/>(stride N*4 bytes)"]:::brown
     end
     subgraph Blocked["blocked transpose"]
         direction LR
-        B1["read a BLOCK-tile of src"]:::blue --> B2["write the matching\ntile of dst"]:::purple
-        B2 -.->|"tile stays hot in L1d"| B1
+        B1["read a BLOCK-tile of<br/>src"]:::blue --> B2["write the matching<br/>tile of dst"]:::purple
+        B2 -.->|"tile stays hot in<br/>L1d"| B1
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the naive transpose's write stream never gets reused for a matrix bigger than cache; the
@@ -436,12 +442,15 @@ with whatever the auto-vectorizer already does (that's ex-47's job).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["AoS scalar\ninterleaved struct fields"]:::brown --> B["SoA scalar\nx[], vx[] separate arrays"]:::orange
-    B --> C["SoA + NEON SIMD\n4 particles per instruction"]:::teal
+    accTitle: Example 60: Particle Simulation -- AoS vs SoA+SIMD
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: AoS scalar interleaved struct fields, SoA scalar x[], vx[] separate arrays, SoA + NEON SIMD 4 particles per instruction. Connections: AoS scalar interleaved struct fields to SoA scalar x[], vx[] separate arrays, SoA scalar x[], vx[] separate arrays to SoA + NEON SIMD 4 particles per instruction.
+    A["AoS scalar<br/>interleaved struct<br/>fields"]:::brown --> B["SoA scalar<br/>x[], vx[] separate<br/>arrays"]:::orange
+    B --> C["SoA + NEON SIMD<br/>4 particles per<br/>instruction"]:::teal
 
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the same `x += vx*dt` update, three ways -- AoS scalar pays for cold fields it never reads,
@@ -702,23 +711,26 @@ exactly how much false sharing costs.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    subgraph Shared["8 threads, SHARED atomic bins"]
+    accTitle: Example 61: Parallel Histogram -- Shared vs Per-Thread Bins
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: thread 0..7, 256-int array 8 cache lines, all contended, thread 0, own private row, thread 1..7, own private row, final histogram. Connections: thread 0..7 to 256-int array 8 cache lines, all contended (atomic increment), thread 0 to own private row, thread 1..7 to own private row, own private row to final histogram (cheap single-threaded merge), own private row to final histogram.
+    subgraph Shared["8 threads, SHARED<br/>atomic bins"]
         direction LR
-        S1["thread 0..7"]:::orange -->|"atomic increment"| SB["256-int array\n8 cache lines, all contended"]:::brown
+        S1["thread 0..7"]:::orange -->|"atomic increment"| SB["256-int array<br/>8 cache lines, all<br/>contended"]:::brown
     end
-    subgraph PerThread["8 threads, PER-THREAD bins"]
+    subgraph PerThread["8 threads,<br/>PER-THREAD bins"]
         direction LR
         T0["thread 0"]:::blue --> R0["own private row"]:::teal
         T1["thread 1..7"]:::blue --> R1["own private row"]:::teal
-        R0 -.->|"cheap single-threaded merge"| M["final histogram"]:::purple
+        R0 -.->|"cheap<br/>single-threaded<br/>merge"| M["final histogram"]:::purple
         R1 -.-> M
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: shared atomic bins bounce a handful of cache lines between all 8 cores on nearly every
@@ -1251,14 +1263,17 @@ this example runs the honest direct test of that fact instead of faking a gap th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["thread first-touches\na fresh page"]:::blue --> B["OS first-touch policy\nbinds the page to the\nwriting CPU's NUMA node"]:::orange
-    B --> C["same-node read later\n= local access"]:::teal
-    B --> D["different-node read later\n= remote access, real latency premium\n(this machine: single node -- N/A)"]:::brown
+    accTitle: Example 64: NUMA-Local vs NUMA-Remote Allocation
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: thread first-touches a fresh page, OS first-touch policy binds the page to the writing CPUs NUMA node, same-node read later = local access, D, N. Connections: thread first-touches a fresh page to OS first-touch policy binds the page to the writing CPUs NUMA node, OS first-touch policy binds the page to the writing CPUs NUMA node to same-node read later = local access, OS first-touch policy binds the page to the writing CPUs NUMA node to D, D to N.
+    A["thread first-touches<br/>a fresh page"]:::blue --> B["OS first-touch<br/>policy<br/>binds the page to<br/>the<br/>writing CPU's NUMA<br/>node"]:::orange
+    B --> C["same-node read later<br/>= local access"]:::teal
+    B --> D["different-node read<br/>later<br/>= remote access,<br/>real latency premium<br/>(this machine:<br/>single node -- N/A)"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: on real multi-socket NUMA hardware, first-touch binds a page to a node, and a remote-node read
@@ -1430,15 +1445,18 @@ than any TLB can hold resident) against a walk confined to 16 pages repeated tho
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["200,000 pages, 4 KB each\n(scattered walk)"]:::orange --> B["needs 200,000 TLB entries\nfar past what any TLB holds"]:::brown
-    C["16 pages, 4 KB each\n(compact, repeated walk)"]:::teal --> D["needs 16 TLB entries\nstays fully resident"]:::blue
-    E["same 16 pages as 2 MB hugepages\n(Linux hugetlbfs/THP)"]:::purple --> F["needs ~0.03 TLB entries --\n512x fewer per byte covered"]:::blue
+    accTitle: Example 65: Huge Pages and TLB Pressure
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: 200,000 pages, 4 KB each (scattered walk), needs 200,000 TLB entries far past what any TLB holds, 16 pages, 4 KB each (compact, repeated walk), needs 16 TLB entries stays fully resident, same 16 pages as 2 MB hugepages (Linux hugetlbfs/THP), F. Connections: 200,000 pages, 4 KB each (scattered walk) to needs 200,000 TLB entries far past what any TLB holds, 16 pages, 4 KB each (compact, repeated walk) to needs 16 TLB entries stays fully resident, same 16 pages as 2 MB hugepages (Linux hugetlbfs/THP) to F.
+    A["200,000 pages, 4 KB<br/>each<br/>(scattered walk)"]:::orange --> B["needs 200,000 TLB<br/>entries<br/>far past what any<br/>TLB holds"]:::brown
+    C["16 pages, 4 KB each<br/>(compact, repeated<br/>walk)"]:::teal --> D["needs 16 TLB entries<br/>stays fully resident"]:::blue
+    E["same 16 pages as 2<br/>MB hugepages<br/>(Linux<br/>hugetlbfs/THP)"]:::purple --> F["needs ~0.03 TLB<br/>entries --<br/>512x fewer per byte<br/>covered"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: a scattered 4 KB-page walk exhausts the TLB; a compact walk stays resident; hugepages (told
@@ -2025,18 +2043,21 @@ what the host CPU's native byte order happens to be.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["naive memcpy(&record, buf, sizeof)"]:::brown --> B["WRONG: compiler padding\n(unspecified, varies by compiler)"]:::brown
-    A --> C["WRONG: host endianness\n(multi-byte field byte order)"]:::brown
-    D["field-by-field serialize\nexplicit shifts, no padding"]:::blue --> E["BE wire format"]:::teal
+    accTitle: Example 69: Portable, Byte-Order-Explicit Serialization
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: A, record, WRONG: compiler padding (unspecified, varies by compiler), WRONG: host endianness (multi-byte field byte order), field-by-field serialize explicit shifts, no padding, BE wire format, LE wire format, round-trips correctly on ANY host. Connections: A to WRONG: compiler padding (unspecified, varies by compiler), record to WRONG: compiler padding (unspecified, varies by compiler), A to WRONG: host endianness (multi-byte field byte order), field-by-field serialize explicit shifts, no padding to BE wire format, field-by-field serialize explicit shifts, no padding to LE wire format, BE wire format to round-trips correctly on ANY host, LE wire format to round-trips correctly on ANY host.
+    A["naive<br/>memcpy(&record, buf,<br/>sizeof)"]:::brown --> B["WRONG: compiler<br/>padding<br/>(unspecified, varies<br/>by compiler)"]:::brown
+    A --> C["WRONG: host<br/>endianness<br/>(multi-byte field<br/>byte order)"]:::brown
+    D["field-by-field<br/>serialize<br/>explicit shifts, no<br/>padding"]:::blue --> E["BE wire format"]:::teal
     D --> F["LE wire format"]:::purple
-    E --> G["round-trips correctly\non ANY host"]:::orange
+    E --> G["round-trips<br/>correctly<br/>on ANY host"]:::orange
     F --> G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: a raw memcpy leaks two host-specific details into the wire format; serializing each field with
@@ -2535,16 +2556,19 @@ ceilings -- not a vendor spec sheet -- predict they should.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["step 1: calibrate THIS machine's\nown streaming bandwidth ceiling"]:::blue --> C["roofline model"]:::brown
-    B["step 2: calibrate THIS machine's\nown register-only compute ceiling"]:::orange --> C
-    C --> D["triad kernel\n~0.167 flops/byte -- memory-bound\nlands near the bandwidth ceiling"]:::teal
-    C --> E["FMA-heavy kernel\nL1-resident -- compute-bound\nlands near the compute ceiling"]:::purple
+    accTitle: Example 72: Roofline -- Bandwidth-Bound vs Compute-Bound
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: step 1: calibrate THIS machines own streaming bandwidth ceiling, roofline model, step 2: calibrate THIS machines own register-only compute ceiling, D, E. Connections: step 1: calibrate THIS machines own streaming bandwidth ceiling to roofline model, step 2: calibrate THIS machines own register-only compute ceiling to roofline model, roofline model to D, roofline model to E.
+    A["step 1: calibrate<br/>THIS machine's<br/>own streaming<br/>bandwidth ceiling"]:::blue --> C["roofline model"]:::brown
+    B["step 2: calibrate<br/>THIS machine's<br/>own register-only<br/>compute ceiling"]:::orange --> C
+    C --> D["triad kernel<br/>~0.167 flops/byte --<br/>memory-bound<br/>lands near the<br/>bandwidth ceiling"]:::teal
+    C --> E["FMA-heavy kernel<br/>L1-resident --<br/>compute-bound<br/>lands near the<br/>compute ceiling"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: with no `perf`/roofline-toolkit on macOS, this example measures its OWN two ceilings first,
@@ -3100,20 +3124,23 @@ loads, both confined to L1d so only the hazard itself is being measured.
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- accessible to all color-vision types
 graph TD
-    subgraph I1["Instruction 1: LOAD r1 from memory"]
+    accTitle: Example 74: A Pipeline Load-Use Hazard, Diagrammed
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: IF, ID, EX, MEM r1 becomes ready here, WB, IF, ID, stall bubble measured extra 0.7410 ns per iteration, EX needs r1s value, MEM, WB. Connections: IF to ID, ID to EX, EX to MEM r1 becomes ready here, MEM r1 becomes ready here to WB, IF to ID, ID to stall bubble measured extra 0.7410 ns per iteration, stall bubble measured extra 0.7410 ns per iteration to EX needs r1s value, EX needs r1s value to MEM, MEM to WB, MEM r1 becomes ready here to EX needs r1s value (forwards r1).
+    subgraph I1["Instruction 1: LOAD<br/>r1 from memory"]
         direction LR
-        A1["IF"]:::blue --> A2["ID"]:::blue --> A3["EX"]:::blue --> A4["MEM<br/>r1 becomes ready here"]:::teal --> A5["WB"]:::blue
+        A1["IF"]:::blue --> A2["ID"]:::blue --> A3["EX"]:::blue --> A4["MEM<br/>r1 becomes ready<br/>here"]:::teal --> A5["WB"]:::blue
     end
-    subgraph I2["Instruction 2: ADD r2, r1, r3 -- consumes r1"]
+    subgraph I2["Instruction 2: ADD<br/>r2, r1, r3 --<br/>consumes r1"]
         direction LR
-        B1["IF"]:::blue --> B2["ID"]:::blue --> B3["stall bubble<br/>measured extra 0.7410 ns per iteration"]:::orange --> B4["EX<br/>needs r1's value"]:::purple --> B5["MEM"]:::blue --> B6["WB"]:::blue
+        B1["IF"]:::blue --> B2["ID"]:::blue --> B3["stall bubble<br/>measured extra<br/>0.7410 ns per<br/>iteration"]:::orange --> B4["EX<br/>needs r1's value"]:::purple --> B5["MEM"]:::blue --> B6["WB"]:::blue
     end
     A4 -.->|forwards r1| B4
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```c
@@ -3596,19 +3623,22 @@ load factor to isolate pure per-step cache locality from probe-count algorithmic
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 77: A Cache-Friendly Hash Map
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: slot i, slot i+1 (consecutive, same line), slot i+2, bucket head, node (pool slot 4821), node (pool slot 91). Connections: slot i to slot i+1 (consecutive, same line), slot i+1 (consecutive, same line) to slot i+2, bucket head to node (pool slot 4821) (pointer chase), node (pool slot 4821) to node (pool slot 91) (pointer chase).
     subgraph OA["open addressing"]
         direction LR
-        O1["slot i"]:::blue --> O2["slot i+1\n(consecutive, same line)"]:::blue --> O3["slot i+2"]:::blue
+        O1["slot i"]:::blue --> O2["slot i+1<br/>(consecutive, same<br/>line)"]:::blue --> O3["slot i+2"]:::blue
     end
     subgraph Chain["separate chaining"]
         direction LR
-        H["bucket head"]:::orange -.->|"pointer chase"| N1["node (pool slot #4821)"]:::brown
+        H["bucket head"]:::orange -.->|"pointer chase"| N1["node (pool slot<br/>#4821)"]:::brown
         N1 -.->|"pointer chase"| N2["node (pool slot #91)"]:::brown
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: open addressing's linear probe walks consecutive, cache-line-adjacent slots; separate
@@ -4000,16 +4030,19 @@ profile-guided layout change should follow.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["TaskRecord: 252 B\npriority + deadline (hot, 8 B)\n+ 240 B cold description"]:::brown --> B["AoS scan\ntouches all 252 B per record\nto read 8 hot bytes"]:::orange
-    C["SoA: priority[], deadline[]\nonly the hot fields, packed"]:::teal --> D["SoA scan\ntouches only 8 B per record"]:::blue
-    B --> E["decision record:\nevery claim cites a\nnumber measured THIS run"]:::purple
+    accTitle: Example 79: A Profile-Guided Layout Decision Record
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: TaskRecord: 252 B priority + deadline (hot, 8 B) + 240 B cold description, AoS scan touches all 252 B per record to read 8 hot bytes, SoA: priority[], deadline[] only the hot fields, packed, SoA scan touches only 8 B per record, decision record: every claim cites a number measured THIS run. Connections: TaskRecord: 252 B priority + deadline (hot, 8 B) + 240 B cold description to AoS scan touches all 252 B per record to read 8 hot bytes, SoA: priority[], deadline[] only the hot fields, packed to SoA scan touches only 8 B per record, AoS scan touches all 252 B per record to read 8 hot bytes to decision record: every claim cites a number measured THIS run, SoA scan touches only 8 B per record to decision record: every claim cites a number measured THIS run.
+    A["TaskRecord: 252 B<br/>priority + deadline<br/>(hot, 8 B)<br/>+ 240 B cold<br/>description"]:::brown --> B["AoS scan<br/>touches all 252 B<br/>per record<br/>to read 8 hot bytes"]:::orange
+    C["SoA: priority[],<br/>deadline[]<br/>only the hot fields,<br/>packed"]:::teal --> D["SoA scan<br/>touches only 8 B per<br/>record"]:::blue
+    B --> E["decision record:<br/>every claim cites a<br/>number measured THIS<br/>run"]:::purple
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: a scan that reads only 2 hot fields out of a 252 B record pays for the other 240 B in AoS

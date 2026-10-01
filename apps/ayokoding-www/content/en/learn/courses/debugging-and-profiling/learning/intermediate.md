@@ -174,14 +174,17 @@ appears in this tier -- and its answer is cross-checked below against a real `cP
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["target_fn() runs<br/>on its own thread"]:::blue --> B["sampler thread polls<br/>sys._current_frames()"]:::orange
-    B -->|"every interval_s"| C["stack -> profile.collapsed"]:::teal
+    accTitle: Example 30: A Flame Graph from a Sampling Profiler
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: target_fn() runs on its own thread, sampler thread polls sys._current_ frames(), stack -> profile.collapsed, cProfile cross-check same workload, confirms the sample is trustworthy. Connections: target_fn() runs on its own thread to sampler thread polls sys._current_ frames(), sampler thread polls sys._current_ frames() to stack -> profile.collapsed (every interval_s), stack -> profile.collapsed to cProfile cross-check same workload, cProfile cross-check same workload to confirms the sample is trustworthy (same top function?).
+    A["target_fn() runs<br/>on its own thread"]:::blue --> B["sampler thread polls<br/>sys._current_<br/>frames()"]:::orange
+    B -->|"every interval_s"| C["stack -><br/>profile.collapsed"]:::teal
     C --> D["cProfile cross-check<br/>same workload"]:::blue
     D -->|"same top function?"| E["confirms the sample<br/>is trustworthy"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -418,13 +421,16 @@ outside the process without stopping it, using a mechanism the process opts into
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["stuck_in_a_loop()<br/>running, never stopped"]:::blue --> B["kill -USR1 &lt;pid&gt;<br/>signal from OUTSIDE"]:::orange
+    accTitle: Example 32: py-spy dump on a Hung Process
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: stuck_in_a_loop() running, never stopped, B, lt, gt, faulthandler dump live stack to stderr. Connections: stuck_in_a_loop() running, never stopped to B, stuck_in_a_loop() running, never stopped to lt, stuck_in_a_loop() running, never stopped to gt, B to faulthandler dump live stack to stderr, faulthandler dump live stack to stderr to stuck_in_a_loop() running, never stopped.
+    A["stuck_in_a_loop()<br/>running, never<br/>stopped"]:::blue --> B["kill -USR1 &lt;pid&gt;<br/>signal from OUTSIDE"]:::orange
     B --> C["faulthandler dump<br/>live stack to stderr"]:::teal
     C --> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -795,14 +801,17 @@ SAME line's growth roughly doubling, confirming it is a real, ongoing leak rathe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 36: A tracemalloc Snapshot Diff for a Leak
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: snap_a after 2000 requests, snap_b after 4000 requests, diff: line 16 +104 KiB, snap_c after 6000 requests, diff: line 16 +104 KiB AGAIN. Connections: snap_a after 2000 requests to snap_b after 4000 requests, snap_b after 4000 requests to diff: line 16 +104 KiB (compare_to(snap_a)), snap_b after 4000 requests to snap_c after 6000 requests, snap_c after 6000 requests to diff: line 16 +104 KiB AGAIN (compare_to(snap_b)).
     A["snap_a<br/>after 2000 requests"]:::blue --> B["snap_b<br/>after 4000 requests"]:::orange
     B -->|"compare_to(snap_a)"| C["diff: line 16<br/>+104 KiB"]:::teal
     B --> D["snap_c<br/>after 6000 requests"]:::orange
     D -->|"compare_to(snap_b)"| E["diff: line 16<br/>+104 KiB AGAIN"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -888,14 +897,17 @@ fuller call-path traceback distinguishes them.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 37: Widening the tracemalloc Traceback with nframe
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: leak_path(), allocate() ONE shared frame, temp_path(), SAME traceback indistinguishable, DIFFERENT tracebacks leak_path vs. temp_path visible. Connections: leak_path() to allocate() ONE shared frame, temp_path() to allocate() ONE shared frame, allocate() ONE shared frame to SAME traceback indistinguishable (nframe=1), allocate() ONE shared frame to DIFFERENT tracebacks leak_path vs. temp_path visible (nframe=5).
     A["leak_path()"]:::blue --> C["allocate()<br/>ONE shared frame"]:::orange
     B["temp_path()"]:::teal --> C
     C -->|"nframe=1"| D["SAME traceback<br/>indistinguishable"]:::orange
-    C -->|"nframe=5"| E["DIFFERENT tracebacks<br/>leak_path vs. temp_path visible"]:::teal
+    C -->|"nframe=5"| E["DIFFERENT tracebacks<br/>leak_path vs.<br/>temp_path visible"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1159,6 +1171,8 @@ debugpy-bundled client library is needed.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 40: debugpy Attach to a Running Server
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: server_target.py debugpy.listen(), attach_client.py initialize + attach, setBreakpoints on handle_request, stopped event reason: breakpoint, scopes + variables read request_id, continue server keeps running. Connections: server_target.py debugpy.listen() to attach_client.py initialize + attach, attach_client.py initialize + attach to setBreakpoints on handle_request, setBreakpoints on handle_request to stopped event reason: breakpoint, stopped event reason: breakpoint to scopes + variables read request_id, scopes + variables read request_id to continue server keeps running.
     A["server_target.py<br/>debugpy.listen()"]:::blue --> B["attach_client.py<br/>initialize + attach"]:::orange
     B --> C["setBreakpoints<br/>on handle_request"]:::teal
     C --> D["stopped event<br/>reason: breakpoint"]:::blue
@@ -1166,8 +1180,9 @@ graph LR
     E --> F["continue<br/>server keeps running"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1376,15 +1391,18 @@ has a chance to connect. The same breakpoint, on the same early line, behaves di
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 41: debugpy waitforclient vs. Attach Later
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: target.py starts debugpy.listen(), wait_for_client()?, BLOCKS until client attaches, breakpoint HIT every time, proceeds immediately early_startup_work() runs, client attaches TOO LATE breakpoint NEVER hit. Connections: target.py starts debugpy.listen() to wait_for_client()?, wait_for_client()? to BLOCKS until client attaches (wait=True), BLOCKS until client attaches to breakpoint HIT every time, wait_for_client()? to proceeds immediately early_startup_work() runs (wait=False), proceeds immediately early_startup_work() runs to client attaches TOO LATE breakpoint NEVER hit.
     A["target.py starts<br/>debugpy.listen()"]:::blue --> B{"wait_for_client()?"}:::orange
-    B -->|"wait=True"| C["BLOCKS<br/>until client attaches"]:::teal
+    B -->|"wait=True"| C["BLOCKS<br/>until client<br/>attaches"]:::teal
     C --> D["breakpoint HIT<br/>every time"]:::teal
-    B -->|"wait=False"| E["proceeds immediately<br/>early_startup_work() runs"]:::orange
-    E --> F["client attaches TOO LATE<br/>breakpoint NEVER hit"]:::orange
+    B -->|"wait=False"| E["proceeds immediately<br/>early_startup_work()<br/>runs"]:::orange
+    E --> F["client attaches TOO<br/>LATE<br/>breakpoint NEVER hit"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1509,12 +1527,15 @@ permission wall -- the same class of limitation `py-spy` hit in ex-29.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["long_running_server.py<br/>PID known"]:::blue --> B["python -m pdb -p &lt;pid&gt;<br/>remote attach attempt"]:::orange
-    B --> C["permission wall<br/>same class as py-spy, ex-29"]:::teal
+    accTitle: Example 42: pdb Remote Attach by PID
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: long_running_server. py PID known, B, lt, gt, permission wall same class as py-spy, ex-29. Connections: long_running_server. py PID known to B, long_running_server. py PID known to lt, long_running_server. py PID known to gt, B to permission wall same class as py-spy, ex-29.
+    A["long_running_server.<br/>py<br/>PID known"]:::blue --> B["python -m pdb -p<br/>&lt;pid&gt;<br/>remote attach<br/>attempt"]:::orange
+    B --> C["permission wall<br/>same class as<br/>py-spy, ex-29"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1703,14 +1724,17 @@ bisect run` to SKIP it automatically instead of stalling.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["commits 1-4<br/>good"]:::teal --> B["commit 5<br/>UNBUILDABLE, exit 125"]:::orange
+    accTitle: Example 44: git bisect run with a Skip
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: commits 1-4 good, commit 5 UNBUILDABLE, exit 125, commit 6 good, commit 7 BAD (regression), commit 8 bad (HEAD). Connections: commits 1-4 good to commit 5 UNBUILDABLE, exit 125, commit 5 UNBUILDABLE, exit 125 to commit 6 good (SKIP, not stall), commit 6 good to commit 7 BAD (regression), commit 7 BAD (regression) to commit 8 bad (HEAD).
+    A["commits 1-4<br/>good"]:::teal --> B["commit 5<br/>UNBUILDABLE, exit<br/>125"]:::orange
     B -->|"SKIP, not stall"| C["commit 6<br/>good"]:::teal
     C --> D["commit 7<br/>BAD (regression)"]:::orange
     D --> E["commit 8<br/>bad (HEAD)"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1962,17 +1986,20 @@ chunk -- is required to correctly narrow in on the 2-character minimal reproduce
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 46: Delta-Debugging a Long String
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: current string, n=2, split into n chunks, try removing each, shrink reset n=2, n >= len(current)?, double n, retry finer, F, 1-minimal. Connections: current string, n=2 to split into n chunks, try removing each, split into n chunks, try removing each to shrink reset n=2 (a chunk was removable), shrink reset n=2 to current string, n=2, split into n chunks, try removing each to n >= len(current)? (no chunk removable), n >= len(current)? to double n, retry finer (no), double n, retry finer to split into n chunks, try removing each, n >= len(current)? to F (yes), F to 1-minimal.
     A["current string, n=2"]:::blue --> B["split into n chunks,<br/>try removing each"]:::orange
-    B -->|"a chunk was removable"| C["shrink; reset n=2"]:::teal
+    B -->|"a chunk was<br/>removable"| C["shrink; reset n=2"]:::teal
     C --> A
     B -->|"no chunk removable"| D{"n >= len(current)?"}:::orange
-    D -->|"no"| E["double n, retry finer"]:::teal
+    D -->|"no"| E["double n, retry<br/>finer"]:::teal
     E --> B
     D -->|"yes"| F["done -- 1-minimal"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2332,14 +2359,17 @@ compete for the same lock.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["8 threads<br/>call handle_request()"]:::blue --> B{"cProfile.enable()<br/>from 2 threads?"}:::orange
+    accTitle: Example 49: Profiling Under Concurrent Load
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 8 threads call handle_request(), cProfile.enable() from 2 threads?, cProfile CANNOT measure this, time.perf_counter() around Lock.acquire(), contention wait time visible only under load. Connections: 8 threads call handle_request() to cProfile.enable() from 2 threads?, cProfile.enable() from 2 threads? to cProfile CANNOT measure this (ValueError: already active), 8 threads call handle_request() to time.perf_counter() around Lock.acquire(), time.perf_counter() around Lock.acquire() to contention wait time visible only under load.
+    A["8 threads<br/>call<br/>handle_request()"]:::blue --> B{"cProfile.enable()<br/>from 2 threads?"}:::orange
     B -->|"ValueError:<br/>already active"| C["cProfile CANNOT<br/>measure this"]:::orange
-    A --> D["time.perf_counter()<br/>around Lock.acquire()"]:::teal
-    D --> E["contention wait time<br/>visible only under load"]:::teal
+    A --> D["time.perf_counter()<br/>around<br/>Lock.acquire()"]:::teal
+    D --> E["contention wait time<br/>visible only under<br/>load"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

@@ -30,11 +30,14 @@ this tier names it by string.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 55: GDS: Project an In-Memory Graph
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Transactional graph on disk, In-memory projection social, Algorithm results streamed back. Connections: Transactional graph on disk to In-memory projection social (gds.graph.project), In-memory projection social to Algorithm results streamed back (gds.pageRank.stream etc.).
     A["Transactional graph<br/>on disk"]:::blue -->|gds.graph.project| B["In-memory projection<br/>'social'"]:::orange
-    B -->|gds.pageRank.stream etc.| C["Algorithm results<br/>streamed back"]:::teal
+    B -->|gds.pageRank.stream<br/>etc.| C["Algorithm results<br/>streamed back"]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-55-gds-graph-projection/example.cypher`**
@@ -87,13 +90,16 @@ poorly-connected ones.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 56: GDS: PageRank
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: A, Hub, B, C. Connections: A to Hub (KNOWS), B to Hub (KNOWS), C to Hub (KNOWS).
     A:::orange -->|KNOWS| Hub:::blue
     B:::teal -->|KNOWS| Hub
     C:::purple -->|KNOWS| Hub
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-56-gds-pagerank-stream/example.cypher`**
@@ -159,10 +165,13 @@ its own degree.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 57: GDS: Betweenness Centrality
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: A1, A2, Bridge, B1, B2. Connections: A1 to A2 (KNOWS), A2 to Bridge (KNOWS), Bridge to B1 (KNOWS), B1 to B2 (KNOWS).
     A1:::blue -->|KNOWS| A2:::blue -->|KNOWS| Bridge:::orange -->|KNOWS| B1:::teal -->|KNOWS| B2:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-57-gds-betweenness-centrality/example.cypher`**
@@ -225,6 +234,8 @@ to two distinct community IDs.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 58: GDS: Louvain Community Detection
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: A1, A2, A3, B1, B2, B3. Connections: A1 to A2 (KNOWS), A2 to A3 (KNOWS), A3 to A1 (KNOWS), B1 to B2 (KNOWS), B2 to B3 (KNOWS), B3 to B1 (KNOWS).
     subgraph Community0["communityId 0"]
     A1:::blue -->|KNOWS| A2:::blue -->|KNOWS| A3:::blue -->|KNOWS| A1
     end
@@ -232,7 +243,8 @@ graph LR
     B1:::orange -->|KNOWS| B2:::orange -->|KNOWS| B3:::orange -->|KNOWS| B1
     end
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-58-gds-louvain-community-detection/example.cypher`**
@@ -298,13 +310,16 @@ bought heavily overlapping sets of items score high similarity, the algorithmic 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 59: GDS: Node Similarity
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Ada, Keyboard, Monitor, Bob. Connections: Ada to Keyboard (BOUGHT), Ada to Monitor (BOUGHT), Bob to Keyboard (BOUGHT), Bob to Monitor (BOUGHT).
     Ada:::blue -->|BOUGHT| Keyboard:::teal
     Ada -->|BOUGHT| Monitor:::teal
     Bob:::orange -->|BOUGHT| Keyboard
     Bob -->|BOUGHT| Monitor
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-59-gds-node-similarity/example.cypher`**
@@ -370,12 +385,15 @@ weight.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 60: GDS: Dijkstra Source-Target
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: A, B, Z, C. Connections: A to B (cost 10), B to Z (cost 10), A to C (cost 5), C to Z (cost 5).
     A:::blue -->|"cost 10"| B:::orange -->|"cost 10"| Z:::purple
     A -->|"cost 5"| C:::teal -->|"cost 5"| Z
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-60-gds-dijkstra-source-target/example.cypher`**
@@ -436,10 +454,13 @@ reachable node in a single call, rather than requiring one source-target call pe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 61: GDS: Dijkstra Single-Source
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: A, B, C. Connections: A to B (cost 5), B to C (cost 5).
     A:::blue -->|"cost 5"| B:::orange -->|"cost 5"| C:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-61-gds-dijkstra-single-source/example.cypher`**
@@ -502,15 +523,18 @@ not.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 62: Recommendation Powered by GDS Similarity
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Ada, Keyboard, Monitor, Bob, Mousepad. Connections: Ada to Keyboard (BOUGHT), Ada to Monitor (BOUGHT), Bob to Keyboard (BOUGHT), Bob to Monitor (BOUGHT), Bob to Mousepad (BOUGHT).
     Ada:::blue -->|BOUGHT| Keyboard:::teal
     Ada -->|BOUGHT| Monitor:::teal
     Bob:::orange -->|BOUGHT| Keyboard
     Bob -->|BOUGHT| Monitor
     Bob -->|BOUGHT| Mousepad:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-62-recommendation-with-gds-similarity/example.cypher`**
@@ -586,16 +610,19 @@ community unflagged.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 63: Fraud Ring via Community Detection
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: R1, R2, R3, R4, N1, N2. Connections: R1 to R2 (SENT), R2 to R3 (SENT), R3 to R4 (SENT), R4 to R1 (SENT), R1 to R3 (SENT), R2 to R4 (SENT), N1 to N2 (SENT).
     subgraph Ring["Dense ring, flagged"]
     R1:::orange -->|SENT| R2:::orange -->|SENT| R3:::orange -->|SENT| R4:::orange -->|SENT| R1
     R1 -->|SENT| R3
     R2 -->|SENT| R4
     end
-    subgraph Pair["Normal pair, not flagged"]
+    subgraph Pair["Normal pair, not<br/>flagged"]
     N1:::blue -->|SENT| N2:::blue
     end
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-63-fraud-ring-with-community-detection/example.cypher`**
@@ -1284,6 +1311,8 @@ Example 44's traversal-cost problem.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 72: Mitigate a Supernode with a Grouping Node
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: Acc1, verified, Acc2, Acc3, AccA, Bucket, verified, AccB. Connections: Acc1 to verified (HAS_STATUS), Acc2 to verified (HAS_STATUS), Acc3 to verified (HAS_STATUS), AccA to Bucket (IN_GROUP), Bucket to verified (HAS_STATUS), AccB to Bucket (IN_GROUP).
     subgraph Before
     Acc1:::blue -->|HAS_STATUS| V1["verified"]:::orange
     Acc2:::blue -->|HAS_STATUS| V1
@@ -1294,8 +1323,9 @@ graph LR
     AccB:::blue -->|IN_GROUP| Bucket
     end
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before (a raw supernode)**:
@@ -1755,11 +1785,14 @@ function (Example 16) -- same question, standardized syntax, identical answer on
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Purple #CC78BC
 graph LR
-    Ada:::blue -->|"KNOWS (2-hop route)"| Bob:::orange -->|KNOWS| Zoe:::purple
+    accTitle: Example 79: GQL-Conformant SHORTEST Path Selector
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Ada, Bob, Zoe. Connections: Ada to Bob (KNOWS (2-hop route)), Bob to Zoe (KNOWS), Ada to Zoe (KNOWS (SHORTEST 1)).
+    Ada:::blue -->|"KNOWS (2-hop<br/>route)"| Bob:::orange -->|KNOWS| Zoe:::purple
     Ada -->|"KNOWS (SHORTEST 1)"| Zoe
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-79-gql-conformant-shortest-path/example.cypher`**

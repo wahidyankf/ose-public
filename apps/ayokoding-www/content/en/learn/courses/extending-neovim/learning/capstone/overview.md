@@ -18,18 +18,21 @@ capstone is where they all run together in one real config.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["Bootstrap<br/>vim.pack.add#40;pinned#41;"]:::blue
-    B["Config tree<br/>lua#47;options, lua#47;keymaps"]:::orange
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Bootstrap vim.pack. add40pinned41, Config tree lua47options, lua47keymaps, Python IDE LSP + Treesitter, Own plugin lua47plugins47greet.lua, Healthcheck :checkhealth, zero missing dep. Connections: Bootstrap vim.pack. add40pinned41 to Config tree lua47options, lua47keymaps, Config tree lua47options, lua47keymaps to Python IDE LSP + Treesitter, Python IDE LSP + Treesitter to Own plugin lua47plugins47greet.lua, Own plugin lua47plugins47greet.lua to Healthcheck :checkhealth, zero missing dep.
+    A["Bootstrap<br/>vim.pack.<br/>add#40;pinned#41;"]:::blue
+    B["Config tree<br/>lua#47;options,<br/>lua#47;keymaps"]:::orange
     C["Python IDE<br/>LSP + Treesitter"]:::teal
-    D["Own plugin<br/>lua#47;plugins#47;greet.lua"]:::purple
-    E["Healthcheck<br/>:checkhealth, zero missing dep"]:::brown
+    D["Own plugin<br/>lua/plugins/<br/>greet.lua"]:::purple
+    E["Healthcheck<br/>:checkhealth, zero<br/>missing dep"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

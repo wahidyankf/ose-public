@@ -87,6 +87,8 @@ A slow pointer advances one node per step while a fast pointer advances two; whe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 30: Find the Middle Node with Slow/Fast Pointers
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: 1 slow and fast start, 2 fast: step 1, 3 slow lands here, 4 then 5 fast exits after 5. Connections: 1 slow and fast start to 2 fast: step 1, 2 fast: step 1 to 3 slow lands here, 3 slow lands here to 4 then 5 fast exits after 5.
     N1["1<br/>slow and fast start"]:::blue
     N2["2<br/>fast: step 1"]:::orange
     N3["3<br/>slow lands here"]:::teal
@@ -94,9 +96,10 @@ graph LR
     N1 --> N2 --> N3 --> N45
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-30-linked-list-middle/example.py`**
@@ -162,14 +165,17 @@ Binary search halves a sorted range on every step: check the midpoint, and disca
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 31: Iterative Binary Search
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: range 911..1393 mid=7, too low, range 919..1393 mid=11, too high, range 919..993 mid=9, match. Connections: range 911..1393 mid=7, too low to range 919..1393 mid=11, too high, range 919..1393 mid=11, too high to range 919..993 mid=9, match.
     A["range #91;1..13#93;<br/>mid=7, too low"]:::blue
     B["range #91;9..13#93;<br/>mid=11, too high"]:::orange
     C["range #91;9..9#93;<br/>mid=9, match"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-31-binary-search-iterative/example.py`**
@@ -484,17 +490,20 @@ _ex-37 &middot; exercises co-12_
 ```mermaid
 %% TD required: heap parent must appear above its children to show the tree order encoded in the array
 graph TD
+    accTitle: Example 37: Min-Heap with heapq.heappush and heappop
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: index 0: 1 40root, min41, index 1: 3 40left child41, index 2: 8 40right child41, index 3: 5 40child of index 141. Connections: index 0: 1 40root, min41 to index 1: 3 40left child41, index 0: 1 40root, min41 to index 2: 8 40right child41, index 1: 3 40left child41 to index 3: 5 40child of index 141.
     A["index 0: 1<br/>#40;root, min#41;"]:::blue
     B["index 1: 3<br/>#40;left child#41;"]:::orange
     C["index 2: 8<br/>#40;right child#41;"]:::orange
-    D["index 3: 5<br/>#40;child of index 1#41;"]:::teal
+    D["index 3: 5<br/>#40;child of index<br/>1#41;"]:::teal
     A --> B
     A --> C
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-37-min-heap-push-pop/example.py`**
@@ -928,16 +937,19 @@ Merge sort recursively splits the list in half until each piece has one element 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 46: Recursive Merge Sort
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: unsorted: 6 items, split into two halves, each half sorted recursively, merged into one sorted list. Connections: unsorted: 6 items to split into two halves, split into two halves to each half sorted recursively, each half sorted recursively to merged into one sorted list.
     A["unsorted: 6 items"]:::blue
-    B["split into two halves"]:::orange
+    B["split into two<br/>halves"]:::orange
     C["each half sorted<br/>recursively"]:::teal
     D["merged into<br/>one sorted list"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-46-merge-sort/example.py`**
@@ -1006,6 +1018,8 @@ Quicksort picks a pivot, partitions the remaining elements into "smaller than pi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 47: Recursive Quicksort
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: unsorted: 6 items, pick pivot partition around it, less than pivot and greater than pivot, recurse on each side then concatenate. Connections: unsorted: 6 items to pick pivot partition around it, pick pivot partition around it to less than pivot and greater than pivot, less than pivot and greater than pivot to recurse on each side then concatenate.
     A["unsorted: 6 items"]:::blue
     B["pick pivot<br/>partition around it"]:::orange
     C["less than pivot and<br/>greater than pivot"]:::teal
@@ -1013,9 +1027,10 @@ graph LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-47-quicksort/example.py`**
@@ -1076,6 +1091,8 @@ A binary tree is a node with up to two children (`left` and `right`). This examp
 ```mermaid
 %% TD required: parent nodes must appear above child nodes to show tree structure
 graph TD
+    accTitle: Example 48: Build a Binary Tree
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 4 40root41, 2, 6, 1, 3. Connections: 4 40root41 to 2, 4 40root41 to 6, 2 to 1, 2 to 3.
     A["4 #40;root#41;"]:::blue
     B["2"]:::orange
     C["6"]:::orange
@@ -1087,8 +1104,9 @@ graph TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-48-binary-tree-build/example.py`**
@@ -1161,6 +1179,8 @@ Inorder traversal visits a binary tree's nodes left-subtree, then node, then rig
 ```mermaid
 %% TD required: parent nodes must appear above child nodes to show tree structure
 graph TD
+    accTitle: Example 49: Recursive Inorder Traversal
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 4 inorder: 4th, 2 inorder: 2nd, 6 inorder: 5th, 1 inorder: 1st, 3 inorder: 3rd. Connections: 4 inorder: 4th to 2 inorder: 2nd, 4 inorder: 4th to 6 inorder: 5th, 2 inorder: 2nd to 1 inorder: 1st, 2 inorder: 2nd to 3 inorder: 3rd.
     A["4<br/>inorder: 4th"]:::blue
     B["2<br/>inorder: 2nd"]:::orange
     C["6<br/>inorder: 5th"]:::orange
@@ -1172,8 +1192,9 @@ graph TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-49-tree-inorder-traversal/example.py`**
@@ -1239,6 +1260,8 @@ Preorder visits node-then-left-then-right; postorder visits left-then-right-then
 ```mermaid
 %% TD required: parent nodes must appear above child nodes to show tree structure
 graph TD
+    accTitle: Example 50: Preorder and Postorder Traversals
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 4 pre:1st post:5th, 2 pre:2nd post:3rd, 6 pre:5th post:4th, 1 pre:3rd post:1st, 3 pre:4th post:2nd. Connections: 4 pre:1st post:5th to 2 pre:2nd post:3rd, 4 pre:1st post:5th to 6 pre:5th post:4th, 2 pre:2nd post:3rd to 1 pre:3rd post:1st, 2 pre:2nd post:3rd to 3 pre:4th post:2nd.
     A["4<br/>pre:1st post:5th"]:::blue
     B["2<br/>pre:2nd post:3rd"]:::orange
     C["6<br/>pre:5th post:4th"]:::orange
@@ -1250,8 +1273,9 @@ graph TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-50-tree-pre-and-post-order/example.py`**
@@ -1344,6 +1368,8 @@ Level-order traversal visits a tree breadth-first -- one whole level at a time -
 ```mermaid
 %% TD required: parent nodes must appear above child nodes to show tree structure
 graph TD
+    accTitle: Example 51: Level-Order Traversal, Grouped by Level
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 4 level 0, 2 level 1, 6 level 1, 1 level 2, 3 level 2. Connections: 4 level 0 to 2 level 1, 4 level 0 to 6 level 1, 2 level 1 to 1 level 2, 2 level 1 to 3 level 2.
     A["4<br/>level 0"]:::blue
     B["2<br/>level 1"]:::orange
     C["6<br/>level 1"]:::orange
@@ -1355,8 +1381,9 @@ graph TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-51-tree-level-order-bfs/example.py`**
@@ -1512,6 +1539,8 @@ A binary search tree (BST) maintains one invariant at every node: everything in 
 ```mermaid
 %% TD required: parent nodes must appear above child nodes to show tree structure
 graph TD
+    accTitle: Example 53: Insert into a Binary Search Tree
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 5, 2, 8, 1, 3. Connections: 5 to 2, 5 to 8, 2 to 1, 2 to 3.
     A["5"]:::blue
     B["2"]:::orange
     C["8"]:::orange
@@ -1523,8 +1552,9 @@ graph TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-53-bst-insert/example.py`**
@@ -1750,6 +1780,8 @@ A graph is represented here as a **dict-of-lists adjacency map**: each key is a 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 56: Build a Graph as a Dict-of-Lists Adjacency Map
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: a, b, c, d. Connections: a to b, a to c, b to d, c to d.
     A["a"]:::blue
     B["b"]:::orange
     C["c"]:::teal
@@ -1760,9 +1792,10 @@ graph LR
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-56-graph-adjacency-build/example.py`**
@@ -1820,16 +1853,19 @@ Breadth-first search (BFS) explores a graph level by level, using a `deque`-back
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
-    A["visit a<br/>frontier: #91;b,c#93;"]:::blue
-    B["visit b<br/>frontier: #91;c,d#93;"]:::orange
+    accTitle: Example 57: Breadth-First Search over a Graph
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: visit a frontier: 91b,c93, visit b frontier: 91c,d93, visit c frontier: 91d93, visit d frontier empty. Connections: visit a frontier: 91b,c93 to visit b frontier: 91c,d93, visit b frontier: 91c,d93 to visit c frontier: 91d93, visit c frontier: 91d93 to visit d frontier empty.
+    A["visit a<br/>frontier:<br/>#91;b,c#93;"]:::blue
+    B["visit b<br/>frontier:<br/>#91;c,d#93;"]:::orange
     C["visit c<br/>frontier: #91;d#93;"]:::teal
     D["visit d<br/>frontier empty"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-57-graph-bfs/example.py`**
@@ -1909,16 +1945,19 @@ Depth-first search (DFS) explores a graph as deep as possible along one branch b
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 58: Depth-First Search over a Graph
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: visit a recurse into b first, visit b recurse into d, visit d recurse into c, visit c all visited, backtrack. Connections: visit a recurse into b first to visit b recurse into d, visit b recurse into d to visit d recurse into c, visit d recurse into c to visit c all visited, backtrack.
     A["visit a<br/>recurse into b first"]:::blue
     B["visit b<br/>recurse into d"]:::orange
     C["visit d<br/>recurse into c"]:::teal
-    D["visit c<br/>all visited, backtrack"]:::purple
+    D["visit c<br/>all visited,<br/>backtrack"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-58-graph-dfs/example.py`**

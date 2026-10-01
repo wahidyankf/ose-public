@@ -18,6 +18,8 @@ _ex-28 · exercises co-16_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 28: Named volume
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Container writes value, Named volume app data, Container is removed, New container reads durable value. Connections: Container writes value to Named volume app data, Named volume app data to New container reads durable value.
     W["Container writes<br/>value"]:::blue
     V["Named volume<br/>app data"]:::teal
     R["Container is removed"]:::orange
@@ -26,8 +28,9 @@ graph LR
     R -. "volume remains" .-> V
     V --> N
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -54,6 +57,8 @@ _ex-29 · exercises co-16_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 29: Bind mount
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Host path local config, Read-only bind mount, Container path config, Host edit visible in container. Connections: Host path local config to Read-only bind mount, Read-only bind mount to Container path config, Host path local config to Host edit visible in container.
     H["Host path<br/>local config"]:::blue
     M["Read-only bind mount"]:::orange
     C["Container path<br/>config"]:::teal
@@ -62,8 +67,9 @@ graph LR
     H --> E
     E -. "projects edit" .-> C
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -90,14 +96,17 @@ _ex-30 · exercises co-16_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 30: Volume versus bind mount
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Who owns persistent data?, Docker managed named volume, Host-path bind mount. Connections: Who owns persistent data? to Docker managed named volume (runtime owns data), Who owns persistent data? to Host-path bind mount (host path required).
     D{"Who owns<br/>persistent data?"}:::orange
     V["Docker managed<br/>named volume"]:::teal
     B["Host-path bind mount"]:::blue
     D -->|"runtime owns data"| V
     D -->|"host path required"| B
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```text
@@ -124,6 +133,8 @@ _ex-31 · exercises co-17_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 31: Compose two services
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: PostgreSQL db service, Health check passes?, Compose DNS name db, app connects runs query. Connections: PostgreSQL db service to Health check passes?, Health check passes? to Compose DNS name db (healthy), Compose DNS name db to app connects runs query, Health check passes? to PostgreSQL db service (not ready).
     DB["PostgreSQL db<br/>service"]:::blue
     H{"Health check passes?"}:::orange
     DNS["Compose DNS name db"]:::teal
@@ -132,8 +143,9 @@ graph LR
     H -->|"healthy"| DNS --> APP
     H -->|"not ready"| DB
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -271,6 +283,8 @@ _ex-34 · exercises co-17_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 34: Compose app, DB, and cache
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Database health check, Cache health check, Both dependencies healthy?, App receives URLs and token, readyz returns 200. Connections: Database health check to Both dependencies healthy?, Cache health check to Both dependencies healthy?, Both dependencies healthy? to App receives URLs and token (yes), App receives URLs and token to readyz returns 200, Both dependencies healthy? to Database health check (no).
     DB["Database health<br/>check"]:::blue
     CACHE["Cache health check"]:::blue
     G{"Both dependencies<br/>healthy?"}:::orange
@@ -281,8 +295,9 @@ graph LR
     G -->|"yes"| APP --> READY
     G -->|"no"| DB
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -392,6 +407,8 @@ _ex-35 · exercises co-18_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 35: Kubernetes architecture
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: User submits desired Pod state, API server, etcd persists desired state, Scheduler selects node, Kubelet starts assigned containers. Connections: User submits desired Pod state to API server, API server to etcd persists desired state, API server to Scheduler selects node, Scheduler selects node to Kubelet starts assigned containers.
     U["User submits<br/>desired Pod state"]:::blue
     API["API server"]:::blue
     ETCD["etcd persists<br/>desired state"]:::teal
@@ -400,8 +417,9 @@ graph LR
     U --> API --> ETCD
     API --> S --> K
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```text
@@ -455,6 +473,8 @@ _ex-37 · exercises co-19_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 37: Multi-container Pod
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Shared Pod network, web listens localhost 8080, sidecar requests localhost 8080, Shared restart and resource fate. Connections: Shared Pod network to web listens localhost 8080, Shared Pod network to sidecar requests localhost 8080, sidecar requests localhost 8080 to web listens localhost 8080, Shared Pod network to Shared restart and resource fate.
     P["Shared Pod<br/>network"]:::blue
     W["web listens<br/>localhost 8080"]:::teal
     S["sidecar requests<br/>localhost 8080"]:::teal
@@ -464,8 +484,9 @@ graph LR
     S --> W
     P --> F
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -502,6 +523,8 @@ _ex-38 · exercises co-20_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 38: Deployment manifest
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Deployment target 3 replicas, ReplicaSet matches app ex38, Three nginx Pods, Selector labels match template. Connections: Deployment target 3 replicas to ReplicaSet matches app ex38, ReplicaSet matches app ex38 to Three nginx Pods, Selector labels match template to ReplicaSet matches app ex38.
     D["Deployment target<br/>3 replicas"]:::blue
     RS["ReplicaSet matches<br/>app ex38"]:::orange
     P["Three nginx Pods"]:::teal
@@ -509,8 +532,9 @@ graph LR
     D --> RS --> P
     L --> RS
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -548,6 +572,8 @@ _ex-39 · exercises co-20_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 %% TD expresses the sequential rollout stages while preserving their causal order.
 graph TD
+    accTitle: Example 39: Rolling update
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Old nginx Pod is Ready, Deployment receives new image, One surge Pod starts, New Pod is Ready?, Old Pod ends after replacement. Connections: Old nginx Pod is Ready to Deployment receives new image, Deployment receives new image to One surge Pod starts, One surge Pod starts to New Pod is Ready?, New Pod is Ready? to Old Pod ends after replacement (ready), New Pod is Ready? to Old nginx Pod is Ready (not ready).
     O["Old nginx Pod<br/>is Ready"]:::blue
     U["Deployment receives<br/>new image"]:::orange
     N["One surge Pod<br/>starts"]:::teal
@@ -557,8 +583,9 @@ graph TD
     R -->|"ready"| X
     R -->|"not ready"| O
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -664,16 +691,19 @@ _ex-42 · exercises co-21_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 42: ClusterIP Service
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: In-cluster client, ClusterIP Service ex42, Ready endpoints selected?, nginx Pod port 80. Connections: In-cluster client to ClusterIP Service ex42 (uses stable Service name), ClusterIP Service ex42 to Ready endpoints selected?, Ready endpoints selected? to nginx Pod port 80 (yes), Ready endpoints selected? to ClusterIP Service ex42 (no endpoints).
     C["In-cluster client"]:::blue
     S["ClusterIP Service<br/>ex42"]:::orange
     E{"Ready endpoints<br/>selected?"}:::orange
     P["nginx Pod port 80"]:::teal
-    C -->|"uses stable Service name"| S --> E
+    C -->|"uses stable Service<br/>name"| S --> E
     E -->|"yes"| P
     E -->|"no endpoints"| S
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -795,14 +825,17 @@ _ex-46 · exercises co-22_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 46: ConfigMap environment injection
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: ConfigMap APP_MODE training, Pod envFrom references ConfigMap, Container env APP_MODE, Process reads non-secret config. Connections: ConfigMap APP_MODE training to Pod envFrom references ConfigMap, Pod envFrom references ConfigMap to Container env APP_MODE, Container env APP_MODE to Process reads non-secret config.
     CM["ConfigMap<br/>APP_MODE training"]:::blue
     REF["Pod envFrom<br/>references ConfigMap"]:::orange
     ENV["Container env<br/>APP_MODE"]:::teal
     P["Process reads<br/>non-secret config"]:::teal
     CM --> REF --> ENV --> P
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -861,6 +894,8 @@ _ex-47 · exercises co-22_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 47: Secret injection
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: Secret API_TOKEN, Pod envFrom references Secret, Container env API_TOKEN, Process uses runtime token, Image layers contain no token. Connections: Secret API_TOKEN to Pod envFrom references Secret, Pod envFrom references Secret to Container env API_TOKEN, Container env API_TOKEN to Process uses runtime token.
     S["Secret API_TOKEN"]:::blue
     REF["Pod envFrom<br/>references Secret"]:::orange
     ENV["Container env<br/>API_TOKEN"]:::teal
@@ -869,8 +904,9 @@ graph LR
     S --> REF --> ENV --> P
     S -. "not baked into" .-> I
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -951,6 +987,8 @@ _ex-49 · exercises co-23_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 49: Namespace
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Object name same-name, default namespace, preview namespace, ConfigMap scope default, ConfigMap scope preview. Connections: Object name same-name to default namespace, default namespace to ConfigMap scope default, Object name same-name to preview namespace, preview namespace to ConfigMap scope preview.
     N["Object name<br/>same-name"]:::blue
     D["default namespace"]:::orange
     P["preview namespace"]:::orange
@@ -959,8 +997,9 @@ graph LR
     N --> D --> DC
     N --> P --> PC
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1034,6 +1073,8 @@ _ex-52 · exercises co-24_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 %% TD expresses the sequential external request path through the configured data plane.
 graph TD
+    accTitle: Example 52: Ingress manifest
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Request for ex52.test slash, Ingress host and path rule, Installed Ingress controller, Service ex52 port 80, nginx backend Pod. Connections: Request for ex52.test slash to Ingress host and path rule, Ingress host and path rule to Installed Ingress controller, Installed Ingress controller to Service ex52 port 80, Service ex52 port 80 to nginx backend Pod.
     R["Request for<br/>ex52.test slash"]:::blue
     I["Ingress host<br/>and path rule"]:::orange
     C["Installed Ingress<br/>controller"]:::orange
@@ -1041,8 +1082,9 @@ graph TD
     P["nginx backend Pod"]:::teal
     R --> I --> C --> S --> P
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -1117,6 +1159,8 @@ _ex-53 · exercises co-24_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 53: Ingress controller required
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Ingress manifest, IngressClass, Matching controller is installed?, Controller sets data plane, No route serves traffic. Connections: Ingress manifest to IngressClass, IngressClass to Matching controller is installed?, Matching controller is installed? to Controller sets data plane (yes), Matching controller is installed? to No route serves traffic (no).
     I["Ingress manifest"]:::blue
     C["IngressClass"]:::orange
     D{"Matching controller<br/>is installed?"}:::orange
@@ -1126,8 +1170,9 @@ graph LR
     D -->|"yes"| P
     D -->|"no"| N
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1154,14 +1199,17 @@ _ex-54 · exercises co-24_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 54: Ingress frozen and Gateway API
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Routing work already deployed?, Keep existing Ingress route, Evaluate Gateway API for new policy. Connections: Routing work already deployed? to Keep existing Ingress route (yes), Routing work already deployed? to Evaluate Gateway API for new policy (new capability).
     D{"Routing work<br/>already deployed?"}:::orange
     I["Keep existing<br/>Ingress route"]:::blue
     G["Evaluate Gateway API<br/>for new policy"]:::teal
     D -->|"yes"| I
     D -->|"new capability"| G
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```text
@@ -1188,6 +1236,8 @@ _ex-55 · exercises co-25_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph LR
+    accTitle: Example 55: Liveness probe
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Live marker exists, Liveness probe checks marker, Marker is removed, Three checks fail, Kubernetes restarts container. Connections: Live marker exists to Liveness probe checks marker, Marker is removed to Liveness probe checks marker, Liveness probe checks marker to Three checks fail (marker missing), Three checks fail to Kubernetes restarts container.
     M["Live marker exists"]:::blue
     P["Liveness probe<br/>checks marker"]:::orange
     D["Marker is removed"]:::orange
@@ -1197,8 +1247,9 @@ graph LR
     D --> P
     P -->|"marker missing"| F --> R
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

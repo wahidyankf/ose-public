@@ -88,6 +88,8 @@ syllabus's DD-35 citations.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-28)
 graph TD
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: HTML structure and semantics co-01 to co-03, CSS selectors, cascade, box model, layout co-04 to co-11, DOM selection, mutation, events, the event loop co-12 to co-17, Component model: state, props, lists, forms co-18 to co-24, Accessibility and typed UI state co-25 to co-28. Connections: HTML structure and semantics co-01 to co-03 to CSS selectors, cascade, box model, layout co-04 to co-11, CSS selectors, cascade, box model, layout co-04 to co-11 to DOM selection, mutation, events, the event loop co-12 to co-17, DOM selection, mutation, events, the event loop co-12 to co-17 to Component model: state, props, lists, forms co-18 to co-24, Component model: state, props, lists, forms co-18 to co-24 to Accessibility and typed UI state co-25 to co-28.
     A["HTML structure<br/>and semantics<br/>co-01 to co-03"]:::blue
     B["CSS selectors,<br/>cascade, box model,<br/>layout<br/>co-04 to co-11"]:::orange
     C["DOM selection,<br/>mutation, events,<br/>the event loop<br/>co-12 to co-17"]:::teal
@@ -100,10 +102,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

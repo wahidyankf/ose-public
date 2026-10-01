@@ -16,11 +16,14 @@ Start with `flutter create focus_shelf` to generate the Dart package, platform r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 1: Flutter Create
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Flutter Create, Visible state or target effect. Connections: Widget to Flutter Create, Flutter Create to Visible state or target effect.
     A[Widget]:::blue --> B{Flutter Create}:::orange
-    B --> C[Visible state or target effect]:::teal
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -77,11 +80,14 @@ Compose the screen from widget values: a `Text` widget becomes the `Center` chil
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 4: Build Only Widgets
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Build Only Widgets, Visible state or target effect. Connections: Widget to Build Only Widgets, Build Only Widgets to Visible state or target effect.
     A[Widget]:::blue --> B{Build Only Widgets}:::orange
-    B --> C[Visible state or target effect]:::teal
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -154,11 +160,14 @@ Use a `StatefulWidget` when a screen needs data that changes over its own lifeti
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Keep Stateful Widget State}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 8: Keep Stateful Widget State
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Keep Stateful Widget State, Visible state or target effect. Connections: Widget to Keep Stateful Widget State, Keep Stateful Widget State to Visible state or target effect.
+    A[Widget]:::blue --> B{Keep Stateful Widget<br/>State}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -196,11 +205,14 @@ Initialize resources that should be acquired once per state lifetime in `initSta
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 10: Acquire in initState
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Acquire in initState, Visible state or target effect. Connections: Widget to Acquire in initState, Acquire in initState to Visible state or target effect.
     A[Widget]:::blue --> B{Acquire in initState}:::orange
-    B --> C[Visible state or target effect]:::teal
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -269,11 +281,14 @@ Place widgets in a `Row` to lay them out horizontally. Give each child a distinc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 14: Lay Out a Row
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Lay Out a Row, Visible state or target effect. Connections: Widget to Lay Out a Row, Lay Out a Row to Visible state or target effect.
     A[Widget]:::blue --> B{Lay Out a Row}:::orange
-    B --> C[Visible state or target effect]:::teal
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -324,11 +339,14 @@ Wrap a `Row` or `Column` child in `Expanded` to claim its share of the remaining
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Share Space with Expanded}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 17: Share Space with Expanded
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Share Space with Expanded, Visible state or target effect. Connections: Widget to Share Space with Expanded, Share Space with Expanded to Visible state or target effect.
+    A[Widget]:::blue --> B{Share Space with<br/>Expanded}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -379,11 +397,14 @@ Place the app beneath `MaterialApp` and give each page a `Scaffold` with its str
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 20: Create a Material App and Scaffold
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Material app shell, Visible state or target effect. Connections: Widget to Material app shell, Material app shell to Visible state or target effect.
     A[Widget]:::blue --> B{Material app shell}:::orange
-    B --> C[Visible state or target effect]:::teal
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -464,11 +485,14 @@ Provide a fixed list of child widgets to `ListView` when the list is small and k
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Render a Static ListView}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 25: Render a Static ListView
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Render a Static ListView, Visible state or target effect. Connections: Widget to Render a Static ListView, Render a Static ListView to Visible state or target effect.
+    A[Widget]:::blue --> B{Render a Static<br/>ListView}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart

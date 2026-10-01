@@ -65,15 +65,18 @@ current stable SDK, Android Gradle Plugin, Kotlin, and Compose BOM before starti
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    UI["Compose UI<br/>renders immutable state"]:::blue --> EVENT{{"User or platform event"}}:::orange
-    EVENT --> VM["ViewModel<br/>business logic and viewModelScope"]:::teal
-    VM --> REPO["Repository<br/>Room, DataStore, Retrofit"]:::purple
+    accTitle: Architecture flow
+    accDescr: Flowchart with 4 nodes and 5 connections. Nodes: Compose UI renders immutable state, User or platform event, ViewModel business logic and viewModelScope, Repository Room, DataStore, Retrofit. Connections: Compose UI renders immutable state to User or platform event, User or platform event to ViewModel business logic and viewModelScope, ViewModel business logic and viewModelScope to Repository Room, DataStore, Retrofit, Repository Room, DataStore, Retrofit to ViewModel business logic and viewModelScope, ViewModel business logic and viewModelScope to Compose UI renders immutable state.
+    UI["Compose UI<br/>renders immutable<br/>state"]:::blue --> EVENT{{"User or platform<br/>event"}}:::orange
+    EVENT --> VM["ViewModel<br/>business logic and<br/>viewModelScope"]:::teal
+    VM --> REPO["Repository<br/>Room, DataStore,<br/>Retrofit"]:::purple
     REPO --> VM
     VM --> UI
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The diagram uses labels, shapes, and arrows as well as colour: UI state travels down, events travel

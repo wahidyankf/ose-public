@@ -1236,6 +1236,8 @@ two loads of the same row, anywhere in the same session, return the identical in
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 40: Identity Map -- Loading the Same PK Twice Returns the Same Instance
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: load40pk=141 first call, key in cache?, query + map cache the object, return SAME cached object, load40pk=141 second call. Connections: load40pk=141 first call to key in cache?, key in cache? to query + map cache the object (miss), query + map cache the object to return SAME cached object, load40pk=141 second call to key in cache?.
     A["load#40;pk=1#41;<br/>first call"]:::blue
     B{"key in cache?"}:::orange
     C["query + map<br/>cache the object"]:::teal
@@ -1245,8 +1247,9 @@ flowchart LR
     E["load#40;pk=1#41;<br/>second call"]:::blue --> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-40-identity-map-same-instance/example.py`**
@@ -1363,6 +1366,8 @@ object, holding its own row's data, with no accidental aliasing between unrelate
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 41: Identity Map -- Different Primary Keys Yield Distinct Instances
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: load40pk=1041, load40pk=2041, cache911093 User A, cache912093 User B. Connections: load40pk=1041 to cache911093 User A, load40pk=2041 to cache912093 User B.
     A["load#40;pk=10#41;"]:::blue
     B["load#40;pk=20#41;"]:::orange
     C["cache#91;10#93;<br/>User A"]:::teal
@@ -1371,9 +1376,10 @@ flowchart LR
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-41-identity-map-different-keys/example.py`**
@@ -1493,6 +1499,8 @@ inferable: a first load issues one real query, and every subsequent load of the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 42: Identity Map -- a Miss Then a Hit Issues Exactly One Query
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: load40pk=141 MISS, real query count -> 1, load40pk=141 HIT, cached object count stays 1. Connections: load40pk=141 MISS to real query count -> 1, real query count -> 1 to cached object count stays 1, load40pk=141 HIT to cached object count stays 1.
     A["load#40;pk=1#41;<br/>MISS"]:::blue
     B["real query<br/>count -> 1"]:::orange
     C["load#40;pk=1#41;<br/>HIT"]:::blue
@@ -1501,8 +1509,9 @@ flowchart LR
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-42-identity-map-miss-then-hit/example.py`**
@@ -1621,17 +1630,20 @@ row with pk 1 (the same integer, different tables) are never confused for the sa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 43: Identity Map -- Keyed by , Never Conflated Across Tables
+    accDescr: Flowchart with 4 nodes and 2 connections. Nodes: users, pk=1, orders, pk=1, cache9140users, 14193 User object, cache9140orders, 14193 Order object. Connections: users, pk=1 to cache9140users, 14193 User object, orders, pk=1 to cache9140orders, 14193 Order object.
     A["users, pk=1"]:::blue
     B["orders, pk=1"]:::orange
-    C["cache#91;#40;'users', 1#41;#93;<br/>User object"]:::teal
-    D["cache#91;#40;'orders', 1#41;#93;<br/>Order object"]:::purple
+    C["cache#91;#40;<br/>'users', 1#41;#93;<br/>User object"]:::teal
+    D["cache#91;#40;<br/>'orders', 1#41;#93;<br/>Order object"]:::purple
     A --> C
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-43-identity-map-key-shape/example.py`**
@@ -1772,15 +1784,18 @@ nothing else holds the object.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["user = User#40;...#41;<br/>strong ref"]:::blue
-    B["cache#91;1#93; = user<br/>WEAK ref only"]:::orange
+    accTitle: Example 44: Back the Identity Map With a WeakValueDictionary
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: user = User40...41 strong ref, cache91193 = user WEAK ref only, del user gc.collect4041, 1 not in cache entry gone. Connections: user = User40...41 strong ref to cache91193 = user WEAK ref only, cache91193 = user WEAK ref only to del user gc.collect4041, del user gc.collect4041 to 1 not in cache entry gone.
+    A["user =<br/>User#40;...#41;<br/>strong ref"]:::blue
+    B["cache#91;1#93; =<br/>user<br/>WEAK ref only"]:::orange
     C["del user<br/>gc.collect#40;#41;"]:::orange
     D["1 not in cache<br/>entry gone"]:::teal
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-44-weak-value-identity-map/example.py`**
@@ -1875,6 +1890,8 @@ proves the weak map's size tracks exactly the live set -- it shrinks, it does no
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 45: A Weak Identity Map Shrinks Under GC Instead of Leaking
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: 100 objects loaded cache size 100, drop most strong refs, gc.collect4041, cache size shrinks tracks live set. Connections: 100 objects loaded cache size 100 to drop most strong refs, drop most strong refs to gc.collect4041, gc.collect4041 to cache size shrinks tracks live set.
     A["100 objects loaded<br/>cache size 100"]:::blue
     B["drop most<br/>strong refs"]:::orange
     C["gc.collect#40;#41;"]:::orange
@@ -1882,8 +1899,9 @@ flowchart LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-45-weak-map-no-leak/example.py`**
@@ -1985,6 +2003,8 @@ session, no matter how many, routes through that same object, never opening a se
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 46: The Session Owns One Connection -- Every Query Shares It
+    accDescr: Flowchart with 5 nodes and 6 connections. Nodes: Session40conn41, query 1, query 2, query 3, the SAME connection. Connections: Session40conn41 to query 1, query 1 to the SAME connection, Session40conn41 to query 2, query 2 to the SAME connection, Session40conn41 to query 3, query 3 to the SAME connection.
     A["Session#40;conn#41;"]:::blue
     B["query 1"]:::orange
     C["query 2"]:::orange
@@ -1995,8 +2015,9 @@ flowchart LR
     A --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-46-session-owns-connection/example.py`**
@@ -2307,7 +2328,9 @@ propagates.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["with Session#40;conn#41;<br/>as s:"]:::blue
+    accTitle: Example 49: with Session as s: -- Commit on Clean Exit, Rollback on Exception
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: with Session40conn41 as s:, block exits how?, clean exit commit4041, exception rollback4041 then re-raise. Connections: with Session40conn41 as s: to block exits how?, block exits how? to clean exit commit4041 (no exception), block exits how? to exception rollback4041 then re-raise (raised).
+    A["with<br/>Session#40;conn#41;<br/>as s:"]:::blue
     B{"block exits<br/>how?"}:::orange
     C["clean exit<br/>commit#40;#41;"]:::teal
     D["exception<br/>rollback#40;#41;<br/>then re-raise"]:::purple
@@ -2316,9 +2339,10 @@ flowchart LR
     B -->|raised| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-49-session-scope-context-manager/example.py`**
@@ -2549,18 +2573,21 @@ entirely, not just the query, proven by an instrumented mapper that counts its o
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 51: The Mapper Checks the Identity Map Before Constructing a New Object
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: load40pk41, in identity map?, return cached object mapper NEVER called, query + mapper40row41 construct + cache. Connections: load40pk41 to in identity map?, in identity map? to return cached object mapper NEVER called (hit), in identity map? to query + mapper40row41 construct + cache (miss).
     A["load#40;pk#41;"]:::blue
     B{"in identity<br/>map?"}:::orange
     C["return cached object<br/>mapper NEVER called"]:::teal
-    D["query + mapper#40;row#41;<br/>construct + cache"]:::purple
+    D["query +<br/>mapper#40;row#41;<br/>construct + cache"]:::purple
     A --> B
     B -->|hit| C
     B -->|miss| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-51-identity-map-feeds-mapper/example.py`**
@@ -2786,16 +2813,19 @@ and every returned row maps to a typed object -- three small, independently-test
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["Select#40;#41;.where_id_gt#40;1#41;<br/>co-03/co-04"]:::blue
+    accTitle: Example 53: Compose a Builder Query, Execute It, Map Every Row to a Typed Object
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Select4041. where_id_gt40141 co-03/co-04, compile4041 co-08, cursor. execute40sql, params41 co-23, row_to_ user40row41 co-10, per row. Connections: Select4041. where_id_gt40141 co-03/co-04 to compile4041 co-08, compile4041 co-08 to cursor. execute40sql, params41 co-23, cursor. execute40sql, params41 co-23 to row_to_ user40row41 co-10, per row.
+    A["Select#40;#41;.<br/>where_id_gt#40;1#41;<br/>co-03/co-04"]:::blue
     B["compile#40;#41;<br/>co-08"]:::orange
-    C["cursor.execute#40;sql, params#41;<br/>co-23"]:::teal
-    D["row_to_user#40;row#41;<br/>co-10, per row"]:::purple
+    C["cursor.<br/>execute#40;sql,<br/>params#41;<br/>co-23"]:::teal
+    D["row_to_<br/>user#40;row#41;<br/>co-10, per row"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-53-builder-plus-mapper-select/example.py`**

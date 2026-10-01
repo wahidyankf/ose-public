@@ -544,15 +544,18 @@ from Airflow's UI with the same confidence a manual script would need to earn fr
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph LR
+    accTitle: The orchestration DAG this band builds toward
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: extract co-18, quality_gate co-18, co-16, load co-18, load never runs ex-44. Connections: extract co-18 to quality_gate co-18, co-16, quality_gate co-18, co-16 to load co-18 (passed), quality_gate co-18, co-16 to load never runs ex-44 (failed, blocked), extract co-18 to extract co-18 (retry on failure).
     E["extract<br/>co-18"]:::blue --> QG["quality_gate<br/>co-18, co-16"]:::orange
     QG -->|passed| L["load<br/>co-18"]:::teal
     QG -.->|failed, blocked| X["load never runs<br/>ex-44"]:::brown
     E -.->|retry on failure| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the five DAG orchestration ideas ex-41 through ex-45 built, assembled into one dependency

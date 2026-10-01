@@ -468,17 +468,20 @@ if __name__ == "__main__":  # => guards the module-level call so importing this 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: learning/code/ex-53-cprofile-to-flame-graph/recordflamegraphandcompare.py
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: workload.prof cProfile, gprof2dot self-time, mini_sampler widest leaf frame, D, lt, gt, E, same function, independently confirmed. Connections: workload.prof cProfile to gprof2dot self-time, workload.prof cProfile to mini_sampler widest leaf frame, gprof2dot self-time to D, gprof2dot self-time to lt, gprof2dot self-time to gt, mini_sampler widest leaf frame to E, mini_sampler widest leaf frame to lt, mini_sampler widest leaf frame to gt, D to same function, independently confirmed, E to same function, independently confirmed.
     A["workload.prof<br/>cProfile"]:::blue --> B["gprof2dot<br/>self-time %"]:::orange
     A --> C["mini_sampler<br/>widest leaf frame"]:::teal
     B --> D["'&lt;genexpr&gt;'<br/>66.29% self time"]:::purple
     C --> E["'&lt;genexpr&gt;'<br/>73.1% of samples"]:::purple
-    D --> F["same function,<br/>independently confirmed"]:::blue
+    D --> F["same function,<br/>independently<br/>confirmed"]:::blue
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Run**: `python3 record_flamegraph_and_compare.py`, then `inferno-flamegraph profile.collapsed >
@@ -523,14 +526,17 @@ CLI `pdb` stopping at the identical line.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 54: A Real Neovim DAP Breakpoint
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: nvim-dap toggle_breakpoint(), dap.run() launches debugpy, target.py hits the breakpoint, scopes + variables request, E, CLI. Connections: nvim-dap toggle_breakpoint() to dap.run() launches debugpy, dap.run() launches debugpy to target.py hits the breakpoint, target.py hits the breakpoint to scopes + variables request (stopped event), scopes + variables request to E, E to CLI.
     A["nvim-dap<br/>toggle_breakpoint()"]:::blue --> B["dap.run()<br/>launches debugpy"]:::orange
     B --> C["target.py<br/>hits the breakpoint"]:::teal
     C -->|"stopped event"| D["scopes + variables<br/>request"]:::orange
-    D --> E["Locals scope<br/>== CLI pdb's p output"]:::blue
+    D --> E["Locals scope<br/>== CLI pdb's p<br/>output"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -902,14 +908,17 @@ section," not a fabricated result.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["thread A<br/>reads counter_box[0]=5"]:::blue --> B["time.sleep(0)<br/>yields to another thread"]:::orange
-    C["thread B<br/>reads counter_box[0]=5"]:::teal --> D["time.sleep(0)<br/>yields"]:::orange
+    accTitle: Example 56: Reproducing a Threading Race
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: thread A reads counter_box[0]=5, time.sleep(0) yields to another thread, thread B reads counter_box[0]=5, time.sleep(0) yields, thread A writes counter_box[0]=6, thread B writes counter_box[0]=6 OVERWRITES As increment. Connections: thread A reads counter_box[0]=5 to time.sleep(0) yields to another thread, thread B reads counter_box[0]=5 to time.sleep(0) yields, time.sleep(0) yields to another thread to thread A writes counter_box[0]=6, time.sleep(0) yields to thread B writes counter_box[0]=6 OVERWRITES As increment.
+    A["thread A<br/>reads<br/>counter_box[0]=5"]:::blue --> B["time.sleep(0)<br/>yields to another<br/>thread"]:::orange
+    C["thread B<br/>reads<br/>counter_box[0]=5"]:::teal --> D["time.sleep(0)<br/>yields"]:::orange
     B --> E["thread A writes<br/>counter_box[0]=6"]:::blue
-    D --> F["thread B writes<br/>counter_box[0]=6<br/>OVERWRITES A's increment"]:::teal
+    D --> F["thread B writes<br/>counter_box[0]=6<br/>OVERWRITES A's<br/>increment"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1133,18 +1142,21 @@ if __name__ == "__main__":  # => guards the module-level call so importing this 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: learning/code/ex-58-asyncio-interleaving-bug/interleave.py
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: stock = 1, B, gt, C, coro-A: await sleep(0) yields to event loop, coro-B: await sleep(0) yields to event loop, coro-A: stock -= 1 RESERVED, coro-B: stock -= 1 RESERVED, stock = -1 BOTH reserved one widget. Connections: stock = 1 to B, stock = 1 to gt, stock = 1 to C, stock = 1 to gt, B to coro-A: await sleep(0) yields to event loop, C to coro-B: await sleep(0) yields to event loop, coro-A: await sleep(0) yields to event loop to coro-A: stock -= 1 RESERVED, coro-B: await sleep(0) yields to event loop to coro-B: stock -= 1 RESERVED, coro-A: stock -= 1 RESERVED to stock = -1 BOTH reserved one widget, coro-B: stock -= 1 RESERVED to stock = -1 BOTH reserved one widget.
     A["stock = 1"]:::blue --> B["coro-A: check<br/>stock &gt; 0? YES"]:::orange
     A --> C["coro-B: check<br/>stock &gt; 0? YES"]:::orange
-    B --> D["coro-A: await sleep(0)<br/>yields to event loop"]:::teal
-    C --> E["coro-B: await sleep(0)<br/>yields to event loop"]:::teal
+    B --> D["coro-A: await<br/>sleep(0)<br/>yields to event loop"]:::teal
+    C --> E["coro-B: await<br/>sleep(0)<br/>yields to event loop"]:::teal
     D --> F["coro-A: stock -= 1<br/>RESERVED"]:::orange
     E --> G["coro-B: stock -= 1<br/>RESERVED"]:::orange
-    F --> H["stock = -1<br/>BOTH reserved one widget"]:::blue
+    F --> H["stock = -1<br/>BOTH reserved one<br/>widget"]:::blue
     G --> H
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Run**: `python3 interleave.py`
@@ -1333,14 +1345,17 @@ if __name__ == "__main__":  # => guards the module-level call so importing this 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: learning/code/ex-60-multiprocessing-vs-threading-profiling/cpubound.py
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: 1 worker alone 0.55s (baseline), B, 3.68x, C, 1.05x, GIL serializes: close to 4x, real parallel cores: well under 4x. Connections: 1 worker alone 0.55s (baseline) to B, B to 3.68x, 1 worker alone 0.55s (baseline) to C, C to 1.05x, B to GIL serializes: close to 4x, C to real parallel cores: well under 4x.
     A["1 worker alone<br/>0.55s (baseline)"]:::blue --> B["4 threads<br/>2.01s -- 3.68x"]:::orange
     A --> C["4 processes<br/>0.57s -- 1.05x"]:::teal
     B --> D["GIL serializes:<br/>close to 4x"]:::orange
     C --> E["real parallel cores:<br/>well under 4x"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Run**: `python3 cpu_bound.py`
@@ -1381,15 +1396,18 @@ bisectable performance regression.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["commit 1<br/>O(n), under threshold"]:::teal --> B["commit 2<br/>O(n), under threshold"]:::teal
-    B --> C["commit 3<br/>O(n), under threshold"]:::teal
-    C --> D["commit 4<br/>O(n^2) swapped in -- BAD"]:::orange
+    accTitle: Example 61: git bisect run for a Performance Regression
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: commit 1 O(n), under threshold, commit 2 O(n), under threshold, commit 3 O(n), under threshold, D, commit 5 still over threshold, commit 6 still over threshold (HEAD). Connections: commit 1 O(n), under threshold to commit 2 O(n), under threshold, commit 2 O(n), under threshold to commit 3 O(n), under threshold, commit 3 O(n), under threshold to D, D to commit 5 still over threshold, commit 5 still over threshold to commit 6 still over threshold (HEAD).
+    A["commit 1<br/>O(n), under<br/>threshold"]:::teal --> B["commit 2<br/>O(n), under<br/>threshold"]:::teal
+    B --> C["commit 3<br/>O(n), under<br/>threshold"]:::teal
+    C --> D["commit 4<br/>O(n^2) swapped in --<br/>BAD"]:::orange
     D --> E["commit 5<br/>still over threshold"]:::blue
-    E --> F["commit 6<br/>still over threshold (HEAD)"]:::blue
+    E --> F["commit 6<br/>still over threshold<br/>(HEAD)"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

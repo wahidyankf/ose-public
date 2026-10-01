@@ -23,8 +23,10 @@ the same team this whole topic has followed, not three artifacts invented from a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["Growth plan<br/>strengths + gaps<br/>+ next-level behaviors"]:::blue
-    B["Prioritization record<br/>options + trade-off<br/>+ decision + comms"]:::orange
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Growth plan strengths + gaps + next-level behaviors, Prioritization record options + trade-off + decision + comms, Technical strategy bets tied to product outcomes, One coherent Q3 leadership decision set. Connections: Growth plan strengths + gaps + next-level behaviors to One coherent Q3 leadership decision set, Prioritization record options + trade-off + decision + comms to One coherent Q3 leadership decision set, Technical strategy bets tied to product outcomes to One coherent Q3 leadership decision set.
+    A["Growth plan<br/>strengths + gaps<br/>+ next-level<br/>behaviors"]:::blue
+    B["Prioritization<br/>record<br/>options + trade-off<br/>+ decision + comms"]:::orange
     C["Technical strategy<br/>bets tied to<br/>product outcomes"]:::teal
     D["One coherent<br/>Q3 leadership<br/>decision set"]:::purple
     A --> D
@@ -32,9 +34,10 @@ flowchart LR
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Diagram: the capstone's three independent artifacts -- a growth plan, a prioritization record, and

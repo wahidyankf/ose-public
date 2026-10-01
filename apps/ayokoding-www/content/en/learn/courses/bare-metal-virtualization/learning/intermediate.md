@@ -604,79 +604,109 @@ Each diagram describes a relationship already covered above; labels, rather than
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Intermediate architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Nodes, Quorum. Connections: Nodes to Quorum.
   A["Nodes"]:::blue --> B["Quorum"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Intermediate architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Compatible CPUs, Live migration. Connections: Compatible CPUs to Live migration.
   A["Compatible CPUs"]:::blue --> B["Live migration"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Intermediate architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Failure detection, Fence then restart. Connections: Failure detection to Fence then restart.
   A["Failure detection"]:::blue --> B["Fence then restart"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Intermediate architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: ZFS snapshot, Off-host replication. Connections: ZFS snapshot to Off-host replication.
   A["ZFS snapshot"]:::blue --> B["Off-host replication"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Intermediate architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Ceph MON, Cluster map. Connections: Ceph MON to Cluster map.
   A["Ceph MON"]:::blue --> B["Cluster map"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Intermediate architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Direct disk, Ceph OSD. Connections: Direct disk to Ceph OSD.
   A["Direct disk"]:::blue --> B["Ceph OSD"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Intermediate architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: CRUSH topology, Replica placement. Connections: CRUSH topology to Replica placement.
   A["CRUSH topology"]:::blue --> B["Replica placement"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Intermediate architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: RBD, VM disk. Connections: RBD to VM disk.
   A["RBD"]:::blue --> B["VM disk"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73.
 flowchart LR
+  accTitle: Intermediate architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Reviewed plan, Approved apply. Connections: Reviewed plan to Approved apply.
   A["Reviewed plan"]:::blue --> B["Approved apply"]:::teal
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05.
 flowchart LR
+  accTitle: Intermediate architecture snapshots
+  accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Cloud-init input, Declared VM. Connections: Cloud-init input to Declared VM.
   A["Cloud-init input"]:::blue --> B["Declared VM"]:::orange
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

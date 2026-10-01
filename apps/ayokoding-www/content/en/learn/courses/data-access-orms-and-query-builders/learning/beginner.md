@@ -28,16 +28,19 @@ can ultimately produce.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["Tier 1: raw SQL<br/>string literal + DB-API"]:::blue
-    B["Tier 2: query builder<br/>composed Table/Field values"]:::orange
-    C["Tier 3: ORM<br/>object graph + Session"]:::teal
+    accTitle: Example 1: Spectrum: Same Query, Three Ways
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Tier 1: raw SQL string literal + DB-API, Tier 2: query builder composed Table/Field values, Tier 3: ORM object graph + Session, same rows. Connections: Tier 1: raw SQL string literal + DB-API to same rows, Tier 2: query builder composed Table/Field values to same rows, Tier 3: ORM object graph + Session to same rows.
+    A["Tier 1: raw SQL<br/>string literal +<br/>DB-API"]:::blue
+    B["Tier 2: query<br/>builder<br/>composed Table/Field<br/>values"]:::orange
+    C["Tier 3: ORM<br/>object graph +<br/>Session"]:::teal
     A --> D["same rows"]
     B --> D
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-01-spectrum-same-query-three-ways/example.py`**
@@ -681,12 +684,15 @@ automatically qualifies every column with its own table name in the rendered SQL
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["Query.from_(customer_order)"]:::blue
-    A --> B[".join(customer, INNER)<br/>.on(customer.id == order.customer_id)"]:::orange
-    B --> C["rendered SQL text<br/>SELECT ... JOIN ... ON ..."]:::blue
+    accTitle: Example 9: Query Builder Join
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Query.from_ (customer_order), B, rendered SQL text SELECT ... JOIN ... ON .... Connections: Query.from_ (customer_order) to B, B to rendered SQL text SELECT ... JOIN ... ON ....
+    A["Query.from_<br/>(customer_order)"]:::blue
+    A --> B[".join(customer,<br/>INNER)<br/>.on(customer.id ==<br/>order.customer_id)"]:::orange
+    B --> C["rendered SQL text<br/>SELECT ... JOIN ...<br/>ON ..."]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-09-querybuilder-join/example.py`**
@@ -828,15 +834,18 @@ the payload become executable SQL syntax.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
+    accTitle: Example 11: Query Builder vs String Safety
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: hostile value x OR 1=1, B, x, f-string f...x... value becomes SQL TEXT, D, inert, E. Connections: hostile value x OR 1=1 to B, B to x, hostile value x OR 1=1 to f-string f...x... value becomes SQL TEXT, B to D, D to inert, f-string f...x... value becomes SQL TEXT to E.
     A["hostile value<br/>x' OR '1'='1"]:::orange
-    A --> B["builder .where(name == x)<br/>value stays DATA"]:::blue
-    A --> C["f-string f'...{x}...'<br/>value becomes SQL TEXT"]:::orange
+    A --> B["builder .where(name<br/>== x)<br/>value stays DATA"]:::blue
+    A --> C["f-string<br/>f'...{x}...'<br/>value becomes SQL<br/>TEXT"]:::orange
     B --> D["0 rows -- inert"]:::teal
-    C --> E["every row -- injected"]:::orange
+    C --> E["every row --<br/>injected"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-11-querybuilder-vs-string-safety/example.py`**
@@ -1674,20 +1683,23 @@ Mapper) makes Fowler's distinction concrete: one object saves itself, the other 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart LR
-    subgraph AR["Active Record (peewee)"]
-        A1["ada = Customer(name='Ada')"]:::blue
+    accTitle: Example 21: Active Record vs Data Mapper
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: ada = Customer(name=Ada), ada.save(), ada = Dm Customer(name=Ada), session.add(ada), session.commit(). Connections: ada = Customer(name=Ada) to ada.save(), ada = Dm Customer(name=Ada) to session.add(ada), session.add(ada) to session.commit().
+    subgraph AR["Active Record<br/>(peewee)"]
+        A1["ada =<br/>Customer(name='Ada')"]:::blue
         A2["ada.save()"]:::blue
         A1 --> A2
     end
-    subgraph DM["Data Mapper (SQLAlchemy)"]
-        B1["ada = DmCustomer(name='Ada')"]:::orange
+    subgraph DM["Data Mapper<br/>(SQLAlchemy)"]
+        B1["ada = Dm<br/>Customer(name='Ada')"]:::orange
         B2["session.add(ada)"]:::orange
         B3["session.commit()"]:::orange
         B1 --> B2 --> B3
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-21-activerecord-vs-datamapper/example.py`**
@@ -1800,6 +1812,8 @@ writes by foreign-key dependency automatically.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73 -- color-blind friendly, WCAG AA
 erDiagram
+    accTitle: Example 22: Relationship One To Many
+    accDescr: Entity-relationship diagram with 2 items: CUSTOMER, CUSTOMER_ORDER. Relationships: CUSTOMER to CUSTOMER_ORDER: orders.
     CUSTOMER ||--o{ CUSTOMER_ORDER : "orders"
     CUSTOMER {
         int id PK
@@ -1810,6 +1824,7 @@ erDiagram
         int customer_id FK
         decimal total
     }
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-22-relationship-one-to-many/example.py`**
@@ -2118,6 +2133,8 @@ and `ada.courses.append(...)` writes the link row for you.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 erDiagram
+    accTitle: Example 25: Many To Many Association Table
+    accDescr: Entity-relationship diagram with 3 items: STUDENT, STUDENT_COURSE, COURSE. Relationships: STUDENT to STUDENT_COURSE: links; COURSE to STUDENT_COURSE: links.
     STUDENT ||--o{ STUDENT_COURSE : links
     COURSE ||--o{ STUDENT_COURSE : links
     STUDENT {
@@ -2132,6 +2149,7 @@ erDiagram
         int student_id FK
         int course_id FK
     }
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-25-many-to-many-assoc-table/example.py`**
@@ -2352,13 +2370,16 @@ returns a genuinely different object.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TB
-    A["select(Customer).where(id==1)"]:::blue --> M["Session identity map<br/>(Customer, 1) -> ada"]
-    B["session.get(Customer, 1)"]:::blue --> M
-    C["select(Customer).where(id==1)"]:::blue --> M
+    accTitle: Example 27: Identity Map Same Object
+    accDescr: Flowchart with 6 nodes and 6 connections. Nodes: A, 1, Session identity map (Customer, 1) -> ada, session. get(Customer, 1), C, ONE Python object. Connections: A to 1, 1 to Session identity map (Customer, 1) -> ada, session. get(Customer, 1) to Session identity map (Customer, 1) -> ada, C to 1, 1 to Session identity map (Customer, 1) -> ada, Session identity map (Customer, 1) -> ada to ONE Python object.
+    A["select(Customer).<br/>where(id==1)"]:::blue --> M["Session identity map<br/>(Customer, 1) -> ada"]
+    B["session.<br/>get(Customer, 1)"]:::blue --> M
+    C["select(Customer).<br/>where(id==1)"]:::blue --> M
     M --> D["ONE Python object"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-27-identity-map-same-object/example.py`**
@@ -2456,15 +2477,18 @@ commit and no longer pending after, making the unit of work's own bookkeeping di
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 28: Session Lifecycle Begin
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Session(engine) open, session.add(ada) ada in session.new, session.commit() ada gets a real id, session.close() connection released. Connections: Session(engine) open to session.add(ada) ada in session.new, session.add(ada) ada in session.new to session.commit() ada gets a real id, session.commit() ada gets a real id to session.close() connection released.
     A["Session(engine)<br/>open"]:::blue
     A --> B["session.add(ada)<br/>ada in session.new"]:::orange
     B --> C["session.commit()<br/>ada gets a real id"]:::teal
     C --> D["session.close()<br/>connection released"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-28-session-lifecycle-begin/example.py`**

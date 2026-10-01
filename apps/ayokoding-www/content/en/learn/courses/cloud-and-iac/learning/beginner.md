@@ -126,14 +126,17 @@ Complete LocalStack artifact: [`ex-06-object-storage-bucket/main.tf`](./code/ex-
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; labels and shapes convey meaning without color.
 graph TD
-    R["Region: geographic boundary"]:::blue
-    A["Zone A: isolated site"]:::teal
-    B["Zone B: isolated site"]:::orange
+    accTitle: Worked Example 8: Regions and availability zones
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Region: geographic boundary, Zone A: isolated site, Zone B: isolated site. Connections: Region: geographic boundary to Zone A: isolated site, Region: geographic boundary to Zone B: isolated site.
+    R["Region: geographic<br/>boundary"]:::blue
+    A["Zone A: isolated<br/>site"]:::teal
+    B["Zone B: isolated<br/>site"]:::orange
     R --> A
     R --> B
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key takeaway**: A region is not one failure domain; availability zones provide the smaller boundary.

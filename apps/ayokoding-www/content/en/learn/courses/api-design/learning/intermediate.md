@@ -30,21 +30,24 @@ own path.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 29: Versioning via the URI Path
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client Request, Versioning strategy, /v1/articles vs /v2/articles, Stripe-Version: 2026-01-01, ?api-version=2026- 01-01. Connections: Client Request to Versioning strategy, Versioning strategy to /v1/articles vs /v2/articles (Example 29: URI path), Versioning strategy to Stripe-Version: 2026-01-01 (Example 30: header), Versioning strategy to ?api-version=2026- 01-01 (Example 31: query param).
     A[Client Request] --> B{Versioning strategy}
-    B -->|Example 29: URI path| C["/v1/articles vs /v2/articles"]
-    B -->|Example 30: header| D["Stripe-Version: 2026-01-01"]
-    B -->|Example 31: query param| E["?api-version=2026-01-01"]
+    B -->|Example 29: URI path| C["/v1/articles vs<br/>/v2/articles"]
+    B -->|Example 30: header| D["Stripe-Version:<br/>2026-01-01"]
+    B -->|Example 31: query<br/>param| E["?api-version=2026-<br/>01-01"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     class A blue
     class B orange
     class C teal
     class D purple
     class E brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-29-version-uri-path/example.py`**
@@ -569,6 +572,8 @@ Examples 38-39 build on.
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 37: Recording an Idempotency-Key on a Write
+    accDescr: State diagram with 4 items: start or end, NoKeyRecorded, KeyRecorded, Rejected422. Relationships: start or end to NoKeyRecorded; NoKeyRecorded to KeyRecorded: Example 37 - first write; KeyRecorded to KeyRecorded: Example 38 - replay response; KeyRecorded to Rejected422: Example 39 - mismatch 422; Rejected422 to start or end.
     [*] --> NoKeyRecorded
     NoKeyRecorded --> KeyRecorded: Example 37 - first write
     KeyRecorded --> KeyRecorded: Example 38 - replay response
@@ -786,15 +791,18 @@ demonstrate the contract.
 ```mermaid
 %% Color Palette: Orange #DE8F05, Teal #029E73, Brown #CA9161
 graph LR
+    accTitle: Example 40: 429 Too Many Requests + Retry-After
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Budget: 3, Budget: 0, 429 + Retry-After: 60. Connections: Budget: 3 to Budget: 0 (calls 1-3: 200 OK), Budget: 0 to 429 + Retry-After: 60 (call 4).
     A["Budget: 3"] -->|calls 1-3: 200 OK| D["Budget: 0"]
-    D -->|call 4| E["429 + Retry-After: 60"]
+    D -->|call 4| E["429 + Retry-After:<br/>60"]
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     class A teal
     class D orange
     class E brown
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **`learning/code/ex-40-rate-limit-429/example.py`**
@@ -1000,6 +1008,8 @@ re-sending unchanged data.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 43: ETag + If-None-Match -> 304 Not Modified
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: GET /articles/1 (no If-None-Match yet); Server to Client: 200 OK, body + ETag: v1-abc123; Client to Server: GET /articles/1, If-None-Match: v1-abc123; Server to Client: 304 Not Modified, EMPTY body.
     participant Client
     participant Server
 
@@ -1152,6 +1162,8 @@ silently overwriting.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 45: Optimistic Concurrency with If-Match
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: PUT /articles/1, If-Match: v1-WRONG; Server to Client: 412 Precondition Failed (stale write rejected); Client to Server: PUT /articles/1, If-Match: v1-abc123; Server to Client: 200 OK, etag advances to v2-def456.
     participant Client
     participant Server
 
@@ -1231,6 +1243,8 @@ scope-based `403`.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 46: Authorization: Bearer
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Authorization header, present?, 401: missing header, starts with Bearer ?, 401: expected Bearer, token known?, 401: invalid token, has required scope?, 403: missing scope, 200 OK. Connections: Authorization header to present?, present? to 401: missing header (no), present? to starts with Bearer ? (yes), starts with Bearer ? to 401: expected Bearer (no), starts with Bearer ? to token known? (yes), token known? to 401: invalid token (no), token known? to has required scope? (yes), has required scope? to 403: missing scope (no, Example 48), has required scope? to 200 OK (yes).
     A[Authorization header] --> B{present?}
     B -->|no| C["401: missing header"]
     B -->|yes| D{starts with Bearer ?}
@@ -1243,14 +1257,15 @@ graph TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class A blue
     class B,D,F,H orange
     class C,E,G brown
     class I purple
     class J teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-46-bearer-token-auth/example.py`**
@@ -1463,21 +1478,24 @@ scheme(s) it requires.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[components.securitySchemes] --> B["bearerAuth: http/bearer"]
-    A --> C["apiKeyAuth: apiKey/header"]
-    D["DELETE /articles/{id}.security"] -->|references| B
+    accTitle: Example 49: Declaring bearer/apiKey Security Schemes in OpenAPI
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: components. securitySchemes, bearerAuth: http/bearer, apiKeyAuth: apiKey/header, DELETE /articles/ id.security, articles:write. Connections: components. securitySchemes to bearerAuth: http/bearer, components. securitySchemes to apiKeyAuth: apiKey/header, DELETE /articles/ id.security to bearerAuth: http/bearer (references), DELETE /articles/ id.security to articles:write (requires scope).
+    A[components.<br/>securitySchemes] --> B["bearerAuth:<br/>http/bearer"]
+    A --> C["apiKeyAuth:<br/>apiKey/header"]
+    D["DELETE /articles/<br/>{id}.security"] -->|references| B
     D -->|requires scope| E["articles:write"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     class A blue
     class B orange
     class C teal
     class D purple
     class E brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-49-openapi-security-scheme/example.py`**
@@ -1806,6 +1824,8 @@ wants, and the API stores that subscription for future OUTBOUND delivery -- the 
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 54: Registering a Webhook Subscription
+    accDescr: Sequence diagram between Caller, API, Callers Endpoint. Messages: Caller to API: POST /webhooks (url, event_types); API to Caller: 201, subscription stored; API to Callers Endpoint: POST url, body + X-Webhook-Signature; Callers Endpoint to Callers Endpoint: recompute HMAC, verify signature.
     participant Caller
     participant API
     participant Receiver as Caller's Endpoint

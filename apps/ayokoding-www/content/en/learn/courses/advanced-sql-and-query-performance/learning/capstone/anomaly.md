@@ -20,6 +20,8 @@ for this class of anomaly.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161
 sequenceDiagram
+    accTitle: Step 4: reproduce, then resolve, a write-skew anomaly
+    accDescr: Sequence diagram between Session A, PostgreSQL, Session B. Messages: Session A to PostgreSQL: BEGIN SELECT on_call count; PostgreSQL to Session A: 2 (Leo, Nancy); Session B to PostgreSQL: BEGIN SELECT on_call count; PostgreSQL to Session B: 2 (Leo, Nancy); Session A to PostgreSQL: UPDATE Leo off call COMMIT; PostgreSQL to Session A: OK; Session B to PostgreSQL: UPDATE Nancy off call COMMIT; PostgreSQL to Session B: OK (write skew -- invariant now violated, 0 on call).
     participant A as Session A
     participant DB as PostgreSQL
     participant B as Session B

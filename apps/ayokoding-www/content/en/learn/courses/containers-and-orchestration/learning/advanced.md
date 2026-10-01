@@ -15,13 +15,16 @@ _ex-56 · exercises co-25_
 
 ```mermaid
 graph LR
+  accTitle: Example 56: Readiness probe
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: Pod, Ready probe, Service endpoints. Connections: Pod to Ready probe, Ready probe to Service endpoints.
   P[Pod] --> R[Ready probe] --> E[Service endpoints]
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#000
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class P blue
   class R orange
   class E teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Brief explanation**: The core API creates a complete Pod for this probe. Its readiness result controls whether Kubernetes includes the Pod in Service endpoints.
@@ -61,13 +64,16 @@ _ex-57 · exercises co-25_
 
 ```mermaid
 graph LR
+  accTitle: Example 57: Startup probe
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: Starting app, Startup probe, Enable liveness. Connections: Starting app to Startup probe, Startup probe to Enable liveness.
   S[Starting app] --> P[Startup probe] --> L[Enable liveness]
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#000
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class S blue
   class P orange
   class L teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Brief explanation**: The core API creates a complete Pod for startup gating. A startup probe delays liveness and readiness checks until a slow initialization path has succeeded.
@@ -109,13 +115,16 @@ _ex-58 · exercises co-25_
 
 ```mermaid
 graph LR
+  accTitle: Example 58: Probe defaults
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: Probe defaults, Manifest values, Kubelet checks. Connections: Probe defaults to Manifest values, Manifest values to Kubelet checks.
   D[Probe defaults] --> V[Manifest values] --> K[Kubelet checks]
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#000
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class D blue
   class V orange
   class K teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Brief explanation**: This standalone Pod intentionally omits `periodSeconds` and `failureThreshold`. Kubernetes applies documented probe defaults, which the manifest can inspect without inventing values.
@@ -160,13 +169,16 @@ _ex-59 · exercises co-26_
 
 ```mermaid
 graph LR
+  accTitle: Example 59: Resource requests
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: CPU request, Scheduler, Node placement. Connections: CPU request to Scheduler, Scheduler to Node placement.
   R[CPU request] --> S[Scheduler] --> N[Node placement]
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#000
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class R blue
   class S orange
   class N teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Brief explanation**: The core API creates a complete Pod for scheduler inspection. Resource requests guide placement by declaring the CPU and memory the scheduler must reserve.
@@ -206,13 +218,16 @@ _ex-60 · exercises co-26_
 
 ```mermaid
 graph LR
+  accTitle: Example 60: Resource limits
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: Memory limit, Cgroup limit, OOM outcome. Connections: Memory limit to Cgroup limit, Cgroup limit to OOM outcome.
   L[Memory limit] --> C[Cgroup limit] --> O[OOM outcome]
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#000
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class L blue
   class C orange
   class O teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Brief explanation**: The core API creates a complete Pod whose limits Kubernetes enforces. The runtime constrains CPU and memory use after scheduling, protecting neighboring workloads from unbounded consumption.
@@ -252,13 +267,16 @@ _ex-61 · exercises co-26_
 
 ```mermaid
 graph LR
+  accTitle: Example 61: QoS classes
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: Requests and limits, QoS class, Eviction order. Connections: Requests and limits to QoS class, QoS class to Eviction order.
   Q[Requests and limits] --> C[QoS class] --> E[Eviction order]
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#000
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class Q blue
   class C orange
   class E teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Brief explanation**: This List carries three standalone Pods so the API computes three QoS outcomes together. Each request-and-limit combination produces a QoS class that affects eviction behavior under node pressure.
@@ -337,13 +355,16 @@ _ex-62 · exercises co-26_
 
 ```mermaid
 graph LR
+  accTitle: Example 62: OOMKilled
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: 64Mi allocation, 32Mi limit, OOMKilled status. Connections: 64Mi allocation to 32Mi limit, 32Mi limit to OOMKilled status.
   A[64Mi allocation] --> L[32Mi limit] --> O[OOMKilled status]
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#000
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class A blue
   class L orange
   class O teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Brief explanation**: Save this complete Pod as `ex62.yaml`; on cgroup v2 nodes, its 32 MiB limit is reflected by `memory.max`. On cgroup v1 or when host cgroups are unavailable, inspect the declared limit portably through the Kubernetes Pod resource.
@@ -395,13 +416,16 @@ _ex-63 · exercises co-27_
 
 ```mermaid
 graph LR
+  accTitle: Example 63: HorizontalPodAutoscaler
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: CPU metric, HPA target, Replica count. Connections: CPU metric to HPA target, HPA target to Replica count.
   M[CPU metric] --> H[HPA target] --> R[Replica count]
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#000
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class M blue
   class H orange
   class R teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Brief explanation**: Save every object needed for this HPA as `ex63.yaml`; do not depend on an earlier lesson's Deployment. The target workload, metrics request, and scaling bounds stay reviewable as one complete artifact.
@@ -467,13 +491,16 @@ _ex-64 · exercises co-27_
 
 ```mermaid
 graph LR
+  accTitle: Example 64: HPA formula
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: Current usage, HPA formula, Desired replicas. Connections: Current usage to HPA formula, HPA formula to Desired replicas.
   U[Current usage] --> F[HPA formula] --> D[Desired replicas]
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#000
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class U blue
   class F orange
   class D teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Brief explanation**: Three replicas are currently averaging 140% of their requested CPU. The HPA formula computes a desired replica count from observed utilization and the configured target.
@@ -499,13 +526,16 @@ _ex-65 · exercises co-28_
 
 ```mermaid
 graph LR
+  accTitle: Example 65: StatefulSet
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: StatefulSet, Ordinal Pod, Stable DNS. Connections: StatefulSet to Ordinal Pod, Ordinal Pod to Stable DNS.
   S[StatefulSet] --> O[Ordinal Pod] --> D[Stable DNS]
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#000
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class S blue
   class O orange
   class D teal
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Brief explanation**: The core API provides the headless Service for stable DNS. A StatefulSet combines that service with ordinal Pod identities so clients can address stable peers.

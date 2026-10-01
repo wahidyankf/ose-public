@@ -87,11 +87,13 @@ their qualitative outcome rather than fabricating a precise millisecond figure.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-26)
 graph TD
-    A["Property graph model,<br/>RDF contrast, and<br/>Cypher's read/write core<br/>co-01 to co-08"]:::blue
-    B["Traversal patterns and<br/>modeling decisions<br/>co-09 to co-14"]:::orange
-    C["Applied query patterns:<br/>recommendations, fraud,<br/>supernodes, sharding, ACID<br/>co-15 to co-19"]:::teal
-    D["Operations: bulk import,<br/>versioning, constraints,<br/>aggregation pipelines<br/>co-20 to co-23"]:::purple
-    E["Alternative languages<br/>and Graph Data Science<br/>co-24 to co-26"]:::brown
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Property graph model, RDF contrast, and Cyphers read/write core co-01 to co-08, Traversal patterns and modeling decisions co-09 to co-14, Applied query patterns: recommendations, fraud, supernodes, sharding, ACID co-15 to co-19, Operations: bulk import, versioning, constraints, aggregation pipelines co-20 to co-23, Alternative languages and Graph Data Science co-24 to co-26. Connections: Property graph model, RDF contrast, and Cyphers read/write core co-01 to co-08 to Traversal patterns and modeling decisions co-09 to co-14, Traversal patterns and modeling decisions co-09 to co-14 to Applied query patterns: recommendations, fraud, supernodes, sharding, ACID co-15 to co-19, Applied query patterns: recommendations, fraud, supernodes, sharding, ACID co-15 to co-19 to Operations: bulk import, versioning, constraints, aggregation pipelines co-20 to co-23, Operations: bulk import, versioning, constraints, aggregation pipelines co-20 to co-23 to Alternative languages and Graph Data Science co-24 to co-26.
+    A["Property graph<br/>model,<br/>RDF contrast, and<br/>Cypher's read/write<br/>core<br/>co-01 to co-08"]:::blue
+    B["Traversal patterns<br/>and<br/>modeling decisions<br/>co-09 to co-14"]:::orange
+    C["Applied query<br/>patterns:<br/>recommendations,<br/>fraud,<br/>supernodes,<br/>sharding, ACID<br/>co-15 to co-19"]:::teal
+    D["Operations: bulk<br/>import,<br/>versioning,<br/>constraints,<br/>aggregation<br/>pipelines<br/>co-20 to co-23"]:::purple
+    E["Alternative<br/>languages<br/>and Graph Data<br/>Science<br/>co-24 to co-26"]:::brown
 
     A --> B
     B --> C
@@ -99,10 +101,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

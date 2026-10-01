@@ -42,6 +42,8 @@ pyramid (topic 15), and the argon2id/injection-safety/headers/env-secrets harden
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Step 1 Scaffold: schema + setup.sh + health, Step 2 Domain model + parameterized CRUD, Step 3 Auth + validation + headers + secrets, Step 4 Unit + property + integration tests. Connections: Step 1 Scaffold: schema + setup.sh + health to Step 2 Domain model + parameterized CRUD, Step 2 Domain model + parameterized CRUD to Step 3 Auth + validation + headers + secrets, Step 3 Auth + validation + headers + secrets to Step 4 Unit + property + integration tests.
     A["Step 1<br/>Scaffold: schema +<br/>setup.sh + health"]:::blue
     B["Step 2<br/>Domain model +<br/>parameterized CRUD"]:::orange
     C["Step 3<br/>Auth + validation +<br/>headers + secrets"]:::teal
@@ -49,9 +51,10 @@ flowchart LR
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

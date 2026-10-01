@@ -185,15 +185,18 @@ time-since-last-loss for that growback, rather than the older linear additive-in
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161
 graph LR
-    A["Slow start<br/>cwnd roughly doubles per RTT<br/>exponential growth"]:::blue --> B{"Loss event<br/>detected"}:::orange
-    B --> C["Congestion avoidance<br/>CUBIC's cubic-function growback<br/>toward the pre-loss cwnd"]:::teal
+    accTitle: Example 19: CUBICs Slow Start Transitioning to Congestion Avoidance
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Slow start cwnd roughly doubles per RTT exponential growth, Loss event detected, Congestion avoidance CUBICs cubic-function growback toward the pre-loss cwnd, Next loss event the cycle repeats. Connections: Slow start cwnd roughly doubles per RTT exponential growth to Loss event detected, Loss event detected to Congestion avoidance CUBICs cubic-function growback toward the pre-loss cwnd, Congestion avoidance CUBICs cubic-function growback toward the pre-loss cwnd to Next loss event the cycle repeats, Next loss event the cycle repeats to Loss event detected.
+    A["Slow start<br/>cwnd roughly doubles<br/>per RTT<br/>exponential growth"]:::blue --> B{"Loss event<br/>detected"}:::orange
+    B --> C["Congestion avoidance<br/>CUBIC's<br/>cubic-function<br/>growback<br/>toward the pre-loss<br/>cwnd"]:::teal
     C --> D["Next loss event<br/>the cycle repeats"]:::brown
     D -.-> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: three labeled phases of CUBIC's own congestion-control cycle -- exponential slow start,
@@ -284,6 +287,8 @@ deliberately delaying.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 22: Nagle Meets Delayed ACK -- a Visible Stall
+    accDescr: Sequence diagram between Sender, Receiver. Messages: Sender to Receiver: Segment 1 (first small write, sent immediately); Receiver to Sender: ACK for segment 1 (delayed-ACK timeout finally fires); Sender to Receiver: Segment 2 (finally released now that segment 1 is ACKed).
     participant Snd as Sender
     participant Rcv as Receiver
     Snd->>Rcv: Segment 1 (first small write, sent immediately)
@@ -800,18 +805,21 @@ zone boundary to the final signed answer.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["Root zone trust anchor<br/>pre-configured in the validating resolver"]:::blue
-    B["Root DS record signs the .com TLD's DNSKEY"]:::orange
-    C[".com TLD DS record signs example.com's DNSKEY"]:::teal
-    D["example.com RRSIG signs the actual A record answer"]:::purple
+    accTitle: Example 29: The DNSSEC Chain of Trust
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Root zone trust anchor pre-configured in the validating resolver, Root DS record signs the .com TLDs DNSKEY, .com TLD DS record signs example.coms DNSKEY, example.com RRSIG signs the actual A record answer. Connections: Root zone trust anchor pre-configured in the validating resolver to Root DS record signs the .com TLDs DNSKEY, Root DS record signs the .com TLDs DNSKEY to .com TLD DS record signs example.coms DNSKEY, .com TLD DS record signs example.coms DNSKEY to example.com RRSIG signs the actual A record answer.
+    A["Root zone trust<br/>anchor<br/>pre-configured in<br/>the validating<br/>resolver"]:::blue
+    B["Root DS record signs<br/>the .com TLD's<br/>DNSKEY"]:::orange
+    C[".com TLD DS record<br/>signs example.com's<br/>DNSKEY"]:::teal
+    D["example.com RRSIG<br/>signs the actual A<br/>record answer"]:::purple
     A --> B
     B --> C
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: each arrow is one delegation boundary a validating resolver must cryptographically verify
@@ -894,6 +902,8 @@ group the server will accept, in its very first flight.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 31: TLS 1.3s Single Round Trip
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: ClientHello + KeyShare (flight 1); Server to Client: ServerHello + KeyShare + Certificate + Finished (flight 2); Client to Server: Finished (flight 3, often piggybacked with application data).
     participant C as Client
     participant S as Server
     C->>S: ClientHello + KeyShare (flight 1)
@@ -928,6 +938,8 @@ round trip.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 32: 0-RTT Session Resumption vs. the Full Handshake
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: ClientHello + KeyShare; Server to Client: ServerHello + KeyShare + Certificate + Finished; Client to Server: Finished, THEN application data; Client to Server: ClientHello + PSK identity + early application data (0-RTT); Server to Client: ServerHello + Finished + response.
     participant C as Client
     participant S as Server
     Note over C,S: Full 1-RTT handshake (Example 31) -- no prior session
@@ -1056,22 +1068,25 @@ request it wants to run concurrently.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    subgraph HTTP2["HTTP/2 -- one TCP connection, three interleaved streams"]
-        S1["Stream 1 frames"]:::blue --> CONN["Single TCP connection"]:::purple
+    accTitle: Example 34: HTTP/2 Multiplexing vs. HTTP/1.1s Multiple Connections
+    accDescr: Graph with 10 nodes and 6 connections. Nodes: Stream 1 frames, Single TCP connection, Stream 3 frames, Stream 5 frames, Request 1, Connection 1, Request 2, Connection 2, Request 3, Connection 3. Connections: Stream 1 frames to Single TCP connection, Stream 3 frames to Single TCP connection, Stream 5 frames to Single TCP connection, Request 1 to Connection 1, Request 2 to Connection 2, Request 3 to Connection 3.
+    subgraph HTTP2["HTTP/2 -- one TCP<br/>connection, three<br/>interleaved streams"]
+        S1["Stream 1 frames"]:::blue --> CONN["Single TCP<br/>connection"]:::purple
         S2["Stream 3 frames"]:::orange --> CONN
         S3["Stream 5 frames"]:::teal --> CONN
     end
-    subgraph HTTP11["HTTP/1.1 -- three separate TCP connections"]
+    subgraph HTTP11["HTTP/1.1 -- three<br/>separate TCP<br/>connections"]
         R1["Request 1"]:::blue --> C1["Connection 1"]:::brown
         R2["Request 2"]:::orange --> C2["Connection 2"]:::brown
         R3["Request 3"]:::teal --> C3["Connection 3"]:::brown
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: HTTP/2 (top) fans three logically-independent streams into ONE connection's interleaved

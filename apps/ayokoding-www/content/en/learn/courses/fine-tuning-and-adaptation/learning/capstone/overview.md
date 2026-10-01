@@ -43,6 +43,8 @@ step's own artefact is committed and re-readable afterward.
 
 ```mermaid
 sequenceDiagram
+    accTitle: The capstone: one real behaviour gap, carried through the entire adaptation arc
+    accDescr: Sequence diagram between Step 1: decision.py, Step 2: dataset.py, Step 3: train.py, Step 4: evaluate.py, Step 5: operate.py. Messages: Step 1: decision.py to Step 1: decision.py: commit decision_record.json; Step 1: decision.py to Step 2: dataset.py: reads decision_record.json; Step 2: dataset.py to Step 2: dataset.py: commit dataset_splits.json; Step 2: dataset.py to Step 3: train.py: reads dataset_splits.json; Step 3: train.py to Step 3: train.py: commit train_result.json; Step 3: train.py to Step 4: evaluate.py: reads train_result.json; Step 4: evaluate.py to Step 4: evaluate.py: commit evaluate_result.json; Step 4: evaluate.py to Step 5: operate.py: reads evaluate_result.json; Step 5: operate.py to Step 5: operate.py: commit operate_result.json.
     participant Step1 as Step 1: decision.py
     participant Step2 as Step 2: dataset.py
     participant Step3 as Step 3: train.py

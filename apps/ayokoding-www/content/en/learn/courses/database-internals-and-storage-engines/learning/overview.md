@@ -50,12 +50,14 @@ four-file capstone.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Six concept clusters, in the order this page teaches them (co-01 through co-28)
 graph TD
-    A["Pages and buffer pool<br/>co-01 to co-06"]:::blue
+    accTitle: How verification works in this topic
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Pages and buffer pool co-01 to co-06, B-tree indexing co-07 to co-10, LSM-tree indexing co-11 to co-15, WAL and recovery co-16 to co-20, MVCC, isolation, durability co-21 to co-26, Physical row/column layout co-27 to co-28. Connections: Pages and buffer pool co-01 to co-06 to B-tree indexing co-07 to co-10, Pages and buffer pool co-01 to co-06 to LSM-tree indexing co-11 to co-15, B-tree indexing co-07 to co-10 to WAL and recovery co-16 to co-20, LSM-tree indexing co-11 to co-15 to WAL and recovery co-16 to co-20, WAL and recovery co-16 to co-20 to MVCC, isolation, durability co-21 to co-26, MVCC, isolation, durability co-21 to co-26 to Physical row/column layout co-27 to co-28.
+    A["Pages and buffer<br/>pool<br/>co-01 to co-06"]:::blue
     B["B-tree indexing<br/>co-07 to co-10"]:::orange
     C["LSM-tree indexing<br/>co-11 to co-15"]:::teal
     D["WAL and recovery<br/>co-16 to co-20"]:::purple
-    E["MVCC, isolation, durability<br/>co-21 to co-26"]:::brown
-    F["Physical row/column layout<br/>co-27 to co-28"]:::blue
+    E["MVCC, isolation,<br/>durability<br/>co-21 to co-26"]:::brown
+    F["Physical row/column<br/>layout<br/>co-27 to co-28"]:::blue
 
     A --> B
     A --> C
@@ -65,10 +67,11 @@ graph TD
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Pages and the buffer pool sit underneath both index families -- a B-tree and an LSM-tree both read

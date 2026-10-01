@@ -18,14 +18,17 @@ Evaluating an agent means evaluating more than its final answer -- the full sequ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 35: Trajectory Capture
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: search_ticket, get_ticket, update_priority, Final answer. Connections: search_ticket to get_ticket, get_ticket to update_priority, update_priority to Final answer.
     A["search_ticket"]:::blue --> B["get_ticket"]:::orange
     B --> C["update_priority"]:::teal
     C --> D["Final answer"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -368,19 +371,22 @@ In a multi-agent system, a failure needs to be attributed to WHICH agent caused 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Tags each of DELEGATED_TRAJECTORY's four steps with the agent that actually performed it
 graph TD
-    A["Step 1: orchestrator<br/>delegate_to_triage_subagent<br/>correct"]:::blue
-    B["Step 2: triage-subagent<br/>search_ticket<br/>correct"]:::teal
-    C["Step 3: triage-subagent<br/>close_ticket<br/>WRONG"]:::orange
-    D["Step 4: orchestrator<br/>report_result_to_user<br/>correct"]:::blue
-    E["Responsible: triage-subagent<br/>orchestrator cleared"]:::purple
+    accTitle: Example 40: Subagent Failure Attribution
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Step 1: orchestrator delegate_to_triage_ subagent correct, Step 2: triage-subagent search_ticket correct, Step 3: triage-subagent close_ticket WRONG, Step 4: orchestrator report_result_to_ user correct, Responsible: triage-subagent orchestrator cleared. Connections: Step 1: orchestrator delegate_to_triage_ subagent correct to Step 2: triage-subagent search_ticket correct, Step 2: triage-subagent search_ticket correct to Step 3: triage-subagent close_ticket WRONG, Step 3: triage-subagent close_ticket WRONG to Step 4: orchestrator report_result_to_ user correct, Step 3: triage-subagent close_ticket WRONG to Responsible: triage-subagent orchestrator cleared (attribute_failure_ by_agent).
+    A["Step 1: orchestrator<br/>delegate_to_triage_<br/>subagent<br/>correct"]:::blue
+    B["Step 2:<br/>triage-subagent<br/>search_ticket<br/>correct"]:::teal
+    C["Step 3:<br/>triage-subagent<br/>close_ticket<br/>WRONG"]:::orange
+    D["Step 4: orchestrator<br/>report_result_to_<br/>user<br/>correct"]:::blue
+    E["Responsible:<br/>triage-subagent<br/>orchestrator cleared"]:::purple
 
     A --> B --> C --> D
-    C -.->|attribute_failure_by_agent| E
+    C -.->|attribute_failure_<br/>by_agent| E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -741,12 +747,14 @@ A CI regression bar has to be derived FROM the measured noise floor, not guessed
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Derives the regression bar from baseline and measured noise, then classifies two runs against it
 graph TD
+    accTitle: Example 45: Set the Regression Bar Above Noise
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Baseline pass rate 86.0, Measured noise floor 3.2 (ex-44), bar = baseline - 2 x noise = 86.0 - 6.4, Regression bar 79.6, Run at 83.0 within noise -> NOT flagged, Run at 76.0 below bar -> flagged REAL. Connections: Baseline pass rate 86.0 to bar = baseline - 2 x noise = 86.0 - 6.4, Measured noise floor 3.2 (ex-44) to bar = baseline - 2 x noise = 86.0 - 6.4, bar = baseline - 2 x noise = 86.0 - 6.4 to Regression bar 79.6, Regression bar 79.6 to Run at 83.0 within noise -> NOT flagged, Regression bar 79.6 to Run at 76.0 below bar -> flagged REAL.
     A["Baseline pass rate<br/>86.0%"]:::blue
     B["Measured noise floor<br/>3.2% (ex-44)"]:::brown
-    C["bar = baseline - 2 x noise<br/>= 86.0% - 6.4%"]:::teal
+    C["bar = baseline - 2 x<br/>noise<br/>= 86.0% - 6.4%"]:::teal
     D["Regression bar<br/>79.6%"]:::teal
-    E["Run at 83.0%<br/>within noise -> NOT flagged"]:::purple
-    F["Run at 76.0%<br/>below bar -> flagged REAL"]:::orange
+    E["Run at 83.0%<br/>within noise -> NOT<br/>flagged"]:::purple
+    F["Run at 76.0%<br/>below bar -> flagged<br/>REAL"]:::orange
 
     A --> C
     B --> C
@@ -755,10 +763,11 @@ graph TD
     D --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -827,14 +836,17 @@ The regression bar gets wired into an actual CI gate: a function that decides wh
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% run_eval_gate's own decision path from a candidate pass rate to a reasoned CI verdict
 graph TD
+    accTitle: Example 46: Eval Gate Blocks a Merge
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Candidate pass rate, pass rate below bar (79.6)?, merge_allowed = True reason: cleared the bar, merge_allowed = False reason: fell below the bar. Connections: Candidate pass rate to pass rate below bar (79.6)?, pass rate below bar (79.6)? to merge_allowed = True reason: cleared the bar (No: 88.0), pass rate below bar (79.6)? to merge_allowed = False reason: fell below the bar (Yes: 70.0).
     A["Candidate pass rate"]:::blue --> B{"pass rate below<br/>bar (79.6%)?"}:::brown
-    B -->|"No: 88.0%"| C["merge_allowed = True<br/>reason: cleared the bar"]:::teal
-    B -->|"Yes: 70.0%"| D["merge_allowed = False<br/>reason: fell below the bar"]:::orange
+    B -->|"No: 88.0%"| C["merge_allowed = True<br/>reason: cleared the<br/>bar"]:::teal
+    B -->|"Yes: 70.0%"| D["merge_allowed =<br/>False<br/>reason: fell below<br/>the bar"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -901,14 +913,17 @@ A fast, deterministic tier runs on every commit, while a slower, judge-using tie
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 47: Tiered Suites
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Every commit, Fast tier (deterministic only), Pre-merge, Judged tier (LLM judge). Connections: Every commit to Fast tier (deterministic only), Pre-merge to Fast tier (deterministic only), Pre-merge to Judged tier (LLM judge).
     A["Every commit"]:::blue --> B["Fast tier<br/>(deterministic only)"]:::teal
     C["Pre-merge"]:::orange --> B
     C --> D["Judged tier<br/>(LLM judge)"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1049,15 +1064,18 @@ A CI failure with no matching taxonomy mode is a genuinely NEW pattern -- this e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 49: Failures Route Back to Error Analysis
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: CI gate catches failure, Error analysis (co-01), Taxonomy grows, New criterion added to suite. Connections: CI gate catches failure to Error analysis (co-01), Error analysis (co-01) to Taxonomy grows, Taxonomy grows to New criterion added to suite, New criterion added to suite to CI gate catches failure.
     A["CI gate<br/>catches failure"]:::orange --> B["Error analysis<br/>(co-01)"]:::blue
     B --> C["Taxonomy<br/>grows"]:::teal
     C --> D["New criterion<br/>added to suite"]:::purple
     D -.-> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1455,17 +1473,20 @@ A schema-validated handoff payload between an orchestrator and a subagent can lo
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Validates the same handoff payload on both sides of a subagent boundary to localize where a field was lost
 graph LR
-    A["Orchestrator sends<br/>3 fields incl. requested_by<br/>valid: True"]:::blue
+    accTitle: Example 66: Subagent Handoff Schema Mismatch
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Orchestrator sends 3 fields incl. requested_by valid: True, Handoff boundary (transport), Subagent receives ticket_id, priority valid: False, missing = requested_by failure localized to handoff. Connections: Orchestrator sends 3 fields incl. requested_by valid: True to Handoff boundary (transport), Handoff boundary (transport) to Subagent receives ticket_id, priority valid: False, Subagent receives ticket_id, priority valid: False to missing = requested_by failure localized to handoff.
+    A["Orchestrator sends<br/>3 fields incl.<br/>requested_by<br/>valid: True"]:::blue
     B{"Handoff boundary<br/>(transport)"}:::brown
     C["Subagent receives<br/>ticket_id, priority<br/>valid: False"]:::orange
-    D["missing = requested_by<br/>failure localized to handoff"]:::purple
+    D["missing =<br/>requested_by<br/>failure localized to<br/>handoff"]:::purple
 
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2414,14 +2435,17 @@ This closing example runs trajectory scoring, a validated judge, and a noise-awa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 80: End-to-End Mini Dry Run of the Whole Pipeline
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Trajectory scoring, Combined verdict, Judge on final answer, Noise-aware CI gate. Connections: Trajectory scoring to Combined verdict, Judge on final answer to Combined verdict, Combined verdict to Noise-aware CI gate.
     A["Trajectory<br/>scoring"]:::blue --> D["Combined<br/>verdict"]:::teal
     B["Judge on<br/>final answer"]:::orange --> D
     D --> E["Noise-aware<br/>CI gate"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

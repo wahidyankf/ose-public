@@ -27,14 +27,17 @@ prints a measured work comparison. All source is strict TypeScript and has no `a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-  A["Counter and list state"]:::blue --> B["VDOM render / patch"]:::orange
+  accTitle: Run it
+  accDescr: Flowchart with 4 nodes and 4 connections. Nodes: Counter and list state, VDOM render / patch, Signal effect, Observable output. Connections: Counter and list state to VDOM render / patch, Counter and list state to Signal effect, VDOM render / patch to Observable output, Signal effect to Observable output.
+  A["Counter and list<br/>state"]:::blue --> B["VDOM render / patch"]:::orange
   A --> C["Signal effect"]:::teal
   B --> D["Observable output"]:::purple
   C --> D
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef purple fill:#CC78BC,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Evidence

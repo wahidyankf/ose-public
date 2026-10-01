@@ -282,10 +282,13 @@ rows.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
+    accTitle: Example 32: A CALL Subquery
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: MATCH (t:Team), CALL (t) subquery scoped to t, RETURN t, players. Connections: MATCH (t:Team) to CALL (t) subquery scoped to t, CALL (t) subquery scoped to t to RETURN t, players.
     A["MATCH (t:Team)"]:::blue --> B["CALL (t) { subquery<br/>scoped to t }"]:::orange
     B --> C["RETURN t, players"]:::blue
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-32-call-subquery/example.cypher`**
@@ -347,9 +350,12 @@ two foreign keys, versus a `TAKES` relationship directly connecting the two enti
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
-    Ada["(:Student name: Ada)"]:::blue -->|TAKES| Course["(:Course name: Graph Theory)"]:::orange
+    accTitle: Example 33: Many-to-Many: Join Table vs. Relationship
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: (:Student name: Ada), (:Course name: Graph Theory). Connections: (:Student name: Ada) to (:Course name: Graph Theory) (TAKES).
+    Ada["(:Student name: Ada)"]:::blue -->|TAKES| Course["(:Course name: Graph<br/>Theory)"]:::orange
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Relational form (SQLite join table)**:
@@ -508,11 +514,14 @@ contributor all the way to the CEO, in one bounded pattern.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph BT
+    accTitle: Example 35: Walk a Hierarchical Tree Upward
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: IC, Manager, Director, CEO. Connections: IC to Manager (REPORTS_TO), Manager to Director (REPORTS_TO), Director to CEO (REPORTS_TO).
     IC:::blue -->|REPORTS_TO| Manager:::orange -->|REPORTS_TO| Director:::teal -->|REPORTS_TO| CEO:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-35-hierarchical-tree-parent-child/example.cypher`**
@@ -564,12 +573,15 @@ every direct AND indirect report beneath them.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph BT
+    accTitle: Example 36: Walk a Hierarchical Tree Downward
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Junior, Senior, Manager, Senior2. Connections: Junior to Senior (REPORTS_TO), Senior to Manager (REPORTS_TO), Senior2 to Manager (REPORTS_TO).
     Junior:::purple -->|REPORTS_TO| Senior:::orange -->|REPORTS_TO| Manager:::blue
     Senior2:::teal -->|REPORTS_TO| Manager
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-36-hierarchical-tree-downward/example.cypher`**
@@ -626,11 +638,14 @@ variable-depth graph problem: `[:PART_OF*]` walks the whole recursive structure 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph BT
+    accTitle: Example 37: Bill-of-Materials Parts Explosion
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Bolt, Bracket, Frame, Screw. Connections: Bolt to Bracket (PART_OF), Bracket to Frame (PART_OF), Screw to Bracket (PART_OF).
     Bolt:::blue -->|PART_OF| Bracket:::orange -->|PART_OF| Frame:::teal
     Screw:::blue -->|PART_OF| Bracket
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-37-bill-of-materials-parts-explosion/example.cypher`**
@@ -804,13 +819,16 @@ _ex-39 &middot; exercises co-15, co-08_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 39: Recommendation by Co-Occurrence
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Ada, Keyboard, Bob, Mousepad. Connections: Ada to Keyboard (BOUGHT), Bob to Keyboard (BOUGHT), Bob to Mousepad (BOUGHT).
     Ada:::blue -->|BOUGHT| Keyboard:::orange
     Bob:::teal -->|BOUGHT| Keyboard
     Bob -->|BOUGHT| Mousepad:::purple
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-39-recommendation-co-occurrence/example.cypher`**
@@ -933,11 +951,14 @@ shape a row-at-a-time relational scan does not naturally surface, but a graph pa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 41: Fraud Ring via a Shared Attribute
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Acc-A, dev-42, Acc-B. Connections: Acc-A to dev-42 (USES), Acc-B to dev-42 (USES).
     AccA["Acc-A"]:::blue -->|USES| Dev["dev-42"]:::teal
     AccB["Acc-B"]:::orange -->|USES| Dev
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-41-fraud-shared-attribute-ring/example.cypher`**
@@ -990,10 +1011,13 @@ the graph, found by matching a variable-length path that returns to its own star
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 42: Fraud Cycle Detection
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: A, B, C. Connections: A to B (SENT), B to C (SENT), C to A (SENT).
     A:::blue -->|SENT| B:::orange -->|SENT| C:::teal -->|SENT| A
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-42-fraud-cycle-detection/example.cypher`**
@@ -1052,12 +1076,15 @@ handful of unusually well-connected nodes in an otherwise ordinary graph.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph LR
+    accTitle: Example 43: Identify a Supernode by Degree
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Hub, Leaf1, Leaf2, Leaf3, ... 17 more leaves. Connections: Hub to Leaf1 (KNOWS), Hub to Leaf2 (KNOWS), Hub to Leaf3 (KNOWS), Hub to ... 17 more leaves (KNOWS).
     Hub:::blue -->|KNOWS| Leaf1:::orange
     Hub -->|KNOWS| Leaf2:::orange
     Hub -->|KNOWS| Leaf3:::orange
     Hub -->|KNOWS| More["... 17 more leaves"]:::orange
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-43-supernode-identification/example.cypher`**
@@ -1342,10 +1369,13 @@ route.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 48: Gremlin: repeat.path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Ada, Bob, Cid. Connections: Ada to Bob (knows), Bob to Cid (knows).
     Ada:::blue -->|knows| Bob:::orange -->|knows| Cid:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-48-gremlin-path-step/example.groovy`**

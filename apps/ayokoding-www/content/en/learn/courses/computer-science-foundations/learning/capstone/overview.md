@@ -266,6 +266,8 @@ Every test string classified correctly against its hand-traced expectation: True
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 stateDiagram-v2
+    accTitle: S2 = last two symbols read were exactly 0 then 1
+    accDescr: State diagram with 7 items: start or end, S0, S1, S2, S0 start, S1 mid, S2 accept. Relationships: start or end to S0; S0 to S1: 0; S0 to S0: 1; S1 to S1: 0; S1 to S2: 1; S2 to S1: 0; S2 to S0: 1; S2 to start or end.
     [*] --> S0
     S0 --> S1: 0
     S0 --> S0: 1
@@ -276,8 +278,8 @@ stateDiagram-v2
     S2 --> [*]
 
     classDef start fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef mid fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef accept fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef mid fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef accept fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class S0 start
     class S1 mid
     class S2 accept

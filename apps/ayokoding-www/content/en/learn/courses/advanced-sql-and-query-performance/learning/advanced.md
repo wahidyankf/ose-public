@@ -30,6 +30,8 @@ efficiently at large scale, using the same anchor-plus-recursive-term shape from
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
+    accTitle: Example 65: Recursive CTE, Shortest Path
+    accDescr: Flowchart with 4 nodes and 5 connections. Nodes: A, B, C, D. Connections: A to B (10), A to C (1), C to B (1), B to D (5), C to D (20).
     A((A)):::blue -->|10| B((B)):::blue
     A -->|1| C((C)):::orange
     C -->|1| B
@@ -37,8 +39,9 @@ flowchart LR
     C -->|20| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-65-recursive-cte-shortest-path/example.sql`**
@@ -965,11 +968,14 @@ name change now has to touch every row that duplicated it, not just one.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart LR
-    A["Normalized<br/>read: JOIN (0.657ms)<br/>update: 1 row (0.169ms)"]:::blue
-    B["Denormalized<br/>read: no JOIN (0.201ms)<br/>update: 200 rows (2.031ms)"]:::orange
+    accTitle: Example 74: Denormalization, Measured
+    accDescr: Flowchart with 2 nodes and 0 connections. Nodes: Normalized read: JOIN (0.657ms) update: 1 row (0.169ms), Denormalized read: no JOIN (0.201ms) update: 200 rows (2.031ms).
+    A["Normalized<br/>read: JOIN (0.657ms)<br/>update: 1 row<br/>(0.169ms)"]:::blue
+    B["Denormalized<br/>read: no JOIN<br/>(0.201ms)<br/>update: 200 rows<br/>(2.031ms)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-74-denormalization-measured/example.sql`**

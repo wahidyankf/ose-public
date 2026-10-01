@@ -277,17 +277,20 @@ A lazily-initialized singleton checks "does an instance exist?" twice -- once WI
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    A["Check: instance exists?"]:::blue -->|"No"| B["Acquire lock"]:::orange
-    A -->|"Yes"| F["Return existing instance"]:::teal
-    B --> C["Check AGAIN: instance exists?"]:::purple
-    C -->|"No -- genuinely first"| D["Construct instance"]:::orange
-    C -->|"Yes -- another thread won the race"| F
+    accTitle: Example 60: Double-Checked Locking -- A Lazily-Built Singleton, Safe Under Contention
+    accDescr: Flowchart with 5 nodes and 6 connections. Nodes: Check: instance exists?, Acquire lock, Return existing instance, Check AGAIN: instance exists?, Construct instance. Connections: Check: instance exists? to Acquire lock (No), Check: instance exists? to Return existing instance (Yes), Acquire lock to Check AGAIN: instance exists?, Check AGAIN: instance exists? to Construct instance (No -- genuinely first), Check AGAIN: instance exists? to Return existing instance (Yes -- another thread won the race), Construct instance to Return existing instance.
+    A["Check: instance<br/>exists?"]:::blue -->|"No"| B["Acquire lock"]:::orange
+    A -->|"Yes"| F["Return existing<br/>instance"]:::teal
+    B --> C["Check AGAIN:<br/>instance exists?"]:::purple
+    C -->|"No -- genuinely<br/>first"| D["Construct instance"]:::orange
+    C -->|"Yes -- another<br/>thread won the race"| F
     D --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-60-thread-safe-singleton-double-checked/example.py`**
@@ -407,14 +410,17 @@ A hand-built `ReaderWriterLock`, using a `threading.Condition` directly, allows 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 61: A Hand-Built Reader-Writer Lock -- Many Readers, OR One Writer
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: ReaderWriterLock, Reader 1, Reader 2, Writer (blocks ALL readers). Connections: ReaderWriterLock to Reader 1 (many readers OK together), ReaderWriterLock to Reader 2 (many readers OK together), ReaderWriterLock to Writer (blocks ALL readers) (writer needs EXCLUSIVE access).
     RW["ReaderWriterLock"]:::blue
-    RW -->|"many readers OK together"| R1["Reader 1"]:::teal
-    RW -->|"many readers OK together"| R2["Reader 2"]:::teal
-    RW -.->|"writer needs EXCLUSIVE access"| W["Writer<br/>(blocks ALL readers)"]:::orange
+    RW -->|"many readers OK<br/>together"| R1["Reader 1"]:::teal
+    RW -->|"many readers OK<br/>together"| R2["Reader 2"]:::teal
+    RW -.->|"writer needs<br/>EXCLUSIVE access"| W["Writer<br/>(blocks ALL readers)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-61-reader-writer-lock/example.py`**
@@ -566,12 +572,15 @@ _ex-62 &middot; exercises co-16, co-18_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 62: Detecting a Deadlock -- Finding a Cycle in a Wait-For Graph
+    accDescr: Flowchart with 3 nodes and 3 connections. Nodes: Thread A, Thread B, Thread C. Connections: Thread A to Thread B (waits for), Thread B to Thread C (waits for), Thread C to Thread A (waits for).
     A["Thread A"]:::blue -->|"waits for"| B["Thread B"]:::orange
     B -->|"waits for"| C["Thread C"]:::teal
     C -->|"waits for"| A
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-62-deadlock-detector-wait-for-graph/example.py`**
@@ -1208,16 +1217,19 @@ _ex-68 &middot; exercises co-26_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+    accTitle: Example 68: asyncio.TaskGroup -- One Failure Cancels ALL Its Siblings
+    accDescr: Flowchart with 5 nodes and 6 connections. Nodes: TaskGroup, Task 1: succeeds, Task 2: RAISES, Task 3: still running, Cancel ALL siblings. Connections: TaskGroup to Task 1: succeeds, TaskGroup to Task 2: RAISES, TaskGroup to Task 3: still running, Task 2: RAISES to Cancel ALL siblings (failure detected), Cancel ALL siblings to Task 1: succeeds, Cancel ALL siblings to Task 3: still running.
     TG["TaskGroup"]:::blue --> T1["Task 1: succeeds"]:::teal
     TG --> T2["Task 2: RAISES"]:::orange
-    TG --> T3["Task 3: still running"]:::teal
+    TG --> T3["Task 3: still<br/>running"]:::teal
     T2 -->|"failure detected"| Cancel["Cancel ALL siblings"]:::orange
     Cancel --> T1
     Cancel --> T3
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-68-async-taskgroup-vs-gather/example.py`**
@@ -1415,11 +1427,14 @@ A three-stage pipeline -- read, transform, write -- connects its stages with TWO
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 70: A Three-Stage Pipeline -- Read -> Transform -> Write, via Two Queues
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Read, Transform, Write. Connections: Read to Transform (Queue 1), Transform to Write (Queue 2).
     R["Read"]:::blue -->|"Queue 1"| T["Transform"]:::orange -->|"Queue 2"| W["Write"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-70-pipeline-three-stages/example.py`**
@@ -1546,15 +1561,18 @@ A deliberately single-threaded, deterministic SIMULATION (not real threads, to a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    subgraph Overloaded["Worker A (overloaded deque)"]
+    accTitle: Example 71: Work-Stealing -- an Idle Worker Steals From an Overloaded Peers Deque
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: task, task, task, owner pops HERE, Worker B (idle). Connections: task to task, task to task, task to owner pops HERE, Worker B (idle) to task (steals from the OPPOSITE end).
+    subgraph Overloaded["Worker A (overloaded<br/>deque)"]
         direction LR
         A1["task"]:::orange --- A2["task"]:::orange --- A3["task"]:::orange --- A4["owner pops HERE"]:::blue
     end
-    Idle["Worker B (idle)"]:::teal -.->|"steals from the OPPOSITE end"| A1
+    Idle["Worker B (idle)"]:::teal -.->|"steals from the<br/>OPPOSITE end"| A1
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-71-work-stealing-intuition/example.py`**
@@ -2024,6 +2042,8 @@ A `threading.Barrier` synchronizes several workers through DISTINCT phases of a 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 75: A Barrier Synchronizes Phased Parallel Computation
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Worker 1: Phase 1, Barrier, Worker 2: Phase 1, Worker 3: Phase 1, Worker 1: Phase 2, Worker 2: Phase 2, Worker 3: Phase 2. Connections: Worker 1: Phase 1 to Barrier, Worker 2: Phase 1 to Barrier, Worker 3: Phase 1 to Barrier, Barrier to Worker 1: Phase 2, Barrier to Worker 2: Phase 2, Barrier to Worker 3: Phase 2.
     P1A["Worker 1: Phase 1"]:::blue --> Bar["Barrier"]:::orange
     P1B["Worker 2: Phase 1"]:::blue --> Bar
     P1C["Worker 3: Phase 1"]:::blue --> Bar
@@ -2032,8 +2052,9 @@ flowchart LR
     Bar --> P2C["Worker 3: Phase 2"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-75-barrier-parallel-phases/example.py`**
@@ -2474,6 +2495,8 @@ The classic dining-philosophers deadlock (five philosophers, five forks, each ne
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+    accTitle: Example 79: Dining Philosophers -- Deadlock-Free, via a Global Fork-Acquisition Order
+    accDescr: Flowchart with 10 nodes and 10 connections. Nodes: Philosopher 1, Fork 1, Philosopher 2, Fork 2, Philosopher 3, Fork 3, Philosopher 4, Fork 4, Philosopher 5, Fork 5. Connections: Philosopher 1 to Fork 1, Philosopher 2 to Fork 1, Philosopher 2 to Fork 2, Philosopher 3 to Fork 2, Philosopher 3 to Fork 3, Philosopher 4 to Fork 3, Philosopher 4 to Fork 4, Philosopher 5 to Fork 4, Philosopher 5 to Fork 5, Philosopher 1 to Fork 5.
     P1["Philosopher 1"]:::blue --- F1["Fork 1"]:::orange
     P2["Philosopher 2"]:::blue --- F1
     P2 --- F2["Fork 2"]:::orange
@@ -2486,7 +2509,8 @@ flowchart LR
     P1 --- F5
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-79-deadlock-free-dining-philosophers/example.py`**
@@ -2712,19 +2736,22 @@ A miniature version of the topic's capstone spec: a fetch-and-aggregate workload
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
-    W["Fetch-and-Aggregate Workload"]:::blue --> S["Serial baseline"]:::orange
+    accTitle: Example 81: Capstone Preview -- Fetch-and-Aggregate, Three Ways, One Timing Harness
+    accDescr: Flowchart with 6 nodes and 8 connections. Nodes: Fetch-and-Aggregate Workload, Serial baseline, ThreadPoolExecutor (I/O-bound fetch), asyncio (I/O-bound fetch), ProcessPoolExecutor (CPU-bound aggregate), Same result, every variant. Connections: Fetch-and-Aggregate Workload to Serial baseline, Fetch-and-Aggregate Workload to ThreadPoolExecutor (I/O-bound fetch), Fetch-and-Aggregate Workload to asyncio (I/O-bound fetch), Fetch-and-Aggregate Workload to ProcessPoolExecutor (CPU-bound aggregate), Serial baseline to Same result, every variant, ThreadPoolExecutor (I/O-bound fetch) to Same result, every variant, asyncio (I/O-bound fetch) to Same result, every variant, ProcessPoolExecutor (CPU-bound aggregate) to Same result, every variant.
+    W["Fetch-and-Aggregate<br/>Workload"]:::blue --> S["Serial baseline"]:::orange
     W --> T["ThreadPoolExecutor<br/>(I/O-bound fetch)"]:::teal
     W --> A["asyncio<br/>(I/O-bound fetch)"]:::teal
-    W --> P["ProcessPoolExecutor<br/>(CPU-bound aggregate)"]:::purple
-    S --> R["Same result, every variant"]:::orange
+    W --> P["ProcessPoolExecutor<br/>(CPU-bound<br/>aggregate)"]:::purple
+    S --> R["Same result, every<br/>variant"]:::orange
     T --> R
     A --> R
     P --> R
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-81-capstone-preview-concurrent-processor/example.py`**
@@ -2877,14 +2904,17 @@ _ex-82 &middot; exercises co-30_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    S["Observable<br/>from_iterable(range(10))"]:::blue -->|"map: x*x"| M["squared values"]:::orange
+    accTitle: Example 82: An Observable, map, and filter -- Reactive Streams via reactivex
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Observable from_ iterable(range(10)), squared values, even squares, Observer. Connections: Observable from_ iterable(range(10)) to squared values (map: x*x), squared values to even squares (filter: even only), even squares to Observer (on_next).
+    S["Observable<br/>from_<br/>iterable(range(10))"]:::blue -->|"map: x*x"| M["squared values"]:::orange
     M -->|"filter: even only"| F["even squares"]:::teal
     F -->|"on_next"| O["Observer"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-82-observable-map-filter-rxpy/example.py`**
@@ -2981,6 +3011,8 @@ A COLD `Observable` (`from_iterable`) replays its ENTIRE sequence independently 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 83: Cold Observables Replay in Full Hot Subjects Drop What Already Happened
+    accDescr: Sequence diagram between Cold Observable, Early Subscriber, Late Subscriber, Hot Subject. Messages: Cold Observable to Early Subscriber: 0,1,2,3,4 (full sequence); Cold Observable to Late Subscriber: 0,1,2,3,4 (full sequence, independently); Hot Subject to Early Subscriber: on_next(1); Hot Subject to Early Subscriber: on_next(2); Hot Subject to Early Subscriber: on_next(3); Hot Subject to Late Subscriber: on_next(3).
     participant Cold as Cold Observable
     participant Sub1 as Early Subscriber
     participant Sub2 as Late Subscriber
@@ -3107,15 +3139,18 @@ A fast producer paired with a slow consumer under two hand-rolled strategies -- 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TB
+    accTitle: Example 84: Backpressure Strategies -- Buffer-All vs Keep-Latest
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Fast Producer, buffer: keeps ALL (unbounded memory), latest: keeps ONLY newest (constant memory, drops older), Slow Consumer eventually gets everything, Slow Consumer only sees freshest values. Connections: Fast Producer to buffer: keeps ALL (unbounded memory), Fast Producer to latest: keeps ONLY newest (constant memory, drops older), buffer: keeps ALL (unbounded memory) to Slow Consumer eventually gets everything, latest: keeps ONLY newest (constant memory, drops older) to Slow Consumer only sees freshest values.
     P["Fast Producer"]:::blue --> B["buffer: keeps ALL<br/>(unbounded memory)"]:::orange
-    P --> L["latest: keeps ONLY newest<br/>(constant memory, drops older)"]:::teal
-    B --> C1["Slow Consumer<br/>eventually gets everything"]:::purple
-    L --> C2["Slow Consumer<br/>only sees freshest values"]:::purple
+    P --> L["latest: keeps ONLY<br/>newest<br/>(constant memory,<br/>drops older)"]:::teal
+    B --> C1["Slow Consumer<br/>eventually gets<br/>everything"]:::purple
+    L --> C2["Slow Consumer<br/>only sees freshest<br/>values"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-84-backpressure-buffer-vs-latest/example.py`**
@@ -3241,6 +3276,8 @@ A hand-rolled `DemandSubscriber`/`DemandSubscription`/`DemandPublisher` trio imp
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Example 85: Reactive Pull -- a Subscribers request Bounds How Much the Producer Emits
+    accDescr: Sequence diagram between Subscriber, Subscription, Publisher. Messages: Subscriber to Publisher: subscribe(); Subscriber to Subscription: request(3); Subscription to Subscriber: on_next x3 (exactly 3, no more); Subscriber to Subscription: request(4); Subscription to Subscriber: on_next x4 (exactly 4, no more).
     participant Sub as Subscriber
     participant Subn as Subscription
     participant Pub as Publisher
@@ -3417,6 +3454,8 @@ A hand-rolled, typed Python mirror of the `java.util.concurrent.Flow` contract (
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 stateDiagram-v2
+    accTitle: Example 86: A java.util.concurrent.Flow-Style Contract, Hand-Rolled in Python
+    accDescr: State diagram with 4 items: start or end, Subscribed, Completed, Errored. Relationships: start or end to Subscribed: on_subscribe (exactly once, always first); Subscribed to Subscribed: on_next (demand-driven); Subscribed to Completed: on_complete; Subscribed to Errored: on_error; Completed to start or end; Errored to start or end.
     [*] --> Subscribed: on_subscribe (exactly once, always first)
     Subscribed --> Subscribed: on_next (demand-driven)
     Subscribed --> Completed: on_complete
@@ -3650,16 +3689,19 @@ A `merge` + `map` + `debounce` pipeline is run over two hand-defined marble stre
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["Source A: a1@0, a2@3, a3@7"]:::blue --> Merge["merge"]:::orange
-    B["Source B: b1@1, b2@2, b3@8"]:::teal --> Merge
+    accTitle: Example 87: An Annotated Marble Diagram for merge -> map -> debounce
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Source A: a1@0, a2@3, a3@7, merge, Source B: b1@1, b2@2, b3@8, map: str.upper, debounce(quiet=2), A2@5, B3@10. Connections: Source A: a1@0, a2@3, a3@7 to merge, Source B: b1@1, b2@2, b3@8 to merge, merge to map: str.upper, map: str.upper to debounce(quiet=2), debounce(quiet=2) to A2@5, B3@10.
+    A["Source A: a1@0,<br/>a2@3, a3@7"]:::blue --> Merge["merge"]:::orange
+    B["Source B: b1@1,<br/>b2@2, b3@8"]:::teal --> Merge
     Merge --> Map["map: str.upper"]:::orange
     Map --> Debounce["debounce(quiet=2)"]:::purple
     Debounce --> Out["A2@5, B3@10"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-87-marble-diagram-operator-annotate/example.py`**

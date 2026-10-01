@@ -17,18 +17,21 @@ topic; this is a light consolidation, not a new set of ideas.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: tasks.json id, priority, deps, parse_tasks O(n), build_graph O(n + e), schedule Kahns + heap tie-break O((n + e) log n), run order or SchedulerCycleError. Connections: tasks.json id, priority, deps to parse_tasks O(n), parse_tasks O(n) to build_graph O(n + e), build_graph O(n + e) to schedule Kahns + heap tie-break O((n + e) log n), schedule Kahns + heap tie-break O((n + e) log n) to run order or SchedulerCycleError.
     A["tasks.json<br/>id, priority, deps"]:::blue
     B["parse_tasks<br/>O(n)"]:::orange
     C["build_graph<br/>O(n + e)"]:::teal
-    D["schedule<br/>Kahn's + heap tie-break<br/>O((n + e) log n)"]:::purple
-    E["run order<br/>or SchedulerCycleError"]:::brown
+    D["schedule<br/>Kahn's + heap<br/>tie-break<br/>O((n + e) log n)"]:::purple
+    E["run order<br/>or<br/>SchedulerCycleError"]:::brown
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

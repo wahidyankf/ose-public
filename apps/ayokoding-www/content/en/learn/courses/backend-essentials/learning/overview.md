@@ -98,11 +98,13 @@ still running. Example 23 (the Flask comparison) instead runs with `flask --app 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Five concept clusters, in the order this page teaches them (co-01 through co-24)
 graph TD
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: HTTP fundamentals and raw server co-01 to co-06, Routing, params, JSON and validation co-07 to co-13, Persistence, migrations, layering co-14, co-15, co-24, Middleware, DI, authentication co-16, co-17, co-18, co-23, Pagination, filtering, negotiation, dev loop co-19 to co-22. Connections: HTTP fundamentals and raw server co-01 to co-06 to Routing, params, JSON and validation co-07 to co-13, Routing, params, JSON and validation co-07 to co-13 to Persistence, migrations, layering co-14, co-15, co-24, Persistence, migrations, layering co-14, co-15, co-24 to Middleware, DI, authentication co-16, co-17, co-18, co-23, Middleware, DI, authentication co-16, co-17, co-18, co-23 to Pagination, filtering, negotiation, dev loop co-19 to co-22.
     A["HTTP fundamentals<br/>and raw server<br/>co-01 to co-06"]:::blue
     B["Routing, params,<br/>JSON and validation<br/>co-07 to co-13"]:::orange
     C["Persistence,<br/>migrations, layering<br/>co-14, co-15, co-24"]:::teal
-    D["Middleware, DI,<br/>authentication<br/>co-16, co-17, co-18, co-23"]:::purple
-    E["Pagination, filtering,<br/>negotiation, dev loop<br/>co-19 to co-22"]:::brown
+    D["Middleware, DI,<br/>authentication<br/>co-16, co-17, co-18,<br/>co-23"]:::purple
+    E["Pagination,<br/>filtering,<br/>negotiation, dev<br/>loop<br/>co-19 to co-22"]:::brown
 
     A --> B
     B --> C
@@ -110,10 +112,11 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

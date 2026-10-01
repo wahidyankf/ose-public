@@ -612,6 +612,8 @@ input combination paired with its output -- exhaustively enumerable with `iterto
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
+    accTitle: Example 11: Generating AND/OR/XOR Truth Tables Programmatically
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: Input a, Gate, Input b, Output. Connections: Input a to Gate, Input b to Gate, Gate to Output (AND: both true), Gate to Output (OR: either true), Gate to Output (XOR: differ).
     A["Input a"]:::blue --> G{"Gate"}:::orange
     B["Input b"]:::blue --> G
     G -->|AND: both true| O1["Output"]:::teal
@@ -619,8 +621,9 @@ graph LR
     G -->|XOR: differ| O1
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: one gate, three interpretations of the same two inputs -- the truth table is what pins
@@ -833,6 +836,8 @@ needs two outputs: a sum bit (via XOR) and a carry-out bit (via AND, since `1 + 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 14: The Half-Adder -- sum = XOR, carry = AND
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: a, XOR, b, AND, sum bit, carry bit. Connections: a to XOR, b to XOR, a to AND, b to AND, XOR to sum bit, AND to carry bit.
     A["a"]:::blue --> X{"XOR"}:::orange
     B["b"]:::blue --> X
     A --> N{"AND"}:::purple
@@ -841,9 +846,10 @@ graph LR
     N --> C["carry bit"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the same two inputs `a`, `b` feed two independent gates -- XOR produces the sum bit, AND

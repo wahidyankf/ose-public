@@ -577,16 +577,19 @@ silver layer to inherit those same choices.
 %% TD required: this is a strictly linear 5-node chain -- LR would push depth to 5,
 %% over the MaxWidth=4 validator ceiling, so TD keeps depth as the unchecked axis
 graph TD
-    S["Source<br/>raw CSV/JSON files"]:::brown --> B["Bronze<br/>as-is + load_ts, co-04"]:::blue
-    B --> SI["Silver<br/>typed, deduped, co-04"]:::orange
-    SI --> G["Gold<br/>consumption-ready, co-04"]:::teal
+    accTitle: The medallion flow, bronze to silver to gold
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Source raw CSV/JSON files, Bronze as-is + load_ts, co-04, Silver typed, deduped, co-04, Gold consumption-ready, co-04, Consumer dashboard / ML store. Connections: Source raw CSV/JSON files to Bronze as-is + load_ts, co-04, Bronze as-is + load_ts, co-04 to Silver typed, deduped, co-04, Silver typed, deduped, co-04 to Gold consumption-ready, co-04, Gold consumption-ready, co-04 to Consumer dashboard / ML store.
+    S["Source<br/>raw CSV/JSON files"]:::brown --> B["Bronze<br/>as-is + load_ts,<br/>co-04"]:::blue
+    B --> SI["Silver<br/>typed, deduped,<br/>co-04"]:::orange
+    SI --> G["Gold<br/>consumption-ready,<br/>co-04"]:::teal
     G --> C["Consumer<br/>dashboard / ML store"]:::purple
 
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the medallion flow ex-05 through ex-07 built, one layer at a time. Each arrow is a
@@ -1208,19 +1211,22 @@ order lines multiple times.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
-    F["fact_order_line<br/>grain: one order line, co-09"]:::blue
-    C["dim_customer<br/>descriptive attributes, co-08"]:::orange
-    P["dim_product<br/>descriptive attributes, co-08"]:::teal
-    D["dim_date<br/>descriptive attributes, co-08"]:::purple
+    accTitle: A star schemas shape
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: fact_order_line grain: one order line, co-09, dim_customer descriptive attributes, co-08, dim_product descriptive attributes, co-08, dim_date descriptive attributes, co-08. Connections: dim_customer descriptive attributes, co-08 to fact_order_line grain: one order line, co-09, dim_product descriptive attributes, co-08 to fact_order_line grain: one order line, co-09, dim_date descriptive attributes, co-08 to fact_order_line grain: one order line, co-09.
+    F["fact_order_line<br/>grain: one order<br/>line, co-09"]:::blue
+    C["dim_customer<br/>descriptive<br/>attributes, co-08"]:::orange
+    P["dim_product<br/>descriptive<br/>attributes, co-08"]:::teal
+    D["dim_date<br/>descriptive<br/>attributes, co-08"]:::purple
 
     C --> F
     P --> F
     D --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: a star schema's namesake shape -- one central fact table, surrounded by dimension tables

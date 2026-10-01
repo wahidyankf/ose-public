@@ -18,13 +18,16 @@ A query builder's first move is representing a piece of SQL as a small immutable
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
-    A["ColumnRef#40;name='id'#41;<br/>a data value"]:::blue
+    accTitle: Example 1: Clause as Data, Not a String
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Column Ref40name=id41 a data value, node.render4041 called lazily, id SQL text, only now. Connections: Column Ref40name=id41 a data value to node.render4041 called lazily (render), node.render4041 called lazily to id SQL text, only now.
+    A["Column<br/>Ref#40;name='id'#41;<br/>a data value"]:::blue
     B["node.render#40;#41;<br/>called lazily"]:::orange
     C["'id'<br/>SQL text, only now"]:::blue
     A -->|render| B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-01-clause-as-data-node/example.py`**
@@ -207,17 +210,20 @@ This is the one non-negotiable safety rule of the whole builder: a bound value a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["Param#40;value=hostile_string#41;"]:::blue
+    accTitle: Example 3: Bind a Value as a Placeholder, Never Interpolate It
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Param40value=hostile_string41, render4041, C, SQL, D, params. Connections: C to SQL, D to params, Param40value=hostile_string41 to render4041, render4041 to C, render4041 to D.
+    A["Param(value=<br/>hostile_string)"]:::blue
     B["render#40;#41;"]:::orange
     C["'?' -- SQL text"]:::teal
-    D["#91;hostile_string#93; -- params list"]:::teal
+    D["#91;hostile_<br/>string#93; -- params<br/>list"]:::teal
     A --> B
     B --> C
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-03-placeholder-not-interpolation/example.py`**
@@ -411,14 +417,17 @@ _ex-05 &middot; exercises co-03_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
+    accTitle: Example 5: A Builder Method Returns a NEW Instance, Never Mutates
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: base wheres=4041, .where40age > 1841, filtered wheres=40age > 1841. Connections: base wheres=4041 to .where40age > 1841 (calls, returns NEW), .where40age > 1841 to filtered wheres=40age > 1841.
     A["base<br/>wheres=#40;#41;"]:::blue
-    B[".where#40;'age > 18'#41;"]:::orange
-    C["filtered<br/>wheres=#40;'age > 18'#41;"]:::blue
+    B[".where#40;'age ><br/>18'#41;"]:::orange
+    C["filtered<br/>wheres=#40;'age ><br/>18'#41;"]:::blue
     A -->|calls, returns NEW| B --> C
     A -.unchanged.-> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-05-builder-returns-new-instance/example.py`**
@@ -911,15 +920,18 @@ _ex-10 &middot; exercises co-04_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 10: .join Adds a JOIN Fragment With an ON Predicate
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: select40...41, .from_ 40users41, .join40orders, on=...41, compile4041 SELECT ... FROM users JOIN orders ON .... Connections: select40...41 to .from_ 40users41, .from_ 40users41 to .join40orders, on=...41, .join40orders, on=...41 to compile4041 SELECT ... FROM users JOIN orders ON ....
     A["select#40;...#41;"]:::blue
-    B[".from_#40;'users'#41;"]:::orange
-    C[".join#40;'orders', on=...#41;"]:::teal
-    D["compile#40;#41;<br/>SELECT ... FROM users<br/>JOIN orders ON ..."]:::blue
+    B[".from_<br/>#40;'users'#41;"]:::orange
+    C[".join#40;'orders',<br/>on=...#41;"]:::teal
+    D["compile#40;#41;<br/>SELECT ... FROM<br/>users<br/>JOIN orders ON ..."]:::blue
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-10-select-with-join/example.py`**
@@ -1284,12 +1296,15 @@ _ex-13 &middot; exercises co-05_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
-    A["Or#40;left, right#41;"]:::blue
-    B["#40;left OR right#41;<br/>ALWAYS parenthesized"]:::orange
+    accTitle: Example 13: Combine Two Predicates With OR, Parenthesized
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Or40left, right41, 40left OR right41 ALWAYS parenthesized. Connections: Or40left, right41 to 40left OR right41 ALWAYS parenthesized.
+    A["Or#40;left,<br/>right#41;"]:::blue
+    B["#40;left OR<br/>right#41;<br/>ALWAYS parenthesized"]:::orange
     A --> B
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-13-where-or/example.py`**
@@ -1572,6 +1587,8 @@ _ex-15 &middot; exercises co-05, co-08_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
+    accTitle: Example 15: Nest And Inside Or Inside And -- a Real Boolean Tree
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: And, region = west 40Eq leaf41, Or, status = open 40Eq leaf41, status = pending 40Eq leaf41. Connections: And to region = west 40Eq leaf41, And to Or, Or to status = open 40Eq leaf41, Or to status = pending 40Eq leaf41.
     A["And"]:::blue
     B["region = 'west'<br/>#40;Eq leaf#41;"]:::teal
     C["Or"]:::orange
@@ -1583,8 +1600,9 @@ flowchart TD
     C --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-15-where-nested-boolean-tree/example.py`**
@@ -2007,14 +2025,17 @@ The clause-as-data approach extends past SELECT: `insert("users").values(id=1, n
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["insert#40;'users'#41;"]:::blue
-    B[".values#40;id=1, name='Alice'#41;"]:::orange
-    C["INSERT INTO users #40;id, name#41;<br/>VALUES #40;?, ?#41;<br/>params: #91;1, 'Alice'#93;"]:::teal
+    accTitle: Example 19: insert.values Compiles a Parameterized INSERT
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: insert40users41, .values40id=1, name=Alice41, INSERT INTO users 40id, name41 VALUES 40?, ?41 params: 911, Alice93. Connections: insert40users41 to .values40id=1, name=Alice41, .values40id=1, name=Alice41 to INSERT INTO users 40id, name41 VALUES 40?, ?41 params: 911, Alice93.
+    A["insert('users')"]:::blue
+    B[".values#40;id=1,<br/>name='Alice'#41;"]:::orange
+    C["INSERT INTO users<br/>#40;id, name#41;<br/>VALUES #40;?, ?#41;<br/>params: #91;1,<br/>'Alice'#93;"]:::teal
     A --> B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-19-insert-builder/example.py`**
@@ -2677,6 +2698,8 @@ _ex-25 &middot; exercises co-23_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 25: The Full PEP 249 Lifecycle -- Connect, Cursor, Execute, Fetch, Close
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: connect4041, cursor4041, execute4041, fetchone4041 / fetchall4041, close4041. Connections: connect4041 to cursor4041, cursor4041 to execute4041, execute4041 to fetchone4041 / fetchall4041, fetchone4041 / fetchall4041 to close4041.
     A["connect#40;#41;"]:::blue
     B["cursor#40;#41;"]:::orange
     C["execute#40;#41;"]:::teal
@@ -2685,10 +2708,11 @@ flowchart LR
     A --> B --> C --> D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-25-connect-cursor-lifecycle/example.py`**

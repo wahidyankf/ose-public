@@ -83,15 +83,18 @@ iterations of the same debugging session: "the test suite is red -- fix it."
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
-    P["Perceive<br/>observe state"]:::blue --> L["Plan<br/>reason about next step"]:::orange
+    accTitle: Worked Example 2: Trace the Agent Loop
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Perceive observe state, Plan reason about next step, Act invoke a tool, Observe read the result. Connections: Perceive observe state to Plan reason about next step, Plan reason about next step to Act invoke a tool, Act invoke a tool to Observe read the result, Observe read the result to Perceive observe state (next iteration).
+    P["Perceive<br/>observe state"]:::blue --> L["Plan<br/>reason about next<br/>step"]:::orange
     L --> A["Act<br/>invoke a tool"]:::purple
     A --> O["Observe<br/>read the result"]:::teal
     O -->|next iteration| P
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: the ReAct-style loop -- each Observe feeds directly into the next Perceive, not a fresh,

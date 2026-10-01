@@ -18,14 +18,17 @@ _ex-01 · exercises co-01_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
-    H["Host hardware and kernel"]:::blue
-    C["Container: isolated process"]:::teal
-    V["VM: guest OS and kernel"]:::orange
+    accTitle: Example 1: Containers vs virtual machines
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Host hardware and kernel, Container: isolated process, VM: guest OS and kernel. Connections: Host hardware and kernel to Container: isolated process (shares host kernel), Host hardware and kernel to VM: guest OS and kernel (virtualizes hardware).
+    H["Host hardware and<br/>kernel"]:::blue
+    C["Container: isolated<br/>process"]:::teal
+    V["VM: guest OS and<br/>kernel"]:::orange
     H -->|"shares host kernel"| C
-    H -->|"virtualizes hardware"| V
+    H -->|"virtualizes<br/>hardware"| V
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```text
@@ -52,15 +55,18 @@ _ex-02 · exercises co-02_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
+    accTitle: Example 2: Namespaces isolation
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Container process, PID: own process tree, Mount: filesystem view, Network: own stack. Connections: Container process to PID: own process tree, Container process to Mount: filesystem view, Container process to Network: own stack.
     P["Container process"]:::blue
-    PID["PID: own process tree"]:::teal
-    MNT["Mount: filesystem view"]:::teal
+    PID["PID: own process<br/>tree"]:::teal
+    MNT["Mount: filesystem<br/>view"]:::teal
     NET["Network: own stack"]:::teal
     P --> PID
     P --> MNT
     P --> NET
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -89,16 +95,19 @@ _ex-03 · exercises co-03_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
+    accTitle: Example 3: cgroups limits
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Application workload, Within cgroup memory limit?, Workload continues, Kernel enforces limit. Connections: Application workload to Within cgroup memory limit?, Within cgroup memory limit? to Workload continues (Yes), Within cgroup memory limit? to Kernel enforces limit (No).
     W["Application workload"]:::blue
-    G{"Within cgroup memory limit?"}:::orange
+    G{"Within cgroup memory<br/>limit?"}:::orange
     R["Workload continues"]:::teal
-    K["Kernel enforces limit"]:::orange
+    K["Kernel enforces<br/>limit"]:::orange
     W --> G
     G -->|"Yes"| R
     G -->|"No"| K
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -133,14 +142,17 @@ _ex-04 · exercises co-04_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
-    I["Immutable image package"]:::blue
-    C["Writable container state"]:::teal
+    accTitle: Example 4: Image vs container
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Immutable image package, Writable container state, Running process. Connections: Immutable image package to Writable container state (docker create), Writable container state to Running process (docker start).
+    I["Immutable image<br/>package"]:::blue
+    C["Writable container<br/>state"]:::teal
     P["Running process"]:::orange
     I -->|"docker create"| C
     C -->|"docker start"| P
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -167,17 +179,20 @@ _ex-05 · exercises co-04_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
+    accTitle: Example 5: docker run
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Image configuration, docker run, Live container process, Process exits. Connections: Image configuration to docker run, docker run to Live container process, Live container process to Process exits, Process exits to Image configuration (--rm removes instance).
     I["Image configuration"]:::blue
     R["docker run"]:::orange
-    P["Live container process"]:::teal
+    P["Live container<br/>process"]:::teal
     X["Process exits"]:::blue
     I --> R
     R --> P
     P --> X
-    X -->|"--rm removes instance"| I
+    X -->|"--rm removes<br/>instance"| I
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -204,6 +219,8 @@ _ex-06 · exercises co-05_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
+    accTitle: Example 6: Image layers
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Base layer, Dependency layer, Application layer, Final image. Connections: Base layer to Dependency layer, Dependency layer to Application layer, Application layer to Final image.
     B["Base layer"]:::blue
     D["Dependency layer"]:::teal
     A["Application layer"]:::orange
@@ -212,8 +229,9 @@ graph TD
     D --> A
     A --> I
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -240,17 +258,20 @@ _ex-07 · exercises co-05_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
-    L["Shared read-only image layer"]:::blue
-    C1["Container one writable layer"]:::teal
-    C2["Container two writable layer"]:::orange
+    accTitle: Example 7: Copy-on-write
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Shared read-only image layer, Container one writable layer, Container two writable layer, Write /tmp/value. Connections: Shared read-only image layer to Container one writable layer, Shared read-only image layer to Container two writable layer, Container one writable layer to Write /tmp/value.
+    L["Shared read-only<br/>image layer"]:::blue
+    C1["Container one<br/>writable layer"]:::teal
+    C2["Container two<br/>writable layer"]:::orange
     W["Write /tmp/value"]:::teal
     L --> C1
     L --> C2
     C1 --> W
     W -. "not visible" .-> C2
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -277,14 +298,17 @@ _ex-08 · exercises co-06_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
-    F["FROM: selected base filesystem"]:::blue
-    R["RUN: build-time command"]:::orange
-    L["New read-only image layer"]:::teal
+    accTitle: Example 8: Dockerfile FROM and RUN
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: FROM: selected base filesystem, RUN: build-time command, New read-only image layer. Connections: FROM: selected base filesystem to RUN: build-time command, RUN: build-time command to New read-only image layer.
+    F["FROM: selected base<br/>filesystem"]:::blue
+    R["RUN: build-time<br/>command"]:::orange
+    L["New read-only image<br/>layer"]:::teal
     F --> R
     R --> L
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -311,16 +335,19 @@ _ex-09 · exercises co-06_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
-    C["Declared build context"]:::blue
+    accTitle: Example 9: Dockerfile COPY
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Declared build context, COPY message.txt, Image file /message.txt, Container reads copied file. Connections: Declared build context to COPY message.txt, COPY message.txt to Image file /message.txt, Image file /message.txt to Container reads copied file.
+    C["Declared build<br/>context"]:::blue
     F["COPY message.txt"]:::orange
-    I["Image file /message.txt"]:::teal
-    R["Container reads copied file"]:::blue
+    I["Image file<br/>/message.txt"]:::teal
+    R["Container reads<br/>copied file"]:::blue
     C --> F
     F --> I
     I --> R
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -349,16 +376,19 @@ _ex-10 · exercises co-06_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
+    accTitle: Example 10: Dockerfile CMD
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Image CMD default, docker run with no command, Default process runs, docker run replacement, Replacement process runs. Connections: Image CMD default to docker run with no command, docker run with no command to Default process runs, Image CMD default to docker run replacement, docker run replacement to Replacement process runs.
     I["Image CMD default"]:::blue
-    D["docker run with no command"]:::teal
+    D["docker run with no<br/>command"]:::teal
     O["Default process runs"]:::teal
-    R["docker run replacement"]:::orange
-    X["Replacement process runs"]:::orange
+    R["docker run<br/>replacement"]:::orange
+    X["Replacement process<br/>runs"]:::orange
     I --> D --> O
     I --> R --> X
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -385,16 +415,19 @@ _ex-11 · exercises co-07_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
-    E["ENTRYPOINT: fixed executable"]:::blue
-    C["CMD: default arguments"]:::teal
+    accTitle: Example 11: ENTRYPOINT and CMD interaction
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: ENTRYPOINT: fixed executable, CMD: default arguments, Caller arguments, Final process invocation. Connections: ENTRYPOINT: fixed executable to Final process invocation, CMD: default arguments to Final process invocation (used by default), Caller arguments to Final process invocation (replaces CMD arguments).
+    E["ENTRYPOINT: fixed<br/>executable"]:::blue
+    C["CMD: default<br/>arguments"]:::teal
     A["Caller arguments"]:::orange
-    P["Final process invocation"]:::blue
+    P["Final process<br/>invocation"]:::blue
     E --> P
     C -->|"used by default"| P
-    A -->|"replaces CMD arguments"| P
+    A -->|"replaces CMD<br/>arguments"| P
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -490,16 +523,19 @@ _ex-14 · exercises co-09_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
+    accTitle: Example 14: Multi-stage build
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Build tools and deps, Finished application artifact, Minimal runtime stage, Runtime process. Connections: Build tools and deps to Finished application artifact, Finished application artifact to Minimal runtime stage (COPY --from=build), Minimal runtime stage to Runtime process.
     B["Build tools and deps"]:::orange
-    A["Finished application artifact"]:::teal
-    R["Minimal runtime stage"]:::blue
+    A["Finished application<br/>artifact"]:::teal
+    R["Minimal runtime<br/>stage"]:::blue
     P["Runtime process"]:::teal
     B --> A
     A -->|"COPY --from=build"| R
     R --> P
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -766,16 +802,19 @@ _ex-25 · exercises co-15_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 graph TD
+    accTitle: Example 25: Bridge network
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Docker host, Built-in bridge network, Container ex25-api, User network with DNS. Connections: Docker host to Built-in bridge network, Built-in bridge network to Container ex25-api, Docker host to User network with DNS.
     H["Docker host"]:::blue
-    B["Built-in bridge network"]:::orange
+    B["Built-in bridge<br/>network"]:::orange
     C["Container ex25-api"]:::teal
-    D["User network with DNS"]:::blue
+    D["User network with<br/>DNS"]:::blue
     H --> B --> C
     H --> D
     D -. "alternative to default bridge" .-> C
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

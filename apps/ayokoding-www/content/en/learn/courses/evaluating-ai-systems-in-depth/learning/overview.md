@@ -119,12 +119,14 @@ source, dated 2026-07-26.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Six concept clusters, in the order this page teaches them (co-01 through co-28)
 graph TD
+    accTitle: How this topics examples are organized
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Error analysis and failure taxonomy co-01 to co-04, Derived criteria and human labeling co-05 to co-08, LLM-as-judge fundamentals and agreement co-09 to co-13, Judge design, rubrics, and recalibration co-14 to co-17, Trajectory and process scoring for agents co-18 to co-20, Dataset construction, CI gate, and the loop co-21 to co-28. Connections: Error analysis and failure taxonomy co-01 to co-04 to Derived criteria and human labeling co-05 to co-08, Derived criteria and human labeling co-05 to co-08 to LLM-as-judge fundamentals and agreement co-09 to co-13, LLM-as-judge fundamentals and agreement co-09 to co-13 to Judge design, rubrics, and recalibration co-14 to co-17, Judge design, rubrics, and recalibration co-14 to co-17 to Trajectory and process scoring for agents co-18 to co-20, Trajectory and process scoring for agents co-18 to co-20 to Dataset construction, CI gate, and the loop co-21 to co-28.
     A["Error analysis and<br/>failure taxonomy<br/>co-01 to co-04"]:::blue
     B["Derived criteria and<br/>human labeling<br/>co-05 to co-08"]:::orange
-    C["LLM-as-judge fundamentals<br/>and agreement<br/>co-09 to co-13"]:::teal
-    D["Judge design, rubrics,<br/>and recalibration<br/>co-14 to co-17"]:::purple
-    E["Trajectory and process<br/>scoring for agents<br/>co-18 to co-20"]:::brown
-    F["Dataset construction,<br/>CI gate, and the loop<br/>co-21 to co-28"]:::blue
+    C["LLM-as-judge<br/>fundamentals<br/>and agreement<br/>co-09 to co-13"]:::teal
+    D["Judge design,<br/>rubrics,<br/>and recalibration<br/>co-14 to co-17"]:::purple
+    E["Trajectory and<br/>process<br/>scoring for agents<br/>co-18 to co-20"]:::brown
+    F["Dataset<br/>construction,<br/>CI gate, and the<br/>loop<br/>co-21 to co-28"]:::blue
 
     A --> B
     B --> C
@@ -133,10 +135,11 @@ graph TD
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts

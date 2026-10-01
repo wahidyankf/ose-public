@@ -15,10 +15,13 @@ so verify syntax and semantics against the included project files before invokin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 21: Bazel target
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: BUILD rule, target label, declared output. Connections: BUILD rule to target label, target label to declared output.
   A["BUILD rule"]:::blue --> B["target label"]:::orange --> C["declared output"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 22: Bazel cache
@@ -26,11 +29,14 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+  accTitle: Flow 22: Bazel cache
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: declared inputs, action hash, cache, output. Connections: declared inputs to action hash, action hash to cache, cache to output.
   A["declared inputs"]:::blue --> B["action hash"]:::orange --> C["cache"]:::teal --> D["output"]:::purple
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 23: Gradle configuration
@@ -38,10 +44,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 23: Gradle configuration
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: build script, task graph, task execution. Connections: build script to task graph, task graph to task execution.
   A["build script"]:::blue --> B["task graph"]:::orange --> C["task execution"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 24: Gradle incremental task
@@ -49,13 +58,16 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+  accTitle: Flow 24: Gradle incremental task
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: declared input, fingerprint changed?, execute task, UP-TO-DATE. Connections: declared input to fingerprint changed?, fingerprint changed? to execute task (yes), fingerprint changed? to UP-TO-DATE (no).
   A["declared input"]:::blue --> B{"fingerprint changed?"}:::orange
   B -->|yes| C["execute task"]:::teal
   B -->|no| D["UP-TO-DATE"]:::purple
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 25: DSL choice
@@ -63,10 +75,13 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 25: DSL choice
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: build intent, Groovy or Kotlin DSL, Gradle task graph. Connections: build intent to Groovy or Kotlin DSL, Groovy or Kotlin DSL to Gradle task graph.
   A["build intent"]:::blue --> B["Groovy or Kotlin DSL"]:::orange --> C["Gradle task graph"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 56: Declare a Bazel Build Target
@@ -299,13 +314,16 @@ enough information to explain a skip, a rerun, or a cache result to reviewers.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+  accTitle: Flow 26: Incremental Gradle task
+  accDescr: Flowchart with 4 nodes and 3 connections. Nodes: input fingerprints, changed?, execute task, UP-TO-DATE. Connections: input fingerprints to changed?, changed? to execute task (yes), changed? to UP-TO-DATE (no).
   A["input fingerprints"]:::blue --> B{"changed?"}:::orange
   B -->|yes| C["execute task"]:::teal
   B -->|no| D["UP-TO-DATE"]:::purple
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 27: Reproducible build
@@ -313,10 +331,13 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 27: Reproducible build
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: pinned inputs, hermetic action, same bytes. Connections: pinned inputs to hermetic action, hermetic action to same bytes.
   A["pinned inputs"]:::blue --> B["hermetic action"]:::orange --> C["same bytes"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 28: Tool selection
@@ -324,12 +345,15 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
+  accTitle: Flow 28: Tool selection
+  accDescr: Flowchart with 4 nodes and 2 connections. Nodes: named task, just, file graph, Make or Bazel or Gradle. Connections: named task to just, file graph to Make or Bazel or Gradle.
   A["named task"]:::blue --> B["just"]:::orange
-  C["file graph"]:::teal --> D["Make or Bazel or Gradle"]:::purple
+  C["file graph"]:::teal --> D["Make or Bazel or<br/>Gradle"]:::purple
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 29: CI invokes build
@@ -337,10 +361,13 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 29: CI invokes build
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: CI job, build target, evidence. Connections: CI job to build target, build target to evidence.
   A["CI job"]:::blue --> B["build target"]:::orange --> C["evidence"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 30: Make capstone graph
@@ -348,14 +375,17 @@ flowchart LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart TD
+  accTitle: Flow 30: Make capstone graph
+  accDescr: Flowchart with 4 nodes and 4 connections. Nodes: all, js dist, native app, complete. Connections: all to js dist, all to native app, js dist to complete, native app to complete.
   A["all"]:::blue --> B["js dist"]:::orange
   A --> C["native app"]:::teal
   B --> D["complete"]:::purple
   C --> D
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Flow 31: Cache boundary in CI
@@ -363,10 +393,13 @@ flowchart TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+  accTitle: Flow 31: Cache boundary in CI
+  accDescr: Flowchart with 3 nodes and 2 connections. Nodes: complete key, restore or build, verified output. Connections: complete key to restore or build, restore or build to verified output.
   A["complete key"]:::blue --> B["restore or build"]:::orange --> C["verified output"]:::teal
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Example 66: Observe a Gradle Up-to-Date Task

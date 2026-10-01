@@ -21,18 +21,21 @@ MVCC).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 flowchart LR
-    A["pages.py<br/>slotted page + buffer pool<br/>co-02, co-03, co-04, co-06"]:::blue
+    accTitle: Goal
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: pages.py slotted page + buffer pool co-02, co-03, co-04, co-06, index.py B+-tree-style index co-07, wal.py WAL + crash recovery co-16, co-17, co-18, co-19, mvcc.py snapshot read co-21, co-22. Connections: pages.py slotted page + buffer pool co-02, co-03, co-04, co-06 to wal.py WAL + crash recovery co-16, co-17, co-18, co-19, index.py B+-tree-style index co-07 to wal.py WAL + crash recovery co-16, co-17, co-18, co-19, wal.py WAL + crash recovery co-16, co-17, co-18, co-19 to mvcc.py snapshot read co-21, co-22.
+    A["pages.py<br/>slotted page +<br/>buffer pool<br/>co-02, co-03, co-04,<br/>co-06"]:::blue
     B["index.py<br/>B+-tree-style index<br/>co-07"]:::orange
-    C["wal.py<br/>WAL + crash recovery<br/>co-16, co-17, co-18, co-19"]:::teal
+    C["wal.py<br/>WAL + crash recovery<br/>co-16, co-17, co-18,<br/>co-19"]:::teal
     D["mvcc.py<br/>snapshot read<br/>co-21, co-22"]:::purple
     A --> C
     B --> C
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

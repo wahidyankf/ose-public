@@ -17,16 +17,19 @@ always means "matches `workload.py`'s own answer", never a re-derived copy.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A["Step 1: workload.py<br/>serial baseline + timing harness"]:::blue
-    B["Step 2: pool_threads.py + async_run.py<br/>I/O-bound fetch -- threads vs asyncio"]:::orange
-    C["Step 3: pool_process.py<br/>CPU-bound aggregate -- threads vs processes"]:::teal
-    D["Step 4: race_demo.py<br/>race + lock fix, deadlock + ordering fix"]:::purple
+    accTitle: Goal
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Step 1: workload.py serial baseline + timing harness, B, C, threads, Step 4: race_demo.py race + lock fix, deadlock + ordering fix. Connections: C to threads, Step 1: workload.py serial baseline + timing harness to B, B to C, C to Step 4: race_demo.py race + lock fix, deadlock + ordering fix.
+    A["Step 1: workload.py<br/>serial baseline +<br/>timing harness"]:::blue
+    B["Step 2:<br/>pool_threads.py +<br/>async_run.py<br/>I/O-bound fetch --<br/>threads vs asyncio"]:::orange
+    C["Step 3:<br/>pool_process.py<br/>CPU-bound aggregate<br/>-- threads vs<br/>processes"]:::teal
+    D["Step 4: race_demo.py<br/>race + lock fix,<br/>deadlock + ordering<br/>fix"]:::purple
     A --> B --> C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **A note on the file name**: the syllabus's ordered steps name this first file `serial.py`. This

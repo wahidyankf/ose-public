@@ -16,11 +16,14 @@ Create a named `MethodChannel` and invoke its `hint` method from Dart. The call 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Invoke a Method Channel}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 55: Invoke a Method Channel
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Invoke a Method Channel, Visible state or target effect. Connections: Widget to Invoke a Method Channel, Invoke a Method Channel to Visible state or target effect.
+    A[Widget]:::blue --> B{Invoke a Method<br/>Channel}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -58,11 +61,14 @@ Use `url_launcher` to request opening a help URI, and check the returned result 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 57: Use a Native Plugin
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Use a Native Plugin, Visible state or target effect. Connections: Widget to Use a Native Plugin, Use a Native Plugin to Visible state or target effect.
     A[Widget]:::blue --> B{Use a Native Plugin}:::orange
-    B --> C[Visible state or target effect]:::teal
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -99,11 +105,14 @@ Run `flutter build apk` to package the project for Android after the required An
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Build an Android Artifact}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 59: Build an Android Artifact
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Build an Android Artifact, Visible state or target effect. Connections: Widget to Build an Android Artifact, Build an Android Artifact to Visible state or target effect.
+    A[Widget]:::blue --> B{Build an Android<br/>Artifact}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -160,11 +169,14 @@ Use `LayoutBuilder` to branch the widget tree from the actual maximum width supp
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Branch with LayoutBuilder}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 62: Branch with LayoutBuilder
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Branch with LayoutBuilder, Visible state or target effect. Connections: Widget to Branch with LayoutBuilder, Branch with LayoutBuilder to Visible state or target effect.
+    A[Widget]:::blue --> B{Branch with<br/>LayoutBuilder}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -204,11 +216,14 @@ Render the same content as a single narrow column or a wider horizontal arrangem
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Reflow from Phone to Desktop}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 64: Reflow from Phone to Desktop
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Reflow from Phone to Desktop, Visible state or target effect. Connections: Widget to Reflow from Phone to Desktop, Reflow from Phone to Desktop to Visible state or target effect.
+    A[Widget]:::blue --> B{Reflow from Phone to<br/>Desktop}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -244,11 +259,14 @@ Call `pumpWidget` with a minimal app wrapper, then use finders to assert that th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 66: Pump a Widget Test
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Pump a Widget Test, Visible state or target effect. Connections: Widget to Pump a Widget Test, Pump a Widget Test to Visible state or target effect.
     A[Widget]:::blue --> B{Pump a Widget Test}:::orange
-    B --> C[Visible state or target effect]:::teal
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -300,11 +318,14 @@ Launch the app in an integration test, perform a complete user flow, and assert 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Drive an Integration Test}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 69: Drive an Integration Test
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Drive an Integration Test, Visible state or target effect. Connections: Widget to Drive an Integration Test, Drive an Integration Test to Visible state or target effect.
+    A[Widget]:::blue --> B{Drive an Integration<br/>Test}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -343,11 +364,14 @@ Compare Flutter's shared widget behavior with a target-specific plugin or native
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Compare Native Fidelity}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 71: Compare Native Fidelity
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Compare Native Fidelity, Visible state or target effect. Connections: Widget to Compare Native Fidelity, Compare Native Fidelity to Visible state or target effect.
+    A[Widget]:::blue --> B{Compare Native<br/>Fidelity}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -392,11 +416,14 @@ Put the method-channel call behind a small app-owned gateway that returns a Dart
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Contain a Platform Edge}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 73: Contain a Platform Edge
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Contain a Platform Edge, Visible state or target effect. Connections: Widget to Contain a Platform Edge, Contain a Platform Edge to Visible state or target effect.
+    A[Widget]:::blue --> B{Contain a Platform<br/>Edge}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -433,11 +460,14 @@ Read the same provider state in narrow and wide layouts, changing only the arran
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A[Widget]:::blue --> B{Adaptive shared state}:::orange
-    B --> C[Visible state or target effect]:::teal
+    accTitle: Example 75: Combine Adaptive Layout and State
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Adaptive shared state, Visible state or target effect. Connections: Widget to Adaptive shared state, Adaptive shared state to Visible state or target effect.
+    A[Widget]:::blue --> B{Adaptive shared<br/>state}:::orange
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -473,11 +503,14 @@ Build an `ArticleRow` that receives one article, watches its saved state, and de
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 77: Wire a Screen, Widget, and State Slice
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Screen-state slice, Visible state or target effect. Connections: Widget to Screen-state slice, Screen-state slice to Visible state or target effect.
     A[Widget]:::blue --> B{Screen-state slice}:::orange
-    B --> C[Visible state or target effect]:::teal
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -498,11 +531,14 @@ Use the capstone composition root to place `ShelfModel` above the Material app, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 78: Preview the Multiplatform Capstone
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Widget, Capstone preview, Visible state or target effect. Connections: Widget to Capstone preview, Capstone preview to Visible state or target effect.
     A[Widget]:::blue --> B{Capstone preview}:::orange
-    B --> C[Visible state or target effect]:::teal
+    B --> C[Visible state or<br/>target effect]:::teal
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart

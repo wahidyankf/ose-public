@@ -26,14 +26,17 @@ change (co-13, co-14) [x] cursor pagination (co-17) [x] idempotency keys (co-18)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: The capstone: a versioned, paginated, idempotent REST API with a GraphQL facade
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Step 1 openapi.yaml + validate_spec.py co-09, co-14, Step 2 rest.py co-13, co-17, co-18, Step 3 limits.py co-19, co-20, Step 4 facade/ co-24, co-27. Connections: Step 1 openapi.yaml + validate_spec.py co-09, co-14 to Step 2 rest.py co-13, co-17, co-18, Step 2 rest.py co-13, co-17, co-18 to Step 3 limits.py co-19, co-20, Step 3 limits.py co-19, co-20 to Step 4 facade/ co-24, co-27.
     A["Step 1<br/>openapi.yaml +<br/>validate_spec.py<br/>co-09, co-14"]:::blue --> B["Step 2<br/>rest.py<br/>co-13, co-17, co-18"]:::orange
     B --> C["Step 3<br/>limits.py<br/>co-19, co-20"]:::teal
     C --> D["Step 4<br/>facade/<br/>co-24, co-27"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **The domain**: one resource, `Article` (`id`, `title`), versioned at `/v1/articles`. The seed data

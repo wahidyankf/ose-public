@@ -24,21 +24,24 @@ cleanly, rather than force-fitting them onto Example 85's narrower preview table
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
-    A["seed.sql<br/>5 depts, 18 employees,<br/>250k sales_event rows"]:::blue
-    B["report.sql<br/>recursive CTE + window fns"]:::orange
-    C["tune_query.sql<br/>EXPLAIN ANALYZE before/after"]:::teal
-    D["n_plus_1.py<br/>N+1 diagnosis + GROUP BY fix"]:::purple
-    E["anomaly_reproduce.py +<br/>anomaly_fix.py -- see Anomaly page"]:::brown
+    accTitle: Goal
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: seed.sql 5 depts, 18 employees, 250k sales_event rows, report.sql recursive CTE + window fns, tune_query.sql EXPLAIN ANALYZE before/after, n_plus_1.py N+1 diagnosis + GROUP BY fix, E. Connections: seed.sql 5 depts, 18 employees, 250k sales_event rows to report.sql recursive CTE + window fns, seed.sql 5 depts, 18 employees, 250k sales_event rows to tune_query.sql EXPLAIN ANALYZE before/after, seed.sql 5 depts, 18 employees, 250k sales_event rows to n_plus_1.py N+1 diagnosis + GROUP BY fix, seed.sql 5 depts, 18 employees, 250k sales_event rows to E.
+    A["seed.sql<br/>5 depts, 18<br/>employees,<br/>250k sales_event<br/>rows"]:::blue
+    B["report.sql<br/>recursive CTE +<br/>window fns"]:::orange
+    C["tune_query.sql<br/>EXPLAIN ANALYZE<br/>before/after"]:::teal
+    D["n_plus_1.py<br/>N+1 diagnosis +<br/>GROUP BY fix"]:::purple
+    E["anomaly_reproduce.py<br/>+<br/>anomaly_fix.py --<br/>see Anomaly page"]:::brown
     A --> B
     A --> C
     A --> D
     A --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Concepts exercised

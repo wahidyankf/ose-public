@@ -18,12 +18,15 @@ _ex-29 &middot; exercises co-09_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 29: flex-grow Absorbs Space
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: row: 400px flex container, .fixed: 60px flex-grow: 0, .grower: flex-grow: 1 absorbs 340px remaining. Connections: row: 400px flex container to .fixed: 60px flex-grow: 0, row: 400px flex container to .grower: flex-grow: 1 absorbs 340px remaining.
     A["row: 400px<br/>flex container"]:::blue --> B[".fixed: 60px<br/>flex-grow: 0"]:::orange
-    A --> C[".grower: flex-grow: 1<br/>absorbs 340px remaining"]:::teal
+    A --> C[".grower: flex-grow:<br/>1<br/>absorbs 340px<br/>remaining"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-29-flex-grow-absorbs-space/index.html`**
@@ -107,11 +110,14 @@ _ex-30 &middot; exercises co-10_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 flowchart LR
+    accTitle: Example 30: Grid Two Column
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: grid: 400px 1fr 1fr, column 1: 200px cell A, column 2: 200px cell B. Connections: grid: 400px 1fr 1fr to column 1: 200px cell A, grid: 400px 1fr 1fr to column 2: 200px cell B.
     A["grid: 400px<br/>1fr 1fr"]:::blue --> B["column 1: 200px<br/>cell A"]:::orange
     A --> C["column 2: 200px<br/>cell B"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-30-grid-two-column/index.html`**
@@ -188,6 +194,8 @@ _ex-31 &middot; exercises co-10_
 %% TD required: mirrors the grid-template-areas ASCII layout, header above sidebar/content
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 31: Grid Named Areas
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: header spans both columns, sidebar 100px column, content 300px column. Connections: header spans both columns to sidebar 100px column, header spans both columns to content 300px column.
     A["header<br/>spans both columns"]:::blue
     B["sidebar<br/>100px column"]:::orange
     C["content<br/>300px column"]:::teal
@@ -195,8 +203,9 @@ graph TD
     A --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-31-grid-named-areas/index.html`**
@@ -286,11 +295,14 @@ _ex-32 &middot; exercises co-10_
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 32: Grid Gap
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: cell A: 100px, gap: 16px lives on container, cell B: 100px. Connections: cell A: 100px to gap: 16px lives on container, gap: 16px lives on container to cell B: 100px.
     A["cell A: 100px"]:::blue --> B["gap: 16px<br/>lives on container"]:::teal --> C["cell B: 100px"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-32-grid-gap/index.html`**
@@ -369,13 +381,16 @@ A `@media (max-width: 600px)` block only applies its rules when the viewport gen
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 33: Responsive Breakpoint
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: viewport width, max-width: 600px?, row layout columns side by side, column layout columns stacked. Connections: viewport width to max-width: 600px?, max-width: 600px? to row layout columns side by side (No), max-width: 600px? to column layout columns stacked (Yes).
     A["viewport width"]:::blue --> B{"max-width:<br/>600px?"}:::orange
     B -->|No| C["row layout<br/>columns side by side"]:::teal
     B -->|Yes| D["column layout<br/>columns stacked"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-33-responsive-breakpoint/index.html`**
@@ -612,11 +627,14 @@ A click event doesn't just fire on the element it happened on -- it BUBBLES upwa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 36: Event Bubbling
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: click on child, event bubbles through parent, parent listener fires. Connections: click on child to event bubbles through parent, event bubbles through parent to parent listener fires.
     A["click on #child"]:::blue --> B["event bubbles<br/>through #parent"]:::orange --> C["#parent listener<br/>fires"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-36-event-bubbling/index.html`**
@@ -688,11 +706,14 @@ Instead of attaching a separate listener to every `<li>`, ONE listener on the pa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["click on any li"]:::blue --> B["bubbles to<br/>#items listener"]:::orange --> C["event.target resolves<br/>the clicked item"]:::teal
+    accTitle: Example 37: Event Delegation List
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: click on any li, bubbles to items listener, event.target resolves the clicked item. Connections: click on any li to bubbles to items listener, bubbles to items listener to event.target resolves the clicked item.
+    A["click on any li"]:::blue --> B["bubbles to<br/>#items listener"]:::orange --> C["event.target<br/>resolves<br/>the clicked item"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-37-event-delegation-list/index.html`**
@@ -895,6 +916,8 @@ _ex-40 &middot; exercises co-17_
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 40: setTimeout Defers Work
+    accDescr: Sequence diagram between synchronous code, event loop, setTimeout callback. Messages: synchronous code to synchronous code: push(sync-1); synchronous code to event loop: setTimeout(fn, 0) scheduled; synchronous code to synchronous code: push(sync-2); event loop to setTimeout callback: run deferred callback; setTimeout callback to setTimeout callback: push(timeout).
     participant Sync as synchronous code
     participant Loop as event loop
     participant Timer as setTimeout callback
@@ -966,6 +989,8 @@ Promise callbacks (`.then`) are microtasks; `setTimeout` callbacks are macrotask
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 41: Microtask Before Timeout
+    accDescr: Sequence diagram between synchronous code, microtask queue, macrotask queue. Messages: synchronous code to macrotask queue: setTimeout scheduled first; synchronous code to microtask queue: Promise.then scheduled second; microtask queue to microtask queue: drain ALL pending microtasks; macrotask queue to macrotask queue: run next macrotask (timeout).
     participant Sync as synchronous code
     participant Micro as microtask queue
     participant Macro as macrotask queue
@@ -1033,6 +1058,8 @@ A debounced handler resets its `setTimeout` timer on every new event -- only onc
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 42: Debounce Input
+    accDescr: Sequence diagram between user typing, debounce timer. Messages: user typing to debounce timer: input event 1 -- start 50ms timer; user typing to debounce timer: input event 2 -- clearTimeout + restart; user typing to debounce timer: input event 3 -- clearTimeout + restart; debounce timer to debounce timer: run handler once, on final value.
     participant User as user typing
     participant Timer as debounce timer
 
@@ -1114,11 +1141,14 @@ A `render(state)` function reads a state object and rebuilds the DOM to match it
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 43: Render From State
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: state object name, count, render40state41, DOM: h1 + p pure output of state. Connections: state object name, count to render40state41, render40state41 to DOM: h1 + p pure output of state.
     A["state object<br/>name, count"]:::blue --> B["render#40;state#41;"]:::orange --> C["DOM: h1 + p<br/>pure output of state"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-43-render-from-state/index.html`**
@@ -1190,12 +1220,15 @@ The full cycle is: mutate the state object, then call `render()` again -- the DO
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["mutate state<br/>state.count += 1"]:::blue --> B["render#40;#41; re-invoked"]:::orange --> C["DOM reflects<br/>new state"]:::teal
+    accTitle: Example 44: State Change Triggers Render
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: mutate state state.count += 1, render4041 re-invoked, DOM reflects new state. Connections: mutate state state.count += 1 to render4041 re-invoked, render4041 re-invoked to DOM reflects new state.
+    A["mutate state<br/>state.count += 1"]:::blue --> B["render#40;#41;<br/>re-invoked"]:::orange --> C["DOM reflects<br/>new state"]:::teal
     C -.next change.-> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-44-state-change-triggers-render/index.html`**
@@ -1403,13 +1436,16 @@ Props flow strictly one way, parent to child -- a child can read and reflect wha
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
-    A["parentState.label"]:::blue -->|passed by value| B["ChildView#40;label#41;"]:::orange
+    accTitle: Example 47: One-Way Data Flow
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: parentState.label, Child View40label41, reflects label in its own DOM. Connections: parentState.label to Child View40label41 (passed by value), Child View40label41 to reflects label in its own DOM.
+    A["parentState.label"]:::blue -->|passed by value| B["Child<br/>View#40;label#41;"]:::orange
     B -.no path back.-> A
     B --> C["reflects label<br/>in its own DOM"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-47-one-way-data-flow/index.html`**
@@ -1542,13 +1578,16 @@ Tracking each list item by a stable key (not its position) lets a re-render REUS
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Example 49: Keyed List Update
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: new items array keyed by id, key already in nodesByKey?, reuse existing li update text only, create new li store in nodesByKey. Connections: new items array keyed by id to key already in nodesByKey?, key already in nodesByKey? to reuse existing li update text only (Yes), key already in nodesByKey? to create new li store in nodesByKey (No).
     A["new items array<br/>keyed by id"]:::blue --> B{"key already<br/>in nodesByKey?"}:::orange
     B -->|Yes| C["reuse existing li<br/>update text only"]:::teal
     B -->|No| D["create new li<br/>store in nodesByKey"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **`learning/code/ex-49-keyed-list-update/index.html`**

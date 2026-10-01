@@ -29,14 +29,17 @@ recommendation query (co-15) [x] a graph-vs-SQL contrast (co-03).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
-    A["Step 1<br/>load.py<br/>co-01, co-06, co-11"]:::blue --> B["Step 2<br/>queries.cypher + run.py<br/>co-05, co-09"]:::orange
+    accTitle: The capstone: a small recommendation/knowledge-graph, end to end
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Step 1 load.py co-01, co-06, co-11, Step 2 queries.cypher + run.py co-05, co-09, Step 3 recommend.py co-10, co-15, Step 4 contrast.md co-03. Connections: Step 1 load.py co-01, co-06, co-11 to Step 2 queries.cypher + run.py co-05, co-09, Step 2 queries.cypher + run.py co-05, co-09 to Step 3 recommend.py co-10, co-15, Step 3 recommend.py co-10, co-15 to Step 4 contrast.md co-03.
+    A["Step 1<br/>load.py<br/>co-01, co-06, co-11"]:::blue --> B["Step 2<br/>queries.cypher +<br/>run.py<br/>co-05, co-09"]:::orange
     B --> C["Step 3<br/>recommend.py<br/>co-10, co-15"]:::teal
     C --> D["Step 4<br/>contrast.md<br/>co-03"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **The domain**: 5 `Person` nodes (Ada, Bob, Cid, Dee, Zoe), 3 `Item` nodes (Keyboard, Monitor,

@@ -577,6 +577,8 @@ slower than a register, and disk is roughly 100,000x slower than RAM.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 27: Approximate Register/Cache/RAM/Disk Latency Ratios
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Register ~0.3 ns, L1 Cache ~1 ns, L2 Cache ~4 ns, RAM ~100 ns, SSD ~100,000 ns, HDD (disk) ~10,000,000 ns. Connections: Register ~0.3 ns to L1 Cache ~1 ns, L1 Cache ~1 ns to L2 Cache ~4 ns, L2 Cache ~4 ns to RAM ~100 ns, RAM ~100 ns to SSD ~100,000 ns, SSD ~100,000 ns to HDD (disk) ~10,000,000 ns.
     R["Register<br/>~0.3 ns"]:::blue --> L1["L1 Cache<br/>~1 ns"]:::orange
     L1 --> L2["L2 Cache<br/>~4 ns"]:::teal
     L2 --> RAM["RAM<br/>~100 ns"]:::purple
@@ -584,10 +586,11 @@ graph TD
     SSD --> HDD["HDD (disk)<br/>~10,000,000 ns"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: each rung of the memory hierarchy is roughly an order of magnitude (or more) slower than
@@ -955,6 +958,8 @@ of memory -- the parity of the 0s seen so far -- using just two states.
 ```mermaid
 %% Color Palette: Blue #0173B2, Teal #029E73
 stateDiagram-v2
+    accTitle: Example 32: A DFA Accepting Strings with an Even Number of 0s
+    accDescr: State diagram with 5 items: start or end, EVEN, ODD, EVEN accept, ODD start. Relationships: start or end to EVEN; EVEN to ODD: 0; ODD to EVEN: 0; EVEN to EVEN: 1; ODD to ODD: 1; EVEN to start or end.
     [*] --> EVEN
     EVEN --> ODD: 0
     ODD --> EVEN: 0
@@ -962,7 +967,7 @@ stateDiagram-v2
     ODD --> ODD: 1
     EVEN --> [*]
 
-    classDef accept fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef accept fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef start fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     class EVEN accept
     class ODD start
@@ -1120,6 +1125,8 @@ state, is what "nondeterminism" concretely means in code.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 stateDiagram-v2
+    accTitle: Example 34: An NFA with epsilon-Moves -- Multiple Live States at Once
+    accDescr: State diagram with 7 items: start or end, q0, q1, q2, q3, q0 start, q3 accept. Relationships: start or end to q0; q0 to q0: a,b,x; q0 to q1: epsilon; q1 to q2: a; q2 to q3: b; q3 to q3: a,b,x; q3 to start or end.
     [*] --> q0
     q0 --> q0: a,b,x
     q0 --> q1: epsilon
@@ -1129,8 +1136,8 @@ stateDiagram-v2
     q3 --> [*]
 
     classDef start fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef mid fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef accept fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef mid fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef accept fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class q0 start
     class q1,q2 mid
     class q3 accept
@@ -1632,14 +1639,17 @@ to a Turing machine's unbounded tape.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    RE["Recursively-enumerable<br/>(Turing machine)"]:::purple --> CS["Context-sensitive<br/>(linear-bounded automaton)"]:::teal
+    accTitle: Example 40: Classifying Sample Languages into the Four Chomsky-Hierarchy Levels
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Recursively- enumerable (Turing machine), Context-sensitive (linear-bounded automaton), Context-free (pushdown automaton), Regular (finite automaton). Connections: Recursively- enumerable (Turing machine) to Context-sensitive (linear-bounded automaton), Context-sensitive (linear-bounded automaton) to Context-free (pushdown automaton), Context-free (pushdown automaton) to Regular (finite automaton).
+    RE["Recursively-<br/>enumerable<br/>(Turing machine)"]:::purple --> CS["Context-sensitive<br/>(linear-bounded<br/>automaton)"]:::teal
     CS --> CF["Context-free<br/>(pushdown automaton)"]:::orange
     CF --> R["Regular<br/>(finite automaton)"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Figure: each level strictly contains the one below it -- every regular language is context-free,

@@ -27,14 +27,17 @@ logging + rate limit + cache (co-25, co-20, co-21) [x] a queue consumer with ide
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: The capstone: a scale-ready API evolved from Backend Essentials
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Step 1 rest.py co-03, co-05, co-06, Step 2 auth.py co-15, co-17, Step 3 resilience.py co-20, co-21, co-25, Step 4 queue.py co-28, co-29, co-35. Connections: Step 1 rest.py co-03, co-05, co-06 to Step 2 auth.py co-15, co-17, Step 2 auth.py co-15, co-17 to Step 3 resilience.py co-20, co-21, co-25, Step 3 resilience.py co-20, co-21, co-25 to Step 4 queue.py co-28, co-29, co-35.
     A["Step 1<br/>rest.py<br/>co-03, co-05, co-06"]:::blue --> B["Step 2<br/>auth.py<br/>co-15, co-17"]:::orange
     B --> C["Step 3<br/>resilience.py<br/>co-20, co-21, co-25"]:::teal
     C --> D["Step 4<br/>queue.py<br/>co-28, co-29, co-35"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **The domain**: one resource, `Article` (`id`, `title`), versioned at `/v1/articles`. The seed data is a

@@ -1014,6 +1014,8 @@ MATCH: two distinct behaviours served from one base model, switched between requ
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 stateDiagram-v2
+    accTitle: learning/code/ex-46-hot-swap-adapters/hotswapadapters.py
+    accDescr: State diagram with 15 items: start or end, Unloaded, Rejected, Loaded, Registered, Active, Standby, Retired, Unloaded blue, Loaded blue, Rejected purple, Registered orange, and 3 more. Relationships: start or end to Unloaded; Unloaded to Rejected: base mismatch, ex-45; Unloaded to Loaded: load succeeds, ex-45; Loaded to Registered: added to registry, ex-72; Registered to Active: resolved by task name; Active to Standby: swap to other adapter, ex-46; Standby to Active: swap back, ex-73; Active to Retired: retired, co-32; Retired to start or end.
     [*] --> Unloaded
     Unloaded --> Rejected: base mismatch, ex-45
     Unloaded --> Loaded: load succeeds, ex-45
@@ -1025,9 +1027,9 @@ stateDiagram-v2
     Retired --> [*]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     class Unloaded blue
     class Loaded blue
     class Rejected purple

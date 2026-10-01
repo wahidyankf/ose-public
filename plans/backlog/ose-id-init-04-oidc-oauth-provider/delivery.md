@@ -185,7 +185,7 @@ a trustworthy clean baseline.
       execution identity and branch inventory with exact path, branch,
       base/head SHAs, dirty-state classification, PR field, delivery status, cleanup status, and
       disposition field.
-- [ ] [AI] Enter the worktree; read root `AGENTS.md`, `RTK.md`, affected nested instructions, Init 03
+- [ ] [AI] Enter the worktree; read root `AGENTS.md`, affected nested instructions, Init 03
       as-built docs, this numbered OSE ID plan family, C# rules, specs conventions, Nx target rules, and
       worktree-to-PR workflow before editing.
 - [ ] [AI] Initialize tools with

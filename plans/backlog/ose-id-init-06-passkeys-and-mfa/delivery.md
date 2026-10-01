@@ -175,7 +175,7 @@ evidence under `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase
       verify with `rtk git -C worktrees/ose-id-init-06-passkeys-and-mfa status --short`; create the branch
       inventory with path, branch, base/head, dirty-state classification,
       PR field, delivery status, cleanup status, and disposition field.
-- [ ] [AI] Read root/nested instructions, RTK, resolved Init 05 as-built plan/docs, C#/TypeScript/UI/E2E/
+- [ ] [AI] Read root/nested instructions, resolved Init 05 as-built plan/docs, C#/TypeScript/UI/E2E/
       accessibility/TDD/BDD/spec rules, worktree workflow, and existing identity/session/key policies.
 - [ ] [AI] Initialize tools via `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
       `rtk npm run doctor` (read-only; only if it reports drift, run

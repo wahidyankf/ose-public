@@ -151,5 +151,3 @@ repository-hygiene executable;
 Vendor names live in the linked catalog, not here. `repo-config.yml` `harness:` is authoritative.
 
 **See**: [platform catalog](./docs/reference/platform-bindings.md)
-
-@RTK.md

@@ -679,7 +679,7 @@ toolchains:
 gates:
   composition:
     pull-request:
-      relation: exact
+      relation: at-least
   entries:
     - id: public-safety-tree
       type: check
@@ -847,6 +847,19 @@ gates:
             staged:
               source: explicit-range
               range: explicit
+    # The pull-request surface also validates every live diagram, not only the changed ones, so a diagram that drifts
+    # outside the palette in an untouched file still fails.
+    - id: md-mermaid-repository
+      type: check
+      command:
+        executable: ./rhino
+        args:
+          - literal: md
+          - literal: mermaid
+          - literal: validate
+      run-on:
+        pull-request:
+          reason: "Pre-commit stays narrowed to staged paths; the pull-request surface checks the whole repository."
     - id: shellcheck
       type: check
       inputs:

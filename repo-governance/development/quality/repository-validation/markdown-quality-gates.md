@@ -5,8 +5,8 @@ when_to_use: "Use when locating a markdown quality gate's command or exclusions.
 
 # Markdown Quality Gates
 
-Five Markdown gates are declared in `repo-config.yml` `gates.entries`: `markdownlint`, `md-mermaid`,
-`md-heading-hierarchy`, `md-naming`, and `md-frontmatter`. The registry is the source of truth for
+Six Markdown gates are declared in `repo-config.yml` `gates.entries`: `markdownlint`, `md-mermaid`,
+`md-mermaid-repository`, `md-heading-hierarchy`, `md-naming`, and `md-frontmatter`. The registry is the source of truth for
 every command, argument, and surface below — read `repo-config.yml` when this page and the registry
 disagree, and run `./rhino gate list` to see the current surfaces.
 
@@ -32,6 +32,11 @@ The same gate also enforces `mermaid.require-default-class`: a `flowchart`, `gra
 mermaid fences nested in another code block. `mermaid.allowed-types`,
 `mermaid.forbid-theme-overrides`, and `mermaid.canvas-colors` refuse undeclared types and theme
 overrides and measure non-text contrast.
+
+The `md-mermaid-repository` gate runs a bare `./rhino md mermaid validate` on the pull-request surface
+only. It scans every live diagram outside `mermaid.exclude`, so a diagram that drifts outside the
+palette in an untouched file still fails; pre-commit stays narrowed to staged paths. Its pull-request
+composition is `at-least` because this surface holds a gate pre-commit does not.
 
 ## 2. Markdown Link Validation
 

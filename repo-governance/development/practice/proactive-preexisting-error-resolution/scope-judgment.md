@@ -37,3 +37,10 @@ These require more than a single commit:
 - Test suites with fundamental structural problems (testing implementation instead of behaviour)
 
 Create a plan in `plans/in-progress/` and begin executing it. The presence of a plan does not defer the work — it organizes it. Execution starts immediately.
+
+## Defects in Pinned Upstream Tools
+
+A defect in HIPPO or RHINO is never patched here, whatever its size. It follows
+[Upstream Tool Defects](../../workflow/upstream-tool-defects.md): a two-pager at its owner while the
+work continues on a workaround, or a bug-fix plan at its owner when it blocks the work with no
+workaround. FERRET is built in this repository, so its defects take the sizes above.

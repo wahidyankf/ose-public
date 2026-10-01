@@ -7,7 +7,8 @@ when_to_use: Use when a user describes a new behaviour, pattern, or convention t
 
 **Purpose**: Transform a user prompt into a production-ready plan in the resolved target stage
 (`plans/in-progress/` by default, or `plans/backlog/`), validated by `plan-quality-gate` and
-pushed to the confirmed target.
+pushed to the confirmed target. A [Bug-Fix Plan](../../conventions/structure/plans/bug-fix-plan.md)
+is not planned through this workflow.
 
 ## Goal and Termination
 

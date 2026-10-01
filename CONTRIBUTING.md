@@ -348,9 +348,10 @@ opening a contribution PR.
 
 ### Before Reporting
 
-1. **Search the existing issues** — someone may have filed the same thing already, and the
-   discussion there is often faster than a fresh report.
-2. **Update to the latest `main`** and try again, in case the fix has already landed.
+1. **Search the existing issues and pull requests** — someone may have filed or fixed the same thing
+   already, and the discussion there is often faster than a fresh report.
+2. **Update to the latest `main`** and try again, in case the fix has already landed. Note the
+   version and commit it still fails on.
 3. **Check the documentation** — if a command behaved differently from what a page told you to
    expect, say which page, because that makes the report actionable either way.
 
@@ -362,9 +363,12 @@ When opening an issue, include:
 - **Steps to reproduce**: the exact commands or clicks, numbered, starting from a clean checkout
 - **Expected behaviour**: what the documentation or the command's own output led you to expect
 - **Actual behaviour**: what happened instead, quoted rather than paraphrased
-- **Environment**: OS, Node.js version, browser (if applicable)
+- **Environment**: OS, Node.js version, tool version and commit, browser (if applicable)
 - **Logs/screenshots**: the error text itself, pasted rather than described, and a picture only
   where the problem is visual
+
+Why each field is shaped this way, and how a report becomes a fix, is in the
+[Bug Reports convention](./repo-governance/conventions/writing/bug-reports.md).
 
 ## Product Feedback
 

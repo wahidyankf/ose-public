@@ -11,7 +11,8 @@ when_to_use: Use when scaffolding a new formal plan and choosing its technical-d
 > "set `DEPLOY_TOKEN` in `.env`"); real values belong in uncommitted files. See the
 > [No Secrets in Git convention](../../security/no-secrets-in-committed-files.md).
 
-Every newly authorized formal plan MUST contain this fixed mature-plan core:
+Every newly authorized formal plan MUST contain this fixed mature-plan core. The one exception is a
+[Bug-Fix Plan](./bug-fix-plan.md), whose single `README.md` carries the core roles as sections:
 
 - `README.md`, `brd.md`, `prd.md`, `delivery.md`, and `learnings.md`
 - exactly one technical form: `tech-docs.md`, or `tech-docs/README.md` with mapped companions
@@ -21,6 +22,6 @@ single file while one coherent technical narrative serves the readers; use the d
 distinct concerns have different readers or owners and its README maps every companion. File or
 line counts are review signals, never structure thresholds.
 
-Do not collapse a new formal plan to one `README.md`. Simple work belongs in the harness task list;
-early work belongs in an explicitly requested idea brief. The retired single-file contract remains
-valid only for plans covered by the prospective transition rule.
+Do not collapse any other new formal plan to one `README.md`. Simple work belongs in the harness
+task list; early work belongs in an explicitly requested idea brief. The retired single-file
+contract remains valid only for plans covered by the prospective transition rule.

@@ -31,6 +31,7 @@ Git, verification, and reproducible environments.
 - [Reproducible Environments](./reproducible-environments.md) — Practices for consistent, reproducible development and build environments. Use when setting up or troubleshooting toolchain pinning.
 - [Test-Driven Development Convention](./test-driven-development.md) — Mandates TDD (Red→Green→Refactor) for all code changes. Use when writing or starting a code delivery step.
 - [Trunk Based Development Convention](./trunk-based-development.md) — Git workflow using Trunk Based Development for continuous integration. Use when deciding how a change reaches main.
+- [Upstream Tool Defects](./upstream-tool-defects.md) — Watching pinned upstream tools for defects, filing a two-pager at the owner, and fixing a blocking defect through a bug-fix plan there. Use when HIPPO or RHINO behaves unexpectedly.
 - [Worktree and Artifact Cleanup Convention](./worktree-and-artifact-cleanup.md) — Mandatory post-merge gate to remove worktrees, branches, and build artifacts. Use when a merged PR needs teardown.
 - [Worktree Toolchain Initialization](./worktree-setup.md) — Initialize the full polyglot toolchain immediately after creating a git worktree.
 

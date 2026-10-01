@@ -12,8 +12,8 @@ the primary checkout. In both cases it syncs from fresh `origin/main` before imp
 
 1. **Plan declares a `## Worktree` section**
    - Multi-file plan: `delivery.md` contains `## Worktree`. An existing pre-contract single-file
-     plan carries it in `README.md`; this compatibility check never authorizes creation of a new
-     single-file formal plan.
+     plan or a bug-fix plan carries it in `README.md`; this check never authorizes creation of any
+     other new single-file formal plan.
    - Missing: **HIGH** finding (the executor should have refused to start; if it ran, that itself is
      a CRITICAL workflow violation).
 

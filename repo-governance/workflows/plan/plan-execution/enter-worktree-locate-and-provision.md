@@ -11,9 +11,10 @@ when_to_use: Use when a plan's worktree does not yet exist and must be provision
 
 1. **Locate the `## Worktree` section** in the plan:
    - **Multi-file plans**: in `delivery.md` (top-level `## Worktree` heading, before any phase).
-   - **Existing pre-contract single-file plans only**: in `README.md` (top-level `## Worktree`
-     before `## Delivery Checklist`). This compatibility branch never authorizes a new single-file
-     formal plan.
+   - **Existing pre-contract single-file plans and
+     [Bug-Fix Plans](../../../conventions/structure/plans/bug-fix-plan.md)**: in `README.md`
+     (top-level `## Worktree` before `## Delivery Checklist`). This branch never authorizes any
+     other new single-file formal plan.
 2. **If the section is missing**: terminate immediately with status `fail`. An invocation branch
    cannot replace or bypass the mandatory declaration. Emit: `Worktree specification missing — add
 a "## Worktree" section to <delivery.md|README.md> per

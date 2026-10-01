@@ -39,9 +39,10 @@ separation does not itself create PR boundaries; natural delivery seams do.
 
 Use exactly one technical shape: the `tech-docs.md` shown above, or `tech-docs/README.md` with mapped
 companions. Reader jobs, cohesion, navigation, and ownership decide the shape; line counts do not.
-New formal plans never collapse to a single README. Simple work uses the harness task list; early
-ideas use an explicitly requested brief. Archived plans and the existing Rhino plan retain their
-recorded contract.
+New formal plans never collapse to a single README, except a
+[Bug-Fix Plan](../../../../repo-governance/conventions/structure/plans/bug-fix-plan.md). Simple
+work uses the harness task list; early ideas use an explicitly requested brief. Archived plans and
+the existing Rhino plan retain their recorded contract.
 
 An API-affecting mature plan must choose the directory form and map exactly one separately numbered
 `NNN-api-contract-delta.md`. The document covers HTTP, BFF, RPC, event, and standard protocol

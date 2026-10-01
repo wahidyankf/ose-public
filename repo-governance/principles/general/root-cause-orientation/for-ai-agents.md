@@ -12,6 +12,9 @@ All agents must follow this principle by:
 3. **Applying the senior engineer test** - Evaluate solutions against what a senior engineer would approve, not just what makes tests pass
 4. **Proactively fixing preexisting errors** - When encountering preexisting bugs, broken tests, or incorrect configurations, fix the root cause rather than mentioning without action or working around the problem. See [Proactive Preexisting Error Resolution](../../../development/practice/proactive-preexisting-error-resolution.md) for the full practice including scope judgment and agent requirements.
 
+A defect in a pinned upstream tool is fixed at its cause in the owning repository, per
+[Upstream Tool Defects](../../../development/workflow/upstream-tool-defects.md), never patched locally.
+
 See [Implementation Workflow - Surgical Changes](../../../development/workflow/implementation/surgical-changes-principle.md) for the detailed surgical changes practice that implements minimal impact for software changes.
 
 See [Agent Workflow Orchestration](../../../development/agents/agent-workflow-orchestration.md) for how this principle applies to planning, verification, and autonomous work in multi-step agent tasks.

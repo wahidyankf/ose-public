@@ -11,14 +11,15 @@ Read the plan in full, reconcile against any prior run's state, and build the li
 
 - Read the plan at `{input.plan-path}` — for a current formal plan, read `README.md`, `brd.md`,
   `prd.md`, `delivery.md`, `learnings.md`, and exactly one technical form (`tech-docs.md` or all
-  files mapped by `tech-docs/README.md`). Preserve the documented prospective exceptions for older
-  plans rather than silently migrating them.
+  files mapped by `tech-docs/README.md`); for a
+  [Bug-Fix Plan](../../../conventions/structure/plans/bug-fix-plan.md), its one `README.md`.
+  Preserve the documented prospective exceptions for older plans rather than silently migrating them.
 - Read the technical form's annotated `## File-Impact Analysis` tree before materializing tasks. Treat it
   as the plan's declared footprint: reconcile each delivery path against its `[E]`/`[N]`/`[D]`/`[G]`
   marker and surface a mismatch before touching an undeclared path. `### More Detail` supplies
   context only; it does not expand the footprint.
-- Locate the delivery checklist in `delivery.md`; only a grandfathered plan may embed it in
-  `README.md`.
+- Locate the delivery checklist in `delivery.md`; only a grandfathered plan or a bug-fix plan may
+  embed it in `README.md`.
 - **Entry and Resume Reconciliation (Iron Rule 10)**: perform this reconstruction whenever this
   workflow is invoked—at the start, for the first time after some checklist work already happened,
   after compaction/handoff, or when reinvoked mid-run. Parse every action checkbox top-to-bottom.

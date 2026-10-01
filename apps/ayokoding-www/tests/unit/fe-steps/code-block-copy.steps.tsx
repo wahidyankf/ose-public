@@ -1,6 +1,6 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { cleanup, render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, fireEvent } from "@testing-library/react";
 import { expect, vi } from "vitest";
 
 import { MarkdownRenderer } from "@/features/content/shell/markdown-renderer";
@@ -116,6 +116,9 @@ describeFeature(feature, ({ Scenario, Background }) => {
   Scenario("The copy button confirms success to the visitor", ({ Given, When, Then }) => {
     Given("a visitor has clicked a code block's copy button", () => {
       cleanup();
+      // Fake timers hold the success state's real-time revert timeout, so a slow gap between steps
+      // on a loaded host cannot revert the button before the Then step reads it.
+      vi.useFakeTimers();
       stubClipboard();
       render(<MarkdownRenderer html={luaHtml} locale="en" />);
       fireEvent.click(copyButton());
@@ -123,13 +126,21 @@ describeFeature(feature, ({ Scenario, Background }) => {
 
     When("the copy succeeds", async () => {
       // The clipboard stub resolves; the button flips to its success state on the microtask.
-      await waitFor(() => expect(copyButton().getAttribute("aria-label")).toBe(t("en", "copied")));
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(0);
+      });
     });
 
-    Then('the button shows a "Copied" confirmation before reverting', () => {
+    Then('the button shows a "Copied" confirmation before reverting', async () => {
       // Success state: aria-label is the copied label and the polite live region carries it.
-      expect(copyButton().getAttribute("aria-label")).toBe("Copied");
+      expect(copyButton().getAttribute("aria-label")).toBe(t("en", "copied"));
       expect(screen.getByText("Copied", { selector: "output" })).toBeTruthy();
+      // …and it reverts once the timeout elapses.
+      await act(async () => {
+        await vi.runAllTimersAsync();
+      });
+      expect(copyButton().getAttribute("aria-label")).not.toBe(t("en", "copied"));
+      vi.useRealTimers();
     });
   });
 

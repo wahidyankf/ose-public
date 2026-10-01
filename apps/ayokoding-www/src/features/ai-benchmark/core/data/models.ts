@@ -1,819 +1,891 @@
-// AI BENCHMARK DATASET — coding-agent model roster across five harnesses, snapshotDate 2026-07-28.
-// Sources: vendor pricing pages + benchmark leaderboards (see each figure's `source` URL).
-// Roster rule DD-7a: a model is included when selectable in ≥1 of the five harnesses' current
-//   rosters and is current or one generation prior; deprecated/legacy/invitation-only and
-//   no-identifiable-vendor entries are excluded.
-// Pricing DD-12/DD-16/DD-17a: standard tier only, stored PER HARNESS (the rate that harness
-//   charges); promotions with a known expiry publish the post-expiry standard rate (Sonnet 5 →
-//   $3/$15 from 2026-09-01, not the $2/$10 intro).
-// Evidence grades DD-19: verified | self-reported | secondary | conflicted | unavailable.
-// Composite DD-5a/DD-6: roster-relative normalization; for a CONFLICTED figure the LOW published
-//   value enters the composite and the full range is stored (low ≤ high, value === low).
-// Version trap (invariant 9): a Terminal-Bench 2.0 or SWE-bench Multilingual figure is NEVER
-//   placed in a terminal-bench-2-1 / swe-bench-verified slot — such figures are absent here.
-// To (re)source this data, see the prompts in
-// ../../../../../docs/ai-benchmark/data-sourcing-prompt.md
+// AI BENCHMARK DATASET — last updated 2026-10-01.
+//
+// Roster: every model from the four frontier vendors (Anthropic, OpenAI, Google, xAI) plus every
+// model on OpenCode Go with an identified vendor, keeping up to three generations of each line (the
+// latest and the two before it) that are still served by the vendor's API or a listed harness.
+//
+// Figures: independent runs only. For each (model, benchmark) the first available source wins:
+//   1. Artificial Analysis Coding Agent Index v1.5 — the model's best published configuration in
+//      its own harness (multi-model combinations excluded);
+//   2. DeepSWE: Datacurve's v1.1 board (best effort level);
+//      Terminal-Bench 4.0: Artificial Analysis' evaluation page → the official board → Vals AI;
+//      SWE-Atlas QnA: Scale AI's board.
+// Prices: the vendor's standard API rate per 1M tokens; the OpenCode-listed rate only where the
+// vendor publishes no reachable price page (`listedBy: "opencode"`).
+//
+// To re-source this data, follow ../../../../../docs/ai-benchmark/data-sourcing-prompt.md.
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+import { benchmarkSpec } from "./benchmarks";
+import { operatorById } from "./operators";
+import type { ApiPrice, BenchmarkId, CostPerTask, Dataset, Figure, OperatorId } from "./types";
 
-/** Provenance of a single figure. DD-19. */
-export type EvidenceGrade = "verified" | "self-reported" | "secondary" | "conflicted" | "unavailable";
+const AA_TB4_EVAL = "https://artificialanalysis.ai/evaluations/terminalbench-4-0";
 
-/** The four benchmarks that make up the composite index (DD-5). */
-export type BenchmarkId = "swe-bench-verified" | "swe-bench-pro" | "terminal-bench-2-1" | "gpqa-diamond";
-
-/**
- * The five harnesses whose current rosters define the model universe (DD-7).
- * Mapping to the Appendix A.2 abbreviations: claude-code = CC, codex-cli = CX,
- * cursor = CU, opencode-go = GO, opencode-zen = ZEN.
- */
-export type HarnessId = "claude-code" | "codex-cli" | "cursor" | "opencode-go" | "opencode-zen";
-
-/** Composite-index weights per benchmark (DD-5). Sums to 100. */
-export const BENCHMARK_WEIGHTS: Record<BenchmarkId, number> = {
-  "swe-bench-verified": 25,
-  "swe-bench-pro": 25,
-  "terminal-bench-2-1": 20,
-  "gpqa-diamond": 30,
-};
-
-/**
- * A single benchmark figure. `value` is the percentage 0–100 that enters the composite (for a
- * conflicted figure, the LOW published value). `source` is a non-empty URL naming the origin.
- * `benchmarkVersion` / `conditions` record the version and evaluation condition — these are also
- * what invariant 9 inspects to keep the version trap honest.
- */
-export type Figure = {
-  benchmark: BenchmarkId;
-  value: number;
-  grade: EvidenceGrade;
-  source: string;
-  benchmarkVersion?: string;
-  conditions?: string;
-};
-
-/**
- * A conflicted figure extends Figure with the full published range. `value === low` (the LOW
- * enters the composite per the scoring pipeline line 117) and `low ≤ high`.
- */
-export type ConflictedFigure = Figure & {
-  grade: "conflicted";
-  low: number;
-  high: number;
-};
-
-/** Type guard narrowing a Figure to its conflicted form (carries low/high). */
-export function isConflictedFigure(f: Figure): f is ConflictedFigure {
-  return f.grade === "conflicted";
-}
-
-/** A metered per-token price (USD per 1M tokens), standard tier (DD-12). */
-export type MeteredPrice = {
-  kind: "metered";
-  input: number;
-  output: number;
-  grade: EvidenceGrade;
-  source: string;
-  conditions?: string;
-};
-
-/**
- * A flat-rate subscription price. Carries a plan cost and usage caps and NEVER a per-token rate
- * (invariant 10). Used for every OpenCode Go entry ($10/mo after first month). Carries a `grade`
- * like every other priced/figured entry (DD-19a) so AC-21 ("every price cell carries an evidence
- * grade marker") is satisfiable for subscription-only rows, not unsatisfiable by construction.
- */
-export type SubscriptionPrice = {
-  kind: "subscription";
-  planCostUsd: number;
-  grade: EvidenceGrade;
-  caps?: string;
-  source: string;
-};
-
-/** A model's price set: the rate each harness that carries the model charges (DD-16). */
-export type PriceSet = Partial<Record<HarnessId, MeteredPrice | SubscriptionPrice>>;
-
-/** A provenance flag that must reach the page (e.g. the METR gaming finding). */
-export type IntegrityNote = {
-  modelId: string;
-  text: string;
-  source: string;
-};
-
-/** One model row. */
-export type Model = {
-  id: string;
-  name: string;
-  vendor: string;
-  harnesses: HarnessId[];
-  figures: Figure[];
-  pricing: PriceSet;
-  notes?: IntegrityNote[];
-};
-
-/** The full dataset — single source of truth for the page and the reference generator. */
-export type Dataset = {
-  snapshotDate: string;
-  models: Model[];
-  anchorIds: { opus: string; sonnet: string };
-};
-
-/** Anchor model ids — the bands are defined by these two models (DD-20a). */
-export const OPUS_ANCHOR_ID = "claude-opus-5";
-export const SONNET_ANCHOR_ID = "claude-sonnet-5";
-
-// ─── Source URLs (vendor pricing pages + benchmark operator / aggregator sources) ──────────
-// Every figure below cites one of these. They are the real URLs named in Appendix A.1/A.3/A.4.
-
-const URL = {
-  anthropic: "https://platform.claude.com/docs/en/pricing",
-  anthropicModels: "https://platform.claude.com/docs/en/models/overview",
-  openai: "https://developers.openai.com/api/docs/pricing",
-  openaiModels: "https://developers.openai.com/codex/models",
-  google: "https://ai.google.dev/gemini-api/docs/pricing",
-  googleModels: "https://ai.google.dev/gemini-api/docs/models",
-  xai: "https://docs.x.ai/docs/models",
-  deepseek: "https://api-docs.deepseek.com",
-  alibaba: "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
-  zai: "https://docs.z.ai/guides/overview/pricing",
-  minimax: "https://platform.minimax.io/docs/guides/pricing-paygo",
-  kimi: "https://platform.kimi.ai",
-  cursor: "https://www.cursor.com/pricing",
-  opencodeGo: "https://opencode.ai/docs",
-  opencodeZen: "https://opencode.ai/docs",
-  sweVerified: "https://llm-stats.com/benchmarks/swe-bench-verified",
-  swePro: "https://scale.com/leaderboard/swe-bench-pro",
-  terminalBench: "https://www.tbench.ai",
-  gpqa: "https://github.com/idavidrein/gpqa",
-} as const;
-
-// ─── Figure / price helpers (keep the literals terse, like cities.ts's `m()`) ───────────────
-
-type FigureExtras = Pick<Partial<Figure>, "benchmarkVersion" | "conditions">;
-
-function fig(
-  benchmark: BenchmarkId,
-  value: number,
-  grade: EvidenceGrade,
-  source: string,
-  extra: FigureExtras = {},
-): Figure {
-  return { benchmark, value, grade, source, ...extra };
-}
-
-/** A conflicted figure: `value` is the LOW (composite input); the full [low, high] range is kept. */
-function cf(
-  benchmark: BenchmarkId,
-  low: number,
-  high: number,
-  source: string,
-  extra: FigureExtras = {},
-): ConflictedFigure {
-  return { benchmark, value: low, grade: "conflicted", low, high, source, ...extra };
-}
-
-function met(input: number, output: number, grade: EvidenceGrade, source: string, conditions?: string): MeteredPrice {
-  return { kind: "metered", input, output, grade, source, conditions };
-}
-
-/**
- * OpenCode Go flat-rate subscription: $5 first month then $10/mo, with usage caps. Graded
- * "verified" — the plan cost and caps are OpenCode's own official published docs, the same grade
- * used elsewhere in this dataset for a harness's own official pricing page (e.g. the OpenCode Zen
- * passthrough rates, `met(..., V, URL...)` below).
- */
-function goSubscription(): SubscriptionPrice {
+function figure(benchmark: BenchmarkId, value: number, operator: OperatorId, config: string, source?: string): Figure {
   return {
-    kind: "subscription",
-    planCostUsd: 10,
-    grade: "verified",
-    caps: "First month $5, then $10/month. Usage caps: $12/5hr · $30/week · $60/month.",
-    source: URL.opencodeGo,
+    benchmark,
+    version: benchmarkSpec(benchmark).version,
+    value,
+    operator,
+    config,
+    source: source ?? operatorById(operator).url,
   };
 }
 
-const V = "verified";
-const XAI_DBL = "xAI doubles all rates once a prompt reaches 200k tokens (applied to the whole request).";
-const ZEN_PASS = "OpenCode Zen passthrough at the vendor rate.";
+/** The three figures of one Artificial Analysis Coding Agent Index row. */
+function aa(config: string, deepSwe: number, terminalBench: number, qna: number): Figure[] {
+  return [
+    figure("deep-swe", deepSwe, "artificial-analysis", config),
+    figure("terminal-bench", terminalBench, "artificial-analysis", config),
+    figure("swe-atlas-qna", qna, "artificial-analysis", config),
+  ];
+}
 
-// ─── Models (Appendix A.2 roster, 38 rows) ────────────────────────────────────────────────
+const datacurve = (value: number, effort: string) =>
+  figure("deep-swe", value, "datacurve", `mini-SWE-agent, ${effort} effort`);
+const aaTb4 = (value: number, config: string) =>
+  figure("terminal-bench", value, "artificial-analysis", config, AA_TB4_EVAL);
+const tbench = (value: number, agent: string) => figure("terminal-bench", value, "terminal-bench", agent);
+const vals = (value: number) => figure("terminal-bench", value, "vals", "mini-SWE-agent");
+const scale = (value: number, config: string) => figure("swe-atlas-qna", value, "scale", config);
+/** An Artificial Analysis Terminal-Bench 4.0 figure read from a model comparison page, shown as a whole percent. */
+const aaTb4Rounded = (value: number, page: string) =>
+  figure("terminal-bench", value, "artificial-analysis", "mini-SWE-agent (published as a whole percent)", page);
+
+const aaCost = (usd: number): CostPerTask => ({
+  usd,
+  operator: "artificial-analysis",
+  source: operatorById("artificial-analysis").url,
+});
+
+const PRICE_URL = {
+  anthropic: "https://platform.claude.com/docs/en/about-claude/pricing",
+  openai: "https://developers.openai.com/api/docs/pricing",
+  google: "https://ai.google.dev/gemini-api/docs/pricing",
+  xai: "https://docs.x.ai/docs/models",
+  zai: "https://docs.z.ai/guides/overview/pricing",
+  moonshot: "https://platform.kimi.ai/docs/pricing/chat",
+  deepseek: "https://api-docs.deepseek.com/quick_start/pricing",
+  alibaba: "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+  minimax: "https://platform.minimax.io/docs/guides/pricing-paygo",
+  meta: "https://dev.meta.ai/docs/pricing-rate-limits",
+  opencodeGo: "https://opencode.ai/docs/go/",
+  opencodeZen: "https://opencode.ai/docs/zen/",
+} as const;
+
+function vendorPrice(input: number, output: number, source: string, note?: string): ApiPrice {
+  return { input, output, source, listedBy: "vendor", note };
+}
+
+function opencodePrice(input: number, output: number, source: string, note?: string): ApiPrice {
+  return { input, output, source, listedBy: "opencode", note };
+}
+
+const GROK_LONG = "Prompts of 200K tokens or more: $4 / $12.";
+const GEMINI_FLASH_PROMO = "Promotional through 2026-12-31; $1.50 / $7.50 from 2027-01-01.";
+const DEEPSEEK_PEAK = "Peak-hour rate; off-peak is half.";
+const MUSE_CONTRIBUTOR = "OpenCode Go carries the cheaper Contributor tier, on which Meta may train on submissions.";
 
 export const dataset: Dataset = {
-  snapshotDate: "2026-07-28",
-  anchorIds: { opus: OPUS_ANCHOR_ID, sonnet: SONNET_ANCHOR_ID },
+  lastUpdated: "2026-10-01",
   models: [
-    // ══════════════════════════════════════════
-    // Anthropic
-    // ══════════════════════════════════════════
+    // ── Anthropic ───────────────────────────────────────────────────────────────
+    {
+      id: "claude-fable-5-1",
+      name: "Claude Fable 5.1",
+      vendor: "Anthropic",
+      line: "Fable",
+      releaseDate: "2026-09-01",
+      access: "general",
+      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      figures: aa("Claude Code, max effort (provider fallback on 74 attempts)", 64.31, 57.58, 64.78),
+      price: vendorPrice(10, 50, PRICE_URL.anthropic),
+      costPerTask: aaCost(12.39),
+    },
     {
       id: "claude-fable-5",
       name: "Claude Fable 5",
       vendor: "Anthropic",
+      line: "Fable",
+      releaseDate: "2026-06-09",
+      access: "general",
       harnesses: ["claude-code", "cursor", "opencode-zen"],
       figures: [
-        fig("swe-bench-verified", 95.0, "self-reported", URL.anthropicModels, { benchmarkVersion: "Verified" }),
-        fig("swe-bench-pro", 80.3, "self-reported", URL.anthropicModels, { benchmarkVersion: "Pro" }),
-        fig("terminal-bench-2-1", 84.3, "self-reported", URL.anthropicModels, { benchmarkVersion: "2.1" }),
+        datacurve(69.91, "xhigh"),
+        tbench(44.55, "Claude Code"),
+        scale(39.0, "Claude Code, xhigh effort (refusals scored as failures)"),
       ],
-      pricing: {
-        "claude-code": met(10, 50, V, URL.anthropic),
-        cursor: met(10, 50, V, URL.anthropic, "Cursor passthrough."),
-        "opencode-zen": met(10, 50, V, URL.anthropic, ZEN_PASS),
-      },
+      price: vendorPrice(10, 50, PRICE_URL.anthropic),
     },
     {
-      id: OPUS_ANCHOR_ID, // claude-opus-5 — OPUS anchor
+      id: "claude-opus-5-5",
+      name: "Claude Opus 5.5",
+      vendor: "Anthropic",
+      line: "Opus",
+      releaseDate: "2026-09-22",
+      access: "general",
+      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      figures: aa("Claude Code, max effort (provider fallback on 78 attempts)", 68.44, 63.13, 66.4),
+      price: vendorPrice(4, 20, PRICE_URL.anthropic),
+      costPerTask: aaCost(13.04),
+    },
+    {
+      id: "claude-opus-5",
       name: "Claude Opus 5",
       vendor: "Anthropic",
+      line: "Opus",
+      releaseDate: "2026-07-24",
+      access: "general",
       harnesses: ["claude-code", "cursor", "opencode-zen"],
-      figures: [
-        fig("swe-bench-verified", 96.0, "self-reported", URL.anthropicModels, {
-          benchmarkVersion: "Verified",
-          conditions: "Self-reported 2026-07-24.",
-        }),
-        // GPQA Diamond is conflicted (K-2): three sources, three numbers, no primary. LOW enters.
-        cf("gpqa-diamond", 93.2, 94.3, URL.anthropicModels, {
-          benchmarkVersion: "Diamond",
-          conditions: "Three secondary sources, three numbers, no primary (K-2).",
-        }),
-        // Terminal-Bench 2.1: K-1 — not captured. Absent (not zero).
-      ],
-      pricing: {
-        "claude-code": met(5, 25, V, URL.anthropic),
-        cursor: met(5, 25, V, URL.anthropic, "Cursor passthrough."),
-        "opencode-zen": met(5, 25, V, URL.anthropic, ZEN_PASS),
-      },
+      figures: aa("Claude Code, max effort (provider fallback on 3 attempts)", 62.54, 54.55, 62.1),
+      price: vendorPrice(5, 25, PRICE_URL.anthropic),
+      costPerTask: aaCost(10.79),
     },
     {
       id: "claude-opus-4-8",
       name: "Claude Opus 4.8",
       vendor: "Anthropic",
+      line: "Opus",
+      releaseDate: "2026-05-28",
+      access: "general",
       harnesses: ["claude-code", "cursor", "opencode-zen"],
       figures: [
-        fig("swe-bench-verified", 88.6, "verified", URL.anthropicModels, { benchmarkVersion: "Verified" }),
-        fig("swe-bench-pro", 69.2, "verified", URL.swePro, { benchmarkVersion: "Pro", conditions: "Scale AI SEAL." }),
+        datacurve(58.97, "max"),
+        tbench(23.64, "Claude Code, max effort"),
+        scale(57.26, "Claude Code, xhigh effort"),
       ],
-      pricing: {
-        "claude-code": met(5, 25, V, URL.anthropic),
-        cursor: met(5, 25, V, URL.anthropic, "Cursor passthrough."),
-        "opencode-zen": met(5, 25, V, URL.anthropic, ZEN_PASS),
-      },
+      price: vendorPrice(5, 25, PRICE_URL.anthropic),
     },
     {
-      id: SONNET_ANCHOR_ID, // claude-sonnet-5 — SONNET anchor
+      id: "claude-sonnet-5-5",
+      name: "Claude Sonnet 5.5",
+      vendor: "Anthropic",
+      line: "Sonnet",
+      releaseDate: "2026-09-28",
+      access: "general",
+      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      figures: aa("Claude Code, max effort (provider fallback on 45 attempts)", 71.98, 66.16, 66.94),
+      price: vendorPrice(2, 10, PRICE_URL.anthropic),
+      costPerTask: aaCost(14.19),
+    },
+    {
+      id: "claude-sonnet-5",
       name: "Claude Sonnet 5",
       vendor: "Anthropic",
+      line: "Sonnet",
+      releaseDate: "2026-06-30",
+      access: "general",
       harnesses: ["claude-code", "cursor", "opencode-zen"],
-      figures: [
-        fig("swe-bench-verified", 85.2, "self-reported", URL.anthropicModels, {
-          benchmarkVersion: "Verified",
-          conditions: "Official launch post.",
-        }),
-        fig("swe-bench-pro", 63.2, "self-reported", URL.anthropicModels, { benchmarkVersion: "Pro" }),
-        fig("terminal-bench-2-1", 80.4, "self-reported", URL.anthropicModels, {
-          benchmarkVersion: "2.1",
-          conditions: "Official.",
-        }),
-      ],
-      // DD-17a: intro $2/$10 through 2026-08-31; standard $3/$15 from 2026-09-01 is published.
-      pricing: {
-        "claude-code": met(
-          3,
-          15,
-          V,
-          URL.anthropic,
-          "Intro $2/$10 through 2026-08-31; standard $3/$15 from 2026-09-01.",
-        ),
-        cursor: met(
-          3,
-          15,
-          V,
-          URL.anthropic,
-          "Intro $2/$10 through 2026-08-31; standard $3/$15 from 2026-09-01. Cursor passthrough.",
-        ),
-        "opencode-zen": met(
-          3,
-          15,
-          V,
-          URL.anthropic,
-          "Standard $3/$15 (DD-17a); Zen currently displays the $2/$10 promo.",
-        ),
-      },
+      figures: [datacurve(53.85, "max"), tbench(12.42, "Claude Code")],
+      price: vendorPrice(2, 10, PRICE_URL.anthropic),
     },
     {
       id: "claude-sonnet-4-6",
       name: "Claude Sonnet 4.6",
       vendor: "Anthropic",
+      line: "Sonnet",
+      releaseDate: "2026-02-17",
+      access: "general",
       harnesses: ["claude-code", "cursor", "opencode-zen"],
-      figures: [
-        fig("swe-bench-verified", 79.6, "secondary", URL.sweVerified, { benchmarkVersion: "Verified" }),
-        // GPQA conflicted: adaptive (89.9) vs standard (74.1) thinking. LOW (standard) enters.
-        cf("gpqa-diamond", 74.1, 89.9, URL.anthropicModels, {
-          benchmarkVersion: "Diamond",
-          conditions: "Adaptive thinking 89.9% vs standard thinking 74.1% — record the condition.",
-        }),
-      ],
-      pricing: {
-        "claude-code": met(3, 15, V, URL.anthropic),
-        cursor: met(3, 15, V, URL.anthropic, "Cursor passthrough."),
-        "opencode-zen": met(3, 15, V, URL.anthropic, ZEN_PASS),
-      },
+      figures: [datacurve(29.93, "high"), scale(31.2, "Claude Code")],
+      price: vendorPrice(3, 15, PRICE_URL.anthropic),
     },
     {
       id: "claude-haiku-4-5",
       name: "Claude Haiku 4.5",
       vendor: "Anthropic",
+      line: "Haiku",
+      releaseDate: "2025-10-15",
+      access: "general",
       harnesses: ["claude-code", "cursor", "opencode-zen"],
-      figures: [
-        fig("swe-bench-verified", 73.3, "verified", URL.anthropicModels, { benchmarkVersion: "Verified" }),
-        fig("swe-bench-pro", 39.5, "secondary", URL.swePro, { benchmarkVersion: "Pro" }),
-        // GPQA conflicted: 74.1% and 67.2% both circulate. LOW (67.2) enters.
-        cf("gpqa-diamond", 67.2, 74.1, URL.anthropicModels, {
-          benchmarkVersion: "Diamond",
-          conditions: "74.1% and 67.2% both circulate.",
-        }),
-      ],
-      pricing: {
-        "claude-code": met(1, 5, V, URL.anthropic),
-        cursor: met(1, 5, V, URL.anthropic, "Cursor passthrough."),
-        "opencode-zen": met(1, 5, V, URL.anthropic, ZEN_PASS),
-      },
+      figures: [],
+      price: vendorPrice(1, 5, PRICE_URL.anthropic),
     },
-    // ══════════════════════════════════════════
-    // OpenAI
-    // ══════════════════════════════════════════
+    {
+      id: "claude-mythos-5-1",
+      name: "Claude Mythos 5.1",
+      vendor: "Anthropic",
+      line: "Mythos",
+      releaseDate: "2026-09-01",
+      access: "limited",
+      harnesses: [],
+      figures: [],
+      price: vendorPrice(10, 50, PRICE_URL.anthropic),
+      note: "Invitation only (Project Glasswing).",
+    },
+    {
+      id: "claude-mythos-5",
+      name: "Claude Mythos 5",
+      vendor: "Anthropic",
+      line: "Mythos",
+      releaseDate: "2026-06-09",
+      access: "limited",
+      harnesses: [],
+      figures: [],
+      price: vendorPrice(10, 50, PRICE_URL.anthropic),
+      note: "Invitation only (Project Glasswing).",
+    },
+
+    // ── OpenAI ──────────────────────────────────────────────────────────────────
+    {
+      id: "gpt-6-astra",
+      name: "GPT-6 Astra",
+      vendor: "OpenAI",
+      line: "Astra",
+      releaseDate: "2026-09-03",
+      access: "limited",
+      harnesses: ["codex-cli", "opencode-zen"],
+      figures: aa("Codex, max effort", 67.55, 55.56, 61.83),
+      price: vendorPrice(10, 50, PRICE_URL.openai, "Prompts over 272K tokens: 2× input, 1.5× output."),
+      costPerTask: aaCost(7.47),
+      note: "Limited rollout in Codex; check your plan.",
+    },
+    {
+      id: "gpt-6.1-sol",
+      name: "GPT-6.1 Sol",
+      vendor: "OpenAI",
+      line: "Sol",
+      releaseDate: "2026-09-29",
+      access: "general",
+      harnesses: ["codex-cli", "opencode-zen"],
+      figures: aa("Codex, xhigh effort", 73.16, 54.55, 61.02),
+      price: vendorPrice(2, 10, PRICE_URL.openai),
+      costPerTask: aaCost(1.04),
+    },
+    {
+      id: "gpt-6-sol",
+      name: "GPT-6 Sol",
+      vendor: "OpenAI",
+      line: "Sol",
+      releaseDate: "2026-09-22",
+      access: "general",
+      harnesses: ["codex-cli", "opencode-zen"],
+      figures: aa("Codex, max effort", 69.03, 43.43, 57.53),
+      price: vendorPrice(2, 10, PRICE_URL.openai),
+      costPerTask: aaCost(2.99),
+    },
     {
       id: "gpt-5.6-sol",
       name: "GPT-5.6 Sol",
       vendor: "OpenAI",
+      line: "Sol",
+      releaseDate: "2026-07-09",
+      access: "general",
       harnesses: ["codex-cli", "cursor", "opencode-zen"],
-      figures: [
-        // SWE-bench Verified: K-3 — vendor moved to SWE-bench Pro; the aggregator's 96.2% is NOT
-        // transcribed. No Verified figure.
-        fig("terminal-bench-2-1", 91.9, "self-reported", URL.openaiModels, {
-          benchmarkVersion: "2.1",
-          conditions: '"Ultra" effort setting.',
-        }),
-        fig("gpqa-diamond", 94.1, "secondary", URL.gpqa, {
-          benchmarkVersion: "Diamond",
-          conditions: "Max effort; flagged unverified in source.",
-        }),
-      ],
-      pricing: {
-        "codex-cli": met(5, 30, V, URL.openai),
-        cursor: met(5, 30, V, URL.openai, "Cursor passthrough."),
-        "opencode-zen": met(5, 30, V, URL.openai, ZEN_PASS),
-      },
-      notes: [
-        {
-          modelId: "gpt-5.6-sol",
-          text: 'METR reported GPT-5.6 Sol "gamed its software engineering evaluation at the highest detected rate in the organization\'s history."',
-          source: "https://metr.org",
-        },
-      ],
+      figures: aa("Codex, max effort", 72.27, 37.37, 54.03),
+      price: vendorPrice(4, 20, PRICE_URL.openai, "Promotional price, held at least through 2026-11-21."),
+      costPerTask: aaCost(6.35),
     },
     {
       id: "gpt-5.6-terra",
       name: "GPT-5.6 Terra",
       vendor: "OpenAI",
+      line: "Terra",
+      releaseDate: "2026-07-09",
+      access: "general",
       harnesses: ["codex-cli", "cursor", "opencode-zen"],
-      figures: [fig("terminal-bench-2-1", 87.4, "self-reported", URL.openaiModels, { benchmarkVersion: "2.1" })],
-      pricing: {
-        "codex-cli": met(2.5, 15, V, URL.openai),
-        cursor: met(2.5, 15, V, URL.openai, "Cursor passthrough."),
-        "opencode-zen": met(2.5, 15, V, URL.openai, ZEN_PASS),
-      },
+      figures: [datacurve(69.62, "max"), tbench(21.52, "Codex")],
+      price: vendorPrice(2, 12, PRICE_URL.openai),
+    },
+    {
+      id: "gpt-5.4-mini",
+      name: "GPT-5.4 mini",
+      vendor: "OpenAI",
+      line: "Terra",
+      releaseDate: "2026-03-17",
+      access: "general",
+      harnesses: ["codex-cli", "cursor", "opencode-zen"],
+      figures: [vals(2.52)],
+      price: vendorPrice(0.75, 4.5, PRICE_URL.openai),
+      note: "The mini tier that Terra succeeds. Codex CLI only with an API key.",
+    },
+    {
+      id: "gpt-6-luna",
+      name: "GPT-6 Luna",
+      vendor: "OpenAI",
+      line: "Luna",
+      releaseDate: "2026-09-22",
+      access: "general",
+      harnesses: ["codex-cli", "opencode-go", "opencode-zen"],
+      figures: aa("Codex, max effort", 63.72, 15.15, 44.35),
+      price: vendorPrice(0.1, 0.5, PRICE_URL.openai),
+      costPerTask: aaCost(0.18),
     },
     {
       id: "gpt-5.6-luna",
       name: "GPT-5.6 Luna",
       vendor: "OpenAI",
-      harnesses: ["codex-cli", "cursor", "opencode-zen"],
-      figures: [fig("terminal-bench-2-1", 84.7, "self-reported", URL.openaiModels, { benchmarkVersion: "2.1" })],
-      pricing: {
-        "codex-cli": met(1, 6, V, URL.openai),
-        cursor: met(1, 6, V, URL.openai, "Cursor passthrough."),
-        "opencode-zen": met(1, 6, V, URL.openai, ZEN_PASS),
-      },
-    },
-    {
-      id: "gpt-5.5",
-      name: "GPT-5.5",
-      vendor: "OpenAI",
-      harnesses: ["codex-cli", "cursor", "opencode-zen"],
-      figures: [],
-      pricing: {
-        "codex-cli": met(5, 30, V, URL.openai),
-        cursor: met(5, 30, V, URL.openai, "Cursor passthrough."),
-        "opencode-zen": met(5, 30, V, URL.openai, ZEN_PASS),
-      },
-    },
-    {
-      id: "gpt-5.5-pro",
-      name: "GPT-5.5 Pro",
-      vendor: "OpenAI",
-      harnesses: ["opencode-zen"],
-      figures: [],
-      pricing: { "opencode-zen": met(30, 180, V, URL.openai, ZEN_PASS) },
-    },
-    {
-      id: "gpt-5.4",
-      name: "GPT-5.4",
-      vendor: "OpenAI",
-      harnesses: ["codex-cli", "cursor", "opencode-zen"],
-      figures: [],
-      pricing: {
-        "codex-cli": met(2.5, 15, V, URL.openai),
-        cursor: met(2.5, 15, V, URL.openai, "Cursor passthrough."),
-        "opencode-zen": met(2.5, 15, V, URL.openai, ZEN_PASS),
-      },
-    },
-    {
-      id: "gpt-5.4-mini",
-      name: "GPT-5.4 Mini",
-      vendor: "OpenAI",
-      harnesses: ["codex-cli", "cursor", "opencode-zen"],
-      figures: [],
-      pricing: {
-        "codex-cli": met(0.75, 4.5, V, URL.openai),
-        cursor: met(0.75, 4.5, V, URL.openai, "Cursor passthrough."),
-        "opencode-zen": met(0.75, 4.5, V, URL.openai, ZEN_PASS),
-      },
+      line: "Luna",
+      releaseDate: "2026-07-09",
+      access: "general",
+      harnesses: ["codex-cli", "cursor", "opencode-go", "opencode-zen"],
+      figures: aa("Codex, max effort", 66.37, 14.65, 48.66),
+      price: vendorPrice(0.2, 1.2, PRICE_URL.openai),
+      costPerTask: aaCost(0.44),
     },
     {
       id: "gpt-5.4-nano",
-      name: "GPT-5.4 Nano",
+      name: "GPT-5.4 nano",
       vendor: "OpenAI",
+      line: "Luna",
+      releaseDate: "2026-03-17",
+      access: "general",
       harnesses: ["cursor", "opencode-zen"],
       figures: [],
-      pricing: {
-        cursor: met(0.2, 1.25, V, URL.openai, "Cursor passthrough."),
-        "opencode-zen": met(0.2, 1.25, V, URL.openai, ZEN_PASS),
-      },
+      price: vendorPrice(0.2, 1.25, PRICE_URL.openai),
+      note: "The nano tier that Luna succeeds.",
+    },
+
+    // ── Google ──────────────────────────────────────────────────────────────────
+    {
+      id: "gemini-4-argon",
+      name: "Gemini 4 Argon",
+      vendor: "Google",
+      line: "Gemini Argon",
+      releaseDate: "2026-09-30",
+      access: "limited",
+      harnesses: [],
+      figures: aa("Antigravity CLI, high effort", 78.76, 56.06, 56.45),
+      costPerTask: aaCost(5.84),
+      note: "Limited access; no public API price yet.",
     },
     {
-      id: "gpt-5.3-codex-spark",
-      name: "GPT-5.3 Codex Spark",
-      vendor: "OpenAI",
-      harnesses: ["codex-cli", "opencode-zen"],
-      figures: [],
-      pricing: {
-        "codex-cli": met(1.75, 14, V, URL.openai, "ChatGPT Pro only, research preview."),
-        "opencode-zen": met(1.75, 14, V, URL.openai, ZEN_PASS),
-      },
+      id: "gemini-3.1-pro-preview",
+      name: "Gemini 3.1 Pro (preview)",
+      vendor: "Google",
+      line: "Gemini Pro",
+      releaseDate: "2026-02-19",
+      access: "general",
+      harnesses: ["cursor", "opencode-zen"],
+      figures: [datacurve(11.73, "high"), vals(2.52), scale(13.5, "mini-SWE-agent")],
+      price: vendorPrice(2, 12, PRICE_URL.google, "Prompts over 200K tokens: $4 / $18."),
     },
-    // ══════════════════════════════════════════
-    // Google
-    // ══════════════════════════════════════════
+    {
+      id: "gemini-3.8-flash",
+      name: "Gemini 3.8 Flash",
+      vendor: "Google",
+      line: "Gemini Flash",
+      releaseDate: "2026-09-02",
+      access: "general",
+      harnesses: ["cursor", "opencode-zen"],
+      figures: aa("Antigravity SDK, high effort", 65.78, 14.65, 45.16),
+      price: vendorPrice(0.75, 3.75, PRICE_URL.google, GEMINI_FLASH_PROMO),
+      costPerTask: aaCost(2.47),
+    },
+    {
+      id: "gemini-3.7-flash",
+      name: "Gemini 3.7 Flash",
+      vendor: "Google",
+      line: "Gemini Flash",
+      releaseDate: "2026-08-13",
+      access: "general",
+      harnesses: ["cursor", "opencode-zen"],
+      figures: [datacurve(65.49, "medium"), tbench(11.21, "mini-SWE-agent")],
+      price: vendorPrice(0.75, 3.75, PRICE_URL.google, GEMINI_FLASH_PROMO),
+    },
     {
       id: "gemini-3.6-flash",
       name: "Gemini 3.6 Flash",
       vendor: "Google",
+      line: "Gemini Flash",
+      releaseDate: "2026-07-21",
+      access: "general",
       harnesses: ["cursor", "opencode-zen"],
-      figures: [fig("terminal-bench-2-1", 78.0, "secondary", URL.terminalBench, { benchmarkVersion: "2.1" })],
-      pricing: {
-        cursor: met(1.5, 7.5, V, URL.google, "Cursor passthrough."),
-        "opencode-zen": met(1.5, 7.5, V, URL.google, ZEN_PASS),
-      },
-    },
-    {
-      id: "gemini-3.5-flash",
-      name: "Gemini 3.5 Flash",
-      vendor: "Google",
-      harnesses: ["cursor", "opencode-zen"],
-      figures: [],
-      pricing: {
-        cursor: met(1.5, 9, V, URL.google, "Cursor passthrough."),
-        "opencode-zen": met(1.5, 9, V, URL.google, ZEN_PASS),
-      },
+      figures: [datacurve(46.68, "high")],
+      price: vendorPrice(0.75, 3.75, PRICE_URL.google, GEMINI_FLASH_PROMO),
     },
     {
       id: "gemini-3.5-flash-lite",
-      name: "Gemini 3.5 Flash Lite",
+      name: "Gemini 3.5 Flash-Lite",
       vendor: "Google",
+      line: "Gemini Flash-Lite",
+      releaseDate: "2026-07-21",
+      access: "general",
       harnesses: ["opencode-zen"],
       figures: [],
-      pricing: { "opencode-zen": met(0.3, 2.5, V, URL.google, ZEN_PASS) },
+      price: vendorPrice(0.3, 2.5, PRICE_URL.google),
     },
     {
-      id: "gemini-3.1-pro",
-      name: "Gemini 3.1 Pro",
+      id: "gemini-3.1-flash-lite",
+      name: "Gemini 3.1 Flash-Lite",
       vendor: "Google",
-      harnesses: ["cursor", "opencode-zen"],
-      figures: [
-        fig("swe-bench-verified", 80.6, "self-reported", URL.googleModels, {
-          benchmarkVersion: "Verified",
-          conditions: "Model card.",
-        }),
-        // GPQA conflicted: 94.1–94.3 range. LOW enters.
-        cf("gpqa-diamond", 94.1, 94.3, URL.googleModels, { benchmarkVersion: "Diamond" }),
-      ],
-      // No transcribable standard-tier price for 3.1 Pro in Appendix A.4 (only 3.6/3.5 Flash and
-      // the 2.5 line are priced). Omitted rather than invented; benchmark data retained.
-      pricing: {},
+      line: "Gemini Flash-Lite",
+      releaseDate: "2026-05-07",
+      access: "general",
+      harnesses: [],
+      figures: [],
+      price: vendorPrice(0.25, 1.5, PRICE_URL.google, "Shuts down 2027-05-07."),
+    },
+
+    // ── xAI ─────────────────────────────────────────────────────────────────────
+    {
+      id: "grok-4.7",
+      name: "Grok 4.7",
+      vendor: "xAI",
+      line: "Grok",
+      releaseDate: "2026-09-21",
+      access: "general",
+      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      figures: aa("Grok Build, xhigh effort", 72.57, 33.33, 62.9),
+      price: vendorPrice(2, 6, PRICE_URL.xai, GROK_LONG),
+      costPerTask: aaCost(8.82),
     },
     {
-      id: "gemini-3-flash",
-      name: "Gemini 3 Flash",
-      vendor: "Google",
-      harnesses: ["cursor", "opencode-zen"],
-      figures: [
-        // SWE-bench Verified conflicted: 76.2–78.0 range across sources. LOW (76.2) enters.
-        cf("swe-bench-verified", 76.2, 78.0, URL.sweVerified, {
-          benchmarkVersion: "Verified",
-          conditions: "Range across sources.",
-        }),
-      ],
-      // No standard-tier price for bare "Gemini 3 Flash" in Appendix A.4. Omitted, not invented.
-      pricing: {},
+      id: "grok-4.6",
+      name: "Grok 4.6",
+      vendor: "xAI",
+      line: "Grok",
+      releaseDate: "2026-08-12",
+      access: "general",
+      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      figures: aa("Grok Build, xhigh effort", 64.9, 17.68, 58.33),
+      price: vendorPrice(2, 6, PRICE_URL.xai, GROK_LONG),
+      costPerTask: aaCost(3.57),
     },
-    // ══════════════════════════════════════════
-    // xAI
-    // ══════════════════════════════════════════
     {
       id: "grok-4.5",
       name: "Grok 4.5",
       vendor: "xAI",
-      harnesses: ["cursor", "opencode-go", "opencode-zen"],
-      figures: [
-        // SWE-bench Verified: vendor moved to Pro — no Verified figure (do not transcribe).
-        fig("swe-bench-pro", 64.7, "self-reported", URL.xai, { benchmarkVersion: "Pro" }),
-        fig("terminal-bench-2-1", 83.3, "self-reported", URL.xai, { benchmarkVersion: "2.1" }),
-        // GPQA Diamond: K-4 — vendors omit. Absent.
-      ],
-      pricing: {
-        cursor: met(2, 6, V, URL.cursor, "Base rate; $4/$18 fast. " + XAI_DBL),
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(2, 6, V, URL.xai, ZEN_PASS + " " + XAI_DBL),
-      },
+      line: "Grok",
+      releaseDate: "2026-07-16",
+      access: "general",
+      harnesses: ["cursor", "opencode-zen"],
+      figures: [datacurve(53.76, "high"), tbench(12.42, "Grok Build, high effort")],
+      price: vendorPrice(2, 6, PRICE_URL.xai, GROK_LONG),
     },
     {
       id: "grok-build-0.1",
-      name: "grok-build-0.1",
+      name: "Grok Build 0.1",
       vendor: "xAI",
+      line: "Grok Build",
+      access: "general",
       harnesses: ["opencode-zen"],
       figures: [],
-      pricing: { "opencode-zen": met(1, 2, V, URL.xai, ZEN_PASS + " " + XAI_DBL) },
+      price: vendorPrice(1, 2, PRICE_URL.xai),
     },
-    // ══════════════════════════════════════════
-    // Cursor (own models)
-    // ══════════════════════════════════════════
+
+    // ── Z.ai ────────────────────────────────────────────────────────────────────
     {
-      id: "cursor-composer-2.5",
-      name: "Cursor Composer 2.5",
-      vendor: "Cursor",
-      harnesses: ["cursor"],
-      // 79.8% is SWE-bench Multilingual (different benchmark) — NOT in swe-bench-verified.
-      // 69.3% is Terminal-Bench 2.0 — NOT in terminal-bench-2-1. GPQA not published.
-      // All four composite benchmarks absent → coverage 0, unrated band.
-      figures: [],
-      pricing: {
-        cursor: met(0.5, 2.5, V, URL.cursor, "Standard rate; $3.00/$15.00 fast. Released 2026-05-18."),
-      },
+      id: "glm-5.3",
+      name: "GLM-5.3",
+      vendor: "Z.ai",
+      line: "GLM",
+      releaseDate: "2026-08-18",
+      access: "general",
+      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      figures: aa("OpenCode, max effort", 61.36, 39.9, 59.41),
+      price: vendorPrice(1.4, 4.4, PRICE_URL.zai),
+      costPerTask: aaCost(4.24),
     },
-    {
-      id: "cursor-composer-1",
-      name: "Cursor Composer 1",
-      vendor: "Cursor",
-      harnesses: ["cursor"],
-      figures: [],
-      pricing: { cursor: met(1.25, 10, V, URL.cursor) },
-    },
-    // ══════════════════════════════════════════
-    // Z.ai (GLM)
-    // ══════════════════════════════════════════
     {
       id: "glm-5.2",
-      name: "GLM 5.2",
+      name: "GLM-5.2",
       vendor: "Z.ai",
+      line: "GLM",
+      releaseDate: "2026-06-16",
+      access: "general",
       harnesses: ["cursor", "opencode-go", "opencode-zen"],
-      figures: [
-        fig("swe-bench-pro", 62.1, "secondary", URL.swePro, { benchmarkVersion: "Pro" }),
-        // Terminal-Bench 2.1 conflicted: 82.7 vs ~81.0 circulates. LOW (~81.0) enters.
-        cf("terminal-bench-2-1", 81.0, 82.7, URL.terminalBench, {
-          benchmarkVersion: "2.1",
-          conditions: "82.7% and ≈81.0% both circulate.",
-        }),
-        fig("gpqa-diamond", 91.2, "secondary", URL.gpqa, { benchmarkVersion: "Diamond" }),
-      ],
-      pricing: {
-        cursor: met(1.4, 4.4, V, URL.zai, "Cursor passthrough."),
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(1.4, 4.4, V, URL.zai, ZEN_PASS),
-      },
+      figures: [datacurve(43.78, "max"), scale(48.12, "mini-SWE-agent")],
+      price: vendorPrice(1.4, 4.4, PRICE_URL.zai),
     },
     {
       id: "glm-5.1",
-      name: "GLM 5.1",
+      name: "GLM-5.1",
       vendor: "Z.ai",
-      harnesses: ["opencode-go", "opencode-zen"],
-      // GLM-5.1 Verified not captured (Appendix A.3 note). No benchmark figures.
-      figures: [],
-      pricing: {
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(1.4, 4.4, V, URL.zai, ZEN_PASS),
-      },
+      line: "GLM",
+      releaseDate: "2026-04-07",
+      access: "general",
+      harnesses: ["opencode-zen"],
+      figures: [aaTb4Rounded(2, "https://artificialanalysis.ai/models/comparisons/glm-5-2-vs-glm-5-1")],
+      price: vendorPrice(1.4, 4.4, PRICE_URL.zai),
     },
-    // ══════════════════════════════════════════
-    // Moonshot (Kimi)
-    // ══════════════════════════════════════════
+    {
+      id: "glm-5.3-flash",
+      name: "GLM-5.3 Flash",
+      vendor: "Z.ai",
+      line: "GLM Flash",
+      releaseDate: "2026-08-26",
+      access: "general",
+      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      figures: [datacurve(63.39, "max"), aaTb4(32.8, "mini-SWE-agent")],
+      price: vendorPrice(0.15, 0.5, PRICE_URL.zai),
+    },
+    {
+      id: "glm-4.7-flash",
+      name: "GLM-4.7-Flash",
+      vendor: "Z.ai",
+      line: "GLM Flash",
+      releaseDate: "2026-01-19",
+      access: "general",
+      harnesses: [],
+      figures: [],
+      price: vendorPrice(0, 0, PRICE_URL.zai, "Free on the Z.ai API."),
+    },
+
+    // ── Moonshot AI ─────────────────────────────────────────────────────────────
     {
       id: "kimi-k3",
       name: "Kimi K3",
-      vendor: "Moonshot",
+      vendor: "Moonshot AI",
+      line: "Kimi",
+      releaseDate: "2026-07-17",
+      access: "general",
       harnesses: ["cursor", "opencode-go", "opencode-zen"],
-      figures: [
-        fig("swe-bench-verified", 76.8, "secondary", URL.sweVerified, { benchmarkVersion: "Verified" }),
-        fig("terminal-bench-2-1", 88.3, "secondary", URL.terminalBench, { benchmarkVersion: "2.1" }),
-        fig("gpqa-diamond", 93.5, "secondary", URL.gpqa, { benchmarkVersion: "Diamond" }),
-      ],
-      pricing: {
-        cursor: met(3, 15, V, URL.kimi, "Cursor passthrough."),
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(3, 15, V, URL.kimi, ZEN_PASS),
-      },
-    },
-    {
-      id: "kimi-k2.7-code",
-      name: "Kimi K2.7 Code",
-      vendor: "Moonshot",
-      harnesses: ["cursor", "opencode-go", "opencode-zen"],
-      figures: [],
-      // K-6: official Moonshot pricing page did not return content. Zen passthrough ($0.95/$4.00)
-      // is recorded as secondary; the official direct rate remains unavailable.
-      pricing: {
-        cursor: met(
-          0.95,
-          4,
-          "secondary",
-          URL.kimi,
-          "K-6: official rate not retrievable; Cursor passthrough of Zen rate.",
-        ),
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(
-          0.95,
-          4,
-          "secondary",
-          URL.opencodeZen,
-          "K-6: official Moonshot rate not retrievable; Zen passthrough.",
-        ),
-      },
+      figures: aa("Kimi Code CLI", 68.44, 21.21, 66.13),
+      price: vendorPrice(3, 15, PRICE_URL.moonshot),
+      costPerTask: aaCost(5.05),
     },
     {
       id: "kimi-k2.6",
       name: "Kimi K2.6",
-      vendor: "Moonshot",
-      harnesses: ["opencode-go", "opencode-zen"],
-      figures: [
-        fig("swe-bench-verified", 80.2, "secondary", URL.sweVerified, { benchmarkVersion: "Verified" }),
-        fig("swe-bench-pro", 58.6, "secondary", URL.swePro, { benchmarkVersion: "Pro" }),
-      ],
-      pricing: {
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(0.95, 4, V, URL.kimi, ZEN_PASS),
-      },
-    },
-    // ══════════════════════════════════════════
-    // MiniMax
-    // ══════════════════════════════════════════
-    {
-      id: "minimax-m3",
-      name: "MiniMax M3",
-      vendor: "MiniMax",
-      harnesses: ["opencode-go", "opencode-zen"],
-      figures: [
-        fig("swe-bench-verified", 80.5, "secondary", URL.sweVerified, { benchmarkVersion: "Verified" }),
-        fig("swe-bench-pro", 59.0, "secondary", URL.swePro, { benchmarkVersion: "Pro" }),
-        fig("terminal-bench-2-1", 66.0, "secondary", URL.terminalBench, { benchmarkVersion: "2.1" }),
-      ],
-      // DD-17a: "permanent 50% off" has no stated end date → publish the effective $0.30/$1.20.
-      pricing: {
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(
-          0.3,
-          1.2,
-          V,
-          URL.minimax,
-          ZEN_PASS + ' "Permanent 50% off" a $0.60/$2.40 list; no stated end date.',
-        ),
-      },
-    },
-    {
-      id: "minimax-m2.7",
-      name: "MiniMax M2.7",
-      vendor: "MiniMax",
+      vendor: "Moonshot AI",
+      line: "Kimi",
+      releaseDate: "2026-04-20",
+      access: "general",
       harnesses: ["opencode-go", "opencode-zen"],
       figures: [],
-      pricing: {
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(0.3, 1.2, V, URL.minimax, ZEN_PASS),
-      },
-    },
-    // ══════════════════════════════════════════
-    // Alibaba (Qwen)
-    // ══════════════════════════════════════════
-    {
-      id: "qwen3.7-max",
-      name: "Qwen3.7 Max",
-      vendor: "Alibaba",
-      harnesses: ["opencode-go", "opencode-zen"],
-      figures: [
-        fig("swe-bench-verified", 80.4, "secondary", URL.sweVerified, {
-          benchmarkVersion: "Verified",
-          conditions: "Flagged unverified in source.",
-        }),
-      ],
-      // International (Singapore) endpoint. "Limited-time 50% off" with no stated end date.
-      pricing: {
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(
-          2.5,
-          7.5,
-          V,
-          URL.alibaba,
-          ZEN_PASS + ' Singapore endpoint; "limited-time 50% off", no end date.',
-        ),
-      },
+      price: vendorPrice(0.95, 4, PRICE_URL.moonshot),
     },
     {
-      id: "qwen3.7-plus",
-      name: "Qwen3.7 Plus",
-      vendor: "Alibaba",
-      harnesses: ["opencode-go", "opencode-zen"],
-      figures: [],
-      pricing: {
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(0.4, 1.6, V, URL.alibaba, ZEN_PASS + " Singapore endpoint, 0–256k band."),
-      },
+      id: "kimi-k2.7-code",
+      name: "Kimi K2.7 Code",
+      vendor: "Moonshot AI",
+      line: "Kimi Code",
+      releaseDate: "2026-06-12",
+      access: "general",
+      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      figures: [datacurve(30.53, "default")],
+      price: vendorPrice(0.95, 4, PRICE_URL.moonshot),
     },
-    {
-      id: "qwen3.6-plus",
-      name: "Qwen3.6 Plus",
-      vendor: "Alibaba",
-      harnesses: ["opencode-go", "opencode-zen"],
-      figures: [],
-      pricing: {
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(0.5, 3, V, URL.alibaba, ZEN_PASS),
-      },
-    },
-    // ══════════════════════════════════════════
-    // DeepSeek
-    // ══════════════════════════════════════════
+
+    // ── DeepSeek ────────────────────────────────────────────────────────────────
     {
       id: "deepseek-v4-pro",
       name: "DeepSeek V4 Pro",
       vendor: "DeepSeek",
+      line: "DeepSeek Pro",
+      releaseDate: "2026-08-13",
+      access: "general",
       harnesses: ["opencode-go", "opencode-zen"],
-      figures: [
-        fig("swe-bench-verified", 80.6, "secondary", URL.sweVerified, { benchmarkVersion: "Verified" }),
-        fig("gpqa-diamond", 90.1, "secondary", URL.gpqa, { benchmarkVersion: "Diamond" }),
-      ],
-      pricing: {
-        "opencode-go": goSubscription(),
-        // Zen marks this up ~4x vs DeepSeek's direct rate — DD-16 worked example. Both numbers
-        // are recorded: the Zen rate as the metered value, the direct rate in `conditions`.
-        "opencode-zen": met(
-          1.74,
-          3.48,
-          V,
-          URL.opencodeZen,
-          "Direct from DeepSeek: $0.435 input / $0.87 output per 1M tokens.",
-        ),
-      },
+      figures: aa("Codex, max effort (V4 Pro 0813)", 57.23, 10.1, 61.83),
+      price: vendorPrice(1.32, 3.96, PRICE_URL.deepseek, DEEPSEEK_PEAK),
+      costPerTask: aaCost(0.24),
+      note: "DeepSeek says it routes this name to V4.1 Flash from 2026-09-14 until V4.1 Pro launches; its price page still lists V4 Pro.",
+    },
+    {
+      id: "deepseek-v4.1-flash",
+      name: "DeepSeek V4.1 Flash",
+      vendor: "DeepSeek",
+      line: "DeepSeek Flash",
+      releaseDate: "2026-09-10",
+      access: "general",
+      harnesses: ["opencode-go", "opencode-zen"],
+      figures: [aaTb4(26.8, "mini-SWE-agent, max effort")],
+      price: vendorPrice(0.3, 1.2, PRICE_URL.deepseek, DEEPSEEK_PEAK),
     },
     {
       id: "deepseek-v4-flash",
       name: "DeepSeek V4 Flash",
       vendor: "DeepSeek",
+      line: "DeepSeek Flash",
+      releaseDate: "2026-04-24",
+      access: "general",
       harnesses: ["opencode-go", "opencode-zen"],
-      figures: [fig("swe-bench-verified", 79.0, "secondary", URL.sweVerified, { benchmarkVersion: "Verified" })],
-      pricing: {
-        "opencode-go": goSubscription(),
-        "opencode-zen": met(0.14, 0.28, V, URL.deepseek, ZEN_PASS),
-      },
+      figures: aa("Codex, max effort (V4 Flash 0731)", 54.28, 10.61, 51.34),
+      price: opencodePrice(0.3, 1.2, PRICE_URL.opencodeGo, "DeepSeek routes this name to V4.1 Flash; peak-hour rate."),
+      costPerTask: aaCost(0.09),
     },
-    // ══════════════════════════════════════════
-    // Xiaomi (MiMo)
-    // ══════════════════════════════════════════
     {
-      id: "mimo-v2.5",
-      name: "MiMo v2.5",
-      vendor: "Xiaomi",
+      id: "deepseek-v4-flash-vision-exp",
+      name: "DeepSeek V4 Flash Vision (experimental)",
+      vendor: "DeepSeek",
+      line: "DeepSeek Flash Vision",
+      access: "general",
       harnesses: ["opencode-go", "opencode-zen"],
       figures: [],
-      // No Xiaomi per-token pricing in Appendix A.4; OpenCode Go carries it on subscription.
-      // Zen rate not transcribable → only the GO subscription entry is recorded.
-      pricing: { "opencode-go": goSubscription() },
+      price: opencodePrice(0.3, 1.2, PRICE_URL.opencodeGo, DEEPSEEK_PEAK),
+      note: "Retired by DeepSeek on 2026-09-10; the name is now served by V4.1 Flash.",
+    },
+
+    // ── Alibaba (Qwen) ──────────────────────────────────────────────────────────
+    {
+      id: "qwen3.8-max",
+      name: "Qwen3.8 Max",
+      vendor: "Alibaba",
+      line: "Qwen Max",
+      releaseDate: "2026-08-03",
+      access: "general",
+      harnesses: ["opencode-go", "opencode-zen"],
+      figures: aa("Claude Code", 51.03, 16.67, 62.1),
+      price: vendorPrice(2, 6, PRICE_URL.alibaba),
+      costPerTask: aaCost(3.48),
+    },
+    {
+      id: "qwen3.7-max",
+      name: "Qwen3.7 Max",
+      vendor: "Alibaba",
+      line: "Qwen Max",
+      releaseDate: "2026-05-20",
+      access: "general",
+      harnesses: ["opencode-zen"],
+      figures: [aaTb4Rounded(2, "https://artificialanalysis.ai/models/comparisons/qwen3-7-max-vs-glm-5-2")],
+      price: vendorPrice(2.5, 7.5, PRICE_URL.alibaba),
+    },
+    {
+      id: "qwen3.6-max-preview",
+      name: "Qwen3.6 Max (preview)",
+      vendor: "Alibaba",
+      line: "Qwen Max",
+      releaseDate: "2026-04-20",
+      access: "general",
+      harnesses: [],
+      figures: [],
+      price: vendorPrice(1.3, 7.8, PRICE_URL.alibaba, "Prompts over 128K tokens: $2 / $12."),
+    },
+    {
+      id: "qwen3.8-flash",
+      name: "Qwen3.8 Flash",
+      vendor: "Alibaba",
+      line: "Qwen Flash",
+      releaseDate: "2026-08-28",
+      access: "general",
+      harnesses: ["opencode-go", "opencode-zen"],
+      figures: [],
+      price: vendorPrice(0.15, 0.47, PRICE_URL.alibaba),
+    },
+    {
+      id: "qwen3.7-flash",
+      name: "Qwen3.7 Flash",
+      vendor: "Alibaba",
+      line: "Qwen Flash",
+      releaseDate: "2026-07-21",
+      access: "general",
+      harnesses: [],
+      figures: [],
+      price: vendorPrice(
+        0.1,
+        0.4,
+        PRICE_URL.alibaba,
+        "Prompts of 32K–256K tokens; up to 32K: $0.03 / $0.13; over 256K: $0.20 / $0.80.",
+      ),
+    },
+    {
+      id: "qwen3.6-flash",
+      name: "Qwen3.6 Flash",
+      vendor: "Alibaba",
+      line: "Qwen Flash",
+      releaseDate: "2026-04-16",
+      access: "general",
+      harnesses: [],
+      figures: [],
+      price: vendorPrice(0.25, 1.5, PRICE_URL.alibaba, "Prompts over 256K tokens: $1 / $4."),
+    },
+    {
+      id: "qwen3.7-plus",
+      name: "Qwen3.7 Plus",
+      vendor: "Alibaba",
+      line: "Qwen Plus",
+      releaseDate: "2026-06-01",
+      access: "general",
+      harnesses: ["opencode-go", "opencode-zen"],
+      figures: [],
+      price: vendorPrice(0.4, 1.6, PRICE_URL.alibaba, "Prompts over 256K tokens: $1.20 / $4.80."),
+    },
+    {
+      id: "qwen3.6-plus",
+      name: "Qwen3.6 Plus",
+      vendor: "Alibaba",
+      line: "Qwen Plus",
+      releaseDate: "2026-04-02",
+      access: "general",
+      harnesses: ["opencode-zen"],
+      figures: [],
+      price: vendorPrice(0.5, 3, PRICE_URL.alibaba, "Prompts over 256K tokens: $2 / $6."),
+    },
+    {
+      id: "qwen3.5-plus",
+      name: "Qwen3.5 Plus",
+      vendor: "Alibaba",
+      line: "Qwen Plus",
+      releaseDate: "2026-02-15",
+      access: "general",
+      harnesses: ["opencode-zen"],
+      figures: [],
+      price: vendorPrice(0.4, 2.4, PRICE_URL.alibaba, "Prompts over 256K tokens cost more."),
+    },
+
+    // ── Meta ────────────────────────────────────────────────────────────────────
+    {
+      id: "muse-spark-1.3",
+      name: "Muse Spark 1.3",
+      vendor: "Meta",
+      line: "Muse Spark",
+      releaseDate: "2026-09-02",
+      access: "general",
+      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      figures: aa("Muse Code, max effort", 71.68, 31.82, 59.41),
+      price: opencodePrice(1.25, 4.25, PRICE_URL.opencodeZen, MUSE_CONTRIBUTOR),
+      costPerTask: aaCost(3.98),
+    },
+    {
+      id: "muse-spark-1.2",
+      name: "Muse Spark 1.2",
+      vendor: "Meta",
+      line: "Muse Spark",
+      access: "general",
+      harnesses: ["opencode-go", "opencode-zen"],
+      figures: [datacurve(54.87, "xhigh"), vals(6.06)],
+      price: opencodePrice(1.25, 4.25, PRICE_URL.opencodeZen, MUSE_CONTRIBUTOR),
+    },
+    {
+      id: "muse-spark-1.1",
+      name: "Muse Spark 1.1",
+      vendor: "Meta",
+      line: "Muse Spark",
+      releaseDate: "2026-07-09",
+      access: "general",
+      harnesses: [],
+      figures: [
+        datacurve(53.32, "xhigh"),
+        aaTb4Rounded(6, "https://artificialanalysis.ai/models/comparisons/muse-spark-1-1-vs-glm-5-2"),
+        scale(42.2, "mini-SWE-agent, xhigh effort"),
+      ],
+      price: vendorPrice(1.25, 4.25, PRICE_URL.meta),
+    },
+
+    // ── MiniMax ─────────────────────────────────────────────────────────────────
+    {
+      id: "minimax-m3",
+      name: "MiniMax M3",
+      vendor: "MiniMax",
+      line: "MiniMax",
+      releaseDate: "2026-06-01",
+      access: "general",
+      harnesses: ["opencode-go", "opencode-zen"],
+      figures: [aaTb4(2.0, "mini-SWE-agent")],
+      price: vendorPrice(
+        0.3,
+        1.2,
+        PRICE_URL.minimax,
+        "Up to 512K tokens, after a vendor discount with no stated end date.",
+      ),
+    },
+    {
+      id: "minimax-m2.7",
+      name: "MiniMax M2.7",
+      vendor: "MiniMax",
+      line: "MiniMax",
+      releaseDate: "2026-03-18",
+      access: "general",
+      harnesses: ["opencode-go", "opencode-zen"],
+      figures: [],
+      price: vendorPrice(0.3, 1.2, PRICE_URL.minimax),
+    },
+    {
+      id: "minimax-m2.5",
+      name: "MiniMax M2.5",
+      vendor: "MiniMax",
+      line: "MiniMax",
+      releaseDate: "2026-02-12",
+      access: "general",
+      harnesses: [],
+      figures: [scale(10.3, "mini-SWE-agent")],
+      price: vendorPrice(0.3, 1.2, PRICE_URL.minimax, "Listed by MiniMax as a legacy model."),
+    },
+
+    // ── Xiaomi (MiMo) ───────────────────────────────────────────────────────────
+    {
+      id: "mimo-v2.6-pro",
+      name: "MiMo V2.6 Pro",
+      vendor: "Xiaomi",
+      line: "MiMo Pro",
+      releaseDate: "2026-09-21",
+      access: "general",
+      harnesses: ["opencode-go"],
+      figures: [aaTb4(34.8, "mini-SWE-agent")],
+      price: opencodePrice(0.435, 0.87, PRICE_URL.opencodeGo),
     },
     {
       id: "mimo-v2.5-pro",
-      name: "MiMo v2.5 Pro",
+      name: "MiMo V2.5 Pro",
       vendor: "Xiaomi",
+      line: "MiMo Pro",
+      releaseDate: "2026-04-22",
+      access: "general",
+      harnesses: ["opencode-go"],
+      figures: [vals(0.51)],
+      price: opencodePrice(0.435, 0.87, PRICE_URL.opencodeGo),
+      note: "Xiaomi takes this model offline on 2026-10-21.",
+    },
+    {
+      id: "mimo-v2.6-flash",
+      name: "MiMo V2.6 Flash",
+      vendor: "Xiaomi",
+      line: "MiMo Flash",
+      releaseDate: "2026-09-21",
+      access: "general",
+      harnesses: ["opencode-go"],
+      figures: [vals(24.24)],
+      price: opencodePrice(0.14, 0.28, PRICE_URL.opencodeGo),
+    },
+    {
+      id: "mimo-v2.5",
+      name: "MiMo V2.5",
+      vendor: "Xiaomi",
+      line: "MiMo Flash",
+      releaseDate: "2026-04-22",
+      access: "general",
       harnesses: ["opencode-go"],
       figures: [],
-      pricing: { "opencode-go": goSubscription() },
+      price: opencodePrice(0.14, 0.28, PRICE_URL.opencodeGo),
+      note: "Xiaomi takes this model offline on 2026-10-21.",
+    },
+
+    // ── Tencent (Hy) ────────────────────────────────────────────────────────────
+    {
+      id: "hy4-preview",
+      name: "Hy4 (preview)",
+      vendor: "Tencent",
+      line: "Hy",
+      releaseDate: "2026-08-28",
+      access: "general",
+      harnesses: ["opencode-go"],
+      figures: [vals(8.08)],
+      price: opencodePrice(0.834, 2.501, PRICE_URL.opencodeGo),
+    },
+    {
+      id: "hy3",
+      name: "Hy3",
+      vendor: "Tencent",
+      line: "Hy",
+      releaseDate: "2026-07-06",
+      access: "general",
+      harnesses: ["opencode-go"],
+      figures: [],
+      price: opencodePrice(0.14, 0.58, PRICE_URL.opencodeGo),
+    },
+
+    // ── Meituan (LongCat) ───────────────────────────────────────────────────────
+    {
+      id: "longcat-2.5-preview-free",
+      name: "LongCat 2.5 (preview)",
+      vendor: "Meituan",
+      line: "LongCat",
+      access: "general",
+      harnesses: ["opencode-go", "opencode-zen"],
+      figures: [],
+      note: "Free on OpenCode for a limited time; no API price published.",
+    },
+    {
+      id: "longcat-2.0",
+      name: "LongCat 2.0",
+      vendor: "Meituan",
+      line: "LongCat",
+      releaseDate: "2026-06-30",
+      access: "general",
+      harnesses: ["opencode-go"],
+      figures: [],
+      price: opencodePrice(0.3, 1.2, PRICE_URL.opencodeGo, "Promotional rate with no published end date."),
     },
   ],
 };

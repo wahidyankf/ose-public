@@ -23,157 +23,124 @@ const translations: Record<Locale, Record<string, string>> = {
     toolsPageCalcDesc: "Compare monthly living costs, savings, and the minimum role needed across cities.",
     toolsPageAiBenchLink: "AI Model Benchmark",
     toolsPageAiBenchDesc:
-      "Compare coding-agent models by capability, class, and per-token price, every figure sourced.",
+      "Compare coding models by independently measured capability tier and API price, and find OpenCode Go substitutes.",
     breadcrumbHome: "Home",
     breadcrumbCalculator: "Calculator",
 
-    // AI benchmark — page shell, data table, honesty surface, and provenance.
-    // Every aiBench* key MUST exist in both locales (AC-35): a missing key renders as its
-    // raw identifier, and the page test asserts no "aiBench" token leaks into rendered text.
+    // AI benchmark. Every aiBench* key MUST exist in both locales: a missing key renders as its raw
+    // identifier, and the page tests assert no "aiBench" token leaks into rendered text. `{name}`
+    // placeholders are filled by `fill()` in `features/ai-benchmark/shell/format.ts`.
     aiBenchTitle: "AI Model Benchmark",
-    // Rule-15 UWT-003 fix (2026-07-30): reworded away from "roster-relative" — that term's own
-    // definition ("normalized to the strongest model on this roster") lived several bullets into
-    // the collapsed "How to read this benchmark" box, which a reader can skip entirely, so the very
-    // first sentence on the page used an undefined term. This wording states the same fact
-    // ("scored relative to each other", not against an absolute standard) in plain language.
-    // Rule-15 UWT-004 fix (2026-07-30): "harness" is the FIRST technical term on the page (right
-    // here, in the subtitle) and was never glossed anywhere — a first-time reader unfamiliar with
-    // coding-agent tooling had no way to learn what it means. The parenthetical below glosses it at
-    // its first use, rather than only inside the collapsed "How to read" box or the filter label.
     aiBenchSubtitle:
-      "An index of coding-agent models scored relative to each other across five harnesses (the CLI or IDE tools used to run them), with every figure sourced.",
-    aiBenchSnapshotLabel: "Data snapshot",
+      "Which coding model is good enough for the job, what it costs, and which OpenCode Go model can stand in for it.",
+    aiBenchLastUpdatedLabel: "Last updated",
+    aiBenchIndependentOnly:
+      "Scores come only from benchmarks run by independent operators. Results that a model's own vendor reports are neither shown nor counted.",
+    aiBenchJumpToMethod: "How the score works",
+
+    aiBenchFinderHeading: "Find an OpenCode Go substitute",
+    aiBenchFinderIntro:
+      "Pick a frontier model to see which OpenCode Go models reach at least its tier, and how their price compares.",
+    aiBenchFinderLabel: "Frontier model",
+    aiBenchFinderPlaceholder: "Choose a model…",
+    aiBenchFinderTarget: "{model} is in the {tier} tier, index {index}, blended price {price}.",
+    aiBenchFinderTargetNoPrice: "{model} is in the {tier} tier, index {index}; no public API price.",
+    aiBenchFinderMatches: "OpenCode Go models in the same tier or higher:",
+    aiBenchFinderNearest: "No OpenCode Go model reaches the {tier} tier yet. The closest options:",
+    aiBenchFinderInsufficient:
+      "{model} has too few independent results to compare. Its available scores are in the table below.",
+    aiBenchFinderNoneCheaper: "None of these is cheaper per token than {model}.",
+    aiBenchPriceCheaper: "{ratio}× cheaper per token",
+    aiBenchPricePricier: "{ratio}× pricier per token",
+    aiBenchPriceSame: "about the same price per token",
+    aiBenchPriceUnknown: "price not comparable",
+
+    aiBenchFilterHeading: "Filter",
+    aiBenchFilterHarness: "Harness",
+    aiBenchFilterHarnessAll: "All harnesses",
+    aiBenchFilterTier: "Tier",
+    aiBenchFilterTierAll: "All tiers",
+    aiBenchFilterReset: "Reset filters",
+    aiBenchFilterResultCount: "{count} of {total} models shown",
+    aiBenchEmptyStateTitle: "No model matches these filters",
+    aiBenchEmptyStateMessage: "Try a different harness or tier, or reset the filters.",
+
+    aiBenchTierMapHeading: "Capability tiers",
+    aiBenchTierUltra: "Ultra",
+    aiBenchTierPlanning: "Planning & orchestration",
+    aiBenchTierExecution: "Execution",
+    aiBenchTierFast: "Fast",
+    aiBenchTierInsufficient: "Insufficient data",
+    aiBenchTierUltraUse: "For the hardest, longest-running work.",
+    aiBenchTierPlanningUse: "For planning, review, and orchestrating other agents.",
+    aiBenchTierExecutionUse: "For carrying out a well-defined plan.",
+    aiBenchTierFastUse: "For quick, well-scoped edits and lookups.",
+    aiBenchTierFloor: "Floor: index {index}, set by {anchor}.",
+    aiBenchTierFastFloor: "Rated models below the Execution floor.",
+    aiBenchTierEmpty: "No model in this tier matches the current filters.",
+    aiBenchAnchorBadge: "anchor",
+    aiBenchLimitedAccess: "Limited access",
+    aiBenchIndexLabel: "Index",
+    aiBenchPriceInOut: "{input} / {output} per 1M tokens",
+    aiBenchNoPrice: "No public API price",
+
+    aiBenchInsufficientHeading: "Not enough independent data yet ({count} models)",
+    aiBenchInsufficientIntro:
+      "These models have independent results on fewer than {min} benchmarks, so they get no index or tier yet.",
+    aiBenchInsufficientNone: "no independent results yet",
+
+    aiBenchTableHeading: "All models",
     aiBenchTableCaption:
-      "Coding-agent model roster: capability figures, composite index, coverage, and per-harness prices.",
+      "Independent benchmark scores, composite index, tier, and API price in USD per 1M tokens. Each score links to its source.",
     aiBenchColModel: "Model",
-    aiBenchColVendor: "Vendor",
+    aiBenchColTier: "Tier",
+    aiBenchColIndex: "Index",
+    aiBenchColInput: "Input",
+    aiBenchColOutput: "Output",
+    aiBenchColBlended: "Blended",
+    aiBenchColCostPerTask: "Cost per task",
     aiBenchColHarnesses: "Harnesses",
-    aiBenchColClass: "Class",
-    aiBenchBenchSweVerified: "SWE-bench Verified",
-    aiBenchBenchSwePro: "SWE-bench Pro",
-    aiBenchBenchTerminalBench: "Terminal-Bench 2.1",
-    aiBenchBenchGpqa: "GPQA Diamond",
-    aiBenchColIndex: "Composite index",
-    aiBenchColCoverage: "Coverage",
-    aiBenchColInputPrice: "Input price",
-    aiBenchColOutputPrice: "Output price",
-    aiBenchBandOpus: "Opus",
-    aiBenchBandSonnet: "Sonnet",
-    // "Haiku" is deliberately untranslated in `id` (see the `id` block below), for the same
-    // reason `aiBenchBandOpus`/`aiBenchBandSonnet` already are — it is a model-tier proper noun
-    // (DD-35), not the common-noun adjective this now-retired band's own Indonesian value used
-    // to be, before the rename.
-    aiBenchBandHaiku: "Haiku",
-    aiBenchBandUnrated: "Unrated",
-    aiBenchNoFigure: "Not reported",
-    aiBenchSubscription: "Subscription",
-    // Rule-15 UWT-016 fix: the detail-region label for a subscription's usage-cap text (plan
-    // ramp/caps), surfaced as its own field so a model's own row/card discloses it directly.
-    aiBenchSubscriptionTerms: "Subscription terms",
-    aiBenchCoverageLow: "low coverage",
-    aiBenchGradeVerified: "verified",
-    aiBenchGradeSelfReported: "self-reported",
-    aiBenchGradeSecondary: "secondary",
-    aiBenchGradeConflicted: "conflicted",
-    aiBenchGradeUnavailable: "unavailable",
-    aiBenchEvidenceLabel: "Evidence grade",
-    aiBenchSourceLabel: "Source",
-    aiBenchRangeSeparator: "to",
-    aiBenchPriceUnit: "per 1M tokens",
-    aiBenchIntegrityLabel: "Integrity note",
-    // Rule-15 UWT-010 fix: the `<summary>` for the always-reachable, click-to-reveal claim text.
-    aiBenchIntegrityDetailsSummary: "Read the finding",
-    // DD-33 item 1 (Phase 6, cycle 6.1) — the roster card's <summary> disclosure label. Genuinely
-    // new copy: no existing key names "reveal the rest of this model's figures".
-    aiBenchCardAllFigures: "All figures",
-    // DD-33 item 3/4 (Phase 6, cycle 6.6) — the two field-group headings DD-34 Treatment 3 adds.
-    // Genuinely new copy: no existing key names either heading.
-    aiBenchCardGroupModel: "Model",
-    aiBenchCardGroupScores: "Scores",
-    aiBenchHowToSummary: "How to read this benchmark (please read before comparing models)",
-    aiBenchHowToVendorReported:
-      "Most frontier benchmark scores are vendor self-reported. On SWE-bench Verified, independent reproduction (METR) confirmed 0 of 104 vendor-claimed tasks — treat unverified scores as upper bounds, not measured facts.",
-    aiBenchHowToIndexRelative:
-      "The composite index is roster-relative: each score is normalized to the strongest model on this roster, not to an absolute standard. The per-benchmark weights are our judgement, not a property of the benchmarks.",
-    aiBenchHowToCoverage:
-      "Coverage varies. A model scored on one of the four benchmarks rests on far less evidence than one scored on all four; low-coverage models are marked so the index is not mistaken for equal-confidence.",
-    aiBenchHowToBestConfig:
-      "Every figure reflects the vendor's best published configuration (effort setting, prompt, and harness). A model's everyday performance may be lower; the figure is a ceiling, not a typical.",
-    // Rule-15 UWT-005 fix (2026-07-30): the example named "ARC-AGI-2" alongside GPQA Diamond, but
-    // ARC-AGI-2 is not one of the four benchmarks that actually feed the composite index (see
-    // `aiBenchLegendCoverageFormula` below: SWE-bench Verified, SWE-bench Pro, Terminal-Bench 2.1,
-    // GPQA Diamond) — a reader who checked the claim against the data table found no ARC-AGI-2
-    // column anywhere. Swapped in SWE-bench Pro, one of the four benchmarks actually scored.
-    aiBenchHowToArcConflict:
-      "Why provenance matters: SWE-bench Pro / GPQA Diamond scores for the same model disagree across sources. Where published values conflict we show the full range and the low end enters the index — never an averaged middle value.",
-    aiBenchHowToPriceGap:
-      "Why prices are per-harness: DeepSeek V4 Pro costs about one quarter as much direct from DeepSeek as through a gateway that marks the rate up. Each price names the harness that charges it; there is no single 'the price'.",
-    // Rule-15 UWT-013 fix: no unit basis (per-token/per-1K/per-million) was disclosed anywhere on
-    // the page for the ~80 dollar figures shown. Reuses the wording already defined in
-    // `aiBenchPriceUnit` (a key that existed but was never rendered anywhere) so the two stay
-    // word-for-word consistent.
-    aiBenchHowToPriceUnit:
-      "Unless marked Subscription, every dollar figure is priced per 1M tokens — a Subscription figure is a flat monthly rate with its own usage caps, not a per-token rate.",
-    aiBenchSourcesHeading: "Sources and licences",
-    aiBenchSourcesIntro:
-      "Every figure links to the leaderboard or vendor page it came from. These are the benchmark operators whose figures appear here, with their republication terms.",
-    aiBenchOpTermsSwebench:
-      "Benchmark code and dataset are MIT-licensed; the leaderboard page itself is marked all rights reserved.",
-    aiBenchOpTermsTerminalbench: "No republication terms stated by the operator.",
-    aiBenchOpTermsGpqa: "The GPQA benchmark repository is MIT-licensed.",
-    aiBenchOpTermsNone: "No republication terms stated by the operator.",
+    aiBenchScoreRunBy: "run by {operator}, {config}",
+    aiBenchTableScrollHint: "Scroll sideways to see every column.",
 
-    // AI benchmark — legend (Rule-15 UWT-002/UWT-003/UWT-005/USS-002 fix): a visible, always
-    // -available definition of the class taxonomy and evidence grades, plus the coverage formula.
-    aiBenchLegendHeading: "Class and evidence-grade legend",
-    aiBenchLegendClassIntro:
-      "The four capability classes are anchor-relative composite-index tiers, not vendor brand names — a model of any vendor can land in any class:",
-    aiBenchLegendClassOpus: "at or above Claude Opus 5's own composite index (the tier's defining anchor).",
-    aiBenchLegendClassSonnet: "at or above Claude Sonnet 5's own composite index, below the Opus anchor.",
-    aiBenchLegendClassHaiku: "below the Sonnet anchor.",
-    aiBenchLegendClassUnrated: "no figure on any of the four composite benchmarks.",
-    aiBenchLegendGradeIntro: "The five evidence grades describe how each figure was sourced:",
-    aiBenchLegendGradeVerified: "scored by an independent verifier (e.g. Scale AI SEAL) or an official model card.",
-    aiBenchLegendGradeSelfReported: "published by the vendor about its own model.",
-    aiBenchLegendGradeSecondary: "quoted by an aggregator; no primary source retrieved.",
-    aiBenchLegendGradeConflicted:
-      "multiple irreconcilable published values — the cell shows the range, never an average.",
-    aiBenchLegendGradeUnavailable: "the vendor publishes no figure for this benchmark.",
-    aiBenchLegendCoverageFormula:
-      "Coverage is the weighted share of the composite a model's reported benchmarks cover (SWE-bench Verified 25% + SWE-bench Pro 25% + Terminal-Bench 2.1 20% + GPQA Diamond 30% = 100%), not a simple count of benchmarks reported.",
+    aiBenchMethodHeading: "How the score works",
+    aiBenchMethodBenchmarksIntro:
+      "Three coding-agent benchmarks, equally weighted. Only the version listed counts, and each score comes from the first listed source that has it.",
+    aiBenchMethodBenchDeepSwe: "Long-horizon changes across real repositories.",
+    aiBenchMethodBenchTerminal: "Autonomous work in real shell environments.",
+    aiBenchMethodBenchQna: "Answering questions about large, unfamiliar codebases.",
+    aiBenchMethodVersion: "version {version}",
+    aiBenchMethodWeight: "weight {weight}",
+    aiBenchMethodSourceOrderIntro: "Sources, in order of preference:",
+    aiBenchMethodIndex:
+      "Index: the average of a model's scores on the benchmarks it has. A model needs at least {min} to get an index and a tier.",
+    aiBenchMethodTiers:
+      "Tiers: each one is defined by a previous-generation anchor model. A model goes in the highest tier whose anchor's index it matches or beats, so a model's tier always follows its index.",
+    aiBenchMethodAnchorsIntro: "Tier anchors:",
+    aiBenchMethodPrice:
+      "Price: the vendor's standard API rate per 1M tokens. Blended = (3 × input + output) ÷ 4, a typical coding-agent mix. Where a vendor publishes no price page, the rate OpenCode lists is used and marked “OpenCode rate”.",
+    aiBenchMethodCostPerTask:
+      "Cost per task: Artificial Analysis' average spend per benchmark task, where it publishes one.",
+    aiBenchMethodCaveat:
+      "Operators run models in different harnesses and effort settings (each score names its configuration), and some Anthropic runs were served by another model on a share of attempts. An index averages only the benchmarks a model has, so two indexes built from different benchmarks are not exactly comparable (GPT-5.6 Terra, for one, has no independent SWE-Atlas QnA result); the table shows which scores each index uses. Treat differences of a few points as noise.",
+    aiBenchMethodExcluded:
+      "Not scored: vendor-reported results, older benchmark versions, SWE-bench Verified and GPQA Diamond (saturated), and SWE-bench Pro (task-quality problems). Space Bunny Free on OpenCode Go is left out because it names no vendor.",
+    aiBenchMethodExampleHeading: "Worked example",
+    aiBenchMethodExampleIndex: "{model}: ({scores}) ÷ {count} = index {index}.",
+    aiBenchMethodExampleCompare:
+      "{model} (index {modelScore}) against the {tier} anchor {anchor} (index {anchorScore}): {model} {result}.",
+    aiBenchMethodMeets: "reaches that tier",
+    aiBenchMethodMisses: "stays below that tier",
+    aiBenchOpencodeRate: "OpenCode rate",
 
-    // AI benchmark — charts (Phase 6/7).
-    aiBenchChartAxisMaxLabel: "Axis maximum",
-    aiBenchPriceLowestSubtitle: "Showing the lowest available rate across harnesses for each model",
-
-    // AI benchmark — merged chart (Phase 2).
-    aiBenchMergedChartTitle: "Capability and price by model",
-    aiBenchSortLabel: "Sort",
-    aiBenchSortCapability: "Capability (high to low)",
-    aiBenchSortPriceAsc: "Price: Low to High",
-    aiBenchSortPriceDesc: "Price: High to Low",
-    // Rule-15 UWT-008 fix: clarifies this sort's scope, since the roster table below keeps its own,
-    // independent row order rather than following a band's chart sort.
-    aiBenchSortScopeNote: "(chart order only)",
-
-    // AI benchmark — harness/class filters (Phase 8).
-    aiBenchFilterSummary: "Filters",
-    aiBenchFilterHarnessLabel: "Harness",
-    aiBenchFilterClassLabel: "Class",
-    aiBenchFilterAllHarnesses: "All harnesses",
-    aiBenchFilterAllClasses: "All classes",
-    // Rule-15 UWT-011 fix: the Class values reuse Anthropic's own tier names cross-vendor with no
-    // inline hint anywhere the column/filter itself appears — this is that hint, linking to the
-    // always-reachable (if collapsed) legend.
-    aiBenchClassHint: "What do these mean?",
-    aiBenchFilterResultCountLabel: "Models shown",
-    aiBenchFilterActiveCountLabel: "active",
-    aiBenchEmptyStateTitle: "No models match these filters",
-    aiBenchEmptyStateMessage: "Try a different harness or class filter.",
-    // Rule-15 UWT-009 fix: a single RATED band (Opus/Sonnet/Haiku) can be emptied by an active
-    // Class filter even while other bands still have models — distinct from `aiBenchEmptyStateTitle`
-    // above, which covers the whole-roster empty state.
-    aiBenchBandEmptyMessage: "No models in this class match the current filter.",
+    aiBenchSourcesHeading: "Sources and checked dates",
+    aiBenchSourcesBenchmarks: "Benchmark results",
+    aiBenchSourcesPrices: "API prices",
+    aiBenchSourcesChecked: "checked {date}",
+    aiBenchSourcesUpdated: "source updated {date}",
+    aiBenchSourcesCitedAs: "figures quoted with attribution and a link",
+    aiBenchSourcesCitation:
+      "Figures are quoted with attribution and a link to each source; see each source for its terms of use.",
 
     // Calculator — page
     calcTitle: "Cost of Living Calculator",
@@ -441,128 +408,123 @@ const translations: Record<Locale, Record<string, string>> = {
       "Bandingkan biaya hidup bulanan, tabungan, dan jabatan minimum yang dibutuhkan di berbagai kota.",
     toolsPageAiBenchLink: "Tolok Ukur Model AI",
     toolsPageAiBenchDesc:
-      "Bandingkan model agen-koding berdasarkan kemampuan, kelas, dan harga per-token, setiap angka bersumber.",
+      "Bandingkan model koding berdasarkan tingkat kemampuan yang diukur independen dan harga API, serta cari pengganti di OpenCode Go.",
     breadcrumbHome: "Beranda",
     breadcrumbCalculator: "Kalkulator",
 
-    // AI benchmark — page shell, data table, honesty surface, and provenance.
-    // Setiap kunci aiBench* HARUS ada di kedua bahasa (AC-35): kunci yang hilang muncul sebagai
-    // ID mentahnya, dan tes halaman memastikan tidak ada token "aiBench" yang bocor ke teks.
+    // AI benchmark. Setiap kunci aiBench* HARUS ada di kedua bahasa: kunci yang hilang muncul
+    // sebagai ID mentahnya, dan tes halaman memastikan tidak ada token "aiBench" yang bocor.
     aiBenchTitle: "Tolok Ukur Model AI",
-    // Rule-15 UWT-003 fix (2026-07-30): mirrors the English rewording — plain-language equivalent
-    // of "scored relative to each other", not the undefined "roster-relative" jargon.
-    // Rule-15 UWT-004 fix (2026-07-30): mirrors the English gloss for "harness" at its first use.
     aiBenchSubtitle:
-      "Indeks model coding-agent yang dinilai secara relatif satu sama lain di lima harness (alat CLI atau IDE yang dipakai menjalankannya), dengan setiap angka disertai sumber.",
-    aiBenchSnapshotLabel: "Cuplikan data",
-    aiBenchTableCaption:
-      "Roster model coding-agent: angka kapabilitas, indeks komposit, cakupan, dan harga per-harness.",
-    aiBenchColModel: "Model",
-    aiBenchColVendor: "Vendor",
-    aiBenchColHarnesses: "Harness",
-    aiBenchColClass: "Kelas",
-    aiBenchBenchSweVerified: "SWE-bench Verified",
-    aiBenchBenchSwePro: "SWE-bench Pro",
-    aiBenchBenchTerminalBench: "Terminal-Bench 2.1",
-    aiBenchBenchGpqa: "GPQA Diamond",
-    aiBenchColIndex: "Indeks komposit",
-    aiBenchColCoverage: "Cakupan",
-    aiBenchColInputPrice: "Harga input",
-    aiBenchColOutputPrice: "Harga output",
-    aiBenchBandOpus: "Opus",
-    aiBenchBandSonnet: "Sonnet",
-    // "Haiku" tetap tidak diterjemahkan (mirip aiBenchBandOpus/aiBenchBandSonnet) — nama tingkatan
-    // model (DD-35), bukan kata sifat umum seperti nilai kelas ini sebelum penggantian nama.
-    aiBenchBandHaiku: "Haiku",
-    aiBenchBandUnrated: "Belum dinilai",
-    aiBenchNoFigure: "Tidak dilaporkan",
-    aiBenchSubscription: "Langganan",
-    aiBenchSubscriptionTerms: "Ketentuan langganan",
-    aiBenchCoverageLow: "cakupan rendah",
-    aiBenchGradeVerified: "terverifikasi",
-    aiBenchGradeSelfReported: "dilaporkan sendiri",
-    aiBenchGradeSecondary: "sekunder",
-    aiBenchGradeConflicted: "berkonflik",
-    aiBenchGradeUnavailable: "tidak tersedia",
-    aiBenchEvidenceLabel: "Tingkat bukti",
-    aiBenchSourceLabel: "Sumber",
-    aiBenchRangeSeparator: "hingga",
-    aiBenchPriceUnit: "per 1 juta token",
-    aiBenchIntegrityLabel: "Catatan integritas",
-    aiBenchIntegrityDetailsSummary: "Baca temuannya",
-    aiBenchCardAllFigures: "Semua angka",
-    aiBenchCardGroupModel: "Model",
-    aiBenchCardGroupScores: "Skor",
-    aiBenchHowToSummary: "Cara membaca tolok ukur ini (harap dibaca sebelum membandingkan model)",
-    aiBenchHowToVendorReported:
-      "Sebagian besar angka tolok ukur frontier dilaporkan sendiri oleh vendor. Pada SWE-bench Verified, reproduksi independen (METR) mengonfirmasi 0 dari 104 tugas yang diklaim vendor — anggap angka yang belum diverifikasi sebagai batas atas, bukan fakta terukur.",
-    aiBenchHowToIndexRelative:
-      "Indeks komposit bersifat relatif terhadap roster: setiap angka dinormalisasi terhadap model terkuat di roster ini, bukan terhadap standar mutlak. Bobot per-tolok-ukur adalah penilaian kami, bukan sifat dari tolok ukurnya.",
-    aiBenchHowToCoverage:
-      "Cakupan bervariasi. Model yang dinilai pada satu dari empat tolok ukur bertumpu pada jauh lebih sedikit bukti daripada yang dinilai pada keempatnya; model dengan cakupan rendah ditandai agar indeks tidak disangka setara-kepercayaan.",
-    aiBenchHowToBestConfig:
-      "Setiap angka mencerminkan konfigurasi publik terbaik vendor (pengaturan effort, prompt, dan harness). Performa harian model bisa lebih rendah; angka tersebut adalah batas langit, bukan kondisi tipikal.",
-    // Rule-15 UWT-005 fix (2026-07-30): mirrors the English fix — ARC-AGI-2 is not one of the four
-    // benchmarks that feed the composite index; swapped in SWE-bench Pro.
-    aiBenchHowToArcConflict:
-      "Mengapa provenans penting: angka SWE-bench Pro / GPQA Diamond untuk model yang sama berbeda antar sumber. Saat nilai yang dipublikasikan berkonflik, kami menampilkan rentang lengkapnya dan ujung rendah masuk ke indeks — tidak pernah nilai rata-rata di tengah.",
-    aiBenchHowToPriceGap:
-      "Mengapa harga per-harness: DeepSeek V4 Pro berharga sekitar seperempat langsung dari DeepSeek dibandingkan melalui gateway yang menaikkan tarifnya. Setiap harga menyebut harness yang menagihnya; tidak ada 'harga tunggal'.",
-    aiBenchHowToPriceUnit:
-      "Kecuali ditandai Langganan, setiap angka dolar adalah harga per 1 juta token — angka Langganan adalah tarif bulanan tetap dengan batas pemakaiannya sendiri, bukan harga per-token.",
-    aiBenchSourcesHeading: "Sumber dan lisensi",
-    aiBenchSourcesIntro:
-      "Setiap angka menaut ke halaman leaderboard atau vendor asalnya. Berikut operator tolok ukur yang angkanya muncul di sini, beserta ketentuan republikasinya.",
-    aiBenchOpTermsSwebench:
-      "Kode dan dataset tolok ukur berlisensi MIT; halaman leaderboard itu sendiri bertanda semua hak dilindungi.",
-    aiBenchOpTermsTerminalbench: "Tidak ada ketentuan republikasi yang dinyatakan oleh operator.",
-    aiBenchOpTermsGpqa: "Repositori tolok ukur GPQA berlisensi MIT.",
-    aiBenchOpTermsNone: "Tidak ada ketentuan republikasi yang dinyatakan oleh operator.",
+      "Model koding mana yang cukup untuk pekerjaanmu, berapa biayanya, dan model OpenCode Go mana yang bisa menggantikannya.",
+    aiBenchLastUpdatedLabel: "Terakhir diperbarui",
+    aiBenchIndependentOnly:
+      "Skor hanya berasal dari benchmark yang dijalankan pihak independen. Hasil yang dilaporkan vendor modelnya sendiri tidak ditampilkan dan tidak dihitung.",
+    aiBenchJumpToMethod: "Cara skor dihitung",
 
-    // AI benchmark — legenda (perbaikan Rule-15 UWT-002/UWT-003/UWT-005/USS-002): definisi yang
-    // selalu terlihat untuk taksonomi kelas dan tingkat bukti, plus rumus cakupan.
-    aiBenchLegendHeading: "Legenda kelas dan tingkat bukti",
-    aiBenchLegendClassIntro:
-      "Keempat kelas kemampuan adalah tingkatan indeks komposit relatif terhadap jangkar, bukan nama merek vendor — model dari vendor mana pun dapat masuk ke kelas mana pun:",
-    aiBenchLegendClassOpus:
-      "setara atau di atas indeks komposit Claude Opus 5 sendiri (jangkar yang menentukan tingkatan ini).",
-    aiBenchLegendClassSonnet: "setara atau di atas indeks komposit Claude Sonnet 5 sendiri, di bawah jangkar Opus.",
-    aiBenchLegendClassHaiku: "di bawah jangkar Sonnet.",
-    aiBenchLegendClassUnrated: "tidak ada angka pada satu pun dari empat tolok ukur komposit.",
-    aiBenchLegendGradeIntro: "Kelima tingkat bukti menjelaskan bagaimana setiap angka bersumber:",
-    aiBenchLegendGradeVerified: "dinilai oleh verifikator independen (mis. Scale AI SEAL) atau kartu model resmi.",
-    aiBenchLegendGradeSelfReported: "dipublikasikan oleh vendor tentang modelnya sendiri.",
-    aiBenchLegendGradeSecondary: "dikutip oleh agregator; tidak ada sumber utama yang ditemukan.",
-    aiBenchLegendGradeConflicted:
-      "beberapa nilai terpublikasi yang tidak dapat direkonsiliasi — sel menampilkan rentang, tidak pernah rata-rata.",
-    aiBenchLegendGradeUnavailable: "vendor tidak mempublikasikan angka untuk tolok ukur ini.",
-    aiBenchLegendCoverageFormula:
-      "Cakupan adalah porsi berbobot dari komposit yang dicakup oleh tolok ukur yang dilaporkan model (SWE-bench Verified 25% + SWE-bench Pro 25% + Terminal-Bench 2.1 20% + GPQA Diamond 30% = 100%), bukan sekadar jumlah tolok ukur yang dilaporkan.",
+    aiBenchFinderHeading: "Cari pengganti di OpenCode Go",
+    aiBenchFinderIntro:
+      "Pilih model frontier untuk melihat model OpenCode Go mana yang setidaknya setingkat, dan bagaimana perbandingan harganya.",
+    aiBenchFinderLabel: "Model frontier",
+    aiBenchFinderPlaceholder: "Pilih model…",
+    aiBenchFinderTarget: "{model} ada di tingkat {tier}, indeks {index}, harga gabungan {price}.",
+    aiBenchFinderTargetNoPrice: "{model} ada di tingkat {tier}, indeks {index}; belum ada harga API publik.",
+    aiBenchFinderMatches: "Model OpenCode Go di tingkat yang sama atau lebih tinggi:",
+    aiBenchFinderNearest: "Belum ada model OpenCode Go yang mencapai tingkat {tier}. Pilihan terdekat:",
+    aiBenchFinderInsufficient:
+      "{model} belum punya cukup hasil independen untuk dibandingkan. Skor yang ada tercantum di tabel di bawah.",
+    aiBenchFinderNoneCheaper: "Tidak ada yang lebih murah per token daripada {model}.",
+    aiBenchPriceCheaper: "{ratio}× lebih murah per token",
+    aiBenchPricePricier: "{ratio}× lebih mahal per token",
+    aiBenchPriceSame: "harga per token kurang lebih sama",
+    aiBenchPriceUnknown: "harga tidak bisa dibandingkan",
 
-    // AI benchmark — bagan (Fase 6/7).
-    aiBenchChartAxisMaxLabel: "Nilai maksimum sumbu",
-    aiBenchPriceLowestSubtitle: "Menampilkan tarif harness terendah yang tersedia untuk setiap model",
-
-    // AI benchmark — bagan gabungan (Fase 2).
-    aiBenchMergedChartTitle: "Kemampuan dan harga per model",
-    aiBenchSortLabel: "Urutkan",
-    aiBenchSortCapability: "Kemampuan (tinggi ke rendah)",
-    aiBenchSortPriceAsc: "Harga: Rendah ke Tinggi",
-    aiBenchSortPriceDesc: "Harga: Tinggi ke Rendah",
-    aiBenchSortScopeNote: "(hanya urutan bagan)",
-
-    // AI benchmark — filter harness/kelas (Fase 8).
-    aiBenchFilterSummary: "Filter",
-    aiBenchFilterHarnessLabel: "Harness",
-    aiBenchFilterClassLabel: "Kelas",
-    aiBenchFilterAllHarnesses: "Semua harness",
-    aiBenchFilterAllClasses: "Semua kelas",
-    aiBenchClassHint: "Apa artinya ini?",
-    aiBenchFilterResultCountLabel: "Model ditampilkan",
-    aiBenchFilterActiveCountLabel: "aktif",
+    aiBenchFilterHeading: "Filter",
+    aiBenchFilterHarness: "Harness",
+    aiBenchFilterHarnessAll: "Semua harness",
+    aiBenchFilterTier: "Tingkat",
+    aiBenchFilterTierAll: "Semua tingkat",
+    aiBenchFilterReset: "Atur ulang filter",
+    aiBenchFilterResultCount: "{count} dari {total} model ditampilkan",
     aiBenchEmptyStateTitle: "Tidak ada model yang cocok dengan filter ini",
-    aiBenchEmptyStateMessage: "Coba filter harness atau kelas yang berbeda.",
-    aiBenchBandEmptyMessage: "Tidak ada model di kelas ini yang cocok dengan filter saat ini.",
+    aiBenchEmptyStateMessage: "Coba harness atau tingkat lain, atau atur ulang filter.",
+
+    aiBenchTierMapHeading: "Tingkat kemampuan",
+    aiBenchTierUltra: "Ultra",
+    aiBenchTierPlanning: "Perencanaan & orkestrasi",
+    aiBenchTierExecution: "Eksekusi",
+    aiBenchTierFast: "Cepat",
+    aiBenchTierInsufficient: "Data belum cukup",
+    aiBenchTierUltraUse: "Untuk pekerjaan tersulit dan paling panjang.",
+    aiBenchTierPlanningUse: "Untuk perencanaan, review, dan mengorkestrasi agen lain.",
+    aiBenchTierExecutionUse: "Untuk menjalankan rencana yang sudah jelas.",
+    aiBenchTierFastUse: "Untuk perubahan kecil yang jelas dan pencarian cepat.",
+    aiBenchTierFloor: "Batas bawah: indeks {index}, ditetapkan oleh {anchor}.",
+    aiBenchTierFastFloor: "Model ber-skor di bawah batas Eksekusi.",
+    aiBenchTierEmpty: "Tidak ada model di tingkat ini yang cocok dengan filter saat ini.",
+    aiBenchAnchorBadge: "patokan",
+    aiBenchLimitedAccess: "Akses terbatas",
+    aiBenchIndexLabel: "Indeks",
+    aiBenchPriceInOut: "{input} / {output} per 1 juta token",
+    aiBenchNoPrice: "Belum ada harga API publik",
+
+    aiBenchInsufficientHeading: "Data independen belum cukup ({count} model)",
+    aiBenchInsufficientIntro:
+      "Model-model ini punya hasil independen di kurang dari {min} benchmark, jadi belum mendapat indeks maupun tingkat.",
+    aiBenchInsufficientNone: "belum ada hasil independen",
+
+    aiBenchTableHeading: "Semua model",
+    aiBenchTableCaption:
+      "Skor benchmark independen, indeks gabungan, tingkat, dan harga API dalam USD per 1 juta token. Setiap skor tertaut ke sumbernya.",
+    aiBenchColModel: "Model",
+    aiBenchColTier: "Tingkat",
+    aiBenchColIndex: "Indeks",
+    aiBenchColInput: "Input",
+    aiBenchColOutput: "Output",
+    aiBenchColBlended: "Gabungan",
+    aiBenchColCostPerTask: "Biaya per tugas",
+    aiBenchColHarnesses: "Harness",
+    aiBenchScoreRunBy: "dijalankan oleh {operator}, {config}",
+    aiBenchTableScrollHint: "Geser ke samping untuk melihat semua kolom.",
+
+    aiBenchMethodHeading: "Cara skor dihitung",
+    aiBenchMethodBenchmarksIntro:
+      "Tiga benchmark agen koding dengan bobot sama. Hanya versi yang tercantum yang dihitung, dan tiap skor diambil dari sumber pertama dalam daftar yang memilikinya.",
+    aiBenchMethodBenchDeepSwe: "Perubahan jangka panjang di repositori nyata.",
+    aiBenchMethodBenchTerminal: "Kerja mandiri di lingkungan shell nyata.",
+    aiBenchMethodBenchQna: "Menjawab pertanyaan tentang codebase besar yang belum dikenal.",
+    aiBenchMethodVersion: "versi {version}",
+    aiBenchMethodWeight: "bobot {weight}",
+    aiBenchMethodSourceOrderIntro: "Sumber, urut prioritas:",
+    aiBenchMethodIndex:
+      "Indeks: rata-rata skor model pada benchmark yang dimilikinya. Model butuh setidaknya {min} benchmark untuk mendapat indeks dan tingkat.",
+    aiBenchMethodTiers:
+      "Tingkat: masing-masing ditentukan oleh satu model patokan generasi sebelumnya. Model masuk ke tingkat tertinggi yang indeks patokannya ia samai atau lampaui, jadi tingkat model selalu mengikuti indeksnya.",
+    aiBenchMethodAnchorsIntro: "Model patokan tiap tingkat:",
+    aiBenchMethodPrice:
+      "Harga: tarif API standar vendor per 1 juta token. Gabungan = (3 × input + output) ÷ 4, campuran yang umum untuk agen koding. Bila vendor tidak menerbitkan halaman harga, tarif yang dicantumkan OpenCode dipakai dan ditandai “tarif OpenCode”.",
+    aiBenchMethodCostPerTask:
+      "Biaya per tugas: rata-rata biaya per tugas benchmark menurut Artificial Analysis, bila mereka menerbitkannya.",
+    aiBenchMethodCaveat:
+      "Tiap operator menjalankan model dengan harness dan tingkat effort berbeda (setiap skor menyebut konfigurasinya), dan sebagian run Anthropic dilayani model lain pada sebagian percobaan. Indeks hanya merata-ratakan benchmark yang dimiliki model, jadi dua indeks dari benchmark berbeda tidak sepenuhnya setara (GPT-5.6 Terra, misalnya, belum punya hasil SWE-Atlas QnA independen); tabel menunjukkan skor mana yang dipakai tiap indeks. Anggap selisih beberapa poin sebagai noise.",
+    aiBenchMethodExcluded:
+      "Tidak dihitung: hasil yang dilaporkan vendor, versi benchmark lama, SWE-bench Verified dan GPQA Diamond (sudah jenuh), serta SWE-bench Pro (masalah kualitas tugas). Space Bunny Free di OpenCode Go tidak dimasukkan karena tidak menyebut vendornya.",
+    aiBenchMethodExampleHeading: "Contoh perhitungan",
+    aiBenchMethodExampleIndex: "{model}: ({scores}) ÷ {count} = indeks {index}.",
+    aiBenchMethodExampleCompare:
+      "{model} (indeks {modelScore}) dibandingkan dengan patokan tingkat {tier}, {anchor} (indeks {anchorScore}): {model} {result}.",
+    aiBenchMethodMeets: "mencapai tingkat itu",
+    aiBenchMethodMisses: "masih di bawah tingkat itu",
+    aiBenchOpencodeRate: "tarif OpenCode",
+
+    aiBenchSourcesHeading: "Sumber dan tanggal pengecekan",
+    aiBenchSourcesBenchmarks: "Hasil benchmark",
+    aiBenchSourcesPrices: "Harga API",
+    aiBenchSourcesChecked: "dicek {date}",
+    aiBenchSourcesUpdated: "sumber diperbarui {date}",
+    aiBenchSourcesCitedAs: "angka dikutip dengan atribusi dan tautan",
+    aiBenchSourcesCitation:
+      "Angka dikutip dengan atribusi dan tautan ke tiap sumber; lihat masing-masing sumber untuk ketentuan penggunaannya.",
 
     // Calculator — page
     calcTitle: "Kalkulator Biaya Hidup",

@@ -1,47 +1,88 @@
-// AI BENCHMARK — benchmark-operator provenance (Phase 5, AC-34 / DD-21).
-//
-// The Sources and Licences section names each benchmark operator whose figures appear in the
-// roster, together with that operator's republication terms. This is dataset-level metadata, not
-// presentation: a new operator is added as one entry below with no component edit (W-22).
-//
-// The `termsKey` is an i18n key resolved by `<SHELL>how-to-read.tsx`; the localized terms copy
-// itself lives in `features/i18n/core/translations.ts`. Operator *names* (SWE-bench, etc.) are
-// proper nouns and are not translated.
-//
-// Per DD-21: where an operator states no terms, the entry records that explicitly via the shared
-// `aiBenchOpTermsNone` key rather than implying permission.
+// AI BENCHMARK — where the figures and prices come from, and when each source was last checked.
+// The sources section renders these lists verbatim; a new source is one entry here.
 
-/**
- * One benchmark operator and its republication terms. `termsKey` resolves to localized copy;
- * operators that state no terms share the `aiBenchOpTermsNone` key.
- */
+import type { OperatorId } from "./types";
+
 export type BenchmarkOperator = {
-  /** Proper-noun operator name (not translated). */
+  id: OperatorId;
+  /** Proper-noun name (not translated). */
   name: string;
-  /** i18n key for the operator's republication-terms copy. */
-  termsKey: string;
-  /** Optional operator / project home page. */
-  url?: string;
+  /** Compact label for table cells. */
+  shortName: string;
+  url: string;
+  /** ISO date this source was last read for the dataset. */
+  checkedOn: string;
+  /** ISO date the source itself says it was last updated, when it says so. */
+  sourceUpdated?: string;
 };
 
-/**
- * The benchmark operators whose figures appear in this roster (DD-21 table). Order is stable for
- * readable output; add a new operator by appending one entry.
- */
 export const OPERATORS: readonly BenchmarkOperator[] = [
   {
-    name: "SWE-bench",
-    termsKey: "aiBenchOpTermsSwebench",
-    url: "https://www.swebench.com",
+    id: "artificial-analysis",
+    name: "Artificial Analysis — Coding Agent Index v1.5",
+    shortName: "Artificial Analysis",
+    url: "https://artificialanalysis.ai/agents/coding-agents",
+    checkedOn: "2026-10-01",
   },
   {
-    name: "Terminal-Bench",
-    termsKey: "aiBenchOpTermsTerminalbench",
-    url: "https://www.tbench.ai",
+    id: "datacurve",
+    name: "Datacurve — DeepSWE v1.1 leaderboard",
+    shortName: "Datacurve",
+    url: "https://deepswe.datacurve.ai/",
+    checkedOn: "2026-10-01",
+    sourceUpdated: "2026-09-22",
   },
   {
-    name: "GPQA",
-    termsKey: "aiBenchOpTermsGpqa",
-    url: "https://github.com/idavidrein/gpqa",
+    id: "terminal-bench",
+    name: "Terminal-Bench — official 4.0 leaderboard",
+    shortName: "Terminal-Bench board",
+    url: "https://www.tbench.ai/leaderboard",
+    checkedOn: "2026-10-01",
+    sourceUpdated: "2026-09-21",
   },
+  {
+    id: "vals",
+    name: "Vals AI — Terminal-Bench 4",
+    shortName: "Vals AI",
+    url: "https://www.vals.ai/benchmarks/terminal-bench-4",
+    checkedOn: "2026-10-01",
+    sourceUpdated: "2026-09-29",
+  },
+  {
+    id: "scale",
+    name: "Scale AI — SWE-Atlas QnA leaderboard",
+    shortName: "Scale AI",
+    url: "https://labs.scale.com/leaderboard/sweatlas-qna",
+    checkedOn: "2026-10-01",
+  },
+];
+
+export function operatorById(id: OperatorId): BenchmarkOperator {
+  return OPERATORS.find((o) => o.id === id) as BenchmarkOperator;
+}
+
+export type PriceSource = {
+  name: string;
+  url: string;
+  checkedOn: string;
+};
+
+/** Pricing pages read for the API prices, in the order the roster lists vendors. */
+export const PRICE_SOURCES: readonly PriceSource[] = [
+  { name: "Anthropic", url: "https://platform.claude.com/docs/en/about-claude/pricing", checkedOn: "2026-10-01" },
+  { name: "OpenAI", url: "https://developers.openai.com/api/docs/pricing", checkedOn: "2026-10-01" },
+  { name: "Google", url: "https://ai.google.dev/gemini-api/docs/pricing", checkedOn: "2026-10-01" },
+  { name: "xAI", url: "https://docs.x.ai/docs/models", checkedOn: "2026-10-01" },
+  { name: "Z.ai", url: "https://docs.z.ai/guides/overview/pricing", checkedOn: "2026-10-01" },
+  { name: "Moonshot AI", url: "https://platform.kimi.ai/docs/pricing/chat", checkedOn: "2026-10-01" },
+  { name: "DeepSeek", url: "https://api-docs.deepseek.com/quick_start/pricing", checkedOn: "2026-10-01" },
+  {
+    name: "Alibaba Cloud",
+    url: "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+    checkedOn: "2026-10-01",
+  },
+  { name: "MiniMax", url: "https://platform.minimax.io/docs/guides/pricing-paygo", checkedOn: "2026-10-01" },
+  { name: "Meta", url: "https://dev.meta.ai/docs/pricing-rate-limits", checkedOn: "2026-10-01" },
+  { name: "OpenCode Go", url: "https://opencode.ai/docs/go/", checkedOn: "2026-10-01" },
+  { name: "OpenCode Zen", url: "https://opencode.ai/docs/zen/", checkedOn: "2026-10-01" },
 ];

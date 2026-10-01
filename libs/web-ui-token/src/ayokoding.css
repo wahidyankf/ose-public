@@ -38,18 +38,6 @@
   --warm-700: oklch(32% 0.018 75);
   --warm-800: oklch(24% 0.018 70);
   --warm-900: oklch(18% 0.016 70);
-
-  /* ── Chart band "wash" tokens (light, default) ──────────────────────────
-     Declared here in the plain `:root` block rather than inside `@theme` below: Tailwind v4's
-     `@theme` compiler drops these four declarations from its emitted `:root` (confirmed via a live
-     browser's `getComputedStyle(document.documentElement).getPropertyValue(...)`, which returns an
-     empty string for all four when declared inside `@theme`, while the identically-shaped `-ink`
-     declarations there resolve fine) — a Tailwind/Lightning CSS quirk this repo does not control.
-     Declaring them as plain custom properties here sidesteps the compiler path entirely. */
-  --chart-band-opus-wash: var(--warm-0);
-  --chart-band-sonnet-wash: var(--warm-0);
-  --chart-band-haiku-wash: var(--warm-0);
-  --chart-band-unrated-wash: var(--warm-0);
 }
 
 /* ── Tailwind @theme overrides (ayokoding-specific, overrides tokens.css defaults) ── */
@@ -90,46 +78,19 @@
   --shadow-md: 0 4px 8px -2px oklch(20% 0.02 75 / 0.08), 0 2px 4px -2px oklch(20% 0.02 75 / 0.06);
   --shadow-lg: 0 12px 24px -6px oklch(20% 0.02 75 / 0.12), 0 4px 8px -4px oklch(20% 0.02 75 / 0.08);
 
-  /* ── Chart band tokens ── */
-  --chart-band-opus: var(--hue-plum);
-  /* `sonnet`/`haiku` deliberately do NOT alias the shared `--hue-teal`/`--hue-honey` tokens here
-     (unlike `opus`, which does — `--hue-plum` already clears WCAG 1.4.11's 3:1 non-text minimum
-     against this theme's near-white background at its shared lightness). At `--hue-teal`'s and
-     `--hue-honey`'s own lightness (66%/76%), the two chart bars measured only ~2.90:1 and ~2.13:1
-     against `--color-background` (verified live via a `<canvas>` 2D context + WCAG relative
-     luminance, the same method `ai-benchmark.steps.ts`'s AC-38 assertion uses) — both fail the
-     3:1 minimum for a bar, a meaningful (non-decorative) graphical object. Darkening the SHARED
-     `--hue-teal`/`--hue-honey` tokens would ripple into every other feature that already uses
-     them at their current lightness, so each chart-band token instead pins its own literal OKLCH
-     value here — same hue angle (200°/75°, preserving the ≥105° colour-blind-safe hue separation
-     from Phase 1), darker lightness only. Re-measured: teal-based sonnet at L=56% → 4.28:1;
-     honey-based haiku at L=60% → 3.91:1 — both comfortably clear 3:1 with margin. */
-  --chart-band-sonnet: oklch(56% 0.1 200);
-  --chart-band-haiku: oklch(60% 0.15 75);
-  --chart-band-unrated: var(--warm-400);
-  --chart-band-opus-ink: var(--warm-900);
-  --chart-band-sonnet-ink: var(--warm-900);
-  --chart-band-haiku-ink: var(--warm-900);
-  --chart-band-unrated-ink: var(--warm-900);
-  /* The four `-wash` declarations for this (light) theme live in the plain `:root` block above,
-     not here — see that block's comment for why. */
-
-  /* ── Evidence-grade tokens (Rule-15 DWT-002 fix) ──────────────────────────────────────
-     `evidence-badge.tsx`'s status dots and `model-table.tsx`'s low-coverage/integrity-note text
-     markers previously hardcoded raw Tailwind default-palette classes (`bg-emerald-500`,
-     `bg-amber-500`, `bg-sky-500`, `bg-rose-500`, `text-amber-700`/`dark:text-amber-400`) — the only
-     place in the whole codebase bypassing the AyoKoding token layer. Reusing the existing `-ink`
-     tones (rather than adding a 7th hue) is deliberate: these dots/markers are decorative/
-     informational, not chart data, so no dedicated wash/base pair is warranted, and `-ink` already
-     clears the 4.5:1 text minimum (comfortably above the 3:1 non-text minimum too) against this
-     theme's near-white background — same measurement method as the chart-band fix above. Declared
-     once here as `var()` references (not literals): each already re-resolves correctly under the
-     dark-mode selector below because `--hue-*-ink` itself is redefined there, so no separate dark
-     override is needed (unlike `--chart-band-sonnet`/`-light` above, which pin LITERAL values). */
-  --evidence-verified: var(--hue-sage-ink);
-  --evidence-self-reported: var(--hue-honey-ink);
-  --evidence-secondary: var(--hue-sky-ink);
-  --evidence-conflicted: var(--hue-terracotta-ink);
+  /* ── AI benchmark tier tokens (bars and swatches) ──
+     `ultra` aliases `--hue-plum`, which already clears WCAG 1.4.11's 3:1 non-text minimum against
+     this theme's near-white background. `planning`/`execution` do NOT alias `--hue-teal`/
+     `--hue-honey`: at their shared lightness (66%/76%) a bar measures only ~2.90:1 / ~2.13:1, so
+     each pins a darker literal OKLCH value on the same hue angle (L=56% → 4.28:1; L=60% → 3.91:1).
+     `fast` is a neutral rather than a fourth hue — teal and sky sit too close for colour-blind
+     readers — and the tier is always also named in text. `insufficient` models get no bar; the
+     token colours their swatch only. */
+  --chart-tier-ultra: var(--hue-plum);
+  --chart-tier-planning: oklch(56% 0.1 200);
+  --chart-tier-execution: oklch(60% 0.15 75);
+  --chart-tier-fast: var(--warm-500);
+  --chart-tier-insufficient: var(--warm-400);
 }
 
 /* ── Dark mode overrides ─────────────────────────────────────────────────── */
@@ -175,17 +136,10 @@
   --color-card: var(--warm-50); /* was #ffffff — must override in dark */
   --color-popover: var(--warm-50); /* was #ffffff — must override in dark */
 
-  /* ── Chart band tokens ── */
-  --chart-band-opus: var(--hue-plum);
-  --chart-band-sonnet: var(--hue-teal);
-  --chart-band-haiku: var(--hue-honey);
-  --chart-band-unrated: var(--warm-400);
-  --chart-band-opus-ink: var(--warm-900);
-  --chart-band-sonnet-ink: var(--warm-900);
-  --chart-band-haiku-ink: var(--warm-900);
-  --chart-band-unrated-ink: var(--warm-900);
-  --chart-band-opus-wash: var(--warm-0);
-  --chart-band-sonnet-wash: var(--warm-0);
-  --chart-band-haiku-wash: var(--warm-0);
-  --chart-band-unrated-wash: var(--warm-0);
+  /* ── AI benchmark tier tokens ── */
+  --chart-tier-ultra: var(--hue-plum);
+  --chart-tier-planning: var(--hue-teal);
+  --chart-tier-execution: var(--hue-honey);
+  --chart-tier-fast: var(--warm-500);
+  --chart-tier-insufficient: var(--warm-400);
 }

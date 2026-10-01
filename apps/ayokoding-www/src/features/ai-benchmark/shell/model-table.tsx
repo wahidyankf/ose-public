@@ -1,199 +1,184 @@
-// AI BENCHMARK — accessible model roster data table (Phase 5/6, W-6..W-18, W-26..W-27, DD-27/DD-28).
-//
-// Renders every roster model as a row carrying its primary figures — name, vendor, class, composite
-// index, and input/output price — with the remaining figures (harnesses, each benchmark score,
-// coverage) inside a per-row expandable detail region, each figure with its evidence grade and
-// source link (AC-20/AC-21/AC-30), conflicted figures as a low–high range (AC-31), and each model's
-// integrity notes reachable from its row (AC-33). The table is semantic: a `<caption>` and
-// `scope` on every `<th>` (AC-19); colour is never the sole encoding (grades are text).
-//
-// DD-27 (R5, in two steps): Unit 1 (Phase 1) removed the wrapper's `lg`-breakpoint overflow
-// override so `overflow-x-auto` contained the table at every breakpoint, at the cost of the sticky
-// `<thead>` no longer sticking at `lg` (a scroll container in both axes can't have a sticky
-// descendant). Unit 2 (here, Phase 6 cycle 6.3) restores that override — now safe because reducing
-// the desktop table to its primary columns shrinks its intrinsic width below the `lg` viewport
-// (AC-59), and DD-28 moves the remaining figures into the per-row detail region below.
-//
-// Responsive (prd §Responsive strategy): below `md` the roster renders as `model-card.tsx`'s
-// collapsed summary cards; at `md`/`lg` a horizontally-scrollable table with a per-row detail
-// disclosure. BOTH representations render the identical set of figures per model (W-26 invariant,
-// summary + detail together per W-30) — CSS toggles which is visible, so the component test asserts
-// parity without a real viewport.
-//
-// FCIS boundary: no literal figure, price, model name, or threshold lives here — every number
-// comes from the passed `dataset` via the pure `core/` selectors, formatted by `shell/format.ts`.
+// AI BENCHMARK — the full data table: every shown model with its tier, each scored benchmark
+// figure (linked to its source and naming its operator), index, prices, cost per task, and
+// harnesses. Rows run from the highest tier down, by index within a tier.
 
-import { Fragment } from "react";
-import { t } from "@/features/i18n/core/translations";
 import type { Locale } from "@/features/i18n/core/config";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@open-sharia-enterprise/web-ui";
-import { dataset as defaultDataset, type Dataset } from "../core/data/models";
-import { HARNESS_DISPLAY_NAMES } from "../core/data/benchmarks";
-import {
-  buildDetailGroups,
-  classLabel,
-  computeScoreViews,
-  integrityNotes,
-  partitionStaticFigures,
-  renderBenchmarkFigures,
-  renderStaticFigures,
-  type ModelFigure,
-} from "./model-figures";
-import { ModelDetailDisclosure } from "./model-detail-disclosure";
-import { ModelCard } from "./model-card";
+import { t } from "@/features/i18n/core/translations";
+import { BENCHMARK_SPECS, HARNESS_DISPLAY_NAMES } from "../core/data/benchmarks";
+import { operatorById } from "../core/data/operators";
+import type { Model } from "../core/data/types";
+import { blendedPrice } from "../core/price";
+import { scoredFigure } from "../core/score";
+import { byIndexDesc, tierRank, type ScoredModel } from "../core/tiers";
+import { formatIndex, formatPercent, formatUsd, tf } from "./format";
+import { LimitedChip, modelNotes } from "./model-bits";
 import { TAP_TARGET_MIN_CLASS } from "./tap-target";
-
-const SLOT = "model-table";
-/** Model, vendor, class, index, input price, output price — the desktop table's primary columns. */
-const PRIMARY_COLUMN_COUNT = 6;
+import { TierSwatch, tierLabel } from "./tier-style";
 
 export type ModelTableProps = {
-  dataset?: Dataset;
-  /**
-   * The full unfiltered roster. Band thresholds (the anchor indices) and the roster-max map are
-   * ALWAYS derived from this dataset, never from `dataset` — `dataset` may be a harness/class
-   * filtered subset that excludes both anchor models, and re-deriving thresholds from it would
-   * silently collapse every rated model to `haiku` (DD-5a: bands are roster-relative to the FULL
-   * population; filtering governs display only). REQUIRED, not optional: an omitted `fullDataset`
-   * reproduces the identical bug with identical silence, so this is a compile-time guard rather
-   * than a silent self-fallback.
-   */
-  fullDataset: Dataset;
+  rows: readonly ScoredModel[];
   locale: Locale;
 };
 
-export function ModelTable({ dataset = defaultDataset, fullDataset, locale }: ModelTableProps) {
-  const views = computeScoreViews(dataset, fullDataset);
-  const models = dataset.models;
+const TH = "px-3 py-2 text-left align-bottom text-xs font-semibold whitespace-nowrap text-muted-foreground";
+const TD = "px-3 py-2 align-top";
+const NUM = `${TD} text-right tabular-nums whitespace-nowrap`;
+const DASH = "—";
+/**
+ * The model-name column stays pinned while the table scrolls sideways, so a row of numbers never
+ * loses its label; it needs an opaque background and a divider to read as a separate layer.
+ */
+const PINNED = "sticky left-0 z-10 border-r";
 
+/** Highest tier first, then {@link byIndexDesc}. */
+export function tableOrder(a: ScoredModel, b: ScoredModel): number {
+  return tierRank(b.tier) - tierRank(a.tier) || byIndexDesc(a, b);
+}
+
+function ScoreCell({
+  model,
+  benchmark,
+  locale,
+}: {
+  model: Model;
+  benchmark: (typeof BENCHMARK_SPECS)[number];
+  locale: Locale;
+}) {
+  const f = scoredFigure(model, benchmark.id);
+  if (f === undefined) return <td className={NUM}>{DASH}</td>;
+  const op = operatorById(f.operator);
+  const runBy = tf(locale, "aiBenchScoreRunBy", { operator: op.name, config: f.config });
   return (
-    <section data-slot={SLOT} data-testid="model-table" className="space-y-4" aria-label={t(locale, "aiBenchTitle")}>
-      {/* ── Desktop / tablet: semantic <table> (md and up), on the shared `libs/web-ui` table
-          primitives (Rule-15 DWT-003 fix) — the same `Table`/`TableHeader`/`TableBody`/`TableRow`/
-          `TableHead`/`TableCell`/`TableCaption` set `cost-of-living-calculator/shell/min-role.tsx`
-          already uses, rather than a bespoke hand-rolled `<table>`. Sticky header/first-column and
-          `scope="row"` are preserved via className overrides on top of the shared primitives; the
-          row-hover intensity is the primitive's own `hover:bg-muted/50`. `wrapperClassName` restores
-          the `lg`-breakpoint overflow override DD-27 Unit 1 (Phase 1) removed — safe now that the
-          primary-column-only table fits below the `lg` viewport (AC-59). Each model renders as TWO
-          `<tr>`s: the primary row, then an adjacent detail row whose single full-width `<td>` holds
-          a native `<details>` disclosure (`ModelDetailDisclosure`, shared with `model-card.tsx`) —
-          zero client JS, and the same disclosure semantics as the mobile card. ─────────────────── */}
-      <div data-testid="model-table-desktop" className="hidden md:block">
-        <Table className="w-max min-w-full border-collapse lg:w-full" wrapperClassName="lg:overflow-visible">
-          <TableCaption className="sr-only">{t(locale, "aiBenchTableCaption")}</TableCaption>
-          <TableHeader className="sticky top-0 z-10 bg-background">
-            <TableRow>
-              <TableHead scope="col" className="sticky left-0 bg-background text-foreground">
-                {t(locale, "aiBenchColModel")}
-              </TableHead>
-              <TableHead scope="col">{t(locale, "aiBenchColVendor")}</TableHead>
-              <TableHead scope="col">
-                {t(locale, "aiBenchColClass")}{" "}
-                {/* Rule-15 UWT-011 fix: same real, keyboard/touch-reachable link the Class filter
-                    now carries (`benchmark-filters.tsx`'s `classHintLink`) — a compact "(?)" glyph
-                    here rather than the filter's full sentence, so this primary-column header does
-                    not grow the table's intrinsic width past its DD-27/AC-59 budget; the accessible
-                    name still carries the full hint text. */}
-                <a
-                  href="#ai-bench-legend-classes"
-                  aria-label={t(locale, "aiBenchClassHint")}
-                  className={`inline-flex items-center text-xs font-normal text-muted-foreground underline decoration-dotted underline-offset-2 ${TAP_TARGET_MIN_CLASS}`}
-                >
-                  (?)
-                </a>
-              </TableHead>
-              <TableHead scope="col" className="text-right">
-                {t(locale, "aiBenchColIndex")}
-              </TableHead>
-              <TableHead scope="col" className="text-right">
-                {t(locale, "aiBenchColInputPrice")}
-              </TableHead>
-              <TableHead scope="col" className="text-right">
-                {t(locale, "aiBenchColOutputPrice")}
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {models.map((model) => {
-              const view = views.get(model.id) ?? { band: "unrated" as const, index: undefined, coverage: 0 };
-              const harnessNames = model.harnesses.map((h) => HARNESS_DISPLAY_NAMES[h] ?? h).join(", ");
-              // Primary columns keep the `stacked` layout (DD-27 — the table must fit below `lg`).
-              const staticFigures = renderStaticFigures(model, view, locale);
-              const {
-                index: indexFigure,
-                input: inputFigure,
-                output: outputFigure,
-              } = partitionStaticFigures(staticFigures, locale);
-              // The detail region's remaining fields render at `inline` layout instead (DD-34
-              // Treatment 2) — a second build of the same figures, same reasoning as
-              // `model-card.tsx`'s identical split.
-              const inlineStaticFigures = renderStaticFigures(model, view, locale, "inline");
-              const { rest: staticDetailFigures } = partitionStaticFigures(inlineStaticFigures, locale);
-              // Vendor is already its own primary column here (unlike the card, which has no
-              // separate vendor column) — this "Model" group carries only harnesses.
-              const modelMetaFigures: ModelFigure[] = [
-                { label: t(locale, "aiBenchColHarnesses"), node: <span>{harnessNames}</span> },
-              ];
-              const scoreFigures: ModelFigure[] = [
-                ...renderBenchmarkFigures(model, locale, "inline"),
-                ...staticDetailFigures,
-              ];
-              const groups = buildDetailGroups(modelMetaFigures, scoreFigures, locale);
-              return (
-                <Fragment key={model.id}>
-                  <TableRow data-model-id={model.id} className="align-top">
-                    <TableHead
-                      scope="row"
-                      className="sticky left-0 bg-background text-left whitespace-normal text-foreground"
-                    >
-                      <span data-slot="model-name">{model.name}</span>
-                      {integrityNotes(model, locale)}
-                    </TableHead>
-                    <TableCell>{model.vendor}</TableCell>
-                    <TableCell>{classLabel(view.band, locale)}</TableCell>
-                    <TableCell className="text-right">{indexFigure?.node}</TableCell>
-                    <TableCell className="text-right">{inputFigure?.node}</TableCell>
-                    <TableCell className="text-right">{outputFigure?.node}</TableCell>
-                  </TableRow>
-                  {/* Rule-15 DWT-005 fix: `TableRow`'s shared `hover:bg-muted/50` (meant to
-                      highlight one data row under the pointer) instead tints this ENTIRE
-                      multi-line detail panel the moment the pointer crosses any element inside
-                      it — hovering a single `<dt>` deep in "Scores" visibly shaded the whole
-                      row. `hover:bg-transparent` overrides it via `cn`'s `tailwind-merge` pass
-                      (last hover:bg-* utility for the same property wins); the primary row above
-                      keeps the shared hover treatment untouched. */}
-                  <TableRow data-model-detail-id={model.id} className="align-top hover:bg-transparent">
-                    <TableCell colSpan={PRIMARY_COLUMN_COUNT}>
-                      <ModelDetailDisclosure slot={SLOT} modelId={model.id} groups={groups} locale={locale} />
-                    </TableCell>
-                  </TableRow>
-                </Fragment>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </div>
+    <td className={NUM} data-testid="ai-bench-score" data-benchmark={benchmark.id}>
+      <a
+        href={f.source}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={runBy}
+        aria-label={`${model.name}, ${benchmark.name} ${benchmark.version}: ${formatPercent(f.value, locale)}, ${runBy}`}
+        className={`inline-flex flex-col items-end font-medium underline-offset-2 hover:underline ${TAP_TARGET_MIN_CLASS}`}
+      >
+        <span>{formatPercent(f.value, locale)}</span>
+        <span data-testid="ai-bench-score-operator" className="text-xs font-normal text-muted-foreground">
+          {op.shortName}
+        </span>
+      </a>
+    </td>
+  );
+}
 
-      {/* ── Mobile: `model-card.tsx`'s collapsed summary cards (below md) — the SAME shared figure
-          list feeds both representations (W-26/W-30), so parity holds by construction. ────────── */}
-      <div data-testid="model-table-mobile" className="md:hidden">
-        <p className="sr-only">{t(locale, "aiBenchTableCaption")}</p>
-        <ul className="space-y-3">
-          {models.map((model) => {
-            const view = views.get(model.id) ?? { band: "unrated" as const, index: undefined, coverage: 0 };
-            return <ModelCard key={model.id} model={model} view={view} locale={locale} />;
-          })}
-        </ul>
+function Row({ s, locale }: { s: ScoredModel; locale: Locale }) {
+  const { model } = s;
+  const blended = blendedPrice(model.price);
+  const notes = [
+    ...(model.price?.listedBy === "opencode" ? [t(locale, "aiBenchOpencodeRate")] : []),
+    ...modelNotes(model, locale),
+  ];
+  return (
+    <tr data-testid="ai-bench-table-row" data-model-id={model.id} data-tier={s.tier} className="border-b last:border-0">
+      <th scope="row" className={`${TD} ${PINNED} min-w-36 bg-background text-left font-normal sm:min-w-48`}>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="font-semibold">{model.name}</span>
+          <LimitedChip model={model} locale={locale} />
+        </div>
+        <div className="text-xs text-muted-foreground">{model.vendor}</div>
+        {notes.map((n) => (
+          <div key={n} className="mt-1 max-w-48 text-xs text-muted-foreground sm:max-w-64">
+            {n}
+          </div>
+        ))}
+      </th>
+      <td className={`${TD} whitespace-nowrap`} data-testid="ai-bench-table-tier">
+        <span className="inline-flex items-center gap-1.5">
+          <TierSwatch tier={s.tier} />
+          {tierLabel(s.tier, locale)}
+        </span>
+      </td>
+      {BENCHMARK_SPECS.map((b) => (
+        <ScoreCell key={b.id} model={model} benchmark={b} locale={locale} />
+      ))}
+      <td className={`${NUM} font-semibold`} data-testid="ai-bench-table-index">
+        {s.index === undefined ? DASH : formatIndex(s.index, locale)}
+      </td>
+      <td className={NUM} data-testid="ai-bench-table-input">
+        {model.price === undefined ? DASH : formatUsd(model.price.input, locale)}
+      </td>
+      <td className={NUM} data-testid="ai-bench-table-output">
+        {model.price === undefined ? DASH : formatUsd(model.price.output, locale)}
+      </td>
+      <td className={NUM} data-testid="ai-bench-table-blended">
+        {blended === undefined ? DASH : formatUsd(blended, locale)}
+      </td>
+      <td className={NUM} data-testid="ai-bench-table-cost">
+        {model.costPerTask === undefined ? DASH : formatUsd(model.costPerTask.usd, locale)}
+      </td>
+      <td className={`${TD} min-w-40 text-xs`} data-testid="ai-bench-table-harnesses">
+        {model.harnesses.length === 0 ? DASH : model.harnesses.map((h) => HARNESS_DISPLAY_NAMES[h]).join(", ")}
+      </td>
+    </tr>
+  );
+}
+
+export function ModelTable({ rows, locale }: ModelTableProps) {
+  const ordered = [...rows].sort(tableOrder);
+  return (
+    // Not a labelled section: the scroll region below carries the heading as its name, and a
+    // second landmark with the same name would be ambiguous to screen-reader users.
+    <div data-testid="ai-bench-table-section" className="space-y-2">
+      <h2 id="ai-bench-table-heading" className="text-xl font-semibold">
+        {t(locale, "aiBenchTableHeading")}
+      </h2>
+      <p className="text-xs text-muted-foreground">{t(locale, "aiBenchTableScrollHint")}</p>
+      <div
+        role="region"
+        aria-labelledby="ai-bench-table-heading"
+        tabIndex={0}
+        className="overflow-x-auto rounded-lg border focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+      >
+        <table data-testid="ai-bench-table" className="w-full text-sm">
+          <caption className="px-3 py-2 text-left text-xs text-muted-foreground">
+            {t(locale, "aiBenchTableCaption")}
+          </caption>
+          <thead className="border-b bg-muted">
+            <tr>
+              <th scope="col" className={`${TH} ${PINNED} bg-muted`}>
+                {t(locale, "aiBenchColModel")}
+              </th>
+              <th scope="col" className={TH}>
+                {t(locale, "aiBenchColTier")}
+              </th>
+              {BENCHMARK_SPECS.map((b) => (
+                <th key={b.id} scope="col" className={`${TH} text-right`}>
+                  {b.name} <span className="font-normal">{b.version}</span>
+                </th>
+              ))}
+              <th scope="col" className={`${TH} text-right`}>
+                {t(locale, "aiBenchColIndex")}
+              </th>
+              <th scope="col" className={`${TH} text-right`}>
+                {t(locale, "aiBenchColInput")}
+              </th>
+              <th scope="col" className={`${TH} text-right`}>
+                {t(locale, "aiBenchColOutput")}
+              </th>
+              <th scope="col" className={`${TH} text-right`}>
+                {t(locale, "aiBenchColBlended")}
+              </th>
+              <th scope="col" className={`${TH} text-right`}>
+                {t(locale, "aiBenchColCostPerTask")}
+              </th>
+              <th scope="col" className={TH}>
+                {t(locale, "aiBenchColHarnesses")}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {ordered.map((s) => (
+              <Row key={s.model.id} s={s} locale={locale} />
+            ))}
+          </tbody>
+        </table>
       </div>
-    </section>
+    </div>
   );
 }

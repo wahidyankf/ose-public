@@ -15,15 +15,17 @@ tags: ["xstate", "typescript", "state-machines", "tutorial", "by-example", "begi
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 1: createMachine — Blueprint for a State Machine
+  accDescr: State diagram with 7 items: start or end, Red, Green, Yellow, Red blue, Green teal, Yellow orange. Relationships: start or end to Red; Red to Green: NEXT; Green to Yellow: NEXT; Yellow to Red: NEXT.
   direction LR
   [*] --> Red
   Red --> Green : NEXT
   Green --> Yellow : NEXT
   Yellow --> Red : NEXT
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class Red blue
   class Green teal
   class Yellow orange
@@ -125,6 +127,8 @@ States are the named nodes in a state machine graph. Each state name represents 
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 3: States — Exhaustive Named Nodes
+  accDescr: State diagram with 7 items: start or end, locked, unlocked, opened, locked blue, unlocked teal, opened orange. Relationships: start or end to locked; locked to unlocked: UNLOCK; unlocked to locked: LOCK; unlocked to opened: OPEN; opened to unlocked: CLOSE.
   direction LR
   [*] --> locked
   locked --> unlocked : UNLOCK
@@ -132,9 +136,9 @@ stateDiagram-v2
   unlocked --> opened : OPEN
   opened --> unlocked : CLOSE
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class locked blue
   class unlocked teal
   class opened orange
@@ -320,13 +324,15 @@ Guards are predicate functions attached to transitions. When a transition has a 
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 6: Guards — Gating Transitions with Predicates
+  accDescr: State diagram with 5 items: start or end, locked, unlocked, locked blue, unlocked teal. Relationships: start or end to locked; locked to unlocked: UNLOCK [key correct]; unlocked to locked: LOCK.
   direction LR
   [*] --> locked
   locked --> unlocked : UNLOCK [key correct]
   unlocked --> locked : LOCK
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
   class locked blue
   class unlocked teal
 ```
@@ -736,16 +742,18 @@ Entry actions run every time a state is entered; exit actions run every time a s
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 11: Entry and Exit Actions
+  accDescr: State diagram with 9 items: start or end, idle, loading, success, error, idle blue, loading orange, success teal, error purple. Relationships: start or end to idle; idle to loading: FETCH; loading to success: LOADED; loading to error: FAILED.
   direction LR
   [*] --> idle
   idle --> loading : FETCH
   loading --> success : LOADED
   loading --> error : FAILED
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef purple fill:#CC78BC,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000
   class idle blue
   class loading orange
   class success teal
@@ -1144,6 +1152,8 @@ actor.stop();
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 16: invoke with fromPromise — Async Operations
+  accDescr: State diagram with 9 items: start or end, idle, loading, loaded, failed, idle blue, loading orange, loaded teal, failed purple. Relationships: start or end to idle; idle to loading: FETCH; loading to loaded: onDone; loading to failed: onError; loaded to idle: RESET.
   direction LR
   [*] --> idle
   idle --> loading : FETCH
@@ -1151,10 +1161,10 @@ stateDiagram-v2
   loading --> failed : onError
   loaded --> idle : RESET
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef purple fill:#CC78BC,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000
   class idle blue
   class loading orange
   class loaded teal
@@ -1245,15 +1255,17 @@ actor.stop();
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 17: invoke with fromCallback — Push-Based Sources
+  accDescr: State diagram with 7 items: start or end, disconnected, connecting, connected, disconnected blue, connecting orange, connected teal. Relationships: start or end to disconnected; disconnected to connecting: CONNECT; connecting to connected: CONNECTED; connected to disconnected: DISCONNECT.
   direction LR
   [*] --> disconnected
   disconnected --> connecting : CONNECT
   connecting --> connected : CONNECTED
   connected --> disconnected : DISCONNECT
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
   class disconnected blue
   class connecting orange
   class connected teal
@@ -1539,6 +1551,8 @@ A machine can invoke another machine as a child actor. The parent machine enters
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 20: invoke — Child Machines and Machine Output
+  accDescr: State diagram with 9 items: start or end, idle, running, q1, q2, done, idle blue, running orange, done teal. Relationships: start or end to idle; idle to running: START; start or end to q1; q1 to q2: ANSWER; q2 to start or end: ANSWER; running to done: onDone.
   direction LR
   [*] --> idle
   idle --> running : START
@@ -1549,9 +1563,9 @@ stateDiagram-v2
   }
   running --> done : onDone
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class idle blue
   class running orange
   class done teal
@@ -1697,6 +1711,8 @@ Compound states contain their own sub-machines. A compound state has an `initial
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 21: Compound States — Nested State Hierarchy
+  accDescr: State diagram with 8 items: start or end, out, auth, dash, settings, out blue, dash teal, settings orange. Relationships: start or end to out; start or end to dash; dash to settings: GO_SETTINGS; settings to dash: GO_DASH; out to auth: LOGIN; auth to out: LOGOUT.
   direction LR
   [*] --> out
   state auth {
@@ -1707,9 +1723,9 @@ stateDiagram-v2
   out --> auth : LOGIN
   auth --> out : LOGOUT
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class out blue
   class dash teal
   class settings orange
@@ -1785,6 +1801,8 @@ Parallel states (`type: 'parallel'`) run multiple independent sub-machines simul
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 22: Parallel States — Independent Concurrent Regions
+  accDescr: State diagram with 12 items: player, pb, start or end, paused, playing, vol, unmuted, muted, paused blue, playing teal, unmuted teal, muted orange. Relationships: start or end to paused; paused to playing: PLAY; playing to paused: PAUSE; start or end to unmuted; unmuted to muted: MUTE; muted to unmuted: UNMUTE.
   direction LR
   state player {
     state pb {
@@ -1800,9 +1818,9 @@ stateDiagram-v2
     }
   }
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class paused blue
   class playing teal
   class unmuted teal
@@ -1967,6 +1985,8 @@ A final state (`type: 'final'`) signals that a machine has completed its work. W
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 24: Final States — Machine Completion and Output
+  accDescr: State diagram with 7 items: start or end, pending, approved, rejected, pending blue, approved teal, rejected orange. Relationships: start or end to pending; pending to approved: APPROVE; pending to rejected: REJECT; approved to start or end; rejected to start or end.
   direction LR
   [*] --> pending
   pending --> approved : APPROVE
@@ -1974,9 +1994,9 @@ stateDiagram-v2
   approved --> [*]
   rejected --> [*]
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class pending blue
   class approved teal
   class rejected orange
@@ -2062,6 +2082,8 @@ actor.stop();
 
 ```mermaid
 stateDiagram-v2
+  accTitle: Example 25: after — Managed Delayed Transitions
+  accDescr: State diagram with 7 items: start or end, idle, editing, saving, idle blue, editing teal, saving orange. Relationships: start or end to idle; idle to editing: EDIT; editing to saving: after 2000ms; editing to saving: SAVE; saving to idle: done.
   direction LR
   [*] --> idle
   idle --> editing : EDIT
@@ -2069,9 +2091,9 @@ stateDiagram-v2
   editing --> saving : SAVE
   saving --> idle : done
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   class idle blue
   class editing teal
   class saving orange

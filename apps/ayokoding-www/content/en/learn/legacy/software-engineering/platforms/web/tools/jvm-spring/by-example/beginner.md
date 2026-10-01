@@ -108,16 +108,24 @@ Spring Context ID: org.springframework.context.annotation.AnnotationConfigApplic
 
 ```mermaid
 graph TD
-    A[AppConfig class] -->|@Configuration annotation| B[Spring scans configuration]
-    B --> C[ApplicationContext created]
-    C --> D[Bean definitions registered]
-    D --> E[Context ready to manage beans]
+    accTitle: Example 1: Creating Spring ApplicationContext
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: AppConfig class, Spring scans configuration, ApplicationContext created, Bean definitions registered, Context ready to manage beans. Connections: AppConfig class to Spring scans configuration (@Configuration annotation), Spring scans configuration to ApplicationContext created, ApplicationContext created to Bean definitions registered, Bean definitions registered to Context ready to manage beans.
+    A[AppConfig class] -->|@Configuration<br/>annotation| B[Spring scans<br/>configuration]
+    B --> C[ApplicationContext<br/>created]
+    C --> D[Bean definitions<br/>registered]
+    D --> E[Context ready to<br/>manage beans]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram Explanation**: This diagram illustrates how Spring transforms a @Configuration class into a fully initialized ApplicationContext that manages bean lifecycle.
@@ -148,16 +156,24 @@ Demonstrates defining a bean with `@Bean` and retrieving it from the context.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["@Configuration\nAppConfig"] -->|"@Bean method"| B["Bean Factory Method\nzakatCalculator()"]
-    B -->|"creates instance"| C["ZakatCalculator\n(singleton)"]
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: @Configuration AppConfig, Bean Factory Method zakatCalculator(), ZakatCalculator (singleton), Spring IoC Container, Application Code. Connections: @Configuration AppConfig to Bean Factory Method zakatCalculator() (@Bean method), Bean Factory Method zakatCalculator() to ZakatCalculator (singleton) (creates instance), ZakatCalculator (singleton) to Spring IoC Container (registered in), Spring IoC Container to Application Code (getBean(Zakat Calculator.class)).
+    A["@Configuration<br/>AppConfig"] -->|"@Bean method"| B["Bean Factory Method<br/>zakatCalculator()"]
+    B -->|"creates instance"| C["ZakatCalculator<br/>(singleton)"]
     C -->|"registered in"| D["Spring IoC Container"]
-    D -->|"getBean(ZakatCalculator.class)"| E["Application Code"]
+    D -->|"getBean(Zakat<br/>Calculator.class)"| E["Application Code"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -435,6 +451,8 @@ Saved: Ahmad: $500.0
 
 ```mermaid
 sequenceDiagram
+    accTitle: => Marks class as Spring bean factory
+    accDescr: Sequence diagram between Spring Container, AppConfig, SadaqahRepository, SadaqahService. Messages: Spring Container to AppConfig: Request sadaqahRepository bean; AppConfig to SadaqahRepository: new SadaqahRepository(); SadaqahRepository to Spring Container: Repository instance; Spring Container to AppConfig: Request sadaqahService bean; AppConfig to SadaqahService: new SadaqahService(repository); SadaqahService to Spring Container: Service instance with injected dependency.
     participant Spring as Spring Container
     participant Config as AppConfig
     participant Repo as SadaqahRepository
@@ -449,10 +467,6 @@ sequenceDiagram
     Note over Service: Constructor receives repository
     Service-->>Spring: Service instance with injected dependency
 
-    style Spring fill:#0173B2,stroke:#000,color:#fff
-    style Config fill:#DE8F05,stroke:#000,color:#000
-    style Repo fill:#029E73,stroke:#000,color:#fff
-    style Service fill:#CC78BC,stroke:#000,color:#000
 ```
 
 **Diagram Explanation**: This sequence diagram shows how Spring resolves dependencies by creating the repository bean first, then passing it to the service constructor during service bean creation.
@@ -483,17 +497,24 @@ Demonstrates automatic bean discovery using `@Component` and `@ComponentScan`.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 2 connections. Nodes: A, B, QardHassanCalculator, C, Application Code. Connections: B to C (auto-registers), C to Application Code (getBean()).
     A["@ComponentScan
 (scans package)"] -->|"discovers"| B["@Component
 QardHassanCalculator"]
     B -->|"auto-registers"| C["Spring IoC Container
-(bean: qardHassanCalculator)"]
+(bean:<br/>qardHassanCalculator)"]
     C -->|"getBean()"| D["Application Code"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -615,15 +636,22 @@ Demonstrates `@Autowired` for automatic dependency injection with components.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["@Component\nTransactionService"] -->|"depends on"| B["@Autowired\n(constructor)"]
-    B -->|"Spring resolves"| C["@Component\nHalalaRepository"]
+    accTitle: Diagram
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: @Component TransactionService, @Autowired (constructor), @Component HalalaRepository, Spring IoC Container. Connections: @Component TransactionService to @Autowired (constructor) (depends on), @Autowired (constructor) to @Component HalalaRepository (Spring resolves), @Component HalalaRepository to @Component TransactionService (injected into), @Component TransactionService to Spring IoC Container (managed by).
+    A["@Component<br/>TransactionService"] -->|"depends on"| B["@Autowired<br/>(constructor)"]
+    B -->|"Spring resolves"| C["@Component<br/>HalalaRepository"]
     C -->|"injected into"| A
     A -->|"managed by"| D["Spring IoC Container"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -776,16 +804,23 @@ Demonstrates specifying custom names for beans instead of defaults.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["@Bean(name='myCalc')\nFactory Method"] -->|"registers with name"| B["Spring Container
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: @Bean(name=myCalc) Factory Method, B, bean, @Bean(name=calc,calculator) Aliases, Application Code. Connections: @Bean(name=myCalc) Factory Method to B (registers with name), @Bean(name=calc,calculator) Aliases to B (registers with aliases), B to Application Code (getBean(myCalc)), B to Application Code (get Bean(calculator)).
+    A["@Bean(name='myCalc')<br/>Factory Method"] -->|"registers with<br/>name"| B["Spring Container
 bean: 'myCalc'"]
-    C["@Bean(name={'calc','calculator'})\nAliases"] -->|"registers with aliases"| B
+    C["@Bean(<br/>name={'calc',<br/>'calculator'})\nAliases"] -->|"registers with<br/>aliases"| B
     B -->|"getBean('myCalc')"| D["Application Code"]
-    B -->|"getBean('calculator')"| D
+    B -->|"get<br/>Bean('calculator')"| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -1191,18 +1226,26 @@ Email sent: Thank you, Ali
 
 ```mermaid
 graph TD
-    A[Spring creates<br/>NotificationService] -->|1. Constructor called| B[NotificationService instance]
-    B -->|2. emailService field null| C[Spring detects @Autowired<br/>setter]
-    C -->|3. Spring calls setter| D[setEmailService method]
-    D -->|4. Injects EmailService bean| E[emailService field populated]
+    accTitle: Example 8: Setter Injection
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Spring creates NotificationService, NotificationService instance, Spring detects @Autowired setter, setEmailService method, emailService field populated, Fully wired NotificationService. Connections: Spring creates NotificationService to NotificationService instance (1. Constructor called), NotificationService instance to Spring detects @Autowired setter (2. emailService field null), Spring detects @Autowired setter to setEmailService method (3. Spring calls setter), setEmailService method to emailService field populated (4. Injects EmailService bean), emailService field populated to Fully wired NotificationService (5. Bean ready).
+    A[Spring creates<br/>NotificationService] -->|1. Constructor<br/>called| B[NotificationService<br/>instance]
+    B -->|2. emailService<br/>field null| C[Spring detects<br/>@Autowired<br/>setter]
+    C -->|3. Spring calls<br/>setter| D[setEmailService<br/>method]
+    D -->|4. Injects<br/>EmailService bean| E[emailService field<br/>populated]
     E -->|5. Bean ready| F[Fully wired<br/>NotificationService]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram Explanation**: This diagram illustrates the two-phase lifecycle of setter injection - object construction first, then dependency injection via setter method after construction completes.
@@ -1547,24 +1590,32 @@ Cash payment: $100.0
 
 ```mermaid
 graph TD
-    A[Spring Container] -->|Detects multiple beans| B{PaymentProcessor beans}
+    accTitle: Example 10: @Qualifier for Disambiguation
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: Spring Container, PaymentProcessor beans, CashPayment bean, CardPayment bean, DonationService needs PaymentProcessor, Spring selects CashPayment, Injects cashProcessor bean, Without @Qualifier, NoUnique BeanDefinition Exception. Connections: Spring Container to PaymentProcessor beans (Detects multiple beans), PaymentProcessor beans to CashPayment bean (@Qualifier cash), PaymentProcessor beans to CardPayment bean (@Qualifier card), DonationService needs PaymentProcessor to Spring selects CashPayment (@Qualifier cash specified), Spring selects CashPayment to Injects cashProcessor bean, Without @Qualifier to NoUnique BeanDefinition Exception (Multiple beans found).
+    A[Spring Container] -->|Detects multiple<br/>beans| B{PaymentProcessor<br/>beans}
     B -->|@Qualifier cash| C[CashPayment bean]
     B -->|@Qualifier card| D[CardPayment bean]
 
-    E[DonationService needs<br/>PaymentProcessor] -->|@Qualifier cash specified| F[Spring selects CashPayment]
-    F --> G[Injects cashProcessor bean]
+    E[DonationService<br/>needs<br/>PaymentProcessor] -->|@Qualifier cash<br/>specified| F[Spring selects<br/>CashPayment]
+    F --> G[Injects<br/>cashProcessor bean]
 
-    H[Without @Qualifier] -->|Multiple beans found| I[NoUnique<br/>BeanDefinitionException]
+    H[Without @Qualifier] -->|Multiple beans found| I[NoUnique<br/>BeanDefinition<br/>Exception]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
-    style H fill:#DE8F05,stroke:#000,color:#000
-    style I fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-0173B2
+    class H pal-DE8F05
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram Explanation**: This diagram shows how @Qualifier enables Spring to select the correct bean when multiple beans of the same type exist, preventing NoUniqueBeanDefinitionException.
@@ -1845,7 +1896,9 @@ Same? false
 
 ```mermaid
 graph TD
-    subgraph Singleton [Singleton Scope - Default]
+    accTitle: => Function main executes
+    accDescr: Graph with 10 nodes and 10 connections. Nodes: First getBean call, Bean Instance 1, Second getBean call, Third getBean call, First getBean call, Bean Instance 1, Second getBean call, Bean Instance 2, Third getBean call, Bean Instance 3. Connections: First getBean call to Bean Instance 1 (Creates instance), First getBean call to Second getBean call (Then), Second getBean call to Bean Instance 1 (Returns cached), Second getBean call to Third getBean call (Then), Third getBean call to Bean Instance 1 (Returns cached), First getBean call to Bean Instance 1 (Creates new), First getBean call to Second getBean call (Then), Second getBean call to Bean Instance 2 (Creates new), Second getBean call to Third getBean call (Then), Third getBean call to Bean Instance 3 (Creates new).
+    subgraph Singleton [Singleton Scope -<br/>Default]
         A1[First getBean call] -->|Creates instance| B1[Bean Instance 1]
         A1 -->|Then| A2[Second getBean call]
         A2 -->|Returns cached| B1
@@ -1853,7 +1906,7 @@ graph TD
         A3 -->|Returns cached| B1
     end
 
-    subgraph Prototype [Prototype Scope - @Scope<br/>prototype]
+    subgraph Prototype [Prototype Scope -<br/>@Scope<br/>prototype]
         C1[First getBean call] -->|Creates new| D1[Bean Instance 1]
         C1 -->|Then| C2[Second getBean call]
         C2 -->|Creates new| D2[Bean Instance 2]
@@ -1861,16 +1914,21 @@ graph TD
         C3 -->|Creates new| D3[Bean Instance 3]
     end
 
-    style A1 fill:#0173B2,stroke:#000,color:#fff
-    style A2 fill:#0173B2,stroke:#000,color:#fff
-    style A3 fill:#0173B2,stroke:#000,color:#fff
-    style B1 fill:#029E73,stroke:#000,color:#fff
-    style C1 fill:#DE8F05,stroke:#000,color:#000
-    style C2 fill:#DE8F05,stroke:#000,color:#000
-    style C3 fill:#DE8F05,stroke:#000,color:#000
-    style D1 fill:#CC78BC,stroke:#000,color:#000
-    style D2 fill:#CC78BC,stroke:#000,color:#000
-    style D3 fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A1 pal-0173B2
+    class A2 pal-0173B2
+    class A3 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C1 pal-DE8F05
+    class C2 pal-DE8F05
+    class C3 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D1 pal-CC78BC
+    class D2 pal-CC78BC
+    class D3 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram Explanation**: This diagram contrasts singleton scope (one shared instance) with prototype scope (new instance per request), showing how each getBean call behaves differently.
@@ -2167,6 +2225,8 @@ Closing context...
 
 ```mermaid
 stateDiagram-v2
+    accTitle: => Function main executes
+    accDescr: State diagram with 6 items: start or end, Created, DependenciesInjected, PostConstructCalled, Ready, PreDestroyCalled. Relationships: start or end to Created: Spring creates bean instance; Created to DependenciesInjected: Inject deps via ctor/setter; DependenciesInjected to PostConstructCalled: Call @PostConstruct method; PostConstructCalled to Ready: Bean ready for use; Ready to PreDestroyCalled: context.close() called; PreDestroyCalled to start or end: Bean destroyed.
     [*] --> Created: Spring creates bean instance
     Created --> DependenciesInjected: Inject deps via ctor/setter
     DependenciesInjected --> PostConstructCalled: Call @PostConstruct method
@@ -2821,6 +2881,8 @@ Timeout: 5000ms
 
 ```mermaid
 graph TD
+    accTitle: => Marks class as Spring bean factory
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: @Value annotation, Property exists?, Use property value, Default specified?, Use default value, Throw exception, Type conversion, Inject into field. Connections: @Value annotation to Property exists? (Reads property key), Property exists? to Use property value (Yes), Property exists? to Default specified? (No), Default specified? to Use default value (Yes colon syntax), Default specified? to Throw exception (No), Use property value to Type conversion, Use default value to Type conversion, Type conversion to Inject into field.
     A[@Value annotation] -->|Reads property key| B{Property exists?}
     B -->|Yes| C[Use property value]
     B -->|No| D{Default specified?}
@@ -2831,14 +2893,20 @@ graph TD
     E --> G
     G --> H[Inject into field]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram Explanation**: This flow diagram shows how Spring resolves @Value properties, checking for property existence, falling back to defaults if specified, and performing type conversion before injection.

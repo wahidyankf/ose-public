@@ -16,16 +16,24 @@ An Axum application starts with a `Router`, a socket address, and a call to `axu
 
 ```mermaid
 graph TD
+    accTitle: Example 1: Minimal Axum Server
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: tokio::main Async Runtime, Router::new4041 Build Routes, TcpListener::bind Open Port, axum::serve Accept Connections, Handler fn Return Response. Connections: tokio::main Async Runtime to Router::new4041 Build Routes, Router::new4041 Build Routes to TcpListener::bind Open Port, TcpListener::bind Open Port to axum::serve Accept Connections, axum::serve Accept Connections to Handler fn Return Response.
     A["tokio::main<br/>Async Runtime"] --> B["Router::new#40;#41;<br/>Build Routes"]
     B --> C["TcpListener::bind<br/>Open Port"]
     C --> D["axum::serve<br/>Accept Connections"]
     D --> E["Handler fn<br/>Return Response"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -285,16 +293,22 @@ Axum's `State` extractor injects shared application state into handlers. The sta
 
 ```mermaid
 graph LR
-    A["App Startup<br/>with_state#40;AppState#41;"] --> B["Router"]
-    B --> C["Handler A<br/>State#60;AppState#62;"]
-    B --> D["Handler B<br/>State#60;AppState#62;"]
-    B --> E["Handler C<br/>State#60;AppState#62;"]
+    accTitle: Example 6: Shared State with State Extractor
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: App Startup with_state40App State41, Router, Handler A State60App State62, Handler B State60App State62, Handler C State60App State62. Connections: App Startup with_state40App State41 to Router, Router to Handler A State60App State62, Router to Handler B State60App State62, Router to Handler C State60App State62.
+    A["App Startup<br/>with_state#40;App<br/>State#41;"] --> B["Router"]
+    B --> C["Handler A<br/>State#60;App<br/>State#62;"]
+    B --> D["Handler B<br/>State#60;App<br/>State#62;"]
+    B --> E["Handler C<br/>State#60;App<br/>State#62;"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust

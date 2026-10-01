@@ -35,16 +35,23 @@ Axum is a **web application framework for Rust** built on top of Tokio, Tower, a
 
 ```mermaid
 graph TD
+  accTitle: Learning Path
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Core Axum Concepts Examples 1-27, Intermediate Production Patterns Examples 28-49, Advanced Scale and Resilience Examples 50-74, 0 No Axum Knowledge, 95 Framework Mastery. Connections: Beginner Core Axum Concepts Examples 1-27 to Intermediate Production Patterns Examples 28-49, Intermediate Production Patterns Examples 28-49 to Advanced Scale and Resilience Examples 50-74, 0 No Axum Knowledge to Beginner Core Axum Concepts Examples 1-27, Advanced Scale and Resilience Examples 50-74 to 95 Framework Mastery.
   A["Beginner<br/>Core Axum Concepts<br/>Examples 1-27"] --> B["Intermediate<br/>Production Patterns<br/>Examples 28-49"]
   B --> C["Advanced<br/>Scale and Resilience<br/>Examples 50-74"]
   D["0%<br/>No Axum Knowledge"] -.-> A
   C -.-> E["95%<br/>Framework Mastery"]
 
-  style A fill:#0173B2,color:#fff
-  style B fill:#DE8F05,color:#fff
-  style C fill:#029E73,color:#fff
-  style D fill:#CC78BC,color:#fff
-  style E fill:#029E73,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Philosophy: 95% Through 74 Examples

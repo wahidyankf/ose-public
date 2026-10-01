@@ -23,18 +23,26 @@ Demonstrates RESTful API with proper HTTP responses.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["HTTP Request\nGET /api/zakat/100000"] -->|"DispatcherServlet"| B["@RestController\nZakatController"]
+    accTitle: Diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: HTTP Request GET /api/zakat/100000, @RestController ZakatController, Business Logic, ResponseEntity 200 OK + body, ResponseEntity 404 NOT FOUND, ResponseEntity 500 ERROR. Connections: HTTP Request GET /api/zakat/100000 to @RestController ZakatController (DispatcherServlet), @RestController ZakatController to Business Logic (processes), Business Logic to ResponseEntity 200 OK + body (success), Business Logic to ResponseEntity 404 NOT FOUND (not found), Business Logic to ResponseEntity 500 ERROR (error).
+    A["HTTP Request<br/>GET<br/>/api/zakat/100000"] -->|"DispatcherServlet"| B["@RestController<br/>ZakatController"]
     B -->|"processes"| C["Business Logic"]
-    C -->|"success"| D["ResponseEntity\n200 OK + body"]
-    C -->|"not found"| E["ResponseEntity\n404 NOT FOUND"]
-    C -->|"error"| F["ResponseEntity\n500 ERROR"]
+    C -->|"success"| D["ResponseEntity<br/>200 OK + body"]
+    C -->|"not found"| E["ResponseEntity<br/>404 NOT FOUND"]
+    C -->|"error"| F["ResponseEntity<br/>500 ERROR"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -606,6 +614,8 @@ class SecurityConfig {  # => Defines SecurityConfig class
 
 ```mermaid
 sequenceDiagram
+    accTitle: => Marks class as Spring bean factory
+    accDescr: Sequence diagram between Request, SecurityContextFilter, AuthenticationFilter, AuthorizationFilter, Controller. Messages: Request to SecurityContextFilter: Incoming HTTP request; SecurityContextFilter to AuthenticationFilter: Pass to authentication; AuthenticationFilter to AuthorizationFilter: Authenticated request; AuthorizationFilter to Controller: Authorized request; Controller to Request: HTTP response.
     participant Request
     participant Filter1 as SecurityContextFilter
     participant Filter2 as AuthenticationFilter
@@ -626,11 +636,6 @@ sequenceDiagram
 
     Controller-->>Request: HTTP response
 
-    style Request fill:#0173B2,stroke:#000,color:#fff
-    style Filter1 fill:#DE8F05,stroke:#000,color:#000
-    style Filter2 fill:#029E73,stroke:#000,color:#fff
-    style Filter3 fill:#CC78BC,stroke:#000,color:#000
-    style Controller fill:#CA9161,stroke:#000,color:#fff
 ```
 
 **Diagram Explanation**: This sequence diagram shows how Spring Security's filter chain processes requests through multiple security filters (context, authentication, authorization) before reaching the controller.
@@ -826,6 +831,8 @@ class CustomUserDetailsService : UserDetailsService {  # => Defines CustomUserDe
 
 ```mermaid
 sequenceDiagram
+    accTitle: => Specialized @Component for business logic layer
+    accDescr: Sequence diagram between Client, Spring Security, CustomUserDetailsService, Database. Messages: Client to Spring Security: Login with username/password; Spring Security to CustomUserDetailsService: loadUserByUsername(username); CustomUserDetailsService to Database: Query user by username; Database to CustomUserDetailsService: User data (or not found); CustomUserDetailsService to Spring Security: UserDetails object (username, password, roles); Spring Security to Spring Security: Validate password; Spring Security to Client: Authentication success; CustomUserDetailsService to Spring Security: UsernameNotFoundException; Spring Security to Client: Authentication failure (401).
     participant Client
     participant Security as Spring Security
     participant UserService as CustomUserDetailsService
@@ -846,10 +853,6 @@ sequenceDiagram
         Security-->>Client: Authentication failure (401)
     end
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style Security fill:#DE8F05,stroke:#000,color:#000
-    style UserService fill:#029E73,stroke:#000,color:#fff
-    style Database fill:#CC78BC,stroke:#000,color:#000
 ```
 
 **Diagram Explanation**: This sequence diagram shows how Spring Security delegates authentication to CustomUserDetailsService, which loads user data and returns UserDetails for password verification.
@@ -1194,6 +1197,8 @@ class DonationCacheService {  # => Defines DonationCacheService class
 
 ```mermaid
 stateDiagram-v2
+    accTitle: => Specialized @Component for business logic layer
+    accDescr: State diagram with 7 items: start or end, CacheMiss, LoadFromDB, CacheStore, CacheHit, CacheUpdate, CacheEvict. Relationships: start or end to CacheMiss: getDonation(1) called; CacheMiss to LoadFromDB: Key not in cache; LoadFromDB to CacheStore: Store result; CacheStore to CacheHit: Subsequent getDonation(1); CacheHit to CacheUpdate: updateDonation(1, data); CacheUpdate to CacheHit: @CachePut updates cache; CacheHit to CacheEvict: deleteDonation(1); CacheEvict to start or end: @CacheEvict removes entry.
     [*] --> CacheMiss: getDonation(1) called
     CacheMiss --> LoadFromDB: Key not in cache
     LoadFromDB --> CacheStore: Store result
@@ -1459,6 +1464,8 @@ class DonationEventListener {  # => Defines DonationEventListener class
 
 ```mermaid
 sequenceDiagram
+    accTitle: => Component scanning will discover and register this class
+    accDescr: Sequence diagram between DonationService, ApplicationEventPublisher, Spring Context, EmailListener, AuditListener. Messages: DonationService to ApplicationEventPublisher: publishEvent(DonationEvent); ApplicationEventPublisher to Spring Context: Broadcast event; Spring Context to EmailListener: @EventListener invoked; Spring Context to AuditListener: @EventListener invoked.
     participant Service as DonationService
     participant Publisher as ApplicationEventPublisher
     participant Context as Spring Context
@@ -1476,11 +1483,6 @@ sequenceDiagram
 
     Note over Service,Listener2: Decoupled - Service unaware of listeners
 
-    style Service fill:#0173B2,stroke:#000,color:#fff
-    style Publisher fill:#DE8F05,stroke:#000,color:#000
-    style Context fill:#029E73,stroke:#000,color:#fff
-    style Listener1 fill:#CC78BC,stroke:#000,color:#000
-    style Listener2 fill:#CA9161,stroke:#000,color:#fff
 ```
 
 **Diagram Explanation**: This sequence diagram shows Spring's event-driven architecture - services publish events through ApplicationEventPublisher, and multiple @EventListener methods receive events independently, enabling loose coupling.
@@ -1753,9 +1755,11 @@ class DatabaseService(type: String) {  # => Defines DatabaseService class
 
 ```mermaid
 graph TD
-    A[Spring scans @Bean methods] --> B{@Conditional annotations?}
-    B -->|@ConditionalOnProperty| C{Property matches?}
-    B -->|@ConditionalOnMissingBean| D{Bean exists?}
+    accTitle: => Marks class as Spring bean factory
+    accDescr: Graph with 9 nodes and 12 connections. Nodes: Spring scans @Bean methods, @Conditional annotations?, Property matches?, Bean exists?, Class in classpath?, Register bean, Skip bean, Bean available in context, Bean not registered. Connections: Spring scans @Bean methods to @Conditional annotations?, @Conditional annotations? to Property matches? (@ConditionalOn Property), @Conditional annotations? to Bean exists? (@ConditionalOn MissingBean), @Conditional annotations? to Class in classpath? (@ConditionalOnClass), Property matches? to Register bean (Yes), Property matches? to Skip bean (No), Bean exists? to Register bean (No missing), Bean exists? to Skip bean (Already exists), Class in classpath? to Register bean (Present), Class in classpath? to Skip bean (Absent), Register bean to Bean available in context, Skip bean to Bean not registered.
+    A[Spring scans @Bean<br/>methods] --> B{@Conditional<br/>annotations?}
+    B -->|@ConditionalOn<br/>Property| C{Property matches?}
+    B -->|@ConditionalOn<br/>MissingBean| D{Bean exists?}
     B -->|@ConditionalOnClass| E{Class in classpath?}
 
     C -->|Yes| F[Register bean]
@@ -1767,18 +1771,24 @@ graph TD
     E -->|Present| F
     E -->|Absent| G
 
-    F --> H[Bean available in context]
+    F --> H[Bean available in<br/>context]
     G --> I[Bean not registered]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
-    style I fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-0173B2
+    class I pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram Explanation**: This flow diagram shows how Spring evaluates @Conditional annotations during bean registration, enabling flexible auto-configuration based on properties, existing beans, or classpath contents.

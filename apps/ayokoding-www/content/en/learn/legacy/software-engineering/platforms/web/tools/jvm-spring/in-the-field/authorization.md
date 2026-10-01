@@ -482,6 +482,8 @@ public class ZakatService {
 
 ```mermaid
 graph TD
+    accTitle: Authorization Architecture Diagram
+    accDescr: Graph with 13 nodes and 13 connections. Nodes: HTTP Request, SecurityFilterChain URL-based?, Check URL Pattern, Controller, 403 Forbidden, Method Security @PreAuthorize?, Evaluate SpEL, Execute Method, 403 AccessDenied, @PostAuthorize?, Evaluate Return Value, Return Response, and 1 more. Connections: HTTP Request to SecurityFilterChain URL-based?, SecurityFilterChain URL-based? to Check URL Pattern (Yes), Check URL Pattern to Controller (Authorized), Check URL Pattern to 403 Forbidden (Denied), Controller to Method Security @PreAuthorize?, Method Security @PreAuthorize? to Evaluate SpEL (Yes), Evaluate SpEL to Execute Method (True), Evaluate SpEL to 403 AccessDenied (False), Execute Method to @PostAuthorize?, @PostAuthorize? to Evaluate Return Value (Yes), Evaluate Return Value to Return Response (True), Evaluate Return Value to 403 AccessDenied (False), and 1 more.
     A[HTTP Request] --> B{SecurityFilterChain<br/>URL-based?}
     B -->|Yes| C[Check URL Pattern]
     C -->|Authorized| D[Controller]
@@ -493,18 +495,23 @@ graph TD
     G -->|False| I[403 AccessDenied]
 
     H --> J{@PostAuthorize?}
-    J -->|Yes| K[Evaluate Return Value]
+    J -->|Yes| K[Evaluate Return<br/>Value]
     K -->|True| L[Return Response]
     K -->|False| M[403 AccessDenied]
     J -->|No| L
 
-    style B fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style F fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style J fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
-    style I fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
-    style M fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
-    style L fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class J pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    class I pal-CC78BC
+    class M pal-CC78BC
+    class L pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

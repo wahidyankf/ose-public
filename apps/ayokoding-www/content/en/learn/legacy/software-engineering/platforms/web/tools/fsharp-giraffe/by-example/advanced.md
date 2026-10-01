@@ -354,15 +354,22 @@ ASP.NET Core SignalR provides a higher-level real-time communication abstraction
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 60: Real-Time Notifications with SignalR
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Client Browser, SignalR Hub /hubs/notifications, Giraffe Handler POST /api/notify, IHubContext SendAsync. Connections: Client Browser to SignalR Hub /hubs/notifications (WebSocket/SSE), Giraffe Handler POST /api/notify to IHubContext SendAsync, IHubContext SendAsync to SignalR Hub /hubs/notifications, SignalR Hub /hubs/notifications to Client Browser.
     A["Client Browser"] -->|"WebSocket/SSE"| B["SignalR Hub<br/>/hubs/notifications"]
     C["Giraffe Handler<br/>POST /api/notify"] --> D["IHubContext<br/>SendAsync"]
     D --> B
     B --> A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp
@@ -883,12 +890,18 @@ A multi-stage Dockerfile builds and packages a Giraffe application efficiently, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Build Stage<br/>mcr.microsoft.com/dotnet/sdk:8.0"] -->|"dotnet publish"| B["Runtime Stage<br/>mcr.microsoft.com/dotnet/aspnet:8.0"]
+    accTitle: Example 66: Dockerfile for Giraffe Applications
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Build Stage mcr.microsoft.com/ dotnet/sdk:8.0, Runtime Stage mcr.microsoft.com/ dotnet/aspnet:8.0, Final Image ~100MB vs 800MB SDK. Connections: Build Stage mcr.microsoft.com/ dotnet/sdk:8.0 to Runtime Stage mcr.microsoft.com/ dotnet/aspnet:8.0 (dotnet publish), Runtime Stage mcr.microsoft.com/ dotnet/aspnet:8.0 to Final Image ~100MB vs 800MB SDK.
+    A["Build Stage<br/>mcr.microsoft.com/<br/>dotnet/sdk:8.0"] -->|"dotnet publish"| B["Runtime Stage<br/>mcr.microsoft.com/<br/>dotnet/aspnet:8.0"]
     B --> C["Final Image<br/>~100MB vs 800MB SDK"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp

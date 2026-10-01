@@ -458,6 +458,8 @@ public class AsyncEventListeners {
 
 ```mermaid
 sequenceDiagram
+    accTitle: Event Propagation Flow Diagram
+    accDescr: Sequence diagram between ZakatPaymentService, ApplicationEventPublisher, NotificationListener, AuditListener, AnalyticsListener, AsyncListener. Messages: ZakatPaymentService to ZakatPaymentService: processPayment(); ZakatPaymentService to ZakatPaymentService: savePaymentToDatabase(); ZakatPaymentService to ApplicationEventPublisher: publishEvent(ZakatPaymentEvent); ApplicationEventPublisher to NotificationListener: handlePaymentEvent() [sync]; NotificationListener to NotificationListener: Send email (1000ms); NotificationListener to ApplicationEventPublisher: Complete; ApplicationEventPublisher to AuditListener: handlePaymentEvent() [sync]; AuditListener to AuditListener: Log audit record; AuditListener to ApplicationEventPublisher: Complete; ApplicationEventPublisher to AnalyticsListener: handlePaymentEvent() [sync]; AnalyticsListener to AnalyticsListener: Track payment; AnalyticsListener to ApplicationEventPublisher: Complete; and 5 more.
     participant Service as ZakatPaymentService
     participant Publisher as ApplicationEventPublisher
     participant Notif as NotificationListener
@@ -494,11 +496,6 @@ sequenceDiagram
     Note over Notif,Analytics: Sequential execution (sync)
     Note over Async: Parallel execution (async)
 
-    style Publisher fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style Notif fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style Audit fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style Analytics fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style Async fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 ## Production Patterns

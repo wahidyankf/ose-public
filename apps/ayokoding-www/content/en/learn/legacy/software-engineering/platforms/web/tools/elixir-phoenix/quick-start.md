@@ -43,8 +43,9 @@ By the end of this tutorial, you will understand:
 ## Learning Path
 
 ```mermaid
-%%{init: {'theme':'base',<br/>'themeVariables': {<br/>'primaryColor':'#0ea5e9','primaryTextColor':'#1e293b','primaryBorderColor':'#0369a1','lineColor':'#64748b','secondaryColor':'#f97316','tertiaryColor':'#8b5cf6','background':'#ffffff','mainBkg':'#f1f5f9','secondBkg':'#e2e8f0'}}}%%
 graph TB
+    accTitle: Learning Path
+    accDescr: Graph with 16 nodes and 15 connections. Nodes: Quick Start, Prerequisites Check, Request Lifecycle, Routing, Controllers, View, Templates, Layouts, Ecto Basics, Changesets, Contexts, LiveView, and 4 more. Connections: Quick Start to Prerequisites Check, Prerequisites Check to Request Lifecycle, Request Lifecycle to Routing, Routing to Controllers, Controllers to View, Controllers to Templates, View to Layouts, Layouts to Ecto Basics, Ecto Basics to Changesets, Changesets to Contexts, Contexts to LiveView, LiveView to Channels, and 3 more.
     Start[Quick Start] --> Setup[Prerequisites Check]
     Setup --> Lifecycle[Request Lifecycle]
     Lifecycle --> Route[Routing]
@@ -60,10 +61,15 @@ graph TB
     Auth --> Deploy[Deployment]
     Deploy --> Next[Next Steps]
 
-    style Start fill:#0ea5e9,stroke:#0369a1,stroke-width:3px,color:#ffffff
-    style Next fill:#10b981,stroke:#059669,stroke-width:3px,color:#ffffff
-    style Route fill:#f97316,stroke:#c2410c,stroke-width:2px,color:#ffffff
-    style Live fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#ffffff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:3px
+    class Start pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:3px
+    class Next pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Route pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Live pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Phoenix Request Lifecycle
@@ -73,8 +79,9 @@ Understanding how Phoenix processes requests is fundamental.
 ### The Full Journey
 
 ```mermaid
-%%{init: {'theme':'base',<br/>'themeVariables': {<br/>'primaryColor':'#0ea5e9','primaryTextColor':'#1e293b','primaryBorderColor':'#0369a1','lineColor':'#64748b','secondaryColor':'#f97316','tertiaryColor':'#8b5cf6','background':'#ffffff','mainBkg':'#f1f5f9','secondBkg':'#e2e8f0'}}}%%
 graph TD
+    accTitle: The Full Journey
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Browser, Endpoint, Router, Pipeline/Plugs, Controller, View, Template, HTTP Response. Connections: Browser to Endpoint, Endpoint to Router, Router to Pipeline/Plugs, Pipeline/Plugs to Controller, Controller to View, View to Template, Template to HTTP Response, HTTP Response to Browser.
     Browser[Browser] --> Endpoint[Endpoint]
     Endpoint --> Router[Router]
     Router --> Pipeline[Pipeline/Plugs]
@@ -84,9 +91,13 @@ graph TD
     Template --> Response[HTTP Response]
     Response --> Browser
 
-    style Endpoint fill:#0ea5e9,stroke:#0369a1,stroke-width:2px,color:#ffffff
-    style Controller fill:#f97316,stroke:#c2410c,stroke-width:2px,color:#ffffff
-    style Template fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#ffffff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Endpoint pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Controller pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Template pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key components**:

@@ -707,6 +707,8 @@ public class GlobalExceptionHandler {
 
 ```mermaid
 graph LR
+    accTitle: Progression Diagram
+    accDescr: Graph with 12 nodes and 9 connections. Nodes: Manual Try-Catch ServletException, Repetitive, Inconsistent, Mixed Concerns, @ExceptionHandler Controller-Level, Per Controller, Clean Methods, ErrorResponse, @ControllerAdvice Global Handlers, All Controllers, Consistency, Observability. Connections: Manual Try-Catch ServletException to Repetitive (50+ Lines/Method), Manual Try-Catch ServletException to Inconsistent (Duplicated Logic), Manual Try-Catch ServletException to Mixed Concerns (Coupled), @ExceptionHandler Controller-Level to Per Controller (Centralized), @ExceptionHandler Controller-Level to Clean Methods (Reusable), @ExceptionHandler Controller-Level to ErrorResponse (Type-Safe), @ControllerAdvice Global Handlers to All Controllers (Global), @ControllerAdvice Global Handlers to Consistency (Single Source), @ControllerAdvice Global Handlers to Observability (Metrics + Logging).
     A[Manual Try-Catch<br/>ServletException] -->|50+ Lines/Method| B[Repetitive]
     A -->|Duplicated Logic| C[Inconsistent]
     A -->|Coupled| D[Mixed Concerns]
@@ -719,9 +721,13 @@ graph LR
     I -->|Single Source| K[Consistency]
     I -->|Metrics + Logging| L[Observability]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style I fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Trade-offs and When to Use

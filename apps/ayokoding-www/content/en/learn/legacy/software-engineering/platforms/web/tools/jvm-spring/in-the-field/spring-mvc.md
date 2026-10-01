@@ -326,6 +326,8 @@ Spring MVC uses DispatcherServlet as front controller:
 
 ```mermaid
 sequenceDiagram
+    accTitle: Request Lifecycle with DispatcherServlet
+    accDescr: Sequence diagram between Client, DispatcherServlet, HandlerMapping, Controller, Service, ViewResolver, View. Messages: Client to DispatcherServlet: GET /zakat/calculate?wealth=5000; DispatcherServlet to HandlerMapping: Find handler for /zakat/calculate; HandlerMapping to DispatcherServlet: ZakatController.calculateZakat(); DispatcherServlet to DispatcherServlet: Convert wealth=5000 to BigDecimal; DispatcherServlet to Controller: calculateZakat(BigDecimal, Model); Controller to Service: calculateZakat(BigDecimal); Service to Controller: BigDecimal zakatAmount; Controller to Controller: model.addAttribute(zakatAmount, zakatAmount); Controller to DispatcherServlet: Return zakat/result; DispatcherServlet to ViewResolver: Resolve zakat/result; ViewResolver to DispatcherServlet: /WEB-INF/views/zakat/result.jsp; DispatcherServlet to View: Render with model data; and 2 more.
     participant Client
     participant DispatcherServlet
     participant HandlerMapping
@@ -349,9 +351,6 @@ sequenceDiagram
     View-->>DispatcherServlet: HTML response
     DispatcherServlet-->>Client: HTTP 200 with HTML
 
-    style DispatcherServlet fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style Controller fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style ViewResolver fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 ## Production Patterns
@@ -607,6 +606,8 @@ public class WebConfig implements WebMvcConfigurer {
 
 ```mermaid
 graph LR
+    accTitle: Progression Diagram
+    accDescr: Graph with 12 nodes and 9 connections. Nodes: Servlet API Manual Handling, Boilerplate, No Type Safety, Verbose Setup, Spring MVC @Controller, Automatic Binding, Type Safety, No XML, Advanced MVC Interceptors + Sessions, JSON/HTML, Multi-Step Forms, Cross-Cutting. Connections: Servlet API Manual Handling to Boilerplate (60+ Lines/Endpoint), Servlet API Manual Handling to No Type Safety (Manual Parsing), Servlet API Manual Handling to Verbose Setup (XML Configuration), Spring MVC @Controller to Automatic Binding (10 Lines/Endpoint), Spring MVC @Controller to Type Safety (Type Conversion), Spring MVC @Controller to No XML (Annotations), Advanced MVC Interceptors + Sessions to JSON/HTML (Content Negotiation), Advanced MVC Interceptors + Sessions to Multi-Step Forms (@SessionAttributes), Advanced MVC Interceptors + Sessions to Cross-Cutting (HandlerInterceptor).
     A[Servlet API<br/>Manual Handling] -->|60+ Lines/Endpoint| B[Boilerplate]
     A -->|Manual Parsing| C[No Type Safety]
     A -->|XML Configuration| D[Verbose Setup]
@@ -615,13 +616,17 @@ graph LR
     E -->|Type Conversion| G[Type Safety]
     E -->|Annotations| H[No XML]
 
-    I[Advanced MVC<br/>Interceptors + Sessions] -->|Content Negotiation| J[JSON/HTML]
+    I[Advanced MVC<br/>Interceptors +<br/>Sessions] -->|Content Negotiation| J[JSON/HTML]
     I -->|@SessionAttributes| K[Multi-Step Forms]
     I -->|HandlerInterceptor| L[Cross-Cutting]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style I fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Trade-offs and When to Use

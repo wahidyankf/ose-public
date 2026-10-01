@@ -426,15 +426,17 @@ public class ZakatPaymentService {
 
 ```mermaid
 flowchart TB
+    accTitle: Logging Architecture Diagram
+    accDescr: Flowchart with 9 nodes and 8 connections. Nodes: Application Code (SLF4J API), SLF4J Facade (Logger abstraction), Logback Implementation (ch.qos.logback), Console Appender (stdout/stderr), File Appender (rotation, compression), JSON Appender (structured logs), Log Aggregation (ELK, Splunk, Datadog), MDC (accountId, requestId), logback.xml (log levels, appenders). Connections: Application Code (SLF4J API) to SLF4J Facade (Logger abstraction), SLF4J Facade (Logger abstraction) to Logback Implementation (ch.qos.logback), Logback Implementation (ch.qos.logback) to Console Appender (stdout/stderr), Logback Implementation (ch.qos.logback) to File Appender (rotation, compression), Logback Implementation (ch.qos.logback) to JSON Appender (structured logs), JSON Appender (structured logs) to Log Aggregation (ELK, Splunk, Datadog), MDC (accountId, requestId) to Logback Implementation (ch.qos.logback) (Thread-local context), logback.xml (log levels, appenders) to Logback Implementation (ch.qos.logback) (Configuration).
     Code["Application Code<br/>(SLF4J API)"]
     SLF4J["SLF4J Facade<br/>(Logger abstraction)"]
-    Logback["Logback Implementation<br/>(ch.qos.logback)"]
+    Logback["Logback<br/>Implementation<br/>(ch.qos.logback)"]
 
     Console["Console Appender<br/>(stdout/stderr)"]
-    File["File Appender<br/>(rotation, compression)"]
+    File["File Appender<br/>(rotation,<br/>compression)"]
     JSON["JSON Appender<br/>(structured logs)"]
 
-    ELK["Log Aggregation<br/>(ELK, Splunk, Datadog)"]
+    ELK["Log Aggregation<br/>(ELK, Splunk,<br/>Datadog)"]
 
     Code --> SLF4J
     SLF4J --> Logback
@@ -443,16 +445,21 @@ flowchart TB
     Logback --> JSON
     JSON --> ELK
 
-    MDC["MDC<br/>(accountId, requestId)"]
+    MDC["MDC<br/>(accountId,<br/>requestId)"]
     MDC -.->|Thread-local context| Logback
 
-    Config["logback.xml<br/>(log levels, appenders)"]
+    Config["logback.xml<br/>(log levels,<br/>appenders)"]
     Config -.->|Configuration| Logback
 
-    style SLF4J fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style Logback fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style JSON fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style ELK fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class SLF4J pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Logback pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class JSON pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class ELK pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

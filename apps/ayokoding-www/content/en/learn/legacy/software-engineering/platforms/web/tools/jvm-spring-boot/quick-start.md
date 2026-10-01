@@ -27,9 +27,11 @@ This quick start follows a structured learning path:
 
 ```mermaid
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 15 nodes and 14 connections. Nodes: Project Setup, B, REST, Dependency Injection, D, Business, Data Models, Repository Pattern, Database Integration, Exception Handling, Configuration, Testing, and 3 more. Connections: Project Setup to B, Project Setup to REST, B to Dependency Injection, Dependency Injection to D, Dependency Injection to Business, D to Data Models, Data Models to Repository Pattern, Repository Pattern to Database Integration, Database Integration to Exception Handling, Exception Handling to Configuration, Configuration to Testing, Testing to Production Features, and 2 more.
     A[Project Setup] --> B[Controllers & REST]
     B --> C[Dependency Injection]
-    C --> D[Services & Business Logic]
+    C --> D[Services & Business<br/>Logic]
     D --> E[Data Models]
     E --> F[Repository Pattern]
     F --> G[Database Integration]
@@ -39,18 +41,20 @@ graph TD
     J --> K[Production Features]
     K --> L[Build & Deploy]
 
-    style A fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    style B fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    style C fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style D fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    style E fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
-    style F fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
-    style G fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
-    style H fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style I fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style J fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    style K fill:#e0f2f1,stroke:#004d40,stroke-width:2px
-    style L fill:#e0f2f1,stroke:#004d40,stroke-width:2px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-CC78BC
+    class B pal-CC78BC
+    class C pal-CC78BC
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    class G pal-CC78BC
+    class H pal-CC78BC
+    class I pal-CC78BC
+    class J pal-CC78BC
+    class K pal-CC78BC
+    class L pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Color Key**:
@@ -80,14 +84,18 @@ Spring Boot applications follow layered architecture with clear separation of co
 
 ```mermaid
 graph TD
+    accTitle: Three-Layer Architecture
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Controller Layer, Service Layer, Repository Layer, Database. Connections: Controller Layer to Service Layer (calls), Service Layer to Repository Layer (calls), Repository Layer to Database (queries).
     A[Controller Layer] -->|calls| B[Service Layer]
     B -->|calls| C[Repository Layer]
     C -->|queries| D[(Database)]
 
-    style A fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    style B fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style C fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
-    style D fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-CC78BC
+    class B pal-CC78BC
+    class C pal-CC78BC
+    class D pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Layer responsibilities**:

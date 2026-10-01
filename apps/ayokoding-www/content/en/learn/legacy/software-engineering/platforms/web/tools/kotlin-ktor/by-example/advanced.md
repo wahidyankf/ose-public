@@ -29,18 +29,25 @@ Production plugins often need to interact with multiple pipeline phases: setup o
 
 ```mermaid
 graph TD
+  accTitle: Example 56: Advanced Plugin with Pipeline Phases
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Request arrives, Setup Phase Start trace span, Call Phase Route matching, Routing Phase Handler executes, Response Phase Serialize response, Finalize Phase End span, emit metrics. Connections: Request arrives to Setup Phase Start trace span, Setup Phase Start trace span to Call Phase Route matching, Call Phase Route matching to Routing Phase Handler executes, Routing Phase Handler executes to Response Phase Serialize response, Response Phase Serialize response to Finalize Phase End span, emit metrics.
   A["Request arrives"] --> B["Setup Phase<br/>Start trace span"]
   B --> C["Call Phase<br/>Route matching"]
   C --> D["Routing Phase<br/>Handler executes"]
   D --> E["Response Phase<br/>Serialize response"]
-  E --> F["Finalize Phase<br/>End span, emit metrics"]
+  E --> F["Finalize Phase<br/>End span, emit<br/>metrics"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  class E pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class F pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -606,6 +613,8 @@ Ktor provides `HttpClient` for making outbound HTTP requests using the same coro
 
 ```mermaid
 graph LR
+  accTitle: Example 63: Ktor Client for Outbound HTTP
+  accDescr: Graph with 5 nodes and 6 connections. Nodes: Ktor Server Route Handler, HttpClient CIO Engine, External API, Data Class, Browser Client. Connections: Ktor Server Route Handler to HttpClient CIO Engine (GET /external), HttpClient CIO Engine to External API (HTTP Request), External API to HttpClient CIO Engine (JSON Response), HttpClient CIO Engine to Data Class (Deserialize), Data Class to Ktor Server Route Handler, Ktor Server Route Handler to Browser Client (HTTP Response).
   A["Ktor Server<br/>Route Handler"] -->|"GET /external"| B["HttpClient<br/>CIO Engine"]
   B -->|"HTTP Request"| C["External API"]
   C -->|"JSON Response"| B
@@ -613,11 +622,17 @@ graph LR
   D --> A
   A -->|"HTTP Response"| E["Browser Client"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class E pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin

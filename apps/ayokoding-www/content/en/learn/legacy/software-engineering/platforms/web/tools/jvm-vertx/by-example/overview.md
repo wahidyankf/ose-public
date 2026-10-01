@@ -35,16 +35,23 @@ Vert.x is a **polyglot toolkit for building reactive applications on the JVM**. 
 
 ```mermaid
 graph TD
+  accTitle: Learning Path
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Core Vert.x Concepts Examples 1-27, Intermediate Production Patterns Examples 28-55, Advanced Scale and Resilience Examples 56-80, 0 No Vert.x Knowledge, 95 Framework Mastery. Connections: Beginner Core Vert.x Concepts Examples 1-27 to Intermediate Production Patterns Examples 28-55, Intermediate Production Patterns Examples 28-55 to Advanced Scale and Resilience Examples 56-80, 0 No Vert.x Knowledge to Beginner Core Vert.x Concepts Examples 1-27, Advanced Scale and Resilience Examples 56-80 to 95 Framework Mastery.
   A["Beginner<br/>Core Vert.x Concepts<br/>Examples 1-27"] --> B["Intermediate<br/>Production Patterns<br/>Examples 28-55"]
   B --> C["Advanced<br/>Scale and Resilience<br/>Examples 56-80"]
   D["0%<br/>No Vert.x Knowledge"] -.-> A
   C -.-> E["95%<br/>Framework Mastery"]
 
-  style A fill:#0173B2,color:#fff
-  style B fill:#DE8F05,color:#fff
-  style C fill:#029E73,color:#fff
-  style D fill:#CC78BC,color:#fff
-  style E fill:#029E73,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Philosophy: 95% Through 80 Examples

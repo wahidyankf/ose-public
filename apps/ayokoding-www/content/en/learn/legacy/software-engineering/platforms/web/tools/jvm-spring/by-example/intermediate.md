@@ -23,19 +23,27 @@ Demonstrates injecting multiple dependencies via constructor with proper orderin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["@Component\nFinancingService"] -->|"constructor requires"| B["HalalaRepository"]
-    A -->|"constructor requires"| C["ZakatCalculator"]
-    A -->|"constructor requires"| D["AuditService"]
-    E["Spring IoC Container"] -->|"resolves and injects"| A
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 7 connections. Nodes: @Component FinancingService, HalalaRepository, ZakatCalculator, AuditService, Spring IoC Container. Connections: @Component FinancingService to HalalaRepository (constructor requires), @Component FinancingService to ZakatCalculator (constructor requires), @Component FinancingService to AuditService (constructor requires), Spring IoC Container to @Component FinancingService (resolves and injects), Spring IoC Container to HalalaRepository (provides), Spring IoC Container to ZakatCalculator (provides), Spring IoC Container to AuditService (provides).
+    A["@Component<br/>FinancingService"] -->|"constructor<br/>requires"| B["HalalaRepository"]
+    A -->|"constructor<br/>requires"| C["ZakatCalculator"]
+    A -->|"constructor<br/>requires"| D["AuditService"]
+    E["Spring IoC Container"] -->|"resolves and<br/>injects"| A
     E -->|"provides"| B
     E -->|"provides"| C
     E -->|"provides"| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -241,18 +249,26 @@ Demonstrates handling optional dependencies that may not be present.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Spring Container"] -->|"required bean present"| B["@Autowired\n(required=true)\nMandatory Dep"]
-    A -->|"optional bean present"| C["@Autowired\n(required=false)\nOptional Dep"]
-    A -->|"optional bean absent"| D["null injected\n(graceful skip)"]
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Spring Container, @Autowired (required=true) Mandatory Dep, @Autowired (required=false) Optional Dep, null injected (graceful skip), Target Bean. Connections: Spring Container to @Autowired (required=true) Mandatory Dep (required bean present), Spring Container to @Autowired (required=false) Optional Dep (optional bean present), Spring Container to null injected (graceful skip) (optional bean absent), @Autowired (required=true) Mandatory Dep to Target Bean (injected), @Autowired (required=false) Optional Dep to Target Bean (injected if found), null injected (graceful skip) to Target Bean (null value).
+    A["Spring Container"] -->|"required bean<br/>present"| B["@Autowired<br/>(required=true)<br/>Mandatory Dep"]
+    A -->|"optional bean<br/>present"| C["@Autowired<br/>(required=false)<br/>Optional Dep"]
+    A -->|"optional bean<br/>absent"| D["null injected<br/>(graceful skip)"]
     B -->|"injected"| E["Target Bean"]
     C -->|"injected if found"| E
     D -->|"null value"| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -1115,6 +1131,8 @@ Donation: Ibrahim - $500.0
 
 ```mermaid
 sequenceDiagram
+    accTitle: => Component scanning will discover and register this class
+    accDescr: Sequence diagram between Client Code, Spring Proxy, LoggingAspect, DonationService (Target). Messages: Client Code to Spring Proxy: donate(Ibrahim, 500.0); Spring Proxy to LoggingAspect: Execute @Before advice; LoggingAspect to LoggingAspect: logBefore() method; Spring Proxy to DonationService (Target): delegate to actual method; DonationService (Target) to DonationService (Target): donate() executes; DonationService (Target) to Spring Proxy: method completes; Spring Proxy to Client Code: return result.
     participant Client as Client Code
     participant Proxy as Spring Proxy
     participant Aspect as LoggingAspect
@@ -1134,10 +1152,6 @@ sequenceDiagram
     Target-->>Proxy: method completes
     Proxy-->>Client: return result
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style Proxy fill:#DE8F05,stroke:#000,color:#000
-    style Aspect fill:#029E73,stroke:#000,color:#fff
-    style Target fill:#CC78BC,stroke:#000,color:#000
 ```
 
 **Diagram Explanation**: This sequence diagram illustrates how Spring AOP creates a proxy that intercepts method calls, executes aspect advice (@Before) before delegating to the target method.
@@ -1425,6 +1439,8 @@ class PerformanceAspect {  # => Defines PerformanceAspect class
 
 ```mermaid
 sequenceDiagram
+    accTitle: => Component scanning will discover and register this class
+    accDescr: Sequence diagram between Client, Spring Proxy, @Around Aspect, Target Method. Messages: Client to Spring Proxy: Call method; Spring Proxy to @Around Aspect: Enter @Around advice; @Around Aspect to @Around Aspect: pjp.proceed(); @Around Aspect to Target Method: Execute target method; Target Method to @Around Aspect: Return result; @Around Aspect to Spring Proxy: Return modified/original result; Spring Proxy to Client: Return to caller.
     participant Client
     participant Proxy as Spring Proxy
     participant Aspect as @Around Aspect
@@ -1442,10 +1458,6 @@ sequenceDiagram
     Aspect-->>Proxy: Return modified/original result
     Proxy-->>Client: Return to caller
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style Proxy fill:#DE8F05,stroke:#000,color:#000
-    style Aspect fill:#029E73,stroke:#000,color:#fff
-    style Target fill:#CC78BC,stroke:#000,color:#000
 ```
 
 **Diagram Explanation**: This sequence diagram shows how @Around advice wraps method execution, enabling before/after logic and control over method invocation via pjp.proceed().
@@ -1476,18 +1488,26 @@ Demonstrates reusable pointcut definitions.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["@Pointcut\nserviceMethods()\nexecution(* *.Service.*(..))"] -->|"used by"| B["@Before advice"]
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: @Pointcut serviceMethods() execution(* *.Service.*(..)), @Before advice, @After advice, @Around advice, Matched Methods in Service classes. Connections: @Pointcut serviceMethods() execution(* *.Service.*(..)) to @Before advice (used by), @Pointcut serviceMethods() execution(* *.Service.*(..)) to @After advice (used by), @Pointcut serviceMethods() execution(* *.Service.*(..)) to @Around advice (used by), @Before advice to Matched Methods in Service classes (applied to), @After advice to Matched Methods in Service classes (applied to), @Around advice to Matched Methods in Service classes (applied to).
+    A["@Pointcut<br/>serviceMethods()<br/>execution(*<br/>*.Service.*(..))"] -->|"used by"| B["@Before advice"]
     A -->|"used by"| C["@After advice"]
     A -->|"used by"| D["@Around advice"]
-    B -->|"applied to"| E["Matched Methods\nin Service classes"]
+    B -->|"applied to"| E["Matched Methods<br/>in Service classes"]
     C -->|"applied to"| E
     D -->|"applied to"| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -1732,7 +1752,9 @@ class AccountService {  # => Defines AccountService class
 
 ```mermaid
 graph TD
-    A[Method with @Transactional<br/>called] -->|Begin transaction| B[Transaction Started]
+    accTitle: => Specialized @Component for business logic layer
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Method with @Transactional called, Transaction Started, Method executes, Commit transaction, Rollback transaction, Changes persisted, Changes reverted. Connections: Method with @Transactional called to Transaction Started (Begin transaction), Transaction Started to Method executes, Method executes to Commit transaction (Success), Method executes to Rollback transaction (Unchecked Exception), Method executes to Commit transaction (Checked Exception), Commit transaction to Changes persisted, Rollback transaction to Changes reverted.
+    A[Method with<br/>@Transactional<br/>called] -->|Begin transaction| B[Transaction Started]
     B --> C{Method executes}
     C -->|Success| D[Commit transaction]
     C -->|Unchecked Exception| E[Rollback transaction]
@@ -1740,13 +1762,19 @@ graph TD
     D --> F[Changes persisted]
     E --> G[Changes reverted]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram Explanation**: This flow diagram shows how @Transactional manages transaction lifecycle - beginning transaction on method entry, committing on success, and rolling back on unchecked exceptions.
@@ -1852,27 +1880,34 @@ class OrderService {  # => Defines OrderService class
 
 ```mermaid
 graph LR
-    subgraph REQUIRED [REQUIRED - Join or Create]
-        A1[Outer Transaction exists?] -->|Yes| B1[Join existing transaction]
-        A1 -->|No| C1[Create new transaction]
+    accTitle: => Specialized @Component for business logic layer
+    accDescr: Graph with 10 nodes and 7 connections. Nodes: Outer Transaction exists?, Join existing transaction, Create new transaction, Method called, Suspend current transaction, Create NEW independent transaction, Commit/rollback independently, Transaction exists?, Join existing, Throw Exception. Connections: Outer Transaction exists? to Join existing transaction (Yes), Outer Transaction exists? to Create new transaction (No), Method called to Suspend current transaction, Suspend current transaction to Create NEW independent transaction, Create NEW independent transaction to Commit/rollback independently, Transaction exists? to Join existing (Yes), Transaction exists? to Throw Exception (No).
+    subgraph REQUIRED [REQUIRED - Join or<br/>Create]
+        A1[Outer Transaction<br/>exists?] -->|Yes| B1[Join existing<br/>transaction]
+        A1 -->|No| C1[Create new<br/>transaction]
     end
 
-    subgraph REQUIRES_NEW [REQUIRES_NEW - Always New]
-        A2[Method called] --> B2[Suspend current transaction]
-        B2 --> C2[Create NEW independent<br/>transaction]
-        C2 --> D2[Commit/rollback independently]
+    subgraph REQUIRES_NEW [REQUIRES_NEW -<br/>Always New]
+        A2[Method called] --> B2[Suspend current<br/>transaction]
+        B2 --> C2[Create NEW<br/>independent<br/>transaction]
+        C2 --> D2[Commit/rollback<br/>independently]
     end
 
-    subgraph MANDATORY [MANDATORY - Must Exist]
+    subgraph MANDATORY [MANDATORY - Must<br/>Exist]
         A3[Transaction exists?] -->|Yes| B3[Join existing]
         A3 -->|No| C3[Throw Exception]
     end
 
-    style B1 fill:#029E73,stroke:#000,color:#fff
-    style C1 fill:#DE8F05,stroke:#000,color:#000
-    style C2 fill:#CC78BC,stroke:#000,color:#000
-    style B3 fill:#029E73,stroke:#000,color:#fff
-    style C3 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C1 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C2 pal-CC78BC
+    class B3 pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C3 pal-CA9161
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Diagram Explanation**: This diagram contrasts three propagation behaviors - REQUIRED (join or create), REQUIRES_NEW (always new independent), and MANDATORY (must exist or fail).
@@ -1972,21 +2007,29 @@ class InventoryService {  # => Defines InventoryService class
 
 ```mermaid
 graph TD
-    A[Transaction Isolation Levels] --> B[READ_UNCOMMITTED<br/>Fastest, Least Safe]
+    accTitle: => Specialized @Component for business logic layer
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Transaction Isolation Levels, READ_UNCOMMITTED Fastest, Least Safe, READ_COMMITTED Prevents Dirty Reads, REPEATABLE_READ Prevents Non-Repeatable Reads, SERIALIZABLE Slowest, Most Safe, Dirty Reads Non-Repeatable Reads Phantom Reads, Non-Repeatable Reads Phantom Reads, Phantom Reads, All Concurrency Issues. Connections: Transaction Isolation Levels to READ_UNCOMMITTED Fastest, Least Safe, Transaction Isolation Levels to READ_COMMITTED Prevents Dirty Reads, Transaction Isolation Levels to REPEATABLE_READ Prevents Non-Repeatable Reads, Transaction Isolation Levels to SERIALIZABLE Slowest, Most Safe, READ_UNCOMMITTED Fastest, Least Safe to Dirty Reads Non-Repeatable Reads Phantom Reads (Allows), READ_COMMITTED Prevents Dirty Reads to Non-Repeatable Reads Phantom Reads (Allows), REPEATABLE_READ Prevents Non-Repeatable Reads to Phantom Reads (Allows), SERIALIZABLE Slowest, Most Safe to All Concurrency Issues (Prevents).
+    A[Transaction<br/>Isolation Levels] --> B[READ_UNCOMMITTED<br/>Fastest, Least Safe]
     A --> C[READ_COMMITTED<br/>Prevents Dirty Reads]
-    A --> D[REPEATABLE_READ<br/>Prevents Non-Repeatable Reads]
+    A --> D[REPEATABLE_READ<br/>Prevents<br/>Non-Repeatable Reads]
     A --> E[SERIALIZABLE<br/>Slowest, Most Safe]
 
     B -.->|Allows| F[Dirty Reads<br/>Non-Repeatable Reads<br/>Phantom Reads]
     C -.->|Allows| G[Non-Repeatable Reads<br/>Phantom Reads]
     D -.->|Allows| H[Phantom Reads]
-    E -.->|Prevents| I[All Concurrency Issues]
+    E -.->|Prevents| I[All Concurrency<br/>Issues]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram Explanation**: This diagram shows the spectrum of transaction isolation levels from fastest/least safe (READ_UNCOMMITTED) to slowest/most safe (SERIALIZABLE), with their concurrency trade-offs.
@@ -2017,15 +2060,22 @@ Demonstrates custom rollback behavior.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["@Transactional\n(rollbackFor=DataIntegrityViolation.class,\n<br/>noRollbackFor=BusinessWarning.class)"] -->|"on exception"| B{"Exception Type?"}
-    B -->|"DataIntegrityViolationException"| C["ROLLBACK\n(data reverted)"]
-    B -->|"BusinessWarningException"| D["COMMIT\n(warning logged only)"]
-    B -->|"other RuntimeException"| C
+    accTitle: Diagram
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: @Transactional (rollbackFor=Data IntegrityViolation. class, noRollback For=BusinessWarning. class), Exception Type?, ROLLBACK (data reverted), COMMIT (warning logged only). Connections: @Transactional (rollbackFor=Data IntegrityViolation. class, noRollback For=BusinessWarning. class) to Exception Type? (on exception), Exception Type? to ROLLBACK (data reverted) (DataIntegrity ViolationException), Exception Type? to COMMIT (warning logged only) (BusinessWarning Exception), Exception Type? to ROLLBACK (data reverted) (other RuntimeException).
+    A["@Transactional<br/>(rollbackFor=Data<br/>IntegrityViolation.<br/>class,<br/><br/>noRollback<br/>For=BusinessWarning.<br/>class)"] -->|"on exception"| B{"Exception Type?"}
+    B -->|"DataIntegrity<br/>ViolationException"| C["ROLLBACK<br/>(data reverted)"]
+    B -->|"BusinessWarning<br/>Exception"| D["COMMIT<br/>(warning logged<br/>only)"]
+    B -->|"other<br/>RuntimeException"| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CC78BC,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -2396,6 +2446,8 @@ class DonationRepository(private val jdbc: JdbcTemplate) {  # => Defines Donatio
 
 ```mermaid
 sequenceDiagram
+    accTitle: => Specialized @Component for data access layer
+    accDescr: Sequence diagram between Service, JdbcTemplate, DataSource, Database, RowMapper. Messages: Service to JdbcTemplate: query(sql, rowMapper); JdbcTemplate to DataSource: Get Connection; DataSource to JdbcTemplate: Connection; JdbcTemplate to Database: Execute SQL query; Database to JdbcTemplate: ResultSet; JdbcTemplate to RowMapper: mapRow(rs, rowNum); RowMapper to JdbcTemplate: Mapped Object; JdbcTemplate to Service: List results.
     participant Service
     participant JdbcTemplate
     participant DataSource
@@ -2416,11 +2468,6 @@ sequenceDiagram
 
     JdbcTemplate-->>Service: List<T> results
 
-    style Service fill:#0173B2,stroke:#000,color:#fff
-    style JdbcTemplate fill:#DE8F05,stroke:#000,color:#000
-    style DataSource fill:#029E73,stroke:#000,color:#fff
-    style Database fill:#CC78BC,stroke:#000,color:#000
-    style RowMapper fill:#CA9161,stroke:#000,color:#fff
 ```
 
 **Diagram Explanation**: This sequence diagram illustrates JdbcTemplate's execution flow - obtaining connection, executing SQL, and mapping each ResultSet row to objects via RowMapper.
@@ -2861,6 +2908,8 @@ class ZakatController {  # => Defines ZakatController class
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 47: @RequestParam and @PathVariable
+    accDescr: Sequence diagram between Browser, DispatcherServlet, HandlerMapping, Controller, View. Messages: Browser to DispatcherServlet: HTTP Request /zakat/calculate?amount=1000; DispatcherServlet to HandlerMapping: Find handler for /zakat/calculate; HandlerMapping to DispatcherServlet: ZakatController.calculate(); DispatcherServlet to Controller: Invoke calculate(1000); Controller to DispatcherServlet: Return 25.0 (@ResponseBody); DispatcherServlet to View: Serialize response; View to DispatcherServlet: JSON/String response; DispatcherServlet to Browser: HTTP Response Body: 25.0.
     participant Browser
     participant DispatcherServlet
     participant HandlerMapping
@@ -2879,11 +2928,6 @@ sequenceDiagram
     View-->>DispatcherServlet: JSON/String response
     DispatcherServlet-->>Browser: HTTP Response<br/>Body: 25.0
 
-    style Browser fill:#0173B2,stroke:#000,color:#fff
-    style DispatcherServlet fill:#DE8F05,stroke:#000,color:#000
-    style HandlerMapping fill:#029E73,stroke:#000,color:#fff
-    style Controller fill:#CC78BC,stroke:#000,color:#000
-    style View fill:#CA9161,stroke:#000,color:#fff
 ```
 
 **Diagram Explanation**: This sequence diagram shows Spring MVC's request processing flow from browser through DispatcherServlet (front controller), handler mapping, controller execution, to response serialization.
@@ -2983,6 +3027,8 @@ class DonationApiController {  # => Defines DonationApiController class
 
 ```mermaid
 sequenceDiagram
+    accTitle: => Maps HTTP requests to this controller
+    accDescr: Sequence diagram between Client, DispatcherServlet, Jackson (JSON), Controller. Messages: Client to DispatcherServlet: POST /api/donations Content-Type: application/json donor:Ali,amount:500; DispatcherServlet to Jackson (JSON): Deserialize JSON; Jackson (JSON) to DispatcherServlet: DonationRequest object; DispatcherServlet to Controller: create(DonationRequest); Controller to DispatcherServlet: Return Created; DispatcherServlet to Client: HTTP 200 Body: Created.
     participant Client
     participant DispatcherServlet
     participant Jackson as Jackson (JSON)
@@ -3000,10 +3046,6 @@ sequenceDiagram
     Controller-->>DispatcherServlet: Return "Created"
     DispatcherServlet-->>Client: HTTP 200<br/>Body: Created
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style DispatcherServlet fill:#DE8F05,stroke:#000,color:#000
-    style Jackson fill:#029E73,stroke:#000,color:#fff
-    style Controller fill:#CC78BC,stroke:#000,color:#000
 ```
 
 **Diagram Explanation**: This sequence diagram shows how @RequestBody triggers Jackson to deserialize JSON request body into Java/Kotlin objects before controller method invocation.
@@ -3216,25 +3258,33 @@ class FormController {  # => Defines FormController class
 
 ```mermaid
 graph TD
-    A[HTTP Request with JSON] --> B[@RequestBody + @Valid]
-    B --> C[Jackson deserializes JSON]
+    accTitle: => Defines DonationForm
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: HTTP Request with JSON, @RequestBody + @Valid, Jackson deserializes JSON, Bean Validation, Method executes, MethodArgumentNot Valid Exception, Return response, 400 Bad Request with errors, @NotBlank, @Min, @Max annotations. Connections: HTTP Request with JSON to @RequestBody + @Valid, @RequestBody + @Valid to Jackson deserializes JSON, Jackson deserializes JSON to Bean Validation, Bean Validation to Method executes (All constraints pass), Bean Validation to MethodArgumentNot Valid Exception (Constraint violation), Method executes to Return response, MethodArgumentNot Valid Exception to 400 Bad Request with errors, @NotBlank, @Min, @Max annotations to Bean Validation (Define rules).
+    A[HTTP Request with<br/>JSON] --> B[@RequestBody +<br/>@Valid]
+    B --> C[Jackson deserializes<br/>JSON]
     C --> D{Bean Validation}
     D -->|All constraints pass| E[Method executes]
-    D -->|Constraint violation| F[MethodArgumentNotValid<br/>Exception]
+    D -->|Constraint violation| F[MethodArgumentNot<br/>Valid<br/>Exception]
 
     E --> G[Return response]
-    F --> H[400 Bad Request with errors]
+    F --> H[400 Bad Request with<br/>errors]
 
-    I[@NotBlank, @Min, @Max<br/>annotations] -.->|Define rules| D
+    I[@NotBlank, @Min,<br/>@Max<br/>annotations] -.->|Define rules| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#0173B2,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-029E73
+    class H pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Diagram Explanation**: This flow diagram shows Bean Validation integration - deserializing JSON, validating against constraints, and either proceeding to method execution or throwing exception with validation errors.

@@ -711,6 +711,8 @@ public class ZakatValidationService {
 
 ```mermaid
 graph LR
+    accTitle: Progression Diagram
+    accDescr: Graph with 12 nodes and 9 connections. Nodes: Manual Validation if-else Checks, Repetitive, Inconsistent, Mixed Concerns, Bean Validation @Valid Annotations, Declarative, Before Method, Same Errors, Custom Validators Business Rules, Complex Rules, Field Relationships, Context-Aware. Connections: Manual Validation if-else Checks to Repetitive (50+ Lines/Method), Manual Validation if-else Checks to Inconsistent (Duplicated Logic), Manual Validation if-else Checks to Mixed Concerns (Coupled), Bean Validation @Valid Annotations to Declarative (3 Lines/Field), Bean Validation @Valid Annotations to Before Method (Automatic), Bean Validation @Valid Annotations to Same Errors (Consistent), Custom Validators Business Rules to Complex Rules (ConstraintValidator), Custom Validators Business Rules to Field Relationships (Class-Level), Custom Validators Business Rules to Context-Aware (Validation Groups).
     A[Manual Validation<br/>if-else Checks] -->|50+ Lines/Method| B[Repetitive]
     A -->|Duplicated Logic| C[Inconsistent]
     A -->|Coupled| D[Mixed Concerns]
@@ -723,9 +725,13 @@ graph LR
     I -->|Class-Level| K[Field Relationships]
     I -->|Validation Groups| L[Context-Aware]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style I fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Trade-offs and When to Use

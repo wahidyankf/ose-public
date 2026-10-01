@@ -311,9 +311,11 @@ public class UserSession {
 
 ```mermaid
 graph TD
+    accTitle: Lifecycle Diagram
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Container Startup, Constructor Called, Dependencies Injected, @PostConstruct Called, Bean Ready for Use, @PreDestroy Called, Bean Destroyed, Prototype Scope. Connections: Container Startup to Constructor Called (1. Instantiate), Constructor Called to Dependencies Injected (2. Inject), Dependencies Injected to @PostConstruct Called (3. Initialize), @PostConstruct Called to Bean Ready for Use (4. Ready), Bean Ready for Use to @PreDestroy Called (Shutdown), @PreDestroy Called to Bean Destroyed (Destroy), Prototype Scope to Constructor Called (Each Request), Prototype Scope to @PreDestroy Called (No Destroy Hook).
     A[Container Startup] -->|1. Instantiate| B[Constructor Called]
-    B -->|2. Inject| C[Dependencies Injected]
-    C -->|3. Initialize| D[@PostConstruct Called]
+    B -->|2. Inject| C[Dependencies<br/>Injected]
+    C -->|3. Initialize| D[@PostConstruct<br/>Called]
     D -->|4. Ready| E[Bean Ready for Use]
 
     E -->|Shutdown| F[@PreDestroy Called]
@@ -322,11 +324,16 @@ graph TD
     H[Prototype Scope] -->|Each Request| B
     H -.->|No Destroy Hook| F
 
-    style A fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style F fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style H fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

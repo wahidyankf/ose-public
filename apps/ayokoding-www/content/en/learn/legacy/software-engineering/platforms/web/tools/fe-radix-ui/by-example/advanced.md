@@ -18,18 +18,24 @@ Production codebases wrap Radix primitives in project-specific components that e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 56: Wrapping Radix Primitives in Design System Components
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Design System Layer, DSButton Styled Trigger, DSModal Styled Dialog, DSMenu Styled Dropdown, @radix-ui/ react-dialog Behavior Layer, @radix-ui/ react-dropdown-menu Behavior Layer. Connections: Design System Layer to DSButton Styled Trigger, Design System Layer to DSModal Styled Dialog, Design System Layer to DSMenu Styled Dropdown, DSModal Styled Dialog to @radix-ui/ react-dialog Behavior Layer, DSMenu Styled Dropdown to @radix-ui/ react-dropdown-menu Behavior Layer.
     DS["Design System Layer"] --> Button["DSButton<br/>Styled Trigger"]
     DS --> Modal["DSModal<br/>Styled Dialog"]
     DS --> Menu["DSMenu<br/>Styled Dropdown"]
-    Modal --> Dialog["@radix-ui/react-dialog<br/>Behavior Layer"]
-    Menu --> Dropdown["@radix-ui/react-dropdown-menu<br/>Behavior Layer"]
+    Modal --> Dialog["@radix-ui/<br/>react-dialog<br/>Behavior Layer"]
+    Menu --> Dropdown["@radix-ui/<br/>react-dropdown-menu<br/>Behavior Layer"]
 
-    style DS fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Button fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Modal fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Menu fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Dialog fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Dropdown fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class DS pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Button pal-DE8F05
+    class Modal pal-DE8F05
+    class Menu pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Dialog pal-029E73
+    class Dropdown pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2295,16 +2301,24 @@ Building a command palette (Cmd+K) by composing Dialog, custom search, and keybo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 78: Command Palette with Search and Keyboard Navigation
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Cmd+K Global shortcut, Dialog.Root Modal container, Search Input Filters commands, Result List Keyboard navigable, Selected Action Execute command. Connections: Cmd+K Global shortcut to Dialog.Root Modal container, Dialog.Root Modal container to Search Input Filters commands, Search Input Filters commands to Result List Keyboard navigable, Result List Keyboard navigable to Selected Action Execute command.
     Shortcut["Cmd+K<br/>Global shortcut"] --> Dialog["Dialog.Root<br/>Modal container"]
     Dialog --> Search["Search Input<br/>Filters commands"]
     Search --> Results["Result List<br/>Keyboard navigable"]
     Results --> Action["Selected Action<br/>Execute command"]
 
-    style Shortcut fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Dialog fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Search fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Results fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Action fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Shortcut pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Dialog pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Search pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Results pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Action pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

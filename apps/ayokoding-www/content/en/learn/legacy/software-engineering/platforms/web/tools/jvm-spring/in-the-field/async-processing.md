@@ -520,6 +520,8 @@ public class ZakatReportService {
 
 ```mermaid
 sequenceDiagram
+    accTitle: Async Execution Model Diagram
+    accDescr: Sequence diagram between ZakatController, @Async Proxy, Thread Pool, ZakatAsyncService, CompletableFuture. Messages: ZakatController to @Async Proxy: sendNotificationAsync(accountId); @Async Proxy to Thread Pool: Submit task; @Async Proxy to ZakatController: Return immediately (non-blocking); ZakatController to ZakatController: Continue processing; Thread Pool to ZakatAsyncService: Execute in background thread; ZakatAsyncService to ZakatAsyncService: sendNotificationEmail(); ZakatAsyncService to Thread Pool: Complete; ZakatController to @Async Proxy: calculateZakatAsync(accountId); @Async Proxy to Thread Pool: Submit task; @Async Proxy to ZakatController: Return CompletableFuture (non-blocking); ZakatController to CompletableFuture: thenApply(formatReport); Thread Pool to ZakatAsyncService: Execute calculation; and 4 more.
     participant Controller as ZakatController
     participant Proxy as @Async Proxy
     participant Pool as Thread Pool
@@ -551,10 +553,6 @@ sequenceDiagram
     Note over Pool: Thread pool (5-10 threads)
     Note over Future: Non-blocking composition
 
-    style Proxy fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style Pool fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style Service fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style Future fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 ## Production Patterns

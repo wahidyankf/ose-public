@@ -367,13 +367,15 @@ public class AdvancedPointcuts {
 
 ```mermaid
 graph TB
+    accTitle: AOP Proxy Mechanism Diagram
+    accDescr: Graph with 12 nodes and 15 connections. Nodes: Client, AOP Proxy, Pointcut Matches?, Execute @Before Advice, Direct Method Call, Execute Target Method, Execute @AfterReturning, Execute @AfterThrowing, Return Result, Throw Exception, @Around Advice, LoggingAspect. Connections: Client to AOP Proxy (1. Call method), AOP Proxy to Pointcut Matches? (2. Match pointcuts), Pointcut Matches? to Execute @Before Advice (Yes), Pointcut Matches? to Direct Method Call (No), Execute @Before Advice to Execute Target Method, Execute Target Method to Execute @AfterReturning (Success), Execute Target Method to Execute @AfterThrowing (Exception), Execute @AfterReturning to Return Result, Execute @AfterThrowing to Throw Exception, Direct Method Call to Execute Target Method, @Around Advice to Execute Target Method (Wraps entire flow), LoggingAspect to Execute @Before Advice (Provides), and 3 more.
     A[Client] -->|1. Call method| B[AOP Proxy]
     B -->|2. Match pointcuts| C{Pointcut<br/>Matches?}
-    C -->|Yes| D[Execute @Before Advice]
+    C -->|Yes| D[Execute @Before<br/>Advice]
     C -->|No| H[Direct Method Call]
-    D --> E[Execute Target Method]
-    E -->|Success| F[Execute @AfterReturning]
-    E -->|Exception| G[Execute @AfterThrowing]
+    D --> E[Execute Target<br/>Method]
+    E -->|Success| F[Execute<br/>@AfterReturning]
+    E -->|Exception| G[Execute<br/>@AfterThrowing]
     F --> I[Return Result]
     G --> J[Throw Exception]
     H --> E
@@ -385,14 +387,20 @@ graph TB
     L -.->|Provides| G
     L -.->|Provides| K
 
-    style B fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#CA9161,stroke:#333,stroke-width:2px,color:#fff
-    style F fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style G fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
-    style K fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style L fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class B pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class G pal-CC78BC
+    class K pal-0173B2
+    class L pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

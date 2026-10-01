@@ -360,18 +360,24 @@ public CloudService awsCloudService() {
 
 ```mermaid
 graph LR
+    accTitle: Progression Diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Manual if/else System.getProperty, @Profile Beans Annotation-based, app-profile. properties External Config, Hard to Maintain, Easy to Maintain, Deploy-time Config. Connections: Manual if/else System.getProperty to @Profile Beans Annotation-based (Declarative), @Profile Beans Annotation-based to app-profile. properties External Config (File-based), Manual if/else System.getProperty to Hard to Maintain (Scattered Logic), @Profile Beans Annotation-based to Easy to Maintain (Centralized), app-profile. properties External Config to Deploy-time Config (Zero Code Changes).
     A[Manual if/else<br/>System.getProperty] -->|Declarative| B[@Profile Beans<br/>Annotation-based]
-    B -->|File-based| C[app-{profile}.properties<br/>External Config]
+    B -->|File-based| C[app-{profile}.<br/>properties<br/>External Config]
 
     A -->|Scattered Logic| D[Hard to Maintain]
     B -->|Centralized| E[Easy to Maintain]
     C -->|Zero Code Changes| F[Deploy-time Config]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style F fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class C pal-0173B2
+    class E pal-029E73
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

@@ -217,26 +217,32 @@ Spring Boot provides starter POMs bundling compatible dependencies:
 
 ```mermaid
 graph TD
-    A["spring-boot-starter-web"] -->|"Depends on"| B["spring-boot-starter"]
-    A -->|"Depends on"| C["spring-boot-starter-json"]
-    A -->|"Depends on"| D["spring-boot-starter-tomcat"]
-    B -->|"Depends on"| E["spring-core, spring-context"]
+    accTitle: Spring Boot Starter Dependencies
+    accDescr: Graph with 11 nodes and 14 connections. Nodes: spring-boot-starter- web, spring-boot-starter, spring-boot-starter- json, spring-boot-starter- tomcat, spring-core, spring-context, jackson-databind, tomcat-embed-core, spring-boot- dependencies BOM, Application, WebMvcAuto Configuration, DispatcherServlet, Tomcat. Connections: spring-boot-starter- web to spring-boot-starter (Depends on), spring-boot-starter- web to spring-boot-starter- json (Depends on), spring-boot-starter- web to spring-boot-starter- tomcat (Depends on), spring-boot-starter to spring-core, spring-context (Depends on), spring-boot-starter- json to jackson-databind (Depends on), spring-boot-starter- tomcat to tomcat-embed-core (Depends on), spring-boot- dependencies BOM to spring-boot-starter- web (Manages versions), spring-boot- dependencies BOM to spring-boot-starter (Manages versions), spring-boot- dependencies BOM to spring-core, spring-context (Manages versions), spring-boot- dependencies BOM to jackson-databind (Manages versions), spring-boot- dependencies BOM to tomcat-embed-core (Manages versions), Application to spring-boot-starter- web (Declares), and 2 more.
+    A["spring-boot-starter-<br/>web"] -->|"Depends on"| B["spring-boot-starter"]
+    A -->|"Depends on"| C["spring-boot-starter-<br/>json"]
+    A -->|"Depends on"| D["spring-boot-starter-<br/>tomcat"]
+    B -->|"Depends on"| E["spring-core,<br/>spring-context"]
     C -->|"Depends on"| F["jackson-databind"]
     D -->|"Depends on"| G["tomcat-embed-core"]
 
-    H["spring-boot-dependencies BOM"] -->|"Manages versions"| A
+    H["spring-boot-<br/>dependencies BOM"] -->|"Manages versions"| A
     H -->|"Manages versions"| B
     H -->|"Manages versions"| E
     H -->|"Manages versions"| F
     H -->|"Manages versions"| G
 
     I["Application"] -->|"Declares"| A
-    A -->|"Triggers"| J["WebMvcAutoConfiguration"]
-    J -->|"Configures"| K["DispatcherServlet, Tomcat"]
+    A -->|"Triggers"| J["WebMvcAuto<br/>Configuration"]
+    J -->|"Configures"| K["DispatcherServlet,<br/>Tomcat"]
 
-    style A fill:#0173B2,color:#fff
-    style H fill:#DE8F05,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class H pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trade-offs**:

@@ -667,14 +667,17 @@ The `flex` utility enables flexbox layout on an element, making direct children 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 15: Flex Container Basics
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: flex container, child 1, child 2, child 3. Connections: flex container to child 1, flex container to child 2, flex container to child 3.
   A["flex container"]:::blue --> B["child 1"]:::orange
   A --> C["child 2"]:::teal
   A --> D["child 3"]:::purple
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```html
@@ -951,16 +954,19 @@ Tailwind uses a mobile-first responsive system. Utilities without prefixes apply
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 20: Mobile-First Responsive Prefixes
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: 0px Mobile base utilities, 640px sm: Small tablet, 768px md: Tablet, 1024px lg: Laptop, 1280px xl: Desktop. Connections: 0px Mobile base utilities to 640px sm: Small tablet, 640px sm: Small tablet to 768px md: Tablet, 768px md: Tablet to 1024px lg: Laptop, 1024px lg: Laptop to 1280px xl: Desktop.
   A["0px<br/>Mobile<br/>base utilities"]:::blue --> B["640px sm:<br/>Small tablet"]:::orange
   B --> C["768px md:<br/>Tablet"]:::teal
   C --> D["1024px lg:<br/>Laptop"]:::purple
   D --> E["1280px xl:<br/>Desktop"]:::brown
 
-  classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
-  classDef brown fill:#CA9161,stroke:#000,color:#fff,stroke-width:2px
+  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```html

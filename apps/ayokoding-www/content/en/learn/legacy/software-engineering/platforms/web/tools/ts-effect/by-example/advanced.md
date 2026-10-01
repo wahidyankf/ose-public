@@ -29,6 +29,8 @@ The full fiber lifecycle includes forking, supervising (watching for completion)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+  accTitle: Example 56: Fiber Lifecycle — Fork, Supervise, and Await
+  accDescr: State diagram with 6 items: start or end, Running, Suspended, Done, Failed, Interrupted. Relationships: start or end to Running: fork / start; Running to Suspended: yield / await IO; Suspended to Running: IO completes; Running to Done: return value; Running to Failed: throw / Effect.fail; Running to Interrupted: Fiber.interrupt; Done to start or end; Failed to start or end; Interrupted to start or end.
   [*] --> Running: fork / start
   Running --> Suspended: yield / await IO
   Suspended --> Running: IO completes
@@ -108,18 +110,25 @@ Effect.runPromise(program);
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["FiberRef<A>\n(fiber-local slot)"] --> B["Fiber 1\nown copy"]
-  A --> C["Fiber 2\nown copy"]
-  A --> D["Fiber 3\nown copy"]
-  B -->|"modify"| B2["Fiber 1\nupdated value"]
-  C -->|"unchanged"| C2["Fiber 2\noriginal value"]
+  accTitle: Example 57: FiberRef — Fiber-Local State
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: FiberRef (fiber-local slot), Fiber 1 own copy, Fiber 2 own copy, Fiber 3 own copy, Fiber 1 updated value, Fiber 2 original value. Connections: FiberRef (fiber-local slot) to Fiber 1 own copy, FiberRef (fiber-local slot) to Fiber 2 own copy, FiberRef (fiber-local slot) to Fiber 3 own copy, Fiber 1 own copy to Fiber 1 updated value (modify), Fiber 2 own copy to Fiber 2 original value (unchanged).
+  A["FiberRef<A>\n(fiber-local slot)"] --> B["Fiber 1<br/>own copy"]
+  A --> C["Fiber 2<br/>own copy"]
+  A --> D["Fiber 3<br/>own copy"]
+  B -->|"modify"| B2["Fiber 1<br/>updated value"]
+  C -->|"unchanged"| C2["Fiber 2<br/>original value"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style B2 fill:#029E73,stroke:#000,color:#fff
-  style C2 fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  class D pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B2 pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C2 pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -253,16 +262,22 @@ Effect.runPromise(allResults).then((results) => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Semaphore\npermits: 3"] -->|"withPermit"| B["Fiber A\n(permit taken)"]
-  A -->|"withPermit"| C["Fiber B\n(permit taken)"]
-  A -->|"withPermit"| D["Fiber C\n(permit taken)"]
-  E["Fiber D"] -->|"blocks until\npermit free"| A
+  accTitle: Example 59: Semaphore — Limiting Concurrent Access
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Semaphore permits: 3, Fiber A (permit taken), Fiber B (permit taken), Fiber C (permit taken), Fiber D. Connections: Semaphore permits: 3 to Fiber A (permit taken) (withPermit), Semaphore permits: 3 to Fiber B (permit taken) (withPermit), Semaphore permits: 3 to Fiber C (permit taken) (withPermit), Fiber D to Semaphore permits: 3 (blocks until permit free).
+  A["Semaphore<br/>permits: 3"] -->|"withPermit"| B["Fiber A<br/>(permit taken)"]
+  A -->|"withPermit"| C["Fiber B<br/>(permit taken)"]
+  A -->|"withPermit"| D["Fiber C<br/>(permit taken)"]
+  E["Fiber D"] -->|"blocks until<br/>permit free"| A
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#029E73,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B pal-029E73
+  class C pal-029E73
+  class D pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class E pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -409,18 +424,25 @@ A `Sink<In, Out, E, R>` is a consumer that processes a stream and produces a res
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 61: Stream Sinks — Collecting Stream Results
+  accDescr: Graph with 7 nodes and 4 connections. Nodes: Stream, Sink, final result Out, Sink.collectAll, Chunk, Sink.sum, number. Connections: Stream to Sink (elements), Sink to final result Out (accumulates), Sink.collectAll to Chunk (example), Sink.sum to number (example).
   A["Stream<A>"] -->|"elements"| B["Sink<In, Out>"]
-  B -->|"accumulates"| C["final\nresult Out"]
+  B -->|"accumulates"| C["final<br/>result Out"]
   D["Sink.collectAll"] -->|"example"| E["Chunk<A>"]
   F["Sink.sum"] -->|"example"| G["number"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CA9161,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
-  style F fill:#CA9161,stroke:#000,color:#fff
-  style G fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  class E pal-CA9161
+  class F pal-CA9161
+  class G pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -496,16 +518,24 @@ Effect.runPromise(evens).then((chunk) => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 62: Stream.groupBy and Stream.chunks
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Stream, grouped streams, Stream (alpha items), Stream (beta items), Stream (gamma items). Connections: Stream to grouped streams (groupBy(key)), grouped streams to Stream (alpha items) (key=alpha), grouped streams to Stream (beta items) (key=beta), grouped streams to Stream (gamma items) (key=gamma).
   A["Stream<A>"] -->|"groupBy(key)"| B["grouped streams"]
   B -->|"key='alpha'"| C["Stream<A>\n(alpha items)"]
   B -->|"key='beta'"| D["Stream<A>\n(beta items)"]
   B -->|"key='gamma'"| E["Stream<A>\n(gamma items)"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -646,18 +676,25 @@ Effect.runPromise(parseUserId("usr-42")).then((id) => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Effect.request(req1)"] --> D["RequestResolver\nbatches within\nsame fiber step"]
+  accTitle: Example 64: Effect.request and RequestResolver — Automatic Batching
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Effect.request(req1), RequestResolver batches within same fiber step, Effect.request(req2), Effect.request(req3), DataSource (DB / API), results distributed. Connections: Effect.request(req1) to RequestResolver batches within same fiber step, Effect.request(req2) to RequestResolver batches within same fiber step, Effect.request(req3) to RequestResolver batches within same fiber step, RequestResolver batches within same fiber step to DataSource (DB / API) (single batch call), DataSource (DB / API) to results distributed ([result1, result2, result3]).
+  A["Effect.request(req1)"] --> D["RequestResolver<br/>batches within<br/>same fiber step"]
   B["Effect.request(req2)"] --> D
   C["Effect.request(req3)"] --> D
-  D -->|"single batch call"| E["DataSource\n(DB / API)"]
-  E -->|"[result1,\nresult2,\nresult3]"| F["results\ndistributed"]
+  D -->|"single batch call"| E["DataSource<br/>(DB / API)"]
+  E -->|"[result1,<br/>result2,<br/>result3]"| F["results<br/>distributed"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#0173B2,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
-  style F fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class D pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class F pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -737,18 +774,26 @@ Effect's `Metric` module provides counters, histograms, gauges, and frequencies 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Effect\npipeline"] -->|"Metric.counter"| B["Counter\n(increment)"]
-  A -->|"Metric.histogram"| C["Histogram\n(distribution)"]
-  A -->|"Metric.gauge"| D["Gauge\n(current value)"]
-  B --> E["MetricRegistry\n(in-process)"]
+  accTitle: Example 65: Metric — Counters, Histograms, and Gauges
+  accDescr: Graph with 5 nodes and 6 connections. Nodes: Effect pipeline, Counter (increment), Histogram (distribution), Gauge (current value), MetricRegistry (in-process). Connections: Effect pipeline to Counter (increment) (Metric.counter), Effect pipeline to Histogram (distribution) (Metric.histogram), Effect pipeline to Gauge (current value) (Metric.gauge), Counter (increment) to MetricRegistry (in-process), Histogram (distribution) to MetricRegistry (in-process), Gauge (current value) to MetricRegistry (in-process).
+  A["Effect<br/>pipeline"] -->|"Metric.counter"| B["Counter<br/>(increment)"]
+  A -->|"Metric.histogram"| C["Histogram<br/>(distribution)"]
+  A -->|"Metric.gauge"| D["Gauge<br/>(current value)"]
+  B --> E["MetricRegistry<br/>(in-process)"]
   C --> E
   D --> E
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CC78BC,stroke:#000,color:#fff
-  style D fill:#CA9161,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class C pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -830,14 +875,20 @@ Effect.runPromise(monitoringProgram);
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["root span:\nhandleRequest"] --> B["child span:\nfetchUser"]
-  A --> C["child span:\nfetchOrders"]
-  B --> D["child span:\nqueryDB"]
+  accTitle: Example 66: Effect.withSpan — Distributed Tracing
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: root span: handleRequest, child span: fetchUser, child span: fetchOrders, child span: queryDB. Connections: root span: handleRequest to child span: fetchUser, root span: handleRequest to child span: fetchOrders, child span: fetchUser to child span: queryDB.
+  A["root span:<br/>handleRequest"] --> B["child span:<br/>fetchUser"]
+  A --> C["child span:<br/>fetchOrders"]
+  B --> D["child span:<br/>queryDB"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -929,16 +980,23 @@ Effect.runPromise(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["ManagedRuntime.make(layer)"] --> B["Runtime\n(initialized services)"]
+  accTitle: Example 67: ManagedRuntime — Production Runtime Configuration
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: ManagedRuntime. make(layer), Runtime (initialized services), Effect -> Promise, Effect -> A, cleanup all scoped resources. Connections: ManagedRuntime. make(layer) to Runtime (initialized services), Runtime (initialized services) to Effect -> Promise (runtime.runPromise), Runtime (initialized services) to Effect -> A (runtime.runSync), Runtime (initialized services) to cleanup all scoped resources (runtime.dispose).
+  A["ManagedRuntime.<br/>make(layer)"] --> B["Runtime<br/>(initialized<br/>services)"]
   B -->|"runtime.runPromise"| C["Effect<A>\n-> Promise<A>"]
   B -->|"runtime.runSync"| D["Effect<A>\n-> A"]
-  B -->|"runtime.dispose"| E["cleanup all\nscoped resources"]
+  B -->|"runtime.dispose"| E["cleanup all<br/>scoped resources"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  class D pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class E pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1228,6 +1286,8 @@ Production services must handle shutdown signals (SIGTERM, SIGINT) gracefully: s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 71: Graceful Shutdown Pattern
+  accDescr: Sequence diagram between OS / Process, Effect Runtime, Active Fibers, Resources. Messages: OS / Process to Effect Runtime: SIGTERM signal; Effect Runtime to Active Fibers: interrupt all fibers; Active Fibers to Effect Runtime: fibers finished; Effect Runtime to Resources: run finalizers; Resources to Effect Runtime: resources released; Effect Runtime to OS / Process: process exits cleanly.
   participant OS as OS / Process
   participant R as Effect Runtime
   participant F as Active Fibers
@@ -1312,6 +1372,8 @@ A circuit breaker stops calling a failing service when it is clearly unhealthy, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+  accTitle: Example 72: Circuit Breaker Pattern with Ref and Schedule
+  accDescr: State diagram with 4 items: start or end, Closed, Open, HalfOpen. Relationships: start or end to Closed: initial state; Closed to Open: failures >= threshold; Open to HalfOpen: timeout elapsed; HalfOpen to Closed: probe succeeds; HalfOpen to Open: probe fails; Closed to Closed: success / failure below threshold.
   [*] --> Closed: initial state
   Closed --> Open: failures >= threshold
   Open --> HalfOpen: timeout elapsed
@@ -1472,16 +1534,22 @@ Tracing spans nest hierarchically. When a span-wrapped Effect forks child fibers
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["withSpan: 'HTTP POST /users'"] --> B["withSpan: 'validateInput'"]
-  A --> C["withSpan: 'createUser'"]
+  accTitle: Example 74: Effect.withSpan and Nested Traces
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: withSpan: HTTP POST /users, withSpan: validateInput, withSpan: createUser, withSpan: insertDB, withSpan: sendEmail. Connections: withSpan: HTTP POST /users to withSpan: validateInput, withSpan: HTTP POST /users to withSpan: createUser, withSpan: createUser to withSpan: insertDB, withSpan: createUser to withSpan: sendEmail.
+  A["withSpan: 'HTTP POST<br/>/users'"] --> B["withSpan:<br/>'validateInput'"]
+  A --> C["withSpan:<br/>'createUser'"]
   C --> D["withSpan: 'insertDB'"]
-  C --> E["withSpan: 'sendEmail'"]
+  C --> E["withSpan:<br/>'sendEmail'"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  class E pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1569,16 +1637,23 @@ Combining Stream with resource management enables processing large files without
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Stream.acquireRelease\n(open file)"] -->|"yields"| B["Stream<Uint8Array>\n(file chunks)"]
-  B -->|"Stream.map"| C["decoded\nlines"]
+  accTitle: Example 75: Stream with External Resources — Reading Files
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Stream. acquireRelease (open file), Stream (file chunks), decoded lines, Chunk, close file (guaranteed). Connections: Stream. acquireRelease (open file) to Stream (file chunks) (yields), Stream (file chunks) to decoded lines (Stream.map), decoded lines to Chunk (Stream.runCollect), Stream. acquireRelease (open file) to close file (guaranteed) (stream ends or error).
+  A["Stream.<br/>acquireRelease<br/>(open file)"] -->|"yields"| B["Stream<Uint8Array>\n(file chunks)"]
+  B -->|"Stream.map"| C["decoded<br/>lines"]
   C -->|"Stream.runCollect"| D["Chunk<string>"]
-  A -->|"stream ends\nor error"| E["close file\n(guaranteed)"]
+  A -->|"stream ends<br/>or error"| E["close file<br/>(guaranteed)"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class E pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1855,15 +1930,22 @@ Effect.runPromise(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Effect.cached\n(timeToLive: 30s)"] -->|"first call"| B["execute\neffect"]
+  accTitle: Example 79: Effect.cached — Time-Bounded Memoization
+  accDescr: Graph with 4 nodes and 4 connections. Nodes: Effect.cached (timeToLive: 30s), execute effect, cached value, return cached (no re-execution). Connections: Effect.cached (timeToLive: 30s) to execute effect (first call), execute effect to cached value (cache result), cached value to return cached (no re-execution) (within 30s), cached value to execute effect (after 30s expires).
+  A["Effect.cached<br/>(timeToLive: 30s)"] -->|"first call"| B["execute<br/>effect"]
   B -->|"cache result"| C["cached value"]
-  C -->|"within 30s"| D["return cached\n(no re-execution)"]
-  C -->|"after 30s\nexpires"| B
+  C -->|"within 30s"| D["return cached<br/>(no re-execution)"]
+  C -->|"after 30s<br/>expires"| B
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1934,22 +2016,30 @@ This final example combines multiple Effect concepts into a realistic production
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["HTTP Request"] -->|"Schema.decode"| B["validated\ninput"]
-  B -->|"Effect.gen"| C["UserService\n(Context.Tag)"]
-  C -->|"Layer provides"| D["DatabaseLayer\n+ CacheLayer"]
+  accTitle: Example 80: Putting It All Together — A Mini Production Service
+  accDescr: Graph with 8 nodes and 7 connections. Nodes: HTTP Request, validated input, UserService (Context.Tag), DatabaseLayer + CacheLayer, MetricRegistry, TraceExporter, HTTP Response, error response (no 500s). Connections: HTTP Request to validated input (Schema.decode), validated input to UserService (Context.Tag) (Effect.gen), UserService (Context.Tag) to DatabaseLayer + CacheLayer (Layer provides), UserService (Context.Tag) to MetricRegistry (Metric.counter), UserService (Context.Tag) to TraceExporter (withSpan), UserService (Context.Tag) to HTTP Response (success), UserService (Context.Tag) to error response (no 500s) (typed error).
+  A["HTTP Request"] -->|"Schema.decode"| B["validated<br/>input"]
+  B -->|"Effect.gen"| C["UserService<br/>(Context.Tag)"]
+  C -->|"Layer provides"| D["DatabaseLayer<br/>+ CacheLayer"]
   C -->|"Metric.counter"| E["MetricRegistry"]
   C -->|"withSpan"| F["TraceExporter"]
   C -->|"success"| G["HTTP Response"]
-  C -->|"typed error"| H["error response\n(no 500s)"]
+  C -->|"typed error"| H["error response<br/>(no 500s)"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#CA9161,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
-  style F fill:#CA9161,stroke:#000,color:#fff
-  style G fill:#029E73,stroke:#000,color:#fff
-  style H fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  class E pal-CA9161
+  class F pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class G pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class H pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

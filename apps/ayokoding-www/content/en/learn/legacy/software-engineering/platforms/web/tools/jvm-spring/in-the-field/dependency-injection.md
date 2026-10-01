@@ -148,18 +148,24 @@ public class Application {
 
 ```mermaid
 graph LR
+    accTitle: Progression Diagram
+    accDescr: Graph with 7 nodes and 5 connections. Nodes: Manual Construction new Dependencies, Hard to Test, Hard to Maintain, Spring DI @Configuration + @Bean, Easy to Test, Easy to Maintain, Lifecycle Hooks. Connections: Manual Construction new Dependencies to Hard to Test (Tight Coupling), Manual Construction new Dependencies to Hard to Maintain (Spread Across Code), Spring DI @Configuration + @Bean to Easy to Test (Loose Coupling), Spring DI @Configuration + @Bean to Easy to Maintain (Centralized Config), Spring DI @Configuration + @Bean to Lifecycle Hooks (Container Managed).
     A[Manual Construction<br/>new Dependencies] -->|Tight Coupling| B[Hard to Test]
     A -->|Spread Across Code| C[Hard to Maintain]
 
-    D[Spring DI<br/>@Configuration + @Bean] -->|Loose Coupling| E[Easy to Test]
+    D[Spring DI<br/>@Configuration +<br/>@Bean] -->|Loose Coupling| E[Easy to Test]
     D -->|Centralized Config| F[Easy to Maintain]
     D -->|Container Managed| G[Lifecycle Hooks]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style F fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style G fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class E pal-0173B2
+    class F pal-0173B2
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

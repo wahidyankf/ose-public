@@ -22,20 +22,28 @@ Forms in LiveView use Ecto changesets for validation and transformation. The cha
 ```mermaid
 %% Ecto changeset form validation flow
 graph TD
+    accTitle: Example 31: Form Basics with Changesets
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: User Input, phx-change event, cast/3 Type conversion, validate_required, validate_format etc, Valid?, changeset.valid? = true, changeset.errors populated, Re-render with errors. Connections: User Input to phx-change event, phx-change event to cast/3 Type conversion, cast/3 Type conversion to validate_required, validate_required to validate_format etc, validate_format etc to Valid?, Valid? to changeset.valid? = true (Yes), Valid? to changeset.errors populated (No), changeset.errors populated to Re-render with errors.
     A[User Input] --> B[phx-change event]
-    B --> C[cast/3 Type conversion]
+    B --> C[cast/3 Type<br/>conversion]
     C --> D[validate_required]
     D --> E[validate_format etc]
     E --> F{Valid?}
-    F -->|Yes| G[changeset.valid? = true]
-    F -->|No| H[changeset.errors populated]
-    H --> I[Re-render with errors]
+    F -->|Yes| G[changeset.valid? =<br/>true]
+    F -->|No| H[changeset.errors<br/>populated]
+    H --> I[Re-render with<br/>errors]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1400,18 +1408,26 @@ Use temporary assigns for large lists that don't need to persist in memory betwe
 ```mermaid
 %% Temporary assigns memory lifecycle
 graph LR
+    accTitle: Example 41: Temporary Assigns
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Large Data Loaded, Assign to socket, render/1 sends HTML, Temporary assign cleared, socket.assigns.logs = empty, New data arrives. Connections: Large Data Loaded to Assign to socket, Assign to socket to render/1 sends HTML, render/1 sends HTML to Temporary assign cleared, Temporary assign cleared to socket.assigns.logs = empty, socket.assigns.logs = empty to New data arrives, New data arrives to Assign to socket.
     A[Large Data Loaded] --> B[Assign to socket]
     B --> C[render/1 sends HTML]
-    C --> D[Temporary assign cleared]
-    D --> E[socket.assigns.logs = empty]
+    C --> D[Temporary assign<br/>cleared]
+    D --> E[socket.assigns.logs<br/>= empty]
     E --> F[New data arrives]
     F --> B
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1707,6 +1723,8 @@ Use streams for efficiently rendering and updating large lists with automatic DO
 ```mermaid
 %% Stream DOM update flow
 graph TD
+    accTitle: Example 44: Stream Collections
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: stream_insert item, Item keyed by id, Client receives diff, Item exists?, Insert into DOM, Update DOM node, Remove from DOM. Connections: stream_insert item to Item keyed by id, Item keyed by id to Client receives diff, Client receives diff to Item exists?, Item exists? to Insert into DOM (New), Item exists? to Update DOM node (Updated), Item exists? to Remove from DOM (Deleted).
     A[stream_insert item] --> B[Item keyed by id]
     B --> C[Client receives diff]
     C --> D{Item exists?}
@@ -1714,12 +1732,18 @@ graph TD
     D -->|Updated| F[Update DOM node]
     D -->|Deleted| G[Remove from DOM]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2073,6 +2097,8 @@ Implement infinite scroll by detecting when user scrolls near bottom and loading
 ```mermaid
 %% Infinite scroll with IntersectionObserver
 sequenceDiagram
+    accTitle: Example 47: Infinite Scroll
+    accDescr: Sequence diagram between User, JS Hook, LiveView. Messages: User to JS Hook: Scroll near bottom; JS Hook to LiveView: push load_more event; LiveView to LiveView: Fetch next page; LiveView to JS Hook: stream_insert new items; JS Hook to User: New items appear in DOM.
     participant User
     participant Hook as JS Hook
     participant LiveView
@@ -2296,20 +2322,28 @@ Understand the difference between `patch` (same LiveView) and `navigate` (differ
 ```mermaid
 %% Navigation type decision
 graph TD
+    accTitle: Example 48: Live Navigation - patch vs navigate
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: User navigates, Same LiveView?, push_patch, push_navigate, handle_params/3 called, LiveView process kept, New LiveView mounted, Old process terminated. Connections: User navigates to Same LiveView?, Same LiveView? to push_patch (Yes), Same LiveView? to push_navigate (No), push_patch to handle_params/3 called, handle_params/3 called to LiveView process kept, push_navigate to New LiveView mounted, New LiveView mounted to Old process terminated.
     A[User navigates] --> B{Same LiveView?}
     B -->|Yes| C[push_patch]
     B -->|No| D[push_navigate]
-    C --> E[handle_params/3 called]
-    E --> F[LiveView process kept]
+    C --> E[handle_params/3<br/>called]
+    E --> F[LiveView process<br/>kept]
     D --> G[New LiveView mounted]
-    G --> H[Old process terminated]
+    G --> H[Old process<br/>terminated]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style F fill:#CA9161,color:#fff
-    style H fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2735,6 +2769,8 @@ Use Phoenix.PubSub to broadcast messages between LiveView processes.
 ```mermaid
 %% PubSub message flow
 sequenceDiagram
+    accTitle: Example 51: Phoenix.PubSub Basics
+    accDescr: Sequence diagram between User A LiveView, PubSub, User B LiveView. Messages: User A LiveView to PubSub: broadcast(topic, message); PubSub to User A LiveView: handle_info (self); PubSub to User B LiveView: handle_info; User A LiveView to User A LiveView: Update assigns, re-render; User B LiveView to User B LiveView: Update assigns, re-render.
     participant UserA as User A LiveView
     participant PubSub
     participant UserB as User B LiveView
@@ -3030,18 +3066,26 @@ Broadcast state changes to all connected users for real-time synchronization.
 ```mermaid
 %% Broadcast on write pattern
 graph TD
+    accTitle: Example 53: Broadcast Updates
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: User event, handle_event, Persist to DB, broadcast to topic, All subscribers, handle_info update, Re-render for each viewer. Connections: User event to handle_event, handle_event to Persist to DB, Persist to DB to broadcast to topic, broadcast to topic to All subscribers, All subscribers to handle_info update, handle_info update to Re-render for each viewer.
     A[User event] --> B[handle_event]
     B --> C[Persist to DB]
     C --> D[broadcast to topic]
     D --> E[All subscribers]
     E --> F[handle_info update]
-    F --> G[Re-render for each viewer]
+    F --> G[Re-render for each<br/>viewer]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3353,21 +3397,28 @@ Synchronize state across multiple users in real-time using presence tracking and
 ```mermaid
 %% Multi-user real-time sync
 graph TD
+    accTitle: Example 55: Multi-user Synchronization
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: User A Edit, broadcast document:1, User B Edit, handle_info User A LiveView, handle_info User B LiveView, handle_info User C LiveView, Update UI, Update UI, Update UI. Connections: User A Edit to broadcast document:1, User B Edit to broadcast document:1, broadcast document:1 to handle_info User A LiveView, broadcast document:1 to handle_info User B LiveView, broadcast document:1 to handle_info User C LiveView, handle_info User A LiveView to Update UI, handle_info User B LiveView to Update UI, handle_info User C LiveView to Update UI.
     A[User A Edit] --> B[broadcast document:1]
     C[User B Edit] --> B
-    B --> D[handle_info User A LiveView]
-    B --> E[handle_info User B LiveView]
-    B --> F[handle_info User C LiveView]
+    B --> D[handle_info User A<br/>LiveView]
+    B --> E[handle_info User B<br/>LiveView]
+    B --> F[handle_info User C<br/>LiveView]
     D --> G[Update UI]
     E --> H[Update UI]
     F --> I[Update UI]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3702,6 +3753,8 @@ Track upload progress in real-time and display to users.
 ```mermaid
 %% File upload progress lifecycle
 sequenceDiagram
+    accTitle: Example 57: Progress Tracking
+    accDescr: Sequence diagram between Browser, LiveView. Messages: Browser to LiveView: Start upload (chunked); Browser to LiveView: Chunk data; LiveView to Browser: entry.progress update; Browser to LiveView: Upload complete; LiveView to Browser: consume_uploaded_entries result.
     participant Browser
     participant LiveView
     Browser->>LiveView: Start upload (chunked)
@@ -4129,20 +4182,28 @@ Process uploaded files with `consume_uploaded_entries/3` callback.
 ```mermaid
 %% Upload consumption pipeline
 graph TD
-    A[Upload Complete] --> B[consume_uploaded_entries]
+    accTitle: Example 59: Consume Uploaded Entries
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Upload Complete, consume_uploaded_ entries, For each entry, path: tmp file location, Process: copy/store/parse, Success?, Return processed data, postpone: retry later, Accumulate results. Connections: Upload Complete to consume_uploaded_ entries, consume_uploaded_ entries to For each entry, For each entry to path: tmp file location, path: tmp file location to Process: copy/store/parse, Process: copy/store/parse to Success?, Success? to Return processed data (Yes), Success? to postpone: retry later (No), Return processed data to Accumulate results.
+    A[Upload Complete] --> B[consume_uploaded_<br/>entries]
     B --> C[For each entry]
-    C --> D[path: tmp file location]
-    D --> E[Process: copy/store/parse]
+    C --> D[path: tmp file<br/>location]
+    D --> E[Process:<br/>copy/store/parse]
     E --> F{Success?}
-    F -->|Yes| G[Return processed data]
-    F -->|No| H[postpone: retry later]
+    F -->|Yes| G[Return processed<br/>data]
+    F -->|No| H[postpone: retry<br/>later]
     G --> I[Accumulate results]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

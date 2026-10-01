@@ -29,20 +29,27 @@ Streams efficiently update lists without re-rendering the entire collection. Eac
 ```mermaid
 %% LiveView stream update propagation
 graph TD
-    A[Server: stream_insert] --> B[Generate DOM ID]
+    accTitle: Example 26: LiveView Streams
+    accDescr: Graph with 9 nodes and 7 connections. Nodes: Server: stream_insert, Generate DOM ID, Send patch to client, Client: Update only new item, DOM: Insert articleposts-123, Server: stream_delete, Send delete command, Client: Remove specific DOM ID, DOM: Remove articleposts-123. Connections: Server: stream_insert to Generate DOM ID, Generate DOM ID to Send patch to client, Send patch to client to Client: Update only new item, Client: Update only new item to DOM: Insert articleposts-123, Server: stream_delete to Send delete command, Send delete command to Client: Remove specific DOM ID, Client: Remove specific DOM ID to DOM: Remove articleposts-123.
+    A[Server:<br/>stream_insert] --> B[Generate DOM ID]
     B --> C[Send patch to client]
-    C --> D[Client: Update only new item]
-    D --> E[DOM: Insert article#posts-123]
+    C --> D[Client: Update only<br/>new item]
+    D --> E[DOM: Insert<br/>article#posts-123]
 
-    F[Server: stream_delete] --> G[Send delete command]
-    G --> H[Client: Remove specific DOM ID]
-    H --> I[DOM: Remove article#posts-123]
+    F[Server:<br/>stream_delete] --> G[Send delete command]
+    G --> H[Client: Remove<br/>specific DOM ID]
+    H --> I[DOM: Remove<br/>article#posts-123]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#0173B2,color:#fff
-    style I fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class I pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -123,6 +130,8 @@ Load data asynchronously without blocking the page. Show loading states while wa
 ```mermaid
 %% Async operation state machine
 stateDiagram-v2
+    accTitle: Example 27: Async Operations with Loading States
+    accDescr: State diagram with 4 items: start or end, Loading, Success, Error. Relationships: start or end to Loading: assign_async called; Loading to Success: Data loaded; Loading to Error: Load failed; Success to start or end; Error to start or end.
     [*] --> Loading: assign_async called
     Loading --> Success: Data loaded
     Loading --> Error: Load failed
@@ -216,19 +225,26 @@ Upload files to external services like Amazon S3 instead of storing locally.
 ```mermaid
 %% File upload flow
 graph TD
+    accTitle: Example 28: LiveView File Uploads with External Storage
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Client selects file, LiveView validates, Client uploads to temp, User submits form, consume_uploaded_ entries, Upload to S3, Store S3 URL in DB, Complete. Connections: Client selects file to LiveView validates, LiveView validates to Client uploads to temp, Client uploads to temp to User submits form, User submits form to consume_uploaded_ entries, consume_uploaded_ entries to Upload to S3, Upload to S3 to Store S3 URL in DB, Store S3 URL in DB to Complete.
     A[Client selects file] --> B[LiveView validates]
-    B --> C[Client uploads to temp]
+    B --> C[Client uploads to<br/>temp]
     C --> D[User submits form]
-    D --> E[consume_uploaded_entries]
+    D --> E[consume_uploaded_<br/>entries]
     E --> F[Upload to S3]
     F --> G[Store S3 URL in DB]
     G --> H[Complete]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style H fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -563,6 +579,8 @@ Channels provide real-time bidirectional WebSocket communication for features li
 ```mermaid
 %% Channel bidirectional flow
 sequenceDiagram
+    accTitle: Example 32: Phoenix Channels - Basic Communication
+    accDescr: Sequence diagram between Client, Server Channel, Broadcast. Messages: Client to Server Channel: join(room:123); Server Channel to Client: :ok, socket; Client to Server Channel: push(new_message); Server Channel to Broadcast: broadcast(message); Broadcast to Client: receive(message); Broadcast to Client: receive(message).
     participant C as Client
     participant S as Server Channel
     participant B as Broadcast
@@ -651,20 +669,26 @@ PubSub delivers messages across the system. LiveView components subscribe to top
 ```mermaid
 %% PubSub broadcast architecture
 graph TD
+    accTitle: Example 33: PubSub for LiveView Updates
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: Blog.create_post, Endpoint.broadcast, PubSub Server, LiveView Instance 1, LiveView Instance 2, LiveView Instance 3, handle_info updates UI. Connections: Blog.create_post to Endpoint.broadcast, Endpoint.broadcast to PubSub Server, PubSub Server to LiveView Instance 1, PubSub Server to LiveView Instance 2, PubSub Server to LiveView Instance 3, LiveView Instance 1 to handle_info updates UI, LiveView Instance 2 to handle_info updates UI, LiveView Instance 3 to handle_info updates UI.
     A[Blog.create_post] --> B[Endpoint.broadcast]
     B --> C[PubSub Server]
     C --> D[LiveView Instance 1]
     C --> E[LiveView Instance 2]
     C --> F[LiveView Instance 3]
-    D --> G[handle_info updates UI]
+    D --> G[handle_info updates<br/>UI]
     E --> G
     F --> G
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -958,19 +982,25 @@ Store user info in encrypted session after login. Session persists across reques
 ```mermaid
 %% Session-based auth flow
 graph TD
+    accTitle: Example 37: Session-Based Authentication
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Login Form, Authenticate, Valid?, put_session user_id, Show error, Redirect to dashboard, SetCurrentUser plug, Load user from session, assign current_user. Connections: Login Form to Authenticate, Authenticate to Valid?, Valid? to put_session user_id (Yes), Valid? to Show error (No), put_session user_id to Redirect to dashboard, Redirect to dashboard to SetCurrentUser plug, SetCurrentUser plug to Load user from session, Load user from session to assign current_user.
     A[Login Form] --> B[Authenticate]
     B --> C{Valid?}
     C -->|Yes| D[put_session user_id]
     C -->|No| E[Show error]
-    D --> F[Redirect to dashboard]
+    D --> F[Redirect to<br/>dashboard]
     F --> G[SetCurrentUser plug]
-    G --> H[Load user from session]
+    G --> H[Load user from<br/>session]
     H --> I[assign current_user]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1199,11 +1229,13 @@ Use JWT tokens for stateless API authentication. Tokens are signed and verified 
 ```mermaid
 %% JWT token lifecycle
 graph TD
+    accTitle: Example 40: JWT Token Authentication for APIs
+    accDescr: Graph with 12 nodes and 11 connections. Nodes: POST /login, Authenticate, Phoenix.Token.sign, Return JWT to client, Client stores token, GET /api with Authorization header, VerifyToken plug, Phoenix.Token.verify, Valid?, Assign user_id, 401 Unauthorized, Controller action. Connections: POST /login to Authenticate, Authenticate to Phoenix.Token.sign, Phoenix.Token.sign to Return JWT to client, Return JWT to client to Client stores token, Client stores token to GET /api with Authorization header, GET /api with Authorization header to VerifyToken plug, VerifyToken plug to Phoenix.Token.verify, Phoenix.Token.verify to Valid?, Valid? to Assign user_id (Yes), Valid? to 401 Unauthorized (No), Assign user_id to Controller action.
     A[POST /login] --> B[Authenticate]
     B --> C[Phoenix.Token.sign]
     C --> D[Return JWT to client]
     D --> E[Client stores token]
-    E --> F[GET /api with Authorization<br/>header]
+    E --> F[GET /api with<br/>Authorization<br/>header]
     F --> G[VerifyToken plug]
     G --> H[Phoenix.Token.verify]
     H --> I{Valid?}
@@ -1211,10 +1243,15 @@ graph TD
     I -->|No| K[401 Unauthorized]
     J --> L[Controller action]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style H fill:#029E73,color:#fff
-    style K fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class H pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class K pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1313,6 +1350,8 @@ Allow users to sign in with Google, GitHub, etc. using Ueberauth library.
 ```mermaid
 %% OAuth2 flow
 sequenceDiagram
+    accTitle: Example 41: OAuth2 Social Login
+    accDescr: Sequence diagram between User, App, Provider (Google). Messages: User to App: Click Login with Google; App to Provider (Google): Redirect to OAuth consent; Provider (Google) to User: Show consent screen; User to Provider (Google): Grant permission; Provider (Google) to App: Redirect with auth code; App to Provider (Google): Exchange code for token; Provider (Google) to App: Return access token; App to Provider (Google): Fetch user info; Provider (Google) to App: Return user data; App to App: Create/find user; App to User: Login complete, redirect.
     participant U as User
     participant A as App
     participant P as "Provider (Google)"
@@ -1782,17 +1821,23 @@ Version your API to support multiple client versions. Use URL versioning or head
 ```mermaid
 %% API versioning strategies
 graph TD
+    accTitle: Example 47: API Versioning Strategies
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Client Request, Version Strategy, /api/v1/posts, Accept: application/ vnd.api.v1+json, application/ vnd.myapp.v1+json, Route to V1 Controller. Connections: Client Request to Version Strategy, Version Strategy to /api/v1/posts (URL), Version Strategy to Accept: application/ vnd.api.v1+json (Header), Version Strategy to application/ vnd.myapp.v1+json (Content Type), /api/v1/posts to Route to V1 Controller, Accept: application/ vnd.api.v1+json to Route to V1 Controller, application/ vnd.myapp.v1+json to Route to V1 Controller.
     A[Client Request] --> B{Version Strategy}
     B -->|URL| C[/api/v1/posts]
-    B -->|Header| D[Accept:<br/>application/vnd.api.v1+json]
-    B -->|Content Type| E[application/vnd.myapp.v1+json]
-    C --> F[Route to V1 Controller]
+    B -->|Header| D[Accept:<br/>application/<br/>vnd.api.v1+json]
+    B -->|Content Type| E[application/<br/>vnd.myapp.v1+json]
+    C --> F[Route to V1<br/>Controller]
     D --> F
     E --> F
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -2006,6 +2051,8 @@ Implement heartbeat to detect disconnections. Handle automatic reconnection with
 ```mermaid
 %% WebSocket heartbeat flow
 sequenceDiagram
+    accTitle: Example 49: WebSocket Heartbeat and Reconnection
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: Connect WebSocket; Server to Client: Connection established; Server to Client: ping; Client to Server: pong; Client to Client: Detect disconnect; Client to Client: Wait 1s (backoff); Client to Server: Reconnect attempt 1; Client to Client: Wait 2s (backoff); Client to Server: Reconnect attempt 2; Server to Client: Connection restored.
     participant C as Client
     participant S as Server
 

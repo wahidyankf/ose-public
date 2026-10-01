@@ -363,9 +363,10 @@ class DonationServiceTest {
 ## Architecture Diagram
 
 ```mermaid
-%%{init: {'theme':'base',<br/>'themeVariables': {<br/>'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#024','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CA9161','fontSize':'16px'}}}%%
 graph TD
-    A["Application Startup"] -->|"reads"| B["SPRING_PROFILES_ACTIVE"]
+    accTitle: Architecture Diagram
+    accDescr: Graph with 9 nodes and 9 connections. Nodes: Application Startup, SPRING_PROFILES_ ACTIVE, Profile: prod, application.yml (shared), application-prod.yml (production), Merged Configuration, DataSource (prod DB), Logging (WARN level), Cache (Redis). Connections: Application Startup to SPRING_PROFILES_ ACTIVE (reads), SPRING_PROFILES_ ACTIVE to Profile: prod (activates), Profile: prod to application.yml (shared) (loads), Profile: prod to application-prod.yml (production) (loads), application.yml (shared) to Merged Configuration, application-prod.yml (production) to Merged Configuration, Merged Configuration to DataSource (prod DB) (configures), Merged Configuration to Logging (WARN level) (configures), Merged Configuration to Cache (Redis) (configures).
+    A["Application Startup"] -->|"reads"| B["SPRING_PROFILES_<br/>ACTIVE"]
     B -->|"activates"| C["Profile: prod"]
 
     C -->|"loads"| D["application.yml<br/>(shared)"]
@@ -378,8 +379,11 @@ graph TD
     F -->|"configures"| H["Logging (WARN level)"]
     F -->|"configures"| I["Cache (Redis)"]
 
-    style C fill:#0173B2,stroke:#024,color:#fff
-    style F fill:#029E73,stroke:#016647,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## When to Use Profiles

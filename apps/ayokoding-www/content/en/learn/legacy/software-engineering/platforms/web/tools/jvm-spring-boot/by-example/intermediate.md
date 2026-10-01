@@ -26,21 +26,29 @@ Spring's declarative transaction management ensures data consistency through ACI
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Starter["spring-boot-starter-data-jpa"] --> Hibernate["Hibernate JPA Provider"]
-    Starter --> DataSource["Auto-Configure DataSource"]
-    DataSource --> Pool["HikariCP Connection Pool"]
+    accTitle: Example 21: @Transactional Basics
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: spring-boot-starter- data-jpa, Hibernate JPA Provider, Auto-Configure DataSource, HikariCP Connection Pool, EntityManagerFactory, JpaRepository Beans, Ready for @Transactional. Connections: spring-boot-starter- data-jpa to Hibernate JPA Provider, spring-boot-starter- data-jpa to Auto-Configure DataSource, Auto-Configure DataSource to HikariCP Connection Pool, Hibernate JPA Provider to EntityManagerFactory, HikariCP Connection Pool to EntityManagerFactory, EntityManagerFactory to JpaRepository Beans, JpaRepository Beans to Ready for @Transactional.
+    Starter["spring-boot-starter-<br/>data-jpa"] --> Hibernate["Hibernate JPA<br/>Provider"]
+    Starter --> DataSource["Auto-Configure<br/>DataSource"]
+    DataSource --> Pool["HikariCP Connection<br/>Pool"]
     Hibernate --> EMF["EntityManagerFactory"]
     Pool --> EMF
     EMF --> Repos["JpaRepository Beans"]
-    Repos --> Ready["Ready for @Transactional"]
+    Repos --> Ready["Ready for<br/>@Transactional"]
 
-    style Starter fill:#0173B2,color:#fff
-    style Hibernate fill:#DE8F05,color:#fff
-    style DataSource fill:#029E73,color:#fff
-    style Pool fill:#CC78BC,color:#fff
-    style EMF fill:#CA9161,color:#fff
-    style Repos fill:#0173B2,color:#fff
-    style Ready fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Starter pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Hibernate pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DataSource pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Pool pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class EMF pal-CA9161
+    class Repos pal-0173B2
+    class Ready pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Caption**: Spring Boot auto-configures JPA by detecting spring-boot-starter-data-jpa on classpath, creating DataSource, EntityManagerFactory, and repository beans automatically.
@@ -50,24 +58,32 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 21: @Transactional Basics
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: @Configuration Class, @Primary DataSource, Secondary DataSource, Primary EntityManagerFactory, Secondary EntityManagerFactory, @EnableJpa Repos(primary), @EnableJpa Repos(secondary), Primary TransactionManager, Secondary TransactionManager. Connections: @Configuration Class to @Primary DataSource, @Configuration Class to Secondary DataSource, @Primary DataSource to Primary EntityManagerFactory, Secondary DataSource to Secondary EntityManagerFactory, Primary EntityManagerFactory to @EnableJpa Repos(primary), Secondary EntityManagerFactory to @EnableJpa Repos(secondary), @EnableJpa Repos(primary) to Primary TransactionManager, @EnableJpa Repos(secondary) to Secondary TransactionManager.
     Config["@Configuration Class"] --> Primary["@Primary DataSource"]
     Config --> Secondary["Secondary DataSource"]
-    Primary --> PrimaryEMF["Primary EntityManagerFactory"]
-    Secondary --> SecondaryEMF["Secondary EntityManagerFactory"]
-    PrimaryEMF --> PrimaryRepos["@EnableJpaRepos(primary)"]
-    SecondaryEMF --> SecondaryRepos["@EnableJpaRepos(secondary)"]
-    PrimaryRepos --> PrimaryTx["Primary TransactionManager"]
-    SecondaryRepos --> SecondaryTx["Secondary TransactionManager"]
+    Primary --> PrimaryEMF["Primary<br/>EntityManagerFactory"]
+    Secondary --> SecondaryEMF["Secondary<br/>EntityManagerFactory"]
+    PrimaryEMF --> PrimaryRepos["@EnableJpa<br/>Repos(primary)"]
+    SecondaryEMF --> SecondaryRepos["@EnableJpa<br/>Repos(secondary)"]
+    PrimaryRepos --> PrimaryTx["Primary<br/>TransactionManager"]
+    SecondaryRepos --> SecondaryTx["Secondary<br/>TransactionManager"]
 
-    style Config fill:#0173B2,color:#fff
-    style Primary fill:#DE8F05,color:#fff
-    style Secondary fill:#029E73,color:#fff
-    style PrimaryEMF fill:#CC78BC,color:#fff
-    style SecondaryEMF fill:#CA9161,color:#fff
-    style PrimaryRepos fill:#0173B2,color:#fff
-    style SecondaryRepos fill:#DE8F05,color:#fff
-    style PrimaryTx fill:#029E73,color:#fff
-    style SecondaryTx fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Config pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Primary pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Secondary pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PrimaryEMF pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class SecondaryEMF pal-CA9161
+    class PrimaryRepos pal-0173B2
+    class SecondaryRepos pal-DE8F05
+    class PrimaryTx pal-029E73
+    class SecondaryTx pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Caption**: Multiple datasources require separate DataSource, EntityManagerFactory, and TransactionManager beans with @Primary designating the default configuration.
@@ -422,6 +438,8 @@ class TransferController(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 21: @Transactional Basics
+    accDescr: Sequence diagram between Controller, TransferService, Database. Messages: Controller to TransferService: transfer(fromId, toId, amount); TransferService to Database: BEGIN TRANSACTION; TransferService to Database: UPDATE account SET balance=... WHERE id=fromId; TransferService to Database: UPDATE account SET balance=... WHERE id=toId; TransferService to Database: INSERT INTO transfer_log...; TransferService to Database: COMMIT; TransferService to Controller: Success; TransferService to Database: ROLLBACK; TransferService to Controller: Error.
     participant C as Controller
     participant S as TransferService
     participant DB as Database
@@ -449,22 +467,30 @@ sequenceDiagram
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Starter["spring-boot-starter-data-jpa"] --> TxStarter["Detects spring-tx on classpath"]
-    TxStarter --> Manager["Auto-Config TransactionMgr"]
-    Manager --> JpaManager["JpaTransactionManager Bean"]
-    JpaManager --> AOP["@EnableTransactionManagement"]
-    AOP --> Proxy["Create @Transactional Proxies"]
-    Proxy --> Interceptor["TransactionInterceptor"]
-    Interceptor --> Ready["Methods Wrapped with TX Logic"]
+    accTitle: Example 21: @Transactional Basics
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: spring-boot-starter- data-jpa, Detects spring-tx on classpath, Auto-Config TransactionMgr, JpaTransaction Manager Bean, @EnableTransaction Management, Create @Transactional Proxies, Transaction Interceptor, Methods Wrapped with TX Logic. Connections: spring-boot-starter- data-jpa to Detects spring-tx on classpath, Detects spring-tx on classpath to Auto-Config TransactionMgr, Auto-Config TransactionMgr to JpaTransaction Manager Bean, JpaTransaction Manager Bean to @EnableTransaction Management, @EnableTransaction Management to Create @Transactional Proxies, Create @Transactional Proxies to Transaction Interceptor, Transaction Interceptor to Methods Wrapped with TX Logic.
+    Starter["spring-boot-starter-<br/>data-jpa"] --> TxStarter["Detects spring-tx on<br/>classpath"]
+    TxStarter --> Manager["Auto-Config<br/>TransactionMgr"]
+    Manager --> JpaManager["JpaTransaction<br/>Manager Bean"]
+    JpaManager --> AOP["@EnableTransaction<br/>Management"]
+    AOP --> Proxy["Create<br/>@Transactional<br/>Proxies"]
+    Proxy --> Interceptor["Transaction<br/>Interceptor"]
+    Interceptor --> Ready["Methods Wrapped with<br/>TX Logic"]
 
-    style Starter fill:#0173B2,color:#fff
-    style TxStarter fill:#DE8F05,color:#fff
-    style Manager fill:#029E73,color:#fff
-    style JpaManager fill:#CC78BC,color:#fff
-    style AOP fill:#CA9161,color:#fff
-    style Proxy fill:#0173B2,color:#fff
-    style Interceptor fill:#DE8F05,color:#fff
-    style Ready fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Starter pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class TxStarter pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Manager pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class JpaManager pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class AOP pal-CA9161
+    class Proxy pal-0173B2
+    class Interceptor pal-DE8F05
+    class Ready pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Caption**: Spring Boot automatically configures transaction management by creating PlatformTransactionManager bean and enabling AOP proxies for @Transactional methods.
@@ -608,11 +634,13 @@ class InventoryService(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 22: Isolation Levels
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Transaction Start, Isolation Level, Prevent Dirty Reads, Prevent Dirty + Non-Repeatable Reads, Prevent All Anomalies, High Concurrency Lower Consistency, Medium Concurrency Medium Consistency, Low Concurrency Full Consistency, Production Default, Financial Systems, Critical Operations. Connections: Transaction Start to Isolation Level, Isolation Level to Prevent Dirty Reads (READ_COMMITTED), Isolation Level to Prevent Dirty + Non-Repeatable Reads (REPEATABLE_READ), Isolation Level to Prevent All Anomalies (SERIALIZABLE), Prevent Dirty Reads to High Concurrency Lower Consistency, Prevent Dirty + Non-Repeatable Reads to Medium Concurrency Medium Consistency, Prevent All Anomalies to Low Concurrency Full Consistency, High Concurrency Lower Consistency to Production Default, Medium Concurrency Medium Consistency to Financial Systems, Low Concurrency Full Consistency to Critical Operations.
     A[Transaction Start] --> B{Isolation Level}
 
     B -->|READ_COMMITTED| C[Prevent Dirty Reads]
-    B -->|REPEATABLE_READ| D[Prevent Dirty + Non-Repeatable Reads]
-    B -->|SERIALIZABLE| E[Prevent All Anomalies]
+    B -->|REPEATABLE_READ| D[Prevent Dirty +<br/>Non-Repeatable Reads]
+    B -->|SERIALIZABLE| E[Prevent All<br/>Anomalies]
 
     C --> F[High Concurrency<br/>Lower Consistency]
     D --> G[Medium Concurrency<br/>Medium Consistency]
@@ -622,11 +650,16 @@ graph TD
     G --> J[Financial Systems]
     H --> K[Critical Operations]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style I fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ---
@@ -1574,7 +1607,9 @@ class ApiController {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
-    A[HTTP Request] --> B{Security Filter Chain}
+    accTitle: Example 26: Custom Authentication
+    accDescr: Flowchart with 12 nodes and 13 connections. Nodes: HTTP Request, Security Filter Chain, Permit All, Has ADMIN Role?, Authenticated?, Allow Access, 403 Forbidden, Redirect to Login, UserDetailsService, Check Credentials, Create Authentication, 401 Unauthorized. Connections: HTTP Request to Security Filter Chain, Security Filter Chain to Permit All (/public/**), Security Filter Chain to Has ADMIN Role? (/admin/**), Security Filter Chain to Authenticated? (Other), Has ADMIN Role? to Allow Access (Yes), Has ADMIN Role? to 403 Forbidden (No), Authenticated? to Allow Access (Yes), Authenticated? to Redirect to Login (No), Redirect to Login to UserDetailsService, UserDetailsService to Check Credentials, Check Credentials to Create Authentication (Valid), Check Credentials to 401 Unauthorized (Invalid), and 1 more.
+    A[HTTP Request] --> B{Security Filter<br/>Chain}
     B -- /public/** --> C[Permit All]
     B -- /admin/** --> D{Has ADMIN Role?}
     B -- Other --> E{Authenticated?}
@@ -1587,16 +1622,21 @@ flowchart TD
 
     H --> I[UserDetailsService]
     I --> J[Check Credentials]
-    J -- Valid --> K[Create Authentication]
+    J -- Valid --> K[Create<br/>Authentication]
     J -- Invalid --> L[401 Unauthorized]
 
     K --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
-    style L fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class L pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ---
@@ -2327,6 +2367,8 @@ class AuthController(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 28: JWT Authentication
+    accDescr: Sequence diagram between Client, Auth Controller, JWT Filter, Secured API. Messages: Client to Auth Controller: POST /auth/login (username, password); Auth Controller to Auth Controller: Authenticate credentials; Auth Controller to Auth Controller: Generate JWT token; Auth Controller to Client: Return JWT; Client to JWT Filter: GET /api/data Header: Authorization: Bearer JWT; JWT Filter to JWT Filter: Extract & validate JWT; JWT Filter to JWT Filter: Load user details; JWT Filter to JWT Filter: Set SecurityContext; JWT Filter to Secured API: Forward request (authenticated); Secured API to Client: Return data.
     participant C as Client
     participant A as Auth Controller
     participant F as JWT Filter
@@ -3168,6 +3210,8 @@ class ProductRepositoryTestContainersTest {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 32: TestContainers
+    accDescr: Sequence diagram between Test Class, @Testcontainers, Docker Engine, @DynamicPropertySource, Spring Context. Messages: Test Class to @Testcontainers: Test class initialized; @Testcontainers to Docker Engine: Start PostgreSQL container; Docker Engine to @Testcontainers: Container started (random port); @Testcontainers to @DynamicPropertySource: Call static properties() method; @DynamicPropertySource to @DynamicPropertySource: Get container JDBC URL/credentials; @DynamicPropertySource to Spring Context: Register dynamic properties; Spring Context to Spring Context: Initialize ApplicationContext; Spring Context to Spring Context: Configure DataSource with container URL; Spring Context to Test Class: Context ready; Test Class to Test Class: Execute test methods; Test Class to Spring Context: Use real PostgreSQL; Test Class to @Testcontainers: Tests complete; and 2 more.
     participant Test as Test Class
     participant TC as @Testcontainers
     participant Docker as Docker Engine
@@ -3681,6 +3725,8 @@ val p3 = productService.findById(1L)  // => Database query again
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Example 34: Cache Abstraction
+    accDescr: Flowchart with 15 nodes and 12 connections. Nodes: Client Request, Cache Check, Return Cached Value, Execute Method, Query Database, Store in Cache, Return Result, Update Operation, @CachePut, Update Database, Update Cache, Delete Operation, and 3 more. Connections: Client Request to Cache Check, Cache Check to Return Cached Value (Cache Hit), Cache Check to Execute Method (Cache Miss), Execute Method to Query Database, Query Database to Store in Cache, Store in Cache to Return Result, Update Operation to @CachePut, @CachePut to Update Database, Update Database to Update Cache, Delete Operation to @CacheEvict, @CacheEvict to Delete from Database, Delete from Database to Remove from Cache.
     A[Client Request] --> B{Cache Check}
     B -->|Cache Hit| C[Return Cached Value]
     B -->|Cache Miss| D[Execute Method]
@@ -3696,11 +3742,17 @@ flowchart TD
     M --> N[Delete from Database]
     N --> O[Remove from Cache]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style K fill:#CC78BC,stroke:#000,color:#fff
-    style O fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class K pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class O pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ---
@@ -4235,9 +4287,11 @@ open class CachePitfallsService(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[1000 Concurrent Requests] --> B{Cache Entry Expired?}
+    accTitle: Example 36: Cache Strategies
+    accDescr: Graph with 14 nodes and 13 connections. Nodes: 1000 Concurrent Requests, Cache Entry Expired?, 1000 Threads Query DB, Database Overload, E, Errors, First Thread Locks, Thread 1: Query DB, Threads 2-1000: Wait, Load Result, Store in Cache, Release Lock, and 2 more. Connections: 1000 Concurrent Requests to Cache Entry Expired?, Cache Entry Expired? to 1000 Threads Query DB (Without sync=true), 1000 Threads Query DB to Database Overload, Database Overload to E, Database Overload to Errors, Cache Entry Expired? to First Thread Locks (With sync=true), First Thread Locks to Thread 1: Query DB, First Thread Locks to Threads 2-1000: Wait, Thread 1: Query DB to Load Result, Load Result to Store in Cache, Store in Cache to Release Lock, Release Lock to All Threads Get Cached Value, and 1 more.
+    A[1000 Concurrent<br/>Requests] --> B{Cache Entry Expired?}
 
-    B -->|Without sync=true| C[1000 Threads Query DB]
+    B -->|Without sync=true| C[1000 Threads Query<br/>DB]
     C --> D[Database Overload]
     D --> E[Timeouts & Errors]
 
@@ -4247,15 +4301,21 @@ graph TD
     G --> I[Load Result]
     I --> J[Store in Cache]
     J --> K[Release Lock]
-    K --> L[All Threads Get Cached Value]
+    K --> L[All Threads Get<br/>Cached Value]
     L --> M[No Database Overload]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
-    style J fill:#029E73,stroke:#000,color:#fff
-    style M fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class J pal-029E73
+    class M pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ---
@@ -5497,6 +5557,8 @@ data class ChatMessage(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 41: WebSocket - Real-Time Communication
+    accDescr: Sequence diagram between Client 1, Spring Server, Client 2. Messages: Client 1 to Spring Server: Connect /ws (WebSocket handshake); Client 2 to Spring Server: Connect /ws (WebSocket handshake); Client 1 to Spring Server: Subscribe /topic/messages; Client 2 to Spring Server: Subscribe /topic/messages; Client 1 to Spring Server: Send /app/chat.send sender:Alice,content:Hello; Spring Server to Client 1: Broadcast /topic/messages; Spring Server to Client 2: Broadcast /topic/messages.
     participant C1 as Client 1
     participant S as Spring Server
     participant C2 as Client 2
@@ -5644,6 +5706,8 @@ data class StockPrice(val symbol: String, val price: Double)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 42: Server-Sent Events - Unidirectional Streaming
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Spring Server, Client 1, Client 2, Client 3, data: event 1, data: event 2, data: event 3. Connections: Spring Server to Client 1 (SSE Stream), Spring Server to Client 2 (SSE Stream), Spring Server to Client 3 (SSE Stream), data: event 1 to Spring Server, data: event 2 to Spring Server, data: event 3 to Spring Server.
     Server[Spring Server] -->|SSE Stream| C1[Client 1]
     Server -->|SSE Stream| C2[Client 2]
     Server -->|SSE Stream| C3[Client 3]
@@ -5652,10 +5716,15 @@ flowchart LR
     Note2[data: event 2] --> Server
     Note3[data: event 3] --> Server
 
-    style Server fill:#0173B2,color:#fff
-    style C1 fill:#029E73,color:#fff
-    style C2 fill:#DE8F05,color:#fff
-    style C3 fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Server pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C2 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C3 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Takeaway**: SSE provides unidirectional server-to-client streaming over HTTP—simpler than WebSocket for use cases like live dashboards, notifications, and progress updates where bidirectional communication isn't needed.
@@ -5919,20 +5988,28 @@ class UserParamVersionController {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 43: API Versioning Strategies
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: API Client, /api/v1/users, /api/v2/users, UserV1 id, name, email, UserV2 id, firstName, lastName, email, phone, URL Versioning Most visible, Backward Compatible New fields added. Connections: API Client to /api/v1/users, API Client to /api/v2/users, /api/v1/users to UserV1 id, name, email, /api/v2/users to UserV2 id, firstName, lastName, email, phone, URL Versioning Most visible to /api/v1/users, Backward Compatible New fields added to /api/v2/users.
     Client[API Client] --> V1[/api/v1/users]
     Client --> V2[/api/v2/users]
 
     V1 --> R1["UserV1<br/>{id, name, email}"]
-    V2 --> R2["UserV2<br/>{id, firstName, lastName,<br/>email, phone}"]
+    V2 --> R2["UserV2<br/>{id, firstName,<br/>lastName,<br/>email, phone}"]
 
     Note1["URL Versioning<br/>Most visible"] --> V1
     Note2["Backward Compatible<br/>New fields added"] --> V2
 
-    style Client fill:#0173B2,color:#fff
-    style V1 fill:#029E73,color:#fff
-    style V2 fill:#DE8F05,color:#fff
-    style R1 fill:#CC78BC,color:#fff
-    style R2 fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class V1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class V2 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class R1 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class R2 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Takeaway**: Choose versioning strategy based on client capabilities—URL versioning is most visible and cacheable, header versioning keeps URLs clean, content negotiation follows REST standards, and parameter versioning is simplest for internal APIs.
@@ -6483,25 +6560,33 @@ class LoggingAspect {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Example 45: Filter vs Interceptor vs AOP
+    accDescr: Flowchart with 12 nodes and 11 connections. Nodes: HTTP Request, Servlet Filter, DispatcherServlet, Interceptor preHandle, AOP @Before, Controller Method, AOP @AfterReturning, Interceptor postHandle, View Rendering, Interceptor afterCompletion, Filter doFilter return, HTTP Response. Connections: HTTP Request to Servlet Filter, Servlet Filter to DispatcherServlet, DispatcherServlet to Interceptor preHandle, Interceptor preHandle to AOP @Before, AOP @Before to Controller Method, Controller Method to AOP @AfterReturning, AOP @AfterReturning to Interceptor postHandle, Interceptor postHandle to View Rendering, View Rendering to Interceptor afterCompletion, Interceptor afterCompletion to Filter doFilter return, Filter doFilter return to HTTP Response.
     Request[HTTP Request] --> Filter[Servlet Filter]
     Filter --> DispatcherServlet[DispatcherServlet]
-    DispatcherServlet --> InterceptorPre[Interceptor preHandle]
+    DispatcherServlet --> InterceptorPre[Interceptor<br/>preHandle]
     InterceptorPre --> AOP_Before[AOP @Before]
     AOP_Before --> Controller[Controller Method]
     Controller --> AOP_After[AOP @AfterReturning]
-    AOP_After --> InterceptorPost[Interceptor postHandle]
+    AOP_After --> InterceptorPost[Interceptor<br/>postHandle]
     InterceptorPost --> View[View Rendering]
-    View --> InterceptorAfter[Interceptor afterCompletion]
-    InterceptorAfter --> FilterAfter[Filter doFilter return]
+    View --> InterceptorAfter[Interceptor<br/>afterCompletion]
+    InterceptorAfter --> FilterAfter[Filter doFilter<br/>return]
     FilterAfter --> Response[HTTP Response]
 
-    style Request fill:#0173B2,color:#fff
-    style Filter fill:#DE8F05,color:#fff
-    style DispatcherServlet fill:#029E73,color:#fff
-    style InterceptorPre fill:#CC78BC,color:#fff
-    style AOP_Before fill:#CA9161,color:#fff
-    style Controller fill:#0173B2,color:#fff
-    style Response fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Request pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Filter pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DispatcherServlet pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class InterceptorPre pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class AOP_Before pal-CA9161
+    class Controller pal-0173B2
+    class Response pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Takeaway**: Use **Filters** for servlet-level concerns (encoding, security, CORS), **Interceptors** for Spring MVC concerns (authentication, logging, request/response modification), and **AOP** for business logic concerns (transactions, caching, auditing) targeting specific methods.

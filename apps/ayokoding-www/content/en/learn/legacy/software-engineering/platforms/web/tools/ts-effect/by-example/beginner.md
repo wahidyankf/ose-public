@@ -15,14 +15,21 @@ The `Effect<Success, Error, Requirements>` type is the foundation of the entire 
 
 ```mermaid
 graph LR
+  accTitle: Example 1: Understanding the Effect Type Signature
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: Effect A, E, R, A Success value, E Error type, R Requirements 40services41. Connections: Effect A, E, R to A Success value, Effect A, E, R to E Error type, Effect A, E, R to R Requirements 40services41.
   A["Effect<br/>A, E, R"] --> B["A<br/>Success value"]
   A --> C["E<br/>Error type"]
   A --> D["R<br/>Requirements<br/>#40;services#41;"]
 
-  style A fill:#0173B2,color:#fff
-  style B fill:#029E73,color:#fff
-  style C fill:#DE8F05,color:#fff
-  style D fill:#CC78BC,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -167,12 +174,17 @@ Effects are lazy descriptions — they do nothing until you "run" them. Effect p
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Effect\n(description only)"] -->|"Effect.runSync"| B["A\n(sync result)"]
+  accTitle: Example 4: Running Effects — runSync, runPromise
+  accDescr: Graph with 3 nodes and 2 connections. Nodes: Effect (description only), A (sync result), Promise (async result). Connections: Effect (description only) to A (sync result) (Effect.runSync), Effect (description only) to Promise (async result) (Effect.runPromise).
+  A["Effect<br/>(description only)"] -->|"Effect.runSync"| B["A<br/>(sync result)"]
   A -->|"Effect.runPromise"| C["Promise<A>\n(async result)"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#029E73,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B pal-029E73
+  class C pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -290,14 +302,20 @@ Exit.match(asyncExit, {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["value\n(input)"] -->|"f1"| B["intermediate\nvalue"]
-  B -->|"f2"| C["another\nvalue"]
-  C -->|"f3"| D["final\nresult"]
+  accTitle: Example 6: pipe and the Pipeline Pattern
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: value (input), intermediate value, another value, final result. Connections: value (input) to intermediate value (f1), intermediate value to another value (f2), another value to final result (f3).
+  A["value<br/>(input)"] -->|"f1"| B["intermediate<br/>value"]
+  B -->|"f2"| C["another<br/>value"]
+  C -->|"f3"| D["final<br/>result"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -413,15 +431,23 @@ console.log(Effect.runSync(parsedName));
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 8: Effect.flatMap — Chaining Effects
+  accDescr: Graph with 5 nodes and 3 connections. Nodes: Effect, f(A), Effect, Effect (failed), short-circuit f not called. Connections: Effect to f(A) (flatMap(f)), f(A) to Effect (returns), Effect (failed) to short-circuit f not called (flatMap(f)).
   A["Effect<A, E, R>"] -->|"flatMap(f)"| B["f(A)"]
   B -->|"returns"| C["Effect<B, E2, R2>"]
-  A2["Effect<never, E, R>\n(failed)"] -->|"flatMap(f)"| D["short-circuit\nf not called"]
+  A2["Effect<never, E, R>\n(failed)"] -->|"flatMap(f)"| D["short-circuit<br/>f not called"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style A2 fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class A2 pal-CA9161
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -560,14 +586,21 @@ Effect shines when errors are explicit types rather than generic `Error` objects
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["AppError\n(union type)"] --> B["NotFoundError\n_tag: 'NotFoundError'"]
-  A --> C["ValidationError\n_tag: 'ValidationError'"]
-  A --> D["DatabaseError\n_tag: 'DatabaseError'"]
+  accTitle: Example 10: Typed Errors with Data.TaggedError
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: AppError (union type), NotFoundError _tag: NotFoundError, ValidationError _tag: ValidationError, DatabaseError _tag: DatabaseError. Connections: AppError (union type) to NotFoundError _tag: NotFoundError, AppError (union type) to ValidationError _tag: ValidationError, AppError (union type) to DatabaseError _tag: DatabaseError.
+  A["AppError<br/>(union type)"] --> B["NotFoundError<br/>_tag:<br/>'NotFoundError'"]
+  A --> C["ValidationError<br/>_tag:<br/>'ValidationError'"]
+  A --> D["DatabaseError<br/>_tag:<br/>'DatabaseError'"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CC78BC,stroke:#000,color:#fff
-  style D fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class C pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -692,13 +725,19 @@ const withTranslation = fetchData("slow-api.com").pipe(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Effect<A,\nE1 | E2 | E3, R>"] -->|"catchTag('E1', f)"| B["handler f\nfor E1"]
-  A -->|"E2 or E3\npasses through"| C["Effect<A,\nE2 | E3, R>"]
+  accTitle: Example 12: Effect.catchTag — Handling Specific Error Types
+  accDescr: Graph with 3 nodes and 3 connections. Nodes: Effect, handler f for E1, Effect. Connections: Effect to handler f for E1 (catchTag(E1, f)), Effect to Effect (E2 or E3 passes through), handler f for E1 to Effect (recovered).
+  A["Effect<A,<br/>E1 | E2 | E3, R>"] -->|"catchTag('E1', f)"| B["handler f<br/>for E1"]
+  A -->|"E2 or E3<br/>passes through"| C["Effect<A,<br/>E2 | E3, R>"]
   B -->|"recovered"| C
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -823,6 +862,8 @@ Effect.runPromise(withRetry).then((result) => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 14: Effect.gen — Generator-Based Pipelines
+  accDescr: Sequence diagram between Generator, Effect Runtime. Messages: Generator to Effect Runtime: yield* effect1; Effect Runtime to Generator: value1 (A); Generator to Effect Runtime: yield* effect2(value1); Effect Runtime to Generator: value2 (B); Generator to Effect Runtime: return finalValue; Effect Runtime to Generator: Effect.
   participant G as Generator
   participant R as Effect Runtime
   G->>R: yield* effect1
@@ -1232,14 +1273,21 @@ Layers compose in two ways: sequentially (one layer provides what another needs)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["DatabaseLayer\n(no deps)"] --> C["UserServiceLayer\n(needs Database)"]
-  B["ConfigLayer\n(no deps)"] --> C
-  C --> D["AppLayer\n(provides all services)"]
+  accTitle: Example 20: Layer Composition Patterns
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: DatabaseLayer (no deps), UserServiceLayer (needs Database), ConfigLayer (no deps), AppLayer (provides all services). Connections: DatabaseLayer (no deps) to UserServiceLayer (needs Database), ConfigLayer (no deps) to UserServiceLayer (needs Database), UserServiceLayer (needs Database) to AppLayer (provides all services).
+  A["DatabaseLayer<br/>(no deps)"] --> C["UserServiceLayer<br/>(needs Database)"]
+  B["ConfigLayer<br/>(no deps)"] --> C
+  C --> D["AppLayer<br/>(provides all<br/>services)"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#CA9161,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class B pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1517,18 +1565,24 @@ const thrownError = Cause.squash(Cause.fail("an error"));
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Effect.all\n(concurrency: unbounded)"] --> B["e1 ▶"]
+  accTitle: Example 24: Effect.all — Sequential and Concurrent Execution
+  accDescr: Graph with 5 nodes and 6 connections. Nodes: Effect.all (concurrency: unbounded), e1 ▶, e2 ▶, e3 ▶, [r1, r2, r3] when all done. Connections: Effect.all (concurrency: unbounded) to e1 ▶, Effect.all (concurrency: unbounded) to e2 ▶, Effect.all (concurrency: unbounded) to e3 ▶, e1 ▶ to [r1, r2, r3] when all done, e2 ▶ to [r1, r2, r3] when all done, e3 ▶ to [r1, r2, r3] when all done.
+  A["Effect.all<br/>(concurrency:<br/>unbounded)"] --> B["e1 ▶"]
   A --> C["e2 ▶"]
   A --> D["e3 ▶"]
-  B --> E["[r1, r2, r3]\nwhen all done"]
+  B --> E["[r1, r2, r3]<br/>when all done"]
   C --> E
   D --> E
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  class D pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

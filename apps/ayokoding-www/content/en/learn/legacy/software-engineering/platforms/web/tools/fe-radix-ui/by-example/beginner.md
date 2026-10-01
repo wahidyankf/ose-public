@@ -18,7 +18,9 @@ Radix UI ships as individual packages -- one per component. You install only wha
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Package["@radix-ui/react-dialog<br/>npm package"] --> Root["Dialog.Root<br/>State Provider"]
+    accTitle: Example 1: Installing and Importing Your First Radix Component
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: @radix-ui/ react-dialog npm package, Dialog.Root State Provider, Dialog.Trigger Open Button, Dialog.Portal DOM Escape, Dialog.Overlay Backdrop, Dialog.Content Modal Body, Dialog.Title Heading, Dialog.Description Summary, Dialog.Close Dismiss Button. Connections: @radix-ui/ react-dialog npm package to Dialog.Root State Provider, Dialog.Root State Provider to Dialog.Trigger Open Button, Dialog.Root State Provider to Dialog.Portal DOM Escape, Dialog.Portal DOM Escape to Dialog.Overlay Backdrop, Dialog.Portal DOM Escape to Dialog.Content Modal Body, Dialog.Content Modal Body to Dialog.Title Heading, Dialog.Content Modal Body to Dialog.Description Summary, Dialog.Content Modal Body to Dialog.Close Dismiss Button.
+    Package["@radix-ui/<br/>react-dialog<br/>npm package"] --> Root["Dialog.Root<br/>State Provider"]
     Root --> Trigger["Dialog.Trigger<br/>Open Button"]
     Root --> Portal["Dialog.Portal<br/>DOM Escape"]
     Portal --> Overlay["Dialog.Overlay<br/>Backdrop"]
@@ -27,15 +29,21 @@ graph TD
     Content --> Desc["Dialog.Description<br/>Summary"]
     Content --> Close["Dialog.Close<br/>Dismiss Button"]
 
-    style Package fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Root fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Trigger fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Portal fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Overlay fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Content fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Title fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Desc fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Close fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Package pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Root pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Trigger pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Portal pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Overlay pal-CA9161
+    class Content pal-0173B2
+    class Title pal-029E73
+    class Desc pal-029E73
+    class Close pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -102,13 +110,20 @@ The `asChild` prop is Radix UI's core composition primitive. It merges Radix's b
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Without["Without asChild"] --> Wrapper["Radix renders wrapper<br/>button > your-element"]
-    With["With asChild"] --> Merged["Radix merges props<br/>onto your element directly"]
+    accTitle: Example 2: Understanding the asChild Pattern
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Without asChild, Radix renders wrapper button > your-element, With asChild, Radix merges props onto your element directly. Connections: Without asChild to Radix renders wrapper button > your-element, With asChild to Radix merges props onto your element directly.
+    Without["Without asChild"] --> Wrapper["Radix renders<br/>wrapper<br/>button ><br/>your-element"]
+    With["With asChild"] --> Merged["Radix merges props<br/>onto your element<br/>directly"]
 
-    style Without fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Wrapper fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style With fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Merged fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Without pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Wrapper pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class With pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Merged pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -417,14 +432,21 @@ Popover displays floating content anchored to a trigger element. Radix handles p
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 6: Popover with Arrow and Positioning
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Popover.Trigger Anchor element, Popover.Content Floating panel, Popover.Arrow Visual pointer, Popover.Close Dismiss button. Connections: Popover.Trigger Anchor element to Popover.Content Floating panel, Popover.Content Floating panel to Popover.Arrow Visual pointer, Popover.Content Floating panel to Popover.Close Dismiss button.
     Trigger["Popover.Trigger<br/>Anchor element"] --> Content["Popover.Content<br/>Floating panel"]
     Content --> Arrow["Popover.Arrow<br/>Visual pointer"]
     Content --> Close["Popover.Close<br/>Dismiss button"]
 
-    style Trigger fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Content fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Arrow fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Close fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Trigger pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Content pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Arrow pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Close pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -545,22 +567,30 @@ DropdownMenu provides a fully accessible menu triggered by a button. Radix imple
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 8: DropdownMenu with Keyboard Navigation
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: DropdownMenu.Root, DropdownMenu.Trigger Menu button, DropdownMenu.Content Menu panel, DropdownMenu.Item Action item, DropdownMenu. Separator Visual divider, DropdownMenu.Sub Submenu, DropdownMenu. SubTrigger Opens submenu, DropdownMenu. SubContent Nested menu. Connections: DropdownMenu.Root to DropdownMenu.Trigger Menu button, DropdownMenu.Root to DropdownMenu.Content Menu panel, DropdownMenu.Content Menu panel to DropdownMenu.Item Action item, DropdownMenu.Content Menu panel to DropdownMenu. Separator Visual divider, DropdownMenu.Content Menu panel to DropdownMenu.Sub Submenu, DropdownMenu.Sub Submenu to DropdownMenu. SubTrigger Opens submenu, DropdownMenu.Sub Submenu to DropdownMenu. SubContent Nested menu.
     Root["DropdownMenu.Root"] --> Trigger["DropdownMenu.Trigger<br/>Menu button"]
     Root --> Content["DropdownMenu.Content<br/>Menu panel"]
     Content --> Item1["DropdownMenu.Item<br/>Action item"]
-    Content --> Sep["DropdownMenu.Separator<br/>Visual divider"]
+    Content --> Sep["DropdownMenu.<br/>Separator<br/>Visual divider"]
     Content --> Sub["DropdownMenu.Sub<br/>Submenu"]
-    Sub --> SubTrigger["DropdownMenu.SubTrigger<br/>Opens submenu"]
-    Sub --> SubContent["DropdownMenu.SubContent<br/>Nested menu"]
+    Sub --> SubTrigger["DropdownMenu.<br/>SubTrigger<br/>Opens submenu"]
+    Sub --> SubContent["DropdownMenu.<br/>SubContent<br/>Nested menu"]
 
-    style Root fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Trigger fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Content fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Item1 fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Sep fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Sub fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style SubTrigger fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style SubContent fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Root pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Trigger pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Content pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Item1 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Sep pal-CA9161
+    class Sub pal-0173B2
+    class SubTrigger pal-DE8F05
+    class SubContent pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1513,6 +1543,8 @@ Real interfaces combine multiple Radix primitives. This example builds a setting
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 23: Composing Multiple Radix Components
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Dialog.Root Modal container, Tabs.Root Content organizer, General Tab Switch controls, Privacy Tab Checkbox controls, Switch Dark Mode, Switch Notifications, Checkbox Analytics. Connections: Dialog.Root Modal container to Tabs.Root Content organizer, Tabs.Root Content organizer to General Tab Switch controls, Tabs.Root Content organizer to Privacy Tab Checkbox controls, General Tab Switch controls to Switch Dark Mode, General Tab Switch controls to Switch Notifications, Privacy Tab Checkbox controls to Checkbox Analytics.
     Dialog["Dialog.Root<br/>Modal container"] --> Tabs["Tabs.Root<br/>Content organizer"]
     Tabs --> General["General Tab<br/>Switch controls"]
     Tabs --> Privacy["Privacy Tab<br/>Checkbox controls"]
@@ -1520,13 +1552,19 @@ graph TD
     General --> Switch2["Switch<br/>Notifications"]
     Privacy --> Check1["Checkbox<br/>Analytics"]
 
-    style Dialog fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Tabs fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style General fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Privacy fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Switch1 fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Switch2 fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Check1 fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Dialog pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Tabs pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class General pal-029E73
+    class Privacy pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Switch1 pal-CC78BC
+    class Switch2 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Check1 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

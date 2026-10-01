@@ -18,12 +18,18 @@ This tutorial covers intermediate OpenAPI techniques including schema compositio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Base["BaseResource<br/>id, createdAt, updatedAt"] --> Book["Book = allOf<br/>BaseResource + BookFields"]
+    accTitle: Example 29: allOf for Schema Inheritance
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: BaseResource id, createdAt, updatedAt, Book = allOf BaseResource + BookFields, BookFields title, isbn, price. Connections: BaseResource id, createdAt, updatedAt to Book = allOf BaseResource + BookFields, BookFields title, isbn, price to Book = allOf BaseResource + BookFields.
+    Base["BaseResource<br/>id, createdAt,<br/>updatedAt"] --> Book["Book = allOf<br/>BaseResource +<br/>BookFields"]
     BookFields["BookFields<br/>title, isbn, price"] --> Book
 
-    style Base fill:#0173B2,stroke:#000,color:#fff
-    style BookFields fill:#DE8F05,stroke:#000,color:#fff
-    style Book fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Base pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class BookFields pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Book pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -92,14 +98,21 @@ components:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 30: oneOf for Polymorphic Responses
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Payment Response, CreditCardPayment, BankTransferPayment, WalletPayment. Connections: Payment Response to CreditCardPayment, Payment Response to BankTransferPayment, Payment Response to WalletPayment.
     Response["Payment Response"] --> CC["CreditCardPayment"]
     Response --> BT["BankTransferPayment"]
     Response --> Wallet["WalletPayment"]
 
-    style Response fill:#0173B2,stroke:#000,color:#fff
-    style CC fill:#DE8F05,stroke:#000,color:#fff
-    style BT fill:#029E73,stroke:#000,color:#fff
-    style Wallet fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Response pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CC pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class BT pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Wallet pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -299,16 +312,24 @@ The `discriminator` object tells tools which property determines the schema vari
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 33: Discriminator for Polymorphic Deserialization
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Incoming JSON, Check type field, Validate as Dog schema, Validate as Cat schema, Validate as Bird schema. Connections: Incoming JSON to Check type field, Check type field to Validate as Dog schema (type: dog), Check type field to Validate as Cat schema (type: cat), Check type field to Validate as Bird schema (type: bird).
     Request["Incoming JSON"] --> Disc{"Check 'type' field"}
-    Disc -->|"type: dog"| Dog["Validate as Dog schema"]
-    Disc -->|"type: cat"| Cat["Validate as Cat schema"]
-    Disc -->|"type: bird"| Bird["Validate as Bird schema"]
+    Disc -->|"type: dog"| Dog["Validate as Dog<br/>schema"]
+    Disc -->|"type: cat"| Cat["Validate as Cat<br/>schema"]
+    Disc -->|"type: bird"| Bird["Validate as Bird<br/>schema"]
 
-    style Request fill:#0173B2,stroke:#000,color:#fff
-    style Disc fill:#DE8F05,stroke:#000,color:#fff
-    style Dog fill:#029E73,stroke:#000,color:#fff
-    style Cat fill:#CC78BC,stroke:#000,color:#fff
-    style Bird fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Request pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Disc pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Dog pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Cat pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Bird pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1077,12 +1098,18 @@ The `links` object describes relationships between operations, showing how respo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 42: Links Between Operations
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: POST /books Response: id=42, GET /books/42, GET /authors/15. Connections: POST /books Response: id=42 to GET /books/42 (id feeds into), GET /books/42 to GET /authors/15 (authorId feeds into).
     Create["POST /books<br/>Response: id=42"] -->|"id feeds into"| Get["GET /books/42"]
-    Get -->|"authorId feeds into"| Author["GET /authors/15"]
+    Get -->|"authorId feeds<br/>into"| Author["GET /authors/15"]
 
-    style Create fill:#0173B2,stroke:#000,color:#fff
-    style Get fill:#DE8F05,stroke:#000,color:#fff
-    style Author fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Create pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Get pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Author pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1181,12 +1208,18 @@ API key authentication sends a secret token in a header, query parameter, or coo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 43: API Key Authentication
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Client, API Gateway, Server. Connections: Client to API Gateway (X-API-Key: abc123), API Gateway to Server (Validates key).
     Client["Client"] -->|"X-API-Key: abc123"| Gateway["API Gateway"]
     Gateway -->|"Validates key"| Server["Server"]
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style Gateway fill:#DE8F05,stroke:#000,color:#fff
-    style Server fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Gateway pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Server pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1360,19 +1393,27 @@ OAuth2 supports multiple flows for different client types. OpenAPI documents all
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Client["Client App"] -->|"1. Redirect to auth"| AuthServer["Authorization Server"]
-    AuthServer -->|"2. User authenticates"| User["User"]
-    User -->|"3. Grant authorization"| AuthServer
-    AuthServer -->|"4. Authorization code"| Client
-    Client -->|"5. Exchange code for token"| TokenEndpoint["Token Endpoint"]
+    accTitle: Example 45: OAuth2 Security Flows
+    accDescr: Graph with 5 nodes and 7 connections. Nodes: Client App, Authorization Server, User, Token Endpoint, API Server. Connections: Client App to Authorization Server (1. Redirect to auth), Authorization Server to User (2. User authenticates), User to Authorization Server (3. Grant authorization), Authorization Server to Client App (4. Authorization code), Client App to Token Endpoint (5. Exchange code for token), Token Endpoint to Client App (6. Access token), Client App to API Server (7. API request with token).
+    Client["Client App"] -->|"1. Redirect to<br/>auth"| AuthServer["Authorization Server"]
+    AuthServer -->|"2. User<br/>authenticates"| User["User"]
+    User -->|"3. Grant<br/>authorization"| AuthServer
+    AuthServer -->|"4. Authorization<br/>code"| Client
+    Client -->|"5. Exchange code<br/>for token"| TokenEndpoint["Token Endpoint"]
     TokenEndpoint -->|"6. Access token"| Client
-    Client -->|"7. API request with token"| API["API Server"]
+    Client -->|"7. API request with<br/>token"| API["API Server"]
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style AuthServer fill:#DE8F05,stroke:#000,color:#fff
-    style User fill:#CC78BC,stroke:#000,color:#fff
-    style TokenEndpoint fill:#029E73,stroke:#000,color:#fff
-    style API fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class AuthServer pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class User pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class TokenEndpoint pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class API pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1962,13 +2003,19 @@ Callbacks define webhooks that the API server sends to a client-provided URL. Th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 52: Callbacks for Asynchronous Operations
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Client, Server, Client Webhook Endpoint. Connections: Client to Server (1. POST /orders callbackUrl: ...), Server to Client (2. 202 Accepted), Server to Client Webhook Endpoint (3. POST to callbackUrl Order status update).
     Client["Client"] -->|"1. POST /orders<br/>callbackUrl: ..."| Server["Server"]
     Server -->|"2. 202 Accepted"| Client
-    Server -->|"3. POST to callbackUrl<br/>Order status update"| Callback["Client Webhook<br/>Endpoint"]
+    Server -->|"3. POST to<br/>callbackUrl<br/>Order status update"| Callback["Client Webhook<br/>Endpoint"]
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style Server fill:#DE8F05,stroke:#000,color:#fff
-    style Callback fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Server pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Callback pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

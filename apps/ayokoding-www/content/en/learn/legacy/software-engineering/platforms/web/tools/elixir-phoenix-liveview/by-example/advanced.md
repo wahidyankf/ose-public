@@ -18,17 +18,24 @@ LiveComponents can maintain their own state independent of parent LiveView, enab
 ```mermaid
 %% Stateful LiveComponent lifecycle
 graph TD
+    accTitle: Example 61: Stateful LiveComponent with Own State
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Parent mount, Component update/2, Component render/1, User interaction, Component handle_event/3, Update component state. Connections: Parent mount to Component update/2, Component update/2 to Component render/1, Component render/1 to User interaction, User interaction to Component handle_event/3, Component handle_event/3 to Update component state, Update component state to Component render/1.
     A[Parent mount] --> B[Component update/2]
     B --> C[Component render/1]
     C --> D[User interaction]
-    D --> E[Component handle_event/3]
-    E --> F[Update component state]
+    D --> E[Component<br/>handle_event/3]
+    E --> F[Update component<br/>state]
     F --> C
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Component module**:
@@ -237,14 +244,21 @@ Components communicate by sending messages to parent LiveView, which updates chi
 ```mermaid
 %% Component communication flow
 graph TD
+    accTitle: Example 63: Component-to-Component Communication via Parent
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Child Component A, Parent LiveView, Child Component B, Re-render Component B. Connections: Child Component A to Parent LiveView (send parent event), Parent LiveView to Child Component B (update assigns), Child Component B to Re-render Component B (update/2 called).
     A[Child Component A] -->|send parent event| B[Parent LiveView]
     B -->|update assigns| C[Child Component B]
-    C -->|update/2 called| D[Re-render Component B]
+    C -->|update/2 called| D[Re-render Component<br/>B]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Selector component**:
@@ -401,16 +415,24 @@ Update component state from parent or other processes without parent re-render u
 ```mermaid
 %% send_update bypasses parent
 graph TD
+    accTitle: Example 64: sendupdate for External Component Updates
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: External Process, send_update 3, Component update/2, Component re-renders, Parent LiveView. Connections: External Process to send_update 3, send_update 3 to Component update/2, Component update/2 to Component re-renders, Parent LiveView to Component re-renders (NOT triggered).
     A[External Process] --> B[send_update 3]
     B --> C[Component update/2]
     C --> D[Component re-renders]
     E[Parent LiveView] -.->|NOT triggered| D
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -722,6 +744,8 @@ Slots enable flexible component composition by passing content from parent into 
 ```mermaid
 %% Slot content injection
 graph TD
+    accTitle: Example 66: Slots and Named Slots
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Parent Template, :header slot content, inner_block content, :footer slot content, CardComponent render, Composed HTML output. Connections: Parent Template to :header slot content, Parent Template to inner_block content, Parent Template to :footer slot content, :header slot content to CardComponent render, inner_block content to CardComponent render, :footer slot content to CardComponent render, CardComponent render to Composed HTML output.
     A[Parent Template] --> B[:header slot content]
     A --> C[inner_block content]
     A --> D[:footer slot content]
@@ -730,11 +754,17 @@ graph TD
     D --> E
     E --> F[Composed HTML output]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1133,16 +1163,23 @@ Compose complex UIs by nesting components and coordinating state.
 ```mermaid
 %% Component composition hierarchy
 graph TD
+    accTitle: Example 69: Component Composition Patterns
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: FormLive Parent, FormComponent, InputComponent, InputComponent, ButtonComponent. Connections: FormLive Parent to FormComponent, FormComponent to InputComponent, FormComponent to InputComponent, FormComponent to ButtonComponent.
     A[FormLive Parent] --> B[FormComponent]
     B --> C[InputComponent]
     B --> D[InputComponent]
     B --> E[ButtonComponent]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Input component** (presentational):
@@ -1605,19 +1642,27 @@ Hooks integrate custom JavaScript with LiveView lifecycle for client-side enhanc
 ```mermaid
 %% JavaScript hook lifecycle
 graph LR
-    A[phx-hook element rendered] --> B[mounted called]
+    accTitle: Example 72: Client Hooks Basics
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: phx-hook element rendered, mounted called, Hook active, LiveView re-renders element, updated called, Element removed, destroyed called. Connections: phx-hook element rendered to mounted called, mounted called to Hook active, Hook active to LiveView re-renders element, LiveView re-renders element to updated called, updated called to Hook active, Hook active to Element removed, Element removed to destroyed called.
+    A[phx-hook element<br/>rendered] --> B[mounted called]
     B --> C[Hook active]
-    C --> D[LiveView re-renders element]
+    C --> D[LiveView re-renders<br/>element]
     D --> E[updated called]
     E --> C
     C --> F[Element removed]
     F --> G[destroyed called]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```javascript
@@ -1833,6 +1878,8 @@ Send events from client JavaScript to server LiveView using pushEvent.
 ```mermaid
 %% pushEvent communication pattern
 sequenceDiagram
+    accTitle: Example 74: pushEvent from Client
+    accDescr: Sequence diagram between Browser, Hook, LiveView. Messages: Browser to Hook: User action or browser event; Hook to LiveView: this.pushEvent name payload; LiveView to LiveView: handle_event/3; LiveView to Hook: push_event response optional; Hook to Browser: Update DOM or call library.
     participant Browser
     participant Hook
     participant LiveView
@@ -2059,19 +2106,27 @@ Test LiveView interactions using Phoenix.LiveViewTest helpers.
 ```mermaid
 %% LiveViewTest execution flow
 graph TD
-    A[live/2 mount LiveView] --> B[Returns view handle]
+    accTitle: Example 76: LiveView Testing Basics - render and renderclick
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: live/2 mount LiveView, Returns view handle, render/1 get HTML, element/2 find DOM node, render_click/1 simulate click, handle_event fires, State updated, Assertions on new HTML. Connections: live/2 mount LiveView to Returns view handle, Returns view handle to render/1 get HTML, render/1 get HTML to element/2 find DOM node, element/2 find DOM node to render_click/1 simulate click, render_click/1 simulate click to handle_event fires, handle_event fires to State updated, State updated to Assertions on new HTML.
+    A[live/2 mount<br/>LiveView] --> B[Returns view handle]
     B --> C[render/1 get HTML]
-    C --> D[element/2 find DOM node]
-    D --> E[render_click/1 simulate click]
+    C --> D[element/2 find DOM<br/>node]
+    D --> E[render_click/1<br/>simulate click]
     E --> F[handle_event fires]
     F --> G[State updated]
-    G --> H[Assertions on new HTML]
+    G --> H[Assertions on new<br/>HTML]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -2519,6 +2574,8 @@ Test asynchronous LiveView operations like PubSub and background processes.
 ```mermaid
 %% Async message test timing
 sequenceDiagram
+    accTitle: Example 80: Testing with Async/Await Patterns
+    accDescr: Sequence diagram between Test, PubSub, LiveView. Messages: Test to PubSub: broadcast message; PubSub to LiveView: handle_info fires async; LiveView to LiveView: Update assigns; Test to Test: assert_receive with timeout; Test to LiveView: render/1 check result.
     participant Test
     participant PubSub
     participant LiveView
@@ -2658,6 +2715,8 @@ Use handle_params/3 to respond to URL parameter changes without full re-mount.
 ```mermaid
 %% handle_params lifecycle
 graph TD
+    accTitle: Example 81: handleparams for URL Changes
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: URL changes, handle_params/3, Extract params, Update assigns, Re-render, Initial load, push_patch, Browser back/forward. Connections: URL changes to handle_params/3, handle_params/3 to Extract params, Extract params to Update assigns, Update assigns to Re-render, Initial load to handle_params/3, push_patch to handle_params/3, Browser back/forward to handle_params/3.
     A[URL changes] --> B[handle_params/3]
     B --> C[Extract params]
     C --> D[Update assigns]
@@ -2666,11 +2725,17 @@ graph TD
     G[push_patch] --> B
     H[Browser back/forward] --> B
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -3003,21 +3068,29 @@ Protect LiveView endpoints from abuse using rate limiting and security best prac
 ```mermaid
 %% Security defense in depth
 graph TD
+    accTitle: Example 83: Rate Limiting and Security
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Incoming Event, Mount Authorization, Authorized?, Redirect unauthorized, Rate limit check, Under limit?, Flash error - too many requests, Process event, Per-operation auth check. Connections: Incoming Event to Mount Authorization, Mount Authorization to Authorized?, Authorized? to Redirect unauthorized (No), Authorized? to Rate limit check (Yes), Rate limit check to Under limit?, Under limit? to Flash error - too many requests (No), Under limit? to Process event (Yes), Process event to Per-operation auth check.
     A[Incoming Event] --> B[Mount Authorization]
     B --> C{Authorized?}
-    C -->|No| D[Redirect unauthorized]
+    C -->|No| D[Redirect<br/>unauthorized]
     C -->|Yes| E[Rate limit check]
     E --> F{Under limit?}
-    F -->|No| G[Flash error - too many<br/>requests]
+    F -->|No| G[Flash error - too<br/>many<br/>requests]
     F -->|Yes| H[Process event]
-    H --> I[Per-operation auth check]
+    H --> I[Per-operation auth<br/>check]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#029E73,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -3216,18 +3289,26 @@ Reduce memory usage for large datasets using temporary assigns that are cleared 
 ```mermaid
 %% Temporary assigns memory cycle
 graph LR
+    accTitle: Example 84: Optimizing Rendering with Temporary Assigns
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: New Data Available, Assign to socket, render sends HTML, temporary_assigns clears, memory freed, Client retains displayed items. Connections: New Data Available to Assign to socket, Assign to socket to render sends HTML, render sends HTML to temporary_assigns clears, temporary_assigns clears to memory freed, memory freed to Client retains displayed items, Client retains displayed items to New Data Available.
     A[New Data Available] --> B[Assign to socket]
     B --> C[render sends HTML]
-    C --> D[temporary_assigns clears]
+    C --> D[temporary_assigns<br/>clears]
     D --> E[memory freed]
-    E --> F[Client retains displayed items]
+    E --> F[Client retains<br/>displayed items]
     F --> A
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -3414,6 +3495,8 @@ Manage user sessions securely in LiveView applications.
 ```mermaid
 %% Session token management
 sequenceDiagram
+    accTitle: Example 85: Session and Token Management
+    accDescr: Sequence diagram between User, LiveView, DB. Messages: User to LiveView: Request protected page; LiveView to DB: Verify session token; DB to LiveView: Token valid/invalid; LiveView to LiveView: on_mount hook check; LiveView to User: Render or redirect; User to LiveView: Logout; LiveView to DB: Delete token record.
     participant User
     participant LiveView
     participant DB

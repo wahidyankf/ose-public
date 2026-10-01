@@ -224,17 +224,23 @@ public class ZakatCalculator {
 
 ```mermaid
 graph TD
+    accTitle: @ConfigurationProperties Approach
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: application.yml, zakat.nisab.gold=85 zakat.rate=0.025, @Configuration Properties Processor, ZakatProperties Object, @Validated + JSR-380, Register as Spring Bean, Application Startup Fails, ZakatCalculator Service. Connections: application.yml to zakat.nisab.gold=85 zakat.rate=0.025 (Properties), zakat.nisab.gold=85 zakat.rate=0.025 to @Configuration Properties Processor (Spring Boot Startup), @Configuration Properties Processor to ZakatProperties Object (Binds), ZakatProperties Object to @Validated + JSR-380 (Validates), @Validated + JSR-380 to Register as Spring Bean (Pass), @Validated + JSR-380 to Application Startup Fails (Fail), Register as Spring Bean to ZakatCalculator Service (Inject).
     A["application.yml"] -->|"Properties"| B["zakat.nisab.gold=85<br/>zakat.rate=0.025"]
-    B -->|"Spring Boot Startup"| C["@ConfigurationProperties<br/>Processor"]
-    C -->|"Binds"| D["ZakatProperties Object"]
+    B -->|"Spring Boot<br/>Startup"| C["@Configuration<br/>Properties<br/>Processor"]
+    C -->|"Binds"| D["ZakatProperties<br/>Object"]
     D -->|"Validates"| E["@Validated + JSR-380"]
-    E -->|"Pass"| F["Register as Spring Bean"]
-    E -->|"Fail"| G["Application Startup Fails"]
-    F -->|"Inject"| H["ZakatCalculator Service"]
+    E -->|"Pass"| F["Register as Spring<br/>Bean"]
+    E -->|"Fail"| G["Application Startup<br/>Fails"]
+    F -->|"Inject"| H["ZakatCalculator<br/>Service"]
 
-    style C fill:#0173B2,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trade-offs**:

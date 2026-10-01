@@ -29,16 +29,24 @@ A verticle is the fundamental unit of deployment in Vert.x—an actor-like compo
 
 ```mermaid
 graph TD
+  accTitle: Example 1: Creating and Deploying a Verticle
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Vertx Instance, Deploy Verticle, AbstractVerticle. start4041, Event Loop Thread, Handles Events. Connections: Vertx Instance to Deploy Verticle, Deploy Verticle to AbstractVerticle. start4041, AbstractVerticle. start4041 to Event Loop Thread, Event Loop Thread to Handles Events.
   A["Vertx Instance"] --> B["Deploy Verticle"]
-  B --> C["AbstractVerticle.start#40;#41;"]
+  B --> C["AbstractVerticle.<br/>start#40;#41;"]
   C --> D["Event Loop Thread"]
   D --> E["Handles Events"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -1127,14 +1135,20 @@ The Vert.x event bus is a lightweight message-passing system connecting verticle
 
 ```mermaid
 graph LR
-  A["Sender Verticle"] -->|"eventBus.send#40;address, msg#41;"| B["Event Bus"]
+  accTitle: Example 15: Event Bus Point-to-Point Messaging
+  accDescr: Graph with 3 nodes and 4 connections. Nodes: Sender Verticle, Event Bus, Consumer Verticle. Connections: Sender Verticle to Event Bus (eventBus. send40address, msg41), Event Bus to Consumer Verticle (delivers to ONE), Consumer Verticle to Event Bus (message.reply40response41), Event Bus to Sender Verticle (delivers reply).
+  A["Sender Verticle"] -->|"eventBus.<br/>send#40;address,<br/>msg#41;"| B["Event Bus"]
   B -->|"delivers to ONE"| C["Consumer Verticle"]
-  C -->|"message.reply#40;response#41;"| B
+  C -->|"message.reply#40;<br/>response#41;"| B
   B -->|"delivers reply"| A
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java

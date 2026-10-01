@@ -443,9 +443,11 @@ public class ZakatAccountService {
 
 ```mermaid
 graph LR
+    accTitle: Progression Diagram
+    accDescr: Graph with 12 nodes and 9 connections. Nodes: Manual EntityManager 50 Lines per Entity, Repetitive CRUD, String Queries, setFirstResult/ setMaxResults, Spring Data JPA Interface Only, Generated CRUD, Type-Safe Methods, Page/Slice Support, Custom Queries @Query, Custom Logic, Database-Specific, DTO Mapping. Connections: Manual EntityManager 50 Lines per Entity to Repetitive CRUD (Boilerplate), Manual EntityManager 50 Lines per Entity to String Queries (Manual JPQL), Manual EntityManager 50 Lines per Entity to setFirstResult/ setMaxResults (Manual Pagination), Spring Data JPA Interface Only to Generated CRUD (Zero Implementation), Spring Data JPA Interface Only to Type-Safe Methods (Derived Queries), Spring Data JPA Interface Only to Page/Slice Support (Built-in Pagination), Custom Queries @Query to Custom Logic (Complex JPQL), Custom Queries @Query to Database-Specific (Native SQL), Custom Queries @Query to DTO Mapping (Projections).
     A[Manual EntityManager<br/>50 Lines per Entity] -->|Boilerplate| B[Repetitive CRUD]
     A -->|Manual JPQL| C[String Queries]
-    A -->|Manual Pagination| D[setFirstResult/setMaxResults]
+    A -->|Manual Pagination| D[setFirstResult/<br/>setMaxResults]
 
     E[Spring Data JPA<br/>Interface Only] -->|Zero Implementation| F[Generated CRUD]
     E -->|Derived Queries| G[Type-Safe Methods]
@@ -455,9 +457,13 @@ graph LR
     I -->|Native SQL| K[Database-Specific]
     I -->|Projections| L[DTO Mapping]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style I fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

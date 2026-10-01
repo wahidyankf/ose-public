@@ -18,14 +18,20 @@ In XState v5, every running state machine is an actor. Actors are isolated units
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 28: Actors vs Machines — The Actor Model
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: Actor A (Machine), Actor B (Machine), Actor System system.get40id41. Connections: Actor A (Machine) to Actor B (Machine) (sendTo: EVENT_X), Actor B (Machine) to Actor A (Machine) (sendTo: RESPONSE_Y), Actor System system.get40id41 to Actor A (Machine), Actor System system.get40id41 to Actor B (Machine).
     A["Actor A<br/>(Machine)"] -->|"sendTo: EVENT_X"| B["Actor B<br/>(Machine)"]
     B -->|"sendTo: RESPONSE_Y"| A
     C["Actor System<br/>system.get#40;id#41;"] --> A
     C --> B
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -117,14 +123,21 @@ actor.send({ type: "TICK" });
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["idle<br/>not started"] -->|"actor.start#40;#41;"| B["pending<br/>promise running"]
+    accTitle: Example 29: fromPromise — Promise Actors
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: idle not started, pending promise running, done output available, error snapshot.error set. Connections: idle not started to pending promise running (actor. start4041), pending promise running to done output available (resolves), pending promise running to error snapshot.error set (rejects).
+    A["idle<br/>not started"] -->|"actor.<br/>start#40;#41;"| B["pending<br/>promise running"]
     B -->|"resolves"| C["done<br/>output available"]
     B -->|"rejects"| D["error<br/>snapshot.error set"]
 
-    style A fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -201,6 +214,8 @@ userActor.start();
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 30: fromCallback — Callback Actors
+    accDescr: Sequence diagram between Parent Machine, Callback Actor, External Source. Messages: Parent Machine to Callback Actor: spawn / invoke (starts actor); Callback Actor to External Source: subscribe / addEventListener; External Source to Callback Actor: event arrives; Callback Actor to Parent Machine: sendBack40event41; Parent Machine to Callback Actor: receive40event41 via send; Callback Actor to External Source: cleanup on stop.
     participant P as Parent Machine
     participant C as Callback Actor
     participant E as External Source
@@ -594,16 +609,21 @@ cartActor.send({ type: "REMOVE_ITEM", id: "book-1" });
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    P["Parent Machine"] -->|"spawn#40;workerMachine#41;"| W1["Worker Actor 1"]
-    P -->|"spawn#40;workerMachine#41;"| W2["Worker Actor 2"]
-    P -->|"spawn#40;workerMachine#41;"| W3["Worker Actor 3"]
+    accTitle: Example 33: spawn — Creating Child Actors
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: Parent Machine, Worker Actor 1, Worker Actor 2, Worker Actor 3. Connections: Parent Machine to Worker Actor 1 (spawn40worker Machine41), Parent Machine to Worker Actor 2 (spawn40worker Machine41), Parent Machine to Worker Actor 3 (spawn40worker Machine41), Parent Machine to Worker Actor 1 (sendTo40ref41), Worker Actor 1 to Parent Machine (sendBack: DONE).
+    P["Parent Machine"] -->|"spawn#40;worker<br/>Machine#41;"| W1["Worker Actor 1"]
+    P -->|"spawn#40;worker<br/>Machine#41;"| W2["Worker Actor 2"]
+    P -->|"spawn#40;worker<br/>Machine#41;"| W3["Worker Actor 3"]
     P -->|"sendTo#40;ref#41;"| W1
     W1 -->|"sendBack: DONE"| P
 
-    style P fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style W1 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style W2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style W3 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class P pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class W1 pal-029E73
+    class W2 pal-029E73
+    class W3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -758,6 +778,8 @@ pool.send({ type: "START_TASK", taskId: "task-1" });
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 34: sendTo — Messaging Between Actors
+    accDescr: Sequence diagram between User / UI, Parent Actor, Child Actor. Messages: User / UI to Parent Actor: SUBMIT_ORDER event; Parent Actor to Child Actor: sendTo40childRef, PROCESS41; Child Actor to Child Actor: process order internally; Child Actor to Parent Actor: sendBack40ORDER_COMPLETE41; Parent Actor to Parent Actor: transition to confirmed state; Parent Actor to User / UI: snapshot update.
     participant U as User / UI
     participant P as Parent Actor
     participant C as Child Actor
@@ -1016,14 +1038,21 @@ Machine `input` lets you pass runtime data into a machine at creation time. The 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["createActor#40;machine,<br/>{ input: data }#41;"] --> B["context initializer<br/>#40;{ input }#41; => ..."]
-    B --> C["Machine runs with<br/>parameterized context"]
-    D["Type: setup#40;{<br/>types: { input }#41;#41;"] -.->|"enforces"| A
+    accTitle: Example 36: Machine Input — Parameterizing Machines
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: create Actor40machine, input: data 41, context initializer 40 input 41 => ..., Machine runs with parameterized context, Type: setup40 types: input 4141. Connections: create Actor40machine, input: data 41 to context initializer 40 input 41 => ..., context initializer 40 input 41 => ... to Machine runs with parameterized context, Type: setup40 types: input 4141 to create Actor40machine, input: data 41 (enforces).
+    A["create<br/>Actor#40;machine,<br/>{ input: data }#41;"] --> B["context initializer<br/>#40;{ input }#41; =><br/>..."]
+    B --> C["Machine runs with<br/>parameterized<br/>context"]
+    D["Type: setup#40;{<br/>types: { input<br/>}#41;#41;"] -.->|"enforces"| A
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1418,9 +1447,11 @@ Tags let you attach semantic labels to states. Instead of checking exact state n
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 39: Tags — Categorizing States
+    accDescr: State diagram with 6 items: idle, start or end, fetching, success, failed, retrying. Relationships: start or end to idle; idle to fetching: FETCH; fetching to success: done; fetching to failed: error; failed to retrying: RETRY; retrying to success: done; retrying to failed: error.
     state "idle" as idle
     state "fetching [loading]" as fetching
-    state "retrying [loading, retrying]" as retrying
+    state "retrying [loading,<br/>retrying]" as retrying
     state "success [success]" as success
     state "failed [error]" as failed
 
@@ -1531,14 +1562,20 @@ console.log(snapshot.hasTag("success"));
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 40: useMachine — React Hook Basics
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: React Component, useMachine actor, Re-render triggered. Connections: React Component to useMachine actor (send40event41), useMachine actor to React Component (snapshot), useMachine actor to Re-render triggered (state change), Re-render triggered to React Component.
     A["React Component"] -->|"send#40;event#41;"| B["useMachine<br/>actor"]
     B -->|"snapshot"| A
     B -->|"state change"| C["Re-render<br/>triggered"]
     C --> A
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1948,16 +1985,23 @@ React Context is the standard pattern for sharing a machine's `ActorRef` across 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 43: Providing Actors via Context
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: ActorProvider (creates actor), React Context (ActorRef), ComponentA useSelector: count, ComponentB useSelector: status, ComponentC actorRef. send40event41. Connections: ActorProvider (creates actor) to React Context (ActorRef), React Context (ActorRef) to ComponentA useSelector: count, React Context (ActorRef) to ComponentB useSelector: status, React Context (ActorRef) to ComponentC actorRef. send40event41.
     A["ActorProvider<br/>(creates actor)"] --> B["React Context<br/>(ActorRef)"]
     B --> C["ComponentA<br/>useSelector: count"]
     B --> D["ComponentB<br/>useSelector: status"]
-    B --> E["ComponentC<br/>actorRef.send#40;event#41;"]
+    B --> E["ComponentC<br/>actorRef.<br/>send#40;event#41;"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2424,16 +2468,24 @@ XState machines are pure — given the same sequence of events, they produce the
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["createActor#40;machine#41;"] -->|".start#40;#41;"| B["Running Actor"]
-    B -->|"actor.send#40;event#41;"| C["State Transition"]
-    C -->|"actor.getSnapshot#40;#41;"| D["Assert snapshot.value"]
-    D -->|"assert snapshot.context"| E["Test Passes"]
+    accTitle: Example 46: Testing Machines with createActor
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: create Actor40machine41, Running Actor, State Transition, Assert snapshot.value, Test Passes. Connections: create Actor40machine41 to Running Actor (.start4041), Running Actor to State Transition (actor. send40event41), State Transition to Assert snapshot.value (actor. getSnapshot4041), Assert snapshot.value to Test Passes (assert snapshot.context).
+    A["create<br/>Actor#40;machine#41;"] -->|".start#40;#41;"| B["Running Actor"]
+    B -->|"actor.<br/>send#40;event#41;"| C["State Transition"]
+    C -->|"actor.<br/>getSnapshot#40;#41;"| D["Assert<br/>snapshot.value"]
+    D -->|"assert<br/>snapshot.context"| E["Test Passes"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2701,15 +2753,23 @@ console.log("All match assertions passed");
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 48: Testing Invocations — Mocking Services
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: Production Machine, Real fetchUser Actor 40network call41, Test Machine machine.provide40. ..41, Mock fetchUser Actor 40fromPromise mock41, Known test data. Connections: Production Machine to Real fetchUser Actor 40network call41 (invokes), Test Machine machine.provide40. ..41 to Mock fetchUser Actor 40fromPromise mock41 (invokes), Mock fetchUser Actor 40fromPromise mock41 to Known test data (returns).
     A["Production Machine"] -->|"invokes"| B["Real fetchUser Actor<br/>#40;network call#41;"]
-    C["Test Machine<br/>machine.provide#40;...#41;"] -->|"invokes"| D["Mock fetchUser Actor<br/>#40;fromPromise mock#41;"]
+    C["Test Machine<br/>machine.provide#40;.<br/>..#41;"] -->|"invokes"| D["Mock fetchUser Actor<br/>#40;fromPromise<br/>mock#41;"]
     D -->|"returns"| E["Known test data"]
 
-    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style B fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -3304,6 +3364,8 @@ console.assert(parsed.context.email === "wahidyan@example.com");
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 52: fromSnapshot — Restoring State
+    accDescr: State diagram with 9 items: Session A, start or end, step1_a, step2_a, step3_a, persisted_a, persisted_b, step3_b, done_b. Relationships: start or end to step1_a: start; step1_a to step2_a: NEXT; step2_a to step3_a: NEXT; step3_a to persisted_a: getPersistedSnapshot; persisted_b to step3_b: createActor with snapshot; step3_b to done_b: COMPLETE; persisted_a to persisted_b: JSON.stringify / parse.
     state "Session A" as sa {
         [*] --> step1_a: start
         step1_a --> step2_a: NEXT

@@ -18,12 +18,18 @@ OpenAPI 3.1 fully aligns with JSON Schema 2020-12, unlocking keywords that were 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    OAS30["OpenAPI 3.0<br/>Modified JSON Schema"] -->|"Migration"| OAS31["OpenAPI 3.1<br/>Full JSON Schema 2020-12"]
+    accTitle: Example 56: JSON Schema 2020-12 Alignment
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: OpenAPI 3.0 Modified JSON Schema, OpenAPI 3.1 Full JSON Schema 2020-12, Standard JSON Schema Validators Work. Connections: OpenAPI 3.0 Modified JSON Schema to OpenAPI 3.1 Full JSON Schema 2020-12 (Migration), OpenAPI 3.1 Full JSON Schema 2020-12 to Standard JSON Schema Validators Work.
+    OAS30["OpenAPI 3.0<br/>Modified JSON Schema"] -->|"Migration"| OAS31["OpenAPI 3.1<br/>Full JSON Schema<br/>2020-12"]
     OAS31 --> Validators["Standard JSON Schema<br/>Validators Work"]
 
-    style OAS30 fill:#DE8F05,stroke:#000,color:#fff
-    style OAS31 fill:#0173B2,stroke:#000,color:#fff
-    style Validators fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class OAS30 pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class OAS31 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Validators pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -202,16 +208,24 @@ The `$ref` keyword can reference schemas in external files, enabling modular spe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 58: External $ref for Cross-File References
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: openapi.yaml 40main spec41, schemas/book.yaml, parameters/ pagination.yaml, responses/ errors.yaml, schemas/common.yaml. Connections: openapi.yaml 40main spec41 to schemas/book.yaml, openapi.yaml 40main spec41 to parameters/ pagination.yaml, openapi.yaml 40main spec41 to responses/ errors.yaml, schemas/book.yaml to schemas/common.yaml.
     Main["openapi.yaml<br/>#40;main spec#41;"] --> Schemas["schemas/book.yaml"]
-    Main --> Params["parameters/pagination.yaml"]
-    Main --> Responses["responses/errors.yaml"]
+    Main --> Params["parameters/<br/>pagination.yaml"]
+    Main --> Responses["responses/<br/>errors.yaml"]
     Schemas --> Common["schemas/common.yaml"]
 
-    style Main fill:#0173B2,stroke:#000,color:#fff
-    style Schemas fill:#DE8F05,stroke:#000,color:#fff
-    style Params fill:#029E73,stroke:#000,color:#fff
-    style Responses fill:#CC78BC,stroke:#000,color:#fff
-    style Common fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Main pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Schemas pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Params pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Responses pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Common pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -504,20 +518,28 @@ Structure your spec to produce clean, idiomatic generated code. Operation IDs, s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 61: Code Generation Metadata
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: OpenAPI Spec, Client SDK Generator, Server Stub Generator, TypeScript Client, Python Client, Java Spring Controller, Go Gin Handler. Connections: OpenAPI Spec to Client SDK Generator, OpenAPI Spec to Server Stub Generator, Client SDK Generator to TypeScript Client, Client SDK Generator to Python Client, Server Stub Generator to Java Spring Controller, Server Stub Generator to Go Gin Handler.
     Spec["OpenAPI Spec"] --> ClientGen["Client SDK Generator"]
-    Spec --> ServerGen["Server Stub Generator"]
+    Spec --> ServerGen["Server Stub<br/>Generator"]
     ClientGen --> TS["TypeScript Client"]
     ClientGen --> Python["Python Client"]
-    ServerGen --> Java["Java Spring Controller"]
+    ServerGen --> Java["Java Spring<br/>Controller"]
     ServerGen --> Go["Go Gin Handler"]
 
-    style Spec fill:#0173B2,stroke:#000,color:#fff
-    style ClientGen fill:#DE8F05,stroke:#000,color:#fff
-    style ServerGen fill:#029E73,stroke:#000,color:#fff
-    style TS fill:#CC78BC,stroke:#000,color:#fff
-    style Python fill:#CC78BC,stroke:#000,color:#fff
-    style Java fill:#CA9161,stroke:#000,color:#fff
-    style Go fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Spec pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ClientGen pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ServerGen pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class TS pal-CC78BC
+    class Python pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Java pal-CA9161
+    class Go pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -878,25 +900,33 @@ Contract-first development defines the API specification before writing implemen
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 64: Contract-First Development Workflow
+    accDescr: Graph with 9 nodes and 9 connections. Nodes: 1. Design API Spec, 2. Team Review, 3. Lint + Validate, 4. Generate Code, 5. Mock Server for Frontend, 6. Server Stubs for Backend, Frontend Development, Backend Implementation, 7. Contract Testing. Connections: 1. Design API Spec to 2. Team Review, 2. Team Review to 3. Lint + Validate, 3. Lint + Validate to 4. Generate Code, 4. Generate Code to 5. Mock Server for Frontend, 4. Generate Code to 6. Server Stubs for Backend, 5. Mock Server for Frontend to Frontend Development, 6. Server Stubs for Backend to Backend Implementation, Frontend Development to 7. Contract Testing, Backend Implementation to 7. Contract Testing.
     Design["1. Design API Spec"] --> Review["2. Team Review"]
     Review --> Lint["3. Lint + Validate"]
     Lint --> Generate["4. Generate Code"]
     Generate --> Mock["5. Mock Server<br/>for Frontend"]
     Generate --> Stub["6. Server Stubs<br/>for Backend"]
     Mock --> FE["Frontend Development"]
-    Stub --> BE["Backend Implementation"]
+    Stub --> BE["Backend<br/>Implementation"]
     FE --> Test["7. Contract Testing"]
     BE --> Test
 
-    style Design fill:#0173B2,stroke:#000,color:#fff
-    style Review fill:#DE8F05,stroke:#000,color:#fff
-    style Lint fill:#029E73,stroke:#000,color:#fff
-    style Generate fill:#CC78BC,stroke:#000,color:#fff
-    style Mock fill:#CA9161,stroke:#000,color:#fff
-    style Stub fill:#CA9161,stroke:#000,color:#fff
-    style FE fill:#0173B2,stroke:#000,color:#fff
-    style BE fill:#0173B2,stroke:#000,color:#fff
-    style Test fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Design pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Review pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Lint pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Generate pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Mock pal-CA9161
+    class Stub pal-CA9161
+    class FE pal-0173B2
+    class BE pal-0173B2
+    class Test pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2051,6 +2081,8 @@ Large APIs benefit from a structured directory layout with separate files for pa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 75: Multi-File Spec Organization
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: openapi.yaml, paths/, components/, books.yaml, authors.yaml, orders.yaml, schemas/, parameters/, responses/, book.yaml, author.yaml. Connections: openapi.yaml to paths/, openapi.yaml to components/, paths/ to books.yaml, paths/ to authors.yaml, paths/ to orders.yaml, components/ to schemas/, components/ to parameters/, components/ to responses/, schemas/ to book.yaml, schemas/ to author.yaml.
     Root["openapi.yaml"] --> Paths["paths/"]
     Root --> Components["components/"]
     Paths --> Books["books.yaml"]
@@ -2062,17 +2094,24 @@ graph TD
     Schemas --> BookSchema["book.yaml"]
     Schemas --> AuthorSchema["author.yaml"]
 
-    style Root fill:#0173B2,stroke:#000,color:#fff
-    style Paths fill:#DE8F05,stroke:#000,color:#fff
-    style Components fill:#029E73,stroke:#000,color:#fff
-    style Books fill:#CC78BC,stroke:#000,color:#fff
-    style Authors fill:#CC78BC,stroke:#000,color:#fff
-    style Orders fill:#CC78BC,stroke:#000,color:#fff
-    style Schemas fill:#CA9161,stroke:#000,color:#fff
-    style Params fill:#CA9161,stroke:#000,color:#fff
-    style Resp fill:#CA9161,stroke:#000,color:#fff
-    style BookSchema fill:#808080,stroke:#000,color:#fff
-    style AuthorSchema fill:#808080,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Root pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Paths pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Components pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Books pal-CC78BC
+    class Authors pal-CC78BC
+    class Orders pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Schemas pal-CA9161
+    class Params pal-CA9161
+    class Resp pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class BookSchema pal-808080
+    class AuthorSchema pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

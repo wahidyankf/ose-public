@@ -28,19 +28,27 @@ SQLx provides compile-time checked SQL queries and async database access. Set up
 
 ```mermaid
 graph TD
+    accTitle: Example 28: SQLx Connection Pool Setup
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: App Startup, PgPool::connect_with max_connections: 10, Arc60AppState62 db_pool: PgPool, Handler A State60App State62, Handler B State60App State62, pool.acquire4041 Connection from Pool. Connections: App Startup to PgPool::connect_with max_connections: 10, PgPool::connect_with max_connections: 10 to Arc60AppState62 db_pool: PgPool, Arc60AppState62 db_pool: PgPool to Handler A State60App State62, Arc60AppState62 db_pool: PgPool to Handler B State60App State62, Handler A State60App State62 to pool.acquire4041 Connection from Pool, Handler B State60App State62 to pool.acquire4041 Connection from Pool.
     A["App Startup"] --> B["PgPool::connect_with<br/>max_connections: 10"]
     B --> C["Arc#60;AppState#62;<br/>db_pool: PgPool"]
-    C --> D["Handler A<br/>State#60;AppState#62;"]
-    C --> E["Handler B<br/>State#60;AppState#62;"]
+    C --> D["Handler A<br/>State#60;App<br/>State#62;"]
+    C --> E["Handler B<br/>State#60;App<br/>State#62;"]
     D --> F["pool.acquire#40;#41;<br/>Connection from Pool"]
     E --> F
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -753,16 +761,24 @@ Axum supports WebSocket upgrades via `axum::extract::ws`. The connection upgrade
 
 ```mermaid
 graph TD
+    accTitle: Example 37: Basic WebSocket Handler
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client HTTP Upgrade Request, Axum WebSocket Upgrade, ws.on_upgrade Async Handler, send40Message41 recv4041, Client WebSocket Messages. Connections: Client HTTP Upgrade Request to Axum WebSocket Upgrade, Axum WebSocket Upgrade to ws.on_upgrade Async Handler, ws.on_upgrade Async Handler to send40Message41 recv4041, send40Message41 recv4041 to Client WebSocket Messages.
     A["Client<br/>HTTP Upgrade Request"] --> B["Axum<br/>WebSocket Upgrade"]
     B --> C["ws.on_upgrade<br/>Async Handler"]
     C --> D["send#40;Message#41;<br/>recv#40;#41;"]
     D --> E["Client<br/>WebSocket Messages"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust

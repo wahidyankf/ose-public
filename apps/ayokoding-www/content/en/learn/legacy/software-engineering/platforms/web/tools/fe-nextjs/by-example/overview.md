@@ -38,18 +38,24 @@ Next.js is a **React framework for building production applications** that adds 
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#1e293b','primaryBorderColor':'#005A8C','lineColor':'#64748b','secondaryColor':'#DE8F05','tertiaryColor':'#029E73','fontSize':'14px'}}}%%
 graph TD
-  A["Beginner<br/>Core Next.js Concepts<br/>Examples 1-25"] --> B["Intermediate<br/>Production Patterns<br/>Examples 26-50"]
+  accTitle: Learning Path
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Beginner Core Next.js Concepts Examples 1-25, Intermediate Production Patterns Examples 26-50, C, Scale, 0 React Knowledge (Prerequisite), 95 Framework Mastery. Connections: Beginner Core Next.js Concepts Examples 1-25 to Intermediate Production Patterns Examples 26-50, Intermediate Production Patterns Examples 26-50 to C, Intermediate Production Patterns Examples 26-50 to Scale, 0 React Knowledge (Prerequisite) to Beginner Core Next.js Concepts Examples 1-25, C to 95 Framework Mastery.
+  A["Beginner<br/>Core Next.js<br/>Concepts<br/>Examples 1-25"] --> B["Intermediate<br/>Production Patterns<br/>Examples 26-50"]
   B --> C["Advanced<br/>Performance & Scale<br/>Examples 51-90"]
   D["0%<br/>React Knowledge<br/>(Prerequisite)"] -.-> A
   C -.-> E["95%<br/>Framework Mastery"]
 
-  style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Color Legend**: Blue (beginner), Orange (intermediate), Green (advanced/mastery), Purple (prerequisite)

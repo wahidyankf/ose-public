@@ -39,6 +39,8 @@ By the end of this tutorial, you will have touchpoints for:
 
 ```mermaid
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 14 nodes and 28 connections. Nodes: Quick Start: Shell, File Operations, Text Processing, D, Redirection, Process Management, Permissions, Archives, Networking, Variables, Scripting, Find Files, and 2 more. Connections: Quick Start: Shell to File Operations, Quick Start: Shell to Text Processing, Quick Start: Shell to D, Quick Start: Shell to Redirection, Quick Start: Shell to Process Management, Quick Start: Shell to Permissions, Quick Start: Shell to Archives, Quick Start: Shell to Networking, Quick Start: Shell to Variables, Quick Start: Shell to Scripting, Quick Start: Shell to Find Files, File Operations to Text Processing, and 16 more.
     A[Quick Start: Shell] --> B[File Operations]
     A --> C[Text Processing]
     A --> D[Pipes & Redirection]
@@ -70,9 +72,11 @@ graph TD
 
     L --> M[By-Example: Shell]
 
-    style A fill:#e1f5ff
-    style L fill:#fff4e1
-    style M fill:#f0e6ff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    class L pal-CC78BC
+    class M pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Concept 1: File Operations - Navigate and Manipulate

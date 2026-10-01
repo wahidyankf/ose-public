@@ -136,6 +136,8 @@ Complex applications decompose middleware into focused, composable layers. Under
 ```mermaid
 %% Middleware chain execution for authenticated API request
 graph TD
+    accTitle: Example 57: Middleware Chain Architecture
+    accDescr: Graph with 12 nodes and 11 connections. Nodes: Request, RecoveryMiddleware, RequestIDMiddleware, LoggingMiddleware, AuthMiddleware, RateLimitMiddleware, Handler, RateLimitMiddleware after c.Next4041, AuthMiddleware after c.Next4041, LoggingMiddleware after c.Next4041, RecoveryMiddleware after c.Next4041, Response. Connections: Request to RecoveryMiddleware, RecoveryMiddleware to RequestIDMiddleware, RequestIDMiddleware to LoggingMiddleware, LoggingMiddleware to AuthMiddleware, AuthMiddleware to RateLimitMiddleware, RateLimitMiddleware to Handler, Handler to RateLimitMiddleware after c.Next4041, RateLimitMiddleware after c.Next4041 to AuthMiddleware after c.Next4041, AuthMiddleware after c.Next4041 to LoggingMiddleware after c.Next4041, LoggingMiddleware after c.Next4041 to RecoveryMiddleware after c.Next4041, RecoveryMiddleware after c.Next4041 to Response.
     A["Request"] --> B["RecoveryMiddleware"]
     B --> C["RequestIDMiddleware"]
     C --> D["LoggingMiddleware"]
@@ -148,14 +150,20 @@ graph TD
     D2 --> B2["RecoveryMiddleware<br/>after c.Next#40;#41;"]
     B2 --> H["Response"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
-    style H fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go

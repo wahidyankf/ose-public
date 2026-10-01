@@ -15,18 +15,26 @@ A FastAPI application requires only four lines to serve its first endpoint. Fast
 
 ```mermaid
 graph TD
+  accTitle: Example 1: Minimal FastAPI Application
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Python Script main.py, FastAPI instance app = FastAPI(), Route decorator @app.get(/hello), Handler function def hello(), JSON Response message: Hello, uvicorn /fastapi dev. Connections: Python Script main.py to FastAPI instance app = FastAPI(), FastAPI instance app = FastAPI() to Route decorator @app.get(/hello), Route decorator @app.get(/hello) to Handler function def hello(), Handler function def hello() to JSON Response message: Hello, uvicorn /fastapi dev to FastAPI instance app = FastAPI().
   A["Python Script<br/>main.py"] --> B["FastAPI instance<br/>app = FastAPI()"]
   B --> C["Route decorator<br/>@app.get('/hello')"]
   C --> D["Handler function<br/>def hello()"]
   D --> E["JSON Response<br/>{message: Hello}"]
-  F["uvicorn / fastapi dev"] --> B
+  F["uvicorn /fastapi dev"] --> B
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#0173B2,stroke:#000,color:#fff
-  style F fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  class E pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class F pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1448,22 +1456,30 @@ Understanding the order in which FastAPI processes a request—from middleware t
 
 ```mermaid
 graph TD
-  A["Client Request"] --> B["ASGI Middleware Stack<br/>CORSMiddleware, timing, etc."]
+  accTitle: Example 27: Request and Response Lifecycle Overview
+  accDescr: Graph with 8 nodes and 7 connections. Nodes: Client Request, ASGI Middleware Stack CORSMiddleware, timing, etc., FastAPI Router Path matching, Dependency Resolution Depends() calls in order, Path Operation Function Your handler code, Response Model Validation Filter and validate output, Middleware Post-processing Add headers, timing, Client Response. Connections: Client Request to ASGI Middleware Stack CORSMiddleware, timing, etc., ASGI Middleware Stack CORSMiddleware, timing, etc. to FastAPI Router Path matching, FastAPI Router Path matching to Dependency Resolution Depends() calls in order, Dependency Resolution Depends() calls in order to Path Operation Function Your handler code, Path Operation Function Your handler code to Response Model Validation Filter and validate output, Response Model Validation Filter and validate output to Middleware Post-processing Add headers, timing, Middleware Post-processing Add headers, timing to Client Response.
+  A["Client Request"] --> B["ASGI Middleware<br/>Stack<br/>CORSMiddleware,<br/>timing, etc."]
   B --> C["FastAPI Router<br/>Path matching"]
-  C --> D["Dependency Resolution<br/>Depends() calls in order"]
-  D --> E["Path Operation Function<br/>Your handler code"]
-  E --> F["Response Model Validation<br/>Filter and validate output"]
-  F --> G["Middleware Post-processing<br/>Add headers, timing"]
+  C --> D["Dependency<br/>Resolution<br/>Depends() calls in<br/>order"]
+  D --> E["Path Operation<br/>Function<br/>Your handler code"]
+  E --> F["Response Model<br/>Validation<br/>Filter and validate<br/>output"]
+  F --> G["Middleware<br/>Post-processing<br/>Add headers, timing"]
   G --> H["Client Response"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#0173B2,stroke:#000,color:#fff
-  style F fill:#DE8F05,stroke:#000,color:#fff
-  style G fill:#029E73,stroke:#000,color:#fff
-  style H fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  class E pal-0173B2
+  class F pal-DE8F05
+  class G pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class H pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

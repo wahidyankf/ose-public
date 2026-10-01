@@ -35,16 +35,24 @@ Spring Boot applications start with a single annotation that combines three esse
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Start["Application Start"] --> Context["Initialize Spring Context"]
+    accTitle: Example 1: Spring Boot Application Starter
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Application Start, Initialize Spring Context, Component Scan, Auto-Configuration, Application Ready. Connections: Application Start to Initialize Spring Context, Initialize Spring Context to Component Scan, Component Scan to Auto-Configuration, Auto-Configuration to Application Ready.
+    Start["Application Start"] --> Context["Initialize Spring<br/>Context"]
     Context --> Scan["Component Scan"]
     Scan --> AutoConfig["Auto-Configuration"]
     AutoConfig --> Ready["Application Ready"]
 
-    style Start fill:#0173B2,color:#fff
-    style Context fill:#DE8F05,color:#fff
-    style Scan fill:#029E73,color:#fff
-    style AutoConfig fill:#CC78BC,color:#fff
-    style Ready fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Context pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Scan pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class AutoConfig pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Ready pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -128,26 +136,34 @@ fun main(args: Array<String>) {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Classpath["Classpath Scanning"] --> Conditions["Evaluate @Conditional"]
+    accTitle: Example 1: Spring Boot Application Starter
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: Classpath Scanning, Evaluate @Conditional, @ConditionalOnClass, @ConditionalOn MissingBean, @ConditionalOn Property, All Conditions Met?, Create Auto-Configured Bean, Skip Configuration, Register in ApplicationContext. Connections: Classpath Scanning to Evaluate @Conditional, Evaluate @Conditional to @ConditionalOnClass, Evaluate @Conditional to @ConditionalOn MissingBean, Evaluate @Conditional to @ConditionalOn Property, @ConditionalOnClass to All Conditions Met?, @ConditionalOn MissingBean to All Conditions Met?, @ConditionalOn Property to All Conditions Met?, All Conditions Met? to Create Auto-Configured Bean (Yes), All Conditions Met? to Skip Configuration (No), Create Auto-Configured Bean to Register in ApplicationContext.
+    Classpath["Classpath Scanning"] --> Conditions["Evaluate<br/>@Conditional"]
     Conditions --> Check1["@ConditionalOnClass"]
-    Conditions --> Check2["@ConditionalOnMissingBean"]
-    Conditions --> Check3["@ConditionalOnProperty"]
+    Conditions --> Check2["@ConditionalOn<br/>MissingBean"]
+    Conditions --> Check3["@ConditionalOn<br/>Property"]
     Check1 --> Decide{All Conditions Met?}
     Check2 --> Decide
     Check3 --> Decide
-    Decide -->|Yes| CreateBean["Create Auto-Configured Bean"]
+    Decide -->|Yes| CreateBean["Create<br/>Auto-Configured Bean"]
     Decide -->|No| Skip["Skip Configuration"]
-    CreateBean --> Register["Register in ApplicationContext"]
+    CreateBean --> Register["Register in<br/>ApplicationContext"]
 
-    style Classpath fill:#0173B2,color:#fff
-    style Conditions fill:#DE8F05,color:#fff
-    style Check1 fill:#029E73,color:#fff
-    style Check2 fill:#029E73,color:#fff
-    style Check3 fill:#029E73,color:#fff
-    style Decide fill:#CC78BC,color:#fff
-    style CreateBean fill:#CA9161,color:#fff
-    style Skip fill:#CA9161,color:#fff
-    style Register fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Classpath pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Conditions pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Check1 pal-029E73
+    class Check2 pal-029E73
+    class Check3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Decide pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class CreateBean pal-CA9161
+    class Skip pal-CA9161
+    class Register pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Caption**: Spring Boot auto-configuration evaluates conditional annotations on classpath classes to determine which beans to create automatically.
@@ -157,6 +173,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 1: Spring Boot Application Starter
+    accDescr: Sequence diagram between SpringApplication, ApplicationContext, Embedded Tomcat, Application Ready. Messages: SpringApplication to ApplicationContext: Create ApplicationContext; ApplicationContext to ApplicationContext: Initialize beans; ApplicationContext to Embedded Tomcat: Detect spring-boot-starter-web; Embedded Tomcat to Embedded Tomcat: Initialize ServletWebServerFactory; Embedded Tomcat to Embedded Tomcat: Configure connectors (port 8080); Embedded Tomcat to Embedded Tomcat: Start Tomcat server; Embedded Tomcat to SpringApplication: Server started on port 8080; SpringApplication to Application Ready: Publish ApplicationReadyEvent.
     participant App as SpringApplication
     participant Context as ApplicationContext
     participant Tomcat as Embedded Tomcat
@@ -342,16 +360,24 @@ Beans are objects managed by Spring's IoC container. Understanding lifecycle hoo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Instantiate["Bean Instantiated"] --> Populate["Dependencies Injected"]
-    Populate --> Init["@PostConstruct Called"]
+    accTitle: Example 3: Bean Lifecycle & Scopes
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Bean Instantiated, Dependencies Injected, @PostConstruct Called, Bean Ready for Use, @PreDestroy Called. Connections: Bean Instantiated to Dependencies Injected, Dependencies Injected to @PostConstruct Called, @PostConstruct Called to Bean Ready for Use, Bean Ready for Use to @PreDestroy Called.
+    Instantiate["Bean Instantiated"] --> Populate["Dependencies<br/>Injected"]
+    Populate --> Init["@PostConstruct<br/>Called"]
     Init --> Ready["Bean Ready for Use"]
     Ready --> Destroy["@PreDestroy Called"]
 
-    style Instantiate fill:#0173B2,color:#fff
-    style Populate fill:#DE8F05,color:#fff
-    style Init fill:#029E73,color:#fff
-    style Ready fill:#CC78BC,color:#fff
-    style Destroy fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Instantiate pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Populate pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Init pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Ready pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Destroy pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -721,17 +747,25 @@ class UserController {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 5: First REST Controller
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: HTTP Request, DispatcherServlet, HandlerMapping, @RestController, Jackson Serializer, JSON Response. Connections: HTTP Request to DispatcherServlet, DispatcherServlet to HandlerMapping, HandlerMapping to @RestController, @RestController to Jackson Serializer, Jackson Serializer to JSON Response.
     Request["HTTP Request"] --> DispatcherServlet["DispatcherServlet"]
     DispatcherServlet --> HandlerMapping["HandlerMapping"]
     HandlerMapping --> Controller["@RestController"]
     Controller --> Jackson["Jackson Serializer"]
     Jackson --> Response["JSON Response"]
 
-    style Request fill:#0173B2,color:#fff
-    style DispatcherServlet fill:#DE8F05,color:#fff
-    style HandlerMapping fill:#029E73,color:#fff
-    style Controller fill:#CC78BC,color:#fff
-    style Jackson fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Request pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class DispatcherServlet pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class HandlerMapping pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Controller pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Jackson pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -1737,14 +1771,21 @@ Spring Data JPA eliminates boilerplate CRUD code. Define an interface extending 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 10: Spring Data JPA Introduction
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Repository, CrudRepository, PagingAndSorting Repository, JpaRepository. Connections: Repository to CrudRepository, CrudRepository to PagingAndSorting Repository, PagingAndSorting Repository to JpaRepository.
     Repository["Repository"] --> CrudRepository["CrudRepository"]
-    CrudRepository --> PagingAndSortingRepository["PagingAndSortingRepository"]
+    CrudRepository --> PagingAndSortingRepository["PagingAndSorting<br/>Repository"]
     PagingAndSortingRepository --> JpaRepository["JpaRepository"]
 
-    style Repository fill:#0173B2,color:#fff
-    style CrudRepository fill:#DE8F05,color:#fff
-    style PagingAndSortingRepository fill:#029E73,color:#fff
-    style JpaRepository fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Repository pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CrudRepository pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class PagingAndSortingRepository pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class JpaRepository pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -2090,11 +2131,16 @@ JPA supports four relationship types: `@OneToOne`, `@OneToMany`, `@ManyToOne`, `
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 12: Entity Relationships
+    accDescr: Graph with 2 nodes and 2 connections. Nodes: User 40141, Order 40*41. Connections: User 40141 to Order 40*41 (@OneToMany), Order 40*41 to User 40141 (@ManyToOne).
     User["User #40;1#41;"] -->|"@OneToMany"| Order["Order #40;*#41;"]
     Order -->|"@ManyToOne"| User
 
-    style User fill:#0173B2,color:#fff
-    style Order fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class User pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Order pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}
@@ -2906,24 +2952,32 @@ data class AppConfig(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Props["application.properties"] --> Scan["Scan @ConfigurationProperties"]
+    accTitle: Spring Boot auto-configuration properties work same in Kotlin
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: application. properties, Scan @Configuration Properties, Match prefix app.*, Bind app.name → name, Bind app.version → version, Bind app.max-users → maxUsers, Validate @Validated, Type-Safe POJO Ready. Connections: application. properties to Scan @Configuration Properties, Scan @Configuration Properties to Match prefix app.*, Match prefix app.* to Bind app.name → name, Match prefix app.* to Bind app.version → version, Match prefix app.* to Bind app.max-users → maxUsers, Bind app.name → name to Validate @Validated, Bind app.version → version to Validate @Validated, Bind app.max-users → maxUsers to Validate @Validated, Validate @Validated to Type-Safe POJO Ready.
+    Props["application.<br/>properties"] --> Scan["Scan @Configuration<br/>Properties"]
     Scan --> Match["Match prefix app.*"]
     Match --> Bind1["Bind app.name → name"]
-    Match --> Bind2["Bind app.version → version"]
-    Match --> Bind3["Bind app.max-users → maxUsers"]
+    Match --> Bind2["Bind app.version →<br/>version"]
+    Match --> Bind3["Bind app.max-users →<br/>maxUsers"]
     Bind1 --> Validate["Validate @Validated"]
     Bind2 --> Validate
     Bind3 --> Validate
     Validate --> POJO["Type-Safe POJO Ready"]
 
-    style Props fill:#0173B2,color:#fff
-    style Scan fill:#DE8F05,color:#fff
-    style Match fill:#029E73,color:#fff
-    style Bind1 fill:#CC78BC,color:#fff
-    style Bind2 fill:#CC78BC,color:#fff
-    style Bind3 fill:#CC78BC,color:#fff
-    style Validate fill:#CA9161,color:#fff
-    style POJO fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Props pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Scan pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Match pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Bind1 pal-CC78BC
+    class Bind2 pal-CC78BC
+    class Bind3 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Validate pal-CA9161
+    class POJO pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Caption**: Spring Boot binds properties with matching prefix to POJO fields, with automatic type conversion and optional validation.
@@ -2933,23 +2987,31 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Defaults["Built-in Defaults"] --> AppProps["application.properties"]
+    accTitle: Spring Boot auto-configuration properties work same in Kotlin
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Built-in Defaults, application. properties, application.yml, application- profile.props, Environment Variables, Command Line Arguments, Final Configuration, Lowest Priority, Highest Priority. Connections: Built-in Defaults to application. properties, application. properties to application.yml, application.yml to application- profile.props, application- profile.props to Environment Variables, Environment Variables to Command Line Arguments, Command Line Arguments to Final Configuration, Lowest Priority to Built-in Defaults, Highest Priority to Command Line Arguments.
+    Defaults["Built-in Defaults"] --> AppProps["application.<br/>properties"]
     AppProps --> AppYml["application.yml"]
-    AppYml --> ProfileProps["application-{profile}.props"]
-    ProfileProps --> EnvVars["Environment Variables"]
-    EnvVars --> CmdArgs["Command Line Arguments"]
+    AppYml --> ProfileProps["application-<br/>{profile}.props"]
+    ProfileProps --> EnvVars["Environment<br/>Variables"]
+    EnvVars --> CmdArgs["Command Line<br/>Arguments"]
     CmdArgs --> FinalConfig["Final Configuration"]
 
     Note1["Lowest Priority"] -.-> Defaults
     Note2["Highest Priority"] -.-> CmdArgs
 
-    style Defaults fill:#0173B2,color:#fff
-    style AppProps fill:#DE8F05,color:#fff
-    style AppYml fill:#029E73,color:#fff
-    style ProfileProps fill:#CC78BC,color:#fff
-    style EnvVars fill:#CA9161,color:#fff
-    style CmdArgs fill:#0173B2,color:#fff
-    style FinalConfig fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Defaults pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class AppProps pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class AppYml pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ProfileProps pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class EnvVars pal-CA9161
+    class CmdArgs pal-0173B2
+    class FinalConfig pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Caption**: Spring Boot loads properties from multiple sources, with later sources overriding earlier ones (command-line arguments have highest priority).
@@ -3472,14 +3534,21 @@ Centralize error handling with `@ControllerAdvice` instead of scattered try-catc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 18: Global Exception Handling
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Exception Thrown, @ControllerAdvice, @ExceptionHandler, Error Response JSON. Connections: Exception Thrown to @ControllerAdvice, @ControllerAdvice to @ExceptionHandler, @ExceptionHandler to Error Response JSON.
     Exception["Exception Thrown"] --> ControllerAdvice["@ControllerAdvice"]
     ControllerAdvice --> ExceptionHandler["@ExceptionHandler"]
     ExceptionHandler --> ErrorResponse["Error Response JSON"]
 
-    style Exception fill:#0173B2,color:#fff
-    style ControllerAdvice fill:#DE8F05,color:#fff
-    style ExceptionHandler fill:#029E73,color:#fff
-    style ErrorResponse fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Exception pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ControllerAdvice pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ExceptionHandler pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ErrorResponse pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin" >}}

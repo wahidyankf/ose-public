@@ -29,19 +29,26 @@ Ktor's authentication plugin provides a structured way to protect routes. Basic 
 
 ```mermaid
 graph TD
+  accTitle: Example 28: Basic Authentication
+  accDescr: Graph with 6 nodes and 6 connections. Nodes: Request without Auth, authenticate block, 401 Unauthorized, Validate Credentials, Route Handler, 200 Response. Connections: Request without Auth to authenticate block, authenticate block to 401 Unauthorized (No Authorization header), authenticate block to Validate Credentials (Authorization: Basic base64), Validate Credentials to 401 Unauthorized (Invalid), Validate Credentials to Route Handler (Valid), Route Handler to 200 Response.
   A["Request without Auth"] --> B["authenticate block"]
-  B -->|"No Authorization header"| C["401 Unauthorized"]
-  B -->|"Authorization: Basic base64"| D["Validate Credentials"]
+  B -->|"No Authorization<br/>header"| C["401 Unauthorized"]
+  B -->|"Authorization:<br/>Basic base64"| D["Validate Credentials"]
   D -->|"Invalid"| C
   D -->|"Valid"| E["Route Handler"]
   E --> F["200 Response"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  class D pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  class F pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -591,15 +598,20 @@ Ktor's WebSocket support enables full-duplex communication over a persistent con
 
 ```mermaid
 graph LR
-  A["Client"] -->|"HTTP Upgrade"| B["Ktor WebSocket Handler"]
-  B -->|"101 Switching Protocols"| A
+  accTitle: Example 34: Basic WebSocket Handler
+  accDescr: Graph with 2 nodes and 6 connections. Nodes: Client, Ktor WebSocket Handler. Connections: Client to Ktor WebSocket Handler (HTTP Upgrade), Ktor WebSocket Handler to Client (101 Switching Protocols), Client to Ktor WebSocket Handler (Text Frame: hello), Ktor WebSocket Handler to Client (Text Frame: Echo: hello), Client to Ktor WebSocket Handler (Close Frame), Ktor WebSocket Handler to Client (Close Frame).
+  A["Client"] -->|"HTTP Upgrade"| B["Ktor WebSocket<br/>Handler"]
+  B -->|"101 Switching<br/>Protocols"| A
   A -->|"Text Frame: hello"| B
-  B -->|"Text Frame: Echo: hello"| A
+  B -->|"Text Frame: Echo:<br/>hello"| A
   A -->|"Close Frame"| B
   B -->|"Close Frame"| A
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin

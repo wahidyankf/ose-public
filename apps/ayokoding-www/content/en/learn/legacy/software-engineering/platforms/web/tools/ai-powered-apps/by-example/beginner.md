@@ -241,6 +241,8 @@ export async function streamOpenAI(prompt: string): Promise<void> {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 6: Chat UI with useChat Hook in Next.js App Router
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: User types message, useChat handleSubmit, POST /api/chat Route Handler, streamText + toDataStreamResponse, SSE stream to browser, useChat updates messages state, React re-renders chat UI. Connections: User types message to useChat handleSubmit, useChat handleSubmit to POST /api/chat Route Handler, POST /api/chat Route Handler to streamText + toDataStreamResponse, streamText + toDataStreamResponse to SSE stream to browser, SSE stream to browser to useChat updates messages state, useChat updates messages state to React re-renders chat UI.
   A["User types<br/>message"] --> B["useChat<br/>handleSubmit"]
   B --> C["POST /api/chat<br/>Route Handler"]
   C --> D["streamText +<br/>toDataStreamResponse"]
@@ -248,13 +250,19 @@ graph LR
   E --> F["useChat updates<br/>messages state"]
   F --> G["React re-renders<br/>chat UI"]
 
-  style A fill:#CC78BC,stroke:#000,color:#fff
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#CA9161,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#0173B2,stroke:#000,color:#fff
-  style G fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  class F pal-0173B2
+  class G pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1599,22 +1607,30 @@ A complete minimal chatbot combining the route handler (Example 3) and chat UI (
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["User submits message"] --> B["useChat.handleSubmit#40;#41;"]
+  accTitle: Example 28: Building a Minimal Chatbot — End-to-End
+  accDescr: Graph with 8 nodes and 7 connections. Nodes: User submits message, useChat. handleSubmit4041, POST /api/chat with messages array, streamText40model, messages41, toDataStream Response4041, SSE chunks to browser, useChat assembles chunks into assistant message, React re-renders with new message in list. Connections: User submits message to useChat. handleSubmit4041, useChat. handleSubmit4041 to POST /api/chat with messages array, POST /api/chat with messages array to streamText40model, messages41, streamText40model, messages41 to toDataStream Response4041, toDataStream Response4041 to SSE chunks to browser, SSE chunks to browser to useChat assembles chunks into assistant message, useChat assembles chunks into assistant message to React re-renders with new message in list.
+  A["User submits message"] --> B["useChat.<br/>handleSubmit#40;#41;"]
   B --> C["POST /api/chat<br/>with messages array"]
-  C --> D["streamText#40;model, messages#41;"]
-  D --> E["toDataStreamResponse#40;#41;"]
-  E --> F["SSE chunks to browser"]
-  F --> G["useChat assembles chunks<br/>into assistant message"]
-  G --> H["React re-renders with<br/>new message in list"]
+  C --> D["streamText#40;model,<br/>messages#41;"]
+  D --> E["toDataStream<br/>Response#40;#41;"]
+  E --> F["SSE chunks to<br/>browser"]
+  F --> G["useChat assembles<br/>chunks<br/>into assistant<br/>message"]
+  G --> H["React re-renders<br/>with<br/>new message in list"]
 
-  style A fill:#CC78BC,stroke:#000,color:#fff
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#CA9161,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#0173B2,stroke:#000,color:#fff
-  style G fill:#DE8F05,stroke:#000,color:#fff
-  style H fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  class F pal-0173B2
+  class G pal-DE8F05
+  class H pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Route handler** (`app/api/chat/route.ts`):

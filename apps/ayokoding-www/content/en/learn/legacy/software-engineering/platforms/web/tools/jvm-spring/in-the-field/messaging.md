@@ -546,6 +546,8 @@ public class ZakatNotificationListener {
 
 ```mermaid
 sequenceDiagram
+    accTitle: JMS Message Flow Diagram
+    accDescr: Sequence diagram between ZakatNotificationService, JmsTemplate, ActiveMQ Broker, @JmsListener, ZakatNotificationListener. Messages: ZakatNotificationService to JmsTemplate: sendZakatNotification(accountId, amount); JmsTemplate to JmsTemplate: Convert to JSON (MessageConverter); JmsTemplate to ActiveMQ Broker: Send message to zakat.notifications queue; ActiveMQ Broker to ActiveMQ Broker: Persist message to disk; ActiveMQ Broker to @JmsListener: Poll for messages (concurrency: 3-10 threads); @JmsListener to @JmsListener: Deserialize JSON to ZakatNotification; @JmsListener to ZakatNotificationListener: handleZakatNotification(notification); ZakatNotificationListener to ZakatNotificationListener: processNotification(); ZakatNotificationListener to @JmsListener: Success (auto-acknowledge); @JmsListener to ActiveMQ Broker: ACK message.
     participant Producer as ZakatNotificationService
     participant JmsTemplate as JmsTemplate
     participant Broker as ActiveMQ Broker
@@ -567,10 +569,6 @@ sequenceDiagram
     Note over Producer,Consumer: Connection pooling (CachingConnectionFactory)
     Note over Listener,Consumer: Error handler catches exceptions
 
-    style JmsTemplate fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style Broker fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style Listener fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style Consumer fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 ## Production Patterns

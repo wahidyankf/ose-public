@@ -396,6 +396,8 @@ The fundamental RAG loop: embed the user's query, retrieve semantically similar 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 34: Basic RAG Pipeline — Embed, Retrieve, Inject
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: User Query, embed40query41, Vector DB similarity search, Top-K Documents, Inject into system prompt, generateText4041, Grounded Answer. Connections: User Query to embed40query41, embed40query41 to Vector DB similarity search, Vector DB similarity search to Top-K Documents, Top-K Documents to Inject into system prompt, Inject into system prompt to generateText4041, generateText4041 to Grounded Answer.
   A["User Query"] --> B["embed#40;query#41;"]
   B --> C["Vector DB<br/>similarity search"]
   C --> D["Top-K<br/>Documents"]
@@ -403,13 +405,19 @@ graph LR
   E --> F["generateText#40;#41;"]
   F --> G["Grounded Answer"]
 
-  style A fill:#CC78BC,stroke:#000,color:#fff
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#0173B2,stroke:#000,color:#fff
-  style G fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class D pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  class F pal-0173B2
+  class G pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

@@ -126,20 +126,25 @@ zakat:
 
 ```mermaid
 graph TD
-    A["Request: spring.datasource.url"] -->|"Search Priority Order"| B["1. Command-line Args"]
-    B -->|"Not found"| C["2. Environment Variables"]
-    C -->|"Not found"| D["3. application-{profile}.yml"]
+    accTitle: => Custom application properties: zakat calculation configuration
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Request: spring. datasource.url, 1. Command-line Args, 2. Environment Variables, 3. application- profile.yml, 4. application.yml, localhost:5432/ zakat_db, Production Deployment, DB_HOST=rds. amazonaws.com, rds.amazonaws.com/ zakat_db. Connections: Request: spring. datasource.url to 1. Command-line Args (Search Priority Order), 1. Command-line Args to 2. Environment Variables (Not found), 2. Environment Variables to 3. application- profile.yml (Not found), 3. application- profile.yml to 4. application.yml (Not found), 4. application.yml to localhost:5432/ zakat_db (Found), Production Deployment to DB_HOST=rds. amazonaws.com (Sets), DB_HOST=rds. amazonaws.com to 4. application.yml (Overrides), 4. application.yml to rds.amazonaws.com/ zakat_db (Resolved).
+    A["Request: spring.<br/>datasource.url"] -->|"Search Priority<br/>Order"| B["1. Command-line Args"]
+    B -->|"Not found"| C["2. Environment<br/>Variables"]
+    C -->|"Not found"| D["3. application-<br/>{profile}.yml"]
     D -->|"Not found"| E["4. application.yml"]
-    E -->|"Found"| F["localhost:5432/zakat_db"]
+    E -->|"Found"| F["localhost:5432/<br/>zakat_db"]
 
-    G["Production Deployment"] -->|"Sets"| H["DB_HOST=rds.amazonaws.com"]
+    G["Production<br/>Deployment"] -->|"Sets"| H["DB_HOST=rds.<br/>amazonaws.com"]
     H -->|"Overrides"| E
-    E -->|"Resolved"| I["rds.amazonaws.com/zakat_db"]
+    E -->|"Resolved"| I["rds.amazonaws.com/<br/>zakat_db"]
 
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class I pal-029E73
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Trade-offs**:

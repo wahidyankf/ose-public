@@ -430,22 +430,28 @@ public class ZakatAccountRepository {
 
 ```mermaid
 graph LR
+    accTitle: Progression Diagram
+    accDescr: Graph with 13 nodes and 10 connections. Nodes: Manual Map Cache ConcurrentHashMap, OutOfMemoryError, Stale Data, Inconsistency Risk, Spring Cache + Caffeine In-Memory, Bounded Memory, Automatic Freshness, Consistent Invalidation, Observability, Spring Cache + Redis Distributed, Multi-Instance, Survives Restarts, and 1 more. Connections: Manual Map Cache ConcurrentHashMap to OutOfMemoryError (No Eviction), Manual Map Cache ConcurrentHashMap to Stale Data (No TTL), Manual Map Cache ConcurrentHashMap to Inconsistency Risk (Manual Invalidation), Spring Cache + Caffeine In-Memory to Bounded Memory (LRU Eviction), Spring Cache + Caffeine In-Memory to Automatic Freshness (TTL), Spring Cache + Caffeine In-Memory to Consistent Invalidation (Declarative), Spring Cache + Caffeine In-Memory to Observability (Metrics), Spring Cache + Redis Distributed to Multi-Instance (Shared Cache), Spring Cache + Redis Distributed to Survives Restarts (Persistence), Spring Cache + Redis Distributed to Terabyte Cache (Scalable).
     A[Manual Map Cache<br/>ConcurrentHashMap] -->|No Eviction| B[OutOfMemoryError]
     A -->|No TTL| C[Stale Data]
     A -->|Manual Invalidation| D[Inconsistency Risk]
 
-    E[Spring Cache + Caffeine<br/>In-Memory] -->|LRU Eviction| F[Bounded Memory]
+    E[Spring Cache +<br/>Caffeine<br/>In-Memory] -->|LRU Eviction| F[Bounded Memory]
     E -->|TTL| G[Automatic Freshness]
-    E -->|Declarative| H[Consistent Invalidation]
+    E -->|Declarative| H[Consistent<br/>Invalidation]
     E -->|Metrics| I[Observability]
 
     J[Spring Cache + Redis<br/>Distributed] -->|Shared Cache| K[Multi-Instance]
     J -->|Persistence| L[Survives Restarts]
     J -->|Scalable| M[Terabyte Cache]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style J fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class J pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

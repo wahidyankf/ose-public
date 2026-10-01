@@ -501,6 +501,8 @@ public class JpaZakatCalculationRepositoryTest {
 
 ```mermaid
 sequenceDiagram
+    accTitle: Spring Test Context Lifecycle Diagram
+    accDescr: Sequence diagram between JUnit Test Runner, Spring TestContext, ApplicationContext, ZakatService, Repository (Mock). Messages: JUnit Test Runner to Spring TestContext: @SpringJUnitConfig detected; Spring TestContext to ApplicationContext: Load ApplicationContext (TestConfig.class); ApplicationContext to ApplicationContext: Scan components (@Service, @Repository); ApplicationContext to Repository (Mock): Create @MockBean instance; ApplicationContext to ZakatService: Create service, inject mocked repository; Spring TestContext to JUnit Test Runner: Context ready; JUnit Test Runner to JUnit Test Runner: @Test method execution; JUnit Test Runner to ZakatService: @Autowired injection (via Spring); ZakatService to Repository (Mock): service.calculateAndSave(); Repository (Mock) to ZakatService: Mocked response; ZakatService to JUnit Test Runner: Result; JUnit Test Runner to JUnit Test Runner: Assertions; and 1 more.
     participant JUnit as JUnit Test Runner
     participant Spring as Spring TestContext
     participant Context as ApplicationContext
@@ -527,10 +529,6 @@ sequenceDiagram
     Note over Repository: @MockBean replaces real repository
     Note over Service: Real service with mocked dependencies
 
-    style Spring fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style Context fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style Service fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style Repository fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 ## Production Patterns

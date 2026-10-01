@@ -401,6 +401,8 @@ public class ApplicationConfig {
 
 ```mermaid
 graph LR
+    accTitle: Progression Diagram
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Manual Factory Static Methods, Java Config @Bean Methods, Component Scan @ComponentScan, High Maintenance, Low Maintenance. Connections: Manual Factory Static Methods to Java Config @Bean Methods (Type Safety), Java Config @Bean Methods to Component Scan @ComponentScan (Auto-Discovery), Manual Factory Static Methods to High Maintenance (100 Methods), Java Config @Bean Methods to High Maintenance (100 Methods), Component Scan @ComponentScan to Low Maintenance (1 Config Line).
     A[Manual Factory<br/>Static Methods] -->|Type Safety| B[Java Config<br/>@Bean Methods]
     B -->|Auto-Discovery| C[Component Scan<br/>@ComponentScan]
 
@@ -408,10 +410,14 @@ graph LR
     B -->|100 Methods| D
     C -->|1 Config Line| E[Low Maintenance]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class C pal-0173B2
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

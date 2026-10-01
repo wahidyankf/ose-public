@@ -27,18 +27,25 @@ A web app manifest is a JSON file that tells the browser your app's name, icons,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 1: Creating a Web App Manifest — Required Fields for Installability
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Browser visits URL, manifest.json linked in head?, Regular website No install prompt, Required fields present?, Partial PWA No install prompt, Installable PWA Install prompt shown. Connections: Browser visits URL to manifest.json linked in head?, manifest.json linked in head? to Regular website No install prompt (No), manifest.json linked in head? to Required fields present? (Yes), Required fields present? to Partial PWA No install prompt (Missing fields), Required fields present? to Installable PWA Install prompt shown (name, short_name start_url, display 192px icon).
   A["Browser visits URL"] --> B{"manifest.json<br/>linked in head?"}
   B -->|"No"| C["Regular website<br/>No install prompt"]
   B -->|"Yes"| D{"Required fields<br/>present?"}
   D -->|"Missing fields"| E["Partial PWA<br/>No install prompt"]
   D -->|"name, short_name<br/>start_url, display<br/>192px icon"| F["Installable PWA<br/>Install prompt shown"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-DE8F05
+  class D pal-CA9161
+  class E pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -116,16 +123,22 @@ Maskable icons let the OS apply its own shape (circle, squircle, rounded rectang
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["512x512 icon canvas"] --> B["Safe zone: centered 80%<br/>= 409x409 px area"]
-  B --> C["Keep logo/symbol inside safe zone"]
-  A --> D["Outer 10% on each edge<br/>= bleed zone, may be clipped"]
-  D --> E["Fill bleed with background color<br/>not important content"]
+  accTitle: Example 3: Generating Maskable Icons — Safe Zone Rule
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: 512x512 icon canvas, Safe zone: centered 80 = 409x409 px area, Keep logo/symbol inside safe zone, Outer 10 on each edge = bleed zone, may be clipped, Fill bleed with background color not important content. Connections: 512x512 icon canvas to Safe zone: centered 80 = 409x409 px area, Safe zone: centered 80 = 409x409 px area to Keep logo/symbol inside safe zone, 512x512 icon canvas to Outer 10 on each edge = bleed zone, may be clipped, Outer 10 on each edge = bleed zone, may be clipped to Fill bleed with background color not important content.
+  A["512x512 icon canvas"] --> B["Safe zone: centered<br/>80%<br/>= 409x409 px area"]
+  B --> C["Keep logo/symbol<br/>inside safe zone"]
+  A --> D["Outer 10% on each<br/>edge<br/>= bleed zone, may be<br/>clipped"]
+  D --> E["Fill bleed with<br/>background color<br/>not important<br/>content"]
 
-  style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-029E73
+  class C pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -168,20 +181,28 @@ The browser discovers the manifest through a `<link>` tag in the HTML `<head>`. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 4: Linking the Manifest in HTML
+  accDescr: Graph with 9 nodes and 10 connections. Nodes: HTML page loads, B, lt, gt, C, Fetches manifest.json, Reads name, icons start_url, display, Evaluates installability, Fires beforeinstallprompt if criteria met. Connections: HTML page loads to B, HTML page loads to lt, HTML page loads to gt, B to C, B to lt, B to gt, C to Fetches manifest.json, Fetches manifest.json to Reads name, icons start_url, display, Reads name, icons start_url, display to Evaluates installability, Evaluates installability to Fires beforeinstallprompt if criteria met.
   A["HTML page loads"] --> B["Browser reads &lt;head&gt;"]
-  B --> C["Finds &lt;link rel='manifest'&gt;"]
-  C --> D["Fetches manifest.json"]
+  B --> C["Finds &lt;link<br/>rel='manifest'&gt;"]
+  C --> D["Fetches<br/>manifest.json"]
   D --> E["Reads name, icons<br/>start_url, display"]
-  E --> F["Evaluates installability"]
-  F --> G["Fires beforeinstallprompt<br/>if criteria met"]
+  E --> F["Evaluates<br/>installability"]
+  F --> G["Fires<br/>beforeinstallprompt<br/>if criteria met"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class G pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -311,19 +332,27 @@ The service worker lifecycle is a state machine managed by the browser. Understa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Browser downloads sw.js"] --> B["Installing<br/>install event fires<br/>cache app shell"]
+  accTitle: Example 7: Service Worker Lifecycle — Install, Waiting, Activate, Controlling
+  accDescr: Graph with 6 nodes and 6 connections. Nodes: Browser downloads sw.js, Installing install event fires cache app shell, Any open tabs controlled by OLD SW?, Waiting new SW paused until tabs close, Activating activate event fires clean old caches, Active + Controlling fetch events intercepted SW handles requests. Connections: Browser downloads sw.js to Installing install event fires cache app shell, Installing install event fires cache app shell to Any open tabs controlled by OLD SW?, Any open tabs controlled by OLD SW? to Waiting new SW paused until tabs close (Yes), Any open tabs controlled by OLD SW? to Activating activate event fires clean old caches (No / skipWaiting), Waiting new SW paused until tabs close to Activating activate event fires clean old caches, Activating activate event fires clean old caches to Active + Controlling fetch events intercepted SW handles requests.
+  A["Browser downloads<br/>sw.js"] --> B["Installing<br/>install event fires<br/>cache app shell"]
   B --> C{"Any open tabs<br/>controlled by<br/>OLD SW?"}
   C -->|"Yes"| D["Waiting<br/>new SW paused<br/>until tabs close"]
   C -->|"No / skipWaiting"| E["Activating<br/>activate event fires<br/>clean old caches"]
   D --> E
-  E --> F["Active + Controlling<br/>fetch events intercepted<br/>SW handles requests"]
+  E --> F["Active + Controlling<br/>fetch events<br/>intercepted<br/>SW handles requests"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-CA9161
+  class D pal-DE8F05
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class E pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -468,22 +497,30 @@ The fetch event fires for every network request from a controlled page. The serv
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Page makes network request"] --> B["SW fetch event fires"]
+  accTitle: Example 10: The Fetch Event — Basic Request Interception
+  accDescr: Graph with 8 nodes and 7 connections. Nodes: Page makes network request, SW fetch event fires, event.respondWith called?, Request passes through to network unchanged, SW controls the response, Cache hit?, Return cached Response instantly, no network, Fetch from network return Response. Connections: Page makes network request to SW fetch event fires, SW fetch event fires to event.respondWith called?, event.respondWith called? to Request passes through to network unchanged (No), event.respondWith called? to SW controls the response (Yes), SW controls the response to Cache hit?, Cache hit? to Return cached Response instantly, no network (Yes), Cache hit? to Fetch from network return Response (No).
+  A["Page makes network<br/>request"] --> B["SW fetch event fires"]
   B --> C{"event.respondWith<br/>called?"}
-  C -->|"No"| D["Request passes through<br/>to network unchanged"]
-  C -->|"Yes"| E["SW controls the response"]
+  C -->|"No"| D["Request passes<br/>through<br/>to network unchanged"]
+  C -->|"Yes"| E["SW controls the<br/>response"]
   E --> F{"Cache hit?"}
-  F -->|"Yes"| G["Return cached Response<br/>instantly, no network"]
+  F -->|"Yes"| G["Return cached<br/>Response<br/>instantly, no<br/>network"]
   F -->|"No"| H["Fetch from network<br/>return Response"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-0173B2
+  class F pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class G pal-029E73
+  class H pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -542,18 +579,26 @@ Cache First serves assets from cache immediately, only reaching the network if t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Fetch request arrives"] --> B{"Check cache"}
-  B -->|"Cache HIT"| C["Return cached response<br/>Zero network latency"]
+  accTitle: Example 11: Cache First Strategy — Serve from Cache, Fall Back to Network
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Fetch request arrives, Check cache, Return cached response Zero network latency, Fetch from network, Store response in cache, Return network response. Connections: Fetch request arrives to Check cache, Check cache to Return cached response Zero network latency (Cache HIT), Check cache to Fetch from network (Cache MISS), Fetch from network to Store response in cache, Store response in cache to Return network response.
+  A["Fetch request<br/>arrives"] --> B{"Check cache"}
+  B -->|"Cache HIT"| C["Return cached<br/>response<br/>Zero network latency"]
   B -->|"Cache MISS"| D["Fetch from network"]
-  D --> E["Store response in cache"]
-  E --> F["Return network response"]
+  D --> E["Store response in<br/>cache"]
+  E --> F["Return network<br/>response"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class E pal-0173B2
+  class F pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -612,20 +657,28 @@ Network First always attempts the network and only falls back to cache on networ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Fetch request arrives"] --> B["Try network first"]
+  accTitle: Example 12: Network First Strategy — Try Network, Fall Back to Cache
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: Fetch request arrives, Try network first, Store in cache, Return fresh response, Check cache, Return stale cached response, Return /offline.html fallback page. Connections: Fetch request arrives to Try network first, Try network first to Store in cache (Network succeeds), Store in cache to Return fresh response, Try network first to Check cache (Network fails (offline/timeout)), Check cache to Return stale cached response (Cache HIT), Check cache to Return /offline.html fallback page (Cache MISS).
+  A["Fetch request<br/>arrives"] --> B["Try network first"]
   B -->|"Network succeeds"| C["Store in cache"]
-  C --> D["Return fresh response"]
+  C --> D["Return fresh<br/>response"]
   B -->|"Network fails<br/>(offline/timeout)"| E{"Check cache"}
-  E -->|"Cache HIT"| F["Return stale cached response"]
+  E -->|"Cache HIT"| F["Return stale cached<br/>response"]
   E -->|"Cache MISS"| G["Return /offline.html<br/>fallback page"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-DE8F05
+  class G pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -688,20 +741,28 @@ Stale While Revalidate (SWR) serves the cached version immediately for speed, th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Fetch request arrives"] --> B{"Cache exists?"}
+  accTitle: Example 13: Stale While Revalidate — Serve Cache Immediately, Update in Background
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: Fetch request arrives, Cache exists?, Return stale cache immediately to user, Wait for network, Fetch from network in background, Update cache with fresh response, Return network response on first visit. Connections: Fetch request arrives to Cache exists?, Cache exists? to Return stale cache immediately to user (Yes), Cache exists? to Wait for network (No), Fetch request arrives to Fetch from network in background, Fetch from network in background to Update cache with fresh response, Wait for network to Return network response on first visit.
+  A["Fetch request<br/>arrives"] --> B{"Cache exists?"}
   B -->|"Yes"| C["Return stale cache<br/>immediately to user"]
   B -->|"No"| D["Wait for network"]
   A --> E["Fetch from network<br/>in background"]
   E --> F["Update cache<br/>with fresh response"]
-  D --> G["Return network response<br/>on first visit"]
+  D --> G["Return network<br/>response<br/>on first visit"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class E pal-0173B2
+  class F pal-0173B2
+  class G pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -858,18 +919,25 @@ An offline fallback page is served when the user is offline and no cached versio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 16: Offline Fallback Page
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Navigation request while offline, Page in cache?, Serve cached page stale but functional, /offline.html pre-cached?, Serve offline fallback branded error page, Browser error screen No internet connection. Connections: Navigation request while offline to Page in cache?, Page in cache? to Serve cached page stale but functional (Yes), Page in cache? to /offline.html pre-cached? (No), /offline.html pre-cached? to Serve offline fallback branded error page (Yes), /offline.html pre-cached? to Browser error screen No internet connection (No).
   A["Navigation request<br/>while offline"] --> B{"Page in cache?"}
   B -->|"Yes"| C["Serve cached page<br/>stale but functional"]
   B -->|"No"| D{"/offline.html<br/>pre-cached?"}
-  D -->|"Yes"| E["Serve offline fallback<br/>branded error page"]
-  D -->|"No"| F["Browser error screen<br/>'No internet connection'"]
+  D -->|"Yes"| E["Serve offline<br/>fallback<br/>branded error page"]
+  D -->|"No"| F["Browser error screen<br/>'No internet<br/>connection'"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  class D pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-DE8F05
+  class F pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1148,26 +1216,34 @@ Chrome and Edge fire `beforeinstallprompt` before showing the default install UI
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Browser detects PWA<br/>criteria met"] --> B["beforeinstallprompt fires"]
-  B --> C["Call preventDefault()"]
-  C --> D["Save event as deferredPrompt"]
-  D --> E["Show custom Install button"]
-  E --> F["User clicks Install button"]
-  F --> G["Call deferredPrompt.prompt()"]
+  accTitle: Example 21: Intercepting beforeinstallprompt for a Custom Install Button
+  accDescr: Graph with 10 nodes and 9 connections. Nodes: Browser detects PWA criteria met, beforeinstallprompt fires, Call preventDefault(), Save event as deferredPrompt, Show custom Install button, User clicks Install button, Call deferredPrompt. prompt(), User choice, appinstalled fires Hide install button, Log analytics Hide install button. Connections: Browser detects PWA criteria met to beforeinstallprompt fires, beforeinstallprompt fires to Call preventDefault(), Call preventDefault() to Save event as deferredPrompt, Save event as deferredPrompt to Show custom Install button, Show custom Install button to User clicks Install button, User clicks Install button to Call deferredPrompt. prompt(), Call deferredPrompt. prompt() to User choice, User choice to appinstalled fires Hide install button (Accepted), User choice to Log analytics Hide install button (Dismissed).
+  A["Browser detects PWA<br/>criteria met"] --> B["beforeinstallprompt<br/>fires"]
+  B --> C["Call<br/>preventDefault()"]
+  C --> D["Save event as<br/>deferredPrompt"]
+  D --> E["Show custom Install<br/>button"]
+  E --> F["User clicks Install<br/>button"]
+  F --> G["Call deferredPrompt.<br/>prompt()"]
   G --> H{"User choice"}
   H -->|"Accepted"| I["appinstalled fires<br/>Hide install button"]
   H -->|"Dismissed"| J["Log analytics<br/>Hide install button"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-CA9161
+  class G pal-CA9161
+  class H pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class I pal-029E73
+  class J pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1396,22 +1472,30 @@ shareButton.addEventListener("click", async () => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["navigator.storage.estimate()"] --> B["Returns usage + quota<br/>in bytes"]
-  B --> C["Calculate usagePercent<br/>usage / quota * 100"]
+  accTitle: Example 25: Storage Estimation — Checking Quota and Usage
+  accDescr: Graph with 8 nodes and 7 connections. Nodes: navigator.storage. estimate(), Returns usage + quota in bytes, Calculate usagePercent usage / quota * 100, Usage > 80?, Warn user Clear old API caches, Storage healthy Continue caching, Optional: persist(), Request protection from browser eviction. Connections: navigator.storage. estimate() to Returns usage + quota in bytes, Returns usage + quota in bytes to Calculate usagePercent usage / quota * 100, Calculate usagePercent usage / quota * 100 to Usage > 80?, Usage > 80? to Warn user Clear old API caches (Yes), Usage > 80? to Storage healthy Continue caching (No), Returns usage + quota in bytes to Optional: persist(), Optional: persist() to Request protection from browser eviction.
+  A["navigator.storage.<br/>estimate()"] --> B["Returns usage +<br/>quota<br/>in bytes"]
+  B --> C["Calculate<br/>usagePercent<br/>usage / quota * 100"]
   C --> D{"Usage > 80%?"}
   D -->|"Yes"| E["Warn user<br/>Clear old API caches"]
   D -->|"No"| F["Storage healthy<br/>Continue caching"]
   B --> G["Optional: persist()"]
-  G --> H["Request protection<br/>from browser eviction"]
+  G --> H["Request protection<br/>from browser<br/>eviction"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-029E73
+  class G pal-DE8F05
+  class H pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

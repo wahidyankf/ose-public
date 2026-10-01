@@ -29,14 +29,20 @@ tags:
 
 ```mermaid
 graph TD
-  A["InheritedWidget<br/>AppState data at top"] --> B["Child Widget A<br/>dependOnInheritedWidget"]
-  A --> C["Child Widget B<br/>dependOnInheritedWidget"]
+  accTitle: Example 28: InheritedWidget
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: InheritedWidget AppState data at top, Child Widget A dependOnInherited Widget, Child Widget B dependOnInherited Widget, GrandChild inherits state. Connections: InheritedWidget AppState data at top to Child Widget A dependOnInherited Widget, InheritedWidget AppState data at top to Child Widget B dependOnInherited Widget, Child Widget A dependOnInherited Widget to GrandChild inherits state.
+  A["InheritedWidget<br/>AppState data at top"] --> B["Child Widget A<br/>dependOnInherited<br/>Widget"]
+  A --> C["Child Widget B<br/>dependOnInherited<br/>Widget"]
   B --> D["GrandChild<br/>inherits state"]
 
-  style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -896,14 +902,21 @@ Explicit animations use `AnimationController` for full control over playback: st
 
 ```mermaid
 graph LR
-  A["AnimationController<br/>drives time 0.0 to 1.0"] --> B["CurvedAnimation<br/>applies easing curve"]
-  B --> C["Tween.animate<br/>maps 0.0-1.0 to typed values"]
-  C --> D["AnimatedBuilder<br/>rebuilds on each frame"]
+  accTitle: Example 36: Explicit Animations
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: AnimationController drives time 0.0 to 1.0, CurvedAnimation applies easing curve, Tween.animate maps 0.0-1.0 to typed values, AnimatedBuilder rebuilds on each frame. Connections: AnimationController drives time 0.0 to 1.0 to CurvedAnimation applies easing curve, CurvedAnimation applies easing curve to Tween.animate maps 0.0-1.0 to typed values, Tween.animate maps 0.0-1.0 to typed values to AnimatedBuilder rebuilds on each frame.
+  A["AnimationController<br/>drives time 0.0 to<br/>1.0"] --> B["CurvedAnimation<br/>applies easing curve"]
+  B --> C["Tween.animate<br/>maps 0.0-1.0 to<br/>typed values"]
+  C --> D["AnimatedBuilder<br/>rebuilds on each<br/>frame"]
 
-  style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart

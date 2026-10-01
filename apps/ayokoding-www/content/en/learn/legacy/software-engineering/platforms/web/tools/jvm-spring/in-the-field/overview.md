@@ -17,12 +17,18 @@ Every guide in this series follows a three-stage progression:
 
 ```mermaid
 graph LR
-    A[Java Standard Library<br/>Manual Implementation] -->|Limitations| B[Spring Core<br/>IoC + DI]
+    accTitle: Spring Core First Principle
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Java Standard Library Manual Implementation, Spring Core IoC + DI, Spring Ecosystem Data, Security, Web. Connections: Java Standard Library Manual Implementation to Spring Core IoC + DI (Limitations), Spring Core IoC + DI to Spring Ecosystem Data, Security, Web (Extensions).
+    A[Java Standard<br/>Library<br/>Manual<br/>Implementation] -->|Limitations| B[Spring Core<br/>IoC + DI]
     B -->|Extensions| C[Spring Ecosystem<br/>Data, Security, Web]
 
-    style A fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Stage 1: Java Baseline

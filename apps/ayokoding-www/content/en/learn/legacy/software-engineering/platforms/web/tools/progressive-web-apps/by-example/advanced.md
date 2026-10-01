@@ -29,20 +29,27 @@ Window Controls Overlay (WCO) removes the default browser title bar in desktop P
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["manifest.json<br/>display_override: window-controls-overlay"] --> B["Desktop PWA installed<br/>Chrome/Edge only"]
-  B --> C["OS renders window controls<br/>close/minimize/maximize"]
-  C --> D["Title bar area available<br/>CSS env vars exposed"]
-  D --> E["env(titlebar-area-x/y/width/height)<br/>position custom title bar"]
-  E --> F["App draws into title bar<br/>-webkit-app-region: drag"]
-  F --> G["Interactive elements:<br/>app-region: no-drag"]
+  accTitle: Example 58: Window Controls Overlay — Custom Title Bar for Desktop PWAs
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: manifest.json display_override: window-controls- overlay, Desktop PWA installed Chrome/Edge only, OS renders window controls close/minimize/ maximize, Title bar area available CSS env vars exposed, env(titlebar-area-x/ y/width/height) position custom title bar, App draws into title bar -webkit-app-region: drag, Interactive elements: app-region: no-drag. Connections: manifest.json display_override: window-controls- overlay to Desktop PWA installed Chrome/Edge only, Desktop PWA installed Chrome/Edge only to OS renders window controls close/minimize/ maximize, OS renders window controls close/minimize/ maximize to Title bar area available CSS env vars exposed, Title bar area available CSS env vars exposed to env(titlebar-area-x/ y/width/height) position custom title bar, env(titlebar-area-x/ y/width/height) position custom title bar to App draws into title bar -webkit-app-region: drag, App draws into title bar -webkit-app-region: drag to Interactive elements: app-region: no-drag.
+  A["manifest.json<br/>display_override:<br/>window-controls-<br/>overlay"] --> B["Desktop PWA<br/>installed<br/>Chrome/Edge only"]
+  B --> C["OS renders window<br/>controls<br/>close/minimize/<br/>maximize"]
+  C --> D["Title bar area<br/>available<br/>CSS env vars exposed"]
+  D --> E["env(titlebar-area-x/<br/>y/width/height)<br/>position custom<br/>title bar"]
+  E --> F["App draws into title<br/>bar<br/>-webkit-app-region:<br/>drag"]
+  F --> G["Interactive<br/>elements:<br/>app-region: no-drag"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-029E73
+  class G pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -218,7 +225,9 @@ Offline-first apps treat IndexedDB as the primary data source. The UI reads from
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["User Action<br/>Create/Read/Update/Delete"] --> B["IndexedDB<br/>Primary Store"]
+  accTitle: Example 60: Offline-First Architecture — IndexedDB as Primary Data Store
+  accDescr: Graph with 8 nodes and 8 connections. Nodes: User Action Create/Read/Update/ Delete, IndexedDB Primary Store, UI Update Immediate response, Sync Queue Pending mutations, Network Available?, POST to Server Remove from queue, Background Sync Retry when online, Server DB Source of truth. Connections: User Action Create/Read/Update/ Delete to IndexedDB Primary Store, IndexedDB Primary Store to UI Update Immediate response, IndexedDB Primary Store to Sync Queue Pending mutations, Sync Queue Pending mutations to Network Available?, Network Available? to POST to Server Remove from queue (Yes), Network Available? to Background Sync Retry when online (No), POST to Server Remove from queue to Server DB Source of truth, Background Sync Retry when online to POST to Server Remove from queue.
+  A["User Action<br/>Create/Read/Update/<br/>Delete"] --> B["IndexedDB<br/>Primary Store"]
   B --> C["UI Update<br/>Immediate response"]
   B --> D["Sync Queue<br/>Pending mutations"]
   D --> E{"Network<br/>Available?"}
@@ -227,14 +236,20 @@ graph TD
   F --> H["Server DB<br/>Source of truth"]
   G --> F
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-CA9161
+  class F pal-029E73
+  class G pal-0173B2
+  class H pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -314,26 +329,34 @@ When multiple clients modify the same data offline, conflicts arise during sync.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Device A edits task<br/>offline for 2 hours"] --> D["Both sync when online"]
-  B["Device B edits same task<br/>offline for 30 min"] --> D
+  accTitle: Example 61: Conflict Resolution Strategies for Offline-First Apps
+  accDescr: Graph with 10 nodes and 9 connections. Nodes: Device A edits task offline for 2 hours, Both sync when online, Device B edits same task offline for 30 min, Conflict resolution strategy?, Compare updatedAt timestamps, Newer timestamp wins other changes lost, Compare each field independently, Preserve non-conflicting changes from both, Mathematically conflict-free merge, All concurrent edits preserved automatically. Connections: Device A edits task offline for 2 hours to Both sync when online, Device B edits same task offline for 30 min to Both sync when online, Both sync when online to Conflict resolution strategy?, Conflict resolution strategy? to Compare updatedAt timestamps (Last-Write-Wins), Compare updatedAt timestamps to Newer timestamp wins other changes lost, Conflict resolution strategy? to Compare each field independently (Field-Level Merge), Compare each field independently to Preserve non-conflicting changes from both, Conflict resolution strategy? to Mathematically conflict-free merge (CRDT (Yjs)), Mathematically conflict-free merge to All concurrent edits preserved automatically.
+  A["Device A edits task<br/>offline for 2 hours"] --> D["Both sync when<br/>online"]
+  B["Device B edits same<br/>task<br/>offline for 30 min"] --> D
   D --> E{"Conflict resolution<br/>strategy?"}
   E -->|"Last-Write-Wins"| F["Compare updatedAt<br/>timestamps"]
   F --> G["Newer timestamp wins<br/>other changes lost"]
   E -->|"Field-Level Merge"| H["Compare each field<br/>independently"]
-  H --> I["Preserve non-conflicting<br/>changes from both"]
+  H --> I["Preserve<br/>non-conflicting<br/>changes from both"]
   E -->|"CRDT (Yjs)"| J["Mathematically<br/>conflict-free merge"]
-  J --> K["All concurrent edits<br/>preserved automatically"]
+  J --> K["All concurrent edits<br/>preserved<br/>automatically"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style H fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style K fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  class B pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-CA9161
+  class E pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-DE8F05
+  class G pal-DE8F05
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class H pal-0173B2
+  class I pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class J pal-029E73
+  class K pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -431,17 +454,23 @@ Service workers can send and receive messages to/from their controlled clients. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Main thread (app.js)"] -->|"registration.active.postMessage()"| B["Service Worker (sw.js)"]
-  B -->|"event.source.postMessage()"| A
-  B -->|"client.postMessage() per client"| C["Tab 1"]
-  B -->|"client.postMessage() per client"| D["Tab 2"]
-  B -->|"client.postMessage() per client"| E["Tab 3"]
+  accTitle: Example 62: Service Worker Message Passing — postMessage Between SW and Clients
+  accDescr: Graph with 5 nodes and 5 connections. Nodes: Main thread (app.js), Service Worker (sw.js), Tab 1, Tab 2, Tab 3. Connections: Main thread (app.js) to Service Worker (sw.js) (registration. active. postMessage()), Service Worker (sw.js) to Main thread (app.js) (event.source. postMessage()), Service Worker (sw.js) to Tab 1 (client. postMessage() per client), Service Worker (sw.js) to Tab 2 (client. postMessage() per client), Service Worker (sw.js) to Tab 3 (client. postMessage() per client).
+  A["Main thread (app.js)"] -->|"registration.<br/>active.<br/>postMessage()"| B["Service Worker<br/>(sw.js)"]
+  B -->|"event.source.<br/>postMessage()"| A
+  B -->|"client.<br/>postMessage() per<br/>client"| C["Tab 1"]
+  B -->|"client.<br/>postMessage() per<br/>client"| D["Tab 2"]
+  B -->|"client.<br/>postMessage() per<br/>client"| E["Tab 3"]
 
-  style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-CC78BC
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  class D pal-029E73
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -532,21 +561,28 @@ async function requestCacheStatus() {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Tab 1 (user logs out)"] -->|"channel.postMessage(USER_LOGGED_OUT)"| B["BroadcastChannel<br/>'app-channel'"]
-  B --> C["Tab 2<br/>receives USER_LOGGED_OUT"]
-  B --> D["Tab 3<br/>receives USER_LOGGED_OUT"]
-  B --> E["Service Worker<br/>receives USER_LOGGED_OUT"]
+  accTitle: Example 63: Cross-Tab Communication — BroadcastChannel Between Service Worker and Clients
+  accDescr: Graph with 7 nodes and 7 connections. Nodes: Tab 1 (user logs out), BroadcastChannel app-channel, Tab 2 receives USER_LOGGED_OUT, Tab 3 receives USER_LOGGED_OUT, Service Worker receives USER_LOGGED_OUT, Clear session redirect to /login, Delete user-data caches. Connections: Tab 1 (user logs out) to BroadcastChannel app-channel (channel. postMessage(USER_ LOGGED_OUT)), BroadcastChannel app-channel to Tab 2 receives USER_LOGGED_OUT, BroadcastChannel app-channel to Tab 3 receives USER_LOGGED_OUT, BroadcastChannel app-channel to Service Worker receives USER_LOGGED_OUT, Tab 2 receives USER_LOGGED_OUT to Clear session redirect to /login, Tab 3 receives USER_LOGGED_OUT to Clear session redirect to /login, Service Worker receives USER_LOGGED_OUT to Delete user-data caches.
+  A["Tab 1 (user logs<br/>out)"] -->|"channel.<br/>postMessage(USER_<br/>LOGGED_OUT)"| B["BroadcastChannel<br/>'app-channel'"]
+  B --> C["Tab 2<br/>receives<br/>USER_LOGGED_OUT"]
+  B --> D["Tab 3<br/>receives<br/>USER_LOGGED_OUT"]
+  B --> E["Service Worker<br/>receives<br/>USER_LOGGED_OUT"]
   C --> F["Clear session<br/>redirect to /login"]
   D --> F
   E --> G["Delete user-data<br/>caches"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-DE8F05
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-029E73
+  class G pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -635,21 +671,29 @@ Embedding the build manifest hash in the cache name creates globally unique cach
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 64: Cache Versioning Strategy — Manifest Hash in Cache Name
+  accDescr: Graph with 8 nodes and 6 connections. Nodes: Deployment A build hash: 9f2e1a0c, Caches: app-shell-9f2e1a0c api-9f2e1a0c, Deployment B build hash: a3b7c9d1, Caches: app-shell-a3b7c9d1 api-a3b7c9d1, New SW activates activate event, caches.keys() returns all 4 cache names, Filter: keep only a3b7c9d1 caches, Delete 9f2e1a0c caches Free storage. Connections: Deployment A build hash: 9f2e1a0c to Caches: app-shell-9f2e1a0c api-9f2e1a0c, Deployment B build hash: a3b7c9d1 to Caches: app-shell-a3b7c9d1 api-a3b7c9d1, Caches: app-shell-a3b7c9d1 api-a3b7c9d1 to New SW activates activate event, New SW activates activate event to caches.keys() returns all 4 cache names, caches.keys() returns all 4 cache names to Filter: keep only a3b7c9d1 caches, Filter: keep only a3b7c9d1 caches to Delete 9f2e1a0c caches Free storage.
   A["Deployment A<br/>build hash: 9f2e1a0c"] --> B["Caches:<br/>app-shell-9f2e1a0c<br/>api-9f2e1a0c"]
   C["Deployment B<br/>build hash: a3b7c9d1"] --> D["Caches:<br/>app-shell-a3b7c9d1<br/>api-a3b7c9d1"]
   D --> E["New SW activates<br/>activate event"]
-  E --> F["caches.keys() returns<br/>all 4 cache names"]
+  E --> F["caches.keys()<br/>returns<br/>all 4 cache names"]
   F --> G["Filter: keep only<br/>a3b7c9d1 caches"]
-  G --> H["Delete 9f2e1a0c caches<br/>Free storage"]
+  G --> H["Delete 9f2e1a0c<br/>caches<br/>Free storage"]
 
-  style A fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style G fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CA9161
+  class B pal-CA9161
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class C pal-0173B2
+  class D pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-DE8F05
+  class F pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class G pal-CC78BC
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class H pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -864,21 +908,28 @@ Navigation preload starts the network request for HTML documents in parallel wit
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 67: Navigation Preload — Reducing Service Worker Boot Latency
+  accDescr: Graph with 7 nodes and 7 connections. Nodes: User clicks link, Browser starts SW boot (50-200ms), Navigation preload starts HTML fetch simultaneously, SW fetch handler runs, Network response arrives, event. preloadResponse already resolved!, Serve preloaded HTML Zero extra latency. Connections: User clicks link to Browser starts SW boot (50-200ms), User clicks link to Navigation preload starts HTML fetch simultaneously, Browser starts SW boot (50-200ms) to SW fetch handler runs, Navigation preload starts HTML fetch simultaneously to Network response arrives, SW fetch handler runs to event. preloadResponse already resolved!, event. preloadResponse already resolved! to Serve preloaded HTML Zero extra latency, Network response arrives to event. preloadResponse already resolved!.
   A["User clicks link"] --> B["Browser starts<br/>SW boot (50-200ms)"]
   A --> C["Navigation preload<br/>starts HTML fetch<br/>simultaneously"]
   B --> D["SW fetch handler<br/>runs"]
   C --> E["Network response<br/>arrives"]
-  D --> F["event.preloadResponse<br/>already resolved!"]
+  D --> F["event.<br/>preloadResponse<br/>already resolved!"]
   F --> G["Serve preloaded HTML<br/>Zero extra latency"]
   E --> F
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class C pal-0173B2
+  class D pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-029E73
+  class F pal-029E73
+  class G pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -953,32 +1004,40 @@ When a new service worker is deployed, the browser downloads the new `sw.js` and
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 68: Service Worker Update Flow — Detecting a New Version
+  accDescr: Graph with 13 nodes and 12 connections. Nodes: New sw.js deployed, Browser downloads new sw.js, updatefound event fires, New SW: installing, statechange → installed, Existing controller? Old SW running?, New SW enters waiting state, notifyUpdate() Show update banner, User clicks Update Now, postMessage SKIP_WAITING to waiting SW, SW skips waiting → activating → active, controllerchange fires Page reloads, and 1 more. Connections: New sw.js deployed to Browser downloads new sw.js, Browser downloads new sw.js to updatefound event fires, updatefound event fires to New SW: installing, New SW: installing to statechange → installed, statechange → installed to Existing controller? Old SW running?, Existing controller? Old SW running? to New SW enters waiting state (Yes), New SW enters waiting state to notifyUpdate() Show update banner, notifyUpdate() Show update banner to User clicks Update Now, User clicks Update Now to postMessage SKIP_WAITING to waiting SW, postMessage SKIP_WAITING to waiting SW to SW skips waiting → activating → active, SW skips waiting → activating → active to controllerchange fires Page reloads, Existing controller? Old SW running? to SW activates directly No update needed (No (first install)).
   A["New sw.js deployed"] --> B["Browser downloads<br/>new sw.js"]
-  B --> C["updatefound event fires"]
+  B --> C["updatefound event<br/>fires"]
   C --> D["New SW: installing"]
-  D --> E["statechange → installed"]
+  D --> E["statechange →<br/>installed"]
   E --> F{"Existing controller?<br/>Old SW running?"}
   F -->|"Yes"| G["New SW enters<br/>waiting state"]
   G --> H["notifyUpdate()<br/>Show update banner"]
-  H --> I["User clicks 'Update Now'"]
-  I --> J["postMessage SKIP_WAITING<br/>to waiting SW"]
-  J --> K["SW skips waiting<br/>→ activating → active"]
-  K --> L["controllerchange fires<br/>Page reloads"]
-  F -->|"No (first install)"| M["SW activates directly<br/>No update needed"]
+  H --> I["User clicks 'Update<br/>Now'"]
+  I --> J["postMessage<br/>SKIP_WAITING<br/>to waiting SW"]
+  J --> K["SW skips waiting<br/>→ activating →<br/>active"]
+  K --> L["controllerchange<br/>fires<br/>Page reloads"]
+  F -->|"No (first install)"| M["SW activates<br/>directly<br/>No update needed"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style J fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style K fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style L fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style M fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-CA9161
+  class G pal-DE8F05
+  class H pal-CA9161
+  class I pal-CA9161
+  class J pal-0173B2
+  class K pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class L pal-029E73
+  class M pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1525,24 +1584,32 @@ Playwright's network interception can simulate offline conditions and verify tha
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Playwright test starts"] --> B["page.goto() online<br/>Populate SW cache"]
-  B --> C["waitForFunction:<br/>SW controller !== null"]
-  C --> D["context.setOffline(true)<br/>Simulate offline"]
+  accTitle: Example 75: Testing Service Workers with Playwright — Intercepting Fetch in E2E Tests
+  accDescr: Graph with 9 nodes and 8 connections. Nodes: Playwright test starts, page.goto() online Populate SW cache, C, context. setOffline(true) Simulate offline, page.goto() offline SW intercepts, SW serves cached response?, expect(heading). toBeVisible() Test PASSES, Test FAILS SW caching broken, context. setOffline(false) Restore network. Connections: Playwright test starts to page.goto() online Populate SW cache, page.goto() online Populate SW cache to C, C to context. setOffline(true) Simulate offline, context. setOffline(true) Simulate offline to page.goto() offline SW intercepts, page.goto() offline SW intercepts to SW serves cached response?, SW serves cached response? to expect(heading). toBeVisible() Test PASSES (Yes — cache hit), SW serves cached response? to Test FAILS SW caching broken (No — browser error), expect(heading). toBeVisible() Test PASSES to context. setOffline(false) Restore network.
+  A["Playwright test<br/>starts"] --> B["page.goto() online<br/>Populate SW cache"]
+  B --> C["waitForFunction:<br/>SW controller !==<br/>null"]
+  C --> D["context.<br/>setOffline(true)<br/>Simulate offline"]
   D --> E["page.goto() offline<br/>SW intercepts"]
   E --> F{"SW serves<br/>cached response?"}
-  F -->|"Yes — cache hit"| G["expect(heading).toBeVisible()<br/>Test PASSES"]
+  F -->|"Yes — cache hit"| G["expect(heading).<br/>toBeVisible()<br/>Test PASSES"]
   F -->|"No — browser error"| H["Test FAILS<br/>SW caching broken"]
-  G --> I["context.setOffline(false)<br/>Restore network"]
+  G --> I["context.<br/>setOffline(false)<br/>Restore network"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class G pal-029E73
+  class H pal-CA9161
+  class I pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1897,22 +1964,30 @@ Large PWAs can partition their service worker scope to isolate caching and updat
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 80: Multi-Page PWA Architecture — Separate Service Workers Per Section
+  accDescr: Graph with 8 nodes and 7 connections. Nodes: Browser request, URL scope match, Dashboard SW scope: /dashboard/, Editor SW scope: /editor/, Main SW scope: /, Dashboard-specific cache + strategies Independent updates, Editor-specific offline support File system integration, App shell Common routes Navigation. Connections: Browser request to URL scope match, URL scope match to Dashboard SW scope: /dashboard/ (/dashboard/*), URL scope match to Editor SW scope: /editor/ (/editor/*), URL scope match to Main SW scope: / (/* (everything else)), Dashboard SW scope: /dashboard/ to Dashboard-specific cache + strategies Independent updates, Editor SW scope: /editor/ to Editor-specific offline support File system integration, Main SW scope: / to App shell Common routes Navigation.
   A["Browser request"] --> B{"URL scope match"}
   B -->|"/dashboard/*"| C["Dashboard SW<br/>scope: /dashboard/"]
   B -->|"/editor/*"| D["Editor SW<br/>scope: /editor/"]
-  B -->|"/* (everything else)"| E["Main SW<br/>scope: /"]
+  B -->|"/* (everything<br/>else)"| E["Main SW<br/>scope: /"]
   C --> F["Dashboard-specific<br/>cache + strategies<br/>Independent updates"]
-  D --> G["Editor-specific<br/>offline support<br/>File system integration"]
+  D --> G["Editor-specific<br/>offline support<br/>File system<br/>integration"]
   E --> H["App shell<br/>Common routes<br/>Navigation"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-CA9161
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-029E73
+  class F pal-0173B2
+  class G pal-DE8F05
+  class H pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2248,8 +2323,10 @@ A comprehensive production checklist verifying all mandatory PWA requirements be
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["PWA Production<br/>Verification"] --> B["Manifest checks<br/>name, short_name, start_url<br/>display, 192px icon, 512px icon<br/>maskable icon"]
-  A --> C["Service Worker checks<br/>active controller<br/>caches populated"]
+  accTitle: Example 85: PWA Production Checklist — Manifest, Icons, HTTPS, Service Worker, Offline, Performance
+  accDescr: Graph with 9 nodes and 12 connections. Nodes: PWA Production Verification, Manifest checks name, short_name, start_url display, 192px icon, 512px icon maskable icon, Service Worker checks active controller caches populated, Security checks HTTPS or localhost, Offline checks /offline.html cached, Performance checks viewport meta theme-color meta, All PASS?, Deploy to production, Fix failing checks Re-verify. Connections: PWA Production Verification to Manifest checks name, short_name, start_url display, 192px icon, 512px icon maskable icon, PWA Production Verification to Service Worker checks active controller caches populated, PWA Production Verification to Security checks HTTPS or localhost, PWA Production Verification to Offline checks /offline.html cached, PWA Production Verification to Performance checks viewport meta theme-color meta, Manifest checks name, short_name, start_url display, 192px icon, 512px icon maskable icon to All PASS?, Service Worker checks active controller caches populated to All PASS?, Security checks HTTPS or localhost to All PASS?, Offline checks /offline.html cached to All PASS?, Performance checks viewport meta theme-color meta to All PASS?, All PASS? to Deploy to production (Yes), All PASS? to Fix failing checks Re-verify (No).
+  A["PWA Production<br/>Verification"] --> B["Manifest checks<br/>name, short_name,<br/>start_url<br/>display, 192px icon,<br/>512px icon<br/>maskable icon"]
+  A --> C["Service Worker<br/>checks<br/>active controller<br/>caches populated"]
   A --> D["Security checks<br/>HTTPS or localhost"]
   A --> E["Offline checks<br/>/offline.html cached"]
   A --> F["Performance checks<br/>viewport meta<br/>theme-color meta"]
@@ -2261,15 +2338,21 @@ graph TD
   G -->|"Yes"| H["Deploy to production"]
   G -->|"No"| I["Fix failing checks<br/>Re-verify"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-CA9161
+  class G pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class H pal-029E73
+  class I pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

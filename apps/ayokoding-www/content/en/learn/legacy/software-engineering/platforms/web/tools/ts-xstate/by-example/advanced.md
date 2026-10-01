@@ -18,16 +18,19 @@ A parent machine can spawn multiple named child actors in a single `assign` entr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 55: Actor Tree — Spawning a Two-Child Hierarchy
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Root Machine (parent), authActor (AuthMachine), dataActor (DataMachine). Connections: Root Machine (parent) to authActor (AuthMachine) (spawn40auth Machine41), Root Machine (parent) to dataActor (DataMachine) (spawn40data Machine41).
     Root["Root Machine<br/>(parent)"]:::blue
     Auth["authActor<br/>(AuthMachine)"]:::teal
     Data["dataActor<br/>(DataMachine)"]:::orange
 
-    Root -->|"spawn#40;authMachine#41;"| Auth
-    Root -->|"spawn#40;dataMachine#41;"| Data
+    Root -->|"spawn#40;auth<br/>Machine#41;"| Auth
+    Root -->|"spawn#40;data<br/>Machine#41;"| Data
 
-    classDef blue fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    classDef teal fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,stroke-width:2px,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,stroke-width:2px,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -110,20 +113,23 @@ A parent machine acting as mediator receives events forwarded by child actors an
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 56: Mediator Pattern — Parent Routes Child Events
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Producer A (childA), Producer B (childB), Mediator (parent), Consumer X (childX), Consumer Y (childY). Connections: Producer A (childA) to Mediator (parent) (sendParent40NOTIFY41), Producer B (childB) to Mediator (parent) (sendParent40NOTIFY41), Mediator (parent) to Consumer X (childX) (sendTo childX), Mediator (parent) to Consumer Y (childY) (sendTo childY).
     P1["Producer A<br/>(childA)"]:::teal
     P2["Producer B<br/>(childB)"]:::teal
     Med["Mediator<br/>(parent)"]:::blue
     C1["Consumer X<br/>(childX)"]:::orange
     C2["Consumer Y<br/>(childY)"]:::orange
 
-    P1 -->|"sendParent#40;NOTIFY#41;"| Med
-    P2 -->|"sendParent#40;NOTIFY#41;"| Med
+    P1 -->|"sendParent(NOTIFY)"| Med
+    P2 -->|"sendParent(NOTIFY)"| Med
     Med -->|"sendTo childX"| C1
     Med -->|"sendTo childY"| C2
 
-    classDef blue fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    classDef teal fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,stroke-width:2px,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,stroke-width:2px,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -253,6 +259,8 @@ An actor pool holds an array of worker `ActorRef`s in context. A dispatcher mach
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 57: Actor Pools — Round-Robin Worker Dispatch
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Dispatcher, Worker 0, Worker 1, Worker 2. Connections: Dispatcher to Worker 0 (round-robin JOB), Dispatcher to Worker 1 (round-robin JOB), Dispatcher to Worker 2 (round-robin JOB).
     D["Dispatcher"]:::blue
     W1["Worker 0"]:::teal
     W2["Worker 1"]:::teal
@@ -262,8 +270,9 @@ graph LR
     D -->|"round-robin JOB"| W2
     D -->|"round-robin JOB"| W3
 
-    classDef blue fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    classDef teal fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,stroke-width:2px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -508,9 +517,11 @@ A complete auth machine covers the full login lifecycle: unauthenticated → aut
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 59: Authentication Flow
+    accDescr: State diagram with 5 items: start or end, unauthenticated, authenticating, authenticated, failed. Relationships: start or end to unauthenticated; unauthenticated to authenticating: LOGIN; authenticating to authenticated: onDone 40token+user41; authenticating to failed: onError; failed to authenticating: RETRY; authenticated to unauthenticated: LOGOUT.
     [*] --> unauthenticated
     unauthenticated --> authenticating : LOGIN
-    authenticating --> authenticated : onDone #40;token+user#41;
+    authenticating --> authenticated : onDone (token+user)
     authenticating --> failed : onError
     failed --> authenticating : RETRY
     authenticated --> unauthenticated : LOGOUT
@@ -656,9 +667,11 @@ A wizard machine advances linearly through steps, supports back navigation, accu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 60: Multi-Step Wizard
+    accDescr: State diagram with 7 items: start or end, step1, step2, step3, submitting, success, failure. Relationships: start or end to step1; step1 to step2: NEXT 40name41; step2 to step3: NEXT 40email41; step2 to step1: BACK; step3 to submitting: SUBMIT; step3 to step2: BACK; submitting to success: onDone; submitting to failure: onError.
     [*] --> step1
-    step1 --> step2 : NEXT #40;name#41;
-    step2 --> step3 : NEXT #40;email#41;
+    step1 --> step2 : NEXT (name)
+    step2 --> step3 : NEXT (email)
     step2 --> step1 : BACK
     step3 --> submitting : SUBMIT
     step3 --> step2 : BACK
@@ -812,6 +825,8 @@ A WebSocket machine models the full connection lifecycle using a `fromCallback` 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 61: WebSocket Connection Machine
+    accDescr: State diagram with 5 items: start or end, disconnected, connecting, connected, reconnecting. Relationships: start or end to disconnected; disconnected to connecting: CONNECT; connecting to connected: ws.onopen; connecting to disconnected: ws.onerror; connected to disconnected: DISCONNECT; connected to reconnecting: ws.onclose; reconnecting to connecting: after 2000ms; reconnecting to disconnected: GIVE_UP.
     [*] --> disconnected
     disconnected --> connecting : CONNECT
     connecting --> connected : ws.onopen
@@ -935,12 +950,14 @@ A fetch machine retries failed requests with exponential backoff using XState's 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 62: Data Fetching with Exponential Backoff Retry
+    accDescr: State diagram with 5 items: start or end, idle, loading, success, failed. Relationships: start or end to idle; idle to loading: FETCH; loading to success: onDone; loading to failed: onError; failed to loading: after backoff; failed to idle: CANCEL 40retries maxed41.
     [*] --> idle
     idle --> loading : FETCH
     loading --> success : onDone
     loading --> failed : onError
     failed --> loading : after backoff
-    failed --> idle : CANCEL #40;retries maxed#41;
+    failed --> idle : CANCEL (retries maxed)
 ```
 
 ```typescript
@@ -1083,6 +1100,8 @@ An optimistic update machine applies a context change immediately (optimistic), 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 63: Optimistic Update
+    accDescr: Sequence diagram between UI, Machine, API. Messages: UI to Machine: UPDATE event; Machine to Machine: apply optimistic context + store previous; Machine to API: invoke updateAPI; API to Machine: onDone; Machine to Machine: clear previousValue; API to Machine: onError; Machine to Machine: restore previousValue (rollback); Machine to UI: error state.
     participant UI
     participant Machine
     participant API
@@ -1226,6 +1245,8 @@ A machine controls form submission UI state while React Query manages the server
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 64: XState + React Query
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: XState FSM (UI state), React Query (server cache), React Component. Connections: React Component to XState FSM (UI state) (send40SUBMIT41), XState FSM (UI state) to React Query (server cache) (invoke mutation), React Query (server cache) to XState FSM (UI state) (onDone / onError), XState FSM (UI state) to React Component (snapshot).
     XS["XState FSM<br/>(UI state)"]:::blue
     RQ["React Query<br/>(server cache)"]:::teal
     UI["React Component"]:::orange
@@ -1235,9 +1256,10 @@ graph TD
     RQ -->|"onDone / onError"| XS
     XS -->|"snapshot"| UI
 
-    classDef blue fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    classDef teal fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,stroke-width:2px,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,stroke-width:2px,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1332,19 +1354,22 @@ export const formMachine = createMachine(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 65: XState + Effect.ts
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Effect pipeline (typed errors), Effect.runPromise (bridge), XState fromPromise (actor), Machine onDone / onError. Connections: Effect pipeline (typed errors) to Effect.runPromise (bridge) (Effect60A, E, R62), Effect.runPromise (bridge) to XState fromPromise (actor) (Promise60A62), XState fromPromise (actor) to Machine onDone / onError (output / error).
     E["Effect pipeline<br/>(typed errors)"]:::teal
     P["Effect.runPromise<br/>(bridge)"]:::orange
     X["XState fromPromise<br/>(actor)"]:::blue
     M["Machine onDone<br/>/ onError"]:::purple
 
-    E -->|"Effect#60;A, E, R#62;"| P
+    E -->|"Effect#60;A, E,<br/>R#62;"| P
     P -->|"Promise#60;A#62;"| X
     X -->|"output / error"| M
 
-    classDef blue fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    classDef teal fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,stroke-width:2px,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,stroke-width:2px,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,stroke-width:2px,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1582,8 +1607,10 @@ React Hook Form (RHF) owns field registration, validation, and dirty tracking. X
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 67: XState + React Hook Form
+    accDescr: State diagram with 5 items: start or end, idle, submitting, done, error. Relationships: start or end to idle; idle to submitting: SUBMIT 40validated data41; submitting to done: onDone; submitting to error: onError; error to idle: RESET.
     [*] --> idle
-    idle --> submitting : SUBMIT #40;validated data#41;
+    idle --> submitting : SUBMIT (validated data)
     submitting --> done : onDone
     submitting --> error : onError
     error --> idle : RESET
@@ -1693,19 +1720,22 @@ export const rhfMachine = createMachine(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 68: Model-Based Testing with @xstate/graph
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: State Machine Definition, createTestModel 40@xstate/ graph41, Test Paths 40getShortest Paths41, Test Runner 40vitest /jest41. Connections: State Machine Definition to createTestModel 40@xstate/ graph41, createTestModel 40@xstate/ graph41 to Test Paths 40getShortest Paths41, Test Paths 40getShortest Paths41 to Test Runner 40vitest /jest41.
     M["State Machine<br/>Definition"]:::blue
-    G["createTestModel<br/>#40;@xstate/graph#41;"]:::orange
-    P["Test Paths<br/>#40;getShortestPaths#41;"]:::teal
-    T["Test Runner<br/>#40;vitest / jest#41;"]:::purple
+    G["createTestModel<br/>#40;@xstate/<br/>graph#41;"]:::orange
+    P["Test Paths<br/>#40;getShortest<br/>Paths#41;"]:::teal
+    T["Test Runner<br/>#40;vitest /jest#41;"]:::purple
 
     M --> G
     G --> P
     P --> T
 
-    classDef blue fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,stroke-width:2px,color:#fff
-    classDef teal fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,stroke-width:2px,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,stroke-width:2px,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2029,6 +2059,8 @@ A history state (`type: 'history'`) restores the last active substate when re-en
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 72: Deep History States
+    accDescr: State diagram with 6 items: start or end, editor, writing, formatting, paused, editor_hist. Relationships: start or end to editor; start or end to writing; writing to formatting: FORMAT; formatting to writing: WRITE; editor to paused: PAUSE; paused to editor_hist: RESUME.
     [*] --> editor
     state editor {
         [*] --> writing
@@ -2122,6 +2154,8 @@ XState actors expose `getPersistedSnapshot()` for serialisation and accept a `sn
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 73: Snapshot Serialization and Restoration
+    accDescr: Sequence diagram between Actor, localStorage, Restored Actor. Messages: Actor to Actor: run transitions; Actor to localStorage: getPersistedSnapshot() → JSON.stringify; localStorage to Restored Actor: JSON.parse → createActor40machine, 123snapshot12541; Restored Actor to Restored Actor: resumes from exact prior state.
     participant Actor
     participant Storage as localStorage
     participant NewActor as Restored Actor
@@ -2287,25 +2321,28 @@ XState v5 renames and restructures several core APIs. This example shows the mos
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 75: XState v4 → v5 Migration Reference
+    accDescr: Graph with 8 nodes and 4 connections. Nodes: interpret40machine41, Machine40config41, services: 123 src 125, assign40123 obj 12541, create Actor40machine41, createMachine40config41, actors: 123 src 125, assign40fn41 or inline. Connections: interpret40machine41 to create Actor40machine41 (migrates to), Machine40config41 to createMachine40config41 (migrates to), services: 123 src 125 to actors: 123 src 125 (migrates to), assign40123 obj 12541 to assign40fn41 or inline (migrates to).
     subgraph v4["XState v4 API"]
-        A4["interpret#40;machine#41;"]:::orange
-        B4["Machine#40;config#41;"]:::orange
-        C4["services: #123; src #125;"]:::orange
-        D4["assign#40;#123; obj #125;#41;"]:::orange
+        A4["interpret(machine)"]:::orange
+        B4["Machine(config)"]:::orange
+        C4["services: #123; src<br/>#125;"]:::orange
+        D4["assign#40;#123; obj<br/>#125;#41;"]:::orange
     end
     subgraph v5["XState v5 API"]
-        A5["createActor#40;machine#41;"]:::blue
-        B5["createMachine#40;config#41;"]:::blue
-        C5["actors: #123; src #125;"]:::blue
-        D5["assign#40;fn#41; or inline"]:::blue
+        A5["create<br/>Actor#40;machine#41;"]:::blue
+        B5["createMachine(<br/>config)"]:::blue
+        C5["actors: #123; src<br/>#125;"]:::blue
+        D5["assign#40;fn#41; or<br/>inline"]:::blue
     end
     A4 -->|migrates to| A5
     B4 -->|migrates to| B5
     C4 -->|migrates to| C5
     D4 -->|migrates to| D5
 
-    classDef blue fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,stroke-width:2px,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **v4 pattern (deprecated):**
@@ -2416,19 +2453,22 @@ A Redux-style reducer and an XState machine both manage state, but they model di
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 76: Statechart vs Reducer — When XState Adds Value
+    accDescr: Graph with 6 nodes and 0 connections. Nodes: Any action in any state, No impossible-state guard, Side effects external, Events only valid in current state, Impossible states structurally forbidden, Effects co-located 40actions/ invoke41.
     subgraph Reducer["Redux Reducer"]
-        R1["Any action in any state"]:::orange
-        R2["No impossible-state guard"]:::orange
-        R3["Side effects external"]:::orange
+        R1["Any action in any<br/>state"]:::orange
+        R2["No impossible-state<br/>guard"]:::orange
+        R3["Side effects<br/>external"]:::orange
     end
     subgraph FSM["XState Machine"]
-        F1["Events only valid in current state"]:::blue
-        F2["Impossible states structurally forbidden"]:::blue
-        F3["Effects co-located #40;actions/invoke#41;"]:::blue
+        F1["Events only valid in<br/>current state"]:::blue
+        F2["Impossible states<br/>structurally<br/>forbidden"]:::blue
+        F3["Effects co-located<br/>#40;actions/<br/>invoke#41;"]:::blue
     end
 
-    classDef blue fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,stroke-width:2px,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Redux reducer approach:**
@@ -2625,6 +2665,8 @@ A machine can be run on the server to compute initial state for a request, seria
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 78: Server-Side Rendering and Client Hydration
+    accDescr: Sequence diagram between Server, Client, Client Actor. Messages: Server to Server: createActor40machine41.start4041; Server to Server: run transitions 40set initial state41; Server to Server: getPersistedSnapshot4041; Server to Client: JSON snapshot in HTML/props; Client to Client Actor: createActor40machine, 123snapshot12541.start4041; Client Actor to Client: hydrated -- no flicker, no re-fetch.
     participant Server
     participant Client
     participant Actor as Client Actor
@@ -2818,11 +2860,13 @@ A complete mini-service demonstrates: a root `AppMachine` that spawns `AuthActor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 80: Production Actor System — Full Mini-Service
+    accDescr: Graph with 5 nodes and 9 connections. Nodes: AppMachine 40root41, AuthActor 40authMachine41, DataActor 40dataMachine41, NotifActor 40notifMachine41, Error Boundary 40AppMachine error state41. Connections: AppMachine 40root41 to AuthActor 40authMachine41 (spawn), AppMachine 40root41 to DataActor 40dataMachine41 (spawn), AppMachine 40root41 to NotifActor 40notifMachine41 (spawn), AuthActor 40authMachine41 to Error Boundary 40AppMachine error state41 (CHILD_ERROR), DataActor 40dataMachine41 to Error Boundary 40AppMachine error state41 (CHILD_ERROR), NotifActor 40notifMachine41 to Error Boundary 40AppMachine error state41 (CHILD_ERROR), AppMachine 40root41 to AuthActor 40authMachine41 (STOP: stop all), AppMachine 40root41 to DataActor 40dataMachine41 (STOP: stop all), AppMachine 40root41 to NotifActor 40notifMachine41 (STOP: stop all).
     App["AppMachine<br/>#40;root#41;"]:::blue
     Auth["AuthActor<br/>#40;authMachine#41;"]:::teal
     Data["DataActor<br/>#40;dataMachine#41;"]:::orange
     Notif["NotifActor<br/>#40;notifMachine#41;"]:::purple
-    EB["Error Boundary<br/>#40;AppMachine error state#41;"]:::brown
+    EB["Error Boundary<br/>#40;AppMachine error<br/>state#41;"]:::brown
 
     App -->|"spawn"| Auth
     App -->|"spawn"| Data
@@ -2834,11 +2878,12 @@ graph TD
     App -->|"STOP: stop all"| Data
     App -->|"STOP: stop all"| Notif
 
-    classDef blue fill:#0173B2,stroke:#000,stroke-width:2px,color:#fff
-    classDef teal fill:#029E73,stroke:#000,stroke-width:2px,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,stroke-width:2px,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,stroke-width:2px,color:#fff
-    classDef brown fill:#CA9161,stroke:#000,stroke-width:2px,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,stroke-width:2px,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,stroke-width:2px,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,stroke-width:2px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

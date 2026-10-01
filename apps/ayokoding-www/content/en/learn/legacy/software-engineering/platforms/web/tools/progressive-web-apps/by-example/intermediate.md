@@ -28,21 +28,28 @@ Workbox is Google's production-grade library for service workers. Version 7.4.0 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Build Tool<br/>(webpack/Vite/Rollup)"] --> B["Workbox Plugin"]
+  accTitle: Example 29: Workbox 7.4.0 Setup — workbox-webpack-plugin and workbox-build
+  accDescr: Graph with 7 nodes and 7 connections. Nodes: Build Tool (webpack/Vite/ Rollup), Workbox Plugin, GenerateSW mode Full SW generated, InjectManifest mode Custom SW template, Output: sw.js Precache + strategies, Output: sw.js __WB_MANIFEST injected, Serve to browser. Connections: Build Tool (webpack/Vite/ Rollup) to Workbox Plugin, Workbox Plugin to GenerateSW mode Full SW generated, Workbox Plugin to InjectManifest mode Custom SW template, GenerateSW mode Full SW generated to Output: sw.js Precache + strategies, InjectManifest mode Custom SW template to Output: sw.js __WB_MANIFEST injected, Output: sw.js Precache + strategies to Serve to browser, Output: sw.js __WB_MANIFEST injected to Serve to browser.
+  A["Build Tool<br/>(webpack/Vite/<br/>Rollup)"] --> B["Workbox Plugin"]
   B --> C["GenerateSW mode<br/>Full SW generated"]
   B --> D["InjectManifest mode<br/>Custom SW template"]
-  C --> E["Output: sw.js<br/>Precache + strategies"]
-  D --> F["Output: sw.js<br/>__WB_MANIFEST injected"]
+  C --> E["Output: sw.js<br/>Precache +<br/>strategies"]
+  D --> F["Output: sw.js<br/>__WB_MANIFEST<br/>injected"]
   E --> G["Serve to browser"]
   F --> G
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-DE8F05
+  class D pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-029E73
+  class F pal-029E73
+  class G pal-0173B2
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -150,26 +157,33 @@ self.addEventListener("install", (event) => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Incoming fetch request"] --> B["Workbox Router"]
-  B --> C{"Match route 1?<br/>destination === image"}
+  accTitle: Example 31: Workbox Route Registration — registerRoute with URL Patterns
+  accDescr: Graph with 11 nodes and 10 connections. Nodes: Incoming fetch request, Workbox Router, C, CacheFirst images-cache, Match route 2? pathname /api/*, NetworkFirst api-cache, Match route 3? origin fonts.googleapis.com, StaleWhileRevalidate google-fonts, I, navigate, NetworkFirst pages-cache. Connections: Incoming fetch request to Workbox Router, Workbox Router to C, C to CacheFirst images-cache (Yes), C to Match route 2? pathname /api/* (No), Match route 2? pathname /api/* to NetworkFirst api-cache (Yes), Match route 2? pathname /api/* to Match route 3? origin fonts.googleapis.com (No), Match route 3? origin fonts.googleapis.com to StaleWhileRevalidate google-fonts (Yes), Match route 3? origin fonts.googleapis.com to I (No), I to navigate, I to NetworkFirst pages-cache.
+  A["Incoming fetch<br/>request"] --> B["Workbox Router"]
+  B --> C{"Match route 1?<br/>destination ===<br/>image"}
   C -->|"Yes"| D["CacheFirst<br/>images-cache"]
   C -->|"No"| E{"Match route 2?<br/>pathname /api/*"}
   E -->|"Yes"| F["NetworkFirst<br/>api-cache"]
-  E -->|"No"| G{"Match route 3?<br/>origin fonts.googleapis.com"}
+  E -->|"No"| G{"Match route 3?<br/>origin<br/>fonts.googleapis.com"}
   G -->|"Yes"| H["StaleWhileRevalidate<br/>google-fonts"]
   G -->|"No"| I["mode === navigate"]
   I --> J["NetworkFirst<br/>pages-cache"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-029E73
+  class E pal-CA9161
+  class F pal-029E73
+  class G pal-CA9161
+  class H pal-029E73
+  class I pal-CA9161
+  class J pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -422,7 +436,9 @@ registerRoute(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Request /api/articles"] --> B["StaleWhileRevalidate<br/>returns cached response"]
+  accTitle: Example 35: Workbox BroadcastUpdatePlugin — Notify Clients When Cache Updates
+  accDescr: Graph with 10 nodes and 9 connections. Nodes: Request /api/articles, StaleWhileRevalidate returns cached response, User sees stale data instantly, Network fetch in background, Response headers changed?, Update cache, BroadcastChannel workbox-updates, All open tabs receive message, Show New content available toast, No broadcast Cache unchanged. Connections: Request /api/articles to StaleWhileRevalidate returns cached response, StaleWhileRevalidate returns cached response to User sees stale data instantly, Request /api/articles to Network fetch in background, Network fetch in background to Response headers changed?, Response headers changed? to Update cache (ETag/Last-Modified different), Update cache to BroadcastChannel workbox-updates, BroadcastChannel workbox-updates to All open tabs receive message, All open tabs receive message to Show New content available toast, Response headers changed? to No broadcast Cache unchanged (Same headers).
+  A["Request<br/>/api/articles"] --> B["StaleWhileRevalidate<br/>returns cached<br/>response"]
   B --> C["User sees stale data<br/>instantly"]
   A --> D["Network fetch<br/>in background"]
   D --> E{"Response headers<br/>changed?"}
@@ -432,16 +448,22 @@ graph LR
   H --> I["Show 'New content<br/>available' toast"]
   E -->|"Same headers"| J["No broadcast<br/>Cache unchanged"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style J fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  class D pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-DE8F05
+  class G pal-DE8F05
+  class H pal-029E73
+  class I pal-029E73
+  class J pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -524,20 +546,27 @@ function showUpdateNotification(message) {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 36: @serwist/next Setup — Modern Next.js PWA Integration
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: next.config.mjs withSerwist(config), Next.js build, @serwist/next compiles src/sw.ts → public/sw.js, sw.js served at https://domain/sw.js, Browser registers SW on page load, Serwist precaches __SW_MANIFEST assets, defaultCache routes handle runtime requests. Connections: next.config.mjs withSerwist(config) to Next.js build, Next.js build to @serwist/next compiles src/sw.ts → public/sw.js, @serwist/next compiles src/sw.ts → public/sw.js to sw.js served at https://domain/sw.js, sw.js served at https://domain/sw.js to Browser registers SW on page load, Browser registers SW on page load to Serwist precaches __SW_MANIFEST assets, Serwist precaches __SW_MANIFEST assets to defaultCache routes handle runtime requests.
   A["next.config.mjs<br/>withSerwist(config)"] --> B["Next.js build"]
-  B --> C["@serwist/next compiles<br/>src/sw.ts → public/sw.js"]
+  B --> C["@serwist/next<br/>compiles<br/>src/sw.ts →<br/>public/sw.js"]
   C --> D["sw.js served at<br/>https://domain/sw.js"]
   D --> E["Browser registers SW<br/>on page load"]
   E --> F["Serwist precaches<br/>__SW_MANIFEST assets"]
-  F --> G["defaultCache routes<br/>handle runtime requests"]
+  F --> G["defaultCache routes<br/>handle runtime<br/>requests"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-029E73
+  class G pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -667,27 +696,35 @@ serwist.addEventListeners();
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["POST /api/submit-form"] --> B["NetworkOnly + BackgroundSyncPlugin"]
+  accTitle: Example 38: Workbox BackgroundSyncPlugin for Failed POST Requests
+  accDescr: Graph with 10 nodes and 10 connections. Nodes: POST /api/submit-form, NetworkOnly + BackgroundSyncPlugin, Network available?, Request sent to server Response returned, Request queued in IndexedDB (workbox- background-sync), Background Sync registered Chrome/Edge only, OS wakes SW when connectivity restored, SW retries queued requests, maxRetentionTime expired?, Request discarded. Connections: POST /api/submit-form to NetworkOnly + BackgroundSyncPlugin, NetworkOnly + BackgroundSyncPlugin to Network available?, Network available? to Request sent to server Response returned (Yes), Network available? to Request queued in IndexedDB (workbox- background-sync) (No (offline)), Request queued in IndexedDB (workbox- background-sync) to Background Sync registered Chrome/Edge only, Background Sync registered Chrome/Edge only to OS wakes SW when connectivity restored, OS wakes SW when connectivity restored to SW retries queued requests, SW retries queued requests to maxRetentionTime expired?, maxRetentionTime expired? to Request sent to server Response returned (No), maxRetentionTime expired? to Request discarded (Yes (>24h)).
+  A["POST<br/>/api/submit-form"] --> B["NetworkOnly +<br/>BackgroundSyncPlugin"]
   B --> C{"Network available?"}
-  C -->|"Yes"| D["Request sent to server<br/>Response returned"]
-  C -->|"No (offline)"| E["Request queued in<br/>IndexedDB (workbox-background-sync)"]
-  E --> F["Background Sync registered<br/>Chrome/Edge only"]
-  F --> G["OS wakes SW<br/>when connectivity restored"]
-  G --> H["SW retries queued requests"]
+  C -->|"Yes"| D["Request sent to<br/>server<br/>Response returned"]
+  C -->|"No (offline)"| E["Request queued in<br/>IndexedDB (workbox-<br/>background-sync)"]
+  E --> F["Background Sync<br/>registered<br/>Chrome/Edge only"]
+  F --> G["OS wakes SW<br/>when connectivity<br/>restored"]
+  G --> H["SW retries queued<br/>requests"]
   H --> I{"maxRetentionTime<br/>expired?"}
   I -->|"No"| D
   I -->|"Yes (>24h)"| J["Request discarded"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style G fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style J fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-DE8F05
+  class F pal-DE8F05
+  class G pal-0173B2
+  class H pal-0173B2
+  class I pal-CA9161
+  class J pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -839,26 +876,34 @@ Web Push uses VAPID (Voluntary Application Server Identification) keys to authen
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Server generates<br/>VAPID key pair"] --> B["Public key → browser<br/>Private key → server only"]
-  B --> C["Browser calls<br/>pushManager.subscribe()"]
-  C --> D["Push service creates<br/>subscription endpoint"]
-  D --> E["Browser returns<br/>PushSubscription to app"]
-  E --> F["App POSTs subscription<br/>to server /api/push/subscribe"]
-  F --> G["Server stores subscription<br/>in database"]
-  G --> H["Server sends push via<br/>web-push + VAPID private key"]
+  accTitle: Example 40: Push Notifications — VAPID Key Generation and pushManager.subscribe
+  accDescr: Graph with 10 nodes and 9 connections. Nodes: Server generates VAPID key pair, Public key → browser Private key → server only, Browser calls pushManager. subscribe(), Push service creates subscription endpoint, Browser returns PushSubscription to app, App POSTs subscription to server /api/push/subscribe, Server stores subscription in database, Server sends push via web-push + VAPID private key, Push service routes encrypted message, SW receives push event shows notification. Connections: Server generates VAPID key pair to Public key → browser Private key → server only, Public key → browser Private key → server only to Browser calls pushManager. subscribe(), Browser calls pushManager. subscribe() to Push service creates subscription endpoint, Push service creates subscription endpoint to Browser returns PushSubscription to app, Browser returns PushSubscription to app to App POSTs subscription to server /api/push/subscribe, App POSTs subscription to server /api/push/subscribe to Server stores subscription in database, Server stores subscription in database to Server sends push via web-push + VAPID private key, Server sends push via web-push + VAPID private key to Push service routes encrypted message, Push service routes encrypted message to SW receives push event shows notification.
+  A["Server generates<br/>VAPID key pair"] --> B["Public key → browser<br/>Private key → server<br/>only"]
+  B --> C["Browser calls<br/>pushManager.<br/>subscribe()"]
+  C --> D["Push service creates<br/>subscription<br/>endpoint"]
+  D --> E["Browser returns<br/>PushSubscription to<br/>app"]
+  E --> F["App POSTs<br/>subscription<br/>to server<br/>/api/push/subscribe"]
+  F --> G["Server stores<br/>subscription<br/>in database"]
+  G --> H["Server sends push<br/>via<br/>web-push + VAPID<br/>private key"]
   H --> I["Push service routes<br/>encrypted message"]
-  I --> J["SW receives push event<br/>shows notification"]
+  I --> J["SW receives push<br/>event<br/>shows notification"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class C pal-0173B2
+  class D pal-0173B2
+  class E pal-DE8F05
+  class F pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class G pal-CA9161
+  class H pal-CA9161
+  class I pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class J pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1049,11 +1094,13 @@ The `notificationclick` event fires in the service worker when the user taps a n
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["User taps notification"] --> B["SW notificationclick fires"]
+  accTitle: Example 43: notificationclick Handler — Focus Existing Window or Open New One
+  accDescr: Graph with 11 nodes and 11 connections. Nodes: User taps notification, SW notificationclick fires, Close notification, event.action?, Return — no navigation, targetUrl = /orders/id, targetUrl = /, clients.matchAll(), Existing tab on same origin?, focus() + navigate() existing tab, clients.openWindow() new tab. Connections: User taps notification to SW notificationclick fires, SW notificationclick fires to Close notification, Close notification to event.action?, event.action? to Return — no navigation (dismiss), event.action? to targetUrl = /orders/id (view-order), event.action? to targetUrl = / (body tap (empty)), targetUrl = /orders/id to clients.matchAll(), targetUrl = / to clients.matchAll(), clients.matchAll() to Existing tab on same origin?, Existing tab on same origin? to focus() + navigate() existing tab (Yes), Existing tab on same origin? to clients.openWindow() new tab (No).
+  A["User taps<br/>notification"] --> B["SW notificationclick<br/>fires"]
   B --> C["Close notification"]
   C --> D{"event.action?"}
-  D -->|"'dismiss'"| E["Return — no navigation"]
-  D -->|"'view-order'"| F["targetUrl = /orders/id"]
+  D -->|"'dismiss'"| E["Return — no<br/>navigation"]
+  D -->|"'view-order'"| F["targetUrl =<br/>/orders/id"]
   D -->|"body tap (empty)"| G["targetUrl = /"]
   F --> H["clients.matchAll()"]
   G --> H
@@ -1061,17 +1108,23 @@ graph TD
   I -->|"Yes"| J["focus() + navigate()<br/>existing tab"]
   I -->|"No"| K["clients.openWindow()<br/>new tab"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style H fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style K fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-DE8F05
+  class F pal-DE8F05
+  class G pal-DE8F05
+  class H pal-0173B2
+  class I pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class J pal-029E73
+  class K pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1251,26 +1304,34 @@ The `idb` library provides a promise-based wrapper around the raw IndexedDB API.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["openDB('my-app-db', 1)"] --> B{"Database exists<br/>at version 1?"}
-  B -->|"No / version mismatch"| C["upgrade() callback<br/>creates object stores"]
-  C --> D["createObjectStore('tasks'<br/>keyPath: 'id', autoIncrement)"]
-  C --> E["createObjectStore('sync-queue'<br/>keyPath: 'id', autoIncrement)"]
-  D --> F["createIndex('by-status', 'status')"]
+  accTitle: Example 45: IndexedDB with idb v8 — openDB, Store Definitions, Transactions
+  accDescr: Graph with 9 nodes and 10 connections. Nodes: openDB(my-app-db, 1), Database exists at version 1?, upgrade() callback creates object stores, createObject Store(tasks keyPath: id, autoIncrement), createObject Store(sync-queue keyPath: id, autoIncrement), createIndex(by- status, status), Return existing DB no upgrade, IDBDatabase ready, db.add / db.get db.put / db.getAllFromIndex. Connections: openDB(my-app-db, 1) to Database exists at version 1?, Database exists at version 1? to upgrade() callback creates object stores (No /version mismatch), upgrade() callback creates object stores to createObject Store(tasks keyPath: id, autoIncrement), upgrade() callback creates object stores to createObject Store(sync-queue keyPath: id, autoIncrement), createObject Store(tasks keyPath: id, autoIncrement) to createIndex(by- status, status), Database exists at version 1? to Return existing DB no upgrade (Yes, same version), createIndex(by- status, status) to IDBDatabase ready, createObject Store(sync-queue keyPath: id, autoIncrement) to IDBDatabase ready, Return existing DB no upgrade to IDBDatabase ready, IDBDatabase ready to db.add / db.get db.put / db.getAllFromIndex.
+  A["openDB('my-app-db',<br/>1)"] --> B{"Database exists<br/>at version 1?"}
+  B -->|"No /version<br/>mismatch"| C["upgrade() callback<br/>creates object<br/>stores"]
+  C --> D["createObject<br/>Store('tasks'<br/>keyPath: 'id',<br/>autoIncrement)"]
+  C --> E["createObject<br/>Store('sync-queue'<br/>keyPath: 'id',<br/>autoIncrement)"]
+  D --> F["createIndex('by-<br/>status', 'status')"]
   B -->|"Yes, same version"| G["Return existing DB<br/>no upgrade"]
   F --> H["IDBDatabase ready"]
   E --> H
   G --> H
-  H --> I["db.add / db.get<br/>db.put / db.getAllFromIndex"]
+  H --> I["db.add / db.get<br/>db.put /<br/>db.getAllFromIndex"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-DE8F05
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class D pal-0173B2
+  class E pal-0173B2
+  class F pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class G pal-029E73
+  class H pal-029E73
+  class I pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1434,28 +1495,36 @@ The Screen Wake Lock API prevents the device screen from dimming or locking duri
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["User starts active task"] --> B["navigator.wakeLock.request('screen')"]
+  accTitle: Example 47: Screen Wake Lock API — Prevent Screen Sleep During Active Tasks
+  accDescr: Graph with 10 nodes and 11 connections. Nodes: User starts active task, navigator.wakeLock. request(screen), Permission granted?, WakeLockSentinel acquired Screen stays on, DOMException thrown Handle gracefully, Page visibility changes?, Browser auto-releases wake lock, release event fires wakeLock = null, Task still active?, Task ended. Connections: User starts active task to navigator.wakeLock. request(screen), navigator.wakeLock. request(screen) to Permission granted?, Permission granted? to WakeLockSentinel acquired Screen stays on (Yes), Permission granted? to DOMException thrown Handle gracefully (No (page hidden)), WakeLockSentinel acquired Screen stays on to Page visibility changes?, Page visibility changes? to Browser auto-releases wake lock (page hidden), Browser auto-releases wake lock to release event fires wakeLock = null, release event fires wakeLock = null to Task still active?, Task still active? to navigator.wakeLock. request(screen) (Yes + page visible), Task still active? to Task ended (No), Page visibility changes? to WakeLockSentinel acquired Screen stays on (page still visible).
+  A["User starts active<br/>task"] --> B["navigator.wakeLock.<br/>request('screen')"]
   B --> C{"Permission granted?"}
-  C -->|"Yes"| D["WakeLockSentinel acquired<br/>Screen stays on"]
+  C -->|"Yes"| D["WakeLockSentinel<br/>acquired<br/>Screen stays on"]
   C -->|"No (page hidden)"| E["DOMException thrown<br/>Handle gracefully"]
   D --> F{"Page visibility<br/>changes?"}
-  F -->|"page hidden"| G["Browser auto-releases<br/>wake lock"]
+  F -->|"page hidden"| G["Browser<br/>auto-releases<br/>wake lock"]
   G --> H["release event fires<br/>wakeLock = null"]
   H --> I{"Task still active?"}
   I -->|"Yes + page visible"| B
   I -->|"No"| J["Task ended"]
   F -->|"page still visible"| D
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style H fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-DE8F05
+  class F pal-CA9161
+  class G pal-DE8F05
+  class H pal-DE8F05
+  class I pal-CA9161
+  class J pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1757,24 +1826,32 @@ App shortcuts create contextual quick-action entries in the app's right-click me
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 51: App Shortcuts in the Manifest
+  accDescr: Graph with 8 nodes and 9 connections. Nodes: manifest.json shortcuts array, OS reads on install, Android: long-press icon, Windows: right-click taskbar, macOS: right-click dock, Shortcut menu appears New Task /Schedule / Settings, User taps shortcut, PWA opens at shortcut URL e.g. /tasks/new. Connections: manifest.json shortcuts array to OS reads on install, OS reads on install to Android: long-press icon, OS reads on install to Windows: right-click taskbar, OS reads on install to macOS: right-click dock, Android: long-press icon to Shortcut menu appears New Task /Schedule / Settings, Windows: right-click taskbar to Shortcut menu appears New Task /Schedule / Settings, macOS: right-click dock to Shortcut menu appears New Task /Schedule / Settings, Shortcut menu appears New Task /Schedule / Settings to User taps shortcut, User taps shortcut to PWA opens at shortcut URL e.g. /tasks/new.
   A["manifest.json<br/>shortcuts array"] --> B["OS reads on install"]
-  B --> C["Android: long-press icon"]
-  B --> D["Windows: right-click taskbar"]
-  B --> E["macOS: right-click dock"]
-  C --> F["Shortcut menu appears<br/>New Task / Schedule / Settings"]
+  B --> C["Android: long-press<br/>icon"]
+  B --> D["Windows: right-click<br/>taskbar"]
+  B --> E["macOS: right-click<br/>dock"]
+  C --> F["Shortcut menu<br/>appears<br/>New Task /Schedule /<br/>Settings"]
   D --> F
   E --> F
   F --> G["User taps shortcut"]
-  G --> H["PWA opens at shortcut URL<br/>e.g. /tasks/new"]
+  G --> H["PWA opens at<br/>shortcut URL<br/>e.g. /tasks/new"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-DE8F05
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-CA9161
+  class G pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class H pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1970,22 +2047,30 @@ The Share Target API lets a PWA appear in the OS share sheet as a destination. W
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 54: Share Target API — Receiving Shared Content in a PWA
+  accDescr: Graph with 8 nodes and 7 connections. Nodes: User shares from another app, OS share sheet opens, PWA appears as share destination, User selects PWA, Browser POSTs to share_target.action URL, Server reads formData: title, text, url, files, Process shared data save note, create draft, etc., Redirect to relevant page in app (303). Connections: User shares from another app to OS share sheet opens, OS share sheet opens to PWA appears as share destination, PWA appears as share destination to User selects PWA, User selects PWA to Browser POSTs to share_target.action URL, Browser POSTs to share_target.action URL to Server reads formData: title, text, url, files, Server reads formData: title, text, url, files to Process shared data save note, create draft, etc., Process shared data save note, create draft, etc. to Redirect to relevant page in app (303).
   A["User shares from<br/>another app"] --> B["OS share sheet opens"]
   B --> C["PWA appears as<br/>share destination"]
   C --> D["User selects PWA"]
-  D --> E["Browser POSTs to<br/>share_target.action URL"]
-  E --> F["Server reads<br/>formData: title, text, url, files"]
-  F --> G["Process shared data<br/>save note, create draft, etc."]
+  D --> E["Browser POSTs to<br/>share_target.action<br/>URL"]
+  E --> F["Server reads<br/>formData: title,<br/>text, url, files"]
+  F --> G["Process shared data<br/>save note, create<br/>draft, etc."]
   G --> H["Redirect to relevant<br/>page in app (303)"]
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class B pal-0173B2
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class F pal-CA9161
+  class G pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class H pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2129,23 +2214,31 @@ Periodic Background Sync lets the browser wake the service worker on a schedule 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["App registers periodic sync<br/>minInterval: 1 hour"] --> B{"Browser checks<br/>conditions"}
+  accTitle: Example 56: Periodic Background Sync — Registering Scheduled Background Updates
+  accDescr: Graph with 8 nodes and 8 connections. Nodes: App registers periodic sync minInterval: 1 hour, Browser checks conditions, Battery OK? Wi-Fi connected? High engagement?, Browser wakes SW periodicsync event fires, SW fetches fresh data from /api/news-feed, Store in IndexedDB for offline reading, User opens app: content already fresh, Browser waits for better conditions. Connections: App registers periodic sync minInterval: 1 hour to Browser checks conditions, Browser checks conditions to Battery OK? Wi-Fi connected? High engagement?, Battery OK? Wi-Fi connected? High engagement? to Browser wakes SW periodicsync event fires (Conditions met at or after minInterval), Browser wakes SW periodicsync event fires to SW fetches fresh data from /api/news-feed, SW fetches fresh data from /api/news-feed to Store in IndexedDB for offline reading, Store in IndexedDB for offline reading to User opens app: content already fresh, Battery OK? Wi-Fi connected? High engagement? to Browser waits for better conditions (Conditions not met), Browser waits for better conditions to Browser checks conditions.
+  A["App registers<br/>periodic sync<br/>minInterval: 1 hour"] --> B{"Browser checks<br/>conditions"}
   B --> C["Battery OK?<br/>Wi-Fi connected?<br/>High engagement?"]
-  C -->|"Conditions met<br/>at or after minInterval"| D["Browser wakes SW<br/>periodicsync event fires"]
-  D --> E["SW fetches fresh data<br/>from /api/news-feed"]
+  C -->|"Conditions met<br/>at or after<br/>minInterval"| D["Browser wakes SW<br/>periodicsync event<br/>fires"]
+  D --> E["SW fetches fresh<br/>data<br/>from /api/news-feed"]
   E --> F["Store in IndexedDB<br/>for offline reading"]
-  F --> G["User opens app:<br/>content already fresh"]
-  C -->|"Conditions not met"| H["Browser waits<br/>for better conditions"]
+  F --> G["User opens app:<br/>content already<br/>fresh"]
+  C -->|"Conditions not met"| H["Browser waits<br/>for better<br/>conditions"]
   H --> B
 
-  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
-  style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class A pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-CA9161
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class C pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-DE8F05
+  class E pal-DE8F05
+  class F pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class G pal-029E73
+  class H pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

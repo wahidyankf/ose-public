@@ -346,8 +346,9 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 ## Architecture Diagram
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#024','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CA9161','fontSize':'16px'}}}%%
 graph LR
+    accTitle: Architecture Diagram
+    accDescr: Graph with 9 nodes and 7 connections. Nodes: java -jar app.jar, Spring Boot, Embedded Tomcat, Servlet Container, DispatcherServlet, HTTP Requests, Traditional WAR, External Tomcat, Multiple WARs. Connections: java -jar app.jar to Spring Boot (starts), Spring Boot to Embedded Tomcat (initializes), Embedded Tomcat to Servlet Container (creates), Servlet Container to DispatcherServlet (registers), DispatcherServlet to HTTP Requests (handles), Traditional WAR to External Tomcat (requires), External Tomcat to Multiple WARs (deploys).
     A["java -jar app.jar"] -->|"starts"| B["Spring Boot"]
     B -->|"initializes"| C["Embedded Tomcat"]
     C -->|"creates"| D["Servlet Container"]
@@ -357,10 +358,14 @@ graph LR
     G["Traditional WAR"] -->|"requires"| H["External Tomcat"]
     H -->|"deploys"| I["Multiple WARs"]
 
-    style A fill:#0173B2,stroke:#024,color:#fff
-    style C fill:#029E73,stroke:#016647,color:#fff
-    style G fill:#CA9161,stroke:#875636,color:#000
-    style H fill:#CA9161,stroke:#875636,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## When to Use Embedded Servers

@@ -18,14 +18,21 @@ Every OpenAPI document requires three root-level fields: `openapi` (version), `i
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Minimal Valid OpenAPI Document
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: OpenAPI Document, openapi: 3.1.0, info, paths. Connections: OpenAPI Document to openapi: 3.1.0, OpenAPI Document to info, OpenAPI Document to paths.
     Root["OpenAPI Document"] --> V["openapi: 3.1.0"]
     Root --> Info["info"]
     Root --> Paths["paths"]
 
-    style Root fill:#0173B2,stroke:#000,color:#fff
-    style V fill:#DE8F05,stroke:#000,color:#fff
-    style Info fill:#029E73,stroke:#000,color:#fff
-    style Paths fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Root pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class V pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Info pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Paths pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -113,14 +120,21 @@ The `servers` array defines base URLs where the API is available. Tools use thes
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 3: Server Definitions
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: OpenAPI Doc, Production api.example.com, Staging staging-api.example. com, Local Dev localhost:3000. Connections: OpenAPI Doc to Production api.example.com, OpenAPI Doc to Staging staging-api.example. com, OpenAPI Doc to Local Dev localhost:3000.
     Doc["OpenAPI Doc"] --> S1["Production<br/>api.example.com"]
-    Doc --> S2["Staging<br/>staging-api.example.com"]
+    Doc --> S2["Staging<br/>staging-api.example.<br/>com"]
     Doc --> S3["Local Dev<br/>localhost:3000"]
 
-    style Doc fill:#0173B2,stroke:#000,color:#fff
-    style S1 fill:#029E73,stroke:#000,color:#fff
-    style S2 fill:#DE8F05,stroke:#000,color:#fff
-    style S3 fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Doc pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class S2 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class S3 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -290,11 +304,16 @@ A path item defines operations available at a URL path. The simplest pattern is 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 6: Basic GET Operation
+    accDescr: Graph with 2 nodes and 2 connections. Nodes: Client, Server. Connections: Client to Server (GET /books), Server to Client (200 + JSON Array).
     Client["Client"] -->|"GET /books"| Server["Server"]
     Server -->|"200 + JSON Array"| Client
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style Server fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Server pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -635,16 +654,24 @@ A single path item can define multiple HTTP method operations. This represents d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 11: Multiple Operations on One Path
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: /books/bookId, GET Retrieve book, PUT Replace book, PATCH Update fields, DELETE Remove book. Connections: /books/bookId to GET Retrieve book, /books/bookId to PUT Replace book, /books/bookId to PATCH Update fields, /books/bookId to DELETE Remove book.
     Path["/books/{bookId}"] --> GET["GET<br/>Retrieve book"]
     Path --> PUT["PUT<br/>Replace book"]
     Path --> PATCH["PATCH<br/>Update fields"]
     Path --> DELETE["DELETE<br/>Remove book"]
 
-    style Path fill:#0173B2,stroke:#000,color:#fff
-    style GET fill:#029E73,stroke:#000,color:#fff
-    style PUT fill:#DE8F05,stroke:#000,color:#fff
-    style PATCH fill:#CC78BC,stroke:#000,color:#fff
-    style DELETE fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Path pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GET pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PUT pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PATCH pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class DELETE pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1181,16 +1208,24 @@ A request body can accept multiple content types. The API chooses the handler ba
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 19: Request Body with Multiple Media Types
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client Request, Content-Type?, JSON Handler, XML Handler, Form Handler. Connections: Client Request to Content-Type?, Content-Type? to JSON Handler (application/json), Content-Type? to XML Handler (application/xml), Content-Type? to Form Handler (application/x-www- form-urlencoded).
     Client["Client Request"] --> CT{"Content-Type?"}
     CT -->|"application/json"| JSON["JSON Handler"]
     CT -->|"application/xml"| XML["XML Handler"]
-    CT -->|"application/x-www-form-urlencoded"| Form["Form Handler"]
+    CT -->|"application/x-www-<br/>form-urlencoded"| Form["Form Handler"]
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style CT fill:#DE8F05,stroke:#000,color:#fff
-    style JSON fill:#029E73,stroke:#000,color:#fff
-    style XML fill:#CC78BC,stroke:#000,color:#fff
-    style Form fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CT pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class JSON pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class XML pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Form pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1510,18 +1545,27 @@ OpenAPI supports five primitive types: string, number, integer, boolean, and nul
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Schema["Schema Types"] --> Str["string<br/>format: date, email, uuid, uri, ..."]
-    Schema --> Num["number<br/>format: float, double"]
+    accTitle: Example 23: Primitive Schema Types
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Schema Types, string format: date, email, uuid, uri, ..., number format: float, double, integer format: int32, int64, boolean true or false, null 403.1 only41. Connections: Schema Types to string format: date, email, uuid, uri, ..., Schema Types to number format: float, double, Schema Types to integer format: int32, int64, Schema Types to boolean true or false, Schema Types to null 403.1 only41.
+    Schema["Schema Types"] --> Str["string<br/>format: date, email,<br/>uuid, uri, ..."]
+    Schema --> Num["number<br/>format: float,<br/>double"]
     Schema --> Int["integer<br/>format: int32, int64"]
     Schema --> Bool["boolean<br/>true or false"]
     Schema --> Null["null<br/>#40;3.1 only#41;"]
 
-    style Schema fill:#0173B2,stroke:#000,color:#fff
-    style Str fill:#DE8F05,stroke:#000,color:#fff
-    style Num fill:#029E73,stroke:#000,color:#fff
-    style Int fill:#CC78BC,stroke:#000,color:#fff
-    style Bool fill:#CA9161,stroke:#000,color:#fff
-    style Null fill:#808080,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Schema pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Str pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Num pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Int pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Bool pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class Null pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1816,14 +1860,21 @@ The `$ref` keyword references a schema defined elsewhere in the document. This e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Op1["GET /books"] -->|"response uses"| BookSchema["components/schemas/Book"]
+    accTitle: Example 27: Basic $ref for Schema Reuse
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: GET /books, components/schemas/ Book, POST /books, GET /books/id. Connections: GET /books to components/schemas/ Book (response uses), POST /books to components/schemas/ Book (request uses), GET /books/id to components/schemas/ Book (response uses).
+    Op1["GET /books"] -->|"response uses"| BookSchema["components/schemas/<br/>Book"]
     Op2["POST /books"] -->|"request uses"| BookSchema
     Op3["GET /books/{id}"] -->|"response uses"| BookSchema
 
-    style Op1 fill:#0173B2,stroke:#000,color:#fff
-    style Op2 fill:#DE8F05,stroke:#000,color:#fff
-    style Op3 fill:#029E73,stroke:#000,color:#fff
-    style BookSchema fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Op1 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Op2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Op3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class BookSchema pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

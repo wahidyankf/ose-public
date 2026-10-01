@@ -366,24 +366,31 @@ public class ZakatController {
 
 ```mermaid
 graph TD
+    accTitle: Spring Security Architecture Diagram
+    accDescr: Graph with 12 nodes and 11 connections. Nodes: HTTP Request, SecurityFilterChain, BasicAuthentication Filter, Credentials Valid?, UserDetailsService, Load User + Roles, Create Authentication, AuthorizationFilter, Has Required Role?, Controller, 403 Forbidden, 401 Unauthorized. Connections: HTTP Request to SecurityFilterChain, SecurityFilterChain to BasicAuthentication Filter, BasicAuthentication Filter to Credentials Valid?, Credentials Valid? to UserDetailsService (Yes), UserDetailsService to Load User + Roles, Load User + Roles to Create Authentication, Create Authentication to AuthorizationFilter, AuthorizationFilter to Has Required Role?, Has Required Role? to Controller (Yes), Has Required Role? to 403 Forbidden (No), Credentials Valid? to 401 Unauthorized (No).
     A[HTTP Request] --> B[SecurityFilterChain]
-    B --> C[BasicAuthenticationFilter]
+    B --> C[BasicAuthentication<br/>Filter]
     C --> D{Credentials Valid?}
     D -->|Yes| E[UserDetailsService]
     E --> F[Load User + Roles]
-    F --> G[Create Authentication]
+    F --> G[Create<br/>Authentication]
     G --> H[AuthorizationFilter]
     H --> I{Has Required Role?}
     I -->|Yes| J[Controller]
     I -->|No| K[403 Forbidden]
     D -->|No| L[401 Unauthorized]
 
-    style B fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style H fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style J fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style K fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
-    style L fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class H pal-DE8F05
+    class J pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class K pal-CC78BC
+    class L pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

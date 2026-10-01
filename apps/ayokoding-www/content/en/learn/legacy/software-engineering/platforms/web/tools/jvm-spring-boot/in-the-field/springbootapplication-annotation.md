@@ -207,25 +207,30 @@ public class ZakatApplication {
 ## Architecture Diagram
 
 ```mermaid
-%%{init: {'theme':'base',<br/>'themeVariables': {<br/>'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#024','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CA9161','fontSize':'16px'}}}%%
 graph TD
-    A["@SpringBootApplication"] -->|"combines"| B["@Configuration"]
-    A -->|"combines"| C["@EnableAutoConfiguration"]
+    accTitle: Architecture Diagram
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: @SpringBoot Application, @Configuration, @EnableAuto Configuration, @ComponentScan, @Bean methods, Auto-configuration classes, @Component/@Service/ @Repository, DataSource, EntityManagerFactory, TransactionManager. Connections: @SpringBoot Application to @Configuration (combines), @SpringBoot Application to @EnableAuto Configuration (combines), @SpringBoot Application to @ComponentScan (combines), @Configuration to @Bean methods (allows), @EnableAuto Configuration to Auto-configuration classes (triggers), @ComponentScan to @Component/@Service/ @Repository (scans), Auto-configuration classes to DataSource (creates), Auto-configuration classes to EntityManagerFactory (creates), Auto-configuration classes to TransactionManager (creates).
+    A["@SpringBoot<br/>Application"] -->|"combines"| B["@Configuration"]
+    A -->|"combines"| C["@EnableAuto<br/>Configuration"]
     A -->|"combines"| D["@ComponentScan"]
 
     B -->|"allows"| E["@Bean methods"]
-    C -->|"triggers"| F["Auto-configuration classes"]
-    D -->|"scans"| G["@Component/@Service/@Repository"]
+    C -->|"triggers"| F["Auto-configuration<br/>classes"]
+    D -->|"scans"| G["@Component/@Service/<br/>@Repository"]
 
     F -->|"creates"| H["DataSource"]
     F -->|"creates"| I["EntityManagerFactory"]
     F -->|"creates"| J["TransactionManager"]
 
-    style A fill:#0173B2,stroke:#024,color:#fff
-    style B fill:#DE8F05,stroke:#996000,color:#000
-    style C fill:#DE8F05,stroke:#996000,color:#000
-    style D fill:#DE8F05,stroke:#996000,color:#000
-    style F fill:#029E73,stroke:#016647,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## When to Use @SpringBootApplication

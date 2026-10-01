@@ -30,18 +30,26 @@ ASP.NET Core minimal APIs let you define HTTP endpoints with just a few lines of
 ```mermaid
 %% ASP.NET Core request pipeline for minimal API
 graph TD
+    accTitle: Example 1: Hello World Minimal API
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: HTTP Request GET /, Kestrel Server Receives connection, Middleware Pipeline Processing chain, Route Matching MapGet /, Route Handler Lambda function, HTTP Response 200 OK. Connections: HTTP Request GET / to Kestrel Server Receives connection, Kestrel Server Receives connection to Middleware Pipeline Processing chain, Middleware Pipeline Processing chain to Route Matching MapGet /, Route Matching MapGet / to Route Handler Lambda function, Route Handler Lambda function to HTTP Response 200 OK.
     A["HTTP Request<br/>GET /"] --> B["Kestrel Server<br/>Receives connection"]
     B --> C["Middleware Pipeline<br/>Processing chain"]
     C --> D["Route Matching<br/>MapGet /"]
     D --> E["Route Handler<br/>Lambda function"]
     E --> F["HTTP Response<br/>200 OK"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -622,6 +630,8 @@ ASP.NET Core ships with essential middleware for HTTPS, static files, routing, a
 ```mermaid
 %% Middleware pipeline - request flows down, response flows up
 graph TD
+    accTitle: Example 11: Built-in Middleware
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Incoming Request, UseHttpsRedirection HTTP => HTTPS, UseStaticFiles Serve wwwroot, UseRouting Match endpoints, UseAuthentication Validate identity, UseAuthorization Check permissions, MapGet / MapPost Route handlers, Response flows back through pipeline. Connections: Incoming Request to UseHttpsRedirection HTTP => HTTPS, UseHttpsRedirection HTTP => HTTPS to UseStaticFiles Serve wwwroot, UseStaticFiles Serve wwwroot to UseRouting Match endpoints, UseRouting Match endpoints to UseAuthentication Validate identity, UseAuthentication Validate identity to UseAuthorization Check permissions, UseAuthorization Check permissions to MapGet / MapPost Route handlers, MapGet / MapPost Route handlers to Response flows back through pipeline.
     A["Incoming Request"] --> B["UseHttpsRedirection<br/>HTTP => HTTPS"]
     B --> C["UseStaticFiles<br/>Serve wwwroot"]
     C --> D["UseRouting<br/>Match endpoints"]
@@ -630,14 +640,19 @@ graph TD
     F --> G["MapGet / MapPost<br/>Route handlers"]
     G --> H["Response flows back<br/>through pipeline"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    class G pal-029E73
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -1005,18 +1020,26 @@ ASP.NET Core's configuration system reads from multiple sources in order. Later 
 ```mermaid
 %% Configuration source precedence
 graph TD
+    accTitle: Example 17: Configuration System
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: appsettings.json Base configuration, Merged Configuration, appsettings.env. json Environment override, Environment Variables Deployment override, Command Line Args Launch override, IConfiguration Injected into services. Connections: appsettings.json Base configuration to Merged Configuration, appsettings.env. json Environment override to Merged Configuration, Environment Variables Deployment override to Merged Configuration, Command Line Args Launch override to Merged Configuration, Merged Configuration to IConfiguration Injected into services.
     A["appsettings.json<br/>Base configuration"] --> E["Merged<br/>Configuration"]
-    B["appsettings.{env}.json<br/>Environment override"] --> E
-    C["Environment Variables<br/>Deployment override"] --> E
+    B["appsettings.{env}.<br/>json<br/>Environment override"] --> E
+    C["Environment<br/>Variables<br/>Deployment override"] --> E
     D["Command Line Args<br/>Launch override"] --> E
-    E --> F["IConfiguration<br/>Injected into services"]
+    E --> F["IConfiguration<br/>Injected into<br/>services"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp

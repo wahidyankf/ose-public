@@ -22,14 +22,21 @@ The `echo` command outputs text to stdout, supporting variable expansion, escape
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: stdin, echo command, Terminal / pipe, File. Connections: stdin to echo command (keyboard/pipe), echo command to Terminal / pipe (stdout), echo command to File (with >).
     A[stdin] -->|keyboard/pipe| B[echo command]
     B -->|stdout| C[Terminal / pipe]
     B -->|"with >"| D[File]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -70,22 +77,30 @@ Shell variables store strings by default, with no type declarations. Variable na
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Diagram
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Variable Assignment name=value, Quote Type?, Variable Expansion echo $name, Literal String echo $name, Expanded Output Bob, Literal Output $name, $((expr)) Arithmetic sum=$((x+y), Numeric Result 30. Connections: Variable Assignment name=value to Quote Type?, Quote Type? to Variable Expansion echo $name (Double Quotes), Quote Type? to Literal String echo $name (Single Quotes), Variable Expansion echo $name to Expanded Output Bob, Literal String echo $name to Literal Output $name, Variable Assignment name=value to $((expr)) Arithmetic sum=$((x+y), $((expr)) Arithmetic sum=$((x+y) to Numeric Result 30.
     A[Variable Assignment<br/>name=value] --> B{Quote Type?}
     B -->|Double Quotes| C[Variable Expansion<br/>echo "$name"]
     B -->|Single Quotes| D[Literal String<br/>echo '$name']
     C --> E[Expanded Output<br/>Bob]
     D --> F[Literal Output<br/>$name]
-    A --> G[$\(\(expr\)) Arithmetic<br/>sum=$\(\(x+y\)\)]
+    A --> G[$\(\(expr\))<br/>Arithmetic<br/>sum=$\(\(x+y\)\)]
     G --> H[Numeric Result<br/>30]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -138,16 +153,23 @@ Shell commands follow the pattern `command [options] [arguments]` where options 
 ```mermaid
 %% Command structure
 graph TD
+    accTitle: Example 3: Command Structure and Options
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Command, Options, Arguments, Execution, Output/Exit Code. Connections: Command to Options, Options to Arguments, Arguments to Execution, Execution to Output/Exit Code.
     A[Command] --> B[Options]
     B --> C[Arguments]
     C --> D[Execution]
     D --> E[Output/Exit Code]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -312,20 +334,26 @@ File viewing commands let you examine file contents without editing: `cat` for e
 ```mermaid
 %% File viewing tools
 graph TD
+    accTitle: Example 6: File Viewing
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: File Content, Viewing Needs?, cat, less, head, tail, tail -f. Connections: File Content to Viewing Needs?, Viewing Needs? to cat (Small File, Full View), Viewing Needs? to less (Large File, Paginate), Viewing Needs? to head (First N Lines), Viewing Needs? to tail (Last N Lines), Viewing Needs? to tail -f (Real-time Updates).
     A[File Content] --> B{Viewing Needs?}
-    B -->|Small File, Full View| C[cat]
+    B -->|Small File, Full<br/>View| C[cat]
     B -->|Large File, Paginate| D[less]
     B -->|First N Lines| E[head]
     B -->|Last N Lines| F[tail]
     B -->|Real-time Updates| G[tail -f]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -469,24 +497,31 @@ Linux file permissions control read, write, and execute access for owner, group,
 ```mermaid
 %% Permission structure
 graph TD
+    accTitle: Example 8: File Permissions
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: Permission String, Type, Owner rwx, Group rwx, Others rwx, - = file, d = directory, r=4, w=2, x=1, Sum for Octal. Connections: Permission String to Type, Permission String to Owner rwx, Permission String to Group rwx, Permission String to Others rwx, Type to - = file, d = directory, Owner rwx to r=4, w=2, x=1, Group rwx to r=4, w=2, x=1, Others rwx to r=4, w=2, x=1, r=4, w=2, x=1 to Sum for Octal.
     A[Permission String] --> B[Type]
     A --> C[Owner rwx]
     A --> D[Group rwx]
     A --> E[Others rwx]
-    B --> F[- = file, d = directory]
+    B --> F[- = file, d =<br/>directory]
     C --> G[r=4, w=2, x=1]
     D --> G
     E --> G
     G --> H[Sum for Octal]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#DE8F05,color:#fff
-    style H fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-DE8F05
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -565,6 +600,8 @@ Redirection operators control where command input comes from and where output go
 ```mermaid
 %% Redirection flow
 graph TD
+    accTitle: Example 9: Output Redirection
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Command, Output Type?, > file overwrite, >> file append, 2> error file, F, file, < stdin. Connections: Command to Output Type?, Output Type? to > file overwrite (stdout, 1), Output Type? to >> file append (stdout, 1), Output Type? to 2> error file (stderr, 2), Output Type? to F (both), file to < stdin, < stdin to Command.
     A[Command] --> B{Output Type?}
     B -->|stdout, 1| C[> file overwrite]
     B -->|stdout, 1| D[>> file append]
@@ -573,14 +610,19 @@ graph TD
     G[file] --> H[< stdin]
     H --> A
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#0173B2,color:#fff
-    style H fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-029E73
+    class G pal-0173B2
+    class H pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -674,16 +716,24 @@ Pipes connect commands by sending stdout of one command to stdin of the next, en
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: cmd1, cmd2, cmd3, Terminal / File, stdin. Connections: cmd1 to cmd2 (stdout→stdin), cmd2 to cmd3 (stdout→stdin), cmd3 to Terminal / File (stdout), stdin to cmd1 (input).
     A[cmd1] -->|stdout→stdin| B[cmd2]
     B -->|stdout→stdin| C[cmd3]
     C -->|stdout| D[Terminal / File]
     E[stdin] -->|input| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -931,16 +981,23 @@ Command substitution `$(command)` captures command output as a string, while sub
 ```mermaid
 %% Command substitution flow
 graph TD
-    A[Command Substitution] --> B[Execute Inner Command]
+    accTitle: Example 14: Command Substitution and Subshells
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Command Substitution, Execute Inner Command, Capture stdout, Replace in Outer Command, Execute Outer Command. Connections: Command Substitution to Execute Inner Command, Execute Inner Command to Capture stdout, Capture stdout to Replace in Outer Command, Replace in Outer Command to Execute Outer Command.
+    A[Command Substitution] --> B[Execute Inner<br/>Command]
     B --> C[Capture stdout]
-    C --> D[Replace in Outer Command]
-    D --> E[Execute Outer Command]
+    C --> D[Replace in Outer<br/>Command]
+    D --> E[Execute Outer<br/>Command]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1394,6 +1451,8 @@ The `if` statement executes code blocks conditionally based on test results, wit
 ```mermaid
 %% If statement flow
 graph TD
+    accTitle: Example 18: If Statements
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: if condition, True?, Execute if block, elif condition?, Execute elif block, else exists?, Execute else block, Continue. Connections: if condition to True?, True? to Execute if block (Yes), True? to elif condition? (No), elif condition? to Execute elif block (Yes), elif condition? to else exists? (No), else exists? to Execute else block (Yes), else exists? to Continue (No), Execute if block to Continue, Execute elif block to Continue, Execute else block to Continue.
     A[if condition] --> B{True?}
     B -->|Yes| C[Execute if block]
     B -->|No| D{elif condition?}
@@ -1405,14 +1464,18 @@ graph TD
     E --> H
     G --> H
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    class F pal-DE8F05
+    class G pal-029E73
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1593,6 +1656,8 @@ The `for` loop iterates over lists, ranges, files, or command output, executing 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Diagram
+    accDescr: State diagram with 5 items: start or end, Initialize, Check, Execute, Done. Relationships: start or end to Initialize: for item in list; Initialize to Check: expand list; Check to Execute: item available; Check to Done: list exhausted; Execute to Check: next item; Done to start or end.
     [*] --> Initialize: for item in list
     Initialize --> Check: expand list
     Check --> Execute: item available
@@ -1724,6 +1789,8 @@ The `while` loop repeats while a condition is true, and `until` repeats while fa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Diagram
+    accDescr: State diagram with 4 items: start or end, TestCondition, Execute, Done. Relationships: start or end to TestCondition: while starts; TestCondition to Execute: condition true (exit 0); TestCondition to Done: condition false (exit non-0); Execute to TestCondition: loop back; Done to start or end.
     [*] --> TestCondition: while starts
     TestCondition --> Execute: condition true (exit 0)
     TestCondition --> Done: condition false (exit non-0)
@@ -1878,6 +1945,8 @@ The `case` statement performs pattern matching against a value, executing the fi
 ```mermaid
 %% Case statement flow
 graph TD
+    accTitle: Example 21: Case Statements
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: case $var in, Match pattern1?, Execute block1, Match pattern2?, Execute block2, Match *?, Execute default, Continue. Connections: case $var in to Match pattern1?, Match pattern1? to Execute block1 (Yes), Match pattern1? to Match pattern2? (No), Match pattern2? to Execute block2 (Yes), Match pattern2? to Match *? (No), Match *? to Execute default (Yes), Match *? to Continue (No), Execute block1 to Continue, Execute block2 to Continue, Execute default to Continue.
     A[case $var in] --> B{Match pattern1?}
     B -->|Yes| C[Execute block1]
     B -->|No| D{Match pattern2?}
@@ -1889,14 +1958,19 @@ graph TD
     E --> H
     G --> H
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    class F pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -2122,23 +2196,31 @@ Functions encapsulate reusable code blocks, accept arguments via `$1, $2, ...`, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Function Definition<br/>greet\(\) \{ ... \}] --> B[Stored in Shell Memory]
+    accTitle: Diagram
+    accDescr: Graph with 9 nodes and 7 connections. Nodes: Function Definition greet() ..., Stored in Shell Memory, Function Call greet arg1 arg2, Lookup Function, Execute Body $1=arg1, $2=arg2, Error: command not found, Return Value, Exit Code $?, Captured via $(. Connections: Function Definition greet() ... to Stored in Shell Memory, Function Call greet arg1 arg2 to Lookup Function, Lookup Function to Execute Body $1=arg1, $2=arg2 (found), Lookup Function to Error: command not found (not found), Execute Body $1=arg1, $2=arg2 to Return Value, Return Value to Exit Code $? (return N), Return Value to Captured via $( (echo output).
+    A[Function Definition<br/>greet\(\) \{ ... \}] --> B[Stored in Shell<br/>Memory]
     C[Function Call<br/>greet arg1 arg2] --> D{Lookup Function}
     D -->|found| E[Execute Body<br/>$1=arg1, $2=arg2]
-    D -->|not found| F[Error: command not found]
+    D -->|not found| F[Error: command not<br/>found]
     E --> G{Return Value}
     G -->|return N| H[Exit Code $?]
     G -->|echo output| I[Captured via $\(\)]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#DE8F05,stroke:#000,color:#000
-    style H fill:#CA9161,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -2685,16 +2767,24 @@ Here documents (`<<`) allow multi-line input to commands, while here strings (`<
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 6 nodes and 9 connections. Nodes: A, lt, Shell Buffer, Command cat / sql / ssh, Output / File, E. Connections: A to Shell Buffer (multi-line text), lt to Shell Buffer (multi-line text), lt to Shell Buffer (multi-line text), Shell Buffer to Command cat / sql / ssh (stdin), Command cat / sql / ssh to Output / File (stdout), E to Command cat / sql / ssh (single line), lt to Command cat / sql / ssh (single line), lt to Command cat / sql / ssh (single line), lt to Command cat / sql / ssh (single line).
     A[Script Source<br/>&lt;&lt; EOF ... EOF] -->|multi-line text| B[Shell Buffer]
     B -->|stdin| C[Command<br/>cat / sql / ssh]
     C -->|stdout| D[Output / File]
     E[Here String<br/>&lt;&lt;&lt; word] -->|single line| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -3119,6 +3209,8 @@ Job control manages processes: `&` runs commands in background, `Ctrl+Z` suspend
 ```mermaid
 %% Job control states
 stateDiagram-v2
+    accTitle: Example 30: Job Control
+    accDescr: State diagram with 4 items: start or end, Running, Background, Suspended. Relationships: start or end to Running: command; Running to Background: &; Running to Suspended: Ctrl+Z; Suspended to Background: bg; Suspended to Running: fg; Background to Running: fg; Running to start or end: exit/finish.
     [*] --> Running: command
     Running --> Background: &
     Running --> Suspended: Ctrl+Z

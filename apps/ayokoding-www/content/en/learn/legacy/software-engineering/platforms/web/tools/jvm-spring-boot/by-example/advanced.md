@@ -426,18 +426,26 @@ class ReactiveUserClient(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 42: WebClient - Reactive Non-Blocking Client
+    accDescr: Flowchart with 6 nodes and 4 connections. Nodes: RestTemplate, Thread Waits, Response, WebClient, Thread Released, Callback on Response. Connections: RestTemplate to Thread Waits (Blocking), Thread Waits to Response, WebClient to Thread Released (Non-Blocking), Thread Released to Callback on Response.
     A[RestTemplate] -->|Blocking| B[Thread Waits]
     B --> C[Response]
 
     D[WebClient] -->|Non-Blocking| E[Thread Released]
     E --> F[Callback on Response]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Takeaway**: WebClient enables reactive programming with non-blocking I/O—threads are released during HTTP calls and notified via callbacks, allowing higher concurrency than RestTemplate's blocking model.
@@ -737,18 +745,26 @@ data class Order(val id: Long, val user: User?)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Example 44: Service Discovery - Eureka Client
+    accDescr: Flowchart with 5 nodes and 6 connections. Nodes: Eureka Server, Service Registry, Order Service, User Service, Payment Service. Connections: Eureka Server to Service Registry, Order Service to Eureka Server (Register), User Service to Eureka Server (Register), Payment Service to Eureka Server (Register), Order Service to Eureka Server (Discover User Service), Order Service to User Service (Call).
     A[Eureka Server] --- B[Service Registry]
     C[Order Service] -->|Register| A
     D[User Service] -->|Register| A
     E[Payment Service] -->|Register| A
-    C -->|Discover User Service| A
+    C -->|Discover User<br/>Service| A
     C -->|Call| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Takeaway**: Eureka enables service discovery—microservices register with Eureka Server and discover other services by name instead of hardcoded URLs, enabling dynamic scaling and failover.
@@ -913,10 +929,12 @@ class MetricsController {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Request["GET /actuator/health"] --> Aggregator["HealthEndpointWebExtension"]
-    Aggregator --> Disk["DiskSpaceHealthIndicator"]
-    Aggregator --> DB["DataSourceHealthIndicator"]
-    Aggregator --> Custom["CustomHealthIndicator"]
+    accTitle: Example 45: Spring Boot Actuator - Health & Metrics
+    accDescr: Graph with 12 nodes and 14 connections. Nodes: GET /actuator/health, HealthEndpointWeb Extension, DiskSpaceHealth Indicator, DataSourceHealth Indicator, CustomHealth Indicator, PingHealthIndicator, UP/DOWN, UP/DOWN, UP/DOWN, UP, Aggregate Status, JSON Response with Status. Connections: GET /actuator/health to HealthEndpointWeb Extension, HealthEndpointWeb Extension to DiskSpaceHealth Indicator, HealthEndpointWeb Extension to DataSourceHealth Indicator, HealthEndpointWeb Extension to CustomHealth Indicator, HealthEndpointWeb Extension to PingHealthIndicator, DiskSpaceHealth Indicator to UP/DOWN, DataSourceHealth Indicator to UP/DOWN, CustomHealth Indicator to UP/DOWN, PingHealthIndicator to UP, UP/DOWN to Aggregate Status, UP/DOWN to Aggregate Status, UP/DOWN to Aggregate Status, and 2 more.
+    Request["GET /actuator/health"] --> Aggregator["HealthEndpointWeb<br/>Extension"]
+    Aggregator --> Disk["DiskSpaceHealth<br/>Indicator"]
+    Aggregator --> DB["DataSourceHealth<br/>Indicator"]
+    Aggregator --> Custom["CustomHealth<br/>Indicator"]
     Aggregator --> Ping["PingHealthIndicator"]
     Disk --> Status1["UP/DOWN"]
     DB --> Status2["UP/DOWN"]
@@ -926,20 +944,26 @@ graph TD
     Status2 --> Combine
     Status3 --> Combine
     Status4 --> Combine
-    Combine --> Response["JSON Response with Status"]
+    Combine --> Response["JSON Response with<br/>Status"]
 
-    style Request fill:#0173B2,color:#fff
-    style Aggregator fill:#DE8F05,color:#fff
-    style Disk fill:#029E73,color:#fff
-    style DB fill:#029E73,color:#fff
-    style Custom fill:#029E73,color:#fff
-    style Ping fill:#029E73,color:#fff
-    style Status1 fill:#CC78BC,color:#fff
-    style Status2 fill:#CC78BC,color:#fff
-    style Status3 fill:#CC78BC,color:#fff
-    style Status4 fill:#CC78BC,color:#fff
-    style Combine fill:#CA9161,color:#fff
-    style Response fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Request pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Aggregator pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Disk pal-029E73
+    class DB pal-029E73
+    class Custom pal-029E73
+    class Ping pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Status1 pal-CC78BC
+    class Status2 pal-CC78BC
+    class Status3 pal-CC78BC
+    class Status4 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Combine pal-CA9161
+    class Response pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Caption**: Actuator aggregates health indicators into a single /actuator/health endpoint, returning DOWN if any indicator fails.
@@ -1097,6 +1121,8 @@ class OrderMetricsService(registry: MeterRegistry) {  // => Inject Micrometer re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 46: Custom Metrics - Micrometer
+    accDescr: Sequence diagram between Application Code, MeterRegistry, PrometheusMeterRegistry, /actuator/prometheus, Prometheus Server. Messages: Application Code to MeterRegistry: counter.increment(); MeterRegistry to PrometheusMeterRegistry: Record metric; Application Code to MeterRegistry: gauge.set(value); MeterRegistry to PrometheusMeterRegistry: Record metric; Application Code to MeterRegistry: timer.record; MeterRegistry to PrometheusMeterRegistry: Record duration; Prometheus Server to /actuator/prometheus: GET /actuator/prometheus; /actuator/prometheus to PrometheusMeterRegistry: Read metrics; PrometheusMeterRegistry to /actuator/prometheus: Format as Prometheus text; /actuator/prometheus to Prometheus Server: TYPE orders_created counter orders_createdtype=online 42.0.
     participant App as Application Code
     participant Meter as MeterRegistry
     participant Prom as PrometheusMeterRegistry
@@ -1290,6 +1316,8 @@ class OrderTracingController(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 47: Distributed Tracing - Micrometer Tracing
+    accDescr: Sequence diagram between Client, Order Service, User Service, Zipkin. Messages: Client to Order Service: GET /order/1 [TraceID: abc123]; Order Service to User Service: GET /user/1 [TraceID: abc123, SpanID: def456]; User Service to Zipkin: Report Span; User Service to Order Service: User Data; Order Service to Zipkin: Report Span; Order Service to Client: Order Data.
     participant C as Client
     participant O as Order Service
     participant U as User Service
@@ -1602,6 +1630,8 @@ class UserServiceClient(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 49: Circuit Breaker - Resilience4j
+    accDescr: State diagram with 4 items: start or end, CLOSED, OPEN, HALF_OPEN. Relationships: start or end to CLOSED; CLOSED to OPEN: Failure threshold exceeded; OPEN to HALF_OPEN: Wait duration elapsed; HALF_OPEN to CLOSED: Calls successful; HALF_OPEN to OPEN: Calls failed.
     [*] --> CLOSED
     CLOSED --> OPEN: Failure threshold exceeded
     OPEN --> HALF_OPEN: Wait duration elapsed
@@ -2103,30 +2133,38 @@ open class CustomAutoConfiguration {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Start["Spring Boot Startup"] --> Load["Load AutoConfiguration.imports"]
-    Load --> Config["Find CustomAutoConfiguration"]
-    Config --> Check1["@ConditionalOnProperty"]
+    accTitle: Example 53: Custom Starter - Creating Reusable Auto-Configuration
+    accDescr: Graph with 12 nodes and 11 connections. Nodes: Spring Boot Startup, Load AutoConfiguration. imports, Find CustomAuto Configuration, @ConditionalOn Property, enabled=true?, Skip Configuration, @ConditionalOn MissingBean, CustomService exists?, Skip Bean Creation, Create CustomService Bean, Bind @Configuration Properties, Register in ApplicationContext. Connections: Spring Boot Startup to Load AutoConfiguration. imports, Load AutoConfiguration. imports to Find CustomAuto Configuration, Find CustomAuto Configuration to @ConditionalOn Property, @ConditionalOn Property to enabled=true?, enabled=true? to Skip Configuration (No), enabled=true? to @ConditionalOn MissingBean (Yes), @ConditionalOn MissingBean to CustomService exists?, CustomService exists? to Skip Bean Creation (Yes), CustomService exists? to Create CustomService Bean (No), Create CustomService Bean to Bind @Configuration Properties, Bind @Configuration Properties to Register in ApplicationContext.
+    Start["Spring Boot Startup"] --> Load["Load<br/>AutoConfiguration.<br/>imports"]
+    Load --> Config["Find CustomAuto<br/>Configuration"]
+    Config --> Check1["@ConditionalOn<br/>Property"]
     Check1 --> Eval1{enabled=true?}
     Eval1 -->|No| Skip1["Skip Configuration"]
-    Eval1 -->|Yes| Check2["@ConditionalOnMissingBean"]
-    Check2 --> Eval2{CustomService exists?}
+    Eval1 -->|Yes| Check2["@ConditionalOn<br/>MissingBean"]
+    Check2 --> Eval2{CustomService<br/>exists?}
     Eval2 -->|Yes| Skip2["Skip Bean Creation"]
-    Eval2 -->|No| Create["Create CustomService Bean"]
-    Create --> Props["Bind @ConfigurationProperties"]
-    Props --> Register["Register in ApplicationContext"]
+    Eval2 -->|No| Create["Create CustomService<br/>Bean"]
+    Create --> Props["Bind @Configuration<br/>Properties"]
+    Props --> Register["Register in<br/>ApplicationContext"]
 
-    style Start fill:#0173B2,color:#fff
-    style Load fill:#DE8F05,color:#fff
-    style Config fill:#029E73,color:#fff
-    style Check1 fill:#CC78BC,color:#fff
-    style Eval1 fill:#CA9161,color:#fff
-    style Check2 fill:#CC78BC,color:#fff
-    style Eval2 fill:#CA9161,color:#fff
-    style Skip1 fill:#0173B2,color:#fff
-    style Skip2 fill:#0173B2,color:#fff
-    style Create fill:#DE8F05,color:#fff
-    style Props fill:#029E73,color:#fff
-    style Register fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Load pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Config pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Check1 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Eval1 pal-CA9161
+    class Check2 pal-CC78BC
+    class Eval2 pal-CA9161
+    class Skip1 pal-0173B2
+    class Skip2 pal-0173B2
+    class Create pal-DE8F05
+    class Props pal-029E73
+    class Register pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Caption**: Custom auto-configuration evaluates @Conditional annotations in order, skipping bean creation if conditions fail, enabling smart defaults with easy overrides.
@@ -2682,15 +2720,17 @@ java -Djarmode=layertools -jar target/myapp.jar list  # => List available layers
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    JAR["myapp.jar<br/>(Layered JAR)"] --> Extract["java -Djarmode=layertools extract"]
-    Extract --> Layer1["Layer 1: dependencies/<br/>(50MB, rarely changes)"]
-    Extract --> Layer2["Layer 2: spring-boot-loader/<br/>(5MB, rarely changes)"]
-    Extract --> Layer3["Layer 3: snapshot-dependencies/<br/>(10MB, occasional changes)"]
-    Extract --> Layer4["Layer 4: application/<br/>(5MB, frequent changes)"]
+    accTitle: application
+    accDescr: Graph with 13 nodes and 15 connections. Nodes: myapp.jar (Layered JAR), java -Djarmode=layertools extract, Layer 1: dependencies/ (50MB, rarely changes), Layer 2: spring-boot-loader/ (5MB, rarely changes), Layer 3: snapshot- dependencies/ (10MB, occasional changes), Layer 4: application/ (5MB, frequent changes), COPY dependencies/./, COPY spring-boot-loader/ ./, COPY snapshot- dependencies/./, COPY application/ ./, Docker Image (Optimized Caching), Layer 1-2: Cached (rarely invalidated), and 1 more. Connections: myapp.jar (Layered JAR) to java -Djarmode=layertools extract, java -Djarmode=layertools extract to Layer 1: dependencies/ (50MB, rarely changes), java -Djarmode=layertools extract to Layer 2: spring-boot-loader/ (5MB, rarely changes), java -Djarmode=layertools extract to Layer 3: snapshot- dependencies/ (10MB, occasional changes), java -Djarmode=layertools extract to Layer 4: application/ (5MB, frequent changes), Layer 1: dependencies/ (50MB, rarely changes) to COPY dependencies/./, Layer 2: spring-boot-loader/ (5MB, rarely changes) to COPY spring-boot-loader/ ./, Layer 3: snapshot- dependencies/ (10MB, occasional changes) to COPY snapshot- dependencies/./, Layer 4: application/ (5MB, frequent changes) to COPY application/ ./, COPY dependencies/./ to Docker Image (Optimized Caching), COPY spring-boot-loader/ ./ to Docker Image (Optimized Caching), COPY snapshot- dependencies/./ to Docker Image (Optimized Caching), and 3 more.
+    JAR["myapp.jar<br/>(Layered JAR)"] --> Extract["java<br/>-Djarmode=layertools<br/>extract"]
+    Extract --> Layer1["Layer 1:<br/>dependencies/<br/>(50MB, rarely<br/>changes)"]
+    Extract --> Layer2["Layer 2:<br/>spring-boot-loader/<br/>(5MB, rarely<br/>changes)"]
+    Extract --> Layer3["Layer 3: snapshot-<br/>dependencies/<br/>(10MB, occasional<br/>changes)"]
+    Extract --> Layer4["Layer 4:<br/>application/<br/>(5MB, frequent<br/>changes)"]
 
-    Layer1 --> Docker1["COPY dependencies/ ./"]
-    Layer2 --> Docker2["COPY spring-boot-loader/ ./"]
-    Layer3 --> Docker3["COPY snapshot-dependencies/ ./"]
+    Layer1 --> Docker1["COPY dependencies/./"]
+    Layer2 --> Docker2["COPY<br/>spring-boot-loader/<br/>./"]
+    Layer3 --> Docker3["COPY snapshot-<br/>dependencies/./"]
     Layer4 --> Docker4["COPY application/ ./"]
 
     Docker1 --> Image["Docker Image<br/>(Optimized Caching)"]
@@ -2701,19 +2741,25 @@ graph TD
     Image --> Cache["Layer 1-2: Cached<br/>(rarely invalidated)"]
     Image --> Rebuild["Layer 4: Rebuilt<br/>(code changes)"]
 
-    style JAR fill:#0173B2,color:#fff
-    style Extract fill:#DE8F05,color:#fff
-    style Layer1 fill:#029E73,color:#fff
-    style Layer2 fill:#029E73,color:#fff
-    style Layer3 fill:#CC78BC,color:#fff
-    style Layer4 fill:#CA9161,color:#fff
-    style Docker1 fill:#0173B2,color:#fff
-    style Docker2 fill:#0173B2,color:#fff
-    style Docker3 fill:#DE8F05,color:#fff
-    style Docker4 fill:#029E73,color:#fff
-    style Image fill:#CC78BC,color:#fff
-    style Cache fill:#CA9161,color:#fff
-    style Rebuild fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class JAR pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Extract pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Layer1 pal-029E73
+    class Layer2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Layer3 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Layer4 pal-CA9161
+    class Docker1 pal-0173B2
+    class Docker2 pal-0173B2
+    class Docker3 pal-DE8F05
+    class Docker4 pal-029E73
+    class Image pal-CC78BC
+    class Cache pal-CA9161
+    class Rebuild pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Caption**: Layered JARs separate dependencies (rarely change, 50MB) from application code (frequent changes, 5MB), enabling Docker layer caching for faster rebuilds.
@@ -3324,6 +3370,8 @@ spring: # => Spring Boot configuration
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: application-kubernetes.yml
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: Kubernetes Cluster, ConfigMap myapp-config, Secret myapp-secrets, Pod 1, Pod 2, Spring Boot App, Spring Boot App, application.yml from ConfigMap, DB_PASSWORD from Secret. Connections: Kubernetes Cluster to ConfigMap myapp-config, Kubernetes Cluster to Secret myapp-secrets, ConfigMap myapp-config to Pod 1 (Mount as Volume), ConfigMap myapp-config to Pod 2 (Mount as Volume), Secret myapp-secrets to Pod 1 (Inject as Env), Secret myapp-secrets to Pod 2 (Inject as Env), Pod 1 to Spring Boot App, Pod 2 to Spring Boot App, Spring Boot App to application.yml from ConfigMap (Reads), Spring Boot App to DB_PASSWORD from Secret (Reads).
     K8s[Kubernetes Cluster] --> CM[ConfigMap<br/>myapp-config]
     K8s --> Secret[Secret<br/>myapp-secrets]
 
@@ -3338,11 +3386,17 @@ graph TD
     App1 -->|Reads| Config[application.yml<br/>from ConfigMap]
     App1 -->|Reads| Env[DB_PASSWORD<br/>from Secret]
 
-    style K8s fill:#0173B2,color:#fff
-    style CM fill:#029E73,color:#fff
-    style Secret fill:#DE8F05,color:#fff
-    style Pod1 fill:#CC78BC,color:#fff
-    style App1 fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class K8s pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class CM pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Secret pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Pod1 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class App1 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< /tab >}}
@@ -3606,6 +3660,8 @@ spring: # => Spring Boot configuration
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: application.yml
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Client, API Gateway :8080, User Service :8081, Order Service :8082, Product Service :8083, Global Filters: Authentication Rate Limiting Circuit Breaker, Fallback Controller. Connections: Client to API Gateway :8080, API Gateway :8080 to User Service :8081 (/api/users/**), API Gateway :8080 to Order Service :8082 (/api/orders/**), API Gateway :8080 to Product Service :8083 (/api/products/**), API Gateway :8080 to Global Filters: Authentication Rate Limiting Circuit Breaker, Global Filters: Authentication Rate Limiting Circuit Breaker to Fallback Controller.
     Client[Client] --> Gateway[API Gateway<br/>:8080]
 
     Gateway -->|/api/users/**| UserService[User Service<br/>:8081]
@@ -3616,12 +3672,18 @@ flowchart TD
 
     Filters --> Fallback[Fallback<br/>Controller]
 
-    style Client fill:#0173B2,color:#fff
-    style Gateway fill:#029E73,color:#fff
-    style UserService fill:#DE8F05,color:#fff
-    style OrderService fill:#CC78BC,color:#fff
-    style ProductService fill:#CA9161,color:#fff
-    style Filters fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Gateway pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class UserService pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class OrderService pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ProductService pal-CA9161
+    class Filters pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< /tab >}}
@@ -4363,6 +4425,8 @@ class OrderEventHandler(private val orderSummaryRepo: OrderSummaryRepository) {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Example 64: CQRS Pattern - Command Query Responsibility Segregation
+    accDescr: Flowchart with 7 nodes and 7 connections. Nodes: User Interface, Command API, Query API, Write DB Normalized OrderWriteModel, Read DB Denormalized OrderReadModel, Event Bus, Read Model Synchronizer. Connections: User Interface to Command API (Commands), User Interface to Query API (Queries), Command API to Write DB Normalized OrderWriteModel, Query API to Read DB Denormalized OrderReadModel, Write DB Normalized OrderWriteModel to Event Bus (Events), Event Bus to Read Model Synchronizer, Read Model Synchronizer to Read DB Denormalized OrderReadModel.
     UI[User Interface]
 
     UI -->|Commands| CommandAPI[Command API]
@@ -4375,12 +4439,18 @@ flowchart TD
     EventBus --> ReadSync[Read Model<br/>Synchronizer]
     ReadSync --> ReadDB
 
-    style UI fill:#0173B2,color:#fff
-    style CommandAPI fill:#DE8F05,color:#fff
-    style QueryAPI fill:#029E73,color:#fff
-    style WriteDB fill:#CC78BC,color:#fff
-    style ReadDB fill:#CA9161,color:#fff
-    style EventBus fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class UI pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CommandAPI pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class QueryAPI pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class WriteDB pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ReadDB pal-CA9161
+    class EventBus pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Takeaway**: CQRS separates write (command) and read (query) models—optimize writes for consistency and reads for performance with denormalized data, synchronizing via events for eventual consistency.
@@ -5066,6 +5136,8 @@ mutation {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: => REST equivalent: POST /books → GET /books/3 → GET /authors/1
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: GraphQL Client, GraphQL Endpoint /graphql, Resolver @QueryMapping @MutationMapping, BookRepository, AuthorRepository, Database, DataLoader Batch Loading. Connections: GraphQL Client to GraphQL Endpoint /graphql (Query/Mutation), GraphQL Endpoint /graphql to Resolver @QueryMapping @MutationMapping, Resolver @QueryMapping @MutationMapping to BookRepository, Resolver @QueryMapping @MutationMapping to AuthorRepository, BookRepository to Database, AuthorRepository to Database, DataLoader Batch Loading to Resolver @QueryMapping @MutationMapping (Prevents N+1).
     Client[GraphQL Client] -->|Query/Mutation| Gateway[GraphQL Endpoint<br/>/graphql]
 
     Gateway --> Resolver[Resolver<br/>@QueryMapping<br/>@MutationMapping]
@@ -5078,12 +5150,18 @@ graph TD
 
     Loader[DataLoader<br/>Batch Loading] -.->|Prevents N+1| Resolver
 
-    style Client fill:#0173B2,color:#fff
-    style Gateway fill:#029E73,color:#fff
-    style Resolver fill:#DE8F05,color:#fff
-    style Repo1 fill:#CC78BC,color:#fff
-    style Repo2 fill:#CA9161,color:#fff
-    style DB fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Gateway pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Resolver pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Repo1 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Repo2 pal-CA9161
+    class DB pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< /tab >}}
@@ -6615,6 +6693,8 @@ services:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: docker-compose.yml - Observability stack
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Spring Boot App, Prometheus :9090, Zipkin :9411, Loki :3100, Grafana :3000, Developer. Connections: Spring Boot App to Prometheus :9090 (Metrics), Spring Boot App to Zipkin :9411 (Traces), Spring Boot App to Loki :3100 (Logs), Prometheus :9090 to Grafana :3000, Zipkin :9411 to Grafana :3000, Loki :3100 to Grafana :3000, Grafana :3000 to Developer (Dashboards).
     App[Spring Boot App] -->|Metrics| Prometheus[Prometheus<br/>:9090]
     App -->|Traces| Zipkin[Zipkin<br/>:9411]
     App -->|Logs| Loki[Loki<br/>:3100]
@@ -6625,12 +6705,18 @@ graph TD
 
     Grafana -->|Dashboards| User[Developer]
 
-    style App fill:#0173B2,color:#fff
-    style Prometheus fill:#DE8F05,color:#fff
-    style Zipkin fill:#029E73,color:#fff
-    style Loki fill:#CC78BC,color:#fff
-    style Grafana fill:#CA9161,color:#fff
-    style User fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class App pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Prometheus pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Zipkin pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Loki pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Grafana pal-CA9161
+    class User pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< /tab >}}

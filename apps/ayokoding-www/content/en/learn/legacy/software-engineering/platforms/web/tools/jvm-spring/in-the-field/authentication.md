@@ -666,11 +666,13 @@ spring:
 
 ```mermaid
 graph LR
-    A[Basic Auth<br/>Credentials Every Request] -->|Add Sessions| B[Form Login<br/>Session Cookies]
+    accTitle: Authentication Evolution Diagram
+    accDescr: Graph with 16 nodes and 15 connections. Nodes: Basic Auth Credentials Every Request, Form Login Session Cookies, JWT Tokens No Server State, OAuth2/OIDC External Providers, ❌ Credentials Per Request, ❌ Browser Dialog, ❌ No Logout, ✅ Custom Login Page, ✅ Session Management, ✅ Remember-Me, ✅ Stateless, ✅ Mobile-Friendly, and 4 more. Connections: Basic Auth Credentials Every Request to Form Login Session Cookies (Add Sessions), Form Login Session Cookies to JWT Tokens No Server State (Add Stateless), JWT Tokens No Server State to OAuth2/OIDC External Providers (Add Federation), Basic Auth Credentials Every Request to ❌ Credentials Per Request, Basic Auth Credentials Every Request to ❌ Browser Dialog, Basic Auth Credentials Every Request to ❌ No Logout, ✅ Custom Login Page to Form Login Session Cookies, ✅ Session Management to Form Login Session Cookies, ✅ Remember-Me to Form Login Session Cookies, ✅ Stateless to JWT Tokens No Server State, ✅ Mobile-Friendly to JWT Tokens No Server State, ✅ Microservices to JWT Tokens No Server State, and 3 more.
+    A[Basic Auth<br/>Credentials Every<br/>Request] -->|Add Sessions| B[Form Login<br/>Session Cookies]
     B -->|Add Stateless| C[JWT Tokens<br/>No Server State]
     C -->|Add Federation| D[OAuth2/OIDC<br/>External Providers]
 
-    A --> A1[❌ Credentials Per Request]
+    A --> A1[❌ Credentials Per<br/>Request]
     A --> A2[❌ Browser Dialog]
     A --> A3[❌ No Logout]
 
@@ -682,14 +684,19 @@ graph LR
     C2[✅ Mobile-Friendly] --> C
     C3[✅ Microservices] --> C
 
-    D1[✅ No Password Management] --> D
+    D1[✅ No Password<br/>Management] --> D
     D2[✅ SSO] --> D
-    D3[✅ Enterprise Integration] --> D
+    D3[✅ Enterprise<br/>Integration] --> D
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class C pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

@@ -29,6 +29,8 @@ A Phoenix application starts with a Mix project that sets up your supervision tr
 ```mermaid
 %% Phoenix application supervision tree
 graph TD
+    accTitle: Example 1: Phoenix Application Starter
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: MyApp.Application, MyApp.Repo, MyAppWeb.Telemetry, Phoenix.PubSub, MyAppWeb.Endpoint, HTTP Server, WebSocket Handler. Connections: MyApp.Application to MyApp.Repo, MyApp.Application to MyAppWeb.Telemetry, MyApp.Application to Phoenix.PubSub, MyApp.Application to MyAppWeb.Endpoint, MyAppWeb.Endpoint to HTTP Server, MyAppWeb.Endpoint to WebSocket Handler.
     A[MyApp.Application] --> B[MyApp.Repo]
     A --> C[MyAppWeb.Telemetry]
     A --> D[Phoenix.PubSub]
@@ -36,13 +38,18 @@ graph TD
     E --> F[HTTP Server]
     E --> G[WebSocket Handler]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -132,6 +139,8 @@ The router defines URL patterns and maps them to controller actions. Phoenix 1.7
 ```mermaid
 %% Request pipeline flow through router
 graph TD
+    accTitle: Example 2: Routing Basics
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: HTTP Request, Router, Pipeline :browser, accepts html, fetch_session, protect_from_forgery, put_secure_headers, Controller Action, Response. Connections: HTTP Request to Router, Router to Pipeline :browser, Pipeline :browser to accepts html, accepts html to fetch_session, fetch_session to protect_from_forgery, protect_from_forgery to put_secure_headers, put_secure_headers to Controller Action, Controller Action to Response.
     A[HTTP Request] --> B[Router]
     B --> C[Pipeline :browser]
     C --> D[accepts html]
@@ -141,11 +150,16 @@ graph TD
     G --> H[Controller Action]
     H --> I[Response]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -278,8 +292,10 @@ Plugs are middleware that transform the connection. They're composable building 
 ```mermaid
 %% Plug transformation chain
 graph TD
+    accTitle: Example 4: Plugs - Request Transformation
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: conn, SetCurrentUser, conn with :current_user, require_login, User logged in?, conn continues, halt conn, redirect to /login, Controller Action. Connections: conn to SetCurrentUser, SetCurrentUser to conn with :current_user, conn with :current_user to require_login, require_login to User logged in?, User logged in? to conn continues (Yes), User logged in? to halt conn (No), halt conn to redirect to /login, conn continues to Controller Action.
     A[conn] --> B[SetCurrentUser]
-    B --> C[conn with :current_user]
+    B --> C[conn with<br/>:current_user]
     C --> D[require_login]
     D --> E{User logged in?}
     E -->|Yes| F[conn continues]
@@ -287,12 +303,18 @@ graph TD
     G --> H[redirect to /login]
     F --> I[Controller Action]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CA9161,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -507,6 +529,8 @@ LiveView components render HTML and respond to events in real-time using WebSock
 ```mermaid
 %% LiveView lifecycle flow
 graph TD
+    accTitle: Example 7: First LiveView Component
+    accDescr: Graph with 9 nodes and 9 connections. Nodes: Client Request, mount/3, assign socket, render/1, HTML to Client, WebSocket Connection, User Event, handle_event/3, Update assigns. Connections: Client Request to mount/3, mount/3 to assign socket, assign socket to render/1, render/1 to HTML to Client, HTML to Client to WebSocket Connection, WebSocket Connection to User Event, User Event to handle_event/3, handle_event/3 to Update assigns, Update assigns to render/1.
     A[Client Request] --> B[mount/3]
     B --> C[assign socket]
     C --> D[render/1]
@@ -517,11 +541,16 @@ graph TD
     H --> I[Update assigns]
     I --> D
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style H fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class H pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -585,6 +614,8 @@ Events are user interactions (clicks, form submissions) that trigger callbacks. 
 ```mermaid
 %% LiveView event handling flow
 sequenceDiagram
+    accTitle: Example 8: LiveView Events
+    accDescr: Sequence diagram between User (Browser), Client JS, LiveView Server. Messages: User (Browser) to Client JS: Click button phx-click=increment; Client JS to LiveView Server: Send event over WebSocket; LiveView Server to LiveView Server: handle_event(increment, params, socket); LiveView Server to LiveView Server: update(socket, :count, fn c -> c + 1 end); LiveView Server to Client JS: Send minimal HTML diff; Client JS to User (Browser): Patch DOM (only count changes).
     participant U as User (Browser)
     participant C as Client JS
     participant S as LiveView Server
@@ -596,9 +627,6 @@ sequenceDiagram
     S->>C: Send minimal HTML diff
     C->>U: Patch DOM (only count changes)
 
-    style U fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style S fill:#029E73,color:#fff
 ```
 
 ```elixir
@@ -793,6 +821,8 @@ Ecto schemas define your database structure. Migrations create and modify databa
 ```mermaid
 %% Ecto schema to database mapping
 graph LR
+    accTitle: Example 11: Schema and Migrations
+    accDescr: Graph with 9 nodes and 1 connections. Nodes: A, B, schema, field, C, posts, title, D, priv. Connections: B to C (mix ecto.migrate).
     A["Elixir Struct
 %Post{}"] -->|"use Ecto.Schema"| B["Ecto Schema
 schema posts do
@@ -804,10 +834,15 @@ posts
 priv/repo/migrations/
 *_create_posts.exs"] -->|defines| C
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -941,8 +976,10 @@ Changesets track data changes and validate them before saving. They're Ecto's wa
 ```mermaid
 %% Changeset validation pipeline
 graph TD
+    accTitle: Example 13: Changesets and Validation
+    accDescr: Graph with 12 nodes and 6 connections. Nodes: A, B, Filter, C, Check, D, E, valid?, G, Save, H, with. Connections: B to C, C to D, D to E, E to valid?, valid? to G (true), valid? to H (false).
     A["Input Attrs
-%{title: '', email: 'bad'}"] --> B["cast/3
+%{title: '', email:<br/>'bad'}"] --> B["cast/3
 Filter allowed fields"]
     B --> C["validate_required/2
 Check :title present"]
@@ -956,10 +993,15 @@ Save to database"]
     F -->|false| H["Return changeset
 with errors map"]
 
-    style A fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1054,11 +1096,16 @@ Database associations relate tables. A post has many comments, a comment belongs
 ```mermaid
 %% One-to-many association structure
 erDiagram
+    accTitle: Example 14: Associations - One-to-Many
+    accDescr: Entity relationship diagram where one POST has many COMMENT records. POST holds id, title and body; COMMENT holds id, body and a post_id foreign key.
     POST ||--o{COMMENT : has POST { int id PK<br/>string title string body}
     COMMENT {int id PK int post_id FK<br/>string body}
 
-    style POST fill:#0173B2,color:#fff
-    style COMMENT fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class POST pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class COMMENT pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1188,6 +1235,8 @@ Phoenix forms in LiveView automatically handle validation, phx-change updates, a
 ```mermaid
 %% LiveView form lifecycle
 sequenceDiagram
+    accTitle: Example 16: LiveView Forms
+    accDescr: Sequence diagram between User, Form (Browser), LiveView Server, Database. Messages: User to Form (Browser): Type in field; Form (Browser) to LiveView Server: phx-change validate event; LiveView Server to LiveView Server: Run changeset validation; LiveView Server to Form (Browser): Return validation errors (no DB); User to Form (Browser): Submit form; Form (Browser) to LiveView Server: phx-submit save event; LiveView Server to Database: Repo.update(changeset); Database to LiveView Server: :ok, post or :error, changeset; LiveView Server to Form (Browser): Redirect on success or show errors.
     participant U as User
     participant F as Form (Browser)
     participant S as LiveView Server
@@ -1203,9 +1252,6 @@ sequenceDiagram
     D->>S: {:ok, post} or {:error, changeset}
     S->>F: Redirect on success or show errors
 
-    style U fill:#0173B2,color:#fff
-    style S fill:#029E73,color:#fff
-    style D fill:#DE8F05,color:#fff
 ```
 
 ```elixir
@@ -1647,20 +1693,26 @@ Organize related resources hierarchically. Nest routes under parent resources fo
 ```mermaid
 %% Nested routes structure
 graph TD
-    A[/posts/:post_id] --> B[/posts/:post_id/comments]
-    B --> C[GET index - list comments]
-    B --> D[POST create - new comment]
-    B --> E[GET :id/show - view comment]
-    B --> F[PUT :id/update - edit comment]
-    B --> G[DELETE :id/delete - remove<br/>comment]
+    accTitle: Example 21: Nested Resources and Scoped Routes
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: /posts/:post_id, /posts/:post_id/ comments, GET index - list comments, POST create - new comment, GET :id/show - view comment, PUT :id/update - edit comment, DELETE :id/delete - remove comment. Connections: /posts/:post_id to /posts/:post_id/ comments, /posts/:post_id/ comments to GET index - list comments, /posts/:post_id/ comments to POST create - new comment, /posts/:post_id/ comments to GET :id/show - view comment, /posts/:post_id/ comments to PUT :id/update - edit comment, /posts/:post_id/ comments to DELETE :id/delete - remove comment.
+    A[/posts/:post_id] --> B[/posts/:post_id/<br/>comments]
+    B --> C[GET index - list<br/>comments]
+    B --> D[POST create - new<br/>comment]
+    B --> E[GET :id/show - view<br/>comment]
+    B --> F[PUT :id/update -<br/>edit comment]
+    B --> G[DELETE :id/delete -<br/>remove<br/>comment]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir

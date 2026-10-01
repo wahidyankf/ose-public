@@ -413,19 +413,25 @@ zakat.rate.general=0.025
 
 ```mermaid
 graph TD
-    A[Manual Properties<br/>Properties.load] -->|Auto Injection| B[@Value<br/>Placeholder Resolution]
+    accTitle: Progression Diagram
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Manual Properties Properties.load, @Value Placeholder Resolution, Environment Abstraction, @Configuration Properties Structured Binding, Error-Prone, Refactor Risk, IDE Support. Connections: Manual Properties Properties.load to @Value Placeholder Resolution (Auto Injection), @Value Placeholder Resolution to Environment Abstraction (Programmatic Access), Environment Abstraction to @Configuration Properties Structured Binding (Type-Safe), Manual Properties Properties.load to Error-Prone (Manual Parsing), @Value Placeholder Resolution to Refactor Risk (String-based), @Configuration Properties Structured Binding to IDE Support (Type-Safe).
+    A[Manual Properties<br/>Properties.load] -->|Auto Injection| B[@Value<br/>Placeholder<br/>Resolution]
     B -->|Programmatic Access| C[Environment<br/>Abstraction]
-    C -->|Type-Safe| D[@ConfigurationProperties<br/>Structured Binding]
+    C -->|Type-Safe| D[@Configuration<br/>Properties<br/>Structured Binding]
 
     A -->|Manual Parsing| E[Error-Prone]
     B -->|String-based| F[Refactor Risk]
     D -->|Type-Safe| G[IDE Support]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style G fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    class C pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class D pal-0173B2
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

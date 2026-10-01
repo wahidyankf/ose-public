@@ -493,15 +493,17 @@ public class ZakatService {
 
 ```mermaid
 graph TB
+    accTitle: Cross-Cutting Concerns Architecture Diagram
+    accDescr: Graph with 12 nodes and 15 connections. Nodes: Controller, Service Method Business Logic Only, LoggingAspect, Performance MonitoringAspect, AuditLoggingAspect, ExceptionLogging Aspect, Success?, Return Result, Throw Exception, SLF4J Logger, Micrometer Metrics, Audit Log Database. Connections: Controller to Service Method Business Logic Only (Call method), LoggingAspect to Service Method Business Logic Only (@Before), LoggingAspect to Service Method Business Logic Only (@AfterReturning), LoggingAspect to Service Method Business Logic Only (@AfterThrowing), Performance MonitoringAspect to Service Method Business Logic Only (@Around), AuditLoggingAspect to Service Method Business Logic Only (@AfterReturning), ExceptionLogging Aspect to Service Method Business Logic Only (@AfterThrowing), LoggingAspect to Performance MonitoringAspect, Service Method Business Logic Only to Success?, Success? to Return Result (Yes), Success? to Throw Exception (No), LoggingAspect to SLF4J Logger, and 3 more.
     A[Controller] -->|Call method| B[Service Method<br/>Business Logic Only]
 
     C[LoggingAspect] -.->|@Before| B
     C -.->|@AfterReturning| B
     C -.->|@AfterThrowing| B
 
-    D[PerformanceMonitoringAspect] -.->|@Around| B
+    D[Performance<br/>MonitoringAspect] -.->|@Around| B
     E[AuditLoggingAspect] -.->|@AfterReturning| B
-    F[ExceptionLoggingAspect] -.->|@AfterThrowing| B
+    F[ExceptionLogging<br/>Aspect] -.->|@AfterThrowing| B
 
     C --- D
 
@@ -514,14 +516,21 @@ graph TB
     E --> L[Audit Log Database]
     F --> J
 
-    style B fill:#029E73,stroke:#333,stroke-width:3px,color:#fff
-    style C fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
-    style F fill:#CA9161,stroke:#333,stroke-width:2px,color:#fff
-    style J fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style K fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style L fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:3px
+    class B pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class F pal-CA9161
+    classDef pal-029E73-2 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class J pal-029E73-2
+    class K pal-029E73-2
+    class L pal-029E73-2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

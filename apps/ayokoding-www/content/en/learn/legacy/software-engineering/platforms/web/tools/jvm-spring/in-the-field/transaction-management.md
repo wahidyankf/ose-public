@@ -484,6 +484,8 @@ public class ZakatPaymentService {
 
 ```mermaid
 graph TD
+    accTitle: Progression Diagram
+    accDescr: Graph with 12 nodes and 15 connections. Nodes: Manual Transaction commit/rollback, Boilerplate, Error-Prone, No Propagation, @Transactional Declarative, Automatic, Safe Rollback, Composable, Advanced @Transactional Isolation + Rollback, Financial Accuracy, Fine-Grained Control, Independent Commits. Connections: Manual Transaction commit/rollback to Boilerplate (60+ Lines), Manual Transaction commit/rollback to Error-Prone (Manual Boundaries), Manual Transaction commit/rollback to No Propagation (No Composition), Boilerplate to Error-Prone, Error-Prone to No Propagation, @Transactional Declarative to Automatic (10 Lines), @Transactional Declarative to Safe Rollback (Exception-Driven), @Transactional Declarative to Composable (Propagation Modes), Automatic to Safe Rollback, Safe Rollback to Composable, Advanced @Transactional Isolation + Rollback to Financial Accuracy (SERIALIZABLE), Advanced @Transactional Isolation + Rollback to Fine-Grained Control (rollbackFor), and 3 more.
     A[Manual Transaction<br/>commit/rollback] -->|60+ Lines| B[Boilerplate]
     A -->|Manual Boundaries| C[Error-Prone]
     A -->|No Composition| D[No Propagation]
@@ -496,15 +498,19 @@ graph TD
     F --- G
     G --- H
 
-    I[Advanced @Transactional<br/>Isolation + Rollback] -->|SERIALIZABLE| J[Financial Accuracy]
+    I[Advanced<br/>@Transactional<br/>Isolation + Rollback] -->|SERIALIZABLE| J[Financial Accuracy]
     I -->|rollbackFor| K[Fine-Grained Control]
     I -->|REQUIRES_NEW| L[Independent Commits]
     J --- K
     K --- L
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style I fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

@@ -685,7 +685,7 @@ automatically qualifies every column with its own table name in the rendered SQL
 %% Color Palette: Blue #0173B2, Orange #DE8F05 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 9: Query Builder Join
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Query.from_ (customer_order), B, rendered SQL text SELECT ... JOIN ... ON .... Connections: Query.from_ (customer_order) to B, B to rendered SQL text SELECT ... JOIN ... ON ....
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Query.from_ (customer_order), .join(customer, INNER) .on(customer.id == order.customer_id), rendered SQL text SELECT ... JOIN ... ON .... Connections: Query.from_ (customer_order) to .join(customer, INNER) .on(customer.id == order.customer_id), .join(customer, INNER) .on(customer.id == order.customer_id) to rendered SQL text SELECT ... JOIN ... ON ....
     A["Query.from_<br/>(customer_order)"]:::blue
     A --> B[".join(customer,<br/>INNER)<br/>.on(customer.id ==<br/>order.customer_id)"]:::orange
     B --> C["rendered SQL text<br/>SELECT ... JOIN ...<br/>ON ..."]:::blue
@@ -835,7 +835,7 @@ the payload become executable SQL syntax.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
     accTitle: Example 11: Query Builder vs String Safety
-    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: hostile value x OR 1=1, B, x, f-string f...x... value becomes SQL TEXT, D, inert, E. Connections: hostile value x OR 1=1 to B, B to x, hostile value x OR 1=1 to f-string f...x... value becomes SQL TEXT, B to D, D to inert, f-string f...x... value becomes SQL TEXT to E.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: hostile value x OR 1=1, builder .where(name == x) value stays DATA, f-string f...x... value becomes SQL TEXT, 0 rows -- inert, every row -- injected. Connections: hostile value x OR 1=1 to builder .where(name == x) value stays DATA, hostile value x OR 1=1 to f-string f...x... value becomes SQL TEXT, builder .where(name == x) value stays DATA to 0 rows -- inert, f-string f...x... value becomes SQL TEXT to every row -- injected.
     A["hostile value<br/>x' OR '1'='1"]:::orange
     A --> B["builder .where(name<br/>== x)<br/>value stays DATA"]:::blue
     A --> C["f-string<br/>f'...{x}...'<br/>value becomes SQL<br/>TEXT"]:::orange
@@ -2371,7 +2371,7 @@ returns a genuinely different object.
 %% Color Palette: Blue #0173B2, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TB
     accTitle: Example 27: Identity Map Same Object
-    accDescr: Flowchart with 6 nodes and 6 connections. Nodes: A, 1, Session identity map (Customer, 1) -> ada, session. get(Customer, 1), C, ONE Python object. Connections: A to 1, 1 to Session identity map (Customer, 1) -> ada, session. get(Customer, 1) to Session identity map (Customer, 1) -> ada, C to 1, 1 to Session identity map (Customer, 1) -> ada, Session identity map (Customer, 1) -> ada to ONE Python object.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: select(Customer). where(id==1), Session identity map (Customer, 1) -> ada, session. get(Customer, 1), select(Customer). where(id==1), ONE Python object. Connections: select(Customer). where(id==1) to Session identity map (Customer, 1) -> ada, session. get(Customer, 1) to Session identity map (Customer, 1) -> ada, select(Customer). where(id==1) to Session identity map (Customer, 1) -> ada, Session identity map (Customer, 1) -> ada to ONE Python object.
     A["select(Customer).<br/>where(id==1)"]:::blue --> M["Session identity map<br/>(Customer, 1) -> ada"]
     B["session.<br/>get(Customer, 1)"]:::blue --> M
     C["select(Customer).<br/>where(id==1)"]:::blue --> M

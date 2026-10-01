@@ -1793,7 +1793,7 @@ A phantom read happens when re-running a range query within one transaction retu
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 74: Phantom Read: a New Row Appears Under Repeatable-Read
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: T1: range query 3 rows, T2: inserts matching row, C, phantom. Connections: C to phantom, T1: range query 3 rows to T2: inserts matching row, T2: inserts matching row to C.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: T1: range query 3 rows, T2: inserts matching row, T1: re-query 4 rows -- phantom. Connections: T1: range query 3 rows to T2: inserts matching row, T2: inserts matching row to T1: re-query 4 rows -- phantom.
     A["T1: range query<br/>3 rows"]:::blue
     B["T2: inserts<br/>matching row"]:::orange
     C["T1: re-query<br/>4 rows -- phantom"]:::teal

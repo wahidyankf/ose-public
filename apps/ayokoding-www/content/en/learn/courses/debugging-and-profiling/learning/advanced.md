@@ -469,7 +469,7 @@ if __name__ == "__main__":  # => guards the module-level call so importing this 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: learning/code/ex-53-cprofile-to-flame-graph/recordflamegraphandcompare.py
-    accDescr: Graph with 8 nodes and 10 connections. Nodes: workload.prof cProfile, gprof2dot self-time, mini_sampler widest leaf frame, D, lt, gt, E, same function, independently confirmed. Connections: workload.prof cProfile to gprof2dot self-time, workload.prof cProfile to mini_sampler widest leaf frame, gprof2dot self-time to D, gprof2dot self-time to lt, gprof2dot self-time to gt, mini_sampler widest leaf frame to E, mini_sampler widest leaf frame to lt, mini_sampler widest leaf frame to gt, D to same function, independently confirmed, E to same function, independently confirmed.
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: workload.prof cProfile, gprof2dot self-time, mini_sampler widest leaf frame, <genexpr> 66.29 self time, <genexpr> 73.1 of samples, same function, independently confirmed. Connections: workload.prof cProfile to gprof2dot self-time, workload.prof cProfile to mini_sampler widest leaf frame, gprof2dot self-time to <genexpr> 66.29 self time, mini_sampler widest leaf frame to <genexpr> 73.1 of samples, <genexpr> 66.29 self time to same function, independently confirmed, <genexpr> 73.1 of samples to same function, independently confirmed.
     A["workload.prof<br/>cProfile"]:::blue --> B["gprof2dot<br/>self-time %"]:::orange
     A --> C["mini_sampler<br/>widest leaf frame"]:::teal
     B --> D["'&lt;genexpr&gt;'<br/>66.29% self time"]:::purple
@@ -527,7 +527,7 @@ CLI `pdb` stopping at the identical line.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 54: A Real Neovim DAP Breakpoint
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: nvim-dap toggle_breakpoint(), dap.run() launches debugpy, target.py hits the breakpoint, scopes + variables request, E, CLI. Connections: nvim-dap toggle_breakpoint() to dap.run() launches debugpy, dap.run() launches debugpy to target.py hits the breakpoint, target.py hits the breakpoint to scopes + variables request (stopped event), scopes + variables request to E, E to CLI.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: nvim-dap toggle_breakpoint(), dap.run() launches debugpy, target.py hits the breakpoint, scopes + variables request, Locals scope == CLI pdbs p output. Connections: nvim-dap toggle_breakpoint() to dap.run() launches debugpy, dap.run() launches debugpy to target.py hits the breakpoint, target.py hits the breakpoint to scopes + variables request (stopped event), scopes + variables request to Locals scope == CLI pdbs p output.
     A["nvim-dap<br/>toggle_breakpoint()"]:::blue --> B["dap.run()<br/>launches debugpy"]:::orange
     B --> C["target.py<br/>hits the breakpoint"]:::teal
     C -->|"stopped event"| D["scopes + variables<br/>request"]:::orange
@@ -1143,7 +1143,7 @@ if __name__ == "__main__":  # => guards the module-level call so importing this 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: learning/code/ex-58-asyncio-interleaving-bug/interleave.py
-    accDescr: Graph with 9 nodes and 10 connections. Nodes: stock = 1, B, gt, C, coro-A: await sleep(0) yields to event loop, coro-B: await sleep(0) yields to event loop, coro-A: stock -= 1 RESERVED, coro-B: stock -= 1 RESERVED, stock = -1 BOTH reserved one widget. Connections: stock = 1 to B, stock = 1 to gt, stock = 1 to C, stock = 1 to gt, B to coro-A: await sleep(0) yields to event loop, C to coro-B: await sleep(0) yields to event loop, coro-A: await sleep(0) yields to event loop to coro-A: stock -= 1 RESERVED, coro-B: await sleep(0) yields to event loop to coro-B: stock -= 1 RESERVED, coro-A: stock -= 1 RESERVED to stock = -1 BOTH reserved one widget, coro-B: stock -= 1 RESERVED to stock = -1 BOTH reserved one widget.
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: stock = 1, coro-A: check stock > 0? YES, coro-B: check stock > 0? YES, coro-A: await sleep(0) yields to event loop, coro-B: await sleep(0) yields to event loop, coro-A: stock -= 1 RESERVED, coro-B: stock -= 1 RESERVED, stock = -1 BOTH reserved one widget. Connections: stock = 1 to coro-A: check stock > 0? YES, stock = 1 to coro-B: check stock > 0? YES, coro-A: check stock > 0? YES to coro-A: await sleep(0) yields to event loop, coro-B: check stock > 0? YES to coro-B: await sleep(0) yields to event loop, coro-A: await sleep(0) yields to event loop to coro-A: stock -= 1 RESERVED, coro-B: await sleep(0) yields to event loop to coro-B: stock -= 1 RESERVED, coro-A: stock -= 1 RESERVED to stock = -1 BOTH reserved one widget, coro-B: stock -= 1 RESERVED to stock = -1 BOTH reserved one widget.
     A["stock = 1"]:::blue --> B["coro-A: check<br/>stock &gt; 0? YES"]:::orange
     A --> C["coro-B: check<br/>stock &gt; 0? YES"]:::orange
     B --> D["coro-A: await<br/>sleep(0)<br/>yields to event loop"]:::teal
@@ -1346,7 +1346,7 @@ if __name__ == "__main__":  # => guards the module-level call so importing this 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: learning/code/ex-60-multiprocessing-vs-threading-profiling/cpubound.py
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: 1 worker alone 0.55s (baseline), B, 3.68x, C, 1.05x, GIL serializes: close to 4x, real parallel cores: well under 4x. Connections: 1 worker alone 0.55s (baseline) to B, B to 3.68x, 1 worker alone 0.55s (baseline) to C, C to 1.05x, B to GIL serializes: close to 4x, C to real parallel cores: well under 4x.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 1 worker alone 0.55s (baseline), 4 threads 2.01s -- 3.68x, 4 processes 0.57s -- 1.05x, GIL serializes: close to 4x, real parallel cores: well under 4x. Connections: 1 worker alone 0.55s (baseline) to 4 threads 2.01s -- 3.68x, 1 worker alone 0.55s (baseline) to 4 processes 0.57s -- 1.05x, 4 threads 2.01s -- 3.68x to GIL serializes: close to 4x, 4 processes 0.57s -- 1.05x to real parallel cores: well under 4x.
     A["1 worker alone<br/>0.55s (baseline)"]:::blue --> B["4 threads<br/>2.01s -- 3.68x"]:::orange
     A --> C["4 processes<br/>0.57s -- 1.05x"]:::teal
     B --> D["GIL serializes:<br/>close to 4x"]:::orange
@@ -1397,7 +1397,7 @@ bisectable performance regression.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 61: git bisect run for a Performance Regression
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: commit 1 O(n), under threshold, commit 2 O(n), under threshold, commit 3 O(n), under threshold, D, commit 5 still over threshold, commit 6 still over threshold (HEAD). Connections: commit 1 O(n), under threshold to commit 2 O(n), under threshold, commit 2 O(n), under threshold to commit 3 O(n), under threshold, commit 3 O(n), under threshold to D, D to commit 5 still over threshold, commit 5 still over threshold to commit 6 still over threshold (HEAD).
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: commit 1 O(n), under threshold, commit 2 O(n), under threshold, commit 3 O(n), under threshold, commit 4 O(n^2) swapped in -- BAD, commit 5 still over threshold, commit 6 still over threshold (HEAD). Connections: commit 1 O(n), under threshold to commit 2 O(n), under threshold, commit 2 O(n), under threshold to commit 3 O(n), under threshold, commit 3 O(n), under threshold to commit 4 O(n^2) swapped in -- BAD, commit 4 O(n^2) swapped in -- BAD to commit 5 still over threshold, commit 5 still over threshold to commit 6 still over threshold (HEAD).
     A["commit 1<br/>O(n), under<br/>threshold"]:::teal --> B["commit 2<br/>O(n), under<br/>threshold"]:::teal
     B --> C["commit 3<br/>O(n), under<br/>threshold"]:::teal
     C --> D["commit 4<br/>O(n^2) swapped in --<br/>BAD"]:::orange

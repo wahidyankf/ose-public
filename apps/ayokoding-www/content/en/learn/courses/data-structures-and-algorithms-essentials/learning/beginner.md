@@ -187,7 +187,7 @@ A stack is last-in-first-out (LIFO): the most recently pushed element is the fir
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 5: Stack with Push and Pop
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: push first 91first93, push second 91first,second93, push third 91first,second,third93, pop returns third 91first,second93. Connections: push first 91first93 to push second 91first,second93, push second 91first,second93 to push third 91first,second,third93, push third 91first,second,third93 to pop returns third 91first,second93.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: push first [first], push second [first,second], push third [first,second,third], pop returns third [first,second]. Connections: push first [first] to push second [first,second], push second [first,second] to push third [first,second,third], push third [first,second,third] to pop returns third [first,second].
     A["push first<br/>#91;first#93;"]:::blue
     B["push second<br/>#91;first,second#93;"]:::blue
     C["push third<br/>[first,second,third]"]:::blue
@@ -247,7 +247,7 @@ Checking whether brackets are balanced is a classic stack application: push ever
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 6: Balanced Parentheses via Stack
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: see 40 push, stack: 1 item, see 40 push, stack: 2 items, see 41 pop, stack: 1 item, see 41 pop, stack empty. Connections: see 40 push, stack: 1 item to see 40 push, stack: 2 items, see 40 push, stack: 2 items to see 41 pop, stack: 1 item, see 41 pop, stack: 1 item to see 41 pop, stack empty.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: see ( push, stack: 1 item, see ( push, stack: 2 items, see ) pop, stack: 1 item, see ) pop, stack empty. Connections: see ( push, stack: 1 item to see ( push, stack: 2 items, see ( push, stack: 2 items to see ) pop, stack: 1 item, see ) pop, stack: 1 item to see ) pop, stack empty.
     A["see #40;<br/>push, stack: 1 item"]:::blue
     B["see #40;<br/>push, stack: 2 items"]:::blue
     C["see #41;<br/>pop, stack: 1 item"]:::orange
@@ -316,7 +316,7 @@ A queue is first-in-first-out (FIFO): the first element enqueued is the first on
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 7: Queue with collections.deque
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: enqueue first 91first93, enqueue second, third 91first,second,third93, dequeue front returns first, remaining: 91second,third93. Connections: enqueue first 91first93 to enqueue second, third 91first,second,third93, enqueue second, third 91first,second,third93 to dequeue front returns first, dequeue front returns first to remaining: 91second,third93.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: enqueue first [first], enqueue second, third [first,second,third], dequeue front returns first, remaining: [second,third]. Connections: enqueue first [first] to enqueue second, third [first,second,third], enqueue second, third [first,second,third] to dequeue front returns first, dequeue front returns first to remaining: [second,third].
     A["enqueue first<br/>#91;first#93;"]:::blue
     B["enqueue second,<br/>third<br/>[first,second,third]"]:::blue
     C["dequeue front<br/>returns first"]:::orange
@@ -378,7 +378,7 @@ _ex-08 &middot; exercises co-06_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: Example 8: Deque Operations at Both Ends
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: start: 912,393, appendleft 1, append 4 911,2,3,493, pop4041 from right: 4 911,2,393, popleft4041 from left: 1 912,393. Connections: start: 912,393 to appendleft 1, append 4 911,2,3,493, appendleft 1, append 4 911,2,3,493 to pop4041 from right: 4 911,2,393, pop4041 from right: 4 911,2,393 to popleft4041 from left: 1 912,393.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: start: [2,3], appendleft 1, append 4 [1,2,3,4], pop() from right: 4 [1,2,3], popleft() from left: 1 [2,3]. Connections: start: [2,3] to appendleft 1, append 4 [1,2,3,4], appendleft 1, append 4 [1,2,3,4] to pop() from right: 4 [1,2,3], pop() from right: 4 [1,2,3] to popleft() from left: 1 [2,3].
     A["start: #91;2,3#93;"]:::blue
     B["appendleft 1, append<br/>4<br/>#91;1,2,3,4#93;"]:::orange
     C["pop#40;#41; from<br/>right: 4<br/>#91;1,2,3#93;"]:::teal
@@ -443,7 +443,7 @@ _ex-09 &middot; exercises co-05, co-01_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: Example 9: list.pop vs deque.popleft -- Same Result, Different Cost
-    accDescr: Graph with 4 nodes and 4 connections. Nodes: 91a,b,c93, list.pop40041 shifts b,c left: O40n41, deque. popleft4041 moves head ptr: O40141, both return a 91b,c93 remains. Connections: 91a,b,c93 to list.pop40041 shifts b,c left: O40n41, list.pop40041 shifts b,c left: O40n41 to both return a 91b,c93 remains, 91a,b,c93 to deque. popleft4041 moves head ptr: O40141, deque. popleft4041 moves head ptr: O40141 to both return a 91b,c93 remains.
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: [a,b,c], list.pop(0) shifts b,c left: O(n), deque. popleft() moves head ptr: O(1), both return a [b,c] remains. Connections: [a,b,c] to list.pop(0) shifts b,c left: O(n), list.pop(0) shifts b,c left: O(n) to both return a [b,c] remains, [a,b,c] to deque. popleft() moves head ptr: O(1), deque. popleft() moves head ptr: O(1) to both return a [b,c] remains.
     S["#91;a,b,c#93;"]:::blue
     L["list.pop#40;0#41;<br/>shifts b,c left:<br/>O#40;n#41;"]:::orange
     D["deque.<br/>popleft#40;#41;<br/>moves head ptr:<br/>O#40;1#41;"]:::teal
@@ -975,7 +975,7 @@ Factorial is the simplest classic recursive function: `factorial(n) = n * factor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: Example 21: Recursive Factorial
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: factorial40541 calls factorial40441, ... calls down to factorial40041, factorial40041 returns 1 base case, unwinds: 5*4*3*2*1 result 120. Connections: factorial40541 calls factorial40441 to ... calls down to factorial40041, ... calls down to factorial40041 to factorial40041 returns 1 base case, factorial40041 returns 1 base case to unwinds: 5*4*3*2*1 result 120.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: factorial(5) calls factorial(4), ... calls down to factorial(0), factorial(0) returns 1 base case, unwinds: 5*4*3*2*1 result 120. Connections: factorial(5) calls factorial(4) to ... calls down to factorial(0), ... calls down to factorial(0) to factorial(0) returns 1 base case, factorial(0) returns 1 base case to unwinds: 5*4*3*2*1 result 120.
     A["factorial#40;5#41;<br/>calls<br/>factorial#40;4#41;"]:::blue
     B["...<br/>calls down to<br/>factorial#40;0#41;"]:::orange
     C["factorial#40;0#41;<br/>returns 1<br/>base case"]:::teal

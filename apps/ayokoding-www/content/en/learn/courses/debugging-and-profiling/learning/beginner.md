@@ -251,7 +251,7 @@ from the module's top level down to the current breakpoint, in order.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 4: Reading the Call Stack with w
-    accDescr: Graph with 6 nodes and 6 connections. Nodes: A, lt, handle_ request(...)), handle_request() return parse_amount(amount), parse_amount() return to_cents(amount), D. Connections: A to handle_request() return parse_amount(amount), lt to handle_request() return parse_amount(amount), handle_ request(...)) to handle_request() return parse_amount(amount), handle_request() return parse_amount(amount) to parse_amount() return to_cents(amount), parse_amount() return to_cents(amount) to D, parse_amount() return to_cents(amount) to handle_ request(...)).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: <module> print(handle_ request(...)), handle_request() return parse_amount(amount), parse_amount() return to_cents(amount), to_cents() > CURRENT (breakpoint here). Connections: <module> print(handle_ request(...)) to handle_request() return parse_amount(amount), handle_request() return parse_amount(amount) to parse_amount() return to_cents(amount), parse_amount() return to_cents(amount) to to_cents() > CURRENT (breakpoint here).
     A["&lt;module&gt;<br/>print(handle_<br/>request(...))"]:::blue --> B["handle_request()<br/>return<br/>parse_amount(amount)"]:::blue
     B --> C["parse_amount()<br/>return<br/>to_cents(amount)"]:::orange
     C --> D["to_cents()<br/>&gt; CURRENT<br/>(breakpoint here)"]:::teal
@@ -559,7 +559,7 @@ times but only ONE iteration is interesting.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 8: Conditional Breakpoint in a Loop
-    accDescr: Graph with 4 nodes and 5 connections. Nodes: for i in range(100):, B, 50, breakpoint fires p i, total. Connections: for i in range(100): to B, B to 50, B to for i in range(100): (no (x99)), B to breakpoint fires p i, total (yes (x1)), breakpoint fires p i, total to for i in range(100):.
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: for i in range(100):, i == 50?, breakpoint fires p i, total. Connections: for i in range(100): to i == 50?, i == 50? to for i in range(100): (no (x99)), i == 50? to breakpoint fires p i, total (yes (x1)), breakpoint fires p i, total to for i in range(100):.
     A["for i in range(100):"]:::blue --> B{"i == 50?"}:::orange
     B -->|"no (x99)"| A
     B -->|"yes (x1)"| C["breakpoint fires<br/>p i, total"]:::teal
@@ -1653,7 +1653,7 @@ large failing string down toward its essential trigger in a handful of steps.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 24: Minimizing a Failing Input by Hand
-    accDescr: Graph with 6 nodes and 4 connections. Nodes: 77 chars still_fails(, drop a left chunk still_fails(, ... 4 more left drops all still True, drop a right chunk still_fails(, ... 4 more right drops all still True, BADSEQ 6 chars, still True. Connections: drop a left chunk still_fails( to ... 4 more left drops all still True, ... 4 more left drops all still True to drop a right chunk still_fails(, drop a right chunk still_fails( to ... 4 more right drops all still True, ... 4 more right drops all still True to BADSEQ 6 chars, still True.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: 77 chars still_fails() == True, drop a left chunk still_fails() == True, ... 4 more left drops all still True, drop a right chunk still_fails() == True, ... 4 more right drops all still True, BADSEQ 6 chars, still True. Connections: 77 chars still_fails() == True to drop a left chunk still_fails() == True, drop a left chunk still_fails() == True to ... 4 more left drops all still True, ... 4 more left drops all still True to drop a right chunk still_fails() == True, drop a right chunk still_fails() == True to ... 4 more right drops all still True, ... 4 more right drops all still True to BADSEQ 6 chars, still True.
     A["77 chars<br/>still_fails() ==<br/>True"]:::blue --> B["drop a left chunk<br/>still_fails() ==<br/>True"]:::orange
     B --> C["... 4 more left<br/>drops<br/>all still True"]:::orange
     C --> D["drop a right chunk<br/>still_fails() ==<br/>True"]:::teal

@@ -1522,7 +1522,7 @@ every read is a real cache miss, isolating the alignment penalty itself.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 18: Misaligned Access Cost
-    accDescr: Graph with 4 nodes and 4 connections. Nodes: 64 MiB buffer (far bigger than any cache), aligned uint64_t reads (8-byte boundaries), misaligned uint64_t reads (1-byte-shifted), D. Connections: 64 MiB buffer (far bigger than any cache) to aligned uint64_t reads (8-byte boundaries), 64 MiB buffer (far bigger than any cache) to misaligned uint64_t reads (1-byte-shifted), aligned uint64_t reads (8-byte boundaries) to D, misaligned uint64_t reads (1-byte-shifted) to D.
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: 64 MiB buffer (far bigger than any cache), aligned uint64_t reads (8-byte boundaries), misaligned uint64_t reads (1-byte-shifted), both are real cache misses -- alignment penalty isolated. Connections: 64 MiB buffer (far bigger than any cache) to aligned uint64_t reads (8-byte boundaries), 64 MiB buffer (far bigger than any cache) to misaligned uint64_t reads (1-byte-shifted), aligned uint64_t reads (8-byte boundaries) to both are real cache misses -- alignment penalty isolated, misaligned uint64_t reads (1-byte-shifted) to both are real cache misses -- alignment penalty isolated.
     A["64 MiB buffer<br/>(far bigger than any<br/>cache)"]:::brown --> B["aligned uint64_t<br/>reads<br/>(8-byte boundaries)"]:::blue
     A --> C["misaligned uint64_t<br/>reads<br/>(1-byte-shifted)"]:::orange
     B --> D["both are real cache<br/>misses --<br/>alignment penalty<br/>isolated"]:::teal
@@ -2303,7 +2303,7 @@ count.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 24: Temporal Locality Working Set
-    accDescr: Graph with 6 nodes and 4 connections. Nodes: small 8 KiB set stays L1-resident, re-scanned repeatedly, same random order, C, large 32 MiB set never fits any cache, re-scanned repeatedly, same random order, F. Connections: small 8 KiB set stays L1-resident to re-scanned repeatedly, same random order, re-scanned repeatedly, same random order to C, large 32 MiB set never fits any cache to re-scanned repeatedly, same random order, re-scanned repeatedly, same random order to F.
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: small 8 KiB set stays L1-resident, re-scanned repeatedly, same random order, fast -- mostly cache HITS, large 32 MiB set never fits any cache, re-scanned repeatedly, same random order, slow -- mostly cache MISSES. Connections: small 8 KiB set stays L1-resident to re-scanned repeatedly, same random order, re-scanned repeatedly, same random order to fast -- mostly cache HITS, large 32 MiB set never fits any cache to re-scanned repeatedly, same random order, re-scanned repeatedly, same random order to slow -- mostly cache MISSES.
     A["small 8 KiB set<br/>stays L1-resident"]:::blue --> B["re-scanned<br/>repeatedly,<br/>same random order"]:::teal --> C["fast --<br/>mostly cache HITS"]:::teal
     D["large 32 MiB set<br/>never fits any cache"]:::orange --> E["re-scanned<br/>repeatedly,<br/>same random order"]:::brown --> F["slow --<br/>mostly cache MISSES"]:::brown
 
@@ -2682,7 +2682,7 @@ emitted mnemonics directly.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 27: ISA Compare -- RISC-V vs x86
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: array_sum4041 C source, clang -O2, x86_64 target, riscv64-elf-gcc -O2, x86 assembly: SSE2 vectorized + scalar tail, RISC-V assembly: lw /addw /bne, fully scalar. Connections: array_sum4041 C source to clang -O2, x86_64 target, array_sum4041 C source to riscv64-elf-gcc -O2, clang -O2, x86_64 target to x86 assembly: SSE2 vectorized + scalar tail, riscv64-elf-gcc -O2 to RISC-V assembly: lw /addw /bne, fully scalar.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: array_sum() C source, clang -O2, x86_64 target, riscv64-elf-gcc -O2, x86 assembly: SSE2 vectorized + scalar tail, RISC-V assembly: lw /addw /bne, fully scalar. Connections: array_sum() C source to clang -O2, x86_64 target, array_sum() C source to riscv64-elf-gcc -O2, clang -O2, x86_64 target to x86 assembly: SSE2 vectorized + scalar tail, riscv64-elf-gcc -O2 to RISC-V assembly: lw /addw /bne, fully scalar.
     A["array_sum#40;#41; C<br/>source"]:::blue --> B["clang -O2, x86_64<br/>target"]:::orange
     A --> C["riscv64-elf-gcc -O2"]:::orange
     B --> D["x86 assembly: SSE2<br/>vectorized + scalar<br/>tail"]:::teal

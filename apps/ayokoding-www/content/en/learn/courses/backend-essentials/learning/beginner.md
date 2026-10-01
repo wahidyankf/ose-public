@@ -28,7 +28,7 @@ what a framework like FastAPI does invisibly on every single request.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 1: Raw Server Hello
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Client sends GET /, send_ response4020041 writes status line, send_header + end_headers, wfile.write40bquothelloquot41 writes body. Connections: Client sends GET / to send_ response4020041 writes status line, send_ response4020041 writes status line to send_header + end_headers, send_header + end_headers to wfile.write40bquothelloquot41 writes body.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Client sends GET /, send_ response(200) writes status line, send_header + end_headers, wfile.write( bhello) writes body. Connections: Client sends GET / to send_ response(200) writes status line, send_ response(200) writes status line to send_header + end_headers, send_header + end_headers to wfile.write( bhello) writes body.
     A["Client sends<br/>GET /"]:::blue
     B["send_<br/>response#40;200#41;<br/>writes status line"]:::orange
     C["send_header +<br/>end_headers"]:::orange
@@ -411,7 +411,7 @@ A raw handler decides its own status code by hand: `send_response(404)` for an u
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 6: Raw 404
-    accDescr: Graph with 4 nodes and 2 connections. Nodes: GET /known, B, GET anything else, D. Connections: GET /known to B, GET anything else to D.
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: GET /known, 200 OK -- found it, GET anything else, 404 Not Found -- not found. Connections: GET /known to 200 OK -- found it, GET anything else to 404 Not Found -- not found.
     A["GET /known"]:::blue --> B["200 OK --<br/>found it"]:::teal
     C["GET anything else"]:::orange --> D["404 Not Found --<br/>not found"]:::orange
 
@@ -625,7 +625,7 @@ syllabus's acceptance criterion.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 9: Method 405, Raw
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Client sends POST /, Is there a do_POST method?, do_POST runs: 405 + Allow: GET, stdlib default: 501 Not Implemented. Connections: Client sends POST / to Is there a do_POST method?, Is there a do_POST method? to do_POST runs: 405 + Allow: GET (Yes, defined), Is there a do_POST method? to stdlib default: 501 Not Implemented (No 40Example 841).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Client sends POST /, Is there a do_POST method?, do_POST runs: 405 + Allow: GET, stdlib default: 501 Not Implemented. Connections: Client sends POST / to Is there a do_POST method?, Is there a do_POST method? to do_POST runs: 405 + Allow: GET (Yes, defined), Is there a do_POST method? to stdlib default: 501 Not Implemented (No (Example 8)).
     A["Client sends<br/>POST /"]:::blue
     B{"Is there a<br/>do_POST method?"}:::orange
     C["do_POST runs:<br/>405 + Allow: GET"]:::teal
@@ -916,7 +916,7 @@ path parameter and its type -- a non-numeric path segment fails validation autom
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 14: Typed Path Param
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: GET /items/5, segment parses as int?, read_item runs, item_id=5 (int), D. Connections: GET /items/5 to segment parses as int?, segment parses as int? to read_item runs, item_id=5 (int) (yes), segment parses as int? to D (no, e.g. /items/abc).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: GET /items/5, segment parses as int?, read_item runs, item_id=5 (int), 422 -- handler never runs. Connections: GET /items/5 to segment parses as int?, segment parses as int? to read_item runs, item_id=5 (int) (yes), segment parses as int? to 422 -- handler never runs (no, e.g. /items/abc).
     A["GET /items/5"]:::blue --> B{"segment parses<br/>as int?"}:::orange
     B -->|yes| C["read_item runs,<br/>item_id=5 (int)"]:::teal
     B -->|"no, e.g.<br/>/items/abc"| D["422 --<br/>handler never runs"]:::orange
@@ -1070,7 +1070,7 @@ validate it against the model -- a malformed body never reaches the handler's ow
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 17: JSON Request Body
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: curl POST JSON body, Body matches Item model?, create_item4041 runs 200 + echoed JSON, 422 Unprocessable structured detail. Connections: curl POST JSON body to Body matches Item model?, Body matches Item model? to create_item4041 runs 200 + echoed JSON (Yes), Body matches Item model? to 422 Unprocessable structured detail (No).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: curl POST JSON body, Body matches Item model?, create_item() runs 200 + echoed JSON, 422 Unprocessable structured detail. Connections: curl POST JSON body to Body matches Item model?, Body matches Item model? to create_item() runs 200 + echoed JSON (Yes), Body matches Item model? to 422 Unprocessable structured detail (No).
     A["curl POST<br/>JSON body"]:::blue
     B{"Body matches<br/>Item model?"}:::orange
     C["create_item#40;#41;<br/>runs<br/>200 + echoed JSON"]:::teal
@@ -1685,7 +1685,7 @@ in the code.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 27: FastAPIs Native Content-Type Rejection
-    accDescr: Graph with 4 nodes and 2 connections. Nodes: POST /notes Content-Type: application/json, body parsed as JSON, Note validates, POST /notes Content-Type: text/plain, D. Connections: POST /notes Content-Type: application/json to body parsed as JSON, Note validates, POST /notes Content-Type: text/plain to D.
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: POST /notes Content-Type: application/json, body parsed as JSON, Note validates, POST /notes Content-Type: text/plain, body never parsed as JSON -- 422, native default. Connections: POST /notes Content-Type: application/json to body parsed as JSON, Note validates, POST /notes Content-Type: text/plain to body never parsed as JSON -- 422, native default.
     A["POST /notes<br/>Content-Type:<br/>application/json"]:::blue --> B["body parsed as JSON,<br/>Note validates"]:::teal
     C["POST /notes<br/>Content-Type:<br/>text/plain"]:::orange --> D["body never parsed as<br/>JSON --<br/>422, native default"]:::orange
 

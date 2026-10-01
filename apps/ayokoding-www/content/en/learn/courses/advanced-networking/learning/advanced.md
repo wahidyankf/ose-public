@@ -534,7 +534,7 @@ addresses (via STUN, and TURN as a relay fallback) before the direct path opens.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
     accTitle: Example 44: WebRTC -- Signaling, ICE/STUN/TURN, Then a Direct Peer-to-Peer Path
-    accDescr: Sequence diagram between Browser A, Signaling server 40often a WebSocket41, Browser B, STUN server. Messages: Browser A to Signaling server 40often a WebSocket41: SDP offer 40codecs, capabilities41; Signaling server 40often a WebSocket41 to Browser B: relay SDP offer; Browser B to Signaling server 40often a WebSocket41: SDP answer; Signaling server 40often a WebSocket41 to Browser A: relay SDP answer; Browser A to STUN server: discover my own public IP:port 40behind NAT41; Browser B to STUN server: discover my own public IP:port 40behind NAT41; Browser A to Browser B: ICE candidates exchanged 40via signaling server41; Browser A to Browser B: DIRECT peer-to-peer media/data 40server no longer in the path41.
+    accDescr: Sequence diagram between Browser A, Signaling server (often a WebSocket), Browser B, STUN server. Messages: Browser A to Signaling server (often a WebSocket): SDP offer (codecs, capabilities); Signaling server (often a WebSocket) to Browser B: relay SDP offer; Browser B to Signaling server (often a WebSocket): SDP answer; Signaling server (often a WebSocket) to Browser A: relay SDP answer; Browser A to STUN server: discover my own public IP:port (behind NAT); Browser B to STUN server: discover my own public IP:port (behind NAT); Browser A to Browser B: ICE candidates exchanged (via signaling server); Browser A to Browser B: DIRECT peer-to-peer media/data (server no longer in the path).
     participant A as Browser A
     participant Sig as Signaling server<br/>#40;often a WebSocket#41;
     participant B as Browser B
@@ -625,7 +625,7 @@ own content.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Example 46: L7 Load Balancing -- Routing by HTTP Path/Header Content
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client, L7 load balancer TERMINATES the client connection reads the real HTTP request, API backend pool, Static-asset backend pool, Admin backend pool 40routed by header, not path41. Connections: Client to L7 load balancer TERMINATES the client connection reads the real HTTP request, L7 load balancer TERMINATES the client connection reads the real HTTP request to API backend pool (path starts with /api/), L7 load balancer TERMINATES the client connection reads the real HTTP request to Static-asset backend pool (path starts with /static/), L7 load balancer TERMINATES the client connection reads the real HTTP request to Admin backend pool 40routed by header, not path41 (Host: admin.example.com).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client, L7 load balancer TERMINATES the client connection reads the real HTTP request, API backend pool, Static-asset backend pool, Admin backend pool (routed by header, not path). Connections: Client to L7 load balancer TERMINATES the client connection reads the real HTTP request, L7 load balancer TERMINATES the client connection reads the real HTTP request to API backend pool (path starts with /api/), L7 load balancer TERMINATES the client connection reads the real HTTP request to Static-asset backend pool (path starts with /static/), L7 load balancer TERMINATES the client connection reads the real HTTP request to Admin backend pool (routed by header, not path) (Host: admin.example.com).
     C["Client"]:::blue --> LB["L7 load balancer<br/>TERMINATES the<br/>client connection<br/>reads the real HTTP<br/>request"]:::orange
     LB -->|"path starts with<br/>/api/"| API["API backend pool"]:::teal
     LB -->|"path starts with<br/>/static/"| CDN_BE["Static-asset backend<br/>pool"]:::purple
@@ -1093,7 +1093,7 @@ contention are accounted for (throughput).
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 53: Latency vs. Bandwidth vs. Throughput -- Three Different Things, One Link
-    accDescr: Graph with 3 nodes and 2 connections. Nodes: Latency time for the FIRST bit to arrive 40a delay, measured in ms41, Bandwidth the links MAXIMUM possible capacity 40e.g. a 1 Gbps link41, Throughput capacity ACTUALLY achieved 40bandwidth minus loss/contention/ overhead41. Connections: Latency time for the FIRST bit to arrive 40a delay, measured in ms41 to Bandwidth the links MAXIMUM possible capacity 40e.g. a 1 Gbps link41 (a SHORT, low-bandwidth link can still have LOW latency), Bandwidth the links MAXIMUM possible capacity 40e.g. a 1 Gbps link41 to Throughput capacity ACTUALLY achieved 40bandwidth minus loss/contention/ overhead41 (loss, retransmits, and contention from OTHER traffic reduce this).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Latency time for the FIRST bit to arrive (a delay, measured in ms), Bandwidth the links MAXIMUM possible capacity (e.g. a 1 Gbps link), Throughput capacity ACTUALLY achieved (bandwidth minus loss/contention/ overhead). Connections: Latency time for the FIRST bit to arrive (a delay, measured in ms) to Bandwidth the links MAXIMUM possible capacity (e.g. a 1 Gbps link) (a SHORT, low-bandwidth link can still have LOW latency), Bandwidth the links MAXIMUM possible capacity (e.g. a 1 Gbps link) to Throughput capacity ACTUALLY achieved (bandwidth minus loss/contention/ overhead) (loss, retransmits, and contention from OTHER traffic reduce this).
     A["Latency<br/>time for the FIRST<br/>bit to arrive<br/>#40;a delay,<br/>measured in ms#41;"]:::blue
     B["Bandwidth<br/>the link's MAXIMUM<br/>possible capacity<br/>#40;e.g. a 1 Gbps<br/>link#41;"]:::orange
     C["Throughput<br/>capacity ACTUALLY<br/>achieved<br/>#40;bandwidth minus<br/>loss/contention/<br/>overhead#41;"]:::teal
@@ -1137,7 +1137,7 @@ then permitted automatically, without needing its own explicit "allow inbound" r
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161
 sequenceDiagram
     accTitle: Example 54: A Stateful Firewall -- Permitting a Reply by Matching Connection State
-    accDescr: Sequence diagram between Internal host, Stateful firewall, External server. Messages: Internal host to Stateful firewall: outbound SYN 40dst=203.0.113.5:44341; Stateful firewall to External server: outbound SYN 40forwarded41; External server to Stateful firewall: inbound SYN-ACK 40reply41; Stateful firewall to Internal host: inbound SYN-ACK 40forwarded41.
+    accDescr: Sequence diagram between Internal host, Stateful firewall, External server. Messages: Internal host to Stateful firewall: outbound SYN (dst=203.0.113.5:443); Stateful firewall to External server: outbound SYN (forwarded); External server to Stateful firewall: inbound SYN-ACK (reply); Stateful firewall to Internal host: inbound SYN-ACK (forwarded).
     participant Host as Internal host
     participant FW as Stateful firewall
     participant Ext as External server

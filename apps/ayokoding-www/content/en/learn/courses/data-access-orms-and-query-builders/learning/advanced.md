@@ -233,7 +233,7 @@ differs.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
     accTitle: Example 59: Bulk vs ORM Performance
-    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: 2000 rows to write, ORM loop 2000x session.add(), Core insert() 1x, list of 2000 dicts, D, per-object, E, one. Connections: 2000 rows to write to ORM loop 2000x session.add(), 2000 rows to write to Core insert() 1x, list of 2000 dicts, ORM loop 2000x session.add() to D, D to per-object, Core insert() 1x, list of 2000 dicts to E, E to one.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: 2000 rows to write, ORM loop 2000x session.add(), Core insert() 1x, list of 2000 dicts, slower -- per-object overhead, faster -- one batched statement. Connections: 2000 rows to write to ORM loop 2000x session.add(), 2000 rows to write to Core insert() 1x, list of 2000 dicts, ORM loop 2000x session.add() to slower -- per-object overhead, Core insert() 1x, list of 2000 dicts to faster -- one batched statement.
     A["2000 rows to write"]:::blue
     A --> B["ORM loop<br/>2000x session.add()"]:::orange
     A --> C["Core insert()<br/>1x, list of 2000<br/>dicts"]:::teal
@@ -575,7 +575,7 @@ awaited coroutine instead of an implicit blocking call.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
     accTitle: Example 62: Async Lazy Forbidden
-    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: order.customer unloaded, order.customer.name implicit blocking call, await order. awaitable_attrs. customer explicit coroutine, MissingGreenlet no sync fallback under async, E, same. Connections: order.customer unloaded to order.customer.name implicit blocking call, order.customer unloaded to await order. awaitable_attrs. customer explicit coroutine, order.customer.name implicit blocking call to MissingGreenlet no sync fallback under async, await order. awaitable_attrs. customer explicit coroutine to E, E to same.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: order.customer unloaded, order.customer.name implicit blocking call, await order. awaitable_attrs. customer explicit coroutine, MissingGreenlet no sync fallback under async, OK -- same lazy SELECT, awaited. Connections: order.customer unloaded to order.customer.name implicit blocking call, order.customer unloaded to await order. awaitable_attrs. customer explicit coroutine, order.customer.name implicit blocking call to MissingGreenlet no sync fallback under async, await order. awaitable_attrs. customer explicit coroutine to OK -- same lazy SELECT, awaited.
     A["order.customer<br/>unloaded"]:::blue
     A --> B["order.customer.name<br/>implicit blocking<br/>call"]:::orange
     A --> C["await order.<br/>awaitable_attrs.<br/>customer<br/>explicit coroutine"]:::teal
@@ -1530,7 +1530,7 @@ The everyday CRUD path (`create_product()`) uses the ORM to build and commit map
 %% Color Palette: Blue #0173B2, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
     accTitle: Example 71: Hybrid ORM Plus Raw
-    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: ONE Session, ONE transaction, B, mapped, apply_holiday_ discount() session. execute(text(...)), session.commit() both tiers writes together. Connections: ONE Session, ONE transaction to B, B to mapped, ONE Session, ONE transaction to apply_holiday_ discount() session. execute(text(...)), B to session.commit() both tiers writes together, apply_holiday_ discount() session. execute(text(...)) to session.commit() both tiers writes together.
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: ONE Session, ONE transaction, create_product() ORM -- mapped Product objects, apply_holiday_ discount() session. execute(text(...)), session.commit() both tiers writes together. Connections: ONE Session, ONE transaction to create_product() ORM -- mapped Product objects, ONE Session, ONE transaction to apply_holiday_ discount() session. execute(text(...)), create_product() ORM -- mapped Product objects to session.commit() both tiers writes together, apply_holiday_ discount() session. execute(text(...)) to session.commit() both tiers writes together.
     A["ONE Session, ONE<br/>transaction"]:::blue
     A --> B["create_product()<br/>ORM -- mapped<br/>Product objects"]:::blue
     A --> C["apply_holiday_<br/>discount()<br/>session.<br/>execute(text(...))"]:::teal
@@ -2267,7 +2267,7 @@ connection immediately).
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart TD
     accTitle: Example 77: Connection Pool Tuning
-    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: 8 concurrent workers 0.2s each, pool_size=2 undersized, pool_size=8 tuned, D, workers, E, every. Connections: 8 concurrent workers 0.2s each to pool_size=2 undersized, 8 concurrent workers 0.2s each to pool_size=8 tuned, pool_size=2 undersized to D, D to workers, pool_size=8 tuned to E, E to every.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: 8 concurrent workers 0.2s each, pool_size=2 undersized, pool_size=8 tuned, ~0.87s -- workers queue in waves, ~0.24s -- every worker gets a connection immediately. Connections: 8 concurrent workers 0.2s each to pool_size=2 undersized, 8 concurrent workers 0.2s each to pool_size=8 tuned, pool_size=2 undersized to ~0.87s -- workers queue in waves, pool_size=8 tuned to ~0.24s -- every worker gets a connection immediately.
     A["8 concurrent workers<br/>0.2s each"]:::blue
     A --> B["pool_size=2<br/>undersized"]:::orange
     A --> C["pool_size=8<br/>tuned"]:::teal

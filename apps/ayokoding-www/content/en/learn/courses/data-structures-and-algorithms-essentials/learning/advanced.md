@@ -19,7 +19,7 @@ The textbook recursive Fibonacci definition (`fib(n) = fib(n-1) + fib(n-2)`) rec
 %% TD required: parent call must appear above the child calls it spawns, to show the call tree
 graph TD
     accTitle: Example 61: Naive Recursive Fibonacci -- and Its Exponential Cost
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: fib40441, fib40341, fib40241 402nd time41, fib40241 401st time41, fib40141. Connections: fib40441 to fib40341, fib40441 to fib40241 402nd time41, fib40341 to fib40241 401st time41, fib40341 to fib40141.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: fib(4), fib(3), fib(2) (2nd time), fib(2) (1st time), fib(1). Connections: fib(4) to fib(3), fib(4) to fib(2) (2nd time), fib(3) to fib(2) (1st time), fib(3) to fib(1).
     A["fib#40;4#41;"]:::blue
     B["fib#40;3#41;"]:::orange
     C["fib#40;2#41;<br/>#40;2nd time#41;"]:::purple
@@ -94,7 +94,7 @@ Caching each `fib(n)` result in a `dict` the first time it's computed turns ever
 %% TD required: parent call must appear above child calls to show the call tree
 graph TD
     accTitle: Example 62: Memoized Fibonacci with a Dict Cache
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: fib40441, fib40341, fib40241 cache hit, O40141, fib40241 computed once. Connections: fib40441 to fib40341, fib40441 to fib40241 cache hit, O40141, fib40341 to fib40241 computed once.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: fib(4), fib(3), fib(2) cache hit, O(1), fib(2) computed once. Connections: fib(4) to fib(3), fib(4) to fib(2) cache hit, O(1), fib(3) to fib(2) computed once.
     A["fib#40;4#41;"]:::blue
     B["fib#40;3#41;"]:::orange
     C["fib#40;2#41;<br/>cache hit,<br/>O#40;1#41;"]:::teal
@@ -391,7 +391,7 @@ Deleting a node from a BST has three distinct cases: a leaf (just remove it), a 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: Example 67: Delete a Node from a BST -- All Three Cases
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: delete40241: two children, successor = 3 40min of right subtree41, 2s value replaced by 3 original node 3 removed 40leaf case41, delete40341: one child 40left=141 splices 1 up into 3s place. Connections: delete40241: two children to successor = 3 40min of right subtree41, successor = 3 40min of right subtree41 to 2s value replaced by 3 original node 3 removed 40leaf case41, 2s value replaced by 3 original node 3 removed 40leaf case41 to delete40341: one child 40left=141 splices 1 up into 3s place.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: delete(2): two children, successor = 3 (min of right subtree), 2s value replaced by 3 original node 3 removed (leaf case), delete(3): one child (left=1) splices 1 up into 3s place. Connections: delete(2): two children to successor = 3 (min of right subtree), successor = 3 (min of right subtree) to 2s value replaced by 3 original node 3 removed (leaf case), 2s value replaced by 3 original node 3 removed (leaf case) to delete(3): one child (left=1) splices 1 up into 3s place.
     A["delete#40;2#41;: two<br/>children"]:::blue
     B["successor = 3<br/>#40;min of right<br/>subtree#41;"]:::orange
     C["2's value replaced<br/>by 3<br/>original node 3<br/>removed #40;leaf<br/>case#41;"]:::teal
@@ -524,7 +524,7 @@ Inorder traversal (Example 49) is naturally recursive, but any recursion can be 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 68: Iterative Inorder Traversal with an Explicit Stack
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: push 5, 2, 1 stack: 915,2,193, pop 1, visit 1 stack: 915,293, pop 2, visit 2 push 3, pop 3, visit 3 stack: 91593. Connections: push 5, 2, 1 stack: 915,2,193 to pop 1, visit 1 stack: 915,293, pop 1, visit 1 stack: 915,293 to pop 2, visit 2 push 3, pop 2, visit 2 push 3 to pop 3, visit 3 stack: 91593.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: push 5, 2, 1 stack: [5,2,1], pop 1, visit 1 stack: [5,2], pop 2, visit 2 push 3, pop 3, visit 3 stack: [5]. Connections: push 5, 2, 1 stack: [5,2,1] to pop 1, visit 1 stack: [5,2], pop 1, visit 1 stack: [5,2] to pop 2, visit 2 push 3, pop 2, visit 2 push 3 to pop 3, visit 3 stack: [5].
     A["push 5, 2, 1<br/>stack: #91;5,2,1#93;"]:::blue
     B["pop 1, visit 1<br/>stack: #91;5,2#93;"]:::orange
     C["pop 2, visit 2<br/>push 3"]:::orange
@@ -643,7 +643,7 @@ A tree is height-balanced if, at every node, its left and right subtrees' height
 %% TD required: parent nodes must appear above child nodes to show tree structure
 graph TD
     accTitle: Example 69: Check Whether a Binary Tree Is Height-Balanced
-    accDescr: Graph with 6 nodes and 4 connections. Nodes: balanced_tree: 1, left: 2 40h=141, right: 3 40h=141, unbalanced_tree: 1, left: 2 40h=241, left.left: 3. Connections: balanced_tree: 1 to left: 2 40h=141, balanced_tree: 1 to right: 3 40h=141, unbalanced_tree: 1 to left: 2 40h=241, left: 2 40h=241 to left.left: 3.
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: balanced_tree: 1, left: 2 (h=1), right: 3 (h=1), unbalanced_tree: 1, left: 2 (h=2), left.left: 3. Connections: balanced_tree: 1 to left: 2 (h=1), balanced_tree: 1 to right: 3 (h=1), unbalanced_tree: 1 to left: 2 (h=2), left: 2 (h=2) to left.left: 3.
     A["balanced_tree: 1"]:::blue
     B["left: 2 #40;h=1#41;"]:::teal
     C["right: 3 #40;h=1#41;"]:::teal
@@ -760,7 +760,7 @@ The lowest common ancestor (LCA) of two nodes in a BST is the deepest node that 
 %% TD required: parent nodes must appear above child nodes to show tree structure
 graph TD
     accTitle: Example 70: Lowest Common Ancestor in a BST
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: 6, 2 = LCA400,441, 8, 0, 4. Connections: 6 to 2 = LCA400,441, 6 to 8, 2 = LCA400,441 to 0, 2 = LCA400,441 to 4.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 6, 2 = LCA(0,4), 8, 0, 4. Connections: 6 to 2 = LCA(0,4), 6 to 8, 2 = LCA(0,4) to 0, 2 = LCA(0,4) to 4.
     A["6"]:::blue
     B["2 = LCA#40;0,4#41;"]:::purple
     C["8"]:::gray
@@ -1556,7 +1556,7 @@ An LRU (least-recently-used) cache needs O(1) `get` and `put`, including O(1) ev
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
     accTitle: Example 78: LRU Cache from Scratch -- Dict + Doubly Linked List
-    accDescr: Graph with 5 nodes and 5 connections. Nodes: dict: keys 1, 3, head 40MRU end41, node 3, node 1, tail 40LRU end41. Connections: dict: keys 1, 3 to node 3, dict: keys 1, 3 to node 1, head 40MRU end41 to node 3, node 3 to node 1, node 1 to tail 40LRU end41.
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: dict: keys 1, 3, head (MRU end), node 3, node 1, tail (LRU end). Connections: dict: keys 1, 3 to node 3, dict: keys 1, 3 to node 1, head (MRU end) to node 3, node 3 to node 1, node 1 to tail (LRU end).
     Dict["dict: keys 1, 3"]:::blue
     Head["head #40;MRU end#41;"]:::orange
     N3["node 3"]:::teal
@@ -1696,7 +1696,7 @@ A prefix trie stores strings character by character down a tree, where each node
 %% TD required: parent characters must appear above child characters to show the trie path
 graph TD
     accTitle: Example 79: Prefix Trie with Dict-Based Children
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: root, c, a, t 40end: cat41, r 40end: car41, d 40end: card41. Connections: root to c, c to a, a to t 40end: cat41, a to r 40end: car41, r 40end: car41 to d 40end: card41.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: root, c, a, t (end: cat), r (end: car), d (end: card). Connections: root to c, c to a, a to t (end: cat), a to r (end: car), r (end: car) to d (end: card).
     Root["root"]:::blue
     C["c"]:::orange
     A["a"]:::orange

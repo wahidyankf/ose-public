@@ -1751,7 +1751,7 @@ MATCH: capacity keeps growing linearly with rank, but quality plateaus -- rank 8
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph LR
     accTitle: => co-20: a sweep across seven ranks -- the SAME eval, SAME dataset, ONLY rank varies
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Rank 1-2 too little capacity, Rank 8 curve bends, ex-29, Rank 32-64 plateaued, ROVER. Connections: Rank 1-2 too little capacity to Rank 8 curve bends, ex-29, Rank 8 curve bends, ex-29 to Rank 32-64 plateaued, Rank 8 curve bends, ex-29 to ROVER.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Rank 1-2 too little capacity, Rank 8 curve bends, ex-29, Rank 32-64 plateaued, Rank too high, small dataset -- memorizes, ex-32. Connections: Rank 1-2 too little capacity to Rank 8 curve bends, ex-29, Rank 8 curve bends, ex-29 to Rank 32-64 plateaued, Rank 8 curve bends, ex-29 to Rank too high, small dataset -- memorizes, ex-32.
     R1["Rank 1-2<br/>too little capacity"]:::orange --> R8["Rank 8<br/>curve bends, ex-29"]:::teal
     R8 --> R64["Rank 32-64<br/>plateaued"]:::blue
     R8 --> ROVER["Rank too high, small<br/>dataset --<br/>memorizes, ex-32"]:::purple

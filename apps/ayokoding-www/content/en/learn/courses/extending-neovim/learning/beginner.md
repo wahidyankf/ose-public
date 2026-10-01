@@ -188,7 +188,7 @@ _ex-07 &middot; exercises co-03_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 7: Set mapleader
-    accDescr: Flowchart with 6 nodes and 3 connections. Nodes: vim.g.mapleader = runs first, B, lt, gt, C, Mapping is stored as a literal Space-prefixed lhs. Connections: vim.g.mapleader = runs first to B, B to C, C to Mapping is stored as a literal Space-prefixed lhs.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: vim.g.mapleader = runs first, vim.keymap.set with <leader>w runs second, Neovim resolves <leader> to the CURRENT mapleader value NOW, Mapping is stored as a literal Space-prefixed lhs. Connections: vim.g.mapleader = runs first to vim.keymap.set with <leader>w runs second, vim.keymap.set with <leader>w runs second to Neovim resolves <leader> to the CURRENT mapleader value NOW, Neovim resolves <leader> to the CURRENT mapleader value NOW to Mapping is stored as a literal Space-prefixed lhs.
     A["vim.g.mapleader = '<br/>'<br/>runs first"]:::blue
     B["vim.keymap.set with<br/>'&lt;leader&gt;w'<br/>runs second"]:::orange
     C["Neovim resolves<br/>&lt;leader&gt; to<br/>the CURRENT<br/>mapleader value NOW"]:::teal
@@ -661,7 +661,7 @@ Moving option lines into a `lua/config/options.lua` file and `require`-ing it fr
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 20: Split Config into a Module
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: init.lua require40config. options41, lua/ on runtimepath (co-01), lua/config/ options.lua found and executed, package. loaded91config. options93 cached, non-nil. Connections: init.lua require40config. options41 to lua/ on runtimepath (co-01), lua/ on runtimepath (co-01) to lua/config/ options.lua found and executed, lua/config/ options.lua found and executed to package. loaded91config. options93 cached, non-nil.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: init.lua require(config. options), lua/ on runtimepath (co-01), lua/config/ options.lua found and executed, package. loaded[config. options] cached, non-nil. Connections: init.lua require(config. options) to lua/ on runtimepath (co-01), lua/ on runtimepath (co-01) to lua/config/ options.lua found and executed, lua/config/ options.lua found and executed to package. loaded[config. options] cached, non-nil.
     A["init.lua<br/>require#40;'config.<br/>options'#41;"]:::blue
     B["lua/ on runtimepath<br/>(co-01)"]:::orange
     C["lua/config/<br/>options.lua<br/>found and executed"]:::teal

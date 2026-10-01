@@ -124,7 +124,7 @@ _ex-32 &middot; exercises co-09_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart TD
     accTitle: Example 32: Bootstrap lazy.nvim
-    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: fs_stat(lazypath) checked on EVERY run, Path exists?, C, filter, rtp:prepend + require(lazy). setup() runs on EVERY run. Connections: C to filter, fs_stat(lazypath) checked on EVERY run to Path exists?, Path exists? to C (No), C to rtp:prepend + require(lazy). setup() runs on EVERY run, Path exists? to rtp:prepend + require(lazy). setup() runs on EVERY run (Yes).
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: fs_stat(lazypath) checked on EVERY run, Path exists?, git clone --filter=blob:none runs ONCE, fresh install only, rtp:prepend + require(lazy). setup() runs on EVERY run. Connections: fs_stat(lazypath) checked on EVERY run to Path exists?, Path exists? to git clone --filter=blob:none runs ONCE, fresh install only (No), git clone --filter=blob:none runs ONCE, fresh install only to rtp:prepend + require(lazy). setup() runs on EVERY run, Path exists? to rtp:prepend + require(lazy). setup() runs on EVERY run (Yes).
     A["fs_stat(lazypath)<br/>checked on EVERY run"]:::blue
     B{"Path exists?"}:::orange
     C["git clone<br/>--filter=blob:none<br/>runs ONCE, fresh<br/>install only"]:::teal

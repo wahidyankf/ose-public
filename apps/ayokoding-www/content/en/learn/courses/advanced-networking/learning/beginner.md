@@ -103,7 +103,7 @@ curl -s -v --http1.1 https://example.com
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: are easy to point at one by one when mapping them to OSI/TCP-IP layers
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, TLS, D. Connections: C to TLS, A to B, B to C, C to D.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Host example.com:443 was resolved Application layer -- DNS name lookup, Connected to example.com port 443 Transport layer -- TCP three-way handshake, SSL connection using TLSv1.3 sits between Transport and Application -- TLS handshake, GET /HTTP/1.1 then HTTP/1.1 200 OK Application layer -- HTTP request/response. Connections: Host example.com:443 was resolved Application layer -- DNS name lookup to Connected to example.com port 443 Transport layer -- TCP three-way handshake, Connected to example.com port 443 Transport layer -- TCP three-way handshake to SSL connection using TLSv1.3 sits between Transport and Application -- TLS handshake, SSL connection using TLSv1.3 sits between Transport and Application -- TLS handshake to GET /HTTP/1.1 then HTTP/1.1 200 OK Application layer -- HTTP request/response.
     A["Host example.com:443<br/>was resolved<br/>Application layer --<br/>DNS name lookup"]:::blue
     B["Connected to<br/>example.com port 443<br/>Transport layer --<br/>TCP three-way<br/>handshake"]:::orange
     C["SSL connection using<br/>TLSv1.3<br/>sits between<br/>Transport and<br/>Application -- TLS<br/>handshake"]:::teal

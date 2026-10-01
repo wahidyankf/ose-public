@@ -1262,7 +1262,7 @@ The broken version (shown in a comment) is a `div` with only a `click` handler -
 %% Color Palette: Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 76: Fix: div-as-Button to Semantic Button
-    accDescr: Flowchart with 7 nodes and 5 connections. Nodes: div + onclick, + role=button (manual), + tabindex=0 (manual), + keydown handler (Example 62s fix), real button (this example), B1, Enter. Connections: div + onclick to + role=button (manual), + role=button (manual) to + tabindex=0 (manual), + tabindex=0 (manual) to + keydown handler (Example 62s fix), real button (this example) to B1, B1 to Enter.
+    accDescr: Flowchart with 6 nodes and 4 connections. Nodes: div + onclick, + role=button (manual), + tabindex=0 (manual), + keydown handler (Example 62s fix), real button (this example), click handler only -- Enter/Space free. Connections: div + onclick to + role=button (manual), + role=button (manual) to + tabindex=0 (manual), + tabindex=0 (manual) to + keydown handler (Example 62s fix), real button (this example) to click handler only -- Enter/Space free.
     A["div + onclick"]:::orange --> A1["+ role=button<br/>(manual)"]:::orange --> A2["+ tabindex=0<br/>(manual)"]:::orange --> A3["+ keydown handler<br/>(Example 62's fix)"]:::orange
     B["real button (this<br/>example)"]:::teal --> B1["click handler only<br/>-- Enter/Space free"]:::teal
 

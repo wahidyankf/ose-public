@@ -422,7 +422,7 @@ outside the process without stopping it, using a mechanism the process opts into
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 32: py-spy dump on a Hung Process
-    accDescr: Graph with 5 nodes and 5 connections. Nodes: stuck_in_a_loop() running, never stopped, B, lt, gt, faulthandler dump live stack to stderr. Connections: stuck_in_a_loop() running, never stopped to B, stuck_in_a_loop() running, never stopped to lt, stuck_in_a_loop() running, never stopped to gt, B to faulthandler dump live stack to stderr, faulthandler dump live stack to stderr to stuck_in_a_loop() running, never stopped.
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: stuck_in_a_loop() running, never stopped, kill -USR1 <pid> signal from OUTSIDE, faulthandler dump live stack to stderr. Connections: stuck_in_a_loop() running, never stopped to kill -USR1 <pid> signal from OUTSIDE, kill -USR1 <pid> signal from OUTSIDE to faulthandler dump live stack to stderr, faulthandler dump live stack to stderr to stuck_in_a_loop() running, never stopped.
     A["stuck_in_a_loop()<br/>running, never<br/>stopped"]:::blue --> B["kill -USR1 &lt;pid&gt;<br/>signal from OUTSIDE"]:::orange
     B --> C["faulthandler dump<br/>live stack to stderr"]:::teal
     C --> A
@@ -1528,7 +1528,7 @@ permission wall -- the same class of limitation `py-spy` hit in ex-29.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 42: pdb Remote Attach by PID
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: long_running_server. py PID known, B, lt, gt, permission wall same class as py-spy, ex-29. Connections: long_running_server. py PID known to B, long_running_server. py PID known to lt, long_running_server. py PID known to gt, B to permission wall same class as py-spy, ex-29.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: long_running_server. py PID known, python -m pdb -p <pid> remote attach attempt, permission wall same class as py-spy, ex-29. Connections: long_running_server. py PID known to python -m pdb -p <pid> remote attach attempt, python -m pdb -p <pid> remote attach attempt to permission wall same class as py-spy, ex-29.
     A["long_running_server.<br/>py<br/>PID known"]:::blue --> B["python -m pdb -p<br/>&lt;pid&gt;<br/>remote attach<br/>attempt"]:::orange
     B --> C["permission wall<br/>same class as<br/>py-spy, ex-29"]:::teal
 
@@ -1987,7 +1987,7 @@ chunk -- is required to correctly narrow in on the 2-character minimal reproduce
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 46: Delta-Debugging a Long String
-    accDescr: Graph with 7 nodes and 8 connections. Nodes: current string, n=2, split into n chunks, try removing each, shrink reset n=2, n >= len(current)?, double n, retry finer, F, 1-minimal. Connections: current string, n=2 to split into n chunks, try removing each, split into n chunks, try removing each to shrink reset n=2 (a chunk was removable), shrink reset n=2 to current string, n=2, split into n chunks, try removing each to n >= len(current)? (no chunk removable), n >= len(current)? to double n, retry finer (no), double n, retry finer to split into n chunks, try removing each, n >= len(current)? to F (yes), F to 1-minimal.
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: current string, n=2, split into n chunks, try removing each, shrink reset n=2, n >= len(current)?, double n, retry finer, done -- 1-minimal. Connections: current string, n=2 to split into n chunks, try removing each, split into n chunks, try removing each to shrink reset n=2 (a chunk was removable), shrink reset n=2 to current string, n=2, split into n chunks, try removing each to n >= len(current)? (no chunk removable), n >= len(current)? to double n, retry finer (no), double n, retry finer to split into n chunks, try removing each, n >= len(current)? to done -- 1-minimal (yes).
     A["current string, n=2"]:::blue --> B["split into n chunks,<br/>try removing each"]:::orange
     B -->|"a chunk was<br/>removable"| C["shrink; reset n=2"]:::teal
     C --> A

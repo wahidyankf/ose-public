@@ -19,7 +19,7 @@ Pydantic validates a request body against `TaskCreate` before the handler functi
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 29: A Missing Required Field Fails Validation
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: POST /tasks body:, title present in body?, C, create_task runs, 201 Created. Connections: POST /tasks body: to title present in body?, title present in body? to C (no), title present in body? to create_task runs, 201 Created (yes).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: POST /tasks body:, title present in body?, 422 -- create_task never runs, create_task runs, 201 Created. Connections: POST /tasks body: to title present in body?, title present in body? to 422 -- create_task never runs (no), title present in body? to create_task runs, 201 Created (yes).
     A["POST /tasks<br/>body: {}"]:::blue --> B{"title present<br/>in body?"}:::orange
     B -->|no| C["422 --<br/>create_task never<br/>runs"]:::orange
     B -->|yes| D["create_task runs,<br/>201 Created"]:::teal
@@ -1118,7 +1118,7 @@ _ex-40 &middot; exercises co-14, co-02_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 40: CRUD -- Update a Task
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: PUT /tasks/id full replacement body, row with this id exists?, C, UPDATE ... WHERE id = ?, 200 + fresh row. Connections: PUT /tasks/id full replacement body to row with this id exists?, row with this id exists? to C (no), row with this id exists? to UPDATE ... WHERE id = ?, 200 + fresh row (yes).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: PUT /tasks/id full replacement body, row with this id exists?, 404 -- PUT never creates, UPDATE ... WHERE id = ?, 200 + fresh row. Connections: PUT /tasks/id full replacement body to row with this id exists?, row with this id exists? to 404 -- PUT never creates (no), row with this id exists? to UPDATE ... WHERE id = ?, 200 + fresh row (yes).
     A["PUT /tasks/id<br/>full replacement<br/>body"]:::blue --> B{"row with<br/>this id exists?"}:::orange
     B -->|no| C["404 --<br/>PUT never creates"]:::orange
     B -->|yes| D["UPDATE ... WHERE id<br/>= ?,<br/>200 + fresh row"]:::teal
@@ -2172,7 +2172,7 @@ A `BaseHTTPMiddleware` subclass's `dispatch()` method runs `call_next(request)` 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 48: Middleware Stamps Every Response with X-Request-Id
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: request arrives, call_next() runs routing + handler, C, response returned to the client. Connections: request arrives to call_next() runs routing + handler, call_next() runs routing + handler to C, C to response returned to the client.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: request arrives, call_next() runs routing + handler, middleware stamps a FRESH uuid4() on the response, unconditionally -- any incoming X-Request-Id header is ignored, response returned to the client. Connections: request arrives to call_next() runs routing + handler, call_next() runs routing + handler to middleware stamps a FRESH uuid4() on the response, unconditionally -- any incoming X-Request-Id header is ignored, middleware stamps a FRESH uuid4() on the response, unconditionally -- any incoming X-Request-Id header is ignored to response returned to the client.
     A["request arrives"]:::blue --> B["call_next() runs<br/>routing + handler"]:::orange
     B --> C["middleware stamps a<br/>FRESH uuid4() on the<br/>response,<br/>unconditionally --<br/>any incoming<br/>X-Request-Id<br/>header is ignored"]:::teal
     C --> D["response returned<br/>to the client"]:::teal
@@ -2363,7 +2363,7 @@ _ex-50 &middot; exercises co-16_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 50: Middleware Measures Request Duration
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: request arrives, start = perf_counter(), call_next(, duration = perf_counter() - start, X-Process-Time header set on the response. Connections: request arrives, start = perf_counter() to call_next(, call_next( to duration = perf_counter() - start, duration = perf_counter() - start to X-Process-Time header set on the response.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: request arrives, start = perf_counter(), call_next() -- handler runs, duration = perf_counter() - start, X-Process-Time header set on the response. Connections: request arrives, start = perf_counter() to call_next() -- handler runs, call_next() -- handler runs to duration = perf_counter() - start, duration = perf_counter() - start to X-Process-Time header set on the response.
     A["request arrives,<br/>start =<br/>perf_counter()"]:::blue --> B["call_next() --<br/>handler runs"]:::orange
     B --> C["duration =<br/>perf_counter()<br/>- start"]:::orange
     C --> D["X-Process-Time<br/>header<br/>set on the response"]:::teal
@@ -2675,7 +2675,7 @@ FastAPI does NOT enforce `Accept` header negotiation out of the box -- this exam
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
     accTitle: Example 54: Hand-Written Accept Header Negotiation
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: GET /tasks/1 Accept: text/plain, hand-written dependency checks Accept, C, 200 + JSON body, same as always. Connections: GET /tasks/1 Accept: text/plain to hand-written dependency checks Accept, hand-written dependency checks Accept to C (json excluded), hand-written dependency checks Accept to 200 + JSON body, same as always (application/json).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: GET /tasks/1 Accept: text/plain, hand-written dependency checks Accept, 406 -- hand-written, not a framework default, 200 + JSON body, same as always. Connections: GET /tasks/1 Accept: text/plain to hand-written dependency checks Accept, hand-written dependency checks Accept to 406 -- hand-written, not a framework default (json excluded), hand-written dependency checks Accept to 200 + JSON body, same as always (application/json).
     A["GET /tasks/1<br/>Accept: text/plain"]:::blue --> B{"hand-written<br/>dependency checks<br/>Accept"}:::orange
     B -->|"json excluded"| C["406 --<br/>hand-written, not a<br/>framework default"]:::orange
     B -->|"application/json"| D["200 + JSON body,<br/>same as always"]:::teal

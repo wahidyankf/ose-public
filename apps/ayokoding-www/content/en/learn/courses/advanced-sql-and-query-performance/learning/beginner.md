@@ -30,7 +30,7 @@ equivalent join-based rewrite.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 1: Uncorrelated Subquery
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: book rows 3 rows, B, WHERE price > 29.83 keeps 2 rows. Connections: book rows 3 rows to B, B to WHERE price > 29.83 keeps 2 rows.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: book rows 3 rows, (SELECT AVG(price)) evaluated ONCE -- 29.83, WHERE price > 29.83 keeps 2 rows. Connections: book rows 3 rows to (SELECT AVG(price)) evaluated ONCE -- 29.83, (SELECT AVG(price)) evaluated ONCE -- 29.83 to WHERE price > 29.83 keeps 2 rows.
     A["book rows<br/>3 rows"]:::blue
     B["#40;SELECT<br/>AVG#40;price#41;#41;<br/>evaluated ONCE --<br/>29.83"]:::orange
     C["WHERE price > 29.83<br/>keeps 2 rows"]:::teal

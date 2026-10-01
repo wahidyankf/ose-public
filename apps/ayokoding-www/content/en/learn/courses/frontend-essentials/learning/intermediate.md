@@ -1142,7 +1142,7 @@ A `render(state)` function reads a state object and rebuilds the DOM to match it
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 43: Render From State
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: state object name, count, render40state41, DOM: h1 + p pure output of state. Connections: state object name, count to render40state41, render40state41 to DOM: h1 + p pure output of state.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: state object name, count, render(state), DOM: h1 + p pure output of state. Connections: state object name, count to render(state), render(state) to DOM: h1 + p pure output of state.
     A["state object<br/>name, count"]:::blue --> B["render#40;state#41;"]:::orange --> C["DOM: h1 + p<br/>pure output of state"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -1221,7 +1221,7 @@ The full cycle is: mutate the state object, then call `render()` again -- the DO
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 44: State Change Triggers Render
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: mutate state state.count += 1, render4041 re-invoked, DOM reflects new state. Connections: mutate state state.count += 1 to render4041 re-invoked, render4041 re-invoked to DOM reflects new state.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: mutate state state.count += 1, render() re-invoked, DOM reflects new state. Connections: mutate state state.count += 1 to render() re-invoked, render() re-invoked to DOM reflects new state.
     A["mutate state<br/>state.count += 1"]:::blue --> B["render#40;#41;<br/>re-invoked"]:::orange --> C["DOM reflects<br/>new state"]:::teal
     C -.next change.-> A
 
@@ -1437,7 +1437,7 @@ Props flow strictly one way, parent to child -- a child can read and reflect wha
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
     accTitle: Example 47: One-Way Data Flow
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: parentState.label, Child View40label41, reflects label in its own DOM. Connections: parentState.label to Child View40label41 (passed by value), Child View40label41 to reflects label in its own DOM.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: parentState.label, Child View(label), reflects label in its own DOM. Connections: parentState.label to Child View(label) (passed by value), Child View(label) to reflects label in its own DOM.
     A["parentState.label"]:::blue -->|passed by value| B["Child<br/>View#40;label#41;"]:::orange
     B -.no path back.-> A
     B --> C["reflects label<br/>in its own DOM"]:::teal

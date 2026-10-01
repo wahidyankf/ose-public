@@ -19,7 +19,7 @@ capstone is where they all run together in one real config.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Bootstrap vim.pack. add40pinned41, Config tree lua47options, lua47keymaps, Python IDE LSP + Treesitter, Own plugin lua47plugins47greet.lua, Healthcheck :checkhealth, zero missing dep. Connections: Bootstrap vim.pack. add40pinned41 to Config tree lua47options, lua47keymaps, Config tree lua47options, lua47keymaps to Python IDE LSP + Treesitter, Python IDE LSP + Treesitter to Own plugin lua47plugins47greet.lua, Own plugin lua47plugins47greet.lua to Healthcheck :checkhealth, zero missing dep.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Bootstrap vim.pack. add(pinned), Config tree lua/options, lua/keymaps, Python IDE LSP + Treesitter, Own plugin lua/plugins/ greet.lua, Healthcheck :checkhealth, zero missing dep. Connections: Bootstrap vim.pack. add(pinned) to Config tree lua/options, lua/keymaps, Config tree lua/options, lua/keymaps to Python IDE LSP + Treesitter, Python IDE LSP + Treesitter to Own plugin lua/plugins/ greet.lua, Own plugin lua/plugins/ greet.lua to Healthcheck :checkhealth, zero missing dep.
     A["Bootstrap<br/>vim.pack.<br/>add#40;pinned#41;"]:::blue
     B["Config tree<br/>lua#47;options,<br/>lua#47;keymaps"]:::orange
     C["Python IDE<br/>LSP + Treesitter"]:::teal

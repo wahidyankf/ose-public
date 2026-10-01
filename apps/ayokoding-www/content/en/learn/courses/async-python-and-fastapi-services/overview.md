@@ -84,9 +84,9 @@ served with `uvicorn`, and exercised with `httpx`/`curl` -- there is no pseudoco
 - **2026-07-29 -- `[Reference pin]`** (version-volatile, re-verify at authoring/refresh): the examples in this
   topic target **FastAPI 0.139.0**, **Pydantic 2.11.x** (the v2 production line), **pydantic-settings 2.x**,
   **uvicorn 0.51.0**, **httpx 0.28.x**, **aiosqlite 0.20.x**, **uv ~0.11.x**, **ruff ~0.15.x**, and **pyright**
-  current, on **Python 3.13**. `[Web-cited: FastAPI -- https://pypi.org/project/fastapi/ ; Pydantic --
-https://pypi.org/project/pydantic/ ; uv -- https://github.com/astral-sh/uv/releases ; ruff --
-https://github.com/astral-sh/ruff/releases ; accessed 2026-07-22]`. All are pre-1.0 except FastAPI/Pydantic and
+  current, on **Python 3.13**. (source: FastAPI -- https://pypi.org/project/fastapi/ ; Pydantic --
+  https://pypi.org/project/pydantic/ ; uv -- https://github.com/astral-sh/uv/releases ; ruff --
+  https://github.com/astral-sh/ruff/releases ; accessed 2026-07-22). All are pre-1.0 except FastAPI/Pydantic and
   change frequently -- treat the pins above as a snapshot, not a guarantee.
 - **2026-07-29 -- `[Stable]`**: `async`/`await`, the `asyncio` event loop, and the ASGI callable protocol are
   stable Python-language and ecosystem concepts; the conceptual treatment lives in

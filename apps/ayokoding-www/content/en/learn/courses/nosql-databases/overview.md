@@ -232,8 +232,8 @@ they cover the same ground.
   for the PyPI `redis` package does not exist. Verified current release is **`redis==8.0.1`**
   (2026-06-23; release history 7.4.x -> 8.0.0b1/b2 -> 8.0.0 on 2026-05-28 -> 8.0.1). Every
   `requirements.txt` in this topic pins `redis==8.0.1`, not the earlier incorrect figure.
-  `[Web-cited: PyPI redis release history -- https://pypi.org/project/redis/#history ; accessed
-2026-07-27]`
+  (source: PyPI redis release history -- https://pypi.org/project/redis/#history ; accessed
+  2026-07-27)
 - **2026-07-27 spot-check**: MongoDB's current default/stable line is **8.3.7** (with 8.2.12 and
   8.0.28 as still-live parallel lines -- MongoDB dropped the old odd/even stable-vs-rapid convention
   at 8.2, so minors are pinned explicitly rather than inferred from parity). This topic's worked

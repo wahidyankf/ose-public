@@ -97,8 +97,8 @@ accompanying verify command on your own box, not a transcript captured inside th
   versions and command surfaces of the chosen reverse proxy (Caddy/Nginx) and any PaaS (Dokku/Coolify
   or a managed buildpack platform) change release to release. The hedge value current as of drafting:
   Caddy latest stable **v2.11.4**
-  `[Web-cited: caddyserver/caddy releases -- https://github.com/caddyserver/caddy/releases ; accessed
-2026-07-22]`. Nginx and the PaaS choice are kept portable across a couple of options rather than
+  (source: caddyserver/caddy releases -- https://github.com/caddyserver/caddy/releases ; accessed
+  2026-07-22). Nginx and the PaaS choice are kept portable across a couple of options rather than
   pinned to one vendor's exact release; re-verify any version before running it on a real box.
 - 2026-07-30 -- **[Needs Verification]**: provider-specific VM-provisioning UI/CLI details are kept
   provider-agnostic wherever possible; the examples name the _shape_ of the step ("create a Linux VM,

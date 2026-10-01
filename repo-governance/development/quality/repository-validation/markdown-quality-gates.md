@@ -26,11 +26,12 @@ segments of at most 20 graphemes
 ([Rule 3](../../../conventions/formatting/diagrams/common-syntax-errors-label-constraints-rule-3-line-length.md)),
 and the declared colour palette.
 
-The `md-mermaid-palette` gate (`node scripts/validate-mermaid-palette.mjs <path>`) takes the same
-staged or changed `.md` paths. It fails a `flowchart`, `graph`, `classDiagram`, `erDiagram`, or
-`requirementDiagram` that declares no `classDef default` setting `fill`, `stroke`, and `color`,
-which `md-mermaid` passes because it checks only declared colours. It skips diagram types whose
-renderer never applies `default`, and mermaid fences nested in another code block.
+The same gate also enforces `mermaid.require-default-class`: a `flowchart`, `graph`,
+`classDiagram`, `erDiagram`, or `requirementDiagram` must declare a `classDef default` setting
+`fill`, `stroke`, and `color`. It skips diagram types whose renderer never applies `default`, and
+mermaid fences nested in another code block. `mermaid.allowed-types`,
+`mermaid.forbid-theme-overrides`, and `mermaid.canvas-colors` refuse undeclared types and theme
+overrides and measure non-text contrast.
 
 ## 2. Markdown Link Validation
 

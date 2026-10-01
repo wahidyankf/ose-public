@@ -47,9 +47,10 @@ unless blue already carries a meaning in that diagram; then use the neutral defa
 Those five types are the ones whose Mermaid renderer applies a class named `default` to every
 unclassed node. `stateDiagram`, `block`, `sequenceDiagram`, `gitGraph`, `timeline`, and `mindmap`
 are exempt: they either lack `classDef` or never apply `default`, so leave them on the theme colours
-rather than forcing a declaration the renderer ignores. The `md-mermaid-palette` gate enforces the
-declaration on changed files; `md-mermaid` checks that its colours come from the palette and meet
-contrast.
+rather than forcing a declaration the renderer ignores. The `md-mermaid` gate enforces the
+declaration (`mermaid.require-default-class`), checks that colours come from the palette and meet
+contrast, and measures non-text contrast against the declared canvases. The rendered-diagram rule
+itself lives in `ose-rules` Colour Accessibility.
 
 **DO NOT USE:**
 

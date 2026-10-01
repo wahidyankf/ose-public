@@ -21,7 +21,7 @@ when_to_use: Use when a two-pager is growing too detailed or when deciding wheth
   evidences it. If no baseline exists, say so plainly (_"no baseline measured"_) rather than inventing
   one — an honestly-unquantified problem is fine; a fabricated number is not.
 - **No fabricated metrics** — state success as an observable fact, a cited number with source + access
-  date, or an explicitly-labeled judgment call (_"Judgment call: we expect X; no baseline measured"_).
+  date, or an explicitly worded expectation (_"we expect X; no baseline measured"_).
   This inherits the [BRD success-metric rule](./content-placement-rules.md#content-placement-rules-brdmd-vs-prdmd).
 - **The summary compresses the whole document**, it does not restate the problem paragraph.
 - **No secrets** — the folder is committed and world-readable; the [No Secrets in Git](../../security/no-secrets-in-committed-files.md) hard rule applies in full.

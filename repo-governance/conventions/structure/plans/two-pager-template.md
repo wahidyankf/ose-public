@@ -33,5 +33,5 @@ Each `plans/ideas/<slug>.md` has an H1 title plus ~8 short sections, targeting �
 7. **Risks & open questions** — rabbit holes worth flagging now, plus named unknowns that block
    promotion. Zero open questions is a smell: the idea is either over-specified or under-thought.
 8. **What success looks like + promotion signal** — the condition that would make the idea worth
-   having pursued (observable fact / cited+dated number / explicitly-labeled judgment call — **never a
+   having pursued (observable fact / cited+dated number / explicitly worded expectation — **never a
    fabricated KPI**), and what "ready to become a `backlog/` plan" means for _this_ idea.

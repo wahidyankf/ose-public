@@ -34,6 +34,6 @@ If any verification fails, the author has three valid responses:
 
 1. **Find the correct reference** (different file path, different target name) and re-verify.
 2. **Mark the claim as `_New file_` / `_New target_`** if the plan creates it (and ensure the delivery checklist explicitly covers creation).
-3. **Refuse the claim** — write `[Unverified]` and flag for follow-up, or omit entirely.
+3. **Refuse the claim** — write an `_Unknown — verify before authoring_` placeholder and carry it as a follow-up item, or omit entirely.
 
 The forbidden response is to write the unverified claim as if it were a fact.

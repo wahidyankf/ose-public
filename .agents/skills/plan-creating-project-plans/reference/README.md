@@ -16,7 +16,7 @@ title: "Reference"
 - [10 Execution Grade Clarity](./execution-grade-clarity.md) — why plans must be written for execution-grade agents, not authoring-grade hand-waving
 - [11 Executor Tagging](./executor-tagging.md) — the [AI] versus [HUMAN] tagging rule for every delivery checklist item
 - [12 Phases As Natural Pauses](./phases-as-natural-pauses.md) — why every phase must be a natural pause point ending with a clear gate
-- [13 Verification Recipes](./verification-recipes.md) — pre-write verification recipes and confidence labels to prevent hallucinated plan content
+- [13 Verification Recipes](./verification-recipes.md) — pre-write verification recipes and plain citations, with no inline confidence labels, to prevent hallucinated plan content
 - [14 Refuse Uncertainty And Anti Patterns](./refuse-uncertainty-and-anti-patterns.md) — refuse-on-uncertainty guidance, web-research delegation, and the anti-pattern catalog
 - [15 Specialized Executor Annotation](./specialized-executor-annotation.md) — annotating delivery checkboxes with a suggested specialized executor agent
 - [16 Gherkin Acceptance Criteria](./gherkin-acceptance-criteria.md) — the requirement that all plans have Gherkin-format acceptance criteria

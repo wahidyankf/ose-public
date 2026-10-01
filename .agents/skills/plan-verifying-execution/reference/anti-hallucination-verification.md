@@ -28,12 +28,12 @@ annotations): `test -f .agents/agents/<name>.md` succeeds — definitions live f
 directory. Missing: **HIGH** (AP-7).
 
 **F. Behaviour claims** — for every claim about library or framework behaviour in the chosen technical form: verify
-it is backed by a `[Web-cited]` inline excerpt + URL + access date, or by a repo-doc reference.
+it is backed by a plain inline citation (excerpt + URL + access date) or by a repo-doc reference.
 Missing source: **MEDIUM** per occurrence.
 
 **G. KPI claims** — for every numeric KPI in brd.md or implementation-notes: confirm it is an
-observable check, a cited measurement, qualitative reasoning, or labeled `_Judgment call:_`. Bare
-unlabeled percentage or duration: **HIGH** per occurrence (AP-5).
+observable check, a cited measurement, qualitative reasoning, or a plainly worded expectation. A
+bare unmeasured percentage or duration stated as fact: **HIGH** per occurrence (AP-5).
 
 **H. Cross-link integrity** — for every relative cross-link in plan files: resolve and `Bash test -f`.
 Broken: **HIGH** per occurrence (Anti-Pattern AP-10).
@@ -51,12 +51,12 @@ Broken: **HIGH** per occurrence (Anti-Pattern AP-10).
 
 ### Finding Severity
 
-- Missing file path / missing Nx target / missing test / missing agent / unlabeled KPI / broken
+- Missing file path / missing Nx target / missing test / missing agent / fabricated KPI / broken
   cross-link: **HIGH** per occurrence
 - Version mismatch / behaviour claim without source / suggested-executor mismatch: **MEDIUM** per
   occurrence
-- Stale `[Unverified]` labels remaining post-execution: **MEDIUM** per occurrence (plan-execution
-  should have resolved them)
+- `_Unknown — verify before authoring_` placeholders remaining post-execution: **MEDIUM** per
+  occurrence (plan-execution should have resolved them)
 
 ### Why Post-Execution Anti-Hallucination Matters
 

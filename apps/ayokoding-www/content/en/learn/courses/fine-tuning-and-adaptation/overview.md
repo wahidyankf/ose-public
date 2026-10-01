@@ -242,9 +242,9 @@ artefact so the analysis stays reproducible without one.
   supplies facts," but that paraphrase is not reproduced above as a direct quote. This course states
   the framing in its own words and cites "AI Engineering" (2025), Chapter 7, as the corrected source.
   Re-verify against the primary text if this course is revised.
-- 2026-07-26 -- `[Web-cited: Hu, Shen, Wallis, Allen-Zhu, Li, S. Wang, L. Wang & Chen, "LoRA: Low-Rank
-Adaptation of Large Language Models", arXiv:2106.09685, submitted 2021-06-17, v2 revised
-2021-10-16 -- https://arxiv.org/abs/2106.09685 ; accessed 2026-07-26]` -- the full author list is
+- 2026-07-26 -- (source: Hu, Shen, Wallis, Allen-Zhu, Li, S. Wang, L. Wang & Chen, "LoRA: Low-Rank
+  Adaptation of Large Language Models", arXiv:2106.09685, submitted 2021-06-17, v2 revised
+  2021-10-16 -- https://arxiv.org/abs/2106.09685 ; accessed 2026-07-26) -- the full author list is
   **Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang,
   Weizhu Chen**. Two authors share the surname "Wang" (Shean Wang, Lu Wang); this course cites full
   given names, or "Hu et al." for short, and never a bare "Wang" to avoid ambiguity. The specific
@@ -252,9 +252,9 @@ Adaptation of Large Language Models", arXiv:2106.09685, submitted 2021-06-17, v2
 Verification]` against the primary source and are not reproduced as spine claims here -- this
   course teaches low-rank adaptation as a durable _principle_ and treats every numeric result as a
   dated, paper-specific figure.
-- 2026-07-26 -- `[Web-cited: Dettmers, Pagnoni, Holtzman & Zettlemoyer, "QLoRA: Efficient Finetuning
-of Quantized LLMs", arXiv:2305.14314, submitted 2023-05-23 -- https://arxiv.org/abs/2305.14314 ;
-accessed 2026-07-26]` -- introduces 4-bit NormalFloat (NF4) quantization, double quantization, and
+- 2026-07-26 -- (source: Dettmers, Pagnoni, Holtzman & Zettlemoyer, "QLoRA: Efficient Finetuning
+  of Quantized LLMs", arXiv:2305.14314, submitted 2023-05-23 -- https://arxiv.org/abs/2305.14314 ;
+  accessed 2026-07-26) -- introduces 4-bit NormalFloat (NF4) quantization, double quantization, and
   paged optimizers. Referenced in this course's accuracy-note sidebars only, never as a spine claim.
 - 2026-07-26 -- `[Unverified]` **volatile, accuracy-note only**: every fine-tuning library and
   trainer name, its API surface, its configuration keys, and its defaults. As of this date: `peft`

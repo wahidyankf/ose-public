@@ -145,10 +145,10 @@ never a fabricated one.
   possible ... Prioritize volume over quality"; the "prioritize volume" guidance is the one that
   most surprises engineers coming from hand-written unit tests. Source:
   [Anthropic -- Develop your tests](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
-  `[Web-cited: Anthropic -- Develop your tests (three principles quoted verbatim: "Be task-specific",
-"Automate when possible", "Prioritize volume over quality") --
-https://platform.claude.com/docs/en/test-and-evaluate/develop-tests ; carried over from this
-course's syllabus source, accessed 2026-07-22]` -- re-verify the wording if this course is
+  (source: Anthropic -- Develop your tests (three principles quoted verbatim: "Be task-specific",
+  "Automate when possible", "Prioritize volume over quality") --
+  https://platform.claude.com/docs/en/test-and-evaluate/develop-tests ; carried over from this
+  course's syllabus source, accessed 2026-07-22) -- re-verify the wording if this course is
   revised.
 - 2026-07-26 -- `[Unverified]` **volatile, accuracy-note only**: eval-framework names, hosted eval
   products, and their schemas change fast. This course deliberately uses a plain JSONL file and

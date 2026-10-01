@@ -7,7 +7,7 @@ when_to_use: "Use for a worked example of this convention."
 
 ## Workflow Integration
 
-- **`plan-quality-gate`** workflow — Step 1 (Initial Validation) explicitly invokes the hallucination scan as part of `plan-checker`'s Step 5f. The gate cannot pass while `[Unverified]` claims remain or any Anti-Pattern violation is open.
+- **`plan-quality-gate`** workflow — Step 1 (Initial Validation) explicitly invokes the hallucination scan as part of `plan-checker`'s Step 5f. The gate cannot pass while an unverified claim remains or any Anti-Pattern violation is open.
 - **`plan-execution`** workflow — Step 2 (Initial Execution) per-item verification: before delegating an item, the orchestrator re-grounds its file paths and commands. Verification failure escalates rather than proceeds (refuse-on-uncertainty applied at execution time too).
 
 ## Examples
@@ -15,10 +15,10 @@ when_to_use: "Use for a worked example of this convention."
 ### Good — repo-grounded file path
 
 ```markdown
-- [ ] Edit `apps/ose-www/src/server/trpc.ts` [Repo-grounded] — wrap public router with
+- [ ] Edit `apps/ose-www/src/server/trpc.ts` — wrap public router with
       `unstable_cache(fn, keyParts, { revalidate: 300 })` per Next.js 16 docs (verified
       2026-05-03 at https://nextjs.org/docs/app/api-reference/functions/unstable_cache,
-      excerpt: "unstable_cache allows caching results of expensive operations") [Web-cited].
+      excerpt: "unstable_cache allows caching results of expensive operations").
       Verify by running
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:test:quick`
       — all tests pass.
@@ -47,10 +47,10 @@ The author refused to write a fabricated billing flow. A follow-up research item
 
 To validate a plan complies with this convention:
 
-1. **Confidence labels present**: every non-trivial factual claim has `[Repo-grounded]` / `[Web-cited]` / `[Judgment call]` / `[Unverified]` or is contained in a quoted code-fence whose source is unambiguous.
+1. **No inline confidence labels**: no claim carries `[Repo-grounded]`, `[Web-cited]`, `[Judgment call]`, or `[Unverified]`; a remaining label is a LOW finding per file and its absence is never a finding, per [No Inline Confidence Labels](./no-inline-confidence-labels.md).
 2. **No Anti-Pattern hits**: `plan-checker` Step 5f scan reports zero AP-1 through AP-14 violations.
 3. **Repo-grounding verifiable**: every internal reference (file path, Nx target, agent, skill) resolves on the current commit.
-4. **External citations complete**: every `[Web-cited]` claim includes URL + access date + excerpt inline.
-5. **No bare KPIs**: every numeric percentage / duration / count is either an observable check, a citation, or `[Judgment call]` — never an unlabeled fact.
+4. **External citations complete**: every external claim carries a plain inline citation with URL + access date + excerpt.
+5. **No bare KPIs**: every numeric percentage / duration / count is either an observable check, a citation, or a plainly worded expectation — never an unmeasured number stated as fact.
 
 `plan-checker` enforces all five at validation time.

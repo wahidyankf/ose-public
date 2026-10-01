@@ -13,7 +13,7 @@ Each pattern below is a known hallucination shape. `plan-checker` admits occurre
 
 > "We will use Next.js 16.0.0 with the new App Router..."
 
-If `package.json` was not grep'd before writing, the version is hearsay. Verify or label `[Unverified]`.
+If `package.json` was not grep'd before writing, the version is hearsay. Verify it, or refuse it per the refuse-on-uncertainty rule.
 
 ### AP-2: Inventing a file path that "should exist"
 

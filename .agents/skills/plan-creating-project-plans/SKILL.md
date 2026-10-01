@@ -86,7 +86,7 @@ lifecycle rules; numeric counts never set their boundaries.
 - [execution-grade-clarity.md](reference/execution-grade-clarity.md) — Execution-Grade Clarity HARD RULE
 - [executor-tagging.md](reference/executor-tagging.md) — `[AI]`/`[HUMAN]` tagging HARD RULE
 - [phases-as-natural-pauses.md](reference/phases-as-natural-pauses.md) — Phase-Gate + Pause-Safety template
-- [verification-recipes.md](reference/verification-recipes.md) — pre-write verification recipes + confidence labels
+- [verification-recipes.md](reference/verification-recipes.md) — pre-write verification recipes + plain citations, no inline labels
 - [refuse-uncertainty-and-anti-patterns.md](reference/refuse-uncertainty-and-anti-patterns.md) — refuse-on-uncertainty + AP-1..AP-10 catalog
 - [specialized-executor-annotation.md](reference/specialized-executor-annotation.md) — suggested-executor annotation
 - [gherkin-acceptance-criteria.md](reference/gherkin-acceptance-criteria.md) — Gherkin format and journey coherence

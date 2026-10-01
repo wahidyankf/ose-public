@@ -87,12 +87,12 @@ before edit.
 
 ## Evidence Confidence
 
-- **[Repo-grounded]** Delivered Plans 01–05 define actual namespaces/routes and can refine the planned `[N]`
+- Delivered Plans 01–05 define actual namespaces/routes and can refine the planned `[N]`
   layout after Phase 0 reconciliation.
-- **[Web-cited, official, accessed 2026-09-15]** Google
+- Official source (accessed 2026-09-15): Google
   [branding guidance](https://developers.google.com/identity/branding-guidelines) requires compliant
   Sign in with Google display for verification.
-- **[Judgment call]** The proposed exact feature folders isolate provider-specific code behind the
+- The proposed exact feature folders isolate provider-specific code behind the
   provider-neutral port; Phase 0 may rename them without widening scope.
 
 ## Rollback

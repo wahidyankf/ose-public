@@ -1,7 +1,7 @@
 # Technical Design — FERRET Init 02 Protocol-Independent Local Backend
 
-> **Evidence scope:** Existing repository and Plan 01 facts are **[Repo-grounded]**; proposed FERRET technical
-> surfaces are approved **[Judgment calls — new artifacts]** unless a companion marks them otherwise.
+> **Evidence scope:** Existing repository and Plan 01 facts were verified against the repository; proposed FERRET
+> technical surfaces are approved new artifacts unless a companion states otherwise.
 
 Read this directory in order before executing `delivery.md`.
 

@@ -1,8 +1,8 @@
 # API Contract Delta — FERRET Init 02
 
 > **Evidence scope:** Existing Plan 01 wire/hash contracts and repository OpenAPI project patterns are
-> **[Repo-grounded]**. Every FERRET endpoint, schema, path fragment, operation ID, limit, status, cursor field,
-> and test fixture below is an approved **[Judgment call — new artifact]**. External protocol claims retain their
+> verified against the repository. Every FERRET endpoint, schema, path fragment, operation ID, limit, status,
+> cursor field, and test fixture below is an approved new artifact. External protocol claims retain their
 > explicit citations in the decisions companion.
 
 ## Contract Authority

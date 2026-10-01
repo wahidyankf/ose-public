@@ -1,7 +1,7 @@
 # Business Requirements — FERRET Init 02 Protocol-Independent Local Backend
 
-> **Evidence scope:** Existing repository/Plan 01 facts are **[Repo-grounded]**; product outcomes and boundaries
-> are approved **[Judgment calls]**; storage ranges are **[Unverified]** until measured during delivery.
+> **Evidence scope:** Existing repository/Plan 01 facts were verified against the repository; product outcomes and
+> boundaries are approved design decisions; storage ranges stay unconfirmed until measured during delivery.
 
 ## Business Goal
 
@@ -52,7 +52,7 @@ not solve.
 
 ## Storage Budget
 
-`[Unverified — low confidence]` Reserve **1–2 KiB per PostgreSQL event** only until measurement. This is an
+Reserve **1–2 KiB per PostgreSQL event** only until measurement; the range is unmeasured and low-confidence. This is an
 engineering allowance, not an external benchmark: it intentionally brackets the Plan 01 SQLite probe while
 allowing for PostgreSQL tuple/index/WAL overhead. At that range, 5,000/20,000/100,000 events per day add roughly
 0.14–0.29/0.57–1.14/2.86–5.72 GiB per 30-day month before WAL retention, backups, or free-space headroom. Plan

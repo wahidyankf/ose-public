@@ -202,19 +202,19 @@ given here), each of which now forward-links here rather than teaching a fourth 
   model used to generate," and its eval principles are "Be task-specific... Automate when
   possible... Prioritize volume over quality." Source:
   [Anthropic -- Develop your tests](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
-  `[Web-cited: Anthropic -- Develop your tests (the "use a different model to evaluate than the
-model used to generate" guidance, and the three principles "Be task-specific", "Automate when
-possible", "Prioritize volume over quality", all quoted verbatim) --
-https://platform.claude.com/docs/en/test-and-evaluate/develop-tests ; accessed 2026-07-22]` --
+  (source: Anthropic -- Develop your tests (the "use a different model to evaluate than the
+  model used to generate" guidance, and the three principles "Be task-specific", "Automate when
+  possible", "Prioritize volume over quality", all quoted verbatim) --
+  https://platform.claude.com/docs/en/test-and-evaluate/develop-tests ; accessed 2026-07-22) --
   re-verify the wording if this course is revised.
 - 2026-07-26 -- LangSmith's trajectory evaluation examines "the exact sequence of messages,
   including tool calls," scored either by a deterministic trajectory-match evaluator (with
   Strict/Unordered/Subset/Superset modes) or an LLM judge. Treat the **trajectory-vs-outcome
   distinction as durable spine** and the **named product as volatile**. Source:
   [LangSmith -- Trajectory evals](https://docs.langchain.com/langsmith/trajectory-evals)
-  `[Web-cited: LangSmith -- Trajectory evaluation ("the exact sequence of messages, including tool
-calls"; scored by a trajectory-match evaluator or an LLM judge) --
-https://docs.langchain.com/langsmith/trajectory-evals ; accessed 2026-07-22]` -- re-verify at
+  (source: LangSmith -- Trajectory evaluation ("the exact sequence of messages, including tool
+  calls"; scored by a trajectory-match evaluator or an LLM judge) --
+  https://docs.langchain.com/langsmith/trajectory-evals ; accessed 2026-07-22) -- re-verify at
   the next revision.
 - 2026-07-26 -- **volatile, product sunset**: OpenAI's Evals platform becomes read-only
   2026-10-31 and shuts down 2026-11-30. This topic's own "Read more" list and worked examples do

@@ -9,7 +9,7 @@ when_to_use: "Use as a checklist for AP-5 - AP-8."
 
 > "This change reduces review time by 35%..."
 
-If no baseline measurement exists, the number is fiction. Acceptable rewrites: `_Judgment call:_ we expect review time to drop`, or `Observable check: zero unsolicited PR-creation steps in audited plans after migration`.
+If no baseline measurement exists, the number is fiction. Acceptable rewrites: `we expect review time to drop; no baseline measured`, or `Observable check: zero unsolicited PR-creation steps in audited plans after migration`.
 
 ## AP-6: Inventing a test name
 

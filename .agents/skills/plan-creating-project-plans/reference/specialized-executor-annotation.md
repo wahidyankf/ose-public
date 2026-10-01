@@ -5,7 +5,7 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
 **Annotation format** (sub-bullet under the checkbox prose, before any implementation notes):
 
 ```markdown
-- [ ] Edit `apps/organiclever-be/src/Domain/User.fs` [Repo-grounded]: add `email: string option` field
+- [ ] Edit `apps/organiclever-be/src/Domain/User.fs`: add `email: string option` field
       with case-insensitive uniqueness. Verify by running
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:test:unit` — new test
       `User_RejectsDuplicateEmailIgnoringCase` passes.

@@ -5,10 +5,13 @@
 After Step 5e, scan the whole plan for unverified factual claims matching the
 [Plan Anti-Hallucination Convention §Anti-Pattern Catalog](../../../../repo-governance/development/quality/plan-anti-hallucination/anti-pattern-catalog-ap-1-through-ap-4.md#anti-pattern-catalog).
 
-**A. Confidence-label coverage** — every non-trivial claim about a file path, Nx target, package
-version, API signature, agent/skill name, behaviour, external standard, or numeric KPI carries
-`[Repo-grounded]`, `[Web-cited]`, `[Judgment call]`, or `[Unverified]` inline, or appears inside a
-repo-file-quoting code fence. Bare unlabeled claims default to `[Unverified]`: **MEDIUM** per claim.
+**A. Claim verification, no inline labels** — verify every non-trivial claim about a file path, Nx
+target, package version, API signature, agent/skill name, behaviour, external standard, or numeric
+KPI against the repository or its cited source. An unverifiable claim matching no Anti-Pattern
+below: **MEDIUM** per claim. Never require an inline confidence label or flag its absence. A retired
+label (`[Repo-grounded]`, `[Web-cited]`, `[Judgment call]`, `[Unverified]`) still in an active plan:
+**LOW** per file; the repair strips it and keeps any URL and access date as a plain citation, per
+[No Inline Confidence Labels](../../../../repo-governance/development/quality/plan-anti-hallucination/no-inline-confidence-labels.md).
 
 **B. Anti-Pattern Catalog scan**:
 
@@ -31,8 +34,8 @@ repo-file-quoting code fence. Bare unlabeled claims default to `[Unverified]`: *
 counts as AP-7); the agent's role suits the action (e.g. `swe-code-maker` for a `.fs` edit, not
 `docs-maker`; mismatch: **MEDIUM**).
 
-**D. Web-citation completeness** — every `[Web-cited]` claim includes URL, access date, and excerpt
-inline; missing any element: **MEDIUM** per occurrence; URL-only citation is forbidden.
+**D. Web-citation completeness** — every external claim carries a plain citation with URL, access
+date, and excerpt inline; missing any element: **MEDIUM** per occurrence; URL-only citation is forbidden.
 
 **How to audit**: read each file top-to-bottom; for every sentence asserting a file path, Nx target,
 version, API surface, agent/skill name, behaviour, or metric, check the corresponding recipe row from
@@ -41,10 +44,10 @@ run the recipe (`Bash test -f`, `Glob`, `Grep`, `jq` against `project.json`, etc
 under the matching Anti-Pattern on failure. For external claims, verify URL/access-date/excerpt; if
 multi-page research was warranted, verify `web-researcher` delegation is documented.
 
-**Re-validation caching (iterations 2+)**: `[Repo-grounded]` claims re-run only if the file changed;
-`[Web-cited]` claims trusted unless newly invalidated; new claims from fixer edits verified normally.
+**Re-validation caching (iterations 2+)**: verified repo claims re-run only if the file changed;
+cited external claims trusted unless newly invalidated; new claims from fixer edits verified normally.
 
-**Finding severity**: AP-1/2/3/4/5/6/7/10: **HIGH** per occurrence. AP-8/9, missing `[Web-cited]`
-excerpt, executor mismatch: **MEDIUM** per occurrence. Bare unlabeled claim (defaults
-`[Unverified]`): **MEDIUM** per claim. Missing `web-researcher` delegation when the multi-page
+**Finding severity**: AP-1/2/3/4/5/6/7/10: **HIGH** per occurrence. AP-8/9, missing citation
+excerpt, executor mismatch: **MEDIUM** per occurrence. Unverifiable claim matching no Anti-Pattern:
+**MEDIUM** per claim. Retired inline confidence label remaining: **LOW** per file. Missing `web-researcher` delegation when the multi-page
 threshold was crossed: **MEDIUM**.

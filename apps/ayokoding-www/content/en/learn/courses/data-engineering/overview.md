@@ -177,13 +177,13 @@ capstone's four files are the sole exception, importing from one another as one 
 
 - 2026-07-12 (DD-35) -- **durable spine**: medallion architecture (bronze/silver/gold), ETL vs.
   ELT, Kimball-style dimensional modeling (star schema, SCDs), and DAG-based orchestration are
-  evergreen data-engineering vocabulary, unchanged in current usage. `[Web-cited: What is Medallion Architecture? -- https://www.databricks.com/blog/what-is-medallion-architecture ; accessed 2026-07-27]` --
+  evergreen data-engineering vocabulary, unchanged in current usage. (source: What is Medallion Architecture? -- https://www.databricks.com/blog/what-is-medallion-architecture ; accessed 2026-07-27) --
   Databricks' own docs do not self-attribute _coining_ the "medallion" term; this course frames it
   as "the bronze/silver/gold pattern popularized by Databricks," never "coined in [year]."
-- 2026-07-12 (DD-35) -- **SCD types** (`[Web-cited: Design Tip #152 Slowly Changing Dimension Types 0, 4, 5, 6 and 7 -- https://www.kimballgroup.com/2013/02/design-tip-152-slowly-changing-dimension-types-0-4-5-6-7/ ; accessed 2026-07-27]` + _The Data Warehouse Toolkit_, 3rd ed. 2013): Type 0 retain-original, Type 1 overwrite, **Type 2 = new row +
+- 2026-07-12 (DD-35) -- **SCD types** (source: Design Tip #152 Slowly Changing Dimension Types 0, 4, 5, 6 and 7 -- https://www.kimballgroup.com/2013/02/design-tip-152-slowly-changing-dimension-types-0-4-5-6-7/ ; accessed 2026-07-27 + _The Data Warehouse Toolkit_, 3rd ed. 2013): Type 0 retain-original, Type 1 overwrite, **Type 2 = new row +
   effective-date range + current flag + surrogate key**, Type 3 add-a-column, **Type 6 = 1+2+3
   hybrid**. This course does not renumber these.
-- 2026-07-12 (DD-35) -- **Kafka** (`[Web-cited: Delivery Semantics -- https://docs.confluent.io/kafka/design/delivery-semantics.html ; accessed 2026-07-27]`): ordering is guaranteed only
+- 2026-07-12 (DD-35) -- **Kafka** (source: Delivery Semantics -- https://docs.confluent.io/kafka/design/delivery-semantics.html ; accessed 2026-07-27): ordering is guaranteed only
   within a partition, never across partitions. **At-least-once is the default**; exactly-once
   (since 0.11) needs the idempotent producer (producer-id + sequence dedup) plus transactions.
 - 2026-07-12 (DD-35) -- **stream-window naming collision**: **Flink** calls time-advancing
@@ -191,7 +191,7 @@ capstone's four files are the sole exception, importing from one another as one 
   "sliding" for a _record-triggered_ join window. This course uses the vendor-neutral trio
   **tumbling / hopping / session** throughout and flags the Kafka Streams "sliding" meaning here
   rather than in the spine.
-- 2026-07-12 (DD-35) -- **exactly-once &ne; idempotent sink** (`[Web-cited: Exactly-once in Dataflow -- https://docs.cloud.google.com/dataflow/docs/concepts/exactly-once ; accessed 2026-07-27]`):
+- 2026-07-12 (DD-35) -- **exactly-once &ne; idempotent sink** (source: Exactly-once in Dataflow -- https://docs.cloud.google.com/dataflow/docs/concepts/exactly-once ; accessed 2026-07-27):
   exactly-once _inside_ an engine does not make an external write exactly-once; the sink write must
   itself be idempotent. This course teaches "idempotent upsert," never "the engine guarantees it
   end to end."
@@ -203,12 +203,12 @@ capstone's four files are the sole exception, importing from one another as one 
   changes. `[Needs Verification]` -- `debezium.io` returned HTTP 403 on direct fetch as of the
   DD-35 pass; the CDC facts are corroborated via a Red Hat mirror plus consistent independent
   search, but this course keeps `[Unverified]` on a Debezium-primary source.
-- 2026-07-12 (DD-35) -- **modern data stack** (`[Web-cited: Emerging Architectures for Modern Data Infrastructure -- https://a16z.com/emerging-architectures-for-modern-data-infrastructure/ ; accessed 2026-07-27]`, Bornstein/Li/Casado): source &rarr; ingest (EL,
+- 2026-07-12 (DD-35) -- **modern data stack** (source: Emerging Architectures for Modern Data Infrastructure -- https://a16z.com/emerging-architectures-for-modern-data-infrastructure/ ; accessed 2026-07-27, Bornstein/Li/Casado): source &rarr; ingest (EL,
   e.g. Fivetran) &rarr; transform (dbt) &rarr; serve (BI); core = replication + cloud warehouse +
   SQL modeling. The a16z page is a living document; this course cites the URL, not a fixed publication year.
 - 2026-07-12 (DD-35) / 2026-07-27 (UPDATED) -- Jay Kreps, "The Log" (2013), is cited from the canonical LinkedIn
   Engineering URL via the Wayback Machine archive (original LinkedIn URL returned HTTP 404 as of 2026-07-27):
-  `[Web-cited: The Log: What every software engineer should know about real-time data's unifying abstraction -- https://web.archive.org/web/20190914012941/https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying ; accessed 2026-07-27]`
+  (source: The Log: What every software engineer should know about real-time data's unifying abstraction -- https://web.archive.org/web/20190914012941/https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying ; accessed 2026-07-27)
 - 2026-07-27 -- **version-pinned, this course's own toolchain**: worked-example transcripts were
   captured against `duckdb==1.5.5` (MIT), `pandas==3.0.5` (BSD-3-Clause, no unpatched CVEs at
   capture time), and `pytest==9.1.1` (MIT), on **Python 3.13**. `polars` (MIT) is a faster
@@ -217,12 +217,12 @@ capstone's four files are the sole exception, importing from one another as one 
   simpler and sufficient.
 - 2026-07-27 -- **Airflow scheduling kwargs, volatile**: `schedule_interval` was deprecated in favor
   of the unified `schedule` kwarg back in Airflow **2.4.0** (2022-09-19), not Airflow 3
-  (`[Web-cited: Apache Airflow 2.4.0 Release Notes -- https://airflow.apache.org/docs/apache-airflow/2.4.0/release_notes.html ; accessed 2026-07-27]`);
+  (source: Apache Airflow 2.4.0 Release Notes -- https://airflow.apache.org/docs/apache-airflow/2.4.0/release_notes.html ; accessed 2026-07-27);
   Airflow **3.0** then removed the legacy `schedule_interval` (and `timetable`) parameters entirely,
   making `schedule` the only option
-  (`[Web-cited: Apache Airflow RELEASE_NOTES.rst, "Unified Scheduling Field" -- https://raw.githubusercontent.com/apache/airflow/main/RELEASE_NOTES.rst ; accessed 2026-07-27]`).
+  (source: Apache Airflow RELEASE_NOTES.rst, "Unified Scheduling Field" -- https://raw.githubusercontent.com/apache/airflow/main/RELEASE_NOTES.rst ; accessed 2026-07-27).
   Airflow 3.0 separately flipped `catchup`'s default from `True` to `False`
-  (`[Web-cited: Apache Airflow -- Upgrading to Airflow 3 -- https://airflow.apache.org/docs/apache-airflow/stable/installation/upgrading_to_airflow3.html ; accessed 2026-07-27]`).
+  (source: Apache Airflow -- Upgrading to Airflow 3 -- https://airflow.apache.org/docs/apache-airflow/stable/installation/upgrading_to_airflow3.html ; accessed 2026-07-27).
   This course's orchestration worked examples (ex-41 through ex-45) simulate a DAG's
   dependency/retry/schedule/catchup/backfill semantics in pure Python -- no live Airflow install,
   matching this course's no-network, no-live-service discipline -- so no example cites a specific

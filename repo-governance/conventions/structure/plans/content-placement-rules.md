@@ -18,7 +18,7 @@ Authoritative split between `brd.md` and `prd.md`. These rules are normative for
   1. **Observable fact** (preferred): cite a grep/git/agent-round-trip check that verifies on demand (e.g., "zero plans using the deprecated layout after migration").
   2. **Cited measurement**: reference an existing dashboard, prior measurement, or external data source. When you cite data pulled from the internet, include the data itself in the plan (specific number, quote, excerpt) alongside the URL and the access date. URL-only citations are not enough — links rot.
   3. **Qualitative reasoning**: state the structural claim plainly without a number.
-  4. **Judgment call / gut target**: allowed, but MUST be explicitly labeled (e.g., "_Judgment call:_ we expect review time to drop; no baseline measured").
+  4. **Gut target**: allowed, but MUST be worded explicitly as an expectation with no measured baseline (e.g., "we expect review time to drop; no baseline measured"), with no inline confidence label.
 - Business-scope Non-Goals
 - Business risks and mitigations
 

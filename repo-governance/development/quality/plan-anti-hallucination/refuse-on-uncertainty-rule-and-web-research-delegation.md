@@ -10,11 +10,10 @@ when_to_use: "Use when uncertain about a plan claim."
 When the author cannot verify a claim — even after running the recipe — the author MUST refuse to write the claim as a fact. Acceptable refusals (in order of preference):
 
 1. **Skip the claim** — do not include it in the plan; the plan is shorter but accurate.
-2. **Use `[Unverified]` label** — keep the claim but flag it for verification before execution.
-3. **Use `[Judgment call]` label** — convert the claim from "this is true" to "this is my best guess".
-4. **Use a placeholder** — write `_Unknown — verify before authoring_` and treat as a delivery item rather than a stated fact.
+2. **Use a placeholder** — write `_Unknown — verify before authoring_`, flagging it for verification before execution, and treat it as a delivery item rather than a stated fact.
+3. **Reword as an expectation** — convert the claim from "this is true" to a plainly worded best guess (for example "we expect review time to drop; no baseline measured").
 
-Forbidden: writing the claim without a label and hoping it is correct. This is the single most damaging hallucination pattern in plan content.
+Forbidden: writing an unverified claim as a fact and hoping it is correct. None of these refusals uses an inline confidence label; see [No Inline Confidence Labels](./no-inline-confidence-labels.md). This is the single most damaging hallucination pattern in plan content.
 
 ## Web-Research Delegation (Lower Threshold for Plans)
 

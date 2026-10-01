@@ -19,7 +19,7 @@ when_to_use: "Use to locate the automated enforcement."
 **Related Conventions:**
 
 - [Plans Organization Convention](../../../conventions/structure/plans.md) — what goes in a plan; this convention says how to verify what you write.
-- [Factual Validation Convention](../../../conventions/writing/factual-validation.md) — universal `[Verified]` / `[Outdated]` / `[Unverified]` system this convention extends.
+- [Factual Validation Convention](../../../conventions/writing/factual-validation.md) — universal verification methodology whose `[Verified]` / `[Outdated]` / `[Unverified]` verdicts stay in checker reports, never inline in plans.
 - [Web Research Delegation Convention](../../../conventions/writing/web-research-delegation.md) — universal delegation threshold this convention lowers for plan content.
 - [Manual Behavioural Verification Convention](.././manual-behavioural-verification.md) — real-browser
   UI and protocol-appropriate API wire verification; complementary to anti-hallucination at

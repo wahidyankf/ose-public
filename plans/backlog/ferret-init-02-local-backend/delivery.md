@@ -1,8 +1,8 @@
 # Delivery — FERRET Init 02 Protocol-Independent Local Backend
 
-**Evidence scope:** Existing workflow commands and Plan 01 contracts are **[Repo-grounded]**. Every FERRET
-source/test/spec path, symbol, Nx target, port, limit, and evidence path below is an approved **[Judgment call —
-new artifact]** unless labelled otherwise. Dependency/image versions are **[Unverified]** until locked.
+**Evidence scope:** Existing workflow commands and Plan 01 contracts were verified against the repository. Every
+FERRET source/test/spec path, symbol, Nx target, port, limit, and evidence path below is an approved new artifact
+unless stated otherwise. Dependency/image versions stay unconfirmed until locked.
 
 > **Legend:** `[AI]` executes repository work. `[HUMAN]` is only for unavoidable privileged/out-of-band work.
 > `[AI+HUMAN]` prepares exact evidence for a human action. This local-only delivery expects no human-only
@@ -80,7 +80,7 @@ mandatory.
 
 Backend paths are fixed as `apps/ferret-be/src/ferret_be/{domain,application,adapters}/`; CLI extensions use
 `apps/ferret-cli/src/ferret/`; owner tests stay under each production app and public-process tests stay in the
-dedicated E2E app. Every path and symbol below is a **[Judgment call — new artifact]**. There are no
+dedicated E2E app. Every path and symbol below is an approved new artifact. There are no
 No unresolved operation, validator, target, or path placeholder remains.
 
 For every packet below, perform and record exactly three steps:

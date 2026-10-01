@@ -181,9 +181,9 @@ statistical library so you know what to call in practice -- with the two verifie
 - 2026-07-26 -- the named agreement coefficients and significance tests are real, distinct
   techniques with the following publication years: **Scott's pi 1955, Cohen's kappa 1960, Fleiss's
   kappa 1971, Krippendorff's alpha circa 1970, McNemar's test 1947**
-  `[Web-cited: Wikipedia "Fleiss' kappa" / "McNemar's test" / "Krippendorff's alpha" --
-https://en.wikipedia.org/wiki/Fleiss%27_kappa ; accessed 2026-07-22, carried over from this
-topic's syllabus source]`. The Wilson and Clopper-Pearson binomial intervals and the bootstrap
+  (source: Wikipedia "Fleiss' kappa" / "McNemar's test" / "Krippendorff's alpha" --
+  https://en.wikipedia.org/wiki/Fleiss%27_kappa ; accessed 2026-07-22, carried over from this
+  topic's syllabus source). The Wilson and Clopper-Pearson binomial intervals and the bootstrap
   percentile interval likewise predate LLMs; their exact years are `[Unverified]` here -- treat as
   unverified until a primary reference is read.
 - 2026-07-26 -- **contested, taught as contested**: there is no consensus threshold for "acceptable"

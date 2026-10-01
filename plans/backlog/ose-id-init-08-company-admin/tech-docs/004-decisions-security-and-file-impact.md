@@ -61,12 +61,12 @@ There is no schema down-migration because this plan creates no migration.
 
 ## Evidence Confidence
 
-- **[Repo-grounded]** Archived Plans 03/05 and delivered code/API are authoritative; Phase 0 resolves
+- Archived Plans 03/05 and delivered code/API are authoritative; Phase 0 resolves
   their moved paths.
-- **[Web-cited, official, accessed 2026-09-15]** W3C
+- Official source (accessed 2026-09-15): W3C
   [dialog guidance](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) requires focus to move inside
   an open dialog and return after close; this binds confirmation tests.
-- **[Web-cited, official, accessed 2026-09-15]** W3C
+- Official source (accessed 2026-09-15): W3C
   [table guidance](https://www.w3.org/WAI/tutorials/tables/) requires programmatic header/data-cell
   relationships; this binds the desktop roster.
-- **[Judgment call]** Roster/detail remains selected pending execution-time tester evidence.
+- Roster/detail remains selected pending execution-time tester evidence.

@@ -1,9 +1,9 @@
 # Persistence, Synchronization, Migration, and Recovery
 
-**Evidence scope:** Existing Plan 01 contracts and repository patterns are **[Repo-grounded]**. Every table,
-column, constraint, migration, cursor field, and command introduced here is an approved **[Judgment call — new
-artifact]** until implementation evidence replaces that label. Storage envelopes remain **[Unverified]** until
-the Phase 2 benchmark records measured values.
+**Evidence scope:** Existing Plan 01 contracts and repository patterns were verified against the repository. Every
+table, column, constraint, migration, cursor field, and command introduced here is an approved new artifact until
+implementation evidence confirms it. Storage envelopes stay unconfirmed until the Phase 2 benchmark records
+measured values.
 
 ## PostgreSQL Data Model
 

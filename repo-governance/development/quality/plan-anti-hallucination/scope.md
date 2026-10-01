@@ -19,7 +19,7 @@ when_to_use: "Use to check whether this applies to an agent."
 
 ## What This Convention Does NOT Cover
 
-- **General factual-validation methodology** — see [Factual Validation Convention](../../../conventions/writing/factual-validation.md) for the universal `[Verified]` / `[Outdated]` / `[Unverified]` confidence system. This convention extends those labels with plan-specific repo-grounding labels and stricter delegation thresholds.
+- **General factual-validation methodology** — see [Factual Validation Convention](../../../conventions/writing/factual-validation.md) for the universal `[Verified]` / `[Outdated]` / `[Unverified]` confidence system. Those verdicts belong to checker reports; this convention adds repo-grounding and stricter delegation thresholds for plan content, and the plan itself carries no inline confidence label.
 - **Web-research delegation threshold** — see [Web Research Delegation Convention](../../../conventions/writing/web-research-delegation.md) for the universal 2-search / 3-fetch threshold. This convention LOWERS that threshold for plan content (any non-grep'd external claim → delegate).
 - **Plan structure and content placement** — see [Plans Organization Convention](../../../conventions/structure/plans.md). That convention says WHAT goes in a plan; this convention says HOW to verify what you write.
 - **Manual behavioural verification** — real-browser UI and protocol-appropriate API wire verification

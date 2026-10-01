@@ -1,7 +1,7 @@
 # Hexagonal Architecture and Protocol Extension
 
-> **Evidence scope:** Inspected repository boundaries are **[Repo-grounded]**. Every FERRET module, port, type,
-> symbol, and fitness-test path is an approved **[Judgment call — new artifact]**.
+> **Evidence scope:** Repository boundaries were inspected and verified. Every FERRET module, port, type, symbol,
+> and fitness-test path is an approved new artifact.
 
 ## Context and Dependency Rule
 

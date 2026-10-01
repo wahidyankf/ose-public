@@ -38,7 +38,7 @@ By the end of this tutorial, you will have touchpoints for:
 ```mermaid
 graph LR
     accTitle: Learning Path
-    accDescr: Graph with 14 nodes and 22 connections. Nodes: Quick Start: Rust, B, Ownership, Borrowing, Structs, F, Match, Error Handling, Traits, Collections, Iterators, Lifetimes, and 2 more. Connections: Quick Start: Rust to B, Quick Start: Rust to Ownership, Quick Start: Rust to Borrowing, Quick Start: Rust to Structs, Quick Start: Rust to F, Quick Start: Rust to Match, Quick Start: Rust to Error Handling, Quick Start: Rust to Traits, Quick Start: Rust to Collections, Quick Start: Rust to Iterators, Quick Start: Rust to Lifetimes, B to Beginner Tutorial, and 10 more.
+    accDescr: Graph with 13 nodes and 21 connections. Nodes: Quick Start: Rust, Variables & Mutability, Ownership, Borrowing, Structs, Enums & Match, Error Handling, Traits, Collections, Iterators, Lifetimes, Beginner Tutorial, and 1 more. Connections: Quick Start: Rust to Variables & Mutability, Quick Start: Rust to Ownership, Quick Start: Rust to Borrowing, Quick Start: Rust to Structs, Quick Start: Rust to Enums & Match, Quick Start: Rust to Error Handling, Quick Start: Rust to Traits, Quick Start: Rust to Collections, Quick Start: Rust to Iterators, Quick Start: Rust to Lifetimes, Variables & Mutability to Beginner Tutorial, Ownership to Beginner Tutorial, and 9 more.
     A[Quick Start: Rust] --> B[Variables &<br/>Mutability]
     A --> C[Ownership]
     A --> D[Borrowing]

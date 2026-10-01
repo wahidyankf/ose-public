@@ -223,7 +223,7 @@ Rust has two string types and understanding both is the single most important pr
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 5: String Types
-    accDescr: Graph with 7 nodes and 14 connections. Nodes: A, quot, amp, B, C, String: ptr + len + cap OWNS the heap data, E. Connections: A to B, A to amp, quot to B, quot to amp, quot to B, quot to amp, amp to B, amp to amp, C to String: ptr + len + cap OWNS the heap data, quot to String: ptr + len + cap OWNS the heap data, quot to String: ptr + len + cap OWNS the heap data, String: ptr + len + cap OWNS the heap data to E, and 2 more.
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: String literal in binary hello : &str, &str: pointer + length borrows the literal, String::from( hello) heap allocation, String: ptr + len + cap OWNS the heap data, &str: borrow of String via &my_string or .as_str(). Connections: String literal in binary hello : &str to &str: pointer + length borrows the literal, String::from( hello) heap allocation to String: ptr + len + cap OWNS the heap data, String: ptr + len + cap OWNS the heap data to &str: borrow of String via &my_string or .as_str().
     A["String literal in<br/>binary<br/>&quot;hello&quot; : &amp;str"] --> B["&amp;str: pointer +<br/>length<br/>borrows the literal"]
     C["String::from#40;<br/>&quot;hello&quot;#41;<br/>heap allocation"] --> D["String: ptr + len +<br/>cap<br/>OWNS the heap data"]
     D --> E["&amp;str: borrow of<br/>String<br/>via &amp;my_string or<br/>.as_str#40;#41;"]
@@ -379,7 +379,7 @@ Every value in Rust has exactly one owner. When the owner goes out of scope, the
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 7: Ownership Basics
-    accDescr: Graph with 7 nodes and 7 connections. Nodes: A, quot, cmd_name owns the String, process_ command40cmd_ name41 ownership moves in, Inside process_command cmd owns the String, Function returns cmd drops here, Heap memory freed automatically. Connections: A to cmd_name owns the String, quot to cmd_name owns the String, quot to cmd_name owns the String, cmd_name owns the String to process_ command40cmd_ name41 ownership moves in, process_ command40cmd_ name41 ownership moves in to Inside process_command cmd owns the String, Inside process_command cmd owns the String to Function returns cmd drops here, Function returns cmd drops here to Heap memory freed automatically.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: String::from( validate) heap allocated, cmd_name owns the String, process_ command(cmd_ name) ownership moves in, Inside process_command cmd owns the String, Function returns cmd drops here, Heap memory freed automatically. Connections: String::from( validate) heap allocated to cmd_name owns the String, cmd_name owns the String to process_ command(cmd_ name) ownership moves in, process_ command(cmd_ name) ownership moves in to Inside process_command cmd owns the String, Inside process_command cmd owns the String to Function returns cmd drops here, Function returns cmd drops here to Heap memory freed automatically.
     A["String::from#40;<br/>&quot;validate&quot;#41;<br/>heap allocated"] --> B["cmd_name owns the<br/>String"]
     B --> C["process_<br/>command#40;cmd_<br/>name#41;<br/>ownership moves in"]
     C --> D["Inside<br/>process_command<br/>cmd owns the String"]

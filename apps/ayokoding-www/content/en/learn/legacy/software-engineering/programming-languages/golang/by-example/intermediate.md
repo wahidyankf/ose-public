@@ -281,7 +281,7 @@ JSON is ubiquitous in Go APIs. The `encoding/json` package marshals (structs to 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 33: JSON Handling
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Go Struct User123Name, Age125, json.Marshal, JSON String 123name:Alice125, json.Unmarshal, Go Struct Person123Name, Age125. Connections: Go Struct User123Name, Age125 to json.Marshal (Marshal), json.Marshal to JSON String 123name:Alice125, JSON String 123name:Alice125 to json.Unmarshal (Unmarshal), json.Unmarshal to Go Struct Person123Name, Age125.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Go Struct UserName, Age, json.Marshal, JSON String name:Alice, json.Unmarshal, Go Struct PersonName, Age. Connections: Go Struct UserName, Age to json.Marshal (Marshal), json.Marshal to JSON String name:Alice, JSON String name:Alice to json.Unmarshal (Unmarshal), json.Unmarshal to Go Struct PersonName, Age.
     A["Go Struct<br/>User#123;Name,<br/>Age#125;"]
     B["json.Marshal"]
     C["JSON String<br/>#123;name:Alice#125;"]

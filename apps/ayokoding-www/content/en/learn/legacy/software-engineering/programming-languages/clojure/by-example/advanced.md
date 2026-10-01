@@ -1552,7 +1552,7 @@ Best practices for deploying Clojure applications to production cover JVM tuning
 %% Production deployment pipeline
 graph TD
     accTitle: Example 78: Production Deployment Checklist
-    accDescr: Graph with 12 nodes and 11 connections. Nodes: Development, AOT Compilation, Build Uberjar, JVM Tuning, Configure Logging, Health Checks, Graceful Shutdown, Error Handling, Connection Pooling, Deploy to Production, K, Alert. Connections: Development to AOT Compilation, AOT Compilation to Build Uberjar, Build Uberjar to JVM Tuning, JVM Tuning to Configure Logging, Configure Logging to Health Checks, Health Checks to Graceful Shutdown, Graceful Shutdown to Error Handling, Error Handling to Connection Pooling, Connection Pooling to Deploy to Production, Deploy to Production to K, Deploy to Production to Alert.
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Development, AOT Compilation, Build Uberjar, JVM Tuning, Configure Logging, Health Checks, Graceful Shutdown, Error Handling, Connection Pooling, Deploy to Production, Monitor & Alert. Connections: Development to AOT Compilation, AOT Compilation to Build Uberjar, Build Uberjar to JVM Tuning, JVM Tuning to Configure Logging, Configure Logging to Health Checks, Health Checks to Graceful Shutdown, Graceful Shutdown to Error Handling, Error Handling to Connection Pooling, Connection Pooling to Deploy to Production, Deploy to Production to Monitor & Alert.
     A[Development] --> B[AOT Compilation]
     B --> C[Build Uberjar]
     C --> D[JVM Tuning]

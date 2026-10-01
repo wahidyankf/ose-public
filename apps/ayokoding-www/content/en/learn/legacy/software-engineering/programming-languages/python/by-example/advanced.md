@@ -1972,7 +1972,7 @@ Implement observer pattern for event-driven architectures.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
     accTitle: Example 79: Observer Pattern
-    accDescr: Sequence diagram between Observable (Subject), EmailNotifier, LogNotifier. Messages: Observable (Subject) to EmailNotifier: Register observer; Observable (Subject) to LogNotifier: Register observer; Observable (Subject) to EmailNotifier: update40User registered41; EmailNotifier to Observable (Subject): Email sent; Observable (Subject) to LogNotifier: update40User registered41; LogNotifier to Observable (Subject): Log written.
+    accDescr: Sequence diagram between Observable (Subject), EmailNotifier, LogNotifier. Messages: Observable (Subject) to EmailNotifier: Register observer; Observable (Subject) to LogNotifier: Register observer; Observable (Subject) to EmailNotifier: update(User registered); EmailNotifier to Observable (Subject): Email sent; Observable (Subject) to LogNotifier: update(User registered); LogNotifier to Observable (Subject): Log written.
     participant S as "Observable (Subject)"
     participant E as EmailNotifier
     participant L as LogNotifier

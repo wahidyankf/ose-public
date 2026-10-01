@@ -2760,7 +2760,7 @@ Process monitoring allows you to detect when other processes crash or exit. Use 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 45: Process Monitoring
-    accDescr: Graph with 9 nodes and 6 connections. Nodes: Process A, Process B, Process B crashes 💥, Both processes terminate, Monitor Process, Monitored Process, Monitored crashes 💥, Monitor receives :DOWN, ref, :process, pid, reason, Monitor survives, handles :DOWN message. Connections: Process A to Process B (link), Process B to Process A (link), Process B crashes 💥 to Both processes terminate, Monitor Process to Monitored Process (monitor), Monitored crashes 💥 to Monitor receives :DOWN, ref, :process, pid, reason, Monitor receives :DOWN, ref, :process, pid, reason to Monitor survives, handles :DOWN message.
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: Process A, Process B, P2Crash, Both processes terminate, Monitor Process, Monitored Process, M2Crash, Monitor receives :DOWN, ref, :process, pid, reason, Monitor survives, handles :DOWN message. Connections: Process A to Process B (link), Process B to Process A (link), P2Crash to Both processes terminate, Monitor Process to Monitored Process (monitor), M2Crash to Monitor receives :DOWN, ref, :process, pid, reason, Monitor receives :DOWN, ref, :process, pid, reason to Monitor survives, handles :DOWN message.
     subgraph Linking["Process Linking<br/>(Bidirectional)"]
         P1["Process A"] -->|link| P2["Process B"]
         P2 -->|link| P1
@@ -3209,7 +3209,7 @@ ExUnit is Elixir's built-in testing framework. Tests are organized into test mod
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Test Organization
-    accDescr: Graph with 6 nodes and 6 connections. Nodes: setup do ..., test description do ..., Assert1, (automatic cleanup), test another do ..., refute condition. Connections: setup do ... to test description do ..., test description do ... to Assert1, Assert1 to (automatic cleanup), setup do ... to test another do ..., test another do ... to refute condition, refute condition to (automatic cleanup).
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: setup do ..., test description do ..., assert value == expected, (automatic cleanup), test another do ..., refute condition. Connections: setup do ... to test description do ..., test description do ... to assert value == expected, assert value == expected to (automatic cleanup), setup do ... to test another do ..., test another do ... to refute condition, refute condition to (automatic cleanup).
     Setup["setup do<br/>..."] --> Test1["test 'description'<br/>do<br/>..."]
     Test1 --> Assert1["assert value ==<br/>expected"]
     Assert1 --> Teardown["(automatic cleanup)"]

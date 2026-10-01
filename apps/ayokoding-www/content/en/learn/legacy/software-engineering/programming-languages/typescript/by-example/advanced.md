@@ -91,7 +91,7 @@ Recursive types enable type-level iteration over complex structures. TypeScript 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 53: Recursive Conditional Types
-    accDescr: Graph with 7 nodes and 10 connections. Nodes: A, lt, gt, Unwrap Layer 1, C, Unwrap Layer 2, string (base case). Connections: A to Unwrap Layer 1, lt to Unwrap Layer 1, lt to Unwrap Layer 1, gt to Unwrap Layer 1, gt to Unwrap Layer 1, Unwrap Layer 1 to C, Unwrap Layer 1 to lt, Unwrap Layer 1 to gt, C to Unwrap Layer 2, Unwrap Layer 2 to string (base case).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Promise< Promise<string>>, Unwrap Layer 1, Promise<string>, Unwrap Layer 2, string (base case). Connections: Promise< Promise<string>> to Unwrap Layer 1, Unwrap Layer 1 to Promise<string>, Promise<string> to Unwrap Layer 2, Unwrap Layer 2 to string (base case).
     A["Promise&lt;<br/>Promise&lt;string&gt;&gt;"] --> B["Unwrap Layer 1"]
     B --> C["Promise&lt;string&gt;"]
     C --> D["Unwrap Layer 2"]
@@ -2219,7 +2219,7 @@ Variance annotations (`in` for contravariance, `out` for covariance) control how
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 71: Variance Annotations
-    accDescr: Graph with 9 nodes and 18 connections. Nodes: Dog extends Animal, out T (Covariant, Producer, lt, gt, C, in T (Contravariant, Consumer, E. Connections: Producer to C (assignable to), Producer to lt (assignable to), Producer to gt (assignable to), lt to C (assignable to), lt to lt (assignable to), lt to gt (assignable to), gt to C (assignable to), gt to lt (assignable to), gt to gt (assignable to), Consumer to E (assignable to), Consumer to lt (assignable to), Consumer to gt (assignable to), and 6 more.
+    accDescr: Graph with 5 nodes and 0 connections. Nodes: Dog extends Animal, out T (Covariant, Producer<Dog>, in T (Contravariant, Consumer<Animal>.
     A["Dog extends Animal"]
     B["out T (Covariant)
 Producer&lt;Animal&gt;"] -->|"assignable to"| C["Producer&lt;Dog&gt;"]
@@ -3046,7 +3046,7 @@ Test type transformations at compile time using conditional types and `never`.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 76: Testing Type Utilities with Conditional Types
-    accDescr: Graph with 5 nodes and 6 connections. Nodes: A, lt, gt, PASS (never error), FAIL: true not assignable to false. Connections: A to PASS (never error) (A extends B AND B extends A), lt to PASS (never error) (A extends B AND B extends A), lt to PASS (never error) (A extends B AND B extends A), gt to PASS (never error) (A extends B AND B extends A), gt to PASS (never error) (A extends B AND B extends A), A to FAIL: true not assignable to false (types differ).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Expect<Equal<A, B>>, PASS (never error), FAIL: true not assignable to false. Connections: Expect<Equal<A, B>> to PASS (never error) (A extends B AND B extends A), Expect<Equal<A, B>> to FAIL: true not assignable to false (types differ).
     A["Expect&lt;Equal&lt;A, B&gt;&gt;"] -->|"A extends B AND B<br/>extends A"| B["PASS (never error)"]
     A -->|"types differ"| C["FAIL: 'true' not<br/>assignable to<br/>'false'"]
 

@@ -276,7 +276,7 @@ Context managers handle setup/cleanup automatically using **enter** and **exit**
 %% Context manager lifecycle
 sequenceDiagram
     accTitle: Example 33: Context Manager
-    accDescr: Sequence diagram between with FileManager as f, Context Manager, File Resource. Messages: with FileManager as f to Context Manager: Enter with block; Context Manager to Context Manager: __enter__4041 called; Context Manager to File Resource: open40data.txt, w41; File Resource to Context Manager: File object; Context Manager to with FileManager as f: Return file object to f; with FileManager as f to File Resource: f.write40Hello41; with FileManager as f to Context Manager: Exit with block; Context Manager to Context Manager: __exit__4041 called; Context Manager to File Resource: f.close4041.
+    accDescr: Sequence diagram between with FileManager as f, Context Manager, File Resource. Messages: with FileManager as f to Context Manager: Enter with block; Context Manager to Context Manager: __enter__() called; Context Manager to File Resource: open(data.txt, w); File Resource to Context Manager: File object; Context Manager to with FileManager as f: Return file object to f; with FileManager as f to File Resource: f.write(Hello); with FileManager as f to Context Manager: Exit with block; Context Manager to Context Manager: __exit__() called; Context Manager to File Resource: f.close().
     participant Code as "with FileManager as f"
     participant CM as "Context Manager"
     participant File as "File Resource"
@@ -815,7 +815,7 @@ deque (double-ended queue) provides O(1) append/pop from both ends.
 %% Deque double-ended operations
 graph TD
     accTitle: Example 43: Collections - deque
-    accDescr: Graph with 9 nodes and 7 connections. Nodes: appendleft40041 O40141, 910, 1, 2, 393 deque, append40441 O40141, popleft4041 O40141 returns 0, pop4041 O40141 returns 4, rotate40141, 913, 1, 293 shift right, rotate40-141, 911, 2, 393 shift left. Connections: appendleft40041 O40141 to 910, 1, 2, 393 deque, 910, 1, 2, 393 deque to append40441 O40141, popleft4041 O40141 returns 0 to 910, 1, 2, 393 deque, 910, 1, 2, 393 deque to pop4041 O40141 returns 4, rotate40141 to 913, 1, 293 shift right, 913, 1, 293 shift right to rotate40-141, rotate40-141 to 911, 2, 393 shift left.
+    accDescr: Graph with 9 nodes and 7 connections. Nodes: appendleft(0) O(1), [0, 1, 2, 3] deque, append(4) O(1), popleft() O(1) returns 0, pop() O(1) returns 4, rotate(1), [3, 1, 2] shift right, rotate(-1), [1, 2, 3] shift left. Connections: appendleft(0) O(1) to [0, 1, 2, 3] deque, [0, 1, 2, 3] deque to append(4) O(1), popleft() O(1) returns 0 to [0, 1, 2, 3] deque, [0, 1, 2, 3] deque to pop() O(1) returns 4, rotate(1) to [3, 1, 2] shift right, [3, 1, 2] shift right to rotate(-1), rotate(-1) to [1, 2, 3] shift left.
     A["appendleft#40;0#41;<br/>O#40;1#41;"] --> B["#91;0, 1, 2, 3#93;<br/>deque"]
     B --> C["append#40;4#41;<br/>O#40;1#41;"]
 

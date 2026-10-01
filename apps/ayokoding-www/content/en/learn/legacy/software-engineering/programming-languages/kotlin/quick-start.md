@@ -38,7 +38,7 @@ By the end of this tutorial, you will have touchpoints for:
 ```mermaid
 graph LR
     accTitle: Learning Path
-    accDescr: Graph with 14 nodes and 22 connections. Nodes: Quick Start: Kotlin, B, Null Safety, D, Objects, Control Flow, Collections, Extension Functions, Higher-Order Functions, Lambdas, Coroutines, Sealed Classes, and 2 more. Connections: Quick Start: Kotlin to B, Quick Start: Kotlin to Null Safety, Quick Start: Kotlin to D, Quick Start: Kotlin to Objects, Quick Start: Kotlin to Control Flow, Quick Start: Kotlin to Collections, Quick Start: Kotlin to Extension Functions, Quick Start: Kotlin to Higher-Order Functions, Quick Start: Kotlin to Lambdas, Quick Start: Kotlin to Coroutines, Quick Start: Kotlin to Sealed Classes, B to Beginner Tutorial, and 10 more.
+    accDescr: Graph with 13 nodes and 21 connections. Nodes: Quick Start: Kotlin, Functions & Variables, Null Safety, Classes & Objects, Control Flow, Collections, Extension Functions, Higher-Order Functions, Lambdas, Coroutines, Sealed Classes, Beginner Tutorial, and 1 more. Connections: Quick Start: Kotlin to Functions & Variables, Quick Start: Kotlin to Null Safety, Quick Start: Kotlin to Classes & Objects, Quick Start: Kotlin to Control Flow, Quick Start: Kotlin to Collections, Quick Start: Kotlin to Extension Functions, Quick Start: Kotlin to Higher-Order Functions, Quick Start: Kotlin to Lambdas, Quick Start: Kotlin to Coroutines, Quick Start: Kotlin to Sealed Classes, Functions & Variables to Beginner Tutorial, Null Safety to Beginner Tutorial, and 9 more.
     A[Quick Start: Kotlin] --> B[Functions &<br/>Variables]
     A --> C[Null Safety]
     A --> D[Classes & Objects]

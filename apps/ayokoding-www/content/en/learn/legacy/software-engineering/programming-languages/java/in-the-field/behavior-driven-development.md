@@ -1181,7 +1181,7 @@ Scenario: No Zakat due when haul is incomplete
 
 graph TD
     accTitle: BDD vs TDD: Complementary Practices
-    accDescr: Graph with 3 nodes and 3 connections. Nodes: BDD Scenario Acceptance Test Given-When-Then, TDD Unit Tests testDonation Creation4041 testDonation Processing4041, Production Code Donation class DonationService. Connections: BDD Scenario Acceptance Test Given-When-Then to TDD Unit Tests testDonation Creation4041 testDonation Processing4041 (Drives), TDD Unit Tests testDonation Creation4041 testDonation Processing4041 to Production Code Donation class DonationService (Implements), Production Code Donation class DonationService to BDD Scenario Acceptance Test Given-When-Then (Satisfies).
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: BDD Scenario Acceptance Test Given-When-Then, TDD Unit Tests testDonation Creation() testDonation Processing(), Production Code Donation class DonationService. Connections: BDD Scenario Acceptance Test Given-When-Then to TDD Unit Tests testDonation Creation() testDonation Processing() (Drives), TDD Unit Tests testDonation Creation() testDonation Processing() to Production Code Donation class DonationService (Implements), Production Code Donation class DonationService to BDD Scenario Acceptance Test Given-When-Then (Satisfies).
     BDD[BDD Scenario<br/>Acceptance Test<br/>Given-When-Then]:::blue
     TDD[TDD Unit Tests<br/>testDonation<br/>Creation#40;#41;<br/>testDonation<br/>Processing#40;#41;]:::orange
     Code[Production Code<br/>Donation class<br/>DonationService]:::teal

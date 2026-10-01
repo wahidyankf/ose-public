@@ -1594,7 +1594,7 @@ async fn cpu_bound_tasks() {
 %% Select racing multiple futures
 graph TD
     accTitle: Example 69: Select and Race Conditions
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: tokio::select! starts, Branch 1: operation1 - 100ms, Branch 2: operation2 - 50ms, D, Dropped, Return Operation 2, Other branches cancelled. Connections: tokio::select! starts to Branch 1: operation1 - 100ms (Poll both branches), tokio::select! starts to Branch 2: operation2 - 50ms (Poll both branches), Branch 1: operation1 - 100ms to D (Still pending at 50ms), Branch 1: operation1 - 100ms to Dropped (Still pending at 50ms), Branch 2: operation2 - 50ms to Return Operation 2 (Completes first at 50ms), Return Operation 2 to Other branches cancelled.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: tokio::select! starts, Branch 1: operation1 - 100ms, Branch 2: operation2 - 50ms, Cancelled & Dropped, Return Operation 2, Other branches cancelled. Connections: tokio::select! starts to Branch 1: operation1 - 100ms (Poll both branches), tokio::select! starts to Branch 2: operation2 - 50ms (Poll both branches), Branch 1: operation1 - 100ms to Cancelled & Dropped (Still pending at 50ms), Branch 2: operation2 - 50ms to Return Operation 2 (Completes first at 50ms), Return Operation 2 to Other branches cancelled.
     A[tokio::select!<br/>starts] -->|Poll both branches| B[Branch 1: operation1<br/>- 100ms]
     A -->|Poll both branches| C[Branch 2: operation2<br/>- 50ms]
     B -->|Still pending at<br/>50ms| D[Cancelled & Dropped]
@@ -3427,7 +3427,7 @@ Const generics allow generic parameters over constant values like array sizes, e
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 77: Const Generics
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: fn foo60T, const N: usize62 One generic function, Call with 91i32 393, Monomorphize: foo::60i32, 362, Specialized code for i32 array size 3, Call with 91i32 593, Monomorphize: foo::60i32, 562, Specialized code for i32 array size 5. Connections: fn foo60T, const N: usize62 One generic function to Call with 91i32 393, Call with 91i32 393 to Monomorphize: foo::60i32, 362, Monomorphize: foo::60i32, 362 to Specialized code for i32 array size 3, fn foo60T, const N: usize62 One generic function to Call with 91i32 593, Call with 91i32 593 to Monomorphize: foo::60i32, 562, Monomorphize: foo::60i32, 562 to Specialized code for i32 array size 5.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: fn foo<T, const N: usize> One generic function, Call with [i32 3], Monomorphize: foo::<i32, 3>, Specialized code for i32 array size 3, Call with [i32 5], Monomorphize: foo::<i32, 5>, Specialized code for i32 array size 5. Connections: fn foo<T, const N: usize> One generic function to Call with [i32 3], Call with [i32 3] to Monomorphize: foo::<i32, 3>, Monomorphize: foo::<i32, 3> to Specialized code for i32 array size 3, fn foo<T, const N: usize> One generic function to Call with [i32 5], Call with [i32 5] to Monomorphize: foo::<i32, 5>, Monomorphize: foo::<i32, 5> to Specialized code for i32 array size 5.
     Generic["fn foo#60;T, const<br/>N: usize#62;<br/>One generic function"]
     Generic --> Call1["Call with #91;i32;<br/>3#93;"]
     Call1 --> Mono1["Monomorphize:<br/>foo::#60;i32, 3#62;"]

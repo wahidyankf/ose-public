@@ -1853,7 +1853,7 @@ graph TD
 %% When expression flow
 graph TD
     accTitle: Example 21: Sealed Classes
-    accDescr: Graph with 6 nodes and 7 connections. Nodes: when40result41, Type check, Access data property, Access message and code, No properties, No else needed. Connections: when40result41 to Type check, Type check to Access data property (is Success), Type check to Access message and code (is Error), Type check to No properties (is Loading), Access data property to No else needed, Access message and code to No else needed, No properties to No else needed.
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: when(result), Type check, Access data property, Access message and code, No properties, No else needed. Connections: when(result) to Type check, Type check to Access data property (is Success), Type check to Access message and code (is Error), Type check to No properties (is Loading), Access data property to No else needed, Access message and code to No else needed, No properties to No else needed.
     E[when#40;result#41;] --> F{Type check}
     F -->|is Success| G[Access data property]
     F -->|is Error| H[Access message and<br/>code]

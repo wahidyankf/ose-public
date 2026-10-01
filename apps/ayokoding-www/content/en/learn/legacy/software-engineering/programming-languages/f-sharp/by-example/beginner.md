@@ -379,7 +379,7 @@ Recursion is the primary iteration mechanism in functional programming, replacin
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
     accTitle: Example 10: Recursion
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: sum 9112393, List empty?, Return 0, head + sum tail, 1 + sum 912393, 1 + 2 + sum 91393, 1 + 2 + 3 + 0 = 6. Connections: sum 9112393 to List empty?, List empty? to Return 0 (Yes), List empty? to head + sum tail (No), head + sum tail to 1 + sum 912393, 1 + sum 912393 to 1 + 2 + sum 91393, 1 + 2 + sum 91393 to 1 + 2 + 3 + 0 = 6.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: sum [123], List empty?, Return 0, head + sum tail, 1 + sum [23], 1 + 2 + sum [3], 1 + 2 + 3 + 0 = 6. Connections: sum [123] to List empty?, List empty? to Return 0 (Yes), List empty? to head + sum tail (No), head + sum tail to 1 + sum [23], 1 + sum [23] to 1 + 2 + sum [3], 1 + 2 + sum [3] to 1 + 2 + 3 + 0 = 6.
     A[sum #91;1;2;3#93;]:::blue --> B{List empty?}:::orange
     B -->|Yes| C[Return 0]:::teal
     B -->|No| D[head + sum tail]:::purple

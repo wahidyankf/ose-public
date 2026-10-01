@@ -879,7 +879,7 @@ The pipe operator `|>` takes the result of an expression and passes it as the fi
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 12: Pipe Operator
-    accDescr: Graph with 6 nodes and 1 connections. Nodes: hello (input), Trim, Upcase, HELLO (output), Nested: upcase(trim( hello )) ❌ Inside-out reading, Pipeline: hello |> trim() |> upcase() ✅ Left-to-right flow. Connections: Upcase to HELLO (output).
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: hello (input), String.trim() Result: hello, String.upcase() Result: HELLO, HELLO (output), Nested: upcase(trim( hello )) ❌ Inside-out reading, Pipeline: hello |> trim() |> upcase() ✅ Left-to-right flow. Connections: hello (input) to String.trim() Result: hello, String.trim() Result: hello to String.upcase() Result: HELLO, String.upcase() Result: HELLO to HELLO (output).
     Input["'  hello  '<br/>(input)"] -->|"|>"| Trim["String.trim()<br/>Result: 'hello'"]
     Trim -->|"|>"| Upcase["String.upcase()<br/>Result: 'HELLO'"]
     Upcase --> Final["'HELLO'<br/>(output)"]

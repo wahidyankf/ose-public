@@ -514,7 +514,7 @@ npx husky install
 
 graph TB
     accTitle: Linting and Formatting Progression Diagram
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, strict, ESLint, Prettier, Pre-commit hooks. Connections: A to strict, strict to ESLint (Limitations), ESLint to Prettier (Style consistency), Prettier to Pre-commit hooks (Automation).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: tsc --strict, ESLint, Prettier, Pre-commit hooks. Connections: tsc --strict to ESLint (Limitations), ESLint to Prettier (Style consistency), Prettier to Pre-commit hooks (Automation).
     A[tsc --strict] -->|Limitations| B[ESLint]
     B -->|Style consistency| C[Prettier]
     C -->|Automation| D[Pre-commit hooks]

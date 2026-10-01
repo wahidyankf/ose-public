@@ -568,7 +568,7 @@ git commit -m "feat!: migrate to TypeScript 5\n\nBREAKING CHANGE: Requires Node.
 
 graph TB
     accTitle: CI/CD Pipeline Progression Diagram
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Manual Scripts, GitHub Actions CI, C, Push, CD Pipeline, Semantic Release. Connections: Manual Scripts to GitHub Actions CI (Automated triggers), GitHub Actions CI to C (Docker builds), GitHub Actions CI to Push (Docker builds), C to CD Pipeline (Deployment automation), CD Pipeline to Semantic Release (Versioning automation).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Manual Scripts, GitHub Actions CI, Build & Push, CD Pipeline, Semantic Release. Connections: Manual Scripts to GitHub Actions CI (Automated triggers), GitHub Actions CI to Build & Push (Docker builds), Build & Push to CD Pipeline (Deployment automation), CD Pipeline to Semantic Release (Versioning automation).
     A[Manual Scripts] -->|Automated triggers| B[GitHub Actions CI]
     B -->|Docker builds| C[Build & Push]
     C -->|Deployment<br/>automation| D[CD Pipeline]

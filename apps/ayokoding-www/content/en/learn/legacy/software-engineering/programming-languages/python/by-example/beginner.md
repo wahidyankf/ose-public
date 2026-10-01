@@ -1055,7 +1055,7 @@ Dictionaries store key-value pairs with fast lookup by key. Keys must be immutab
 %% Dictionary operations
 graph TD
     accTitle: Example 12: Dictionaries - Key-Value Pairs
-    accDescr: Graph with 10 nodes and 9 connections. Nodes: Dictionary, Operation?, O40141 Lookup, O40141 Insert/Update, O40141 Delete, O40141 Membership, Return Value or KeyError, Update Existing or Add New, Remove Key-Value Pair, Return True/False. Connections: Dictionary to Operation?, Operation? to O40141 Lookup (Get Key), Operation? to O40141 Insert/Update (Set Key), Operation? to O40141 Delete (Delete Key), Operation? to O40141 Membership (Check Key), O40141 Lookup to Return Value or KeyError, O40141 Insert/Update to Update Existing or Add New, O40141 Delete to Remove Key-Value Pair, O40141 Membership to Return True/False.
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Dictionary, Operation?, O(1) Lookup, O(1) Insert/Update, O(1) Delete, O(1) Membership, Return Value or KeyError, Update Existing or Add New, Remove Key-Value Pair, Return True/False. Connections: Dictionary to Operation?, Operation? to O(1) Lookup (Get Key), Operation? to O(1) Insert/Update (Set Key), Operation? to O(1) Delete (Delete Key), Operation? to O(1) Membership (Check Key), O(1) Lookup to Return Value or KeyError, O(1) Insert/Update to Update Existing or Add New, O(1) Delete to Remove Key-Value Pair, O(1) Membership to Return True/False.
     A[Dictionary] --> B{Operation?}
     B -->|Get Key| C[O#40;1#41; Lookup]
     B -->|Set Key| D[O#40;1#41;<br/>Insert/Update]
@@ -3694,7 +3694,7 @@ Python's iterator protocol enables lazy evaluation and memory-efficient iteratio
 %% Iterator protocol flow
 graph TD
     accTitle: Example 26: Iterators and the Iterator Protocol
-    accDescr: Graph with 5 nodes and 5 connections. Nodes: Iterable Object, Iterator Object, Has Next Item?, Return Item, Raise StopIteration. Connections: Iterable Object to Iterator Object (iter4041), Iterator Object to Has Next Item? (next4041), Has Next Item? to Return Item (Yes), Has Next Item? to Raise StopIteration (No), Return Item to Iterator Object.
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Iterable Object, Iterator Object, Has Next Item?, Return Item, Raise StopIteration. Connections: Iterable Object to Iterator Object (iter()), Iterator Object to Has Next Item? (next()), Has Next Item? to Return Item (Yes), Has Next Item? to Raise StopIteration (No), Return Item to Iterator Object.
     A[Iterable Object] -->|iter#40;#41;| B[Iterator Object]
     B -->|next#40;#41;| C{Has Next Item?}
     C -->|Yes| D[Return Item]

@@ -2321,7 +2321,7 @@ graph TD
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 43: Operator Overloading
-    accDescr: Graph with 12 nodes and 8 connections. Nodes: matrix91i, j93, operator fun get, Returns element, value in matrix, operator fun contains, Returns Boolean, matrix40row41, operator fun invoke, Returns result, point += other, operator fun plusAssign, Modifies in place. Connections: matrix91i, j93 to operator fun get, operator fun get to Returns element, value in matrix to operator fun contains, operator fun contains to Returns Boolean, matrix40row41 to operator fun invoke, operator fun invoke to Returns result, point += other to operator fun plusAssign, operator fun plusAssign to Modifies in place.
+    accDescr: Graph with 12 nodes and 8 connections. Nodes: matrix[i, j], operator fun get, Returns element, value in matrix, operator fun contains, Returns Boolean, matrix(row), operator fun invoke, Returns result, point += other, operator fun plusAssign, Modifies in place. Connections: matrix[i, j] to operator fun get, operator fun get to Returns element, value in matrix to operator fun contains, operator fun contains to Returns Boolean, matrix(row) to operator fun invoke, operator fun invoke to Returns result, point += other to operator fun plusAssign, operator fun plusAssign to Modifies in place.
     Index["matrix#91;i, j#93;"]
     Index --> IndexFn["operator fun get"]
     IndexFn --> I[Returns element]

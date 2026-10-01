@@ -84,22 +84,30 @@ Rust allows redeclaring variables with the same name, which creates a new bindin
 ```mermaid
 %% Variable shadowing creates new bindings
 graph TD
-    A[let x = 5] --> B[x: i32 = 5 at Address A]
+    accTitle: Example 3: Variable Shadowing
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: let x = 5, x: i32 = 5 at Address A, let x = x + 1, Drop old x at Address A, x: i32 = 6 at Address B, let x = hello, Drop old x at Address B, H, str. Connections: let x = 5 to x: i32 = 5 at Address A, x: i32 = 5 at Address A to let x = x + 1, let x = x + 1 to Drop old x at Address A, let x = x + 1 to x: i32 = 6 at Address B, x: i32 = 6 at Address B to let x = hello, let x = hello to Drop old x at Address B, let x = hello to H, let x = hello to str.
+    A[let x = 5] --> B[x: i32 = 5 at<br/>Address A]
     B --> C[let x = x + 1]
-    C --> D[Drop old x at Address A]
-    C --> E[x: i32 = 6 at Address B]
+    C --> D[Drop old x at<br/>Address A]
+    C --> E[x: i32 = 6 at<br/>Address B]
     E --> F[let x = hello]
-    F --> G[Drop old x at Address B]
-    F --> H[x: &str = hello at Address C]
+    F --> G[Drop old x at<br/>Address B]
+    F --> H[x: &str = hello at<br/>Address C]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CA9161,color:#fff
-    style H fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class E pal-DE8F05
+    class F pal-029E73
+    class G pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -476,15 +484,22 @@ Rust's ownership model ensures memory safety without garbage collection. Each va
 
 ```mermaid
 graph TD
+    accTitle: Example 8: Ownership Basics
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Create String, Owner: s1, Scope Ends?, Drop String. Connections: Create String to Owner: s1, Owner: s1 to Scope Ends?, Scope Ends? to Drop String (Yes), Scope Ends? to Owner: s1 (No).
     A[Create String] --> B[Owner: s1]
     B --> C{Scope Ends?}
     C -->|Yes| D[Drop String]
     C -->|No| B
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -555,6 +570,8 @@ When assigning heap-allocated values, Rust moves ownership rather than copying, 
 
 ```mermaid
 graph TD
+    accTitle: Example 9: Move Semantics
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: s1 = String, s1 owns data, s2 = s1, s2 owns data, s1 invalidated, s2 dropped, Memory freed once. Connections: s1 = String to s1 owns data, s1 owns data to s2 = s1, s2 = s1 to s2 owns data, s2 = s1 to s1 invalidated, s2 owns data to s2 dropped, s2 dropped to Memory freed once.
     A[s1 = String] --> B[s1 owns data]
     B --> C[s2 = s1]
     C --> D[s2 owns data]
@@ -562,13 +579,19 @@ graph TD
     D --> F[s2 dropped]
     F --> G[Memory freed once]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -665,6 +688,8 @@ References allow accessing values without taking ownership. Borrowing enables mu
 
 ```mermaid
 graph TD
+    accTitle: Example 11: References and Borrowing
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: s = String, s owns data, C, s, Read data, Borrow ends, s dropped. Connections: s = String to s owns data, s owns data to C, s owns data to s, C to Read data, Read data to Borrow ends, Borrow ends to s owns data, s owns data to s dropped.
     A[s = String] --> B[s owns data]
     B --> C[&s borrows]
     C --> D[Read data]
@@ -672,12 +697,18 @@ graph TD
     E --> B
     B --> F[s dropped]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -721,24 +752,32 @@ Mutable references allow modifying borrowed data, but Rust enforces at most one 
 ```mermaid
 %% Mutable reference exclusive access
 graph TD
+    accTitle: Example 12: Mutable References
+    accDescr: Graph with 10 nodes and 10 connections. Nodes: let mut s = String, s owns data, C, mut, r1 has exclusive write access, r1.push_str, r1 lifetime ends, G, r2 has exclusive write access, Only ONE mutable ref at a time. Connections: let mut s = String to s owns data, s owns data to C, s owns data to mut, C to r1 has exclusive write access, r1 has exclusive write access to r1.push_str, r1.push_str to r1 lifetime ends, r1 lifetime ends to G, r1 lifetime ends to mut, G to r2 has exclusive write access, r2 has exclusive write access to Only ONE mutable ref at a time.
     A[let mut s = String] --> B[s owns data]
     B --> C[let r1 = &mut s]
-    C --> D[r1 has exclusive write access]
+    C --> D[r1 has exclusive<br/>write access]
     D --> E[r1.push_str]
     E --> F[r1 lifetime ends]
     F --> G[let r2 = &mut s]
-    G --> H[r2 has exclusive write access]
-    H --> I[Only ONE mutable ref at a time]
+    G --> H[r2 has exclusive<br/>write access]
+    H --> I[Only ONE mutable ref<br/>at a time]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-029E73
+    class H pal-CC78BC
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -784,27 +823,34 @@ Rust enforces borrowing rules at compile time: multiple immutable references OR 
 ```mermaid
 %% Borrowing rules: readers-writer lock at compile-time
 graph TD
+    accTitle: Example 13: Borrowing Rules
+    accDescr: Graph with 12 nodes and 15 connections. Nodes: let mut s = String, Borrow Type?, C, s, D, All read simultaneously, No mutation possible, G, mut, H, Exclusive write access, No other references. Connections: let mut s = String to Borrow Type?, Borrow Type? to C (Immutable), Borrow Type? to s (Immutable), C to D, C to s, C to s, C to s, D to All read simultaneously, All read simultaneously to No mutation possible, Borrow Type? to G (Mutable), Borrow Type? to mut (Mutable), G to H, and 3 more.
     A[let mut s = String] --> B{Borrow Type?}
     B -->|Immutable| C[Multiple &s allowed]
-    C --> D[r1 = &s, r2 = &s, r3 = &s]
-    D --> E[All read simultaneously]
+    C --> D[r1 = &s, r2 = &s, r3<br/>= &s]
+    D --> E[All read<br/>simultaneously]
     E --> F[No mutation possible]
 
-    B -->|Mutable| G[Only ONE &mut s allowed]
+    B -->|Mutable| G[Only ONE &mut s<br/>allowed]
     G --> H[r = &mut s]
-    H --> I[Exclusive write access]
+    H --> I[Exclusive write<br/>access]
     I --> J[No other references]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#CC78BC,color:#fff
-    style J fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-CC78BC
+    class I pal-CC78BC
+    class J pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -915,23 +961,31 @@ Structs group related data into named fields. They're Rust's primary way to crea
 ```mermaid
 %% Struct memory layout: stack and heap
 graph TD
+    accTitle: Example 15: Structs
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: User struct instance, Stack: user1, username: pointer to heap, email: pointer to heap, sign_in_count: u64, active: bool, Heap: user123 bytes, Heap: user@example.com bytes. Connections: User struct instance to Stack: user1, Stack: user1 to username: pointer to heap, Stack: user1 to email: pointer to heap, Stack: user1 to sign_in_count: u64, Stack: user1 to active: bool, username: pointer to heap to Heap: user123 bytes, email: pointer to heap to Heap: user@example.com bytes.
     A[User struct instance] --> B[Stack: user1]
-    B --> C[username: pointer to heap]
-    B --> D[email: pointer to heap]
+    B --> C[username: pointer to<br/>heap]
+    B --> D[email: pointer to<br/>heap]
     B --> E[sign_in_count: u64]
     B --> F[active: bool]
 
-    C --> G[Heap: 'user123' bytes]
-    D --> H[Heap: 'user@example.com' bytes]
+    C --> G[Heap: 'user123'<br/>bytes]
+    D --> H[Heap:<br/>'user@example.com'<br/>bytes]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -1414,9 +1468,11 @@ Enums define types that can be one of several variants, each potentially holding
 ```mermaid
 %% Enum variants: different data types
 graph TD
+    accTitle: Example 19: Enums
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: IpAddr Enum Type, Variant?, V4: u8, u8, u8, u8, Example: V4 127, 0, 0, 1, V6: String, Example: V6 ::1, Same Type: IpAddr. Connections: IpAddr Enum Type to Variant?, Variant? to V4: u8, u8, u8, u8 (V4), V4: u8, u8, u8, u8 to Example: V4 127, 0, 0, 1, Variant? to V6: String (V6), V6: String to Example: V6 ::1, Example: V4 127, 0, 0, 1 to Same Type: IpAddr, Example: V6 ::1 to Same Type: IpAddr.
     A[IpAddr Enum Type] --> B{Variant?}
     B -->|V4| C[V4: u8, u8, u8, u8]
-    C --> D[Example: V4 127, 0, 0, 1]
+    C --> D[Example: V4 127, 0,<br/>0, 1]
 
     B -->|V6| E[V6: String]
     E --> F[Example: V6 '::1']
@@ -1424,13 +1480,19 @@ graph TD
     D --> G[Same Type: IpAddr]
     F --> G
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -1561,6 +1623,8 @@ fn route(ip: IpAddr) {               // => ip: IpAddr enum (any variant)
 
 ```mermaid
 graph TD
+    accTitle: Example 20: Pattern Matching with Match
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: match value, Variant?, Execute Arm 1, Execute Arm 2, Execute Arm 3, Return Result. Connections: match value to Variant?, Variant? to Execute Arm 1 (Pattern 1), Variant? to Execute Arm 2 (Pattern 2), Variant? to Execute Arm 3 (Pattern 3), Execute Arm 1 to Return Result, Execute Arm 2 to Return Result, Execute Arm 3 to Return Result.
     A[match value] --> B{Variant?}
     B -->|Pattern 1| C[Execute Arm 1]
     B -->|Pattern 2| D[Execute Arm 2]
@@ -1569,12 +1633,17 @@ graph TD
     D --> F
     E --> F
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust

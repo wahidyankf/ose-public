@@ -19,27 +19,35 @@ Examples 58-85 cover expert mastery and performance optimization (75-95% coverag
 
 ```mermaid
 graph TD
+    accTitle: Example 58: Unsafe Code Basics
+    accDescr: Graph with 9 nodes and 11 connections. Nodes: Safe Rust, Need Unsafe?, Use Safe Abstractions, unsafe Block, Raw Pointers, Unsafe Functions, Mutable Statics, FFI Calls, Manual Safety Verification. Connections: Safe Rust to Need Unsafe?, Need Unsafe? to Use Safe Abstractions (No), Need Unsafe? to unsafe Block (Yes), unsafe Block to Raw Pointers, unsafe Block to Unsafe Functions, unsafe Block to Mutable Statics, unsafe Block to FFI Calls, Raw Pointers to Manual Safety Verification, Unsafe Functions to Manual Safety Verification, Mutable Statics to Manual Safety Verification, FFI Calls to Manual Safety Verification.
     A[Safe Rust] --> B{Need Unsafe?}
-    B -->|No| C[Use Safe Abstractions]
+    B -->|No| C[Use Safe<br/>Abstractions]
     B -->|Yes| D[unsafe Block]
     D --> E[Raw Pointers]
     D --> F[Unsafe Functions]
     D --> G[Mutable Statics]
     D --> H[FFI Calls]
-    E --> I[Manual Safety Verification]
+    E --> I[Manual Safety<br/>Verification]
     F --> I
     G --> I
     H --> I
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    class G pal-CC78BC
+    class H pal-CC78BC
+    class I pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -178,19 +186,25 @@ FFI enables calling functions from other languages like C, using `extern` blocks
 ```mermaid
 %% FFI boundary showing Rust-C interop
 graph TD
+    accTitle: Example 60: FFI
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Rust Code, FFI Boundary, C Library Function, Rust Function, C-Compatible Symbol, C Code. Connections: Rust Code to FFI Boundary (extern C declaration), FFI Boundary to C Library Function (C ABI calling convention), C Library Function to FFI Boundary (Return value), FFI Boundary to Rust Code (Unsafe block required), Rust Function to C-Compatible Symbol (no_mangle attribute), C-Compatible Symbol to C Code (Can be called from C).
     A[Rust Code] -->|extern C declaration| B[FFI Boundary]
-    B -->|C ABI calling convention| C[C Library Function]
+    B -->|C ABI calling<br/>convention| C[C Library Function]
     C -->|Return value| B
-    B -->|Unsafe block required| A
+    B -->|Unsafe block<br/>required| A
     D[Rust Function] -->|no_mangle attribute| E[C-Compatible Symbol]
     E -->|Can be called from C| F[C Code]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#0173B2,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-0173B2
+    class E pal-DE8F05
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -546,21 +560,28 @@ Declarative macros enable code generation through pattern matching on syntax tre
 ```mermaid
 %% Macro expansion process showing compile-time transformation
 graph TD
-    A[Macro Invocation: vec_from!1, 2, 3] -->|Parse tokens| B[Pattern Match]
+    accTitle: Example 63: Declarative Macros
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Macro Invocation: vec_from!1, 2, 3, Pattern Match, Repetition Expansion, Expanded Code, Final Machine Code, Pattern: $x:expr,*, Expansion: temp_vec.push$x*. Connections: Macro Invocation: vec_from!1, 2, 3 to Pattern Match (Parse tokens), Pattern Match to Repetition Expansion (Capture $x = 1, 2, 3), Repetition Expansion to Expanded Code (Generate AST), Expanded Code to Final Machine Code (Type check & compile), Pattern: $x:expr,* to Pattern Match (Defines structure), Expansion: temp_vec.push$x* to Repetition Expansion (Template).
+    A[Macro Invocation:<br/>vec_from!1, 2, 3] -->|Parse tokens| B[Pattern Match]
     B -->|Capture $x = 1, 2, 3| C[Repetition Expansion]
     C -->|Generate AST| D[Expanded Code]
     D -->|Type check & compile| E[Final Machine Code]
 
     F[Pattern: $x:expr,*] -->|Defines structure| B
-    G[Expansion: temp_vec.push$x*] -->|Template| C
+    G[Expansion:<br/>temp_vec.push$x*] -->|Template| C
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -878,6 +899,8 @@ tokio = { version = "1", features = ["full"] }
 
 ```mermaid
 graph TD
+    accTitle: Example 65: Async/Await Basics
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Call async fn, Return Future, .await Future, Ready?, Yield to Runtime, Get Result, Poll Again. Connections: Call async fn to Return Future, Return Future to .await Future, .await Future to Ready?, Ready? to Yield to Runtime (No), Ready? to Get Result (Yes), Yield to Runtime to Poll Again, Poll Again to Ready?.
     A[Call async fn] --> B[Return Future]
     B --> C[.await Future]
     C --> D{Ready?}
@@ -886,13 +909,19 @@ graph TD
     E --> G[Poll Again]
     G --> D
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -1002,6 +1031,8 @@ Futures are lazy computations that require an executor to poll them to completio
 ```mermaid
 %% Future state machine and executor polling cycle
 stateDiagram-v2
+    accTitle: Example 66: Futures and Executors
+    accDescr: State diagram with 5 items: start or end, Created, Polling, Pending, Ready. Relationships: start or end to Created: Future created (lazy); Created to Polling: Executor calls poll(); Polling to Pending: Not ready, register waker; Polling to Ready: Computation complete; Pending to Polling: Waker notifies executor; Ready to start or end: Return value consumed.
     [*] --> Created: Future created (lazy)
     Created --> Polling: Executor calls poll()
     Polling --> Pending: Not ready, register waker
@@ -1138,6 +1169,8 @@ async fn demonstrate_timing() {
 ```mermaid
 %% tokio::join! concurrent execution timeline
 gantt
+    accTitle: Example 67: Async Concurrency with Join
+    accDescr: Gantt chart of concurrent execution with tokio::join!. Task 1 sleeps 100ms and completes; Task 2 sleeps 50ms, completes, then waits for Task 1; the total time is 100ms.
     title Concurrent Execution with tokio::join!
     dateFormat SSS
     axisFormat %Lms
@@ -1560,18 +1593,26 @@ async fn cpu_bound_tasks() {
 ```mermaid
 %% Select racing multiple futures
 graph TD
-    A[tokio::select! starts] -->|Poll both branches| B[Branch 1: operation1 - 100ms]
-    A -->|Poll both branches| C[Branch 2: operation2 - 50ms]
-    B -->|Still pending at 50ms| D[Cancelled & Dropped]
-    C -->|Completes first at 50ms| E[Return Operation 2]
-    E --> F[Other branches cancelled]
+    accTitle: Example 69: Select and Race Conditions
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: tokio::select! starts, Branch 1: operation1 - 100ms, Branch 2: operation2 - 50ms, D, Dropped, Return Operation 2, Other branches cancelled. Connections: tokio::select! starts to Branch 1: operation1 - 100ms (Poll both branches), tokio::select! starts to Branch 2: operation2 - 50ms (Poll both branches), Branch 1: operation1 - 100ms to D (Still pending at 50ms), Branch 1: operation1 - 100ms to Dropped (Still pending at 50ms), Branch 2: operation2 - 50ms to Return Operation 2 (Completes first at 50ms), Return Operation 2 to Other branches cancelled.
+    A[tokio::select!<br/>starts] -->|Poll both branches| B[Branch 1: operation1<br/>- 100ms]
+    A -->|Poll both branches| C[Branch 2: operation2<br/>- 50ms]
+    B -->|Still pending at<br/>50ms| D[Cancelled & Dropped]
+    C -->|Completes first at<br/>50ms| E[Return Operation 2]
+    E --> F[Other branches<br/>cancelled]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#CA9161,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -1867,6 +1908,8 @@ Tokio provides async channels for message passing between async tasks with backp
 ```mermaid
 %% Async channel communication with backpressure
 sequenceDiagram
+    accTitle: Example 70: Channels in Async Context
+    accDescr: Sequence diagram between Producer, Channel, Consumer. Messages: Producer to Channel: send(msg1).await; Producer to Channel: send(msg2).await; Consumer to Channel: recv().await; Channel to Consumer: msg1; Producer to Channel: send(msg3).await; Producer to Channel: send(msg4).await; Producer to Channel: send(msg5).await (BLOCKED); Consumer to Channel: recv().await; Channel to Consumer: msg2; Channel to Producer: send(msg5) completes.
     participant Producer
     participant Channel
     participant Consumer
@@ -2164,25 +2207,33 @@ async fn watch_demo() {
 ```mermaid
 %% Pin preventing memory moves for self-referential structs
 graph TD
-    A[Self-Referential Struct] -->|Has internal pointer| B[Field points to self.data]
-    B -->|Without Pin| C[Move invalidates pointer]
+    accTitle: Example 71: Pin and Unpin
+    accDescr: Graph with 11 nodes and 8 connections. Nodes: Self-Referential Struct, Field points to self.data, Move invalidates pointer, Undefined Behavior, Pin prevents move, Pointer remains valid, Memory Safety Guaranteed, Unpin Types: i32, Vec, String, Pin::new allowed, !Unpin Types: async futures, Pin::new_unchecked unsafe. Connections: Self-Referential Struct to Field points to self.data (Has internal pointer), Field points to self.data to Move invalidates pointer (Without Pin), Move invalidates pointer to Undefined Behavior, Self-Referential Struct to Pin prevents move (With Pin), Pin prevents move to Pointer remains valid, Pointer remains valid to Memory Safety Guaranteed, Unpin Types: i32, Vec, String to Pin::new allowed (Can move safely), !Unpin Types: async futures to Pin::new_unchecked unsafe (Cannot move).
+    A[Self-Referential<br/>Struct] -->|Has internal pointer| B[Field points to<br/>self.data]
+    B -->|Without Pin| C[Move invalidates<br/>pointer]
     C --> D[Undefined Behavior]
 
     A -->|With Pin| E[Pin prevents move]
-    E --> F[Pointer remains valid]
-    F --> G[Memory Safety Guaranteed]
+    E --> F[Pointer remains<br/>valid]
+    F --> G[Memory Safety<br/>Guaranteed]
 
-    H[Unpin Types: i32, Vec, String] -->|Can move safely| I[Pin::new allowed]
-    J[!Unpin Types: async futures] -->|Cannot move| K[Pin::new_unchecked unsafe]
+    H[Unpin Types: i32,<br/>Vec, String] -->|Can move safely| I[Pin::new allowed]
+    J[!Unpin Types: async<br/>futures] -->|Cannot move| K[Pin::new_unchecked<br/>unsafe]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style J fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class J pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -2831,17 +2882,24 @@ Trait objects enable runtime polymorphism through dynamic dispatch, trading comp
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 74: Trait Objects and Dynamic Dispatch
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: impl Trait compile-time, Monomorphization, Generate specialized code per type, Fast execution no runtime overhead, Large binary code duplication. Connections: impl Trait compile-time to Monomorphization, Monomorphization to Generate specialized code per type, Generate specialized code per type to Fast execution no runtime overhead, Generate specialized code per type to Large binary code duplication.
     Start["impl Trait<br/>compile-time"]
     Start --> Mono[Monomorphization]
     Mono --> Code[Generate specialized<br/>code per type]
     Code --> Fast[Fast execution<br/>no runtime overhead]
     Code --> Size[Large binary<br/>code duplication]
 
-    style Start fill:#0173B2,color:#fff
-    style Mono fill:#029E73,color:#fff
-    style Code fill:#DE8F05,color:#fff
-    style Fast fill:#029E73,color:#fff
-    style Size fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Mono pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Code pal-DE8F05
+    class Fast pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Size pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Dynamic Dispatch (dyn Trait):**
@@ -2849,17 +2907,24 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 74: Trait Objects and Dynamic Dispatch
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: dyn Trait runtime, Fat pointer created data + vtable, Virtual method lookup, Slower execution indirect call, Small binary one implementation. Connections: dyn Trait runtime to Fat pointer created data + vtable, Fat pointer created data + vtable to Virtual method lookup, Virtual method lookup to Slower execution indirect call, Virtual method lookup to Small binary one implementation.
     Start["dyn Trait<br/>runtime"]
     Start --> Pointer[Fat pointer created<br/>data + vtable]
-    Pointer --> Lookup[Virtual method lookup]
+    Pointer --> Lookup[Virtual method<br/>lookup]
     Lookup --> Slow[Slower execution<br/>indirect call]
     Lookup --> Size[Small binary<br/>one implementation]
 
-    style Start fill:#0173B2,color:#fff
-    style Pointer fill:#DE8F05,color:#fff
-    style Lookup fill:#029E73,color:#fff
-    style Slow fill:#CC78BC,color:#fff
-    style Size fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Pointer pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Lookup pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Slow pal-CC78BC
+    class Size pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trait Object Structure (Fat Pointer):**
@@ -2867,6 +2932,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 74: Trait Objects and Dynamic Dispatch
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Trait Object 16 bytes total, vtable pointer 8 bytes, data pointer 8 bytes, Method pointers draw, clone, etc, Concrete type Circle or Square, Runtime dispatch vtable lookup. Connections: Trait Object 16 bytes total to vtable pointer 8 bytes, Trait Object 16 bytes total to data pointer 8 bytes, vtable pointer 8 bytes to Method pointers draw, clone, etc, data pointer 8 bytes to Concrete type Circle or Square, Method pointers draw, clone, etc to Runtime dispatch vtable lookup.
     TraitObj[Trait Object<br/>16 bytes total]
     TraitObj --> VTable[vtable pointer<br/>8 bytes]
     TraitObj --> Data[data pointer<br/>8 bytes]
@@ -2876,12 +2943,18 @@ graph TD
 
     Methods --> Dispatch[Runtime dispatch<br/>vtable lookup]
 
-    style TraitObj fill:#0173B2,color:#fff
-    style VTable fill:#DE8F05,color:#fff
-    style Data fill:#029E73,color:#fff
-    style Methods fill:#CC78BC,color:#fff
-    style Concrete fill:#CA9161,color:#fff
-    style Dispatch fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class TraitObj pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class VTable pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Data pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Methods pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Concrete pal-CA9161
+    class Dispatch pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -3353,22 +3426,29 @@ Const generics allow generic parameters over constant values like array sizes, e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Generic["fn foo#60;T, const N: usize#62;<br/>One generic function"]
-    Generic --> Call1["Call with #91;i32; 3#93;"]
+    accTitle: Example 77: Const Generics
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: fn foo60T, const N: usize62 One generic function, Call with 91i32 393, Monomorphize: foo::60i32, 362, Specialized code for i32 array size 3, Call with 91i32 593, Monomorphize: foo::60i32, 562, Specialized code for i32 array size 5. Connections: fn foo60T, const N: usize62 One generic function to Call with 91i32 393, Call with 91i32 393 to Monomorphize: foo::60i32, 362, Monomorphize: foo::60i32, 362 to Specialized code for i32 array size 3, fn foo60T, const N: usize62 One generic function to Call with 91i32 593, Call with 91i32 593 to Monomorphize: foo::60i32, 562, Monomorphize: foo::60i32, 562 to Specialized code for i32 array size 5.
+    Generic["fn foo#60;T, const<br/>N: usize#62;<br/>One generic function"]
+    Generic --> Call1["Call with #91;i32;<br/>3#93;"]
     Call1 --> Mono1["Monomorphize:<br/>foo::#60;i32, 3#62;"]
     Mono1 --> Code1[Specialized code<br/>for i32 array size 3]
 
-    Generic --> Call2["Call with #91;i32; 5#93;"]
+    Generic --> Call2["Call with #91;i32;<br/>5#93;"]
     Call2 --> Mono2["Monomorphize:<br/>foo::#60;i32, 5#62;"]
     Mono2 --> Code2[Specialized code<br/>for i32 array size 5]
 
-    style Generic fill:#0173B2,color:#fff
-    style Call1 fill:#029E73,color:#fff
-    style Call2 fill:#029E73,color:#fff
-    style Mono1 fill:#DE8F05,color:#fff
-    style Mono2 fill:#DE8F05,color:#fff
-    style Code1 fill:#CC78BC,color:#fff
-    style Code2 fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Generic pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Call1 pal-029E73
+    class Call2 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Mono1 pal-DE8F05
+    class Mono2 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Code1 pal-CC78BC
+    class Code2 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Zero-Cost Abstraction:**
@@ -3376,15 +3456,22 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Source[const N: usize parameter]
-    Source --> Compile[Compile-time constant<br/>known at build]
+    accTitle: Example 77: Const Generics
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: const N: usize parameter, Compile-time constant known at build, No runtime overhead size in type, Zero-cost abstraction same as handwritten code. Connections: const N: usize parameter to Compile-time constant known at build, Compile-time constant known at build to No runtime overhead size in type, No runtime overhead size in type to Zero-cost abstraction same as handwritten code.
+    Source[const N: usize<br/>parameter]
+    Source --> Compile[Compile-time<br/>constant<br/>known at build]
     Compile --> NoRuntime[No runtime overhead<br/>size in type]
-    NoRuntime --> Benefit[Zero-cost abstraction<br/>same as handwritten code]
+    NoRuntime --> Benefit[Zero-cost<br/>abstraction<br/>same as handwritten<br/>code]
 
-    style Source fill:#0173B2,color:#fff
-    style Compile fill:#029E73,color:#fff
-    style NoRuntime fill:#DE8F05,color:#fff
-    style Benefit fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Compile pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class NoRuntime pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Benefit pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -3781,24 +3868,32 @@ fn main() {
 ```mermaid
 %% Memory layout comparison for different repr attributes
 graph TD
-    A[Rust Struct Fields: u8, u32, u16] -->|repr Rust default| B[Optimized Layout: 8 bytes]
-    A -->|repr C| C[C Layout: 12 bytes with padding]
-    A -->|repr packed| D[Packed Layout: 7 bytes no padding]
-    A -->|repr align 16| E[Aligned Layout: 16 bytes]
+    accTitle: Example 81: Memory Layout and Alignment
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Rust Struct Fields: u8, u32, u16, Optimized Layout: 8 bytes, C Layout: 12 bytes with padding, Packed Layout: 7 bytes no padding, Aligned Layout: 16 bytes, u32 4B, u16 2B, u8 1B, pad 1B, u8 1B, pad 3B, u32 4B, u16 2B, pad 2B, u8 1B, u32 4B misaligned, u16 2B, Fields + padding to 16B boundary. Connections: Rust Struct Fields: u8, u32, u16 to Optimized Layout: 8 bytes (repr Rust default), Rust Struct Fields: u8, u32, u16 to C Layout: 12 bytes with padding (repr C), Rust Struct Fields: u8, u32, u16 to Packed Layout: 7 bytes no padding (repr packed), Rust Struct Fields: u8, u32, u16 to Aligned Layout: 16 bytes (repr align 16), Optimized Layout: 8 bytes to u32 4B, u16 2B, u8 1B, pad 1B, C Layout: 12 bytes with padding to u8 1B, pad 3B, u32 4B, u16 2B, pad 2B, Packed Layout: 7 bytes no padding to u8 1B, u32 4B misaligned, u16 2B, Aligned Layout: 16 bytes to Fields + padding to 16B boundary.
+    A[Rust Struct Fields:<br/>u8, u32, u16] -->|repr Rust default| B[Optimized Layout: 8<br/>bytes]
+    A -->|repr C| C[C Layout: 12 bytes<br/>with padding]
+    A -->|repr packed| D[Packed Layout: 7<br/>bytes no padding]
+    A -->|repr align 16| E[Aligned Layout: 16<br/>bytes]
 
-    B --> F[u32 4B, u16 2B, u8 1B, pad 1B]
-    C --> G[u8 1B, pad 3B, u32 4B, u16 2B, pad 2B]
-    D --> H[u8 1B, u32 4B misaligned, u16 2B]
-    E --> I[Fields + padding to 16B boundary]
+    B --> F[u32 4B, u16 2B, u8<br/>1B, pad 1B]
+    C --> G[u8 1B, pad 3B, u32<br/>4B, u16 2B, pad 2B]
+    D --> H[u8 1B, u32 4B<br/>misaligned, u16 2B]
+    E --> I[Fields + padding to<br/>16B boundary]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#DE8F05,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-029E73
+    class G pal-DE8F05
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -3895,6 +3990,8 @@ Rust automatically calls destructors (`Drop` trait) in reverse order of declarat
 ```mermaid
 %% Drop order and RAII resource cleanup
 sequenceDiagram
+    accTitle: Example 82: Drop Order and Destructors
+    accDescr: Sequence diagram between Scope, Resource_A, Resource_B, Resource_C. Messages: Scope to Resource_A: Create first (let a = ...); Scope to Resource_B: Create second (let b = ...); Scope to Resource_C: Create third (let c = ...); Scope to Resource_C: Drop C first (reverse order); Resource_C to Scope: Cleanup complete; Scope to Resource_B: Drop B second; Resource_B to Scope: Cleanup complete; Scope to Resource_A: Drop A last; Resource_A to Scope: Cleanup complete.
     participant Scope
     participant Resource_A
     participant Resource_B

@@ -470,8 +470,9 @@ public class KafkaConsumerExample {
 **Consumer Groups**:
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
+    accTitle: Consumer API
+    accDescr: Flowchart with 8 nodes and 9 connections. Nodes: Topic: orders 3 partitions, Partition 0, Partition 1, Partition 2, Consumer 1, Consumer 2, Consumer 3, Consumer Group: order-processing- group. Connections: Topic: orders 3 partitions to Partition 0, Topic: orders 3 partitions to Partition 1, Topic: orders 3 partitions to Partition 2, Partition 0 to Consumer 1 (assigned to), Partition 1 to Consumer 2 (assigned to), Partition 2 to Consumer 3 (assigned to), Consumer 1 to Consumer Group: order-processing- group, Consumer 2 to Consumer Group: order-processing- group, Consumer 3 to Consumer Group: order-processing- group.
     T[Topic: orders<br/>3 partitions]
     P0[Partition 0]
     P1[Partition 1]
@@ -479,7 +480,7 @@ flowchart LR
     C1[Consumer 1]
     C2[Consumer 2]
     C3[Consumer 3]
-    CG[Consumer Group:<br/>order-processing-group]
+    CG[Consumer Group:<br/>order-processing-<br/>group]
 
     T -.-> P0
     T -.-> P1
@@ -491,14 +492,19 @@ flowchart LR
     C2 -.-> CG
     C3 -.-> CG
 
-    style T fill:#0173B2,stroke:#0173B2,color:#fff
-    style P0 fill:#029E73,stroke:#029E73,color:#fff
-    style P1 fill:#029E73,stroke:#029E73,color:#fff
-    style P2 fill:#029E73,stroke:#029E73,color:#fff
-    style C1 fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style C2 fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style C3 fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style CG fill:#CC78BC,stroke:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class T pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class P0 pal-029E73
+    class P1 pal-029E73
+    class P2 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C1 pal-DE8F05
+    class C2 pal-DE8F05
+    class C3 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class CG pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **SCALING**: Add consumers up to partition count
@@ -605,24 +611,29 @@ public class KafkaStreamsExample {
 **Partitions**: Physical subdivision for parallelism.
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
+    accTitle: Topics and Partitions
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Topic: orders, Partition 0 msg0, msg3, msg6, ..., Partition 1 msg1, msg4, msg7, ..., Partition 2 msg2, msg5, msg8, ..., Key Routing: hash key mod partition_count. Connections: Key Routing: hash key mod partition_count to Topic: orders (determines), Topic: orders to Partition 0 msg0, msg3, msg6, ..., Topic: orders to Partition 1 msg1, msg4, msg7, ..., Topic: orders to Partition 2 msg2, msg5, msg8, ....
     T[Topic: orders]
-    P0[Partition 0<br/>msg0, msg3, msg6, ...]
-    P1[Partition 1<br/>msg1, msg4, msg7, ...]
-    P2[Partition 2<br/>msg2, msg5, msg8, ...]
-    KR[Key Routing:<br/>hash key mod partition_count]
+    P0[Partition 0<br/>msg0, msg3, msg6,<br/>...]
+    P1[Partition 1<br/>msg1, msg4, msg7,<br/>...]
+    P2[Partition 2<br/>msg2, msg5, msg8,<br/>...]
+    KR[Key Routing:<br/>hash key mod<br/>partition_count]
 
     KR -->|determines| T
     T --> P0
     T --> P1
     T --> P2
 
-    style T fill:#0173B2,stroke:#0173B2,color:#fff
-    style KR fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style P0 fill:#029E73,stroke:#029E73,color:#fff
-    style P1 fill:#029E73,stroke:#029E73,color:#fff
-    style P2 fill:#029E73,stroke:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class T pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class KR pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class P0 pal-029E73
+    class P1 pal-029E73
+    class P2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **KEY ROUTING**: `hash(key) % partition_count → partition`

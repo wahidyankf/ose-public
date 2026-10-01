@@ -40,8 +40,9 @@ Authentication (proving identity) and authorization (granting permissions) are f
 **Example flow**:
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 sequenceDiagram
+    accTitle: Authentication vs Authorization
+    accDescr: Sequence diagram between User, System. Messages: User to System: Login (username/password); System to System: Validate credentials; System to System: Create session with user ID; System to User: Session token; User to System: DELETE /api/posts/123; System to System: Check if user owns post 123 OR has ADMIN role; System to User: Grant access (200 OK); System to User: Deny access (403 Forbidden).
     participant User
     participant System
 

@@ -15,16 +15,22 @@ Embedding allows structs to inherit fields and methods from other types without 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 31: Type Embedding and Composition
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: struct Person Name, Age, embedded, struct Employee Person, Title Has all Person fields. Connections: struct Person Name, Age to struct Employee Person, Title Has all Person fields (embed), struct Employee Person, Title Has all Person fields to struct Person Name, Age (has access to).
     A["struct Person<br/>Name, Age"]
     B["embedded"]
-    C["struct Employee<br/>Person, Title<br/>Has all Person fields"]
+    C["struct Employee<br/>Person, Title<br/>Has all Person<br/>fields"]
 
     A ---|embed| C
     C -->|"has access to"| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -274,22 +280,30 @@ JSON is ubiquitous in Go APIs. The `encoding/json` package marshals (structs to 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Go Struct<br/>User#123;Name, Age#125;"]
+    accTitle: Example 33: JSON Handling
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Go Struct User123Name, Age125, json.Marshal, JSON String 123name:Alice125, json.Unmarshal, Go Struct Person123Name, Age125. Connections: Go Struct User123Name, Age125 to json.Marshal (Marshal), json.Marshal to JSON String 123name:Alice125, JSON String 123name:Alice125 to json.Unmarshal (Unmarshal), json.Unmarshal to Go Struct Person123Name, Age125.
+    A["Go Struct<br/>User#123;Name,<br/>Age#125;"]
     B["json.Marshal"]
     C["JSON String<br/>#123;name:Alice#125;"]
     D["json.Unmarshal"]
-    E["Go Struct<br/>Person#123;Name, Age#125;"]
+    E["Go Struct<br/>Person#123;Name,<br/>Age#125;"]
 
     A -->|Marshal| B
     B --> C
     C -->|Unmarshal| D
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -413,6 +427,8 @@ Goroutines are lightweight threads managed by the Go runtime. Unlike OS threads,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 34: Goroutines
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: func main, go someFunc, continue in main, someFunc runs concurrently. Connections: func main to go someFunc, go someFunc to someFunc runs concurrently (spawns goroutine), func main to continue in main.
     A["func main"]
     B["go someFunc"]
     C["continue in main"]
@@ -422,10 +438,15 @@ graph TD
     B -->|spawns goroutine| D
     A --> C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -529,6 +550,8 @@ Channels enable safe communication between goroutines. Send data on one end, rec
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 35: Channels
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Goroutine 1 send on channel, Channel message, Goroutine 2 receive from channel. Connections: Goroutine 1 send on channel to Channel message (data flow), Channel message to Goroutine 2 receive from channel (data flow).
     A["Goroutine 1<br/>send on channel"]
     B["Channel<br/>message"]
     C["Goroutine 2<br/>receive from channel"]
@@ -536,9 +559,13 @@ graph TD
     A -->|data flow| B
     B -->|data flow| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -637,6 +664,8 @@ The `select` statement lets a goroutine wait on multiple channel operations. It'
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Select statement multiplexing channels
 sequenceDiagram
+    accTitle: Example 36: Channel Select
+    accDescr: Sequence diagram between Main Goroutine, Select Statement, Channel 1, Channel 2, Timeout Channel. Messages: Main Goroutine to Channel 1: Go routine sends (100ms delay); Main Goroutine to Channel 2: Go routine sends (200ms delay); Main Goroutine to Select Statement: select case <-ch1: ... case <-ch2: ...; Channel 1 to Select Statement: Ready at 100ms; Select Statement to Main Goroutine: Execute case <-ch1 (first ready); Channel 2 to Select Statement: Ready at 200ms; Select Statement to Main Goroutine: Execute case <-ch2; Main Goroutine to Select Statement: select case <-ch: ... case <-time.After(100ms): ...; Timeout Channel to Select Statement: Timeout fires at 100ms; Select Statement to Main Goroutine: Execute timeout case (ch never ready).
     participant M as Main Goroutine
     participant S as Select Statement
     participant C1 as Channel 1
@@ -1607,19 +1636,26 @@ The `context` package manages deadlines, cancellation, and request-scoped values
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["func main<br/>ctx, cancel := context.WithTimeout"]
+    accTitle: Example 43: Context Package
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: func main ctx, cancel := context.WithTimeout, func doWork receives ctx, func subTask respects ctx, context.Done() receives cancellation. Connections: func main ctx, cancel := context.WithTimeout to func doWork receives ctx (passes), func doWork receives ctx to func subTask respects ctx (passes), func subTask respects ctx to context.Done() receives cancellation (listens to).
+    A["func main<br/>ctx, cancel :=<br/>context.WithTimeout"]
     B["func doWork<br/>receives ctx"]
     C["func subTask<br/>respects ctx"]
-    D["context.Done()<br/>receives cancellation"]
+    D["context.Done()<br/>receives<br/>cancellation"]
 
     A -->|passes| B
     B -->|passes| C
     C -->|listens to| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2129,6 +2165,8 @@ Worker pools limit concurrent work and improve resource efficiency. Fixed number
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Worker pool job distribution
 graph TD
+    accTitle: Example 47: Worker Pool Pattern
+    accDescr: Graph with 9 nodes and 11 connections. Nodes: Main Goroutine, Job Channel Buffered size 10, Worker 0, Worker 1, Worker 2, Job processing, Job processing, Job processing, WaitGroup Tracks completion. Connections: Main Goroutine to Job Channel Buffered size 10 (Submit jobs 1-10), Job Channel Buffered size 10 to Worker 0 (Receive job), Job Channel Buffered size 10 to Worker 1 (Receive job), Job Channel Buffered size 10 to Worker 2 (Receive job), Worker 0 to Job processing (Process), Worker 1 to Job processing (Process), Worker 2 to Job processing (Process), Job processing to WaitGroup Tracks completion (wg.Done), Job processing to WaitGroup Tracks completion (wg.Done), Job processing to WaitGroup Tracks completion (wg.Done), WaitGroup Tracks completion to Main Goroutine (All done).
     Main[Main Goroutine] -->|Submit jobs 1-10| JobChan[Job Channel<br/>Buffered size 10]
     JobChan -->|Receive job| W1[Worker 0]
     JobChan -->|Receive job| W2[Worker 1]
@@ -2144,12 +2182,17 @@ graph TD
 
     WG -->|All done| Main
 
-    style Main fill:#0173B2,color:#fff
-    style JobChan fill:#DE8F05,color:#fff
-    style W1 fill:#029E73,color:#fff
-    style W2 fill:#029E73,color:#fff
-    style W3 fill:#029E73,color:#fff
-    style WG fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Main pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class JobChan pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class W1 pal-029E73
+    class W2 pal-029E73
+    class W3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class WG pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2529,23 +2572,31 @@ Middleware chains are essential in production HTTP services. They compose cross-
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 51: HTTP Middleware Chain
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: HTTP Request, Middleware 1: Logging, Middleware 2: Authentication, Middleware 3: Rate Limiting, Final Handler: Business Logic, HTTP Response, Early Response. Connections: HTTP Request to Middleware 1: Logging, Middleware 1: Logging to Middleware 2: Authentication, Middleware 2: Authentication to Middleware 3: Rate Limiting, Middleware 3: Rate Limiting to Final Handler: Business Logic, Final Handler: Business Logic to HTTP Response, Middleware 1: Logging to HTTP Response (Log request/response), Middleware 2: Authentication to Early Response (401 if unauthorized), Middleware 3: Rate Limiting to Early Response (429 if rate exceeded).
     Request["HTTP Request"] --> M1["Middleware 1:<br/>Logging"]
     M1 --> M2["Middleware 2:<br/>Authentication"]
     M2 --> M3["Middleware 3:<br/>Rate Limiting"]
     M3 --> Handler["Final Handler:<br/>Business Logic"]
     Handler --> Response["HTTP Response"]
 
-    M1 -.->|"Log request/response"| Response
-    M2 -.->|"401 if unauthorized"| ShortCircuit["Early Response"]
-    M3 -.->|"429 if rate exceeded"| ShortCircuit
+    M1 -.->|"Log<br/>request/response"| Response
+    M2 -.->|"401 if<br/>unauthorized"| ShortCircuit["Early Response"]
+    M3 -.->|"429 if rate<br/>exceeded"| ShortCircuit
 
-    style Request fill:#0173B2,stroke:#000,color:#fff
-    style M1 fill:#DE8F05,stroke:#000,color:#fff
-    style M2 fill:#DE8F05,stroke:#000,color:#fff
-    style M3 fill:#DE8F05,stroke:#000,color:#fff
-    style Handler fill:#029E73,stroke:#000,color:#fff
-    style Response fill:#CC78BC,stroke:#000,color:#fff
-    style ShortCircuit fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Request pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class M1 pal-DE8F05
+    class M2 pal-DE8F05
+    class M3 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Handler pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Response pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ShortCircuit pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2814,6 +2865,8 @@ Context enables graceful cancellation of long-running operations. When a context
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 52: Context Cancellation Patterns
+    accDescr: Graph with 5 nodes and 7 connections. Nodes: Parent Context WithTimeout(2s), Child Goroutine 1 Checks ctx.Done(), Child Goroutine 2 Checks ctx.Done(), Timeout Expires, All Goroutines Exit Gracefully. Connections: Parent Context WithTimeout(2s) to Child Goroutine 1 Checks ctx.Done() (spawns), Parent Context WithTimeout(2s) to Child Goroutine 2 Checks ctx.Done() (spawns), Timeout Expires to Parent Context WithTimeout(2s) (signals), Parent Context WithTimeout(2s) to Child Goroutine 1 Checks ctx.Done() (cancels), Parent Context WithTimeout(2s) to Child Goroutine 2 Checks ctx.Done() (cancels), Child Goroutine 1 Checks ctx.Done() to All Goroutines Exit Gracefully, Child Goroutine 2 Checks ctx.Done() to All Goroutines Exit Gracefully.
     A["Parent Context<br/>WithTimeout(2s)"]
     B["Child Goroutine 1<br/>Checks ctx.Done()"]
     C["Child Goroutine 2<br/>Checks ctx.Done()"]
@@ -2828,11 +2881,16 @@ graph TD
     B --> E
     C --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3089,6 +3147,8 @@ Production HTTP clients need timeouts (prevent hanging), retries (handle transie
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 54: HTTP Client with Timeouts and Retries
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: HTTP Request with timeout, Connection Pool, Request Succeeds, Request Fails, Retry Logic Exponential Backoff, Final Result. Connections: HTTP Request with timeout to Connection Pool, Connection Pool to Request Succeeds, Connection Pool to Request Fails, Request Succeeds to Final Result, Request Fails to Retry Logic Exponential Backoff, Retry Logic Exponential Backoff to Connection Pool (Retry 1, 2, 3...), Retry Logic Exponential Backoff to Final Result (Max retries).
     A["HTTP Request<br/>with timeout"]
     B["Connection Pool"]
     C["Request Succeeds"]
@@ -3104,12 +3164,18 @@ graph TD
     E -->|"Retry 1, 2, 3..."| B
     E -->|"Max retries"| F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3608,6 +3674,8 @@ Worker pools distribute work across fixed number of goroutines. This pattern con
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 57: Worker Pool with Graceful Shutdown
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Job Queue Buffered Channel, Worker 1, Worker 2, Worker 3, Results Channel, Coordinator Waits for completion. Connections: Job Queue Buffered Channel to Worker 1 (Read jobs), Job Queue Buffered Channel to Worker 2 (Read jobs), Job Queue Buffered Channel to Worker 3 (Read jobs), Worker 1 to Results Channel, Worker 2 to Results Channel, Worker 3 to Results Channel, Results Channel to Coordinator Waits for completion.
     A["Job Queue<br/>Buffered Channel"]
     B["Worker 1"]
     C["Worker 2"]
@@ -3623,12 +3691,17 @@ graph TD
     D --> E
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3989,6 +4062,8 @@ Rate limiting prevents abuse and controls resource consumption. Token bucket alg
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Token bucket rate limiting
 stateDiagram-v2
+    accTitle: Example 59: Rate Limiting with Token Bucket
+    accDescr: State diagram with 5 items: start or end, FullBucket, Processing, RateLimited, Waiting. Relationships: start or end to FullBucket: Initialize (10 tokens); FullBucket to Processing: TryConsume(1) Success; Processing to FullBucket: Refill at 5 tokens/sec; Processing to RateLimited: TryConsume(1) No tokens; RateLimited to Processing: Refill restores tokens; Processing to Waiting: Consume(2) Block until available; Waiting to Processing: Tokens available after 400ms.
     [*] --> FullBucket: Initialize<br/>(10 tokens)
 
     FullBucket --> Processing: TryConsume(1)<br/>Success

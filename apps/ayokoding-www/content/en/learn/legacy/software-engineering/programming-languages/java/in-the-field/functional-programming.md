@@ -225,14 +225,20 @@ words.stream()
 
 ```mermaid
 graph LR
+    accTitle: Stream Pipeline Structure
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Source Collection, Intermediate filter/map/sorted, Terminal collect/reduce/ forEach, Result. Connections: Source Collection to Intermediate filter/map/sorted, Intermediate filter/map/sorted to Terminal collect/reduce/ forEach, Terminal collect/reduce/ forEach to Result.
     Source["Source<br/>Collection"] --> Intermediate["Intermediate<br/>filter/map/sorted"]
-    Intermediate --> Terminal["Terminal<br/>collect/reduce/forEach"]
+    Intermediate --> Terminal["Terminal<br/>collect/reduce/<br/>forEach"]
     Terminal --> Result["Result"]
 
-    style Source fill:#0173B2,stroke:#000,color:#fff
-    style Intermediate fill:#029E73,stroke:#000,color:#fff
-    style Terminal fill:#DE8F05,stroke:#000,color:#000
-    style Result fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Intermediate pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Terminal pal-DE8F05
+    class Result pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key operations:**

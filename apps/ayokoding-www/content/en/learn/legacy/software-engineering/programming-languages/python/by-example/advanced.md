@@ -16,18 +16,26 @@ Metaclasses customize class creation, enabling class-level validation and modifi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 55: Basic Metaclass
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Class Definition class User(Base), Metaclass __new__ called, Validation validate() exists?, type.__new__ creates class, Raise TypeError, User class created. Connections: Class Definition class User(Base) to Metaclass __new__ called, Metaclass __new__ called to Validation validate() exists?, Validation validate() exists? to type.__new__ creates class (Yes), Validation validate() exists? to Raise TypeError (No), type.__new__ creates class to User class created.
     A["Class Definition<br/>class User(Base)"] --> B["Metaclass __new__<br/>called"]
     B --> C{"Validation<br/>validate() exists?"}
     C -->|Yes| D["type.__new__<br/>creates class"]
     C -->|No| E["Raise TypeError"]
     D --> F["User class<br/>created"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -100,24 +108,31 @@ print(user.validate())                        # => Calls validate method
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["class PDFPlugin(Plugin,<br/>plugin_name='pdf')"] --> B["__init_subclass__<br/>called"]
+    accTitle: Example 56: initsubclass
+    accDescr: Graph with 9 nodes and 7 connections. Nodes: class PDFPlugin(Plugin, plugin_name=pdf), __init_subclass__ called, Extract plugin_name from kwargs, Register in Plugin.plugins dict, plugins[pdf] = PDFPlugin, class CSVPlugin(Plugin, plugin_name=csv), __init_subclass__ called, Extract plugin_name, plugins[csv] = CSVPlugin. Connections: class PDFPlugin(Plugin, plugin_name=pdf) to __init_subclass__ called, __init_subclass__ called to Extract plugin_name from kwargs, Extract plugin_name from kwargs to Register in Plugin.plugins dict, Register in Plugin.plugins dict to plugins[pdf] = PDFPlugin, class CSVPlugin(Plugin, plugin_name=csv) to __init_subclass__ called, __init_subclass__ called to Extract plugin_name, Extract plugin_name to plugins[csv] = CSVPlugin.
+    A["class<br/>PDFPlugin(Plugin,<br/>plugin_name='pdf')"] --> B["__init_subclass__<br/>called"]
     B --> C["Extract plugin_name<br/>from kwargs"]
     C --> D["Register in<br/>Plugin.plugins dict"]
-    D --> E["plugins['pdf'] = PDFPlugin"]
+    D --> E["plugins['pdf'] =<br/>PDFPlugin"]
 
-    F["class CSVPlugin(Plugin,<br/>plugin_name='csv')"] --> G["__init_subclass__<br/>called"]
+    F["class<br/>CSVPlugin(Plugin,<br/>plugin_name='csv')"] --> G["__init_subclass__<br/>called"]
     G --> H["Extract plugin_name"]
-    H --> I["plugins['csv'] = CSVPlugin"]
+    H --> I["plugins['csv'] =<br/>CSVPlugin"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#0173B2,color:#fff
-    style G fill:#DE8F05,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-0173B2
+    class G pal-DE8F05
+    class H pal-CC78BC
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -186,6 +201,8 @@ Descriptors customize attribute access using **get**, **set**, and **delete** me
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 57: Descriptor Protocol
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: acc.balance = 100, Positive.__set__ called, value < 0?, Raise ValueError, Store in obj.__dict__, print(acc.balance), Positive.__get__ called, Return from obj.__dict__. Connections: acc.balance = 100 to Positive.__set__ called, Positive.__set__ called to value < 0?, value < 0? to Raise ValueError (Yes), value < 0? to Store in obj.__dict__ (No), print(acc.balance) to Positive.__get__ called, Positive.__get__ called to Return from obj.__dict__.
     A["acc.balance = 100"] --> B["Positive.__set__<br/>called"]
     B --> C{"value < 0?"}
     C -->|Yes| D["Raise ValueError"]
@@ -194,14 +211,20 @@ graph TD
     F["print(acc.balance)"] --> G["Positive.__get__<br/>called"]
     G --> H["Return from<br/>obj.__dict__"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#0173B2,color:#fff
-    style G fill:#DE8F05,color:#fff
-    style H fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-0173B2
+    class G pal-DE8F05
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -345,6 +368,8 @@ Asyncio enables concurrent I/O operations using async/await syntax.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 59: Asyncio Basics
+    accDescr: Sequence diagram between Main, EventLoop, API1, API2, API3. Messages: Main to EventLoop: asyncio.gather; EventLoop to API1: fetch_data; EventLoop to API2: fetch_data; EventLoop to API3: fetch_data; API1 to EventLoop: await sleep; API2 to EventLoop: await sleep; API3 to EventLoop: await sleep; API1 to EventLoop: Complete; API2 to EventLoop: Complete; API3 to EventLoop: Complete; EventLoop to Main: Return results.
     participant Main
     participant EventLoop
     participant API1
@@ -433,8 +458,10 @@ Tasks wrap coroutines for concurrent execution with more control than gather.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["create_task(process_item A)"] --> B["Task 1<br/>runs in background"]
-    C["create_task(process_item B)"] --> D["Task 2<br/>runs in background"]
+    accTitle: Example 60: Asyncio Tasks
+    accDescr: Graph with 12 nodes and 10 connections. Nodes: create_task(process_ item A), Task 1 runs in background, create_task(process_ item B), Task 2 runs in background, Main coroutine continues, await task1, await task2, Get result A, Get result B, asyncio.wait(..., FIRST_COMPLETED), Wait for first task, Return done and pending sets. Connections: create_task(process_ item A) to Task 1 runs in background, create_task(process_ item B) to Task 2 runs in background, Main coroutine continues to await task1, Main coroutine continues to await task2, Task 1 runs in background to await task1, Task 2 runs in background to await task2, await task1 to Get result A, await task2 to Get result B, asyncio.wait(..., FIRST_COMPLETED) to Wait for first task, Wait for first task to Return done and pending sets.
+    A["create_task(process_<br/>item A)"] --> B["Task 1<br/>runs in background"]
+    C["create_task(process_<br/>item B)"] --> D["Task 2<br/>runs in background"]
 
     E["Main coroutine<br/>continues"] --> F["await task1"]
     E --> G["await task2"]
@@ -448,16 +475,21 @@ graph TD
     J["asyncio.wait(...,<br/>FIRST_COMPLETED)"] --> K["Wait for<br/>first task"]
     K --> L["Return done<br/>and pending sets"]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
-    style J fill:#0173B2,color:#fff
-    style K fill:#DE8F05,color:#fff
-    style L fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class G pal-029E73
+    class J pal-0173B2
+    class K pal-DE8F05
+    class L pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -606,6 +638,8 @@ Protocols define interfaces checked structurally (duck typing with type hints).
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 62: Protocol
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Drawable Protocol def draw() -> str, Circle has draw() method, Square has draw() method, Triangle no draw() method, render(Circle()) ✓ Type checks, render(Square()) ✓ Type checks, render(Triangle()) ✗ mypy error. Connections: Drawable Protocol def draw() -> str to Circle has draw() method, Drawable Protocol def draw() -> str to Square has draw() method, Drawable Protocol def draw() -> str to Triangle no draw() method (Missing), Circle has draw() method to render(Circle()) ✓ Type checks, Square has draw() method to render(Square()) ✓ Type checks, Triangle no draw() method to render(Triangle()) ✗ mypy error.
     A["Drawable Protocol<br/>def draw() -> str"] --> B["Circle<br/>has draw() method"]
     A --> C["Square<br/>has draw() method"]
     A -.->|Missing| D["Triangle<br/>no draw() method"]
@@ -614,13 +648,17 @@ graph TD
     C --> F["render(Square())<br/>✓ Type checks"]
     D --> G["render(Triangle())<br/>✗ mypy error"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -693,6 +731,8 @@ Generic types enable type-safe containers and functions for multiple types.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 63: Generic Types
+    accDescr: Graph with 11 nodes and 9 connections. Nodes: Stack[T] Generic class, Stack[int] Type parameter = int, Stack[str] Type parameter = str, _items: List[int], push(int) -> None, pop() -> int, _items: List[str], push(str) -> None, pop() -> str, int_stack. push(text), mypy error: Expected int, got str. Connections: Stack[T] Generic class to Stack[int] Type parameter = int, Stack[T] Generic class to Stack[str] Type parameter = str, Stack[int] Type parameter = int to _items: List[int], Stack[int] Type parameter = int to push(int) -> None, Stack[int] Type parameter = int to pop() -> int, Stack[str] Type parameter = str to _items: List[str], Stack[str] Type parameter = str to push(str) -> None, Stack[str] Type parameter = str to pop() -> str, int_stack. push(text) to mypy error: Expected int, got str.
     A["Stack[T]<br/>Generic class"] --> B["Stack[int]<br/>Type parameter = int"]
     A --> C["Stack[str]<br/>Type parameter = str"]
 
@@ -704,19 +744,25 @@ graph TD
     C --> H["push(str) -> None"]
     C --> I["pop() -> str"]
 
-    J["int_stack.push('text')"] --> K["mypy error:<br/>Expected int, got str"]
+    J["int_stack.<br/>push('text')"] --> K["mypy error:<br/>Expected int, got<br/>str"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
-    style J fill:#CC78BC,color:#fff
-    style K fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    class H pal-029E73
+    class I pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class J pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class K pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -878,11 +924,13 @@ Use threading for I/O-bound operations bypassing GIL limitations.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 66: Threading for I/O-Bound Tasks
+    accDescr: Graph with 9 nodes and 9 connections. Nodes: Sequential Execution 6 seconds total, download_file(url1) 2 seconds, download_file(url2) 2 seconds, download_file(url3) 2 seconds, Concurrent with Threads 2 seconds total, Thread 1 url1, Thread 2 url2, Thread 3 url3, All complete simultaneously. Connections: Sequential Execution 6 seconds total to download_file(url1) 2 seconds, download_file(url1) 2 seconds to download_file(url2) 2 seconds, download_file(url2) 2 seconds to download_file(url3) 2 seconds, Concurrent with Threads 2 seconds total to Thread 1 url1, Concurrent with Threads 2 seconds total to Thread 2 url2, Concurrent with Threads 2 seconds total to Thread 3 url3, Thread 1 url1 to All complete simultaneously, Thread 2 url2 to All complete simultaneously, Thread 3 url3 to All complete simultaneously.
     A["Sequential Execution<br/>6 seconds total"] --> B["download_file(url1)<br/>2 seconds"]
     B --> C["download_file(url2)<br/>2 seconds"]
     C --> D["download_file(url3)<br/>2 seconds"]
 
-    E["Concurrent with Threads<br/>2 seconds total"] --> F["Thread 1<br/>url1"]
+    E["Concurrent with<br/>Threads<br/>2 seconds total"] --> F["Thread 1<br/>url1"]
     E --> G["Thread 2<br/>url2"]
     E --> H["Thread 3<br/>url3"]
 
@@ -890,15 +938,20 @@ graph TD
     G --> I
     H --> I
 
-    style A fill:#CA9161,color:#fff
-    style B fill:#CA9161,color:#fff
-    style C fill:#CA9161,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#DE8F05,color:#fff
-    style H fill:#DE8F05,color:#fff
-    style I fill:#029E73,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    class B pal-CA9161
+    class C pal-CA9161
+    class D pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class E pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    class G pal-DE8F05
+    class H pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -965,6 +1018,8 @@ ThreadPoolExecutor simplifies thread management with automatic pooling.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 67: ThreadPoolExecutor
+    accDescr: Graph with 10 nodes and 10 connections. Nodes: 10 tasks submitted, ThreadPoolExecutor max_workers=3, Worker Thread 1, Worker Thread 2, Worker Thread 3, Process tasks from queue, as_completed() yields futures, future.result() get completed results, Context exit, Automatic thread shutdown. Connections: 10 tasks submitted to ThreadPoolExecutor max_workers=3, ThreadPoolExecutor max_workers=3 to Worker Thread 1, ThreadPoolExecutor max_workers=3 to Worker Thread 2, ThreadPoolExecutor max_workers=3 to Worker Thread 3, Worker Thread 1 to Process tasks from queue, Worker Thread 2 to Process tasks from queue, Worker Thread 3 to Process tasks from queue, Process tasks from queue to as_completed() yields futures, as_completed() yields futures to future.result() get completed results, Context exit to Automatic thread shutdown.
     A["10 tasks submitted"] --> B["ThreadPoolExecutor<br/>max_workers=3"]
     B --> C["Worker Thread 1"]
     B --> D["Worker Thread 2"]
@@ -975,20 +1030,25 @@ graph TD
     E --> F
 
     F --> G["as_completed()<br/>yields futures"]
-    G --> H["future.result()<br/>get completed results"]
+    G --> H["future.result()<br/>get completed<br/>results"]
 
     I["Context exit"] --> J["Automatic<br/>thread shutdown"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#0173B2,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    class H pal-029E73
+    class I pal-0173B2
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1033,11 +1093,13 @@ Use multiprocessing for CPU-bound tasks to bypass GIL with separate processes.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 68: Multiprocessing for CPU-Bound Tasks
+    accDescr: Graph with 11 nodes and 13 connections. Nodes: Main Process, Pool(processes=4), Process 1 Own Python interpreter, Process 2 Own Python interpreter, Process 3 Own Python interpreter, Process 4 Own Python interpreter, CPU Core 1 No GIL limitation, CPU Core 2 No GIL limitation, CPU Core 3 No GIL limitation, CPU Core 4 No GIL limitation, Results collected. Connections: Main Process to Pool(processes=4), Pool(processes=4) to Process 1 Own Python interpreter, Pool(processes=4) to Process 2 Own Python interpreter, Pool(processes=4) to Process 3 Own Python interpreter, Pool(processes=4) to Process 4 Own Python interpreter, Process 1 Own Python interpreter to CPU Core 1 No GIL limitation, Process 2 Own Python interpreter to CPU Core 2 No GIL limitation, Process 3 Own Python interpreter to CPU Core 3 No GIL limitation, Process 4 Own Python interpreter to CPU Core 4 No GIL limitation, CPU Core 1 No GIL limitation to Results collected, CPU Core 2 No GIL limitation to Results collected, CPU Core 3 No GIL limitation to Results collected, and 1 more.
     A["Main Process"] --> B["Pool(processes=4)"]
-    B --> C["Process 1<br/>Own Python interpreter"]
-    B --> D["Process 2<br/>Own Python interpreter"]
-    B --> E["Process 3<br/>Own Python interpreter"]
-    B --> F["Process 4<br/>Own Python interpreter"]
+    B --> C["Process 1<br/>Own Python<br/>interpreter"]
+    B --> D["Process 2<br/>Own Python<br/>interpreter"]
+    B --> E["Process 3<br/>Own Python<br/>interpreter"]
+    B --> F["Process 4<br/>Own Python<br/>interpreter"]
 
     C --> G["CPU Core 1<br/>No GIL limitation"]
     D --> H["CPU Core 2<br/>No GIL limitation"]
@@ -1049,17 +1111,22 @@ graph TD
     I --> K
     J --> K
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
-    style K fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    class H pal-029E73
+    class I pal-029E73
+    class J pal-029E73
+    class K pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1109,26 +1176,34 @@ Weak references allow object references without preventing garbage collection.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Strong Reference"] --> B["obj = LargeObject('Strong')"]
+    accTitle: Example 69: Weak References
+    accDescr: Graph with 10 nodes and 8 connections. Nodes: Strong Reference, obj = Large Object(Strong), ref = obj, del obj, Object still in memory ref keeps it alive, Weak Reference, obj2 = LargeObject(Weak), weak_ref = weakref.ref(obj2), del obj2, Object garbage collected weak_ref() returns None. Connections: Strong Reference to obj = Large Object(Strong), obj = Large Object(Strong) to ref = obj, ref = obj to del obj, del obj to Object still in memory ref keeps it alive, Weak Reference to obj2 = LargeObject(Weak), obj2 = LargeObject(Weak) to weak_ref = weakref.ref(obj2), weak_ref = weakref.ref(obj2) to del obj2, del obj2 to Object garbage collected weak_ref() returns None.
+    A["Strong Reference"] --> B["obj = Large<br/>Object('Strong')"]
     B --> C["ref = obj"]
     C --> D["del obj"]
-    D --> E["Object still in memory<br/>ref keeps it alive"]
+    D --> E["Object still in<br/>memory<br/>ref keeps it alive"]
 
-    F["Weak Reference"] --> G["obj2 = LargeObject('Weak')"]
-    G --> H["weak_ref = weakref.ref(obj2)"]
+    F["Weak Reference"] --> G["obj2 =<br/>LargeObject('Weak')"]
+    G --> H["weak_ref =<br/>weakref.ref(obj2)"]
     H --> I["del obj2"]
-    I --> J["Object garbage collected<br/>weak_ref() returns None"]
+    I --> J["Object garbage<br/>collected<br/>weak_ref() returns<br/>None"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#0173B2,color:#fff
-    style G fill:#DE8F05,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class I pal-029E73
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1192,9 +1267,11 @@ ContextVar provides task-local storage for asyncio applications.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["asyncio.gather(...)"] --> B["Task 1<br/>process_request('REQ-1')"]
-    A --> C["Task 2<br/>process_request('REQ-2')"]
-    A --> D["Task 3<br/>process_request('REQ-3')"]
+    accTitle: Example 70: Context Variables for Async Context
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: asyncio.gather(...), Task 1 process_ request(REQ-1), Task 2 process_ request(REQ-2), Task 3 process_ request(REQ-3), Context: request_id=REQ-1, Context: request_id=REQ-2, Context: request_id=REQ-3, request_id.get() returns REQ-1, request_id.get() returns REQ-2, request_id.get() returns REQ-3. Connections: asyncio.gather(...) to Task 1 process_ request(REQ-1), asyncio.gather(...) to Task 2 process_ request(REQ-2), asyncio.gather(...) to Task 3 process_ request(REQ-3), Task 1 process_ request(REQ-1) to Context: request_id=REQ-1, Task 2 process_ request(REQ-2) to Context: request_id=REQ-2, Task 3 process_ request(REQ-3) to Context: request_id=REQ-3, Context: request_id=REQ-1 to request_id.get() returns REQ-1, Context: request_id=REQ-2 to request_id.get() returns REQ-2, Context: request_id=REQ-3 to request_id.get() returns REQ-3.
+    A["asyncio.gather(...)"] --> B["Task 1<br/>process_<br/>request('REQ-1')"]
+    A --> C["Task 2<br/>process_<br/>request('REQ-2')"]
+    A --> D["Task 3<br/>process_<br/>request('REQ-3')"]
 
     B --> E["Context:<br/>request_id='REQ-1'"]
     C --> F["Context:<br/>request_id='REQ-2'"]
@@ -1204,16 +1281,21 @@ graph TD
     F --> I["request_id.get()<br/>returns 'REQ-2'"]
     G --> J["request_id.get()<br/>returns 'REQ-3'"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class H pal-029E73
+    class I pal-029E73
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1889,6 +1971,8 @@ Implement observer pattern for event-driven architectures.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 79: Observer Pattern
+    accDescr: Sequence diagram between Observable (Subject), EmailNotifier, LogNotifier. Messages: Observable (Subject) to EmailNotifier: Register observer; Observable (Subject) to LogNotifier: Register observer; Observable (Subject) to EmailNotifier: update40User registered41; EmailNotifier to Observable (Subject): Email sent; Observable (Subject) to LogNotifier: update40User registered41; LogNotifier to Observable (Subject): Log written.
     participant S as "Observable (Subject)"
     participant E as EmailNotifier
     participant L as LogNotifier

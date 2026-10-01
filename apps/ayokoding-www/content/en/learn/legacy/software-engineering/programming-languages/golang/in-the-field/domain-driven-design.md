@@ -26,7 +26,9 @@ Domain-Driven Design (DDD) structures complex business domains through explicit 
 
 ```mermaid
 graph LR
-    subgraph Aggregate1["Portfolio Aggregate (Consistency Boundary)"]
+    accTitle: DDD Building Blocks and Boundaries
+    accDescr: Graph with 13 nodes and 9 connections. Nodes: Portfolio (Aggregate Root), Account (Entity), Account (Entity), Money (Value Object), Money (Value Object), Zakat Portfolio (Aggregate Root), Obligation (Entity), Obligation (Entity), Nisab (Value Object), Portfolio Repository, Aggregate1, Zakat Repository, and 1 more. Connections: Portfolio (Aggregate Root) to Account (Entity) (contains), Portfolio (Aggregate Root) to Account (Entity) (contains), Account (Entity) to Money (Value Object) (has balance), Account (Entity) to Money (Value Object) (has balance), Zakat Portfolio (Aggregate Root) to Obligation (Entity) (contains), Zakat Portfolio (Aggregate Root) to Obligation (Entity) (contains), Obligation (Entity) to Nisab (Value Object) (has threshold), Portfolio Repository to Aggregate1 (persists), Zakat Repository to Aggregate2 (persists).
+    subgraph Aggregate1["Portfolio Aggregate<br/>(Consistency<br/>Boundary)"]
         direction TB
         PortfolioRoot["Portfolio<br/>(Aggregate Root)"]
         Account1["Account<br/>(Entity)"]
@@ -40,7 +42,7 @@ graph LR
         Account2 -->|"has balance"| Money2
     end
 
-    subgraph Aggregate2["Zakat Obligation Aggregate (Consistency Boundary)"]
+    subgraph Aggregate2["Zakat Obligation<br/>Aggregate<br/>(Consistency<br/>Boundary)"]
         direction TB
         ZakatRoot["Zakat Portfolio<br/>(Aggregate Root)"]
         Obligation1["Obligation<br/>(Entity)"]
@@ -55,17 +57,22 @@ graph LR
     Repository1["Portfolio Repository"] -.->|"persists"| Aggregate1
     Repository2["Zakat Repository"] -.->|"persists"| Aggregate2
 
-    style PortfolioRoot fill:#0173B2,stroke:#0173B2,color:#fff
-    style Account1 fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style Account2 fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style Money1 fill:#029E73,stroke:#029E73,color:#fff
-    style Money2 fill:#029E73,stroke:#029E73,color:#fff
-    style ZakatRoot fill:#0173B2,stroke:#0173B2,color:#fff
-    style Obligation1 fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style Obligation2 fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style Nisab fill:#029E73,stroke:#029E73,color:#fff
-    style Repository1 fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style Repository2 fill:#CC78BC,stroke:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PortfolioRoot pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Account1 pal-DE8F05
+    class Account2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Money1 pal-029E73
+    class Money2 pal-029E73
+    class ZakatRoot pal-0173B2
+    class Obligation1 pal-DE8F05
+    class Obligation2 pal-DE8F05
+    class Nisab pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Repository1 pal-CC78BC
+    class Repository2 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Aggregate pattern**:

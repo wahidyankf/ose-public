@@ -1126,32 +1126,37 @@ Summary of how TypeScript security practices address OWASP Top 10 vulnerabilitie
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart TD
-    A[OWASP Top 10 2021] --> B[A01: Broken Access Control]
-    A --> C[A02: Cryptographic Failures]
+    accTitle: OWASP Top 10 Coverage
+    accDescr: Flowchart with 21 nodes and 20 connections. Nodes: OWASP Top 10 2021, A01: Broken Access Control, A02: Cryptographic Failures, A03: Injection, A04: Insecure Design, A05: Security Misconfiguration, A06: Vulnerable Components, A07: Authentication Failures, A08: Data Integrity Failures, A09: Logging Failures, A10: SSRF, JWT/Session validation Role-based access control, and 9 more. Connections: OWASP Top 10 2021 to A01: Broken Access Control, OWASP Top 10 2021 to A02: Cryptographic Failures, OWASP Top 10 2021 to A03: Injection, OWASP Top 10 2021 to A04: Insecure Design, OWASP Top 10 2021 to A05: Security Misconfiguration, OWASP Top 10 2021 to A06: Vulnerable Components, OWASP Top 10 2021 to A07: Authentication Failures, OWASP Top 10 2021 to A08: Data Integrity Failures, OWASP Top 10 2021 to A09: Logging Failures, OWASP Top 10 2021 to A10: SSRF, A01: Broken Access Control to JWT/Session validation Role-based access control, A02: Cryptographic Failures to bcrypt password hashing HTTPS enforcement HSTS, and 8 more.
+    A[OWASP Top 10 2021] --> B[A01: Broken Access<br/>Control]
+    A --> C[A02: Cryptographic<br/>Failures]
     A --> D[A03: Injection]
     A --> E[A04: Insecure Design]
-    A --> F[A05: Security Misconfiguration]
-    A --> G[A06: Vulnerable Components]
-    A --> H[A07: Authentication Failures]
-    A --> I[A08: Data Integrity Failures]
-    A --> J[A09: Logging Failures]
+    A --> F[A05: Security<br/>Misconfiguration]
+    A --> G[A06: Vulnerable<br/>Components]
+    A --> H[A07: Authentication<br/>Failures]
+    A --> I[A08: Data Integrity<br/>Failures]
+    A --> J[A09: Logging<br/>Failures]
     A --> K[A10: SSRF]
 
-    B --> B1[JWT/Session validation<br/>Role-based access control]
-    C --> C1[bcrypt password hashing<br/>HTTPS enforcement HSTS]
-    D --> D1[Parameterized queries pg<br/>Zod input validation<br/>HTML sanitization]
-    E --> E1[Secure by default design<br/>Threat modeling]
-    F --> F1[Helmet.js security headers<br/>CSP configuration]
+    B --> B1[JWT/Session<br/>validation<br/>Role-based access<br/>control]
+    C --> C1[bcrypt password<br/>hashing<br/>HTTPS enforcement<br/>HSTS]
+    D --> D1[Parameterized<br/>queries pg<br/>Zod input validation<br/>HTML sanitization]
+    E --> E1[Secure by default<br/>design<br/>Threat modeling]
+    F --> F1[Helmet.js security<br/>headers<br/>CSP configuration]
     G --> G1[npm audit<br/>Dependabot updates]
-    H --> H1[Rate limiting express-rate-limit<br/>MFA support<br/>Strong password validation]
-    I --> I1[CSRF protection csurf<br/>Signature verification]
-    J --> J1[Structured logging winston<br/>Audit trails]
-    K --> K1[URL validation<br/>Allowlist external requests]
+    H --> H1[Rate limiting<br/>express-rate-limit<br/>MFA support<br/>Strong password<br/>validation]
+    I --> I1[CSRF protection<br/>csurf<br/>Signature<br/>verification]
+    J --> J1[Structured logging<br/>winston<br/>Audit trails]
+    K --> K1[URL validation<br/>Allowlist external<br/>requests]
 
-    style A fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style D1 fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style C1 fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style H1 fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D1 pal-029E73
+    class C1 pal-029E73
+    class H1 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Trade-offs and When to Use Each

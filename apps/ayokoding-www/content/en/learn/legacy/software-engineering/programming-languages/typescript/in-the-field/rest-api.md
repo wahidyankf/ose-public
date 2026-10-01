@@ -905,6 +905,8 @@ app.register(rateLimit, {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
+    accTitle: REST API Framework Progression Diagram
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Node.js http module, Express.js, Fastify. Connections: Node.js http module to Express.js (Need routing), Node.js http module to Fastify (Need performance).
     A[Node.js http module] -->|Need routing| B[Express.js]
     A -->|Need performance| C[Fastify]
 
@@ -912,20 +914,23 @@ graph TB
     B:::framework
     C:::framework
 
-    classDef standard fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef framework fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef standard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef framework fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 
     subgraph Standard[" Standard Library "]
         A
     end
 
-    subgraph Production[" Production Frameworks "]
+    subgraph Production["Production<br/>Frameworks"]
         B
         C
     end
 
-    style Standard fill:#F0F0F0,stroke:#0173B2,stroke-width:3px
-    style Production fill:#F0F0F0,stroke:#029E73,stroke-width:3px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#0173B2,color:#000000,stroke-width:3px
+    class Standard pal-CC78BC
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#029E73,color:#000000,stroke-width:3px
+    class Production pal-CC78BC-2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

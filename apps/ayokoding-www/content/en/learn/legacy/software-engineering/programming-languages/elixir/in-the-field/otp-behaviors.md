@@ -32,26 +32,34 @@ Use this decision tree to select the appropriate behavior:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: OTP Behavior Decision Matrix
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Need concurrency?, Pure functions No OTP needed, Managing other processes?, Supervisor, Need long-lived state?, Task, Complex state transitions?, GenStateMachine, Simple state?, Agent, GenServer. Connections: Need concurrency? to Pure functions No OTP needed (No), Need concurrency? to Managing other processes? (Yes), Managing other processes? to Supervisor (Yes), Managing other processes? to Need long-lived state? (No), Need long-lived state? to Task (No), Need long-lived state? to Complex state transitions? (Yes), Complex state transitions? to GenStateMachine (Yes), Complex state transitions? to Simple state? (No), Simple state? to Agent (Yes - Read heavy), Simple state? to GenServer (Yes - General purpose).
     A["Need concurrency?"] -->|No| Z["Pure functions<br/>No OTP needed"]
-    A -->|Yes| B["Managing other processes?"]
+    A -->|Yes| B["Managing other<br/>processes?"]
 
     B -->|Yes| C["Supervisor"]
-    B -->|No| D["Need long-lived state?"]
+    B -->|No| D["Need long-lived<br/>state?"]
 
     D -->|No| E["Task"]
-    D -->|Yes| F["Complex state transitions?"]
+    D -->|Yes| F["Complex state<br/>transitions?"]
 
     F -->|Yes| G["GenStateMachine"]
     F -->|No| H["Simple state?"]
 
     H -->|Yes - Read heavy| I["Agent"]
-    H -->|Yes - General purpose| J["GenServer"]
+    H -->|Yes - General<br/>purpose| J["GenServer"]
 
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style I fill:#CC78BC,stroke:#000,color:#fff
-    style J fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class I pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class J pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Quick Selection Guide
@@ -447,6 +455,8 @@ PaymentProcessor.refund(pid, 5000)           # => :ok
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: State Machine Visualization
+    accDescr: State diagram with 9 items: start or end, pending, authorized, captured, refunded, pending pending, authorized authorized, captured captured, refunded refunded. Relationships: start or end to pending: init; pending to authorized: authorize(token); authorized to captured: capture(); authorized to refunded: refund(amount); captured to refunded: refund(amount); refunded to start or end; captured to start or end.
     [*] --> pending: init
     pending --> authorized: authorize(token)
     authorized --> captured: capture()
@@ -455,10 +465,10 @@ stateDiagram-v2
     refunded --> [*]
     captured --> [*]
 
-    classDef pending fill:#0173B2,stroke:#000,color:#fff
-    classDef authorized fill:#DE8F05,stroke:#000,color:#fff
-    classDef captured fill:#029E73,stroke:#000,color:#fff
-    classDef refunded fill:#CC78BC,stroke:#000,color:#fff
+    classDef pending fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef authorized fill:#DE8F05,stroke:#000000,color:#000000
+    classDef captured fill:#029E73,stroke:#000000,color:#000000
+    classDef refunded fill:#CC78BC,stroke:#000000,color:#000000
 
     class pending pending
     class authorized authorized
@@ -705,13 +715,21 @@ ConfigCache.reload()                         # => :ok (reloads from environment)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Complexity vs Control Spectrum
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Agent Least Code, Task Async Only, GenServer General Purpose, GenStateMachine Explicit FSM, Supervisor Lifecycle Management. Connections: Agent Least Code to Task Async Only, Task Async Only to GenServer General Purpose, GenServer General Purpose to GenStateMachine Explicit FSM, GenStateMachine Explicit FSM to Supervisor Lifecycle Management.
     A["Agent<br/>Least Code"] --> B["Task<br/>Async Only"] --> C["GenServer<br/>General Purpose"] --> D["GenStateMachine<br/>Explicit FSM"] --> E["Supervisor<br/>Lifecycle Management"]
 
-    style A fill:#CC78BC,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Rule of thumb**:

@@ -26,12 +26,18 @@ This tutorial assumes you're familiar with programming concepts (variables, func
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner<br/>Examples 1-28<br/>Ownership Fundamentals"] --> B["Intermediate<br/>Examples 29-57<br/>Production Patterns"]
+    accTitle: Learning Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-28 Ownership Fundamentals, Intermediate Examples 29-57 Production Patterns, Advanced Examples 58-85 Expert Mastery. Connections: Beginner Examples 1-28 Ownership Fundamentals to Intermediate Examples 29-57 Production Patterns, Intermediate Examples 29-57 Production Patterns to Advanced Examples 58-85 Expert Mastery.
+    A["Beginner<br/>Examples 1-28<br/>Ownership<br/>Fundamentals"] --> B["Intermediate<br/>Examples 29-57<br/>Production Patterns"]
     B --> C["Advanced<br/>Examples 58-85<br/>Expert Mastery"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Progress from ownership fundamentals through production patterns to expert mastery. Each level builds on the previous, with ownership understanding being the critical foundation.
@@ -198,6 +204,8 @@ Rust's ownership system ensures memory safety without garbage collection by enfo
 
 ```mermaid
 graph TD
+    accTitle: Example N: Concept Name
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Create Value, Owner Scope, Moved?, New Owner, Drop Value, New Scope Ends. Connections: Create Value to Owner Scope, Owner Scope to Moved?, Moved? to New Owner (Yes), Moved? to Drop Value (No), New Owner to New Scope Ends, New Scope Ends to Drop Value.
     A[Create Value] --> B[Owner Scope]
     B --> C{Moved?}
     C -->|Yes| D[New Owner]
@@ -205,12 +213,18 @@ graph TD
     D --> F[New Scope Ends]
     F --> E
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust

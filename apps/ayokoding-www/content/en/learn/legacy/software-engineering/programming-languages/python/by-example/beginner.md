@@ -183,26 +183,33 @@ Strings in Python are immutable sequences of Unicode characters with rich method
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 4: Strings and String Methods
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: Original String text = Python, text.strip(), text.upper(), text.replace(P, J), Returns NEW String Python, Returns NEW String PYTHON, Returns NEW String Jython, Original UNCHANGED text still Python. Connections: Original String text = Python to text.strip(), Original String text = Python to text.upper(), Original String text = Python to text.replace(P, J), text.strip() to Returns NEW String Python, text.upper() to Returns NEW String PYTHON, text.replace(P, J) to Returns NEW String Jython, Returns NEW String Python to Original UNCHANGED text still Python, Returns NEW String PYTHON to Original UNCHANGED text still Python, Returns NEW String Jython to Original UNCHANGED text still Python.
     A["Original String<br/>text = '  Python  '"] --> B["text.strip()"]
     A --> C["text.upper()"]
-    A --> D["text.replace('P', 'J')"]
+    A --> D["text.replace('P',<br/>'J')"]
 
     B --> E["Returns NEW String<br/>'Python'"]
     C --> F["Returns NEW String<br/>'  PYTHON  '"]
     D --> G["Returns NEW String<br/>'  Jython  '"]
 
-    E -.-> H["Original UNCHANGED<br/>text still '  Python  '"]
+    E -.-> H["Original UNCHANGED<br/>text still ' Python<br/>'"]
     F -.-> H
     G -.-> H
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -289,6 +296,8 @@ Python provides boolean type with `True`/`False` values, comparison operators, a
 ```mermaid
 %% Boolean logic flow
 graph TD
+    accTitle: Example 5: Boolean Logic and Comparisons
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Expression, and Operator?, First False?, Return False, Evaluate Second, or Operator?, First True?, Return True, Evaluate Second, Return Result. Connections: Expression to and Operator?, and Operator? to First False? (Yes), First False? to Return False (Yes), First False? to Evaluate Second (No), and Operator? to or Operator? (No), or Operator? to First True? (Yes), First True? to Return True (Yes), First True? to Evaluate Second (No), or Operator? to Return Result (No).
     A[Expression] --> B{and Operator?}
     B -->|Yes| C{First False?}
     C -->|Yes| D[Return False]
@@ -299,16 +308,21 @@ graph TD
     G -->|No| I[Evaluate Second]
     F -->|No| J[Return Result]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-DE8F05
+    class G pal-CC78BC
+    class H pal-029E73
+    class I pal-029E73
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -414,10 +428,12 @@ Python uses indentation-based blocks for conditionals with `if`, `elif` (else-if
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Start: temperature = 15"] --> B{"if temperature > 30?"}
-    B -->|False| C{"elif temperature > 20?"}
+    accTitle: Example 6: Conditional Statements
+    accDescr: Graph with 9 nodes and 11 connections. Nodes: Start: temperature = 15, if temperature > 30?, elif temperature > 20?, status = Hot, elif temperature > 10?, status = Warm, status = Cool, status = Cold, Output: status. Connections: Start: temperature = 15 to if temperature > 30?, if temperature > 30? to elif temperature > 20? (False), if temperature > 30? to status = Hot (True), elif temperature > 20? to elif temperature > 10? (False), elif temperature > 20? to status = Warm (True), elif temperature > 10? to status = Cool (True), elif temperature > 10? to status = Cold (False), status = Hot to Output: status, status = Warm to Output: status, status = Cool to Output: status, status = Cold to Output: status.
+    A["Start: temperature =<br/>15"] --> B{"if temperature > 30?"}
+    B -->|False| C{"elif temperature ><br/>20?"}
     B -->|True| D["status = 'Hot'"]
-    C -->|False| E{"elif temperature > 10?"}
+    C -->|False| E{"elif temperature ><br/>10?"}
     C -->|True| F["status = 'Warm'"]
     E -->|True| G["status = 'Cool'"]
     E -->|False| H["status = 'Cold'"]
@@ -426,15 +442,21 @@ graph TD
     G --> I
     H --> I
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CA9161,color:#fff
-    style I fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-DE8F05
+    class F pal-029E73
+    class G pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class I pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -650,19 +672,26 @@ Python's `for` loop iterates over sequences (lists, strings, ranges) with `range
 ```mermaid
 %% For loop with range
 graph TD
-    A[range Start, Stop, Step] --> B[Generate Sequence]
+    accTitle: Example 8: For Loops and Range
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: range Start, Stop, Step, Generate Sequence, For Each Element, Execute Block, More Elements?, Exit Loop. Connections: range Start, Stop, Step to Generate Sequence, Generate Sequence to For Each Element, For Each Element to Execute Block, Execute Block to More Elements?, More Elements? to For Each Element (Yes), More Elements? to Exit Loop (No).
+    A[range Start, Stop,<br/>Step] --> B[Generate Sequence]
     B --> C[For Each Element]
     C --> D[Execute Block]
     D --> E{More Elements?}
     E -->|Yes| C
     E -->|No| F[Exit Loop]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-DE8F05
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -725,6 +754,8 @@ Lists are mutable, ordered sequences that can contain mixed types, support index
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 9: Lists - Creation and Access
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Index: 0 Value: 1, Index: 1 Value: 2, Index: 2 Value: 3, Index: 3 Value: 4, Index: 4 Value: 5. Connections: Index: 0 Value: 1 to Index: 1 Value: 2, Index: 1 Value: 2 to Index: 2 Value: 3, Index: 2 Value: 3 to Index: 3 Value: 4, Index: 3 Value: 4 to Index: 4 Value: 5.
     N0["Index: 0<br/>Value: 1"]
     N1["Index: 1<br/>Value: 2"]
     N2["Index: 2<br/>Value: 3"]
@@ -733,11 +764,13 @@ graph TD
 
     N0 --> N1 --> N2 --> N3 --> N4
 
-    style N0 fill:#0173B2,color:#fff
-    style N1 fill:#0173B2,color:#fff
-    style N2 fill:#0173B2,color:#fff
-    style N3 fill:#0173B2,color:#fff
-    style N4 fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class N0 pal-0173B2
+    class N1 pal-0173B2
+    class N2 pal-0173B2
+    class N3 pal-0173B2
+    class N4 pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Negative Indexing:**
@@ -745,6 +778,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 9: Lists - Creation and Access
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Index: -5 Value: 1, Index: -4 Value: 2, Index: -3 Value: 3, Index: -2 Value: 4, Index: -1 Value: 5. Connections: Index: -5 Value: 1 to Index: -4 Value: 2, Index: -4 Value: 2 to Index: -3 Value: 3, Index: -3 Value: 3 to Index: -2 Value: 4, Index: -2 Value: 4 to Index: -1 Value: 5.
     M5["Index: -5<br/>Value: 1"]
     M4["Index: -4<br/>Value: 2"]
     M3["Index: -3<br/>Value: 3"]
@@ -753,11 +788,13 @@ graph TD
 
     M5 --> M4 --> M3 --> M2 --> M1
 
-    style M5 fill:#DE8F05,color:#fff
-    style M4 fill:#DE8F05,color:#fff
-    style M3 fill:#DE8F05,color:#fff
-    style M2 fill:#DE8F05,color:#fff
-    style M1 fill:#DE8F05,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class M5 pal-DE8F05
+    class M4 pal-DE8F05
+    class M3 pal-DE8F05
+    class M2 pal-DE8F05
+    class M1 pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Python lists support both positive indexing (starting from 0) and negative indexing (counting from the end starting at -1). Both index systems refer to the same list elements.
@@ -1017,26 +1054,33 @@ Dictionaries store key-value pairs with fast lookup by key. Keys must be immutab
 ```mermaid
 %% Dictionary operations
 graph TD
+    accTitle: Example 12: Dictionaries - Key-Value Pairs
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Dictionary, Operation?, O40141 Lookup, O40141 Insert/Update, O40141 Delete, O40141 Membership, Return Value or KeyError, Update Existing or Add New, Remove Key-Value Pair, Return True/False. Connections: Dictionary to Operation?, Operation? to O40141 Lookup (Get Key), Operation? to O40141 Insert/Update (Set Key), Operation? to O40141 Delete (Delete Key), Operation? to O40141 Membership (Check Key), O40141 Lookup to Return Value or KeyError, O40141 Insert/Update to Update Existing or Add New, O40141 Delete to Remove Key-Value Pair, O40141 Membership to Return True/False.
     A[Dictionary] --> B{Operation?}
     B -->|Get Key| C[O#40;1#41; Lookup]
-    B -->|Set Key| D[O#40;1#41; Insert/Update]
+    B -->|Set Key| D[O#40;1#41;<br/>Insert/Update]
     B -->|Delete Key| E[O#40;1#41; Delete]
-    B -->|Check Key| F[O#40;1#41; Membership]
-    C --> G[Return Value or KeyError]
-    D --> H[Update Existing or Add New]
-    E --> I[Remove Key-Value Pair]
+    B -->|Check Key| F[O#40;1#41;<br/>Membership]
+    C --> G[Return Value or<br/>KeyError]
+    D --> H[Update Existing or<br/>Add New]
+    E --> I[Remove Key-Value<br/>Pair]
     F --> J[Return True/False]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#CC78BC,color:#fff
-    style J fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-CC78BC
+    class I pal-CC78BC
+    class J pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1362,6 +1406,8 @@ Python uses LEGB scope resolution (Local, Enclosing, Global, Built-in) with expl
 ```mermaid
 %% LEGB scope resolution
 graph TD
+    accTitle: Example 15: Function Scope and Global Variables
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Variable Reference, In Local Scope?, Use Local, In Enclosing Scope?, Use Enclosing, In Global Scope?, Use Global, In Built-in Scope?, Use Built-in, NameError. Connections: Variable Reference to In Local Scope?, In Local Scope? to Use Local (Yes), In Local Scope? to In Enclosing Scope? (No), In Enclosing Scope? to Use Enclosing (Yes), In Enclosing Scope? to In Global Scope? (No), In Global Scope? to Use Global (Yes), In Global Scope? to In Built-in Scope? (No), In Built-in Scope? to Use Built-in (Yes), In Built-in Scope? to NameError (No).
     A[Variable Reference] --> B{In Local Scope?}
     B -->|Yes| C[Use Local]
     B -->|No| D{In Enclosing Scope?}
@@ -1372,16 +1418,21 @@ graph TD
     H -->|Yes| I[Use Built-in]
     H -->|No| J[NameError]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#DE8F05,color:#fff
-    style I fill:#029E73,color:#fff
-    style J fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    class F pal-DE8F05
+    class G pal-029E73
+    class H pal-DE8F05
+    class I pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class J pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1877,6 +1928,8 @@ Python uses try/except blocks to handle errors gracefully, with optional else (r
 ```mermaid
 %% Exception handling flow
 graph TD
+    accTitle: Example 19: Exception Handling - Try/Except
+    accDescr: Graph with 9 nodes and 9 connections. Nodes: Try Block, Exception Raised?, Else Block, Matching Except?, Except Block, Propagate Exception, Finally Block, Crash/Outer Handler, Continue Execution. Connections: Try Block to Exception Raised?, Exception Raised? to Else Block (No), Exception Raised? to Matching Except? (Yes), Matching Except? to Except Block (Yes), Matching Except? to Propagate Exception (No), Else Block to Finally Block, Except Block to Finally Block, Propagate Exception to Crash/Outer Handler, Finally Block to Continue Execution.
     A[Try Block] --> B{Exception Raised?}
     B -->|No| C[Else Block]
     B -->|Yes| D{Matching Except?}
@@ -1887,15 +1940,20 @@ graph TD
     F --> H[Crash/Outer Handler]
     G --> I[Continue Execution]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-029E73
+    class H pal-CC78BC
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2670,18 +2728,24 @@ Inheritance allows classes to extend other classes, inheriting attributes and me
 ```mermaid
 %% Inheritance hierarchy
 graph TD
+    accTitle: Example 22: Classes - Inheritance
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Animal Base Class, Dog Subclass, Cat Subclass, Inherits speak, Overrides speak, Overrides speak. Connections: Animal Base Class to Dog Subclass, Animal Base Class to Cat Subclass, Dog Subclass to Inherits speak, Dog Subclass to Overrides speak, Cat Subclass to Overrides speak.
     A[Animal Base Class] --> B[Dog Subclass]
     A --> C[Cat Subclass]
     B --> D[Inherits speak]
     B --> E[Overrides speak]
     C --> F[Overrides speak]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -3629,17 +3693,24 @@ Python's iterator protocol enables lazy evaluation and memory-efficient iteratio
 ```mermaid
 %% Iterator protocol flow
 graph TD
+    accTitle: Example 26: Iterators and the Iterator Protocol
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Iterable Object, Iterator Object, Has Next Item?, Return Item, Raise StopIteration. Connections: Iterable Object to Iterator Object (iter4041), Iterator Object to Has Next Item? (next4041), Has Next Item? to Return Item (Yes), Has Next Item? to Raise StopIteration (No), Return Item to Iterator Object.
     A[Iterable Object] -->|iter#40;#41;| B[Iterator Object]
     B -->|next#40;#41;| C{Has Next Item?}
     C -->|Yes| D[Return Item]
     C -->|No| E[Raise StopIteration]
     D --> B
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

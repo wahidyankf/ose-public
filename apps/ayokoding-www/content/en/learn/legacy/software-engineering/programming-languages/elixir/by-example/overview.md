@@ -27,12 +27,18 @@ Unlike narrative tutorials that build understanding through explanation and stor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-30 Basics, Intermediate Examples 31-60 Practical Patterns, Advanced Examples 61-85 Complex Features. Connections: Beginner Examples 1-30 Basics to Intermediate Examples 31-60 Practical Patterns, Intermediate Examples 31-60 Practical Patterns to Advanced Examples 61-85 Complex Features.
     A["Beginner<br/>Examples 1-30<br/>Basics"] --> B["Intermediate<br/>Examples 31-60<br/>Practical Patterns"]
     B --> C["Advanced<br/>Examples 61-85<br/>Complex Features"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Progress from fundamentals through practical patterns to advanced OTP and metaprogramming features. Each level builds on the previous, increasing in sophistication and introducing more Elixir-specific concepts.

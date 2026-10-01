@@ -26,15 +26,22 @@ MailboxProcessor implements the actor model for concurrency, where agents proces
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 61: MailboxProcessor - Agent-Based Concurrency
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Client Posts Messages, Mailbox Queue, Agent Processes Sequentially, State Updated. Connections: Client Posts Messages to Mailbox Queue, Mailbox Queue to Agent Processes Sequentially, Agent Processes Sequentially to State Updated, State Updated to Agent Processes Sequentially (loop).
     A[Client Posts<br/>Messages]:::blue --> B[Mailbox Queue]:::orange
     B --> C[Agent Processes<br/>Sequentially]:::teal
     C --> D[State Updated]:::purple
     D -->|loop| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -182,6 +189,8 @@ Async.Parallel executes multiple async computations concurrently and collects re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 63: Async Parallelism with Async.Parallel
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Async.Parallel, Task 1 runs, Task 2 runs, Task 3 runs, Collect Results. Connections: Async.Parallel to Task 1 runs, Async.Parallel to Task 2 runs, Async.Parallel to Task 3 runs, Task 1 runs to Collect Results, Task 2 runs to Collect Results, Task 3 runs to Collect Results.
     A[Async.Parallel]:::blue --> B[Task 1<br/>runs]:::orange
     A --> C[Task 2<br/>runs]:::orange
     A --> D[Task 3<br/>runs]:::orange
@@ -189,11 +198,15 @@ graph TD
     C --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -359,16 +372,22 @@ Quotations represent F# code as data structures, enabling metaprogramming, code 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 66: Quotations - Code as Data
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Source Code, Quotation AST, Analyze, Transform, Execute. Connections: Source Code to Quotation AST, Quotation AST to Analyze, Quotation AST to Transform, Quotation AST to Execute.
     A[Source Code]:::blue --> B[Quotation<br/>AST]:::orange
     B --> C[Analyze]:::teal
     B --> D[Transform]:::teal
     B --> E[Execute]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -516,16 +535,22 @@ Statically Resolved Type Parameters (SRTP) enable compile-time polymorphism thro
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 68: Advanced Type Constraints with SRTP
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Generic Code inline add, Compile Time Type Resolution, int + int, float + float, string + string. Connections: Generic Code inline add to Compile Time Type Resolution, Compile Time Type Resolution to int + int, Compile Time Type Resolution to float + float, Compile Time Type Resolution to string + string.
     A[Generic Code<br/>inline add]:::blue --> B[Compile Time<br/>Type Resolution]:::orange
     B --> C[int + int]:::teal
     B --> D[float + float]:::teal
     B --> E[string + string]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -780,12 +805,18 @@ Units of measure provide compile-time dimensional analysis, preventing unit conv
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 72: Units of Measure - Type-Safe Calculations
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: 100.0 meter, / time 5.0 second, 20.0 meter/second. Connections: 100.0 meter to / time 5.0 second, / time 5.0 second to 20.0 meter/second.
     A[100.0 meter]:::blue --> B[/ time<br/>5.0 second]:::orange
     B --> C[20.0 meter/second]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -857,6 +888,8 @@ Phantom types encode state in type system, making illegal state transitions impo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 73: Phantom Types for Type-State Pattern
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Connection, open, Connection, query, Result, close. Connections: Connection to open, open to Connection, Connection to query, query to Result, Connection to close, close to Connection.
     A[Connection<Closed>]:::blue --> B[open]:::orange
     B --> C[Connection<Open>]:::teal
     C --> D[query]:::orange
@@ -864,12 +897,17 @@ graph TD
     C --> F[close]:::orange
     F --> A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -942,16 +980,22 @@ F# emulates Generalized Algebraic Data Types (GADTs) using discriminated unions 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 74: GADTs Emulation with Discriminated Unions
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Expr Tree, TLit 10, TAdd, TLit 20, Eval: 30. Connections: Expr Tree to TLit 10, Expr Tree to TAdd, TAdd to TLit 20, TAdd to Eval: 30.
     A[Expr Tree]:::blue --> B[TLit 10]:::orange
     A --> C[TAdd]:::orange
     C --> D[TLit 20]:::teal
     C --> E[Eval: 30]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1146,14 +1190,21 @@ Event sourcing stores state changes as immutable events, enabling complete audit
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 76: Event Sourcing Pattern
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: AccountCreated 1000.0, MoneyDeposited +500, MoneyWithdrawn -200, Current State 1300.0. Connections: AccountCreated 1000.0 to MoneyDeposited +500, MoneyDeposited +500 to MoneyWithdrawn -200, MoneyWithdrawn -200 to Current State 1300.0.
     A[AccountCreated<br/>1000.0]:::blue --> B[MoneyDeposited<br/>+500]:::orange
     B --> C[MoneyWithdrawn<br/>-200]:::teal
     C --> D[Current State<br/>1300.0]:::purple
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1251,16 +1302,23 @@ CQRS separates read (query) and write (command) models, optimizing each independ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 77: CQRS with F - Command Query Separation
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Command, Write Model, Event Store, Read Model, Query. Connections: Command to Write Model, Write Model to Event Store, Event Store to Read Model, Query to Read Model.
     A[Command]:::blue --> B[Write Model]:::orange
     B --> C[Event Store]:::teal
     C --> D[Read Model]:::purple
     E[Query]:::blue --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1955,6 +2013,8 @@ Async workflows support cancellation tokens and timeouts for robust async progra
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 85: Advanced Async Patterns - Cancellation and Timeouts
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Start Async, Cancelled?, Continue Work, Clean Cancel, Timeout?, Complete. Connections: Start Async to Cancelled?, Cancelled? to Continue Work (No), Cancelled? to Clean Cancel (Yes), Continue Work to Timeout?, Timeout? to Complete (No), Timeout? to Clean Cancel (Yes).
     A[Start Async]:::blue --> B{Cancelled?}:::orange
     B -->|No| C[Continue Work]:::teal
     B -->|Yes| D[Clean Cancel]:::purple
@@ -1962,12 +2022,17 @@ graph TD
     E -->|No| F[Complete]:::teal
     E -->|Yes| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-DE8F05
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

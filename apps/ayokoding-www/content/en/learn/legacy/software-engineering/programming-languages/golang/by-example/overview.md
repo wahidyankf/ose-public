@@ -29,16 +29,22 @@ The Go by-example tutorial guides you through 75-90 examples organized into thre
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner (Examples 1-30)<br/>Fundamentals<br/>Fundamentals"]
-    B["Intermediate (Examples 31-60)<br/>Production Patterns<br/>Production Ready"]
-    C["Advanced (Examples 61-90)<br/>Advanced Mastery<br/>Expert Mastery"]
+    accTitle: Learning Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner (Examples 1-30) Fundamentals Fundamentals, Intermediate (Examples 31-60) Production Patterns Production Ready, Advanced (Examples 61-90) Advanced Mastery Expert Mastery. Connections: Beginner (Examples 1-30) Fundamentals Fundamentals to Intermediate (Examples 31-60) Production Patterns Production Ready (Master foundations), Intermediate (Examples 31-60) Production Patterns Production Ready to Advanced (Examples 61-90) Advanced Mastery Expert Mastery (Advanced patterns).
+    A["Beginner (Examples<br/>1-30)<br/>Fundamentals<br/>Fundamentals"]
+    B["Intermediate<br/>(Examples 31-60)<br/>Production Patterns<br/>Production Ready"]
+    C["Advanced (Examples<br/>61-90)<br/>Advanced Mastery<br/>Expert Mastery"]
 
     A -->|Master foundations| B
     B -->|Advanced patterns| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Philosophy

@@ -37,6 +37,8 @@ By the end of this tutorial, you will have touchpoints for:
 
 ```mermaid
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 16 nodes and 30 connections. Nodes: Quick Start: Go, B, Packages, C, Types, Structs, Pointers, Interfaces, Error Handling, H, Arrays, Maps, and 4 more. Connections: Quick Start: Go to B, Quick Start: Go to Packages, Quick Start: Go to C, Quick Start: Go to Types, Quick Start: Go to Structs, Quick Start: Go to Pointers, Quick Start: Go to Interfaces, Quick Start: Go to Error Handling, Quick Start: Go to H, Quick Start: Go to Arrays, Quick Start: Go to Maps, Quick Start: Go to Goroutines, and 18 more.
     A[Quick Start: Go] --> B[Functions & Packages]
     A --> C[Variables & Types]
     A --> D[Structs]
@@ -68,9 +70,11 @@ graph TD
 
     L --> M[By-Example: Go]
 
-    style A fill:#e1f5ff
-    style L fill:#fff4e1
-    style M fill:#f0e6ff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    class L pal-CC78BC
+    class M pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Concept 1: Functions and Packages - Organize Code

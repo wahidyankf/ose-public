@@ -30,8 +30,9 @@ The three major LTS releases from the last 5 years:
 Oracle delivers LTS releases every **2 years** (reduced from 3 years in 2023):
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 timeline
+    accTitle: LTS Cadence
+    accDescr: Timeline of Java LTS releases: Java 11 in 2018, Java 17 in 2021 after a 3-year gap, Java 21 in 2023 when the 2-year cadence begins, Java 25 in 2025, and Java 27 expected in 2027.
     title Java LTS Release Timeline
     2018 : Java 11 LTS : First post-Java 8 LTS
     2021 : Java 17 LTS : 3-year gap

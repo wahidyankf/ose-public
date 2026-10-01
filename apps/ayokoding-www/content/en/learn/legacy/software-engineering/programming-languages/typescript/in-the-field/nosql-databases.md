@@ -1305,7 +1305,9 @@ async function updateUser(userId: string, updates: any) {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart TD
-    A[Choose NoSQL Database] --> B{Data Model?}
+    accTitle: NoSQL Database Selection Diagram
+    accDescr: Flowchart with 15 nodes and 17 connections. Nodes: Choose NoSQL Database, Data Model?, MongoDB, Redis, Neo4j, Cassandra, MongoDB Library?, mongodb, Mongoose, Redis Library?, redis, ioredis, and 3 more. Connections: Choose NoSQL Database to Data Model?, Data Model? to MongoDB (Documents Flexible schema), Data Model? to Redis (Key-Value High performance), Data Model? to Neo4j (Graphs Relationships), Data Model? to Cassandra (Columns Time series), MongoDB to MongoDB Library?, MongoDB Library? to mongodb (Native Driver Performance), MongoDB Library? to Mongoose (ORM Validation + Types), Redis to Redis Library?, Redis Library? to redis (Basic Simple commands), Redis Library? to ioredis (Production Full features), mongodb to Use Cases, and 5 more.
+    A[Choose NoSQL<br/>Database] --> B{Data Model?}
 
     B -->|Documents<br/>Flexible schema| C[MongoDB]
     B -->|Key-Value<br/>High performance| D[Redis]
@@ -1325,14 +1327,18 @@ flowchart TD
     D2 --> G
     D3 --> G
 
-    G --> G1[MongoDB: User profiles<br/>Product catalogs<br/>Content management]
+    G --> G1[MongoDB: User<br/>profiles<br/>Product catalogs<br/>Content management]
     G --> G2[Redis: Caching<br/>Sessions<br/>Real-time analytics<br/>Job queues]
 
-    style A fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style C3 fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style D3 fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class C3 pal-DE8F05
+    class D3 pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

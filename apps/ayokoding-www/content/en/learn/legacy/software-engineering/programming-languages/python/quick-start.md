@@ -37,6 +37,8 @@ By the end of this tutorial, you will have touchpoints for:
 
 ```mermaid
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 15 nodes and 27 connections. Nodes: Quick Start: Python, B, Types, Control Flow, Functions, Data Structures, String Operations, File I/O, Error Handling, List Comprehensions, J, Objects, and 3 more. Connections: Quick Start: Python to B, Quick Start: Python to Types, Quick Start: Python to Control Flow, Quick Start: Python to Functions, Quick Start: Python to Data Structures, Quick Start: Python to String Operations, Quick Start: Python to File I/O, Quick Start: Python to Error Handling, Quick Start: Python to List Comprehensions, Quick Start: Python to J, Quick Start: Python to Objects, Quick Start: Python to Modules, and 15 more.
     A[Quick Start: Python] --> B[Variables & Types]
     A --> C[Control Flow]
     A --> D[Functions]
@@ -66,9 +68,11 @@ graph TD
 
     L --> M[By-Example: Python]
 
-    style A fill:#e1f5ff
-    style L fill:#fff4e1
-    style M fill:#f0e6ff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    class L pal-CC78BC
+    class M pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Concept 1: Variables and Types - Store and Manipulate Data

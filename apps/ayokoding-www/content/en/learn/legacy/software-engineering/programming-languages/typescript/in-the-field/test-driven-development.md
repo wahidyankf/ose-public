@@ -32,6 +32,8 @@ TDD follows a simple three-step cycle that drives development through tests.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 stateDiagram-v2
+    accTitle: The Red-Green-Refactor Cycle
+    accDescr: State diagram with 7 items: start or end, Red, Green, Refactor, Red redState, Green greenState, Refactor refactorState. Relationships: start or end to Red: Write test; Red to Green: Test fails; Green to Refactor: Test passes; Refactor to Red: Tests still pass, next feature.
     [*] --> Red: Write test
 
     Red --> Green: Test fails
@@ -56,8 +58,8 @@ stateDiagram-v2
         Keep tests passing
     end note
 
-    classDef redState fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:3px
-    classDef greenState fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:3px
+    classDef redState fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:3px
+    classDef greenState fill:#029E73,stroke:#000000,color:#000000,stroke-width:3px
     classDef refactorState fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:3px
 
     class Red redState

@@ -16,6 +16,8 @@ Multimethods enable polymorphism based on arbitrary dispatch functions. Unlike c
 ```mermaid
 %% Multimethod dispatch flow
 graph TD
+    accTitle: Example 28: Multimethods
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: area shape, Dispatch on :shape, Circle Method, Rectangle Method, :default Method, π × r², width × height, Exception. Connections: area shape to Dispatch on :shape, Dispatch on :shape to Circle Method (:circle), Dispatch on :shape to Rectangle Method (:rectangle), Dispatch on :shape to :default Method (:triangle), Circle Method to π × r², Rectangle Method to width × height, :default Method to Exception.
     A[area shape] --> B{Dispatch on :shape}
     B -->|:circle| C[Circle Method]
     B -->|:rectangle| D[Rectangle Method]
@@ -24,14 +26,20 @@ graph TD
     D --> G[width × height]
     E --> H[Exception]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -70,10 +78,12 @@ Protocols define interfaces for polymorphic functions with type-based dispatch. 
 ```mermaid
 %% Protocol implementation flow
 graph TD
+    accTitle: Example 29: Protocols
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: IDrawable Protocol, draw method, resize method, Circle Implementation, Square Implementation, Circle resize, Square resize, String Output, String Output, New Circle Instance, New Square Instance. Connections: IDrawable Protocol to draw method, IDrawable Protocol to resize method, draw method to Circle Implementation, draw method to Square Implementation, resize method to Circle resize, resize method to Square resize, Circle Implementation to String Output, Square Implementation to String Output, Circle resize to New Circle Instance, Square resize to New Square Instance.
     A[IDrawable Protocol] --> B[draw method]
     A --> C[resize method]
-    B --> D[Circle Implementation]
-    B --> E[Square Implementation]
+    B --> D[Circle<br/>Implementation]
+    B --> E[Square<br/>Implementation]
     C --> F[Circle resize]
     C --> G[Square resize]
     D --> H[String Output]
@@ -81,17 +91,22 @@ graph TD
     F --> J[New Circle Instance]
     G --> K[New Square Instance]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#CC78BC,color:#fff
-    style J fill:#CC78BC,color:#fff
-    style K fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    class I pal-CC78BC
+    class J pal-CC78BC
+    class K pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -252,6 +267,8 @@ Atoms provide thread-safe synchronous mutable references using Compare-And-Swap 
 ```mermaid
 %% Atom state transitions
 stateDiagram-v2
+    accTitle: Example 33: Atoms for Synchronous State
+    accDescr: State diagram with 7 items: start or end, atom_0, atom_1, atom_6, complex, updated, final. Relationships: start or end to atom_0: Create atom 0; atom_0 to atom_1: swap! inc; atom_1 to atom_6: swap! + 5; atom_6 to atom_0: reset! 0; atom_0 to complex: Create map with users and count; complex to updated: swap! update count inc; updated to final: swap! update users conj.
     [*] --> atom_0: Create atom 0
     atom_0 --> atom_1: swap! inc
     atom_1 --> atom_6: swap! + 5
@@ -313,6 +330,8 @@ Refs enable coordinated synchronous updates across multiple references using Sof
 ```mermaid
 %% STM transaction flow
 sequenceDiagram
+    accTitle: Example 34: Refs and Software Transactional Memory
+    accDescr: Sequence diagram between Transaction, account-a (ref), account-b (ref). Messages: Transaction to account-a (ref): dosync start; Transaction to account-a (ref): alter - 200; account-a (ref) to Transaction: 800 (tentative); Transaction to account-b (ref): alter + 200; account-b (ref) to Transaction: 700 (tentative); Transaction to Transaction: Commit transaction; Transaction to account-a (ref): Committed: 800; Transaction to account-b (ref): Committed: 700; Transaction to account-a (ref): dosync start; Transaction to account-a (ref): alter - 100; Transaction to Transaction: Exception thrown; Transaction to Transaction: Rollback.
     participant T as Transaction
     participant A as "account-a (ref)"
     participant B as "account-b (ref)"
@@ -384,6 +403,8 @@ Agents handle asynchronous state changes with guaranteed sequential processing. 
 ```mermaid
 %% Agent asynchronous processing
 graph TD
+    accTitle: Example 35: Agents for Asynchronous State
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: send action 1, Agent Queue, send action 2, send action 3, Thread Pool, Sequential Execution, Action 1, Action 2, Action 3, Agent State Updated. Connections: send action 1 to Agent Queue, send action 2 to Agent Queue, send action 3 to Agent Queue, Agent Queue to Thread Pool, Thread Pool to Sequential Execution, Sequential Execution to Action 1, Action 1 to Action 2, Action 2 to Action 3, Action 3 to Agent State Updated.
     A[send action 1] --> Q[Agent Queue]
     B[send action 2] --> Q
     C[send action 3] --> Q
@@ -394,13 +415,19 @@ graph TD
     S3 --> S4[Action 3]
     S4 --> R[Agent State Updated]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#0173B2,color:#fff
-    style C fill:#0173B2,color:#fff
-    style Q fill:#DE8F05,color:#fff
-    style T fill:#029E73,color:#fff
-    style S1 fill:#CC78BC,color:#fff
-    style R fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Q pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class T pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class S1 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class R pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -450,6 +477,8 @@ Channels enable CSP-style communication between async processes. Unlike Java's t
 ```mermaid
 %% Channel communication pattern
 graph TD
+    accTitle: Example 36: core.async Channels
+    accDescr: Graph with 10 nodes and 8 connections. Nodes: Producer go block, Channel, Producer go block, Consumer go block 1, Consumer go block 2, Process Value, Process Value, Buffered Channel, Buffer, Park Producer. Connections: Producer go block to Channel (>! put), Producer go block to Channel (>! put), Channel to Consumer go block 1 (<! take), Channel to Consumer go block 2 (<! take), Consumer go block 1 to Process Value, Consumer go block 2 to Process Value, Buffered Channel to Buffer (Size 10), Buffer to Park Producer (Full?).
     P1[Producer go block] -->|>! put| C[Channel]
     P2[Producer go block] -->|>! put| C
     C -->|<! take| C1[Consumer go block 1]
@@ -460,13 +489,19 @@ graph TD
     B[Buffered Channel] -->|Size 10| BUF[Buffer]
     BUF -->|Full?| PARK[Park Producer]
 
-    style P1 fill:#0173B2,color:#fff
-    style P2 fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style C1 fill:#029E73,color:#fff
-    style C2 fill:#029E73,color:#fff
-    style B fill:#CC78BC,color:#fff
-    style BUF fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P1 pal-0173B2
+    class P2 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C1 pal-029E73
+    class C2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class BUF pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -520,6 +555,8 @@ go blocks execute code asynchronously with automatic channel parking. The `go` m
 ```mermaid
 %% go block execution timeline
 sequenceDiagram
+    accTitle: Example 37: core.async go Blocks
+    accDescr: Sequence diagram between Main Thread, go block 1, go block 2, Channel. Messages: Main Thread to go block 1: Launch go block; Main Thread to go block 2: Launch go block; go block 1 to go block 1: println Starting...; go block 1 to go block 1: timeout 1000ms (park); go block 2 to go block 2: println Waiting...; go block 2 to Channel: <! (park, waiting); go block 1 to Channel: >! Task complete; Channel to go block 2: Value delivered; go block 2 to go block 2: println Result.
     participant M as Main Thread
     participant G1 as go block 1
     participant G2 as go block 2
@@ -683,28 +720,38 @@ Transducers compose transformations without creating intermediate collections, p
 
 ```mermaid
 graph TD
+    accTitle: Example 40: Transducers
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: range 10, map inc, Lazy Seq 1, filter even?, Lazy Seq 2, Final Result. Connections: range 10 to map inc, map inc to Lazy Seq 1, Lazy Seq 1 to filter even?, filter even? to Lazy Seq 2, Lazy Seq 2 to Final Result.
     R1[range 10] --> R2[map inc]
     R2 --> R3[Lazy Seq 1]
     R3 --> R4[filter even?]
     R4 --> R5[Lazy Seq 2]
     R5 --> R6[Final Result]
 
-    style R3 fill:#CA9161,color:#fff
-    style R5 fill:#CA9161,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class R3 pal-CA9161
+    class R5 pal-CA9161
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Transducers (Single Pass, No Intermediates):**
 
 ```mermaid
 graph TD
+    accTitle: Example 40: Transducers
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: range 10, Transducer comp, map inc + filter even?, Single Pass, Final Result. Connections: range 10 to Transducer comp, Transducer comp to map inc + filter even?, map inc + filter even? to Single Pass, Single Pass to Final Result.
     T1[range 10] --> TX[Transducer comp]
-    TX --> T2[map inc + filter even?]
+    TX --> T2[map inc + filter<br/>even?]
     T2 --> T3[Single Pass]
     T3 --> T4[Final Result]
 
-    style TX fill:#029E73,color:#fff
-    style T2 fill:#0173B2,color:#fff
-    style T3 fill:#DE8F05,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class TX pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class T2 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class T3 pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -822,6 +869,8 @@ Lazy sequences compute elements on demand enabling infinite sequences. Only the 
 ```mermaid
 %% Lazy sequence evaluation
 graph TD
+    accTitle: Example 42: Lazy Sequences
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Infinite Sequence, naturals iterate inc, Not Computed, take 5, Compute 0, Compute 1, Compute 2, Compute 3, Compute 4, Return 0 1 2 3 4, Still Lazy. Connections: Infinite Sequence to naturals iterate inc, naturals iterate inc to Not Computed, Not Computed to take 5, take 5 to Compute 0 (Demand), Compute 0 to Compute 1, Compute 1 to Compute 2, Compute 2 to Compute 3, Compute 3 to Compute 4, Compute 4 to Return 0 1 2 3 4, Not Computed to Still Lazy (Rest).
     A[Infinite Sequence] --> B[naturals iterate inc]
     B --> C[Not Computed]
     C --> D{take 5}
@@ -833,16 +882,22 @@ graph TD
     I --> J[Return 0 1 2 3 4]
     C -.->|Rest| K[Still Lazy]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#CA9161,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
-    style J fill:#CC78BC,color:#fff
-    style K fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    class H pal-029E73
+    class I pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class J pal-CC78BC
+    class K pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure

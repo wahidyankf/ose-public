@@ -14,6 +14,8 @@ Pipelines process data through stages, each stage running concurrently. Each sta
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 61: Pipeline Pattern
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Source generates values, Stage 1 transforms, Stage 2 filters, Sink collects results. Connections: Source generates values to Stage 1 transforms (channel), Stage 1 transforms to Stage 2 filters (channel), Stage 2 filters to Sink collects results (channel).
     A["Source<br/>generates values"]
     B["Stage 1<br/>transforms"]
     C["Stage 2<br/>filters"]
@@ -23,10 +25,15 @@ graph TD
     B -->|channel| C
     C -->|channel| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -118,6 +125,8 @@ Pipeline stages should respect cancellation. When context is cancelled, all stag
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Context cancellation propagates through pipeline stages
 sequenceDiagram
+    accTitle: Example 62: Context-Aware Pipelines
+    accDescr: Sequence diagram between Main, Context, Generate Stage, Square Stage, Output. Messages: Main to Context: WithTimeout(100ms); Main to Generate Stage: Start generation; Main to Square Stage: Start squaring; Generate Stage to Square Stage: Send values (1,2,3...); Square Stage to Output: Send squared (1,4,9...); Context to Generate Stage: ctx.Done() signal; Context to Square Stage: ctx.Done() signal; Generate Stage to Generate Stage: Exit gracefully; Square Stage to Square Stage: Exit gracefully; Generate Stage to Square Stage: Close channel; Square Stage to Output: Close channel; Output to Main: Loop exits.
     participant Main
     participant Ctx as Context
     participant Gen as Generate Stage
@@ -448,6 +457,8 @@ Atomic operations ensure thread-safe modifications without mutexes. The `sync/at
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Compare-and-swap atomic operation flow
 graph TD
+    accTitle: Example 65: Atomic Operations
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Start: value=5, Call CompareAndSwap expected=5, new=10, Current value equals expected?, D, 5, No: value!=5, Atomically swap value=10, Return true, No change value unchanged, Return false. Connections: D to 5, Start: value=5 to Call CompareAndSwap expected=5, new=10, Call CompareAndSwap expected=5, new=10 to Current value equals expected?, Current value equals expected? to D (value==5), Current value equals expected? to No: value!=5 (value!=5), D to Atomically swap value=10, No: value!=5 to No change value unchanged, Atomically swap value=10 to Return true, No change value unchanged to Return false.
     A["Start: value=5"]
     B["Call CompareAndSwap<br/>expected=5, new=10"]
     C{Current value<br/>equals expected?}
@@ -467,15 +478,21 @@ graph TD
     F --> G
     H --> I
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
-    style H fill:#CA9161,stroke:#000,color:#fff
-    style I fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-0173B2
+    class H pal-CA9161
+    class I pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -570,6 +587,8 @@ Reflection inspects types and values at runtime. The `reflect` package enables d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 66: Reflection
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Value PersonName, Age, reflect.ValueOf(p), reflect.Type main.Person, Iterate Fields, Field 0: Name string, Field 1: Age int. Connections: Value PersonName, Age to reflect.ValueOf(p), reflect.ValueOf(p) to reflect.Type main.Person, reflect.ValueOf(p) to Iterate Fields, Iterate Fields to Field 0: Name string, Iterate Fields to Field 1: Age int.
     A["Value<br/>Person{Name, Age}"]
     B["reflect.ValueOf(p)"]
     C["reflect.Type<br/>main.Person"]
@@ -583,12 +602,18 @@ graph TD
     D --> E
     D --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -837,6 +862,8 @@ Templates generate text (HTML, email, config files). The `text/template` package
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 69: Templates
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Template String Hello .Name, template.Parse(), Compiled Template, Data Name: Alice, template.Execute(), Output Hello Alice. Connections: Template String Hello .Name to template.Parse(), template.Parse() to Compiled Template, Compiled Template to template.Execute(), Data Name: Alice to template.Execute(), template.Execute() to Output Hello Alice.
     A["Template String<br/>Hello {{.Name}}"]
     B["template.Parse()"]
     C["Compiled Template"]
@@ -850,12 +877,18 @@ graph TD
     D --> E
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -961,10 +994,12 @@ Generics enable functions to work with different types while maintaining type sa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 70: Generic Functions
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Generic Function max[T Ordered], Called with []int, Called with []string, Called with []float64, Compiler generates max_int version, Compiler generates max_string version, Compiler generates max_float64 version. Connections: Generic Function max[T Ordered] to Called with []int, Generic Function max[T Ordered] to Called with []string, Generic Function max[T Ordered] to Called with []float64, Called with []int to Compiler generates max_int version, Called with []string to Compiler generates max_string version, Called with []float64 to Compiler generates max_float64 version.
     A["Generic Function<br/>max[T Ordered]"]
     B["Called with []int"]
     C["Called with []string"]
-    D["Called with []float64"]
+    D["Called with<br/>[]float64"]
     E["Compiler generates<br/>max_int version"]
     F["Compiler generates<br/>max_string version"]
     G["Compiler generates<br/>max_float64 version"]
@@ -976,13 +1011,17 @@ graph TD
     C --> F
     D --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1091,6 +1130,8 @@ Generic struct types work similarly to generic functions. Define type parameters
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 71: Generic Types
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Generic Type Stack[T any], Stack[int] items []int, Stack[string] items []string, Stack[Person] items []Person, Push(10) Pop() int, Push(hi) Pop() string, Push(person) Pop() Person. Connections: Generic Type Stack[T any] to Stack[int] items []int (instantiate), Generic Type Stack[T any] to Stack[string] items []string (instantiate), Generic Type Stack[T any] to Stack[Person] items []Person (instantiate), Stack[int] items []int to Push(10) Pop() int, Stack[string] items []string to Push(hi) Pop() string, Stack[Person] items []Person to Push(person) Pop() Person.
     A["Generic Type<br/>Stack[T any]"]
     B["Stack[int]<br/>items []int"]
     C["Stack[string]<br/>items []string"]
@@ -1104,13 +1145,17 @@ graph TD
     C --> F["Push(\"hi\")<br/>Pop() string"]
     D --> G["Push(person)<br/>Pop() Person"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1308,11 +1353,13 @@ The options pattern provides flexible configuration through functional options. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 73: Options Pattern
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: NewServer4041, Default Config Host: 0.0.0.0 Port: 80, WithHost40localhost41, WithPort40808041, With Timeout403041, Final Config Host: localhost Port: 8080 Timeout: 30. Connections: NewServer4041 to Default Config Host: 0.0.0.0 Port: 80, Default Config Host: 0.0.0.0 Port: 80 to WithHost40localhost41, WithHost40localhost41 to WithPort40808041, WithPort40808041 to With Timeout403041, With Timeout403041 to Final Config Host: localhost Port: 8080 Timeout: 30.
     A["NewServer#40;#41;"]
     B["Default Config<br/>Host: 0.0.0.0<br/>Port: 80"]
-    C["WithHost#40;localhost#41;"]
+    C["WithHost#40;<br/>localhost#41;"]
     D["WithPort#40;8080#41;"]
-    E["WithTimeout#40;30#41;"]
+    E["With<br/>Timeout#40;30#41;"]
     F["Final Config<br/>Host: localhost<br/>Port: 8080<br/>Timeout: 30"]
 
     A --> B
@@ -1321,12 +1368,17 @@ graph TD
     D --> E
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1663,6 +1715,8 @@ Dependency injection passes dependencies to functions/types instead of creating 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 77: Dependency Injection
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: UserService depends on Database, Production: Inject RealDB, Testing: Inject MockDB, UserService uses Database interface, RealDB.Query() Real SQL, MockDB.Query() Hardcoded data. Connections: UserService depends on Database to UserService uses Database interface, Production: Inject RealDB to RealDB.Query() Real SQL, Testing: Inject MockDB to MockDB.Query() Hardcoded data, UserService uses Database interface to RealDB.Query() Real SQL (production), UserService uses Database interface to MockDB.Query() Hardcoded data (testing).
     A["UserService<br/>depends on Database"]
     B["Production:<br/>Inject RealDB"]
     C["Testing:<br/>Inject MockDB"]
@@ -1676,12 +1730,18 @@ graph TD
     D -.->|production| E
     D -.->|testing| F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2089,6 +2149,8 @@ CGO enables calling C from Go. Use when you need external C libraries or perform
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Go-C interop boundary and type conversion
 graph TD
+    accTitle: Example 81: CGO Basics
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Go Code goString string, C.CString() Type Conversion, C Memory *char (malloc), C Function strlen_c(), Return Value C.int, Type Conversion int(), Go Code length int, C.free() Cleanup. Connections: Go Code goString string to C.CString() Type Conversion (Go string), C.CString() Type Conversion to C Memory *char (malloc) (*C.char), C Memory *char (malloc) to C Function strlen_c() (Pass pointer), C Function strlen_c() to Return Value C.int (C.int result), Return Value C.int to Type Conversion int() (Convert), Type Conversion int() to Go Code length int (Go int), C Memory *char (malloc) to C.free() Cleanup (Must free!).
     A["Go Code<br/>goString string"]
     B["C.CString()<br/>Type Conversion"]
     C["C Memory<br/>*char (malloc)"]
@@ -2106,14 +2168,21 @@ graph TD
     F -->|"Go int"| G
     C -.->|"Must free!"| H
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#fff,stroke-width:3px,stroke-dasharray: 5 5
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CA9161
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:3px,stroke-dasharray:5 5
+    class H pal-CC78BC-2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

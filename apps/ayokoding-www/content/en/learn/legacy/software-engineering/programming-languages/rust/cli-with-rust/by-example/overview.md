@@ -56,12 +56,18 @@ Every crate used in this tutorial is stable, widely adopted, and production-stan
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner<br/>Examples 1-28<br/>Rust Fundamentals via CLI Lens"] --> B["Intermediate<br/>Examples 29-57<br/>Real CLI Patterns"]
+    accTitle: Learning Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-28 Rust Fundamentals via CLI Lens, Intermediate Examples 29-57 Real CLI Patterns, Advanced Examples 58-80 Production CLI. Connections: Beginner Examples 1-28 Rust Fundamentals via CLI Lens to Intermediate Examples 29-57 Real CLI Patterns, Intermediate Examples 29-57 Real CLI Patterns to Advanced Examples 58-80 Production CLI.
+    A["Beginner<br/>Examples 1-28<br/>Rust Fundamentals<br/>via CLI Lens"] --> B["Intermediate<br/>Examples 29-57<br/>Real CLI Patterns"]
     B --> C["Advanced<br/>Examples 58-80<br/>Production CLI"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Beginner (Examples 1-28): Rust Fundamentals via CLI Lens

@@ -37,6 +37,8 @@ By the end of this tutorial, you will have touchpoints for:
 
 ```mermaid
 graph LR
+    accTitle: Learning Path
+    accDescr: Graph with 14 nodes and 22 connections. Nodes: Quick Start: Java, B, Objects, Methods, Inheritance, Interfaces, Collections, Exceptions, Streams API, File I/O, Generics, Testing, and 2 more. Connections: Quick Start: Java to B, Quick Start: Java to Objects, Quick Start: Java to Methods, Quick Start: Java to Inheritance, Quick Start: Java to Interfaces, Quick Start: Java to Collections, Quick Start: Java to Exceptions, Quick Start: Java to Streams API, Quick Start: Java to File I/O, Quick Start: Java to Generics, Quick Start: Java to Testing, B to Beginner Tutorial, and 10 more.
     A[Quick Start: Java] --> B[Classes & Objects]
     A --> C[Methods]
     A --> D[Inheritance]
@@ -61,9 +63,11 @@ graph LR
 
     L --> M[By-Example: Java]
 
-    style A fill:#e1f5ff
-    style L fill:#fff4e1
-    style M fill:#f0e6ff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    class L pal-CC78BC
+    class M pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Concept 1: Classes and Objects - Object-Oriented Fundamentals

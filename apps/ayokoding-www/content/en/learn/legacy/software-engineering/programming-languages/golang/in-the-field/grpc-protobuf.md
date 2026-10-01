@@ -27,6 +27,8 @@ gRPC is a high-performance RPC framework using Protocol Buffers (binary serializ
 
 ```mermaid
 sequenceDiagram
+    accTitle: gRPC Client-Server Communication
+    accDescr: Sequence diagram between gRPC Client, Connection (HTTP/2), gRPC Server, Service Handler. Messages: gRPC Client to Connection (HTTP/2): GetUser(id: 1); Connection (HTTP/2) to gRPC Server: Serialized Request (Protobuf binary); gRPC Server to Service Handler: Deserialize + Invoke; Service Handler to Service Handler: Process request (query database); Service Handler to gRPC Server: Userid:1, name:Alice; gRPC Server to Connection (HTTP/2): Serialized Response (Protobuf binary); Connection (HTTP/2) to gRPC Client: User object; gRPC Client to gRPC Server: ListUsers(page: 1); gRPC Server to Service Handler: Invoke; Service Handler to gRPC Server: User object; gRPC Server to gRPC Client: Stream user (continuous); gRPC Server to gRPC Client: EOF (stream complete); and 7 more.
     participant Client as gRPC Client
     participant Conn as Connection<br/>(HTTP/2)
     participant Server as gRPC Server
@@ -70,10 +72,6 @@ sequenceDiagram
         Server-->>Client: ChatMessage<br/>(continuous)
     end
 
-    style Client fill:#0173B2,stroke:#0173B2,color:#fff
-    style Conn fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style Server fill:#029E73,stroke:#029E73,color:#fff
-    style Handler fill:#CC78BC,stroke:#CC78BC,color:#fff
 ```
 
 **gRPC communication patterns**:

@@ -26,6 +26,8 @@ Go's `net/http` package is production-grade HTTP implementation used by major co
 
 ```mermaid
 sequenceDiagram
+    accTitle: HTTP Request Lifecycle with Middleware
+    accDescr: Sequence diagram between Client, Server, Logger Middleware, Auth Middleware, Rate Limit Middleware, Handler. Messages: Client to Server: HTTP Request (GET /api/users); Server to Logger Middleware: Request enters chain; Logger Middleware to Logger Middleware: Log request (method, path, timestamp); Logger Middleware to Auth Middleware: next.ServeHTTP(); Auth Middleware to Auth Middleware: Verify token Extract user ID; Auth Middleware to Rate Limit Middleware: next.ServeHTTP() (user ID in context); Rate Limit Middleware to Rate Limit Middleware: Check rate limit (user bucket); Rate Limit Middleware to Handler: next.ServeHTTP(); Handler to Handler: Process request (query database); Handler to Rate Limit Middleware: Response; Rate Limit Middleware to Auth Middleware: Response; Auth Middleware to Logger Middleware: Response; and 10 more.
     participant Client
     participant Server
     participant LoggerMW as Logger Middleware
@@ -62,12 +64,6 @@ sequenceDiagram
         Server-->>Client: 401 Unauthorized
     end
 
-    style Client fill:#0173B2,stroke:#0173B2,color:#fff
-    style Server fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style LoggerMW fill:#029E73,stroke:#029E73,color:#fff
-    style AuthMW fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style RateLimitMW fill:#CA9161,stroke:#CA9161,color:#fff
-    style Handler fill:#0173B2,stroke:#0173B2,color:#fff
 ```
 
 **Middleware chain execution**:

@@ -25,12 +25,18 @@ This tutorial teaches Clojure through **80 heavily annotated, runnable code exam
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-27 Clojure Fundamentals, Intermediate Examples 28-54 Production Patterns, Advanced Examples 55-80 Expert Mastery. Connections: Beginner Examples 1-27 Clojure Fundamentals to Intermediate Examples 28-54 Production Patterns, Intermediate Examples 28-54 Production Patterns to Advanced Examples 55-80 Expert Mastery.
     A["Beginner<br/>Examples 1-27<br/>Clojure Fundamentals"] --> B["Intermediate<br/>Examples 28-54<br/>Production Patterns"]
     B --> C["Advanced<br/>Examples 55-80<br/>Expert Mastery"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Progress from Lisp fundamentals through production patterns to expert mastery. Each level builds on the previous, with immutability and functional thinking as the critical foundation.
@@ -273,14 +279,20 @@ Clojure's destructuring syntax allows you to extract values from maps and sequen
 ```mermaid
 %% Map destructuring flow
 graph TD
-    A["Map: {:name \"Alice\" :age 30}"] --> B[Destructure]
+    accTitle: Example 5: Destructuring Maps
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Map: :name Alice :age 30, Destructure, name → Alice, age → 30. Connections: Map: :name Alice :age 30 to Destructure, Destructure to name → Alice, Destructure to age → 30.
+    A["Map: {:name<br/>\"Alice\" :age 30}"] --> B[Destructure]
     B --> C["name → \"Alice\""]
     B --> D["age → 30"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure

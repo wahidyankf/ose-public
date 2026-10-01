@@ -110,6 +110,8 @@ public class Order {
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Enum-Based FSM Pattern
+    accDescr: State diagram with 6 items: start or end, PENDING, CONFIRMED, CANCELLED, SHIPPED, DELIVERED. Relationships: start or end to PENDING; PENDING to CONFIRMED: confirm(); PENDING to CANCELLED: cancel(); CONFIRMED to SHIPPED: ship(); CONFIRMED to CANCELLED: cancel(); SHIPPED to DELIVERED: deliver(); DELIVERED to start or end; CANCELLED to start or end.
     [*] --> PENDING
     PENDING --> CONFIRMED: confirm()
     PENDING --> CANCELLED: cancel()
@@ -119,11 +121,14 @@ stateDiagram-v2
     DELIVERED --> [*]
     CANCELLED --> [*]
 
-    style PENDING fill:#0173B2,stroke:#000,color:#fff
-    style CONFIRMED fill:#029E73,stroke:#000,color:#fff
-    style SHIPPED fill:#DE8F05,stroke:#000,color:#000
-    style DELIVERED fill:#029E73,stroke:#000,color:#fff
-    style CANCELLED fill:#CC3311,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PENDING pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class CONFIRMED pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SHIPPED pal-DE8F05
+    class DELIVERED pal-029E73
+    class CANCELLED pal-DE8F05
 ```
 
 ### Enum-Based Patterns
@@ -329,17 +334,23 @@ public class AuthenticatedState implements LoginState {
 
 ```mermaid
 graph TD
+    accTitle: Choosing Between Patterns
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: FSM Needed, State-specific behavior?, < 10 states?, Class-Based FSM, Enum-Based FSM. Connections: FSM Needed to State-specific behavior?, State-specific behavior? to < 10 states? (No), State-specific behavior? to Class-Based FSM (Yes), < 10 states? to Enum-Based FSM (Yes), < 10 states? to Class-Based FSM (No).
     Start["FSM Needed"] --> Q1["State-specific<br/>behavior?"]
     Q1 -->|No| Q2["< 10 states?"]
     Q1 -->|Yes| ClassBased["Class-Based FSM"]
     Q2 -->|Yes| EnumBased["Enum-Based FSM"]
     Q2 -->|No| ClassBased
 
-    style Start fill:#0173B2,stroke:#000,color:#fff
-    style Q1 fill:#DE8F05,stroke:#000,color:#000
-    style Q2 fill:#DE8F05,stroke:#000,color:#000
-    style EnumBased fill:#029E73,stroke:#000,color:#fff
-    style ClassBased fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Q1 pal-DE8F05
+    class Q2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class EnumBased pal-029E73
+    class ClassBased pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Practical Patterns

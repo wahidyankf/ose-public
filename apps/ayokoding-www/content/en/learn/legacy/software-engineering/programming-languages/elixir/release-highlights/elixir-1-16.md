@@ -14,8 +14,9 @@ next: "/en/learn/software-engineering/programming-languages/elixir/release-highl
 Elixir 1.16 arrived in January 2024 as a feature-focused release delivering long-requested developer experience improvements. This version adds native JSON encoding and decoding capabilities, eliminating dependency on third-party JSON libraries for basic operations. The release demonstrates the language's maturation by incorporating commonly used ecosystem patterns directly into the standard library.
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
+    accTitle: Release Overview
+    accDescr: Flowchart with 13 nodes and 12 connections. Nodes: Elixir 1.16 January 2024, JSON Module, Module Attributes, Process Improvements, Standard Library, Native Encoding JSON.encode/1, Native Decoding JSON.decode/1, Enhanced @doc Better Metadata, Function Guards Compile-time Checks, Process.sleep/1 Duration Support, Better Timeouts Type Safety, ExUnit Improvements Test Experience, and 1 more. Connections: Elixir 1.16 January 2024 to JSON Module, Elixir 1.16 January 2024 to Module Attributes, Elixir 1.16 January 2024 to Process Improvements, Elixir 1.16 January 2024 to Standard Library, JSON Module to Native Encoding JSON.encode/1, JSON Module to Native Decoding JSON.decode/1, Module Attributes to Enhanced @doc Better Metadata, Module Attributes to Function Guards Compile-time Checks, Process Improvements to Process.sleep/1 Duration Support, Process Improvements to Better Timeouts Type Safety, Standard Library to ExUnit Improvements Test Experience, Standard Library to Mix Enhancements Build Tools.
     A[Elixir 1.16<br/>January 2024] --> B[JSON Module]
     A --> C[Module Attributes]
     A --> D[Process Improvements]
@@ -33,11 +34,16 @@ flowchart TD
     E --> E1[ExUnit Improvements<br/>Test Experience]
     E --> E2[Mix Enhancements<br/>Build Tools]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Built-in JSON Module

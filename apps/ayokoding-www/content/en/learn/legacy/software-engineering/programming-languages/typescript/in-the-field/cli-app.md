@@ -840,6 +840,8 @@ Progress |████████████░░░░░░░░| 60% | 3/
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
+    accTitle: CLI Framework Progression Diagram
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: process.argv, Commander.js, Yargs, Oclif. Connections: process.argv to Commander.js (Declarative API), process.argv to Yargs (Advanced validation), process.argv to Oclif (Plugin architecture).
     A[process.argv] -->|Declarative API| B[Commander.js]
     A -->|Advanced validation| C[Yargs]
     A -->|Plugin architecture| D[Oclif]
@@ -849,8 +851,8 @@ graph TB
     C:::framework
     D:::production
 
-    classDef standard fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef framework fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef standard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef framework fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef production fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
 
     subgraph Standard[" Standard Node.js "]
@@ -863,8 +865,11 @@ graph TB
         D
     end
 
-    style Standard fill:#F0F0F0,stroke:#CC78BC,stroke-width:3px
-    style Frameworks fill:#F0F0F0,stroke:#029E73,stroke-width:3px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:3px
+    class Standard pal-CC78BC
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#029E73,color:#000000,stroke-width:3px
+    class Frameworks pal-CC78BC-2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

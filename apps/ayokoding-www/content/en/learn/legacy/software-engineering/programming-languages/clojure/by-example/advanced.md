@@ -16,8 +16,10 @@ Macros can recursively transform nested code structures by traversing the Clojur
 ```mermaid
 %% Macro code walking process
 graph TD
+    accTitle: Example 55: Advanced Macros - Code Walking
+    accDescr: Graph with 10 nodes and 12 connections. Nodes: Code Form, Is Seq?, Map Walk Over Elements, Is Vector?, Vec Map Walk, Is Map?, Map Walk K/V Pairs, Transform Leaf Node, Recursive Walk, Return Transformed. Connections: Code Form to Is Seq?, Is Seq? to Map Walk Over Elements (Yes), Is Seq? to Is Vector? (No), Is Vector? to Vec Map Walk (Yes), Is Vector? to Is Map? (No), Is Map? to Map Walk K/V Pairs (Yes), Is Map? to Transform Leaf Node (No), Map Walk Over Elements to Recursive Walk, Vec Map Walk to Recursive Walk, Map Walk K/V Pairs to Recursive Walk, Transform Leaf Node to Return Transformed, Recursive Walk to Return Transformed.
     A[Code Form] --> B{Is Seq?}
-    B -->|Yes| C[Map Walk Over Elements]
+    B -->|Yes| C[Map Walk Over<br/>Elements]
     B -->|No| D{Is Vector?}
     D -->|Yes| E[Vec Map Walk]
     D -->|No| F{Is Map?}
@@ -29,12 +31,17 @@ graph TD
     H --> J[Return Transformed]
     I --> J
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style H fill:#029E73,color:#fff
-    style J fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class D pal-DE8F05
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class H pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class J pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -87,19 +94,26 @@ Debug macros by expanding to see generated code before evaluation. `macroexpand-
 ```mermaid
 %% Macro expansion process
 graph TD
+    accTitle: Example 56: Macro Debugging with macroexpand
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Macro Form, macroexpand-1, First Level Expansion, More Macros?, macroexpand, Final Code, Recursive Expansion. Connections: Macro Form to macroexpand-1, macroexpand-1 to First Level Expansion, First Level Expansion to More Macros?, More Macros? to macroexpand (Yes), More Macros? to Final Code (No), macroexpand to Recursive Expansion, Recursive Expansion to Final Code.
     A[Macro Form] --> B[macroexpand-1]
-    B --> C[First Level Expansion]
+    B --> C[First Level<br/>Expansion]
     C --> D{More Macros?}
     D -->|Yes| E[macroexpand]
     D -->|No| F[Final Code]
     E --> G[Recursive Expansion]
     G --> F
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -182,6 +196,8 @@ Add type hints to eliminate reflection for performance in numeric and Java inter
 ```mermaid
 %% Type hint performance impact
 graph TD
+    accTitle: Example 58: Type Hints for Performance
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Method Call, Type Hinted?, Runtime Reflection, Direct Method Call, Slow: Class Lookup, Slow: Method Search, Finally Execute, Fast: Direct Invoke. Connections: Method Call to Type Hinted?, Type Hinted? to Runtime Reflection (No), Type Hinted? to Direct Method Call (Yes), Runtime Reflection to Slow: Class Lookup, Slow: Class Lookup to Slow: Method Search, Slow: Method Search to Finally Execute, Direct Method Call to Fast: Direct Invoke.
     A[Method Call] --> B{Type Hinted?}
     B -->|No| C[Runtime Reflection]
     B -->|Yes| D[Direct Method Call]
@@ -190,12 +206,17 @@ graph TD
     F --> G[Finally Execute]
     D --> H[Fast: Direct Invoke]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CA9161,color:#fff
-    style D fill:#029E73,color:#fff
-    style G fill:#CA9161,color:#fff
-    style H fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class G pal-CA9161
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -257,6 +278,8 @@ Transducers can maintain state across transformation steps using a mutable conta
 ```mermaid
 %% Stateful transducer flow
 sequenceDiagram
+    accTitle: Example 59: Stateful Transducers
+    accDescr: Sequence diagram between Collection, Transducer, Volatile State, Reducing Function. Messages: Collection to Transducer: Input 1; Transducer to Volatile State: Read State; Volatile State to Transducer: Previous Value; Transducer to Volatile State: Update State; Transducer to Reducing Function: Transform & Emit; Collection to Transducer: Input 2; Transducer to Volatile State: Read State; Volatile State to Transducer: Updated Value; Transducer to Volatile State: Update State; Transducer to Reducing Function: Transform & Emit.
     participant C as Collection
     participant T as Transducer
     participant V as Volatile State
@@ -335,6 +358,8 @@ Leverage reducers for parallel processing on large datasets using JVM's fork-joi
 ```mermaid
 %% Fork-join parallel processing
 graph TD
+    accTitle: Example 60: Reducers with Fork-Join
+    accDescr: Graph with 9 nodes and 11 connections. Nodes: Large Collection, Split into Chunks, Chunk 1, Chunk 2, Chunk 3, Chunk 4, Process in Parallel, Combine Results, Final Result. Connections: Large Collection to Split into Chunks, Split into Chunks to Chunk 1, Split into Chunks to Chunk 2, Split into Chunks to Chunk 3, Split into Chunks to Chunk 4, Chunk 1 to Process in Parallel, Chunk 2 to Process in Parallel, Chunk 3 to Process in Parallel, Chunk 4 to Process in Parallel, Process in Parallel to Combine Results, Combine Results to Final Result.
     A[Large Collection] --> B[Split into Chunks]
     B --> C[Chunk 1]
     B --> D[Chunk 2]
@@ -347,11 +372,16 @@ graph TD
     G --> H[Combine Results]
     H --> I[Final Result]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -429,6 +459,8 @@ Define protocols for extensible polymorphic operations that work across differen
 ```mermaid
 %% Protocol polymorphism
 graph TD
+    accTitle: Example 61: Protocols for Polymorphism
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: Protocol Definition, Serializable, serialize method, deserialize method, String Type, extend-protocol, Vector Type, Date Type, extend-type. Connections: Protocol Definition to Serializable, Serializable to serialize method, Serializable to deserialize method, String Type to extend-protocol, Vector Type to extend-protocol, Date Type to extend-type, extend-protocol to serialize method, extend-protocol to deserialize method, extend-type to serialize method, extend-type to deserialize method.
     A[Protocol Definition] --> B[Serializable]
     B --> C[serialize method]
     B --> D[deserialize method]
@@ -440,10 +472,14 @@ graph TD
     I --> C
     I --> D
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -503,6 +539,8 @@ Define custom type hierarchies for multimethod dispatch using `derive` and `isa?
 ```mermaid
 %% Type hierarchy for multimethods
 graph TD
+    accTitle: Example 62: Multimethods with Hierarchies
+    accDescr: Graph with 11 nodes and 9 connections. Nodes: ::animal, ::dog, ::cat, ::parrot, ::bird, speak multimethod, Dispatch on :type, Woof!, Meow!, Inherits ::animal, Some sound. Connections: ::animal to ::dog, ::animal to ::cat, ::animal to ::parrot, ::bird to ::parrot, speak multimethod to Dispatch on :type, Dispatch on :type to Woof! (::dog), Dispatch on :type to Meow! (::cat), Dispatch on :type to Inherits ::animal (::parrot), Inherits ::animal to Some sound.
     A[::animal] --> B[::dog]
     A --> C[::cat]
     A --> D[::parrot]
@@ -514,10 +552,14 @@ graph TD
     G -->|::parrot| J[Inherits ::animal]
     J --> K[Some sound]
 
-    style A fill:#0173B2,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class E pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -579,6 +621,8 @@ Structure applications using component lifecycle management with Stuart Sierra's
 ```mermaid
 %% Component dependency graph
 graph TD
+    accTitle: Example 63: Component Architecture
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: System, Database Component, Web Server Component, start: connect, stop: disconnect, start: bind port, stop: unbind, Start System, Stop System. Connections: System to Database Component, System to Web Server Component, Database Component to start: connect, Database Component to stop: disconnect, Web Server Component to start: bind port, Web Server Component to stop: unbind, Start System to start: connect, start: connect to start: bind port, Stop System to stop: unbind, stop: unbind to stop: disconnect.
     A[System] --> B[Database Component]
     A --> C[Web Server Component]
     C -.depends on.-> B
@@ -593,11 +637,15 @@ graph TD
     I[Stop System] --> G
     G --> E
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -728,6 +776,8 @@ Build HTTP middleware for request/response transformation using Ring's simple ha
 ```mermaid
 %% Ring middleware stack
 sequenceDiagram
+    accTitle: Example 65: Ring Middleware
+    accDescr: Sequence diagram between Request, wrap-logging, wrap-auth, Handler, Response. Messages: Request to wrap-logging: Incoming Request; wrap-logging to wrap-logging: Log request URI; wrap-logging to wrap-auth: Forward request; wrap-auth to wrap-auth: Check authorization; wrap-auth to Handler: Authorized request; Handler to Handler: Process request; Handler to wrap-auth: Generate response; wrap-auth to wrap-logging: Pass response; wrap-logging to wrap-logging: Log response status; wrap-logging to Response: Final response.
     participant R as Request
     participant L as wrap-logging
     participant A as wrap-auth
@@ -959,6 +1009,8 @@ Generate test data automatically from specs using `clojure.spec.gen.alpha` and `
 ```mermaid
 %% Spec generative testing flow
 graph TD
+    accTitle: Example 69: Spec Generative Testing
+    accDescr: Graph with 13 nodes and 12 connections. Nodes: Spec Definition, s/def specs, s/gen Generator, gen/sample, Random Valid Data, s/fdef Function Spec, stest/check, Generate Inputs, Run Function, Validate Output, Valid?, Test Passes, and 1 more. Connections: Spec Definition to s/def specs, s/def specs to s/gen Generator, s/gen Generator to gen/sample, gen/sample to Random Valid Data, Spec Definition to s/fdef Function Spec, s/fdef Function Spec to stest/check, stest/check to Generate Inputs, Generate Inputs to Run Function, Run Function to Validate Output, Validate Output to Valid?, Valid? to Test Passes (Yes), Valid? to Counterexample Found (No).
     A[Spec Definition] --> B[s/def specs]
     B --> C[s/gen Generator]
     C --> D[gen/sample]
@@ -973,11 +1025,16 @@ graph TD
     K -->|Yes| L[Test Passes]
     K -->|No| M[Counterexample Found]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style G fill:#DE8F05,color:#fff
-    style L fill:#029E73,color:#fff
-    style M fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class G pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class L pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class M pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -1095,6 +1152,8 @@ Profile code to identify performance bottlenecks using criterium, the Clojure be
 ```mermaid
 %% Performance profiling workflow
 graph TD
+    accTitle: Example 71: Performance Profiling
+    accDescr: Graph with 14 nodes and 13 connections. Nodes: Code to Profile, crit/bench, JVM Warmup, Multiple Iterations, Statistical Analysis, Timing Report, time macro, Single Execution, Elapsed Time, Memory Profiling, Before Memory, Execute Function, and 2 more. Connections: Code to Profile to crit/bench, crit/bench to JVM Warmup, JVM Warmup to Multiple Iterations, Multiple Iterations to Statistical Analysis, Statistical Analysis to Timing Report, Code to Profile to time macro, time macro to Single Execution, Single Execution to Elapsed Time, Code to Profile to Memory Profiling, Memory Profiling to Before Memory, Before Memory to Execute Function, Execute Function to After Memory, and 1 more.
     A[Code to Profile] --> B[crit/bench]
     B --> C[JVM Warmup]
     C --> D[Multiple Iterations]
@@ -1111,11 +1170,15 @@ graph TD
     L --> M[After Memory]
     M --> N[Memory Delta]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
-    style N fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class I pal-029E73
+    class N pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -1169,6 +1232,8 @@ Cache function results for repeated calls with same arguments using `memoize`. C
 ```mermaid
 %% Memoization cache flow
 graph TD
+    accTitle: Example 72: Memoization for Performance
+    accDescr: Graph with 10 nodes and 11 connections. Nodes: Function Call, In Cache?, Return Cached Result, Compute Result, Store in Cache, Return Result, First Call fib 35, ~5 seconds, Second Call fib 35, Instant: 0ms. Connections: Function Call to In Cache?, In Cache? to Return Cached Result (Yes), In Cache? to Compute Result (No), Compute Result to Store in Cache, Store in Cache to Return Result, First Call fib 35 to Compute Result, Compute Result to ~5 seconds, ~5 seconds to Store in Cache, Second Call fib 35 to In Cache?, In Cache? to Return Cached Result, Return Cached Result to Instant: 0ms.
     A[Function Call] --> B{In Cache?}
     B -->|Yes| C[Return Cached Result]
     B -->|No| D[Compute Result]
@@ -1182,11 +1247,16 @@ graph TD
     B --> C
     C --> J[Instant: 0ms]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CA9161,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -1481,6 +1551,8 @@ Best practices for deploying Clojure applications to production cover JVM tuning
 ```mermaid
 %% Production deployment pipeline
 graph TD
+    accTitle: Example 78: Production Deployment Checklist
+    accDescr: Graph with 12 nodes and 11 connections. Nodes: Development, AOT Compilation, Build Uberjar, JVM Tuning, Configure Logging, Health Checks, Graceful Shutdown, Error Handling, Connection Pooling, Deploy to Production, K, Alert. Connections: Development to AOT Compilation, AOT Compilation to Build Uberjar, Build Uberjar to JVM Tuning, JVM Tuning to Configure Logging, Configure Logging to Health Checks, Health Checks to Graceful Shutdown, Graceful Shutdown to Error Handling, Error Handling to Connection Pooling, Connection Pooling to Deploy to Production, Deploy to Production to K, Deploy to Production to Alert.
     A[Development] --> B[AOT Compilation]
     B --> C[Build Uberjar]
     C --> D[JVM Tuning]
@@ -1492,11 +1564,16 @@ graph TD
     I --> J[Deploy to Production]
     J --> K[Monitor & Alert]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
-    style K fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class J pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class K pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure

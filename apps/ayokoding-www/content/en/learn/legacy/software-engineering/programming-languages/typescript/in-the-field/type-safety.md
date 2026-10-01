@@ -750,7 +750,9 @@ calculateSpeed(converted, time);
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
-    A[Basic TypeScript Types] -->|Enable strict mode| B[Strict Type Checking]
+    accTitle: Type Safety Progression Diagram
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Basic TypeScript Types, Strict Type Checking, Branded Types, Discriminated Unions. Connections: Basic TypeScript Types to Strict Type Checking (Enable strict mode), Strict Type Checking to Branded Types (Domain validation), Strict Type Checking to Discriminated Unions (Complex states).
+    A[Basic TypeScript<br/>Types] -->|Enable strict mode| B[Strict Type Checking]
     B -->|Domain validation| C[Branded Types]
     B -->|Complex states| D[Discriminated Unions]
 
@@ -759,11 +761,11 @@ graph TB
     C:::production
     D:::production
 
-    classDef standard fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef standard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef framework fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef production fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef production fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 
-    subgraph Standard[" Standard TypeScript "]
+    subgraph Standard["Standard TypeScript"]
         A
     end
 
@@ -771,14 +773,18 @@ graph TB
         B
     end
 
-    subgraph Production[" Production Patterns "]
+    subgraph Production["Production Patterns"]
         C
         D
     end
 
-    style Standard fill:#F0F0F0,stroke:#CC78BC,stroke-width:3px
-    style Strict fill:#F0F0F0,stroke:#0173B2,stroke-width:3px
-    style Production fill:#F0F0F0,stroke:#029E73,stroke-width:3px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:3px
+    class Standard pal-CC78BC
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#0173B2,color:#000000,stroke-width:3px
+    class Strict pal-CC78BC-2
+    classDef pal-CC78BC-3 fill:#CC78BC,stroke:#029E73,color:#000000,stroke-width:3px
+    class Production pal-CC78BC-3
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

@@ -16,14 +16,20 @@ C# is a compiled language that targets the .NET runtime. You can run C# code thr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 1: Hello World and C Compilation
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Source Code Program.cs, C Compiler Roslyn, IL Assembly Program.dll, .NET Runtime Execution. Connections: Source Code Program.cs to C Compiler Roslyn, C Compiler Roslyn to IL Assembly Program.dll, IL Assembly Program.dll to .NET Runtime Execution.
     A[Source Code<br/>Program.cs]:::blue --> B[C# Compiler<br/>Roslyn]:::orange
     B --> C[IL Assembly<br/>Program.dll]:::teal
     C --> D[.NET Runtime<br/>Execution]:::orange
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -45,14 +51,20 @@ C# supports type inference with the `var` keyword, allowing the compiler to dedu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 2: Variables with Type Inference
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: var x = 10, Compiler Inference, Type: int, Mutable by default. Connections: var x = 10 to Compiler Inference, Compiler Inference to Type: int, Compiler Inference to Mutable by default.
     A[var x = 10]:::blue --> B[Compiler Inference]:::orange
     B --> C[Type: int]:::teal
     B --> D[Mutable by default]:::orange
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -195,16 +207,22 @@ Switch expressions provide pattern matching with expression semantics, replacing
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 6: Switch Expressions
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: number input, Pattern Match, One, Two, Other. Connections: number input to Pattern Match, Pattern Match to One (1), Pattern Match to Two (2), Pattern Match to Other (_).
     A[number input]:::blue --> B{Pattern Match}:::orange
     B -->|1| C[One]:::teal
     B -->|2| D[Two]:::teal
     B -->|_| E[Other]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -396,12 +414,18 @@ Classes define object templates with fields, properties, and methods. They're C#
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 11: Classes and Objects
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Person Class Template, alice Instance Name: Alice Age: 30, bob Instance Name: Bob Age: 25. Connections: Person Class Template to alice Instance Name: Alice Age: 30, Person Class Template to bob Instance Name: Bob Age: 25.
     A[Person Class<br/>Template]:::blue --> B[alice Instance<br/>Name: Alice<br/>Age: 30]:::orange
     A --> C[bob Instance<br/>Name: Bob<br/>Age: 25]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -649,15 +673,21 @@ Dictionaries provide key-value storage with O(1) average lookup time, essential 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 16: Collections - Dictionary
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Dictionary, Alice → 30, Bob → 25, Charlie → 35. Connections: Dictionary to Alice → 30, Dictionary to Bob → 25, Dictionary to Charlie → 35.
     A["Dictionary<string, int>"]:::blue
     A --> B["Alice → 30"]:::orange
     A --> C["Bob → 25"]:::teal
     A --> D["Charlie → 35"]:::orange
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -764,12 +794,18 @@ LINQ (Language Integrated Query) provides functional operations on collections t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A[Source: 1,2,3,4,5,6,7,8,9,10]:::blue -->|Where n % 2 == 0| B[Filtered: 2,4,6,8,10]:::orange
+    accTitle: Example 18: LINQ - Where
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Source: 1,2,3,4,5,6,7,8,9,10, Filtered: 2,4,6,8,10, Result List. Connections: Source: 1,2,3,4,5,6,7,8,9,10 to Filtered: 2,4,6,8,10 (Where n 2 == 0), Filtered: 2,4,6,8,10 to Result List (ToList).
+    A[Source:<br/>1,2,3,4,5,6,7,8,9,10]:::blue -->|Where n % 2 == 0| B[Filtered: 2,4,6,8,10]:::orange
     B -->|ToList| C[Result List]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -814,12 +850,18 @@ Select transforms each element in a collection, projecting to a new type or valu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A[Source: 1,2,3,4,5]:::blue -->|Select n => n * 2| B[Transformed: 2,4,6,8,10]:::orange
+    accTitle: Example 19: LINQ - Select
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Source: 1,2,3,4,5, Transformed: 2,4,6,8,10, Result List. Connections: Source: 1,2,3,4,5 to Transformed: 2,4,6,8,10 (Select n => n * 2), Transformed: 2,4,6,8,10 to Result List (ToList).
+    A[Source: 1,2,3,4,5]:::blue -->|Select n => n * 2| B[Transformed:<br/>2,4,6,8,10]:::orange
     B -->|ToList| C[Result List]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

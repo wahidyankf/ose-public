@@ -32,6 +32,8 @@ TDD follows a simple three-step cycle that drives development through tests.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 stateDiagram-v2
+    accTitle: The Red-Green-Refactor Cycle
+    accDescr: State diagram with 7 items: start or end, Red, Green, Refactor, Red redState, Green greenState, Refactor refactorState. Relationships: start or end to Red: Write test; Red to Green: Test fails; Green to Refactor: Test passes; Refactor to Red: Tests still pass, next feature.
     [*] --> Red: Write test
 
     Red --> Green: Test fails
@@ -56,8 +58,8 @@ stateDiagram-v2
         Keep tests passing
     end note
 
-    classDef redState fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:3px
-    classDef greenState fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:3px
+    classDef redState fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:3px
+    classDef greenState fill:#029E73,stroke:#000000,color:#000000,stroke-width:3px
     classDef refactorState fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:3px
 
     class Red redState
@@ -537,6 +539,8 @@ JUnit 5 organizes tests with clear structure using lifecycle hooks and annotatio
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Lifecycle Hooks
+    accDescr: Graph with 12 nodes and 11 connections. Nodes: Test Suite Start, 64BeforeAll Setup resources, Test 1, 64BeforeEach Setup test data, 64Test Execute test, 64AfterEach Cleanup test data, Test 2, 64BeforeEach Setup test data, 64Test Execute test, 64AfterEach Cleanup test data, 64AfterAll Release resources, Test Suite End. Connections: Test Suite Start to 64BeforeAll Setup resources, 64BeforeAll Setup resources to Test 1, Test 1 to 64BeforeEach Setup test data, 64BeforeEach Setup test data to 64Test Execute test, 64Test Execute test to 64AfterEach Cleanup test data, 64AfterEach Cleanup test data to Test 2, Test 2 to 64BeforeEach Setup test data, 64BeforeEach Setup test data to 64Test Execute test, 64Test Execute test to 64AfterEach Cleanup test data, 64AfterEach Cleanup test data to 64AfterAll Release resources, 64AfterAll Release resources to Test Suite End.
     Start([Test Suite Start]) --> BeforeAll["#64;BeforeAll<br/>Setup resources"]:::purple
     BeforeAll --> Test1Start[Test 1]
 
@@ -552,9 +556,10 @@ graph TD
     AfterEach2 --> AfterAll["#64;AfterAll<br/>Release resources"]:::purple
     AfterAll --> End([Test Suite End])
 
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Before**: Manual setup in each test, potential state leakage between tests
@@ -685,6 +690,8 @@ Mockito creates test doubles that intercept method calls and return stubbed valu
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Creating Mocks
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Test Code, Call Service Method, Mock Intercepts Call, Return Stubbed Value, Return Default Value, Verify Interactions, Assert Behavior. Connections: Test Code to Call Service Method, Call Service Method to Mock Intercepts Call, Mock Intercepts Call to Return Stubbed Value (Stubbed), Mock Intercepts Call to Return Default Value (Not Stubbed), Return Stubbed Value to Verify Interactions, Return Default Value to Verify Interactions, Verify Interactions to Assert Behavior.
     Test[Test Code]:::blue --> ServiceCall[Call Service Method]:::teal
     ServiceCall --> MockIntercept{Mock Intercepts Call}:::purple
     MockIntercept -->|Stubbed| ReturnStub[Return Stubbed Value]:::orange
@@ -696,9 +703,10 @@ graph TD
     Verify --> Assert[Assert Behavior]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key annotations**:
@@ -801,6 +809,8 @@ The test pyramid guides how many tests to write at each level for optimal covera
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Testing Strategies and the Test Pyramid
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: E2E Tests Few, Slow Full system, Integration Tests Moderate count Multiple components, Unit Tests Many, Fast Isolated units. Connections: E2E Tests Few, Slow Full system to Integration Tests Moderate count Multiple components, Integration Tests Moderate count Multiple components to Unit Tests Many, Fast Isolated units.
     E2E[E2E Tests<br/>Few, Slow<br/>Full system]:::orange
     Integration[Integration Tests<br/>Moderate count<br/>Multiple components]:::teal
     Unit[Unit Tests<br/>Many, Fast<br/>Isolated units]:::blue
@@ -808,9 +818,10 @@ graph TD
     E2E --> Integration
     Integration --> Unit
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Strategy**:

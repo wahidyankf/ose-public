@@ -26,6 +26,8 @@ Authentication (verifying identity) and authorization (verifying permissions) ar
 
 ```mermaid
 sequenceDiagram
+    accTitle: JWT Authentication Flow
+    accDescr: Sequence diagram between Client, LoginHandler, Database, JWTMiddleware, ProtectedHandler. Messages: Client to LoginHandler: POST /login (username, password); LoginHandler to Database: Validate credentials; Database to LoginHandler: User found + role; LoginHandler to LoginHandler: Generate JWT (sign with secret); LoginHandler to Client: token: eyJhbGc...; Client to JWTMiddleware: GET /protected Authorization: Bearer eyJhbGc...; JWTMiddleware to JWTMiddleware: Parse token Validate signature Check expiration; JWTMiddleware to JWTMiddleware: Extract claims (username, role); JWTMiddleware to ProtectedHandler: Forward request (claims in context); ProtectedHandler to Client: 200 OK Protected resource; JWTMiddleware to Client: 401 Unauthorized.
     participant Client
     participant LoginHandler
     participant Database
@@ -50,11 +52,6 @@ sequenceDiagram
         JWTMiddleware-->>Client: 401 Unauthorized
     end
 
-    style Client fill:#0173B2,stroke:#0173B2,color:#fff
-    style LoginHandler fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style Database fill:#029E73,stroke:#029E73,color:#fff
-    style JWTMiddleware fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style ProtectedHandler fill:#CA9161,stroke:#CA9161,color:#fff
 ```
 
 **Authentication flow steps**:

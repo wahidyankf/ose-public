@@ -16,16 +16,24 @@ Elixir programs run on the BEAM virtual machine (Erlang's runtime). Code can be 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Hello World and Basic Syntax
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Elixir Source Code (.ex files), Elixir Compiler, BEAM Bytecode (.beam files), BEAM Virtual Machine, Program Output. Connections: Elixir Source Code (.ex files) to Elixir Compiler, Elixir Compiler to BEAM Bytecode (.beam files), BEAM Bytecode (.beam files) to BEAM Virtual Machine, BEAM Virtual Machine to Program Output.
     Source["Elixir Source Code<br/>(.ex files)"] --> Compiler["Elixir Compiler"]
     Compiler --> Bytecode["BEAM Bytecode<br/>(.beam files)"]
     Bytecode --> VM["BEAM Virtual Machine"]
     VM --> Output["Program Output"]
 
-    style Source fill:#0173B2,color:#fff
-    style Compiler fill:#DE8F05,color:#fff
-    style Bytecode fill:#029E73,color:#fff
-    style VM fill:#CC78BC,color:#fff
-    style Output fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Compiler pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Bytecode pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class VM pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Output pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -216,18 +224,25 @@ The `=` operator is the **match operator**, not assignment. The left side (patte
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 4: Pattern Matching Basics
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Left: Pattern with variables, Match Operator =, Right: Value, Shapes Match?, Bind variables to values, Raise MatchError. Connections: Left: Pattern with variables to Match Operator =, Right: Value to Match Operator =, Match Operator = to Shapes Match?, Shapes Match? to Bind variables to values (Yes), Shapes Match? to Raise MatchError (No).
     Pattern["Left: Pattern<br/>with variables"] --> MatchOp["Match Operator ="]
     Value["Right: Value"] --> MatchOp
     MatchOp --> Check{Shapes Match?}
     Check -->|Yes| Bind["Bind variables<br/>to values"]
     Check -->|No| Error["Raise MatchError"]
 
-    style Pattern fill:#0173B2,color:#fff
-    style Value fill:#0173B2,color:#fff
-    style MatchOp fill:#DE8F05,color:#fff
-    style Check fill:#029E73,color:#fff
-    style Bind fill:#029E73,color:#fff
-    style Error fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Pattern pal-0173B2
+    class Value pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class MatchOp pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Check pal-029E73
+    class Bind pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Error pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -424,18 +439,24 @@ Lists are linked lists (efficient for prepending, linear access). Tuples are con
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 7: Lists and Tuples
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: List: [1, 2, 3], 1 | *, 2 | *, 3 | nil, Tuple: 1, 2, 3, Contiguous Memory: [1][2][3]. Connections: List: [1, 2, 3] to 1 | *, 1 | * to 2 | *, 2 | * to 3 | nil, Tuple: 1, 2, 3 to Contiguous Memory: [1][2][3].
     List["List: [1, 2, 3]"] --> Node1["1 | *"]
     Node1 --> Node2["2 | *"]
     Node2 --> Node3["3 | nil"]
 
     Tuple["Tuple: {1, 2, 3}"] --> Array["Contiguous Memory:<br/>[1][2][3]"]
 
-    style List fill:#0173B2,color:#fff
-    style Node1 fill:#DE8F05,color:#fff
-    style Node2 fill:#DE8F05,color:#fff
-    style Node3 fill:#DE8F05,color:#fff
-    style Tuple fill:#029E73,color:#fff
-    style Array fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class List pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Node1 pal-DE8F05
+    class Node2 pal-DE8F05
+    class Node3 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Tuple pal-029E73
+    class Array pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -630,16 +651,24 @@ Functions are first-class values in Elixir—you can assign them to variables, p
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Define["Define: fn x -> x * 2 end"] --> Variable["Bind to Variable:<br/>double = fn..."]
+    accTitle: Example 10: Anonymous Functions
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Define: fn x -> x * 2 end, Bind to Variable: double = fn..., Pass to Enum.map/2, Execute on each element, Return: [2, 4, 6]. Connections: Define: fn x -> x * 2 end to Bind to Variable: double = fn..., Bind to Variable: double = fn... to Pass to Enum.map/2, Pass to Enum.map/2 to Execute on each element, Execute on each element to Return: [2, 4, 6].
+    Define["Define: fn x -> x *<br/>2 end"] --> Variable["Bind to Variable:<br/>double = fn..."]
     Variable --> Pass["Pass to Enum.map/2"]
-    Pass --> Execute["Execute on each element"]
+    Pass --> Execute["Execute on each<br/>element"]
     Execute --> Result["Return: [2, 4, 6]"]
 
-    style Define fill:#0173B2,color:#fff
-    style Variable fill:#DE8F05,color:#fff
-    style Pass fill:#029E73,color:#fff
-    style Execute fill:#CC78BC,color:#fff
-    style Result fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Define pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Variable pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Pass pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Execute pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Result pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -849,19 +878,26 @@ The pipe operator `|>` takes the result of an expression and passes it as the fi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 12: Pipe Operator
+    accDescr: Graph with 6 nodes and 1 connections. Nodes: hello (input), Trim, Upcase, HELLO (output), Nested: upcase(trim( hello )) ❌ Inside-out reading, Pipeline: hello |> trim() |> upcase() ✅ Left-to-right flow. Connections: Upcase to HELLO (output).
     Input["'  hello  '<br/>(input)"] -->|"|>"| Trim["String.trim()<br/>Result: 'hello'"]
     Trim -->|"|>"| Upcase["String.upcase()<br/>Result: 'HELLO'"]
     Upcase --> Final["'HELLO'<br/>(output)"]
 
-    Nested["Nested:<br/>upcase(trim('  hello  '))<br/>❌ Inside-out reading"]
-    Pipeline["Pipeline:<br/>'  hello  ' |> trim() |> upcase()<br/>✅ Left-to-right flow"]
+    Nested["Nested:<br/>upcase(trim(' hello<br/>'))<br/>❌ Inside-out reading"]
+    Pipeline["Pipeline:<br/>' hello ' |> trim()<br/>|> upcase()<br/>✅ Left-to-right flow"]
 
-    style Input fill:#0173B2,color:#fff
-    style Trim fill:#DE8F05,color:#fff
-    style Upcase fill:#029E73,color:#fff
-    style Final fill:#029E73,color:#fff
-    style Nested fill:#CC78BC,color:#fff
-    style Pipeline fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Input pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Trim pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Upcase pal-029E73
+    class Final pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Nested pal-CC78BC
+    class Pipeline pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1206,7 +1242,9 @@ The `Enum` module provides functions for working with enumerable collections (li
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    List["[1, 2, 3, 4, 5]"] --> Reduce["Enum.reduce(list, 0, fn x, acc ->"]
+    accTitle: Example 15: Enum Module Essentials
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: [1, 2, 3, 4, 5], Enum.reduce(list, 0, fn x, acc ->, Step 1: 0 + 1 = 1, Step 2: 1 + 2 = 3, Step 3: 3 + 3 = 6, Step 4: 6 + 4 = 10, Step 5: 10 + 5 = 15, Result: 15. Connections: [1, 2, 3, 4, 5] to Enum.reduce(list, 0, fn x, acc ->, Enum.reduce(list, 0, fn x, acc -> to Step 1: 0 + 1 = 1, Step 1: 0 + 1 = 1 to Step 2: 1 + 2 = 3, Step 2: 1 + 2 = 3 to Step 3: 3 + 3 = 6, Step 3: 3 + 3 = 6 to Step 4: 6 + 4 = 10, Step 4: 6 + 4 = 10 to Step 5: 10 + 5 = 15, Step 5: 10 + 5 = 15 to Result: 15.
+    List["[1, 2, 3, 4, 5]"] --> Reduce["Enum.reduce(list, 0,<br/>fn x, acc ->"]
     Reduce --> Step1["Step 1: 0 + 1 = 1"]
     Step1 --> Step2["Step 2: 1 + 2 = 3"]
     Step2 --> Step3["Step 3: 3 + 3 = 6"]
@@ -1214,14 +1252,19 @@ graph TD
     Step4 --> Step5["Step 5: 10 + 5 = 15"]
     Step5 --> Result["Result: 15"]
 
-    style List fill:#0173B2,color:#fff
-    style Reduce fill:#DE8F05,color:#fff
-    style Step1 fill:#029E73,color:#fff
-    style Step2 fill:#029E73,color:#fff
-    style Step3 fill:#029E73,color:#fff
-    style Step4 fill:#029E73,color:#fff
-    style Step5 fill:#029E73,color:#fff
-    style Result fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class List pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Reduce pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Step1 pal-029E73
+    class Step2 pal-029E73
+    class Step3 pal-029E73
+    class Step4 pal-029E73
+    class Step5 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Result pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1534,18 +1577,26 @@ Lists support special operators for prepending and pattern matching. The head/ta
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 18: List Operators and Head/Tail
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: [1, 2, 3, 4], [head | tail], head = 1, tail = [2, 3, 4], [0 | [1, 2, 3]], [0, 1, 2, 3]. Connections: [1, 2, 3, 4] to [head | tail], [head | tail] to head = 1, [head | tail] to tail = [2, 3, 4], [0 | [1, 2, 3]] to [0, 1, 2, 3].
     List["[1, 2, 3, 4]"] --> HeadTail["[head | tail]"]
     HeadTail --> Head["head = 1"]
     HeadTail --> Tail["tail = [2, 3, 4]"]
 
     Prepend["[0 | [1, 2, 3]]"] --> NewList["[0, 1, 2, 3]"]
 
-    style List fill:#0173B2,color:#fff
-    style HeadTail fill:#DE8F05,color:#fff
-    style Head fill:#029E73,color:#fff
-    style Tail fill:#029E73,color:#fff
-    style Prepend fill:#CC78BC,color:#fff
-    style NewList fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class List pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class HeadTail pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Head pal-029E73
+    class Tail pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Prepend pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class NewList pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

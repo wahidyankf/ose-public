@@ -485,14 +485,19 @@ func TestUserRepository_Integration(t *testing.T) {
 Go testing follows the test pyramid pattern:
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#000','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC'}}}%%
 graph TD
-    A[E2E Tests<br/>5% - Slow, brittle] -->|testify + real services| B[Integration Tests<br/>15% - TestContainers]
-    B -->|testify/assert| C[Unit Tests<br/>80% - testing package]
+    accTitle: Test Pyramid in Go
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: E2E Tests 5 - Slow, brittle, Integration Tests 15 - TestContainers, Unit Tests 80 - testing package. Connections: E2E Tests 5 - Slow, brittle to Integration Tests 15 - TestContainers (testify + real services), Integration Tests 15 - TestContainers to Unit Tests 80 - testing package (testify/assert).
+    A[E2E Tests<br/>5% - Slow, brittle] -->|testify + real<br/>services| B[Integration Tests<br/>15% - TestContainers]
+    B -->|testify/assert| C[Unit Tests<br/>80% - testing<br/>package]
 
-    style A fill:#CC78BC,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Progression**:

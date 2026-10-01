@@ -17,14 +17,20 @@ Async workflows enable non-blocking I/O and concurrency using F#'s async/let! sy
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 31: Async Workflows - Basic Asynchrony
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: async block, async.Sleep 1000, let! waits non-blocking, return value. Connections: async block to async.Sleep 1000, async.Sleep 1000 to let! waits non-blocking, let! waits non-blocking to return value.
     A[async block]:::blue --> B[async.Sleep 1000]:::orange
     B --> C[let! waits<br/>non-blocking]:::teal
     C --> D[return value]:::orange
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -63,6 +69,8 @@ printfn "%s" result      // => Outputs: Result
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 32: Async Parallel Execution
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Start, Task 1: 500ms, Task 2: 500ms, Task 3: 500ms, All complete ~500ms total. Connections: Start to Task 1: 500ms, Start to Task 2: 500ms, Start to Task 3: 500ms, Task 1: 500ms to All complete ~500ms total, Task 2: 500ms to All complete ~500ms total, Task 3: 500ms to All complete ~500ms total.
     A[Start]:::blue --> B[Task 1: 500ms]:::orange
     A --> C[Task 2: 500ms]:::orange
     A --> D[Task 3: 500ms]:::orange
@@ -70,11 +78,15 @@ graph TD
     C --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -173,16 +185,22 @@ Computation expressions enable custom control flow syntax. The "maybe" builder h
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 34: Computation Expressions Basics - Maybe Builder
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: maybe builder, let! Some v?, Continue with v, Short-circuit: None, return Some result. Connections: maybe builder to let! Some v?, let! Some v? to Continue with v (Some), let! Some v? to Short-circuit: None (None), Continue with v to return Some result.
     A[maybe builder]:::blue --> B{let! Some v?}:::orange
     B -->|Some| C[Continue with v]:::teal
     B -->|None| D[Short-circuit: None]:::orange
     C --> E[return Some result]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -289,6 +307,8 @@ Option-based computation expressions enable safe chaining of operations that mig
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 36: Option Computation - Railway-Oriented Programming
+    accDescr: Graph with 7 nodes and 9 connections. Nodes: Input strings, Parse OK?, tryParseInt 2, None (short-circuit), tryParseInt 3, tryDivide, Some result. Connections: Input strings to Parse OK? (tryParseInt), Parse OK? to tryParseInt 2 (Some value), Parse OK? to None (short-circuit) (None), tryParseInt 2 to tryParseInt 3 (Some value), tryParseInt 2 to None (short-circuit) (None), tryParseInt 3 to tryDivide (Some value), tryParseInt 3 to None (short-circuit) (None), tryDivide to Some result (Some result), tryDivide to None (short-circuit) (None (div/0)).
     A["Input strings"] -->|"tryParseInt"| B{"Parse OK?"}
     B -->|"Some value"| C{"tryParseInt 2"}
     B -->|"None"| Z["None (short-circuit)"]
@@ -299,13 +319,18 @@ graph LR
     E -->|"Some result"| F["Some result"]
     E -->|"None (div/0)"| Z
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#DE8F05,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
-    style Z fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Z pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp
@@ -377,12 +402,18 @@ The Result type carries explicit error information instead of None, providing co
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 37: Result Type - Explicit Error Handling
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Result type, Ok of value, Error of error. Connections: Result type to Ok of value, Result type to Error of error.
     A[Result type]:::blue --> B[Ok of value]:::teal
     A --> C[Error of error]:::orange
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -606,14 +637,20 @@ Units of measure add dimension checking to numeric types, preventing unit mismat
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A[float with unit]:::blue --> B[Compile-time checking]:::orange
+    accTitle: Example 40: Units of Measure
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: float with unit, Compile-time checking, m + m = OK, m + kg = ERROR. Connections: float with unit to Compile-time checking, Compile-time checking to m + m = OK, Compile-time checking to m + kg = ERROR.
+    A[float with unit]:::blue --> B[Compile-time<br/>checking]:::orange
     B --> C[m + m = OK]:::teal
     B --> D[m + kg = ERROR]:::orange
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -742,14 +779,21 @@ Multi-case active patterns enable custom matching with multiple outcomes, like e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 42: Active Patterns - Multi-Case
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: match value, Active Pattern, Handle even, Handle odd. Connections: match value to Active Pattern, Active Pattern to Handle even (Even), Active Pattern to Handle odd (Odd).
     A[match value]:::blue --> B{Active Pattern}:::orange
     B -->|Even| C[Handle even]:::teal
     B -->|Odd| D[Handle odd]:::purple
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1046,18 +1090,24 @@ Recursion patterns include direct recursion, mutual recursion, and continuation-
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 46: Function Recursion Patterns
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: factorial 5, 5 * factorial 4, 5 * 4 * factorial 3, 5 * 4 * 3 * factorial 2, 5 * 4 * 3 * 2 * 1, Result: 120. Connections: factorial 5 to 5 * factorial 4, 5 * factorial 4 to 5 * 4 * factorial 3, 5 * 4 * factorial 3 to 5 * 4 * 3 * factorial 2, 5 * 4 * 3 * factorial 2 to 5 * 4 * 3 * 2 * 1, 5 * 4 * 3 * 2 * 1 to Result: 120.
     A[factorial 5]:::blue --> B[5 * factorial 4]:::orange
     B --> C[5 * 4 * factorial 3]:::orange
-    C --> D[5 * 4 * 3 * factorial 2]:::orange
+    C --> D[5 * 4 * 3 *<br/>factorial 2]:::orange
     D --> E[5 * 4 * 3 * 2 * 1]:::teal
     E --> F[Result: 120]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1622,16 +1672,22 @@ Interfaces define contracts for classes, enabling polymorphism and dependency in
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 54: Object Programming - Interfaces
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: IShape interface, Circle implements, Rectangle implements, Area method, Area method. Connections: IShape interface to Circle implements, IShape interface to Rectangle implements, Circle implements to Area method, Rectangle implements to Area method.
     A[IShape interface]:::blue --> B[Circle implements]:::orange
     A --> C[Rectangle implements]:::teal
     B --> D[Area method]:::orange
     C --> E[Area method]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1789,16 +1845,23 @@ Recursive discriminated unions model tree and list structures naturally.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 56: Discriminated Unions Advanced - Recursive Types
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: BinaryTree, Empty, Node of value * left * right, Left subtree, Right subtree. Connections: BinaryTree to Empty, BinaryTree to Node of value * left * right, Node of value * left * right to Left subtree, Node of value * left * right to Right subtree.
     A[BinaryTree]:::blue --> B[Empty]:::orange
-    A --> C[Node of value * left * right]:::teal
+    A --> C[Node of value * left<br/>* right]:::teal
     C --> D[Left subtree]:::purple
     C --> E[Right subtree]:::purple
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

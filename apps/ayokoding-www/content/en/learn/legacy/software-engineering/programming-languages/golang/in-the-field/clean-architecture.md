@@ -26,19 +26,27 @@ Clean Architecture separates concerns into distinct layers with clear dependency
 
 ```mermaid
 graph TD
-    Frameworks["Frameworks & Drivers Layer<br/>(HTTP, Database, External APIs)"] -->|"depends on"| Adapters["Interface Adapters Layer<br/>(Controllers,<br/>Presenters, Gateways)"]
-    Adapters -->|"depends on"| UseCases["Use Cases Layer<br/>(Application Business Rules)"]
-    UseCases -->|"depends on"| Domain["Domain Layer<br/>(Enterprise Business Rules)"]
+    accTitle: Clean Architecture Dependency Rule
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Frameworks, HTTP, Database, External APIs), Interface Adapters Layer (Controllers, Presenters, Gateways), Use Cases Layer (Application Business Rules), Domain Layer (Enterprise Business Rules), Interfaces defined in Use Cases, Interfaces defined in Domain. Connections: Frameworks to Interface Adapters Layer (Controllers, Presenters, Gateways) (depends on), HTTP, Database, External APIs) to Interface Adapters Layer (Controllers, Presenters, Gateways) (depends on), Interface Adapters Layer (Controllers, Presenters, Gateways) to Use Cases Layer (Application Business Rules) (depends on), Use Cases Layer (Application Business Rules) to Domain Layer (Enterprise Business Rules) (depends on), Interface Adapters Layer (Controllers, Presenters, Gateways) to Interfaces defined in Use Cases (implements), Use Cases Layer (Application Business Rules) to Interfaces defined in Domain (implements).
+    Frameworks["Frameworks & Drivers<br/>Layer<br/>(HTTP, Database,<br/>External APIs)"] -->|"depends on"| Adapters["Interface Adapters<br/>Layer<br/>(Controllers,<br/>Presenters,<br/>Gateways)"]
+    Adapters -->|"depends on"| UseCases["Use Cases Layer<br/>(Application<br/>Business Rules)"]
+    UseCases -->|"depends on"| Domain["Domain Layer<br/>(Enterprise Business<br/>Rules)"]
 
     Adapters -.->|"implements"| UseCasesPorts["Interfaces defined<br/>in Use Cases"]
     UseCases -.->|"implements"| DomainPorts["Interfaces defined<br/>in Domain"]
 
-    style Frameworks fill:#CA9161,stroke:#CA9161,color:#fff
-    style Adapters fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style UseCases fill:#029E73,stroke:#029E73,color:#fff
-    style Domain fill:#0173B2,stroke:#0173B2,color:#fff
-    style UseCasesPorts fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style DomainPorts fill:#DE8F05,stroke:#DE8F05,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Frameworks pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Adapters pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class UseCases pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Domain pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class UseCasesPorts pal-DE8F05
+    class DomainPorts pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Dependency rule**:

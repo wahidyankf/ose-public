@@ -143,8 +143,9 @@ TypeScript uses semantic versioning: `MAJOR.MINOR.PATCH`
 **Historical Timeline**:
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 timeline
+    accTitle: Version Naming and Cadence
+    accDescr: Timeline of TypeScript major releases from 4.0 in August 2020 through 5.4 in March 2024, each with its headline feature such as variadic tuples, template literals, decorators and NoInfer.
     title TypeScript Major Release Timeline
     2020 Aug : TypeScript 4.0 : Variadic tuples
     2020 Nov : TypeScript 4.1 : Template literals

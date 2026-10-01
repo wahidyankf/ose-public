@@ -16,14 +16,21 @@ Conditional types distribute over unions automatically. Understanding distributi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 52: Advanced Conditional Types with Distribution
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Type string | number, Conditional Type T extends string, Distributes to: string | number, Results: true | false. Connections: Type string | number to Conditional Type T extends string, Conditional Type T extends string to Distributes to: string | number, Distributes to: string | number to Results: true | false.
     A["Type<br/>string | number"] --> B["Conditional Type<br/>T extends string"]
     B --> C["Distributes to:<br/>string | number"]
     C --> D["Results:<br/>true | false"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -83,16 +90,24 @@ Recursive types enable type-level iteration over complex structures. TypeScript 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Promise&lt;Promise&lt;string&gt;&gt;"] --> B["Unwrap Layer 1"]
+    accTitle: Example 53: Recursive Conditional Types
+    accDescr: Graph with 7 nodes and 10 connections. Nodes: A, lt, gt, Unwrap Layer 1, C, Unwrap Layer 2, string (base case). Connections: A to Unwrap Layer 1, lt to Unwrap Layer 1, lt to Unwrap Layer 1, gt to Unwrap Layer 1, gt to Unwrap Layer 1, Unwrap Layer 1 to C, Unwrap Layer 1 to lt, Unwrap Layer 1 to gt, C to Unwrap Layer 2, Unwrap Layer 2 to string (base case).
+    A["Promise&lt;<br/>Promise&lt;string&gt;&gt;"] --> B["Unwrap Layer 1"]
     B --> C["Promise&lt;string&gt;"]
     C --> D["Unwrap Layer 2"]
     D --> E["string (base case)"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -173,16 +188,24 @@ Template literal types enable type-level string manipulation. Combine with mappe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 54: Template Literal Types - Advanced Patterns
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: user, Capitalize, User, Add get, getUser. Connections: user to Capitalize, Capitalize to User, User to Add get, Add get to getUser.
     A["'user'"] --> B["Capitalize"]
     B --> C["'User'"]
     C --> D["Add 'get'"]
     D --> E["'getUser'"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -318,18 +341,25 @@ The `infer` keyword enables extracting types from generic positions. Master infe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["T extends (...args: infer P) => infer R"] -->|"T is function"| B["P = parameter types"]
+    accTitle: Example 56: Type Inference with Infer Keyword Mastery
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: T extends (...args: infer P) => infer R, P = parameter types, R = return type, (a: string) => boolean, [string], boolean. Connections: T extends (...args: infer P) => infer R to P = parameter types (T is function), T extends (...args: infer P) => infer R to R = return type (T is function), (a: string) => boolean to [string] (Parameters), (a: string) => boolean to boolean (ReturnType).
+    A["T extends (...args:<br/>infer P) => infer R"] -->|"T is function"| B["P = parameter types"]
     A -->|"T is function"| C["R = return type"]
 
-    D["(a: string) => boolean"] -->|"Parameters<>"| E["[string]"]
+    D["(a: string) =><br/>boolean"] -->|"Parameters<>"| E["[string]"]
     D -->|"ReturnType<>"| F["boolean"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#DE8F05,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-DE8F05
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -418,20 +448,28 @@ Branded types prevent mixing semantically different values of the same primitive
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 57: Branded Types for Runtime Safety
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: string (structural), B, C, getUserById(id: UserId), getProductById(id: ProductId). Connections: string (structural) to B (brand function), string (structural) to C (brand function), B to C (compile error), C to B (compile error), B to getUserById(id: UserId) (OK), C to getProductById(id: ProductId) (OK).
     A["string (structural)"] -->|"brand function"| B["UserId
 (string branded)"]
     A -->|"brand function"| C["ProductId
 (string branded)"]
     B -->|"compile error"| C
     C -->|"compile error"| B
-    B -->|"OK"| D["getUserById(id: UserId)"]
-    C -->|"OK"| E["getProductById(id: ProductId)"]
+    B -->|"OK"| D["getUserById(id:<br/>UserId)"]
+    C -->|"OK"| E["getProductById(id:<br/>ProductId)"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -907,14 +945,21 @@ Mixins enable composing behavior from multiple sources. TypeScript doesn't suppo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Base Class"] -->|"applyMixin(Serializable)"| B["+ serialize() / deserialize()"]
-    B -->|"applyMixin(Validatable)"| C["+ validate() / errors[]"]
+    accTitle: Example 62: Mixin Pattern for Multiple Inheritance
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Base Class, + serialize() / deserialize(), + validate() / errors[], Final Composed Class. Connections: Base Class to + serialize() / deserialize() (apply Mixin(Serializable)), + serialize() / deserialize() to + validate() / errors[] (apply Mixin(Validatable)), + validate() / errors[] to Final Composed Class.
+    A["Base Class"] -->|"apply<br/>Mixin(Serializable)"| B["+ serialize() /<br/>deserialize()"]
+    B -->|"apply<br/>Mixin(Validatable)"| C["+ validate() /<br/>errors[]"]
     C --> D["Final Composed Class"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1309,16 +1354,24 @@ AsyncIterators enable iteration over async sequences. AsyncGenerators simplify a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["async function* generator()"] -->|"yield"| B["value 1 (async)"]
+    accTitle: Example 65: AsyncIterator and AsyncGenerator Types
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: async function* generator(), value 1 (async), value 2 (async), value N (async), return value. Connections: async function* generator() to value 1 (async) (yield), value 1 (async) to value 2 (async) (next()), value 2 (async) to value N (async) (next()), value N (async) to return value (done: true).
+    A["async function*<br/>generator()"] -->|"yield"| B["value 1 (async)"]
     B -->|"next()"| C["value 2 (async)"]
     C -->|"next()"| D["value N (async)"]
     D -->|"done: true"| E["return value"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1585,6 +1638,8 @@ Proxies intercept object operations. Type proxies carefully to maintain type saf
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 67: Proxy Typing for Meta-Programming
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: obj.prop, ProxyHandler.get, Target Object, obj.prop = val, ProxyHandler.set. Connections: obj.prop to ProxyHandler.get (triggers get trap), ProxyHandler.get to Target Object (delegate to target), Target Object to ProxyHandler.get (raw value), ProxyHandler.get to obj.prop (transformed), obj.prop = val to ProxyHandler.set (triggers set trap), ProxyHandler.set to Target Object (validates).
     A["obj.prop"] -->|"triggers get trap"| B["ProxyHandler.get"]
     B -->|"delegate to target"| C["Target Object"]
     C -->|"raw value"| B
@@ -1593,10 +1648,15 @@ graph LR
     D["obj.prop = val"] -->|"triggers set trap"| E["ProxyHandler.set"]
     E -->|"validates"| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2158,17 +2218,25 @@ Variance annotations (`in` for contravariance, `out` for covariance) control how
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 71: Variance Annotations
+    accDescr: Graph with 9 nodes and 18 connections. Nodes: Dog extends Animal, out T (Covariant, Producer, lt, gt, C, in T (Contravariant, Consumer, E. Connections: Producer to C (assignable to), Producer to lt (assignable to), Producer to gt (assignable to), lt to C (assignable to), lt to lt (assignable to), lt to gt (assignable to), gt to C (assignable to), gt to lt (assignable to), gt to gt (assignable to), Consumer to E (assignable to), Consumer to lt (assignable to), Consumer to gt (assignable to), and 6 more.
     A["Dog extends Animal"]
     B["out T (Covariant)
 Producer&lt;Animal&gt;"] -->|"assignable to"| C["Producer&lt;Dog&gt;"]
     D["in T (Contravariant)
 Consumer&lt;Dog&gt;"] -->|"assignable to"| E["Consumer&lt;Animal&gt;"]
 
-    style A fill:#CA9161,stroke:#000,color:#000
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2977,12 +3045,18 @@ Test type transformations at compile time using conditional types and `never`.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Expect&lt;Equal&lt;A, B&gt;&gt;"] -->|"A extends B AND B extends A"| B["PASS (never error)"]
-    A -->|"types differ"| C["FAIL: 'true' not assignable to 'false'"]
+    accTitle: Example 76: Testing Type Utilities with Conditional Types
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: A, lt, gt, PASS (never error), FAIL: true not assignable to false. Connections: A to PASS (never error) (A extends B AND B extends A), lt to PASS (never error) (A extends B AND B extends A), lt to PASS (never error) (A extends B AND B extends A), gt to PASS (never error) (A extends B AND B extends A), gt to PASS (never error) (A extends B AND B extends A), A to FAIL: true not assignable to false (types differ).
+    A["Expect&lt;Equal&lt;A, B&gt;&gt;"] -->|"A extends B AND B<br/>extends A"| B["PASS (never error)"]
+    A -->|"types differ"| C["FAIL: 'true' not<br/>assignable to<br/>'false'"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

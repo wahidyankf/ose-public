@@ -27,7 +27,9 @@ Messaging systems enable asynchronous communication between services, decoupling
 
 ```mermaid
 graph LR
-    Publisher1["Publisher<br/>(Order Service)"] -->|"Publish:<br/>order.created"| Broker["Message Broker<br/>(NATS/RabbitMQ/Kafka)"]
+    accTitle: Pub/Sub Messaging Pattern
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Publisher (Order Service), Message Broker (NATS/RabbitMQ/ Kafka), Publisher (Payment Service), Subscriber 1 (Email Service), Subscriber 2 (Inventory Service), Subscriber 3 (Analytics Service), Subscriber 4 (Accounting Service), Email System, Inventory DB, Analytics DB, Accounting DB. Connections: Publisher (Order Service) to Message Broker (NATS/RabbitMQ/ Kafka) (Publish: order.created), Publisher (Payment Service) to Message Broker (NATS/RabbitMQ/ Kafka) (Publish: payment.processed), Message Broker (NATS/RabbitMQ/ Kafka) to Subscriber 1 (Email Service) (Subscribe: order.*), Message Broker (NATS/RabbitMQ/ Kafka) to Subscriber 2 (Inventory Service) (Subscribe: order.created), Message Broker (NATS/RabbitMQ/ Kafka) to Subscriber 3 (Analytics Service) (Subscribe: order.*), Message Broker (NATS/RabbitMQ/ Kafka) to Subscriber 4 (Accounting Service) (Subscribe: payment.*), Subscriber 1 (Email Service) to Email System (Send email), Subscriber 2 (Inventory Service) to Inventory DB (Update stock), Subscriber 3 (Analytics Service) to Analytics DB (Track metrics), Subscriber 4 (Accounting Service) to Accounting DB (Record transaction).
+    Publisher1["Publisher<br/>(Order Service)"] -->|"Publish:<br/>order.created"| Broker["Message Broker<br/>(NATS/RabbitMQ/<br/>Kafka)"]
     Publisher2["Publisher<br/>(Payment Service)"] -->|"Publish:<br/>payment.processed"| Broker
 
     Broker -->|"Subscribe:<br/>order.*"| Subscriber1["Subscriber 1<br/>(Email Service)"]
@@ -40,17 +42,22 @@ graph LR
     Subscriber3 -->|"Track metrics"| Analytics["Analytics DB"]
     Subscriber4 -->|"Record transaction"| Accounting["Accounting DB"]
 
-    style Publisher1 fill:#0173B2,stroke:#0173B2,color:#fff
-    style Publisher2 fill:#0173B2,stroke:#0173B2,color:#fff
-    style Broker fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style Subscriber1 fill:#029E73,stroke:#029E73,color:#fff
-    style Subscriber2 fill:#029E73,stroke:#029E73,color:#fff
-    style Subscriber3 fill:#029E73,stroke:#029E73,color:#fff
-    style Subscriber4 fill:#029E73,stroke:#029E73,color:#fff
-    style Email fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style Inventory fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style Analytics fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style Accounting fill:#CC78BC,stroke:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Publisher1 pal-0173B2
+    class Publisher2 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Broker pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Subscriber1 pal-029E73
+    class Subscriber2 pal-029E73
+    class Subscriber3 pal-029E73
+    class Subscriber4 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Email pal-CC78BC
+    class Inventory pal-CC78BC
+    class Analytics pal-CC78BC
+    class Accounting pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Pub/Sub pattern**:

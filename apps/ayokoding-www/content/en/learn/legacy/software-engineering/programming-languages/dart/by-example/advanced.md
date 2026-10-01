@@ -18,6 +18,8 @@ Parallel execution with isolates for CPU-intensive work without blocking main th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 51: Isolates Basics
+    accDescr: Sequence diagram between Main Isolate Memory Space 1, Worker Isolate Memory Space 2. Messages: Main Isolate Memory Space 1 to Main Isolate Memory Space 1: Create ReceivePort; Main Isolate Memory Space 1 to Worker Isolate Memory Space 2: Isolate.spawn(function, sendPort); Worker Isolate Memory Space 2 to Main Isolate Memory Space 1: Send SendPort; Main Isolate Memory Space 1 to Worker Isolate Memory Space 2: Send data via SendPort; Worker Isolate Memory Space 2 to Worker Isolate Memory Space 2: Process data (CPU-intensive work); Worker Isolate Memory Space 2 to Main Isolate Memory Space 1: Send result via SendPort; Main Isolate Memory Space 1 to Main Isolate Memory Space 1: Receive result; Main Isolate Memory Space 1 to Worker Isolate Memory Space 2: Kill isolate.
     participant Main as Main Isolate<br/>Memory Space 1
     participant Worker as Worker Isolate<br/>Memory Space 2
 
@@ -115,6 +117,8 @@ Bidirectional communication between isolates with multiple messages.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 52: Isolate Communication
+    accDescr: Sequence diagram between Main Isolate, Worker Isolate. Messages: Main Isolate to Worker Isolate: Spawn with mainSendPort; Worker Isolate to Main Isolate: Send workerSendPort; Main Isolate to Worker Isolate: wealth: 10000000; Worker Isolate to Main Isolate: wealth: 10000000, zakat: 250000; Main Isolate to Worker Isolate: wealth: 50000000; Worker Isolate to Main Isolate: wealth: 50000000, zakat: 1250000; Main Isolate to Worker Isolate: done; Worker Isolate to Worker Isolate: Close port, exit.
     participant Main as Main Isolate
     participant Worker as Worker Isolate
 
@@ -380,6 +384,8 @@ Racing multiple Futures to get first completion.
 
 ```mermaid
 flowchart LR
+    accTitle: Example 55: Future.any and Future.race
+    accDescr: Flowchart with 6 nodes and 6 connections. Nodes: Future.any starts, Server 1 800ms delay, Server 2 500ms delay, Server 3 1200ms delay, Winner returned Others cancelled, Ignored. Connections: Future.any starts to Server 1 800ms delay, Future.any starts to Server 2 500ms delay, Future.any starts to Server 3 1200ms delay, Server 2 500ms delay to Winner returned Others cancelled (fastest), Server 1 800ms delay to Ignored, Server 3 1200ms delay to Ignored.
     Start[Future.any starts] --> S1[Server 1<br/>800ms delay]
     Start --> S2[Server 2<br/>500ms delay]
     Start --> S3[Server 3<br/>1200ms delay]
@@ -387,9 +393,13 @@ flowchart LR
     S1 --> Ignore[Ignored]
     S3 --> Ignore
 
-    style S2 fill:#029E73,color:#fff
-    style Win fill:#0173B2,color:#fff
-    style Ignore fill:#CA9161,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S2 pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Win pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Ignore pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -479,6 +489,8 @@ Ensuring single instance of class with factory constructor.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 56: Singleton Pattern
+    accDescr: Sequence diagram between Client 1, Factory Constructor, Single Instance, Client 2. Messages: Client 1 to Factory Constructor: new Singleton(); Factory Constructor to Factory Constructor: Check _instance; Factory Constructor to Single Instance: Create instance; Single Instance to Factory Constructor: Return reference; Factory Constructor to Client 1: Return reference; Client 2 to Factory Constructor: new Singleton(); Factory Constructor to Factory Constructor: Check _instance; Factory Constructor to Client 2: Return existing reference.
     participant C1 as Client 1
     participant Factory as Factory Constructor
     participant Instance as Single Instance
@@ -572,6 +584,8 @@ Creating objects without specifying exact class with factory methods.
 
 ```mermaid
 classDiagram
+    accTitle: Example 57: Factory Pattern
+    accDescr: Class diagram with 5 items: Payment, CashPayment, QRISPayment, BankTransferPayment, PaymentFactory. Relationships: Payment to CashPayment; Payment to QRISPayment; Payment to BankTransferPayment; PaymentFactory to Payment: creates.
     class Payment {
         <<abstract>>
         void process()
@@ -601,6 +615,7 @@ classDiagram
     Payment <|-- QRISPayment
     Payment <|-- BankTransferPayment
     PaymentFactory ..> Payment : creates
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```dart
@@ -720,6 +735,8 @@ Implementing observer pattern using Dart Streams for event notification.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 58: Observer Pattern with Streams
+    accDescr: Sequence diagram between DonationTracker (Subject), StreamController, EmailNotifier (Observer 1), AuditLogger (Observer 2), StatsCalculator (Observer 3). Messages: EmailNotifier (Observer 1) to StreamController: listen(); AuditLogger (Observer 2) to StreamController: listen(); StatsCalculator (Observer 3) to StreamController: listen(); DonationTracker (Subject) to StreamController: add(donation); StreamController to EmailNotifier (Observer 1): notify(donation); StreamController to AuditLogger (Observer 2): notify(donation); StreamController to StatsCalculator (Observer 3): notify(donation); EmailNotifier (Observer 1) to EmailNotifier (Observer 1): Send email; AuditLogger (Observer 2) to AuditLogger (Observer 2): Log transaction; StatsCalculator (Observer 3) to StatsCalculator (Observer 3): Update statistics.
     participant Subject as DonationTracker<br/>(Subject)
     participant Stream as StreamController
     participant O1 as EmailNotifier<br/>(Observer 1)
@@ -1078,15 +1095,21 @@ Deferring expensive initialization until first use.
 
 ```mermaid
 flowchart TD
+    accTitle: Example 61: Lazy Initialization
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: First Access, _cache != null?, Initialize resource expensive operation, Store in _cache, Return resource, Return cached value no initialization. Connections: First Access to _cache != null?, _cache != null? to Initialize resource expensive operation (no - first call), Initialize resource expensive operation to Store in _cache, Store in _cache to Return resource, _cache != null? to Return cached value no initialization (yes - subsequent calls).
     First[First Access] --> Check{_cache != null?}
     Check -->|no - first call| Init[Initialize resource<br/>expensive operation]
     Init --> Store[Store in _cache]
     Store --> Return[Return resource]
-    Check -->|yes - subsequent calls| Direct[Return cached value<br/>no initialization]
+    Check -->|yes - subsequent<br/>calls| Direct[Return cached value<br/>no initialization]
 
-    style Init fill:#DE8F05,color:#fff
-    style Direct fill:#029E73,color:#fff
-    style Return fill:#0173B2,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Init pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Direct pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Return pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -1176,15 +1199,21 @@ Caching expensive function results to avoid redundant computation. Critical for 
 
 ```mermaid
 flowchart TD
+    accTitle: Example 62: Memoization and Caching
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Function called with key, Key in cache?, Return cached result instant response, Execute expensive computation, Store result in cache Map, Return computed result. Connections: Function called with key to Key in cache?, Key in cache? to Return cached result instant response (yes - cache hit), Key in cache? to Execute expensive computation (no - cache miss), Execute expensive computation to Store result in cache Map, Store result in cache Map to Return computed result.
     Call[Function called<br/>with key] --> Cache{Key in cache?}
     Cache -->|yes - cache hit| Return[Return cached result<br/>instant response]
     Cache -->|no - cache miss| Compute[Execute expensive<br/>computation]
     Compute --> Store[Store result<br/>in cache Map]
-    Store --> Return2[Return computed result]
+    Store --> Return2[Return computed<br/>result]
 
-    style Return fill:#029E73,color:#fff
-    style Compute fill:#DE8F05,color:#fff
-    style Store fill:#CA9161,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Return pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Compute pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Store pal-CA9161
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```dart
@@ -2769,19 +2798,21 @@ Implementing repository pattern for data access abstraction, separating business
 
 ```mermaid
 classDiagram
+    accTitle: Example 71: Repository Pattern
+    accDescr: Class diagram with 4 items: DonationRepository, InMemoryDonationRepo, PostgresDonationRepo, DonationService. Relationships: DonationRepository to InMemoryDonationRepo; DonationRepository to PostgresDonationRepo; DonationService to DonationRepository: uses.
     class DonationRepository {
         <<interface>>
         +save(Donation) Future~void~
         +findById(String) Future~Donation~
         +findAll() Future~List~
     }
-    class InMemoryDonationRepository {
+    class InMemoryDonationRepo {
         Map~String,Donation~ _store
         +save(Donation) Future~void~
         +findById(String) Future~Donation~
         +findAll() Future~List~
     }
-    class PostgresDonationRepository {
+    class PostgresDonationRepo {
         Connection _db
         +save(Donation) Future~void~
         +findById(String) Future~Donation~
@@ -2791,9 +2822,10 @@ classDiagram
         DonationRepository _repo
         +processDonation(Donation)
     }
-    DonationRepository <|-- InMemoryDonationRepository
-    DonationRepository <|-- PostgresDonationRepository
+    DonationRepository <|-- InMemoryDonationRepo
+    DonationRepository <|-- PostgresDonationRepo
     DonationService --> DonationRepository : uses
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```dart
@@ -3635,25 +3667,31 @@ Applying clean architecture for maintainable, testable, framework-independent bu
 
 ```mermaid
 flowchart TD
-    subgraph Domain["Domain Layer (Pure Dart)"]
+    accTitle: Example 73: Clean Architecture Principles
+    accDescr: Flowchart with 5 nodes and 3 connections. Nodes: Donation Entity, SaveDonationUseCase, DonationRepository interface, InMemoryDonation Repository implements interface, DonationController orchestrates use cases. Connections: DonationController orchestrates use cases to SaveDonationUseCase, SaveDonationUseCase to DonationRepository interface, InMemoryDonation Repository implements interface to DonationRepository interface (implements).
+    subgraph Domain["Domain Layer (Pure<br/>Dart)"]
         Entity[Donation Entity]
         UseCase[SaveDonationUseCase]
         Repo[DonationRepository<br/>interface]
     end
     subgraph Data["Data Layer"]
-        RepoImpl[InMemoryDonationRepository<br/>implements interface]
+        RepoImpl[InMemoryDonation<br/>Repository<br/>implements interface]
     end
     subgraph Presentation["Presentation Layer"]
-        Controller[DonationController<br/>orchestrates use cases]
+        Controller[DonationController<br/>orchestrates use<br/>cases]
     end
 
     Controller --> UseCase
     UseCase --> Repo
     RepoImpl -.->|implements| Repo
 
-    style Domain fill:#0173B2,color:#fff
-    style Data fill:#DE8F05,color:#fff
-    style Presentation fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Domain pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Data pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Presentation pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -4188,6 +4226,8 @@ Implementing comprehensive testing strategies including unit, widget, integratio
 
 ```mermaid
 flowchart LR
+    accTitle: Example 75: Advanced Testing Strategies
+    accDescr: Flowchart with 12 nodes and 3 connections. Nodes: Zero wealth → 0.0, Below nisab → 0.0, Above nisab → 2.5, Negative → throws, Exactly at nisab, Nisab + 0.01, Zakat ≤ wealth always, Monotonic: wealth->zakat, ZakatCalculator, Unit, Boundary, Property. Connections: Unit to ZakatCalculator, Boundary to ZakatCalculator, Property to ZakatCalculator.
     subgraph Unit["Unit Tests"]
         UT1[Zero wealth → 0.0]
         UT2[Below nisab → 0.0]
@@ -4199,17 +4239,21 @@ flowchart LR
         BT2[Nisab + 0.01]
     end
     subgraph Property["Property Tests"]
-        PT1[Zakat ≤ wealth always]
-        PT2[Monotonic: wealth->zakat]
+        PT1[Zakat ≤ wealth<br/>always]
+        PT2[Monotonic:<br/>wealth->zakat]
     end
     ZakatCalc[ZakatCalculator]
     Unit --> ZakatCalc
     Boundary --> ZakatCalc
     Property --> ZakatCalc
 
-    style Unit fill:#0173B2,color:#fff
-    style Boundary fill:#DE8F05,color:#fff
-    style Property fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Unit pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Boundary pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Property pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart

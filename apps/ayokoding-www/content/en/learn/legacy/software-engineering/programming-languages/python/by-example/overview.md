@@ -27,12 +27,18 @@ This approach works best for developers who **prefer learning through working co
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-27 Python Fundamentals, Intermediate Examples 28-54 Production Patterns, Advanced Examples 55-80 Expert Mastery. Connections: Beginner Examples 1-27 Python Fundamentals to Intermediate Examples 28-54 Production Patterns, Intermediate Examples 28-54 Production Patterns to Advanced Examples 55-80 Expert Mastery.
     A["Beginner<br/>Examples 1-27<br/>Python Fundamentals"] --> B["Intermediate<br/>Examples 28-54<br/>Production Patterns"]
     B --> C["Advanced<br/>Examples 55-80<br/>Expert Mastery"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Progress from fundamentals through production patterns to expert mastery. Each level builds on the previous, increasing in sophistication and introducing more Pythonic idioms.
@@ -104,6 +110,8 @@ Visual representation for non-obvious concepts (30-50% of examples):
 ```mermaid
 %% List comprehension flow
 graph TD
+    accTitle: 2. Mermaid Diagram
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Input List, For Each Element, Filter Condition?, Transform Element, Add to Result, Output List. Connections: Input List to For Each Element, For Each Element to Filter Condition?, Filter Condition? to Transform Element (True), Filter Condition? to For Each Element (False), Transform Element to Add to Result, Add to Result to For Each Element, For Each Element to Output List.
     A[Input List] --> B[For Each Element]
     B --> C{Filter Condition?}
     C -->|True| D[Transform Element]
@@ -112,12 +120,17 @@ graph TD
     E --> B
     B --> F[Output List]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### 3. Heavily Annotated Code

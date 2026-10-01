@@ -16,18 +16,25 @@ Generic functions work with multiple types using type parameters. They provide t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 31: Generic Functions
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Generic Function, Called with string, Called with number, Called with custom type, Returns T (string), Returns T (number), Returns T (custom). Connections: Generic Function to Called with string, Generic Function to Called with number, Generic Function to Called with custom type, Called with string to Returns T (string), Called with number to Returns T (number), Called with custom type to Returns T (custom).
     A["Generic Function<T>"] --> B["Called with string"]
     A --> C["Called with number"]
-    A --> D["Called with custom type"]
+    A --> D["Called with custom<br/>type"]
 
     B --> E["Returns T (string)"]
     C --> F["Returns T (number)"]
     D --> G["Returns T (custom)"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -110,19 +117,26 @@ Generic classes define type parameters at the class level. All methods share the
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Stack&lt;T&gt;"] -->|"instantiate with string"| B["Stack&lt;string&gt;"]
-    A -->|"instantiate with number"| C["Stack&lt;number&gt;"]
+    accTitle: Example 32: Generic Classes
+    accDescr: Graph with 9 nodes and 16 connections. Nodes: A, lt, gt, B, C, push(hello), pop() => string, push(42), pop() => number. Connections: A to B (instantiate with string), A to lt (instantiate with string), A to gt (instantiate with string), lt to B (instantiate with string), lt to lt (instantiate with string), lt to gt (instantiate with string), gt to B (instantiate with string), gt to lt (instantiate with string), gt to gt (instantiate with string), A to C (instantiate with number), A to lt (instantiate with number), A to gt (instantiate with number), and 4 more.
+    A["Stack&lt;T&gt;"] -->|"instantiate with<br/>string"| B["Stack&lt;string&gt;"]
+    A -->|"instantiate with<br/>number"| C["Stack&lt;number&gt;"]
 
     B --> D["push('hello')"]
     B --> E["pop() => string"]
     C --> F["push(42)"]
     C --> G["pop() => number"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -342,12 +356,18 @@ console.log(scores.alice); // => Output: 95
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["User {name: string, email: string, age: number}"] -->|"Partial<User>"| B["Partial<User> {name?, email?, age?}"]
-    A -->|"Required<User>"| C["Required<User> {name!, email!, age!}"]
+    accTitle: Example 34: Utility Types in API Design - Partial and Required
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: User name: string, email: string, age: number, Partial name?, email?, age?, Required name!, email!, age!. Connections: User name: string, email: string, age: number to Partial name?, email?, age? (Partial), User name: string, email: string, age: number to Required name!, email!, age! (Required).
+    A["User {name: string,<br/>email: string, age:<br/>number}"] -->|"Partial<User>"| B["Partial<User><br/>{name?, email?,<br/>age?}"]
+    A -->|"Required<User>"| C["Required<User><br/>{name!, email!,<br/>age!}"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -656,6 +676,8 @@ TypeScript provides strong typing for Promises and async/await patterns. This en
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 37: Async/Await and Promises
+    accDescr: Sequence diagram between Caller, Promise.
     participant Caller
     participant Async Function
     participant Promise
@@ -665,9 +687,6 @@ sequenceDiagram
     Promise-->>-Async Function: Resolve with T
     Async Function-->>-Caller: Return T
 
-    style Caller fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Async Function fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Promise fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -892,6 +911,8 @@ Conditional types distribute over union types automatically. This enables powerf
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 39: Conditional Types with Distributive Behavior
+    accDescr: Graph with 8 nodes and 16 connections. Nodes: A, lt, gt, B, C, string[], number[], string[] | number[]. Connections: A to B (distributes), A to lt (distributes), A to gt (distributes), lt to B (distributes), lt to lt (distributes), lt to gt (distributes), gt to B (distributes), gt to lt (distributes), gt to gt (distributes), A to C (distributes), A to lt (distributes), A to gt (distributes), and 4 more.
     A["ToArray&lt;string | number&gt;"] -->|"distributes"| B["ToArray&lt;string&gt;"]
     A -->|"distributes"| C["ToArray&lt;number&gt;"]
     B --> D["string[]"]
@@ -899,10 +920,15 @@ graph TD
     D -->|"union result"| F["string[] | number[]"]
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1183,15 +1209,22 @@ Abstract classes provide partial implementations. Interfaces define pure contrac
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 42: Abstract Classes and Interfaces Compared
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Interface (Pure Contract), Concrete Class, Abstract Class (Partial Implementation), Full Implementation. Connections: Interface (Pure Contract) to Concrete Class, Abstract Class (Partial Implementation) to Concrete Class, Concrete Class to Full Implementation.
     A["Interface<br/>(Pure Contract)"] --> C["Concrete Class"]
-    B["Abstract Class<br/>(Partial Implementation)"] --> C
+    B["Abstract Class<br/>(Partial<br/>Implementation)"] --> C
 
     C --> D["Full Implementation"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1464,15 +1497,21 @@ Branded types create distinct types from the same underlying type. They prevent 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["string (unbranded)"] -->|"brand as UserId"| B["UserId = string & {_brand: UserId}"]
-    A -->|"brand as ProductId"| C["ProductId = string & {_brand: ProductId}"]
+    accTitle: Example 45: Branded Types
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: string (unbranded), B, C. Connections: string (unbranded) to B (brand as UserId), string (unbranded) to C (brand as ProductId), B to C (not assignable to), C to B (not assignable to).
+    A["string (unbranded)"] -->|"brand as UserId"| B["UserId = string &<br/>{_brand: UserId}"]
+    A -->|"brand as ProductId"| C["ProductId = string &<br/>{_brand: ProductId}"]
 
     B -->|"not assignable to"| C
     C -->|"not assignable to"| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1918,16 +1957,23 @@ The `Awaited<T>` utility type unwraps Promise types recursively. It's essential 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 50: Awaited Type
+    accDescr: Graph with 8 nodes and 11 connections. Nodes: A, lt, gt, string, C, number, E, User[]. Connections: A to string (Awaited), lt to string (Awaited), gt to string (Awaited), C to number (Awaited), lt to number (Awaited), lt to number (Awaited), gt to number (Awaited), gt to number (Awaited), E to User[] (Awaited), lt to User[] (Awaited), gt to User[] (Awaited).
     A["Promise&lt;string&gt;"] -->|"Awaited<>"| B["string"]
-    C["Promise&lt;Promise&lt;number&gt;&gt;"] -->|"Awaited<>"| D["number"]
+    C["Promise&lt;<br/>Promise&lt;number&gt;&gt;"] -->|"Awaited<>"| D["number"]
     E["Promise&lt;User[]&gt;"] -->|"Awaited<>"| F["User[]"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

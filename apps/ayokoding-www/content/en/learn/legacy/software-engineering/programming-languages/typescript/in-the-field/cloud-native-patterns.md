@@ -725,17 +725,19 @@ app.listen(3000);
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
+    accTitle: Cloud Native Progression Diagram
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Stateful Monolith, Stateless App, Serverless Functions, Microservices. Connections: Stateful Monolith to Stateless App (12-Factor Principles), Stateless App to Serverless Functions (Event-Driven), Stateless App to Microservices (Service Decomposition).
     A[Stateful Monolith] -->|12-Factor Principles| B[Stateless App]
     B -->|Event-Driven| C[Serverless Functions]
-    B -->|Service Decomposition| D[Microservices]
+    B -->|Service<br/>Decomposition| D[Microservices]
 
     A:::standard
     B:::framework
     C:::production
     D:::production
 
-    classDef standard fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef framework fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef standard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef framework fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef production fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
 
     subgraph Traditional[" Traditional "]
@@ -748,8 +750,11 @@ graph TB
         D
     end
 
-    style Traditional fill:#F0F0F0,stroke:#CC78BC,stroke-width:3px
-    style CloudNative fill:#F0F0F0,stroke:#029E73,stroke-width:3px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:3px
+    class Traditional pal-CC78BC
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#029E73,color:#000000,stroke-width:3px
+    class CloudNative pal-CC78BC-2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

@@ -22,8 +22,9 @@ The release delivers three transformative features that expand Elixir's capabili
 This release fundamentally changes how Elixir approaches type safety while maintaining backward compatibility and the language's dynamic nature.
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','noteTextColor':'#000','noteBkgColor':'#DE8F05','textColor':'#000','fontSize':'16px'}}}%%
 timeline
+    accTitle: Release Overview
+    accDescr: Timeline of the Elixir type system evolution from Elixir 1.14 in 2022-09 through Elixir 1.15, 1.16 and 1.17 to production adoption in 2024-Q3, listing the key features of each release.
     title Elixir Type System Evolution Timeline
     2022-09 : Elixir 1.14 Released : Type System Foundation : Gradual Typing Infrastructure
     2023-06 : Elixir 1.15 : Compiler Diagnostics : Duration Type System

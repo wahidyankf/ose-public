@@ -454,7 +454,7 @@ proof, and GraphQL/MCP remain genuinely deferred.
       declared by this delivery and record every frozen input, manifest row, finding, fix, and final status.
       Do not invoke `rules-quality-gate`; it requires a separate user-named invocation or an authorized
       rules-grooming Step 8 and is not authorized by this product plan.
-- [ ] [AI] **Sibling obligation:** record cloud deployment as a separately authorized future `ose-private` plan;
+- [ ] [AI] **Sibling obligation:** record cloud deployment as a separately authorized future private infrastructure plan;
       make no private-repository mutation or parity claim.
 
 ### Documentation, Manual, and Exploratory Proof

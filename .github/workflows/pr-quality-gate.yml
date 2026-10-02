@@ -92,24 +92,6 @@ jobs:
         run: >-
           ./hippo run --class transactional --resource-tier standard --disk-path . --
           npx nx run ferret-cli:install
-      # HIPPO v0.8.2 reads Linux available memory as the job cgroup's limit minus memory.current, which
-      # counts clean page cache, so the toolchain installs above can make a healthy runner look starved
-      # and the guard sheds the surface. Dropping clean cache first is the recorded workaround; remove
-      # it on the repin that fixes the reading:
-      # https://github.com/wahidyankf/hippo/blob/main/plans/ideas/q1-urgent-important/linux-available-memory-counts-page-cache.md
-      - name: Release clean page cache before the guarded surface
-        run: |
-          set -euo pipefail
-          cgroup="/sys/fs/cgroup$(cut -d: -f3 /proc/self/cgroup)"
-          report() {
-            echo "$1: $(grep MemAvailable /proc/meminfo)," \
-              "cgroup memory.current $(cat "$cgroup/memory.current" 2>/dev/null || echo n/a)," \
-              "$(grep -E '^inactive_file ' "$cgroup/memory.stat" 2>/dev/null || echo 'inactive_file n/a')"
-          }
-          report before
-          sync
-          echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null
-          report after
       - name: Verify the declared lifecycle surface
         env:
           RHINO_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}

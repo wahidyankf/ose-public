@@ -47,7 +47,7 @@ finding is `execution` work.
    edited projects. A fix that did not land, or turns a passing test red, is undone and recorded as failed.
 6. **Write the fix report** to `local-tmp/swe-code/`, beside the audit it answers, per
    [Generating Validation Reports](../skills/repo-generating-validation-reports/SKILL.md): each disposition, the red and
-   green runs of every test-first fix, and the changed files a scoped re-validation needs.
+   green runs of every test-first fix, and the changed files as evidence for each fix.
 
 ## Test First Where a Fix Needs a Test
 

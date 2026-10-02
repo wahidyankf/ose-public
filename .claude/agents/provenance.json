@@ -50,12 +50,12 @@
     {
       "id": "agent/apps-ayokoding-www-link-checker",
       "path": ".agents/agents/apps-ayokoding-www-link-checker.md",
-      "digest": "c2e75987fa32d51588b0c7f28629ce002b453d295c04c63e4a76b7ed66536428"
+      "digest": "1bf2e06e0407dfbb974b6b7a85cbbb422fb500e6856128324f2268f40f86197b"
     },
     {
       "id": "agent/apps-ayokoding-www-link-fixer",
       "path": ".agents/agents/apps-ayokoding-www-link-fixer.md",
-      "digest": "fc263b5772d3b564c2c6ec94d1088cd5c9eb289ee5e2e5e1d48cd9d08cd46c72"
+      "digest": "74f14764932a2b887302f5266706e7f7a8d96c6ed67fa13b6480219faa11316a"
     },
     {
       "id": "agent/apps-ayokoding-www-primer-maker",
@@ -100,7 +100,7 @@
     {
       "id": "agent/ci-fixer",
       "path": ".agents/agents/ci-fixer.md",
-      "digest": "ad47da12c666c48c07684c156609aa4e5ec4299621eeb151977f62893cc1eb7f"
+      "digest": "ef437d97ca1d242b0a9f94fe1d1502744c63d38ff6b6245a540282705088799f"
     },
     {
       "id": "agent/content-checker",
@@ -125,12 +125,12 @@
     {
       "id": "agent/docs-fixer",
       "path": ".agents/agents/docs-fixer.md",
-      "digest": "dcc1daa266b1d5116a4362bebe503bd00f4343b024fae4260f5f7f50bd3ec64f"
+      "digest": "3e10a62da977f53006f4a9a4cb5e6f25397ee5706485a49a40e5dab58638c850"
     },
     {
       "id": "agent/docs-link-checker",
       "path": ".agents/agents/docs-link-checker.md",
-      "digest": "ac54d79d2f7856feeac4ce3afda73da4ca3560743dafa24db9e34bfaa8913876"
+      "digest": "8c55e5a5e60c816512e7767230e0abe1bc33b085663c691e6ad97de80e4202a6"
     },
     {
       "id": "agent/docs-maker",
@@ -150,7 +150,7 @@
     {
       "id": "agent/docs-tutorial-checker",
       "path": ".agents/agents/docs-tutorial-checker.md",
-      "digest": "09e3974c129de2ac6f7012749d4939c2dd55d41ae43c1b68f4e49a2020ea68b9"
+      "digest": "a1064654154957a085cf135bc2c3f9a3f049873fc072c86ea98dad49bc51abe1"
     },
     {
       "id": "agent/docs-tutorial-fixer",
@@ -330,7 +330,7 @@
     {
       "id": "agent/specs-fixer",
       "path": ".agents/agents/specs-fixer.md",
-      "digest": "be5ac9b1123a55784bfb1a8ad849f278dcdab6796ee8d4210bb2b1706fbad312"
+      "digest": "4c342438e4ce09cd537ffec1faabc8c8d3da1ee725f35fdcf236972e1f292a40"
     },
     {
       "id": "agent/specs-maker",
@@ -345,7 +345,7 @@
     {
       "id": "agent/swe-code-fixer",
       "path": ".agents/agents/swe-code-fixer.md",
-      "digest": "a48bd83f97a815025900cb40e4e6d588a740852a1ce8e1a9cc34755ca43853d4"
+      "digest": "c490e98cd24ea6c05323f9f74149e8c2245ef483600491423570b1766169e278"
     },
     {
       "id": "agent/swe-code-maker",
@@ -705,7 +705,7 @@
     {
       "id": "skill/repo-applying-maker-checker-fixer",
       "path": ".agents/skills/repo-applying-maker-checker-fixer/SKILL.md",
-      "digest": "6787942c83c39275a43c9deaed7ec1a3f16cbf0313cbda08579a5d003a3db3e3"
+      "digest": "fcb61a718ee3f197656d62f850ce2e78f800285de9597d9f758254b8b0c53468"
     },
     {
       "id": "skill/repo-assessing-criticality-confidence",
@@ -720,7 +720,7 @@
     {
       "id": "skill/repo-generating-validation-reports",
       "path": ".agents/skills/repo-generating-validation-reports/SKILL.md",
-      "digest": "cc650d18f307884e96b474018f40c99391e9a5d9afd1b49246a497e983a7b1bd"
+      "digest": "dbf83428ad2cbeb75fd58893bd44ada0c80ffd5f4f1a1403170418bc901869f6"
     },
     {
       "id": "skill/repo-maintaining-task-lists",

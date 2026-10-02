@@ -290,7 +290,7 @@
     {
       "id": "skill/repo-applying-maker-checker-fixer",
       "path": ".agents/skills/repo-applying-maker-checker-fixer/SKILL.md",
-      "digest": "6787942c83c39275a43c9deaed7ec1a3f16cbf0313cbda08579a5d003a3db3e3"
+      "digest": "fcb61a718ee3f197656d62f850ce2e78f800285de9597d9f758254b8b0c53468"
     },
     {
       "id": "skill/repo-assessing-criticality-confidence",
@@ -305,7 +305,7 @@
     {
       "id": "skill/repo-generating-validation-reports",
       "path": ".agents/skills/repo-generating-validation-reports/SKILL.md",
-      "digest": "cc650d18f307884e96b474018f40c99391e9a5d9afd1b49246a497e983a7b1bd"
+      "digest": "dbf83428ad2cbeb75fd58893bd44ada0c80ffd5f4f1a1403170418bc901869f6"
     },
     {
       "id": "skill/repo-maintaining-task-lists",

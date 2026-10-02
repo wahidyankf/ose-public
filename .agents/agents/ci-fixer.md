@@ -58,7 +58,7 @@ work.
 6. **Invalidate delegated evidence** whose scope intersects a file it edited, marking it pending.
 7. **Write the fix report,** naming the audit it answers, per
    [Generating Validation Reports](../skills/repo-generating-validation-reports/SKILL.md): each finding's disposition, each
-   false positive with what would stop it recurring, and the changed files for a scoped re-validation.
+   false positive with what would stop it recurring, and the changed files as evidence for each fix.
 
 ## Left for a Person
 

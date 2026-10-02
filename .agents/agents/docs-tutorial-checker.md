@@ -67,7 +67,9 @@ template, and the anti-patterns checklist.
 ## Convergence Safeguards
 
 See `repo-generating-validation-reports` Skill's Convergence Safeguards reference — the
-false-positive skip list and scoped re-validation apply; a calling gate bounds its cycles at three.
+false-positive skip list applies; each cycle of a calling gate audits the whole frozen scope, for at
+most three cycles, per the
+[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## Report Generation
 

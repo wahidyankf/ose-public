@@ -33,10 +33,10 @@ date fields must not exist at all, not merely be correct).
 against the stable key `[category] | [file] | [brief-description]` — if matched, log as
 `[PREVIOUSLY ACCEPTED FALSE_POSITIVE — skipped]` (informational, not counted).
 
-**Re-validation Mode (Scoped Scan)**: when a multi-part UUID chain exists (e.g. `abc123_def456`),
-check the latest fix report for a `## Changed Files (for Scoped Re-validation)` section — if
-found, run Steps 1-7 normally on all files but run Step 8 (~265 software-doc files) only on
-changed files; if not found, run a full scan.
+**Re-validation Mode (Full Scan)**: when a multi-part UUID chain exists (e.g. `abc123_def456`),
+run Steps 1-8 on the whole frozen scope again, per the
+[Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md);
+a fix report's `## Changed Files` list never narrows Step 8.
 
 ## Step 2: Agent-to-Agent Duplication Detection
 

@@ -26,6 +26,6 @@ non-destructively, and a **fixer** applies only validated, high-confidence fixes
 - [When to Use Each Stage](./maker-checker-fixer/when-to-use-each-stage.md) — Decision guidance for maker vs. fixer. Use when unsure which stage applies.
 - [Benefits of the Pattern](./maker-checker-fixer/benefits-of-the-pattern.md) — The five benefits of this pattern. Use to justify adopting this pattern.
 - [Integration with Conventions](./maker-checker-fixer/integration-with-conventions.md) — How this pattern integrates with other conventions. Use to trace a convention into this workflow.
-- [Preventing Iteration Loops — False-Positive Persistence and Scoped Re-validation](./maker-checker-fixer/preventing-iteration-loops-false-positive-persistence-and-scoped-revalidation.md) — The first two safeguards against iteration loops. Use when a checker re-flags a false positive.
+- [Preventing Iteration Loops — False-Positive Persistence and Changed-Files Record](./maker-checker-fixer/preventing-iteration-loops-false-positive-persistence-and-scoped-revalidation.md) — The first two safeguards against iteration loops. Use when a checker re-flags a false positive.
 - [Preventing Iteration Loops — Self-Verification and Escalation](./maker-checker-fixer/preventing-iteration-loops-self-verification-and-escalation.md) — The remaining two safeguards. Use when a bash/sed fix may have failed.
 - [Related Documentation](./maker-checker-fixer/related-documentation.md) — Links to related conventions and agent files. Use to find the doc backing this pattern.

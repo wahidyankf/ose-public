@@ -69,7 +69,9 @@ bilingual path structure).
 
 Per `repo-applying-maker-checker-fixer`: initialize the report (UUID + progressive writing), run
 `docs-validating-links` methodology against external and internal links while writing findings progressively, then finalize status and summary. The same skill
-keeps the known false-positive skip list and scoped re-validation; a calling gate bounds its cycles at three.
+keeps the known false-positive skip list; each cycle of a calling gate audits the whole frozen scope, for at
+most three cycles, per the
+[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## Reference Documentation
 

@@ -3,7 +3,7 @@ description: "The first two safeguards against iteration loops."
 when_to_use: "Use when a checker re-flags a false positive."
 ---
 
-# Preventing Iteration Loops — False-Positive Persistence and Scoped Re-validation
+# Preventing Iteration Loops — False-Positive Persistence and Changed-Files Record
 
 Without explicit mechanisms to track accepted decisions, checker-fixer workflows can enter infinite or very long iteration loops. This section defines the three structural safeguards that prevent runaway iterations.
 
@@ -19,10 +19,8 @@ Without explicit mechanisms to track accepted decisions, checker-fixer workflows
 
 **Fixer behaviour**: At end of every fix report, append each FALSE_POSITIVE to `.known-false-positives.md` and include an `## Accepted FALSE_POSITIVE Findings` section in the fix report.
 
-## 2. Scoped Re-validation (Changed Files Only)
+## 2. Changed-Files Record
 
-**Problem**: Full-repo scan on every iteration re-validates all ~265 software documentation files even when the fixer only changed 3-4 agent files.
+**Problem**: Without a record of what the fixer touched, a repair cannot be traced to the row it answers.
 
-**Solution**: Fixer captures `git diff --name-only HEAD` after applying fixes and includes the list in the fix report under `## Changed Files (for Scoped Re-validation)`. Checker in re-validation mode (identified by multi-part UUID chain like `abc123_def456`) focuses Step 8 validation only on the listed changed files.
-
-**Result**: Subsequent iterations are 10-50x faster, reducing unnecessary work on unchanged content.
+**Solution**: Fixer captures `git diff --name-only HEAD` after applying fixes and includes the list in the fix report under `## Changed Files` as evidence for the rows it verified. The list never narrows the next audit: every quality-gate cycle audits the whole frozen scope, per the [Quality Gate Contract](../../workflow/quality-gate-contract.md).

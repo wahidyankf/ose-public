@@ -73,7 +73,7 @@ governance-gate class itself.
 ## Convergence Safeguards
 
 Checker agents re-running across maker-checker-fixer iterations MUST apply the known-false-positive
-skip list, scoped re-validation, cached-verification, escalation, and convergence-target rules in
+skip list, full re-audit, cached-verification, escalation, and convergence-target rules in
 [reference/convergence-safeguards.md](./reference/convergence-safeguards.md).
 
 ## Integration with Other Skills

@@ -52,7 +52,7 @@ what that evidence settles. Applying stated rules finding by finding is `executi
    the repository's documentation format, lint, and link checks over the edited files.
 6. **Write the fix report,** naming the findings it answers, per
    [Generating Validation Reports](../skills/repo-generating-validation-reports/SKILL.md): each disposition, and the changed
-   files a scoped re-validation needs.
+   files as evidence for each fix.
 
 ## Link Findings
 

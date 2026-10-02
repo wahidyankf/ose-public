@@ -47,7 +47,7 @@ Support `mode` parameter for quality-gate workflows:
 **Automatic Application** (HIGH confidence only):
 
 - Apply ALL HIGH_CONFIDENCE fixes automatically
-- NO confirmation prompts (user already reviewed checker report)
+- NO confirmation prompts (no gate cycle waits for a person, per the [Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md))
 - Skip MEDIUM_CONFIDENCE findings (flag for manual review)
 - Skip FALSE_POSITIVE findings (report to improve checker)
 - Use the right tool for the edit shape:

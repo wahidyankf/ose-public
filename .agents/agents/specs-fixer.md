@@ -63,7 +63,7 @@ is left for a person, however obvious the edit.
 7. **Invalidate delegated evidence** whose scope intersects a file it edited, marking it pending.
 8. **Write the fix report,** naming the audit it answers, per
    [Generating Validation Reports](../skills/repo-generating-validation-reports/SKILL.md): each disposition and the changed
-   files a scoped re-validation needs.
+   files as evidence for each fix.
 
 ## Layout Stays as Recorded
 

@@ -55,8 +55,9 @@ strict/all. FALSE_POSITIVE carry-forward maintained in
 `local-tmp/.known-false-positives.md`. Adoption gaps and tree-shape migrations are never
 auto-fixed regardless of mode.
 
-## Capture Changed Files for Scoped Re-validation
+## Capture Changed Files
 
 After applying all fixes: `git diff --name-only HEAD`. Include in the fix report under
-`## Changed Files (for Scoped Re-validation)` so the next checker run can scope to exactly what
-changed.
+`## Changed Files` as evidence for each fix. It never narrows the next checker run, which audits the
+whole frozen scope, per the
+[Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md).

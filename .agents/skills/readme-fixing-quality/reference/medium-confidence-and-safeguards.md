@@ -63,6 +63,6 @@ judgment); recommendations to improve `readme-checker`; and a fix report file in
 ## Convergence Safeguards
 
 See `repo-applying-maker-checker-fixer` Skill for: **Capture Changed Files** (after applying all
-fixes, capture the changed-files list for scoped re-validation); **Persist FALSE_POSITIVE
+fixes, capture the changed-files list as evidence for each fix); **Persist FALSE_POSITIVE
 Findings** (append each to `local-tmp/.known-false-positives.md`); **Self-Verification
 After Edits** (re-read modified sections and log APPLIED/FAILED status in the fix report).

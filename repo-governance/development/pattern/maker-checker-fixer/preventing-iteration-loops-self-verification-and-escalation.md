@@ -26,8 +26,8 @@ If verification fails, log the fix as FAILED (not applied). Do NOT log as "fixed
 
 **Solution**: If the `.known-false-positives.md` skip list is loaded but checker still flags the same item (meaning the skip key didn't match), this indicates the skip key format is inconsistent. Escalate to maker for governance decision:
 
-1. Fixer marks the finding as `ESCALATED` in the fix report (not FALSE_POSITIVE, not applied)
-2. Fixer notifies user: "This finding has been re-flagged after a FALSE_POSITIVE acceptance. Manual review required."
+1. Fixer marks the row `needs-decision` in the ledger (not FALSE_POSITIVE, not applied); no cycle pauses for it
+2. The open row makes the verdict `FAIL`, and the caller gives it an owner after the verdict, per the [Quality Gate Contract](../../workflow/quality-gate-contract.md)
 3. Maker updates the relevant convention or agent to resolve the root ambiguity
 
 **Ceiling**: A quality gate runs at most three cycles, per the [Quality Gate Contract](../../workflow/quality-gate-contract.md). If blocking rows remain after the last one, it returns `FAIL` and the maker owns them.

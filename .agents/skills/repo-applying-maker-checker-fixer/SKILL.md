@@ -42,7 +42,7 @@ See [Tool Requirements](./reference/tool-requirements.md) for the typical tool s
 
 ## Preventing Iteration Loops
 
-Without explicit safeguards, checker-fixer workflows can loop indefinitely. See [Preventing Iteration Loops](./reference/preventing-iteration-loops.md) for the four structural safeguards: FALSE_POSITIVE persistence, scoped re-validation, self-verification after bash edits, and escalation after repeated disagreements.
+Without explicit safeguards, checker-fixer workflows can loop indefinitely. See [Preventing Iteration Loops](./reference/preventing-iteration-loops.md) for the four structural safeguards: FALSE_POSITIVE persistence, the changed-files record, self-verification after bash edits, and escalation after repeated disagreements.
 
 ## Integration with Conventions
 

@@ -26,9 +26,9 @@ cat >> local-tmp/.known-false-positives.md << 'EOF'
 EOF
 ```
 
-## 2. Scoped Re-validation (Changed Files Only)
+## 2. Changed-Files Record
 
-**Problem**: Full-repo scan on every iteration re-validates all ~265 software documentation files even when fixer only changed 3-4 agent files.
+**Problem**: Without a record of what the fixer touched, a repair cannot be traced to the row it answers.
 
 **Solution**: Fixer captures changed files after applying fixes:
 
@@ -36,7 +36,7 @@ EOF
 git diff --name-only HEAD
 ```
 
-Includes list in fix report under `## Changed Files (for Scoped Re-validation)`. Checker in re-validation mode (multi-part UUID chain like `abc123_def456`) runs Step 8 only on changed files.
+Includes the list in the fix report under `## Changed Files` as evidence for the rows it verified. The list never narrows the next audit: every quality-gate cycle audits the whole frozen scope, per the [Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## 3. Self-Verification After Bash Edits
 
@@ -55,10 +55,10 @@ Log as **FAILED (not applied)** if verification fails. For multi-line reformatti
 
 If checker and fixer disagree on the same finding for 2+ iterations, escalate to maker:
 
-1. Fixer marks finding as `ESCALATED` (not FALSE_POSITIVE, not applied)
-2. Notify user: "This finding has been re-flagged after a FALSE_POSITIVE acceptance. Manual review required."
+1. Fixer marks the row `needs-decision` (not FALSE_POSITIVE, not applied); no cycle pauses for it
+2. The open row makes the verdict `FAIL`, and the caller gives it an owner after the verdict, per the [Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md)
 3. Maker resolves the root ambiguity in the relevant convention or agent
 
 **Cycle ceiling**: A quality gate runs at most three cycles, per the [Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md); a gate still finding blocking rows after its last cycle returns `FAIL`, never another cycle.
 
-**Implementation status**: All checker agents implement safeguards 1-2 (skip list + scoped re-validation). Agents with WebSearch/WebFetch also implement cached factual verification. All fixer agents implement changed files capture, FALSE_POSITIVE persistence, and self-verification. Every quality gate takes its `max-cycles` bound, its termination rules, and its advisory verdict from the [Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md); these safeguards never add a cycle or another input.
+**Implementation status**: All checker agents implement safeguard 1 (skip list) and audit the whole frozen scope every cycle. Agents with WebSearch/WebFetch also implement cached factual verification. All fixer agents implement changed files capture, FALSE_POSITIVE persistence, and self-verification. Every quality gate takes its `max-cycles` bound, its termination rules, and its advisory verdict from the [Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md); these safeguards never add a cycle or another input.

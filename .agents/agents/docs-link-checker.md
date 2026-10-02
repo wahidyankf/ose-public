@@ -68,7 +68,9 @@ correct relative paths and `.md` extensions per the
 ## Convergence Safeguards
 
 See `repo-generating-validation-reports` Skill's Convergence Safeguards reference — the
-false-positive skip list and scoped re-validation apply; a calling gate bounds its cycles at three.
+false-positive skip list applies; each cycle of a calling gate audits the whole frozen scope, for at
+most three cycles, per the
+[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
 
 Out of scope: same-page anchors (unless requested), links in code blocks, non-documentation files,
 links outside `docs/`. Some sites (Wikipedia, government/academic) block automated tools — treat

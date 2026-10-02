@@ -15,13 +15,13 @@ cycle never converges. Every checker agent applies all five safeguards below.
 - **If matched**: log as `[PREVIOUSLY ACCEPTED FALSE_POSITIVE — skipped]` in the informational
   section. Do NOT count it in the findings total.
 
-## Re-validation Mode (Scoped Scan)
+## Full Re-audit
 
-When a UUID chain exists from a previous iteration (multi-part chain like `abc123_def456`):
-
-1. Check for a `## Changed Files (for Scoped Re-validation)` section in the latest fix report
-2. **If found**: run validation only on the CHANGED files listed. Skip unchanged files entirely.
-3. **If not found**: run a full scan as normal
+When a UUID chain exists from a previous iteration (multi-part chain like `abc123_def456`), audit
+the whole frozen scope again, per the
+[Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md).
+A fix report's `## Changed Files` list is evidence for the rows the fixer verified; it never narrows
+the audit.
 
 ## Cached Verification (Iterations 2+)
 
@@ -41,8 +41,10 @@ new findings on unchanged content.
 If a finding was flagged in iteration N, marked FALSE_POSITIVE by the fixer, and re-flagged in
 iteration N+2:
 
-- Mark it as `[ESCALATED — manual review required]` instead of a countable finding
-- Do NOT count it in the findings total
+- Record it as a `needs-decision` row; no cycle pauses for it
+- An open `needs-decision` row makes the verdict `FAIL`, and the caller gives it an owner after the
+  verdict, per the
+  [Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md)
 
 ## Convergence Target
 

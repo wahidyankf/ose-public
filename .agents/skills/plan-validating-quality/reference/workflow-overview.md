@@ -28,12 +28,12 @@ findings report:
 
 ### Step 0c: Re-validation Mode Detection
 
-When a multi-part UUID chain exists (e.g. `abc123_def456`): check the latest fix report for a
-`## Changed Files (for Scoped Re-validation)` section. If found — run validation (Steps 2-6) only on
-changed plan files; run factual accuracy (Step 4b) only on claims in changed sections; reuse
-iteration 1's `## Codebase Files Inspected` list, do not read additional codebase files. If not
-found, run full validation. This prevents scope expansion across iterations and ensures deterministic
-convergence.
+When a multi-part UUID chain exists (e.g. `abc123_def456`): run validation (Steps 2-6) and factual
+accuracy (Step 4b) on the whole frozen plan again, per the
+[Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md); a
+fix report's `## Changed Files` list never narrows the audit. Reuse iteration 1's
+`## Codebase Files Inspected` list and do not read additional codebase files. This prevents scope
+expansion across iterations.
 
 ### Step 1: Read Complete Plan
 

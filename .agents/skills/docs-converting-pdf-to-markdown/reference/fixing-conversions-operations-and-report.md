@@ -41,9 +41,10 @@ uses a SHA256 stable key for dedup, safe to call multiple times with the same ar
 
 ## Changed Sections Tracking
 
-At the end of a fix run, write a `## Changed Sections (for Scoped Re-validation)` list (section
-titles/page ranges, tables, Mermaid blocks, paragraphs touched) so the checker can scope its next
-iteration to only changed areas.
+At the end of a fix run, write a `## Changed Sections` list (section titles/page ranges, tables,
+Mermaid blocks, paragraphs touched) as evidence for each fix. It never narrows the checker's next
+audit, which covers the whole frozen scope, per the
+[Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## Fix Report Format
 
@@ -85,7 +86,7 @@ iteration to only changed areas.
 **Re-validation**: Paragraph present at line 892, whitespace-normalized match
 **Action**: Added to `local-tmp/.known-false-positives.md` via `crane skiplist --add`
 
-## Changed Sections (for Scoped Re-validation)
+## Changed Sections
 
 - Section "X" re-extracted from pages 12-14
 - Mermaid block at line 445 syntax corrected

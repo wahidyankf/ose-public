@@ -49,7 +49,8 @@ def process_finding(finding):
 
 - Apply ALL HIGH confidence fixes automatically
 - Skip MEDIUM and FALSE_POSITIVE findings
-- NO confirmation prompts (user already reviewed checker report)
+- NO confirmation prompts (no gate cycle waits for a person, per the
+  [Quality Gate Contract](../../workflow/quality-gate-contract.md))
 
 ### 5. Fix Report Generation
 

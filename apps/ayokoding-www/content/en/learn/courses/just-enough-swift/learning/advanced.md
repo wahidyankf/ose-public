@@ -14,40 +14,80 @@ does not exit before its child task prints; iOS ownership and cancellation are d
 _ex-55 · exercises co-25_
 
 ```swift
-func exchange<T>(_ left: inout T, _ right: inout T) { let saved = left; left = right; right = saved }
-var first = 1; var second = 2; exchange(&first, &second) // => T is Int here
-var a = "a"; var b = "b"; exchange(&a, &b) // => the same implementation also accepts String
+// => exchange works for any type T; inout lets it rewrite both arguments
+func exchange<T>(_ left: inout T, _ right: inout T) { // => one body for every T
+    // => saved keeps the original left value while left is overwritten
+    let saved = left
+    left = right // => left now holds the right value
+    right = saved // => right now holds the original left value
+}
+
+var first = 1 // => first is an Int
+var second = 2 // => second is an Int
+exchange(&first, &second) // => T is inferred as Int
+var a = "a" // => a is a String
+var b = "b" // => b is a String
+exchange(&a, &b) // => the same implementation runs with T as String
+// => both pairs are now swapped
 print("\(first),\(second); \(a),\(b)") // => 2,1; b,a
 ```
 
 **Key takeaway:** a type parameter preserves type relationships without `Any`. **Why it matters:**
-one tested algorithm serves many types while the compiler still rejects mismatched arguments.
+one tested algorithm serves many types while the compiler still rejects mismatched arguments. Without generics you
+would write one swap per type or erase everything to `Any`, losing the guarantee that both arguments share a type.
+iOS code relies on the same idea in collection APIs and `SwiftUI` views, so recognizing a type parameter early makes
+standard-library signatures readable instead of intimidating.
 
 ## Example 56: Make a Generic Stack
 
 _ex-56 · exercises co-25_
 
 ```swift
-struct Stack<Element> { var items: [Element] = []; mutating func push(_ item: Element) { items.append(item) }; mutating func pop() -> Element? { items.popLast() } }
-var stack = Stack<String>(); stack.push("first")
+// => Element is a placeholder the caller fills in
+struct Stack<Element> { // => a value type generic over Element
+    var items: [Element] = [] // => storage holds only Element values
+    // => push appends to the top; mutating because it changes items
+    mutating func push(_ item: Element) { // => accepts only Element
+        items.append(item) // => items grows by one
+    }
+    // => pop returns nil when the stack is empty
+    mutating func pop() -> Element? { // => returns Element, never another type
+        items.popLast() // => removes and returns the top item, if any
+    }
+}
+
+var stack = Stack<String>() // => Element is String for this stack
+stack.push("first") // => items is ["first"]
 print(stack.pop() ?? "empty") // => first
+print(stack.pop() ?? "empty") // => empty; the stack is now empty
 ```
 
 **Key takeaway:** generic types expose one model over a variable element type. **Why it matters:**
-the stack cannot accidentally accept one type and return another unrelated one.
+the stack cannot accidentally accept one type and return another unrelated one. A generic container keeps its element
+type in every signature, so the compiler checks each `push` and `pop` at the call site rather than at runtime. Swift's
+own `Array`, `Dictionary`, and `Optional` are generic types built the same way, which is why their methods return
+precisely typed values.
 
 ## Example 57: Constrain a Generic Function
 
 _ex-57 · exercises co-25_
 
 ```swift
-func maximum<T: Comparable>(_ left: T, _ right: T) -> T { left > right ? left : right }
+// => T: Comparable lets the body use > on two T values
+func maximum<T: Comparable>(_ left: T, _ right: T) -> T { // => both arguments share T
+    left > right ? left : right // => returns the larger argument
+}
+
 print(maximum(3, 7)) // => 7; Int conforms to Comparable
 print(maximum("Ada", "Lin")) // => Lin; String also supplies ordering
+// => maximum(3, "Lin") would not compile: both arguments must share one T
 ```
 
 **Key takeaway:** `<T: Comparable>` requires the operation the implementation needs. **Why it matters:**
-constraints state the algorithm's real dependency instead of accepting values it cannot compare.
+constraints state the algorithm's real dependency instead of accepting values it cannot compare. The constraint turns a
+would-be runtime failure into a compile-time error at the call site, and it documents the contract for the next reader.
+Standard-library functions such as `max(_:_:)` and `sorted()` use the same `Comparable` constraint, so your own generic
+code composes with them naturally.
 
 ## Example 58: Constrain to Your Protocol
 

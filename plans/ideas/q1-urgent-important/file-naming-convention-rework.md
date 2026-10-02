@@ -55,7 +55,7 @@ less than that.
 
 - [`repo-rules-sweep`](../../done/2026-08-18__repo-rules-sweep/README.md) — the sweep that exposed
   every item above; entries 6-8 of its `learnings.md` are the specification source.
-- [Iron Rule 3](../../../repo-governance/workflows/plan/plan-execution/iron-rules-1-5.md) — fix the
+- [Iron Rule 3](../../../repo-governance/workflows/plan/plan-execution/012-iron-rules-1-5.md) — fix the
   class, not the sites a finding names; the propagation discipline any prose change here inherits.
 - [rhino-governance-tooling-defects](./rhino-governance-tooling-defects.md) — the sibling
   family, where the tool under-reports rather than the document.

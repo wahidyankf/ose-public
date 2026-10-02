@@ -18,12 +18,12 @@ when_to_use: Use when looking for the agent, workflow, or skill that creates or 
 ## Related Agents
 
 - [apps-ayokoding-www-in-the-field-maker](../../../../.agents/agents/apps-ayokoding-www-in-the-field-maker.md) — Creates in-the-field content
-- [apps-ayokoding-www-in-the-field-checker](../../../../.agents/agents/apps-ayokoding-www-in-the-field-checker.md) — Validates in-the-field standards
-- [apps-ayokoding-www-in-the-field-fixer](../../../../.agents/agents/apps-ayokoding-www-in-the-field-fixer.md) — Applies validated fixes
+- [tutorial-in-the-field-checker](../../../../.agents/agents/tutorial-in-the-field-checker.md) — Validates in-the-field standards
+- [tutorial-in-the-field-fixer](../../../../.agents/agents/tutorial-in-the-field-fixer.md) — Applies validated fixes
 
 ## Related Workflows
 
-- [ayokoding-web-in-the-field-quality-gate](../../../workflows/ayokoding-web/ayokoding-web-in-the-field-quality-gate.md) — Quality assurance workflow for in-the-field tutorials
+- [tutorial-in-the-field-quality-gate](../../../workflows/quality/tutorial-in-the-field-quality-gate.md) — Quality assurance workflow for in-the-field tutorials
 
 ## Related agent skills
 

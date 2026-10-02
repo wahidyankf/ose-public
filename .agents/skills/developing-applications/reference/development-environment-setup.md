@@ -49,4 +49,4 @@ rtk ./rhino env restore --dir local-tmp/env-backup --apply --force
 ## Full Setup Guide
 
 For complete step-by-step environment setup (new machine, fresh OS, or broken toolchain), see:
-[Development Environment Setup Workflow](../../../../repo-governance/workflows/infra/development-environment-setup.md)
+[Development Environment Setup Workflow](../../../../repo-governance/workflows/maintenance/development-environment-setup.md)

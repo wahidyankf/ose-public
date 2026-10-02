@@ -222,7 +222,7 @@ OSE-authored code/docs inherit root MIT; every third party retains its license/n
 │   ├── development/infra/nx-targets/mandatory-targets-cli-e2e.md [E?] — only if mixed CLI/E2E text is insufficient
 │   ├── development/infra/nx-targets/mandatory-targets-behaviour-coverage.md [E?] — only if Python BE is absent
 │   ├── development/infra/nx-targets/tag-convention-current-tags-and-examples.md [E?] — only if BE/E2E tags are absent
-│   └── workflows/infra/development-environment-setup/phase-6-python-ecosystem.md [E] — backend dependencies
+│   └── workflows/maintenance/development-environment-setup/008-phase-6-python-ecosystem.md [E] — backend dependencies
 ├── scripts/
 │   ├── behaviour-coverage.mjs [E] — backend pytest-bdd adapter recognition if Plan 01 support is insufficient
 │   └── behaviour-coverage.test.mjs [E] — backend owner/E2E regression fixtures

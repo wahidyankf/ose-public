@@ -9,16 +9,16 @@ Use the ownership registry by file and region: ignore only wholly generated file
 regions; vendored files and hand-authored regions participate. Recompute every cycle.
 
 Record the ordinary risk tier. For `lite` and `full`, select exactly these specialists plus
-`pr-review-synthesis-maker` as coordinator:
+`pr-review-checker` as coordinator:
 
-- `pr-review-security-maker` — run the primary mandatory probe for real secrets, credentials, or
+- `pr-review-security-checker` — run the primary mandatory probe for real secrets, credentials, or
   other values that grant access, using the canonical
   [system-secret boundary](../../../../repo-governance/conventions/security/secrets-and-env-standards/hard-iron-rule-no-secrets-in-committed-files.md).
-- `pr-review-architecture-maker` — review architecture and design decisions made by the plan.
-- `pr-review-logic-maker` — review domain intent and Gherkin acceptance-criteria completeness.
-- `pr-review-docs-maker` — review the plan as the shipping artifact for substantive quality and
+- `pr-review-architecture-checker` — review architecture and design decisions made by the plan.
+- `pr-review-logic-checker` — review domain intent and Gherkin acceptance-criteria completeness.
+- `pr-review-docs-checker` — review the plan as the shipping artifact for substantive quality and
   completeness.
-- `pr-review-governance-maker` — review mechanical conformance to repository rules.
+- `pr-review-governance-checker` — review mechanical conformance to repository rules.
 
 For `trivial`, select no specialists. The coordinator runs one generalist pass: execute the same
 primary security probe first, then cover architecture/design, domain intent and Gherkin,

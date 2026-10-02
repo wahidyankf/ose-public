@@ -25,10 +25,10 @@ Existing agents using different terminology should migrate to this convention.
 
 **Severity-Based Family**:
 
-- apps-ayokoding-www-general-checker
-- apps-ayokoding-www-by-example-checker
-- apps-ayokoding-www-in-the-field-checker
-- apps-ose-www-content-checker
+- content-checker
+- tutorial-by-example-checker
+- tutorial-in-the-field-checker
+- content-checker
 - repo-workflow-checker
 
 **Dual-Label Family** (preserve existing labels + add criticality):
@@ -36,7 +36,7 @@ Existing agents using different terminology should migrate to this convention.
 - docs-checker ([Verified]/[Error]/[Outdated] + CRITICAL/HIGH/MEDIUM/LOW)
 - docs-tutorial-checker
 - docs-software-engineering-separation-checker
-- apps-ayokoding-www-facts-checker
+- content-checker
 - apps-ayokoding-www-link-checker
 - docs-link-checker ([OK]/[BROKEN]/[REDIRECT] + CRITICAL/HIGH/MEDIUM/LOW)
 - rules-checker
@@ -52,14 +52,14 @@ Existing agents using different terminology should migrate to this convention.
 Update all fixer agents to use priority-based execution:
 
 - repo-workflow-fixer (pilot)
-- apps-ayokoding-www-general-fixer
-- apps-ayokoding-www-by-example-fixer
-- apps-ayokoding-www-facts-fixer
-- apps-ayokoding-www-in-the-field-fixer
+- content-fixer
+- tutorial-by-example-fixer
+- content-fixer
+- tutorial-in-the-field-fixer
 - apps-ayokoding-www-link-fixer
 - docs-tutorial-fixer
 - docs-software-engineering-separation-fixer
-- apps-ose-www-content-fixer
+- content-fixer
 - readme-fixer
 - docs-fixer
 - docs-fixer

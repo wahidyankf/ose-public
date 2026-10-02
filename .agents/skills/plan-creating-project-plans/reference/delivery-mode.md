@@ -33,8 +33,8 @@ availability grant here. An unmarked plan resolves to the tier-3 default (`workt
 requires the `Quality gate` from `.github/workflows/pr-quality-gate.yml` for the PR's exact current
 head and base, one authenticated clean current-head `pr-leak-review`, plus applicable finite surface
 gates. Broad semantic review is absent by default. Include
-[`pr-review`](../../../../repo-governance/workflows/pr/pr-review.md) or
-[`pr-review-cycle`](../../../../repo-governance/workflows/pr/pr-review-cycle.md) only when the user
+[`pr-review`](../../../../repo-governance/workflows/quality/pr-review.md) or
+[`pr-review-quality-gate`](../../../../repo-governance/workflows/quality/pr-review-quality-gate.md) only when the user
 explicitly requested it, and place it at that PR delivery boundary. The merge remains outside the
 done-boundary and `[AI]` merges once hardened preconditions hold.
 

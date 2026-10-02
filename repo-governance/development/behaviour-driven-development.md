@@ -90,6 +90,6 @@ resolves exactly once in every applicable adapter; every step has one binding, a
 - [BDD Coverage, Exemptions, and Execution](./behaviour-driven-development/coverage-exemptions-and-execution.md) — static
   coverage targets, higher-layer exemptions, `test:quick` composition, and execution surfaces.
 
-Run the [Gherkin implementation review](../workflows/gherkin-implementation-review.md) after adding
+Run the [Gherkin implementation review](../workflows/quality/gherkin-implementation-review.md) after adding
 or materially changing a feature, adapter, exemption, or coverage mechanism. Static binding
 coverage cannot prove semantic implementation.

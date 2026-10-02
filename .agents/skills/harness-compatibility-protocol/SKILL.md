@@ -1,7 +1,7 @@
 ---
 name: harness-compatibility-protocol
 description: Cross-vendor parity invariants, lifecycle delegation, and seven external-drift dimensions shared by the harness compatibility checker and fixer.
-when_to_use: When acting as harness-compatibility-checker or harness-compatibility-fixer — running/interpreting a Phase 0 invariant or Phase 1 drift dimension, or writing an audit/fix report.
+when_to_use: When acting as harness-checker or harness-fixer — running/interpreting a Phase 0 invariant or Phase 1 drift dimension, or writing an audit/fix report.
 ---
 
 # Repository Harness Compatibility Protocol
@@ -33,10 +33,9 @@ detects; the fixer remediates what's safely mechanical and flags the rest for hu
 
 ## Core Principles
 
-1. **Standalone Phase 0 runs in full.** In the quality-gate workflow, exact
-   `delegated-gate-ids` filter registered vendor, binding, ownership, catalog, and duplication
-   predicates. Missing/stale evidence is `pending`, not a fallback run; unregistered semantic
-   parity still runs.
+1. **Phase 0 leaves declared tools their properties.** Under the quality gate, vendor terms and
+   adapter generation belong to `governance-vendor` and `harness-adapters`, never to findings;
+   unregistered semantic parity still runs.
 2. **Only Invariant 3 (binding sync) and most Phase 1 dimensions auto-fix** — anything touching
    governance prose, root-instruction files, agent-set divergence, or a new color/tier mapping
    requires human judgment.
@@ -68,5 +67,5 @@ Hand-authored registrations that forward harness lifecycle events to FERRET (`.c
 
 ## Related Agents
 
-`harness-compatibility-checker`, `harness-compatibility-fixer`, `web-researcher`
+`harness-checker`, `harness-fixer`, `web-researcher`
 (delegated Phase 1 research), `rules-checker` and `rules-propagation` (different scope).

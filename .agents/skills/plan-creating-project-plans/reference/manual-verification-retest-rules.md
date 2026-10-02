@@ -3,7 +3,7 @@
 ## For Web-UI Feature-Change Plans — Rule-15 Three-Tester Retest
 
 Near the end of the checklist, before archival: run the three live-site testers (the
-`web-ux-test-fixing-planning` workflow: `web-exploratory-tester` + `web-usability-tester` +
+`ux-review-fix-planning` workflow: `web-exploratory-tester` + `web-usability-tester` +
 `web-design-tester`) against the running target across ALL supported locales; append each finding as
 a new unchecked checkbox, source-attributed (`EWT-###`/`UWT-###`/`DWT-###`), and fix (or explicitly
 defer) before archival. See

@@ -23,7 +23,7 @@ PR to be merged.
      that head. Missing, stale, failed, or findings-bearing evidence: **CRITICAL**. A head-changing
      fix requires one new pass, never a clean streak.
    - **Semantic review is optional** — no review record is a valid default. If the user explicitly
-     requested `pr-review` or `pr-review-cycle`, verify it ran at the PR boundary and every resulting
+     requested `pr-review` or `pr-review-quality-gate`, verify it ran at the PR boundary and every resulting
      conversation is resolved. An unrequested semantic-review step: **HIGH**.
    - **Applicable finite surface gates pass** — missing or failed UI/API/other reachable-behaviour
      evidence is **CRITICAL**; a genuinely unreachable surface requires an explicit exemption.

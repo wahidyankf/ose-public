@@ -20,7 +20,7 @@ Absent one of these two, use `worktree-to-pr` even if a direct-push mode would o
 convenient. This restriction targets `main-to-origin-main` specifically — working directly in the
 primary checkout skips both PR review and worktree isolation, so it is held to a narrower bar than
 `worktree-to-origin-main`, which still isolates work from the primary checkout even though it also
-skips review. The [Plan-Docs-Only Carve-Out](../../../workflows/plan/plan-planning/plan-docs-only-carve-out.md#the-plan-docs-only-carve-out-superseded--retired-in-ose-public)
+skips review. The [Plan-Docs-Only Carve-Out](../../../workflows/plan/plan-planning/007-plan-docs-only-carve-out.md#the-plan-docs-only-carve-out-superseded--retired-in-ose-public)
 is the plan-authoring-time instance of condition 1 above — see that section for how the two
 reconcile when a plan folder's push includes non-markdown evidence files.
 
@@ -30,10 +30,10 @@ reconcile when a plan folder's push includes non-markdown evidence files.
 condition above.
 
 The `*-to-pr` modes require the exact-current-head/base `Quality gate` plus one authenticated clean
-current-head [`pr-leak-review`](../../../workflows/pr/pr-leak-review.md) before merge. Broad
+current-head [`pr-leak-review`](../../../workflows/quality/pr-leak-review.md) before merge. Broad
 semantic review is absent by default and may
-appear only when the user explicitly requests [`pr-review`](../../../workflows/pr/pr-review.md) or
-[`pr-review-cycle`](../../../workflows/pr/pr-review-cycle.md). Selecting a `*-to-pr` mode authorizes
+appear only when the user explicitly requests [`pr-review`](../../../workflows/quality/pr-review.md) or
+[`pr-review-quality-gate`](../../../workflows/quality/pr-review-quality-gate.md). Selecting a `*-to-pr` mode authorizes
 PR steps at the plan's **delivery boundaries** only — never at every phase, per
 [PRs Open at Delivery Boundaries](./prs-open-at-delivery-boundaries-rules.md#prs-open-at-delivery-boundaries-not-every-phase-hard-rule), and
 never at Phase 0 under any mode, per

@@ -14,7 +14,7 @@
 2. **Rule-15 Three-Tester Retest (web-UI feature-change plans)**
    - If the plan was a web-UI **feature-change** plan, verify it carried a near-end "Rule-15
      three-tester retest" round — the
-     [`web-ux-test-fixing-planning`](../../../../repo-governance/workflows/web/web-ux-test-fixing-planning.md)
+     [`ux-review-fix-planning`](../../../../repo-governance/workflows/quality/ux-review-fix-planning.md)
      triad (`web-exploratory-tester` + `web-usability-tester` + `web-design-tester`) — that ran across
      ALL supported locales, and that every resulting `EWT-###`/`UWT-###`/`DWT-###` defect checkbox in
      `delivery.md` is `- [x]` (fixed) before archival. Deferral of EWT/UWT/DWT defect findings is NOT

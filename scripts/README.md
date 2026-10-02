@@ -51,7 +51,7 @@ copy from a resolved full `main` commit; its history-aware range screen was port
 ## The leak-review record check
 
 [`leak-review/`](./leak-review/README.md) is not a wrapper either. Its `record-status.sh` publishes the `leak-review`
-commit status from the posted [PR Leak Review](../repo-governance/workflows/pr/pr-leak-review.md) record, and its
+commit status from the posted [PR Leak Review](../repo-governance/workflows/quality/pr-leak-review.md) record, and its
 offline suite runs as the `leak-review-tests` gate.
 
 ## Which gates invoke these

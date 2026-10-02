@@ -8,7 +8,7 @@ and nothing in the toolchain says a word.
 > `ayokoding-www` regression test silently executed zero times because it landed outside every
 > configured Vitest project's `include` glob, surfaced during the
 > [`ayokoding-www-tools-ai-benchmark`](../../done/2026-07-30__ayokoding-www-tools-ai-benchmark/README.md)
-> PR #122 cycle-3 review (`pr-review-integrity-maker`, HIGH finding F2).
+> PR #122 cycle-3 review (`pr-review-integrity-checker`, HIGH finding F2).
 
 ## Problem / context
 
@@ -19,7 +19,7 @@ runs under a Node environment and includes `test/unit/be-steps/**/*.steps.ts` pl
 regression test landed at `src/app/[locale]/tools/ai-benchmark/benchmark-content.test.tsx` — a path
 neither glob matched.
 
-`pr-review-integrity-maker` proved the consequence empirically rather than by inspection: it reverted
+`pr-review-integrity-checker` proved the consequence empirically rather than by inspection: it reverted
 the actual EWT-003 code fix and re-ran the full suite, which still passed **144/144 test files** with
 the bug fully reintroduced. The regression test meant to catch it never executed. No error, no
 warning, no skip count — with `passWithNoTests: true` set at the top level, zero files matched reads

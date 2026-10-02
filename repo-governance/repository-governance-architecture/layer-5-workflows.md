@@ -14,7 +14,7 @@ when_to_use: Use for Layer 5's scope and workflow requirements.
 **Workflow Families**:
 
 - **Maker-Checker-Fixer** - Three-stage content quality (create → validate → fix)
-- **Check-Fix** - Iterative validation (check → fix → re-check until clean)
+- **Quality Gate** - Bounded validation (check → propagate → re-check, at most three cycles)
 - **Plan-Execute-Validate** - Planning workflow (plan → execute → validate → iterate)
 
 **Workflow Characteristics**:

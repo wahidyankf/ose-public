@@ -15,7 +15,7 @@
   ```
 
   `cause` is defined in
-  [Convergence Measurement](../../../../repo-governance/workflows/pr/pr-review-cycle/convergence-measurement.md).
+  [Convergence Measurement](../../../../repo-governance/workflows/quality/pr-review-quality-gate/003-clean-audits-and-the-ceiling.md).
   Version 3 requires `effect`. Hydrate legacy v2, which had no field, as
   `effect: dismisses-finding`; only a pinned/live-head mismatch uses `stale-cycle-only`, closing
   obsolete evidence while preserving fresh-head evaluation.
@@ -58,10 +58,10 @@ gh api graphql -f query='
 ## Repeated-Finding Handling
 
 The orchestrating
-[PR-Review Maker→Fixer Cycle workflow](../../../../repo-governance/workflows/pr/pr-review-cycle.md)
+[PR-Review Maker→Fixer Cycle workflow](../../../../repo-governance/workflows/quality/pr-review-quality-gate.md)
 feeds each fresh cycle the accumulated `prior` findings and their resolution state. A fixed,
 rejected, or linked-deferred disposition with `effect: dismisses-finding` stays settled; later
 cycles do not re-litigate it. Only `effect: stale-cycle-only` carries the underlying claim to the
 fresh head, where it is independently evaluated under a new finding ID. At the configured ceiling,
 capture sanitized learning and request human direction; see
-[Loop-Exit and Block Rules](../../../../repo-governance/workflows/pr/pr-review-cycle/loop-exit-and-block-rules.md#loop-exit-and-block-rules).
+[Loop-Exit and Block Rules](../../../../repo-governance/workflows/quality/pr-review-quality-gate/003-clean-audits-and-the-ceiling.md).

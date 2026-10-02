@@ -31,7 +31,7 @@ alignment because those remain domain judgement.
 
 **Scope**: all governance layers (`vision/`, `principles/`, `conventions/`, `development/`,
 `workflows/`, `.agents/agents/*.md` content/cross-layer consistency only — frontmatter
-shape/naming/mirror parity belong to `Rhino harness` and `harness-compatibility-checker`),
+shape/naming/mirror parity belong to `Rhino harness` and `harness-checker`),
 `repository-governance-architecture.md`, `repo-governance/README.md`, `docs/explanation/README.md`.
 
 1. **Contradictions**: cross-reference principle definitions against implementations, check

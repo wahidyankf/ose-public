@@ -9,7 +9,7 @@ These budgets bound how agents spend two scarce resources — external API rate 
 
 ## Authoring and Propagating Repository Rules
 
-Rule work runs through the [rules-propagation workflow](../../../workflows/rules/rules-propagation.md), which is entered automatically the moment a request implies a rule is being created, updated, superseded, or deleted — however that request is phrased, and including any edit to a repo-rules surface. The workflow composes the agents rather than replacing them: `rules-maker` remains the canonical maker for `repo-governance/` content and `rules-checker` validates, while propagation itself applies every edit as sole writer. Invoking the maker directly skips the normalization, conflict scan, placement, and enforcement-disposition steps, which is the failure this routing exists to prevent.
+Rule work runs through the [rules-propagation workflow](../../../workflows/quality/rules-propagation.md), which is entered automatically the moment a request implies a rule is being created, updated, superseded, or deleted — however that request is phrased, and including any edit to a repo-rules surface. The workflow composes the agents rather than replacing them: `rules-maker` remains the canonical maker for `repo-governance/` content and `rules-checker` validates, while propagation itself applies every edit as sole writer. Invoking the maker directly skips the normalization, conflict scan, placement, and enforcement-disposition steps, which is the failure this routing exists to prevent.
 
 **Enforcement disposition — unenforced by decision.** Two mechanisms make an ad-hoc rule edit
 unlikely: an agent skill that fires on rule-shaped phrasing, and a pre-write reminder that fires on
@@ -23,6 +23,6 @@ run carries the same canonical change there; no other repository is a propagatio
 repository's ready PR merges on its own hardened prerequisites and merge opportunity — never hold
 one solely to synchronize with its sibling — while the recorded obligation keeps any temporary gap
 visible until convergence. Use
-[plan-multi-repo-parity-planning](../../../workflows/plan/plan-multi-repo-parity-planning.md) for a
+[plan-parity-planning](../../../workflows/plan/plan-parity-planning.md) for a
 planned cross-repository change and see
 [Related Repositories §Sync cadence](../../../../docs/reference/related-repositories.md#sync-cadence).

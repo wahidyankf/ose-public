@@ -20,8 +20,8 @@ is:
      surface exists.
    - Archival-in-PR is committed (ose-public only -- the plan folder's archival move lands in the same
      PR, since the plan folder lives solely in this repo).
-2. If the user explicitly requested [`pr-review`](../../../workflows/pr/pr-review.md) or
-   [`pr-review-cycle`](../../../workflows/pr/pr-review-cycle.md), complete that bounded request and
+2. If the user explicitly requested [`pr-review`](../../../workflows/quality/pr-review.md) or
+   [`pr-review-quality-gate`](../../../workflows/quality/pr-review-quality-gate.md), complete that bounded request and
    resolve any conversations it created. Its absence is valid.
 3. Flip the PR from draft to ready for review (`gh pr ready`).
 

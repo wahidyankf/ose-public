@@ -54,10 +54,9 @@ preceding `# Exemption(layer): <boundary mismatch>; alternative-proof: <Nx targe
 comment and names substantive proof in an unexempted layer; Unit remains mandatory. Difficulty,
 runtime/speed, flakiness, cost/expense, `TODO`, missing implementation, and unfinished work are
 invalid reasons. `@wip` and positive layer-selection tags are forbidden. Static coverage never replaces the
-[semantic implementation review](../../../repo-governance/workflows/gherkin-implementation-review.md).
+[semantic implementation review](../../../repo-governance/workflows/quality/gherkin-implementation-review.md).
 
 ## Lifecycle Handoff
 
-When a CI quality gate supplies `delegated-gate-ids` and evidence, omit only exact delegated
-predicates. Preserve pending evidence and invalidate only entries whose registered scope intersects
-fixer changes.
+Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
+owns it, per the [Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md).

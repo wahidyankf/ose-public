@@ -49,5 +49,5 @@ silently skips the style guides, the gate declarations, and the enforcement mach
 - [Membership Test](./repo-rules-membership-test.md) — deciding an unlisted file, and what
   membership obligates.
 - [Content Trees](./content-trees.md) — what each directory is for.
-- [Repository Rules Validation](../workflows/rules/rules-quality-gate.md) — the workflow that
+- [Repository Rules Validation](../workflows/quality/rules-quality-gate.md) — the workflow that
   audits this set.

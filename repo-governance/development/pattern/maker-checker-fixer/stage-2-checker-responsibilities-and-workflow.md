@@ -31,7 +31,7 @@ Checkers categorize findings by **importance/urgency**:
 ```markdown
 User: "Check the new TypeScript tutorial for quality issues"
 
-Checker Agent (apps-ayokoding-www-general-checker):
+Checker Agent (content-checker):
 
 1. Reads content/en/learn/swe/programming-languages/typescript/generics.md
 2. Validates frontmatter (date format, required fields, weight ordering)

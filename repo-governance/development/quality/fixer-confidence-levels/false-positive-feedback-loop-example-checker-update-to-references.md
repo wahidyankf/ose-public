@@ -24,14 +24,14 @@ when_to_use: "Use for the second half of a worked feedback-loop example."
 
 ### Fixer Agents Using This Convention
 
-- [apps-ayokoding-www-general-fixer.md](../../../.agents/agents/apps-ayokoding-www-general-fixer.md) - ayokoding-www general Next.js content fixer
-- [apps-ayokoding-www-by-example-fixer.md](../../../.agents/agents/apps-ayokoding-www-by-example-fixer.md) - ayokoding-www by-example tutorial fixer
-- [apps-ayokoding-www-facts-fixer.md](../../../.agents/agents/apps-ayokoding-www-facts-fixer.md) - ayokoding-www factual accuracy fixer
+- [content-fixer.md](../../../.agents/agents/content-fixer.md) - ayokoding-www general Next.js content fixer
+- [tutorial-by-example-fixer.md](../../../.agents/agents/tutorial-by-example-fixer.md) - ayokoding-www by-example tutorial fixer
+- [content-fixer.md](../../../.agents/agents/content-fixer.md) - ayokoding-www factual accuracy fixer
 - [docs-tutorial-fixer.md](../../../.agents/agents/docs-tutorial-fixer.md) - Tutorial quality fixer
-- [apps-ose-www-content-fixer.md](../../../.agents/agents/apps-ose-www-content-fixer.md) - ose-www Next.js content fixer
+- [content-fixer.md](../../../.agents/agents/content-fixer.md) - ose-www Next.js content fixer
 - [readme-fixer.md](../../../.agents/agents/readme-fixer.md) - README quality fixer
 - [docs-fixer.md](../../../.agents/agents/docs-fixer.md) - Documentation factual accuracy fixer
-- [apps-ayokoding-www-in-the-field-fixer.md](../../../.agents/agents/apps-ayokoding-www-in-the-field-fixer.md) - ayokoding-www in-the-field tutorial fixer
+- [tutorial-in-the-field-fixer.md](../../../.agents/agents/tutorial-in-the-field-fixer.md) - ayokoding-www in-the-field tutorial fixer
 - [apps-ayokoding-www-link-fixer.md](../../../.agents/agents/apps-ayokoding-www-link-fixer.md) - ayokoding-www link validation fixer
 - [docs-software-engineering-separation-fixer.md](../../../.agents/agents/docs-software-engineering-separation-fixer.md) - Software engineering documentation separation fixer
 - [repo-workflow-fixer.md](../../../.agents/agents/repo-workflow-fixer.md) - Repository workflow structural consistency fixer

@@ -520,7 +520,7 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 ### Mandatory API Quality Gate and Exploratory Retest
 
 - [ ] [AI] Before the Phase 5 gate, execute the complete
-      [API Quality Gate](../../../repo-governance/workflows/api/api-quality-gate.md) in `strict` mode.
+      [API Quality Gate](../../../repo-governance/workflows/quality/api-http-quality-gate.md) in `strict` mode.
       Its immutable scope is the running `http://127.0.0.1:8501` backend; every account method/path,
       request/response/error/cookie/rate-limit contract in `tech-docs/007-api-contract-delta.md`;
       retained health/disabled capabilities; and account Gherkin. Its machine-readable contract inputs
@@ -534,7 +534,7 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
       `max-concurrency: 3`. It must exercise happy/error/concurrent/replay/known-versus-unknown,
       cookie/CSRF, rate-limit, redaction, Mailpit, multi-instance, and retained-regression cases. Append
       every `AET-###` as an unchecked delivery task and save sanitized reports/matrices/run/resource IDs
-      under `plans/in-progress/ose-id-init-02-local-email-account/evidence/phase-5/api-quality-gate/`.
+      under `plans/in-progress/ose-id-init-02-local-email-account/evidence/phase-5/api-http-quality-gate/`.
 - [ ] [AI] Triage findings at `strict`. If any in-threshold defect exists, delegate the workflow's one
       bounded fix pass to `swe-code-maker` with `programming-csharp`, run affected Unit/Integration/E2E, OpenAPI, migration, and
       secret gates, rebuild/restart the stack once, then invoke

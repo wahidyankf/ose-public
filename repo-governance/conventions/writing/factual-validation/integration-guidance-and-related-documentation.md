@@ -29,7 +29,7 @@ when_to_use: Use when determining which validation focus and agent applies to a 
 - Indonesian/English consistency
 - Educational sequences are logical
 
-**Agent:** `apps-ayokoding-www-facts-checker`, `apps-ayokoding-www-facts-fixer`
+**Agent:** `content-checker`, `content-fixer`
 
 ### Platform Content (ose-www)
 
@@ -67,7 +67,7 @@ when_to_use: Use when determining which validation focus and agent applies to a 
 **Implementation Agents:**
 
 - `docs-checker.md` - Documentation factual accuracy validator (implements this convention for `docs/`)
-- `apps-ayokoding-www-facts-checker.md` - Educational content factual validator (implements this convention for ayokoding-www)
+- `content-checker.md` - Educational content factual validator (implements this convention for ayokoding-www)
 - `plan-checker.md` - Plan accuracy validator (implements portions of this convention)
 
 **Quality Standards:**

@@ -16,10 +16,10 @@ The following checks determine whether an FP-variant by-example page complies wi
 5. **Cross-paradigm annotations**: When a concept is language-specific, does the other tab include a `// [Clojure: ...]` or `; [F#: ...]` annotation?
 6. **Annotation density**: Does each tab's code block meet the 1.0–2.25 comment-to-code ratio?
 
-`apps-ayokoding-www-by-example-checker` enforces checks 1, 5, and 6. Checks 2, 3, and 4 require AI semantic judgement and are part of the checker's content audit pass.
+`tutorial-by-example-checker` enforces checks 1, 5, and 6. Checks 2, 3, and 4 require AI semantic judgement and are part of the checker's content audit pass.
 
 ## Tools and Automation
 
 - **`apps-ayokoding-www-by-example-maker`** — creates FP-variant by-example content; responsible for applying this convention when generating or updating F# + Clojure tabs.
-- **`apps-ayokoding-www-by-example-checker`** — validates tabs format, annotation density, and cross-paradigm annotation presence.
-- **`apps-ayokoding-www-by-example-fixer`** — applies fixes to non-compliant pages (adds missing tabs, adds missing annotations, adjusts annotation density).
+- **`tutorial-by-example-checker`** — validates tabs format, annotation density, and cross-paradigm annotation presence.
+- **`tutorial-by-example-fixer`** — applies fixes to non-compliant pages (adds missing tabs, adds missing annotations, adjusts annotation density).

@@ -7,12 +7,8 @@ description: Universal markdown content quality standards for active voice, head
 
 ## Quality-Gate Lifecycle Handoff
 
-Checker/fixer invocations may receive `delegated-gate-ids` and `lifecycle-evidence` from
-[Lifecycle Validation Ownership](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
-Suppress only predicates matched by an exact gate ID or declared `verifies` relationship; an empty
-set suppresses nothing. Checkers return the evidence unchanged. After edits, fixers intersect
-changed files with delegated gate scopes and return `updated-lifecycle-evidence`, invalidating only
-affected entries. Omitted handoff preserves standalone full behaviour.
+Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
+owns it, per the [Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## Purpose
 

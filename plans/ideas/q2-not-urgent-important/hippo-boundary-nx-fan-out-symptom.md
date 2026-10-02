@@ -53,7 +53,7 @@ pays the same recovery cost again.
   [resource-aware-development](../../../repo-governance/development/practice/resource-aware-development.md)
 - **Rules propagation workflow** — the required route for any rule addition, and the reason this was
   not edited in place during the originating plan.
-  [rules-propagation](../../../repo-governance/workflows/rules/rules-propagation.md)
+  [rules-propagation](../../../repo-governance/workflows/quality/rules-propagation.md)
 - **Knowledge Capture convention** — the mechanism that routed this learning here instead of losing
   it in an archived plan.
   [knowledge-capture](../../../repo-governance/development/quality/knowledge-capture.md)

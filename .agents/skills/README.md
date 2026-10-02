@@ -102,9 +102,9 @@ The [repository adapter](../../repo-governance/development/quality/stacks/reposi
 ### PR review pipeline
 
 - [Pr Review Fixer Resolution](./pr-review-fixer-resolution/README.md) — pr-review-fixer's thread-resolution triage
-- [Pr Review Scout Classification](./pr-review-scout-classification/README.md) — pr-review-scout-maker's risk-tier classification
+- [Pr Review Scout Classification](./pr-review-scout-classification/README.md) — pr-review-scout's risk-tier classification
 - [Pr Review Specialist Protocol](./pr-review-specialist-protocol/README.md) — shared protocol for the nine discipline specialists
-- [Pr Review Synthesis Coordination](./pr-review-synthesis-coordination/README.md) — pr-review-synthesis-maker's dedup and posting
+- [Pr Review Synthesis Coordination](./pr-review-synthesis-coordination/README.md) — pr-review-checker's dedup and posting
 
 ### Web and API testing
 

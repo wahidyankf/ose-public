@@ -58,7 +58,7 @@ growing. The fix is a sentence in an existing contract, not a build.
   [brief](./vitest-glob-coverage-guard.md)
 - **Rules propagation workflow** — the required route for sharpening a contract in
   `repo-governance/development/`.
-  [rules-propagation](../../../repo-governance/workflows/rules/rules-propagation.md)
+  [rules-propagation](../../../repo-governance/workflows/quality/rules-propagation.md)
 
 ## Proposed direction (sketch)
 

@@ -21,7 +21,7 @@ that setup cost is worth paying once per repo, not once per delivery unit.
 
 **What stays one-per-delivery-unit under `*-to-pr`**: the **branch** and the **PR**. A permitted
 direct-push mode instead uses one direct integration checkpoint per unit. See
-[Planning Granularity and Mode-Specific Delivery](../../../workflows/plan/plan-planning/planning-granularity-and-one-branch-rule.md).
+[Planning Granularity and Mode-Specific Delivery](../../../workflows/plan/plan-planning/003-planning-granularity-and-one-branch-rule.md).
 
 **`worktree-to-pr` sequencing consequence**: delivery units sharing a repo execute their file edits
 **serially** in the reused worktree — land unit A, refresh from `origin/main`, then create unit B's

@@ -900,7 +900,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
   edit the fixture to mask a product defect.
 
 - [ ] [AI] **Owner: API gate integrator; strict discovery.** Run the bounded
-      `repo-governance/workflows/api/api-quality-gate.md` twice in `mode: strict`,
+      `repo-governance/workflows/quality/api-http-quality-gate.md` twice in `mode: strict`,
       using `.agents/agents/api-exploratory-tester.md` with `output-mode: delivery` and this exact
       plan path. LMS API discovery targets `http://127.0.0.1:8303` with
       `specs/apps/ose/lms-be/contracts/openapi.yaml`, the full resource-server/domain-authorization
@@ -925,7 +925,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       command, verification result, and terminal disposition to
       `plans/in-progress/lms-user/evidence/phase-5/api-quality/finding-lifecycle.md`; any open row blocks this checkbox and reopens
       the operation's Phase 2/3 owner.
-- [ ] [AI] **Owner: UI gate integrator; static UI lifecycle.** Run the bounded `repo-governance/workflows/ui/ui-quality-gate.md` in `mode: strict` over every
+- [ ] [AI] **Owner: UI gate integrator; static UI lifecycle.** Run the bounded `repo-governance/workflows/quality/ui-web-quality-gate.md` in `mode: strict` over every
       new LMS web route, auth/session component, style, story, responsive state, and shared-primitive call
       site. Invoke `.agents/agents/swe-ui-checker.md` once for all seven static dimensions. If it
       reports in-threshold findings, invoke `.agents/agents/swe-ui-fixer.md` once for revalidated
@@ -934,7 +934,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       evidence, and final status at `plans/in-progress/lms-user/evidence/phase-5/ui-quality/`; `partial`, `fail`, pending lifecycle
       evidence, or an unresolved original finding blocks the phase and routes to Phase 3 UI ownership.
 - [ ] [AI] **Owner: live-test integrator; sequential tester run.** After visual sign-off, execute the Rule-15 in-place delivery variant described by
-      `repo-governance/workflows/web/web-ux-test-fixing-planning.md` sequentially against `/learning`,
+      `repo-governance/workflows/quality/ux-review-fix-planning.md` sequentially against `/learning`,
       sign-in start/callback/result, personal/company context, switch, both logout modes, error/loading/
       empty, and dependency-unavailable states. Invoke `.agents/agents/web-exploratory-tester.md`
       first with canonical specs, `.agents/agents/web-usability-tester.md` second and spec-blind, and
@@ -1041,9 +1041,9 @@ partial, failing, or unverified artifact blocks the Phase 6 gate and keeps the p
 - [ ] [AI] **Owner: review integrator; exact-head review gates.** At the pushed PR head, record
       `rtk git rev-parse HEAD` and require the exact-head/base quality gate, one clean leak review,
       applicable API/UI gate lifecycle records, plus semantic reviews from
-      `.agents/agents/pr-review-security-maker.md`,
-      `.agents/agents/pr-review-logic-maker.md`, and
-      `.agents/agents/pr-review-integrity-maker.md`. Store head/base SHA, run/report links,
+      `.agents/agents/pr-review-security-checker.md`,
+      `.agents/agents/pr-review-logic-checker.md`, and
+      `.agents/agents/pr-review-integrity-checker.md`. Store head/base SHA, run/report links,
       original finding IDs, resolutions, and terminal status at
       `plans/in-progress/lms-user/evidence/phase-6/delivery/review-gates.md`. Acceptance: every required check/review is terminal PASS
       for the same head and no conversation is unresolved; any fix changes HEAD and reruns this packet.

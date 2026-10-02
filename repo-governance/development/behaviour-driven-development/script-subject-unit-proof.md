@@ -57,7 +57,7 @@ native line-coverage floor still applies to every source the Unit runner loads.
   Unit test starts a process for a subject its runner can load in process.
 
 **Unenforced by decision:** qualification and fake completeness are semantic judgements. The
-[Gherkin implementation review](../../workflows/gherkin-implementation-review.md) applies this
+[Gherkin implementation review](../../workflows/quality/gherkin-implementation-review.md) applies this
 definition to every Unit row whose subject is a script.
 
 **Why**: a shell script or a plugin for another runtime has no in-process seam. Without this

@@ -24,4 +24,4 @@ phase inside a unit is the boundary that actually opens one — is stated in
 The remaining planning-granularity rules — the `*-to-pr` 1-PR↔1-branch mapping, the worktree cap,
 the temporary flag lifecycle for incomplete behaviour, and how the
 `worktree-to-pr` default binds as a design obligation at authoring time — are stated in the
-[plan-planning workflow §Planning Granularity](../../../workflows/plan/plan-planning/planning-granularity-and-one-branch-rule.md).
+[plan-planning workflow §Planning Granularity](../../../workflows/plan/plan-planning/003-planning-granularity-and-one-branch-rule.md).

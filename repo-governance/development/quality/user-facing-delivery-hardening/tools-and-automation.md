@@ -9,7 +9,7 @@ when_to_use: "Use when locating the automated enforcement for one of the sixteen
   Screenshots saved to `evidence/` and referenced in `delivery.md` per the
   [Evidence Capture Convention](.././evidence-capture.md).
 - **`web-exploratory-tester` / `web-usability-tester` / `web-design-tester`** (the
-  [`web-ux-test-fixing-planning`](../../../workflows/web/web-ux-test-fixing-planning.md) triad): the
+  [`ux-review-fix-planning`](../../../workflows/quality/ux-review-fix-planning.md) triad): the
   near-end three-tester round against the running web UI (Rule 15); runs across ALL supported locales;
   surfaces EWT-### (correctness) / UWT-### (usability) / DWT-### (design-fidelity) findings plus SG-###
   spec-gap / USS-### spec-suggestion proposals; saves screenshots to the plan's `evidence/` folder.

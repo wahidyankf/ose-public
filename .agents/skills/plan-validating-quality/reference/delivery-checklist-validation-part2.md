@@ -25,7 +25,7 @@
   an operation with no applicable curl/native-client recipe is **CRITICAL**. See
   [Evidence Capture Convention](../../../../repo-governance/development/quality/evidence-capture.md).
 - **Rule-15 three-tester retest (web-UI feature-change plans)**: a near-end step runs the
-  [`web-ux-test-fixing-planning`](../../../../repo-governance/workflows/web/web-ux-test-fixing-planning.md)
+  [`ux-review-fix-planning`](../../../../repo-governance/workflows/quality/ux-review-fix-planning.md)
   triad (`web-exploratory-tester`, `web-usability-tester`, `web-design-tester`) across all supported
   locales, with every EWT/UWT/DWT defect finding folded into `delivery.md` as an unchecked checkbox
   fixed before archival (deferral needs explicit user permission, only when genuinely impossible;

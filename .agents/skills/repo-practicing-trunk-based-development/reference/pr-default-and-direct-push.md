@@ -19,7 +19,7 @@ Never silently coerce an invalid non-empty value; treat it as a question for the
 
 **Plan delivery checklists SHOULD include the PR steps** under the two `*-to-pr` modes — opening the
 draft PR, verifying exact-head/base PR CI and applicable surface gates, and the merge step itself.
-They include `pr-review` or `pr-review-cycle` only when the user explicitly requested it, at that PR
+They include `pr-review` or `pr-review-quality-gate` only when the user explicitly requested it, at that PR
 boundary. They must not contain a `[HUMAN]` "review the diff and approve push" gate: pushing to a PR
 branch is not a merge, and the push is always `[AI]`.
 

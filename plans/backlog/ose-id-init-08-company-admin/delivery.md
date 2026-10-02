@@ -637,7 +637,7 @@ process/container/network/volume/temp-secret inventories are empty.
 - [ ] [AI] Enforce at least **99% Unit line coverage for authored production code**.
       Exclusions follow only canonical generated/test policy. Validate every Gherkin scenario's Unit,
       Integration, and E2E mapping and every explicit indexed boundary exemption.
-- [ ] [AI] Run the bounded `repo-governance/workflows/api/api-quality-gate.md` in `mode: strict` against
+- [ ] [AI] Run the bounded `repo-governance/workflows/quality/api-http-quality-gate.md` in `mode: strict` against
       the ready BFF at `http://127.0.0.1:3500`, with
       `specs/apps/ose/id-web/contracts/company-admin.openapi.yaml`, the company-admin web Gherkin, and
       synthetic signed-out, personal, Company A admin/member, Company B admin, recent/stale-auth,
@@ -653,7 +653,7 @@ process/container/network/volume/temp-secret inventories are empty.
       contexts, AET IDs, commands, sanitized evidence, `final-status`, and `lifecycle-status`.
       `partial`, `fail`, pending lifecycle evidence, contract drift, or an unchecked finding blocks the
       phase. Accept or reject each genuine `SG-###` explicitly; never defer a defect as a spec gap.
-- [ ] [AI] Run the bounded `repo-governance/workflows/ui/ui-quality-gate.md` in `mode: strict` over every
+- [ ] [AI] Run the bounded `repo-governance/workflows/quality/ui-web-quality-gate.md` in `mode: strict` over every
       changed company-admin route, view model, component, style, story, and shared-primitive call site.
       Invoke `.agents/agents/swe-ui-checker.md` once for tokens, accessibility, contrast, component
       patterns, dark mode, responsiveness, and anti-patterns. When findings are in threshold, invoke
@@ -662,7 +662,7 @@ process/container/network/volume/temp-secret inventories are empty.
       paths, original IDs, affected components, lifecycle evidence, and final status; `partial`, `fail`,
       pending lifecycle evidence, or unresolved original finding blocks the phase.
 - [ ] [AI] After visual sign-off, run the Rule-15 in-place delivery variant described by
-      `repo-governance/workflows/web/web-ux-test-fixing-planning.md` sequentially against
+      `repo-governance/workflows/quality/ux-review-fix-planning.md` sequentially against
       `/admin/company` Members, Invitations, and Entitlements plus denied, stale, empty, error, loading,
       destructive-confirmation, and context-exit states. Invoke
       `.agents/agents/web-exploratory-tester.md` first with canonical specs,

@@ -44,11 +44,9 @@ Mini-TDD passes work well for UI: one Red→Green→Refactor cycle per variant, 
 
 ## Quality-Gate Lifecycle Handoff
 
-When the UI quality gate provides `delegated-gate-ids` and an evidence ledger, omit only exact
-registry IDs or predicates connected through `verifies`. Preserve pending state; never rerun,
-infer, revalidate, or fix delegated work. The seven semantic UI dimensions remain in scope. See the
-[lifecycle ownership policy](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
-Fixers invalidate evidence whose registered scope intersects their changed files.
+Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
+owns it, per the [Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md). The seven semantic UI dimensions
+remain in scope.
 
 The UI gate has two checker roles: one full discovery and, only after its single fixer invocation,
 one verification limited to the original in-threshold findings plus regression smoke over affected

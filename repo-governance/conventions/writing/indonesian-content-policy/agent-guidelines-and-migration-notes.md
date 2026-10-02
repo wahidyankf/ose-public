@@ -29,7 +29,7 @@ Agent: Creates /id/celoteh/2024/02/belajar-typescript.md
 
 ### Validation Agents
 
-**apps-ayokoding-www-general-checker**:
+**content-checker**:
 
 - Validates that technical tutorials in English do NOT have automatic Indonesian mirrors
 - Flags Indonesian technical tutorials without explicit translation justification

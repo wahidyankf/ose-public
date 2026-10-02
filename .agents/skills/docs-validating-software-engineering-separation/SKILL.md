@@ -22,13 +22,10 @@ Use this Skill when:
 
 ### Lifecycle Delegation
 
-For a quality-gate handoff, accept exact `delegated-gate-ids` and `lifecycle-evidence`. No
-lifecycle gate validates internal links, so path and fragment checks stay here alongside the
+No declared gate validates internal links, so path and fragment checks stay here alongside the
 semantic correctness of prerequisite relationships and all separation checks.
 `./rhino md internal-link validate` (on demand) reports missing target files but does not check
-`#fragment` anchors. Checkers preserve
-the ledger; fixers return a scope-intersected `updated-lifecycle-evidence`. Omitted delegation
-preserves standalone full behaviour.
+`#fragment` anchors.
 
 **CRITICAL**: Only validate relationships **explicitly listed** in the Software Design Reference prerequisite table.
 

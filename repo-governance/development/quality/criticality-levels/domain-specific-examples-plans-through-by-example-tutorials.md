@@ -84,7 +84,7 @@ when_to_use: "Use for a domain example in these checkers."
 - Consider alternative agent selection
 - Potential optimization
 
-## By-Example Tutorials (apps-ayokoding-www-by-example-checker)
+## By-Example Tutorials (tutorial-by-example-checker)
 
 **CRITICAL**:
 

@@ -22,8 +22,8 @@ once the hardened preconditions hold -- `[AI]` by default, `[HUMAN]` only where 
   PR itself via CI. Affected `test:quick` owns Unit runtime plus every applicable static
   `test:coverage:*` validator on both surfaces.
 - Semantic review is absent by default. Run
-  [`pr-review`](../../../workflows/pr/pr-review.md) or
-  [`pr-review-cycle`](../../../workflows/pr/pr-review-cycle.md) only on explicit user request.
+  [`pr-review`](../../../workflows/quality/pr-review.md) or
+  [`pr-review-quality-gate`](../../../workflows/quality/pr-review-quality-gate.md) only on explicit user request.
 
 This applies to all routine development: features, bug fixes, refactors, documentation, governance
 changes, and work executed inside a git worktree -- the default is the same regardless of context.

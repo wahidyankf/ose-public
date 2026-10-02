@@ -67,7 +67,7 @@ This convention reflects standards validated by **7 production languages** (75-8
 
 This convention implements and respects:
 
-- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Automated validation via apps-ayokoding-www-by-example-checker agent
+- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Automated validation via tutorial-by-example-checker agent
 - **[Progressive Disclosure](../../../principles/content/progressive-disclosure.md)**: Content organized in complexity levels (beginner/intermediate/advanced)
 - **[Accessibility First](../../../principles/content/accessibility-first.md)**: Color-blind friendly diagrams and accessible formatting
 - **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: Self-contained examples with explicit imports and clear context

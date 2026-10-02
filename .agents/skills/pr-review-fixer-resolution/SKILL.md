@@ -1,6 +1,6 @@
 ---
 name: pr-review-fixer-resolution
-description: How pr-review-fixer enumerates unresolved GitHub PR review threads, triages each into fix/reject/defer/clarify, applies the outcome, and resolves only what was genuinely addressed. Use when resolving threads posted by pr-review-synthesis-maker's consolidated review.
+description: How pr-review-fixer enumerates unresolved GitHub PR review threads, triages each into fix/reject/defer/clarify, applies the outcome, and resolves only what was genuinely addressed. Use when resolving threads posted by pr-review-checker's consolidated review.
 when_to_use: When acting as pr-review-fixer in the PR-Review Maker→Fixer Cycle — enumerating unresolved review threads, deciding a triage outcome, posting a reply, or deciding whether to resolve a thread.
 ---
 
@@ -10,7 +10,7 @@ when_to_use: When acting as pr-review-fixer in the PR-Review Maker→Fixer Cycle
 
 `pr-review-fixer` is the fixer half of a fan-out→synthesize→fixer loop: it never discovers
 findings itself, only resolves what the nine discipline specialists and
-`pr-review-synthesis-maker` already posted as GitHub review threads.
+`pr-review-checker` already posted as GitHub review threads.
 
 ## Reference Modules
 
@@ -18,7 +18,7 @@ findings itself, only resolves what the nine discipline specialists and
 [reference/README.md](./reference/README.md) is the authoritative annotated index of the set — it
 governs which modules exist and what each one covers. This file deliberately does not restate that
 list: a second copy of it went stale the first time a module was added, which is the failure
-[restatement-by-value.md](../../../repo-governance/workflows/pr/pr-review-cycle/restatement-by-value.md)
+[restatement-by-value.md](../../../repo-governance/development/quality/pr-review-disciplines/restatement-by-value.md)
 describes.
 
 The `refutation-clause-*` modules are one rule split across a word budget. Read them together
@@ -48,5 +48,5 @@ or not at all — the execution shapes are meaningless without the invariants th
 
 ## Related Agents
 
-`pr-review-synthesis-maker` (posts the consolidated review this agent resolves),
-`pr-review-scout-maker` (pipeline stage 0), the nine `pr-review-*-maker` discipline specialists.
+`pr-review-checker` (posts the consolidated review this agent resolves),
+`pr-review-scout` (pipeline stage 0), the nine `pr-review-*-checker` discipline specialists.

@@ -2,13 +2,11 @@
 
 ## Validation Workflow
 
-**Lifecycle filter**: The `md-mermaid` gate checks accessibility, the colour palette, and label
-length, not Mermaid syntax, so its delegation never removes `crane check-all` or Step 7.
-For delegated `markdownlint`, `format-staged`, `md-heading-hierarchy`, `md-frontmatter`, or
-`md-naming`, omit only generic Markdown mechanics. No lifecycle gate validates internal links, so
-link checks are never delegated. Retain all source-comparison checks, including PDF-corresponding
-heading depth/order and figure representation. Omitted `delegated-gate-ids` means standalone full
-validation.
+**Deterministic boundary**: The `md-mermaid` gate checks accessibility, the colour palette, and label
+length, not Mermaid syntax, so it never replaces `crane check-all` or Step 7. Leave generic Markdown
+mechanics to `markdownlint`, `format-staged`, `md-heading-hierarchy`, `md-frontmatter`, and `md-naming`.
+No declared gate validates internal links, so link checks always run. Retain all source-comparison
+checks, including PDF-corresponding heading depth/order and figure representation.
 
 **Step 0 — Initialize report**: `crane report --init "$PDF_FILE" --md "$MD_FILE" --scope pdf-to-md`
 creates a UUID-chained, UTC+7-timestamped report at

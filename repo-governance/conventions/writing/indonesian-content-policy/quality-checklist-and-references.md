@@ -34,4 +34,4 @@ Before creating Indonesian content, verify:
 - `apps-ayokoding-www-general-maker` - Creates ayokoding-www content following this policy
 - `apps-ayokoding-www-by-example-maker` - Creates by-example tutorials (English-first)
 - `apps-ayokoding-www-in-the-field-maker` - Creates in-the-field production guides (English-first)
-- `apps-ayokoding-www-general-checker` - Validates compliance with this policy
+- `content-checker` - Validates compliance with this policy

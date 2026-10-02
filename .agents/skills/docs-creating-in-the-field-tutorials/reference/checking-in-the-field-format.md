@@ -1,6 +1,6 @@
 # Checking In-the-Field Format
 
-Validation checklist for `apps-ayokoding-www-in-the-field-checker`.
+Validation checklist for `tutorial-in-the-field-checker`.
 
 ## 1. Guide Count
 

@@ -13,7 +13,7 @@ when_to_use: "Use to find the doc backing this pattern."
 
 **Workflow Orchestration**:
 
-- [Workflow Pattern Convention](../../../workflows/meta/workflow-identifier.md) - How workflows orchestrate agents
+- [Workflow Pattern Convention](../../../conventions/structure/workflow-pattern.md) - How workflows orchestrate agents
 
 **Domain-Specific Standards**:
 
@@ -28,10 +28,10 @@ when_to_use: "Use to find the doc backing this pattern."
 - `.agents/agents/repo-workflow-fixer.md` - Example fixer agent
 - `.agents/agents/apps-ayokoding-www-general-maker.md` - General Next.js content maker
 - `.agents/agents/apps-ayokoding-www-by-example-maker.md` - By-example tutorial maker
-- `.agents/agents/apps-ayokoding-www-general-checker.md` - General Next.js content checker
-- `.agents/agents/apps-ayokoding-www-by-example-checker.md` - By-example tutorial checker
-- `.agents/agents/apps-ayokoding-www-general-fixer.md` - General Next.js content fixer
-- `.agents/agents/apps-ayokoding-www-by-example-fixer.md` - By-example tutorial fixer
+- `.agents/agents/content-checker.md` - General Next.js content checker
+- `.agents/agents/tutorial-by-example-checker.md` - By-example tutorial checker
+- `.agents/agents/content-fixer.md` - General Next.js content fixer
+- `.agents/agents/tutorial-by-example-fixer.md` - By-example tutorial fixer
 
 ---
 

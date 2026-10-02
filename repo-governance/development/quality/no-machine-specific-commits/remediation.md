@@ -7,7 +7,7 @@ when_to_use: "Use when machine-specific information has already been committed a
 
 If the commit has not been pushed, fix the history, not the tree: amend the commit or rebuild the
 unpushed range so no commit carries the value. A later deleting commit does not pass the
-[push leak review](../../../workflows/pr/pr-leak-review/push-review.md), because the commit that
+[push leak review](../../../workflows/quality/pr-leak-review/002-push-review.md), because the commit that
 added the value would still be published.
 
 If machine-specific information has already been pushed:

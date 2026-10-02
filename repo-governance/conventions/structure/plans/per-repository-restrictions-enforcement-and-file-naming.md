@@ -9,7 +9,7 @@ Continues [Per-Repository Delivery Mode Restrictions (HARD RULE)](./per-reposito
 
 `main-to-pr` is not blocked by protection in `ose-public` — it still opens a PR — but
 is not used either: every plan here uses **`worktree-to-pr`**, with no exception. The
-[Plan-Docs-Only Carve-Out](../../../workflows/plan/plan-planning/plan-docs-only-carve-out.md#the-plan-docs-only-carve-out-superseded--retired-in-ose-public)
+[Plan-Docs-Only Carve-Out](../../../workflows/plan/plan-planning/007-plan-docs-only-carve-out.md#the-plan-docs-only-carve-out-superseded--retired-in-ose-public)
 and the `.md`-only condition of the content restriction above are **retired** here — direct push is
 disallowed by this rule regardless of file content.
 

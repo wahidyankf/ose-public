@@ -89,7 +89,7 @@ workflow, and the WebSearch/WebFetch tool usage pattern.
 
 **Related Skills**: `repo-assessing-criticality-confidence` - dual-label system and priority matrix
 
-**Related Agents**: `docs-checker`, `docs-tutorial-checker`, `apps-ayokoding-www-facts-checker`
+**Related Agents**: `docs-checker`, `docs-tutorial-checker`, `content-checker`
 
 ---
 

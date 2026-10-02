@@ -37,7 +37,7 @@ _citation_, not for deference: see
 ## Defer and Clarify Paths
 
 **Whether a fix widens the PR — and which fixes are exempt — is settled by the
-[Scope Guard](../../../../repo-governance/workflows/pr/pr-review-cycle/scope-guard-no-scope-creep.md),
+[Scope Guard](../../../../repo-governance/development/quality/pr-review-disciplines/scope-guard.md),
 never restated here.**
 
 - **Defer**: acknowledge the finding is valid, say why it sits outside this PR's scope, then

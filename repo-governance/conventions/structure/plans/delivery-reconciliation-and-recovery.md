@@ -24,7 +24,7 @@ not disappear into a generic final cleanup task.
   2. scan semantic duplicates, contradictions, precedence, and supersessions;
   3. decide the canonical home and any instruction-surface eviction;
   4. update canonical rules, indexes, configuration, and enforcement machinery;
-  5. record one canonical [Step 7 enforcement disposition](../../../workflows/rules/rules-propagation/step-7-enforcement-disposition.md)
+  5. record one canonical [Step 7 enforcement disposition](../../../workflows/quality/rules-propagation/003-enforcement-and-verification.md)
      per rule: `Covered`, `Gated`, or `Unenforced by Decision`, with the required gate evidence or
      rationale; an unfalsifiable rule halts at intake, not as a successful delivery disposition;
   6. generate declared harness adapters instead of hand-editing mirrors;

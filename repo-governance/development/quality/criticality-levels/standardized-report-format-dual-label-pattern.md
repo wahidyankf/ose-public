@@ -9,7 +9,7 @@ when_to_use: "Use when labeling a finding with both dimensions."
 
 - `docs-checker` - Verification labels ([Verified], [Error], [Outdated], [Unverified])
 - `docs-tutorial-checker` - Verification labels
-- `apps-ayokoding-www-facts-checker` - Verification labels
+- `content-checker` - Verification labels
 - `docs-link-checker` - Status labels ([OK], [BROKEN], [REDIRECT])
 - `apps-ayokoding-www-link-checker` - Status labels
 

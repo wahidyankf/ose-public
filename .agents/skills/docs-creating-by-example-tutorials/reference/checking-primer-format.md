@@ -1,6 +1,6 @@
 # Checking Primer ("Just Enough X") Format
 
-Validation checklist for `apps-ayokoding-www-primer-checker`. The mechanical density/structure
+Validation checklist for `tutorial-primer-checker`. The mechanical density/structure
 criteria are shared with By Example (see SKILL.md); this module covers Primer-specific checks.
 
 ## 1. Example Count

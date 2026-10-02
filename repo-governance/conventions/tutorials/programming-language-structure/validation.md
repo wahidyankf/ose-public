@@ -7,7 +7,7 @@ when_to_use: Use when running or interpreting automated tutorial-structure check
 
 ## Automated Validation
 
-**apps-ayokoding-www-general-checker** validates:
+**content-checker** validates:
 
 - PASS: By-concept directory structure exists
 - PASS: All mandatory files present (\_index.md, overview.md, beginner/intermediate/advanced.md)
@@ -16,7 +16,7 @@ when_to_use: Use when running or interpreting automated tutorial-structure check
 - PASS: Frontmatter completeness
 - PASS: No H1 headings in content
 
-**apps-ayokoding-www-by-example-checker** validates:
+**tutorial-by-example-checker** validates:
 
 - PASS: By-example directory structure (when exists)
 - PASS: 75-90 examples across three files

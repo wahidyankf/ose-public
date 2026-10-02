@@ -24,7 +24,7 @@ when_to_use: "Use when deciding whether a finding is MEDIUM_CONFIDENCE."
 - Link target unclear (file missing, but can't determine correct target automatically)
 - Field value could be valid in specific context (non-standard but potentially intentional)
 
-**apps-ayokoding-www-general-fixer:**
+**content-fixer:**
 
 - Description length borderline (145 chars vs 150-160 optimal - functional but could improve)
 - Line length slightly over 100 characters (breaking might harm readability)
@@ -39,7 +39,7 @@ when_to_use: "Use when deciding whether a finding is MEDIUM_CONFIDENCE."
 - Content balance assessments (theory vs practice ratio)
 - Example quality assessments (examples work but could be better)
 
-**apps-ose-www-content-fixer:**
+**content-fixer:**
 
 - Summary length is short but functional (85 chars vs 150-160 optimal)
 - Image alt text vague but not missing ("screenshot" - need image context to improve)

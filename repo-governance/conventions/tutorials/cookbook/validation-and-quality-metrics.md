@@ -24,7 +24,7 @@ when_to_use: "Read when checking whether a cookbook has enough recipes per categ
 
 ## Quality Validation
 
-**Automated checks** (by apps-ayokoding-www-general-checker):
+**Automated checks** (by content-checker):
 
 - ✅ Recipe has all required sections
 - ✅ Code is properly annotated (0.5-1.5 ratio)

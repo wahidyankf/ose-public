@@ -9,7 +9,7 @@ when_to_use: "Read when you need to know exactly what the automated checker vali
 
 ### Automated Validation
 
-The **apps-ayokoding-www-by-example-checker** agent validates:
+The **tutorial-by-example-checker** agent validates:
 
 - **Coverage percentage**: 95% target achieved
 - **Example count**: 75-85 total (beginner: 27-30, intermediate: 20-30, advanced: 25-28)
@@ -36,9 +36,9 @@ The **apps-ayokoding-www-by-example-checker** agent validates:
 The **by-example-quality-gate** workflow orchestrates:
 
 1. **apps-ayokoding-www-by-example-maker**: Creates/updates examples
-2. **apps-ayokoding-www-by-example-checker**: Validates against standards
+2. **tutorial-by-example-checker**: Validates against standards
 3. **User review**: Reviews audit report
-4. **apps-ayokoding-www-by-example-fixer**: Applies validated fixes
+4. **tutorial-by-example-fixer**: Applies validated fixes
 
 ## Relationship to Other Tutorial Types
 

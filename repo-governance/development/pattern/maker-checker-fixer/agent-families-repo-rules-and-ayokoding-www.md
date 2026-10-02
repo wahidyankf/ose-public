@@ -33,18 +33,18 @@ when_to_use: "Use for repo-wide rules or ayokoding-www content."
 
 - **apps-ayokoding-www-general-maker** (🟦 Maker) - Creates general Next.js learning content following conventions
 - **apps-ayokoding-www-by-example-maker** (🟦 Maker) - Creates by-example tutorials with annotated code
-- **apps-ayokoding-www-general-checker** (🟩 Checker) - Validates general Next.js content (frontmatter, links, quality)
-- **apps-ayokoding-www-by-example-checker** (🟩 Checker) - Validates by-example tutorial quality (coverage, annotations)
-- **apps-ayokoding-www-general-fixer** (🟨 Fixer) - Fixes general Next.js content issues
-- **apps-ayokoding-www-by-example-fixer** (🟨 Fixer) - Fixes by-example tutorial issues
+- **content-checker** (🟩 Checker) - Validates general Next.js content (frontmatter, links, quality)
+- **tutorial-by-example-checker** (🟩 Checker) - Validates by-example tutorial quality (coverage, annotations)
+- **content-fixer** (🟨 Fixer) - Fixes general Next.js content issues
+- **tutorial-by-example-fixer** (🟨 Fixer) - Fixes by-example tutorial issues
 - **apps-ayokoding-www-in-the-field-maker** (🟦 Maker) - Creates in-the-field tutorials from real-world experiences
-- **apps-ayokoding-www-in-the-field-checker** (🟩 Checker) - Validates in-the-field tutorial quality
-- **apps-ayokoding-www-in-the-field-fixer** (🟨 Fixer) - Applies validated fixes to in-the-field tutorials
+- **tutorial-in-the-field-checker** (🟩 Checker) - Validates in-the-field tutorial quality
+- **tutorial-in-the-field-fixer** (🟨 Fixer) - Applies validated fixes to in-the-field tutorials
 
 **Agents (Factual Accuracy)**:
 
-- **apps-ayokoding-www-facts-checker** (🟩 Checker) - Validates factual accuracy of ayokoding-www content using WebSearch/WebFetch. Verifies command syntax, versions, code examples, external references with confidence classification
-- **apps-ayokoding-www-facts-fixer** (🟨 Fixer) - Applies validated fixes from facts-checker audit reports
+- **content-checker** (🟩 Checker) - Validates factual accuracy of ayokoding-www content using WebSearch/WebFetch. Verifies command syntax, versions, code examples, external references with confidence classification
+- **content-fixer** (🟨 Fixer) - Applies validated fixes from facts-checker audit reports
 
 **Agents (Link Validation)**:
 
@@ -57,14 +57,14 @@ when_to_use: "Use for repo-wide rules or ayokoding-www content."
 
 ```
 1. apps-ayokoding-www-general-maker: Create TypeScript tutorial with bilingual content
-2. apps-ayokoding-www-general-checker: Validate frontmatter, links, navigation, weight ordering
-3. apps-ayokoding-www-general-fixer: Apply validated fixes from audit
+2. content-checker: Validate frontmatter, links, navigation, weight ordering
+3. content-fixer: Apply validated fixes from audit
 ```
 
 **Example (By-Example Tutorial)**:
 
 ```
 1. apps-ayokoding-www-by-example-maker: Create Golang by-example with 75-90 annotated examples
-2. apps-ayokoding-www-by-example-checker: Validate 95% coverage, annotations, self-containment
-3. apps-ayokoding-www-by-example-fixer: Apply validated fixes from audit
+2. tutorial-by-example-checker: Validate 95% coverage, annotations, self-containment
+3. tutorial-by-example-fixer: Apply validated fixes from audit
 ```

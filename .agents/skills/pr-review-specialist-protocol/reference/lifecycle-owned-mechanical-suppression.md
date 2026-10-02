@@ -2,12 +2,9 @@
 
 ## PR Quality-Gate Invocation
 
-Consume `{step0.outputs.delegated-gate-ids}` and its lifecycle evidence ledger before reviewing.
-Suppress only a predicate owned by an exact registry ID or its declared `verifies` relationship.
-Do not rerun, tool-verify, or AI-rederive that predicate. Exact current repository/head and
-applicable-base green aggregate PR CI is `verified`; missing, mismatched, or stale evidence is
-`pending`, not a finding and not a fallback check. A relevant fixer edit invalidates only affected
-evidence until current-head CI replaces it.
+Read the gate's Deterministic Boundary before reviewing. Suppress every property it lists: its declared tool
+runs in pull request CI, and a red CI result is that tool's finding, never a specialist's. Do not rerun,
+tool-verify, or AI-rederive such a property.
 
 Continue semantic review, including behavioural correctness, architecture, security, test
 integrity, performance, documentation meaning, instruction decay, and type soundness. Continue

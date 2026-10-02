@@ -98,7 +98,7 @@ Before publishing workflow:
 
 ## References
 
-**Primary Convention**: [Workflow Pattern Convention](../../../repo-governance/workflows/meta/workflow-identifier.md)
+**Primary Convention**: [Workflow Pattern Convention](../../../repo-governance/conventions/structure/workflow-pattern.md)
 
 **Related Conventions**:
 

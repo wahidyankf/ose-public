@@ -4,7 +4,7 @@
 
 After verifying archival (Step 5d), verify execution used the delivery mode's declared work
 location per the
-[plan-execution Step 0 gate](../../../../repo-governance/workflows/plan/plan-execution/enter-worktree-preconditions-and-work-branch.md#0-enter-the-designated-worktree-sequential-hard-gate).
+[plan-execution Step 0 gate](../../../../repo-governance/workflows/plan/plan-execution/014-enter-worktree-preconditions-and-work-branch.md#0-enter-the-designated-worktree-sequential-hard-gate).
 For a worktree mode, it enters or provisions the declared worktree; for a main mode, it remains in
 the primary checkout. In both cases it syncs from fresh `origin/main` before implementation.
 

@@ -70,8 +70,8 @@ Content creators MUST:
 
 Content MUST pass:
 
-1. **apps-ayokoding-www-general-checker** or **apps-ayokoding-www-by-example-checker** validation (quality principles)
-2. **apps-ayokoding-www-facts-checker** verification (factual correctness)
+1. **content-checker** or **tutorial-by-example-checker** validation (quality principles)
+2. **content-checker** verification (factual correctness)
 3. **apps-ayokoding-www-link-checker** validation (all links work)
 4. **Manual review** (pedagogical effectiveness, clarity)
 

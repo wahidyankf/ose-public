@@ -22,7 +22,7 @@ shape" is live — every new topic is an opportunity to drift.
 
 - **Existing AyoKoding structural checkers** — the `by-example` and `in-the-field` checkers already
   validate per-track content shape; this extends that idea to the canonical topic tree.
-  [by-example-checker](../../../.agents/agents/apps-ayokoding-www-by-example-checker.md)
+  [by-example-checker](../../../.agents/agents/tutorial-by-example-checker.md)
 - **Maker-Checker-Fixer pattern** — the repo's standard three-stage quality workflow a
   shape-enforcement checker plugs into.
   [pattern](../../../repo-governance/development/pattern/maker-checker-fixer.md)
@@ -34,8 +34,8 @@ shape" is live — every new topic is an opportunity to drift.
 
 ## Proposed direction (sketch)
 
-- Add canonical-shape enforcement rules to `apps-ayokoding-www-by-example-checker` and
-  `apps-ayokoding-www-in-the-field-checker`: validate each checked topic follows the tree shape.
+- Add canonical-shape enforcement rules to `tutorial-by-example-checker` and
+  `tutorial-in-the-field-checker`: validate each checked topic follows the tree shape.
 - Create `apps-ayokoding-www-by-concept-checker` once the by-concept track has enough coverage to
   warrant dedicated structural validation.
 

@@ -1,5 +1,5 @@
 ---
-description: The SSOT practice that mandates enumerate-not-sample forcing-functions for the three live-site testers and the web-ux-test-fixing-planning workflow
+description: The SSOT practice that mandates enumerate-not-sample forcing-functions for the three live-site testers and the ux-review-fix-planning workflow
 when_to_use: "Use when a live-site tester agent needs to enumerate coverage instead of sampling it."
 ---
 
@@ -29,7 +29,7 @@ This practice mandates enumerate-not-sample forcing-functions for the three live
   must land with a reproducing test when fixed
 - [Behaviour-Driven Development](../behaviour-driven-development.md) -- Automated testing
   architecture that systematic live testing complements (not replaces)
-- [web-ux-test-fixing-planning workflow](../../workflows/web/web-ux-test-fixing-planning.md) --
+- [ux-review-fix-planning workflow](../../workflows/quality/ux-review-fix-planning.md) --
   The orchestration workflow that sequences all three testers against the same target
 
 ## Scope
@@ -39,7 +39,7 @@ This practice applies to:
 - All runs of `web-exploratory-tester`, `web-usability-tester`, and `web-design-tester` against
   any live web surface in `apps/`.
 - All runs of `api-exploratory-tester` against any live REST or GraphQL API in `apps/`.
-- All invocations of the `web-ux-test-fixing-planning` workflow.
+- All invocations of the `ux-review-fix-planning` workflow.
 - The Rule-15 near-end retest required by the
   [User-Facing Delivery Hardening Convention](./user-facing-delivery-hardening.md) before plan
   archival.

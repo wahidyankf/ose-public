@@ -1,14 +1,14 @@
 ---
 name: pr-review-synthesis-coordination
-description: How pr-review-synthesis-maker deduplicates, re-categorizes, reasonableness-filters, and tool-verifies the nine discipline specialists' raw findings, then posts exactly one consolidated GitHub review. Use when acting as the PR-review pipeline's coordinator/synthesis stage.
-when_to_use: When acting as pr-review-synthesis-maker — running the four coordination functions over raw findings, building the consolidated review header, posting via the GitHub Reviews API, or handling cross-cycle/human-dismissal state.
+description: How pr-review-checker deduplicates, re-categorizes, reasonableness-filters, and tool-verifies the nine discipline specialists' raw findings, then posts exactly one consolidated GitHub review. Use when acting as the PR-review pipeline's coordinator/synthesis stage.
+when_to_use: When acting as pr-review-checker — running the four coordination functions over raw findings, building the consolidated review header, posting via the GitHub Reviews API, or handling cross-cycle/human-dismissal state.
 ---
 
 # PR Review Synthesis Coordination
 
 ## Overview
 
-`pr-review-synthesis-maker` never discovers findings itself. It consumes the nine specialists'
+`pr-review-checker` never discovers findings itself. It consumes the nine specialists'
 raw findings (or performs the single trivial-tier generalist pass itself, per DD-7) and is the
 sole place a finding gets deduplicated, re-categorized, filtered for reasonableness, and
 tool-verified before posting exactly ONE consolidated review.
@@ -40,13 +40,13 @@ tool-verified before posting exactly ONE consolidated review.
 3. **Exactly ONE consolidated review per pass** — never one review per specialist or discipline.
    **Post it through the Reviews API as line-anchored inline threads, one per finding — NEVER
    `gh pr comment`.** A top-level comment cannot be anchored, replied to as a thread, or resolved,
-   so the loop's thread-resolution query reads it as **zero findings**. A review is a conversation
+   so the loop's thread-resolution query reads it as **no findings at all**. A review is a conversation
    with the author: you post the finding, the fixer replies on the same thread. Never write the
    disposition into your own comment.
 4. **A `CRITICAL` finding needs reproduction, not just multi-specialist agreement.**
 
 ## Related Agents
 
-`pr-review-scout-maker` (upstream tier/context/dismissal-read), the nine `pr-review-*-maker`
-discipline specialists (raw-finding sources), `pr-review-fixer` (consumes the posted review),
+`pr-review-scout` (upstream tier/context/dismissal-read), the nine `pr-review-*-checker`
+lens specialists (raw-finding sources), `pr-review-fixer` (consumes the posted review),
 `web-researcher`.

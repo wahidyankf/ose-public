@@ -529,7 +529,7 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 ### Mandatory API Quality Gate and Exploratory Retest
 
 - [ ] [AI] Before the Phase 5 gate, execute the complete
-      [API Quality Gate](../../../repo-governance/workflows/api/api-quality-gate.md) in `strict` mode.
+      [API Quality Gate](../../../repo-governance/workflows/quality/api-http-quality-gate.md) in `strict` mode.
       Its immutable scope is `http://127.0.0.1:8501`; all context, membership, invitation, acceptance,
       and entitlement method/path contracts in `tech-docs/008-api-contract-delta.md`; retained account/
       health/disabled operations; tenancy Gherkin; and the real PostgreSQL RLS/runtime-role boundary.
@@ -547,7 +547,7 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
       acceptance concurrency, rate limits, RLS/pool reuse, revocation, and multi-instance handoff. Append
       every `AET-###` as an unchecked delivery task; save sanitized reports, matrices, catalog/policy
       proof, run IDs, and cleanup inventory under
-      `plans/in-progress/ose-id-init-03-company-tenancy-core/evidence/phase-5/api-quality-gate/`.
+      `plans/in-progress/ose-id-init-03-company-tenancy-core/evidence/phase-5/api-http-quality-gate/`.
 - [ ] [AI] Triage findings at `strict`. For any in-threshold defect, delegate the workflow's single
       bounded fix pass to `swe-code-maker` with `programming-csharp`; rerun affected Unit/Integration/E2E, OpenAPI, migration/RLS,
       secret, and tenant-isolation gates; rebuild/restart once; then invoke

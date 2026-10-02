@@ -11,8 +11,8 @@ Continues [Delivery Mode — main-to-origin-main Content Restriction](./delivery
 from `.github/workflows/pr-quality-gate.yml` must be green for the exact current head and base, and
 one authenticated `ose-pr-leak-review:v1` record must pass for that head.
 Semantic review is not inferred from executable content, `plans/**`, risk, or delivery mode. A plan
-may include [`pr-review`](../../../workflows/pr/pr-review.md) or
-[`pr-review-cycle`](../../../workflows/pr/pr-review-cycle.md) only because the user explicitly
+may include [`pr-review`](../../../workflows/quality/pr-review.md) or
+[`pr-review-quality-gate`](../../../workflows/quality/pr-review-quality-gate.md) only because the user explicitly
 requested it, and only at a PR delivery boundary. The shared hardened preconditions also require a
 current conflict-free branch, resolved conversations, and passing applicable finite surface gates;
 see the [PR Merge Protocol](../../../development/workflow/pr-merge-protocol.md).

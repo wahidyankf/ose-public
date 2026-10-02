@@ -86,7 +86,7 @@ unlanded work in the active worktree; convenience alone does not qualify.
 The `## Worktree` section must still name `worktrees/<plan-identifier>/`, record `Provisioning status:
 pending`, name the active authoring worktree and user constraint, and omit—not fabricate—the
 Provisioned Worktree Identity and branch inventory. The
-[Step 0 gate](../../../workflows/plan/plan-execution/enter-worktree-preconditions-and-work-branch.md#0-enter-the-designated-worktree-sequential-hard-gate)
+[Step 0 gate](../../../workflows/plan/plan-execution/014-enter-worktree-preconditions-and-work-branch.md#0-enter-the-designated-worktree-sequential-hard-gate)
 must provision the declared matching worktree, initialize the immutable identity/inventory, and
 sync it before any delivery packet begins. The exception ends at execution.
 

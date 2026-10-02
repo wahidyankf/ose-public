@@ -18,6 +18,6 @@ tier, specialist set, and probe to match the typed object and review body. Requi
 output review ID to equal that object's server-assigned ID. Never put a secret, token, or copied
 vulnerable value in the record.
 
-For an independent `pr-review`, use pass-local IDs `P-F<n>`. An enclosing `pr-review-cycle` may
+For an independent `pr-review`, use pass-local IDs `P-F<n>`. An enclosing `pr-review-quality-gate` may
 display its ordinal as `C<ordinal>-F<n>` and joins the authenticated pass record to separate credit,
 disposition, checkpoint, and ceiling records. Head drift never rewrites the pass record.

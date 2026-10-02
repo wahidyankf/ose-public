@@ -33,7 +33,7 @@ when_to_use: "Use to locate the automated enforcement."
 
 **Workflows:**
 
-- [Plan Quality Gate](../../../workflows/plan/plan-quality-gate.md)
+- [Plan Quality Gate](../../../workflows/quality/plan-quality-gate.md)
 - [Plan Execution](../../../workflows/plan/plan-execution.md)
 
 **Agent skills:**

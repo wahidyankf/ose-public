@@ -25,7 +25,7 @@ when_to_use: "Use when deciding whether a finding is HIGH_CONFIDENCE."
 - Wrong field value verified by comparing actual vs expected value
 - File naming convention violation verified by checking filename against the kebab-case pattern
 
-**apps-ayokoding-www-general-fixer:**
+**content-fixer:**
 
 - Missing `draft: false` field verified by re-reading frontmatter
 - Wrong date format verified by regex pattern match (missing UTC+7 timezone)
@@ -38,7 +38,7 @@ when_to_use: "Use when deciding whether a finding is HIGH_CONFIDENCE."
 - Incorrect LaTeX delimiter verified by pattern match (single `$` on own line for display math)
 - Wrong tutorial type naming verified against convention patterns
 
-**apps-ose-www-content-fixer:**
+**content-fixer:**
 
 - Missing required frontmatter field verified (title, date, draft)
 - Wrong date format verified by regex (missing timezone)

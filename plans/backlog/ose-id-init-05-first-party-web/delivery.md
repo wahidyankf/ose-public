@@ -497,7 +497,7 @@ the delivery branch without merge or archival yet.
 
 ### Mandatory API Quality Gate and Rule-16 Session
 
-Run the [API Quality Gate workflow](../../../repo-governance/workflows/api/api-quality-gate.md) after
+Run the [API Quality Gate workflow](../../../repo-governance/workflows/quality/api-http-quality-gate.md) after
 local gates and before any live-web pass so the UI testers do not diagnose a known backend defect as UI
 friction.
 
@@ -532,7 +532,7 @@ friction.
 
 ### Mandatory UI Quality Gate
 
-Run the [UI Quality Gate workflow](../../../repo-governance/workflows/ui/ui-quality-gate.md) after the
+Run the [UI Quality Gate workflow](../../../repo-governance/workflows/quality/ui-web-quality-gate.md) after the
 API gate and before browser sessions. This is a static source audit; the live design tester below is its
 runtime complement, not a substitute.
 
@@ -556,12 +556,12 @@ runtime complement, not a substitute.
 ### Mandatory Rule-15 Live-Web Sessions
 
 Use the in-flight delivery variant documented by the
-[Web UX Test-Fixing Planning workflow](../../../repo-governance/workflows/web/web-ux-test-fixing-planning.md#contents):
+[Web UX Test-Fixing Planning workflow](../../../repo-governance/workflows/quality/ux-review-fix-planning.md#contents):
 invoke its three testers directly with `output-mode: delivery` and this plan path. Do not create a
 second plan. Run them sequentially as required by the
-[exploratory](../../../repo-governance/workflows/web/web-ux-test-fixing-planning/phase-1-exploratory-pass-and-integrate.md),
-[usability](../../../repo-governance/workflows/web/web-ux-test-fixing-planning/phase-2-usability-pass-and-integrate.md),
-and [design](../../../repo-governance/workflows/web/web-ux-test-fixing-planning/phase-3-design-pass-and-completeness-critic.md)
+[exploratory](../../../repo-governance/workflows/quality/ux-review-fix-planning/007-phase-1-exploratory-pass-and-integrate.md),
+[usability](../../../repo-governance/workflows/quality/ux-review-fix-planning/008-phase-2-usability-pass-and-integrate.md),
+and [design](../../../repo-governance/workflows/quality/ux-review-fix-planning/009-phase-3-design-pass-and-completeness-critic.md)
 passes.
 
 - [ ] [AI] Give all three testers the same inputs: target routes at `http://127.0.0.1:3500` listed in

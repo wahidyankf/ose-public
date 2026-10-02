@@ -1,5 +1,5 @@
 ---
-description: "Describes the automated validation performed by apps-ayokoding-www-general-checker and the quality-gate workflow."
+description: "Describes the automated validation performed by content-checker and the quality-gate workflow."
 when_to_use: "Read when you need to know what an automated checker validates on By-Concept content or how the quality-gate workflow runs."
 ---
 
@@ -7,7 +7,7 @@ when_to_use: "Read when you need to know what an automated checker validates on 
 
 ## Automated Validation
 
-The **apps-ayokoding-www-general-checker** agent validates:
+The **content-checker** agent validates:
 
 - **Coverage percentage**: 95% target achieved
 - **Section count**: 40-60 total (beginner: 15-25, intermediate: 12-20, advanced: 10-20)
@@ -28,6 +28,6 @@ The **apps-ayokoding-www-general-checker** agent validates:
 The **by-concept-quality-gate** workflow orchestrates:
 
 1. **apps-ayokoding-www-general-maker**: Creates/updates sections
-2. **apps-ayokoding-www-general-checker**: Validates against standards
+2. **content-checker**: Validates against standards
 3. **User review**: Reviews audit report
-4. **apps-ayokoding-www-general-fixer**: Applies validated fixes
+4. **content-fixer**: Applies validated fixes

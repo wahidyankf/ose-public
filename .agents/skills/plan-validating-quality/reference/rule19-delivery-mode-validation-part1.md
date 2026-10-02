@@ -23,7 +23,7 @@ integration target and merge authority.
    base before merge, one authenticated clean current-head `pr-leak-review`, plus applicable finite
    surface gates. Missing/stale/failed/findings leak evidence blocks merge; a head-changing fix
    requires one new pass, never two. Absence of broad semantic review is valid. A `pr-review` or
-   `pr-review-cycle` step is valid only when the user explicitly requested it and it
+   `pr-review-quality-gate` step is valid only when the user explicitly requested it and it
    appears at that PR delivery boundary.
 4. **Merge tagging matches mode** — for `*-to-pr` modes, the final PR-merge step defaults to `[AI]`; a
    `[HUMAN]` tag IS the plan's opt-in into human merge judgment, per

@@ -41,7 +41,7 @@ Examples prioritize:
 - Platform-specific advanced features
 - Deprecated features
 
-**Coverage verification**: The apps-ayokoding-www-by-example-checker agent validates coverage against comprehensive checklists for each language/framework.
+**Coverage verification**: The tutorial-by-example-checker agent validates coverage against comprehensive checklists for each language/framework.
 
 ## 3. Example Count: 75-85 Total
 

@@ -5,16 +5,14 @@
 1. Read audit report — parse "Folders validated" and findings by criticality/confidence.
 2. Verify scope — every fix targets only files within the validated folders.
 3. Filter by mode — see `repo-applying-maker-checker-fixer` Skill for the full
-   lax/normal/strict/ocd logic.
+   lax/normal/strict/all logic.
 4. Sort by priority: P0 (CRITICAL/HIGH confidence) → P1 (CRITICAL/MEDIUM) → P2 (HIGH/HIGH) → etc.
 5. Re-validate each finding — confirm the issue still exists before fixing.
-6. Apply — Edit for Markdown, `rtk git mv` via Bash for renames, and use non-delegated
+6. Apply — Edit for Markdown, `rtk git mv` via Bash for renames, and use
    `specs structure validate`/`specs counts validate` or `md internal-link validate` evidence for structural
    and broken-link fixes.
 7. Post-fix verify — read the modified file to confirm the fix is correct.
-8. Generate the fix report.
-9. Scope-intersect changed files with delegated predicates and return
-   `updated-lifecycle-evidence`; invalidate only intersecting entries.
+8. Record each row's status and evidence on the ledger.
 
 ## Fix Report Format
 

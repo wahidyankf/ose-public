@@ -11,18 +11,18 @@ when_to_use: >-
 Seven capabilities cover the plan lifecycle. Each must be **reachable**: a named workflow in the repository, or an
 equivalent local procedure recorded as a deviation.
 
-| Capability       | Canonical workflow                                                          |
-| ---------------- | --------------------------------------------------------------------------- |
-| idea grooming    | [`plan-ideas-grooming`](../../../workflows/plan/plan-ideas-grooming.md)     |
-| backlog grooming | [`plan-backlog-grooming`](../../../workflows/plan/plan-backlog-grooming.md) |
-| plan creation    | [`plan-planning`](../../../workflows/plan/plan-planning.md)                 |
-| plan execution   | [`plan-execution`](../../../workflows/plan/plan-execution.md)               |
-| quality review   | [`plan-quality-gate`](../../../workflows/plan/plan-quality-gate.md)         |
-| execution review | [`plan-execution-check`](../../../workflows/plan/plan-execution-check.md)   |
-| cleanup          | [`dev-artifact-clean-up`](../../../workflows/dev-artifact-clean-up.md)      |
+| Capability       | Canonical workflow                                                                 |
+| ---------------- | ---------------------------------------------------------------------------------- |
+| idea grooming    | [`plan-ideas-grooming`](../../../workflows/plan/plan-ideas-grooming.md)            |
+| backlog grooming | [`plan-backlog-grooming`](../../../workflows/plan/plan-backlog-grooming.md)        |
+| plan creation    | [`plan-planning`](../../../workflows/plan/plan-planning.md)                        |
+| plan execution   | [`plan-execution`](../../../workflows/plan/plan-execution.md)                      |
+| quality review   | [`plan-quality-gate`](../../../workflows/quality/plan-quality-gate.md)             |
+| execution review | [`plan-execution-check`](../../../workflows/plan/plan-execution-check.md)          |
+| cleanup          | [`dev-artifact-clean-up`](../../../workflows/maintenance/dev-artifact-clean-up.md) |
 
 A repository that supports Gherkin acceptance criteria additionally exposes exactly one
-[`gherkin-implementation-review`](../../../workflows/gherkin-implementation-review.md). One, not several: the
+[`gherkin-implementation-review`](../../../workflows/quality/gherkin-implementation-review.md). One, not several: the
 review's value is that every scenario is walked, and two overlapping reviews each assume the other covered the gap.
 
 ## Why These Seven

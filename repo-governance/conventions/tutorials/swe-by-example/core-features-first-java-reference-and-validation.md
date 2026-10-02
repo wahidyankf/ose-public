@@ -31,7 +31,7 @@ The Java by-example tutorial demonstrates this principle for programming languag
 
 ## Validation Criteria
 
-The apps-ayokoding-www-by-example-checker validates:
+The tutorial-by-example-checker validates:
 
 - **Beginner dependency count**: 0 external dependencies/abstractions (CRITICAL)
 - **Intermediate dependency justification**: Each external dependency has explicit "Why Not Core Features" explanation (HIGH)

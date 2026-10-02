@@ -46,7 +46,7 @@ one-per-delivery-unit only under `*-to-pr`; direct-push modes integrate at the u
 - [Glossary](../glossary.md) — the other term clusters.
 - [Delivery Mode](../conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode) —
   the four modes and how the active one is resolved.
-- [Planning Granularity](../workflows/plan/plan-planning/planning-granularity-and-one-branch-rule.md) —
+- [Planning Granularity](../workflows/plan/plan-planning/003-planning-granularity-and-one-branch-rule.md) —
   the one-branch rule and the worktree cap.
 - [Natural Seams and Deployable State](../conventions/structure/plans/prs-open-at-delivery-boundaries-natural-seams.md) —
   the canonical delivery-unit boundary and production-safety test.

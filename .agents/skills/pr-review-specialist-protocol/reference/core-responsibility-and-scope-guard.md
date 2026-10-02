@@ -3,7 +3,7 @@
 ## Core Responsibility
 
 Before forming any opinion about a PR, consume the **shared-context brief**
-`pr-review-scout-maker` assembles once per cycle — its pinned head SHA, full diff, and
+`pr-review-scout` assembles once per cycle — its pinned head SHA, full diff, and
 plan/issue context — when this agent runs as part of the pipeline's tier-selected fan-out; every
 finding posted in this pass anchors to the SHA the brief carries, never a moving target. Do not
 review a diff in isolation: the PR's originating `plans/in-progress/` (or `plans/done/`) plan, or

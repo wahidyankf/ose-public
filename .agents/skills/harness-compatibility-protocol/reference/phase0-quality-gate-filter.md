@@ -1,8 +1,7 @@
 # Phase 0 Quality-Gate Filter
 
-Under `harness-compatibility-quality-gate`, consume Step 0's exact `delegated-gate-ids` and
-lifecycle evidence before Phase 0. Delegate Invariants 1–4 only where an exact vendor, binding,
-ownership, catalog, or duplication ID (or declared `verifies` relationship) owns the predicate.
+Under `harness-quality-gate`, leave Invariants 1–4 to their declared tools only where the gate's
+Deterministic Boundary names a vendor, binding, ownership, catalog, or duplication check.
 Do not run the Invariant 3 generator as a check. Retain Invariant 5's unregistered semantic mapping
 judgement and Invariant 6's hand-authored config-intent comparison.
 

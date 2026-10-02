@@ -433,7 +433,7 @@ proof, and GraphQL/MCP remain genuinely deferred.
       `repo-governance/development/infra/nx-targets/mandatory-targets-cli-e2e.md`,
       `repo-governance/development/infra/nx-targets/mandatory-targets-behaviour-coverage.md`,
       `repo-governance/development/infra/nx-targets/tag-convention-current-tags-and-examples.md`,
-      `repo-governance/workflows/infra/development-environment-setup/phase-6-python-ecosystem.md`,
+      `repo-governance/workflows/maintenance/development-environment-setup/008-phase-6-python-ecosystem.md`,
       `repo-config.yml`, and `scripts/behaviour-coverage.mjs` plus its test. Mark
       a path no-edit with inspected evidence when Plan 01 already suffices. GraphQL and MCP surfaces are
       excluded.

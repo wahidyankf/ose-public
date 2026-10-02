@@ -25,7 +25,7 @@ creative synthesis across domains, nuanced judgment under ambiguity.
 
 - **plan-maker** — creates project plans requiring scope analysis, dependency mapping, and strategic sequencing
 - **rules-\***, **harness-\***, **specs-\*** — reason about governance surfaces where a wrong call propagates across the repository
-- **pr-review-scout-maker**, **pr-review-synthesis-maker** — route risk and consolidate nine specialists' findings into one review
+- **pr-review-scout**, **pr-review-checker** — route risk and consolidate nine specialists' findings into one review
 - **docs-tutorial-maker** — produces tutorial content requiring pedagogical reasoning, narrative flow, and learning progression design
 - **swe-ui-maker** — creates UI components requiring CVA variants, Radix composition, accessibility, tests, and stories in one pass
 

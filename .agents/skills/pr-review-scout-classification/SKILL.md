@@ -1,14 +1,14 @@
 ---
 name: pr-review-scout-classification
-description: How pr-review-scout-maker selects one pass's risk tier and specialist set, assembles shared context, and reads authenticated prior state.
-when_to_use: When acting as pr-review-scout-maker at the start of a PR-review cycle — deciding risk tier, selecting specialists, assembling the shared-context brief, or reading prior-cycle thread-resolution status.
+description: How pr-review-scout selects one pass's risk tier and specialist set, assembles shared context, and reads authenticated prior state.
+when_to_use: When acting as pr-review-scout at the start of a PR-review cycle — deciding risk tier, selecting specialists, assembling the shared-context brief, or reading prior-cycle thread-resolution status.
 ---
 
 # PR Review Scout Classification
 
 ## Overview
 
-`pr-review-scout-maker` is the PR-review pipeline's stage-0 scout: it never reviews code for a
+`pr-review-scout` is the PR-review pipeline's stage-0 scout: it never reviews code for a
 defect and never posts a finding. Its entire job is deciding what the rest of the cycle sees —
 risk tier, specialist set, shared context, and prior-cycle human decisions nobody should
 re-litigate.
@@ -38,10 +38,10 @@ re-litigate.
 3. **Security-sensitive paths force `full` regardless of size** — non-negotiable.
 4. **First and only ingestion point for raw PR text** — every downstream consumer reads only this
    agent's derived outputs, never the raw text itself.
-5. **Carry lifecycle ownership without reclassification.** When supplied, put exact delegated IDs
-   and the evidence ledger into the brief unchanged.
+5. **Carry the deterministic boundary unchanged.** Put the gate's Deterministic Boundary into the
+   brief so no specialist reports a property a declared tool owns.
 
 ## Related Agents
 
-`pr-review-synthesis-maker` (receives this agent's tier/set/brief every pass), the nine
-`pr-review-*-maker` discipline specialists, and cycle-only `pr-review-fixer`.
+`pr-review-checker` (receives this agent's tier/set/brief every pass), the nine
+`pr-review-*-checker` discipline specialists, and cycle-only `pr-review-fixer`.

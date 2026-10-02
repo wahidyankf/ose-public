@@ -46,5 +46,6 @@ iteration N+2:
 
 ## Convergence Target
 
-The maker-checker-fixer workflow should stabilize in 3-5 iterations. If not converged after 7
-iterations, log a warning in the audit report.
+A quality gate runs at most three cycles, per the
+[Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md); blocking rows left
+after the last cycle make its verdict `FAIL`, never another cycle.

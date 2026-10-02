@@ -7,13 +7,13 @@ when_to_use: Read this to find which checker or fixer agent enforces this conven
 
 ## Tools and Automation
 
-- **`apps-ayokoding-www-by-example-checker`** — Validates by-example tutorial content,
+- **`tutorial-by-example-checker`** — Validates by-example tutorial content,
   including scanning `**Why It Matters**:` sections for prohibited patterns
-- **`apps-ayokoding-www-in-the-field-checker`** — Validates in-the-field tutorial content
+- **`tutorial-in-the-field-checker`** — Validates in-the-field tutorial content
   using the same Why It Matters rules
-- **`apps-ayokoding-www-by-example-fixer`** — Applies fixes to by-example tutorial content,
+- **`tutorial-by-example-fixer`** — Applies fixes to by-example tutorial content,
   rewriting prohibited Why It Matters patterns as theoretical explanations
-- **`apps-ayokoding-www-in-the-field-fixer`** — Applies fixes to in-the-field tutorial content
+- **`tutorial-in-the-field-fixer`** — Applies fixes to in-the-field tutorial content
 
 ## References
 
@@ -37,7 +37,7 @@ when_to_use: Read this to find which checker or fixer agent enforces this conven
 
 - `apps-ayokoding-www-by-example-maker` — Creates by-example tutorials; must follow this convention
 - `apps-ayokoding-www-in-the-field-maker` — Creates in-the-field guides; must follow this convention
-- `apps-ayokoding-www-by-example-checker` — Validates Why It Matters sections in by-example tutorials
-- `apps-ayokoding-www-in-the-field-checker` — Validates Why It Matters sections in in-the-field guides
-- `apps-ayokoding-www-by-example-fixer` — Fixes prohibited patterns in by-example tutorials
-- `apps-ayokoding-www-in-the-field-fixer` — Fixes prohibited patterns in in-the-field guides
+- `tutorial-by-example-checker` — Validates Why It Matters sections in by-example tutorials
+- `tutorial-in-the-field-checker` — Validates Why It Matters sections in in-the-field guides
+- `tutorial-by-example-fixer` — Fixes prohibited patterns in by-example tutorials
+- `tutorial-in-the-field-fixer` — Fixes prohibited patterns in in-the-field guides

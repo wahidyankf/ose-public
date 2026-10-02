@@ -58,18 +58,18 @@ This progressive approach ensures findings persist even if context is compacted 
 ALL \*-checker agents must implement progressive writing:
 
 1. rules-checker
-2. apps-ayokoding-www-general-checker
-3. apps-ayokoding-www-by-example-checker
-4. apps-ayokoding-www-facts-checker
+2. content-checker
+3. tutorial-by-example-checker
+4. content-checker
 5. apps-ayokoding-www-link-checker
-6. apps-ose-www-content-checker
+6. content-checker
 7. docs-checker
 8. docs-link-checker
 9. docs-tutorial-checker
 10. readme-checker
 11. plan-checker
 12. plan-execution-checker
-13. apps-ayokoding-www-in-the-field-checker
+13. tutorial-in-the-field-checker
 14. docs-software-engineering-separation-checker
 15. repo-workflow-checker
 16. specs-checker

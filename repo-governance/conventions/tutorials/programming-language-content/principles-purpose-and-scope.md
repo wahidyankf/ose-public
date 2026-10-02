@@ -32,6 +32,6 @@ This convention applies to:
   - **ayokoding-www** (`apps/ayokoding-www/content/[lang]/learn/swe/programming-languages/[language]/`) - canonical location
   - **Any other location** where programming language tutorials exist
 - Includes: tutorials (foundational, by-concept, by-example, cookbook), how-to guides, best practices, anti-patterns
-- Enforced by: `apps-ayokoding-www-general-checker`, `apps-ayokoding-www-by-example-checker`, `apps-ayokoding-www-general-maker`, `apps-ayokoding-www-by-example-maker`, `apps-ayokoding-www-facts-checker` agents
+- Enforced by: `content-checker`, `tutorial-by-example-checker`, `apps-ayokoding-www-general-maker`, `apps-ayokoding-www-by-example-maker`, `content-checker` agents
 
 **Implementation Notes**: While the Full Set Tutorial Package architecture applies universally, implementation details (frontmatter, weight values, navigation) are documented in the Content Requirements section below.

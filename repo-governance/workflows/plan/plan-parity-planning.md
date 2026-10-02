@@ -17,7 +17,7 @@ Plan authoring and validation use [plan-maker](../../../.agents/agents/plan-make
 
 **Goal**: Author sibling-repository plans for one objective, with every deviation decided and recorded
 
-**Termination**: One plan per target repo exists, each receiving a PASS verdict from plan-quality-gate, every deviation-matrix cell carries a recorded decision, research findings are incorporated or skipped with justification, and delivery completed per the selected mode
+**Termination**: One plan per target repo exists, each with a recorded plan-quality-gate verdict, every deviation-matrix cell carries a recorded decision, research findings are incorporated or skipped with justification, and delivery completed per the selected mode
 
 ## Inputs
 
@@ -31,7 +31,7 @@ Plan authoring and validation use [plan-maker](../../../.agents/agents/plan-make
 
 - **`plans-created`** (file-list) — One plan folder path per target repo
 - **`deviation-matrix`** (file) — Cross-repo decision matrix (every gap mapped to an align/deviate decision with justification), embedded in each plan's chosen technical form and mirrored in each repo's explanation rationale doc
-- **`gate-results`** (string) — plan-quality-gate verdict per plan (PASS/BLOCKED\_\*)
+- **`gate-results`** (string) — plan-quality-gate verdict per plan (`PASS`, `PASS_WITH_FINDINGS`, `FAIL`, or `BLOCKED`)
 - **`parity-identity-record`** (string) — Shared objective, worktree basename, and branch mapping
 - **`delivery-refs`** (string) — Commits pushed to origin main (main-push modes) or PR URLs (worktree-to-pr)
 

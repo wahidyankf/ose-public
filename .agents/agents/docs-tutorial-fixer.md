@@ -60,7 +60,7 @@ Many tutorial quality issues are subjective (narrative flow, diagram placement, 
 apply fixes ONLY for objective, verifiable issues.
 
 See `repo-applying-maker-checker-fixer` Skill for the maker-checker-fixer pattern and mode
-parameter handling (lax/normal/strict/ocd).
+parameter handling (lax/normal/strict/all).
 
 ## Reference Documentation
 

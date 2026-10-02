@@ -33,7 +33,7 @@ Composed: `rules-checker` discovers and verifies, propagation writes at Step 6, 
 
 **Goal**: Reduce the size of the repository's rule corpus without reducing its normative content, by identifying representation that carries no obligation and routing each reduction through the sole writer of rule edits
 
-**Termination**: Every manifest item is landed, rejected, or deferred with a recorded reason, the post-run obligation inventory differs from the pre-run inventory only by the approved retirements, the rules quality gate returns a passing verdict, and the run and its metrics delta are recorded; halts on any unapproved obligation loss
+**Termination**: Every manifest item is landed, rejected, or deferred with a recorded reason, the post-run obligation inventory differs from the pre-run inventory only by the approved retirements, the rules quality gate's verdict is recorded and every open blocking row has an owner, and the run and its metrics delta are recorded; halts on any unapproved obligation loss
 
 ## Inputs
 

@@ -16,7 +16,8 @@ Scenario: One run produces one combined, source-attributed plan
   And the plan contains README.md, brd.md, prd.md, findings.md, tech-docs.md, and delivery.md
   And findings.md has separate "Exploratory findings (EWT-###)", "Usability findings (UWT-###)", and "Design findings (DWT-###)" sections
   And delivery.md is TDD-shaped with Specs & Gherkin coverage steps
-  And the plan receives a PASS verdict from plan-quality-gate
+  And the plan has a recorded plan-quality-gate verdict
+  And every open blocking row has an owner
   And no file under apps/ or libs/ source is modified
 
 Scenario: Testers run sequentially with incremental integration

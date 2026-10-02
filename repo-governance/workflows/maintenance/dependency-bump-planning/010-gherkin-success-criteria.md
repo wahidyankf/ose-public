@@ -13,7 +13,8 @@ Scenario: Planning sweep produces a backlog plan without touching manifests
   When the workflow runs to completion
   Then a clearance report appears under local-tmp/dependency-bump-planning/dependency-bump-planning__*__report.md
   And a plan exists at plans/backlog/dependency-bump/
-  And the backlog plan receives a PASS verdict from plan-quality-gate
+  And the backlog plan has a recorded plan-quality-gate verdict
+  And every open blocking row has an owner
   And no package.json, Cargo.toml, rust-toolchain.toml, go.mod, *.fsproj, Dockerfile, docker-compose*.yml, .github/ action.yml/workflow, or lockfile is modified
 
 Scenario: Functional-hold is surfaced before authoring

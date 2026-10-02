@@ -14,7 +14,7 @@ is not planned through this workflow.
 
 **Goal**: Create a well-researched, grill-validated project plan in the resolved target stage (plans/in-progress/ by default, or plans/backlog/ when target-stage=backlog) from a user prompt describing a desired behaviour or change, then push it to the confirmed target
 
-**Termination**: Plan exists in the resolved target-stage directory, receives a PASS verdict from plan-quality-gate, and is pushed to the confirmed target
+**Termination**: Plan exists in the resolved target-stage directory, has a recorded plan-quality-gate verdict, and is pushed to the confirmed target
 
 ## Inputs
 

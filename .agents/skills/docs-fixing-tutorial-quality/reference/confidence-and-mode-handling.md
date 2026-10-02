@@ -47,7 +47,7 @@ writing style). Apply fixes ONLY for objective, verifiable issues.
 
 ## Mode Parameter Handling
 
-See `repo-applying-maker-checker-fixer` Skill for the complete mode logic (lax/normal/strict/ocd
+See `repo-applying-maker-checker-fixer` Skill for the complete mode logic (lax/normal/strict/all
 levels, implementation, and skipped findings reporting).
 
 ## When to Use This Agent

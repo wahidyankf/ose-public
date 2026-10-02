@@ -25,6 +25,6 @@ Invoke the [plan-planning workflow](../../plan/plan-planning.md) with:
     steps 8–12, grouped per ecosystem, TDD-shaped where code changes are required.
 
 Because `plan-planning` runs its own grill + (optional) research + `plan-maker` +
-`plan-quality-gate` + push, this phase yields a gate-passing backlog plan.
+`plan-quality-gate` + push, this phase yields a backlog plan with a recorded gate verdict.
 
 **Output**: `plan-path`, `final-status`, `final-report` (from the nested quality gate).

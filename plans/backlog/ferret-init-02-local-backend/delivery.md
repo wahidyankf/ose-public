@@ -635,10 +635,10 @@ containment.
       not recursively invoke it. Call `plan-execution-checker` with the archived plan path,
       `delivered-ref=$FERRET_MERGE_SHA`, and `reviewed-pr-head=$FERRET_REVIEWED_HEAD`; require `Status: Complete`,
       `Total Findings: 0`, and the calling workflow's external `final-status: pass` report before cleanup.
-- [ ] [AI] Execute `repo-governance/workflows/dev-artifact-clean-up.md` as the mandatory terminal workflow with
-      the Plan 02 worktree/branch/reviewed head/merge SHA. Classify every plan-created branch and every Docker,
-      PostgreSQL, coverage, build, or evidence artifact by positive session ownership; active/ambiguous entries
-      block cleanup, and user SQLite/PostgreSQL data is never deleted.
+- [ ] [AI] Execute `repo-governance/workflows/maintenance/dev-artifact-clean-up.md` as the mandatory terminal
+      workflow with the Plan 02 worktree/branch/reviewed head/merge SHA. Classify every plan-created branch and
+      every Docker, PostgreSQL, coverage, build, or evidence artifact by positive session ownership;
+      active/ambiguous entries block cleanup, and user SQLite/PostgreSQL data is never deleted.
 - [ ] [AI] For a live remote delivery branch, fetch without pruning, prove local and remote tips both equal
       `FERRET_REVIEWED_HEAD`, set that verified upstream, remove the worktree non-force, use ordinary
       `git branch -d`, then delete only that exact remote. For an already deleted remote after squash, allow

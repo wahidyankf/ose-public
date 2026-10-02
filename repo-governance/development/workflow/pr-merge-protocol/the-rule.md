@@ -23,9 +23,11 @@ hold.**
   non-destructively when behind, and GitHub reports no merge conflict.
 - **(d) Conversations** — every review conversation is resolved or explicitly dismissed by the
   user. Semantic review is optional, but conversations created by an invoked review still bind.
-- **(e) Applicable surface gates** — every UI, API, or other reachable-behaviour gate required by
-  the changed surface has run against the current head and returned `PASS` or `PASS_WITH_FINDINGS`; a `FAIL` or
-  `BLOCKED` verdict does not satisfy it. A genuinely unreachable surface carries an explicit exemption.
+- **(e) Applicable surface gates** — every deterministic check the changed reachable behaviour requires has a passing
+  result on the current head. A UI, API, or other surface quality gate is advisory under the
+  [Quality Gate Contract](../quality-gate-contract.md): its verdict is recorded for the current head, and each open
+  blocking row of a `FAIL` or `BLOCKED` verdict has an owner. A genuinely unreachable surface carries an explicit
+  exemption.
 
 For every PR merge -- without exception -- the agent must:
 

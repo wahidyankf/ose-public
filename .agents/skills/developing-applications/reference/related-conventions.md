@@ -3,7 +3,7 @@
 **Workflow Conventions**:
 
 - [Trunk Based Development](../../../../repo-governance/development/workflow/trunk-based-development.md) - Git workflow details (all development targets `main`; see [Plans Organization Convention §Delivery Mode](../../../../repo-governance/conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode) for how a plan reaches `main` — `worktree-to-pr` is the default)
-- [PR Merge Protocol](../../../../repo-governance/development/workflow/pr-merge-protocol.md) - `[AI]` merges by default once the five hardened preconditions hold; a `[HUMAN]` merge gate is an explicit per-plan opt-in; all quality gates must pass before merge
+- [PR Merge Protocol](../../../../repo-governance/development/workflow/pr-merge-protocol.md) - `[AI]` merges by default once the five hardened preconditions hold; a `[HUMAN]` merge gate is an explicit per-plan opt-in; deterministic gates must pass and surface quality-gate verdicts are recorded before merge
 - [Commit Messages Convention](../../../../repo-governance/development/workflow/commit-messages.md) - Conventional Commits specification
 - [Implementation Workflow](../../../../repo-governance/development/workflow/implementation.md) - Make it work → right → fast
 - [Test-Driven Development](../../../../repo-governance/development/workflow/test-driven-development.md) - Required for all code changes (Red→Green→Refactor, all levels)

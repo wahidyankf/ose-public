@@ -28,7 +28,10 @@ Git, verification, and reproducible environments.
 - [Native-First Toolchain Management](./native-first-toolchain.md) — Use native package managers and ./rhino toolchain validate, not Terraform/Docker. Use when deciding how to install or verify a toolchain.
 - [No Destructive Git Operations Convention](./no-destructive-git-operations.md) — Forbids local destructive git operations; prescribes the safe equivalent. Use before any git operation that could discard uncommitted work.
 - [PR Merge Protocol](./pr-merge-protocol.md) — Merge authority granted by hardened preconditions, not a prompt. Use whenever a pull request is about to be merged.
+- [Quality Gate Adapter](./quality-gate-adapter.md) — How this repository adopted the shared quality gates: families, callers, tools, and agents. Use when running or re-adopting a gate.
+- [Quality Gate Contract](./quality-gate-contract.md) — The shared shape of every quality gate: read-only checker, frozen ledger, sole writer, at most three cycles. Use when running or writing a gate.
 - [Reproducible Environments](./reproducible-environments.md) — Practices for consistent, reproducible development and build environments. Use when setting up or troubleshooting toolchain pinning.
+- [Sole-Writer Propagation](./sole-writer-propagation.md) — One propagation per family is the only writer a gate's fixes go through. Use when repairing from a gate ledger.
 - [Test-Driven Development Convention](./test-driven-development.md) — Mandates TDD (Red→Green→Refactor) for all code changes. Use when writing or starting a code delivery step.
 - [Trunk Based Development Convention](./trunk-based-development.md) — Git workflow using Trunk Based Development for continuous integration. Use when deciding how a change reaches main.
 - [Upstream Tool Defects](./upstream-tool-defects.md) — Watching pinned upstream tools for defects, filing a two-pager at the owner, and fixing a blocking defect through a bug-fix plan there. Use when HIPPO or RHINO behaves unexpectedly.

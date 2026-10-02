@@ -13,7 +13,7 @@ declares a `tier` and what it needs from a closed vocabulary in fixed order — 
 `shell`, `network`, `subagent` — records what it must not do under `constraints`, and lists the skills it preloads.
 
 The canonical file is the one a human edits. `./rhino harness adapters generate` renders a route for every agent into
-`.claude/agents/<name>.md`, and for the three plan agents into `.codex/agents/` and `.opencode/agents/`. Do not treat an
+`.claude/agents/<name>.md`, and for the four plan agents into `.codex/agents/` and `.opencode/agents/`. Do not treat an
 adapter as a second source of instructions, and never hand-edit one.
 
 Most delivery work follows a maker, checker, fixer loop. For a gate family the read-only `<family>-checker` writes a

@@ -22,7 +22,7 @@ The checksum-pinned v0.4 Rhino configuration is authoritative. Canonical content
 `.agents/agents/*.md`, and `.agents/skills/*/SKILL.md`. The current profiles generate only the
 declared routes: Claude receives `CLAUDE.md`, one route `.claude/agents/{name}.md` per canonical
 agent, and one pointer `.claude/skills/{name}/SKILL.md` per canonical skill; Codex receives
-`.codex/agents/` and OpenCode receives `.opencode/agents/` for only the three plan agents their
+`.codex/agents/` and OpenCode receives `.opencode/agents/` for only the four plan agents their
 profiles' `agents` lists name, and OpenCode reads `.agents/skills/` natively. Each Claude agent route
 carries `tools` from the agent's `capabilities` and `constraints`, `model` and `effort` from its
 `tier`, and its `skills` list; no route carries a color. No other mirror of a canonical skill
@@ -195,7 +195,7 @@ Every generated-tier harness in `repo-config.yml` receives its binding mechanica
   Codex counterpart (`inherit`, a pinned vendor ID) omits the key and raises a conversion warning
   rather than guessing.
 - **`.codex/config.toml`** — registers, by hand, one `[agents.<name>]` table for each agent file
-  the emitter generates under `.codex/agents/` (today the three plan agents), beside the
+  the emitter generates under `.codex/agents/` (today the four plan agents), beside the
   `ci-monitor-subagent` table and the `mcp_servers` and `features` settings. The pinned emitter
   writes none of it; see
   [Partial ownership](../../repo-governance/conventions/structure/multi-harness-binding/ownership-classes.md#partial-ownership).

@@ -68,25 +68,7 @@ The compiler automates memory management:
 
 ## Ownership Rules
 
-Every Rust value has exactly one owner. When the owner goes out of scope, the value is dropped (memory freed).
-
-```rust
-// CORRECT: Ownership transfer (move semantics)
-fn process_contract(contract: MurabahaContract) {
-    // contract is moved here — caller no longer owns it
-    let id = contract.id; // Access fields before contract is dropped
-    // contract is dropped at end of function
-}
-
-let contract = MurabahaContract::new(...);
-process_contract(contract);
-// contract cannot be used here — it was moved!
-
-// CORRECT: Clone when both caller and callee need the value
-let contract = MurabahaContract::new(...);
-process_contract(contract.clone()); // Clone — both retain a copy
-println!("{:?}", contract); // Still valid — we kept a copy
-```
+Ownership, move semantics, and cloning are taught in AyoKoding Rust By Example: [Example 8: Ownership Basics](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/beginner.md#example-8-ownership-basics), [Example 9: Move Semantics](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/beginner.md#example-9-move-semantics), and [Example 10: Clone for Deep Copy](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/beginner.md#example-10-clone-for-deep-copy).
 
 ## Borrowing Rules
 
@@ -111,58 +93,13 @@ fn log_contract(contract: MurabahaContract) { // Takes ownership unnecessarily!
 }
 ```
 
-**The borrow rules**:
-
-1. At any time, you can have EITHER one mutable reference OR any number of immutable references
-2. References must always be valid (no dangling references)
-
-```rust
-// The compiler enforces these rules:
-let mut contract = MurabahaContract::new(...);
-
-let r1 = &contract;       // Shared borrow
-let r2 = &contract;       // Another shared borrow — OK
-// let rm = &mut contract; // COMPILE ERROR — cannot borrow mutably while shared borrows exist
-
-println!("{:?} {:?}", r1, r2); // r1 and r2 used here
-
-// After r1 and r2 are no longer used:
-let rm = &mut contract;   // Mutable borrow — now valid
-rm.activate().unwrap();
-```
+The borrow rules the compiler enforces are taught in AyoKoding Rust By Example: [Example 11: References and Borrowing](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/beginner.md#example-11-references-and-borrowing), [Example 12: Mutable References](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/beginner.md#example-12-mutable-references), and [Example 13: Borrowing Rules](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/beginner.md#example-13-borrowing-rules).
 
 ## Lifetime Annotations
 
 **MUST** add lifetime annotations when the compiler cannot infer how long references live. Most functions do not need explicit lifetimes (lifetime elision handles common cases).
 
-**Add lifetimes when**:
-
-- A function returns a reference whose lifetime depends on input references
-- A struct holds a reference
-
-```rust
-// CORRECT: Lifetime needed — return value borrows from parameter
-fn longest_contract_id<'a>(x: &'a str, y: &'a str) -> &'a str {
-    if x.len() > y.len() { x } else { y }
-}
-
-// No lifetime needed — single reference parameter (lifetime elision)
-fn first_word(s: &str) -> &str {
-    s.split_whitespace().next().unwrap_or("")
-}
-
-// CORRECT: Struct holding a reference requires lifetime
-struct ContractReference<'a> {
-    contract: &'a MurabahaContract,
-    description: &'a str,
-}
-
-impl<'a> ContractReference<'a> {
-    fn id(&self) -> ContractId {
-        self.contract.id()
-    }
-}
-```
+When annotations are required, how elision works, and how structs hold references are taught in AyoKoding Rust By Example: [Example 29: Lifetime Annotations Basics](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/intermediate.md#example-29-lifetime-annotations-basics), [Example 30: Lifetime Elision Rules](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/intermediate.md#example-30-lifetime-elision-rules), and [Example 31: Struct Lifetimes](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/intermediate.md#example-31-struct-lifetimes).
 
 **Avoid lifetime explosion**:
 
@@ -295,22 +232,7 @@ impl Drop for DatabaseConnection {
 
 **SHOULD** understand `Pin<T>` when working with async/await and self-referential types. Most async code does not need to use `Pin` directly — the compiler handles it.
 
-```rust
-// Pin is needed when implementing Future manually:
-use std::pin::Pin;
-use std::future::Future;
-
-// Most async code: use async fn — no Pin needed
-async fn process_contract(id: ContractId) -> Result<Contract, AppError> {
-    let contract = fetch(id).await?;
-    Ok(contract)
-}
-
-// Pinning is needed when boxing async futures:
-fn dynamic_future(id: ContractId) -> Pin<Box<dyn Future<Output = Result<Contract, AppError>>>> {
-    Box::pin(process_contract(id))
-}
-```
+What `Pin` and `Unpin` guarantee, and when pinning (including `Box::pin`) is required, are taught in [AyoKoding Rust By Example, Example 71: Pin and Unpin](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/advanced.md#example-71-pin-and-unpin).
 
 ## Common Issues and Solutions
 

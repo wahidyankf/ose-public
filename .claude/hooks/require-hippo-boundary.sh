@@ -51,8 +51,13 @@ cmd="$(printf '%s' "$input" | jq -r '.tool_input.command // empty')"
 # This check is what lets the same file serve both layers. Inside a consuming repository it passes
 # trivially, so the repository copies need no variant of their own; in the machine-wide copy it is
 # the whole reason a scratch directory or a non-consuming repository is left alone.
+#
+# A consumer's `./hippo` is checksum-pinned by a tracked `hippo.lock`. HIPPO's own source checkout
+# also ships an executable `./hippo`, but it is a bootstrap that builds the tool under test and has
+# no lock. HIPPO cannot guard HIPPO, so that repository runs its gates directly by its own rule, and
+# requiring the lock is what leaves it alone instead of denying its documented setup.
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-[ -n "$repo_root" ] && [ -x "$repo_root/hippo" ] || exit 0
+[ -n "$repo_root" ] && [ -x "$repo_root/hippo" ] && [ -f "$repo_root/hippo.lock" ] || exit 0
 
 deny() {
 	# `permissionDecisionReason` is the only text the model reliably sees, so it carries the

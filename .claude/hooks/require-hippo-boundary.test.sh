@@ -10,7 +10,9 @@
 # the host run out of memory.
 set -uo pipefail
 
-HOOK="$(dirname "$0")/require-hippo-boundary.sh"
+# Absolute, because the consumer cases below run from another directory: a relative path would
+# miss the hook there, and the resulting silence would pass as a correct allow.
+HOOK="$(cd "$(dirname "$0")" && pwd)/require-hippo-boundary.sh"
 pass=0
 fail=0
 
@@ -182,6 +184,22 @@ consumer_case "outside any git repository" "$scratch"
 
 git -C "$scratch" init -q 2>/dev/null
 consumer_case "git repository with no ./hippo consumer" "$scratch"
+
+# HIPPO's own source checkout: an executable `./hippo` bootstrap with no `hippo.lock`. HIPPO cannot
+# guard HIPPO, so its documented direct setup must pass.
+printf '#!/bin/sh\n' >"$scratch/hippo"
+chmod +x "$scratch/hippo"
+consumer_case "HIPPO source checkout with no hippo.lock" "$scratch"
+
+# The same tree with the lock is a consumer again, which proves the lock is the deciding difference.
+: >"$scratch/hippo.lock"
+out="$(cd "$scratch" && printf '%s' "$(bash_payload "rtk npm install")" | "$HOOK" 2>/dev/null)"
+if printf '%s' "$out" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' >/dev/null 2>&1; then
+	pass=$((pass + 1))
+else
+	echo "FAIL: locked ./hippo consumer — expected a deny, got: ${out:-<empty>}"
+	fail=$((fail + 1))
+fi
 
 # Positive control: the same command inside a repository that DOES ship ./hippo must still be
 # denied. Without this, the consumer cases above would pass against a guard that never fires at all.

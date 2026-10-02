@@ -19,7 +19,7 @@ monolith into nine discipline-scoped specialists plus a coordinator only works i
 4. The cost- and noise-control mechanics that make a nine-specialist fan-out affordable and quiet
    are documented alongside the disciplines they govern, not left as an unstated assumption.
 
-Audience: the eleven `pr-review-*-maker.md` agent definitions, the
-[PR Review Cycle workflow](../../../workflows/pr/pr-review-cycle.md) that optionally orchestrates
+Audience: the eleven pr-review agent definitions (nine lens checkers, `pr-review-scout`, and `pr-review-checker`), the
+[PR Review Cycle workflow](../../../workflows/quality/pr-review-quality-gate.md) that optionally orchestrates
 them, and any future contributor deciding whether a new class of finding needs its own discipline
 or fits inside an existing one.

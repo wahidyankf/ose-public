@@ -17,13 +17,13 @@ Use the binding ownership registry by file and region: only wholly generated fil
 regions are ignored; vendored files and hand-authored regions participate in the test.
 
 Record the ordinary trivial/lite/full risk tier. For `lite` and `full`, select these five
-specialists plus `pr-review-synthesis-maker` as coordinator:
+specialists plus `pr-review-checker` as coordinator:
 
-- `pr-review-security-maker`
-- `pr-review-architecture-maker`
-- `pr-review-logic-maker`
-- `pr-review-docs-maker`
-- `pr-review-governance-maker`
+- `pr-review-security-checker`
+- `pr-review-architecture-checker`
+- `pr-review-logic-checker`
+- `pr-review-docs-checker`
+- `pr-review-governance-checker`
 
 For `trivial`, select no specialists. The coordinator performs one generalist pass which runs the
 primary security probe first, then covers architecture/design, domain intent and Gherkin,
@@ -35,7 +35,7 @@ review-route record.
 
 ## Review Focus
 
-The separate mandatory [`pr-leak-review`](../../../workflows/pr/pr-leak-review.md) owns real
+The separate mandatory [`pr-leak-review`](../../../workflows/quality/pr-leak-review.md) owns real
 secrets, protected environment properties, and machine-specific paths for every exact PR head.
 The optional plans-only semantic route consumes that authenticated evidence and does not repeat the
 predicate. Architecture reviews architecture and design decisions made by the plan. Logic reviews domain
@@ -59,5 +59,5 @@ Explicit `pr-review` routes a plans-only pass and records every selected or skip
 
 - [Risk-Tier Fan-Out](./cost-control-noise-control-mechanics-risk-tier-fan-out.md) — standard tier
   calculation and specialist selection.
-- [What Code-Related Means](../../../workflows/pr/pr-review-cycle/what-code-related-means.md)
+- [What Code-Related Means](what-code-related-means.md)
   — why the plan remains a blocking shipping artifact.

@@ -30,22 +30,22 @@ is not planned through this workflow.
 
 ## Contents
 
-- [Stage Resolution](./plan-planning/stage-resolution.md) — how target-stage resolves `<plan-dir>`.
-- [Execution Mode](./plan-planning/execution-mode.md) — direct orchestration, worktree default.
-- [Planning Granularity and Mode-Specific Delivery](./plan-planning/planning-granularity-and-one-branch-rule.md) — one natural unit per resolved integration mechanism.
-- [Merge Timing, Feature Flags, worktree-to-pr Binding](./plan-planning/delivery-merge-timing-flags-and-worktree-to-pr-binding.md) — when PRs merge.
-- [Surface-Conditional Tester Gates](./plan-planning/surface-conditional-tester-gates.md) — routing table, three UI gates.
-- [Vercel MCP Availability](./plan-planning/vercel-mcp-availability.md) — probe and boundary.
-- [The Plan-Docs-Only Carve-Out (Superseded)](./plan-planning/plan-docs-only-carve-out.md) — retired, narrowed context.
-- [File-Touch Ledger](./plan-planning/file-touch-ledger.md) — the two obligations.
-- [Step 0 — Prompt Parsing and Repo Exploration](./plan-planning/step-0-prompt-parsing-and-repo-exploration.md) — pre-grill exploration.
-- [Step 1 — First Grill](./plan-planning/step-1-first-grill.md) — the ten decisions.
-- [Step 2 — Web Research](./plan-planning/step-2-web-research.md) — conditional delegation to web-researcher.
-- [Step 3 — Second Grill: Post-Research Validation](./plan-planning/step-3-second-grill.md) — confirm direction.
-- [Step 4 — Plan Creation](./plan-planning/step-4-plan-creation.md) — plan-maker handoff and envelope loop.
-- [Step 4 — Automatic Rule-Impact Handoff](./plan-planning/step-4-automatic-rule-impact.md) — per-repository rules and docs propagation coverage.
-- [Step 5 — Plan Review](./plan-planning/step-5-plan-review.md) — eleven structural checks.
-- [Step 6 — Quality Gate](./plan-planning/step-6-quality-gate.md) — the gate's sole named pre-authorization.
-- [Step 7 — Push and Verify](./plan-planning/step-7-push-and-verify.md) — commit, push, CI, and complete three-class cleanup.
-- [Principles and Conventions Implemented/Respected](./plan-planning/principles-and-conventions.md) — the catalog entries.
-- [Related Workflows and Documentation](./plan-planning/related-workflows-and-documentation.md) — cross-references.
+- [Stage Resolution](./plan-planning/001-stage-resolution.md) — how target-stage resolves `<plan-dir>`.
+- [Execution Mode](./plan-planning/002-execution-mode.md) — direct orchestration, worktree default.
+- [Planning Granularity and Mode-Specific Delivery](./plan-planning/003-planning-granularity-and-one-branch-rule.md) — one natural unit per resolved integration mechanism.
+- [Merge Timing, Feature Flags, worktree-to-pr Binding](./plan-planning/004-delivery-merge-timing-flags-and-worktree-to-pr-binding.md) — when PRs merge.
+- [Surface-Conditional Tester Gates](./plan-planning/005-surface-conditional-tester-gates.md) — routing table, three UI gates.
+- [Vercel MCP Availability](./plan-planning/006-vercel-mcp-availability.md) — probe and boundary.
+- [The Plan-Docs-Only Carve-Out (Superseded)](./plan-planning/007-plan-docs-only-carve-out.md) — retired, narrowed context.
+- [File-Touch Ledger](./plan-planning/008-file-touch-ledger.md) — the two obligations.
+- [Step 0 — Prompt Parsing and Repo Exploration](./plan-planning/009-step-0-prompt-parsing-and-repo-exploration.md) — pre-grill exploration.
+- [Step 1 — First Grill](./plan-planning/010-step-1-first-grill.md) — the ten decisions.
+- [Step 2 — Web Research](./plan-planning/011-step-2-web-research.md) — conditional delegation to web-researcher.
+- [Step 3 — Second Grill: Post-Research Validation](./plan-planning/012-step-3-second-grill.md) — confirm direction.
+- [Step 4 — Plan Creation](./plan-planning/013-step-4-plan-creation.md) — plan-maker handoff and envelope loop.
+- [Step 4 — Automatic Rule-Impact Handoff](./plan-planning/014-step-4-automatic-rule-impact.md) — per-repository rules and docs propagation coverage.
+- [Step 5 — Plan Review](./plan-planning/015-step-5-plan-review.md) — eleven structural checks.
+- [Step 6 — Quality Gate](./plan-planning/016-step-6-plan-gate-run.md) — one of the gate's named callers.
+- [Step 7 — Push and Verify](./plan-planning/017-step-7-push-and-verify.md) — commit, push, CI, and complete three-class cleanup.
+- [Principles and Conventions Implemented/Respected](./plan-planning/018-principles-and-conventions.md) — the catalog entries.
+- [Related Workflows and Documentation](./plan-planning/019-related-workflows-and-documentation.md) — cross-references.

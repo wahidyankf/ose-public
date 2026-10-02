@@ -14,8 +14,8 @@ diffs and filters inapplicable lenses.
 ### Risk-tier fan-out (D12)
 
 The primary cost lever is **diff-size tiering**, not model choice. Risk-tier classification is
-performed by [`pr-review-scout-maker`](../../../../.agents/agents/pr-review-scout-maker.md), not by
-`pr-review-synthesis-maker` directly — the scout classifies each PR into one of three tiers by line
+performed by [`pr-review-scout`](../../../../.agents/agents/pr-review-scout.md), not by
+`pr-review-checker` directly — the scout classifies each PR into one of three tiers by line
 count, file count, and whether it touches a security-sensitive path, and the specialist set fans out
 accordingly:
 
@@ -46,14 +46,14 @@ asymmetry. The sample is all `full`; lite remains unmeasured.
 **Security-sensitive paths force `full` for every non-plans-only PR.** The no-secrets and
 git-identity rules make this non-negotiable. Recompute and record the tier and route each cycle.
 
-**Content-type applicability filter (DD-10)**: within `full` tier, `pr-review-scout-maker` may skip
-`pr-review-types-maker` (no typed source in the diff) or `pr-review-integrity-maker` (no test/CI
+**Content-type applicability filter (DD-10)**: within `full` tier, `pr-review-scout` may skip
+`pr-review-types-checker` (no typed source in the diff) or `pr-review-integrity-checker` (no test/CI
 files in the diff) — the only two disciplines whose own charter is gated on a specific artifact class
 rather than being applicable to any changed content. The other seven specialists are never skipped by
 file type; see
-[`pr-review-scout-maker.md`'s own filter definition](../../../../.agents/skills/pr-review-scout-classification/reference/risk-tier-and-specialist-selection.md#risk-tier-classification--specialist-set-selection-d12)
+[`pr-review-scout.md`'s own filter definition](../../../../.agents/skills/pr-review-scout-classification/reference/risk-tier-and-specialist-selection.md#risk-tier-classification--specialist-set-selection-d12)
 for the full rule and its fresh-per-cycle re-evaluation requirement.
 
 **Enforcement disposition — covered when invoked.** The optional PR review workflow invokes a fresh
-`pr-review-scout-maker` every cycle, and its human-readable review-route record exposes the ordinary
+`pr-review-scout` every cycle, and its human-readable review-route record exposes the ordinary
 tier, plans-only verdict, primary probe, and every selected or skipped specialist.

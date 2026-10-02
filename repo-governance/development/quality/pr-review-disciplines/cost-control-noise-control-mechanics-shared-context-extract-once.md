@@ -20,21 +20,21 @@ wrote last cycle. The **PR body stays in the brief** — it is what a human read
 plans-only PR the plan itself is the shipping surface and stays too. This is not generated-file filtering by another name: those files are
 excluded because the **loop itself authored them**, not because a tool emitted them, and cycle 1
 still reviews them in full. See
-[Loop-Exit and Block Rules](../../../workflows/pr/pr-review-cycle/loop-exit-and-block-rules.md)
+[Loop-Exit and Block Rules](../../../workflows/quality/pr-review-quality-gate/003-clean-audits-and-the-ceiling.md)
 for the rule and the PR #239 evidence behind it.
 
 Two mechanics keep this full-diff posture tractable rather than merely expensive:
 
 - **Shared context, extracted once.**
-  [`pr-review-scout-maker`](../../../../.agents/agents/pr-review-scout-maker.md) assembles the PR
+  [`pr-review-scout`](../../../../.agents/agents/pr-review-scout.md) assembles the PR
   metadata, linked-plan/issue context, and the full diff **once** into a single shared-context
   brief every specialist reads, rather than each specialist separately re-deriving the same context
   (which would multiply token cost by the number of specialists) — this extraction is the scout's
-  job, not `pr-review-synthesis-maker`'s.
+  job, not `pr-review-checker`'s.
 - **Scout-discretion large-diff slicing.** For a `full`-tier PR whose diff exceeds a
-  specialist's comfortable context budget, `pr-review-scout-maker` MAY have specialists review
+  specialist's comfortable context budget, `pr-review-scout` MAY have specialists review
   per-domain-relevant file slices rather than the whole diff at once, recording the slicing choice
-  in the shared-context brief for `pr-review-synthesis-maker` to carry into the review header it
+  in the shared-context brief for `pr-review-checker` to carry into the review header it
   posts. If a diff still cannot be reviewed in one fan-out, the scout records an explicit
   "diff exceeds single-review scope — reviewed in N slices" note in the brief rather than silently
   under-covering it.

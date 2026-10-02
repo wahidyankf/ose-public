@@ -11,8 +11,9 @@ Use these workflows to turn an idea into a well-grounded, checkable delivery pla
 
 These workflows define **WHEN and HOW to establish, validate, and execute plans**. The
 plan-establishment workflow orchestrates the full prompt-to-pushed-plan lifecycle (repo
-exploration → grill → research → plan-maker → quality gate → push). The plan-quality-gate
-workflow delegates a read-only `plan-checker` sweep and repairs its own ledger. The
+exploration → grill → research → plan-maker → quality gate → push). The
+[plan-quality-gate](../quality/plan-quality-gate.md), in the quality group, has a read-only `plan-checker` audit and
+hands its frozen ledger to [plan-propagation](../quality/plan-propagation.md), run by `plan-fixer`. The
 plan-execution workflow is orchestrated directly by the calling context (which delegates
 per-item work to specialized agents) and invokes `plan-execution-checker` for independent
 validation at the end.
@@ -21,16 +22,14 @@ validation at the end.
 
 **✅ Workflows Here:**
 
-- Plan quality validation
-- Plan execution tracking
-- Iterative plan improvement
+- Plan authoring and parity planning
+- Plan execution tracking and execution checks
 - Multi-agent orchestration for plans/
-- Check-fix-verify and execution cycles
+- Plan grooming and handover
 
 **❌ Not Included:**
 
-- Content quality validation (that's docs/)
-- ayokoding-web content validation (that's ayokoding-web/)
+- Plan quality gates and every other gate (that's [quality/](../quality/README.md))
 - Single-agent operations (use agents directly)
 
 ## Workflows
@@ -41,8 +40,7 @@ validation at the end.
 - [plan-execution](./plan-execution.md) — Executes a project plan end-to-end — orchestration, delegation, quality gates, iteration, archival — split into per-topic children. Use when executing a plan, or looking up one step (worktree entry, a quality gate, finalization) of that execution.
 - [plan-execution-check](./plan-execution-check.md) — Evaluates finished execution in a fixed order and records the terminal verdict that permits or blocks archival. Use once every substantive delivery item is terminal, before a plan is archived.
 - [multi-plans-execution](./multi-plans-execution.md) — Schedules several ready plans together via a dependency DAG and bounded parallelism. Use when two or more gated plans should run together, not one at a time.
-- [plan-multi-repo-parity-planning](./plan-multi-repo-parity-planning.md) — Authors aligned-but-divergent plans across sibling repos, grilling every deviation to a decision. Use when a change spans sibling repos and drift between them must not be silent.
-- [plan-quality-gate](./plan-quality-gate.md) — Governance gate producing exactly one terminal verdict on a formal plan's semantic readiness, from a frozen ledger repaired in at most two cycles. Use only when the user explicitly names it, or from one of its three named callers.
+- [plan-parity-planning](./plan-parity-planning.md) — Authors aligned-but-divergent plans across sibling repos, grilling every deviation to a decision. Use when a change spans sibling repos and drift between them must not be silent.
 - [plan-ideas-grooming](./plan-ideas-grooming.md) — Sweeps plans/ideas/ across repos, deduplicating, classifying into Eisenhower quadrants, and correcting cross-repo residency. Use when a repo's plans/ideas/ exceeds 60 files or 90 days have passed since the last grooming run.
 
 ## Orchestration Model Shared by These Workflows

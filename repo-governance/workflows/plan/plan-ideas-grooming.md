@@ -32,10 +32,10 @@ When grooming promotes a ready idea into a full plan, hand authoring to
 
 ## Contents
 
-- [Purpose and When to Use](./plan-ideas-grooming/purpose-and-when-to-use.md) — what it does; the recurrence trigger.
-- [Scope Boundary and Execution Mode](./plan-ideas-grooming/scope-boundary-and-execution-mode.md) — plans/ideas/\*\*-only; orchestration.
-- [Steps 1-3](./plan-ideas-grooming/steps-1-3-inventory-dedup-and-cross-repo-dedup.md) — inventory, within-repo dedup, cross-repo dedup.
+- [Purpose and When to Use](./plan-ideas-grooming/001-purpose-and-when-to-use.md) — what it does; the recurrence trigger.
+- [Scope Boundary and Execution Mode](./plan-ideas-grooming/002-scope-boundary-and-execution-mode.md) — plans/ideas/\*\*-only; orchestration.
+- [Steps 1-3](./plan-ideas-grooming/003-steps-1-3-inventory-dedup-and-cross-repo-dedup.md) — inventory, within-repo dedup, cross-repo dedup.
 - [Steps 4-5](./plan-ideas-grooming/004-residency-decision-and-relocation.md) — residency rules, relocation sequence.
-- [Steps 6-8](./plan-ideas-grooming/steps-6-8-reshape-provenance-and-classification.md) — template reshape, provenance, classification.
-- [Steps 9-10](./plan-ideas-grooming/steps-9-10-link-rewrite-and-recurrence-trigger.md) — link rewrite; the re-run condition.
-- [Related Workflows and Documentation](./plan-ideas-grooming/related-workflows-and-documentation.md) — cross-references.
+- [Steps 6-8](./plan-ideas-grooming/005-steps-6-8-reshape-provenance-and-classification.md) — template reshape, provenance, classification.
+- [Steps 9-10](./plan-ideas-grooming/006-steps-9-10-link-rewrite-and-recurrence-trigger.md) — link rewrite; the re-run condition.
+- [Related Workflows and Documentation](./plan-ideas-grooming/007-related-workflows-and-documentation.md) — cross-references.

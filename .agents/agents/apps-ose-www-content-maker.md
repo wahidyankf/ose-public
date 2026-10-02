@@ -24,7 +24,7 @@ skills:
 
 - English-only content removes the bilingual nuance that justifies opus for `apps-ayokoding-www-*-maker` agents
 - The `apps-ose-www-developing-content` skill pins down landing page structure, date-prefixed filenames, frontmatter fields, and flat organization
-- Parity with peer agents: `apps-ose-www-content-checker` and `apps-ose-www-content-fixer` are both sonnet, and the three-agent trio should share a tier
+- Parity with peer agents: `content-checker` and `content-fixer` are both sonnet, and the three-agent trio should share a tier
 - Sonnet handles structured content generation with a quality rubric, matching the task profile
 
 Create landing page content for ose-web (Next.js 16 with tRPC, English-only).
@@ -47,8 +47,8 @@ Create landing page content for ose-web (Next.js 16 with tRPC, English-only).
 
 **Related Agents**:
 
-- `apps-ose-www-content-checker` - Validates content created by this maker
-- `apps-ose-www-content-fixer` - Fixes validation issues
+- `content-checker` - Validates content created by this maker
+- `content-fixer` - Fixes validation issues
 
 **Related Conventions**:
 

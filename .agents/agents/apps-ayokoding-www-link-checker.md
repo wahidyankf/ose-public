@@ -39,11 +39,9 @@ comes from `repo-assessing-criticality-confidence`.
 
 ## Input Parameters
 
-- `delegated-gate-ids` (optional) — exact lifecycle gate IDs. No lifecycle gate validates internal
-  links, and `./rhino md internal-link validate` skips `apps/ayokoding-www/content/**`, so internal
-  path and fragment checks always run here alongside external HTTP/cache validation. Omitted means
-  standalone full link validation.
-- `lifecycle-evidence` (optional) — Step 0 evidence ledger; preserve it in the audit unchanged.
+- No declared gate validates internal links, and `./rhino md internal-link validate` skips
+  `apps/ayokoding-www/content/**`, so internal path and fragment checks always run here alongside
+  external HTTP/cache validation.
 
 ## Web Research Delegation
 
@@ -70,11 +68,8 @@ bilingual path structure).
 ## Workflow Overview
 
 Per `repo-applying-maker-checker-fixer`: initialize the report (UUID + progressive writing), run
-`docs-validating-links` methodology against external links and any non-delegated internal
-predicates while writing findings progressively, then finalize status and summary. The same skill
-also governs convergence — known
-false-positive skip list, scoped re-validation on multi-part UUID chains, escalation after 2+
-disagreements, and the 3-5 iteration convergence target.
+`docs-validating-links` methodology against external and internal links while writing findings progressively, then finalize status and summary. The same skill
+keeps the known false-positive skip list and scoped re-validation; a calling gate bounds its cycles at three.
 
 ## Reference Documentation
 

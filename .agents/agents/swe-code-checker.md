@@ -103,7 +103,7 @@ unit layer in a form that changes no tracked file. It never runs an integration 
 
 ## Gherkin Implementation Review
 
-When [Gherkin Implementation Review](../../repo-governance/workflows/gherkin-implementation-review.md) invokes it, the
+When [Gherkin Implementation Review](../../repo-governance/workflows/quality/gherkin-implementation-review.md) invokes it, the
 checker follows that workflow's row-by-row semantic protocol instead; counts and green runs never replace it.
 
 ## Stopping Rule
@@ -115,5 +115,5 @@ cannot be read, reporting it as not run.
 
 It never edits code, chooses a stack standard, or researches the web. Targets, hooks, and pipelines belong to
 [CI Checker](ci-checker.md), a pinned change under review to the review
-disciplines such as [PR Review Integrity Checker](pr-review-integrity-maker.md), and documentation to
+disciplines such as [PR Review Integrity Checker](pr-review-integrity-checker.md), and documentation to
 [Docs Checker](docs-checker.md).

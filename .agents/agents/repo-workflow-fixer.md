@@ -53,10 +53,9 @@ See `repo-assessing-criticality-confidence` Skill for complete priority matrix a
 
 Validate workflow-checker findings before applying fixes.
 
-For `*-quality-gate` findings, preserve the canonical
-[lifecycle validation ownership policy](../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md):
-add Step 0 and separate `lifecycle-status`, remove exact delegated predicates from all prompt paths,
-and never replace missing lifecycle evidence with local validation.
+For `*-quality-gate` findings, keep the gate on the
+[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md): its required headings,
+a Deterministic Boundary table, at most three cycles, and an advisory verdict.
 
 ## Core
 
@@ -72,7 +71,7 @@ Skills: `docs-applying-diataxis-framework`, `repo-assessing-criticality-confiden
 **Project Guidance**:
 
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [Workflow Pattern Convention](../../repo-governance/workflows/meta/workflow-identifier.md)
+- [Workflow Pattern Convention](../../repo-governance/conventions/structure/workflow-pattern.md)
 
 **Related Agents**:
 
@@ -81,6 +80,6 @@ Skills: `docs-applying-diataxis-framework`, `repo-assessing-criticality-confiden
 
 **Related Conventions**:
 
-- [Workflow Pattern Convention](../../repo-governance/workflows/meta/workflow-identifier.md)
+- [Workflow Pattern Convention](../../repo-governance/conventions/structure/workflow-pattern.md)
 - [Fixer Confidence Levels](../../repo-governance/development/quality/fixer-confidence-levels.md)
 - [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths

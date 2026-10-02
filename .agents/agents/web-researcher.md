@@ -35,7 +35,7 @@ returns), is read-only by design, and enforces research discipline per
 `docs-validating-factual-accuracy`.
 
 **Relationship to other agents**: pure research — discovers and cites, never edits or applies
-fixes. `docs-checker`, `apps-ayokoding-www-facts-checker`, `plan-checker` delegate here for
+fixes. `docs-checker`, `content-checker`, `plan-checker` delegate here for
 current-data verification; makers commission research before drafting.
 
 ## Core Responsibilities

@@ -38,7 +38,7 @@ Authors formal plans end to end, for execution through the
    [Bug-Fix Plan](../../repo-governance/conventions/structure/plans/bug-fix-plan.md) is instead one `README.md` in
    `plans/in-progress/`, authorized and gate-free per that module.
 5. Run the post-write decision gate on the complete draft the same way.
-6. Submit the draft to the [Quality Gate](../../repo-governance/workflows/plan/plan-quality-gate.md), whose declared
+6. Submit the draft to the [Quality Gate](../../repo-governance/workflows/quality/plan-quality-gate.md), whose declared
    repair budget bounds every repair.
 
 `plan-creating-project-plans` holds the complete authoring method. Read every listed skill before acting.

@@ -55,7 +55,7 @@ resulting Vercel build via the Vercel MCP protocol.
 
 ## Reference Documentation
 
-**Related Agents**: `apps-ayokoding-www-general-checker` — validates content before deployment.
+**Related Agents**: `content-checker` — validates content before deployment.
 
 **Related Conventions**:
 

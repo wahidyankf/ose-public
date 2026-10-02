@@ -1,13 +1,14 @@
 ---
-description: Applies validated fixes from ci-checker audit reports. Re-validates findings before applying to prevent false positives.
+description: |-
+  Applies a CI checker's findings to test targets, hooks, and pipeline definitions after re-validating each one, and records what it fixed, disproved, and left for a person.
 effort: xhigh
 model: sonnet
 name: ci-fixer
 skills:
   - ci-standards
   - repo-applying-maker-checker-fixer
-  - repo-maintaining-task-lists
   - repo-assessing-criticality-confidence
+  - repo-generating-validation-reports
 tools: |-
   Read, Glob, Grep, Write, Edit, Bash
 ---

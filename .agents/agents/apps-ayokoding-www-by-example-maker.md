@@ -41,7 +41,7 @@ beginner/intermediate/advanced, Mermaid diagram usage, the content-creation work
 checklist.
 
 **Do NOT use for**: By Concept tutorials (different structure), validation
-(`apps-ayokoding-www-by-example-checker`), or fixing (`apps-ayokoding-www-by-example-fixer`).
+(`tutorial-by-example-checker`), or fixing (`tutorial-by-example-fixer`).
 
 ## Examples-by-Level Section (MANDATORY)
 
@@ -71,8 +71,8 @@ wrong anchor or 404.
 
 **Related Agents:**
 
-- `apps-ayokoding-www-by-example-checker` - Validates By Example quality
-- `apps-ayokoding-www-by-example-fixer` - Fixes By Example issues
+- `tutorial-by-example-checker` - Validates By Example quality
+- `tutorial-by-example-fixer` - Fixes By Example issues
 - `apps-ayokoding-www-general-maker` - Creates general ayokoding content
 
 **Remember**: Annotation quality is paramount - every line should have 1.0-2.25 lines of insightful

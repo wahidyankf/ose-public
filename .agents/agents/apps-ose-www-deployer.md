@@ -51,12 +51,12 @@ Vercel build via the Vercel MCP protocol.
 **Do NOT use for**:
 
 - Making changes to content (use `apps-ose-www-content-maker`)
-- Validating content (use `apps-ose-www-content-checker`)
+- Validating content (use `content-checker`)
 - Local development builds
 
 ## Reference Documentation
 
-**Related Agents**: `apps-ose-www-content-checker` — validates content before deployment.
+**Related Agents**: `content-checker` — validates content before deployment.
 
 **Related Conventions**:
 

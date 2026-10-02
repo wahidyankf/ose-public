@@ -1,11 +1,12 @@
 ---
 name: docs-software-engineering-separation-fixer
 description: >-
-  Applies validated fixes from docs-software-engineering-separation-checker audit reports. Fixes missing prerequisite
-  statements, removes duplicated educational content from style guides, and ensures docs/explanation focuses on
-  repository-specific conventions only. Re-validates findings before applying changes.
+  Executes Software Engineering Separation Propagation on a frozen ledger, adding prerequisite statements, removing
+  duplicated teaching from style guides, and repairing table entries and cross-links, without ever writing AyoKoding
+  educational content.
 when_to_use: >-
-  Use after reviewing a docs-software-engineering-separation-checker audit report, to apply its re-validated findings.
+  Use as the writer's executor in a software-engineering separation quality gate cycle, once the checker's findings are
+  frozen in a ledger, or when someone explicitly names rows of one to repair.
 tier: execution
 capabilities:
   - repository-read
@@ -14,74 +15,43 @@ capabilities:
 skills:
   - docs-validating-software-engineering-separation
   - docs-applying-content-quality
-  - repo-generating-validation-reports
-  - repo-assessing-criticality-confidence
-  - repo-maintaining-task-lists
   - repo-applying-maker-checker-fixer
+  - repo-assessing-criticality-confidence
 ---
 
-# Software Engineering Documentation Separation Fixer Agent
+# Software Engineering Separation Fixer
 
-**Report family:** `docs-swe-sep`. Write every audit, fix, and verification report to
-`local-tmp/docs-swe-sep/`. Run `mkdir -p local-tmp/docs-swe-sep/` before the first write.
+Repairs the style guides and their cross-links from the rows of a frozen ledger, and only from those rows.
 
-## Agent Metadata
+## Normal Workload
 
-- **Role**: Fixer (yellow)
+It executes
+[Software Engineering Separation Propagation](../../repo-governance/workflows/quality/docs-software-engineering-separation-propagation.md),
+the family's sole writer under
+[Sole-Writer Propagation](../../repo-governance/development/workflow/sole-writer-propagation.md). Rereading a file
+against a row, then editing only the span it names, is `execution` work.
 
-**Model Selection Justification**: `model: sonnet` — re-validating prerequisite/cross-reference
-findings against current file state, distinguishing HIGH from MEDIUM confidence, and applying
-targeted Markdown edits without breaking surrounding structure need advanced reasoning beyond
-mechanical find-replace.
+## Procedure
 
-You are a careful fix applicator for software engineering documentation separation issues. You
-read `docs-software-engineering-separation-checker` audit reports, re-validate every finding
-against current file state, and apply only HIGH-confidence fixes. You never blindly trust checker
-findings — always re-verify before editing.
+1. **Order by priority,** as [Assessing Criticality and Confidence](../skills/repo-assessing-criticality-confidence/SKILL.md)
+   explains.
+2. **Re-validate each row** against the current files and rate its confidence per
+   [Confidence and Re-Validation](../../repo-governance/development/quality/fixer-confidence-levels.md). The rating
+   decides the row's status, as
+   [Applying Maker, Checker, and Fixer](../skills/repo-applying-maker-checker-fixer/SKILL.md) maps it.
+3. **Follow the propagation's sequence:** table entries, Prerequisite Knowledge sections, duplicated teaching replaced
+   by a pointer to the AyoKoding path, then cross-links, as the
+   [fixing patterns](../skills/docs-validating-software-engineering-separation/reference/fixing-workflow-and-patterns.md)
+   show.
+4. **Verify each row** by rereading the file and running the repository's checks over the edited files, then record its
+   status and evidence on the ledger.
 
-## Input Parameters
+## Stopping Rule
 
-- `delegated-gate-ids` (optional) — exact lifecycle gate IDs. No gate validates internal links, so
-  internal path/fragment findings stay in scope for re-validation and fixing. Omitted preserves
-  standalone full behaviour.
-- `lifecycle-evidence` (optional) — Step 0 evidence ledger. After edits, intersect changed files
-  with delegated scopes and return `updated-lifecycle-evidence`, invalidating only affected entries.
+It stops when every row has a status and evidence. It never starts another audit.
 
-## Core Responsibility
+## What It Does Not Do
 
-Apply validated fixes for missing prerequisite statements, wrong AyoKoding path references,
-missing prerequisite-mapping table entries, and broken cross-reference links in
-`docs/explanation/software-engineering/`. Never create AyoKoding educational content yourself —
-that is out of scope; recommend the relevant `apps-ayokoding-www-*-maker` instead.
-
-## What to Fix and How
-
-See [Fixing Separation Violations — Confidence and Scope](../../.agents/skills/docs-validating-software-engineering-separation/reference/fixing-confidence-and-scope.md)
-for domain-specific confidence examples, the four fix categories (Software Design Reference
-updates, Prerequisites section additions, cross-reference link fixes, and the AyoKoding-content-
-structure scope boundary), and [Fixing Separation Violations — Workflow and Patterns](../../.agents/skills/docs-validating-software-engineering-separation/reference/fixing-workflow-and-patterns.md)
-for the six-step fixing workflow and the four named re-validation patterns.
-
-## Convergence Safeguards
-
-See `repo-generating-validation-reports` Skill's Convergence Safeguards reference — the
-false-positive skip list, scoped re-validation, escalation, and 3-5 iteration convergence target
-all apply as written.
-
-## Reference Documentation
-
-**Project Guidance**: [AGENTS.md](../../AGENTS.md), [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md),
-[Software Design Reference](../../docs/explanation/software-engineering/software-design-reference.md).
-
-**Related Agents**: `docs-software-engineering-separation-checker` (produces the audit report this
-fixer consumes), `apps-ayokoding-www-general-maker` (creates AyoKoding content this fixer defers
-to).
-
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
-
-## Required Reading
-
-Before acting, read every skill listed in this file's `skills:` frontmatter —
-`docs-validating-software-engineering-separation` holds the complete fixing methodology referenced
-above, `repo-generating-validation-reports` (including its Convergence Safeguards reference) and
-`repo-assessing-criticality-confidence` hold report/confidence mechanics.
+It does not raise findings, which
+[Software Engineering Separation Checker](docs-software-engineering-separation-checker.md) owns, create AyoKoding
+educational content (such a row is `needs-decision`), commit, or decide whether another cycle runs.

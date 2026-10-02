@@ -1,13 +1,13 @@
 ---
 description: |-
-  Resolves unresolved GitHub PR review threads posted by pr-review-synthesis-maker's single consolidated review. Enumerates every unresolved thread via the GitHub Reviews API, applies a 4-way triage (fix / reject-with-reason / defer-with-reason / clarify), pushes fixes to the PR branch, replies to every thread, and resolves only the threads it actually addressed. Use as the fixer half of the explicit PR-Review Maker→Fixer Cycle workflow (`repo-governance/workflows/pr/pr-review-cycle.md`), never standalone.
+  Executes PR Review Propagation on a frozen review ledger, answering each blocking row on one change with a fix, a reasoned reject, or a deferral, tagging each answer's cause, and committing fixes only to the change's own branch.
 effort: xhigh
 model: sonnet
 name: pr-review-fixer
 skills:
   - pr-review-fixer-resolution
-  - repo-maintaining-task-lists
-  - repo-understanding-shared-vocabulary
+  - repo-assessing-criticality-confidence
+  - repo-applying-maker-checker-fixer
 tools: |-
   Read, Glob, Grep, Write, Edit, Bash
 ---

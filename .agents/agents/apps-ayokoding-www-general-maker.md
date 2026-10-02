@@ -54,8 +54,8 @@ Create by-concept tutorials and general content for ayokoding-web.
 
 **Related Agents**:
 
-- `apps-ayokoding-www-general-checker` - Validates content created by this maker
-- `apps-ayokoding-www-general-fixer` - Fixes validation issues
+- `content-checker` - Validates content created by this maker
+- `content-fixer` - Fixes validation issues
 
 **Related Conventions**:
 

@@ -48,8 +48,8 @@ code/pseudocode block), using worked examples rather than a fixed example-count 
 mode first (standard vs. no-code sub-mode), then pick the right medium per concept.
 
 **Do NOT use for**: By Example tutorials (`apps-ayokoding-www-by-example-maker`), Primer content
-(`apps-ayokoding-www-primer-maker`), validation (`apps-ayokoding-www-annotated-concept-checker`), or
-fixing (`apps-ayokoding-www-annotated-concept-fixer`).
+(`apps-ayokoding-www-primer-maker`), validation (`tutorial-annotated-concept-checker`), or
+fixing (`tutorial-annotated-concept-fixer`).
 
 ## Reference Documentation
 
@@ -63,8 +63,8 @@ fixing (`apps-ayokoding-www-annotated-concept-fixer`).
 
 **Related Agents:**
 
-- `apps-ayokoding-www-annotated-concept-checker` - Validates Annotated-concept quality
-- `apps-ayokoding-www-annotated-concept-fixer` - Fixes Annotated-concept issues
+- `tutorial-annotated-concept-checker` - Validates Annotated-concept quality
+- `tutorial-annotated-concept-fixer` - Fixes Annotated-concept issues
 - `apps-ayokoding-www-by-example-maker`, `apps-ayokoding-www-primer-maker`,
   `apps-ayokoding-www-general-maker` - Sibling content makers
 

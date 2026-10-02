@@ -47,7 +47,7 @@ doesn't serve "just enough to be productive" belongs in a full By Example tutori
 
 **Do NOT use for**: full comprehensive-coverage tutorials (`apps-ayokoding-www-by-example-maker`),
 Annotated-concept topics (`apps-ayokoding-www-annotated-concept-maker`), validation
-(`apps-ayokoding-www-primer-checker`), or fixing (`apps-ayokoding-www-primer-fixer`).
+(`tutorial-primer-checker`), or fixing (`tutorial-primer-fixer`).
 
 ## Scope Discipline (The Defining Constraint)
 
@@ -76,8 +76,8 @@ consolidation program** using the just-learned scoped features together — not 
 
 **Related Agents:**
 
-- `apps-ayokoding-www-primer-checker` - Validates Primer quality
-- `apps-ayokoding-www-primer-fixer` - Fixes Primer issues
+- `tutorial-primer-checker` - Validates Primer quality
+- `tutorial-primer-fixer` - Fixes Primer issues
 - `apps-ayokoding-www-by-example-maker` - Creates full comprehensive-coverage tutorials
 - `apps-ayokoding-www-annotated-concept-maker` - Creates concept-centric content
 

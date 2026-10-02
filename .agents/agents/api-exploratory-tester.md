@@ -57,17 +57,10 @@ a browser. Feeds `plan-maker`, `specs-maker`, `swe-code-maker`. Delegates standa
 
 ## Lifecycle-Owned Predicates
 
-When a gate supplies `delegated-gate-ids` and evidence, omit only exact registered predicates.
-Carry evidence unchanged; never execute or report delegated work. Missing/stale evidence remains
-pending; without a handoff, suppress nothing. See the
-[lifecycle ownership policy](../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
+## Not a Gate Role
 
-## Bounded Quality-Gate Roles
-
-For `api-quality-gate`, `discovery` runs the full sweep once. `verification` reproduces supplied
-original findings and smoke-tests affected operations only. Return resolved/unresolved IDs,
-regressions, and errors; never fix, repeat discovery, probe unrelated endpoints, or request another
-pass.
+The [API HTTP Quality Gate](../../repo-governance/workflows/quality/api-http-quality-gate.md) runs `api-http-checker`
+and `api-http-fixer`; this tester explores an API outside that gate and never fixes what it finds.
 
 ## References
 

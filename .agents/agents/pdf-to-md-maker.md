@@ -66,7 +66,7 @@ OCR pages tagged, chunk boundaries invisible) and the tool-graceful-degradation 
 ## Reference Documentation
 
 - [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md)
-- [pdf-to-md-quality-gate workflow](../../repo-governance/workflows/content/pdf-to-md-quality-gate.md)
+- [pdf-to-md-quality-gate workflow](../../repo-governance/workflows/quality/pdf-to-md-quality-gate.md)
 - **Related Agents**: `pdf-to-md-checker.md`, `pdf-to-md-fixer.md`
 - [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
 

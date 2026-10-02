@@ -1,6 +1,6 @@
 ---
 description: |-
-  Audits a complete plan draft against the plan specification and returns findings with a terminal verdict, without modifying anything it audits.
+  Audits a complete plan draft against the plan specification and returns criticality-rated findings to the plan quality gate, without modifying anything it audits.
 effort: high
 model: opus
 name: plan-checker
@@ -10,7 +10,6 @@ skills:
   - plan-creating-project-plans
   - plan-validating-quality
   - docs-validating-factual-accuracy
-  - repo-generating-validation-reports
   - repo-assessing-criticality-confidence
   - repo-applying-maker-checker-fixer
   - repo-maintaining-task-lists

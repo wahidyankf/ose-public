@@ -64,7 +64,7 @@ combined convention: content split rule, PM-readability contract, BDD/Contracts 
 tree shape. [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md) —
 canonical path patterns, per-surface variants, domain subdirectory rules.
 [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md).
-[Specs Validation Workflow](../../repo-governance/workflows/specs/specs-quality-gate.md). Related
+[Specs Validation Workflow](../../repo-governance/workflows/quality/specs-quality-gate.md). Related
 agents: [specs-checker](specs-checker.md), [specs-fixer](specs-fixer.md).
 
 - [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) -

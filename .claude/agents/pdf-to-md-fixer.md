@@ -1,14 +1,13 @@
 ---
 description: |-
-  Applies validated fixes from pdf-to-md-checker audit reports. Re-validates each finding before applying. Fixes missing sections (re-extracts from PDF), incorrect text, wrong table data, invalid Mermaid syntax, and missing figure placeholders. Use after reviewing pdf-to-md-checker output.
+  Re-validates each PDF conversion finding against the source and the current Markdown, restores confirmed gaps from the source, and records false positives and uncertain repairs.
 effort: xhigh
 model: sonnet
 name: pdf-to-md-fixer
 skills:
   - docs-converting-pdf-to-markdown
-  - repo-assessing-criticality-confidence
   - repo-applying-maker-checker-fixer
-  - repo-maintaining-task-lists
+  - repo-assessing-criticality-confidence
   - repo-generating-validation-reports
 tools: |-
   Read, Glob, Grep, Write, Edit, Bash

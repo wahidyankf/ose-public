@@ -41,7 +41,7 @@ constraints:
 Validate workflow documentation quality.
 
 For every `*-quality-gate`, enforce the canonical
-[lifecycle validation ownership policy](../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md):
+[lifecycle validation ownership policy](../../repo-governance/development/workflow/quality-gate-contract.md):
 Step 0 filters exact registry-owned predicates from checker/fixer/recheck prompts, reports a separate
 `lifecycle-status`, and never converts missing evidence into a local rerun or domain finding.
 
@@ -52,7 +52,7 @@ Skill: `repo-generating-validation-reports`
 
 ## Reference
 
-- [Workflow Pattern Convention](../../repo-governance/workflows/meta/workflow-identifier.md)
+- [Workflow Pattern Convention](../../repo-governance/conventions/structure/workflow-pattern.md)
 - Skills: `docs-applying-diataxis-framework`, `repo-assessing-criticality-confidence`, `repo-generating-validation-reports`
 
 ## Reference Documentation
@@ -60,7 +60,7 @@ Skill: `repo-generating-validation-reports`
 **Project Guidance**:
 
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [Workflow Pattern Convention](../../repo-governance/workflows/meta/workflow-identifier.md)
+- [Workflow Pattern Convention](../../repo-governance/conventions/structure/workflow-pattern.md)
 
 **Related Agents**:
 
@@ -69,6 +69,6 @@ Skill: `repo-generating-validation-reports`
 
 **Related Conventions**:
 
-- [Workflow Pattern Convention](../../repo-governance/workflows/meta/workflow-identifier.md)
-- [Execution Modes Convention](../../repo-governance/workflows/meta/execution-modes.md)
+- [Workflow Pattern Convention](../../repo-governance/conventions/structure/workflow-pattern.md)
+- [Execution Modes Convention](../../repo-governance/conventions/structure/workflow-pattern/execution-modes.md)
 - [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths

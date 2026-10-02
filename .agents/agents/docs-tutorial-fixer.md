@@ -27,10 +27,8 @@ skills:
 
 ## Lifecycle Handoff
 
-Accept optional `delegated-gate-ids` and `lifecycle-evidence`. Do not re-validate or fix an exact
-delegated predicate; empty or omitted delegation suppresses nothing. After edits, intersect changed
-files with delegated scopes and return `updated-lifecycle-evidence`, invalidating only affected
-entries.
+Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
+owns it, per the [Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## Agent Metadata
 

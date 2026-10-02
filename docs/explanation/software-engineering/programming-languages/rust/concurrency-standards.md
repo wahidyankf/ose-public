@@ -67,19 +67,11 @@ Rust automates concurrency safety:
 
 ## Fearless Concurrency: Send and Sync
 
-**Send** means a type can be transferred to another thread. **Sync** means a type can be shared between threads via shared references.
+What `Send` and `Sync` mean, and which standard-library types implement them, are taught in [AyoKoding Rust By Example, Example 50: Send and Sync Traits](../../../../../apps/ayokoding-www/content/en/learn/legacy/software-engineering/programming-languages/rust/by-example/intermediate.md#example-50-send-and-sync-traits).
 
-These traits are automatically derived for most types and checked by the compiler:
+**MUST** use `Arc<T>` (not `Rc<T>`) for shared ownership across threads or async tasks, as the [Memory Management Standards](memory-management-standards.md) require:
 
 ```rust
-// The compiler verifies these automatically:
-
-// Rc<T> is NOT Send — cannot be sent to another thread
-// Arc<T> IS Send — can be sent to another thread
-
-// Cell<T> is NOT Sync — cannot be shared between threads
-// Mutex<T> IS Sync — can be shared between threads
-
 // CORRECT: Arc enables shared ownership across threads
 use std::sync::Arc;
 

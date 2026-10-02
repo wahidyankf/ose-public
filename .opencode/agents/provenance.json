@@ -13,6 +13,11 @@
       "digest": "f96d30890031710ce66f45422bcb234bac5a8e6b0f34b251e242650bfc738be4"
     },
     {
+      "id": "agent/plan-fixer",
+      "path": ".agents/agents/plan-fixer.md",
+      "digest": "206f7c7effb10504db529efdceaa559ea035a0e2152d6c58b2ee5494dbaaeb9a"
+    },
+    {
       "id": "agent/plan-maker",
       "path": ".agents/agents/plan-maker.md",
       "digest": "cbd6a1ca82cb7b1f78ac3fc7d90fe01c1b1d5bfff506ab4e5718137c05fe4753"
@@ -375,7 +380,7 @@
     {
       "id": "instruction",
       "path": "AGENTS.md",
-      "digest": "01e673d359dfe54a2c783e9c47263e4c8d1f4cd33fa18f24fd6f046ef4d74c79"
+      "digest": "c1b567c04bb3e898279f9dc0b90cb9b9c660f198c128fb9eed024187b0f31207"
     }
   ]
 }

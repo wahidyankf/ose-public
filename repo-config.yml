@@ -145,7 +145,7 @@ harness:
         route-field: developer_instructions
         route: "Before acting, read the complete canonical agent definition at the repository-root path {path} and follow it as authoritative. If it cannot be read, stop and report the missing path."
         identity: { name: name, description: description }
-        agents: [plan-checker, plan-execution-checker, plan-maker]
+        agents: [plan-checker, plan-execution-checker, plan-fixer, plan-maker]
         absent: [model, effort]
     - id: opencode
       supports:
@@ -171,7 +171,7 @@ harness:
         route-field: body
         route: "Before acting, read the complete canonical agent definition at the repository-root path {path} and follow it as authoritative. If it cannot be read, stop and report the missing path."
         identity: { description: description }
-        agents: [plan-checker, plan-execution-checker, plan-maker]
+        agents: [plan-checker, plan-execution-checker, plan-fixer, plan-maker]
         fixed: { mode: subagent }
         translations:
           - { when: always, field: permission, entries: { read: allow } }

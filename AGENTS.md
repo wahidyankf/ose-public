@@ -119,7 +119,7 @@ Verify UI/API behaviour manually; investigate CI failures at the root cause, nev
 ## AI Agents
 
 [Canonical agents](./.agents/agents/README.md) and canonical skills under `.agents/skills/` are
-authoritative. Every agent has a generated route under `.claude/agents/`, and the three plan
+authoritative. Every agent has a generated route under `.claude/agents/`, and the four plan
 agents also under `.codex/agents/` and `.opencode/agents/`; regenerate and validate them through
 the pinned Rhino adapter commands rather than hand-editing a route.
 

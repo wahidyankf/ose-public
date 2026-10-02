@@ -21,6 +21,10 @@ config_file = "agents/plan-checker.toml"
 description = "Validates completed plan implementation by verifying all requirements met, code quality standards followed, and acceptance criteria satisfied. Final quality gate before marking plan complete."
 config_file = "agents/plan-execution-checker.toml"
 
+[agents.plan-fixer]
+description = "Executes Plan Propagation on a frozen plan quality ledger, re-validating each row against the current plan, repairing only what the plan's own decisions settle, and leaving every policy choice to the plan's owner."
+config_file = "agents/plan-fixer.toml"
+
 [agents.plan-maker]
 description = "Creates project plans with requirements, technical documentation, and delivery checklists. Returns unresolved pre-write and post-write decisions to the calling root orchestrator for grilling, then resumes with resolved answers. Structures plans for systematic execution via the plan-execution workflow (orchestrated by the calling context)."
 config_file = "agents/plan-maker.toml"

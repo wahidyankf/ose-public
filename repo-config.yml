@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.8.0/schemas/repo-config/v2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.9.0/schemas/repo-config/v2.schema.json
 # Repository-owned policy for the checksum-pinned Rhino candidate.
 #
 # The grouped document contains no legacy compatibility section. Each retained
@@ -567,6 +567,52 @@ policies:
         - { glob: "scripts/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: "social-media-posts/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: "README.md", target: 900, warn: 1000, fail: 1000 }
+    # Owner: repo-governance/development/workflow/quality-gate-contract.md. Each declared family has its gate,
+    # propagation, checker, and fixer; product rules live in repo-governance/development/quality/gate-adapters/.
+    quality-gates:
+      root: repo-governance/workflows
+      agents: .agents/agents
+      groups: [plan, quality, maintenance]
+      gate-group: quality
+      gate-headings:
+        - Entry
+        - Inputs
+        - Deterministic Boundary
+        - Cycle
+        - Termination
+        - Verdict
+        - Ledger
+      verdict-heading: Verdict
+      verdicts: [PASS, PASS_WITH_FINDINGS, FAIL, BLOCKED]
+      retired-inputs: [max-iterations, min-iterations, max-audits]
+      propagation-headings:
+        - Contract
+        - Scope
+        - Executor
+        - Row Verification
+        - Family Rules
+      defaults:
+        mode: normal
+        max-cycles: 3
+      gates:
+        - family: plan
+        - family: docs
+        - family: rules
+        - family: harness
+        - family: ci
+        - family: pr-review
+        - family: specs
+        - family: ui-web
+        - family: api-http
+        - family: content
+          subject: apps/ayokoding-www/content
+        - family: pdf-to-md
+        - family: tutorial-by-example
+        - family: tutorial-in-the-field
+        - family: tutorial-primer
+        - family: tutorial-annotated-concept
+        - family: docs-software-engineering-separation
+          subject: docs/explanation/software-engineering
   conventions:
     emoji:
       prohibited:
@@ -713,7 +759,7 @@ gates:
               range: explicit
     # The leak review's history screen: every commit a push publishes, and every commit in a pull
     # request's base..head range, contributes its own additions, names, and message
-    # (repo-governance/workflows/pr/pr-leak-review/enforcement.md).
+    # (repo-governance/workflows/quality/pr-leak-review/005-enforcement.md).
     - id: public-safety-range
       type: check
       inputs:
@@ -801,6 +847,17 @@ gates:
         args:
           - literal: governance
           - literal: vendor
+          - literal: validate
+      run-on:
+        pre-commit: {}
+        pull-request: {}
+    - id: governance-quality-gates
+      type: check
+      command:
+        executable: ./rhino
+        args:
+          - literal: governance
+          - literal: quality-gates
           - literal: validate
       run-on:
         pre-commit: {}

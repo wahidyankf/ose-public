@@ -155,7 +155,7 @@
     {
       "id": "agent/docs-tutorial-fixer",
       "path": ".agents/agents/docs-tutorial-fixer.md",
-      "digest": "bf31a2ece3a3dfa9a74f93340524755d42326811974b4bfbe18d1d9a44f19a36"
+      "digest": "f172d1878988504acd8401196f85cf1974f8911a34f0a3b701e16801a7b2d5be"
     },
     {
       "id": "agent/docs-tutorial-maker",
@@ -275,7 +275,7 @@
     {
       "id": "agent/readme-fixer",
       "path": ".agents/agents/readme-fixer.md",
-      "digest": "ddd2712ff8fb8bdac0328d0637e3c8465c4ec2c1d099f7bc2d431c0d15bebc00"
+      "digest": "b8e4d06afe55b0d7b61104062ea6cf9d24b8f5230827f6d79e2f4341addde39f"
     },
     {
       "id": "agent/readme-maker",
@@ -705,7 +705,7 @@
     {
       "id": "skill/repo-applying-maker-checker-fixer",
       "path": ".agents/skills/repo-applying-maker-checker-fixer/SKILL.md",
-      "digest": "d3ebdd5762d465c06b6745e9a062ea25cf8850e863688d78926a555e3ace5569"
+      "digest": "6787942c83c39275a43c9deaed7ec1a3f16cbf0313cbda08579a5d003a3db3e3"
     },
     {
       "id": "skill/repo-assessing-criticality-confidence",

@@ -5,7 +5,7 @@ when_to_use: Use whenever a pull request is about to be merged, or when checking
 
 # PR Merge Protocol
 
-Merging a pull request requires a set of hardened preconditions to hold — not a per-instance prompt. Once they hold, `[AI]` merges by default; a `[HUMAN]` merge gate applies only where a plan's own step says so explicitly. All quality gates must pass before merge, and bypassing them without explicit user permission is forbidden.
+Merging a pull request requires a set of hardened preconditions to hold — not a per-instance prompt. Once they hold, `[AI]` merges by default; a `[HUMAN]` merge gate applies only where a plan's own step says so explicitly. Every deterministic gate must pass before merge, every surface quality-gate verdict is recorded with an owner for each open blocking row, and bypassing a gate without explicit user permission is forbidden.
 
 ## Contents
 

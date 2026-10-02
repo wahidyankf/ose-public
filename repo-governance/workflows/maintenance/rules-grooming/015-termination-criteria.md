@@ -27,8 +27,7 @@ All of:
 - Every approved item carries a propagation terminal status.
 - The post-run obligation inventory differs from the pre-run inventory only by the approved
   retirements, with every survivor unchanged and reachable.
-- The rules quality gate returned `PASS_EFFECTIVE`, or returned `NEEDS_PROPAGATION` and the
-  propagation it handed off to landed.
+- The rules quality gate's verdict is recorded, and every open blocking row has an owner.
 - The PR record is written, including the metrics delta, the gate verdict, every finding bounded
   out to the next sweep, and the next trigger evaluation.
 

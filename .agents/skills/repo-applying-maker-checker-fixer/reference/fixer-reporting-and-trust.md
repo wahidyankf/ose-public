@@ -9,7 +9,7 @@
 **Source Audit**: {path to audit report}
 **Timestamp**: {YYYY-MM-DD--HH-MM UTC+7}
 **UUID Chain**: {uuid-chain}
-**Mode**: {lax/normal/strict/ocd}
+**Mode**: {lax/normal/strict/all}
 
 ---
 

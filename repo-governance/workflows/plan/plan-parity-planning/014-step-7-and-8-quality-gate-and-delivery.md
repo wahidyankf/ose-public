@@ -1,5 +1,5 @@
 ---
-description: Runs plan-quality-gate per plan and records each verdict, then delivers per the selected mode and reports the deviation count summary.
+description: Runs plan-quality-gate per plan and records its advisory verdict, then delivers per the selected mode and reports the deviation count summary.
 when_to_use: Use when gating and delivering the authored plans, or reporting the run's final outcomes.
 ---
 
@@ -16,11 +16,14 @@ one of that gate's named callers.
 
 Each plan runs with `mode: normal` and `max-cycles: 3` unless the user names other values.
 
-**On `FAIL` or `BLOCKED`**: read the returned ledger. [Plan Fixer](../../../../.agents/agents/plan-fixer.md) already ran
-Plan Propagation inside the gate's bounded cycles, so open blocking rows need an external decision, not another gate
-pass. Surface them to the invoker and do not deliver that plan until each has an owner and the named change lands.
+Each run returns one advisory verdict. Record each plan's one-line verdict in its `delivery.md`.
 
-**Success criteria**: Every plan in the parity set returns `PASS` or `PASS_WITH_FINDINGS`.
+**On `FAIL` or `BLOCKED`**: read the returned ledger. [Plan Fixer](../../../../.agents/agents/plan-fixer.md) already ran
+Plan Propagation inside the gate's bounded cycles, so an open blocking row needs an external decision, not another gate
+pass. Give each open row an owner, surface it to the invoker, and continue; re-invoke the gate only after the named
+external change lands.
+
+**Success criteria**: Every plan in the parity set has a recorded verdict, and every open blocking row has an owner.
 
 ## Step 8 — Delivery and Finalization (Per Mode)
 
@@ -72,7 +75,7 @@ Report outcomes.
 **Output**:
 
 - `plans-created`: One path per target repo
-- `gate-results`: plan-quality-gate verdict per plan (PASS / BLOCKED\_\*)
+- `gate-results`: plan-quality-gate verdict per plan (`PASS`, `PASS_WITH_FINDINGS`, `FAIL`, or `BLOCKED`)
 - `delivery-refs`: Commit SHAs pushed to `origin main` (main modes) or PR URLs (worktree-to-pr)
 - Deviation count summary: "N deliberate deviations recorded; 0 silent deviations"
 - Parity identity assertion: actual worktree basename and corresponding branch per repository match

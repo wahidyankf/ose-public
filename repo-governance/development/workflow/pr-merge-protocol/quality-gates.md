@@ -13,12 +13,15 @@ pre-commit, pre-push, or PR CI merely to satisfy this protocol.
 
 Changed reachable behaviour may also require a finite surface gate:
 
-| Surface                   | Required result                                                                           |
-| ------------------------- | ----------------------------------------------------------------------------------------- |
-| UI                        | The UI web gate returns `PASS` or `PASS_WITH_FINDINGS`; the running-UI triad retests pass |
-| API                       | The API HTTP gate returns `PASS` or `PASS_WITH_FINDINGS` on the endpoint                  |
-| Other reachable behaviour | Its interface is exercised and the result recorded                                        |
-| No reachable behaviour    | An explicit exemption identifies why no surface gate applies                              |
+| Surface                   | Required result                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------- |
+| UI                        | Running-UI triad retests pass; UI web gate verdict recorded, open blocking rows owned |
+| API                       | Endpoint exercised; API HTTP gate verdict recorded, open blocking rows owned          |
+| Other reachable behaviour | Its interface is exercised and the result recorded                                    |
+| No reachable behaviour    | An explicit exemption identifies why no surface gate applies                          |
+
+Surface quality-gate verdicts are advisory under the [Quality Gate Contract](../quality-gate-contract.md); a `FAIL` or
+`BLOCKED` verdict needs an owner for each open blocking row, while deterministic checks stay blocking.
 
 Every push first passes the private push leak review of each outgoing commit, and every PR runs one
 focused [`pr-leak-review`](../../../workflows/quality/pr-leak-review.md) against its exact current head.

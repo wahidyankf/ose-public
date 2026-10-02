@@ -9,7 +9,7 @@ Support `mode` parameter for quality-gate workflows:
 - **lax**: Process CRITICAL findings only (skip HIGH/MEDIUM/LOW)
 - **normal**: Process CRITICAL + HIGH findings only (skip MEDIUM/LOW)
 - **strict**: Process CRITICAL + HIGH + MEDIUM findings (skip LOW)
-- **ocd**: Process all findings (CRITICAL + HIGH + MEDIUM + LOW)
+- **all**: Process all findings (CRITICAL + HIGH + MEDIUM + LOW)
 
 **Implementation**:
 
@@ -19,7 +19,7 @@ Support `mode` parameter for quality-gate workflows:
    - lax: Only process CRITICAL findings
    - normal: Process CRITICAL + HIGH findings
    - strict: Process CRITICAL + HIGH + MEDIUM findings
-   - ocd: Process all findings
+   - all: Process all findings
 3. Track skipped findings for reporting
 4. Document skipped findings in fix report
 ```
@@ -39,7 +39,7 @@ Support `mode` parameter for quality-gate workflows:
 
 1. [File path] - [Issue description]
 
-**Note**: Run with `mode=strict` or `mode=ocd` to fix these findings.
+**Note**: Run with `mode=strict` or `mode=all` to fix these findings.
 ```
 
 ## Fixer Workflow Step 4: Fix Application

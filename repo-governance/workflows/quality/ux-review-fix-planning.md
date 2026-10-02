@@ -18,7 +18,7 @@ source or lands a behaviour change.
 
 **Goal**: Run the three live-site UX-quality testers — spec-aware exploratory (correctness), spec-blind heuristic-usability, and design-aware design-fidelity — against the same live URL(s) and goal, sequentially, integrating each result set into the plan before the next runs, then solidify one fix-ready plan whose findings section keeps the three sources clearly separated (exploratory EWT-### vs usability UWT-### vs design DWT-###) and which carries a tech-docs.md (root-cause + fix approach), a TDD-shaped delivery.md describing how to fix every finding, and — when the plan is UI-bearing — an assets/ folder of both-tier (lo-fi + hi-fi) UI mockups. The deliverable is the plan, never the fixes.
 
-**Termination**: A grill-validated plan exists under plans/in-progress/<identifier>/ containing README.md, brd.md, prd.md, findings.md (with separate Exploratory, Usability, and Design sections), tech-docs.md, and delivery.md, receives a PASS verdict from plan-quality-gate, and is pushed to the requested git target. No application or library source under apps/ or libs/ is modified by this workflow.
+**Termination**: A grill-validated plan exists under plans/in-progress/<identifier>/ containing README.md, brd.md, prd.md, findings.md (with separate Exploratory, Usability, and Design sections), tech-docs.md, and delivery.md, has a recorded plan-quality-gate verdict, and is pushed to the requested git target. No application or library source under apps/ or libs/ is modified by this workflow.
 
 ## Contents
 

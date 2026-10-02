@@ -19,7 +19,7 @@ See [Stage 1: Maker and Stage 2 Checker Role](./reference/stage1-maker-and-check
 
 The Checker's 5-step process (Initialize → Validate → Finalize) is detailed in [Checker Workflow: 5-Step Process](./reference/checker-workflow-steps.md) and [Checker Report Finalization and Progressive Writing](./reference/checker-finalization.md).
 
-The Fixer's 6-step process is detailed across [Fixer Role, Priority, and Report Discovery](./reference/fixer-role-and-detection.md), [Fixer Mode Parameter Handling and Fix Application](./reference/fixer-mode-and-application.md) (lax/normal/strict/ocd), and [Fix Report Structure and Trust Model](./reference/fixer-reporting-and-trust.md) (why fixers lack web tools).
+The Fixer's 6-step process is detailed across [Fixer Role, Priority, and Report Discovery](./reference/fixer-role-and-detection.md), [Fixer Mode Parameter Handling and Fix Application](./reference/fixer-mode-and-application.md) (lax/normal/strict/all), and [Fix Report Structure and Trust Model](./reference/fixer-reporting-and-trust.md) (why fixers lack web tools).
 
 ## Lifecycle-Owned Validation
 

@@ -42,13 +42,13 @@ Feature: Repository rules grooming
     Given a run whose only class is fragmentation
     And preservation verification passed
     When Step 8 is reached
-    Then the rules quality gate is invoked once in EFFECTIVE mode
-    And the run does not reach Step 9 without a passing verdict
+    Then the rules quality gate is invoked once with an effective subject
+    And its verdict is recorded and every open blocking row has an owner before Step 9
 
   Scenario: The gate is invoked under named authorization, not inferred
     Given the gate refuses authorization inferred from another workflow
     When grooming invokes it at Step 8
-    Then the gate's Authorization section names grooming as a sanctioned caller
+    Then the gate's Entry section names grooming as a caller
     And no other workflow inherits that permission
 
   Scenario: A gate finding outside the run's own edits defers
@@ -57,11 +57,11 @@ Feature: Repository rules grooming
     Then the finding is recorded as next-sweep input rather than repaired
     And the gate is not re-run to confirm any repair
 
-  Scenario: A gate handoff continues into propagation without asking again
-    Given the gate returns NEEDS_PROPAGATION
-    When Step 8 handles the verdict
-    Then propagation runs once with the frozen ledger and no further user instruction
-    And propagation's terminal result is reported as the step's
+  Scenario: A gate cycle hands its ledger to propagation without asking again
+    Given the gate's audit freezes blocking rows
+    When the gate hands the ledger over
+    Then propagation runs on that frozen ledger with no further user instruction
+    And the gate's advisory verdict is recorded as the step's
 
   Scenario: A run that lost an obligation is never submitted for a verdict
     Given preservation verification found an unapproved loss

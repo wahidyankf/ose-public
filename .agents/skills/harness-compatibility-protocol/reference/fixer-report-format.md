@@ -44,4 +44,4 @@ EOF
 ## Mode Parameter Handling
 
 See `repo-applying-maker-checker-fixer` skill: **lax** fixes CRITICAL only; **normal** fixes
-CRITICAL+HIGH; **strict** (default) fixes CRITICAL+HIGH+MEDIUM; **ocd** fixes all levels.
+CRITICAL+HIGH (default); **strict** fixes CRITICAL+HIGH+MEDIUM; **all** fixes all levels.

@@ -89,7 +89,7 @@ if is_rule_surface "$rel"; then
 		cat <<'TXT'
 [rules-propagation] this write targets a repo-rules surface.
 
-Rule work runs through repo-governance/workflows/rules/rules-propagation.md, not an ad-hoc
+Rule work runs through repo-governance/workflows/quality/rules-propagation.md, not an ad-hoc
 edit: normalize the rule so it is falsifiable, scan for contradictions under layer-aware
 precedence before writing, place it on the narrowest surface that binds (evicting from the
 instruction surface if admitted there), tidy every other surface stating its subject, and record

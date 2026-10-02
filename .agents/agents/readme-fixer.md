@@ -48,7 +48,7 @@ patterns) from subjective quality assessments.
 
 See `repo-assessing-criticality-confidence` Skill for the complete priority matrix (Criticality ×
 Confidence → P0-P4) and execution order (P0 → P1 → P2 → P3 → P4). See
-`repo-applying-maker-checker-fixer` Skill for mode-parameter handling (lax/normal/strict/ocd) and
+`repo-applying-maker-checker-fixer` Skill for mode-parameter handling (lax/normal/strict/all) and
 the standard report-discovery → re-validate → apply → report workflow.
 
 **See `readme-fixing-quality` Skill** for the domain-specific mechanics: README-specific

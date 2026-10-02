@@ -94,6 +94,36 @@ jobs:
           HIPPO_INSTALL_CACHE: ${{ runner.temp }}/hippo-cache
           HIPPO_ROOT: ${{ runner.temp }}/hippo-state
         run: |
+          # The light tier's deadline bounds only HIPPO's reservation queue. After it, host-pressure
+          # admission samples for a fixed 16-second window, so a briefly loaded runner can defer the
+          # run (124, hippo.limit.capacity-deferred) seconds in, with a never-started receipt. HIPPO's
+          # contract makes one requeue per such receipt safe, and this payload is an idempotent env
+          # assertion, so requeue it, at most three attempts in all. Anything else fails as it came.
+          new_never_started_receipt() {
+            local path
+            for path in "$HIPPO_ROOT"/receipts/*.json; do
+              [ -f "$path" ] || continue
+              printf '%s\n' "$1" | grep -qxF "${path##*/}" && continue
+              grep -q '"state":"never-started"' "$path" && return 0
+            done
+            return 1
+          }
+          requeue_never_started() {
+            local attempt before status
+            for attempt in 1 2 3; do
+              before=$(ls "$HIPPO_ROOT/receipts" 2>/dev/null || true)
+              status=0
+              "$@" 2>"$RUNNER_TEMP/hippo-stderr" || status=$?
+              cat "$RUNNER_TEMP/hippo-stderr" >&2
+              if [ "$status" -ne 124 ] ||
+                ! grep -q '^hippo: \[hippo.limit.capacity-deferred\]' "$RUNNER_TEMP/hippo-stderr" ||
+                ! new_never_started_receipt "$before"; then
+                return "$status"
+              fi
+              echo "HIPPO deferred attempt $attempt of 3 before launch with a never-started receipt"
+            done
+            return 124
+          }
           assertion="test \"\$NX_PARALLEL\" = \"\$HIPPO_CONCURRENCY\" && test \"\$DOTNET_PROCESSOR_COUNT\" = \"\$HIPPO_CONCURRENCY\" && test \"\$HIPPO_ROOT\" = \"\$EXPECTED_HIPPO_ROOT\""
-          EXPECTED_HIPPO_ROOT="$HIPPO_ROOT" ./hippo run --class ephemeral --resource-tier light --disk-path . -- sh -c "$assertion"
-          EXPECTED_HIPPO_ROOT="$HIPPO_ROOT" ./hippo run --class ephemeral --resource-tier light --cwd docs --disk-path docs -- sh -c "$assertion"
+          EXPECTED_HIPPO_ROOT="$HIPPO_ROOT" requeue_never_started ./hippo run --class ephemeral --resource-tier light --disk-path . -- sh -c "$assertion"
+          EXPECTED_HIPPO_ROOT="$HIPPO_ROOT" requeue_never_started ./hippo run --class ephemeral --resource-tier light --cwd docs --disk-path docs -- sh -c "$assertion"

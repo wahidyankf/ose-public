@@ -34,8 +34,8 @@ This convention ensures:
 
 **Enforced by:**
 
-- `apps-ayokoding-www-general-checker` (validates by-concept structure)
-- `apps-ayokoding-www-by-example-checker` (validates by-example structure)
+- `content-checker` (validates by-concept structure)
+- `tutorial-by-example-checker` (validates by-example structure)
 - `docs-tutorial-checker` (validates docs/ tutorial quality)
 
 **Implementation Notes**: The Full Set Tutorial Package structure is universal. Platform-specific details (weight values, frontmatter, navigation) are covered in site-specific skills.

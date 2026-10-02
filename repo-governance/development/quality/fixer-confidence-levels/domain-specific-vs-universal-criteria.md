@@ -39,7 +39,7 @@ Each fixer agent has domain-specific validation checks:
 - File naming convention compliance
 - Structural consistency across repository
 
-**apps-ayokoding-www-general-fixer:**
+**content-fixer:**
 
 - Next.js/MDX frontmatter for ayokoding-www
 - Bilingual content validation (en/id)
@@ -52,7 +52,7 @@ Each fixer agent has domain-specific validation checks:
 - LaTeX notation compliance
 - Tutorial naming patterns by type
 
-**apps-ose-www-content-fixer:**
+**content-fixer:**
 
 - Next.js/MDX frontmatter for ose-www
 - English-only content validation

@@ -15,8 +15,8 @@ Use this agent when:
 
 - By Example tutorials (language-syntax-centric; use `apps-ayokoding-www-by-example-maker`)
 - Primer ("Just Enough X") language/tool on-ramps (use `apps-ayokoding-www-primer-maker`)
-- Validation (use `apps-ayokoding-www-annotated-concept-checker`)
-- Fixing issues (use `apps-ayokoding-www-annotated-concept-fixer`)
+- Validation (use `tutorial-annotated-concept-checker`)
+- Fixing issues (use `tutorial-annotated-concept-fixer`)
 
 **Note**: Annotated-concept is a distinct format from the pre-existing narrative "By-Concept"
 tutorial type documented in

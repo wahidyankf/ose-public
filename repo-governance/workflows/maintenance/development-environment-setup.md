@@ -1,0 +1,77 @@
+---
+description: "Guides installing and verifying every toolchain needed for pre-commit, pre-push, integration, and E2E work in this monorepo."
+when_to_use: "Use for new developer onboarding, a fresh machine/OS setup, or recovering a broken toolchain."
+---
+
+# Development Environment Setup Workflow
+
+**Purpose**: Guide a developer (or AI assistant helping a developer) through installing and
+configuring every tool required to work on any project in this monorepo — from git hooks to
+integration tests to E2E tests.
+
+> **Note**: The polyglot demo apps (`a-demo-be-*`, `a-demo-fe-*`) were removed from this repo on
+> 2026-04-18. The optional-scope phases below survive for languages this repo may still need; a phase
+> with no project in this repo is safe to skip.
+
+**When to use**: new developer onboarding, a fresh machine/OS install, recovering a broken
+toolchain, or verifying an environment after adding a new project language.
+
+## Goal and Termination
+
+**Goal**: Set up a complete local development environment with all toolchains required for pre-commit, pre-push, integration tests, and E2E tests across all projects
+
+**Termination**: npm run doctor reports no findings for the declared toolchains and nx affected -t test:quick passes for all projects
+
+## Inputs
+
+- **`platform`** (enum: macos, linux, optional, default `macos`) — Target operating system
+- **`scope`** (enum: full, minimal, optional, default `full`) — full: every phase, covering all 21 declared toolchains; minimal: core phases only (Git, Docker, jq, Volta, Node.js, npm). Doctor has no scope: it always probes every declared toolchain
+
+## Outputs
+
+- **`doctor-status`** (enum: clean, findings) — Result of npm run doctor after setup
+- **`tools-installed`** (number) — Count of tools successfully installed and verified
+
+## Contents
+
+- [Execution Mode](./development-environment-setup/001-execution-mode.md) — manual orchestration.
+- [Tool Inventory](./development-environment-setup/002-tool-inventory.md) — the 21 toolchains declared
+  under `repo-config.yml` `toolchains`, and what is deliberately undeclared.
+- [Quick Start](./development-environment-setup/003-quick-start.md) — install, validate, provision only on drift.
+
+### Phases
+
+- [Phase 1: System Package Manager](./development-environment-setup/004-phase-1-system-package-manager.md) — Homebrew/apt.
+- [Phase 2: Core Tools](./development-environment-setup/005-phase-2-core-tools.md) — Git, Docker, jq.
+- [Phase 3: Node.js Ecosystem](./development-environment-setup/006-phase-3-nodejs-ecosystem.md) — Volta, Node, npm.
+- [Phase 4: Go Ecosystem](./development-environment-setup/007-phase-4-go-ecosystem.md) — Go toolchain.
+- [Phase 6: Python Ecosystem](./development-environment-setup/008-phase-6-python-ecosystem.md) — full scope only.
+- [Phase 7: Rust Ecosystem](./development-environment-setup/009-phase-7-rust-ecosystem.md) — full scope only.
+- [Phase 8: Elixir/Erlang Ecosystem](./development-environment-setup/010-phase-8-elixir-erlang-ecosystem.md) — full scope only.
+- [Phase 9: .NET Ecosystem](./development-environment-setup/011-phase-9-dotnet-ecosystem.md) — full scope only.
+- [Phase 10: Dart/Flutter Ecosystem](./development-environment-setup/012-phase-10-dart-flutter-ecosystem.md) — full scope only.
+- [Phase 11: Repository Bootstrap](./development-environment-setup/013-phase-11-repository-bootstrap.md) — clone, install, env, doctor.
+- [Phase 12: Playwright Browsers](./development-environment-setup/014-phase-12-playwright-browsers.md) — E2E browser install.
+- [Phase 13: Verification](./development-environment-setup/015-phase-13-verification.md) — end-to-end smoke test.
+
+### Reference
+
+- [Termination Criteria](./development-environment-setup/016-termination-criteria.md) — success/partial/failure.
+- [Minimal Scope Quick Reference](./development-environment-setup/017-minimal-scope-quick-reference.md) — minimal-scope table.
+- [Notes](./development-environment-setup/018-notes.md) — pinning, idempotency, platform notes.
+- [Principles Respected](./development-environment-setup/019-principles-implemented-respected.md) — governance.
+- [Related Documentation](./development-environment-setup/020-related-documentation.md) — how-to guide, governance docs.
+- [Related Agents](./development-environment-setup/021-related-agents.md) — rules-checker follow-up.
+
+## Related Workflows
+
+- [CI Quality Gate](../quality/ci-quality-gate.md) — Validates CI/CD compliance (assumes toolchain
+  is already set up)
+
+## Conventions Implemented/Respected
+
+- **[Workflow Identifier Convention](../../conventions/structure/workflow-pattern.md)**: Follows standard workflow
+  structure with YAML frontmatter
+- **[Reproducible Environments](../../development/workflow/reproducible-environments.md)**: Implements
+  the environment reproducibility practices defined in governance
+- **[Code Quality Convention](../../development/quality/code.md)**: Verification steps ensure

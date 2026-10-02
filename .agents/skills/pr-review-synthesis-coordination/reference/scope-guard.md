@@ -6,4 +6,4 @@ so the guard has something falsifiable to test against. The test: does fixing th
 that problem, or add a second one, or grow the PR into something the body declared out? The second and the third are both scope creep — drop them in the reasonableness filter, and never manufacture
 new scope during synthesis. A defect this PR itself introduces is always in scope, and a declared
 non-goal never suppresses one. See
-[Scope Guard](../../../../repo-governance/workflows/pr/pr-review-cycle/scope-guard-no-scope-creep.md).
+[Scope Guard](../../../../repo-governance/development/quality/pr-review-disciplines/scope-guard.md).

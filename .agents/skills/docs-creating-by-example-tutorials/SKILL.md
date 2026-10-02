@@ -79,7 +79,7 @@ most common by-example mistakes with corrections.
 
 See [Checking By-Example Format — Count, Density, Structure, Self-Containment](./reference/checking-density-structure-containment.md)
 and [Checking By-Example Format — Grouping, Compliance, Diagrams, Examples-by-Level](./reference/checking-grouping-compliance-and-diagrams.md)
-for the full `apps-ayokoding-www-by-example-checker` validation checklist and step-by-step
+for the full `tutorial-by-example-checker` validation checklist and step-by-step
 validation order.
 
 ## References

@@ -28,7 +28,7 @@ The rule has exactly three exceptions. Exceptions are closed-ended — adding a 
 
 1. **Single-shot verification of a known URL.** When an agent already has the authoritative URL (from checker notes, from an audit report, from explicit user instruction) and one `WebFetch` answers the question, run it in-context. Do not launch a delegated agent for one call.
 
-2. **Fixer agents re-validating a single audit finding.** Fixer agents (`docs-fixer`, `apps-ayokoding-www-facts-fixer`, `apps-ayokoding-www-link-fixer`) intentionally operate in the same context as the audit they consume. Their re-validation must be decisive and paired with the fix; delegating to a delegated agent breaks that coupling. If a fixer discovers research much larger than the audit frame, it should escalate MEDIUM or FALSE_POSITIVE rather than spawn `web-researcher` itself.
+2. **Fixer agents re-validating a single audit finding.** Fixer agents (`docs-fixer`, `content-fixer`, `apps-ayokoding-www-link-fixer`) intentionally operate in the same context as the audit they consume. Their re-validation must be decisive and paired with the fix; delegating to a delegated agent breaks that coupling. If a fixer discovers research much larger than the audit frame, it should escalate MEDIUM or FALSE_POSITIVE rather than spawn `web-researcher` itself.
 
 3. **Link-reachability checker and fixer agents.** `docs-link-checker`, `apps-ayokoding-www-link-checker`, and their fixer counterparts are scoped to URL liveness — HTTP status codes, redirect chains, cache freshness. Their domain is explicitly URL-reachability, not content research. They invoke `WebFetch` directly against the URL under test; delegating to `web-researcher` would add latency without improving the signal (a 404 is a 404).
 

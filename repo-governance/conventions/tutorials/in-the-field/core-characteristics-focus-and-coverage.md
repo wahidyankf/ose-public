@@ -49,7 +49,7 @@ In-the-field prioritizes:
 - Comprehensive language coverage (by-example achieves 95%)
 - Sequential skill building (by-example/by-concept handle this)
 
-**Coverage verification**: The apps-ayokoding-www-general-checker agent validates production scenario completeness.
+**Coverage verification**: The content-checker agent validates production scenario completeness.
 
 ## 3. Topic Count: 20-40 Production Guides
 

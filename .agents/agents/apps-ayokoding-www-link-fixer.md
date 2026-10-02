@@ -56,9 +56,7 @@ You validate link-checker findings before applying fixes.
 
 ## Input Parameters
 
-- Optional lifecycle handoff: no gate validates internal links, so internal path/fragment fixes
-  always stay in scope; after edits return scope-intersected `updated-lifecycle-evidence`. Omission
-  preserves standalone behaviour.
+- No declared gate validates internal links, so internal path and fragment fixes always stay in scope.
 
 ## Web Research Delegation
 

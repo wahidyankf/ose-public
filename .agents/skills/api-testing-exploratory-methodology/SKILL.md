@@ -44,11 +44,9 @@ a **running** REST or GraphQL API — the API-surface counterpart to the web tes
 
 ## Quality-Gate Lifecycle Handoff
 
-When the API quality gate provides `delegated-gate-ids` and an evidence ledger, omit only exact
-registry IDs or predicates connected through `verifies`. Preserve the ledger and pending state;
-never rerun or infer delegated work. The live contract, authorization, edge, and runtime sweeps stay
-in scope. See the
-[lifecycle ownership policy](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
+Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
+owns it, per the [Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md). The live contract,
+authorization, edge, and runtime sweeps stay in scope.
 
 The API gate uses the complete methodology once for discovery. After its single fix and
 rebuild/redeployment pass, verification reproduces only the original in-threshold findings and

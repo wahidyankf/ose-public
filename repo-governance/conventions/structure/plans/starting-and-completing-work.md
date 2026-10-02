@@ -33,7 +33,7 @@ before implementation begins.
    path, initialize the toolchain, and only then execute its delivery checklist. The promotion PR
    and implementation are separate delivery units.
 
-For the worked route, see [Execute Plan from Backlog](../../../workflows/plan/plan-execution/example-usage-and-iteration-example.md#execute-plan-from-backlog).
+For the worked route, see [Execute Plan from Backlog](../../../workflows/plan/plan-execution/046-example-usage-and-iteration-example.md#execute-plan-from-backlog).
 
 ## Completing Work
 

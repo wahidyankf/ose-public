@@ -69,7 +69,7 @@ that a "N-step" claim matches the number of numbered steps in the thing it descr
   validator in this repo; a "declared step count matches numbered steps" check would live beside it.
 - **Multi-repo parity planning workflow** — the process any three-repo byte-identical correction must
   run through.
-  [plan-multi-repo-parity-planning](../../../repo-governance/workflows/plan/plan-multi-repo-parity-planning.md)
+  [plan-parity-planning](../../../repo-governance/workflows/plan/plan-parity-planning.md)
 
 ## Proposed direction (sketch)
 

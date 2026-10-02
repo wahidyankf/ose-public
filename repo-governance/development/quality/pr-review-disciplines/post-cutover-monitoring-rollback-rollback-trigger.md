@@ -21,7 +21,7 @@ convention:
 - **human-override-rate > 5%** over the window, OR
 - any single **CRITICAL false-positive** reaches `pr-review-fixer` at all — this threshold carries no
   window; one occurrence trips it (see
-  [CRITICAL-Requires-Reproduction](./quality-gate-enhancements-critical-reproduction-and-five-cycle-maximum.md) above for why a CRITICAL finding
+  [CRITICAL-Requires-Reproduction](./quality-gate-enhancements-critical-reproduction-and-three-cycle-maximum.md) above for why a CRITICAL finding
   without a reproduction should never have reached the fixer as CRITICAL in the first place).
 
 These three thresholds are proposed defaults, deliberately conservative and maintainer-tunable — they

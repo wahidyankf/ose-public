@@ -34,6 +34,6 @@ enhancement is the documented manual procedure that keeps that ≥80 threshold h
 This is a documented manual procedure, not an automated job — no agent runs the calibration check
 unprompted; a maintainer (or a future dedicated checker) performs it periodically against the
 review history. It complements the
-[CRITICAL-Requires-Reproduction](./quality-gate-enhancements-critical-reproduction-and-five-cycle-maximum.md) rule below: confidence
+[CRITICAL-Requires-Reproduction](./quality-gate-enhancements-critical-reproduction-and-three-cycle-maximum.md) rule below: confidence
 calibration catches a systematically miscalibrated score across many findings, while
 CRITICAL-requires-reproduction catches a single unverified high-severity finding.

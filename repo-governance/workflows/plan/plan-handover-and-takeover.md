@@ -32,7 +32,7 @@ and track each probe, anomaly, and cleanup candidate as its own task per
    after checking; learned constraints with why they bite; files touched, or where they are listed; and settled
    decisions not to reopen. Status and next steps are never empty; no required section is absent.
 3. **Save it dated and named by plan identifier** under `local-tmp/handovers/`, keeping earlier records, in the
-   [local template](./plan-handover-and-takeover/handover-record-and-local-discovery.md) — its format.
+   [local template](./plan-handover-and-takeover/001-handover-record-and-local-discovery.md) — its format.
 4. **Report the path** of the non-empty record.
 5. **Re-read the instructions and reconcile active rule decisions** under
    [Continuation-State Integrity](../../development/agents/agent-workflow-orchestration/continuation-state-integrity.md)
@@ -55,7 +55,7 @@ and track each probe, anomaly, and cleanup candidate as its own task per
     reported. Until the touched-file record is rebuilt from branch history, every changed path is unattributed. Reuse an
     existing pull request, and tick a checkbox only from cited discovery evidence.
 11. **Clean up only after classification.** A found worktree or branch not adopted passes the pre-removal checks of
-    [Dev Artifact Clean-Up](../dev-artifact-clean-up.md). Anomalies are never cleaned, anything not proven idle stays
+    [Dev Artifact Clean-Up](../maintenance/dev-artifact-clean-up.md). Anomalies are never cleaned, anything not proven idle stays
     and is reported, and each removal or skip is logged.
 12. **Hand each live or plan-owning nothing-found repository to [Execution](plan-execution.md).**
 

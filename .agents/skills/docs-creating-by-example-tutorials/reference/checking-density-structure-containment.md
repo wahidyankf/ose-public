@@ -1,6 +1,6 @@
 # Checking By-Example Format — Count, Density, Structure, Self-Containment
 
-Validation checklist for `apps-ayokoding-www-by-example-checker`.
+Validation checklist for `tutorial-by-example-checker`.
 
 ## 1. Example Count
 

@@ -1,16 +1,13 @@
 ---
-description: Applies validated fixes from docs-checker audit reports. Re-validates factual accuracy findings before applying changes. Use after reviewing docs-checker output.
+description: |-
+  Applies documentation checker findings after re-validating each against the current text and its recorded evidence, edits only high-confidence fixes, and records false positives and findings left for a person.
 effort: xhigh
 model: sonnet
 name: docs-fixer
 skills:
-  - docs-fixing-factual-accuracy
-  - docs-applying-content-quality
-  - docs-applying-diataxis-framework
-  - docs-validating-factual-accuracy
-  - repo-assessing-criticality-confidence
   - repo-applying-maker-checker-fixer
-  - repo-maintaining-task-lists
+  - repo-assessing-criticality-confidence
+  - docs-validating-factual-accuracy
   - repo-generating-validation-reports
 tools: |-
   Read, Glob, Grep, Write, Edit, Bash

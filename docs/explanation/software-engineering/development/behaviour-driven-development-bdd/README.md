@@ -227,7 +227,7 @@ specs/
 - Happy path scenarios for all user-facing features
 - Critical error scenarios (validation failures, permission denied)
 - Edge cases identified during Three Amigos sessions
-- A passing [Gherkin implementation review](../../../../../repo-governance/workflows/gherkin-implementation-review.md)
+- A passing [Gherkin implementation review](../../../../../repo-governance/workflows/quality/gherkin-implementation-review.md)
   after material changes to features, bindings, exemptions, or coverage machinery
 
 **PROHIBITED:**

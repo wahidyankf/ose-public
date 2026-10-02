@@ -44,7 +44,7 @@ when_to_use: "Use for documentation accuracy or plan completeness."
 ```
 1. plan-maker: Create project plan with requirements, tech-docs, delivery checklist
 2. plan-checker: Validate required sections exist, verify codebase assumptions, check technology choices
-3. plan-quality-gate repair pass: Add missing sections, fix broken file references, correct format violations
+3. plan-fixer (Plan Propagation): Add missing sections, fix broken file references, correct format violations
 ```
 
-**Note**: the plan family is the one exception to this pattern — it has no Fixer agent. `plan-quality-gate` is a [governance gate](../../../workflows/meta/workflow-identifier/governance-gate-class.md) that repairs its own frozen ledger, distinguishing structural/format issues (missing sections, broken links - repaired directly) from strategic decisions (technology choices, scope, architecture - blocked for human resolution)
+**Note**: the plan family follows the [Quality Gate Contract](../../workflow/quality-gate-contract.md): `plan-quality-gate` freezes the checker's ledger and `plan-fixer` executes Plan Propagation on it, distinguishing structural/format issues (missing sections, broken links - repaired directly) from strategic decisions (technology choices, scope, architecture - blocked for human resolution)

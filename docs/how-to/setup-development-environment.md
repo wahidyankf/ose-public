@@ -40,7 +40,7 @@ and `hippo.lock`.
 - **Full** — Every toolchain declared under `toolchains` in `repo-config.yml`, so `npm run doctor`
   reports no findings. Required for the .NET projects (`organiclever-be`, `ose-be`, `ose-id-be`,
   `crane-cli`), the Go and Java backends, FERRET, and course content in other languages. The
-  [tool inventory](../../repo-governance/workflows/infra/development-environment-setup/tool-inventory.md)
+  [tool inventory](../../repo-governance/workflows/maintenance/development-environment-setup/002-tool-inventory.md)
   lists each toolchain and where to install it.
 - **Automated** — When the read-only `npm run doctor` reports a missing or drifted toolchain, run
   `./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
@@ -168,7 +168,7 @@ libraries) and the C# project `ose-id-be`. Each pins its SDK in its own `global.
 `apps/ose-be/global.json`); doctor proves only that `dotnet --version` runs, so install that major
 version. The pre-commit formatter also needs the `fantomas` and `csharpier` global tools at the
 versions `.config/dotnet-tools.json` pins — see
-[Phase 9](../../repo-governance/workflows/infra/development-environment-setup/phase-9-dotnet-ecosystem.md).
+[Phase 9](../../repo-governance/workflows/maintenance/development-environment-setup/011-phase-9-dotnet-ecosystem.md).
 
 ```bash
 # macOS
@@ -287,7 +287,7 @@ npm run doctor
 
 Expected output: `checked <n> declared toolchains, no findings`. Each finding names a toolchain
 and `unavailable` or `probe-failed`; install it from the step above or the
-[tool inventory](../../repo-governance/workflows/infra/development-environment-setup/tool-inventory.md).
+[tool inventory](../../repo-governance/workflows/maintenance/development-environment-setup/002-tool-inventory.md).
 
 ### Test git hooks
 
@@ -329,7 +329,7 @@ app's E2E stack instead of `test:integration`.
 
 Doctor prints one line per finding, `[toolchain-validate] <id>: unavailable` or `probe-failed`.
 It reports presence only, not versions. Install the tool through the phase the
-[tool inventory](../../repo-governance/workflows/infra/development-environment-setup/tool-inventory.md)
+[tool inventory](../../repo-governance/workflows/maintenance/development-environment-setup/002-tool-inventory.md)
 names, then run `npm run doctor` again.
 
 ### Pre-push hook times out
@@ -415,7 +415,7 @@ Never hardcode version numbers in scripts — always read from these source-of-t
 
 ## Related Documentation
 
-- [Development Environment Setup Workflow](../../repo-governance/workflows/infra/development-environment-setup.md) —
+- [Development Environment Setup Workflow](../../repo-governance/workflows/maintenance/development-environment-setup.md) —
   Granular workflow with phases and success criteria. Its `scope: minimal` parameter selects
   which phases you run; the checker has no scope and always inspects every declared toolchain
 - [Reproducible Environments](../../repo-governance/development/workflow/reproducible-environments.md) —

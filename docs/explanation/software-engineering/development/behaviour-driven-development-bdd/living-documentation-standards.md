@@ -55,7 +55,7 @@ jobs:
 ```
 
 Run the repository's
-[Gherkin implementation review](../../../../../repo-governance/workflows/gherkin-implementation-review.md)
+[Gherkin implementation review](../../../../../repo-governance/workflows/quality/gherkin-implementation-review.md)
 after materially changing a feature, adapter, exemption, or coverage mechanism. It is a semantic
 review workflow, not a package script.
 

@@ -22,7 +22,7 @@ available wherever a plan finds it easier.
   code (Terraform, Ansible, and equivalent state-changing infra work) needing the real `.env`
   credentials or local infrastructure state that exist only in the primary checkout — never in a
   worktree provisioned fresh from `origin/main` — per the
-  [secret- and state-dependent infra operations rule](../../../workflows/plan/plan-execution/enter-worktree-preconditions-and-work-branch.md#0-enter-the-designated-worktree-sequential-hard-gate).
+  [secret- and state-dependent infra operations rule](../../../workflows/plan/plan-execution/014-enter-worktree-preconditions-and-work-branch.md#0-enter-the-designated-worktree-sequential-hard-gate).
   The second category is CI-IaC changing the repository's own pipeline, runner, or toolchain
   provisioning where PR self-validation is circular. Both categories are narrower than the general
   `.md`-only / explicit-go-ahead content restriction above: the exception is granted for one of

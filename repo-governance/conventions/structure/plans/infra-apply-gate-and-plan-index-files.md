@@ -12,9 +12,9 @@ real hosts, or any equivalent state-changing infra operation — MUST remain in 
 until those steps are genuinely executed and verified from the primary checkout. Zero validation
 findings is not sufficient for completion when an infra-apply step is still pending or merely
 deferred; the plan status stays `partial`. See the
-[Step 0 policy note](../../../workflows/plan/plan-execution/enter-worktree-preconditions-and-work-branch.md#0-enter-the-designated-worktree-sequential-hard-gate)
+[Step 0 policy note](../../../workflows/plan/plan-execution/014-enter-worktree-preconditions-and-work-branch.md#0-enter-the-designated-worktree-sequential-hard-gate)
 (secrets and infrastructure state live only in the primary checkout, never the worktree) and the
-[Step 8 Infra-Execution Gate](../../../workflows/plan/plan-execution/finalization-pre-archival-gates.md#8-finalization-and-archival-sequential)
+[Step 8 Infra-Execution Gate](../../../workflows/plan/plan-execution/036-finalization-pre-archival-gates.md#8-finalization-and-archival-sequential)
 for the complete policy.
 
 ## Plan Index Files

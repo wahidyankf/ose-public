@@ -583,7 +583,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       absolute machine paths, test skips/retries/sleeps, broad exclusions, and production fake settings.
       Resolve every active hit; explicit plan-history non-goals may remain.
 - [ ] [AI] Run the bounded
-      `repo-governance/workflows/api/api-quality-gate.md` twice in `mode: strict`, using
+      `repo-governance/workflows/quality/api-http-quality-gate.md` twice in `mode: strict`, using
       `.agents/agents/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
       path. Backend discovery targets `http://127.0.0.1:8501` with
       `specs/apps/ose/id-be/contracts/google-federation.openapi.yaml`, the backend federation Gherkin, and signed-out,
@@ -603,7 +603,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       `partial`, `fail`, pending lifecycle evidence, or an unchecked finding blocks this phase; a genuine
       `SG-###` is accepted into canonical specs or rejected with an explicit reason, never deferred by
       relabeling a defect.
-- [ ] [AI] Run the bounded `repo-governance/workflows/ui/ui-quality-gate.md` in `mode: strict` over the
+- [ ] [AI] Run the bounded `repo-governance/workflows/quality/ui-web-quality-gate.md` in `mode: strict` over the
       changed Google route, BFF presentation, account-security, and shared-component source paths. Invoke
       `.agents/agents/swe-ui-checker.md` once for all seven static dimensions; if it reports
       in-threshold findings, invoke `.agents/agents/swe-ui-fixer.md` once, preserve false-positive and
@@ -612,7 +612,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       status. `partial`, `fail`, pending lifecycle evidence, or unresolved original finding blocks the
       phase.
 - [ ] [AI] After visual sign-off, execute the Rule-15 in-place delivery variant described by
-      `repo-governance/workflows/web/web-ux-test-fixing-planning.md` sequentially against the running
+      `repo-governance/workflows/quality/ux-review-fix-planning.md` sequentially against the running
       `/sign-in`, `/auth/google/callback` result states, and `/account/security` journeys. Invoke
       `.agents/agents/web-exploratory-tester.md` first with canonical specs, then
       `.agents/agents/web-usability-tester.md` spec-blind, then

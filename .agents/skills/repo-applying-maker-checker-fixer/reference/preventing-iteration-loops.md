@@ -59,6 +59,6 @@ If checker and fixer disagree on the same finding for 2+ iterations, escalate to
 2. Notify user: "This finding has been re-flagged after a FALSE_POSITIVE acceptance. Manual review required."
 3. Maker resolves the root ambiguity in the relevant convention or agent
 
-**Convergence target**: Workflow should stabilize in 3-5 iterations. If not converged after 5 iterations, log a warning; after 7 iterations (default max), terminate with `partial` status.
+**Cycle ceiling**: A quality gate runs at most three cycles, per the [Quality Gate Contract](../../../../repo-governance/development/workflow/quality-gate-contract.md); a gate still finding blocking rows after its last cycle returns `FAIL`, never another cycle.
 
 **Implementation status**: All checker agents implement safeguards 1-2 (skip list + scoped re-validation). Agents with WebSearch/WebFetch also implement cached factual verification. All fixer agents implement changed files capture, FALSE_POSITIVE persistence, and self-verification. All quality gate workflows default to max-iterations=7 with escalation warning at iteration 5.

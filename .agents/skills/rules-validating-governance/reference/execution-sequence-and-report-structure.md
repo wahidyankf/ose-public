@@ -30,8 +30,8 @@ In a quality-gate invocation, the report has three top-level sections in fixed o
 2. **`## AI-Only Findings`** — output of the AI-only sub-portions of Steps 1-8 (paraphrased
    duplication, contradictions, terminology alignment, semantic principle-appropriateness, README
    content quality, etc.), each using its step's finding format.
-3. **`## Lifecycle Evidence`** — exact delegated IDs, owner surface, evidence coordinates, and
-   `verified`/`pending`/`not-applicable`; never copied into the domain finding total.
+3. **`## Deterministic Boundary`** — the declared tools the gate ran and their exit status; never copied into the
+   domain finding total.
 
 Standalone invocation retains its existing preflight/fallback report behaviour.
 

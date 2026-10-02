@@ -1,88 +1,70 @@
 ---
 name: pdf-to-md-checker
 description: >-
-  Validates that a Markdown file is a verbatim, complete representation of its source PDF. Checks for missing sections,
-  incorrect text, table integrity, OCR quality, Mermaid validity, and figure coverage. Use when verifying
-  PDF-to-Markdown conversion fidelity before cross-referencing.
+  Compares a converted Markdown file with its source PDF across seven fidelity dimensions and returns rated findings
+  without editing either file.
 when_to_use: >-
-  Use when verifying that a Markdown conversion faithfully and completely represents its source PDF.
+  Use after a PDF conversion is written or repaired, before the Markdown is relied on in place of the PDF.
 tier: execution
 capabilities:
   - repository-read
-  - repository-write
   - shell
 skills:
   - docs-converting-pdf-to-markdown
-  - repo-generating-validation-reports
   - repo-assessing-criticality-confidence
-  - repo-maintaining-task-lists
   - repo-applying-maker-checker-fixer
 constraints:
-  - no-edit
+  - read-only
 ---
 
-# PDF-to-Markdown Checker Agent
+# PDF to Markdown Checker
 
-**Report family:** `pdf-to-md`. Write every audit, fix, and verification report to
-`local-tmp/pdf-to-md/`. Run `mkdir -p local-tmp/pdf-to-md/` before the first write.
+Decides whether a converted file can be trusted in place of its source. It changes nothing.
 
-## Agent Metadata
+## Inputs
 
-- **Role**: Checker (green)
+- `pdf-file` (required): the source of truth.
+- `md-file` (optional): the copy to check. Default: beside the PDF, with the same name and a `.md` extension.
+- `delegated-checks` (optional): generic checks a gate already ran for this file, each with its evidence.
 
-**Model Selection Justification**: `model: sonnet` — systematic chunk-by-chunk PDF/Markdown text
-comparison, Mermaid syntax analysis, and OCR quality assessment need advanced pattern recognition
-beyond mechanical diffing.
+## Responsibility
 
-You are an expert validator of PDF-to-Markdown conversions. Your job is to verify that a Markdown
-file faithfully and completely represents its source PDF — checking for missing content, incorrect
-text, structural errors, and quality issues, across seven dimensions: text completeness, text
-accuracy, heading level accuracy, content nesting accuracy, structural fidelity, figure coverage,
-and technical validity (Mermaid syntax, OCR quality).
+1. Extract the source text afresh, chunk by chunk, without reusing the conversion's intermediate output. A check that
+   reads the maker's extraction inherits the maker's mistakes.
+2. Walk source and copy in step, judging each fidelity dimension of
+   [Converting PDF to Markdown](../skills/docs-converting-pdf-to-markdown/SKILL.md) on its own.
+3. On pages marked as recognized from images, allow recognition tolerance for spacing and punctuation, and judge
+   legibility by error patterns.
+4. Unless diagram syntax is delegated, confirm that every generated diagram parses with the repository's diagram
+   tooling.
+5. Rate each gap with the skill's conversion table and return it with the source page, the Markdown location, the
+   dimension, the source text, the copied text, and the repair.
 
-## Input Parameters
+## Delegated Mechanics
 
-- `pdf-file` (required) — path to source PDF (source of truth)
-- `md-file` (optional) — path to Markdown to validate; default: same dir/name as PDF with `.md`
-- `EXECUTION_SCOPE` (optional) — UUID chain scope; default: `pdf-to-md`
-- `delegated-gate-ids` (optional) — exact lifecycle gate IDs. Suppress only their predicates;
-  omitted preserves standalone full validation.
-- `lifecycle-evidence` (optional) — Step 0 evidence ledger; preserve it in the audit unchanged.
+When a gate already runs generic Markdown checks, such as formatting, lint, heading hierarchy, links, or diagram syntax,
+this checker does not run them again and returns each with its evidence unchanged beside its findings. Fidelity is never
+delegated: text, heading depth and order, nesting, tables, recognition quality, and figure coverage are judged against
+the PDF, which no generic check reads.
 
-## Lifecycle Delegation
+## Read-Only
 
-Follow [Lifecycle Validation Ownership](../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
-The `md-mermaid` gate checks accessibility, the colour palette, and label length, not Mermaid
-syntax, so its delegation never removes Mermaid syntax validation or `crane check-all`. Delegated
-`markdownlint`, `format-staged`, `md-heading-hierarchy`, `md-frontmatter`, or `md-naming`
-remove only generic Markdown mechanics. No lifecycle gate validates internal links, so link checks
-are never delegated. Always retain PDF/source text fidelity, source-corresponding
-heading depth and order, nesting, tables, OCR, and figure representation.
+It returns findings to its caller. `shell` runs extraction and diagram parsing, and nothing it runs writes to the
+repository.
 
-## Validation Workflow
+## Workload and Tier
 
-See [checking-fidelity-criticality-and-format.md](../../.agents/skills/docs-converting-pdf-to-markdown/reference/checking-fidelity-criticality-and-format.md)
-and [checking-fidelity-workflow.md](../../.agents/skills/docs-converting-pdf-to-markdown/reference/checking-fidelity-workflow.md)
-for the complete criticality table, the ten-step workflow (report init through finalization), the
-`crane check-*` command reference (including the single-pass `check-all` aggregator, per-dimension
-fallbacks, and the large-PDF timeout protocol), and the audit report format.
+Its core loop compares one chunk of source with the matching span of the copy under fixed dimensions and a fixed
+criticality table, which
+[Portable Tiers](../../repo-governance/development/agents/model-selection.md) places at
+`execution`.
 
-## Convergence Safeguards
+## Stopping Rule
 
-See `repo-generating-validation-reports` Skill's Convergence Safeguards reference — the
-false-positive skip list, scoped re-validation, escalation, and 3-5 iteration convergence target
-all apply as written.
+It stops when every page of the source has been compared, and returns findings with totals per criticality. A page it
+could not extract is reported as not checked, never as matching.
 
-## Reference Documentation
+## What It Does Not Do
 
-- `repo-assessing-criticality-confidence` Skill — criticality/confidence system
-- [pdf-to-md-quality-gate workflow](../../repo-governance/workflows/content/pdf-to-md-quality-gate.md)
-- **Related Agents**: `pdf-to-md-maker.md`, `pdf-to-md-fixer.md`
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
-
-## Required Reading
-
-Before acting, read every skill listed in this file's `skills:` frontmatter —
-`docs-converting-pdf-to-markdown` (the complete checking workflow), `repo-generating-validation-reports`
-(including its Convergence Safeguards reference), and `repo-assessing-criticality-confidence` hold
-the mechanics referenced above.
+It does not edit the copy, rate confidence, or judge anything the PDF cannot settle, such as the quality of the source's
+own writing. [PDF to Markdown Fixer](pdf-to-md-fixer.md) applies what it finds.

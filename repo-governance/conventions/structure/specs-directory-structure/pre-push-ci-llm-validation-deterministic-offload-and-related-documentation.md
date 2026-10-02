@@ -21,7 +21,7 @@ part of the active lifecycle. Semantic binding substance belongs to the Gherkin 
 
 ## LLM Semantic Validation (specs-checker)
 
-`specs-checker` validates categories that require semantic judgment: narrative coherence, terminology drift, C4 diagram consistency, cross-folder contradictions, and PM-readability compliance. See [Specs Validation Workflow](../../../workflows/specs/specs-quality-gate.md).
+`specs-checker` validates categories that require semantic judgment: narrative coherence, terminology drift, C4 diagram consistency, cross-folder contradictions, and PM-readability compliance. See [Specs Validation Workflow](../../../workflows/quality/specs-quality-gate.md).
 
 ## Deterministic Offload
 
@@ -48,4 +48,4 @@ When reviewing changes to the `specs/` directory, verify:
 - [Acceptance Criteria Convention](../../../development/infra/acceptance-criteria.md) — Gherkin writing standards for feature files
 - [File Naming Convention](../file-naming.md) — general file naming patterns
 - [Plans Organization Convention](../plans.md) — similar convention for plans/ directory structure
-- [Specs Validation Workflow](../../../workflows/specs/specs-quality-gate.md) — iterative validation workflow
+- [Specs Validation Workflow](../../../workflows/quality/specs-quality-gate.md) — iterative validation workflow

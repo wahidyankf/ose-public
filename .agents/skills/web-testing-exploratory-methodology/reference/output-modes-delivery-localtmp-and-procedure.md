@@ -6,7 +6,7 @@ Selected with `output-mode: delivery` and a `plan-path`. This mode is the single
 **rule-15 web-UI near-end three-tester retest** (see the
 [User-Facing Delivery Hardening Convention](../../../../repo-governance/development/quality/user-facing-delivery-hardening.md)
 and the
-[Web UX Test-Fixing Planning workflow](../../../../repo-governance/workflows/web/web-ux-test-fixing-planning.md)).
+[Web UX Test-Fixing Planning workflow](../../../../repo-governance/workflows/quality/ux-review-fix-planning.md)).
 Do not create a new plan folder and do not author `README`/`brd`/`prd`/`tech-docs`/`delivery`.
 Instead:
 

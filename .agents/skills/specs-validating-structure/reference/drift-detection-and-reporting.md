@@ -10,9 +10,8 @@ Use `./rhino md internal-link validate` for missing Markdown link targets (it do
 `#fragment` anchors) and
 the project `test:coverage:behaviour` target for explicit When/Then and corpus structure.
 
-In a quality-gate invocation, skip a command and any LLM substitute when its exact gate ID is in
-`delegated-gate-ids`: `specs-structure` or `governance-readme-index`. No gate owns internal links,
-so the link command above always runs. Preserve the supplied lifecycle evidence instead.
+In a quality-gate invocation, skip a command and any LLM substitute when the gate's Deterministic Boundary lists
+its property. No gate owns internal links, so the link command above always runs.
 
 Route-level drift (endpoints, contracts) is not currently implemented — the placeholder command
 files were removed in the BDD+DDD tooling gap-fill plan; re-introduction needs a new dedicated

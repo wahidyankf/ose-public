@@ -17,11 +17,11 @@ this **tie-breaker**, in order:
    written down as a new rule so the next occurrence falls under bullet 1 instead.
 3. **"Does it satisfy domain intent?" → correctness.** If neither of the above applies, and the
    question is whether the change actually does what the domain requires, it is correctness's
-   (owned by `pr-review-logic-maker`).
+   (owned by `pr-review-logic-checker`).
 
 The **architecture↔correctness boundary is the highest-risk of the three** — a new structural
 decision and a domain-behaviour question can look identical in a raw finding. The coordinator
-(`pr-review-synthesis-maker`) **owns re-categorizing a misfiled finding across this specific
+(`pr-review-checker`) **owns re-categorizing a misfiled finding across this specific
 boundary** as part of its re-categorize function; no specialist self-adjudicates its own
 tie-breaker verdict once the coordinator has reviewed it. This is the same tie-breaker every
 grey-zone ruling below applies — the seven rulings are this rule pre-resolved for seven recurring

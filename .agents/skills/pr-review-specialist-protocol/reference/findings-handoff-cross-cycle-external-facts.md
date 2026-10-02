@@ -12,7 +12,7 @@ coordinator-exclusive.
   [finding-requirements-hard-rules.md](./finding-requirements-hard-rules.md) requires — that module
   owns the finding's shape, and a finding missing any element is not ready to hand off. Findings
   below confidence 80 are hard-dropped before handoff.
-- **Hand off** those raw findings to `pr-review-synthesis-maker`, the **sole poster of record**:
+- **Hand off** those raw findings to `pr-review-checker`, the **sole poster of record**:
   it dedups across all nine disciplines, re-categorizes arch↔correctness ownership,
   reasonableness-filters, tool-verifies, and posts exactly **one consolidated review per cycle**
   via the GitHub Reviews API. There is never one review per specialist.

@@ -40,20 +40,23 @@ For a step **range**, the ordinal equals the first step:
 `05-step-5-and-6-iteration-control-and-finalization.md` passes, becoming
 `005-iteration-control-and-finalization.md`.
 
-**Known deviation, not a second rule**: four `*-quality-gate/` dirs split 2-2 —
-`in-the-field`/`swe-by-example` carry the prescribed `004-fixer.md`; `annotated-concept`/`primer`
-carry `step-4-fixer.md`, which no row licenses. Pre-existing drift.
+## Split Workflow Modules
+
+A workflow split under `repo-governance/workflows/` numbers its modules `001-`, `002-`, … in reading order, as the
+[Workflow Pattern](./workflow-pattern.md#layout) layout requires, so the two questions above do not apply there. The
+same holds for an ordered companion set elsewhere whose owner declares reading order, such as the
+[Quality Gate Contract](../../development/workflow/quality-gate-contract.md) modules.
 
 ## The Keep-Clause Is Not Vacuous
 
-`ayokoding-web-in-the-field-quality-gate/003-user-review.md` passes: its ordinal is its own step,
-with no colliding second number. Confirm non-emptiness rather than trusting that:
+A file whose ordinal is its own step, with no colliding second number, passes. Confirm that such files exist rather
+than trusting it:
 
 ```bash
 find repo-governance/workflows -regex '.*/[0-9]+-[^/]*\.md'
 ```
 
-No matches means the rule has collapsed into the ban it replaces. Returns 8 today.
+No matches means the rule has collapsed into the ban it replaces.
 
 The regex stays width-agnostic — `[0-9]+`, never `[0-9][0-9][0-9]` — because its job is to find
 every ordinal, including one whose width breaks the rule below. A glob pinned to the prescribed

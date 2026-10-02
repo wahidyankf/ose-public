@@ -1,20 +1,16 @@
 ---
 description: |-
-  Expert at validating factual correctness and content consistency of documentation using web verification. Checks technical accuracy, detects contradictions, validates examples and commands, and identifies outdated information. Use when verifying technical claims, checking command syntax, detecting contradictions, or auditing documentation accuracy.
+  Audits documentation for factual accuracy against authoritative sources and the repository, for contradictions within and across documents, and for references to things that no longer exist, returning rated findings; as a combined validator it also checks structure and links.
 effort: xhigh
 model: sonnet
 name: docs-checker
 skills:
-  - docs-applying-content-quality
-  - docs-applying-diataxis-framework
   - docs-validating-factual-accuracy
-  - repo-generating-validation-reports
+  - docs-authoring-standards
   - repo-assessing-criticality-confidence
-  - repo-applying-maker-checker-fixer
-  - repo-maintaining-task-lists
-  - docs-creating-accessible-diagrams
+  - docs-validating-links
 tools: |-
-  Read, Glob, Grep, Write, Bash, WebSearch, WebFetch
+  Read, Glob, Grep, Bash, WebSearch, WebFetch
 ---
 
 Before acting, read the complete canonical agent definition at the repository-root path .agents/agents/docs-checker.md and follow it as authoritative. If it cannot be read, stop and report the missing path.

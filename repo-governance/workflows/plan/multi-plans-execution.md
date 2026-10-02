@@ -33,16 +33,16 @@ Each plan retains its normal specialist ownership; final implementation verifica
 
 ## Contents
 
-- [Purpose & Mode](./multi-plans-execution/purpose-scope-and-execution-mode.md) — when to use, orchestrator.
-- [Relationship & Concurrency](./multi-plans-execution/relationship-and-concurrency-model.md) — inherited vs. added.
-- [Phase A — Scope](./multi-plans-execution/phase-a-scope-and-nodes.md) — A1-A3.
-- [Phase A — Frozen Scope Recovery](./multi-plans-execution/phase-a-frozen-scope-recovery.md) — durable selection and promotion state.
-- [Phase A — Edges](./multi-plans-execution/phase-a-edges-report-and-diagram.md) — A4-A7.
-- [Phase B — Tasks](./multi-plans-execution/phase-b-union-task-list.md) — B1-B5.
-- [Phase C — Scheduler](./multi-plans-execution/phase-c-ready-queue-scheduler.md) — C1-C6.
-- [Phase D — Lifecycle](./multi-plans-execution/phase-d-lifecycle-and-failure-isolation.md) — D1-D4.
-- [Phase D — Capture](./multi-plans-execution/phase-d-knowledge-capture-and-finalization.md) — D5-D6.
-- [Iron Rules & Termination](./multi-plans-execution/iron-rules-and-termination-criteria.md) — 8 rules.
-- [Example Usage](./multi-plans-execution/example-usage.md) — six patterns.
-- [Safety & Related](./multi-plans-execution/safety-related-workflows-and-principles.md) — guardrails, links.
-- [Conventions & Notes](./multi-plans-execution/conventions-and-notes.md) — governance, recap.
+- [Purpose & Mode](./multi-plans-execution/001-purpose-scope-and-execution-mode.md) — when to use, orchestrator.
+- [Relationship & Concurrency](./multi-plans-execution/002-relationship-and-concurrency-model.md) — inherited vs. added.
+- [Phase A — Scope](./multi-plans-execution/003-phase-a-scope-and-nodes.md) — A1-A3.
+- [Phase A — Frozen Scope Recovery](./multi-plans-execution/004-phase-a-frozen-scope-recovery.md) — durable selection and promotion state.
+- [Phase A — Edges](./multi-plans-execution/005-phase-a-edges-report-and-diagram.md) — A4-A7.
+- [Phase B — Tasks](./multi-plans-execution/006-phase-b-union-task-list.md) — B1-B5.
+- [Phase C — Scheduler](./multi-plans-execution/007-phase-c-ready-queue-scheduler.md) — C1-C6.
+- [Phase D — Lifecycle](./multi-plans-execution/008-phase-d-lifecycle-and-failure-isolation.md) — D1-D4.
+- [Phase D — Capture](./multi-plans-execution/009-phase-d-knowledge-capture-and-finalization.md) — D5-D6.
+- [Iron Rules & Termination](./multi-plans-execution/010-iron-rules-and-termination-criteria.md) — 8 rules.
+- [Example Usage](./multi-plans-execution/011-example-usage.md) — six patterns.
+- [Safety & Related](./multi-plans-execution/012-safety-related-workflows-and-principles.md) — guardrails, links.
+- [Conventions & Notes](./multi-plans-execution/013-conventions-and-notes.md) — governance, recap.

@@ -44,7 +44,7 @@ is fixed rather than tolerated.
 ## Verification
 
 Invariant 6 of the
-[harness compatibility quality gate](../../../workflows/harness/harness-compatibility-quality-gate.md)
+[harness compatibility quality gate](../../../workflows/quality/harness-quality-gate.md)
 checks this rule.
 
 ## Related Documents

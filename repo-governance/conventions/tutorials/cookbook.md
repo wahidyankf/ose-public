@@ -31,7 +31,7 @@ This convention extends the [Tutorials Convention](../tutorials/general.md) for 
 
 This convention implements and respects:
 
-- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)**: Automated validation via apps-ayokoding-www-general-checker agent
+- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)**: Automated validation via content-checker agent
 - **[Progressive Disclosure](../../principles/content/progressive-disclosure.md)**: Recipes organized by problem complexity within categories
 - **[Accessibility First](../../principles/content/accessibility-first.md)**: Color-blind friendly diagrams and accessible formatting
 - **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: Clear problem statements and complete, runnable code

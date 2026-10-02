@@ -28,4 +28,4 @@ when_to_use: "Read when determining whether a question about By-Concept tutorial
 - **General tutorial standards** - Covered in [Tutorials Convention](../general.md)
 - **Tutorial naming** - Covered in [Tutorial Naming Convention](../naming.md)
 - **Code quality** - Source code standards in development conventions
-- **Tutorial validation** - Covered by apps-ayokoding-www-general-checker agent
+- **Tutorial validation** - Covered by content-checker agent

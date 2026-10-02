@@ -29,12 +29,12 @@ ALL checker agents MUST write their validation/audit reports to their own `local
 
 1. rules-checker
 2. repo-workflow-checker
-3. apps-ayokoding-www-general-checker
-4. apps-ayokoding-www-by-example-checker
-5. apps-ayokoding-www-in-the-field-checker
-6. apps-ayokoding-www-facts-checker
+3. content-checker
+4. tutorial-by-example-checker
+5. tutorial-in-the-field-checker
+6. content-checker
 7. apps-ayokoding-www-link-checker
-8. apps-ose-www-content-checker
+8. content-checker
 9. docs-checker
 10. docs-tutorial-checker
 11. docs-link-checker
@@ -47,16 +47,16 @@ ALL checker agents MUST write their validation/audit reports to their own `local
 18. swe-code-checker
 19. ci-checker
 20. swe-ui-checker
-21. harness-compatibility-checker
+21. harness-checker
 
-> **Harness compatibility (Phase 0 + Phase 1)**: `harness-compatibility-checker`
-> (green) and `harness-compatibility-fixer` (yellow) validate both internal
+> **Harness compatibility (Phase 0 + Phase 1)**: `harness-checker`
+> (green) and `harness-fixer` (yellow) validate both internal
 > cross-vendor parity invariants (Phase 0: governance prose vendor-neutrality;
 > AGENTS.md / CLAUDE.md vendor-neutrality; binding sync no-op; agent inventory parity;
 > color-translation map and capability-tier map coverage) and external harness drift
 > (Phase 1: per-harness web-research-backed comparison against upstream docs). They
 > are orchestrated by the
-> [`harness-compatibility-quality-gate` workflow](../../../workflows/harness/harness-compatibility-quality-gate.md).
+> [`harness-quality-gate` workflow](../../../workflows/quality/harness-quality-gate.md).
 > The fixer auto-remediates only Phase 0 sync drift and unambiguous catalog updates;
 > all other invariant violations and ambiguous findings are surfaced for human
 > resolution.

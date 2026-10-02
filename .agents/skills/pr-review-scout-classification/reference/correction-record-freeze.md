@@ -8,8 +8,8 @@ human reads it first. Record the omission.
 
 **The test is who wrote it, not where it lives.** This is not generated-file filtering: these files
 are excluded because the loop **wrote** them, not because a tool emitted them. A `plans/**` glob is
-only a proxy for that, and the proxy fails in one direction — a plan document a human pushes at
-cycle 5 matches the glob, was never in a cycle-1 brief, and would otherwise be reviewed by no cycle
+only a proxy for that, and the proxy fails in one direction — a plan document a human pushes in
+cycle 3 matches the glob, was never in a cycle-1 brief, and would otherwise be reviewed by no cycle
 at all. Reviewing it once restores the guarantee below without reopening the loop's own record.
 
 **Why the freeze exists.** A loop whose scope contains its own correction record reviews the
@@ -26,11 +26,11 @@ Two carve-outs, both narrower than the freeze:
   `specs/**` file turns a plans-only PR into a mixed one mid-loop, and the carve-out lapses from
   that cycle on.
 - **Security-sensitive content** — a `plans/**` hunk falling anywhere in
-  `pr-review-security-maker`'s charter stays in the **shared** brief regardless of cycle — the
+  `pr-review-security-checker`'s charter stays in the **shared** brief regardless of cycle — the
   scout hands every specialist one identical brief, so there is no per-specialist copy to add it
   to.
   That is the **whole** charter as stated in
-  [`pr-review-security-maker`'s own Owns section](../../../agents/pr-review/pr-review-security-maker.md),
+  [`pr-review-security-checker`'s own Owns section](../../../agents/pr-review-security-checker.md),
   read by reference and never copied here — a copy drifts, and a drifted copy silently narrows or
   widens what stays reviewable. Naming a shortlist would leave the rest reviewed once and then
   frozen out. The freeze is a noise-control device and never narrows a security charter.

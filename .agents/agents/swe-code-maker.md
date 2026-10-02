@@ -62,7 +62,7 @@ hand-off says so. A browser end-to-end suite counts as a stack here, with
    check
    [Behaviour Change Verification](../../repo-governance/development/quality/manual-behavioural-verification.md)
    still requires of the change, and every README or document the change leaves stale, per
-   [Docs Propagation](../../repo-governance/workflows/docs/docs-propagation.md), so the caller can route it to
+   [Docs Propagation](../../repo-governance/workflows/quality/docs-propagation.md), so the caller can route it to
    Docs Maker or run that workflow before committing.
 
 ## Shell

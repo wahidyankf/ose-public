@@ -7,7 +7,7 @@ platform-binding catalog with upstream harness conventions that have since moved
 
 ## Problem / context
 
-A `repo-harness-compatibility-checker` run at ose-public commit `6aea08047` found several catalog rows
+A harness compatibility checker run at ose-public commit `6aea08047` found several catalog rows
 describing upstream harness conventions that have since drifted. The catalog decides which binding
 files this repo emits and which instruction surfaces each vendor reads, so a stale row is not
 cosmetic — it can mean shipping a binding file a harness no longer reads or omitting one it now
@@ -81,8 +81,8 @@ vanishes on clean), so the evidence exists now but decays as vendors keep changi
   catalog implements. [multi-harness-binding](../../../repo-governance/conventions/structure/multi-harness-binding.md)
 - **Platform Bindings reference** — the catalog document itself, the primary artifact this triage
   reconciles. [platform-bindings](../../../docs/reference/platform-bindings.md)
-- **harness-compatibility-checker** — the agent whose 2026-07-20 run produced the drift findings
-  being triaged. [checker agent](../../../.agents/agents/harness-compatibility-checker.md)
+- **harness-checker** — the agent whose 2026-07-20 run produced the drift findings
+  being triaged. [checker agent](../../../.agents/agents/harness-checker.md)
 
 ## Proposed direction (sketch)
 
@@ -114,7 +114,7 @@ catalog); any Phase 0 parity work (already green).
 ## What success looks like + promotion signal
 
 Success: the surviving cautionary note is carried into whatever governs the next
-`repo-harness-compatibility-checker` run, so no future reader trusts an audit summary over its report
+harness compatibility checker run, so no future reader trusts an audit summary over its report
 body. There is no longer a promotion signal tied to re-verifying the Windsurf/Devin, Codex CLI, or
 Copilot rows — the first and third are moot and the second is done. Promote only if a fresh audit
 produces a new drift set worth triaging.

@@ -25,11 +25,11 @@ when_to_use: "Use to identify which fixer agent to use."
 
 **Examples**:
 
-| Agent                               | Fixes                                               | Generates Report                                              | Tools Used            |
-| ----------------------------------- | --------------------------------------------------- | ------------------------------------------------------------- | --------------------- |
-| repo-workflow-fixer                 | Workflow violations from repo-workflow-checker      | `repo-rules__{uuid-chain}__{timestamp}__fix.md`               | Bash (not Edit/Write) |
-| apps-ayokoding-www-general-fixer    | General Next.js content issues from general-checker | `ayokoding-web__{uuid-chain}__{timestamp}__fix.md`            | Edit, Write, Bash     |
-| apps-ayokoding-www-by-example-fixer | By-example tutorial issues from by-example-checker  | `ayokoding-web-by-example__{uuid-chain}__{timestamp}__fix.md` | Edit, Write, Bash     |
-| readme-fixer                        | README quality issues from readme-checker           | `readme__{uuid-chain}__{timestamp}__fix.md`                   | Edit, Write, Bash     |
+| Agent                     | Fixes                                               | Generates Report                                              | Tools Used            |
+| ------------------------- | --------------------------------------------------- | ------------------------------------------------------------- | --------------------- |
+| repo-workflow-fixer       | Workflow violations from repo-workflow-checker      | `repo-rules__{uuid-chain}__{timestamp}__fix.md`               | Bash (not Edit/Write) |
+| content-fixer             | General Next.js content issues from general-checker | `ayokoding-web__{uuid-chain}__{timestamp}__fix.md`            | Edit, Write, Bash     |
+| tutorial-by-example-fixer | By-example tutorial issues from by-example-checker  | `ayokoding-web-by-example__{uuid-chain}__{timestamp}__fix.md` | Edit, Write, Bash     |
+| readme-fixer              | README quality issues from readme-checker           | `readme__{uuid-chain}__{timestamp}__fix.md`                   | Edit, Write, Bash     |
 
 **Note**: `repo-workflow-fixer` is a special case that uses bash commands (sed, awk, cat) instead of Edit/Write tools for file modifications. It still needs bash for report generation and timestamps.

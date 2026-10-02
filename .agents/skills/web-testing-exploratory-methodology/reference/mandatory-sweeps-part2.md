@@ -25,6 +25,6 @@ Before writing up, run one explicit critic pass over the matrices: "which contro
 breakpoint, edge state, or declared invariant did I NOT enumerate?" Any blank cell is either filled or
 recorded under "areas not covered" with the reason — silent omission reads as "all clear" when it is
 not. (When this agent runs inside the
-[Web UX Test-Fixing Planning workflow](../../../../repo-governance/workflows/web/web-ux-test-fixing-planning.md),
+[Web UX Test-Fixing Planning workflow](../../../../repo-governance/workflows/quality/ux-review-fix-planning.md),
 that workflow also carries a cross-tester completeness critic and a recurrence/diff-since-last-run
 pass.)

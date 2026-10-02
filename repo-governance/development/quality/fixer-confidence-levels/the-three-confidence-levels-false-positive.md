@@ -23,7 +23,7 @@ when_to_use: "Use when deciding whether a finding is a false positive."
 - Checker reported missing field that actually exists (case sensitivity issue)
 - Checker misinterpreted file content (wrong pattern match)
 
-**apps-ayokoding-www-general-fixer:**
+**content-fixer:**
 
 - Checker flagged overview.md in English folder but file is correct (checker confused /en/ with /id/)
 - Checker flagged missing ikhtisar.md in blogging content (learning-only rule applied to wrong directory)
@@ -35,7 +35,7 @@ when_to_use: "Use when deciding whether a finding is a false positive."
 - Checker reported missing diagram but diagram exists (different Mermaid syntax or placement)
 - Checker misinterpreted tutorial type (tutorial follows convention correctly)
 
-**apps-ose-www-content-fixer:**
+**content-fixer:**
 
 - Checker flagged Next.js MDX link as broken (doesn't recognize component-style link syntax)
 - Checker applied post validation rules to static page (about.md doesn't need date field)

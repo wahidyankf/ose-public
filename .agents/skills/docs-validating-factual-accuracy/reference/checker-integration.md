@@ -48,7 +48,7 @@ Three agents implement this methodology end-to-end (check → finding → fix):
 
 - **docs-checker** — Validates documentation factual accuracy
 - **docs-tutorial-checker** — Validates tutorial factual accuracy
-- **apps-ayokoding-www-facts-checker** — Validates ayokoding-web factual accuracy
+- **content-checker** — Validates ayokoding-web factual accuracy
 
 All use the same validation workflow and confidence classification.
 

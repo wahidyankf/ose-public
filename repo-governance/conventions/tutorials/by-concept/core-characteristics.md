@@ -41,7 +41,7 @@ Sections prioritize:
 - Platform-specific advanced features
 - Deprecated features
 
-**Coverage verification**: The apps-ayokoding-www-general-checker agent validates coverage against comprehensive checklists for each language/framework.
+**Coverage verification**: The content-checker agent validates coverage against comprehensive checklists for each language/framework.
 
 ## 3. Section Count: 40-60 Total
 

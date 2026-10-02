@@ -433,7 +433,7 @@ proof, and GraphQL/MCP remain genuinely deferred.
       `repo-governance/development/infra/nx-targets/mandatory-targets-cli-e2e.md`,
       `repo-governance/development/infra/nx-targets/mandatory-targets-behaviour-coverage.md`,
       `repo-governance/development/infra/nx-targets/tag-convention-current-tags-and-examples.md`,
-      `repo-governance/workflows/infra/development-environment-setup/phase-6-python-ecosystem.md`,
+      `repo-governance/workflows/maintenance/development-environment-setup/008-phase-6-python-ecosystem.md`,
       `repo-config.yml`, and `scripts/behaviour-coverage.mjs` plus its test. Mark
       a path no-edit with inspected evidence when Plan 01 already suffices. GraphQL and MCP surfaces are
       excluded.
@@ -454,7 +454,7 @@ proof, and GraphQL/MCP remain genuinely deferred.
       declared by this delivery and record every frozen input, manifest row, finding, fix, and final status.
       Do not invoke `rules-quality-gate`; it requires a separate user-named invocation or an authorized
       rules-grooming Step 8 and is not authorized by this product plan.
-- [ ] [AI] **Sibling obligation:** record cloud deployment as a separately authorized future `ose-private` plan;
+- [ ] [AI] **Sibling obligation:** record cloud deployment as a separately authorized future private infrastructure plan;
       make no private-repository mutation or parity claim.
 
 ### Documentation, Manual, and Exploratory Proof

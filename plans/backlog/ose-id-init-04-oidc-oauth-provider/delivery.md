@@ -507,7 +507,7 @@ are green without merging or archiving yet.
 ### Manual Retests and Trace Reconciliation
 
 - [ ] [AI] Repeat the API assertions from Phase 3 against the final build, then execute the complete
-      [UI Quality Gate](../../../repo-governance/workflows/ui/ui-quality-gate.md) in `strict` mode for
+      [UI Quality Gate](../../../repo-governance/workflows/quality/ui-web-quality-gate.md) in `strict` mode for
       the backend-rendered `GET /connect/logout` confirmation and cancellation surface. Its immutable
       scope is PRD Option A, the HTML/form contract in `tech-docs/005-api-contract-delta.md`, and
       `ID04-LOGOUT-001/002`. Invoke `.agents/agents/swe-ui-checker.md`; route each validated finding
@@ -533,7 +533,7 @@ are green without merging or archiving yet.
       `.agents/agents/web-exploratory-tester.md`, then
       `.agents/agents/web-usability-tester.md`, then
       `.agents/agents/web-design-tester.md` via the
-      [Web UX Test-Fixing Planning workflow](../../../repo-governance/workflows/web/web-ux-test-fixing-planning.md).
+      [Web UX Test-Fixing Planning workflow](../../../repo-governance/workflows/quality/ux-review-fix-planning.md).
       Give each `output-mode: delivery`, this executing plan's `plan-path`, and the immutable logout
       scope above. Append every `EWT-###`, `UWT-###`, and `DWT-###` defect as an unchecked delivery task;
       route one bounded source-fix pass to the owning C# UI adapter or `swe-ui-fixer`, rebuild, and rerun
@@ -547,10 +547,10 @@ are green without merging or archiving yet.
 ### Mandatory API Quality Gate and Rule-16 Protocol Session
 
 Run this section after local gates and final manual API assertions, and before the Phase 4 gate. Follow
-the [API Quality Gate workflow](../../../repo-governance/workflows/api/api-quality-gate.md), including
-its [discovery](../../../repo-governance/workflows/api/api-quality-gate/step-1-discovery.md),
-[fix](../../../repo-governance/workflows/api/api-quality-gate/step-3-fix.md), and
-[verification](../../../repo-governance/workflows/api/api-quality-gate/step-4-verification.md) bounds.
+the [API Quality Gate workflow](../../../repo-governance/workflows/quality/api-http-quality-gate.md), including
+its [discovery](../../../repo-governance/workflows/quality/api-http-quality-gate.md),
+[fix](../../../repo-governance/workflows/quality/api-http-quality-gate.md), and
+[verification](../../../repo-governance/workflows/quality/api-http-quality-gate.md) bounds.
 The API gate applies only to the three internal JSON REST operations backed by OpenAPI. The standards
 endpoints are OIDC/OAuth protocol operations, not generic REST, so a separate protocol-conformance
 session below uses discovery and the protocol packets as ground truth and does not claim API-gate

@@ -51,10 +51,8 @@ See `repo-assessing-criticality-confidence` Skill for complete priority matrix.
 
 ## Lifecycle-Owned Predicates
 
-Preserve supplied `delegated-gate-ids` and evidence. Skip exact delegated predicates; missing/stale
-evidence remains pending. After edits, invalidate evidence whose registered scope intersects the
-changes. Without a handoff, suppress nothing. See the
-[lifecycle ownership policy](../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
+Never fix a property a declared tool already checks; run the tool instead, as the
+[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md) sets out.
 
 ## Fix Capabilities
 
@@ -69,18 +67,11 @@ changes. Without a handoff, suppress nothing. See the
 | Missing focus-visible        | Yes           | Replace focus: with focus-visible:         |
 | Non-accessible color         | Partial       | Suggest replacement from semantic tokens   |
 
-## Bounded Quality-Gate Role
-
-For `ui-quality-gate`, process validated in-threshold discovery findings once. Return finding IDs,
-affected components, and updated evidence. Never invoke the checker, repeat fixing, or expand scope;
-the workflow owns verification.
-
 ## When to Use This Agent
 
 **Use when**:
 
 - After running swe-ui-checker and reviewing the audit report
-- As part of the ui-quality-gate workflow
 - Automated fixing of known patterns is needed
 
 **Do NOT use for**:

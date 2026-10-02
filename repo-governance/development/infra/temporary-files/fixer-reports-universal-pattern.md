@@ -7,7 +7,7 @@ when_to_use: Use when a fixer agent generates its fix report.
 
 Continues [Report File Naming Standard — Repository Audit and Link Validation Reports](./report-file-naming-early-report-types.md).
 
-**Agents**: All fixer agents (repo-workflow-fixer, apps-ayokoding-www-general-fixer, apps-ayokoding-www-by-example-fixer, apps-ayokoding-www-facts-fixer, apps-ayokoding-www-in-the-field-fixer, apps-ayokoding-www-link-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, apps-ose-www-content-fixer, readme-fixer, docs-fixer, specs-fixer, harness-compatibility-fixer)
+**Agents**: All fixer agents (repo-workflow-fixer, content-fixer, tutorial-by-example-fixer, content-fixer, tutorial-in-the-field-fixer, apps-ayokoding-www-link-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, content-fixer, readme-fixer, docs-fixer, specs-fixer, harness-fixer)
 
 **Pattern**: `{agent-family}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__fix.md`
 

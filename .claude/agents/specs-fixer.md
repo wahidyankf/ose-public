@@ -1,15 +1,14 @@
 ---
-description: Applies validated fixes from specs-checker audit reports for explicitly listed spec folders. Re-validates findings before applying. Use after reviewing specs-checker output.
-effort: high
-model: opus
+description: |-
+  Applies specification checker findings inside the folders that audit covered, after re-validating each one, repairs only structure a rule settles, and records what it fixed, disproved, and left for a person.
+effort: xhigh
+model: sonnet
 name: specs-fixer
 skills:
   - specs-validating-structure
-  - repo-generating-validation-reports
-  - repo-assessing-criticality-confidence
-  - docs-applying-content-quality
-  - repo-maintaining-task-lists
   - repo-applying-maker-checker-fixer
+  - repo-assessing-criticality-confidence
+  - repo-generating-validation-reports
 tools: |-
   Read, Glob, Grep, Write, Edit, Bash
 ---

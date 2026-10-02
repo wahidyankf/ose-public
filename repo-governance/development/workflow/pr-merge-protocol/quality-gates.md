@@ -13,15 +13,15 @@ pre-commit, pre-push, or PR CI merely to satisfy this protocol.
 
 Changed reachable behaviour may also require a finite surface gate:
 
-| Surface                   | Required result                                              |
-| ------------------------- | ------------------------------------------------------------ |
-| UI                        | The applicable static and running-UI gates pass              |
-| API                       | The API quality gate passes against the running endpoint     |
-| Other reachable behaviour | Its interface is exercised and the result recorded           |
-| No reachable behaviour    | An explicit exemption identifies why no surface gate applies |
+| Surface                   | Required result                                                                           |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| UI                        | The UI web gate returns `PASS` or `PASS_WITH_FINDINGS`; the running-UI triad retests pass |
+| API                       | The API HTTP gate returns `PASS` or `PASS_WITH_FINDINGS` on the endpoint                  |
+| Other reachable behaviour | Its interface is exercised and the result recorded                                        |
+| No reachable behaviour    | An explicit exemption identifies why no surface gate applies                              |
 
 Every push first passes the private push leak review of each outgoing commit, and every PR runs one
-focused [`pr-leak-review`](../../../workflows/pr/pr-leak-review.md) against its exact current head.
+focused [`pr-leak-review`](../../../workflows/quality/pr-leak-review.md) against its exact current head.
 Only authenticated `ose-pr-leak-review:v1` `pass` evidence counts, and the hosted
 `pr-leak-review.yml` publishes it as the required `leak-review` commit status on that head. Missing,
 stale, failed, or findings-bearing evidence blocks merge; a fix triggers one new pass, never a
@@ -34,8 +34,8 @@ two-clean streak. Its scope is defined by the canonical
 conditional on changed reachable behaviour; broad semantic review remains optional.
 
 These gates complement PR CI; they do not create a broad semantic-review requirement. Optional
-[`pr-review`](../../../workflows/pr/pr-review.md) and
-[`pr-review-cycle`](../../../workflows/pr/pr-review-cycle.md) runs are user-invoked review tools,
+[`pr-review`](../../../workflows/quality/pr-review.md) and
+[`pr-review-quality-gate`](../../../workflows/quality/pr-review-quality-gate.md) runs are user-invoked review tools,
 not merge gates by default.
 
 ## Leak Finding Remediation

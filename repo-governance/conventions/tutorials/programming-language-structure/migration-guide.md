@@ -69,4 +69,4 @@ Follow [By Example Tutorial Convention](../swe-by-example.md) to create 75-90 an
 
 **Step 6: Validate**
 
-Run `apps-ayokoding-www-by-example-checker` to verify structure and content quality.
+Run `tutorial-by-example-checker` to verify structure and content quality.

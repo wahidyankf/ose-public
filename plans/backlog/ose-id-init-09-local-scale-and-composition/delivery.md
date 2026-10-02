@@ -206,7 +206,7 @@ target/configuration, or unrelated failure blocks Phase 2.
       `rtk rg -n "ose-id|3500|8501|local-stack|dependency" AGENTS.md repo-governance repo-config.yml .claude docs/reference`
       and record every target/port/dependency-graph rule surface with `no-change` or canonical-home action
       at `evidence/phase-0-rules-impact.md`. A required normative/enforcement change stops before editing
-      and instantiates `repo-governance/workflows/rules/rules-propagation.md`; unresolved classification
+      and instantiates `repo-governance/workflows/quality/rules-propagation.md`; unresolved classification
       blocks the Phase 0 gate.
 
 ### Phase 0 Gate
@@ -620,7 +620,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       descriptor/control/cleanup Unit, Integration, and E2E matrices, and preserve exact exit/status plus
       zero-resource or empty-residue evidence. The REST/GraphQL-specific API gate must not be claimed as
       proof of the command/control-file contract.
-- [ ] [AI] Run the bounded `repo-governance/workflows/api/api-quality-gate.md` in `mode: strict` against
+- [ ] [AI] Run the bounded `repo-governance/workflows/quality/api-http-quality-gate.md` in `mode: strict` against
       the unchanged live HTTP surfaces through the no-affinity proxies. Invoke
       `.agents/agents/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
       path: backend base `http://127.0.0.1:8501` plus
@@ -638,7 +638,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       commands, sanitized evidence, `final-status`, and `lifecycle-status`. `partial`, `fail`, pending
       lifecycle evidence, an unchecked finding, or contract drift blocks delivery. Accept or reject every
       genuine `SG-###` explicitly; never relabel a defect to defer it.
-- [ ] [AI] Record the static `repo-governance/workflows/ui/ui-quality-gate.md` disposition. It is not
+- [ ] [AI] Record the static `repo-governance/workflows/quality/ui-web-quality-gate.md` disposition. It is not
       applicable only while the reconciled diff changes no component, token, style, responsive layout,
       accessibility behavior, or UI primitive. Shared session/readiness/proxy code alone does not create
       a static UI surface. If execution touches any such UI source, the exemption ends: run
@@ -646,7 +646,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       `.agents/agents/swe-ui-fixer.md` at most once for validated in-threshold findings, then one
       scoped checker verification; record report paths, IDs, lifecycle status, and require `pass`.
 - [ ] [AI] Execute the Rule-15 in-place delivery variant described by
-      `repo-governance/workflows/web/web-ux-test-fixing-planning.md` sequentially against the running OSE
+      `repo-governance/workflows/quality/ux-review-fix-planning.md` sequentially against the running OSE
       sign-in/authorization/account/company-admin handoffs and the synthetic dependent app's identity-
       unavailable state. Invoke `.agents/agents/web-exploratory-tester.md` first with canonical specs,
       `.agents/agents/web-usability-tester.md` second and spec-blind, and

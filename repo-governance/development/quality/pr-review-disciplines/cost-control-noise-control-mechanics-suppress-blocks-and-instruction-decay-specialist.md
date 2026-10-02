@@ -20,8 +20,8 @@ review quality.
 
 Instruction-decay — a framework, build-tool, package-manager, env-var, or CI change in the diff that
 is not reflected in `AGENTS.md`/`CLAUDE.md`/`.claude/` — gets its own dedicated eighth specialist,
-`pr-review-instruction-maker`, rather than being folded into `pr-review-governance-maker`.
-`pr-review-governance-maker` checks conformance to the documented rules; it does not check whether
-those rules themselves have gone stale against a changed toolchain. `pr-review-instruction-maker`
+`pr-review-instruction-checker`, rather than being folded into `pr-review-governance-checker`.
+`pr-review-governance-checker` checks conformance to the documented rules; it does not check whether
+those rules themselves have gone stale against a changed toolchain. `pr-review-instruction-checker`
 also penalizes instruction bloat — generic filler that adds no enforceable rule. It does not police
 file length: the word-budget gate owns that, and owns it deterministically.

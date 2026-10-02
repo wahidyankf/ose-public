@@ -17,7 +17,7 @@ This document records the architectural decision to use native toolchain managem
 ## Related Documentation
 
 - [Reproducible Environments](../workflow/reproducible-environments.md) — broader reproducibility practices (Volta, lockfiles, Docker for services).
-- [Development Environment Setup](../../workflows/infra/development-environment-setup.md) — workflow for setting up a development environment.
+- [Development Environment Setup](../../workflows/maintenance/development-environment-setup.md) — workflow for setting up a development environment.
 - Native Dev Setup Improvements Plan — completed plan that implemented the retired in-tree Doctor's `--fix` mode; `./rhino toolchain provision --apply` now runs only the provision vectors `repo-config.yml` toolchain entries declare.
 
 ## When to Revisit This Decision

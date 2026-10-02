@@ -1,6 +1,6 @@
 # Checking By-Example Format — Grouping, Compliance, Diagrams, Examples-by-Level
 
-Validation checklist for `apps-ayokoding-www-by-example-checker` (continued).
+Validation checklist for `tutorial-by-example-checker` (continued).
 
 ## 5. Example Grouping
 

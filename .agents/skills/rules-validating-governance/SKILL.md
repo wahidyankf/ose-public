@@ -31,9 +31,8 @@ governance layers, agent/Skill duplication, and software-engineering documentati
 
 ## Core Principles
 
-**Lifecycle ownership**: in `rules-quality-gate`, exact `delegated-gate-ids` are omitted from the
-domain scan. Missing/stale evidence is `pending`, never a local rerun or AI imitation. Retained
-layer-coherence and traceability checks remain domain findings. Standalone behaviour is unchanged.
+**Deterministic boundary**: in `rules-quality-gate`, every property the gate's Deterministic Boundary lists is
+left to its declared tool. Retained layer-coherence and traceability checks remain domain findings.
 **Progressive writing**: every finding is written immediately, never buffered — Step 8
 (~265 files) is the step most likely to be interrupted by compaction. **Conservative
 consolidation**: when uncertain whether Skills should merge, recommend KEEP SEPARATE.

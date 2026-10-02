@@ -30,7 +30,7 @@ when_to_use: "Read when you need to confirm whether a topic falls inside this co
 - **General tutorial standards** - Covered in [Tutorials Convention](../general.md)
 - **Tutorial naming** - Covered in [Tutorial Naming Convention](../naming.md)
 - **Code quality** - Source code standards in development conventions
-- **Tutorial validation** - Covered by apps-ayokoding-www-by-example-checker agent
+- **Tutorial validation** - Covered by tutorial-by-example-checker agent
 
 ## Related Documentation
 
@@ -43,12 +43,12 @@ when_to_use: "Read when you need to confirm whether a topic falls inside this co
 ## Related Agents
 
 - [apps-ayokoding-www-by-example-maker](../../../../.agents/agents/apps-ayokoding-www-by-example-maker.md) — Creates by-example content
-- [apps-ayokoding-www-by-example-checker](../../../../.agents/agents/apps-ayokoding-www-by-example-checker.md) — Validates by-example standards
-- [apps-ayokoding-www-by-example-fixer](../../../../.agents/agents/apps-ayokoding-www-by-example-fixer.md) — Applies validated fixes
+- [tutorial-by-example-checker](../../../../.agents/agents/tutorial-by-example-checker.md) — Validates by-example standards
+- [tutorial-by-example-fixer](../../../../.agents/agents/tutorial-by-example-fixer.md) — Applies validated fixes
 
 ## Related Workflows
 
-- [ayokoding-web-swe-by-example-quality-gate](../../../workflows/ayokoding-web/ayokoding-web-swe-by-example-quality-gate.md) — Quality assurance workflow for by-example tutorials
+- [tutorial-by-example-quality-gate](../../../workflows/quality/tutorial-by-example-quality-gate.md) — Quality assurance workflow for by-example tutorials
 
 ## Related agent skills
 

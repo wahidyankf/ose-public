@@ -8,7 +8,7 @@ Every finding this agent posts MUST carry all of the following. A finding missin
    a defect here; do not raise it. A defect **this PR introduces** is always in scope, however far
    from the stated problem. When scope is absent, vague, or contradicted by the diff, raise that
    as a finding against the body rather than inferring a boundary. See
-   [Scope Guard](../../../../repo-governance/workflows/pr/pr-review-cycle/scope-guard-no-scope-creep.md).
+   [Scope Guard](../../../../repo-governance/development/quality/pr-review-disciplines/scope-guard.md).
 1. **Legible to a junior engineer** — state the **consequence** in plain terms (what breaks, for
    whom) alongside the evidence, paraphrase any rule you cite rather than only linking it, and
    define or avoid terms of art. Critique the change, never its author (rule 7). One

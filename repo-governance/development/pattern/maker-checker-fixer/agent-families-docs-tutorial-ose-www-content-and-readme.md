@@ -34,8 +34,8 @@ when_to_use: "Use for tutorials, ose-www content, or READMEs."
 **Agents**:
 
 - **apps-ose-www-content-maker** (🟦 Maker) - Creates platform content (updates, about)
-- **apps-ose-www-content-checker** (🟩 Checker) - Validates content structure, formatting
-- **apps-ose-www-content-fixer** (🟨 Fixer) - Applies validated fixes from apps-ose-www-content-checker audit reports
+- **content-checker** (🟩 Checker) - Validates content structure, formatting
+- **content-fixer** (🟨 Fixer) - Applies validated fixes from content-checker audit reports
 
 **Use Case**: Creating and validating professional English content for platform landing page
 
@@ -43,8 +43,8 @@ when_to_use: "Use for tutorials, ose-www content, or READMEs."
 
 ```
 1. apps-ose-www-content-maker: Create beta release announcement post
-2. apps-ose-www-content-checker: Validate frontmatter, links, cover images
-3. apps-ose-www-content-fixer: Apply validated fixes from audit
+2. content-checker: Validate frontmatter, links, cover images
+3. content-fixer: Apply validated fixes from audit
 ```
 
 ## 5. readme-\* (README Quality)

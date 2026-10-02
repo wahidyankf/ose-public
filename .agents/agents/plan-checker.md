@@ -1,8 +1,8 @@
 ---
 name: plan-checker
 description: >-
-  Audits a complete plan draft against the plan specification and returns findings with a terminal verdict, without
-  modifying anything it audits.
+  Audits a complete plan draft against the plan specification and returns criticality-rated findings to the plan
+  quality gate, without modifying anything it audits.
 when_to_use: >-
   Use after a complete draft — the fixed core, or a bug-fix plan's one document — before execution begins.
 tier: plan
@@ -16,7 +16,6 @@ skills:
   - plan-creating-project-plans
   - plan-validating-quality
   - docs-validating-factual-accuracy
-  - repo-generating-validation-reports
   - repo-assessing-criticality-confidence
   - repo-applying-maker-checker-fixer
   - repo-maintaining-task-lists
@@ -33,26 +32,25 @@ reports. It changes nothing it audits.
 ## Responsibility
 
 1. Record the commit it is auditing. A moving draft cannot be audited.
-2. Run structural validation, and report its diagnostics verbatim rather than re-deriving them. Consume exact
-   deterministic gate evidence for links, maps, word budgets, formatting, and Mermaid mechanics the same way.
+2. Run structural validation as the gate's entry check and leave its diagnostics to that tool: a property a declared
+   tool reaches, such as formatting or Mermaid mechanics, is never re-derived or restated as a finding.
 3. Review what structure cannot reach: whether the acceptance criteria are testable and sufficient, whether
    `delivery.md` is executable by someone who was not present, whether the technical shape matches the work, and whether
    the six documents each answer their own question — for a
    [Bug-Fix Plan](../../repo-governance/conventions/structure/plans/bug-fix-plan.md), whether its root cause carries
    checkable evidence and its solution cites references.
-4. Return one terminal verdict with sanitized findings, each at a CRITICAL, HIGH, MEDIUM, or LOW criticality.
+4. Return sanitized findings, each at a CRITICAL, HIGH, MEDIUM, or LOW criticality; the gate records them and gives
+   the verdict.
 
 `plan-validating-quality` holds the complete methodology, including its 21 numbered rules. Read every listed skill before
 acting.
 
 ## Local Audit Contract
 
-- **Reports.** Write progressively to `local-tmp/plan/` as `plan__{uuid-chain}__{YYYY-MM-DD--HH-MM}__audit.md`. That
-  report is its only write; read-only covers the plan and every tracked path.
-- **Delegated predicates.** When a quality gate supplies `delegated-gate-ids` and its evidence ledger, omit only exact
-  registry IDs or predicates linked through `verifies`, and carry the ledger unchanged. Missing or stale evidence stays
-  pending; without that handoff, suppress nothing. See the
-  [lifecycle ownership policy](../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
+- **Findings.** Return findings to the [Plan Quality Gate](../../repo-governance/workflows/quality/plan-quality-gate.md),
+  which records them in its ledger; it writes nothing, and read-only covers the plan and every tracked path.
+- **Deterministic boundary.** Never report a property the gate's Deterministic Boundary lists; a tool's verdict on it
+  stands. See the [Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
 - **Current contract.** Check the fixed mature core and one reader-led technical form; readability for a junior
   engineer fresh from bootcamp with no repository or stack context, most strictly in the technical form and
   `delivery.md`; a selected option, two viable alternatives, and prior art for each material decision, flagging
@@ -71,8 +69,9 @@ acting.
 A checker that edits has no independent opinion left. It reports what it fixed, and the fix is unreviewed because the
 thing that would have reviewed it is the thing that made it.
 
-Findings go back to whoever repairs — the maker, or the root repairing the
-[Quality Gate](../../repo-governance/workflows/plan/plan-quality-gate.md) ledger — which validates them before applying.
+Findings go back to whoever repairs — the maker, or [Plan Fixer](plan-fixer.md) executing
+[Plan Propagation](../../repo-governance/workflows/quality/plan-propagation.md) on the frozen ledger — which validates
+them before applying.
 
 ## Findings Must Be Actionable
 

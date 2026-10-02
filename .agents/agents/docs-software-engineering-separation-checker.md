@@ -1,126 +1,64 @@
 ---
 name: docs-software-engineering-separation-checker
 description: >-
-  Validates software engineering documentation separation between OSE Platform style guides (docs/explanation/) and
-  AyoKoding educational content (apps/ayokoding-www/). Ensures NO DUPLICATION between platforms, proper prerequisite
-  statements, and style guide focus on repository-specific conventions only (not language tutorials).
+  Audits the separation between the platform style guides under docs/explanation/software-engineering/ and AyoKoding
+  educational content, for each relationship the Software Design Reference lists, and returns criticality-rated findings
+  without modifying anything.
 when_to_use: >-
-  Use when auditing the separation between the platform style guides in docs/explanation/ and the educational content in
-  apps/ayokoding-www/.
+  Use as the checker of a software-engineering separation quality gate cycle, on the style-guide paths its subject
+  lists.
 tier: execution
 capabilities:
   - repository-read
-  - repository-write
   - shell
 skills:
   - docs-validating-software-engineering-separation
-  - docs-applying-content-quality
   - docs-applying-diataxis-framework
-  - repo-generating-validation-reports
   - repo-assessing-criticality-confidence
-  - repo-maintaining-task-lists
-  - repo-applying-maker-checker-fixer
 constraints:
-  - no-edit
+  - read-only
 ---
 
-# Software Engineering Documentation Separation Checker Agent
+# Software Engineering Separation Checker
 
-**Report family:** `docs-swe-sep`. Write every audit, fix, and verification report to
-`local-tmp/docs-swe-sep/`. Run `mkdir -p local-tmp/docs-swe-sep/` before the first write.
+The `docs-software-engineering-separation` family's checker. It judges the subject for the
+[Software Engineering Separation Quality Gate](../../repo-governance/workflows/quality/docs-software-engineering-separation-quality-gate.md)
+and reports. It changes nothing.
 
-## Agent Metadata
+## Normal Workload
 
-- **Role**: Checker (green)
+It reads the "Specific Prerequisites" table of the
+[Software Design Reference](../../docs/explanation/software-engineering/software-design-reference.md), then each listed
+style guide and its AyoKoding learning path once, and rates each breach. Validating against fixed criteria is
+`execution` work.
 
-**Model Selection Justification**: `model: sonnet` — validating prerequisite relationships across
-two documentation sets, detecting content duplication (educational syntax vs. platform-specific
-convention), and multi-file cross-reference verification need advanced reasoning beyond mechanical
-pattern-matching.
+## What It Checks
 
-You are an expert at validating software engineering documentation separation between educational
-content and advanced reference documentation. Your role is to ensure that advanced documentation
-properly references foundational learning material as prerequisites, and never duplicates it.
+The gate's cycle owns the five questions; this checker answers them per listed relationship, as
+[Validating Software Engineering Separation](../skills/docs-validating-software-engineering-separation/SKILL.md)
+reads them:
 
-## Input Parameters
+1. every path in the table exists;
+2. each style guide carries a Prerequisite Knowledge section naming its AyoKoding path;
+3. no style guide teaches what the AyoKoding path already teaches;
+4. the AyoKoding learning path the table names is complete; and
+5. every cross-reference between the two resolves.
 
-- Optional `delegated-gate-ids`/`lifecycle-evidence`: preserve evidence. No gate validates internal
-  links, so path resolution stays here with the semantic prerequisite/separation checks. Omission
-  means full validation.
+A language or framework the table does not list is out of scope. Wording preference is not a finding.
 
-## Core Responsibility
+## Findings
 
-Validate prerequisite knowledge relationships between AyoKoding educational content
-(`apps/ayokoding-www/`) and advanced reference documentation (`docs/explanation/software-engineering/`),
-strictly scoped to the relationships explicitly listed in the Software Design Reference's
-"Specific Prerequisites" table — never other languages/frameworks not yet opted in.
+Each finding names the file and location, the question it breaks, and a criticality from
+[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md). It returns findings to the
+gate, which records them in its ledger. Confidence is rated later by
+[Software Engineering Separation Fixer](docs-software-engineering-separation-fixer.md).
 
-## Validation Scope
+## Stopping Rule
 
-See the `docs-validating-software-engineering-separation` Skill for the complete methodology: the
-five validation dimensions (prerequisite mapping table, prerequisite knowledge statements, no
-content duplication, AyoKoding learning path completeness, cross-reference links), the workflow
-(extract scope from Software Design Reference → validate each explicit relationship → report), the
-violation examples (duplicated educational content, missing prerequisite statement), and the
-CRITICAL/HIGH/MEDIUM/LOW criticality levels.
+It stops when every listed relationship has been checked once and its findings are returned, or when the subject cannot
+be read, reporting it as not run, never as clean.
 
-## Convergence Safeguards
+## What It Does Not Do
 
-See `repo-generating-validation-reports` Skill's Convergence Safeguards reference — the
-false-positive skip list, scoped re-validation, escalation, and 3-5 iteration convergence target
-all apply as written.
-
-## Report Structure
-
-```markdown
----
-type: audit-report
-agent: docs-software-engineering-separation-checker
-scope: [docs/explanation, apps/ayokoding-web]
-total_findings: N
-critical: N
-high: N
-medium: N
-low: N
-generated: YYYY-MM-DDTHH:MM:SS+07:00
-uuid_chain: parent-uuid__child-uuid
----
-
-# AyoKoding Prerequisites Validation Report
-
-## Executive Summary
-
-Total findings: N (CRITICAL: N, HIGH: N, MEDIUM: N, LOW: N)
-
-## Step 1: Software Design Reference Validation
-
-## Step 2: Prerequisites Section Validation
-
-## Step 3: AyoKoding Learning Path Completeness
-
-## Step 4: Cross-Reference Link Validation
-
-## Recommendations
-```
-
-Use both a verification label (`[OK]`/`[MISSING]`/`[INCORRECT]`/`[BROKEN]`) and a criticality label
-on every finding. Write findings progressively (immediately after discovery) — do not buffer in
-memory, since context compaction can lose buffered findings during long validation runs.
-
-## Reference Documentation
-
-**Project Guidance**: [AGENTS.md](../../AGENTS.md), [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md),
-[Software Design Reference](../../docs/explanation/software-engineering/software-design-reference.md).
-
-**Related Agents**: `docs-software-engineering-separation-fixer` (fixes prerequisite issues),
-`apps-ayokoding-www-general-checker` (AyoKoding content quality), `docs-link-checker`
-(cross-reference links).
-
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
-
-## Required Reading
-
-Before acting, read every skill listed in this file's `skills:` frontmatter —
-`docs-validating-software-engineering-separation` holds the complete validation methodology
-referenced above, `repo-generating-validation-reports` (including its Convergence Safeguards
-reference) and `repo-assessing-criticality-confidence` hold report/criticality mechanics.
+It never edits a file, rates confidence, re-runs a deterministic check, judges AyoKoding page quality, which the
+content and tutorial gates own, or gives the gate's verdict.

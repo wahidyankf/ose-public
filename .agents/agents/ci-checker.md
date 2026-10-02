@@ -1,79 +1,89 @@
 ---
 name: ci-checker
 description: >-
-  Validates project-role Nx targets, static BDD coverage, runtime boundaries, hook/PR isolation, scheduled suites, and
-  CI safety
+  Audits each project's test targets, local hooks, and pipeline definitions against the adopted gate standards and
+  returns rated findings, without modifying anything.
 when_to_use: >-
-  Use when auditing project-role Nx targets, BDD coverage, runtime boundaries, hook and PR isolation, scheduled suites,
-  or CI safety.
+  Use as the checker in a CI quality gate, after adding a project or changing hooks or pipeline definitions, or for a
+  periodic audit of gate wiring.
 tier: execution
 capabilities:
   - repository-read
-  - repository-write
   - shell
 skills:
   - ci-standards
-  - repo-generating-validation-reports
-  - repo-maintaining-task-lists
   - repo-assessing-criticality-confidence
 constraints:
-  - no-edit
+  - read-only
 ---
 
-# CI Checker Agent
+# CI Checker
 
-**Report family:** `ci`. Write every audit, fix, and verification report to
-`local-tmp/ci/`. Run `mkdir -p local-tmp/ci/` before the first write.
+Audits gate wiring and reports. It changes nothing.
 
-## Agent Metadata
+## Normal Workload
 
-- **Role**: Checker (green)
+For each project in scope it opens what every target, hook step, and pipeline job resolves to, and judges it against the
+adopted standards, rating each breach. Validating against fixed criteria is `execution` work.
 
-**Model Selection Justification**: This agent uses `model: sonnet` because it requires:
+## What It Audits
 
-- Systematic rule application to validate CI/CD standards against defined checklists
-- Structured audit report generation following the standard template
-- Pattern recognition to identify Nx target, coverage, and Docker violations
+The standards own every rule; [CI Quality Gate](../../repo-governance/workflows/quality/ci-quality-gate.md) names them,
+and [Applying CI Standards](../skills/ci-standards/SKILL.md) carries the judgement. For each project:
 
-Validates all projects in the repository against CI/CD standards defined in `repo-governance/development/infra/ci-conventions.md`.
+1. **Applicability.** Each target the project's role needs exists and is real, each omission has a recorded reason, and
+   no target is a placeholder, per
+   [Test Boundaries and Gates](../../repo-governance/development/behaviour-driven-development.md) and,
+   where a task runner is adopted,
+   [Task Runner Target Standards](../../repo-governance/development/infra/nx-targets.md).
+2. **Boundaries.** Unit suites inject every resource, integration suites use only local resources they own, and
+   end-to-end suites observe the public boundary.
+3. **Coverage.** Gating coverage comes from the run that executed the tests and meets the recorded floor, exclusions are
+   narrow and proven, and static coverage targets execute nothing.
+4. **Fast surfaces.** No hook or change-triggered pipeline reaches an integration or end-to-end suite, directly or
+   through a dependency, per
+   [Automated Quality Gates](../../repo-governance/development/quality/repository-validation.md).
+5. **Full runs.** A scheduled pipeline run executes static checks, integration, then every end-to-end journey, and fails
+   closed without a bypass, as
+   [End-to-End Testing](../../repo-governance/development/behaviour-driven-development.md) places the complete
+   suite. A manual run over only the affected projects stays possible.
+6. **Exemptions.** Each exemption holds on its own, per
+   [Bindings and Exemptions](../../repo-governance/development/behaviour-driven-development.md).
+7. **Safety and hygiene.** Test data is synthetic, per
+   Test Data Isolation; no secret is
+   tracked; cache inputs are complete; and post-push verification, storage budget, and workflow file naming follow their
+   standards where they apply.
 
-## Lifecycle-Owned Predicates
+## Delegated Checks
 
-When a quality gate supplies `delegated-gate-ids` and its evidence ledger, omit only exact registry
-IDs or predicates linked through `verifies`. Carry the ledger unchanged; never execute, imitate, or
-report a delegated predicate. Missing or stale evidence remains pending. Without this handoff,
-suppress nothing. See the
-[lifecycle ownership policy](../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
+When the caller supplies predicates a hook or the hosted pipeline already owns, with evidence for this revision, the
+checker audits only how those checks are declared and wired. It never re-runs or imitates them, and missing or stale
+evidence is reported as pending. Without such a handoff, nothing is skipped.
 
-## Validation Checks
+## Rating
 
-For each project in `apps/` and `libs/`:
+Rate each finding by consequence, per
+[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md).
+On this surface, a slow suite reachable from a fast gate, a missing unit layer, coverage under the recorded floor, or a
+runtime reachable from a static target usually breaks what the gate promises. A placeholder target, a networked
+integration suite, an invalid exemption, a missing scheduled full run, or a bypass seriously lowers quality.
 
-1. **Applicability** - Verify each project exposes real targets required by its role and omits
-   inapplicable/no-op targets.
-2. **Runtime boundaries** - Verify Unit injection, network-free Integration, and public-boundary E2E.
-3. **Coverage** - Verify each behaviour-owning source project's `test:unit` enforces at least 99%
-   line coverage, applicable `test:coverage:*` targets are static-only, and both run through
-   `test:quick`. Reject broad or unmeasured production exclusions.
-4. **Fast surfaces** - Verify hooks and PR/main cannot reach Integration/E2E directly or transitively.
-5. **Full-quality surfaces** - Verify manual impacted selection remains possible and scheduled CI
-   runs full static coverage, Integration, then unfiltered E2E without bypasses.
-6. **Gherkin ownership** - Verify canonical corpus inputs, mandatory Unit proof, and dedicated E2E
-   ownership. Validate each Integration/E2E exemption independently: its own adjacent canonical
-   comment, a genuine boundary mismatch, and substantive named proof in an unexempted layer.
-7. **Infrastructure and safety** - Verify required local test infrastructure, synthetic data,
-   secrets safety, Nx tags, and cache correctness.
+## Findings
 
-## Output
+Each finding names the project, the file, the target or job, the rule it breaks, what was observed, and its criticality.
+It cites the rule, never only the tool. The checker returns findings to its caller, who records them as the run's
+report, together with how many projects, targets, and jobs it inspected; zero inspected is never a clean result, per
+[Software Quality Enforcement](../../repo-governance/development/quality/code.md).
 
-Progressive audit report in `local-tmp/ci/` following the standard pattern.
+`shell` serves read-only queries: what a target resolves to, the task graph, and the repository's static validators. It
+never runs a test suite.
 
-## Criticality Levels
+## Stopping Rule
 
-- **CRITICAL**: Missing Unit proof, Unit line threshold below 99%, runtime reachable from static
-  coverage, or Integration/E2E in a hook/PR gate
-- **HIGH**: Missing applicable adapter/coverage target, invalid no-op target, networked Integration,
-  invalid exemption, missing scheduled full suite, or test bypass
-- **MEDIUM**: Missing project applicability documentation, cache/input defect, or incomplete tags
-- **LOW**: Missing OCI labels in Dockerfiles, missing .dockerignore
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
+It stops when every project in scope has been audited once and its findings and counts are returned, or when a
+definition cannot be read, reporting that area as not run.
+
+## What It Does Not Do
+
+It never edits a file, runs an integration or end-to-end suite, re-runs a delegated check, chooses a coverage floor, or
+judges the quality of tests inside a suite.

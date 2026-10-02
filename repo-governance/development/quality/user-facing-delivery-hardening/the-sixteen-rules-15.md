@@ -8,7 +8,7 @@ when_to_use: "Use when a web-UI feature-change plan is nearing archival."
 1. **(Verification) A web-UI feature-change plan MUST run a near-end round of all three live-site
    testers — `web-exploratory-tester` (correctness), `web-usability-tester` (usability), and
    `web-design-tester` (design fidelity), i.e. the
-   [`web-ux-test-fixing-planning`](../../../workflows/web/web-ux-test-fixing-planning.md) workflow —
+   [`ux-review-fix-planning`](../../../workflows/quality/ux-review-fix-planning.md) workflow —
    against the running UI to iron out rough edges and inconsistencies, and fix their findings before
    archival.** Gap: the visual-parity sign-off (Rule 10) confirms the screen matches the mockups but
    does not hunt for functional, behavioural-consistency, responsive, accessibility, URL/IA, or

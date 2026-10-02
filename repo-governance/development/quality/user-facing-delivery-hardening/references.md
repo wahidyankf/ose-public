@@ -18,10 +18,10 @@ when_to_use: "Use when you need a related workflow or convention document."
 **Workflows:**
 
 - [Plan Execution](../../../workflows/plan/plan-execution.md) — execution, finalization, archival gate.
-- [Plan Quality Gate](../../../workflows/plan/plan-quality-gate.md) — pre-execution plan validation.
-- [Web UX Test-Fixing Planning](../../../workflows/web/web-ux-test-fixing-planning.md) — workflow that runs the three-tester near-end retest (Rule 15).
-- [API Quality Gate](../../../workflows/api/api-quality-gate.md) — workflow that runs the near-end `api-exploratory-tester` round (Rule 16); the API counterpart to the web triad.
-- [UI Quality Gate](../../../workflows/ui/ui-quality-gate.md) — static component-source gate a UI-bearing plan runs alongside the Rule 15 triad.
+- [Plan Quality Gate](../../../workflows/quality/plan-quality-gate.md) — pre-execution plan validation.
+- [Web UX Test-Fixing Planning](../../../workflows/quality/ux-review-fix-planning.md) — workflow that runs the three-tester near-end retest (Rule 15).
+- [API Quality Gate](../../../workflows/quality/api-http-quality-gate.md) — workflow that runs the near-end `api-exploratory-tester` round (Rule 16); the API counterpart to the web triad.
+- [UI Quality Gate](../../../workflows/quality/ui-web-quality-gate.md) — static component-source gate a UI-bearing plan runs alongside the Rule 15 triad.
 - [PR Merge Protocol](../../workflow/pr-merge-protocol.md) — keeps applicable surface gates merge-blocking.
 
 **Agents:**

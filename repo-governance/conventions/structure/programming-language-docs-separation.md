@@ -31,13 +31,13 @@ This convention establishes the clear separation between **repository-specific p
 **Checkers**:
 
 - `docs-checker` - Validates style guides follow this convention (prerequisite statements, no duplication)
-- `apps-ayokoding-www-general-checker` - Validates educational content scope (no OSE Platform-specific content)
-- `apps-ayokoding-www-facts-checker` - Validates factual correctness of educational content
+- `content-checker` - Validates educational content scope (no OSE Platform-specific content)
+- `content-checker` - Validates factual correctness of educational content
 
 **Fixers**:
 
 - `docs-fixer` - Fixes style guide violations (adds missing prerequisite statements, removes duplicated content)
-- `apps-ayokoding-www-general-fixer` - Fixes educational content violations (removes OSE Platform-specific content)
+- `content-fixer` - Fixes educational content violations (removes OSE Platform-specific content)
 
 ---
 

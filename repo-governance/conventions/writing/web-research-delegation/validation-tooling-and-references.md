@@ -34,9 +34,9 @@ To validate an agent complies with this convention:
 **Agents:**
 
 - [`web-researcher`](../../../../.agents/agents/web-researcher.md) — the default research primitive
-- `docs-checker`, `docs-tutorial-checker`, `apps-ayokoding-www-facts-checker`, `plan-checker` — validation agents that delegate to `web-researcher` above the threshold
+- `docs-checker`, `docs-tutorial-checker`, `content-checker`, `plan-checker` — validation agents that delegate to `web-researcher` above the threshold
 - `docs-maker`, `docs-tutorial-maker`, `plan-maker` — authoring agents that commission research before writing
-- `docs-fixer`, `apps-ayokoding-www-facts-fixer` — fixer agents invoking Exception 2 (same-context re-validation)
+- `docs-fixer`, `content-fixer` — fixer agents invoking Exception 2 (same-context re-validation)
 - `docs-link-checker`, `apps-ayokoding-www-link-checker`, `apps-ayokoding-www-link-fixer` — link-reachability agents invoking Exception 3
 
 **Agent skills:**
@@ -46,11 +46,11 @@ To validate an agent complies with this convention:
 
 **Workflows:**
 
-- [Plan Quality Gate](../../../workflows/plan/plan-quality-gate.md)
-- [Documentation Quality Gate](../../../workflows/docs/docs-quality-gate.md)
-- [AyoKoding General Quality Gate](../../../workflows/ayokoding-web/ayokoding-web-general-quality-gate.md)
-- [AyoKoding By-Example Quality Gate](../../../workflows/ayokoding-web/ayokoding-web-swe-by-example-quality-gate.md)
-- [AyoKoding In-the-Field Quality Gate](../../../workflows/ayokoding-web/ayokoding-web-in-the-field-quality-gate.md)
+- [Plan Quality Gate](../../../workflows/quality/plan-quality-gate.md)
+- [Documentation Quality Gate](../../../workflows/quality/docs-quality-gate.md)
+- [AyoKoding General Quality Gate](../../../workflows/quality/content-quality-gate.md)
+- [AyoKoding By-Example Quality Gate](../../../workflows/quality/tutorial-by-example-quality-gate.md)
+- [AyoKoding In-the-Field Quality Gate](../../../workflows/quality/tutorial-in-the-field-quality-gate.md)
 
 **Repository Architecture:**
 

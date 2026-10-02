@@ -28,14 +28,14 @@ would have permitted all of it; only an allow-list removes it and keeps it remov
 
 ## What Replaces the Removed Keys
 
-| Removed                                    | Where it lives now                                                                                               |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `title`                                    | The document's H1                                                                                                |
-| `name`                                     | The filename stem                                                                                                |
-| `category`, `subcategory`                  | The directory the file sits in                                                                                   |
-| `tags`                                     | Nothing — `description` and `when_to_use` are the routing surface                                                |
-| `created`                                  | Git history, per [No Manual Date Metadata](./no-date-metadata.md)                                                |
-| `goal`, `termination`, `inputs`, `outputs` | Workflow body sections, per [Workflow Structure](../../workflows/meta/workflow-identifier/workflow-structure.md) |
+| Removed                                    | Where it lives now                                                                       |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `title`                                    | The document's H1                                                                        |
+| `name`                                     | The filename stem                                                                        |
+| `category`, `subcategory`                  | The directory the file sits in                                                           |
+| `tags`                                     | Nothing — `description` and `when_to_use` are the routing surface                        |
+| `created`                                  | Git history, per [No Manual Date Metadata](./no-date-metadata.md)                        |
+| `goal`, `termination`, `inputs`, `outputs` | Workflow body sections, per [Workflow Structure](workflow-pattern/workflow-structure.md) |
 
 A workflow's contract did not disappear with its frontmatter — it moved into `## Goal and
 Termination`, `## Inputs`, and `## Outputs` body sections, where it is readable without a YAML
@@ -54,10 +54,10 @@ unaffected.
   both are read by `./rhino governance directory-map validate` to build a README index entry's
   annotation. A vague `description` produces a vague index.
 - **Quoting still matters.** Both values are prose that regularly contains a colon, so the
-  [YAML syntax requirements](../../workflows/meta/workflow-identifier/yaml-syntax-requirements.md)
+  [YAML syntax requirements](workflow-pattern/yaml-syntax-requirements.md)
   continue to apply.
 - **Adding a key is a rule change**, not an editorial one. It goes through
-  [rules-propagation](../../workflows/rules/rules-propagation.md) and requires amending both this
+  [rules-propagation](../../workflows/quality/rules-propagation.md) and requires amending both this
   convention and the validator's allow-list.
 
 ## Related

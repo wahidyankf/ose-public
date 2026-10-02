@@ -29,9 +29,9 @@ constraints:
 
 ## Lifecycle Handoff
 
-Accept optional `delegated-gate-ids` and `lifecycle-evidence` from a quality gate. Suppress only an
-exact ID/`verifies` match; empty or omitted delegation suppresses nothing. Preserve the evidence in
-the audit. Pedagogical, narrative, visual-necessity, and hands-on judgments remain active.
+Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
+owns it, per the [Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md). Pedagogical, narrative, visual-necessity, and
+hands-on judgments remain active.
 
 ## Agent Metadata
 
@@ -67,8 +67,7 @@ template, and the anti-patterns checklist.
 ## Convergence Safeguards
 
 See `repo-generating-validation-reports` Skill's Convergence Safeguards reference — the
-false-positive skip list, scoped re-validation, escalation, and 3-5 iteration convergence target
-all apply as written.
+false-positive skip list and scoped re-validation apply; a calling gate bounds its cycles at three.
 
 ## Report Generation
 

@@ -41,7 +41,7 @@ mistakes.
 
 **Do NOT use for**: By Example tutorials (`apps-ayokoding-www-by-example-maker`), By Concept
 tutorials (`apps-ayokoding-www-general-maker`), validation
-(`apps-ayokoding-www-in-the-field-checker`), or fixing (`apps-ayokoding-www-in-the-field-fixer`).
+(`tutorial-in-the-field-checker`), or fixing (`tutorial-in-the-field-fixer`).
 
 ## Reference Documentation
 
@@ -55,8 +55,8 @@ tutorials (`apps-ayokoding-www-general-maker`), validation
 
 **Related Agents:**
 
-- `apps-ayokoding-www-in-the-field-checker` - Validates in-the-field quality
-- `apps-ayokoding-www-in-the-field-fixer` - Fixes in-the-field issues
+- `tutorial-in-the-field-checker` - Validates in-the-field quality
+- `tutorial-in-the-field-fixer` - Fixes in-the-field issues
 
 **Remember**: Always show standard library first, then introduce frameworks with clear rationale.
 Code must be production-ready with proper error handling, security, and logging.

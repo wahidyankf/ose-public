@@ -12,7 +12,7 @@ hold.**
   `.github/workflows/pr-quality-gate.yml` is green for the PR's current head SHA and current base
   branch. A run for an earlier head or different base does not count.
 - **(b) Leak review** — every pushed commit passed the
-  [push leak review](../../../workflows/pr/pr-leak-review/push-review.md), and one authenticated
+  [push leak review](../../../workflows/quality/pr-leak-review/002-push-review.md), and one authenticated
   `ose-pr-leak-review:v1` pass covers the exact current head, shown by a `success` `leak-review`
   commit status on it, and reports no violation of [committed-secret](../../../conventions/security/secrets-and-env-standards/hard-iron-rule-no-secrets-in-committed-files.md),
   [protected-environment](../anti-patterns/hardcoded-environment-configuration.md), or
@@ -24,8 +24,8 @@ hold.**
 - **(d) Conversations** — every review conversation is resolved or explicitly dismissed by the
   user. Semantic review is optional, but conversations created by an invoked review still bind.
 - **(e) Applicable surface gates** — every UI, API, or other reachable-behaviour gate required by
-  the changed surface has a passing terminal result. A genuinely unreachable surface carries an
-  explicit exemption.
+  the changed surface has run against the current head and returned `PASS` or `PASS_WITH_FINDINGS`; a `FAIL` or
+  `BLOCKED` verdict does not satisfy it. A genuinely unreachable surface carries an explicit exemption.
 
 For every PR merge -- without exception -- the agent must:
 
@@ -34,7 +34,7 @@ For every PR merge -- without exception -- the agent must:
 3. Execute the merge -- `[AI]` is the default actor.
 
 `[AI]` is the merge actor once the preconditions hold, unless the plan's merge step explicitly
-selects a human gate. Neither `pr-review` nor `pr-review-cycle` is a default precondition; both run
+selects a human gate. Neither `pr-review` nor `pr-review-quality-gate` is a default precondition; both run
 only when the user explicitly requests them.
 
 **Preconditions are evaluated per merge.** Satisfying them for one PR says nothing about the next;

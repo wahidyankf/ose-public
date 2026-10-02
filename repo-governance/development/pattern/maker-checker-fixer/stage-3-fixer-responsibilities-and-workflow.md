@@ -34,7 +34,7 @@ Fixers combine **criticality** (importance) with **confidence** (certainty) to d
 ```markdown
 User: "Apply fixes from the latest ayokoding-web audit report"
 
-Fixer Agent (apps-ayokoding-www-general-fixer):
+Fixer Agent (content-fixer):
 
 1. Auto-detects latest: local-tmp/ayokoding-web/ayokoding-web**2025-12-14--20-45**audit.md
 2. Parses findings (25 issues found)

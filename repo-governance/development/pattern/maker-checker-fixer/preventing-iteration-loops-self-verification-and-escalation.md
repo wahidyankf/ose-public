@@ -30,4 +30,4 @@ If verification fails, log the fix as FAILED (not applied). Do NOT log as "fixed
 2. Fixer notifies user: "This finding has been re-flagged after a FALSE_POSITIVE acceptance. Manual review required."
 3. Maker updates the relevant convention or agent to resolve the root ambiguity
 
-**Goal**: The workflow should converge in 1-3 iterations. If it hasn't converged after 5 iterations, stop and escalate to maker.
+**Ceiling**: A quality gate runs at most three cycles, per the [Quality Gate Contract](../../workflow/quality-gate-contract.md). If blocking rows remain after the last one, it returns `FAIL` and the maker owns them.

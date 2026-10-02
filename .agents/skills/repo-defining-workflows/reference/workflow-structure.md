@@ -1,6 +1,6 @@
 # Workflow Structure
 
-The [Workflow Structure](../../../../repo-governance/workflows/meta/workflow-identifier/workflow-structure.md)
+The [Workflow Structure](../../../../repo-governance/conventions/structure/workflow-pattern/workflow-structure.md)
 convention owns the full template. This reference covers what authors most often get wrong in it.
 
 ## Frontmatter: Exactly Two Keys

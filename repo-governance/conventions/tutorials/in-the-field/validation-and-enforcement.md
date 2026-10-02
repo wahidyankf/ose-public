@@ -7,7 +7,7 @@ when_to_use: Use when you need to know which automated agent or workflow enforce
 
 ## Automated Validation
 
-The **apps-ayokoding-www-general-checker** agent validates:
+The **content-checker** agent validates:
 
 - **Production topic coverage**: 20-40 guides
 - **Standard library first**: Built-in examples precede frameworks
@@ -24,6 +24,6 @@ The **apps-ayokoding-www-general-checker** agent validates:
 The **in-the-field-quality-gate** workflow orchestrates:
 
 1. **apps-ayokoding-www-general-maker**: Creates/updates production guides
-2. **apps-ayokoding-www-general-checker**: Validates against standards
+2. **content-checker**: Validates against standards
 3. **User review**: Reviews audit report
-4. **apps-ayokoding-www-general-fixer**: Applies validated fixes
+4. **content-fixer**: Applies validated fixes

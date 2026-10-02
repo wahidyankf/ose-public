@@ -34,6 +34,6 @@ generator is re-run or the stale directory is removed.
 **Important distinction**: this guard catches _internal_ drift (a committed binding falling out of
 sync with `AGENTS.md`). It is deterministic and runs in milliseconds. It is distinct from the
 periodic compatibility-audit workflow (see
-[harness-compatibility-quality-gate.md](../../../workflows/harness/harness-compatibility-quality-gate.md)),
+[harness-quality-gate.md](../../../workflows/quality/harness-quality-gate.md)),
 which catches _external_ drift — an upstream harness changing its conventions — and requires
 web-research-backed agent work.

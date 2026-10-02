@@ -48,7 +48,7 @@ every applicable rule; mandatory safeguards remain part of sufficiency. See
 During authoring, classify both proposed behaviour and the file-impact tree against the full repo
 rules surface. If any scoped repository may add, change, supersede, or delete a rule or enforcement,
 `delivery.md` automatically includes the complete repository-local
-[`rules-propagation`](../../../repo-governance/workflows/rules/rules-propagation.md) outcome in that
+[`rules-propagation`](../../../repo-governance/workflows/quality/rules-propagation.md) outcome in that
 delivery unit. Split inventory, conflict/precedence, placement/eviction, canonical and enforcement
 edits, enforcement dispositions, binding generation, verification plus `rules-quality-gate`,
 manifest/final status, and sibling obligation into granular bootcamp-executable checkboxes. Repeat
@@ -56,7 +56,7 @@ per affected repository; a link, generic invocation, or reusable checkbox templa
 because every concrete repository/action pair must map to its own execution task.
 
 A delivery unit that changes what a README, documentation page, or specification describes also carries a
-[Docs Propagation](../../../repo-governance/workflows/docs/docs-propagation.md) item, landing in the same commit
+[Docs Propagation](../../../repo-governance/workflows/quality/docs-propagation.md) item, landing in the same commit
 as the change.
 
 ## Primary Junior-Readable Surfaces

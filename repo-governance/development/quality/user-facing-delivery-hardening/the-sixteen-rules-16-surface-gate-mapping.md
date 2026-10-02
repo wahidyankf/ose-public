@@ -7,15 +7,15 @@ when_to_use: "Use when mapping a plan's surface to its required tester gate, or 
 
     **This is the same surface-conditional rule the plan workflows and the merge gate apply**, seen
     from the delivery-hardening side. Rule 15's web triad is run by
-    [`workflows/web/web-ux-test-fixing-planning.md`](../../../workflows/web/web-ux-test-fixing-planning.md)
+    [`workflows/quality/ux-review-fix-planning.md`](../../../workflows/quality/ux-review-fix-planning.md)
     and Rule 16's API round by
-    [`workflows/api/api-quality-gate.md`](../../../workflows/api/api-quality-gate.md); a UI-bearing plan
-    additionally runs the static [`workflows/ui/ui-quality-gate.md`](../../../workflows/ui/ui-quality-gate.md).
-    Each quality gate is finite: one discovery, at most one fix pass, and one scoped verification of
-    original findings plus affected-surface regression smoke. A clean discovery passes immediately;
-    unresolved findings, regressions, or technical failures never trigger an automatic rerun.
+    [`workflows/quality/api-http-quality-gate.md`](../../../workflows/quality/api-http-quality-gate.md); a UI-bearing plan
+    additionally runs the running-UI [`workflows/quality/ui-web-quality-gate.md`](../../../workflows/quality/ui-web-quality-gate.md).
+    Each quality gate follows the
+    [Quality Gate Contract](../../workflow/quality-gate-contract.md): at most three cycles and one
+    advisory verdict; nothing reruns it automatically.
     The surface-to-gate mapping is stated once in
-    [plan-planning §Surface-Conditional Tester Gates](../../../workflows/plan/plan-planning/surface-conditional-tester-gates.md#surface-conditional-tester-gates),
+    [plan-planning §Surface-Conditional Tester Gates](../../../workflows/plan/plan-planning/005-surface-conditional-tester-gates.md#surface-conditional-tester-gates),
     re-applied at execution, and enforced by the
     [PR Merge Protocol](../../workflow/pr-merge-protocol.md). A plan bearing neither
     of those two surfaces is **not thereby exempt** — if it still changes behaviour a user or caller

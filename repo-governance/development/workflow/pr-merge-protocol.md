@@ -29,4 +29,4 @@ Merging a pull request requires a set of hardened preconditions to hold — not 
 - [Worktree Toolchain Initialization](../workflow/worktree-setup.md) -- Mandatory guarded install plus read-only Doctor validation after creating a worktree
 - [Nx Target Standards](../infra/nx-targets.md) -- Canonical target names for quality gates
 - [Git Push Default Convention](../workflow/git-push-default.md) -- Governs the default `worktree-to-pr` push target and the explicit direct-push modes; this convention governs what happens once a PR exists
-- [`pr-review`](../../workflows/pr/pr-review.md) and [`pr-review-cycle`](../../workflows/pr/pr-review-cycle.md) -- Optional semantic-review workflows, invoked only on explicit user request
+- [`pr-review`](../../workflows/quality/pr-review.md) and [`pr-review-quality-gate`](../../workflows/quality/pr-review-quality-gate.md) -- Optional semantic-review workflows, invoked only on explicit user request

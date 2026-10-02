@@ -7,7 +7,7 @@ when_to_use: Use the moment a request implies rule work, and before the first ed
 # Propagating Repository Rules
 
 Rule work does not go in through an ad-hoc edit. It goes through
-[rules-propagation](../../../repo-governance/workflows/rules/rules-propagation.md), which
+[rules-propagation](../../../repo-governance/workflows/quality/rules-propagation.md), which
 exists because placing a rule badly is invisible at review time and expensive later.
 
 ## Recognising Rule Work

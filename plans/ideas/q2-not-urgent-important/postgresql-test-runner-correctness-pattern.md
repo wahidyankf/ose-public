@@ -68,7 +68,7 @@ recalled from memory later.
   [trustworthy-measurement](../../../repo-governance/development/practice/trustworthy-measurement.md)
 - **Rules propagation workflow** — the required route for a new durable page under
   `repo-governance/development/`.
-  [rules-propagation](../../../repo-governance/workflows/rules/rules-propagation.md)
+  [rules-propagation](../../../repo-governance/workflows/quality/rules-propagation.md)
 
 ## Proposed direction (sketch)
 

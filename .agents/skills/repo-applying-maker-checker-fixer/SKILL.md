@@ -24,7 +24,7 @@ The Fixer's 6-step process is detailed across [Fixer Role, Priority, and Report 
 ## Lifecycle-Owned Validation
 
 Before any quality-gate checker, fixer, or recheck invocation, apply the canonical
-[lifecycle ownership Step 0](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
+[lifecycle ownership Step 0](../../../repo-governance/development/workflow/quality-gate-contract.md).
 Exclude registry-owned predicates from prompts and report them through `lifecycle-status`; keep
 `final-status` domain-only.
 

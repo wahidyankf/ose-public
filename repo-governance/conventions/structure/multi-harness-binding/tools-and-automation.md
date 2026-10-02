@@ -27,7 +27,7 @@ the commit-discipline rule for their output.
     declaration, never an inference — an undeclared file with no source is still an orphan.
 - Neither command runs automatically: no hook, registry gate, or CI workflow invokes either one, so
   run `validate` yourself before committing a binding change.
-- **`harness-compatibility-checker`** / **`harness-compatibility-fixer`** agents — run on
+- **`harness-checker`** / **`harness-fixer`** agents — run on
   demand or on a schedule; use web research to detect external upstream convention drift (distinct
   from the deterministic parity guard above).
 

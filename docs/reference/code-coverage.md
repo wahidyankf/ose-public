@@ -40,7 +40,7 @@ would make that dependency ambiguous.
 These targets inspect source, tests, Gherkin, and configuration without executing tests directly or
 transitively. Every applicable validator is mandatory in `test:quick`. Static success proves
 coverage shape, not semantic implementation; material Gherkin or adapter changes also require the
-[Gherkin implementation review](../../repo-governance/workflows/gherkin-implementation-review.md).
+[Gherkin implementation review](../../repo-governance/workflows/quality/gherkin-implementation-review.md).
 
 ## Failure Interpretation
 

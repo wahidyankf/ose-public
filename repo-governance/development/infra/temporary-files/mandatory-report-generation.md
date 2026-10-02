@@ -21,18 +21,18 @@ directory moved.
 All checker agents in the following families MUST write audit reports to `local-tmp/<agent-family>/`, using the family token each declares in its own body:
 
 1. **rules-checker** - Repository consistency validation
-2. **apps-ayokoding-www-general-checker** - General content validation (ayokoding-www)
-3. **apps-ayokoding-www-by-example-checker** - By-example tutorial validation (ayokoding-www)
-4. **apps-ayokoding-www-facts-checker** - Educational content factual accuracy validation
+2. **content-checker** - General content validation (ayokoding-www)
+3. **tutorial-by-example-checker** - By-example tutorial validation (ayokoding-www)
+4. **content-checker** - Educational content factual accuracy validation
 5. **apps-ayokoding-www-link-checker** - Link validation (ayokoding-www)
-6. **apps-ose-www-content-checker** - Content validation (ose-www, Next.js)
+6. **content-checker** - Content validation (ose-www, Next.js)
 7. **docs-checker** - Documentation factual accuracy validation
 8. **docs-link-checker** - External and internal link validation
 9. **docs-tutorial-checker** - Tutorial quality validation
 10. **readme-checker** - README quality validation
 11. **plan-checker** - Plan readiness validation
 12. **plan-execution-checker** - Implementation validation
-13. **apps-ayokoding-www-in-the-field-checker** - In-the-field content validation (ayokoding-www)
+13. **tutorial-in-the-field-checker** - In-the-field content validation (ayokoding-www)
 14. **docs-software-engineering-separation-checker** - Software engineering docs separation validation
 15. **repo-workflow-checker** - Workflow documentation quality validation
 16. **specs-checker** - Gherkin/BDD specs directory structural and content validation

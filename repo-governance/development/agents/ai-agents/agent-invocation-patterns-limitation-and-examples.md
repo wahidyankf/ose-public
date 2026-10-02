@@ -16,7 +16,7 @@ when_to_use: Use when an agent needs conversation continuity and you must judge 
 - Generate fix reports
 - Allow git commit of changes
 
-**See**: [Workflow Execution Modes Convention](../../../workflows/meta/execution-modes.md) for complete workflow execution patterns.
+**See**: [Workflow Execution Modes Convention](../../../conventions/structure/workflow-pattern/execution-modes.md) for complete workflow execution patterns.
 
 ## Current Limitation: Task Tool Isolation
 

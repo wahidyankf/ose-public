@@ -9,7 +9,7 @@ contradicting instance in a file the citing specialist never read in full — th
 across cycles. Grep before replying `Fixed`, not after a later cycle rediscovers the miss.
 
 A fact restated across several files is a
-[restatement by value](../../../../repo-governance/workflows/pr/pr-review-cycle/restatement-by-value.md):
+[restatement by value](../../../../repo-governance/development/quality/pr-review-disciplines/restatement-by-value.md):
 reduce how many copies exist rather than syncing them.
 
 ## Why This Is Not Scope Creep
@@ -17,7 +17,7 @@ reduce how many copies exist rather than syncing them.
 Widening a fix to every site of the **same** defect stays inside the PR — one defect stated in six
 files is one problem, and fixing only the cited file leaves the other five contradicting it. Adding
 a **different** defect is creep. See
-[Scope Guard](../../../../repo-governance/workflows/pr/pr-review-cycle/scope-guard-no-scope-creep.md).
+[Scope Guard](../../../../repo-governance/development/quality/pr-review-disciplines/scope-guard.md).
 
 ## A Fix That Crosses a Word Budget Is a Structural Change
 

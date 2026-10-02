@@ -14,11 +14,9 @@ Auto-loads for `pdf-to-md-maker`, `pdf-to-md-checker`, and `pdf-to-md-fixer`.
 
 ## Lifecycle Delegation
 
-Quality-gate invocations may pass exact `delegated-gate-ids` under
-[Lifecycle Validation Ownership](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
-Checker and fixer omit only matching generic Markdown predicates. PDF/source fidelity remains
-authoritative. Accept `lifecycle-evidence`: checkers preserve it; fixers scope-intersect changed
-files and return `updated-lifecycle-evidence`. Omitted delegation preserves standalone full behaviour.
+Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
+owns it, per the [Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md). PDF/source fidelity
+remains authoritative.
 
 ## Reference Modules
 
@@ -46,4 +44,4 @@ files and return `updated-lifecycle-evidence`. Omitted delegation preserves stan
 
 ## Reference Documentation
 
-- [pdf-to-md-quality-gate workflow](../../../repo-governance/workflows/content/pdf-to-md-quality-gate.md)
+- [pdf-to-md-quality-gate workflow](../../../repo-governance/workflows/quality/pdf-to-md-quality-gate.md)

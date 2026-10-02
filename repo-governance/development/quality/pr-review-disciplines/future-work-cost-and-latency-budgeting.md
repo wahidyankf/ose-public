@@ -8,8 +8,8 @@ when_to_use: "Use when proposing a cost/latency budget for review."
 Cloudflare's own production system — the one this convention's fan-out/coordinator shape is modeled
 on (see [Cost-Control & Noise-Control Mechanics](./cost-control-noise-control-mechanics-risk-tier-fan-out.md)) — reports a
 median cost of ≈$1 per review. Applied to this repo's shape, a `full`-tier PR fanning out to all
-nine specialists across the full five-cycle ceiling costs at worst roughly ≈$1 × 9 specialists ×
-5 cycles per PR, bounded downward twice over: by the
+nine specialists across the full three-cycle ceiling costs at worst roughly ≈$1 × 9 specialists ×
+3 cycles per PR, bounded downward twice over: by the
 [risk-tier fan-out (D12)](./cost-control-noise-control-mechanics-risk-tier-fan-out.md) — a `trivial` PR
 runs the coordinator alone and a `lite` PR fans out to only five specialists — and by the
 earliest-clean-exit rule, since the ceiling is reached only by a PR that never converges, and the

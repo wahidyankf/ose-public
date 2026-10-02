@@ -36,7 +36,7 @@ reports a missing or drifted toolchain, `./rhino toolchain provision --apply` ru
 vectors the `repo-config.yml` toolchain entries declare; `--apply` is the explicit authorization, and the
 transactional HIPPO class admits that mutation. Then re-run `rtk npm run doctor` and continue only
 when it is clean. Install a tool whose entry declares no provision vector through the phase the
-[Tool Inventory](../../../workflows/infra/development-environment-setup/tool-inventory.md) names.
+[Tool Inventory](../../../workflows/maintenance/development-environment-setup/002-tool-inventory.md) names.
 
 ## Shared Cargo Target Directories
 

@@ -33,11 +33,11 @@ Agent: apps-ayokoding-www-general-maker (creates tutorial + navigation updates)
 
 # Step 2: Validate
 User: "Check the new tutorial"
-Agent: apps-ayokoding-www-general-checker (generates audit report)
+Agent: content-checker (generates audit report)
 
 # Step 3: Fix
 User: "Apply the fixes"
-Agent: apps-ayokoding-www-general-fixer (applies validated fixes from audit)
+Agent: content-fixer (applies validated fixes from audit)
 ```
 
 ## Iterative Workflow: Maker → Checker → Fixer → Checker

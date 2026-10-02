@@ -62,7 +62,7 @@ exploratory testing:
 - [Regression Test Mandate](../../repo-governance/development/quality/regression-test-mandate.md) --
   the full blocking rule with enforcement details and examples
 - [Live-Tester Systematic Coverage](../../repo-governance/development/quality/live-tester-systematic-coverage.md) --
-  the SSOT practice the three tester agents and the `web-ux-test-fixing-planning` workflow implement
+  the SSOT practice the three tester agents and the `ux-review-fix-planning` workflow implement
 - [Feature Change Completeness Convention](../../repo-governance/development/quality/feature-change-completeness.md) --
   the feature-change companion to the regression test mandate
 - [Behaviour-Driven Development](../../repo-governance/development/behaviour-driven-development.md) --

@@ -33,4 +33,4 @@ target contract and the adapter drivers are still checked.
 
 Static coverage cannot prove that a binding invokes production code or observes independent
 evidence. Material changes also require the
-[Gherkin implementation review](../../../workflows/gherkin-implementation-review.md).
+[Gherkin implementation review](../../../workflows/quality/gherkin-implementation-review.md).

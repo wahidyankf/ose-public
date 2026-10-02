@@ -1,6 +1,6 @@
 # Leak Review Record Check
 
-`record-status.sh` makes the [PR Leak Review](../../repo-governance/workflows/pr/pr-leak-review.md) merge precondition
+`record-status.sh` makes the [PR Leak Review](../../repo-governance/workflows/quality/pr-leak-review.md) merge precondition
 mechanical. The hosted [`pr-leak-review`](../../.github/workflows/pr-leak-review.yml) workflow runs it on every
 pull-request change and review event; it publishes the `leak-review` commit status on the pull request's live head,
 `success` only when the designated reviewer's latest undismissed review on that head carries a `pass` record with every

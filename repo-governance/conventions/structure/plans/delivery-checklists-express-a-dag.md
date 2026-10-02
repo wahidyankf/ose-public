@@ -24,7 +24,7 @@ phase, stating:
   reservations are admitted; the plan does not invent a manual live-capacity exception.
 - **Cleanup as the terminal node**, depending on every delivery node — so the cleanup gate can never
   remove a worktree, branch, or artifact that an in-flight node still needs. The node references the
-  [Dev Artifact Clean-Up workflow](../../../workflows/dev-artifact-clean-up.md); an inlined copy
+  [Dev Artifact Clean-Up workflow](../../../workflows/maintenance/dev-artifact-clean-up.md); an inlined copy
   drifts and no gate reads it.
 
 The distinction that makes this worth writing down: **sequence is not dependency**. A checklist is

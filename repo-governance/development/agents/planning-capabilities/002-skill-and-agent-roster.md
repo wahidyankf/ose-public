@@ -28,7 +28,7 @@ when_to_use: >-
 | `plan-execution-checker` | auditing finished execution before archival                    |
 
 There is no separate fixer agent. The maker incorporates validated findings itself, within the repair budget the
-[Quality Gate](../../../workflows/plan/plan-quality-gate.md) declares.
+[Quality Gate](../../../workflows/quality/plan-quality-gate.md) declares.
 
 A maker–checker–fixer triangle sounds safer and is not: it creates a workflow that waits for a reviewer to return an
 empty report, and "no findings" is a state a sufficiently persistent loop can always reach. Bounding the repairs and

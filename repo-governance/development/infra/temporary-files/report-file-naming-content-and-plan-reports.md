@@ -9,7 +9,7 @@ Continues [Report File Naming Standard — Fixer Reports (Universal Pattern)](./
 
 ## Content Validation Reports
 
-**Agents**: apps-ayokoding-www-general-checker, apps-ayokoding-www-by-example-checker, apps-ayokoding-www-facts-checker, apps-ayokoding-www-in-the-field-checker, apps-ayokoding-www-link-checker, apps-ose-www-content-checker
+**Agents**: content-checker, tutorial-by-example-checker, content-checker, tutorial-in-the-field-checker, apps-ayokoding-www-link-checker, content-checker
 **Pattern**: `{site}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__audit.md`
 
 **Examples**:

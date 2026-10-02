@@ -145,7 +145,7 @@ Decision: Keep in plan-checker agent
 **Scenario 3**: Adding mode parameter handling to fixer agents
 
 ```
-Knowledge: lax/normal/strict/ocd modes filter findings by criticality
+Knowledge: lax/normal/strict/all modes filter findings by criticality
 
 Q: Used by 3+ agents?
 A: YES (all fixer agents use mode parameter)

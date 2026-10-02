@@ -14,7 +14,7 @@ that belongs in its own document rather than being folded into this convention's
 
 ### Bot Identity and the `REQUEST_CHANGES` Gap
 
-Only `pr-review-synthesis-maker` posts to the PR — through the GitHub Reviews API, as the sole poster
+Only `pr-review-checker` posts to the PR — through the GitHub Reviews API, as the sole poster
 of record; the nine specialists never post, they hand their raw findings to the coordinator. The
 coordinator authenticates as the PR author's own identity, and GitHub rejects a `REQUEST_CHANGES`
 review submitted against one's own pull request. Every blocking review — including one carrying a

@@ -74,13 +74,10 @@ production-disabled flag, tests for both paths, and rollout/rollback/removal.
 
 ## Quality-Gate Lifecycle Handoff
 
-When the plan quality gate provides `delegated-gate-ids` and an evidence ledger, omit only exact
-registry IDs or predicates connected through `verifies`. Deterministic gates own links, maps, word
-budgets, formatting, and Mermaid mechanics. Project-local `test:coverage:behaviour` owns static
-Gherkin corpus, adapter, exemption, and journey-shape evidence; semantic journey quality remains in
-scope. Preserve pending state; never rerun or infer delegated work. Plan structure, semantics,
-evidence, and executability remain in scope. See the
-[lifecycle ownership policy](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
+Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
+owns it, per the [Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md). Project-local `test:coverage:behaviour` owns static
+Gherkin corpus, adapter, exemption, and journey-shape evidence; semantic journey quality, plan structure, semantics,
+evidence, and executability remain in scope.
 
 ## Related
 

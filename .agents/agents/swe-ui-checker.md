@@ -46,10 +46,8 @@ Validate seven UI dimensions and emit `local-tmp/swe-ui/swe-ui__{uuid}__{timesta
 
 ## Lifecycle-Owned Predicates
 
-When a gate supplies `delegated-gate-ids` and evidence, omit only exact registered predicates.
-Carry evidence unchanged; never execute or report delegated work. Missing/stale evidence remains
-pending; without a handoff, suppress nothing. See the
-[lifecycle ownership policy](../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
+Never report a property a declared tool already checks; that tool's verdict stands, as the
+[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md) sets out.
 
 ## Check Dimensions
 
@@ -70,18 +68,11 @@ pending; without a handoff, suppress nothing. See the
 3. Classify criticality and confidence.
 4. Write the progressive audit report.
 
-## Bounded Quality-Gate Roles
-
-For `ui-quality-gate`, `discovery` audits all dimensions once. `verification` reproduces supplied
-original findings and smoke-tests affected components only. Return resolved/unresolved IDs,
-regressions, changed scope, and errors; never repeat discovery or request another pass.
-
 ## When to Use This Agent
 
 **Use when**:
 
 - Auditing existing or newly created UI components
-- Running `ui-quality-gate`
 - Reviewing PR UI changes
 
 **Do NOT use for**:

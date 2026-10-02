@@ -16,15 +16,10 @@ single folder. Subfolders are always included automatically.
 
 ## Lifecycle Delegation
 
-Quality-gate invocations may pass exact `delegated-gate-ids` under
-[Lifecycle Validation Ownership](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
-Do not run, re-derive, report, or fix the matching predicates: `governance-readme-index` owns
-README existence/index membership; `specs-structure` owns adoption, tree shape, and registered
-counts. No gate owns internal links: run `./rhino md internal-link validate` for missing targets and
+Under a quality gate, do not re-derive, report, or fix a property the gate's Deterministic Boundary lists, per the
+[Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md). No gate owns internal links: run `./rhino md internal-link validate` for missing targets and
 check `#fragment` anchors yourself, because it does not. Keep Gherkin journey coherence,
-semantic, and cross-folder judgment. Omitted delegation
-preserves standalone full behaviour. Accept `lifecycle-evidence`: checkers preserve it; fixers
-scope-intersect changed files and return `updated-lifecycle-evidence`.
+semantic, and cross-folder judgment.
 
 ## The Nine Validation Categories
 
@@ -51,7 +46,7 @@ execution pattern, fix report format, safety rules, and changed-file capture.
 ## What This Methodology Does NOT Cover
 
 Test bindings and semantic implementation (use the
-[`gherkin-implementation-review`](../../../repo-governance/workflows/gherkin-implementation-review.md)),
+[`gherkin-implementation-review`](../../../repo-governance/workflows/quality/gherkin-implementation-review.md)),
 governance docs (`rules-checker`), or runtime tests (CI). This methodology is read-only.
 
 ## Related

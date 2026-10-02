@@ -55,7 +55,7 @@ See [Usage Example](./reference/usage-example.md) for a complete checker-agent s
 
 ## Governance-Gate Carve-Out
 
-The two [governance gates](../../../repo-governance/workflows/meta/workflow-identifier/governance-gate-class.md) —
+The two [governance gates](../../../repo-governance/development/workflow/quality-gate-contract.md) —
 `plan-quality-gate` and `rules-quality-gate` — are **exempt from this report contract**. They emit a
 frozen ledger table, not a streamed audit report:
 

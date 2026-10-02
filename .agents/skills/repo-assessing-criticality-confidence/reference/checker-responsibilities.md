@@ -94,7 +94,7 @@ Ask the questions in order and stop at the first yes:
 
 - `docs-checker` - [Verified]/[Error]/[Outdated]/[Unverified] + criticality
 - `docs-tutorial-checker` - Verification labels + criticality
-- `apps-ayokoding-www-facts-checker` - Verification labels + criticality
+- `content-checker` - Verification labels + criticality
 - `docs-link-checker` - [OK]/[BROKEN]/[REDIRECT] + criticality
 - `apps-ayokoding-www-link-checker` - Status labels + criticality
 

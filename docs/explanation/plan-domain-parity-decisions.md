@@ -43,7 +43,7 @@ explains the thinking behind every resolution.
 The survey (empirical, 2026-06-06) established these facts before any decisions:
 
 - `plan-quality-gate.md` is byte-identical in both repos — no action needed.
-- `plan-multi-repo-parity-planning.md` exists only in ose-public.
+- `plan-parity-planning.md` exists only in ose-public.
 - The grilling convention exists as `grilling-with-options.md` in ose-public and
   `grilling.md` (different name, broader wording) in the private sibling.
 - The OpenCode emitter in the retired in-tree Rhino still emits the deprecated boolean `tools`
@@ -63,7 +63,7 @@ pair are omitted, so the sequence below skips.
 
 ### Row 1 — Parity Workflow Propagation
 
-**Decision**: propagate `plan-multi-repo-parity-planning.md` from ose-public to
+**Decision**: propagate `plan-parity-planning.md` from ose-public to
 infra.
 
 **Rationale**: the workflow must be invocable from any anchor repo. Keeping it
@@ -72,7 +72,7 @@ cross-repo parity sweep.
 
 ### Row 2 — Parity Workflow Grill Structure
 
-**Decision**: amend all copies of `plan-multi-repo-parity-planning.md` to add a
+**Decision**: amend all copies of `plan-parity-planning.md` to add a
 two-grill + web-research step: Survey → Matrix → First Grill (hard gate) →
 web-researcher (conditional) → Second Grill (post-research) → Author → Gate →
 Deliver.

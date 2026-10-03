@@ -32,7 +32,7 @@ git check-ignore --quiet hippo.local.json
 node -e '
 const fs = require("fs");
 const config = JSON.parse(fs.readFileSync("hippo.local.json.example", "utf8"));
-if (config.schemaVersion !== 3 || config.defaultProfile !== "local-constrained") process.exit(1);
+if (config.schemaVersion !== 3 || config.defaultProfile !== "balanced") process.exit(1);
 const coordination = config.coordination;
 if (
   coordination?.mode !== "reservation" || coordination.maxCpu !== 8 ||
@@ -53,15 +53,14 @@ if (
   promotion?.completedRuns !== 25 || promotion.minimumSources !== 3 ||
   promotion.minimumAvailableMemoryMiB !== 10240 || promotion.maximumCpuP95Percent !== 75
 ) process.exit(1);
-const profile = config.profiles?.[config.defaultProfile];
-if (
-  !profile || profile.strict !== false || profile.fallback !== "minimal" ||
-  profile.maxCpuUtilizationPercent !== 90
-) process.exit(1);
-// A reservation share is what bounds this consumer now. A fixed profile
-// concurrency cap would pin every run to one worker and defeat the adaptive
-// parallelism the reservation vector exists to provide.
-if (profile.maxConcurrency !== undefined) process.exit(1);
+// The default is the built-in balanced profile with no override block. On
+// macOS, HIPPO grants degraded admission under a stable memory-pressure warning
+// only to the built-in balanced profile by name; a custom profile, even one
+// extending balanced, waits indefinitely instead. The reservation tiers above
+// still cap every grant, and the built-in fallback chain still applies. A
+// fixed profile concurrency cap would also pin every run to one worker and
+// defeat the adaptive parallelism the reservation vector exists to provide.
+if (config.profiles !== undefined) process.exit(1);
 '
 
 # The editor schema must identify the same immutable release that the runtime

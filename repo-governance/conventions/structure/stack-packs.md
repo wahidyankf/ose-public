@@ -24,7 +24,7 @@ This convention implements One Source Per Fact,
 | stack standard     | `repo-governance/development/quality/stacks/<id>-standards.md`                                       |
 | stack index        | [`repo-governance/development/quality/stacks/README.md`](../../development/quality/stacks/README.md) |
 | skill              | `.agents/skills/<prefix>-<id>/SKILL.md`, with the prefix set by the pack's kind below                |
-| generic agents     | `.agents/agents/swe-code-{maker,checker,fixer}.md`                                                   |
+| generic agents     | `.agents/agents/swe-{developer,reviewer,debugger}.md`                                                |
 | repository adapter | `repo-governance/development/quality/stacks/repository-adapter.md`, in an adopter                    |
 | inventory          | the `extensions.software-development` key of the repository configuration file                       |
 | human reference    | `docs/reference/software-development.md`, in an adopter with a `docs/` tree                          |

@@ -1,0 +1,13 @@
+---
+description: |-
+  Prepares one pinned review pass before fan-out by choosing its risk tier, route, and specialist set with reasons, reading settled thread outcomes, and assembling one shared brief, without reviewing the change.
+mode: subagent
+permission:
+  bash: allow
+  edit: deny
+  glob: allow
+  grep: allow
+  read: allow
+---
+
+Before acting, read the complete canonical agent definition at the repository-root path .agents/agents/pr-review-scout.md and follow it as authoritative. If it cannot be read, stop and report the missing path.

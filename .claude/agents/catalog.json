@@ -8,21 +8,6 @@
       "digest": "5cd440029327ce20e7d68f80b5b6ab490005763573d022f3a147f4f389e00df8"
     },
     {
-      "id": "agent/api-exploratory-tester",
-      "path": ".agents/agents/api-exploratory-tester.md",
-      "digest": "0119534eee4f65e202a45b591046e014217815968c28be493980e114023d6aa3"
-    },
-    {
-      "id": "agent/api-http-checker",
-      "path": ".agents/agents/api-http-checker.md",
-      "digest": "086f219c6bd3fd168621ebd5787b9b9ce7080af630afc5322ce5e024af647269"
-    },
-    {
-      "id": "agent/api-http-fixer",
-      "path": ".agents/agents/api-http-fixer.md",
-      "digest": "8cdbb1fbb955c4118e781f84606e78613e015f8d66e17dc8588637dcc019195d"
-    },
-    {
       "id": "agent/apps-ayokoding-www-annotated-concept-maker",
       "path": ".agents/agents/apps-ayokoding-www-annotated-concept-maker.md",
       "digest": "b5f4ca0b53076ebbf7f3efda7b3b49bde20ac0f087204fef0f421e65705d59c6"
@@ -31,11 +16,6 @@
       "id": "agent/apps-ayokoding-www-by-example-maker",
       "path": ".agents/agents/apps-ayokoding-www-by-example-maker.md",
       "digest": "0d8a3ae6c0496afc86ba4128874197d092f35e6eb31b52f5a63d7131c4ffcda3"
-    },
-    {
-      "id": "agent/apps-ayokoding-www-deployer",
-      "path": ".agents/agents/apps-ayokoding-www-deployer.md",
-      "digest": "bb2af6e63a3b993c785a3cb01525301913b35086da368dd45419721d9d3b3f32"
     },
     {
       "id": "agent/apps-ayokoding-www-general-maker",
@@ -60,37 +40,12 @@
     {
       "id": "agent/apps-ayokoding-www-primer-maker",
       "path": ".agents/agents/apps-ayokoding-www-primer-maker.md",
-      "digest": "08005f77fdf45f02dd6a268eaa45e338dd19245128b1ca313af3f4c1d11b9d65"
-    },
-    {
-      "id": "agent/apps-organiclever-app-web-deployer",
-      "path": ".agents/agents/apps-organiclever-app-web-deployer.md",
-      "digest": "2f9e3b2776ede65a56bbb023e1ab90e9c7e0291f5161e096382999dc4c14cb3e"
-    },
-    {
-      "id": "agent/apps-organiclever-www-deployer",
-      "path": ".agents/agents/apps-organiclever-www-deployer.md",
-      "digest": "b9dcef294ac3d4a5e1124534e675d68fe41ef96362434edae4309a1a6472278b"
-    },
-    {
-      "id": "agent/apps-ose-app-web-deployer",
-      "path": ".agents/agents/apps-ose-app-web-deployer.md",
-      "digest": "47011f8ff30d8aa2fe44723c3112f70683ee12bcd013dfdbaaf5b818879b9c30"
+      "digest": "08a49ee9312409a6ebf66328c1492e7da64486653ce3908c0e3256c6add7381a"
     },
     {
       "id": "agent/apps-ose-www-content-maker",
       "path": ".agents/agents/apps-ose-www-content-maker.md",
       "digest": "c26a7dece37b23bc61b2554c86a11b1ae10f8214e41d37c86bb2a08d6fc07ca1"
-    },
-    {
-      "id": "agent/apps-ose-www-deployer",
-      "path": ".agents/agents/apps-ose-www-deployer.md",
-      "digest": "de6c334c42212a70b5186292fe46b924ee2e702e9bf24ab2c88a0dd573d3d938"
-    },
-    {
-      "id": "agent/apps-web-ui-storybook-deployer",
-      "path": ".agents/agents/apps-web-ui-storybook-deployer.md",
-      "digest": "51d757b726abbe8a99b18cefb8944f41cf94434e51f6f0384a38dc6dbed4b02b"
     },
     {
       "id": "agent/ci-checker",
@@ -185,7 +140,7 @@
     {
       "id": "agent/pdf-to-md-maker",
       "path": ".agents/agents/pdf-to-md-maker.md",
-      "digest": "939c17261b8a5566ce251f8b577ea3d3dfb8ee98a09057337cd0b6eede803788"
+      "digest": "5a50a4bcba3b2db8cf692786f7728305399ce9143d558aa2d72533cd21be4f86"
     },
     {
       "id": "agent/plan-checker",
@@ -206,11 +161,6 @@
       "id": "agent/plan-maker",
       "path": ".agents/agents/plan-maker.md",
       "digest": "cbd6a1ca82cb7b1f78ac3fc7d90fe01c1b1d5bfff506ab4e5718137c05fe4753"
-    },
-    {
-      "id": "agent/pr-review-architecture-checker",
-      "path": ".agents/agents/pr-review-architecture-checker.md",
-      "digest": "aac3f864c570a309b108ebe92f87acfcdef4218615c4573b794ac9f6c7da54b6"
     },
     {
       "id": "agent/pr-review-checker",
@@ -320,7 +270,7 @@
     {
       "id": "agent/social-linkedin-post-maker",
       "path": ".agents/agents/social-linkedin-post-maker.md",
-      "digest": "46caf2824a4acaeb0e840dd72a1b74a7462a22e0b94307e8e5e9b20c089e5941"
+      "digest": "b73088c5169ba01b5b7c94bf99923f051f1ea686db8e0b711bd404cd86ac604c"
     },
     {
       "id": "agent/specs-checker",
@@ -335,37 +285,52 @@
     {
       "id": "agent/specs-maker",
       "path": ".agents/agents/specs-maker.md",
-      "digest": "ec671f0e38373dc3a29351b045ee1de1eca5365b3e13df6bac890d31f4669590"
+      "digest": "61877ee189ec90688f3cdc0a6a98d171918d832618bbc4d71de395bdb1724ef4"
     },
     {
-      "id": "agent/swe-code-checker",
-      "path": ".agents/agents/swe-code-checker.md",
-      "digest": "19d75155c30ba29771f2ef984469f3856cf22b4c9319201d0c5d38d6377030b1"
+      "id": "agent/swe-api-tester",
+      "path": ".agents/agents/swe-api-tester.md",
+      "digest": "3a4a58c958d1d866c7a2276b22030b35da2c3570e6fc16260d0fa9f2682ca3cb"
     },
     {
-      "id": "agent/swe-code-fixer",
-      "path": ".agents/agents/swe-code-fixer.md",
-      "digest": "c490e98cd24ea6c05323f9f74149e8c2245ef483600491423570b1766169e278"
+      "id": "agent/swe-architect",
+      "path": ".agents/agents/swe-architect.md",
+      "digest": "111ff85d8bfa74b640aba7fcd777cdcba62b4646de61ffb03d3787ae7d1c2613"
     },
     {
-      "id": "agent/swe-code-maker",
-      "path": ".agents/agents/swe-code-maker.md",
-      "digest": "c34c2adfb3b8b9a651e8a574d9c1ac6e8c4d776eaa6a2a1c13998963da684f9f"
+      "id": "agent/swe-debugger",
+      "path": ".agents/agents/swe-debugger.md",
+      "digest": "b970d4dc9875417ab3bb5275153d52cc44dc2b204cd747315f9124d561df86f2"
     },
     {
-      "id": "agent/swe-ui-checker",
-      "path": ".agents/agents/swe-ui-checker.md",
-      "digest": "f0607f77bd34c5503c22ba0b0165f3ca0250515410d342228bd6829c56045d00"
+      "id": "agent/swe-developer",
+      "path": ".agents/agents/swe-developer.md",
+      "digest": "c20864f3355623eb99190eb988439e4127f21326a3eaf41bfe6aa6516e6ec2f9"
     },
     {
-      "id": "agent/swe-ui-fixer",
-      "path": ".agents/agents/swe-ui-fixer.md",
-      "digest": "87082287b11d3fddd9a249ccf115ec43fe825299fe815c1f08132d9978522b84"
+      "id": "agent/swe-orchestrator",
+      "path": ".agents/agents/swe-orchestrator.md",
+      "digest": "9595824fa2f66ef32cc7de737e3701b91c66d33f56ee6d3ea57aa7a1e5bba82a"
     },
     {
-      "id": "agent/swe-ui-maker",
-      "path": ".agents/agents/swe-ui-maker.md",
-      "digest": "4412e9f068b1bbb8f6239a5fd593fc374841b3c2982d6552fd76e3ccc4405b08"
+      "id": "agent/swe-releaser",
+      "path": ".agents/agents/swe-releaser.md",
+      "digest": "7e4ed212c14bb7d2677a4e3cf7d6acb6c5393b634c17fd405a69b7b8a04f97bf"
+    },
+    {
+      "id": "agent/swe-reviewer",
+      "path": ".agents/agents/swe-reviewer.md",
+      "digest": "b9e44a053e4deb8525ce6340de552db76a5af09906fe4eb1c72dde12617e91ef"
+    },
+    {
+      "id": "agent/swe-usability-tester",
+      "path": ".agents/agents/swe-usability-tester.md",
+      "digest": "36f66fa17e82d750d4387c2661ae9cc1b1e83d9363b6a14773d549bed8c19f9c"
+    },
+    {
+      "id": "agent/swe-web-tester",
+      "path": ".agents/agents/swe-web-tester.md",
+      "digest": "5ea40ec6acce9142b78c6d026b6421ea8632726910f2d614f728799708cc6f4f"
     },
     {
       "id": "agent/tutorial-annotated-concept-checker",
@@ -408,34 +373,9 @@
       "digest": "3b3a58af7a706f4e956a76fba06cafbc99358dfd1d6cfa5ab69bfab8f595d689"
     },
     {
-      "id": "agent/ui-web-checker",
-      "path": ".agents/agents/ui-web-checker.md",
-      "digest": "026406a80b00f7e3e6c0f27c553e926f0630512e93cc0cbde761aea98fa3517d"
-    },
-    {
-      "id": "agent/ui-web-fixer",
-      "path": ".agents/agents/ui-web-fixer.md",
-      "digest": "396648cd2289013eb81ac5839acab14351e485abd19ee1d0db030d7f9dd7b361"
-    },
-    {
-      "id": "agent/web-design-tester",
-      "path": ".agents/agents/web-design-tester.md",
-      "digest": "4f038c5ad634f5d2c8ee0e8657ec3cab6ad21d33f1f9620b2628a3fc5555cbed"
-    },
-    {
-      "id": "agent/web-exploratory-tester",
-      "path": ".agents/agents/web-exploratory-tester.md",
-      "digest": "dd29511d703619b3ce5cfc9a1a1f3896fb5a623e35dbddcb36a7b1547cffe144"
-    },
-    {
       "id": "agent/web-researcher",
       "path": ".agents/agents/web-researcher.md",
       "digest": "84c06d7ed571de3593fc608d7ef26acc2d4b3254bda27441117af5fc104901d9"
-    },
-    {
-      "id": "agent/web-usability-tester",
-      "path": ".agents/agents/web-usability-tester.md",
-      "digest": "38964824efcc9e2fc9c73e15b8fb3a7f386944b302cf0610c91727f4b42ef4bb"
     },
     {
       "id": "skill/agent-developing-agents",
@@ -445,7 +385,7 @@
     {
       "id": "skill/api-testing-exploratory-methodology",
       "path": ".agents/skills/api-testing-exploratory-methodology/SKILL.md",
-      "digest": "44a84923402a077c0768b0bfb2572a063d7666abccc1111adc74e252c3d068c7"
+      "digest": "7ca02550ed240e512c9fd6044125687c793e019aa3d586e5f27caab317a682d3"
     },
     {
       "id": "skill/apps-ayokoding-www-authoring-annotated-concept",
@@ -465,12 +405,12 @@
     {
       "id": "skill/apps-organiclever-www-developing-content",
       "path": ".agents/skills/apps-organiclever-www-developing-content/SKILL.md",
-      "digest": "95dca96efe1fed0dd67be78afbc08cc4aa1c81b3c7b2965ed92fd5889e3b751e"
+      "digest": "10c26f02381ff7d56c3fbfb5310ba201727682b86e3c04b966810d2b907ac48e"
     },
     {
       "id": "skill/apps-ose-www-developing-content",
       "path": ".agents/skills/apps-ose-www-developing-content/SKILL.md",
-      "digest": "cb67882d7cd811dd9c4d0535b07ee43b16477253907f8432967ebfb327950cd1"
+      "digest": "c7aaa4800d590309941aaeda6c757b464f41f3bbe226fdf73dd8f73756d244b9"
     },
     {
       "id": "skill/building-command-line-interfaces",
@@ -568,6 +508,16 @@
       "digest": "aad2fecd0ba9b07c774cf0d334e23775364356ad5219b7c68a47ee320d1b6fe9"
     },
     {
+      "id": "skill/evolving-database-schemas",
+      "path": ".agents/skills/evolving-database-schemas/SKILL.md",
+      "digest": "b189a93278df87faf64411ecc763ada8c609a83cb8ca835d4de0cba2b0348c39"
+    },
+    {
+      "id": "skill/exploratory-testing",
+      "path": ".agents/skills/exploratory-testing/SKILL.md",
+      "digest": "5ae777f3775e0b93f8db32f602ccedfbbc8601401601c564953f96bc360c500c"
+    },
+    {
       "id": "skill/framework-aspnet-core",
       "path": ".agents/skills/framework-aspnet-core/SKILL.md",
       "digest": "b7c4540796a40dbb06af535d1eb0aaa9acd1fcb7abb53e58b0fcef857514c288"
@@ -606,6 +556,11 @@
       "id": "skill/harness-compatibility-protocol",
       "path": ".agents/skills/harness-compatibility-protocol/SKILL.md",
       "digest": "b9507a657083b1333cce3d8e0623c9c09b1583fd9a9018a2a2fe93bdf3378d2d"
+    },
+    {
+      "id": "skill/modeling-threats",
+      "path": ".agents/skills/modeling-threats/SKILL.md",
+      "digest": "c42cfb52d59c1dc93bc53dd695125eafffbf4563c6c27e942937ad6892e30127"
     },
     {
       "id": "skill/plan-creating-project-plans",
@@ -651,6 +606,11 @@
       "id": "skill/pr-review-synthesis-coordination",
       "path": ".agents/skills/pr-review-synthesis-coordination/SKILL.md",
       "digest": "fb5af2c74f1017ac02a52b13f1a9385e1e79ab7bb0784473184b6f804a547df1"
+    },
+    {
+      "id": "skill/producing-review-findings",
+      "path": ".agents/skills/producing-review-findings/SKILL.md",
+      "digest": "b2b39f866b8b1a5e344a0757e754f02f5d664e47e7bb715255687a3b5d805845"
     },
     {
       "id": "skill/programming-csharp",
@@ -775,17 +735,17 @@
     {
       "id": "skill/web-testing-design-fidelity",
       "path": ".agents/skills/web-testing-design-fidelity/SKILL.md",
-      "digest": "faae900464a2e27988289b60e93eb78f556650b29578f7a1b397e0f20ce29e9f"
+      "digest": "fd77961899547f94de951d43775a8a77ea9c0a8ed76c4538532a00684bf8d55a"
     },
     {
       "id": "skill/web-testing-exploratory-methodology",
       "path": ".agents/skills/web-testing-exploratory-methodology/SKILL.md",
-      "digest": "31603f82abd96222ac3f9bfc0e62a8d466be024c41f68b75980b45476bdd321d"
+      "digest": "b7c6aa26884c3a0841c7b8f52e524dc99cd7f4ccf68caffb874a1674c33c2328"
     },
     {
       "id": "skill/web-testing-usability-heuristics",
       "path": ".agents/skills/web-testing-usability-heuristics/SKILL.md",
-      "digest": "e05e58b05cd893169c437dd8ac1542d735137358bcf8addb9051388fb4c30b57"
+      "digest": "bf415a89ac005cbcab8fcf4cb43c8eda7c57ed47dc38fcf5c2d0c75be84ce8cb"
     },
     {
       "id": "skill/writing-browser-e2e-tests",
@@ -795,7 +755,7 @@
     {
       "id": "instruction",
       "path": "AGENTS.md",
-      "digest": "c1b567c04bb3e898279f9dc0b90cb9b9c660f198c128fb9eed024187b0f31207"
+      "digest": "6977918ef64e6f4430523d96447604d323a55fbc89c7fa4a7e924ebc7b4c09c0"
     }
   ]
 }

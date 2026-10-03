@@ -46,4 +46,4 @@ export default function Counter() {
 
 **Wrong**: `git checkout prod-organiclever-www && git commit`
 
-**Right**: Commit to `main`, use `apps-organiclever-app-web-deployer` agent to force-push
+**Right**: Commit to `main`, use `swe-releaser` (Deploy mode, `organiclever-www` target) agent to force-push

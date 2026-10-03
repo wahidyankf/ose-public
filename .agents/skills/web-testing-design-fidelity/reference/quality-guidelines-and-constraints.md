@@ -7,7 +7,7 @@
 - **Assert the rendered value, not presence** — "a button exists" is not "the on-token button"; quote
   the computed colour/spacing, compared to the designed value.
 - **Stay on the runtime side** — judge the **rendered** page; do not audit component source (that is
-  `swe-ui-checker`). Report the runtime symptom; note a source locus only as a hypothesis.
+  `swe-reviewer`). Report the runtime symptom; note a source locus only as a hypothesis.
 - **Reproduce before you report** — a design claim without deterministic steps (and the
   breakpoint/locale) is an opinion, not a finding.
 - **Record non-coverage honestly** — list dimensions, breakpoints, locales, or sources not exercised
@@ -17,7 +17,7 @@
 ## Constraints
 
 - Does not modify the site under test, fix code, or audit component source the way
-  `swe-ui-checker` does. In explicit `plan` mode it authors the complete mature core; in `delivery`
+  `swe-reviewer` does. In explicit `plan` mode it authors the complete mature core; in `delivery`
   mode it only appends granular finding action checklists under cohesive outcomes in the existing plan.
 - Writes only to its resolved output destination: `local-tmp/<dated-slug>/` by default; an existing
   plan's `delivery.md` + `evidence/` in `delivery` mode; or a `plans/backlog/<slug>/` or

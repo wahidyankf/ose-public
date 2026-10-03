@@ -1,8 +1,7 @@
 ---
 description: |-
   Audits a complete plan draft against the plan specification and returns criticality-rated findings to the plan quality gate, without modifying anything it audits.
-effort: high
-model: opus
+model: inherit
 name: plan-checker
 skills:
   - docs-applying-content-quality

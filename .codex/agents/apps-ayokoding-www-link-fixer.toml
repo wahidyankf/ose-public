@@ -1,0 +1,5 @@
+description = "Applies validated fixes from link-checker audit reports. Re-validates link findings before applying changes."
+developer_instructions = "Before acting, read the complete canonical agent definition at the repository-root path .agents/agents/apps-ayokoding-www-link-fixer.md and follow it as authoritative. If it cannot be read, stop and report the missing path."
+model = "gpt-6-luna"
+model_reasoning_effort = "xhigh"
+name = "apps-ayokoding-www-link-fixer"

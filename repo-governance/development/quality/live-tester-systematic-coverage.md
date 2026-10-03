@@ -36,9 +36,9 @@ This practice mandates enumerate-not-sample forcing-functions for the three live
 
 This practice applies to:
 
-- All runs of `web-exploratory-tester`, `web-usability-tester`, and `web-design-tester` against
+- All runs of `swe-web-tester` (exploratory charter), `swe-usability-tester`, and `swe-web-tester` (design charter) against
   any live web surface in `apps/`.
-- All runs of `api-exploratory-tester` against any live REST or GraphQL API in `apps/`.
+- All runs of `swe-api-tester` (exploratory charter) against any live REST or GraphQL API in `apps/`.
 - All invocations of the `ux-review-fix-planning` workflow.
 - The Rule-15 near-end retest required by the
   [User-Facing Delivery Hardening Convention](./user-facing-delivery-hardening.md) before plan

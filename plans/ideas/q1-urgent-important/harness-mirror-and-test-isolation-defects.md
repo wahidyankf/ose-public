@@ -66,8 +66,6 @@ adds a test to that binary, which makes it cheapest to fix before any workstream
   reproduction record.
 - [rhino-governance-tooling-defects](./rhino-governance-tooling-defects.md) — the sibling
   family of `rhino-cli` tools that report success while under-running.
-- [harness-binding-catalog-drift](../q2-not-urgent-important/harness-binding-catalog-drift.md) — the
-  same emitter surface, drifting in a different dimension.
 - [README Completeness convention](../../../repo-governance/conventions/structure/governance-readme-completeness.md)
   — the rule that puts an index inside the globbed directory in the first place; the collision is
   between two rules, not a bug in one.

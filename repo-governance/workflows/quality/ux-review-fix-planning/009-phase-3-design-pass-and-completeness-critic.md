@@ -1,5 +1,5 @@
 ---
-description: "Runs web-design-tester after Phase 2 integrates, then folds its DWT-### findings and SG-### design-spec proposals into the same plan, keeping all three sources in labelled sections."
+description: "Runs swe-web-tester (design charter) after Phase 2 integrates, then folds its DWT-### findings and SG-### design-spec proposals into the same plan, keeping all three sources in labelled sections."
 when_to_use: "Use when checking what the design-aware tester is dispatched with, or how its findings stay attributed distinctly from the exploratory and usability sources."
 ---
 
@@ -10,14 +10,14 @@ when_to_use: "Use when checking what the design-aware tester is dispatched with,
 Only after Phase 2 has integrated, run the design-aware tester and fold its results into the **same**
 plan. Also passive / non-destructive.
 
-**Agent**: `web-design-tester` — design-aware. Judges whether the **running** rendered page matches its
+**Agent**: `swe-web-tester` (design charter) — design-aware. Judges whether the **running** rendered page matches its
 design and follows good design practice, against five ground-truth sources (committed plan-folder
 mockups, design tokens/theme at runtime, design-system primitives `libs/web-ui`, an optional external
 Figma/mockup source passed at invocation, and general design best-practice grounded by
 `web-researcher`); produces a findings catalog `DWT-###` (mockup fidelity, runtime token/theme fidelity,
 design-system-primitive reuse, visual hierarchy, alignment, spacing/density "not cramped", typography,
 colour, cross-surface visual consistency) plus design-spec proposals `SG-###` (Gherkin for on-design
-behaviours worth protecting). It is the **runtime** counterpart to `swe-ui-checker`'s **static** source
+behaviours worth protecting). It is the **runtime** counterpart to `swe-reviewer`'s **static** source
 audit and never audits component source.
 
 - **Args**: same as Phase 1, plus an optional `design-source` (Figma link / mockup URL) when one is

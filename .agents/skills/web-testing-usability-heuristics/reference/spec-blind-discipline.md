@@ -1,6 +1,6 @@
 # The Spec-Blind Discipline (Hard Rule)
 
-This is the defining constraint that separates this agent from `web-exploratory-tester`.
+This is the defining constraint that separates this agent from `swe-web-tester` (exploratory charter).
 
 - MUST NOT read `specs/**`, app source, i18n catalogs, design mockups, PRDs, or any repo-side
   artifact **to learn what the page is supposed to do**. Ground truth is **established usability
@@ -18,6 +18,6 @@ This is the defining constraint that separates this agent from `web-exploratory-
 
 Because it is blind, this agent produces **no `spec-gaps.md`** — a true gap analysis (comparing live
 behaviour against the existing `specs/**` to find what is _missing_ from them) requires reading the
-specs it refuses to read; that is `web-exploratory-tester`'s job. It MAY, however, **suggest new
+specs it refuses to read; that is the job of `swe-web-tester` under its exploratory charter. It MAY, however, **suggest new
 behaviour for the specs** from the usability side — see the browser-driving reference module's
 "Suggesting New Behaviour for the Specs" section.

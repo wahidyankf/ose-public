@@ -1551,7 +1551,7 @@ disables/removes the entire guarded web slice while retaining backend data.
 | Unit             | runtime schemas, backend-to-view projections, problem mapping, auth/context, CSRF/origin, pagination, idempotency/version, redaction, page states, focus/status semantics    |
 | Integration      | real Next.js handlers with generated backend client/session, current-company derivation, stale/last-admin/invitation/entitlement mapping, Mailpit handoff without capability |
 | E2E              | built browser+BFF/backend/PostgreSQL/Mailpit for Company A/B/personal, roster, mutation conflicts, invitations, entitlements, exit, accessibility/responsive/leak checks     |
-| API quality gate | strict `api-exploratory-tester` against web base URL and `company-admin.openapi.yaml`; successful destructive mutations remain isolated Integration/E2E-owned                |
+| API quality gate | strict `swe-api-tester` (exploratory charter) against web base URL and `company-admin.openapi.yaml`; successful destructive mutations remain isolated Integration/E2E-owned  |
 | UI/live web      | strict static UI gate plus sequential exploratory, usability, and design testers over every tab/state/locale/breakpoint                                                      |
 
 There are no default layer exemptions. Any genuinely inapplicable Integration/E2E adapter is declared

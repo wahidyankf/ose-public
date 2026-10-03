@@ -15,10 +15,13 @@ This document defines the standards for selecting the appropriate model tier whe
 
 Four grades, cheapest first: **fast**, **execution-grade**, **planning-grade**, **ultra**.
 
-- [Ultra](./model-selection/model-tiers-ultra.md) — fable grade; defined, currently unpopulated.
-- [Planning-Grade](./model-selection/model-tiers-planning-grade.md) — opus grade.
-- [Execution-Grade](./model-selection/model-tiers-execution-grade.md) — sonnet grade.
-- [Fast](./model-selection/model-tiers-fast.md) — haiku grade.
+A canonical agent names a `tier`, never a model. The Tier Registry, the `tiers` map of each
+`harness.profiles[]` entry in `repo-config.yml`, maps each tier per harness.
+
+- [Ultra](./model-selection/model-tiers-ultra.md) — `ultra`, unpinned; defined, currently unpopulated.
+- [Planning-Grade](./model-selection/model-tiers-planning-grade.md) — `plan`, unpinned.
+- [Execution-Grade](./model-selection/model-tiers-execution-grade.md) — `execution`, `sonnet` in `.claude/agents/`.
+- [Fast](./model-selection/model-tiers-fast.md) — `fast`, `haiku` in `.claude/agents/`, the newest luna model on Codex.
 - [Model Selection Decision Tree](./model-selection/model-selection-decision-tree.md) — the decision tree.
 - [Justification Requirement](./model-selection/justification-requirement.md) — the required block.
 

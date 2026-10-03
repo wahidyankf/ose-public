@@ -18,7 +18,7 @@ rules 1, 10, and 15.
 
 **API-bearing plan pre-archival gate (rule 16)**: For API feature-change plans (REST or GraphQL
 endpoints in a backend or tRPC app), archival MUST NOT proceed until the near-end
-`api-exploratory-tester` retest has run against the running endpoint(s) and every resulting `AET-###`
+`swe-api-tester` (exploratory charter) retest has run against the running endpoint(s) and every resulting `AET-###`
 defect checkbox in `delivery.md` is `- [x]` (fixed) — exactly as the rule-15 retest gates UI plans. See
 [User-Facing Delivery Hardening Convention](../../../development/quality/user-facing-delivery-hardening.md)
 rule 16.
@@ -27,7 +27,7 @@ rule 16.
 plans specifically, after the implementation lands and the rule-1 visual sign-off is recorded, run a
 **three-tester** round against the running target URL(s) across all supported locales — the
 [`ux-review-fix-planning`](../../quality/ux-review-fix-planning.md) workflow:
-`web-exploratory-tester` (correctness), `web-usability-tester` (usability), and `web-design-tester`
+`swe-web-tester` (exploratory charter) (correctness), `swe-usability-tester` (usability), and `swe-web-tester` (design charter)
 (design fidelity). Invoke each tester with **`output-mode: delivery`** and the executing plan's
 `plan-path`; this is the unified mechanism that appends findings directly into THIS plan's
 `delivery.md` rather than filing a separate plan. Its output is folded back into THIS plan, not a separate plan:

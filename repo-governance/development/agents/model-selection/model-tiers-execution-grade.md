@@ -1,6 +1,6 @@
 ---
-description: "Defines the execution-grade tier: agents that declare sonnet for structured, execution-heavy work."
-when_to_use: Use when deciding whether a new agent should declare the execution-grade (sonnet) model tier.
+description: "Defines the execution-grade tier: agents that declare `tier: execution` for structured, execution-heavy work."
+when_to_use: Use when deciding whether a new agent should declare the execution-grade (`execution`) model tier.
 ---
 
 # Model Tiers — Execution-Grade
@@ -19,22 +19,24 @@ when_to_use: Use when deciding whether a new agent should declare the execution-
 
 **Agent examples**:
 
-- **Content and code checkers** -- validate content against conventions using defined rulesets and produce structured audit reports (docs-checker, docs-tutorial-checker, docs-software-engineering-separation-checker, readme-checker, repo-workflow-checker, swe-code-checker, swe-ui-checker, ci-checker, apps-\*-checker). The governance checkers -- `rules-*`, `specs-*`, `plan-*`, `harness-*` -- sit at planning-grade instead, because a wrong call there propagates across the repository rather than one file
-- **Most fixers** -- apply corrections from checker audit reports following documented fix procedures (docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-fixer, repo-workflow-fixer, swe-ui-fixer, ci-fixer, apps-\*-fixer). Each governance fixer follows its checker's grade
+- **Content and code checkers** -- validate content against conventions using defined rulesets and produce structured audit reports (docs-checker, docs-tutorial-checker, docs-software-engineering-separation-checker, readme-checker, repo-workflow-checker, swe-reviewer, ci-checker, apps-\*-checker). The governance checkers -- `rules-*`, `specs-*`, `plan-*`, `harness-*` -- sit at planning-grade instead, because a wrong call there propagates across the repository rather than one file
+- **Most fixers** -- apply corrections from checker audit reports following documented fix procedures (docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-fixer, repo-workflow-fixer, ci-fixer, apps-\*-fixer). Each governance fixer follows its checker's grade
 - **social-linkedin-post-maker** -- generates social media posts following a defined template and tone guidelines
 - **Structured makers** -- makers with tight, well-defined skills that pin down most decisions, making them rule-following rather than open-ended creation (docs-maker, readme-maker, agent-maker, repo-workflow-maker, apps-ose-www-content-maker, and every `apps-ayokoding-www-*-maker`)
-- **Testers and converters** -- agents whose sweep is enumerated rather than invented: `web-*-tester` and api-exploratory-tester work through a fixed charter and cite ground truth; `pdf-to-md-*` follows a chunked extract-and-verify procedure; repo-setup-manager runs a five-step sequence with an acceptance condition per step
-- **swe-code-maker**, **swe-code-fixer** -- build code and apply findings test-first under the adopted stack standards and skills, which settle the approach; an open design decision goes back to its owner rather than raising the tier
+- **Testers and converters** -- agents whose sweep is enumerated rather than invented: `swe-web-tester`, `swe-usability-tester`, and `swe-api-tester` work through a fixed charter and cite ground truth; `pdf-to-md-*` follows a chunked extract-and-verify procedure; repo-setup-manager runs a five-step sequence with an acceptance condition per step
+- **swe-developer**, **swe-debugger**, **swe-reviewer**, **swe-releaser** -- build code and apply findings test-first, resolve failing checks, audit code, and publish through documented workflows under the adopted stack standards and skills, which settle the approach; an open design decision goes back to its owner rather than raising the tier
 
-**Frontmatter**: Specify `model: sonnet` explicitly.
+**Frontmatter**: Declare `tier: execution` in the canonical agent. The Tier Registry maps it to
+`model: sonnet` with `effort: xhigh` in `.claude/agents/`, and pins no model on Codex.
 
 ```yaml
 ---
 name: docs-checker
 description: Expert documentation validator...
-tools: [Read, Glob, Grep, Write, Bash]
-model: sonnet
-effort: xhigh
-color: green
+tier: execution
+capabilities:
+  - repository-read
+  - repository-write
+  - shell
 ---
 ```

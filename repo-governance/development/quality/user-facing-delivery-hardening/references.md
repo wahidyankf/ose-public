@@ -20,12 +20,12 @@ when_to_use: "Use when you need a related workflow or convention document."
 - [Plan Execution](../../../workflows/plan/plan-execution.md) — execution, finalization, archival gate.
 - [Plan Quality Gate](../../../workflows/quality/plan-quality-gate.md) — pre-execution plan validation.
 - [Web UX Test-Fixing Planning](../../../workflows/quality/ux-review-fix-planning.md) — workflow that runs the three-tester near-end retest (Rule 15).
-- [API Quality Gate](../../../workflows/quality/api-http-quality-gate.md) — workflow that runs the near-end `api-exploratory-tester` round (Rule 16); the API counterpart to the web triad.
+- [API Quality Gate](../../../workflows/quality/api-http-quality-gate.md) — workflow that runs the near-end `swe-api-tester` (exploratory charter) round (Rule 16); the API counterpart to the web triad.
 - [UI Quality Gate](../../../workflows/quality/ui-web-quality-gate.md) — static component-source gate a UI-bearing plan runs alongside the Rule 15 triad.
 - [PR Merge Protocol](../../workflow/pr-merge-protocol.md) — keeps applicable surface gates merge-blocking.
 
 **Agents:**
 
-- `plan-maker`, `plan-checker`, `plan-execution-checker`, `swe-ui-maker`, `swe-ui-checker`,
-  `web-exploratory-tester`, `web-usability-tester`, `web-design-tester` (Rule 15 web triad),
-  `api-exploratory-tester` (Rule 16 API counterpart).
+- `plan-maker`, `plan-checker`, `plan-execution-checker`, `swe-developer`, `swe-reviewer`,
+  `swe-web-tester` (exploratory charter), `swe-usability-tester`, `swe-web-tester` (design charter) (Rule 15 web triad),
+  `swe-api-tester` (exploratory charter) (Rule 16 API counterpart).

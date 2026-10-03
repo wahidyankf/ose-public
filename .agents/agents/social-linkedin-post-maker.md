@@ -2,9 +2,8 @@
 name: social-linkedin-post-maker
 description: >-
   Creates LinkedIn posts in social-media-posts/linkedin/ from completed origin/main updates across the ose-public and
-  private-sibling repos. Enforces the 3,000-character LinkedIn body limit (measured from the "OPEN SHARIA ENTERPRISE"
-  line down). Optimizes for engagement and professional tone. Use every time a LinkedIn post is created in
-  social-media-posts/linkedin/.
+  private-sibling repos, enforcing the 3,000-character body limit (from the "OPEN SHARIA ENTERPRISE" line down) in a
+  professional, engaging tone.
 when_to_use: >-
   Use every time a LinkedIn post is created in social-media-posts/linkedin/ from completed origin/main updates.
 tier: execution

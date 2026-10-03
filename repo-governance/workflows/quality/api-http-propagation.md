@@ -21,7 +21,7 @@ consumes the service belongs to [UI Web Propagation](ui-web-propagation.md).
 
 ## Executor
 
-`api-http-fixer`, loading the `developing-applications` skill.
+`swe-developer`, in its Apply Findings mode, loading the `developing-applications` skill.
 
 ## Row Verification
 
@@ -35,7 +35,8 @@ evidence.
 
 ### Entry
 
-The [API HTTP Quality Gate](api-http-quality-gate.md) hands over a frozen ledger, or an explicit request names its rows.
+The [API HTTP Quality Gate](api-http-quality-gate.md) hands over a frozen ledger of findings its judge,
+`swe-api-tester`, raised, or an explicit request names its rows.
 
 - `findings` (`file`, required): the frozen ledger, each row with its request and response.
 

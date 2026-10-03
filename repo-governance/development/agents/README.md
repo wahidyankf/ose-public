@@ -37,6 +37,8 @@ These standards define **HOW to develop AI agents**, covering agent file structu
 - [Planning Capabilities](./planning-capabilities.md) — Defines the planning capability roster a repository must expose and the uniform contract every workflow, skill, and agent in it satisfies. Use when adopting the plan system, auditing planning capabilities, or resolving which form a new planning capability should take.
 - [Skill Context Architecture](./skill-context-architecture.md) — Architectural guidance on skill context modes in `.agents/skills/`. Inline skills work universally; fork skills work from main conversation only. Use when authoring a Skill and deciding its context mode, or when a Skill needs to spawn or delegate work.
 - [Subagent Orchestration Convention](./subagent-orchestration.md) — Standards for concurrency caps and stuck-detection when a main agent spawns subagents via the Agent tool, capping concurrent delegated agents at N=3 (four total including the main agent/thread) to control token burn and avoid Claude API rate-limit hits. Use when spawning, polling, or capping background subagents, or diagnosing a stuck subagent.
+- [SWE Delegation](./swe-delegation.md) — Requires a session doing coding work to dispatch the fitting swe agent rather than doing the work in the main thread, defines coding work, and names the three exceptions. Use before implementing, debugging, reviewing, or testing code in a session.
+- [SWE Agent Procedures](./swe-agent-procedures/README.md) — Procedure sections moved verbatim out of four adopted `swe-*` agent definitions so each fits its word budget. Use when an `swe-*` definition links a section there.
 
 ## Related Documentation
 

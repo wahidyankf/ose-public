@@ -1,8 +1,7 @@
 ---
 description: |-
   Creates new spec areas, missing README files, and scaffolds Gherkin feature structure at explicitly specified paths under specs/. Use when adding a new app or library to the specs directory.
-effort: high
-model: opus
+model: inherit
 name: specs-maker
 skills:
   - specs-scaffolding

@@ -6,8 +6,8 @@ when_to_use: "Use when a web-UI feature-change plan is nearing archival."
 # The Sixteen Rules (15)
 
 1. **(Verification) A web-UI feature-change plan MUST run a near-end round of all three live-site
-   testers — `web-exploratory-tester` (correctness), `web-usability-tester` (usability), and
-   `web-design-tester` (design fidelity), i.e. the
+   testers — `swe-web-tester` (exploratory charter) (correctness), `swe-usability-tester` (usability), and
+   `swe-web-tester` (design charter) (design fidelity), i.e. the
    [`ux-review-fix-planning`](../../../workflows/quality/ux-review-fix-planning.md) workflow —
    against the running UI to iron out rough edges and inconsistencies, and fix their findings before
    archival.** Gap: the visual-parity sign-off (Rule 10) confirms the screen matches the mockups but

@@ -48,7 +48,7 @@ with `deploy=true` is not that approval.
   - Decline → skip to Step 7 and end as `merged-not-deployed`
 - **Timeout**: none; the workflow waits
 
-**Agent**: `apps-ayokoding-www-deployer`, only while the local `main` tip is still the approved SHA; a
+**Agent**: `swe-releaser` (Deploy mode, `ayokoding-www` target), only while the local `main` tip is still the approved SHA; a
 moved tip needs a new approval.
 
 Verify per

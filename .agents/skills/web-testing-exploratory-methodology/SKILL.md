@@ -1,12 +1,12 @@
 ---
 name: web-testing-exploratory-methodology
-description: Spec-aware session-based exploratory testing methodology for web-exploratory-tester — charter framing, testing tours, SFDIPOT/CRUSSPIC STMPL coverage models, the test dimensions checklist, three mandatory systematic sweeps, specs-as-ground-truth comparison and spec-gap detection, defect anatomy, and the three output modes (plan/delivery/local-tmp).
-when_to_use: When performing spec-aware exploratory testing of a live website for functional/correctness defects, or extending/auditing the web-exploratory-tester agent's methodology.
+description: Spec-aware session-based exploratory testing methodology for swe-web-tester (exploratory charter) — charter framing, testing tours, SFDIPOT/CRUSSPIC STMPL coverage models, the test dimensions checklist, three mandatory systematic sweeps, specs-as-ground-truth comparison and spec-gap detection, defect anatomy, and the three output modes (plan/delivery/local-tmp).
+when_to_use: When performing spec-aware exploratory testing of a live website for functional/correctness defects, or extending/auditing the swe-web-tester (exploratory charter) agent's methodology.
 ---
 
 # Web Exploratory Testing — Session-Based Methodology
 
-Full methodology for `web-exploratory-tester`: how to hunt functional, edge-case, and consistency
+Full methodology for `swe-web-tester` (exploratory charter): how to hunt functional, edge-case, and consistency
 defects on a live site using Session-Based Test Management, comparing against `specs/**` as ground
 truth.
 
@@ -14,7 +14,7 @@ truth.
 
 - `reference/01-why-this-agent-exists-and-inputs.md` — why this agent exists, invocation inputs.
 - `reference/02-relationships-and-nondestructive-constraint.md` — relationship to
-  `web-usability-tester`/`web-design-tester`/`swe-ui-checker`, the Non-Destructive Constraint.
+  `swe-usability-tester`/`swe-web-tester` (design charter)/`swe-reviewer`, the Non-Destructive Constraint.
 - `reference/03-session-based-methodology.md` — charter framing (Hendrickson template), testing
   tours (Whittaker taxonomy), SFDIPOT coverage, CRUSSPIC STMPL quality criteria.
 - `reference/04-test-dimensions-checklist-part1.md` and
@@ -46,7 +46,7 @@ behaviour becomes a `spec-gaps.md` proposal.
 
 ## Related
 
-`web-usability-tester` (the spec-blind first-time-comprehension sibling), `web-design-tester` (the
+`swe-usability-tester` (the spec-blind first-time-comprehension sibling), `swe-web-tester` (design charter) (the
 design-aware third lens of the live-site advocate triad), `plan-creating-project-plans` (explicit
 plan-mode structure), `plan-writing-gherkin-criteria` (Gherkin ACs and `spec-gaps.md` scenarios),
 `docs-applying-content-quality`.

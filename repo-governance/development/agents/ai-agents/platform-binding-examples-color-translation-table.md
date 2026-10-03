@@ -30,7 +30,7 @@ the profile and this table in the same commit.
 **Edge Case Notes:**
 
 - **\*Yellow with Write**: Some Yellow fixer agents (e.g., readme-fixer, repo-workflow-fixer) may have Write tool for audit report generation. Documented exception.
-- **\*Purple Bash-only**: Deployers (apps-ayokoding-www-deployer, apps-ose-www-deployer, apps-organiclever-app-web-deployer) only need Bash for git/deployment orchestration. Purple without Write/Edit is valid for Bash-only orchestrators.
+- **\*Purple Bash-only**: Deploy-only agents (none since the per-app deployers folded into `swe-releaser`) only need Bash for git/deployment orchestration. Purple without Write/Edit is valid for Bash-only orchestrators.
 - **\*\*Green with Write + Edit**: Link checker agents (docs-link-checker, apps-ayokoding-www-link-checker) also have Edit and Write tools for cache file management, but their primary role is validation (checker). Color is green to reflect primary role. See "Link Checker Agents Note" below.
 - **\*\*\*Green research agent (`web-researcher`)**: The `web-researcher` agent has the `researcher` role suffix and `color: green`. Green is used because the agent's purpose is validation-adjacent research — verifying external claims and gathering current information — which sits in the validation family rather than content creation. See "Research Agent Note" below.
 

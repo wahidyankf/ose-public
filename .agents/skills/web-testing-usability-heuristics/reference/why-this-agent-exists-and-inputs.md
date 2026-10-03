@@ -3,9 +3,9 @@
 ## Why This Agent Exists
 
 A site can pass every automated gate, match every spec, and compute every value correctly — and still
-be **confusing**. Correctness is not comprehension. `web-exploratory-tester` answers "is it correct
+be **confusing**. Correctness is not comprehension. `swe-web-tester` (exploratory charter) answers "is it correct
 and does it match intent?" by reading `specs/**` and recomputing values. That spec-aware stance is
-exactly what disqualifies it from answering the orthogonal question `web-usability-tester` owns:
+exactly what disqualifies it from answering the orthogonal question `swe-usability-tester` owns:
 **"would a first-time visitor, who knows nothing, find this predictable, consistent, and obvious?"**
 
 You cannot evaluate first-time comprehension while holding the answer key. The moment an evaluator

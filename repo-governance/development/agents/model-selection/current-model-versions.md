@@ -5,15 +5,17 @@ when_to_use: Use when you need the current concrete model version string for a t
 
 # Current Model Versions (September 2026)
 
-| Grade     | Agent config alias | Model ID                    | Context     | List price (in/out per MTok) |
-| --------- | ------------------ | --------------------------- | ----------- | ---------------------------- |
-| Ultra     | `fable`            | `claude-fable-5-1`          | 1M tokens   | $10 / $50                    |
-| Planning  | `opus`             | `claude-opus-5`             | 1M tokens   | $5 / $25                     |
-| Execution | `sonnet`           | `claude-sonnet-5`           | 1M tokens   | $2 / $10                     |
-| Fast      | `haiku`            | `claude-haiku-4-5-20251001` | 200k tokens | $1 / $5                      |
+| Grade     | Claude alias | Model ID                    | Context     | List price (in/out per MTok) |
+| --------- | ------------ | --------------------------- | ----------- | ---------------------------- |
+| Ultra     | `fable`      | `claude-fable-5-1`          | 1M tokens   | $10 / $50                    |
+| Planning  | `opus`       | `claude-opus-5`             | 1M tokens   | $5 / $25                     |
+| Execution | `sonnet`     | `claude-sonnet-5`           | 1M tokens   | $2 / $10                     |
+| Fast      | `haiku`      | `claude-haiku-4-5-20251001` | 200k tokens | $1 / $5                      |
 
 Aliases (`fable`, `opus`, `sonnet`, `haiku`) automatically track future model versions within each
-grade, which is why agent frontmatter declares the alias and never the dated ID. The concrete IDs
+grade, which is why the Tier Registry pins an alias and never the dated ID. It pins only `execution`
+(`sonnet`) and `fast` (`haiku`); `ultra` and `plan` render `model: inherit`, so the first two rows
+describe the models a session selects for that work rather than a pin. The concrete IDs
 and prices above were verified against the vendor's published model overview on 2026-09-06.
 
 The vendor's own guidance matches the grade ordering: start at the planning grade for most

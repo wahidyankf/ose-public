@@ -21,7 +21,7 @@ The web interface's source, its tests, and its behaviour specification. The HTTP
 
 ## Executor
 
-`ui-web-fixer`, loading the `developing-frontend-ui` skill.
+`swe-developer`, in its Apply Findings mode, loading the `developing-frontend-ui` skill.
 
 ## Row Verification
 
@@ -35,7 +35,8 @@ evidence.
 
 ### Entry
 
-The [UI Web Quality Gate](ui-web-quality-gate.md) hands over a frozen ledger, or an explicit request names its rows.
+The [UI Web Quality Gate](ui-web-quality-gate.md) hands over a frozen ledger of findings its judge, `swe-web-tester`,
+raised, or an explicit request names its rows.
 
 - `findings` (`file`, required): the frozen ledger, each row with its reproduction steps.
 

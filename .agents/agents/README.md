@@ -12,39 +12,26 @@ Agent definitions in their canonical, harness-neutral form, one Markdown file pe
 declares a `tier` and what it needs from a closed vocabulary in fixed order — `repository-read`, `repository-write`,
 `shell`, `network`, `subagent` — records what it must not do under `constraints`, and lists the skills it preloads.
 
-The canonical file is the one a human edits. `./rhino harness adapters generate` renders a route for every agent into
-`.claude/agents/<name>.md`, and for the four plan agents into `.codex/agents/` and `.opencode/agents/`. Do not treat an
-adapter as a second source of instructions, and never hand-edit one.
+Humans edit only the canonical file. `./rhino harness adapters generate` renders every agent's routes into
+`.claude/agents/`, `.codex/agents/`, and `.opencode/agents/`; never hand-edit one.
 
-Most delivery work follows a maker, checker, fixer loop. For a gate family the read-only `<family>-checker` writes a
-frozen ledger and the `<family>-fixer` executes `<family>-propagation`, the sole writer, per the
-[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md). Deployers are
-single-purpose instead.
+For a gate family the read-only `<family>-checker` writes a frozen ledger and the `<family>-fixer` executes
+`<family>-propagation`, the sole writer, per the
+[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## Directory Map
 
 ## AyoKoding-Web Content
 
-Create, link-check, and deploy ayokoding-web content; the content and tutorial gates judge it (see Quality Gates).
+Create and link-check ayokoding-web content; the content and tutorial gates judge it.
 
 - [apps-ayokoding-www-annotated-concept-maker](apps-ayokoding-www-annotated-concept-maker.md) — writes Annotated-concept tutorials
 - [apps-ayokoding-www-by-example-maker](apps-ayokoding-www-by-example-maker.md) — writes By Example tutorials
-- [apps-ayokoding-www-deployer](apps-ayokoding-www-deployer.md) — deploys ayokoding-web to production
 - [apps-ayokoding-www-general-maker](apps-ayokoding-www-general-maker.md) — writes general content
 - [apps-ayokoding-www-in-the-field-maker](apps-ayokoding-www-in-the-field-maker.md) — writes In-the-Field guides
 - [apps-ayokoding-www-link-checker](apps-ayokoding-www-link-checker.md) — audits content links
 - [apps-ayokoding-www-link-fixer](apps-ayokoding-www-link-fixer.md) — repairs link findings
 - [apps-ayokoding-www-primer-maker](apps-ayokoding-www-primer-maker.md) — writes Primer tutorials
-
-## App Deployers
-
-Push each app to its staging or production environment branch after validation.
-
-- [apps-organiclever-app-web-deployer](apps-organiclever-app-web-deployer.md) — deploys the OrganicLever app group to staging
-- [apps-organiclever-www-deployer](apps-organiclever-www-deployer.md) — deploys organiclever-www to production
-- [apps-ose-app-web-deployer](apps-ose-app-web-deployer.md) — deploys the OSE Application app group to staging
-- [apps-ose-www-deployer](apps-ose-www-deployer.md) — deploys ose-web to production
-- [apps-web-ui-storybook-deployer](apps-web-ui-storybook-deployer.md) — publishes the web-ui Storybook
 
 ## OSE-Web Content
 
@@ -69,10 +56,9 @@ Create, check, fix, and manage documentation, tutorials, and file organization u
 
 ## General
 
-Cross-cutting agents scoped to no single app: agent scaffolding, API testing, CI standards, and social posts.
+Cross-cutting agents scoped to no single app: agent scaffolding, CI standards, and social posts.
 
 - [agent-maker](agent-maker.md) — scaffolds new agents
-- [api-exploratory-tester](api-exploratory-tester.md) — tests live APIs against their contracts
 - [ci-checker](ci-checker.md) — audits CI and Nx target standards
 - [ci-fixer](ci-fixer.md) — repairs CI findings
 - [social-linkedin-post-maker](social-linkedin-post-maker.md) — writes LinkedIn posts
@@ -96,9 +82,8 @@ Create, check, and validate the execution of project plans.
 
 ## PR Review
 
-The pr-review gate: a scout, nine lens checkers, the coordinating checker, and the fixer.
+The pr-review gate: a scout, eight lens checkers plus `swe-architect`, the coordinating checker, and the fixer.
 
-- [pr-review-architecture-checker](pr-review-architecture-checker.md) — reviews architecture
 - [pr-review-checker](pr-review-checker.md) — coordinates one pass and publishes the review
 - [pr-review-docs-checker](pr-review-docs-checker.md) — reviews documentation quality
 - [pr-review-fixer](pr-review-fixer.md) — executes PR Review Propagation
@@ -113,10 +98,9 @@ The pr-review gate: a scout, nine lens checkers, the coordinating checker, and t
 
 ## Quality Gates
 
-Content, tutorial, and running-surface gate pairs; each fixer executes its family's propagation.
+Content and tutorial gate pairs; each fixer executes its family's propagation. The ui-web and api-http gates use SWE
+testers and `swe-developer`.
 
-- [api-http-checker](api-http-checker.md) — audits a running HTTP API
-- [api-http-fixer](api-http-fixer.md) — executes API HTTP Propagation
 - [content-checker](content-checker.md) — audits published content against its product adapter
 - [content-fixer](content-fixer.md) — executes Content Propagation
 - [tutorial-annotated-concept-checker](tutorial-annotated-concept-checker.md) — audits Annotated-concept tutorials
@@ -127,8 +111,6 @@ Content, tutorial, and running-surface gate pairs; each fixer executes its famil
 - [tutorial-in-the-field-fixer](tutorial-in-the-field-fixer.md) — repairs In-the-Field findings
 - [tutorial-primer-checker](tutorial-primer-checker.md) — audits Primer tutorials
 - [tutorial-primer-fixer](tutorial-primer-fixer.md) — repairs Primer findings
-- [ui-web-checker](ui-web-checker.md) — audits a running web UI
-- [ui-web-fixer](ui-web-fixer.md) — executes UI Web Propagation
 
 ## README Tooling
 
@@ -162,20 +144,43 @@ Create and validate specs/ Gherkin feature areas and structure.
 
 ## SWE
 
-Generic code maker, checker, and fixer that load each project's stack packs, plus the UI trio.
+The software-engineering family; writers and judges stay apart.
 
-- [swe-code-checker](swe-code-checker.md) — audits code against the adopted standards
-- [swe-code-fixer](swe-code-fixer.md) — applies confirmed code checker findings
-- [swe-code-maker](swe-code-maker.md) — implements code test-first under the adopted standards
-- [swe-ui-checker](swe-ui-checker.md) — audits UI components
-- [swe-ui-fixer](swe-ui-fixer.md) — repairs UI findings
-- [swe-ui-maker](swe-ui-maker.md) — builds shared UI components
+- [swe-api-tester](swe-api-tester.md) — judges a running API
+- [swe-architect](swe-architect.md) — designs boundaries; architecture lens
+- [swe-debugger](swe-debugger.md) — resolves failing checks
+- [swe-developer](swe-developer.md) — builds test-first; applies findings
+- [swe-orchestrator](swe-orchestrator.md) — dispatches the family toward a goal
+- [swe-releaser](swe-releaser.md) — deploys and repins
+- [swe-reviewer](swe-reviewer.md) — audits code against the standards
+- [swe-usability-tester](swe-usability-tester.md) — evaluates first use
+- [swe-web-tester](swe-web-tester.md) — judges a running web interface
 
 ## Web
 
-Live-site testers and the web-researcher fact-finding agent.
+The web-researcher fact-finding agent.
 
-- [web-design-tester](web-design-tester.md) — evaluates live-site design
-- [web-exploratory-tester](web-exploratory-tester.md) — explores a live site for edge cases
 - [web-researcher](web-researcher.md) — researches cited facts on the web
-- [web-usability-tester](web-usability-tester.md) — evaluates first-time usability
+
+## Old-to-New Map
+
+Each agent the swe family replaced, and where its work went. A reader holding an old name finds its replacement here.
+
+| Replaced agent                    | New agent              | Mode or charter   |
+| --------------------------------- | ---------------------- | ----------------- |
+| `swe-code-maker`                  | `swe-developer`        | build             |
+| `swe-ui-maker`                    | `swe-developer`        | build (UI skills) |
+| `swe-code-fixer`, `swe-ui-fixer`  | `swe-developer`        | apply findings    |
+| `ui-web-fixer`, `api-http-fixer`  | `swe-developer`        | apply findings    |
+| `bugs-solver`                     | `swe-debugger`         | —                 |
+| `swe-code-checker`                | `swe-reviewer`         | code              |
+| `swe-ui-checker`                  | `swe-reviewer`         | interface         |
+| `gherkin-implementation-reviewer` | `swe-reviewer`         | scenario trace    |
+| `ui-web-checker`                  | `swe-web-tester`       | spec              |
+| `web-design-tester`               | `swe-web-tester`       | design            |
+| `web-exploratory-tester`          | `swe-web-tester`       | exploratory       |
+| `web-usability-tester`            | `swe-usability-tester` | —                 |
+| `api-http-checker`                | `swe-api-tester`       | contract          |
+| `api-exploratory-tester`          | `swe-api-tester`       | exploratory       |
+| `pr-review-architecture-checker`  | `swe-architect`        | lens              |
+| `apps-*-deployer` (per app)       | `swe-releaser`         | deploy            |

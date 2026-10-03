@@ -26,7 +26,7 @@
   [Evidence Capture Convention](../../../../repo-governance/development/quality/evidence-capture.md).
 - **Rule-15 three-tester retest (web-UI feature-change plans)**: a near-end step runs the
   [`ux-review-fix-planning`](../../../../repo-governance/workflows/quality/ux-review-fix-planning.md)
-  triad (`web-exploratory-tester`, `web-usability-tester`, `web-design-tester`) across all supported
+  triad (`swe-web-tester` (exploratory charter), `swe-usability-tester`, `swe-web-tester` (design charter)) across all supported
   locales, with every EWT/UWT/DWT defect finding folded into `delivery.md` as an unchecked checkbox
   fixed before archival (deferral needs explicit user permission, only when genuinely impossible;
   SG-###/USS-### proposals may be triaged/deferred). Unfixed defect checkbox at archival, missing
@@ -35,7 +35,7 @@
   [User-Facing Delivery Hardening](../../../../repo-governance/development/quality/user-facing-delivery-hardening.md)
   Rule 15.
 - **Rule-16 API exploratory retest (API feature-change plans)**: a near-end step runs
-  `api-exploratory-tester` (`output-mode: delivery`) against the running endpoint(s), with every
+  `swe-api-tester` (exploratory charter) (`output-mode: delivery`) against the running endpoint(s), with every
   AET-### defect finding folded into `delivery.md` and fixed before archival (same deferral rule;
   SG-### proposals triageable). Unfixed defect checkbox, or missing step on an API feature-change
   plan: **HIGH**. Independent of Rule 15 (a plan changing both UI and API carries both retests).

@@ -27,7 +27,7 @@ flowchart TD
   docs-checker. Exception: link checkers also have the `Edit` tool for cache management (see "Link Checker Agents
   Note" below).
 - Fixer (`yellow`): has `Edit` but not `Write`. Examples: docs-file-manager, readme-fixer, repo-workflow-fixer.
-- Implementor (`purple`): has `Write`, `Edit`, and `Bash`. Examples: `swe-code-maker`; plan execution itself is
+- Implementor (`purple`): has `Write`, `Edit`, and `Bash`. Examples: `swe-developer`; plan execution itself is
   orchestrated by the calling context via the plan-execution workflow (no dedicated subagent).
 
 **Edge Cases:**
@@ -44,7 +44,7 @@ flowchart TD
   - Execute deployment orchestration (purple's "executes plans/orchestrates tasks")
   - Don't create or edit files, only run git/deployment commands
   - Edge case: purple without Write/Edit tools (Bash-only orchestration)
-  - Examples: apps-ayokoding-www-deployer, apps-ose-www-deployer, apps-organiclever-app-web-deployer
+  - Examples: none since the per-app deployers folded into `swe-releaser`, which also holds Write and Edit
 - **Fixers with Write tool**: Investigate actual usage
   - Yellow (Fixers) should have Edit but NOT Write
   - If Write is needed for creating new convention files → keep yellow, document exception

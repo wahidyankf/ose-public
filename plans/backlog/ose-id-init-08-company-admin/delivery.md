@@ -642,12 +642,12 @@ process/container/network/volume/temp-secret inventories are empty.
       `specs/apps/ose/id-web/contracts/company-admin.openapi.yaml`, the company-admin web Gherkin, and
       synthetic signed-out, personal, Company A admin/member, Company B admin, recent/stale-auth,
       current/stale-version, empty/error, and dependency-unavailable contexts. Invoke
-      `.agents/agents/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
+      `.agents/agents/swe-api-tester.md` (exploratory charter) with `output-mode: delivery` and this exact plan
       path. Enumerate every safe operation, status, schema, auth/context/tenant boundary, pagination,
       idempotency, concurrency, rate-limit, and privacy rule. The tester does not perform successful
       destructive member/invitation/entitlement changes; isolated Integration/E2E owns those rows.
 - [ ] [AI] Perform one API discovery, triage original `AET-###` findings at the strict threshold, and
-      append each finding as a new unchecked delivery task. If needed, run `swe-code-maker` with `programming-typescript` once for
+      append each finding as a new unchecked delivery task. If needed, run `swe-developer` with `programming-typescript` once for
       validated fixes with reproducing regression tests, rebuild/restart once, then run one scoped tester
       verification of original IDs and affected operations. Record base URL, contract/spec inputs,
       contexts, AET IDs, commands, sanitized evidence, `final-status`, and `lifecycle-status`.
@@ -655,9 +655,9 @@ process/container/network/volume/temp-secret inventories are empty.
       phase. Accept or reject each genuine `SG-###` explicitly; never defer a defect as a spec gap.
 - [ ] [AI] Run the bounded `repo-governance/workflows/quality/ui-web-quality-gate.md` in `mode: strict` over every
       changed company-admin route, view model, component, style, story, and shared-primitive call site.
-      Invoke `.agents/agents/swe-ui-checker.md` once for tokens, accessibility, contrast, component
+      Invoke `.agents/agents/swe-reviewer.md` once for tokens, accessibility, contrast, component
       patterns, dark mode, responsiveness, and anti-patterns. When findings are in threshold, invoke
-      `.agents/agents/swe-ui-fixer.md` once for revalidated high-confidence fixes, preserve false-
+      `.agents/agents/swe-developer.md` (Apply Findings mode) once for revalidated high-confidence fixes, preserve false-
       positive/below-threshold dispositions, then invoke one scoped checker verification. Record report
       paths, original IDs, affected components, lifecycle evidence, and final status; `partial`, `fail`,
       pending lifecycle evidence, or unresolved original finding blocks the phase.
@@ -665,9 +665,9 @@ process/container/network/volume/temp-secret inventories are empty.
       `repo-governance/workflows/quality/ux-review-fix-planning.md` sequentially against
       `/admin/company` Members, Invitations, and Entitlements plus denied, stale, empty, error, loading,
       destructive-confirmation, and context-exit states. Invoke
-      `.agents/agents/web-exploratory-tester.md` first with canonical specs,
-      `.agents/agents/web-usability-tester.md` second and spec-blind, and
-      `.agents/agents/web-design-tester.md` third with the selected plan mockups, runtime tokens, and
+      `.agents/agents/swe-web-tester.md` (exploratory charter) first with canonical specs,
+      `.agents/agents/swe-usability-tester.md` second and spec-blind, and
+      `.agents/agents/swe-web-tester.md` (design charter) third with the selected plan mockups, runtime tokens, and
       shared primitives. Each uses `output-mode: delivery`, this plan path, all supported locales,
       breakpoints 320, 375, 768, 1024, 1280, and 1440 CSS px, the recurrence-class list, and changed-
       surface list.

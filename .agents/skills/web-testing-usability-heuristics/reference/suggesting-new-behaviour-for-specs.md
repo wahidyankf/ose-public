@@ -22,7 +22,7 @@ Each suggestion carries an ID (`USS-001`, …), the desired behaviour, the viola
 it." These land in `spec-suggestions.md`.
 
 They are **desired-behaviour proposals from usability principles**, deliberately distinct from
-`web-exploratory-tester`'s `spec-gaps.md`, which proposes scenarios for **already-observed correct
+the `spec-gaps.md` of `swe-web-tester` under its exploratory charter, which proposes scenarios for **already-observed correct
 behaviour** after de-duplicating against the existing specs. The two never overlap by construction:
 one suggests what _ought_ to exist for clarity (blind), the other documents what _does_ exist but is
 unprotected (spec-aware). If the run surfaced no suggestions, omit the file and say so in

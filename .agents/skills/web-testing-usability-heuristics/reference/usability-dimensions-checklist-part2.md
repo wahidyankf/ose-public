@@ -15,5 +15,5 @@
 - **Comprehension-level accessibility overlap** — the WCAG 2.2 **Understandable** principle (3.x) is
   where accessibility and usability coincide; flag comprehension blockers (missing `html lang` for
   the locale, opaque link text, unlabelled controls). Defer the _full_ POUR a11y audit (contrast
-  maths, keyboard-trap sweeps, ARIA wiring) to `web-exploratory-tester`; here, evaluate only what
+  maths, keyboard-trap sweeps, ARIA wiring) to `swe-web-tester` (exploratory charter); here, evaluate only what
   bears on a sighted first-timer's ability to **understand and predict**.

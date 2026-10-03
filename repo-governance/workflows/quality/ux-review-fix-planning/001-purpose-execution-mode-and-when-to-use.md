@@ -6,8 +6,8 @@ when_to_use: "Use when deciding whether this workflow applies, or how it will be
 # Purpose, Execution Mode, and When to Use
 
 **Purpose**: Test a live website from the three complementary live-site UX-quality lenses in one pass —
-spec-aware exploratory correctness (`web-exploratory-tester`), spec-blind heuristic-usability
-(`web-usability-tester`), and design-aware design-fidelity (`web-design-tester`) — then fold all three
+spec-aware exploratory correctness (`swe-web-tester` (exploratory charter)), spec-blind heuristic-usability
+(`swe-usability-tester`), and design-aware design-fidelity (`swe-web-tester` (design charter)) — then fold all three
 result sets into a single fix-ready plan whose findings stay attributed to their source and which
 spells out, in `tech-docs.md` and a TDD-shaped `delivery.md`, exactly how to fix what was found.
 
@@ -23,7 +23,7 @@ document. It is **not** an iterative quality gate over the site.
 ## Execution Mode
 
 **Agent Delegation (preferred)** — the calling context orchestrates the phases, delegating the three
-testing passes to `web-exploratory-tester`, `web-usability-tester`, and `web-design-tester` via the
+testing passes to `swe-web-tester` (exploratory charter), `swe-usability-tester`, and `swe-web-tester` (design charter) via the
 Agent tool **one at a time** (exploratory → integrate → usability → integrate → design → integrate),
 running the solidification and plan authoring through `plan-maker`, and gating with `plan-checker` /
 `plan-checker`. The human grill checkpoint runs inline so the user's conversation is preserved.

@@ -5,7 +5,7 @@ title: "Reference"
 # Reference
 
 - [01 Why This Agent Exists And Inputs](./why-this-agent-exists-and-inputs.md) — why this agent exists and what inputs it requires
-- [02 Spec Blind Discipline](./spec-blind-discipline.md) — the hard rule that separates this agent from web-exploratory-tester
+- [02 Spec Blind Discipline](./spec-blind-discipline.md) — the hard rule that separates this agent from swe-web-tester (exploratory charter)
 - [03 Relationships And Nondestructive Constraint](./relationships-and-nondestructive-constraint.md) — relationship to other agents and the non-destructive constraint
 - [04 Heuristic Evaluation And Walkthrough](./heuristic-evaluation-and-walkthrough.md) — combining Nielsen heuristic evaluation with cognitive walkthrough
 - [05 Usability Dimensions Checklist Part1](./usability-dimensions-checklist-part1.md) — usability dimensions checklist, part 1: predictability through cognitive load

@@ -10,15 +10,15 @@ The tree is entered from the bottom. Each grade must be argued past, never assum
 ```mermaid
 flowchart TD
     accTitle: Model Selection Decision Tree
-    accDescr: Purely mechanical task? leads to Fast: haiku via Yes; Purely mechanical task? leads to Applies rules or checklists? via No; Applies rules or checklists? leads to Execution-Grade: sonnet via Yes; and 6 more links.
+    accDescr: Purely mechanical task? leads to Fast: tier fast via Yes; Purely mechanical task? leads to Applies rules or checklists? via No; Applies rules or checklists? leads to Execution-Grade: tier execution via Yes; and 6 more links.
     Q1{"Purely<br/>mechanical task?"}
-    Q1 -->|Yes| F["Fast:<br/>haiku"]
+    Q1 -->|Yes| F["Fast:<br/>tier fast"]
     Q1 -->|No| Q2{"Applies rules or<br/>checklists?"}
-    Q2 -->|Yes| X["Execution-Grade:<br/>sonnet"]
+    Q2 -->|Yes| X["Execution-Grade:<br/>tier execution"]
     Q2 -->|No| Q3{"Needs creative<br/>reasoning?"}
-    Q3 -->|Yes| P["Planning-Grade:<br/>opus"]
+    Q3 -->|Yes| P["Planning-Grade:<br/>tier plan"]
     Q3 -->|No| Q4{"Failed at<br/>planning grade?"}
-    Q4 -->|Yes, with evidence| U["Ultra:<br/>fable"]
+    Q4 -->|Yes, with evidence| U["Ultra:<br/>tier ultra"]
     Q4 -->|No, but feels hard| P
     Q4 -->|None or ambiguous| X
     classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF

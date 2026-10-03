@@ -1,7 +1,6 @@
 ---
 description: Audits finished plan execution in fixed order and returns the terminal verdict that permits or blocks archival.
-effort: high
-model: opus
+model: inherit
 name: plan-execution-checker
 skills:
   - plan-verifying-execution

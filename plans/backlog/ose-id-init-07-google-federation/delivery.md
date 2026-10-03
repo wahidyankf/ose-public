@@ -372,7 +372,7 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       endpoints plus loopback-only per-test scenario control. Use synthetic `.test` identities and unique
       stack IDs; run the Phase 3 backend E2E command. Acceptance: success and all trust-failure cases
       reach the Google adapter. Save `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-3-fake-protocol-green.txt`.
-  - _Suggested executor: `swe-code-maker` with `programming-csharp`._
+  - _Suggested executor: `swe-developer` with `programming-csharp`._
 - [ ] [AI] **GREEN:** implement readiness, child-failure propagation, bounded event-driven waiting, and
       unconditional cleanup in the E2E lifecycle. Deliberately fail a test and crash the provider;
       run the Phase 3 backend E2E command; acceptance: primary status is preserved and no owned port/
@@ -584,7 +584,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       Resolve every active hit; explicit plan-history non-goals may remain.
 - [ ] [AI] Run the bounded
       `repo-governance/workflows/quality/api-http-quality-gate.md` twice in `mode: strict`, using
-      `.agents/agents/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
+      `.agents/agents/swe-api-tester.md` (exploratory charter) with `output-mode: delivery` and this exact plan
       path. Backend discovery targets `http://127.0.0.1:8501` with
       `specs/apps/ose/id-be/contracts/google-federation.openapi.yaml`, the backend federation Gherkin, and signed-out,
       recent/stale Person, conflicting-Person, replay, and disabled-provider synthetic contexts. BFF
@@ -596,7 +596,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       idempotency, replay, rate limit, or privacy rule.
 - [ ] [AI] For each API run, perform exactly one full discovery, triage the original `AET-###` findings
       at the strict threshold, and append each finding as a new unchecked delivery task. If findings are
-      in threshold, use `swe-code-maker` with `programming-csharp` for backend fixes and with `programming-typescript` for BFF fixes, each
+      in threshold, use `swe-developer` with `programming-csharp` for backend fixes and with `programming-typescript` for BFF fixes, each
       with a reproducing regression test; rebuild/restart once, then run one scoped tester verification
       of original IDs and affected operations. Record contract/base URL, synthetic context, AET IDs,
       affected operations, commands, sanitized evidence path, `final-status`, and `lifecycle-status`.
@@ -605,8 +605,8 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       relabeling a defect.
 - [ ] [AI] Run the bounded `repo-governance/workflows/quality/ui-web-quality-gate.md` in `mode: strict` over the
       changed Google route, BFF presentation, account-security, and shared-component source paths. Invoke
-      `.agents/agents/swe-ui-checker.md` once for all seven static dimensions; if it reports
-      in-threshold findings, invoke `.agents/agents/swe-ui-fixer.md` once, preserve false-positive and
+      `.agents/agents/swe-reviewer.md` once for all seven static dimensions; if it reports
+      in-threshold findings, invoke `.agents/agents/swe-developer.md` (Apply Findings mode) once, preserve false-positive and
       below-threshold dispositions, then invoke the checker once in scoped verification mode. Record the
       audit/fix report paths, original finding IDs, affected components, lifecycle evidence, and final
       status. `partial`, `fail`, pending lifecycle evidence, or unresolved original finding blocks the
@@ -614,9 +614,9 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
 - [ ] [AI] After visual sign-off, execute the Rule-15 in-place delivery variant described by
       `repo-governance/workflows/quality/ux-review-fix-planning.md` sequentially against the running
       `/sign-in`, `/auth/google/callback` result states, and `/account/security` journeys. Invoke
-      `.agents/agents/web-exploratory-tester.md` first with canonical specs, then
-      `.agents/agents/web-usability-tester.md` spec-blind, then
-      `.agents/agents/web-design-tester.md` with this plan's selected mockups/tokens. Each invocation
+      `.agents/agents/swe-web-tester.md` (exploratory charter) first with canonical specs, then
+      `.agents/agents/swe-usability-tester.md` spec-blind, then
+      `.agents/agents/swe-web-tester.md` (design charter) with this plan's selected mockups/tokens. Each invocation
       uses `output-mode: delivery`, this plan path, all supported locales, breakpoints 320, 375, 768,
       1024, 1280, and 1440 CSS px, the recurrence-class list, and changed-surface list.
 - [ ] [AI] Reconcile the three live-tester coverage maps into one control × route × locale × breakpoint ×

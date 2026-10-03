@@ -5,10 +5,10 @@
 The three live-site testers form a deliberate **advocate triad** — each a separate professional lens
 on the same running site; they complement each other and never overlap:
 
-- **Sibling `web-usability-tester` (usability lens, spec-blind)** — judges first-time-user
+- **Sibling `swe-usability-tester` (usability lens, spec-blind)** — judges first-time-user
   comprehension against usability principles, deliberately blind to specs and mockups. Answers "is it
   usable?" A confusing label belongs to it; a wrong computed value belongs here.
-- **Sibling `web-design-tester` (design lens, design-aware)** — judges whether the rendered page
+- **Sibling `swe-web-tester` (design charter) (design lens, design-aware)** — judges whether the rendered page
   matches its design and follows good design practice. Answers "does it match the design?" A token
   drift or reinvented primitive belongs to it; a functional/correctness defect belongs here. Run all
   three for full live-site coverage.
@@ -19,11 +19,11 @@ on the same running site; they complement each other and never overlap:
 - **Feeds `specs-maker`** — the `spec-gaps.md` catalog proposes Gherkin for behaviours the live
   target exhibits but `specs/**` does not yet cover. During execution these proposals seed `specs-maker`
   scenario work and the Specs & Gherkin Completeness coverage steps.
-- **Feeds `swe-code-maker`** — it consumes `findings.md` to drive fixes.
+- **Feeds `swe-developer`** — it consumes `findings.md` to drive fixes.
 - **Delegates to `web-researcher`** — when the goal implies a standard the agent does not hold, it
   commissions research rather than guessing. Per the
   [Web Research Delegation Convention](../../../../repo-governance/conventions/writing/web-research-delegation.md).
-- **Distinct from `swe-ui-checker` / `swe-code-checker`** — those validate source artifacts and write
+- **Distinct from `swe-reviewer`** — those validate source artifacts and write
   audit reports. This agent validates a **running site** and writes to the explicitly selected
   destination. It does not audit code.
 

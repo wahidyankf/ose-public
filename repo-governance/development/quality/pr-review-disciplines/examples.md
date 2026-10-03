@@ -16,7 +16,7 @@ documented, mechanically-checkable rule already covers it (tie-breaker step 1).
 
 A specialist notices a change that adds an O(n²) loop inside a request handler already known to
 run on a hot path. Per ruling (e), this is a concrete/likely measured regression — it routes to
-`pr-review-performance-checker`, not `pr-review-architecture-checker`, because no new tradeoff judgment
+`pr-review-performance-checker`, not `swe-architect` in Lens mode, because no new tradeoff judgment
 is being made; the regression is a fact about the code, not a design decision.
 
 ## FAIL: A specialist raising a finding outside its `SUPPRESS` block

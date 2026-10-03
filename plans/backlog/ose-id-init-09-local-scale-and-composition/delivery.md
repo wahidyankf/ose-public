@@ -319,7 +319,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       non-authoritative or remove them; do not add Redis. After each slice run the Phase 2 run-many
       command; acceptance: its named RED cases turn green without a predecessor regression. Save
       `evidence/phase-2-state-store-green.txt`.
-  - _Suggested executor: `swe-code-maker` with `programming-csharp` for backend and with `programming-typescript` for web._
+  - _Suggested executor: `swe-developer` with `programming-csharp` for backend and with `programming-typescript` for web._
 - [ ] [AI] **GREEN:** make web session/data protection and backend signing/encryption/key metadata
       instance-independent. Add readiness checks that compare store access and current key generation;
       run the Phase 2 run-many command; acceptance: A/B interchange passes and divergent/unavailable key
@@ -622,7 +622,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       proof of the command/control-file contract.
 - [ ] [AI] Run the bounded `repo-governance/workflows/quality/api-http-quality-gate.md` in `mode: strict` against
       the unchanged live HTTP surfaces through the no-affinity proxies. Invoke
-      `.agents/agents/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
+      `.agents/agents/swe-api-tester.md` (exploratory charter) with `output-mode: delivery` and this exact plan
       path: backend base `http://127.0.0.1:8501` plus
       `specs/apps/ose/id-be/contracts/openapi.yaml` and all referenced Gherkin; BFF base
       `http://127.0.0.1:3500` plus `specs/apps/ose/id-web/contracts/openapi.yaml` and all referenced
@@ -642,15 +642,15 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       applicable only while the reconciled diff changes no component, token, style, responsive layout,
       accessibility behavior, or UI primitive. Shared session/readiness/proxy code alone does not create
       a static UI surface. If execution touches any such UI source, the exemption ends: run
-      `.agents/agents/swe-ui-checker.md` once in `mode: strict`,
-      `.agents/agents/swe-ui-fixer.md` at most once for validated in-threshold findings, then one
+      `.agents/agents/swe-reviewer.md` once in `mode: strict`,
+      `.agents/agents/swe-developer.md` (Apply Findings mode) at most once for validated in-threshold findings, then one
       scoped checker verification; record report paths, IDs, lifecycle status, and require `pass`.
 - [ ] [AI] Execute the Rule-15 in-place delivery variant described by
       `repo-governance/workflows/quality/ux-review-fix-planning.md` sequentially against the running OSE
       sign-in/authorization/account/company-admin handoffs and the synthetic dependent app's identity-
-      unavailable state. Invoke `.agents/agents/web-exploratory-tester.md` first with canonical specs,
-      `.agents/agents/web-usability-tester.md` second and spec-blind, and
-      `.agents/agents/web-design-tester.md` third with delivered mockups/tokens. Every call uses
+      unavailable state. Invoke `.agents/agents/swe-web-tester.md` (exploratory charter) first with canonical specs,
+      `.agents/agents/swe-usability-tester.md` second and spec-blind, and
+      `.agents/agents/swe-web-tester.md` (design charter) third with delivered mockups/tokens. Every call uses
       `output-mode: delivery`, this plan path, all supported locales, breakpoints 320, 375, 768, 1024,
       1280, and 1440 CSS px, the recurrence-class list, and changed-surface list.
 - [ ] [AI] Reconcile the three live coverage maps into a control × route × locale × breakpoint × edge-

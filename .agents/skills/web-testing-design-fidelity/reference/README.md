@@ -6,7 +6,7 @@ title: "Reference"
 
 - [01 Why This Agent Exists](./why-this-agent-exists.md) — why a site can be correct yet not match its intended design
 - [02 Inputs](./inputs.md) — what the orchestrator or user must provide before a design evaluation starts
-- [03 Relationships And Boundary](./relationships-and-boundary.md) — relationship to other agents and the swe-ui-checker boundary
+- [03 Relationships And Boundary](./relationships-and-boundary.md) — relationship to other agents and the swe-reviewer boundary
 - [04 Non Destructive Constraint](./non-destructive-constraint.md) — the hard rule that evaluation stays passive and observational
 - [05 Methodology](./methodology.md) — the design-fidelity-plus-design-practice evaluation methodology
 - [06 Ground Truth Sources](./ground-truth-sources.md) — the five ground-truth sources judged against the live rendered page

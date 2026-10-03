@@ -6,7 +6,7 @@ import {
   SKILLS_SECTION_ACCENT_HUE,
 } from "../../../../../src/features/course-paths/core/path-hue";
 
-// phase-5 rule-15 DWT-001 fix (`web-design-tester` retest): every one of this plan's five
+// phase-5 rule-15 DWT-001 fix (`swe-web-tester` (design charter) retest): every one of this plan's five
 // committed, Selected hi-fi mockups depicts a per-arc/per-compliance-track hue-coding system
 // (prd.md's DD-50 "Accent hue" design legend) that shipped code never actually applied — this
 // module is the single pure source of truth for resolving that hue, so a test here proves the

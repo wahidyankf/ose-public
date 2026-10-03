@@ -1,8 +1,7 @@
 ---
 description: |-
   Checks one pinned change for the pr-review family by coordinating one review pass: after the lens checkers report, it deduplicates, re-categorizes, filters, verifies, and rates raw findings for criticality, then publishes the one review bound to the pinned head, editing no file.
-effort: high
-model: opus
+model: inherit
 name: pr-review-checker
 skills:
   - pr-review-synthesis-coordination

@@ -579,7 +579,7 @@ local gates and before live-web testing.
       `http://127.0.0.1:8501`, PostgreSQL `127.0.0.1:5438`, Mailpit SMTP `127.0.0.1:1026`, and Mailpit
       UI `http://127.0.0.1:8026`; reset to synthetic passkey/TOTP/recovery fixtures.
 - [ ] [AI] Invoke
-      [`api-exploratory-tester`](../../../.agents/agents/api-exploratory-tester.md) for one
+      [`swe-api-tester`](../../../.agents/agents/swe-api-tester.md) (exploratory charter) for one
       backend discovery run with `quality-gate-phase: discovery`, `output-mode: delivery`, this plan
       path, `mode: strict`, and `max-concurrency: 3`. Pass base `http://127.0.0.1:8501`, every backend
       operation in `tech-docs/006-api-contract-delta.md`, machine contract
@@ -595,7 +595,7 @@ local gates and before live-web testing.
 - [ ] [AI] Append `AET-###` findings and save secret-free matrices at
       `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-api-quality-gate-backend.md` and
       `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-api-quality-gate-bff.md`. Per run, clean discovery records `pass` without a
-      fixer. Otherwise invoke `swe-code-maker` with `programming-csharp` for
+      fixer. Otherwise invoke `swe-developer` with `programming-csharp` for
       backend findings or with `programming-typescript` for
       BFF findings once, with a failing regression before each root-cause fix.
 - [ ] [AI] Rebuild/restart the affected service once, then invoke that scope's tester once in
@@ -610,7 +610,7 @@ Run the [UI Quality Gate workflow](../../../repo-governance/workflows/quality/ui
 API gate and before live browser sessions.
 
 - [ ] [AI] Invoke
-      [`swe-ui-checker`](../../../.agents/agents/swe-ui-checker.md) with
+      [`swe-reviewer`](../../../.agents/agents/swe-reviewer.md) with
       `quality-gate-phase: discovery`, `mode: strict`, `max-concurrency: 3`, lifecycle handoff, and scope
       `apps/ose-id-web/` plus changed `libs/web-ui/` components. Require token, accessibility, contrast,
       component-pattern, dark-mode, responsive, and anti-pattern coverage, including authenticator
@@ -619,8 +619,8 @@ API gate and before live browser sessions.
       `local-tmp/swe-ui/swe-ui__*__audit.md` path and sanitized result in
       `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-ui-quality-gate.md`.
 - [ ] [AI] Clean discovery records `pass` without fixing. Otherwise invoke
-      [`swe-ui-fixer`](../../../.agents/agents/swe-ui-fixer.md) once with original in-threshold IDs and
-      lifecycle evidence, then invoke `swe-ui-checker` once in verification mode with those IDs and
+      [`swe-developer`](../../../.agents/agents/swe-developer.md) (Apply Findings mode) once with original in-threshold IDs and
+      lifecycle evidence, then invoke `swe-reviewer` once in verification mode with those IDs and
       affected components. `partial`, `fail`, or pending lifecycle evidence blocks; correct the root
       cause and start a fresh bounded run rather than recursively invoking the workflow.
 
@@ -640,7 +640,7 @@ testers sequentially with `output-mode: delivery` and this plan path. Do not cre
       authenticator; never capture a TOTP seed, live TOTP, recovery code, credential response, cookie,
       token, or personal data.
 - [ ] [AI] Invoke
-      [`web-exploratory-tester`](../../../.agents/agents/web-exploratory-tester.md) first. Compare
+      [`swe-web-tester`](../../../.agents/agents/swe-web-tester.md) (exploratory charter) first. Compare
       every route/state/control to `specs/apps/ose/id-web/**`; enumerate add/sign-in/cancel/unsupported/
       fallback/remove, setup/invalid/expired/replay, recovery display/use/regenerate, step-up/consent,
       cross-instance, reload/back, console/network/storage, responsive, keyboard, and screen-reader
@@ -651,13 +651,13 @@ testers sequentially with `output-mode: delivery` and this plan path. Do not cre
       defects block; explicit user permission is required for genuinely impossible deferral. Reconcile
       correct-but-unspecified `SG-###` with app-scoped specs.
 - [ ] [AI] Invoke
-      [`web-usability-tester`](../../../.agents/agents/web-usability-tester.md) second and spec-blind
+      [`swe-usability-tester`](../../../.agents/agents/swe-usability-tester.md) second and spec-blind
       with the same URLs/goal/locales/breakpoints. Require a first-time walkthrough of native prompt
       initiation/cancel/fallback, authenticator naming/removal, QR/manual setup, one-time recovery-code
       custody, last-safe-path denial, and recovery from every error. Append `UWT-###`/`USS-###`; save
       evidence under `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-web-usability.*`; run the same fix/rebuild/retest loop.
 - [ ] [AI] Invoke
-      [`web-design-tester`](../../../.agents/agents/web-design-tester.md) last with the Plan 06
+      [`swe-web-tester`](../../../.agents/agents/swe-web-tester.md) (design charter) last with the Plan 06
       high-fidelity PNGs, runtime tokens/theme, `libs/web-ui`, and cited UI-funnel prior art as design
       sources. Check hierarchy, spacing, focus, status/error differentiation without color alone,
       readable QR/manual/recovery alternatives, responsive reflow, dark mode, reduced motion, and

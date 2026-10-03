@@ -470,7 +470,7 @@ proof, and GraphQL/MCP remain genuinely deferred.
       row/ACK counts, auth/privacy, cursors/aggregates, dry-run/execute prune, storage results, and cleanup.
 - [ ] [AI] Follow
       `repo-governance/workflows/plan/plan-execution/finalization-rule16-api-retest.md` and invoke
-      `api-exploratory-tester`. First create the current fingerprint with the exact safe command
+      `swe-api-tester` (exploratory charter). First create the current fingerprint with the exact safe command
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-be:candidate:fingerprint --args='--output=local-tmp/ferret-api/candidate.json'`; the target records current
       40-character HEAD, OpenAPI SHA-256, Alembic head, running image ID, and base URL without a token. Then use
       this exact tester packet:
@@ -489,8 +489,8 @@ candidate-fingerprint-file: local-tmp/ferret-api/candidate.json
 ```
 
 - [ ] [AI] Require the tester to append every defect as
-      `- [ ] AET-###: <defect> — api-exploratory-tester; fix before archival` and every proposal as
-      `- [ ] SG-###: <proposal> — api-exploratory-tester; triage before archival` under the exact
+      `- [ ] AET-###: <defect> — swe-api-tester; fix before archival` and every proposal as
+      `- [ ] SG-###: <proposal> — swe-api-tester; triage before archival` under the exact
       `Rule-16 API exploratory-test retest follow-ups` heading at the end of this delivery checklist. Create one
       native harness task per checkbox. Fix every AET defect at root cause, run its scoped packet and affected
       gate, tick it only through task/checklist atomic sync, rebuild/restart, recompute all five candidate
@@ -662,6 +662,6 @@ containment.
 
 ## Rule-16 API exploratory-test retest follow-ups
 
-`api-exploratory-tester` appends `AET-###` defects and `SG-###` proposals below this heading using the exact
+`swe-api-tester` (exploratory charter) appends `AET-###` defects and `SG-###` proposals below this heading using the exact
 unchecked formats declared in Phase 5. An empty section before the tester runs is expected; any unchecked AET
 after the run blocks archival.

@@ -16,8 +16,8 @@ prioritization, fix approach, and any UI direction, then authors:
   **Specs & Gherkin completeness** coverage steps that fold the exploratory `SG-###` proposals into
   `specs/**` Gherkin (per [feature-change-completeness](../../../development/quality/feature-change-completeness.md)).
   For a web-UI feature-change plan, the checklist also ends with a **"Rule-15 three-tester retest
-  follow-ups"** section: run the three live-site testers (`web-exploratory-tester`,
-  `web-usability-tester`, `web-design-tester` — i.e. this `ux-review-fix-planning` round) against
+  follow-ups"** section: run the three live-site testers (`swe-web-tester` (exploratory charter),
+  `swe-usability-tester`, `swe-web-tester` (design charter) — i.e. this `ux-review-fix-planning` round) against
   the running target URL(s) across all locales after the fixes land and the visual sign-off is
   recorded, append each finding as a **new unchecked task-list checkbox** (source-attributed
   `EWT-###`/`UWT-###`/`DWT-###`), and fix/tick each before archival — per the

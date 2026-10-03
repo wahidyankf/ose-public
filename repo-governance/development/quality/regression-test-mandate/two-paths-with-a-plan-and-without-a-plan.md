@@ -8,7 +8,7 @@ when_to_use: "Use when a bug fix has a plan doc and needs a tracked test step."
 Like Feature Change Completeness, this mandate binds both paths a fix can take:
 
 1. **Direct fix (no plan doc)**: The reproducing test MUST be added in the same commit or PR
-   as the fix. The `swe-code-checker` agent flags a code fix that lacks a companion reproducing
+   as the fix. The `swe-reviewer` agent flags a code fix that lacks a companion reproducing
    test. This is the same enforcement path used for missing Gherkin specs under Feature Change
    Completeness.
 

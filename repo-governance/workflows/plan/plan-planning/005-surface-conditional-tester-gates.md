@@ -41,11 +41,11 @@ They act at different lifecycle stages or angles, and passing one says nothing a
 - **`plan-checker` Step 5k** gates the UI **design funnel** in `prd.md` — **pre-build**, before any
   component exists.
 - **`quality/ui-web-quality-gate.md`** judges the **running UI** against its design, accessibility, and
-  behaviour specifications via `ui-web-checker` / `ui-web-fixer`.
+  behaviour specifications via `swe-web-tester` (spec charter) / `swe-developer` (Apply Findings mode).
 - **`quality/ux-review-fix-planning.md`** explores the **running UI** via the EWT/UWT/DWT triad — a
   real browser against a real deployment — and plans the fixes.
 
-`swe-ui-checker` remains available for a static audit of component source on request; it is not a gate.
+`swe-reviewer` remains available for a static audit of component source on request; it is not a gate.
 A component can satisfy Step 5k's design funnel, match its specification, and still fail a first-time
 user in the browser. Treating any one of the three as covering another is the failure
 this distinction guards against.

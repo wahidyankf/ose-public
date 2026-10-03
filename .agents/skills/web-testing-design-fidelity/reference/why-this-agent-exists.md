@@ -8,11 +8,11 @@ inconsistent. The
 exists precisely because a feature once shipped to production bland and off-design while every gate was
 green. The two existing live-site testers do not close this gap:
 
-- `web-exploratory-tester` cites `specs/**`, not the **design system at runtime**;
-- `web-usability-tester` is **spec-blind and mockup-blind by design** — it must not read the design
+- `swe-web-tester` (exploratory charter) cites `specs/**`, not the **design system at runtime**;
+- `swe-usability-tester` is **spec-blind and mockup-blind by design** — it must not read the design
   intent.
 
-The **static** counterpart, `swe-ui-checker`, reads component **source** for token/a11y/pattern
+The **static** counterpart, `swe-reviewer`, reads component **source** for token/a11y/pattern
 compliance — it never drives a browser, so it cannot catch divergence that only appears in the
 **rendered** page (a token overridden by inline style, a mockup not matched after build, a primitive
 reinvented in a route the source check did not reach).

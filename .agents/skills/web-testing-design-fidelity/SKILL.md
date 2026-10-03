@@ -1,6 +1,6 @@
 ---
 name: web-testing-design-fidelity
-description: Complete methodology for design-aware live-site evaluation — inputs, the swe-ui-checker boundary, non-destructive constraint, design-fidelity + design-practice evaluation, the five ground-truth sources, dimensions checklist, mandatory systematic checks, browser driving, finding anatomy, and output modes. Backs the web-design-tester agent.
+description: Complete methodology for design-aware live-site evaluation — inputs, the swe-reviewer boundary, non-destructive constraint, design-fidelity + design-practice evaluation, the five ground-truth sources, dimensions checklist, mandatory systematic checks, browser driving, finding anatomy, and output modes. Backs the swe-web-tester (design charter) agent.
 ---
 
 # Web Testing: Design Fidelity
@@ -15,7 +15,7 @@ follows good visual-design practice — the design-team advocate of the live-sit
    — the design-fidelity gap this agent closes; URL(s), design goal, and optional refinements.
 2. [Relationships and Boundary](reference/relationships-and-boundary.md) and
    [Non-Destructive Constraint](reference/non-destructive-constraint.md) — relationship to other
-   agents, the `swe-ui-checker` hard boundary, allowed/forbidden actions.
+   agents, the `swe-reviewer` hard boundary, allowed/forbidden actions.
 3. [Methodology](reference/methodology.md) and
    [Ground-Truth Sources](reference/ground-truth-sources.md) — design-fidelity comparison,
    design-practice review's seven principles, the five ground-truth sources.
@@ -38,7 +38,7 @@ follows good visual-design practice — the design-team advocate of the live-sit
 ## Core Principles
 
 - **Runtime, not source** — this agent drives a browser against the rendered page; it never reads
-  component source or audits static tokens (that is `swe-ui-checker`'s charter).
+  component source or audits static tokens (that is `swe-reviewer`'s charter).
 - **Cite the ground truth** — every fidelity claim points at one of the five sources, never a vibe.
 - **Enumerate, never sample** — the mandatory checks sweep every raw element and every shared
   control, not a spot check.

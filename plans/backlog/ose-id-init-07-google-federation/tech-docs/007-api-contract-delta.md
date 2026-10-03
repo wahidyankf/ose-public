@@ -1047,13 +1047,13 @@ Scenario: The legacy backend challenge route remains disabled
 
 ## Layer and Quality-Gate Proof
 
-| Proof            | Required evidence                                                                                                                                                                             |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unit             | serializers, allowlists, status/problem mapping, idempotency keys, callback validation policy, account/link decision matrix, redaction, list projection, unlink/version/last-method rules     |
-| Integration      | real ASP.NET routes/OpenAPI, PostgreSQL transactions/uniqueness/single-use/rate limits/audit, BFF generated client/session/CSRF mapping, fake-provider HTTP/JWKS/token exchange               |
-| E2E              | built web+BFF+backend+PostgreSQL+fake Google for new/repeat/deny/fault/replay/link/unlink/responsive/a11y/leak and instance-handoff journeys                                                  |
-| API quality gate | `api-exploratory-tester`, `output-mode: delivery`, strict threshold, running backend/BFF URLs, backend OpenAPI plus these scenarios; destructive unlink success remains Integration/E2E-owned |
-| UI/live web      | static UI gate plus sequential exploratory, usability, and design testers over `/sign-in`, callback result, and `/account/security` at every supported locale/breakpoint                      |
+| Proof            | Required evidence                                                                                                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unit             | serializers, allowlists, status/problem mapping, idempotency keys, callback validation policy, account/link decision matrix, redaction, list projection, unlink/version/last-method rules                   |
+| Integration      | real ASP.NET routes/OpenAPI, PostgreSQL transactions/uniqueness/single-use/rate limits/audit, BFF generated client/session/CSRF mapping, fake-provider HTTP/JWKS/token exchange                             |
+| E2E              | built web+BFF+backend+PostgreSQL+fake Google for new/repeat/deny/fault/replay/link/unlink/responsive/a11y/leak and instance-handoff journeys                                                                |
+| API quality gate | `swe-api-tester` (exploratory charter), `output-mode: delivery`, strict threshold, running backend/BFF URLs, backend OpenAPI plus these scenarios; destructive unlink success remains Integration/E2E-owned |
+| UI/live web      | static UI gate plus sequential exploratory, usability, and design testers over `/sign-in`, callback result, and `/account/security` at every supported locale/breakpoint                                    |
 
 There are no default layer exemptions. Any genuinely inapplicable Integration/E2E adapter is declared
 only per canonical scenario with the repository exemption comment and static behavior-coverage proof.

@@ -26,7 +26,7 @@ a raw `--color-destructive`.
 
 ## Why now
 
-Two independent audits looked straight past it. The originating `swe-ui-checker` audit flagged the
+Two independent audits looked straight past it. The originating `swe-reviewer` audit flagged the
 Callout wiring but never evaluated dark mode, and its stated contrast figures did not reproduce —
 they appear to omit the sRGB gamma transfer, so its numbers should be treated as directionally
 useful and numerically unreliable. The defect was only found by recomputing from resolved token

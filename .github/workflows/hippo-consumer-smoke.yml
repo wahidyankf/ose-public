@@ -73,10 +73,11 @@ jobs:
           if (value.schemaVersion !== 5) problems.push("status schemaVersion " + value.schemaVersion);
           if (!value.configHash) problems.push("missing configHash");
           const profile = value.profile ?? {};
-          // resolvedProfile is pressure-dependent by design: the config declares a fallback and
-          // strict false, so a busy runner legitimately resolves to the fallback instead. Pin the
-          // config-derived request, and require only that the outcome stays on its declared chain.
-          if (profile.requestedProfile !== "local-constrained") problems.push("requestedProfile " + profile.requestedProfile);
+          // resolvedProfile is pressure-dependent by design: the built-in balanced profile is not
+          // strict and falls back through constrained and minimal, so a busy runner legitimately
+          // resolves to a fallback instead. Pin the config-derived request, and require only that
+          // the outcome stays on its declared chain.
+          if (profile.requestedProfile !== "balanced") problems.push("requestedProfile " + profile.requestedProfile);
           if (!Array.isArray(profile.fallbackChain) || !profile.fallbackChain.includes(profile.resolvedProfile)) problems.push("resolvedProfile " + profile.resolvedProfile + " is outside its declared chain " + JSON.stringify(profile.fallbackChain));
           const coordination = value.coordination ?? {};
           if (coordination.mode !== "reservation") problems.push("coordination mode " + coordination.mode);

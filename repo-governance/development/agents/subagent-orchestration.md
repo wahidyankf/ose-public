@@ -1,5 +1,5 @@
 ---
-description: "Standards for concurrency caps and stuck-detection when a main agent spawns subagents via the Agent tool, capping concurrent background subagents at two (three total including the main agent/thread) to control token burn and avoid Claude API rate-limit hits"
+description: "Standards for concurrency caps and stuck-detection when a main agent spawns subagents via the Agent tool, capping concurrent delegated agents at N=3 (four total including the main agent/thread) to control token burn and avoid Claude API rate-limit hits"
 when_to_use: Use when spawning, polling, or capping background subagents, or diagnosing a stuck subagent.
 ---
 

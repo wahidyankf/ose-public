@@ -1,5 +1,5 @@
 ---
-description: The five-point checklist for AI agents doing qualifying multi-step work, its relationship to plan delivery checklists, and links to related documentation
+description: The five-point checklist for AI agents doing qualifying multi-step work, its relationship to plan delivery checklists, the outside-plan progress file, and links to related documentation
 when_to_use: Use as a quick-reference checklist before starting qualifying multi-step work, or to find related conventions and principles.
 ---
 
@@ -21,7 +21,11 @@ Every agent — main thread and delegated alike — must follow this practice fo
 
 The [Plans Convention](../../../conventions/structure/plans.md) governs the delivery checklist inside plan documents (`delivery.md`). That checklist is the authoritative progress record for plan-mediated work. This practice governs the live working task list for everyday multi-step execution outside a plan document — and for the in-session tracking state during plan execution itself. Both require continuous sync. Neither exempts the other.
 
-That checklist is also the only written progress record. `local-tmp/` holds what an execution needs and then discards — scripts, assets, logs, intermediate data, the touched-file ledger — and never a copy of the checklist, its ticks, or its status, because two written records drift apart and nothing decides which one was true. Outside plan-mediated work there is no `delivery.md`, and a scratch file may carry working notes that have to survive a context boundary.
+That checklist is also the only written progress record. `local-tmp/` holds what an execution needs and then discards — scripts, assets, logs, intermediate data, the touched-file ledger — and never a copy of the checklist, its ticks, or its status, because two written records drift apart and nothing decides which one was true.
+
+### Outside a Plan
+
+Outside plan-mediated work there is no `delivery.md`, so a progress file in `local-tmp/` is the written progress record. Open it before the task's first action, record the goal, every active rule decision, and each item with its status, and update it as items resolve. A session that breaks off resumes from it. It stays until the whole task has ended, delivery and cleanup in every repository included, and is then removed under [Dev Artifact Clean-Up](../../../workflows/maintenance/dev-artifact-clean-up.md). Enforcement: unenforced by decision; the owner declined mechanical enforcement, so review verifies it.
 
 ## Related Documentation
 

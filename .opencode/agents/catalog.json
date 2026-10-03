@@ -165,7 +165,7 @@
     {
       "id": "agent/pr-review-checker",
       "path": ".agents/agents/pr-review-checker.md",
-      "digest": "3223588fc170a0822bc7053d181096e073f0c147318ec55ff4c66818fe30c69a"
+      "digest": "156cd7c96b8ed9b3e65b67c8bc0af0e16fddbbbe52d5bfb3222a156c33423a53"
     },
     {
       "id": "agent/pr-review-docs-checker",

@@ -55,11 +55,12 @@ if (
 ) process.exit(1);
 // The default is the built-in balanced profile with no override block. On
 // macOS, HIPPO grants degraded admission under a stable memory-pressure warning
-// only to the built-in balanced profile by name; a custom profile, even one
-// extending balanced, waits indefinitely instead. The reservation tiers above
-// still cap every grant, and the built-in fallback chain still applies. A
-// fixed profile concurrency cap would also pin every run to one worker and
-// defeat the adaptive parallelism the reservation vector exists to provide.
+// only to a profile whose extends lineage reaches balanced; one that extends
+// constrained or minimal defers instead. The built-in profile keeps that path
+// with nothing to audit. The reservation tiers above still cap every grant,
+// and the built-in fallback chain still applies. A fixed profile concurrency
+// cap would also pin every run to one worker and defeat the adaptive
+// parallelism the reservation vector exists to provide.
 if (config.profiles !== undefined) process.exit(1);
 '
 

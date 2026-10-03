@@ -1,5 +1,5 @@
 ---
-description: "Standards for concurrency caps and stuck-detection when a main agent spawns subagents via the Agent tool, capping concurrent background subagents at two (three total including the main agent/thread) to control token burn and avoid Claude API rate-limit hits"
+description: "Standards for concurrency caps and stuck-detection when a main agent spawns subagents via the Agent tool, capping concurrent delegated agents at N=3 (four total including the main agent/thread) to control token burn and avoid Claude API rate-limit hits"
 when_to_use: "Read this index to find the right Subagent Orchestration Convention child document."
 ---
 
@@ -8,7 +8,7 @@ when_to_use: "Read this index to find the right Subagent Orchestration Conventio
 - [Principles Implemented/Respected](./principles-implemented-respected.md) — Lists the core repository principles this convention implements and respects. Use when checking which principles justify a rule about subagent orchestration.
 - [Purpose](./purpose.md) — States why this convention defines standards for orchestrating background subagents. Use when explaining why a background-agent orchestration rule exists.
 - [Scope](./scope.md) — Defines what this convention covers and does not cover regarding subagent orchestration. Use when checking whether a subagent-orchestration question is in scope for this convention.
-- [Standard 1 — Default Concurrency: N Background Agents (N+1 Total Including Main Thread)](./standard-1-default-concurrency.md) — States the default concurrency cap for background agents plus the main thread. Use when deciding how many background agents to run concurrently for a batch of independent work.
+- [Standard 1 — Default Concurrency: N Delegated Agents (N+1 Total Including Main Thread)](./standard-1-default-concurrency.md) — States the default concurrency cap for delegated agents plus the main thread. Use when deciding how many background agents to run concurrently for a batch of independent work.
 - [Standard 1 — Default Concurrency (Continued)](./standard-1-worked-examples.md) — Continues Standard 1 with worked examples of the default-concurrency cap. Use when you need a worked example of applying the default concurrency cap.
 - [Standard 2 — 3-Minute Stuck-Detection Polling](./standard-2-stuck-detection-polling.md) — Covers the polling mechanism, stuck threshold, and recovery procedure for detecting a stuck background agent. Use when a background agent has been running for a while and you need to check whether it is stuck.
 - [Standard 2 — 3-Minute Stuck-Detection Polling (Continued)](./standard-2-healthy-versus-stuck-signals.md) — Continues Standard 2 with the healthy-vs-stuck empirical signal table and worked examples. Use when distinguishing a healthy slow-running agent from a genuinely stuck one.

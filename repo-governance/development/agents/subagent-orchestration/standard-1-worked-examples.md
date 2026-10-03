@@ -20,6 +20,8 @@ PASS: Plan declares N=5 for a wide independent batch → 5 background agents act
 PASS: Disk pressure on the shared machine → lower N for the rest of the batch
 PASS: Two dependent nodes remain → run them serially even though slots are free (DAG governs)
 FAIL: More than the declared N launched simultaneously
+FAIL: N background agents active, then a foreground delegated agent launched (N+1 live)
+FAIL: N agents active and one spawns a nested agent (the nested agent takes its own slot)
 FAIL: Main agent raises N on its own because "the first few seem fast"
 FAIL: Splitting one dependent chain into fake parallel units to fill idle slots
 ```

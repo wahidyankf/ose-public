@@ -1,8 +1,7 @@
 ---
 description: |-
   Prepares one pinned review pass before fan-out by choosing its risk tier, route, and specialist set with reasons, reading settled thread outcomes, and assembling one shared brief, without reviewing the change.
-effort: high
-model: opus
+model: inherit
 name: pr-review-scout
 skills:
   - pr-review-scout-classification

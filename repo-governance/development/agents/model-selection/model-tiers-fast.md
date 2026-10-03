@@ -1,6 +1,6 @@
 ---
-description: "Defines the fast tier: agents that declare haiku for simple, high-volume, low-reasoning work."
-when_to_use: Use when deciding whether a new agent should declare the fast (haiku) model tier.
+description: "Defines the fast tier: agents that declare `tier: fast` for simple, high-volume, low-reasoning work."
+when_to_use: Use when deciding whether a new agent should declare the fast (`fast`) model tier.
 ---
 
 # Model Tiers — Fast
@@ -19,20 +19,23 @@ when_to_use: Use when deciding whether a new agent should declare the fast (haik
 
 **Agent examples**:
 
-- **Deployers** (apps-ayokoding-www-deployer, apps-ose-www-deployer, apps-organiclever-app-web-deployer) -- execute git branch operations and deployment commands following a fixed procedure
 - **Link checkers** (docs-link-checker, apps-ayokoding-www-link-checker) -- validate URLs by checking HTTP status codes and managing cache files
 - **apps-ayokoding-www-link-fixer** -- applies checker-identified broken links via deterministic URL replacement; no independent analysis required
 - **docs-file-manager** -- performs deterministic file operations (move, rename, delete) with `git mv`, kebab-case pattern matching, and mechanical link updates; no judgment calls required
 
-**Frontmatter**: Specify `model: haiku` explicitly.
+**Frontmatter**: Declare `tier: fast` in the canonical agent. The Tier Registry maps it to
+`model: haiku` with `effort: xhigh` in `.claude/agents/`, and to the newest `gpt-*-luna` model with
+`model_reasoning_effort = "xhigh"` on Codex.
 
 ```yaml
 ---
-name: apps-ayokoding-www-deployer
-description: Expert deployment orchestrator...
-tools: [Bash, Read, Glob, Grep]
-model: haiku
-effort: xhigh
-color: purple
+name: docs-link-checker
+description: Validates external and internal links...
+tier: fast
+capabilities:
+  - repository-read
+  - repository-write
+  - shell
+  - network
 ---
 ```

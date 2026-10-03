@@ -1,8 +1,7 @@
 ---
 description: |-
   Audits a repository's rules as a whole for contradictions across levels, inaccurate references, inconsistent terms and strengths, missing traceability, and duplicated bodies, and returns rated findings without editing.
-effort: high
-model: opus
+model: inherit
 name: rules-checker
 skills:
   - rules-validating-governance

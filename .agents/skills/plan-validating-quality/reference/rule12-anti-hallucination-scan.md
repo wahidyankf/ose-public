@@ -31,7 +31,7 @@ label (`[Repo-grounded]`, `[Web-cited]`, `[Judgment call]`, `[Unverified]`) stil
 
 **C. Suggested-executor annotation validity** — where a checkbox carries `_Suggested executor:
 <agent-name>_`: `test -f .agents/agents/<agent-name>.md` succeeds (missing: **HIGH**,
-counts as AP-7); the agent's role suits the action (e.g. `swe-code-maker` for a `.fs` edit, not
+counts as AP-7); the agent's role suits the action (e.g. `swe-developer` for a `.fs` edit, not
 `docs-maker`; mismatch: **MEDIUM**).
 
 **D. Web-citation completeness** — every external claim carries a plain citation with URL, access

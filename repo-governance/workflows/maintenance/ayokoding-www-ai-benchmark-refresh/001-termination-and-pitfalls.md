@@ -13,7 +13,7 @@ when_to_use: "Use when deciding whether a refresh run is finished, or when a ste
   names what is missing. `deployed` needs both the READY and the browser proofs of Step 6.
 - FAIL: **Failure**: `final-status` is `failed` because a gate cannot be made green at the root cause, or
   the deploy reaches ERROR. Roll back by redeploying the previous `prod-ayokoding-www` commit through
-  `apps-ayokoding-www-deployer`, after the same per-instance force-push approval as Step 6.
+  `swe-releaser` (Deploy mode, `ayokoding-www` target), after the same per-instance force-push approval as Step 6.
 
 `halted` from Step 2 is a valid stop awaiting the user, not a failure.
 

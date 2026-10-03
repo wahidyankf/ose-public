@@ -1,6 +1,6 @@
 ---
-description: "Defines the planning-grade tier: agents that declare opus for creative reasoning, architecture, and open-ended judgment."
-when_to_use: Use when deciding whether a new agent should declare the planning-grade (opus) model tier.
+description: "Defines the planning-grade tier: agents that declare `tier: plan` for creative reasoning, architecture, and open-ended judgment."
+when_to_use: Use when deciding whether a new agent should declare the planning-grade (`plan`) model tier.
 ---
 
 # Model Tiers — Planning-Grade
@@ -27,35 +27,31 @@ creative synthesis across domains, nuanced judgment under ambiguity.
 - **rules-\***, **harness-\***, **specs-\*** — reason about governance surfaces where a wrong call propagates across the repository
 - **pr-review-scout**, **pr-review-checker** — route risk and consolidate nine specialists' findings into one review
 - **docs-tutorial-maker** — produces tutorial content requiring pedagogical reasoning, narrative flow, and learning progression design
-- **swe-ui-maker** — creates UI components requiring CVA variants, Radix composition, accessibility, tests, and stories in one pass
+- **swe-architect**, **swe-orchestrator** — decide boundaries and tradeoffs, and decompose a goal across the software-engineering family
 
-**Frontmatter**: Specify `model: opus` explicitly.
+**Frontmatter**: Declare `tier: plan` in the canonical agent. The Tier Registry maps `plan` to an
+empty mapping, so `.claude/agents/` renders `model: inherit` and Codex pins no model.
 
 ```yaml
 ---
 name: plan-maker
 description: Creates project plans with requirements...
-tools: [Read, Write, Edit, Glob, Grep, Bash]
-model: opus
-effort: high
-color: blue
+tier: plan
+capabilities:
+  - repository-read
+  - repository-write
+  - shell
 ---
 ```
 
-## Why This Grade Is Declared, Not Inherited
+## Why the Tier Is Declared but the Model Is Not Pinned
 
-This grade was previously defined as _omitting_ the `model` field so that the agent inherited the
-session's model and adapted to the caller's account tier. That definition has been retired. Every
-agent now declares its grade explicitly, for two reasons:
+Every agent declares its tier explicitly. A tier that is spelled `<absent>` cannot be read: a reviewer
+could not tell a deliberate planning-grade assignment from an author who forgot the field, so
+declaring it satisfies
+[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md), and
+RHINO refuses an agent with no tier.
 
-1. **A grade that is spelled `<absent>` cannot be read.** A reviewer opening an agent file could not
-   tell a deliberate planning-grade assignment from an author who forgot the field. Declaring the
-   grade satisfies [Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md).
-2. **Inheritance made the grade non-deterministic.** The same agent ran at a different capability on
-   different accounts, so an agent could pass review on one machine and fail on another. Grades now
-   mean the same thing everywhere.
-
-Budget adaptation has not disappeared; it moved to the caller. A session may still override any
-subagent's model, and `inherit` remains a valid frontmatter value for an agent that genuinely should
-track its caller. What is no longer permitted is leaving `model` blank and calling the absence a
-grade.
+The model is a separate, deliberate choice made once in the registry. Mapping `plan` to an empty
+entry lets the calling session's model run planning work, so a session on a stronger model gives its
+planners that model. Pinning `plan` again is one registry edit followed by regeneration.

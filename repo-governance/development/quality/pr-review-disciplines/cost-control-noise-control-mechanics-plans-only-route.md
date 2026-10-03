@@ -20,7 +20,7 @@ Record the ordinary trivial/lite/full risk tier. For `lite` and `full`, select t
 specialists plus `pr-review-checker` as coordinator:
 
 - `pr-review-security-checker`
-- `pr-review-architecture-checker`
+- `swe-architect` (Lens mode)
 - `pr-review-logic-checker`
 - `pr-review-docs-checker`
 - `pr-review-governance-checker`

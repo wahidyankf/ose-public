@@ -29,7 +29,7 @@ For immediate deployment outside the scheduled window:
 git push origin main:prod-ayokoding-www --force
 ```
 
-Or use the `apps-ayokoding-www-deployer` agent for a guided deployment.
+Or use the `swe-releaser` (Deploy mode, `ayokoding-www` target) agent for a guided deployment.
 
 ### Why Force Push
 

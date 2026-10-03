@@ -15,7 +15,7 @@
    - If the plan was a web-UI **feature-change** plan, verify it carried a near-end "Rule-15
      three-tester retest" round — the
      [`ux-review-fix-planning`](../../../../repo-governance/workflows/quality/ux-review-fix-planning.md)
-     triad (`web-exploratory-tester` + `web-usability-tester` + `web-design-tester`) — that ran across
+     triad (`swe-web-tester` (exploratory charter) + `swe-usability-tester` + `swe-web-tester` (design charter)) — that ran across
      ALL supported locales, and that every resulting `EWT-###`/`UWT-###`/`DWT-###` defect checkbox in
      `delivery.md` is `- [x]` (fixed) before archival. Deferral of EWT/UWT/DWT defect findings is NOT
      permitted — an unfixed defect checkbox at archival time is a **HIGH** finding. (`SG-###`/`USS-###`
@@ -29,7 +29,7 @@
 3. **Rule-16 API Exploratory Retest (API feature-change plans)**
    - If the plan was an API **feature-change** plan (REST or GraphQL endpoints in a backend or tRPC
      app), verify it carried a near-end "Rule-16 API exploratory retest" round —
-     `api-exploratory-tester` run with `output-mode: delivery` against the running endpoint(s) with
+     `swe-api-tester` (exploratory charter) run with `output-mode: delivery` against the running endpoint(s) with
      the contract (OpenAPI 3.x / GraphQL SDL) as ground truth — and that every resulting `AET-###`
      defect checkbox in `delivery.md` is `- [x]` (fixed) before archival. Deferral is NOT permitted —
      an unfixed defect checkbox at archival time is a **HIGH** finding.

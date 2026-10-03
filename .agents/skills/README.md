@@ -74,12 +74,14 @@ The [repository adapter](../../repo-governance/development/quality/stacks/reposi
 
 - [Developing Applications](./developing-applications/README.md) — language-agnostic application judgement
 - [Developing Frontend UI](./developing-frontend-ui/README.md) — UI tokens, composition, accessibility
+- [Evolving Database Schemas](./evolving-database-schemas/README.md) — expand, migrate, verify, contract
 - [Framework ASP.NET Core](./framework-aspnet-core/README.md) — ASP.NET Core stack skill
 - [Framework Gin](./framework-gin/README.md) — Gin stack skill
 - [Framework Giraffe](./framework-giraffe/README.md) — Giraffe stack skill
 - [Framework Next.js](./framework-nextjs/README.md) — Next.js stack skill
 - [Framework React](./framework-react/README.md) — React stack skill
 - [Framework Spring Boot](./framework-spring-boot/README.md) — Spring Boot stack skill
+- [Modeling Threats](./modeling-threats/README.md) — a short threat model beside a decision
 - [Programming C#](./programming-csharp/README.md) — C# stack skill
 - [Programming F#](./programming-fsharp/README.md) — F# stack skill
 - [Programming Go](./programming-golang/README.md) — Go stack skill
@@ -95,7 +97,7 @@ The [repository adapter](../../repo-governance/development/quality/stacks/reposi
 
 - [Apps Ayokoding Www Authoring Annotated Concept](./apps-ayokoding-www-authoring-annotated-concept/README.md) — Annotated-concept authoring for ayokoding-web
 - [Apps Ayokoding Www Developing Content](./apps-ayokoding-www-developing-content/README.md) — ayokoding-web bilingual content development guide
-- [Apps Deploying Vercel Branches](./apps-deploying-vercel-branches/README.md) — shared deployer-agent branch force-push procedure
+- [Apps Deploying Vercel Branches](./apps-deploying-vercel-branches/README.md) — swe-releaser's environment-branch deploy procedure
 - [Apps Organiclever Www Developing Content](./apps-organiclever-www-developing-content/README.md) — organiclever-www feature-context/PGlite/Effect TS development
 - [Apps Ose Www Developing Content](./apps-ose-www-developing-content/README.md) — ose-web content creation conventions
 
@@ -105,13 +107,15 @@ The [repository adapter](../../repo-governance/development/quality/stacks/reposi
 - [Pr Review Scout Classification](./pr-review-scout-classification/README.md) — pr-review-scout's risk-tier classification
 - [Pr Review Specialist Protocol](./pr-review-specialist-protocol/README.md) — shared protocol for the nine discipline specialists
 - [Pr Review Synthesis Coordination](./pr-review-synthesis-coordination/README.md) — pr-review-checker's dedup and posting
+- [Producing Review Findings](./producing-review-findings/README.md) — what a reviewer raises and how
 
 ### Web and API testing
 
-- [Api Testing Exploratory Methodology](./api-testing-exploratory-methodology/README.md) — api-exploratory-tester's contract-aware testing methodology
-- [Web Testing Design Fidelity](./web-testing-design-fidelity/README.md) — web-design-tester's design-fidelity methodology
-- [Web Testing Exploratory Methodology](./web-testing-exploratory-methodology/README.md) — web-exploratory-tester's spec-aware testing methodology
-- [Web Testing Usability Heuristics](./web-testing-usability-heuristics/README.md) — web-usability-tester's Nielsen heuristics evaluation
+- [Api Testing Exploratory Methodology](./api-testing-exploratory-methodology/README.md) — swe-api-tester's exploratory charter
+- [Exploratory Testing](./exploratory-testing/README.md) — session-based exploratory testing
+- [Web Testing Design Fidelity](./web-testing-design-fidelity/README.md) — swe-web-tester's design charter
+- [Web Testing Exploratory Methodology](./web-testing-exploratory-methodology/README.md) — swe-web-tester's exploratory charter
+- [Web Testing Usability Heuristics](./web-testing-usability-heuristics/README.md) — swe-usability-tester's Nielsen heuristics
 
 ### Repository, CI, and governance
 

@@ -7,9 +7,9 @@ when_to_use: "Use when tracing which agent or convention backs a specific behavi
 
 ## Related Documents
 
-- [web-exploratory-tester Agent](../../../../.agents/agents/web-exploratory-tester.md) — Phase 1 spec-aware pass.
-- [web-usability-tester Agent](../../../../.agents/agents/web-usability-tester.md) — Phase 2 spec-blind pass.
-- [web-design-tester Agent](../../../../.agents/agents/web-design-tester.md) — Phase 3 design-aware pass.
+- [swe-web-tester Agent](../../../../.agents/agents/swe-web-tester.md) (exploratory charter) — Phase 1 spec-aware pass.
+- [swe-usability-tester Agent](../../../../.agents/agents/swe-usability-tester.md) — Phase 2 spec-blind pass.
+- [swe-web-tester Agent](../../../../.agents/agents/swe-web-tester.md) (design charter) — Phase 3 design-aware pass.
 - [plan-maker Agent](../../../../.agents/agents/plan-maker.md) — Phase 4 solidification + tech-docs/delivery/UI-assets authoring.
 - [Plan Quality Gate workflow](../plan-quality-gate.md) — Phase 4 nested gate.
 - [Plan Execution workflow](../../plan/plan-execution.md) — runs the plan later, after human review.

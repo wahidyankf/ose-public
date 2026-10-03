@@ -10,7 +10,7 @@ Every agent MUST include a **Model Selection Justification** block in its markdo
 **Format**:
 
 ```markdown
-**Model Selection Justification**: `model: sonnet` (execution grade) — this agent requires:
+**Model Selection Justification**: `tier: execution` (execution grade) — this agent requires:
 
 - [Capability 1] to [accomplish task aspect]
 - [Capability 2] to [accomplish task aspect]
@@ -20,7 +20,7 @@ Every agent MUST include a **Model Selection Justification** block in its markdo
 
 For a checker agent:
 
-> **Model Selection Justification**: `model: sonnet` (execution grade) — this agent requires:
+> **Model Selection Justification**: `tier: execution` (execution grade) — this agent requires:
 >
 > - Systematic rule application to validate content against defined checklists
 > - Structured report generation following the audit report template
@@ -28,17 +28,17 @@ For a checker agent:
 
 For a planning-grade maker:
 
-> **Model Selection Justification**: `model: opus` (planning grade) — this agent requires:
+> **Model Selection Justification**: `tier: plan` (planning grade) — this agent requires:
 >
 > - Advanced reasoning to generate idiomatic code across language paradigms
 > - Multi-step problem decomposition for complex refactoring tasks
 > - Creative synthesis to design APIs and data models
 
-For a deployer agent:
+For a link checker:
 
-> **Model Selection Justification**: `model: haiku` (fast grade) — this agent requires:
+> **Model Selection Justification**: `tier: fast` (fast grade) — this agent requires:
 >
-> - Execution of predefined git and deployment commands
+> - Execution of predefined link and status checks
 > - No analytical reasoning beyond following a fixed procedure
 
 An ultra-grade agent's block carries a heavier burden: it must record the three-part admission

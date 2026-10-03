@@ -41,7 +41,7 @@ rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exe
 **See**: [nx-targets.md](./repo-governance/development/infra/nx-targets.md)
 
 Local compute uses the checksum-pinned root `./hippo` consumer. HIPPO source, specifications, and
-releases stay in the independent [upstream repository](https://github.com/wahidyankf/hippo); never
+releases stay in the independent [upstream](https://github.com/wahidyankf/hippo); never
 copy them here. Independent compute may overlap only through HIPPO admission; dependency,
 shared-output, Rhino byte-identity, transactional, and correctness edges still serialize.
 
@@ -88,8 +88,8 @@ formal plans follow the
 [plans convention](./repo-governance/conventions/structure/plans.md). PR bodies state new-code cost/benefit;
 tests exempt.
 
-Use English for repository-authored material and developer-facing source text; declared localized
-content and user-facing values are exempt. See [Working Language](./repo-governance/conventions/writing/repository-working-language.md).
+Use [English](./repo-governance/conventions/writing/repository-working-language.md) for repository-authored
+material and developer-facing source text; declared localized content and user-facing values are exempt.
 
 ### Reproducible Environments
 
@@ -118,10 +118,10 @@ Verify UI/API behaviour manually; investigate CI failures at the root cause, nev
 
 ## AI Agents
 
-[Canonical agents](./.agents/agents/README.md) and canonical skills under `.agents/skills/` are
-authoritative. Every agent has a generated route under `.claude/agents/`, and the four plan
-agents also under `.codex/agents/` and `.opencode/agents/`; regenerate and validate them through
-the pinned Rhino adapter commands rather than hand-editing a route.
+[Canonical agents](./.agents/agents/README.md) and skills under `.agents/skills/` are authoritative;
+regenerate and validate every route under `.claude/`, `.codex/`, and `.opencode/` with the pinned
+Rhino adapter commands, never by hand. Dispatch coding work to the fitting `swe-*` agent, except a
+trivial edit or a harness without subagents, per [SWE Delegation](./repo-governance/development/agents/swe-delegation.md).
 
 **See**: [ai-agents.md](./repo-governance/development/agents/ai-agents.md)
 
@@ -134,7 +134,7 @@ working state. Regenerate swept artifacts; never protect.
 
 ## Important Notes
 
-Stage/commit only when explicitly instructed. License MIT — see
+Stage/commit only when explicitly instructed. License MIT; see
 [LICENSING-NOTICE.md](./LICENSING-NOTICE.md).
 
 ## Related Repositories

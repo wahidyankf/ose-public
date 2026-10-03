@@ -24,16 +24,18 @@ large working set and a materially lower rate of confidently-wrong output on nov
 
 **Agent examples**: none yet — see Status above.
 
-**Frontmatter**: Specify `model: fable` explicitly.
+**Frontmatter**: Declare `tier: ultra` in the canonical agent. The Tier Registry maps `ultra` to an
+empty mapping today, so `.claude/agents/` renders `model: inherit` and Codex pins no model.
 
 ```yaml
 ---
 name: example-ultra-agent
 description: Illustrative only; no agent declares this grade today...
-tools: [Read, Write, Edit, Glob, Grep, Bash]
-model: fable
-effort: high
-color: blue
+tier: ultra
+capabilities:
+  - repository-read
+  - repository-write
+  - shell
 ---
 ```
 
@@ -56,8 +58,8 @@ grade higher.
 
 ## Before the First Ultra Agent Lands
 
-The Codex model this grade maps to is behind a restricted-access programme, so the mirror can emit a
-`model` value the running account cannot use. The first agent promoted to this grade must be
-smoke-tested on the Codex binding before it lands — see
+The registry pins no model for this grade, so an ultra agent would run on whatever model its session
+or harness defaults to. The first agent promoted to this grade must have the tier pinned in the
+registry and smoke-tested on each harness binding before it lands — see
 [Platform Binding Examples](./platform-binding-examples.md#where-a-grade-does-not-mean-the-same-thing).
 This costs nothing while the grade has no members, which is exactly why it is written down now.

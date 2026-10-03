@@ -5,7 +5,7 @@ when_to_use: "Use when locating the automated enforcement for git-fixture isolat
 
 # Enforcement
 
-- **`swe-code-checker`**: Locates test/fixture files that shell out to a raw `git` invocation
+- **`swe-reviewer`**: Locates test/fixture files that shell out to a raw `git` invocation
   (`Command::new("git")` in Rust, `exec.Command("git"` in Go, `child_process.spawn/exec("git"` in
   TypeScript, `subprocess.run/Popen([...,"git"` in Python, `ProcessStartInfo` targeting `git` in
   F#/.NET) and verifies all six layers are present -- the four mandatory isolation env vars

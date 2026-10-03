@@ -14,7 +14,7 @@ layout or needs its own treatment.
 
 ## Problem / context
 
-The Phase 11 `web-exploratory-tester` retest (2026-07-31) measured two shared app-shell tap targets
+The Phase 11 `swe-web-tester` (exploratory charter) retest (2026-07-31) measured two shared app-shell tap targets
 below the WCAG 2.2 SC 2.5.8 24x24 CSS px minimum, reproduced across `en` and `id` at all five tested
 breakpoints (320 / 390 / 768 / 1280 / 1440 px):
 

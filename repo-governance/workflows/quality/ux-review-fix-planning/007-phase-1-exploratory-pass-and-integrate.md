@@ -1,5 +1,5 @@
 ---
-description: "Runs web-exploratory-tester first and alone, then integrates its EWT-### findings and SG-### spec-gap proposals into the plan skeleton before Phase 2 starts."
+description: "Runs swe-web-tester (exploratory charter) first and alone, then integrates its EWT-### findings and SG-### spec-gap proposals into the plan skeleton before Phase 2 starts."
 when_to_use: "Use when checking exactly what the exploratory tester is dispatched with, or how its results get folded into the new/merged plan."
 ---
 
@@ -9,7 +9,7 @@ Run the spec-aware tester **first, alone**, then fold its results into the plan 
 pass starts. It is **non-destructive / passive** — it reads, clicks, resizes, and probes but never
 mutates server state.
 
-**Agent**: `web-exploratory-tester` — spec-aware. Compares live behaviour against existing
+**Agent**: `swe-web-tester` (exploratory charter) — spec-aware. Compares live behaviour against existing
 `specs/**` Gherkin; actively hunts edge cases and boundary conditions; produces a findings catalog
 `EWT-###` (functional, behavioural-consistency, edge-case/boundary, UI/UX, responsive, accessibility,
 URL/IA, passive security) plus spec-gap proposals `SG-###` (Gherkin scenarios for correct-but-unspecced

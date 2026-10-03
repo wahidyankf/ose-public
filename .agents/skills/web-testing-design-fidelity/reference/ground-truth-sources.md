@@ -8,7 +8,7 @@ Document and apply all five, each judged against the **running** page:
    Compare the rendered page to these and report divergence as a `DWT-###` finding citing the mockup
    file.
 2. **Design tokens / theme (colours, spacing, typography) at RUNTIME** — the **runtime counterpart** to
-   `swe-ui-checker`'s static source check. Read computed styles on the live page and compare them to
+   `swe-reviewer`'s static source check. Read computed styles on the live page and compare them to
    the theme tokens; an inline-overridden colour or off-scale spacing that the source check cannot see
    is a finding. **Must NOT duplicate** the static source-token audit — report the rendered symptom.
 3. **Design-system primitives (the shared component library)** — flag **reinvented UI** the shared

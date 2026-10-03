@@ -9,7 +9,7 @@ Domain-specialized agents hallucinate less than generic orchestration. When a de
       with case-insensitive uniqueness. Verify by running
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:test:unit` — new test
       `User_RejectsDuplicateEmailIgnoringCase` passes.
-  - _Suggested executor: `swe-code-maker`_
+  - _Suggested executor: `swe-developer`_
 ```
 
 **When to annotate**:

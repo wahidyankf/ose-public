@@ -23,11 +23,11 @@ The social-linkedin-post-maker uses execution-grade despite being a "maker" agen
 
 ## Structured Makers as Execution-Grade
 
-Several maker agents use execution-grade because their output is structured by tight skills with well-defined rubrics -- every `apps-ayokoding-www-*-maker` and `apps-ose-www-content-maker`, plus docs-maker, readme-maker, agent-maker, and repo-workflow-maker. Each has an execution-grade checker and execution-grade fixer in its maker-checker-fixer trio, and the skill pins down most decisions. The governance trios -- `rules-*`, `specs-*`, `plan-*` -- sit a grade higher for the reason given under Model Tiers — Execution-Grade. Contrast with planning-grade makers (plan-maker, docs-tutorial-maker, swe-ui-maker) where the creative work is open-ended, pedagogically demanding, or multi-concern.
+Several maker agents use execution-grade because their output is structured by tight skills with well-defined rubrics -- every `apps-ayokoding-www-*-maker` and `apps-ose-www-content-maker`, plus docs-maker, readme-maker, agent-maker, and repo-workflow-maker. Each has an execution-grade checker and execution-grade fixer in its maker-checker-fixer trio, and the skill pins down most decisions. The governance trios -- `rules-*`, `specs-*`, `plan-*` -- sit a grade higher for the reason given under Model Tiers — Execution-Grade. Contrast with planning-grade makers (plan-maker, docs-tutorial-maker) where the creative work is open-ended, pedagogically demanding, or multi-concern.
 
 ## Code Maker as Execution-Grade
 
-The swe-code-maker writes production application code yet uses execution-grade. It loads each project's stack packs from the repository inventory, so the stack standards, the stack skills, and the requirement already settle the approach, and applying them cycle by cycle is rule-following. A requirement that leaves a design decision open goes back to its owner instead of raising the tier.
+The swe-developer writes production application code yet uses execution-grade. It loads each project's stack packs from the repository inventory, so the stack standards, the stack skills, and the requirement already settle the approach, and applying them cycle by cycle is rule-following. A requirement that leaves a design decision open goes back to its owner instead of raising the tier.
 
 ## File Manager as Fast-Tier
 

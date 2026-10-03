@@ -23,7 +23,7 @@ demands it. Follow it when it helps a reader find the agent.
 **Use a scope prefix when the agent works only within one app or library:**
 
 - `apps-<app-name>-` — content creation, validation, or deployment for a single app.
-  Examples: `apps-ayokoding-www-general-maker`, `apps-ose-www-deployer`.
+  Examples: `apps-ayokoding-www-general-maker`, `swe-releaser` (Deploy mode, `ose-www` target).
 - `libs-<lib-name>-` — work confined to one library.
   Examples: `libs-ts-auth-validator`, `libs-ts-payment-checker`.
 

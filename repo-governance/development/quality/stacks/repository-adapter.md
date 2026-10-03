@@ -51,9 +51,34 @@ gives it a plain name and its parent index carries the order. Every other adopte
 | `repo-governance/development/quality/stacks/react-standards/library-decisions.md`             | `repo-governance/development/quality/stacks/react-standards/001-library-decisions.md`             |
 | `repo-governance/development/quality/stacks/nextjs-standards/version-hosting-and-examples.md` | `repo-governance/development/quality/stacks/nextjs-standards/001-version-hosting-and-examples.md` |
 
+## SWE Agent Decisions
+
+Each label below is the exact Adopter Decision label in the adopted `swe-*` agent that offers it.
+
+| Agent           | Label                      | Choice                                                                                                                                                                                           |
+| --------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `swe-architect` | ADR location               | default, `docs/explanation/decisions/NNN-<slug>.md`; the `docs/explanation/*-decisions.md` files explain parity efforts and are not ADRs                                                         |
+| `swe-developer` | Stack skills               | read on demand (default)                                                                                                                                                                         |
+| `swe-developer` | Host-integrated proof      | not required (default)                                                                                                                                                                           |
+| `swe-reviewer`  | Reviewer output            | report file under `local-tmp/swe-reviewer/`, per [Mandatory Report Generation](../../infra/temporary-files/mandatory-report-generation.md); the copy adds `repository-write` and holds `no-edit` |
+| `swe-reviewer`  | Specification completeness | checked                                                                                                                                                                                          |
+| `swe-reviewer`  | Test boundary              | default, the catalog's Test Boundaries and Gates                                                                                                                                                 |
+| `swe-releaser`  | Deploy targets             | `ayokoding-www`, `organiclever-app-web`, `organiclever-www`, `ose-app-web`, `ose-www`, and `web-ui-storybook`, per [Deploy Targets](repository-adapter/deploy-targets.md)                        |
+
+## Skill Names
+
+The adopted `swe-*` agents load six catalog skills under local names: `applying-maker-checker-fixer` as
+`repo-applying-maker-checker-fixer`, `assessing-criticality-confidence` as `repo-assessing-criticality-confidence`,
+`generating-validation-reports` as `repo-generating-validation-reports`, `design-fidelity-review` as
+`web-testing-design-fidelity`, `usability-heuristic-evaluation` as `web-testing-usability-heuristics`, and
+`cutting-releases` as `apps-deploying-vercel-branches`, because this repository cuts no versioned release and ships by
+moving environment branches. Every other adopted skill keeps its catalog name.
+
 ## Details
 
 - [Adopter Decisions](repository-adapter/adopter-decisions.md) — Every choice an adopted standard leaves open, plus the
   local rules that are stronger than the catalog.
+- [Deploy Targets](repository-adapter/deploy-targets.md) — Each environment the SWE releaser may deploy, with its
+  branch, workflow, and verification.
 - [Project Applicability](repository-adapter/project-applicability.md) — One link per inventory project, inline facts
   for projects without a README, and the manifests that declare each version.

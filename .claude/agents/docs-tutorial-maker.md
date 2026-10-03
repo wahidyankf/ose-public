@@ -1,8 +1,7 @@
 ---
 description: |-
   Creates and updates tutorial documentation following Diátaxis framework and tutorial conventions
-effort: high
-model: opus
+model: inherit
 name: docs-tutorial-maker
 skills:
   - docs-creating-tutorial-structure

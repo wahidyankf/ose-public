@@ -6,7 +6,7 @@ import type { PathManifest } from "./schemas";
  * source of truth mapping a manifest to its documented accent hue, so every card/badge/strip
  * surface (hero, hub, category landing, arc landing, path landing) shares one resolution instead
  * of each independently re-deriving — or omitting — it, which was the root cause of the phase-5
- * rule-15 `web-design-tester` retest's DWT-001 finding (every one of this plan's five committed,
+ * rule-15 `swe-web-tester` (design charter) retest's DWT-001 finding (every one of this plan's five committed,
  * Selected hi-fi mockups depicts this hue-coding system; the shipped code applied none of it).
  *
  * Pure — no IO.

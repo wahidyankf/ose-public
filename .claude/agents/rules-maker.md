@@ -1,8 +1,7 @@
 ---
 description: |-
   Creates repository rules and conventions in repo-governance/ directories. Documents standards, patterns, and quality requirements.
-effort: high
-model: opus
+model: inherit
 name: rules-maker
 skills:
   - docs-applying-content-quality

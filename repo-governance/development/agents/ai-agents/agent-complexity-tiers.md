@@ -26,9 +26,6 @@ whose thresholds live in `repo-config.yml` and are enforced at pre-push and in C
 
 **Examples**:
 
-- apps-ayokoding-www-deployer (deployment automation)
-- apps-ose-www-deployer (deployment automation)
-- apps-organiclever-app-web-deployer (deployment automation)
 - social-linkedin-post-maker (single-purpose content generation)
 - repo-workflow-maker (workflow document creation)
 

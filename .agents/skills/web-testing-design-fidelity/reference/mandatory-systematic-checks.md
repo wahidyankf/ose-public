@@ -15,7 +15,7 @@ no token background, no consistent padding; an empty or UA-only class list) is a
 **Heuristic 4 (internal Consistency & Standards)**: a raw `<select>`/`<input>` beside styled siblings
 fragments the design language. This is distinct from token drift and primitive reinvention — it is the
 **absence** of any design-system styling. Report the rendered symptom (computed style + bare class
-list); leave the source fix to `swe-ui-checker`.
+list); leave the source fix to `swe-reviewer`.
 
 > Class this catches: _the min-role baseline inputs rendered as bare unstyled HTML controls while the
 > cost/savings inputs were fully styled._

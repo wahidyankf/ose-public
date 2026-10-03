@@ -48,7 +48,7 @@ Feature: Search
     And each result should display the section path indicating where the page lives
     And each result should display a text excerpt showing the matching content
 
-  # USS-001 — Rule-15 web-usability-tester spec-blind suggestion (paired with UWT-001): the search
+  # USS-001 — Rule-15 swe-usability-tester spec-blind suggestion (paired with UWT-001): the search
   # index used to be built entirely from markdown `content/` files, structurally excluding the
   # Tools section (`/tools/ai-benchmark`, `/tools/cost-of-living-calculator`); a first-time visitor
   # searching "AI Model Benchmark" got zero results. Fixed via `staticSearchDocs()`

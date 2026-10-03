@@ -1,5 +1,5 @@
 ---
-description: "Runs web-usability-tester after Phase 1 integrates, then folds its UWT-### findings, walkthrough, and USS-### spec-suggestions into the same plan."
+description: "Runs swe-usability-tester after Phase 1 integrates, then folds its UWT-### findings, walkthrough, and USS-### spec-suggestions into the same plan."
 when_to_use: "Use when checking what the spec-blind usability tester is dispatched with, or how its results are kept distinct from the exploratory findings."
 ---
 
@@ -8,7 +8,7 @@ when_to_use: "Use when checking what the spec-blind usability tester is dispatch
 Only after Phase 1 has integrated, run the spec-blind tester and fold its results into the **same**
 plan. Also passive / non-destructive.
 
-**Agent**: `web-usability-tester` — spec-blind. Deliberately ignores specs/source/mockups; judges
+**Agent**: `swe-usability-tester` — spec-blind. Deliberately ignores specs/source/mockups; judges
 only first-time-user perception against Nielsen's 10 heuristics (0–4 severity), cognitive walkthrough,
 information scent, edge-case UX states (empty/zero-result/loading/error), and responsive usability;
 produces a findings catalog `UWT-###`. Emits no spec-_gaps_ (gap analysis requires reading the specs,

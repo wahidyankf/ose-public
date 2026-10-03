@@ -73,6 +73,6 @@ ALL \*-checker agents must implement progressive writing:
 14. docs-software-engineering-separation-checker
 15. repo-workflow-checker
 16. specs-checker
-17. swe-code-checker
+17. swe-reviewer
 
 **Validation**: See rules-checker agent for validation rules that verify progressive writing compliance across all checker agents.

@@ -8,7 +8,7 @@ when_to_use: "Use when locating the automated enforcement for one of the sixteen
 - **Playwright MCP**: per-breakpoint, per-locale visual sign-off against `assets/` mockups.
   Screenshots saved to `evidence/` and referenced in `delivery.md` per the
   [Evidence Capture Convention](.././evidence-capture.md).
-- **`web-exploratory-tester` / `web-usability-tester` / `web-design-tester`** (the
+- **`swe-web-tester` (exploratory charter) / `swe-usability-tester` / `swe-web-tester` (design charter)** (the
   [`ux-review-fix-planning`](../../../workflows/quality/ux-review-fix-planning.md) triad): the
   near-end three-tester round against the running web UI (Rule 15); runs across ALL supported locales;
   surfaces EWT-### (correctness) / UWT-### (usability) / DWT-### (design-fidelity) findings plus SG-###
@@ -18,8 +18,8 @@ when_to_use: "Use when locating the automated enforcement for one of the sixteen
   existing plan's `delivery.md`). For the Rule-15 in-place append, invoke each
   tester with **`output-mode: delivery`** and the executing plan's `plan-path`; this is the single
   mechanism that produces the "Rule-15 three-tester retest follow-ups" section in `delivery.md`.
-- **`api-exploratory-tester`**: the API-surface counterpart to the web triad — the near-end
-  `api-exploratory-tester` round against the running REST or GraphQL API (Rule 16); HTTP/curl-driven,
+- **`swe-api-tester` (exploratory charter)**: the API-surface counterpart to the web triad — the near-end
+  `swe-api-tester` (exploratory charter) round against the running REST or GraphQL API (Rule 16); HTTP/curl-driven,
   never a browser; surfaces `AET-###` (contract / functional / status-code / error-envelope / auth /
   consistency / pagination / performance / GraphQL-schema) findings plus `SG-###` spec-gap proposals;
   saves redacted request/response captures to the plan's `evidence/` folder. Supports the same

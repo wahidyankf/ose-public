@@ -14,7 +14,7 @@ Record the ordinary risk tier. For `lite` and `full`, select exactly these speci
 - `pr-review-security-checker` — run the primary mandatory probe for real secrets, credentials, or
   other values that grant access, using the canonical
   [system-secret boundary](../../../../repo-governance/conventions/security/secrets-and-env-standards/hard-iron-rule-no-secrets-in-committed-files.md).
-- `pr-review-architecture-checker` — review architecture and design decisions made by the plan.
+- `swe-architect` (Lens mode) — review architecture and design decisions made by the plan.
 - `pr-review-logic-checker` — review domain intent and Gherkin acceptance-criteria completeness.
 - `pr-review-docs-checker` — review the plan as the shipping artifact for substantive quality and
   completeness.

@@ -10,7 +10,7 @@ security-sensitive path, then select the specialist set accordingly:
   Handoff in
   [untrusted-input-and-output-contract.md](./untrusted-input-and-output-contract.md)).
 - **Lite** (≤50 lines AND ≤20 files) → the **five highest-yield specialists** for this repo
-  (`pr-review-governance-checker`, `pr-review-architecture-checker`, `pr-review-logic-checker`,
+  (`pr-review-governance-checker`, `swe-architect` in Lens mode, `pr-review-logic-checker`,
   `pr-review-security-checker`, `pr-review-integrity-checker`). `pr-review-types-checker` is
   `full`-tier-only; promotion to `lite` is gated on acceptance-rate data.
 - **Full** (>50 lines OR >20 files OR touches a security-sensitive path — secrets/`.env`, git

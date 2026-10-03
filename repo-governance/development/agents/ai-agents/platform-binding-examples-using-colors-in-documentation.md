@@ -78,7 +78,7 @@ capabilities:
 
 ```yaml
 ---
-name: swe-code-maker
+name: swe-developer
 description: Implements application, library, script, and test code in named projects test-first under the adopted language-neutral and stack standards, reusing what the repository already holds before adding code.
 when_to_use: >-
   Use when [scenario].

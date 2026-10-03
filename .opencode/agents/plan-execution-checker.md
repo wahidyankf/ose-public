@@ -3,6 +3,7 @@ description: Audits finished plan execution in fixed order and returns the termi
 mode: subagent
 permission:
   bash: allow
+  edit: deny
   glob: allow
   grep: allow
   read: allow

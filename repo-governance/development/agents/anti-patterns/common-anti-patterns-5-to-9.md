@@ -150,7 +150,7 @@ tool.md
 
 ```
 docs-tutorial-checker.md
-apps-ayokoding-www-deployer.md
+swe-releaser.md
 plan-execution-checker.md
 readme-maker.md
 ```

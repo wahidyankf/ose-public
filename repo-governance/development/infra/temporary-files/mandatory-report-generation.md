@@ -36,7 +36,7 @@ All checker agents in the following families MUST write audit reports to `local-
 14. **docs-software-engineering-separation-checker** - Software engineering docs separation validation
 15. **repo-workflow-checker** - Workflow documentation quality validation
 16. **specs-checker** - Gherkin/BDD specs directory structural and content validation
-17. **swe-code-checker** - Software code quality validation
+17. **swe-reviewer** - Software code quality validation
 
 **NO EXCEPTIONS**: Checker agents MUST NOT output results in conversation only. All validation findings MUST be written to audit report files.
 

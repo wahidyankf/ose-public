@@ -17,7 +17,7 @@ when_to_use: "Use for a concrete example of these rules applied."
 - Screenshots committed to evidence/ and referenced in delivery.md (Rules 1, 10; Evidence Capture Convention)
 - Deploy-config sweep + live-URL smoke test included (Rule 11)
 - A near-end three-tester round (web-exploratory + web-usability + web-design) runs across ALL locales; every EWT/UWT/DWT defect finding is fixed (ticked) before archival — deferral requires explicit user permission and only when the fix is genuinely impossible (SG-### proposals may be triaged) (Rule 15)
-- For an API change, a near-end api-exploratory-tester round runs against the running endpoint(s); every AET-### defect finding is fixed (ticked) before archival (SG-### proposals may be triaged) (Rule 16)
+- For an API change, a near-end swe-api-tester (exploratory charter) round runs against the running endpoint(s); every AET-### defect finding is fixed (ticked) before archival (SG-### proposals may be triaged) (Rule 16)
 ```
 
 ## FAIL: The incident this convention prevents

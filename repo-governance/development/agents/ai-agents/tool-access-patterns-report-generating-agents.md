@@ -44,10 +44,9 @@ ALL checker agents MUST write their validation/audit reports to their own `local
 15. plan-checker
 16. plan-execution-checker
 17. specs-checker
-18. swe-code-checker
+18. swe-reviewer
 19. ci-checker
-20. swe-ui-checker
-21. harness-checker
+20. harness-checker
 
 > **Harness compatibility (Phase 0 + Phase 1)**: `harness-checker`
 > (green) and `harness-fixer` (yellow) validate both internal

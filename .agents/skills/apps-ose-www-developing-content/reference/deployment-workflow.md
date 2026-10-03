@@ -27,7 +27,7 @@ For immediate deployment outside the scheduled window:
 git push origin main:prod-ose-www --force
 ```
 
-Or use the `apps-ose-www-deployer` agent for a guided deployment.
+Or use the `swe-releaser` (Deploy mode, `ose-www` target) agent for a guided deployment.
 
 ## Why Force Push
 

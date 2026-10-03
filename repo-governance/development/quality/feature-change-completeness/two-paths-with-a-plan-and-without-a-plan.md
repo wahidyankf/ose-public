@@ -7,7 +7,7 @@ when_to_use: "Use when a feature change has a plan doc and you need to know how 
 
 This convention binds **both** ways a behaviour change reaches `apps/`, `libs/`, or `specs/` -- whether or not a planning document mediates it:
 
-1. **Direct change (no plan doc)** -- When application or library code is edited directly, without a plan, the companion `specs/` Gherkin (and the contracts, tests, and documentation named below) MUST be added or updated **in the same commit or PR**. The `test:coverage:behaviour` Nx target and the `swe-code-checker` agent enforce this path.
+1. **Direct change (no plan doc)** -- When application or library code is edited directly, without a plan, the companion `specs/` Gherkin (and the contracts, tests, and documentation named below) MUST be added or updated **in the same commit or PR**. The `test:coverage:behaviour` Nx target and the `swe-reviewer` agent enforce this path.
 
 2. **Planned change (plan doc)** -- When the work is mediated by a plan under `plans/`, the plan files are not themselves implementation artifacts, but any plan whose **scope creates, modifies, or deletes observable behaviour in `apps/`, `libs/`, or `specs/`** MUST carry explicit delivery-checklist steps that create or update the corresponding `specs/` Gherkin `.feature` files and run `test:coverage:behaviour`. The `plan-maker` agent emits these steps; the `plan-checker` agent flags their absence. The specs/Gherkin work is then executed -- and verified by path 1 -- when the plan runs.
 

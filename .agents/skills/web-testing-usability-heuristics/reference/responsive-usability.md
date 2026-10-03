@@ -1,7 +1,7 @@
 # Responsive Usability (Mobile / Tablet / Desktop)
 
 Responsiveness here is judged as **usability at each size**, not merely "does the layout not break"
-(that layout-defect angle is `web-exploratory-tester`'s). At mobile (375, plus 320 reflow), tablet
+(that layout-defect angle belongs to the exploratory charter of `swe-web-tester`). At mobile (375, plus 320 reflow), tablet
 (768), and desktop (1280, plus 1440 when `thorough`), and in each locale, evaluate:
 
 - **Predictable transformation** — when nav collapses to a hamburger or columns restack, can a

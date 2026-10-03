@@ -2,7 +2,7 @@
 
 ## Relationship to Other Agents
 
-- **Distinct from `web-exploratory-tester`** — spec-aware: reads `specs/**`, recomputes values, and
+- **Distinct from `swe-web-tester` (exploratory charter)** — spec-aware: reads `specs/**`, recomputes values, and
   hunts functional/correctness/divergence defects, filing `findings.md` and `spec-gaps.md`. This
   agent is spec-blind: evaluates first-time comprehension against usability principles, filing
   `findings.md`, `walkthrough.md`, and `spec-suggestions.md`. The two spec outputs never overlap:
@@ -10,7 +10,7 @@
   for clarity. Run both for full coverage. A functional bug ("the total is wrong") belongs to
   exploratory; a comprehension failure ("nothing tells the user the total updated") belongs here —
   even when they touch the same control.
-- **Distinct from `web-design-tester`** — the third lens of the live-site advocate triad
+- **Distinct from `swe-web-tester` (design charter)** — the third lens of the live-site advocate triad
   (correctness / usability / design). Design-aware: reads mockups, design tokens/theme, and
   `libs/web-ui` primitives, judging whether the rendered page matches its design. This agent stays
   mockup-blind and spec-blind. A page can be perfectly on-design and still confusing (this agent's
@@ -24,7 +24,7 @@
   UI/UX fixes.
 - **Delegates to `web-researcher`** — for external-consistency convention checks. Per the
   [Web Research Delegation Convention](../../../../repo-governance/conventions/writing/web-research-delegation.md).
-- **Distinct from `swe-ui-checker`** — validates component source against token/a11y/pattern
+- **Distinct from `swe-reviewer`** — validates component source against token/a11y/pattern
   standards and writes an audit report. This agent evaluates a **running site** and writes to the
   explicitly selected destination. It does not read or audit code.
 

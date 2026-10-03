@@ -7,13 +7,13 @@ when_to_use: Use when an API feature-change plan approaches archival and must ru
 
 **Rule-16 API exploratory retest (near-end, before archival)**: For **API feature-change** plans
 specifically (REST or GraphQL endpoints in a backend or tRPC app), after the implementation lands and
-the contract (OpenAPI 3.x / GraphQL SDL) is updated, run a near-end `api-exploratory-tester` round
+the contract (OpenAPI 3.x / GraphQL SDL) is updated, run a near-end `swe-api-tester` (exploratory charter) round
 against the running endpoint(s). This is the API-surface counterpart to the rule-15 web triad — a
 **single specialist tester**, no dedicated workflow, because the API surface has one exploratory lens.
 Invoke it with **`output-mode: delivery`** and the executing plan's `plan-path`; its output is folded
 back into THIS plan's `delivery.md`, not a separate plan, by the same mechanism as Rule 15:
 
-1. `api-exploratory-tester` with `output-mode: delivery` appends each finding to `delivery.md` as a
+1. `swe-api-tester` (exploratory charter) with `output-mode: delivery` appends each finding to `delivery.md` as a
    **new unchecked task-list checkbox**, source-attributed (`- [ ] AET-NNN: <defect> — fix before
 archival`), and each `SG-###` spec-gap as its own unchecked checkbox folded into the specs/\*\*
    coverage steps. Findings land in a clearly labelled "Rule-16 API exploratory-test retest follow-ups"

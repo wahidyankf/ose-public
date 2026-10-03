@@ -98,7 +98,7 @@ fail on any file matching zero configured project globs — reporting the offend
 (glob mismatch), not just a count.
 
 Two design decisions stay open and shape everything else: where the guard lives (a lightweight script
-wired into an existing Nx target versus an enhancement to `ci-checker` or `swe-code-checker`), and
+wired into an existing Nx target versus an enhancement to `ci-checker` or `swe-reviewer`), and
 whether it blocks CI or files a checker report. Whichever home wins, the guard must be validated in
 both directions — it reports zero uncovered files against the current repo, **and** it reports exactly
 the offending file when the pre-fix `unit-fe` glob is synthetically reintroduced. A guard proven only
@@ -125,7 +125,7 @@ Out of scope:
 ## Risks & open questions
 
 - **Where does the guard live?** A new script plus an Nx target, or an enhancement to `ci-checker` or
-  `swe-code-checker`? The two homes imply different failure modes and different maintenance owners.
+  `swe-reviewer`? The two homes imply different failure modes and different maintenance owners.
   (open — this is the decision that unblocks everything else)
 - **CI-blocking or checker-report?** Blocking is the only mode that actually prevents recurrence, but
   a false positive then breaks every push. (open)

@@ -57,7 +57,8 @@ returns file locations, metadata keys, model identifier format, permission schem
 fact's authoritative source and retrieval date. Disagreeing sources come back as a conflict, not a choice.
 
 The checker compares the research with the reference record and the committed bindings. Each difference is a finding
-with its local path and upstream citation.
+with its local path and upstream citation. Whoever acts on a checker report reads its body, never its summary alone: a
+2026-07-20 audit's summary rated a finding HIGH that its body recorded as a false positive.
 
 How the writer repairs drift in the canonical sources, regenerates the adapters, and leaves decisions to people is in
 [Harness Propagation](harness-propagation.md).

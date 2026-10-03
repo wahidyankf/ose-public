@@ -18,7 +18,7 @@ capability on different accounts.
   and nuanced content creation (creative makers, the governance trios).
 - **Execution-grade** (`model: sonnet`): Rule-based validation, applying validated fixes,
   template-driven output, and structured pattern-following (checkers, fixers, structured makers,
-  swe-code-maker).
+  swe-developer).
 - **Fast** (`model: haiku`): Purely mechanical tasks with no reasoning required — URL validation,
   deployment scripts, deterministic file operations (deployers, link checkers, docs-file-manager).
 

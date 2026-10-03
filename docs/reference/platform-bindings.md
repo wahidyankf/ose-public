@@ -22,10 +22,10 @@ The checksum-pinned v0.4 Rhino configuration is authoritative. Canonical content
 `.agents/agents/*.md`, and `.agents/skills/*/SKILL.md`. The current profiles generate only the
 declared routes: Claude receives `CLAUDE.md`, one route `.claude/agents/{name}.md` per canonical
 agent, and one pointer `.claude/skills/{name}/SKILL.md` per canonical skill; Codex receives
-`.codex/agents/` and OpenCode receives `.opencode/agents/` for only the four plan agents their
-profiles' `agents` lists name, and OpenCode reads `.agents/skills/` natively. Each Claude agent route
-carries `tools` from the agent's `capabilities` and `constraints`, `model` and `effort` from its
-`tier`, and its `skills` list; no route carries a color. No other mirror of a canonical skill
+`.codex/agents/` and OpenCode receives `.opencode/agents/` for every canonical agent, and OpenCode
+reads `.agents/skills/` natively. Each Claude agent route
+carries `tools` from the agent's `capabilities`, `constraints`, and `dispatches`, `model` and `effort`
+from its `tier` through the Tier Registry, and its `skills` list; no route carries a color. No other mirror of a canonical skill
 exists. Run `./rhino harness adapters generate` followed by
 `./rhino harness adapters validate`; do not hand-edit those generated routes.
 
@@ -41,11 +41,17 @@ one starts with a registry entry, not a row here.
 
 **Verified 2026-08-26.**
 
-| Platform         | Reads root `AGENTS.md` natively?           | Tool-specific instruction surface                                           | Project MCP config                         | Custom-agent surface                                                                                    | Skills surface                                    | Status                     |
-| ---------------- | ------------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------------------- |
-| Claude Code      | No — reads `CLAUDE.md` (shim `@AGENTS.md`) | `CLAUDE.md`, `.claude/`                                                     | `.mcp.json`                                | `.claude/agents/*.md`                                                                                   | `.agents/skills/*/SKILL.md`                       | Active                     |
-| OpenCode         | Yes                                        | `.opencode/agents/` (auto-synced); reads `.agents/skills/` natively         | `opencode.json`                            | `.opencode/agents/*.md`                                                                                 | reads `.agents/skills/` **and** `.agents/skills/` | Active                     |
-| OpenAI Codex CLI | Yes (since Apr 2025)                       | `AGENTS.md`, `AGENTS.override.md` (overrides), `.codex/config.toml`[^trust] | `.codex/config.toml` `[mcp_servers]`[^mcp] | `.codex/agents/<name>.toml` standalone files **and** `[agents.<name>]` tables in `config.toml`[^agents] | `.agents/skills/`[^skills]                        | Partial (`.codex/` exists) |
+| Platform         | Reads root `AGENTS.md` natively?           | Tool-specific instruction surface                                           | Project MCP config                         | Custom-agent surface                                                                                    | Skills surface                                    | Status                                                                                            |
+| ---------------- | ------------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Claude Code      | No — reads `CLAUDE.md` (shim `@AGENTS.md`) | `CLAUDE.md`, `.claude/`                                                     | `.mcp.json`                                | `.claude/agents/*.md`                                                                                   | `.agents/skills/*/SKILL.md`                       | Active                                                                                            |
+| OpenCode         | Yes                                        | `.opencode/agents/` (auto-synced); reads `.agents/skills/` natively         | `opencode.json`                            | `.opencode/agents/*.md`                                                                                 | reads `.agents/skills/` **and** `.agents/skills/` | Active                                                                                            |
+| OpenAI Codex CLI | Yes (since Apr 2025)                       | `AGENTS.md`, `AGENTS.override.md` (overrides), `.codex/config.toml`[^trust] | `.codex/config.toml` `[mcp_servers]`[^mcp] | `.codex/agents/<name>.toml` standalone files **and** `[agents.<name>]` tables in `config.toml`[^agents] | `.agents/skills/`[^skills]                        | Partial (custom agents do not spawn by name from `codex exec`, 0.160.0, 2026-10-03)[^codex-spawn] |
+
+[^codex-spawn]:
+    The project `.codex/config.toml`, root `AGENTS.md`, and `.agents/skills/` load. On 2026-10-03, with codex-cli
+    0.160.0, asking `codex exec` to spawn a custom agent by name returned a success message while the agent never
+    ran (`--json` showed only a `wait` call with no receiver), in two attempts; so a coordinating agent such as
+    `swe-orchestrator` runs as the main thread there.
 
 [^mcp]:
     The MCP key is `mcp_servers` in **snake_case**. The camelCase `mcpServers` form other harnesses
@@ -195,7 +201,8 @@ Every generated-tier harness in `repo-config.yml` receives its binding mechanica
   Codex counterpart (`inherit`, a pinned vendor ID) omits the key and raises a conversion warning
   rather than guessing.
 - **`.codex/config.toml`** — registers, by hand, one `[agents.<name>]` table for each agent file
-  the emitter generates under `.codex/agents/` (today the four plan agents), beside the
+  the emitter generates under `.codex/agents/` (today the four plan agents; every other generated file
+  loads standalone), beside the
   `ci-monitor-subagent` table and the `mcp_servers` and `features` settings. The pinned emitter
   writes none of it; see
   [Partial ownership](../../repo-governance/conventions/structure/multi-harness-binding/ownership-classes.md#partial-ownership).

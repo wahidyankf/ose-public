@@ -20,6 +20,19 @@ repository or stack context, chat, or tribal knowledge.
 - Separate RED, GREEN, and REFACTOR checkboxes for every code behaviour slice, each with its exact
   test/source path, symbol, copyable command, and expected failure/pass state.
 
+## Deterministic and Executable
+
+**Deterministic proof.** Every checklist item's proof is a deterministic check: a command with its expected exit status
+or output, or a file whose presence or content a command tests. "Holds on read", "looks right", and "satisfy review" are
+not proofs.
+
+**Execution-tier executable.** An agent at the `execution` tier can carry out every item from the plan's own documents,
+without consulting other context or making a policy choice. An item labelled `[HUMAN]` for a reason
+[Executor Tagging](executor-tagging-tags-and-bias.md) permits is the only exception.
+
+A plan item is a goal an executor works toward, and only a check that passes or fails the same way for everyone can say
+the goal is met.
+
 ## Counted Claims Carry the Command That Produced Them
 
 A plan that says "only one line names this path", "just three call sites", or any other bounded

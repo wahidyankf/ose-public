@@ -119,7 +119,7 @@ procedure, and why force-push is safe for deployment branches.
 
 **Related Skills**: `apps-ayokoding-www-developing-content`, `docs-creating-accessible-diagrams`
 
-**Related Agents**: `apps-ose-www-content-maker`, `content-checker`, `apps-ose-www-deployer`
+**Related Agents**: `apps-ose-www-content-maker`, `content-checker`, `swe-releaser` (Deploy mode, `ose-www` target)
 
 **External Resources**: [Next.js 16 Documentation](https://nextjs.org/docs)
 

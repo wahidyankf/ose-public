@@ -62,8 +62,8 @@ See [Content Validation Checklist and Common Mistakes](./reference/validation-ch
 
 **Related Agents**:
 
-- `apps-organiclever-app-web-deployer` - Deploys organiclever-www to production
-- `swe-code-maker` - TypeScript/Next.js development and Playwright E2E tests
+- `swe-releaser` (Deploy mode, `organiclever-www` target) - Deploys organiclever-www to production
+- `swe-developer` - TypeScript/Next.js development and Playwright E2E tests
 
 ---
 

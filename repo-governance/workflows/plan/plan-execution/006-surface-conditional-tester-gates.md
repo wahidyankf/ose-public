@@ -24,6 +24,6 @@ and again as merge precondition (e) in the
 
 **The three UI checks are complementary, never substitutes**: `plan-checker` **Step 5k** gates the
 UI **design funnel** in `prd.md` (pre-build); `quality/ui-web-quality-gate.md` judges the **running UI**
-against its specifications via `ui-web-checker` / `ui-web-fixer`; and
+against its specifications via `swe-web-tester` (spec charter) / `swe-developer` (Apply Findings mode); and
 `quality/ux-review-fix-planning.md` explores the **running UI** via the EWT/UWT/DWT triad in a real
 browser. Passing one never discharges another.

@@ -1,11 +1,11 @@
 ---
-description: "Rule 16: the near-end api-exploratory-tester retest before archival."
+description: "Rule 16: the near-end swe-api-tester (exploratory charter) retest before archival."
 when_to_use: "Use when an API feature-change plan is nearing archival."
 ---
 
 # The Sixteen Rules (16, part 1)
 
-1. **(Verification) An API feature-change plan MUST run a near-end `api-exploratory-tester` retest of
+1. **(Verification) An API feature-change plan MUST run a near-end `swe-api-tester` (exploratory charter) retest of
    the running API and fix its findings before archival.** Gap: contract-codegen, unit, and BE E2E
    gates assert the API does what its fixed tests say — they do not hunt for contract-conformance,
    status-code, error-envelope, payload-boundary, auth/authz, pagination, idempotency, or (for
@@ -14,7 +14,7 @@ when_to_use: "Use when an API feature-change plan is nearing archival."
    client and integrator consumers, so the same near-end live-system retest discipline as Rule 15
    applies — with a **single specialist tester instead of a triad**, because the API surface has one
    exploratory lens. Apply: after the API is implemented and its contract (OpenAPI 3.x spec or GraphQL
-   SDL) is updated, run `api-exploratory-tester` against the plan's running endpoint(s) by invoking it
+   SDL) is updated, run `swe-api-tester` (exploratory charter) against the plan's running endpoint(s) by invoking it
    with **`output-mode: delivery`** and the executing plan's `plan-path`. **Record each resulting
    finding in `delivery.md` as a new unchecked task-list checkbox**, source-attributed
    (`- [ ] AET-NNN: <defect> — fix before archival`), in a labelled "Rule-16 API exploratory-test

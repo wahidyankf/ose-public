@@ -1,12 +1,12 @@
 ---
 name: web-testing-usability-heuristics
-description: Spec-blind heuristic usability evaluation methodology for web-usability-tester — Nielsen's 10 heuristics, cognitive walkthrough, first-click/information-scent analysis, the usability dimensions checklist, four mandatory systematic probes, URL naturalness, responsive usability, finding anatomy, and the three output modes (plan/delivery/local-tmp).
-when_to_use: When performing spec-blind, first-time-user usability evaluation of a live website, or extending/auditing the web-usability-tester agent's methodology.
+description: Spec-blind heuristic usability evaluation methodology for swe-usability-tester — Nielsen's 10 heuristics, cognitive walkthrough, first-click/information-scent analysis, the usability dimensions checklist, four mandatory systematic probes, URL naturalness, responsive usability, finding anatomy, and the three output modes (plan/delivery/local-tmp).
+when_to_use: When performing spec-blind, first-time-user usability evaluation of a live website, or extending/auditing the swe-usability-tester agent's methodology.
 ---
 
 # Web Usability Testing — Heuristic Evaluation Methodology
 
-Full methodology for `web-usability-tester`: how to evaluate a live site's first-time comprehension
+Full methodology for `swe-usability-tester`: how to evaluate a live site's first-time comprehension
 against established usability science, without reading specs, source, or mockups.
 
 ## Reference Modules
@@ -14,7 +14,7 @@ against established usability science, without reading specs, source, or mockups
 - `reference/01-why-this-agent-exists-and-inputs.md` — why this agent exists, invocation inputs.
 - `reference/02-spec-blind-discipline.md` — the Spec-Blind Discipline (hard rule).
 - `reference/03-relationships-and-nondestructive-constraint.md` — relationship to
-  `web-exploratory-tester`/`web-design-tester`/`swe-ui-checker`, the Non-Destructive Constraint.
+  `swe-web-tester` (exploratory charter)/`swe-web-tester` (design charter)/`swe-reviewer`, the Non-Destructive Constraint.
 - `reference/04-heuristic-evaluation-and-walkthrough.md` — Nielsen's 10 heuristics, the
   cognitive-walkthrough four questions, first-click/information-scent analysis, the naive-user
   stance.
@@ -49,7 +49,7 @@ these failure classes once the evaluator has already explored the page.
 
 ## Related
 
-`web-exploratory-tester` (the spec-aware functional/correctness sibling), `web-design-tester` (the
+`swe-web-tester` (exploratory charter) (the spec-aware functional/correctness sibling), `swe-web-tester` (design charter) (the
 design-aware third lens of the live-site advocate triad), `plan-creating-project-plans` (explicit
 plan-mode structure), `plan-writing-gherkin-criteria` (Gherkin ACs and `spec-suggestions.md` scenarios),
 `docs-applying-content-quality`.

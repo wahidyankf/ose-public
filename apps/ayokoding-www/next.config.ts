@@ -2,6 +2,7 @@ import "./src/env-loader.ts";
 import "./src/env.ts";
 import type { NextConfig } from "next";
 import path from "node:path";
+import { buildWorkerOptions } from "./src/build-workers";
 import { learnReorgRedirects } from "./src/redirects/learn-reorg";
 import { courseRehomeRedirects } from "./src/redirects/course-rehome";
 import { contentNamespaceRedirects } from "./src/redirects/content-namespace";
@@ -28,6 +29,9 @@ const nextConfig: NextConfig = {
   // config preserves static redirects without restoring request-time proxying.
   experimental: {
     caseSensitiveRoutes: true,
+    // Next treats a non-default `experimental.cpus` as a user override of its worker count, so
+    // the cap applies to local builds only; CI and Vercel keep Next's default.
+    ...buildWorkerOptions(process.env),
   },
   // Legacy markdown pages can exceed Next's 60s default during the full SSG
   // fan-out; retain static generation instead of retrying them as failures.

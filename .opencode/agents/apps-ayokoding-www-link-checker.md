@@ -7,6 +7,7 @@ permission:
   glob: allow
   grep: allow
   read: allow
+  task: deny
   webfetch: allow
   websearch: allow
 ---

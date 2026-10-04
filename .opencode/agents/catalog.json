@@ -165,7 +165,7 @@
     {
       "id": "agent/pr-review-checker",
       "path": ".agents/agents/pr-review-checker.md",
-      "digest": "156cd7c96b8ed9b3e65b67c8bc0af0e16fddbbbe52d5bfb3222a156c33423a53"
+      "digest": "518a5c847e361ed54c39e2dae6c3a751b1118fe1b76351f6b1ead3ac20a4a7be"
     },
     {
       "id": "agent/pr-review-docs-checker",
@@ -295,7 +295,7 @@
     {
       "id": "agent/swe-architect",
       "path": ".agents/agents/swe-architect.md",
-      "digest": "111ff85d8bfa74b640aba7fcd777cdcba62b4646de61ffb03d3787ae7d1c2613"
+      "digest": "46efa2acad493cc6caa646c6cef570002182b31756841848e8585db499f03876"
     },
     {
       "id": "agent/swe-debugger",
@@ -305,7 +305,7 @@
     {
       "id": "agent/swe-developer",
       "path": ".agents/agents/swe-developer.md",
-      "digest": "c20864f3355623eb99190eb988439e4127f21326a3eaf41bfe6aa6516e6ec2f9"
+      "digest": "a0c38bae585185fdf175948ef39e7a23cd13501196471760e8faa55c7234e4e3"
     },
     {
       "id": "agent/swe-orchestrator",
@@ -320,7 +320,7 @@
     {
       "id": "agent/swe-reviewer",
       "path": ".agents/agents/swe-reviewer.md",
-      "digest": "b9e44a053e4deb8525ce6340de552db76a5af09906fe4eb1c72dde12617e91ef"
+      "digest": "1fd615207d43c332d2cecf31ed9ecdf1e797794698bbf628ff97b17321351c9c"
     },
     {
       "id": "agent/swe-usability-tester",
@@ -330,7 +330,7 @@
     {
       "id": "agent/swe-web-tester",
       "path": ".agents/agents/swe-web-tester.md",
-      "digest": "5ea40ec6acce9142b78c6d026b6421ea8632726910f2d614f728799708cc6f4f"
+      "digest": "c89013e208c22fd6b9315399f9093fcc310710a1d2bd2b160e39befe688315d0"
     },
     {
       "id": "agent/tutorial-annotated-concept-checker",

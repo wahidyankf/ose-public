@@ -38,11 +38,12 @@ judges source, never a running render or a live service.
 
 ## Code
 
-Six checks: placement and failure handling, clarity and cost, stack rules, test design (doubles per
-[Test Doubles](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/testing/test-doubles.md)),
-test-first evidence, and regression tests.
+Six checks: placement and failure handling, clarity and cost, stack rules, test design, test-first evidence, and
+regression tests.
 
-The rest of this section is in [SWE Reviewer Code Checks](../../repo-governance/development/agents/swe-agent-procedures/swe-reviewer-code-checks.md#code); read it in full before acting.
+The rest of this section is in
+[SWE Reviewer Code Checks](../../repo-governance/development/agents/swe-agent-procedures/swe-reviewer-code-checks.md#code);
+read it in full before acting.
 
 ## Interface
 

@@ -177,6 +177,9 @@ evidence under `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase
       PR field, delivery status, cleanup status, and disposition field.
 - [ ] [AI] Read root/nested instructions, resolved Init 05 as-built plan/docs, C#/TypeScript/UI/E2E/
       accessibility/TDD/BDD/spec rules, worktree workflow, and existing identity/session/key policies.
+      acceptance:
+      `grep -c 'ose-id-init-05' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-0-baseline.md`
+      prints at least `1`.
 - [ ] [AI] Initialize tools via `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
       `rtk npm run doctor` (read-only; only if it reports drift, run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
@@ -185,6 +188,9 @@ evidence under `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase
 - [ ] [AI] Inventory exact backend/web/test/spec paths, identity entities, migrations, data protection,
       session/recent-auth policies, OIDC claims policy, UI components/assets/locales, browser/E2E versions,
       virtual-authenticator support, ports, env prefixes, and generated ownership. Freeze file ledger.
+      acceptance:
+      `grep -c 'apps/ose-id-be' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-0-path-inventory.md`
+      prints at least `1`.
 - [ ] [AI] Verify pinned local ports are unclaimed with
       `rtk lsof -nP -iTCP:3500 -iTCP:8501 -iTCP:5438 -iTCP:1026 -iTCP:8026 -sTCP:LISTEN`.
       The required result is no listener. If any is occupied, stop the owning local process or amend
@@ -194,13 +200,19 @@ evidence under `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase
 - [ ] [AI] Verify current .NET 10 passkey/Identity/TOTP APIs, WebAuthn Level 3 guidance, supported browser
       automation, dependency versions/licenses, and repository MIT inheritance. Record exact confidence
       and reject stale/unsupported API assumptions.
+      acceptance: `grep -li 'confidence' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-0-*.md`
+      prints at least one path.
 - [ ] [AI] Run complete predecessor build/typecheck/lint/Unit/Integration/backend E2E/web E2E/behavior
       coverage/spec/Markdown/boundary gates through HIPPO. Fix baseline defects at root cause.
+      acceptance:
+      `grep -c 'test:coverage:behaviour' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-0-baseline.md`
+      prints at least `1`.
 
 ### Phase 0 Gate
 
 - [ ] [AI] Worktree identity/inventory and frozen ledger exist; predecessor behavior is green; current
       authenticator/browser APIs and support matrix are recorded; all blockers are closed.
+      acceptance: `test -f plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-0-baseline.md` exits `0`.
 
 > **Pause Safety:** repository behavior is unchanged with a trusted baseline. Safe to stop. To resume,
 > rerun the exact Init 05 quick-test commands recorded in evidence.
@@ -264,10 +276,15 @@ exist before code.
       its command/target records before the first Plan 06 scenario, binding, or test. Inspect the isolated
       RED ledger: only named absent Plan 06 behavior may be nonzero; a baseline, target/configuration, or
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
+      acceptance: `grep -l 'test:quick' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-1-*.md`
+      prints at least one path.
 - [ ] [AI] Every AC, threat, state transition, browser/platform boundary, locale/breakpoint, and manual
       assertion maps to Unit plus applicable Integration/E2E proof; exemptions are explicit/indexed/
       static-valid; at least 99% Unit line coverage for authored production code is enforced with only
       canonical exclusions; no social/deployment scope entered.
+      acceptance:
+      `grep -c 'ID06-AUDIT-001' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-1-adapter-map.md`
+      prints at least `1`.
 
 > **Pause Safety:** complete reviewable contracts exist while factor routes remain inert. Safe to stop.
 > To resume, rerun the recorded Phase 1 specs/static-coverage command.
@@ -283,47 +300,75 @@ before public routes are enabled.
 
 ### AC-06-01/02/07/09 — Passkey options, verification, ownership, replay, and audited cleanup
 
-- [ ] [AI] **RED:** add backend Unit/Integration cases in discovered `ose-id-be` test paths for register/
-      assert options, challenge binding/expiry/atomic use, RP/origin/type/UV/algorithm/signature/owner,
+- [ ] [AI] Delegate to `swe-developer`: **RED:** add backend Unit/Integration cases in discovered `ose-id-be` test paths
+      for register/ assert options, challenge binding/expiry/atomic use, RP/origin/type/UV/algorithm/signature/owner,
       multiple credentials, labels, duplicate IDs, counter guidance, cancellation, and cross-instance
       replay, plus compiled-SQL/projection/parameter/timeout/cancellation and query-count/row-bound
       contracts. Save `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-2-passkey-red.txt` showing missing behavior and unsafe query shape.
-- [ ] [AI] **GREEN:** implement a narrow passkey service using current supported ASP.NET/WebAuthn
-      primitives, forward migrations, and SqlKata/Npgsql shared-challenge and public-credential
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement a narrow passkey service using current supported
+      ASP.NET/WebAuthn primitives, forward migrations, and SqlKata/Npgsql shared-challenge and public-credential
       repositories under the PostgreSQL Persistence Contract. Acceptance: positive ceremonies pass,
       compiled SQL uses bounded explicit projections/parameters/timeouts/cancellation, and every negative
       fault creates no session.
-- [ ] [AI] **REFACTOR:** isolate framework adapters from domain policy, centralize challenge consumption/
-      redaction, sanitize labels, and rerun migration, Unit, Integration, concurrency, and predecessor tests.
+      acceptance:
+      `grep -c 'GREEN.*passkey' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-2-authenticators.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** isolate framework adapters from domain policy, centralize
+      challenge consumption/ redaction, sanitize labels, and rerun migration, Unit, Integration, concurrency, and
+      predecessor tests.
+      acceptance:
+      `grep -c 'REFACTOR.*passkey' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-2-authenticators.md`
+      prints at least `1`.
 
 - [ ] [AI] **AC-06-09 audit gate:** Unit snapshots prove explicit tombstone predicates and actor/time
       stamping; Integration inventories all authenticator tables' six columns, constraints, guards,
       `ON DELETE RESTRICT` FKs, grants, and executes a rejected real `DELETE`; built E2E soft-deletes a
       terminal challenge, destroys usable verifier/payload material, and retains safe audit attribution.
       No layer exemption is permitted.
+      acceptance:
+      `grep -rl 'ON DELETE RESTRICT' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-2-persistence/`
+      prints at least one path.
 
 ### AC-06-03/04 — TOTP enrollment and recovery-code generations
 
-- [ ] [AI] **RED:** add tests for pending→confirmed TOTP, abandoned/restarted setup, configured skew,
-      invalid/replayed/rate-limited codes, recovery generation/show-once/verifier storage/atomic use,
+- [ ] [AI] Delegate to `swe-developer`: **RED:** add tests for pending→confirmed TOTP, abandoned/restarted setup,
+      configured skew, invalid/replayed/rate-limited codes, recovery generation/show-once/verifier storage/atomic use,
       regeneration, old-set denial, concurrent consumption, compiled-SQL snapshots, and bounded query
       counts/rows. Save expected missing behavior.
-- [ ] [AI] **GREEN:** implement protected TOTP factor service and recovery-code generator/verifier with
-      SqlKata/Npgsql stores; activation requires current-code proof, plaintext returns once, and an
-      explicit transaction atomically replaces a generation. Acceptance: raw secret/code never reaches
+      acceptance:
+      `grep -c 'RED.*TOTP' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-2-authenticators.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement protected TOTP factor service and recovery-code
+      generator/verifier with SqlKata/Npgsql stores; activation requires current-code proof, plaintext returns once, and
+      an explicit transaction atomically replaces a generation. Acceptance: raw secret/code never reaches
       logs/audit/database evidence and no Identity/EF persistence path exists.
-- [ ] [AI] **REFACTOR:** share rate-limit/recent-auth/audit primitives without merging authenticator
-      semantics; rerun focused plus full backend regression and migration tests.
+      acceptance:
+      `grep -c 'GREEN.*TOTP' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-2-authenticators.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** share rate-limit/recent-auth/audit primitives without merging
+      authenticator semantics; rerun focused plus full backend regression and migration tests.
+      acceptance:
+      `grep -c 'REFACTOR.*TOTP' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-2-authenticators.md`
+      prints at least `1`.
 
 ### AC-06-05/06 — Last-path, recent-auth, session, and OIDC evidence
 
-- [ ] [AI] **RED:** add table/concurrency tests for password/passkey/TOTP/recovery combinations, stale
-      auth, concurrent removals, security-stamp/session/grant consequences, completed-versus-requested
-      methods, and forbidden credential claims.
-- [ ] [AI] **GREEN:** implement transactional safe-access-path policy, recent-auth transactions, session/
-      grant consequences, and allowlisted actual `amr`/`auth_time` projection.
-- [ ] [AI] **REFACTOR:** keep credential policy centralized and independent of personal/company context;
-      rerun all identity, authorization, claims, and multi-company regression targets.
+- [ ] [AI] Delegate to `swe-developer`: **RED:** add table/concurrency tests for password/passkey/TOTP/recovery
+      combinations, stale auth, concurrent removals, security-stamp/session/grant consequences,
+      completed-versus-requested methods, and forbidden credential claims.
+      acceptance:
+      `grep -c 'RED.*policy' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-2-authenticators.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement transactional safe-access-path policy, recent-auth
+      transactions, session/ grant consequences, and allowlisted actual `amr`/`auth_time` projection.
+      acceptance:
+      `grep -c 'GREEN.*policy' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-2-authenticators.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** keep credential policy centralized and independent of
+      personal/company context; rerun all identity, authorization, claims, and multi-company regression targets.
+      acceptance:
+      `grep -c 'REFACTOR.*policy' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-2-authenticators.md`
+      prints at least `1`.
 
 ### Phase 2 Gate
 
@@ -345,40 +390,69 @@ before public routes are enabled.
 
 ### AC-06-01/02/08 — Passkey sign-in and management
 
-- [ ] [AI] **RED:** add component/web E2E cases in `ose-id-web`/`ose-id-web-e2e` for explicit passkey
-      action, register/name/list/remove, multiple keys, recent auth, platform success/cancel/unsupported,
-      wrong ceremony outcomes, email fallback, focus/status, and each locale/breakpoint. Save red output.
-- [ ] [AI] **GREEN:** implement passkey sign-in and method cards through server-only backend calls and
-      browser WebAuthn invocation. Acceptance: platform data is serialized only as required by WebAuthn,
-      and email fallback always remains reachable.
-- [ ] [AI] **REFACTOR:** centralize ceremony presentation and safe problem mapping, retain clear native
-      prompt boundaries, and rerun component/story/a11y/full-stack regressions.
+- [ ] [AI] Delegate to `swe-developer`: **RED:** add component/web E2E cases in `ose-id-web`/`ose-id-web-e2e` for
+      explicit passkey action, register/name/list/remove, multiple keys, recent auth, platform
+      success/cancel/unsupported, wrong ceremony outcomes, email fallback, focus/status, and each locale/breakpoint.
+      Save red output.
+      acceptance:
+      `grep -c 'RED.*passkey' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-journeys.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement passkey sign-in and method cards through server-only
+      backend calls and browser WebAuthn invocation. Acceptance: platform data is serialized only as required by
+      WebAuthn, and email fallback always remains reachable.
+      acceptance:
+      `grep -c 'GREEN.*passkey' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-journeys.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** centralize ceremony presentation and safe problem mapping, retain
+      clear native prompt boundaries, and rerun component/story/a11y/full-stack regressions.
+      acceptance:
+      `grep -c 'REFACTOR.*passkey' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-journeys.md`
+      prints at least `1`.
 
 ### AC-06-03/04/05/08 — TOTP and recovery experience
 
-- [ ] [AI] **RED:** add UI/E2E cases for QR plus manual/copy path, current-code confirmation, abandoned
-      setup, code paste/autocomplete, recovery show-once/copy/download/confirmation, regenerate/remove,
-      last-path refusal, stale auth, focus/live status, zoom/text spacing, and secret-leak inspection.
-- [ ] [AI] **GREEN:** implement selected security method cards and accessible TOTP/recovery wizards using
-      existing Init 05 components; ensure one-time plaintext never re-enters RSC, URL, analytics, trace,
+- [ ] [AI] Delegate to `swe-developer`: **RED:** add UI/E2E cases for QR plus manual/copy path, current-code
+      confirmation, abandoned setup, code paste/autocomplete, recovery show-once/copy/download/confirmation,
+      regenerate/remove, last-path refusal, stale auth, focus/live status, zoom/text spacing, and secret-leak
+      inspection.
+      acceptance: `grep -c 'RED.*TOTP' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-journeys.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement selected security method cards and accessible TOTP/recovery
+      wizards using existing Init 05 components; ensure one-time plaintext never re-enters RSC, URL, analytics, trace,
       screenshot, log, or subsequent render.
-- [ ] [AI] **REFACTOR:** simplify form/dialog state without hiding lifecycle/security steps; rerun backend
-      contract, component, story, a11y, and built-process E2E suites.
+      acceptance: `grep -c 'GREEN.*TOTP' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-journeys.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** simplify form/dialog state without hiding lifecycle/security
+      steps; rerun backend contract, component, story, a11y, and built-process E2E suites.
+      acceptance:
+      `grep -c 'REFACTOR.*TOTP' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-journeys.md`
+      prints at least `1`.
 
 ### AC-06-06/07 — Step-up and no-affinity
 
-- [ ] [AI] **RED:** start a challenge on backend/web A, stop A, complete on B, race a replay, then exercise
-      password→TOTP step-up through OIDC; confirm missing shared/policy integration fails.
-- [ ] [AI] **GREEN:** route all challenge/factor/session state through shared stores and derive OIDC
-      evidence from completed factors. Acceptance: B succeeds once, replay fails, consent waits for
+- [ ] [AI] Delegate to `swe-developer`: **RED:** start a challenge on backend/web A, stop A, complete on B, race a
+      replay, then exercise password→TOTP step-up through OIDC; confirm missing shared/policy integration fails.
+      acceptance:
+      `grep -c 'RED.*step-up' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-journeys.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** route all challenge/factor/session state through shared stores and
+      derive OIDC evidence from completed factors. Acceptance: B succeeds once, replay fails, consent waits for
       required step-up, and no affinity exists.
-- [ ] [AI] **REFACTOR:** remove mutable singleton/temp-file/cache authority and rerun restart, concurrency,
-      OIDC, personal/company, and ordinary email flows.
+      acceptance:
+      `grep -c 'GREEN.*step-up' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-journeys.md`
+      prints at least `1`.
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** remove mutable singleton/temp-file/cache authority and rerun
+      restart, concurrency, OIDC, personal/company, and ordinary email flows.
+      acceptance:
+      `grep -c 'REFACTOR.*step-up' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-journeys.md`
+      prints at least `1`.
 
 ### Manual UI and API Verification
 
 - [ ] [AI] In terminal A start the exact built stack and retain its HIPPO service handle:
       `OSE_ID_WEB_PORT=3500 OSE_ID_BE_PORT=8501 OSE_ID_POSTGRES_PORT=5438 OSE_ID_MAILPIT_SMTP_PORT=1026 OSE_ID_MAILPIT_UI_PORT=8026 rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:serve-local`.
+      acceptance: `rtk lsof -nP -iTCP:3500 -iTCP:8501 -iTCP:5438 -iTCP:1026 -iTCP:8026 -sTCP:LISTEN`
+      prints a LISTEN row for each of the five pinned ports.
 - [ ] [AI] Seed isolated authenticator state with
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:seed-manual -- --profile=passkeys-mfa --output=local-tmp/ose-id-init-06/seed.env --requests=local-tmp/ose-id-init-06/requests`.
       The committed fixture must create separate one-use backend and BFF sessions, recent-auth proofs,
@@ -494,6 +568,9 @@ successful one-time mutation blocks Phase 3 and follows cleanup.
 - [ ] [AI] Record the sanitized outcome for every backend, page, BFF, and protocol operation pair above
       in `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-api-contract.md`; the root coordinator owns disposition and invokes cleanup
       on the first mismatch.
+      acceptance:
+      `grep -c 'token-update' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-api-contract.md`
+      prints at least `1`.
 
 - [ ] [AI] Use synthetic user `person.personal@example.test`, password
       `Correct-Horse-Battery-9!`, passkey label `Local Laptop`, seeded test TOTP `123456`, recovery code
@@ -502,6 +579,9 @@ successful one-time mutation blocks Phase 3 and follows cleanup.
       `browser_fill_form`, and `browser_click`, with a new `browser_snapshot` after every transition.
       Cover passkey sign-in/add/cancel/unsupported/success/remove, TOTP QR/manual/confirm/error, recovery
       display/copy/download/confirm/regenerate/use, final-path refusal, step-up, loading, and failure.
+      acceptance:
+      `grep -c 'navigate' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-browser-api-runbook.md`
+      prints at least `1`.
 - [ ] [AI] At each terminal state run `browser_console_messages`, `browser_network_requests`, and
       `browser_evaluate` to inspect local storage, session storage, IndexedDB names, URL/history, and
       readable cookies. Expect no credential private material, TOTP seed, recovery code, token, code,
@@ -523,6 +603,8 @@ successful one-time mutation blocks Phase 3 and follows cleanup.
 - [ ] [AI] AC-06-01 through AC-06-09 pass at all applicable layers; no authenticator/recovery secret is
       in evidence; `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-persistence/` proves transactional challenge consumption across
       instances without N+1/unbounded queries; the feature gate can be removed while production remains disabled.
+      acceptance: `grep -c 'AC-06-09' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-3-journeys.md`
+      prints at least `1`.
 
 > **Pause Safety:** complete local passkey/MFA behavior works with email fallback; no social provider or
 > deployment exists. Safe to stop. To resume, rerun the recorded full-stack E2E target through HIPPO.
@@ -538,14 +620,22 @@ delivery branch without merge or archival yet.
 
 - [ ] [AI] Remove the temporary feature gate and dead branches only after enabled/disabled/startup tests
       prove complete local behavior and production fail-closed state. Rollback is delivery-unit revert.
+      acceptance: `rtk npm run check:pre-push` exits `0`.
 - [ ] [AI] Reconcile architecture, API/UI/spec/app/local-run docs, MIT source inheritance, dependency
       notices, recovery behavior, and production non-readiness. Do not add deployment instructions.
+      acceptance: `rtk npm run check:pre-push` exits `0`.
 - [ ] [AI] If any project/test/network/port/rule/enforcement surface changes, execute the full repository-
       local rules-propagation workflow and save intake, manifest, owner gates, final status, and sibling
       obligation.
+      acceptance:
+      `grep -ci 'propagation' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-quality-gates.md`
+      prints at least `1`.
 - [ ] [AI] Run mandatory semantic review under the BDD contract plus independent security review of
       WebAuthn, MFA, recovery, sessions, claims, and secret handling. Fix every validated finding with a
       regression-first cycle; stop/reconsider the chosen library if high/medium risk cannot close.
+      acceptance:
+      `grep -ci 'security review' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-quality-gates.md`
+      prints at least `1`.
 
 ### Local Quality Gates Before Push
 
@@ -556,8 +646,12 @@ delivery branch without merge or archival yet.
       `plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-quality-gates.md`; any failure reopens its owning implementation packet.
 - [ ] [AI] **Important:** fix every failure at root cause, including preexisting failures; never retry,
       skip, narrow, loosen, or quarantine a gate.
+      acceptance: `rtk npm run check:pre-push` exits `0`.
 - [ ] [AI] Reconcile final diff, frozen ledger, generated ownership, evidence, licenses, assets, and plan
       scope. Verify no provider/deployment/production-secret file exists.
+      acceptance:
+      `grep -ci 'ledger' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-quality-gates.md`
+      prints at least `1`.
 - [ ] [AI] Before every authorized push run the canonical registry exactly:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`.
 
@@ -566,9 +660,14 @@ delivery branch without merge or archival yet.
 - [ ] [AI] Repeat manual UI/API/security evidence on the final build across all supported locales and
       375/768/1280 px. Run the mandatory API, UI, and three live-web gates below; smoke evidence does
       not replace their bounded discovery/fix/verification contracts.
+      acceptance:
+      `grep -ci 'final build' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-quality-gates.md`
+      prints at least `1`.
 - [ ] [AI] Trace every AC, threat, state, file, test, screenshot, leak assertion, recovery/rollback rule,
       and delivery promise to as-built evidence; reopen the earliest incomplete packet. The formal
       preliminary audit occurs only after Knowledge Capture in Phase 6.
+      acceptance: `grep -ci 'trace' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-quality-gates.md`
+      prints at least `1`.
 
 ### Mandatory API Quality Gate and Rule-16 Session
 
@@ -578,12 +677,17 @@ local gates and before live-web testing.
 - [ ] [AI] Keep the final Phase 3 stack running at web `http://127.0.0.1:3500`, backend
       `http://127.0.0.1:8501`, PostgreSQL `127.0.0.1:5438`, Mailpit SMTP `127.0.0.1:1026`, and Mailpit
       UI `http://127.0.0.1:8026`; reset to synthetic passkey/TOTP/recovery fixtures.
+      acceptance: `rtk lsof -nP -iTCP:3500 -iTCP:8501 -iTCP:5438 -iTCP:1026 -iTCP:8026 -sTCP:LISTEN`
+      prints a LISTEN row for each of the five pinned ports.
 - [ ] [AI] Invoke
       [`swe-api-tester`](../../../.agents/agents/swe-api-tester.md) (exploratory charter) for one
       backend discovery run with `quality-gate-phase: discovery`, `output-mode: delivery`, this plan
       path, `mode: strict`, and `max-concurrency: 3`. Pass base `http://127.0.0.1:8501`, every backend
       operation in `tech-docs/006-api-contract-delta.md`, machine contract
       `specs/apps/ose/id-be/contracts/openapi.yaml`, and mapped `specs/apps/ose/id-be/**` features.
+      acceptance:
+      `test -f plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-api-quality-gate-backend.md`
+      exits `0`.
 - [ ] [AI] Invoke the tester for a separate BFF discovery run with the same controls, base
       `http://127.0.0.1:3500`, every `/api/bff/**` operation in the delta, machine contract
       `specs/apps/ose/id-web/contracts/openapi.yaml`, and mapped `specs/apps/ose/id-web/**` features.
@@ -639,6 +743,8 @@ testers sequentially with `output-mode: delivery` and this plan path. Do not cre
       surface/recurrence lists, and synthetic fixtures. Use a clean browser profile and virtual
       authenticator; never capture a TOTP seed, live TOTP, recovery code, credential response, cookie,
       token, or personal data.
+      acceptance: `ls plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-web-*`
+      prints the exploratory, usability, and design evidence paths.
 - [ ] [AI] Invoke
       [`swe-web-tester`](../../../.agents/agents/swe-web-tester.md) (exploratory charter) first. Compare
       every route/state/control to `specs/apps/ose/id-web/**`; enumerate add/sign-in/cancel/unsupported/
@@ -650,6 +756,7 @@ testers sequentially with `output-mode: delivery` and this plan path. Do not cre
       C# executor, rebuild, and retest the defect plus affected journey before continuing. Unresolved
       defects block; explicit user permission is required for genuinely impossible deferral. Reconcile
       correct-but-unspecified `SG-###` with app-scoped specs.
+      acceptance: `rtk npm run check:pre-push` exits `0`.
 - [ ] [AI] Invoke
       [`swe-usability-tester`](../../../.agents/agents/swe-usability-tester.md) second and spec-blind
       with the same URLs/goal/locales/breakpoints. Require a first-time walkthrough of native prompt
@@ -693,12 +800,19 @@ testers sequentially with `output-mode: delivery` and this plan path. Do not cre
 - [ ] [AI] Triage each learning. Move reusable authenticator, C#, UI, accessibility, testing, security,
       or workflow knowledge to the narrowest durable docs/rules/spec owner; route rules through full
       propagation and add enforcement/regression where required.
+      acceptance: `test -f plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-5-knowledge.md` exits `0`.
 - [ ] [AI] Mark duplicates/plan-only notes, run owner gates for durable edits, and record explicit none
       when no learning generalizes.
+      acceptance:
+      `grep -ci 'owner gate' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-5-knowledge.md`
+      prints at least `1`.
 
 ### Phase 5 Gate
 
 - [ ] [AI] Every learning is triaged and every durable edit passes its owner gate.
+      acceptance:
+      `grep -ci 'disposition' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-5-knowledge.md`
+      prints at least `1`.
 
 > **Pause Safety:** knowledge is reconciled; preliminary audit and in-PR archival remain. Safe to stop.
 > To resume, inspect `learnings.md` and rerun its owner gates.
@@ -715,6 +829,8 @@ review.
 - [ ] [AI] Perform the preliminary plan-execution audit. Trace every AC, threat, screen/state,
       locale/breakpoint, migration/no-loss proof, adapter binding/exemption, browser/API assertion,
       recovery rule, and delivery promise. Reopen the earliest incomplete phase instead of marking it.
+      acceptance: `grep -rli 'preliminary audit' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence`
+      prints at least one path.
 - [ ] [AI] After completion proof exists, run `rtk date +%F`, record the returned date as
       `<completion-date>`, and never predict it.
 - [ ] [AI] In the delivering branch run
@@ -725,6 +841,8 @@ review.
 - [ ] [AI] Do not stage or commit without explicit user authorization. Once authorized, use the fewest
       build-valid, reviewable Conventional Commits, including
       `chore(plans): move ose-id-init-06-passkeys-and-mfa to done` for archival.
+      acceptance: `rtk git log --format=%s --grep='move ose-id-init-06-passkeys-and-mfa to done'`
+      prints `chore(plans): move ose-id-init-06-passkeys-and-mfa to done`.
 - [ ] [AI] Run docs/plan/link gates and the exact canonical pre-push registry:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`;
       push and open or update the PR to `main`.
@@ -733,6 +851,7 @@ review.
 
 - [ ] [AI] The PR head contains implementation, proof, Knowledge Capture, archive, indexes, and
       references; preliminary audit is green and the worktree matches the ledger.
+      acceptance: `test -f plans/done/<completion-date>__ose-id-init-06-passkeys-and-mfa/delivery.md` exits `0`.
 
 > **Pause Safety:** the complete delivery is pushed but unmerged. Safe to stop. To resume, fetch the PR
 > head and verify it matches the recorded SHA.
@@ -752,11 +871,15 @@ review.
 - [ ] [AI] Immediately before any follow-up push, rerun the exact canonical pre-push registry from Phase 6. Never merge a different head from the one reviewed.
 - [ ] [AI] Merge `[AI]` only after hardened preconditions and all required checks pass. Confirm the merge
       commit contains the exact reviewed head and production remains fail-closed.
+      acceptance: `grep -rli 'merge commit' plans/done/<completion-date>__ose-id-init-06-passkeys-and-mfa/evidence`
+      prints at least one path.
 
 ### Phase 7 Gate
 
 - [ ] [AI] The reviewed PR head is merged to `main`; no social provider, deployment, production secret,
       or production enablement entered the delivery.
+      acceptance: `rtk git cat-file -e origin/main:plans/done/<completion-date>__ose-id-init-06-passkeys-and-mfa`
+      exits `0`.
 
 > **Pause Safety:** merge is complete; retain the worktree until workflow-owned finalization succeeds.
 
@@ -773,8 +896,12 @@ review.
       and no deployment surface changed.
 - [ ] [AI] Run the workflow-owned terminal audit against the delivered head. Never pre-check it; on
       failure retain the worktree and reopen the earliest affected execution packet.
+      acceptance: `grep -rli 'terminal audit' plans/done/<completion-date>__ose-id-init-06-passkeys-and-mfa/evidence`
+      prints at least one path.
 - [ ] [AI] Classify every Phase 0 branch/inventory row as delivered, unused, or retained/escalated with
       owner and evidence; ambiguity is escalated, never deleted.
+      acceptance: `grep -rl 'delivered' plans/done/<completion-date>__ose-id-init-06-passkeys-and-mfa/evidence`
+      prints at least one path.
 - [ ] [AI] From the repository root complete mandatory pre-removal checks, then run
       `rtk git worktree remove worktrees/ose-id-init-06-passkeys-and-mfa`; clean the delivered branch by
       convention and run `rtk git worktree prune`.
@@ -783,6 +910,7 @@ review.
 
 - [ ] [AI] Containment and terminal audit pass against the merged head; inventory and cleanup records
       are complete; no live delivery worktree remains.
+      acceptance: `rtk git worktree list` prints no `worktrees/ose-id-init-06-passkeys-and-mfa` entry.
 
 > **Pause Safety:** delivery and cleanup are terminally complete. Any later defect starts a new
 > regression-first delivery rather than reopening this worktree.

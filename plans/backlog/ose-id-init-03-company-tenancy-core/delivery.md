@@ -146,16 +146,19 @@ SqlKata/Npgsql runtime behavior, green baseline.
       audit-column, RLS, connection-pool, API/spec, and tenant
       precedents with targeted `rtk rg` over `apps/`, `specs/`, `docs/`, `repo-governance/`, and
       `repo-config.yml`. Record exact paths/commands and stop on rule conflict.
+      acceptance: `rtk rg -q 'rtk rg' plans/in-progress/ose-id-init-03-*/evidence/phase-0` exits 0.
 - [ ] [AI] Re-verify official RLS/`SET LOCAL`/pool APIs and exact package licenses for resolved versions.
       Acceptance: OSE source/docs inherit root MIT; third-party terms/notices remain their own. Verify
       inherited ports 3500/8501/5438/1026/8026 remain registered and unclaimed; stop and amend on collision.
 - [ ] [AI] Run predecessor backend/full-stack baselines twice through HIPPO, including production guard,
       account journeys, Mailpit cleanup, migration privilege, and two-instance tests. Fix failures at root cause.
+      acceptance: `rtk rg -oi 'exit 0' plans/in-progress/ose-id-init-03-*/evidence/phase-0 | wc -l` prints at least 2.
 
 ### Phase 0 Gate
 
 - [ ] [AI] Re-run predecessor full E2E and affected baseline; acceptance: exit 0, empty resource inventory,
       current dependencies, and no unverified schema/policy assumption.
+      acceptance: `rtk rg -qi 'empty resource inventory' plans/in-progress/ose-id-init-03-*/evidence/phase-0` exits 0.
 
 > **Pause Safety:** delivered account capability is confirmed and no tenant schema exists. Safe to stop.
 > To resume, rerun the Plan 02 full account E2E target.
@@ -222,6 +225,7 @@ SqlKata/Npgsql runtime behavior, green baseline.
       its command/target records before the first Plan 03 scenario, binding, or test. Inspect the isolated
       RED ledger: only named absent Plan 03 behavior may be nonzero; a baseline, target/configuration, or
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
+      acceptance: `rtk rg -q 'ose-id-be:build' plans/in-progress/ose-id-init-03-*/evidence/phase-1` exits 0.
 - [ ] [AI] **Owner: Phase 1 integrator; contract gate.** Rerun the exact specs, Redocly, threat-doc
       Prettier, and two-project behavior-coverage commands above, then run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- find plans/in-progress/ose-id-init-03-company-tenancy-core specs/apps/ose/id-be -type f -name '*.md' -exec ./scripts/validate-mermaid-files {} +`.
@@ -273,11 +277,13 @@ membership_id)` keyset order, company/query/order-bound cursor rejection, Compan
 - [ ] [AI] **RED:** add invitation create/resend/revoke/expiry, new/existing account, verified-email match,
       admin-visible recipient-email allowlist, capability/provider/login-field exclusion, wrong Person/
       company, purpose, replay/concurrency, and Mailpit cases. Run focused tests; save RED.
+      acceptance: `rtk rg -qi 'invitation' plans/in-progress/ose-id-init-03-*/evidence/phase-2/red` exits 0.
 - [ ] [AI] **GREEN:** add Invitation migration/use cases and typed notification using existing
       `INotificationSender`; implement atomic authenticated acceptance. Rerun Unit/Integration/Mailpit E2E;
       acceptance: one membership is created and no email becomes immutable identity.
 - [ ] [AI] **REFACTOR:** share capability infrastructure without merging verification/reset/invitation
       purposes; rerun all account and invitation regressions. Acceptance: Plan 02 semantics stay green.
+      acceptance: `rtk rg -qi 'exit 0' plans/in-progress/ose-id-init-03-*/evidence/phase-2/refactor` exits 0.
 
 ### AC-TEN-12 — Auditable invitation cleanup
 
@@ -285,6 +291,7 @@ membership_id)` keyset order, company/query/order-bound cursor rejection, Compan
       every new tenancy table, and built E2E for an expired invitation cleanup. Acceptance: failures name
       missing tombstone/audit behavior, columns, constraints, guards, grants, or active filters; no layer
       exemption is permitted.
+      acceptance: `rtk rg -qi 'tombstone|deleted_at' plans/in-progress/ose-id-init-03-*/evidence/phase-2/red` exits 0.
 - [ ] [AI] **GREEN:** implement bounded actor-attributed soft-delete cleanup, null or invalidate usable
       capability material, and apply the inherited six-column/guard/`ON DELETE RESTRICT` contract to every
       tenancy table. Acceptance: ordinary reads exclude the tombstone, the audit row remains, and a real
@@ -292,6 +299,7 @@ membership_id)` keyset order, company/query/order-bound cursor rejection, Compan
 - [ ] [AI] **REFACTOR:** inspect compiled SQL for explicit tombstone predicates and forbidden physical
       delete syntax, then rerun fresh/current migrations, RLS, concurrent cleanup, and account regressions.
       Acceptance: global security identifiers remain non-reusable and no source row is lost.
+      acceptance: `rtk rg -q 'deleted_at' plans/in-progress/ose-id-init-03-*/evidence/phase-2-persistence` exits 0.
 
 ### Phase 2 Gate
 
@@ -326,6 +334,7 @@ membership_id)` keyset order, company/query/order-bound cursor rejection, Compan
       wrong/missing operation denies without foreign rows/counts.
 - [ ] [AI] **GREEN:** implement one shared-store `ITenantStoreResolver` mapping stable store keys to the
       delivered PostgreSQL target. Test unknown/inactive route rejection; add no dynamic sharding/cache.
+      acceptance: `rtk rg -q 'ITenantStoreResolver' apps/ose-id-be` exits 0.
 - [ ] [AI] **REFACTOR:** centralize transaction setup/reset and repository composition without exposing
       Npgsql/SqlKata connection/query types to domain; prove no EF runtime query/change-tracking path.
       Rerun matrix concurrently and twice; acceptance: no pooled leakage/flakiness.
@@ -357,11 +366,14 @@ membership_id)` keyset order, company/query/order-bound cursor rejection, Compan
 - [ ] [AI] **RED:** add tests for personal/company/both resource policies, companyless Person, personal
       entitlement, company entitlement plus active membership, no synthetic company, and absence of
       product roles. Run focused tests and save missing-behavior RED.
+      acceptance: `rtk rg -qi 'entitlement' plans/in-progress/ose-id-init-03-*/evidence/phase-4` exits 0.
 - [ ] [AI] **GREEN:** add ProductResource fixture, PersonalEntitlement, CompanyEntitlement migrations and
       application policies. Rerun focused tests; acceptance: personal has no company ID and company access
       requires every current state under RLS.
+      acceptance: `rtk rg -q 'company_product_entitlements' apps/ose-id-be` exits 0.
 - [ ] [AI] **REFACTOR:** separate entry entitlement from company authority and any future claims mapping;
       run backend regression. Acceptance: no LMS-domain role/token field is stored or returned.
+      acceptance: `rtk rg -q 'accessToken|productRole' specs/apps/ose/id-be/contracts/tenancy.openapi.yaml` exits 1.
 
 ### AC-TEN-03, AC-TEN-10, and AC-TEN-11 — List/select/revoke fresh context
 
@@ -374,6 +386,7 @@ membership_id)` keyset order, company/query/order-bound cursor rejection, Compan
       selection in a fresh transaction, and persist/audit only the invalidation/version signal—not a
       global active company. Rerun focused tests; acceptance: one explicit current context or the stable
       overflow result is returned.
+      acceptance: `rtk rg -q 'context_limit_exceeded' apps/ose-id-be` exits 0.
 - [ ] [AI] **REFACTOR:** remove process caches/affinity and isolate a future protocol-facing application
       result without JWT/OpenIddict types. Run complete backend/E2E twice with instances stopped mid-flow.
 
@@ -398,12 +411,15 @@ membership_id)` keyset order, company/query/order-bound cursor rejection, Compan
 - [ ] [AI] Inventory every actual rule impact across canonical/enforcement/binding surfaces for tenant
       specs/API, RLS test ownership, fixture isolation, ports/env, migrations, and project dependencies.
       Save intake at `local-tmp/rules-propagation/ose-id-init-03-intake.md`; classify conflicts first.
+      acceptance: `test -f local-tmp/rules-propagation/ose-id-init-03-intake.md` exits 0.
 - [ ] [AI] Apply narrow canonical/enforcement changes and generate bindings only if their source changed.
       Run rules-quality, repo-config, dependency/test-boundary, specs/contract, migration/RLS, port/env,
       and binding-sync gates; save a partial-pending-delivery manifest.
+      acceptance: `rtk rg -q 'partial-pending-delivery' local-tmp/rules-propagation/ose-id-init-03-*` exits 0.
 - [ ] [AI] Update affected backend/E2E/spec/reference READMEs with personal/company semantics, API,
       RLS/role/transaction requirements, fixture isolation, rollback, failure diagnosis, and explicit
       no-UI/no-token/no-deployment. Run Markdown lint/heading/link/Mermaid gates.
+      acceptance: `rtk ./rhino md internal-link validate` exits 0.
 - [ ] [AI] Execute all 11 steps in `tech-docs/004-local-apis-statelessness-and-verification.md`; save
       sanitized status/count/policy/role evidence under `evidence/manual/`, delete raw cookies/capabilities/
       messages/logs, and prove empty resources. Acceptance: all PRD criteria are observed.
@@ -555,17 +571,20 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
       finding and affected-API regression. Tick only with
       passing live retest proof. `partial`, `fail`, pending lifecycle evidence, an isolation uncertainty,
       regression, or unchecked `AET-###` blocks Phase 5 and reopens the earliest responsible phase.
+      acceptance: `rtk rg -q '\[ \].*AET-[0-9]+' plans/in-progress/ose-id-init-03-*/delivery.md` exits 1.
 - [ ] [AI] Record the UI Quality Gate and live tester agents
       `.agents/agents/swe-web-tester.md` (exploratory charter),
       `.agents/agents/swe-usability-tester.md`, and
       `.agents/agents/swe-web-tester.md` (design charter) as **not applicable** with proof that this
       backend-only slice changes no UI/component/browser route and retains the inert web shell unchanged.
       If the diff contains a UI delta, stop and amend the plan to add all mandatory UI gates.
+      acceptance: `rtk git diff --quiet origin/main...HEAD -- apps/ose-id-web ':!*.md'` exits 0.
 
 ### Phase 5 Gate
 
 - [ ] [AI] Re-run rule/docs/spec/API/RLS/manual-cleanup gates; acceptance: implementation and contracts
       agree, no foreign tenant/secret/absolute path appears, and no unresolved rules finding remains.
+      acceptance: `rtk rg -q '/Users/|/home/' plans/in-progress/ose-id-init-03-*/evidence` exits 1.
 - [ ] [AI] Confirm the API Quality Gate reports `final-status: pass` and
       `lifecycle-status: verified`, the live exploratory matrix covers every added/updated/retained API
       plus RLS boundary, no unchecked `AET-###` remains, and the no-UI applicability proof matches the
@@ -586,12 +605,16 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 
 - [ ] [AI] Review every entry in `plans/in-progress/ose-id-init-03-company-tenancy-core/learnings.md`. Promote general knowledge to its narrow durable owner, link duplicates, and justify plan-specific dispositions. If no entry exists, append an explicit reviewed/none disposition. Run affected Markdown, link, and rules gates; acceptance: every entry has exactly one disposition.
 - [ ] [AI] Reconcile any durable documentation/rule edit with the file-impact ledger before continuing. Acceptance: no newly discovered path or rule change remains unplanned.
+      acceptance: `rtk git diff --name-only origin/main...HEAD -- docs repo-governance` prints only ledger-listed paths.
 
 ### Preliminary Delivery Audit
 
 - [ ] [AI] Trace AC-TEN-01..12, approved scope, every file-impact row, physical schema/migration proof, old-code/new-schema compatibility, no-loss manifests, runtime guard, rollback/forward-fix, automated/manual evidence, rules propagation, license record, and Knowledge Capture into `plans/in-progress/ose-id-init-03-company-tenancy-core/evidence/preliminary-delivery-audit.md`. Reopen the earliest failed phase for any unsupported row; checked boxes alone are not evidence.
+      acceptance: `grep -c AC-TEN plans/in-progress/ose-id-init-03-*/evidence/preliminary-delivery-audit.md` prints 12+.
 - [ ] [AI] Run tenant smoke, invitation, context, and complete RLS matrix from a fresh owned stack and the changed-surface documentation/spec/plan gates. Acceptance: all pass without retry/sleep, resources clean up, and no UI, OIDC, provider, product-domain role, or deployment behavior is present.
+      acceptance: `rtk rg -c 'headers=validated' "$OSE_TEN_EVIDENCE"` prints 29.
 - [ ] [AI] Verify all applicable rule-15 EWT/UWT/DWT and rule-16 AET defects are fixed. A defect deferral requires explicit user permission; SG proposals/suggestions receive an explicit disposition.
+      acceptance: `rtk rg -q '\[ \].*(AET|EWT|UWT|DWT)-[0-9]+' plans/in-progress/ose-id-init-03-*/delivery.md` exits 1.
 
 ### Plan Archival in the Delivering PR
 
@@ -600,10 +623,12 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 - [ ] [AI] Run Markdown, link, plan, and `rtk git diff --check` validation against the moved `plans/done/<completion-date>__ose-id-init-03-company-tenancy-core/` path and changed indexes. Acceptance: the archive folder contains `evidence/`, all links resolve, and no duplicate backlog/in-progress folder remains.
 - [ ] [AI] Inspect the complete merge-base diff and `rtk git status --short`. Acceptance: implementation, tests, specs, documentation, evidence, plan archive move, and index/reference edits are all present; no post-merge documentation commit is planned.
 - [ ] [AI] Do not stage or commit until the user explicitly authorizes the named change set. Once authorized, create the fewest coherent build-valid Conventional Commits, including the archive move/index/reference changes in this delivering PR; use `feat(ose-id): add company tenancy core` for the feature commit and `chore(plans): archive ose-id-init-03-company-tenancy-core` only when a separate archival commit is needed for reviewability.
+      acceptance: `rtk git log --grep='feat(ose-id): add company tenancy core' origin/main..HEAD` prints one commit.
 
 ### Phase 6 Gate
 
 - [ ] [AI] Verify the branch HEAD already contains Knowledge Capture, the passing preliminary audit, and the complete in-progress-to-done move/index/reference changes. The working tree is clean and no final review has started against an earlier head.
+      acceptance: `rtk git status --short` outputs nothing.
 
 > **Pause Safety:** the complete delivery and archived plan state are committed locally but not yet merged. Safe to stop. To resume, verify the archive commit is HEAD and rerun the preliminary audit's changed-surface gates.
 
@@ -627,23 +652,30 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
       higher-layer/static target pass. Save commands and exits in `evidence/phase-7/nx-quality.txt`;
       any failure reopens its owning phase.
 - [ ] [AI] Run the repository specs/OpenAPI, Markdown, plan, schema/migration, dependency/rules/binding, secret, and changed-surface gates required by the final diff. Acceptance: every gate exits 0 against the archive-containing HEAD.
+      acceptance: `rtk rg -qi 'exit 0' plans/done/*__ose-id-init-03-*/evidence/phase-7` exits 0.
 - [ ] [AI] Run `ose-id-be:test:unit` with native coverage; acceptance: it enforces and reports
       **at least 99% Unit line coverage for authored production code**, with canonical exclusions only. Run all applicable backend/backend-E2E static
       `test:coverage:unit`, `:integration`, `:e2e`, and `:behaviour` targets; acceptance: retained
       foundation/account plus new tenancy maps close with no invalid exemption.
 - [ ] [AI] Inspect `rtk git diff --check`, `rtk git status --short`, and the full `origin/main...HEAD` diff. Acceptance: the tree is clean, generated files trace to exact sources, all plan lifecycle changes are present, and UI, OIDC, provider, product-domain role, or deployment remains absent.
 - [ ] [AI] Fix every failure, including preexisting failures encountered by these gates, at root cause. Any repair changes HEAD and invalidates all current-head review evidence; recommit only with user authorization, then rerun this phase from its first check. Never retry, sleep, widen, loosen, skip, or quarantine.
+      acceptance: `rtk rg -q "$(rtk git rev-parse HEAD)" plans/done/*__ose-id-init-03-*/evidence/phase-7` exits 0.
 
 ### Push and Exact-Head Review
 
 - [ ] [AI] After explicit authorization, push the delivery branch and open or update its draft PR to `main`. Record exact 40-character head/base SHAs; the head must already include the archived plan.
+      acceptance: `gh pr view --json baseRefName,isDraft --jq '.baseRefName,.isDraft'` prints main and true.
 - [ ] [AI] Poll GitHub Actions every two minutes without `gh run watch`. Fix root causes, push authorized repairs, and restart all exact-head gates whenever HEAD changes.
+      acceptance: `gh pr checks` exits 0.
 - [ ] [AI] Require the PR's exact current head/base Quality gate, applicable finite API/E2E/schema gates, one authenticated clean current-head `pr-leak-review`, and the repository-required semantic review for identity/security code. Resolve every blocking finding and rerun invalidated proof.
+      acceptance: `gh pr view --json mergeStateStatus --jq .mergeStateStatus` prints CLEAN.
 - [ ] [AI] Merge under default `[AI]` authority only when all hardened checks refer to the same current head/base and the archive move is visible in the PR diff. Record the PR URL, reviewed head, base, merge SHA, and merge timestamp in the workflow final report; make no post-merge plan edit.
+      acceptance: `gh pr view --json state,mergeCommit --jq '.state,(.mergeCommit.oid|length)'` prints MERGED and 40.
 
 ### Phase 7 Gate
 
 - [ ] [AI] Verify `origin/main` contains the merge SHA and `plans/done/<completion-date>__ose-id-init-03-company-tenancy-core/`, while backlog/in-progress paths are absent. Do not clean the worktree before the terminal audit.
+      acceptance: `rtk git merge-base --is-ancestor <merge-sha> origin/main` exits 0.
 
 > **Pause Safety:** the delivery is merged and its archived plan is already on `origin/main`; only containment confirmation, terminal audit, and cleanup remain. Safe to stop. To resume, fetch `origin/main` and verify the recorded merge SHA before auditing.
 
@@ -657,13 +689,19 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 
 - [ ] [AI] Run `rtk git fetch origin`; verify the recorded merge SHA is an ancestor of `origin/main`, the reviewed head matches the merged PR, and the archived plan/index state is present. A mismatch reopens Phase 7 and blocks cleanup.
 - [ ] [AI] Run the workflow-owned terminal plan-execution audit against the delivered merge head. It must trace AC-TEN-01..12, scope, schema/no-loss/compatibility evidence, reviews, and archive state. Record the verdict in the plan-execution final report, not by editing the merged plan. Failure reopens the earliest affected phase.
+      acceptance: `rtk git diff --quiet <merge-sha> origin/main -- 'plans/done/*__ose-id-init-03-*'` exits 0.
 - [ ] [AI] Update the rules-propagation manifest's external final report/disposition to delivered only after the terminal audit passes; make no repository mutation that would require an unreviewed post-merge commit.
+      acceptance: `rtk rg -qi 'disposition: delivered' local-tmp/rules-propagation/ose-id-init-03-*` exits 0.
 - [ ] [AI] Classify every Phase 0-created Delivery Branch Inventory entry as delivered, unused, or retained/escalated using merged PR and 40-character reviewed-head proof. Ambiguous/active rows retain the worktree and escalate.
+      acceptance: `gh pr view <n> --json state,headRefOid --jq '.state,(.headRefOid|length)'` prints MERGED and 40.
 - [ ] [AI] Run the mandatory pre-removal checks, reconcile the declared route with `rtk git worktree list --porcelain`, and remove non-force with `rtk git worktree remove worktrees/ose-id-init-03-company-tenancy-core`. Then complete canonical branch cleanup and run `rtk git worktree prune`. Never remove on a partial/failing terminal audit.
+      acceptance: `test ! -e worktrees/ose-id-init-03-company-tenancy-core` exits 0.
 - [ ] [AI] Publish the final execution report with merge containment, terminal verdict, cleanup proof, and the statement: later OIDC/UI plans remain blocked until this terminal audit passes.
+      acceptance: `rtk rg -q 'remain blocked until this terminal audit passes' local-tmp/plan-execution` exits 0.
 
 ### Phase 8 Gate
 
 - [ ] [AI] Confirm terminal audit PASS, no retained unexplained branch, declared worktree absent, branch cleanup complete, and `origin/main` still contains the reviewed archive state.
+      acceptance: `rtk git branch --list 'ose-id-init-03-company-tenancy-core*'` prints nothing or only retained ones.
 
 > **Pause Safety:** delivery, audit, archival, and cleanup are complete. No repository mutation remains for this plan.

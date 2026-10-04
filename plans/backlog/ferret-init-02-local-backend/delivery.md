@@ -216,6 +216,7 @@ and green baseline.
 - [ ] [AI] Provision/enter the declared worktree, record repository-relative identity/branch inventory, run
       transactional dependency convergence and read-only Doctor (provisioning only on reported drift), and keep
       unrelated/user edits untouched.
+      acceptance: `rtk npm run doctor` exits 0 with no drift reported in the execution worktree
 - [ ] [AI] Run and retain this exact setup/baseline packet; resolve every failure, including unrelated
       pre-existing failures, before Phase 1:
 
@@ -233,14 +234,22 @@ rtk git diff --check
       ownership, migration roles, secrets/env rules, API quality workflow, and generated contract conventions.
       Verify the author-time resolved ports `127.0.0.1:8601` and `127.0.0.1:5440` are available; stop and amend
       this plan on collision rather than silently choosing another wire/registry contract.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+./rhino gate run --surface=pre-push` exits 0 only after the port checks find 8601 and 5440 free
 - [ ] [AI] Resolve/lock current compatible FastAPI, Uvicorn, Pydantic/settings, SQLAlchemy 2, Alembic, psycopg,
       pytest stack, PostgreSQL 18 image digest, and licenses using official sources. The contract toolchain is
       already resolved from repository precedent as Redocly bundle plus Spectral lint behind
       `ferret-contracts:{lint,bundle,test:quick}`. CLI runtime dependencies must remain empty.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+./rhino gate run --surface=pre-push` exits 0 after the dependency checks resolve and lock the stack
 - [ ] [AI] Reverify OpenAPI 3.1/FastAPI schema behaviour and current GraphQL/MCP official guidance only to confirm
       deferral/adapter boundaries. Do not add GraphQL/MCP dependencies or freeze a future protocol version.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+./rhino gate run --surface=pre-push` exits 0 with no open architecture/API/schema decision remaining
 - [ ] [AI] Run the delivered Plan 01 full matrix twice plus repository pre-push/docs/spec/rules/secret baselines.
       Fix failures at root cause. Create the exact file-impact ledger and generated-source map.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+./rhino gate run --surface=pre-push` exits 0 on the repository pre-push baseline
 
 ### Phase 0 Gate
 
@@ -260,22 +269,28 @@ rtk git diff --check
 isolated RED adapters precede production code.
 **Proof:** OpenAPI/spec validation, operation/scenario map, import-rule RED, and target RED in `evidence/phase-1/`.
 
-- [ ] [AI] Execute `BE-C01` RED → GREEN → REFACTOR, including new `ferret-contracts` project, exact path/schema
-      fragments, Spectral/Redocly targets, committed bundles, normalized FastAPI drift fixture, and handwritten
-      CLI fixture validation. Keep tokens/bodies outside tracked evidence.
-- [ ] [AI] Execute `BE-C02` RED → GREEN → REFACTOR for the dependency rule and exact framework-free package
-      skeleton. Keep GraphQL/MCP packages absent.
-- [ ] [AI] Execute `BE-C03` RED → GREEN → REFACTOR: copy every exact owner scenario and API scenario into its
-      declared feature, create no E2E-owned corpus, and bind every scenario at required layers.
-- [ ] [AI] Execute `BE-C04` RED → GREEN → REFACTOR for pinned PostgreSQL health, isolated resources,
-      migration-before-readiness, loopback-only listener, cleanup, and non-Local/Test rejection.
-- [ ] [AI] Execute `BE-C05` RED → GREEN → REFACTOR for the closed phase-command map and evidence/fingerprint/
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-C01` RED → GREEN → REFACTOR, including new `ferret-contracts`
+      project, exact path/schema fragments, Spectral/Redocly targets, committed bundles, normalized FastAPI drift
+      fixture, and handwritten CLI fixture validation. Keep tokens/bodies outside tracked evidence.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-C02` RED → GREEN → REFACTOR for the dependency rule and exact
+      framework-free package skeleton. Keep GraphQL/MCP packages absent.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-C03` RED → GREEN → REFACTOR: copy every exact owner scenario
+      and API scenario into its declared feature, create no E2E-owned corpus, and bind every scenario at required
+      layers.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-C04` RED → GREEN → REFACTOR for pinned PostgreSQL health,
+      isolated resources, migration-before-readiness, loopback-only listener, cleanup, and non-Local/Test rejection.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-C05` RED → GREEN → REFACTOR for the closed phase-command map
+      and evidence/fingerprint/
       no-op-target failure policy.
 - [ ] [AI] Create `ferret-be`, `ferret-be-e2e`, and `ferret-contracts` project metadata with README/LICENSE,
       uv lock, Pyright strict, Ruff, pytest/pytest-bdd/coverage, TypeScript/Playwright, exact cache inputs, and the
       `verify:delivery` target/script/unit test declared above.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . --
+npm exec nx -- run-many -t build,typecheck,lint,test:quick
+--projects=ferret-be,ferret-be-e2e,ferret-contracts` exits 0
 - [ ] [AI] Inventory any lasting Python backend/Nx/API/harness/rules change and start a per-repository
       rules-propagation manifest. Do not edit a rule already made sufficient by Plan 01.
+      acceptance: `test -f local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` exits 0
 
 ### Phase 1 Gate
 
@@ -297,33 +312,39 @@ queries, analytics, capabilities, pruning, migrations, and post-commit notices.
 
 ### Domain and Application Use Cases
 
-- [ ] [AI] Execute `BE-U01` RED → GREEN → REFACTOR for exact Event/CapabilitySnapshot/CapabilityEntry fields,
-      per-field visibility capabilities, canonical hashes, and invariants.
-- [ ] [AI] Execute `BE-U02` RED → GREEN → REFACTOR for the closed principal/scope/error policy.
-- [ ] [AI] Execute `BE-U03` RED → GREEN → REFACTOR for batch ID/hash replay, stored response, item order/count,
-      event/snapshot duplicate/conflict, and transaction result.
-- [ ] [AI] Execute `BE-U04` RED → GREEN → REFACTOR for event keyset, watermark, and prune-epoch invalidation.
-- [ ] [AI] Execute `BE-U05` RED → GREEN → REFACTOR for usage/outcome grouping, observed-duration rules,
-      deterministic aggregate keysets, and prune-epoch invalidation.
-- [ ] [AI] Execute `BE-U06` RED → GREEN → REFACTOR for capability installation keyset, eligible-snapshot
-      watermark-before-ranking, deterministic tie-break, and prune invalidation.
-- [ ] [AI] Execute `BE-U07` RED → GREEN → REFACTOR for dry-run/execute prune, epoch increment, authorization,
-      commit-before-publication, rollback silence, and publisher-failure policy.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-U01` RED → GREEN → REFACTOR for exact
+      Event/CapabilitySnapshot/CapabilityEntry fields, per-field visibility capabilities, canonical hashes, and
+      invariants.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-U02` RED → GREEN → REFACTOR for the closed
+      principal/scope/error policy.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-U03` RED → GREEN → REFACTOR for batch ID/hash replay, stored
+      response, item order/count, event/snapshot duplicate/conflict, and transaction result.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-U04` RED → GREEN → REFACTOR for event keyset, watermark, and
+      prune-epoch invalidation.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-U05` RED → GREEN → REFACTOR for usage/outcome grouping,
+      observed-duration rules, deterministic aggregate keysets, and prune-epoch invalidation.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-U06` RED → GREEN → REFACTOR for capability installation
+      keyset, eligible-snapshot watermark-before-ranking, deterministic tie-break, and prune invalidation.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-U07` RED → GREEN → REFACTOR for dry-run/execute prune, epoch
+      increment, authorization, commit-before-publication, rollback silence, and publisher-failure policy.
 
 ### PostgreSQL and Alembic
 
-- [ ] [AI] Execute `BE-I01` RED → GREEN → REFACTOR for fresh/current/empty downgrade-upgrade schema and exact
-      batch/item/capability/state constraints, roles, cascades, and indexes.
-- [ ] [AI] Execute `BE-I02` RED → GREEN → REFACTOR for same-batch replay, different-hash conflict, concurrent
-      race, stored-response reconstruction, contiguous ordinals, and count reconciliation.
-- [ ] [AI] Execute `BE-I03` RED → GREEN → REFACTOR for Plan 01 fixed hashes and lossless Event/CapabilitySnapshot
-      PostgreSQL round trips.
-- [ ] [AI] Execute `BE-I04` RED → GREEN → REFACTOR for event/aggregate keysets, recent/backdated inserts, and
-      raw/aggregate traversal invalidation across execute-prune.
-- [ ] [AI] Execute `BE-I05` RED → GREEN → REFACTOR for two installations with identical logical capability keys,
-      later snapshots, deterministic ranking, and execute-prune invalidation.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-I01` RED → GREEN → REFACTOR for fresh/current/empty
+      downgrade-upgrade schema and exact batch/item/capability/state constraints, roles, cascades, and indexes.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-I02` RED → GREEN → REFACTOR for same-batch replay,
+      different-hash conflict, concurrent race, stored-response reconstruction, contiguous ordinals, and count
+      reconciliation.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-I03` RED → GREEN → REFACTOR for Plan 01 fixed hashes and
+      lossless Event/CapabilitySnapshot PostgreSQL round trips.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-I04` RED → GREEN → REFACTOR for event/aggregate keysets,
+      recent/backdated inserts, and raw/aggregate traversal invalidation across execute-prune.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-I05` RED → GREEN → REFACTOR for two installations with
+      identical logical capability keys, later snapshots, deterministic ranking, and execute-prune invalidation.
 - [ ] [AI] Inspect compiled SQL and synthetic `EXPLAIN (ANALYZE, BUFFERS)` after the five packets; failures in
       bounds/projection/index use return to the owning BE-I packet, never to a widened timeout or blind index.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+npm exec nx -- run ferret-be:verify:delivery --args='--phase=2'` exits 0 with the query-plan checks passing
 
 ### Change Publisher and Storage
 
@@ -333,6 +354,8 @@ queries, analytics, capabilities, pruning, migrations, and post-commit notices.
       conflict/query/prune latency, dead tuples/vacuum, and monthly projections at 5k/20k/100k events/day.
       Replace the provisional 1–2 KiB estimate with measured operational documentation and correct unjustified
       indexes/schema before proceeding.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+npm exec nx -- run ferret-be:verify:delivery --args='--phase=2'` exits 0 with the measured-storage checks passing
 
 ### Phase 2 Gate
 
@@ -352,23 +375,30 @@ queries, analytics, capabilities, pruning, migrations, and post-commit notices.
 deterministic.
 **Proof:** contract drift, Unit/Integration/E2E, manual wire, and cleanup evidence in `evidence/phase-3/`.
 
-- [ ] [AI] Execute `BE-R01` RED → GREEN → REFACTOR for API-LIVE-01.
-- [ ] [AI] Execute `BE-R02` RED → GREEN → REFACTOR for API-READY-01..02 and finite dependency checks.
-- [ ] [AI] Execute `BE-R03` RED → GREEN → REFACTOR for API-BATCH-01..07, including batch-ID replay/conflict and
-      exact stored response.
-- [ ] [AI] Execute `BE-R04` RED → GREEN → REFACTOR for API-EVENTS-01..04 and `cursor_invalidated`.
-- [ ] [AI] Execute `BE-R05` RED → GREEN → REFACTOR for API-USAGE-01..03 and aggregate prune invalidation.
-- [ ] [AI] Execute `BE-R06` RED → GREEN → REFACTOR for API-OUTCOMES-01..03 and observed-duration rules.
-- [ ] [AI] Execute `BE-R07` RED → GREEN → REFACTOR for API-CAPABILITIES-01..04, including `installationId`,
-      watermark-before-ranking, full keyset, and prune invalidation.
-- [ ] [AI] Execute `BE-R08` RED → GREEN → REFACTOR for token init, management prune, migration/start commands,
-      Local/Test/loopback pre-listener guard, Compose readiness, cleanup, and safe diagnostics.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-R01` RED → GREEN → REFACTOR for API-LIVE-01.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-R02` RED → GREEN → REFACTOR for API-READY-01..02 and finite
+      dependency checks.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-R03` RED → GREEN → REFACTOR for API-BATCH-01..07, including
+      batch-ID replay/conflict and exact stored response.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-R04` RED → GREEN → REFACTOR for API-EVENTS-01..04 and
+      `cursor_invalidated`.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-R05` RED → GREEN → REFACTOR for API-USAGE-01..03 and aggregate
+      prune invalidation.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-R06` RED → GREEN → REFACTOR for API-OUTCOMES-01..03 and
+      observed-duration rules.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-R07` RED → GREEN → REFACTOR for API-CAPABILITIES-01..04,
+      including `installationId`, watermark-before-ranking, full keyset, and prune invalidation.
+- [ ] [AI] Delegate to `swe-developer`: Execute `BE-R08` RED → GREEN → REFACTOR for token init, management prune,
+      migration/start commands, Local/Test/loopback pre-listener guard, Compose readiness, cleanup, and safe
+      diagnostics.
 - [ ] [AI] Refactor shared Pydantic/problem/auth/cursor mapping only after BE-R01..08 pass; run their regression
       commands and architecture import test to prove no Pydantic/FastAPI/SQLAlchemy type leaks inward and no
       GraphQL/MCP/realtime dependency appears.
 - [ ] [AI] Run canonical-vs-generated OpenAPI comparison and CLI fixture schema validation. Any normalized
       operation/schema/security difference returns to the contract or handler; never regenerate over the
       canonical document silently.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+npm exec nx -- run ferret-be:verify:delivery --args='--phase=3'` exits 0 with no OpenAPI drift
 - [ ] [AI] Execute the API delta's literal `rtk curl` recipes for all success/failure cases using ignored
       synthetic fixtures. M1–M7 are the acceptance packets; their setup, response assertions, persistence
       assertions, and cleanup are mandatory. Never save a token or raw request body as evidence.
@@ -392,20 +422,22 @@ paths preserve the 30-day local boundary.
 **Proof:** no-loss reconciliation, fault matrix, built CLI-to-BE E2E, and standalone regression in
 `evidence/phase-4/`.
 
-- [ ] [AI] Execute `CLI-S01` RED → GREEN → REFACTOR for additive SQLite migration, atomic
-      enable/reconfigure/capture, live-lease refusal, delivery revisions, and non-retroactive counter split:
+- [ ] [AI] Delegate to `swe-developer`: Execute `CLI-S01` RED → GREEN → REFACTOR for additive SQLite migration,
+      atomic enable/reconfigure/capture, live-lease refusal, delivery revisions, and non-retroactive counter split:
       `expired_local_total` only for `local`; `expired_before_ack_total` only for `pending`/`leased`/`rejected`.
-- [ ] [AI] Execute `CLI-S02` RED → GREEN → REFACTOR for bounded prefix leasing, reclaim, ACK identity/cardinality,
-      the current response-header/original replay-body request-ID split, state transitions,
-      Retry-After/backoff/jitter, 401 automatic disable, and permanent rejection.
-- [ ] [AI] Execute `CLI-S03` RED → GREEN → REFACTOR for the stdlib `urllib` mapper, OpenAPI fixture validation,
-      ten-second deadline, batch-ID/hash semantics, five-minute due acquisition, detached attempt, and no token
-      in argv/log/config/evidence.
-- [ ] [AI] Execute `CLI-S04` RED → GREEN → REFACTOR for two processes, refusal/timeout/429/503, malformed/partial
-      ACK, stale lease, process death, commit-then-drop replay with a new header request ID and the stored
-      original body request ID marking the lease delivered exactly once, duplicate replay, and 30-day expiry.
-- [ ] [AI] Execute `CLI-S05` RED → GREEN → REFACTOR with backend absent, disabled, down, and unauthorized; all
-      Plan 01 commands/retention/privacy remain compatible except declared sync fields. No daemon/loop appears.
+- [ ] [AI] Delegate to `swe-developer`: Execute `CLI-S02` RED → GREEN → REFACTOR for bounded prefix leasing,
+      reclaim, ACK identity/cardinality, the current response-header/original replay-body request-ID split, state
+      transitions, Retry-After/backoff/jitter, 401 automatic disable, and permanent rejection.
+- [ ] [AI] Delegate to `swe-developer`: Execute `CLI-S03` RED → GREEN → REFACTOR for the stdlib `urllib` mapper,
+      OpenAPI fixture validation, ten-second deadline, batch-ID/hash semantics, five-minute due acquisition, detached
+      attempt, and no token in argv/log/config/evidence.
+- [ ] [AI] Delegate to `swe-developer`: Execute `CLI-S04` RED → GREEN → REFACTOR for two processes,
+      refusal/timeout/429/503, malformed/partial ACK, stale lease, process death, commit-then-drop replay with a new
+      header request ID and the stored original body request ID marking the lease delivered exactly once, duplicate
+      replay, and 30-day expiry.
+- [ ] [AI] Delegate to `swe-developer`: Execute `CLI-S05` RED → GREEN → REFACTOR with backend absent, disabled,
+      down, and unauthorized; all Plan 01 commands/retention/privacy remain compatible except declared sync fields. No
+      daemon/loop appears.
 
 ### Phase 4 Gate
 
@@ -437,33 +469,53 @@ proof, and GraphQL/MCP remain genuinely deferred.
       `repo-config.yml`, and `scripts/behaviour-coverage.mjs` plus its test. Mark
       a path no-edit with inspected evidence when Plan 01 already suffices. GraphQL and MCP surfaces are
       excluded.
+      acceptance: `grep -c 'behaviour-coverage.mjs'
+local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Inventory:** enumerate every changed rule/enforcement surface across governance, instruction files,
       canonical/generated skills, `repo-config.yml`, CI/hooks, scripts, setup/style guides, API/schema rules, and
       project tags. Separate declarations from product enforcement.
+      acceptance: `grep -c 'Inventory'
+local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Conflict/precedence:** compare Python backend/mixed E2E/local API/port/migration behaviour against
       repository hierarchy and Plan 01 rules. Resolve at the narrow owner; stop on contradiction.
+      acceptance: `grep -c 'Conflict/precedence'
+local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Placement/eviction:** add only missing durable rules; remove/redirect duplicates and stale "no Python
       apps" statements. Do not make this product plan the permanent rule owner.
+      acceptance: `grep -c 'Placement/eviction'
+local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Canonical/enforcement edits:** update exact Nx/Python/API/port/setup declarations and validators
       with failing-before/passing-after tests. If Plan 01 support is sufficient, record no-edit evidence.
+      acceptance: `grep -c 'Canonical/enforcement edits'
+local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Enforcement dispositions:** map every normative change to an automated gate, an already-required
       named human review surface, or justified intentional non-enforcement.
+      acceptance: `grep -c 'Enforcement dispositions'
+local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Bindings/generation:** hand-edit canonical sources only, run official generators for any affected
       binding, inspect generated diffs, and verify harness/catalog parity. No GraphQL/MCP binding is added.
+      acceptance: `grep -c 'Bindings/generation'
+local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Verification/manifest:** run the structure/content/link/rule/BDD/project/API validation commands
       declared by this delivery and record every frozen input, manifest row, finding, fix, and final status.
       Do not invoke `rules-quality-gate`; it requires a separate user-named invocation or an authorized
       rules-grooming Step 8 and is not authorized by this product plan.
+      acceptance: `grep -c 'Verification/manifest'
+local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Sibling obligation:** record cloud deployment as a separately authorized future private infrastructure plan;
       make no private-repository mutation or parity claim.
+      acceptance: `grep -c 'Sibling obligation'
+local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 
 ### Documentation, Manual, and Exploratory Proof
 
 - [ ] [AI] Update C4, README/setup, runner, token rotation/redaction, migration, sync/retry/expiry, query recipes,
       prune/recovery, storage measurements, and protocol-extension ADR. State that no GraphQL/MCP adapter,
       subscription durability, or cloud security exists.
+      acceptance: `grep -c 'subscription durability' specs/apps/ferret/be/architecture.md` prints at least 1
 - [ ] [AI] Update non-normative product registry `docs/reference/web-sites.md` with HTTP 8601/PostgreSQL 5440 and
       validate its links/table separately; do not add it to the rules-propagation manifest.
+      acceptance: `grep -oE '8601|5440' docs/reference/web-sites.md | sort -u | wc -l` prints 2
 - [ ] [AI] Run the full four-project matrix, OpenAPI drift, specs/Gherkin implementation, schema/migration,
       Markdown/link, license, secret/absolute-path, rules/binding, project graph, and clean-stack gates.
 - [ ] [AI] Execute every API delta manual recipe and management command from fresh state; verify all responses,
@@ -500,6 +552,7 @@ candidate-fingerprint-file: local-tmp/ferret-api/candidate.json
       `lifecycle-status != verified` blocks Phase 6.
 - [ ] [AI] Classify UI/browser design/usability verification not applicable because no frontend/browser route
       exists. If the diff contradicts this, stop and amend before review.
+      acceptance: `ls specs/apps/ferret/be/contracts/paths/*.yaml | wc -l` prints 7, the seven REST operations only
 
 ### Phase 5 Gate
 
@@ -526,14 +579,20 @@ review.
       durable owner, link to an existing owner, retain as plan-specific, or report out-of-scope. Never promote
       secrets, absolute paths, raw telemetry, or generated evidence. Record a dated `reviewed; none` row if
       empty and rerun affected gates after any promotion.
+      acceptance: `grep -c 'Destination' plans/in-progress/ferret-init-02-local-backend/learnings.md`
+      prints at least 1
 - [ ] [AI] Before promotion, pass sensitivity, repository-relevance, destination-type, and authorization/
       overlap gates. Code/test learnings return to their owning delivery phase, never inline docs. Search durable
       docs and `plans/ideas/`; creating an idea requires literal user authorization. Terminal statuses are only
       `promoted`, `linked`, `retained-plan-specific`, `reported-without-plan-authorization`, or
       `reviewed-none`; any `open` row blocks archival.
+      acceptance: `grep -cE '\| open +\|' plans/in-progress/ferret-init-02-local-backend/learnings.md`
+      prints 0
 - [ ] [AI] Build `evidence/preliminary-delivery-audit.md` tracing AC-BE-01..12, all API scenarios, OpenAPI drift,
       schema/migrations/reconciliation, sync crash/replay, auth/privacy, queries, pruning/storage, architecture,
       rules, reviews, rollback, non-goals, and cleanup. Reopen earliest unsupported phase.
+      acceptance: `test -f
+plans/in-progress/ferret-init-02-local-backend/evidence/preliminary-delivery-audit.md` exits 0
 - [ ] [AI] Reconcile the Phase 0 file ledger against `rtk git status --short`. After explicit commit
       authorization, stage exactly the implementation, contract, migration, spec, rule/binding, sanitized
       evidence, and still-in-progress plan paths; exclude every done-plan/index move. Require the cached
@@ -598,19 +657,28 @@ containment.
       `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- ./rhino gate run --surface=pre-push`.
 - [ ] [AI] Inspect `origin/main...HEAD`, diff-check/status, lock/licenses, generated provenance, migration and
       rollback paths, archive state, and absence of GraphQL/MCP/frontend/cloud artifacts.
+      acceptance: `rtk git diff --check origin/main...HEAD` exits 0
 - [ ] [AI] After explicit authorization, push and open/update draft PR; record exact head/base. Poll CI every two
       minutes without `gh run watch`, fixing root causes only.
+      acceptance: `test "$(rtk gh pr view --json headRefOid --jq .headRefOid)" = "$(rtk git rev-parse HEAD)"`
+      exits 0, so the draft PR head equals the local HEAD
 - [ ] [AI] Require exact-head/base Quality gate, applicable API/E2E/schema/migration/rules finite gates, and one
       clean authenticated current-head `pr-leak-review`. Semantic review is required only when the repository
       workflow or user requests it. All API exploratory fixes must be retested against this head.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+npm exec nx -- run ferret-be:verify:delivery
+--args='--phase=7 --evidence-output=local-tmp/plan-execution/ferret-init-02-local-backend/phase-7-gate.txt'`
+      exits 0, recording the current PR head/base Quality, leak, and API checks
 - [ ] [AI] After every hardened proof names the same current head/base and the archive is in the PR, mark the
       draft ready, recheck all five hardened merge preconditions, and squash-merge without requesting branch
       deletion. Record `FERRET_REVIEWED_HEAD`, `FERRET_MERGE_SHA`, `mergedAt`, and the PR URL externally. A
       human merge gate or external blocker may produce a ready-unmerged handoff only when explicitly selected;
       it is paused/incomplete, never terminal completion.
+      acceptance: `rtk gh pr view --json state --jq .state` prints MERGED
 - [ ] [AI] Fetch `origin/main`, prove the PR's historical `headRefOid` still equals
       `FERRET_REVIEWED_HEAD`, prove `FERRET_MERGE_SHA` is an ancestor of `origin/main`, and prove the archived
       Plan 02 `delivery.md` exists in that merge. Never test reviewed-head ancestry after a squash merge.
+      acceptance: `rtk git merge-base --is-ancestor "$FERRET_MERGE_SHA" origin/main` exits 0
 
 ### Phase 7 Gate
 
@@ -631,6 +699,8 @@ containment.
 
 - [ ] [AI] Fetch `origin`, verify reviewed-head/merge ancestry and delivered app/spec/contract/migration/archive
       state. Any mismatch reopens Phase 7.
+      acceptance: `rtk git cat-file -e
+"$FERRET_MERGE_SHA:plans/done/<completion-date>__ferret-init-02-local-backend/delivery.md"` exits 0
 - [ ] [AI] Continue the already-calling top-level plan-execution workflow at its terminal completeness step; do
       not recursively invoke it. Call `plan-execution-checker` with the archived plan path,
       `delivered-ref=$FERRET_MERGE_SHA`, and `reviewed-pr-head=$FERRET_REVIEWED_HEAD`; require `Status: Complete`,
@@ -639,17 +709,22 @@ containment.
       workflow with the Plan 02 worktree/branch/reviewed head/merge SHA. Classify every plan-created branch and
       every Docker, PostgreSQL, coverage, build, or evidence artifact by positive session ownership;
       active/ambiguous entries block cleanup, and user SQLite/PostgreSQL data is never deleted.
+      acceptance: `rtk git worktree list --porcelain | grep -c 'worktrees/ferret-init-02-local-backend'`
+      prints 0
 - [ ] [AI] For a live remote delivery branch, fetch without pruning, prove local and remote tips both equal
       `FERRET_REVIEWED_HEAD`, set that verified upstream, remove the worktree non-force, use ordinary
       `git branch -d`, then delete only that exact remote. For an already deleted remote after squash, allow
       `git branch -D` only with all four canonical proofs: local tip equals reviewed head, merge SHA is contained
       in `origin/main`, repository `delete_branch_on_merge` was enabled, and the exact branch has a
       `HEAD_REF_DELETED_EVENT` at or after `mergedAt`. Retain/escalate on any mismatch.
+      acceptance: `rtk git branch --list 'ferret-init-02-local-backend*'` prints nothing
 - [ ] [AI] Prune worktrees, fast-forward the clean primary `main`, inspect the full incoming diff, and require
       the worktree plus local/remote branch absent and
       `git rev-list --left-right --count HEAD...origin/main` equal `0 0`.
 - [ ] [AI] Publish final execution report with containment, terminal PASS, cleanup, measured storage, and explicit
       deferral of GraphQL/MCP adapters/dashboard and cloud deployment to separately authorized plans.
+      acceptance: `grep -rl 'final-status: pass' local-tmp/plan-execution/ferret-init-02-local-backend`
+      prints at least one report path
 
 ### Phase 8 Gate
 

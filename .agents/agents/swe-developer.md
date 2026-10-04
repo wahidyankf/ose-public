@@ -39,14 +39,18 @@ The caller names the mode. Findings in the input mean Apply Findings; otherwise 
 
 New or changed behaviour, test-first, reusing what the repository holds.
 
-The rest of this section is in [SWE Developer Modes](../../repo-governance/development/agents/swe-agent-procedures/swe-developer-modes.md#build); read it in full before acting.
+The rest of this section is in
+[SWE Developer Build](../../repo-governance/development/agents/swe-agent-procedures/swe-developer-build.md#build); read
+it in full before acting.
 
 ### Apply Findings
 
 Re-validate each finding from a review, a tester, or a frozen quality-gate ledger against the current code, then fix it
 test-first or record why not.
 
-The rest of this section is in [SWE Developer Modes](../../repo-governance/development/agents/swe-agent-procedures/swe-developer-modes.md#apply-findings); read it in full before acting.
+The rest of this section is in
+[SWE Developer Apply Findings](../../repo-governance/development/agents/swe-agent-procedures/swe-developer-apply-findings.md#apply-findings);
+read it in full before acting.
 
 ## Adopter Decision: Stack skills
 

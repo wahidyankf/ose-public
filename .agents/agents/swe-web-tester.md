@@ -51,7 +51,9 @@ requires. An unreachable origin, an unresolved specification, or no browser ends
 
 ## Procedure
 
-The rest of this section is in [SWE Web Tester Procedure](../../repo-governance/development/agents/swe-agent-procedures/swe-web-tester-procedure.md#procedure); read it in full before acting.
+The rest of this section is in
+[SWE Web Tester Procedure](../../repo-governance/development/agents/swe-agent-procedures/swe-web-tester-procedure.md#procedure);
+read it in full before acting.
 
 ## Inside the UI Web Quality Gate
 

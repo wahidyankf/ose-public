@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.10.0/schemas/repo-config/v2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.11.0/schemas/repo-config/v2.schema.json
 # Repository-owned policy for the checksum-pinned Rhino candidate.
 #
 # The grouped document contains no legacy compatibility section. Each retained
@@ -191,6 +191,7 @@ harness:
           - { when: denies, capability: repository-write, field: permission, entries: { edit: deny } }
           - { when: denies, capability: shell, field: permission, entries: { bash: deny } }
           - { when: constrains, capability: read-only, field: permission, entries: { edit: deny } }
+          - { when: no-dispatches, field: permission, entries: { task: deny } }
 
 policies:
   markdown:

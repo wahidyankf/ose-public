@@ -42,7 +42,9 @@ The caller names the mode. With none named, it asks rather than guessing.
 Before implementation, when a task touches a module boundary, adds a dependency, or makes a tradeoff no written rule
 settles.
 
-The rest of this section is in [SWE Architect Modes](../../repo-governance/development/agents/swe-agent-procedures/swe-architect-modes.md#design); read it in full before acting.
+The rest of this section is in
+[SWE Architect Modes](../../repo-governance/development/agents/swe-agent-procedures/swe-architect-modes.md#design); read
+it in full before acting.
 
 ### Final Review
 
@@ -62,7 +64,9 @@ occurrence. On a plan-only change under
 [Plan Document Route](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/agents/review-disciplines/005-plan-document-route.md), it judges
 the design decisions the plan makes.
 
-The rest of this section is in [SWE Architect Modes](../../repo-governance/development/agents/swe-agent-procedures/swe-architect-modes.md#lens); read it in full before acting.
+The rest of this section is in
+[SWE Architect Modes](../../repo-governance/development/agents/swe-agent-procedures/swe-architect-modes.md#lens); read
+it in full before acting.
 
 ## Adopter Decision: ADR location
 

@@ -188,6 +188,8 @@ a trustworthy clean baseline.
 - [ ] [AI] Enter the worktree; read root `AGENTS.md`, affected nested instructions, Init 03
       as-built docs, this numbered OSE ID plan family, C# rules, specs conventions, Nx target rules, and
       worktree-to-PR workflow before editing.
+      acceptance: `rtk git -C worktrees/ose-id-init-04-oidc-oauth-provider status --short` prints nothing, so no file
+      was edited before the reading.
 - [ ] [AI] Initialize tools with
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
       `rtk npm run doctor` (read-only; only if it reports drift, run
@@ -205,14 +207,20 @@ a trustworthy clean baseline.
 - [ ] [AI] Verify current OpenIddict/.NET 10 APIs, supported endpoint/pass-through/storage/key methods,
       resolved licenses, and protocol requirements against official sources. Record versions and
       confidence; do not paste source material or secrets.
+      acceptance: `grep -l 'confidence' plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-0-*.md`
+      prints at least one path, so versions and confidence are recorded.
 - [ ] [AI] Run the existing project build, typecheck, lint, Unit, Integration, backend E2E, behavior coverage, and
       spec gates through HIPPO. Fix baseline defects at root cause before plan work and record the clean
       observations.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
+      run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e` exits 0.
 
 ### Phase 0 Gate
 
 - [ ] [AI] `rtk git status --short` matches the recorded ledger; Init 03 tests are green; current tool
       and API facts are recorded; no execution blocker remains.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run
+      ose-id-be:test:quick` exits 0, so the Init 03 quick tests are green.
 
 > **Pause Safety:** no product file has changed and the baseline is reproducible. Safe to stop. To
 > resume, rerun the recorded Init 03 quick-test command through HIPPO.
@@ -274,11 +282,16 @@ implementation.
       its command/target records before the first Plan 04 scenario, binding, or test. Inspect the isolated
       RED ledger: only named absent Plan 04 behavior may be nonzero; a baseline, target/configuration, or
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
+      acceptance: `grep -l 'ose-id-be:build' plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-1-*.md`
+      prints at least one path, so the predecessor baseline command is recorded.
 - [ ] [AI] Every AC and threat maps to Unit plus applicable Integration/E2E proof, every exemption is
       explicit/indexed/static-valid, and at least 99% Unit line coverage for authored production code
       is enforced with only canonical exclusions. No contract permits implicit,
       password grant, wildcard redirect, universal audience, email subject, client-authored company, or
       provider login.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many
+      -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e` exits 0 with zero missing, duplicate, or unowned
+      mappings.
 
 > **Pause Safety:** contracts are reviewable while implementation remains absent. Safe to stop. To
 > resume, rerun the exact spec and static-coverage commands captured in Phase 1 evidence.
@@ -293,7 +306,8 @@ implementation.
 
 ### AC-04-01/03/08 — Atomic authorization, consent, code, and audited cleanup stores
 
-- [ ] [AI] **RED:** add focused Unit/Integration cases in the discovered `ose-id-be` test locations for
+- [ ] [AI] Delegate to `swe-developer`:
+      **RED:** add focused Unit/Integration cases in the discovered `ose-id-be` test locations for
       transaction expiry, context recheck, consent identity, single code consumption, concurrent
       redemption, and revocation. Freeze every resolved OpenIddict store-interface member, then add
       contracts for compiled SQL, UUID/text round trips, audit actor stamping, soft-delete/prune,
@@ -301,14 +315,16 @@ implementation.
       hard delete, missing member, or N+1 access fails before implementation. Run the focused Nx test targets; acceptance: failures
       name missing Init 04 stores/policy and query proof, not setup faults. Save sanitized output in
       `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-2-stores-red.txt`; an unrelated failure is fixed before GREEN.
-- [ ] [AI] **GREEN:** implement and register version-pinned custom OpenIddict stores for application,
+- [ ] [AI] Delegate to `swe-developer`:
+      **GREEN:** implement and register version-pinned custom OpenIddict stores for application,
       authorization, scope, and token records over SqlKata/Npgsql. Implement every interface member,
       `ON DELETE RESTRICT`, six audit fields, guard triggers, actor-attributed soft-delete/prune, active
       filters, UUID/text conversion, and terminal secret scrubbing. Implement versioned consent and
       render-safe transaction policies using shared PostgreSQL and optimistic/transactional guards;
       rerun focused tests plus compiled-SQL, query-plan, bounded-row, and N+1 contracts. Acceptance: one
       concurrent claimant consumes a code and no runtime EF model/context exists.
-- [ ] [AI] **REFACTOR:** keep OpenIddict entities inside infrastructure, remove duplicated transaction
+- [ ] [AI] Delegate to `swe-developer`:
+      **REFACTOR:** keep OpenIddict entities inside infrastructure, remove duplicated transaction
       mapping, and commit generated-SQL snapshots, catalog ownership assertions, synthetic `EXPLAIN`
       evidence, and bounded N+1/query-count assertions. Use `EXPLAIN ANALYZE` only for safe synthetic
       data. Run the Phase 2 Mandatory Nx Quality Matrix plus backend Integration and migration-upgrade
@@ -321,25 +337,47 @@ implementation.
       six columns, constraints, `ON DELETE RESTRICT` FKs, guards, grants, and performs a failed real
       `DELETE`; built E2E retires an expired token, proves it is unusable and absent from ordinary lookup,
       then observes its sanitized audit metadata. No layer exemption is permitted.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
+      run-many -t test:unit,test:integration -p ose-id-be` exits 0.
 
 ### AC-04-01/02 — Client, resource, context, and claims policy
 
-- [ ] [AI] **RED:** add table-driven policy tests for exact local callbacks, grant/response type, PKCE
+- [ ] [AI] Delegate to `swe-developer`:
+      **RED:** add table-driven policy tests for exact local callbacks, grant/response type, PKCE
       method, scopes/resources, personal/company eligibility, claim destinations, and excess-claim
       rejection. Capture the expected missing-policy failure.
-- [ ] [AI] **GREEN:** implement the synthetic LMS client/resource catalog and allowlisted claims policy;
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
+      run-many -t test:unit,test:integration -p ose-id-be` exits non-zero, with failures naming the missing policy
+      rather than a setup fault.
+- [ ] [AI] Delegate to `swe-developer`:
+      **GREEN:** implement the synthetic LMS client/resource catalog and allowlisted claims policy;
       acceptance: personal and company token projections match PRD exactly and unsupported entries fail.
-- [ ] [AI] **REFACTOR:** isolate catalog validation, context resolution, entitlement evaluation, and
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
+      run-many -t test:unit,test:integration -p ose-id-be` exits 0.
+- [ ] [AI] Delegate to `swe-developer`:
+      **REFACTOR:** isolate catalog validation, context resolution, entitlement evaluation, and
       claim destinations behind narrow application interfaces; rerun focused and regression suites.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
+      run-many -t test:unit,test:integration -p ose-id-be` exits 0.
 
 ### AC-04-04/05 — Shared asymmetric key lifecycle
 
-- [ ] [AI] **RED:** add key-state, JWKS-public-only, overlap, unknown-`kid`, wrong-algorithm, production
+- [ ] [AI] Delegate to `swe-developer`:
+      **RED:** add key-state, JWKS-public-only, overlap, unknown-`kid`, wrong-algorithm, production
       startup, and instance-handoff tests; capture missing behavior.
-- [ ] [AI] **GREEN:** implement the local shared key provider and pending→active→verify-only→retired
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
+      run-many -t test:unit,test:integration -p ose-id-be` exits non-zero, with failures naming the missing key behavior
+      rather than a setup fault.
+- [ ] [AI] Delegate to `swe-developer`:
+      **GREEN:** implement the local shared key provider and pending→active→verify-only→retired
       lifecycle with stable `kid`, overlap derived from token lifetime, and production-mode rejection.
-- [ ] [AI] **REFACTOR:** separate signing from metadata/publication, remove local-file/process-state
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
+      run-many -t test:unit,test:integration -p ose-id-be` exits 0.
+- [ ] [AI] Delegate to `swe-developer`:
+      **REFACTOR:** separate signing from metadata/publication, remove local-file/process-state
       dependencies, and rerun key, startup, and backend regression targets.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
+      run-many -t test:unit,test:integration -p ose-id-be` exits 0.
 
 ### Phase 2 Gate
 
@@ -362,16 +400,25 @@ implementation.
 
 ### AC-04-01/02/03/06 — Authorization and token profile
 
-- [ ] [AI] **RED:** add real-process backend E2E cases under `apps/ose-id-be-e2e/` for discovery, JWKS,
+- [ ] [AI] Delegate to `swe-developer`:
+      **RED:** add real-process backend E2E cases under `apps/ose-id-be-e2e/` for discovery, JWKS,
       authorization, allow/cancel consent, token exchange, absent UserInfo/refresh-token surfaces,
       revocation, logout,
       invalid redirect, missing/plain PKCE, wrong verifier, nonce/audience/issuer/signature/time faults,
       replay, context substitution, unsupported grants, and absent providers. Save red output.
-- [ ] [AI] **GREEN:** configure OpenIddict server endpoints and handlers, map the backend authorization
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run
+      ose-id-be-e2e:test:e2e` exits non-zero, with the new cases failing on the missing protocol behavior.
+- [ ] [AI] Delegate to `swe-developer`:
+      **GREEN:** configure OpenIddict server endpoints and handlers, map the backend authorization
       transaction, issue the exact ID/access artifacts, and enable only the synthetic local registrations.
       Acceptance: the complete positive flow passes and every negative case is denied safely.
-- [ ] [AI] **REFACTOR:** separate endpoint orchestration from domain/policy code, normalize safe protocol
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run
+      ose-id-be-e2e:test:e2e` exits 0.
+- [ ] [AI] Delegate to `swe-developer`:
+      **REFACTOR:** separate endpoint orchestration from domain/policy code, normalize safe protocol
       errors and secret redaction, then rerun full backend Unit/Integration/E2E and coverage gates.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run
+      ose-id-be-e2e:test:e2e` exits 0.
 
 ### Manual API Verification
 
@@ -459,6 +506,8 @@ then `409 authorization_transaction_terminal`. Any status/header/body divergence
 
 - [ ] [AI] AC-04-01 through AC-04-08 pass at all applicable layers; discovery advertises
       only supported features; production remains disabled.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run
+      ose-id-be-e2e:test:e2e` exits 0.
 
 > **Pause Safety:** localhost OIDC/OAuth works as one complete surface and fails closed elsewhere. Safe
 > to stop. To resume, rerun the recorded `ose-id-be-e2e:test:e2e` protocol command through HIPPO.
@@ -472,23 +521,41 @@ are green without merging or archiving yet.
 
 **Proof:** cross-instance E2E, independent security findings disposition, affected gates, exact-head CI.
 
-- [ ] [AI] **RED:** add an E2E that starts authorization on backend A, confirms/redeems on B, stops A
+- [ ] [AI] Delegate to `swe-developer`:
+      **RED:** add an E2E that starts authorization on backend A, confirms/redeems on B, stops A
       before completion, rotates active signing key, and validates old/new tokens without affinity.
-- [ ] [AI] **GREEN:** remove any discovered process-local correctness state and route both instances to
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run
+      ose-id-be-e2e:test:e2e` exits non-zero until the shared stores and key material are in place.
+- [ ] [AI] Delegate to `swe-developer`:
+      **GREEN:** remove any discovered process-local correctness state and route both instances to
       shared stores/key material; acceptance: the test passes with A unavailable.
-- [ ] [AI] **REFACTOR:** inspect singleton caches, temp files, static mutable state, and background jobs;
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run
+      ose-id-be-e2e:test:e2e` exits 0.
+- [ ] [AI] Delegate to `swe-developer`:
+      **REFACTOR:** inspect singleton caches, temp files, static mutable state, and background jobs;
       retain only rebuildable optimizations and rerun concurrent/restart tests.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run
+      ose-id-be-e2e:test:e2e` exits 0.
 - [ ] [AI] Run an independent security review against the Phase 1 threat model. Fix every validated high
       or medium finding through its own regression-first cycle; record rejected findings with evidence.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
+      run-many -t test:unit,test:integration -p ose-id-be` exits 0, so every regression test for a validated finding
+      passes.
 - [ ] [AI] Update OSE ID/spec/reference docs for the delivered local issuer and MIT source inheritance.
       Preserve dependency license notices; make no production/deployment claim.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec
+      markdownlint-cli2 -- specs/apps/ose/id-be/README.md` exits 0.
 - [ ] [AI] If any registry, port, target, boundary, rule, or enforcement must change, execute the full
       repository-local rules-propagation workflow: intake, inventory, conflict/precedence analysis,
       narrow placement, enforcement disposition, binding generation when canonical sources change,
       verification, rules-quality-gate, manifest, final status, and sibling obligation.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run
+      --surface=pre-push` exits 0.
 - [ ] [AI] Run mandatory semantic review under the repository BDD contract plus independent security
       review of protocol, claims, keys, consent, and statelessness. Resolve every validated finding
       through regression-first changes before local gates.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many
+      -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e` exits 0.
 
 ### Local Quality Gates Before Push
 
@@ -499,8 +566,10 @@ are green without merging or archiving yet.
       reopens its owning implementation packet.
 - [ ] [AI] **Important:** fix all failures encountered at root cause, including preexisting failures;
       update proof after every fix and do not narrow, skip, retry, or loosen a gate.
+      acceptance: `rtk npm run check:pre-push` exits 0.
 - [ ] [AI] Reconcile `git diff`, frozen ledger, file-impact tree, generated-file ownership, licenses,
       plan checklist, and evidence. No unowned or deployment file may remain.
+      acceptance: `rtk npm run check:pre-push` exits 0.
 - [ ] [AI] Before every authorized push, run the canonical registry exactly:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`.
 
@@ -514,6 +583,8 @@ are green without merging or archiving yet.
       through the workflow's one bounded `.agents/agents/swe-developer.md` (Apply Findings mode) pass, rebuild, rerun the
       affected Unit/Integration/E2E checks, and invoke the checker once for scoped verification. Save
       the request, report, fixes, retest, and final status under `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-ui-quality-gate/`.
+      acceptance: `grep -rl 'final-status: pass'
+      plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-ui-quality-gate/` prints at least one path.
 - [ ] [AI] Run the built local stack with
       `OSE_ID_E2E_SEED_PROFILE=logout-ui OSE_ID_BE_PORT=8501 OSE_ID_POSTGRES_PORT=5438 rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve-local`;
       acceptance: its bounded seed output returns a synthetic browser storage-state path and registered
@@ -540,9 +611,12 @@ are green without merging or archiving yet.
       the affected state plus full smoke. Store reports and retests under `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4/web-live-gates/`.
       Any unchecked defect, undisposed suggestion, technical failure, `partial`, regression, or missing
       selected-asset sign-off blocks the phase and reopens the earliest responsible implementation step.
+      acceptance: `grep -rl 'final-status: pass'
+      plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4/web-live-gates/` prints at least one path.
 - [ ] [AI] Reconcile the evolving trace ledger for every AC, threat, file, test, manual assertion,
       rollback/recovery rule, and delivery-boundary promise. The formal preliminary audit occurs only
       after Knowledge Capture in Phase 6.
+      acceptance: `rtk npm run check:pre-push` exits 0.
 
 ### Mandatory API Quality Gate and Rule-16 Protocol Session
 
@@ -559,6 +633,8 @@ coverage.
 - [ ] [AI] Start the final built local stack with the Phase 3 command and prove
       `http://127.0.0.1:8501/.well-known/openid-configuration` is reachable. Use only synthetic people,
       companies, clients, codes, and tokens; restore the seeded database after destructive probes.
+      acceptance: `rtk lsof -nP -iTCP:8501 -sTCP:LISTEN` prints one listening process line, so the final stack is
+      serving on the pinned port.
 - [ ] [AI] Invoke
       [`swe-api-tester`](../../../.agents/agents/swe-api-tester.md) (exploratory charter) once with
       `quality-gate-phase: discovery`, `output-mode: delivery`, this executing plan's `plan-path`,
@@ -568,11 +644,15 @@ coverage.
       `tech-docs/005-api-contract-delta.md`; OpenAPI owner
       `specs/apps/ose/id-be/contracts/openapi.yaml`; and all mapped features under
       `specs/apps/ose/id-be/`.
+      acceptance: `grep -c 'discovery'
+      plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-api-quality-gate.md` prints at least 1.
 - [ ] [AI] Require the API discovery pass to enumerate transaction reads, personal/company offers,
       allow/cancel decisions, auth/service/context boundaries, schema/status/problem conformance,
       stale/expired/replay/concurrency, limits, safe errors, and instance-A-to-B behavior. Append all
       REST findings as `AET-###`; save the sanitized request/status/response transcript and matrix at
       `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-api-quality-gate.md` with no code, token, verifier, cookie, key, or PII value.
+      acceptance: `test -f plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-api-quality-gate.md`
+      exits 0.
 - [ ] [AI] Separately run an OIDC/OAuth protocol exploratory session through the built synthetic LMS BFF
       and resource against discovery plus every protocol ADD packet in
       `tech-docs/005-api-contract-delta.md`. Enumerate authorization-code + PKCE S256,
@@ -581,21 +661,29 @@ coverage.
       rate limits, cache headers, and instance A-to-B. Record sanitized commands/statuses/semantic
       response assertions and `PROTO-###` findings in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-protocol-conformance.md`; do not
       represent this as an OpenAPI/API-gate run.
+      acceptance: `test -f
+      plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-protocol-conformance.md` exits 0.
 - [ ] [AI] For every protocol finding, add a lowest-layer failing regression, fix with
       `swe-developer` with `programming-csharp`, rebuild/restart, and rerun the
       exact protocol reproduction plus affected protocol matrix. Any unresolved protocol defect blocks
       Phase 4; deferral requires explicit user permission.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run
+      ose-id-be-e2e:test:e2e` exits 0.
 - [ ] [AI] If discovery has no strict-threshold finding, record `final-status: pass` and do not invoke a
       fixer. If it has an in-threshold finding, run exactly one bounded fix pass with
       `swe-developer` with `programming-csharp`: revalidate the finding, add a
       failing regression at the lowest applicable layer, implement the root-cause fix, and rerun its
       Unit/Integration/E2E and contract checks. A correct-but-unspecified observation becomes an
       app-scoped `specs/**` scenario before the fix; it is not dismissed as a false positive.
+      acceptance: `grep -c 'final-status'
+      plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-api-quality-gate.md` prints at least 1.
 - [ ] [AI] After that one fix pass, rebuild and restart the stack once, then invoke the same tester once
       with `quality-gate-phase: verification`, original in-threshold finding IDs/reproduction steps,
       affected operations, the same lifecycle handoff, and the same delivery output. Verify originals
       and affected authorization/error/security behavior only; do not begin another discovery or fix
       loop inside this run.
+      acceptance: `grep -c 'verification'
+      plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-api-quality-gate.md` prints at least 1.
 - [ ] [AI] Record `final-status` and independent `lifecycle-status` in
       `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-api-quality-gate.md`. Only `pass` plus `verified` or `not-applicable` may cross
       the Phase 4 gate. `partial`, `fail`, or `pending` blocks delivery: stop, diagnose at root cause,
@@ -614,6 +702,7 @@ coverage.
       validation, Unit line coverage for authored production code is at least 99% with only canonical
       exclusions, and no high/medium security
       finding, secret, provider implementation, deployment mutation, or production enablement remains.
+      acceptance: `rtk npm run check:pre-push` exits 0.
 
 > **Pause Safety:** implementation is complete and locally proven on the delivery branch; nothing has
 > merged. Safe to stop. To resume, rerun the recorded affected and manual gates.
@@ -629,8 +718,11 @@ coverage.
 - [ ] [AI] Review each learning against the repository litmus test. Move reusable protocol, C#, testing,
       or workflow knowledge to the narrowest durable docs/rules/spec authority; route rule changes
       through rules propagation and add regression/enforcement where required.
+      acceptance: `test -f plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-5-knowledge.md` exits 0.
 - [ ] [AI] Mark duplicates and plan-only observations explicitly. Run applicable docs/rules gates after
       durable edits and record an explicit none disposition if the log has no generalizable entry.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec
+      markdownlint-cli2 -- plans/in-progress/ose-id-init-04-oidc-oauth-provider/learnings.md` exits 0.
 
 ### Phase 5 Gate
 
@@ -651,6 +743,7 @@ audit evidence before the exact-head review.
 - [ ] [AI] Perform the preliminary plan-execution audit. Trace every AC, threat, file, migration,
       adapter binding/exemption, test, manual assertion, recovery rule, and delivery-boundary promise;
       reopen the earliest incomplete phase rather than marking speculative completion.
+      acceptance: `rtk npm run check:pre-push` exits 0.
 - [ ] [AI] After completion proof exists, run `rtk date +%F` and record the returned date as
       `<completion-date>`; do not predict it.
 - [ ] [AI] In the delivering branch run
@@ -660,6 +753,8 @@ audit evidence before the exact-head review.
 - [ ] [AI] Do not stage or commit until the user explicitly authorizes the named change set. Then use
       the fewest build-valid, reviewable Conventional Commits, including
       `chore(plans): move ose-id-init-04-oidc-oauth-provider to done` for the archival slice.
+      acceptance: `rtk git log origin/main..HEAD --grep='chore(plans): move ose-id-init-04-oidc-oauth-provider to done'
+      --format=%s` prints the archival commit subject.
 - [ ] [AI] Run all docs/plan/link gates and the canonical pre-push registry exactly:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`;
       push and open or update the PR to `main`.
@@ -668,6 +763,7 @@ audit evidence before the exact-head review.
 
 - [ ] [AI] The PR head contains implementation, proof, Knowledge Capture, archive, indexes, and
       references; preliminary audit is green and the working tree matches the ledger.
+      acceptance: `rtk npm run check:pre-push` exits 0.
 
 > **Pause Safety:** the complete delivery is pushed but unmerged. Safe to stop. To resume, fetch the PR
 > head and verify it matches the recorded SHA.
@@ -684,14 +780,17 @@ audit evidence before the exact-head review.
       applicable API/security surface gates, and mandatory semantic review under the repository BDD
       contract. Poll CI every two minutes; root-cause fixes return to Phase 4 or 6 and require a new
       exact-head review.
+      acceptance: `rtk npm run check:pre-push` exits 0.
 - [ ] [AI] Immediately before any follow-up push, rerun the exact canonical pre-push command from Phase 6. Never merge a head different from the reviewed head.
 - [ ] [AI] Merge `[AI]` only after hardened preconditions and all required checks are green. Confirm the
       merge commit contains the exact reviewed head and production remains fail-closed.
+      acceptance: `rtk git merge-base --is-ancestor <reviewed-head> origin/main` exits 0.
 
 ### Phase 7 Gate
 
 - [ ] [AI] The reviewed PR head is merged to `main`; no provider, deployment, or production enablement
       entered the delivery.
+      acceptance: `rtk git merge-base --is-ancestor <reviewed-head> origin/main` exits 0.
 
 > **Pause Safety:** merge is complete; only workflow-owned post-merge finalization remains. Retain the
 > worktree until containment and terminal audit succeed.
@@ -709,8 +808,12 @@ audit evidence before the exact-head review.
       and no deployment surface changed.
 - [ ] [AI] Run the workflow-owned terminal audit against the delivered head. This item is never checked
       before merge. If it fails, retain the worktree and reopen the earliest affected execution packet.
+      acceptance: `grep -l 'terminal audit'
+      plans/done/<completion-date>__ose-id-init-04-oidc-oauth-provider/evidence/phase-8-*.md` prints at least one path.
 - [ ] [AI] Classify every Phase 0 branch/inventory row as delivered, unused, or retained/escalated with
       owner and evidence; ambiguity is escalated, never deleted.
+      acceptance: `grep -l 'delivered'
+      plans/done/<completion-date>__ose-id-init-04-oidc-oauth-provider/evidence/phase-8-*.md` prints at least one path.
 - [ ] [AI] From the repository root, complete mandatory pre-removal checks, then remove non-force with
       `rtk git worktree remove worktrees/ose-id-init-04-oidc-oauth-provider`; clean the delivered branch
       by convention and run `rtk git worktree prune`.
@@ -719,6 +822,8 @@ audit evidence before the exact-head review.
 
 - [ ] [AI] Containment and terminal audit pass against the merged head; inventory and cleanup records
       are complete; no live delivery worktree remains.
+      acceptance: `test ! -e worktrees/ose-id-init-04-oidc-oauth-provider` exits 0, so no live delivery worktree
+      remains.
 
 > **Pause Safety:** delivery and cleanup are terminally complete. Any later defect starts a new
 > regression-first delivery rather than reopening this worktree.

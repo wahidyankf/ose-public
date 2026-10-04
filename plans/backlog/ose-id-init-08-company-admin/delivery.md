@@ -192,25 +192,34 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       resolved merge; inspect their full delivered diffs and terminal audits. Save exact archive/merge/API/
       session/target/locale/UI facts at `evidence/phase-0-dependencies.md`. Missing, non-ancestor, stale, or
       conflicting proof stops before worktree creation and routes to the prerequisite owner.
+      acceptance:
+      `grep -c 'ose-id-init-0[35]' plans/in-progress/ose-id-init-08-company-admin/evidence/phase-0-dependencies.md`
+      prints at least 1.
 - [ ] [AI] **Owner: integrator; worktree.** Verify the lifecycle-only promotion diff, run
       `rtk git worktree list --porcelain`, then provision/enter the exact worktree using the Worktree
       section command. Save path, branch, 40-character HEAD, creator/session, UTC time, and inventory at
       `evidence/phase-0-worktree.md`. Divergence from current `origin/main` or second worktree stops under
       the documented recovery procedure.
+      acceptance:
+      `grep -c 'worktrees/ose-id-init-08' plans/in-progress/ose-id-init-08-company-admin/evidence/phase-0-worktree.md`
+      prints at least 1.
 - [ ] [AI] Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
       `rtk npm run doctor` (read-only; only if it reports drift, run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
       and repeat Doctor); inspect the diff
       and reject secrets or unrelated mutation.
+      acceptance: `rtk npm run doctor` exits 0 and reports no drift.
 - [ ] [AI] **Owner: web lane; route/component/port inventory.** Run
       `rtk rg -n "api/bff|Card|Table|Dialog|Alert|3500|8501|5438|1026|8026" apps/ose-id-web libs/web-ui libs/web-ui-token docs/reference/web-sites.md repo-config.yml`
       and `rtk lsof -nP -iTCP -sTCP:LISTEN`. Save exact reusable/net-new decisions and collision results at
       `evidence/phase-0-web-inventory.md`. Any occupied reserved port or unowned duplicate component stops
       for plan amendment; never select a port or shared primitive silently.
+      acceptance: `test -f plans/in-progress/ose-id-init-08-company-admin/evidence/phase-0-web-inventory.md` exits 0.
 - [ ] [AI] **Owner: dependency reviewer; licenses.** Run
       `rtk git ls-files LICENSE LICENSING-NOTICE.md package-lock.json` and the delivered Plan 05 dependency
       audit target; record package/version/license/source/disposition at `evidence/phase-0-licenses.md`.
       Unknown/incompatible/missing-notice dependencies block the phase; OSE-authored source remains MIT.
+      acceptance: `test -f plans/in-progress/ose-id-init-08-company-admin/evidence/phase-0-licenses.md` exits 0.
 - [ ] [AI] **Owner: integrator; baseline.** Run the Phase 0 predecessor-green baseline commands,
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`,
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`,
@@ -249,6 +258,8 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       unchanged Plan 03 operations. Run the repository OpenAPI lint/bundle target recorded in Phase 0 and
       save semantic operation/schema diff at `evidence/phase-1-openapi.txt`. Any extra field/operation or
       backend contract change blocks RED and routes to this owner.
+      acceptance: `grep -c 'CompanyAdminContextView' specs/apps/ose/id-web/contracts/company-admin.openapi.yaml`
+      prints at least 1.
 - [ ] [AI] **RED — BFF contract:** add handler, runtime-schema, safe-projection, auth/context, status/
       problem-mapping, CSRF, pagination, idempotency, concurrency, and redaction Unit/Integration tests.
       Run `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit`
@@ -276,6 +287,9 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       its command/target records before the first Plan 08 scenario, binding, or test. Inspect the isolated
       RED ledger: only named absent Plan 08 behavior may be nonzero; a baseline, target/configuration, or
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
+      acceptance:
+      `grep -l 'typecheck,lint,test:quick' plans/in-progress/ose-id-init-08-company-admin/evidence/phase-1-*`
+      prints at least one record path.
 - [ ] [AI] Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-web,ose-id-web-e2e`;
       acceptance: static BDD coverage passes, every scenario maps to Unit/Integration/E2E, all intended
@@ -299,8 +313,8 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       acceptance: the named company-admin cases fail only because adapters/view models are absent while
       predecessor cases pass. Save `evidence/phase-2-bff-red.txt`.
 
-- [ ] [AI] **GREEN:** implement the exact allowlisted view models and server-only adapters. Use the Plan 05
-      session; never accept browser company identity as authority, cache authorization, or pass upstream
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement the exact allowlisted view models and server-only adapters.
+      Use the Plan 05 session; never accept browser company identity as authority, cache authorization, or pass upstream
       bodies/errors through. Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit` and
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:integration`;
@@ -311,7 +325,8 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       shared-library, or backend change would be needed, then amend the exact file boundary before RED.
       Run the Phase 2 Unit/Integration commands; acceptance: every closed status maps safely and unknown
       status fails closed. Save `evidence/phase-2-problem-map-green.txt`.
-- [ ] [AI] **REFACTOR:** remove duplicated state/policy language and prove no provider subject, credential,
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** remove duplicated state/policy language and prove no provider
+      subject, credential,
       raw invitation capability, global audit, product role, or Company B field enters a view model.
       Rerun both commands plus OpenAPI validation for
       `specs/apps/ose/id-web/contracts/company-admin.openapi.yaml`; acceptance: output is green, the
@@ -342,16 +357,18 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       acceptance: named member cases fail for absent roster/detail presentation while BFF and predecessor
       cases pass. Save `evidence/phase-3-members-red.txt`.
 
-- [ ] [AI] **GREEN:** implement the selected semantic roster/detail drawer, labeled mobile cards, loading,
-      empty, pagination/filter, denied, stale, and last-admin conflict states using shared primitives.
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement the selected semantic roster/detail drawer, labeled mobile
+      cards, loading, empty, pagination/filter, denied, stale, and last-admin conflict states using shared primitives.
       Run `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit`
       and `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`;
       acceptance: the Phase 1 member RED set is green at every supported locale/width. Save
       `evidence/phase-3-members-green.txt`.
-- [ ] [AI] Implement keyboard/focus/status behavior, 200% zoom, 320 px safety, and table headers/card labels.
+- [ ] [AI] Delegate to `swe-developer`: Implement keyboard/focus/status behavior, 200% zoom, 320 px safety, and table
+      headers/card labels.
       Run the Phase 3 Unit/E2E commands; acceptance: automated accessibility/keyboard cases pass and
       manual evidence has no clipped control. Save `evidence/phase-3-members-accessibility-green.txt`.
-- [ ] [AI] **REFACTOR:** keep authorization server-derived and no action hover/color-only. Rerun the exact
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** keep authorization server-derived and no action hover/color-only.
+      Rerun the exact
       Unit and E2E commands above, whose configured suites include component accessibility and Playwright
       locale/breakpoint coverage. Save commands and
       sanitized output in `evidence/phase-3-members-refactor.txt`; acceptance: no duplicate projection,
@@ -381,8 +398,8 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       acceptance: named cases fail only for absent UI/BFF presentation and the backend remains unchanged.
       Save `evidence/phase-4-invitations-entitlements-red.txt`.
 
-- [ ] [AI] **GREEN:** implement invitation list/create/resend/revoke/status and entitlement grant/revoke
-      screens by invoking existing Plan 03 commands. Render Mailpit-delivered flow; never create, store,
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement invitation list/create/resend/revoke/status and entitlement
+      grant/revoke screens by invoking existing Plan 03 commands. Render Mailpit-delivered flow; never create, store,
       parse, log, or expose a capability. Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit`,
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:integration`,
@@ -392,12 +409,12 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
 - [ ] [AI] Rerun retained `AC-TEN-12` through backend Unit, Integration, and built E2E after the BFF
       revoke/remove journeys. Acceptance: actor attribution is preserved, ordinary reads omit the
       tombstone, a serving-role hard delete fails, and no backend/schema diff or test-only API is added.
-- [ ] [AI] Implement destructive confirmation/recent-auth return, focus restoration, stale/error recovery,
-      and a strict entry-entitlement vocabulary with no product-role input. Run the three Phase 4
+- [ ] [AI] Delegate to `swe-developer`: Implement destructive confirmation/recent-auth return, focus restoration,
+      stale/error recovery, and a strict entry-entitlement vocabulary with no product-role input. Run the three Phase 4
       commands; acceptance: all confirmation/recovery cases pass and no product-role field is accepted.
       Save `evidence/phase-4-confirmation-green.txt`.
-- [ ] [AI] **REFACTOR:** reuse the member status/confirmation presentation model. Rerun the exact three
-      Phase 4 commands. Record duplication/accessibility review and sanitized output in
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** reuse the member status/confirmation presentation model. Rerun the
+      exact three Phase 4 commands. Record duplication/accessibility review and sanitized output in
       `evidence/phase-4-invitations-entitlements-refactor.txt`; acceptance: behavior stays green, backend
       and shared-primitive diffs remain empty, and no capability/contact enters logs or browser storage.
 
@@ -593,10 +610,15 @@ rtk curl -fsS http://127.0.0.1:8026/
 - [ ] [AI] Open Invitations, fill `invitee.a@example.test`, submit, inspect the message only at
       `http://127.0.0.1:8026`, and confirm the UI shows the current Plan 03 status without a raw link value
       in DOM/log/evidence. Exercise resend/revoke and one safe denial as Company B/personal user.
+      acceptance:
+      `grep -c 'invitations' plans/in-progress/ose-id-init-08-company-admin/evidence/phase-5-company-admin-network.txt`
+      prints at least 1.
 - [ ] [AI] At 375 and 1280 CSS px, run `browser_snapshot` and `browser_take_screenshot`; store sanitized
       captures at `evidence/phase-5-company-members-en-375px.png`,
       `evidence/phase-5-company-invite-en-1280px.png`, and safe network/console text at
       `evidence/phase-5-company-admin-network.txt`. Never save cookies/capabilities.
+      acceptance: `ls plans/in-progress/ose-id-init-08-company-admin/evidence/phase-5-company-*`
+      exits 0 and prints the three named captures.
 
 Any wrong URL/status, tenant leak, console error, browser-stored authority, unreachable dependency, or
 missing focus state fails the phase; save sanitized failure evidence, stop, fix root cause, and rerun from
@@ -637,6 +659,8 @@ process/container/network/volume/temp-secret inventories are empty.
 - [ ] [AI] Enforce at least **99% Unit line coverage for authored production code**.
       Exclusions follow only canonical generated/test policy. Validate every Gherkin scenario's Unit,
       Integration, and E2E mapping and every explicit indexed boundary exemption.
+      acceptance: rerun the Phase 2 Unit command, `ose-id-web:test:unit`, which exits 0 and prints at least
+      99% Unit line coverage for authored production code.
 - [ ] [AI] Run the bounded `repo-governance/workflows/quality/api-http-quality-gate.md` in `mode: strict` against
       the ready BFF at `http://127.0.0.1:3500`, with
       `specs/apps/ose/id-web/contracts/company-admin.openapi.yaml`, the company-admin web Gherkin, and
@@ -646,6 +670,8 @@ process/container/network/volume/temp-secret inventories are empty.
       path. Enumerate every safe operation, status, schema, auth/context/tenant boundary, pagination,
       idempotency, concurrency, rate-limit, and privacy rule. The tester does not perform successful
       destructive member/invitation/entitlement changes; isolated Integration/E2E owns those rows.
+      acceptance: `grep -l 'final-status: pass' plans/in-progress/ose-id-init-08-company-admin/evidence/phase-6-*`
+      prints at least one tester record path.
 - [ ] [AI] Perform one API discovery, triage original `AET-###` findings at the strict threshold, and
       append each finding as a new unchecked delivery task. If needed, run `swe-developer` with `programming-typescript` once for
       validated fixes with reproducing regression tests, rebuild/restart once, then run one scoped tester
@@ -678,11 +704,15 @@ process/container/network/volume/temp-secret inventories are empty.
       sanitized evidence. Accept/reject `SG-###` and `USS-###` proposals explicitly. A missing tester,
       sampled matrix, unresolved finding, tenant leak, console/accessibility/design regression, or
       unexplained gap blocks archival.
+      acceptance: `grep -c '^ *- \[ \] [EUD]WT-' plans/in-progress/ose-id-init-08-company-admin/delivery.md` prints 0.
 - [ ] [AI] Run independent security, logic, types, architecture, and test-integrity semantic review; this
       identity/security change requires semantic review. Search diff/evidence for secrets, tokens,
       capabilities, tenant data, provider fields, platform-superadmin scope, backend/schema/RLS changes,
       deployment/Kubernetes content, and license drift.
+      acceptance: `rtk git diff --exit-code -- apps/ose-id-be apps/ose-id-be-e2e specs/apps/ose/id-be` exits 0.
 - [ ] [AI] Run `plan-execution-checker`, address all findings, and record preliminary exact-head evidence.
+      acceptance: `grep -l 'plan-execution-checker' plans/in-progress/ose-id-init-08-company-admin/evidence/phase-6-*`
+      prints at least one record path.
 
 ### Phase 6 Gate
 
@@ -703,28 +733,38 @@ process/container/network/volume/temp-secret inventories are empty.
 
 - [ ] [AI] Apply the durability, sensitivity, and public-repository gates to every `learnings.md` entry;
       route each surviving entry to one durable home or record an explicit plan-only/discarded reason.
+      acceptance: `grep -vc -e '^<!--' -e '^#' -e '^$' plans/in-progress/ose-id-init-08-company-admin/learnings.md`
+      prints at least 1.
 - [ ] [AI] Perform the preliminary end-to-end completeness audit across every AC, full Gherkin adapter
       map, UI/manual evidence, file boundary, local guard, rollback, rule/license disposition, and
       learning. Reopen the earliest unsupported phase; checked boxes alone are not proof.
+      acceptance: `grep -l 'completeness audit' plans/in-progress/ose-id-init-08-company-admin/evidence/phase-7-*`
+      prints at least one record path.
 - [ ] [AI] Reconcile the final file ledger and branch inventory. Run `rtk date +%F`, move
       `plans/in-progress/ose-id-init-08-company-admin/` to
       `plans/done/<completion-date>__ose-id-init-08-company-admin/`, update indexes/references, and rerun
       plan/Markdown/Mermaid gates before final push. The archive move belongs to the same delivering PR.
+      acceptance: `test -f plans/done/<completion-date>__ose-id-init-08-company-admin/delivery.md` exits 0.
 - [ ] [AI] Do not stage, commit, push, or open/merge the PR without explicit authorization for the named
       action. Once authorized, use the fewest build-valid Conventional Commits; the PR body states
       authored-code cost/benefit, with tests exempt.
+      acceptance: `rtk git log --format=%s origin/main..HEAD` prints only Conventional Commit subjects.
 - [ ] [AI] After the archive commit is on the PR branch, verify exact current-head/base Quality gate,
       current-head leak review, semantic/UI/API gates, and resolved conversations. Merge only that
       reviewed head after hardened preconditions hold.
+      acceptance: `grep -l 'pr-quality-gate' plans/in-progress/ose-id-init-08-company-admin/evidence/phase-7-*`
+      prints at least one record path.
 - [ ] [AI] Verify merge containment and run the workflow-owned terminal audit against the delivered head;
       record proof outside the already-merged plan. Only after PASS, remove the execution worktree
       non-force through mandatory cleanup, classify/delete eligible branches, and run
       `rtk git worktree prune`.
+      acceptance: `rtk git worktree list --porcelain` prints no `worktrees/ose-id-init-08-company-admin` entry.
 
 ### Phase 7 Gate
 
 - [ ] [AI] One merged PR contains implementation, knowledge capture, and archived plan; the terminal
       audit passes and no worktree, branch, or owned resource remains.
+      acceptance: `rtk git branch --list 'ose-id-init-08-company-admin*'` prints nothing.
 
 > **Pause Safety:** after merge and terminal audit, the delivery is complete. Before merge, retain the
 > worktree. Safe to stop. To resume: `rtk git status --short` and reconcile it with the branch inventory.

@@ -173,9 +173,11 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
 - [ ] [AI] Verify `origin/main` contains completed plans 01–05 and this folder exists only under
       `plans/in-progress/`. Inspect full intervening diffs; stop if plan 05's actual contract conflicts
       with this plan.
+      acceptance: `rtk git ls-tree --name-only origin/main plans/done/ | grep -c 'ose-id-init-0[1-5]-'` prints 5.
 - [ ] [AI] From repository root, provision/enter `worktrees/ose-id-init-07-google-federation/`, sync it
       non-destructively with current `origin/main`, and record route/branch/HEAD/reflog evidence plus a
       branch-inventory row.
+      acceptance: `rtk git merge-base --is-ancestor origin/main HEAD` exits 0 inside the execution worktree.
 - [ ] [AI] Run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
       `rtk npm run doctor` (read-only; only if it reports drift, run
@@ -186,6 +188,8 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
       `apps/ose-id-web/project.json`, and `apps/ose-id-web-e2e/project.json`; record actual source roots,
       target names, runtime guards, migration ownership, and test commands. Update planned paths/commands
       before code if prior slices differ.
+      acceptance: `test -f plans/in-progress/ose-id-init-07-google-federation/evidence/phase-0-path-inventory.md`
+      exits 0.
 - [ ] [AI] Verify root `LICENSE`, `LICENSING-NOTICE.md`, current package manifests, and exact resolved
       licenses for any proposed Google/OIDC library. Acceptance: OSE source/docs remain root MIT and
       third-party licenses are compatible and documented.
@@ -194,9 +198,14 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`; inventory the registry with
       `rtk ./rhino gate list --output text`; preserve clean baseline transcripts. Diagnose every failure
       at root cause; never skip, retry, sleep, quarantine, widen, or weaken a gate.
+      acceptance: `grep -c 'pre-push' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-0-baseline.md`
+      prints at least 1.
 - [ ] [AI] Search current OSE ID files for provider abstractions and Google/Facebook references. Reuse a
       proven seam, remove no unrelated user work, and record whether any repository rule/enforcement
       surface must change.
+      acceptance:
+      `grep -c 'rule/enforcement' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-0-baseline.md`
+      prints at least 1.
 
 ### Phase 0 Gate
 
@@ -272,17 +281,20 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec markdownlint-cli2 -- plans/in-progress/ose-id-init-07-google-federation/delivery.md`;
       acceptance is exit `0`, exact paths for every row, and RED as the only executed stage. A missing
       operation/stage/path or any premature GREEN blocks Phase 2.
-- [ ] [AI] **RED:** create provider-port and account-policy Unit cases under the Phase 0-discovered
-      `ose-id-be` test source for AC-GOOGLE-01..06; run
+- [ ] [AI] Delegate to `swe-developer`: **RED:** create provider-port and account-policy Unit cases under the
+      Phase 0-discovered `ose-id-be` test source for AC-GOOGLE-01..06; run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:test:unit`;
       acceptance: the new cases fail because the provider contract and policies do not exist, while old
       tests remain green. Save sanitized output to `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-1-backend-red.txt`.
-- [ ] [AI] **RED:** create web component/server-boundary cases under the discovered `ose-id-web` test
-      source for Google action/loading/denial/linking states; run the `ose-id-web:test:unit` target;
+- [ ] [AI] Delegate to `swe-developer`: **RED:** create web component/server-boundary cases under the discovered
+      `ose-id-web` test source for Google action/loading/denial/linking states; run the `ose-id-web:test:unit` target;
       acceptance: new assertions fail for missing presentation only. Save output.
-- [ ] [AI] **REFACTOR:** review names and fixture vocabulary so specs, tests, and product terms use
-      provider issuer/subject consistently and never encode email as identity. Rerun static coverage;
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** review names and fixture vocabulary so specs, tests, and product
+      terms use provider issuer/subject consistently and never encode email as identity. Rerun static coverage;
       acceptance: mappings remain complete.
+      acceptance: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx --
+      run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`
+      outputs zero duplicate/undefined/unowned scenarios, with missing implementations only RED.
 
 ### Phase 1 Gate
 
@@ -290,6 +302,9 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       its command/target records before the first Plan 07 scenario, binding, or test. Inspect the isolated
       RED ledger: only named absent Plan 07 behavior may be nonzero; a baseline, target/configuration, or
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
+      acceptance:
+      `grep -c 'predecessor' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-1-contracts.md`
+      prints at least 1.
 - [ ] [AI] Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`;
       acceptance: all scenarios have U/I/E ownership, threat owners, and named RED evidence while no
@@ -335,6 +350,9 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       tables' six columns, time/pair constraints, guards, `ON DELETE RESTRICT`, grants, and executes a
       rejected real `DELETE`; built E2E unlinks a non-final provider, proves it unusable/absent from
       ordinary reads, and observes retained sanitized attribution. No layer exemption is permitted.
+      acceptance:
+      `grep -c 'AC-GOOGLE-08' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-2-backend.md`
+      prints at least 1.
 - [ ] [AI] **Backend slice quality closure.** Rerun backend build/typecheck/lint/Unit/Integration and
       migration validation with
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build,typecheck,lint,test:unit,test:integration -p ose-id-be`.
@@ -363,8 +381,8 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
 
 **Proof:** fake scenario matrix and ownership-aware cleanup pass on success, failure, crash, and interrupt.
 
-- [ ] [AI] **RED:** add backend E2E cases under `apps/ose-id-be-e2e/` for every matrix row in technical
-      doc 003; run
+- [ ] [AI] Delegate to `swe-developer`: **RED:** add backend E2E cases under `apps/ose-id-be-e2e/` for every matrix row
+      in technical doc 003; run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`;
       acceptance: tests fail because the fake lifecycle/control
       surface is absent. Save `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-3-fake-red.txt`.
@@ -373,13 +391,13 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       stack IDs; run the Phase 3 backend E2E command. Acceptance: success and all trust-failure cases
       reach the Google adapter. Save `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-3-fake-protocol-green.txt`.
   - _Suggested executor: `swe-developer` with `programming-csharp`._
-- [ ] [AI] **GREEN:** implement readiness, child-failure propagation, bounded event-driven waiting, and
-      unconditional cleanup in the E2E lifecycle. Deliberately fail a test and crash the provider;
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement readiness, child-failure propagation, bounded event-driven
+      waiting, and unconditional cleanup in the E2E lifecycle. Deliberately fail a test and crash the provider;
       run the Phase 3 backend E2E command; acceptance: primary status is preserved and no owned port/
       process/temp key remains. Save `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-3-fake-cleanup-green.txt`.
-- [ ] [AI] **REFACTOR:** reduce the fake to adapter-required behavior, remove Google UI/branding mimicry,
-      and prove its registration is compile/runtime unreachable in forbidden modes. Rerun backend E2E
-      twice from clean state using the exact E2E command; both runs pass without leaked resources. Save
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** reduce the fake to adapter-required behavior, remove Google
+      UI/branding mimicry, and prove its registration is compile/runtime unreachable in forbidden modes. Rerun backend
+      E2E twice from clean state using the exact E2E command; both runs pass without leaked resources. Save
       `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-3-fake-refactor.txt`.
 
 ### Phase 3 Gate
@@ -508,6 +526,7 @@ mutation, or status/header/body mismatch blocks Phase 5 and invokes cleanup.
 - [ ] [AI] Record the sanitized outcome for every operation pair above in
       `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-api-contract.md`; the root coordinator owns disposition and invokes cleanup on
       the first mismatch.
+      acceptance: `test -f plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-api-contract.md` exits 0.
 
 Use web `http://127.0.0.1:3500`, API `http://127.0.0.1:8501`, PostgreSQL host port 5438,
 Mailpit SMTP 1026/UI `http://127.0.0.1:8026`, and fake Google 8502 via
@@ -526,19 +545,29 @@ unsafe storage, raw error, console error, or unreachable dependency fails the ph
 - [ ] [AI] Start the plan-05 local OSE ID stack with the plan-07 fake-provider extension using its
       documented HIPPO/Nx service command. Wait on readiness, never arbitrary sleep; record sanitized
       discovery/status only.
+      acceptance: `rtk curl -fsS http://127.0.0.1:8501/health/ready` exits 0.
 - [ ] [AI] Manually run new-person, repeat sign-in, denial, invalid response, matching-email non-link,
       explicit link, unlink, last-method refusal, personal continuation, and company-context continuation.
       Capture screenshots at 375/768/1280 CSS px with synthetic data and descriptive filenames.
+      acceptance: `ls plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-google-*.png | wc -l`
+      prints at least 3.
 - [ ] [AI] Inspect cookies, storage, network, redirects, console, logs, and PostgreSQL outcome. Acceptance:
       only the opaque OSE cookie reaches the browser; one provider link exists; no secret enters evidence.
+      acceptance:
+      `grep -c 'opaque OSE cookie' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-federation.md`
+      prints at least 1.
 - [ ] [AI] Run curl/API assertions for exact callback, replay, wrong issuer/audience/signature, disabled
       configuration, and production-mode startup rejection. Store responses over 20 lines in evidence.
+      acceptance:
+      `grep -c 'startup rejection' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-federation.md`
+      prints at least 1.
 - [ ] [AI] Stop the stack through the owned cleanup path and verify every provider process, port, temp
       key, log capability, and synthetic fixture is absent or intentionally retained by documented DB
       policy.
 - [ ] [HUMAN] Optional only: place real Google development credentials in an uncommitted local env file
       through the repository secret-safe path and perform one loopback smoke test. Absence does not block
       completion, and no secret/raw response may enter evidence.
+      acceptance: `rtk git status --short | grep -c '\.env'` prints 0, so the env file stays uncommitted.
 
 Cleanup after success, failure, or interruption: press Ctrl-C in the service terminal, then run
 `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup`.
@@ -578,10 +607,15 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       Map every Gherkin scenario to Unit, Integration, and E2E adapters; every inapplicable adapter has an
       explicit boundary reason indexed in behavior-coverage configuration and statically validated.
       Blanket/implicit exemptions and ad hoc coverage ignores fail the gate.
+      acceptance: `grep -c '99%' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`
+      prints at least 1.
 - [ ] [AI] Search the changed OSE ID source/config/UI/tests/env/contracts case-insensitively for
       `facebook`, provider secrets, raw tokens/codes, wildcard redirects/origins, browser token storage,
       absolute machine paths, test skips/retries/sleeps, broad exclusions, and production fake settings.
       Resolve every active hit; explicit plan-history non-goals may remain.
+      acceptance:
+      `grep -rli --exclude='*.test.*' --exclude='*.spec.*' 'facebook' apps/ose-id-be/src apps/ose-id-web/src | wc -l`
+      prints 0.
 - [ ] [AI] Run the bounded
       `repo-governance/workflows/quality/api-http-quality-gate.md` twice in `mode: strict`, using
       `.agents/agents/swe-api-tester.md` (exploratory charter) with `output-mode: delivery` and this exact plan
@@ -594,6 +628,9 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       discovery. Exclude successful unlink from the non-destructive tester and point to its Integration/
       E2E fixture; do not silently skip any other operation, auth boundary, payload edge, status, shape,
       idempotency, replay, rate limit, or privacy rule.
+      acceptance:
+      `grep -cE ':(8501|3500)' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`
+      prints at least 2.
 - [ ] [AI] For each API run, perform exactly one full discovery, triage the original `AET-###` findings
       at the strict threshold, and append each finding as a new unchecked delivery task. If findings are
       in threshold, use `swe-developer` with `programming-csharp` for backend fixes and with `programming-typescript` for BFF fixes, each
@@ -603,6 +640,9 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       `partial`, `fail`, pending lifecycle evidence, or an unchecked finding blocks this phase; a genuine
       `SG-###` is accepted into canonical specs or rejected with an explicit reason, never deferred by
       relabeling a defect.
+      acceptance:
+      `grep -c 'status: pass' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`
+      prints at least 2.
 - [ ] [AI] Run the bounded `repo-governance/workflows/quality/ui-web-quality-gate.md` in `mode: strict` over the
       changed Google route, BFF presentation, account-security, and shared-component source paths. Invoke
       `.agents/agents/swe-reviewer.md` once for all seven static dimensions; if it reports
@@ -626,15 +666,27 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       affected live journey, and tick it only with sanitized browser evidence. Accept/reject `SG-###` and
       `USS-###` proposals explicitly. A missing tester, sampled matrix, unresolved finding, console error,
       accessibility regression, or unexplained coverage gap blocks archival.
+      acceptance:
+      `grep -c 'coverage map' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`
+      prints at least 1.
 - [ ] [AI] Run independent semantic security, logic, type-soundness, and test-integrity review for the
       provider/correlation/linking diff. Resolve each validated finding and rerun all affected gates.
+      acceptance:
+      `grep -c 'semantic security' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`
+      prints at least 1.
 - [ ] [AI] Reconcile Automatic Rule-Impact Coverage. If execution changed any durable rule or
       enforcement surface, stop and complete repository-local rules-propagation inventory, conflict/
       precedence, canonical/enforcement edits, binding generation, rules-quality-gate, manifest, final
       status, and sibling obligation before continuing. If none changed, record evidence-backed `none`.
+      acceptance:
+      `grep -c 'Rule-Impact' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`
+      prints at least 1.
 - [ ] [AI] Run `plan-execution-checker` against every BRD outcome, PRD criterion, file-impact row,
       TDD/manual proof, feature-guard lifecycle, rollback, license, deployment exclusion, and learning.
       Reopen the earliest responsible phase for each validated gap.
+      acceptance:
+      `grep -c 'plan-execution' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`
+      prints at least 1.
 
 ### Phase 6 Gate
 
@@ -661,25 +713,40 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       every `learnings.md` entry. Route each surviving non-code entry to exactly one durable home; code
       ideas require separate literal plan authorization. Record routed/reported/discarded terminal state
       or `No generalizable learnings — <reason>`.
+      acceptance:
+      `grep -cE 'routed|reported|discarded|No general' plans/in-progress/ose-id-init-07-google-federation/learnings.md`
+      prints at least 1.
 - [ ] [AI] Verify no entry remains pending and no private infrastructure detail entered `ose-public`.
+      acceptance: `grep -ci 'pending' plans/in-progress/ose-id-init-07-google-federation/learnings.md` prints 0.
 
 ### Commit Guidelines
 
 - [ ] [AI] Do not stage, commit, push, open a PR, or merge until the user explicitly authorizes the named
       change set.
+      acceptance: `rtk git diff --cached --quiet` exits 0 before the user authorizes.
 - [ ] [AI] Once authorized, use the fewest build-valid, independently reviewable and revertible
       Conventional Commits, keeping specs/tests/docs/migration and generated files with the behavior they
       complete. Do not extend the authorized scope.
+      acceptance: `rtk git log --format=%s origin/main..HEAD | grep -vcE '^[a-z]+(\(.+\))?!?: '` prints 0.
 
 ### Plan Archival
 
 - [ ] [AI] Perform the preliminary end-to-end completeness audit across scope, every AC, artifacts,
       automated/manual proof, feature guard, rollback, rule disposition, cleanup, and Knowledge Capture.
       Checked boxes alone are not proof.
+      acceptance:
+      `grep -c 'completeness audit' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-7-closure.md`
+      prints at least 1.
 - [ ] [AI] Confirm all checkboxes and local/CI/UI/API/security gates pass; all EWT/UWT/DWT/AET defects
       are fixed; every branch inventory row has delivered/unused/retained-escalated proof.
+      acceptance:
+      `grep -c 'branch inventory' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-7-closure.md`
+      prints at least 1.
 - [ ] [AI] Register the workflow-owned terminal audit task; its final result waits for delivered-head
       proof and cannot be marked complete pre-merge.
+      acceptance:
+      `grep -c 'terminal audit' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-7-closure.md`
+      prints at least 1.
 - [ ] [AI] Run `rtk date +%F` only now and record `<completion-date>`. Move
       `plans/in-progress/ose-id-init-07-google-federation/` to
       `plans/done/<completion-date>__ose-id-init-07-google-federation/`; update all relevant plan indexes
@@ -687,17 +754,22 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
 - [ ] [AI] After explicit authorization, push the PR branch. Verify exact-head/base Quality gate,
       current-head leak review, applicable surface gates, and requested semantic review; fix and repush
       every failure before merge.
+      acceptance: `rtk gh pr checks <PR>` exits 0 at the pushed head.
 - [ ] [AI] Merge only after hardened preconditions hold; record PR URL, reviewed head, merge SHA, and
       `origin/main` containment. Run the registered terminal audit against the delivered head; reopen on
       failure.
+      acceptance: `rtk git merge-base --is-ancestor <merge-sha> origin/main` exits 0.
 - [ ] [AI] Following mandatory pre-removal checks, remove
       `worktrees/ose-id-init-07-google-federation/` non-force, complete branch cleanup, and run
       `rtk git worktree prune`. Never remove ambiguous or retained work.
+      acceptance: `rtk git worktree list --porcelain | grep -c 'ose-id-init-07-google-federation'` prints 0.
 
 ### Phase 7 Gate
 
 - [ ] [AI] Delivered head contains the complete locally scoped Google slice, archived plan, terminal
       audit PASS, and clean worktree/branch disposition; plan 09 may now count this prerequisite complete.
+      acceptance: `rtk git ls-tree --name-only origin/main plans/done/ | grep -c 'ose-id-init-07-google-federation'`
+      prints 1.
 
 > **Pause Safety:** after merge/audit the repository is complete and production remains fail-closed.
 > Before merge, retain the worktree. Safe to stop. To resume: `rtk git status --short` and reconcile the

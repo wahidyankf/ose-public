@@ -172,8 +172,11 @@ where safe, and baseline outputs under `plans/in-progress/ose-id-init-05-first-p
       verify with `rtk git -C worktrees/ose-id-init-05-first-party-web status --short`; create the
       execution branch inventory with path, branch, base/head SHAs, dirty-state
       classification, PR field, delivery status, and cleanup status.
+      acceptance: `rtk git -C worktrees/ose-id-init-05-first-party-web status --short`
+      exits 0 for the provisioned worktree
 - [ ] [AI] Read root/nested instructions, predecessor as-built docs at its resolved archived path,
       plan/spec/UI/accessibility/i18n/TDD rules, Next.js precedent, and worktree-to-PR workflow.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-0-path-inventory.md` exits 0
 - [ ] [AI] Initialize with `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
       `rtk npm run doctor` (read-only; only if it reports drift, run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
@@ -182,6 +185,8 @@ where safe, and baseline outputs under `plans/in-progress/ose-id-init-05-first-p
 - [ ] [AI] Inventory exact `ose-id-web`, `ose-id-web-e2e`, backend contract, generated client, session
       mechanism, specs, project configuration, port, env prefix, locale set, `libs/web-ui`, OSE tokens,
       Storybook, sibling identity/form patterns, and generated ownership. Freeze the file ledger.
+      acceptance: `grep -c 'e2e' plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-0-path-inventory.md`
+      prints at least 1
 - [ ] [AI] Verify all pinned local ports are unclaimed with
       `rtk lsof -nP -iTCP:3500 -iTCP:8501 -iTCP:5438 -iTCP:1026 -iTCP:8026 -sTCP:LISTEN`.
       The required result is no listener. If any is occupied, stop the owning local process or amend
@@ -190,14 +195,17 @@ where safe, and baseline outputs under `plans/in-progress/ose-id-init-05-first-p
       and Mailpit UI `http://127.0.0.1:8026`.
 - [ ] [AI] Recheck Next.js security APIs, WCAG 2.2 requirements, repository dependencies/licenses, and
       asset content. Record that OSE-authored source/docs inherit MIT and dependencies retain licenses.
+      acceptance: `grep -rl 'inherit MIT' plans/in-progress/ose-id-init-05-first-party-web/evidence/` prints a path
 - [ ] [AI] Run predecessor backend and existing web project build/typecheck/lint/Unit/Integration/E2E,
       behavior coverage, spec, Markdown, and boundary gates through HIPPO. Fix baseline failures at root
       cause before plan changes.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-0-baseline.md` exits 0
 
 ### Phase 0 Gate
 
 - [ ] [AI] Worktree identity/inventory and frozen ledger exist; Init 04 is green; UI/locale/component
       evidence is current; no blocker remains.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-0-baseline.md` exits 0
 
 > **Pause Safety:** no product behavior has changed. Safe to stop. To resume, rerun the exact baseline
 > quick-test commands captured in Phase 0 evidence.
@@ -260,10 +268,12 @@ coverage exist before routes become reachable.
       its command/target records before the first Plan 05 scenario, binding, or test. Inspect the isolated
       RED ledger: only named absent Plan 05 behavior may be nonzero; a baseline, target/configuration, or
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-1-contracts.md` exits 0
 - [ ] [AI] Every page state, AC, threat, locale, breakpoint, manual assertion, and backend contract maps
       to Unit plus applicable Integration/E2E proof; exemptions are explicit/indexed/static-valid; at
       least 99% Unit line coverage for authored production code is enforced with only canonical
       exclusions; future methods and deployment are absent.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-1-adapter-map.md` exits 0
 
 > **Pause Safety:** complete specifications exist while routes remain inert. Safe to stop. To resume,
 > rerun the Phase 1 specs/static-coverage command recorded in evidence.
@@ -279,42 +289,52 @@ feature gate.
 
 ### AC-05-04/06/07 — BFF, session, startup, and statelessness
 
-- [ ] [AI] **RED:** add focused tests in `apps/ose-id-web/` and `apps/ose-id-web-e2e/` for opaque cookie
-      attributes, CSRF/origin, safe return, no-store/referrer headers, unknown backend response, local
-      feature gate, production-invalid configuration, shared-session continuation, compiled Kysely SQL,
-      audit actor stamping, active-row filtering, soft-delete cleanup, and hard-delete denial. Confirm missing
-      behavior and save `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-2-bff-red.txt`.
-- [ ] [AI] **GREEN:** implement the BFF backend client, render-safe mapper, shared session adapter, cookie
-      rotation, safe-return policy, headers, local feature gate, and fail-closed startup validation.
-      Implement the server-only Kysely + `pg` session adapter and repository-owned numbered-SQL runner
-      with PostgreSQL advisory lock, SHA-256 checksum history, `migrate:local` Nx target, restricted role,
-      universal six-column audit envelope, hard-delete guard, active-row predicates, and actor-attributed
-      soft-delete cleanup. Route identity-domain calls through the generated backend client. Acceptance:
-      browser bundles contain no database/runtime secret or protocol artifact, a real SQL `DELETE` fails,
-      and any web instance can resolve a committed active session. Running `migrate:local` twice is
-      idempotent; altered applied bytes fail checksum validation; both metadata and session tables pass
-      the universal audit/guard catalog manifest.
-- [ ] [AI] **REFACTOR:** isolate server-only modules, remove mutable module state/local files, centralize
-      safe problem mapping and redaction, and rerun focused plus existing web/backend contract tests.
+- [ ] [AI] Delegate to `swe-developer`: **RED:** add focused tests in `apps/ose-id-web/` and
+      `apps/ose-id-web-e2e/` for opaque cookie attributes, CSRF/origin, safe return, no-store/referrer headers,
+      unknown backend response, local feature gate, production-invalid configuration, shared-session
+      continuation, compiled Kysely SQL, audit actor stamping, active-row filtering, soft-delete cleanup, and
+      hard-delete denial. Confirm missing behavior and save
+      `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-2-bff-red.txt`.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-2-bff-red.txt` exits 0
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement the BFF backend client, render-safe mapper, shared
+      session adapter, cookie rotation, safe-return policy, headers, local feature gate, and fail-closed startup
+      validation. Implement the server-only Kysely + `pg` session adapter and repository-owned numbered-SQL
+      runner with PostgreSQL advisory lock, SHA-256 checksum history, `migrate:local` Nx target, restricted
+      role, universal six-column audit envelope, hard-delete guard, active-row predicates, and actor-attributed
+      soft-delete cleanup. Route identity-domain calls through the generated backend client. Acceptance: browser
+      bundles contain no database/runtime secret or protocol artifact, a real SQL `DELETE` fails, and any web
+      instance can resolve a committed active session. Running `migrate:local` twice is idempotent; altered
+      applied bytes fail checksum validation; both metadata and session tables pass the universal audit/guard
+      catalog manifest.
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** isolate server-only modules, remove mutable module
+      state/local files, centralize safe problem mapping and redaction, and rerun focused plus existing
+      web/backend contract tests.
+      acceptance: `grep -c 'REFACTOR' plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-2-web-core.md`
+      prints at least 1
 
 ### AC-05-01/07 — Identifier-first email, password, verification, and recovery UI
 
-- [ ] [AI] **RED:** add component/browser cases for email and password happy/error/loading states,
-      account-enumeration parity, verification/recovery through Mailpit delivered by
-      `ose-id-init-02-local-email-account`, paste/autocomplete, Caps Lock
-      guidance where reliable, focus/error/live status, 320/768/1280 layout, and absent Google/Facebook/
-      passkey/MFA controls. Save expected missing-page failures.
-- [ ] [AI] **GREEN:** implement `IdentityShell`, email/password forms, verification/recovery notices, and
-      safe backend command handling with existing UI primitives and OSE tokens. Render only delivered
-      methods and preserve the selected identifier-first hierarchy.
-- [ ] [AI] **REFACTOR:** extract feature-level form/status composition without hiding security steps;
-      add a shared primitive only when the Phase 0 inventory proves reuse. Run component, story, visual,
-      a11y, and focused browser regressions.
+- [ ] [AI] Delegate to `swe-developer`: **RED:** add component/browser cases for email and password
+      happy/error/loading states, account-enumeration parity, verification/recovery through Mailpit delivered by
+      `ose-id-init-02-local-email-account`, paste/autocomplete, Caps Lock guidance where reliable,
+      focus/error/live status, 320/768/1280 layout, and absent Google/Facebook/ passkey/MFA controls. Save
+      expected missing-page failures.
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement `IdentityShell`, email/password forms,
+      verification/recovery notices, and safe backend command handling with existing UI primitives and OSE
+      tokens. Render only delivered methods and preserve the selected identifier-first hierarchy.
+      acceptance: `grep -rl 'IdentityShell' apps/ose-id-web` prints a path
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** extract feature-level form/status composition without
+      hiding security steps; add a shared primitive only when the Phase 0 inventory proves reuse. Run component,
+      story, visual, a11y, and focused browser regressions.
+      acceptance: `grep -c 'REFACTOR' plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-2-web-core.md`
+      prints at least 1
 
 ### Phase 2 Gate
 
 - [ ] [AI] Email sign-in/recovery works behind the local gate; BFF/session/startup tests pass; build,
       typecheck, lint, Unit, component, and contract targets are green.
+      acceptance: `grep -c 'nx-quality' plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-2-web-core.md`
+      prints at least 1
 
 > **Pause Safety:** a complete local email screen exists behind a disabled-by-default gate; production
 > remains inert. Safe to stop. To resume, rerun the focused `ose-id-web:test:quick` command.
@@ -329,39 +349,53 @@ feature gate.
 
 ### AC-05-02/03 — Personal/company context and consent
 
-- [ ] [AI] **RED:** add component/contract/E2E cases for personal, one/many/no company, suspended/stale
-      choices, client-disallowed context, changed entitlement, scope expansion, allow/cancel, expired
-      transaction, double submit, and malicious opaque-choice substitution. Save expected failures.
-- [ ] [AI] **GREEN:** implement the context picker and consent summary using only backend-provided safe
-      models and narrow commands; acceptance: cancellation is equally reachable and stale/altered
-      authority restarts safely.
-- [ ] [AI] **REFACTOR:** share choice/error/status primitives without moving policy into TypeScript;
-      rerun backend contract, component, and full browser suites.
+- [ ] [AI] Delegate to `swe-developer`: **RED:** add component/contract/E2E cases for personal, one/many/no
+      company, suspended/stale choices, client-disallowed context, changed entitlement, scope expansion,
+      allow/cancel, expired transaction, double submit, and malicious opaque-choice substitution. Save expected
+      failures.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-journeys.md` exits 0
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement the context picker and consent summary using only
+      backend-provided safe models and narrow commands; acceptance: cancellation is equally reachable and
+      stale/altered authority restarts safely.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-journeys.md` exits 0
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** share choice/error/status primitives without moving policy
+      into TypeScript; rerun backend contract, component, and full browser suites.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-journeys.md` exits 0
 
 ### AC-05-04/05 — Account security, accessibility, and leak-free full stack
 
-- [ ] [AI] **RED:** add browser cases for current sessions/connected clients/password state, revoke/
-      logout outcomes supported by backend, keyboard-only flow, focus recovery, live status, 200% zoom,
-      text spacing, axe, each locale and breakpoint, storage/RSC/URL/network/log/analytics leakage, and
-      open redirect/CSRF negatives.
-- [ ] [AI] **GREEN:** implement account-security/session/client pages for delivered capabilities and
-      correct all responsive/a11y/security behavior. Do not render passkey, MFA, Google, or Facebook.
-- [ ] [AI] **REFACTOR:** simplify page view models/styles, retain semantic DOM/focus order, and run built
-      production-process web E2E plus backend regression and behavior coverage.
+- [ ] [AI] Delegate to `swe-developer`: **RED:** add browser cases for current sessions/connected
+      clients/password state, revoke/ logout outcomes supported by backend, keyboard-only flow, focus recovery,
+      live status, 200% zoom, text spacing, axe, each locale and breakpoint,
+      storage/RSC/URL/network/log/analytics leakage, and open redirect/CSRF negatives.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-browser-runbook.md` exits 0
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** implement account-security/session/client pages for delivered
+      capabilities and correct all responsive/a11y/security behavior. Do not render passkey, MFA, Google, or
+      Facebook.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-browser-runbook.md` exits 0
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** simplify page view models/styles, retain semantic
+      DOM/focus order, and run built production-process web E2E plus backend regression and behavior coverage.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-browser-runbook.md` exits 0
 
 ### No-Affinity E2E
 
-- [ ] [AI] **RED:** begin on web A, stop A after email authentication, route context/consent to web B,
-      and issue a concurrent duplicate command; confirm the absent shared-state guarantee fails first.
-- [ ] [AI] **GREEN:** ensure both web instances use shared sessions and backend transactions; acceptance:
-      B continues and exactly one command advances.
-- [ ] [AI] **REFACTOR:** remove affinity assumptions and rebuildable cache authority; rerun restart,
-      concurrency, and ordinary single-instance flows.
+- [ ] [AI] Delegate to `swe-developer`: **RED:** begin on web A, stop A after email authentication, route
+      context/consent to web B, and issue a concurrent duplicate command; confirm the absent shared-state
+      guarantee fails first.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-journeys.md` exits 0
+- [ ] [AI] Delegate to `swe-developer`: **GREEN:** ensure both web instances use shared sessions and backend
+      transactions; acceptance: B continues and exactly one command advances.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-journeys.md` exits 0
+- [ ] [AI] Delegate to `swe-developer`: **REFACTOR:** remove affinity assumptions and rebuildable cache
+      authority; rerun restart, concurrency, and ordinary single-instance flows.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-journeys.md` exits 0
 
 ### Manual UI Verification — All Locales and Breakpoints
 
 - [ ] [AI] In terminal A start the exact built stack and retain its HIPPO service handle:
       `OSE_ID_WEB_PORT=3500 OSE_ID_BE_PORT=8501 OSE_ID_POSTGRES_PORT=5438 OSE_ID_MAILPIT_SMTP_PORT=1026 OSE_ID_MAILPIT_UI_PORT=8026 rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:serve-local`.
+      acceptance: `rtk lsof -nP -iTCP:3500 -iTCP:8501 -iTCP:5438 -iTCP:1026 -iTCP:8026 -sTCP:LISTEN`
+      exits 0 while the stack runs
 - [ ] [AI] Seed disposable web/BFF state with
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:seed-manual -- --profile=first-party-web --output=local-tmp/ose-id-init-05/seed.env`.
       The committed fixture must create separate success/error browser sessions, sign-in attempts,
@@ -423,6 +457,7 @@ header, redirect authority, or mutation blocks Phase 3 and follows the failure r
 - [ ] [AI] Record the sanitized outcome for every operation pair above in
       `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-api-contract.md`; the root coordinator owns disposition and invokes cleanup on
       the first mismatch.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-api-contract.md` exits 0
 
 - [ ] [AI] Use synthetic user `person.personal@example.test`, password
       `Correct-Horse-Battery-9!`, companies `Acme Learning Company` and `Example Foundation`, and client
@@ -449,6 +484,7 @@ header, redirect authority, or mutation blocks Phase 3 and follows the failure r
 
 - [ ] [AI] AC-05-01 through AC-05-08 pass at applicable layers; the local gate can be removed without
       exposing partial behavior, and production continues to fail closed.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-3-journeys.md` exits 0
 
 > **Pause Safety:** the complete local email web experience works; later methods remain absent. Safe to
 > stop. To resume, rerun the recorded `ose-id-web-e2e:test:e2e` command through HIPPO.
@@ -465,12 +501,17 @@ the delivery branch without merge or archival yet.
 - [ ] [AI] Remove the temporary local feature gate and its dead branches only after enabled/disabled
       tests prove complete behavior and production fail-closed startup. Record rollback as reverting the
       delivery unit, not leaving a permanent flag.
+      acceptance: `grep -c 'revert' plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-quality-gates.md`
+      prints at least 1
 - [ ] [AI] Reconcile specs, architecture/UI docs, app READMEs, local-run docs, MIT inheritance, and
       dependency notices. Do not claim deployment readiness.
+      acceptance: `rtk npm run check:pre-push` exits 0
 - [ ] [AI] If a project/port/locale/test boundary or repository rule/enforcement changes, execute the
       full repository-local rules-propagation workflow and save its manifest/final status.
+      acceptance: `rtk npm run check:pre-push` exits 0
 - [ ] [AI] Run mandatory semantic review for the security- and behavior-affecting changes under the BDD
       contract; resolve every validated finding with regression-first fixes.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-quality-gates.md` exits 0
 
 ### Local Quality Gates Before Push
 
@@ -481,8 +522,10 @@ the delivery branch without merge or archival yet.
       `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-quality-gates.md`; any failure reopens its owning implementation packet.
 - [ ] [AI] **Important:** fix all failures at root cause, including preexisting issues; never retry,
       skip, narrow, loosen, or quarantine a failing gate.
+      acceptance: `rtk git diff --check` exits 0
 - [ ] [AI] Reconcile final diff, file ledger, generated ownership, evidence, licenses, assets, and plan
       scope. Verify no provider/MFA/deployment file or production configuration was added.
+      acceptance: `rtk npm run check:pre-push` exits 0
 - [ ] [AI] Before every authorized push, run the canonical registry exactly:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`.
 
@@ -491,9 +534,12 @@ the delivery branch without merge or archival yet.
 - [ ] [AI] Repeat final manual UI and API assertions for all supported locales and the 375/768/1280 px
       breakpoints. Run the mandatory API, UI, and three live-web gates below against the same final
       build; do not replace those bounded workflows with this smoke step.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-quality-gates.md` exits 0
 - [ ] [AI] Trace every AC, threat, screenshot, browser leak check, file, rollback/recovery rule, and
       delivery promise to as-built proof. Reopen the earliest incomplete packet. The formal preliminary
       audit occurs only after Knowledge Capture in Phase 6.
+      acceptance: `grep -c 'AC-05' plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-quality-gates.md`
+      prints at least 1
 
 ### Mandatory API Quality Gate and Rule-16 Session
 
@@ -504,6 +550,8 @@ friction.
 - [ ] [AI] Keep the Phase 3 stack running at web `http://127.0.0.1:3500`, backend
       `http://127.0.0.1:8501`, PostgreSQL `127.0.0.1:5438`, Mailpit SMTP `127.0.0.1:1026`, and Mailpit
       UI `http://127.0.0.1:8026`. Reset to synthetic fixtures before the session.
+      acceptance: `rtk lsof -nP -iTCP:3500 -iTCP:8501 -iTCP:5438 -iTCP:1026 -iTCP:8026 -sTCP:LISTEN`
+      exits 0 while the stack runs
 - [ ] [AI] Invoke
       [`swe-api-tester`](../../../.agents/agents/swe-api-tester.md) (exploratory charter) for one
       backend discovery run with `quality-gate-phase: discovery`, `output-mode: delivery`, this plan
@@ -518,12 +566,16 @@ friction.
       stale/expired/concurrent decisions, dependency problems, safe redirects, rate limits, and secret
       non-disclosure. OIDC discovery/authorize/token regression runs through the accepted protocol
       harness outside these REST-gate invocations.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-api-quality-gate-bff.md`
+      exits 0
 - [ ] [AI] Append all `AET-###` findings and save distinct sanitized matrices/transcripts at
       `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-api-quality-gate-backend.md` and
       `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-api-quality-gate-bff.md`. For each run, clean discovery records `pass` and skips
       fixing. Otherwise invoke `swe-developer` with `programming-csharp` for
       backend findings or with `programming-typescript` for
       BFF findings once, with a failing regression before the root-cause fix.
+      acceptance: `ls plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-api-quality-gate-*.md | wc -l`
+      prints 2
 - [ ] [AI] Rebuild/restart the affected service once and invoke that scope's tester once in
       `quality-gate-phase: verification` with original IDs/reproduction and affected operations. Both
       bounded runs must report `pass` plus lifecycle `verified`/`not-applicable`. `partial`, `fail`, or
@@ -544,10 +596,13 @@ runtime complement, not a substitute.
       design, and anti-patterns. Preserve the emitted
       `local-tmp/swe-ui/swe-ui__*__audit.md` path and its sanitized outcome in
       `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-ui-quality-gate.md`.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-ui-quality-gate.md` exits 0
 - [ ] [AI] If no strict-threshold finding exists, record `final-status: pass` and do not fix. Otherwise
       invoke [`swe-developer`](../../../.agents/agents/swe-developer.md) (Apply Findings mode) exactly once with the original
       IDs and lifecycle handoff. It must revalidate, fix only supported findings, and invalidate only
       intersecting lifecycle evidence.
+      acceptance: `grep -c 'pass' plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-ui-quality-gate.md`
+      prints at least 1
 - [ ] [AI] Invoke `swe-reviewer` exactly once in `quality-gate-phase: verification`, passing original
       in-threshold IDs and affected components. It must reproduce each original and smoke affected
       interactions without expanding scope. `partial`, `fail`, or pending lifecycle evidence blocks
@@ -569,6 +624,7 @@ passes.
       verification, recovery, personal/company context, consent, security, and sessions safely and
       accessibly”; all repository-discovered locales; breakpoints `375,768,1280`; changed-surface and
       recurrence lists; synthetic `person.personal@example.test` fixtures; and non-destructive scope.
+      acceptance: `ls plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-web-* | wc -l` prints at least 3
 - [ ] [AI] First invoke
       [`swe-web-tester`](../../../.agents/agents/swe-web-tester.md) (exploratory charter). It must compare
       every route/state/control against mapped `specs/apps/ose/id-web/**`, enumerate happy/error/empty/
@@ -579,6 +635,8 @@ passes.
       C# executor, rebuild, and retest the finding plus affected journey. Unresolved defects block the
       next tester; only explicit user permission can defer a genuinely impossible fix. Reconcile
       correct-but-unspecified `SG-###` proposals with the app-scoped specs.
+      acceptance: `grep -l 'EWT' plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-web-exploratory.*`
+      prints a path
 - [ ] [AI] Next invoke
       [`swe-usability-tester`](../../../.agents/agents/swe-usability-tester.md) spec-blind with the
       same URLs/goal/locales/breakpoints. Require a first-time cognitive walkthrough and all loading,
@@ -621,12 +679,15 @@ passes.
 - [ ] [AI] Triage each learning using the repository litmus test. Move reusable UI, BFF, accessibility,
       testing, or workflow knowledge to the narrowest durable docs/rules/spec surface; route rule changes
       through propagation and add enforcement/regression where required.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-5-knowledge.md` exits 0
 - [ ] [AI] Mark duplicate/plan-specific entries, run owner gates for durable edits, and record explicit
       none when appropriate.
+      acceptance: `rtk npm run check:pre-push` exits 0
 
 ### Phase 5 Gate
 
 - [ ] [AI] Every learning is triaged and each durable edit passes its owner gate.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-5-knowledge.md` exits 0
 
 > **Pause Safety:** knowledge is reconciled; preliminary audit and in-PR archival remain. Safe to stop.
 > To resume, inspect `learnings.md` and rerun its owner gates.
@@ -643,6 +704,7 @@ review.
 - [ ] [AI] Perform the preliminary plan-execution audit. Trace every AC, threat, screen/state,
       breakpoint/locale, adapter binding/exemption, browser assertion, file, recovery rule, and delivery
       promise. Reopen the earliest incomplete phase instead of marking speculative completion.
+      acceptance: `test -f plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-6-archive.md` exits 0
 - [ ] [AI] After completion proof exists, run `rtk date +%F` and record the returned date as
       `<completion-date>`; do not predict it.
 - [ ] [AI] In the delivering branch run
@@ -653,6 +715,7 @@ review.
 - [ ] [AI] Do not stage or commit until explicit user authorization. Then use the fewest build-valid,
       reviewable Conventional Commits, including
       `chore(plans): move ose-id-init-05-first-party-web to done` for archival.
+      acceptance: `rtk git log --oneline --grep 'move ose-id-init-05-first-party-web to done'` prints at least one line
 - [ ] [AI] Run docs/plan/link gates and the exact canonical pre-push registry:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`;
       push and open or update the PR to `main`.
@@ -661,6 +724,7 @@ review.
 
 - [ ] [AI] The PR head contains implementation, proof, Knowledge Capture, archive, indexes, and
       references; preliminary audit is green and the worktree matches the ledger.
+      acceptance: `rtk npm run check:pre-push` exits 0
 
 > **Pause Safety:** the complete delivery is pushed but unmerged. Safe to stop. To resume, fetch the PR
 > head and verify it matches the recorded SHA.
@@ -680,11 +744,13 @@ review.
 - [ ] [AI] Immediately before any follow-up push, rerun the exact canonical pre-push registry from Phase 6. Never merge a different head from the one reviewed.
 - [ ] [AI] Merge `[AI]` only after hardened preconditions and all required checks pass. Confirm the merge
       commit contains the exact reviewed head and production remains fail-closed.
+      acceptance: `rtk git merge-base --is-ancestor <reviewed-head> origin/main` exits 0
 
 ### Phase 7 Gate
 
 - [ ] [AI] The reviewed PR head is merged to `main`; no provider, MFA, deployment, or production
       enablement entered the delivery.
+      acceptance: `rtk git merge-base --is-ancestor <reviewed-head> origin/main` exits 0
 
 > **Pause Safety:** merge is complete; retain the worktree until workflow-owned finalization succeeds.
 
@@ -701,8 +767,12 @@ review.
       and no deployment surface changed.
 - [ ] [AI] Run the workflow-owned terminal audit against the delivered head. Never pre-check this item;
       on failure retain the worktree and reopen the earliest affected execution packet.
+      acceptance: `grep -c 'audit' plans/done/*__ose-id-init-05-first-party-web/evidence/phase-8-cleanup.md`
+      prints at least 1
 - [ ] [AI] Classify every Phase 0 branch/inventory row as delivered, unused, or retained/escalated with
       owner and evidence; ambiguity is escalated, never deleted.
+      acceptance: `grep -c 'delivered' plans/done/*__ose-id-init-05-first-party-web/evidence/phase-8-cleanup.md`
+      prints at least 1
 - [ ] [AI] From the repository root complete mandatory pre-removal checks, then run
       `rtk git worktree remove worktrees/ose-id-init-05-first-party-web`; clean the delivered branch by
       convention and run `rtk git worktree prune`.
@@ -711,6 +781,7 @@ review.
 
 - [ ] [AI] Containment and terminal audit pass against the merged head; inventory and cleanup records
       are complete; no live delivery worktree remains.
+      acceptance: `rtk git worktree list | grep -c 'ose-id-init-05-first-party-web'` prints 0
 
 > **Pause Safety:** delivery and cleanup are terminally complete. Any later defect starts a new
 > regression-first delivery rather than reopening this worktree.

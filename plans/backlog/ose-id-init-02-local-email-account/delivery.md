@@ -145,6 +145,7 @@ target/configuration, or unrelated failure blocks Phase 2.
 - [ ] [AI] Inspect current Identity, migration, API/spec, session/cookie, rate-limit, SMTP, and E2E
       conventions using `rtk rg` under `apps/`, `specs/`, `docs/`, and `repo-governance/`. Resolve exact
       paths/targets before editing; record any contradiction that requires plan amendment.
+      acceptance: `grep -c 'test:quick' apps/ose-id-be/project.json` prints at least 1, so the target resolves.
 - [ ] [AI] Resolve exact ASP.NET Core Identity and Mailpit versions and official licenses/config flags.
       Acceptance: OSE source/docs remain under root MIT; each dependency retains its license/notice;
       Mailpit supports loopback SMTP/inbox/API with relay disabled. Verify inherited 3500/8501/5438 and
@@ -152,11 +153,15 @@ target/configuration, or unrelated failure blocks Phase 2.
       host. Stop and amend on collision or incompatible terms; do not silently renumber.
 - [ ] [AI] Run Plan 01's documented four-project and full-stack baselines twice through HIPPO. Acceptance:
       all pass, production modes fail closed, and no resources survive. Fix baseline failures at root cause.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD` exits 0 on both runs.
 
 ### Phase 0 Gate
 
 - [ ] [AI] Re-run the Plan 01 smoke/E2E target and repository affected baseline; acceptance: exit 0,
       clean resource inventory, and dependency/license record complete.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- run ose-id-be-e2e:test:e2e` exits 0 and leaves no owned resource.
 
 > **Pause Safety:** no account migration/code exists and the delivered foundation is verified. Safe to
 > stop. To resume, rerun the Plan 01 smoke target.
@@ -220,6 +225,7 @@ target/configuration, or unrelated failure blocks Phase 2.
       its command/target records before the first Plan 02 scenario, binding, or test. Inspect the isolated
       RED ledger: only named absent Plan 02 behavior may be nonzero; a baseline, target/configuration, or
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
+      acceptance: `grep -rl 'ose-id-be:build' evidence/phase-1/` prints a file name when run from the plan folder.
 - [ ] [AI] **Owner: Phase 1 integrator; contract gate.** Rerun the exact specs, Redocly, threat-doc
       Prettier, and two-project behavior-coverage commands above, then run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- find plans/in-progress/ose-id-init-02-local-email-account specs/apps/ose/id-be -type f -name '*.md' -exec ./scripts/validate-mermaid-files {} +`.
@@ -262,6 +268,8 @@ target/configuration, or unrelated failure blocks Phase 2.
 - [ ] [AI] **REFACTOR:** centralize normalization/result mapping without exposing Identity, Npgsql, or
       SqlKata types; prove no EF runtime query/change-tracking path exists. Run backend
       build/typecheck/lint/Unit/Integration; acceptance: green with no custom password hashing/token crypto.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e` exits 0.
 - [ ] [AI] Produce `evidence/phase-2-schema/` old/new catalog manifests and per-table stable counts/digests;
       record no-backfill/no-contract, Plan-01-code/new-schema compatibility, new-code/old-schema
       fail-closed readiness, retained-schema rollback, and forward-fix proof. Acceptance: no source row is
@@ -277,6 +285,8 @@ target/configuration, or unrelated failure blocks Phase 2.
       focused tests through two instances. Acceptance: public schemas/statuses do not disclose state.
 - [ ] [AI] **REFACTOR:** remove raw email from metric labels/audit where opaque identifiers suffice; scan
       focused logs and rerun regression. Acceptance: behavior remains green and redaction scan passes.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e` exits 0.
 
 ### Phase 2 Gate
 
@@ -306,6 +316,8 @@ target/configuration, or unrelated failure blocks Phase 2.
       recipients, and reverse cleanup. Rerun focused tests; acceptance: one expected message is observable.
 - [ ] [AI] **REFACTOR:** isolate transport/template/config from account use cases and run backend plus
       lifecycle regression twice. Acceptance: no real network destination, stale message, or resource remains.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- run ose-id-be-e2e:test:e2e` exits 0 on both runs, with no stale message left.
 
 ### Phase 3 Gate
 
@@ -335,16 +347,22 @@ target/configuration, or unrelated failure blocks Phase 2.
       create sessions and revoked/expired cookies fail on either instance.
 - [ ] [AI] **REFACTOR:** separate cookie transport, session policy, and application commands; run backend
       build/typecheck/lint/Unit/Integration/E2E. Acceptance: no JWT/OIDC/client token exists.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- run-many -t test:quick,test:integration,test:e2e --projects=ose-id-be,ose-id-be-e2e` exits 0.
 
 ### AC-ACC-05 — Recovery and security consequences
 
 - [ ] [AI] **RED:** add recovery known/unknown equivalence, purpose/expiry/single-use/concurrency, password
       policy, prior-password failure, and all-prior-session revocation tests. Run focused targets and save RED.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- run ose-id-be:test:quick` exits non-zero, failing only the new recovery tests.
 - [ ] [AI] **GREEN:** implement recovery request/reset using notification/capability ports and atomic
       security-version/session changes. Rerun focused tests; acceptance: one reset succeeds and old
       password/sessions fail consistently.
 - [ ] [AI] **REFACTOR:** consolidate capability consumption without merging purposes and rerun verification
       plus recovery suites. Acceptance: separate purpose/audit semantics remain explicit.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- run-many -t test:quick,test:integration,test:e2e --projects=ose-id-be,ose-id-be-e2e` exits 0.
 
 ### AC-ACC-10 — Auditable account cleanup
 
@@ -364,10 +382,14 @@ target/configuration, or unrelated failure blocks Phase 2.
 
 - [ ] [AI] **RED:** extend E2E to start on A and complete on B for registration, verification, sign-in,
       recovery, and revocation; add response/log/evidence forbidden-pattern scan. Run and observe missing proof.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- run ose-id-be-e2e:test:e2e` exits non-zero on the missing handoff or redaction proof.
 - [ ] [AI] **GREEN:** move any discovered correctness state to PostgreSQL/shared key provider and correct
       redaction. Rerun with one instance stopped at each boundary; acceptance: outcomes remain consistent.
 - [ ] [AI] **REFACTOR:** remove affinity/test bypasses and run the complete suite twice; acceptance: no
       plaintext password/hash/capability/cookie/SMTP body/connection secret is retained.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      ./rhino gate run --surface=pre-push` exits 0, so no secret or credential is retained.
 
 ### Phase 4 Gate
 
@@ -389,12 +411,15 @@ target/configuration, or unrelated failure blocks Phase 2.
 - [ ] [AI] Inventory actual rule impacts for Mailpit ports, E2E network ownership, new specs/API, targets,
       secrets/env, and project docs across all canonical/enforcement/binding surfaces. Save intake under
       `local-tmp/rules-propagation/ose-id-init-02-intake.md`; classify duplicates/conflicts before editing.
+      acceptance: `test -f local-tmp/rules-propagation/ose-id-init-02-intake.md` exits 0.
 - [ ] [AI] Apply the narrow canonical changes, enforcement dispositions, and generated binding sync only
       where inventory proves necessary. Run rules-quality, repo-config, port/env, dependency/test-boundary,
       specs/contract, and binding-sync gates; save `final-status: partial` manifest pending delivery.
+      acceptance: `grep -rl 'final-status: partial' local-tmp/rules-propagation/` prints at least one file.
 - [ ] [AI] Update affected project/spec/reference READMEs with API purposes, local-only warning, Mailpit
       commands, session semantics, forbidden evidence, migration/rollback, and no-company invariant. Run
       Markdown lint/heading/link/Mermaid gates; acceptance: all pass.
+      acceptance: `rtk ./rhino md internal-link validate` exits 0 over the updated READMEs.
 - [ ] [AI] Execute `tech-docs/003-sessions-statelessness-and-local-verification.md` manually using an
       ignored cookie jar. Save sanitized status/header/audit/resource proof under `evidence/manual/`, then
       delete raw capabilities/cookies/messages/logs. Acceptance: all ten PRD criteria are observed.
@@ -542,21 +567,27 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
       verification mode over every original finding and affected-API regression. Tick only findings
       backed by a passing live retest. `partial`, `fail`, pending lifecycle evidence, regression, or an
       unchecked `AET-###` blocks Phase 5 and reopens the earliest responsible phase; never waive or loop.
+      acceptance: `grep -c '\[ \].*AET-[0-9]' delivery.md` prints 0 after the live retest, run from the plan folder.
 - [ ] [AI] Record the UI Quality Gate and live tester agents
       `.agents/agents/swe-web-tester.md` (exploratory charter),
       `.agents/agents/swe-usability-tester.md`, and
       `.agents/agents/swe-web-tester.md` (design charter) as **not applicable** with proof that this
       slice changes no UI/component/browser route and retains the inert web shell byte-for-byte. If the
       diff contradicts that proof, stop: add the required UI gates through a plan amendment before review.
+      acceptance: `grep -rl 'not applicable' evidence/phase-5/` prints a file name when run from the plan folder.
 
 ### Phase 5 Gate
 
 - [ ] [AI] Re-run rules/docs/spec/API gates and full manual cleanup; acceptance: implementation, contracts,
       and docs agree with no secret or absolute host path in evidence.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      ./rhino gate run --surface=pre-push` exits 0 on the current candidate.
 - [ ] [AI] Confirm the API Quality Gate reports `final-status: pass` and
       `lifecycle-status: verified`, its live exploratory matrix covers every added/retained contract,
       no unchecked `AET-###` remains, and the no-UI applicability proof matches the candidate diff.
       Archival cannot start without this current-candidate evidence.
+      acceptance: `grep -rl 'final-status: pass' evidence/phase-5/api-http-quality-gate/` prints
+      a file name when run from the plan folder.
 
 > **Pause Safety:** DU1 is fully documented and manually reproducible. Safe to stop. To resume, rerun the
 > documented full account smoke target.
@@ -573,12 +604,17 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 
 - [ ] [AI] Review every entry in `plans/in-progress/ose-id-init-02-local-email-account/learnings.md`. Promote general knowledge to its narrow durable owner, link duplicates, and justify plan-specific dispositions. If no entry exists, append an explicit reviewed/none disposition. Run affected Markdown, link, and rules gates; acceptance: every entry has exactly one disposition.
 - [ ] [AI] Reconcile any durable documentation/rule edit with the file-impact ledger before continuing. Acceptance: no newly discovered path or rule change remains unplanned.
+      acceptance: `rtk git diff --name-only origin/main...HEAD -- docs repo-governance` prints only paths
+      listed in the File-Impact Analysis of `tech-docs/004-decisions-sources-and-file-impact.md`.
 
 ### Preliminary Delivery Audit
 
 - [ ] [AI] Trace AC-ACC-01..10, approved scope, every file-impact row, physical schema/migration proof, old-code/new-schema compatibility, no-loss manifests, runtime guard, rollback/forward-fix, automated/manual evidence, rules propagation, license record, and Knowledge Capture into `plans/in-progress/ose-id-init-02-local-email-account/evidence/preliminary-delivery-audit.md`. Reopen the earliest failed phase for any unsupported row; checked boxes alone are not evidence.
 - [ ] [AI] Run full account, Mailpit, recovery, and multi-instance E2E from a fresh owned stack and the changed-surface documentation/spec/plan gates. Acceptance: all pass without retry/sleep, resources clean up, and no UI, OIDC, provider, company, product-token, or deployment behavior is present.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- run ose-id-be-e2e:test:e2e` exits 0 from a fresh owned stack, with no retry or sleep.
 - [ ] [AI] Verify all applicable rule-15 EWT/UWT/DWT and rule-16 AET defects are fixed. A defect deferral requires explicit user permission; SG proposals/suggestions receive an explicit disposition.
+      acceptance: `grep -cE '\[ \].*(AET|EWT|UWT|DWT)-[0-9]' delivery.md` prints 0 when run from the plan folder.
 
 ### Plan Archival in the Delivering PR
 
@@ -591,6 +627,7 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 ### Phase 6 Gate
 
 - [ ] [AI] Verify the branch HEAD already contains Knowledge Capture, the passing preliminary audit, and the complete in-progress-to-done move/index/reference changes. The working tree is clean and no final review has started against an earlier head.
+      acceptance: `rtk git status --short` prints nothing, so the working tree is clean at the branch HEAD.
 
 > **Pause Safety:** the complete delivery and archived plan state are committed locally but not yet merged. Safe to stop. To resume, verify the archive commit is HEAD and rerun the preliminary audit's changed-surface gates.
 
@@ -614,19 +651,28 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
       higher-layer/static target pass. Save commands and exits in `evidence/phase-7/nx-quality.txt`;
       any failure reopens its owning phase.
 - [ ] [AI] Run the repository specs/OpenAPI, Markdown, plan, schema/migration, dependency/rules/binding, secret, and changed-surface gates required by the final diff. Acceptance: every gate exits 0 against the archive-containing HEAD.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      ./rhino gate run --surface=pre-push` exits 0 against the archive-containing HEAD.
 - [ ] [AI] Run `ose-id-be:test:unit` with native coverage; acceptance: it enforces and reports
       **at least 99% Unit line coverage for authored production code**, with canonical exclusions only. Run all applicable backend/backend-E2E static
       `test:coverage:unit`, `:integration`, `:e2e`, and `:behaviour` targets; acceptance: retained
       foundation plus new account scenario maps close with no invalid exemption.
 - [ ] [AI] Inspect `rtk git diff --check`, `rtk git status --short`, and the full `origin/main...HEAD` diff. Acceptance: the tree is clean, generated files trace to exact sources, all plan lifecycle changes are present, and UI, OIDC, provider, company, product-token, or deployment remains absent.
 - [ ] [AI] Fix every failure, including preexisting failures encountered by these gates, at root cause. Any repair changes HEAD and invalidates all current-head review evidence; recommit only with user authorization, then rerun this phase from its first check. Never retry, sleep, widen, loosen, skip, or quarantine.
+      acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
+      npm exec nx -- affected -t build,typecheck,lint,test:quick,test:integration,test:e2e,test:coverage:behaviour
+      --base=origin/main --head=HEAD` exits 0 on the repaired HEAD, rerun from the first check.
 
 ### Push and Exact-Head Review
 
 - [ ] [AI] After explicit authorization, push the delivery branch and open or update its draft PR to `main`. Record exact 40-character head/base SHAs; the head must already include the archived plan.
+      acceptance: `rtk git diff --name-only origin/main...HEAD` prints at least one path under `plans/done/`.
 - [ ] [AI] Poll GitHub Actions every two minutes without `gh run watch`. Fix root causes, push authorized repairs, and restart all exact-head gates whenever HEAD changes.
+      acceptance: `rtk gh pr checks` exits 0 only when every check on the current head has passed.
 - [ ] [AI] Require the PR's exact current head/base Quality gate, applicable finite API/E2E/schema gates, one authenticated clean current-head `pr-leak-review`, and the repository-required semantic review for identity/security code. Resolve every blocking finding and rerun invalidated proof.
+      acceptance: `rtk gh pr checks` prints a pass row for the Quality gate and `pr-leak-review`.
 - [ ] [AI] Merge under default `[AI]` authority only when all hardened checks refer to the same current head/base and the archive move is visible in the PR diff. Record the PR URL, reviewed head, base, merge SHA, and merge timestamp in the workflow final report; make no post-merge plan edit.
+      acceptance: `rtk git merge-base --is-ancestor <merge-sha> origin/main` exits 0 after the merge.
 
 ### Phase 7 Gate
 
@@ -644,13 +690,19 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 
 - [ ] [AI] Run `rtk git fetch origin`; verify the recorded merge SHA is an ancestor of `origin/main`, the reviewed head matches the merged PR, and the archived plan/index state is present. A mismatch reopens Phase 7 and blocks cleanup.
 - [ ] [AI] Run the workflow-owned terminal plan-execution audit against the delivered merge head. It must trace AC-ACC-01..10, scope, schema/no-loss/compatibility evidence, reviews, and archive state. Record the verdict in the plan-execution final report, not by editing the merged plan. Failure reopens the earliest affected phase.
+      acceptance: `rtk git status --short` prints nothing: the verdict is in the final report, not a plan edit.
 - [ ] [AI] Update the rules-propagation manifest's external final report/disposition to delivered only after the terminal audit passes; make no repository mutation that would require an unreviewed post-merge commit.
+      acceptance: `grep -rl 'final-status: delivered' local-tmp/rules-propagation/` prints at least one file.
 - [ ] [AI] Classify every Phase 0-created Delivery Branch Inventory entry as delivered, unused, or retained/escalated using merged PR and 40-character reviewed-head proof. Ambiguous/active rows retain the worktree and escalate.
+      acceptance: `rtk git merge-base --is-ancestor <merge-sha> origin/main` exits 0 for each delivered entry.
 - [ ] [AI] Run the mandatory pre-removal checks, reconcile the declared route with `rtk git worktree list --porcelain`, and remove non-force with `rtk git worktree remove worktrees/ose-id-init-02-local-email-account`. Then complete canonical branch cleanup and run `rtk git worktree prune`. Never remove on a partial/failing terminal audit.
 - [ ] [AI] Publish the final execution report with merge containment, terminal verdict, cleanup proof, and the statement: Plan 03 remains blocked until this terminal audit passes.
+      acceptance: `rtk git worktree list --porcelain | grep -c 'ose-id-init-02-local-email-account'` prints 0.
 
 ### Phase 8 Gate
 
 - [ ] [AI] Confirm terminal audit PASS, no retained unexplained branch, declared worktree absent, branch cleanup complete, and `origin/main` still contains the reviewed archive state.
+      acceptance: `rtk git branch --list 'ose-id-init-02-local-email-account*'` prints nothing
+      except a retained branch the final report explains.
 
 > **Pause Safety:** delivery, audit, archival, and cleanup are complete. No repository mutation remains for this plan.

@@ -846,7 +846,8 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
   rtk curl --config local-tmp/lms-user/curl/logout-missing-csrf.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/errors/logout-missing-csrf.headers --output plans/in-progress/lms-user/evidence/phase-5/http/errors/logout-missing-csrf.json --write-out '%{http_code}\n' http://127.0.0.1:3400/api/bff/auth/logout
   ```
 
-- [ ] [AI] **Owner: API verification lane; captured-wire assertions.** Implement the bounded committed
+- [ ] [AI] Delegate to `swe-developer`: **Owner: API verification lane; captured-wire assertions.**
+      Implement the bounded committed
       assertion driver at `apps/ose-lms-app-web-e2e/src/http/assert-capture-matrix.ts` and its closed
       manifest at `apps/ose-lms-app-web-e2e/fixtures/http/manual-wire-expectations.json`. The manifest has
       exactly one row for every named curl capture above: `discovery`, `jwks`, `auth-start`,
@@ -874,8 +875,8 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
   header mismatch, non-allowlisted redirect, leaked token/company detail, or cleanup residue fails the
   driver, preserves only its sanitized row summary, and reopens the owning Phase 2/3 packet.
 
-- [ ] [AI] **Owner: API verification lane; independently falsifiable token rejections.** Implement the
-      bounded committed driver at
+- [ ] [AI] Delegate to `swe-developer`: **Owner: API verification lane; independently falsifiable token rejections.**
+      Implement the bounded committed driver at
       `apps/ose-lms-app-web-e2e/src/resource-server/verify-token-negative-matrix.ts` and its closed case
       manifest at `apps/ose-lms-app-web-e2e/fixtures/resource-server/token-negative-cases.json`; expose it
       only as `ose-lms-app-web-e2e:verify-token-negative-matrix`. The manifest contains exactly these
@@ -925,6 +926,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       command, verification result, and terminal disposition to
       `plans/in-progress/lms-user/evidence/phase-5/api-quality/finding-lifecycle.md`; any open row blocks this checkbox and reopens
       the operation's Phase 2/3 owner.
+      acceptance: `test -f plans/in-progress/lms-user/evidence/phase-5/api-quality/finding-lifecycle.md` exits 0.
 - [ ] [AI] **Owner: UI gate integrator; static UI lifecycle.** Run the bounded `repo-governance/workflows/quality/ui-web-quality-gate.md` in `mode: strict` over every
       new LMS web route, auth/session component, style, story, responsive state, and shared-primitive call
       site. Invoke `.agents/agents/swe-reviewer.md` once for all seven static dimensions. If it
@@ -933,6 +935,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       once in scoped verification. Record report paths, original IDs, affected components, lifecycle
       evidence, and final status at `plans/in-progress/lms-user/evidence/phase-5/ui-quality/`; `partial`, `fail`, pending lifecycle
       evidence, or an unresolved original finding blocks the phase and routes to Phase 3 UI ownership.
+      acceptance: `test -d plans/in-progress/lms-user/evidence/phase-5/ui-quality` exits 0.
 - [ ] [AI] **Owner: live-test integrator; sequential tester run.** After visual sign-off, execute the Rule-15 in-place delivery variant described by
       `repo-governance/workflows/quality/ux-review-fix-planning.md` sequentially against `/learning`,
       sign-in start/callback/result, personal/company context, switch, both logout modes, error/loading/
@@ -955,6 +958,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       finding ID, fix/regression command, retest result, and accepted/rejected proposal at
       `plans/in-progress/lms-user/evidence/phase-5/live-testers/coverage-and-findings.md`; an incomplete/open row reopens its Phase 3
       or Phase 4 owner.
+      acceptance: `test -f plans/in-progress/lms-user/evidence/phase-5/live-testers/coverage-and-findings.md` exits 0.
 - [ ] [AI] **Owner: quality integrator; complete automated gate.** Run the exact commands below and save
       command, exit, report path, and candidate HEAD at `plans/in-progress/lms-user/evidence/phase-5/quality-gate.txt`:
 
@@ -1065,6 +1069,7 @@ partial, failing, or unverified artifact blocks the Phase 6 gate and keeps the p
       after worktree, local-branch, remote-branch, and containment inventories at
       `plans/in-progress/lms-user/evidence/phase-6/cleanup/final-inventory.md`. Dirty/ambiguous/retained branches or any owned runtime
       resource block removal; never use force and never create a post-merge plan-only commit.
+      acceptance: `test -f plans/in-progress/lms-user/evidence/phase-6/cleanup/final-inventory.md` exits 0.
 
 ### Phase 6 Gate
 

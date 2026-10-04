@@ -186,21 +186,21 @@ target/configuration, or unrelated failure blocks Phase 2.
       source/target/store/control/locale paths at `evidence/phase-0-topology-inventory.md`. Any mismatch
       with technical documents 001–006 stops code work and amends the path/command ledger first.
       acceptance: `test -f
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-0-topology-inventory.md` exits 0.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-0-topology-inventory.md` exits 0.
 - [ ] [AI] **Owner: integrator; collision inventory.** Run `rtk lsof -nP -iTCP -sTCP:LISTEN` and
       `rtk docker ps -a --format '{{.ID}} {{.Names}} {{.Ports}}'`; compare processes, containers,
       networks, and volumes with ports 3500/8501/8502/5438/1026/8026 and the repository registry. Save
       sanitized results at `evidence/phase-0-resource-inventory.md`. A collision stops for plan amendment;
       never kill or remove a preexisting resource.
       acceptance: `test -f
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-0-resource-inventory.md` exits 0.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-0-resource-inventory.md` exits 0.
 - [ ] [AI] **Owner: dependency reviewer; licenses.** Run `rtk git ls-files LICENSE LICENSING-NOTICE.md`,
       `rtk docker compose -f <resolved-compose-path> config --images`, and the recorded npm/NuGet license
       inventory commands from the delivered plans. Store exact version/digest/license/source/disposition
       rows at `evidence/phase-0-licenses.md`. Unknown, incompatible, unpinned, or missing-notice items block
       the phase and route to dependency review; OSE-authored source remains MIT.
       acceptance: `test -f
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-0-licenses.md` exits 0.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-0-licenses.md` exits 0.
 - [ ] [AI] **Owner: integrator; green baseline.** Run the Phase 0 predecessor-green baseline commands,
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`,
       the resolved migration/RLS/local-stack smoke and cleanup targets, and
@@ -215,7 +215,7 @@ target/configuration, or unrelated failure blocks Phase 2.
       and instantiates `repo-governance/workflows/quality/rules-propagation.md`; unresolved classification
       blocks the Phase 0 gate.
       acceptance: `test -f
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-0-rules-impact.md` exits 0.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-0-rules-impact.md` exits 0.
 
 ### Phase 0 Gate
 
@@ -262,7 +262,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       at `evidence/phase-1-state-ledger.md`. Each process-memory/local-disk correctness authority gets an
       owner, smallest repair, compatibility, rollback, and RED test. An unclassified match blocks Phase 1.
       acceptance: `test -f
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-1-state-ledger.md` exits 0.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-1-state-ledger.md` exits 0.
 - [ ] [AI] **Owner: security reviewer; threat delta.** Update the Plan 09 threat-model section for affinity,
       split-brain keys, stale grants/revocation, replay, proxy/test-control trust, manifest/path/PID
       injection, cross-stack cleanup, stdout/argv secrets, startup races, and fallback. Run
@@ -286,7 +286,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:no-affinity`;
       save `evidence/phase-1-no-affinity-red.txt`.
       acceptance: `test -f
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-1-no-affinity-red.txt` exits 0.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-1-no-affinity-red.txt` exits 0.
 - [ ] [AI] **REFACTOR — owner: spec/integration lanes.** Reconcile only the two feature files, four
       project `behaviour-coverage.json` maps, and new focused test names for state, instance, stack
       ownership, and descriptors. Run
@@ -302,7 +302,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       RED ledger: only named absent Plan 09 behavior may be nonzero; a baseline, target/configuration, or
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
       acceptance: `grep -l 'run-many -t build'
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-1-*` prints at least one file.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-1-*` prints at least one file.
 - [ ] [AI] Rerun static behavior coverage and inspect all RED transcripts; acceptance: every criterion
       has U/I/E ownership and a threat owner, each RED fails for its named missing behavior, and
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:quick -p ose-id-be,ose-id-web`
@@ -583,7 +583,7 @@ them. Wrong instance handoff, URL/status/storage, console error, fallback identi
       headers/bodies for readiness/JWKS/revocation/negative cases. Any clipping, focus/status, console,
       network, or redaction failure routes to the owning UI/API phase and requires the full matrix rerun.
       acceptance: `test -d
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-5-browser` exits 0.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence/phase-5-browser` exits 0.
 - [ ] [AI] **Owner: lifecycle lane; failure and cleanup.** Run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack -- --cases=child-crash,test-failure,interrupt,repeated-cleanup,concurrent-isolation`
       twice from clean state, invoking the cleanup command after each. Store exit/cause/empty-inventory
@@ -629,21 +629,21 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       explicit boundary reason indexed in behavior-coverage configuration and statically validated.
       Blanket/implicit exemptions and ad hoc coverage ignores fail the gate.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
-      run-many -t test:coverage:behaviour,test:quick -p ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e` exits 0.
+  run-many -t test:coverage:behaviour,test:quick -p ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e` exits 0.
 - [ ] [AI] Search diff/evidence for secrets, private descriptors, broad delete targets, unresolved paths/
       variables/globs, unsafe PID/container matching, raw tokens/cookies/codes, browser storage, local-state
       authority, affinity, sleeps/retries/skips, test-control exposure, Redis, LMS implementation,
       deployment/Kubernetes/production config, real data, and license drift. Resolve every hit.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run
-      ose-id-web-e2e:inspect-local-stack-evidence --
-      --evidence=plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence` exits 0.
+  ose-id-web-e2e:inspect-local-stack-evidence --
+  --evidence=plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence` exits 0.
 - [ ] [AI] Validate the non-REST runner API independently of the live-HTTP gate: validate every example
       and fixture against the four JSON Schemas from technical document 006, run the version/admission/
       descriptor/control/cleanup Unit, Integration, and E2E matrices, and preserve exact exit/status plus
       zero-resource or empty-residue evidence. The REST/GraphQL-specific API gate must not be claimed as
       proof of the command/control-file contract.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx --
-      run-many -t test:local-stack,test:composition-contract -p ose-id-web-e2e` exits 0.
+  run-many -t test:local-stack,test:composition-contract -p ose-id-web-e2e` exits 0.
 - [ ] [AI] Run the bounded `repo-governance/workflows/quality/api-http-quality-gate.md` in `mode: strict` against
       the unchanged live HTTP surfaces through the no-affinity proxies. Invoke
       `.agents/agents/swe-api-tester.md` (exploratory charter) with `output-mode: delivery` and this exact plan
@@ -656,8 +656,8 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       instance handoff; identify destructive success cases as Integration/E2E-owned rather than issuing
       them during non-destructive discovery.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run
-      ose-id-web-e2e:verify-no-http-contract-delta --
-      --baseline=evidence/phase-0-http-contract-baseline --current=evidence/phase-5-http-contract-current` exits 0.
+  ose-id-web-e2e:verify-no-http-contract-delta --
+  --baseline=evidence/phase-0-http-contract-baseline --current=evidence/phase-5-http-contract-current` exits 0.
 - [ ] [AI] For each API surface, run one discovery, triage original `AET-###` findings at the strict
       threshold, append each as an unchecked task, apply at most one language-matched fix pass with a
       reproducing regression test, rebuild/restart once, and run one scoped verification of original IDs
@@ -666,7 +666,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       lifecycle evidence, an unchecked finding, or contract drift blocks delivery. Accept or reject every
       genuine `SG-###` explicitly; never relabel a defect to defer it.
       acceptance: `grep -cE '^ *- \[ \].*AET-[0-9]{3}'
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/delivery.md` prints 0.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/delivery.md` prints 0.
 - [ ] [AI] Record the static `repo-governance/workflows/quality/ui-web-quality-gate.md` disposition. It is not
       applicable only while the reconciled diff changes no component, token, style, responsive layout,
       accessibility behavior, or UI primitive. Shared session/readiness/proxy code alone does not create
@@ -675,7 +675,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       `.agents/agents/swe-developer.md` (Apply Findings mode) at most once for validated in-threshold findings, then one
       scoped checker verification; record report paths, IDs, lifecycle status, and require `pass`.
       acceptance: `grep -c 'ui-web-quality-gate disposition'
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/delivery.md` prints at least 1.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/delivery.md` prints at least 1.
 - [ ] [AI] Execute the Rule-15 in-place delivery variant described by
       `repo-governance/workflows/quality/ux-review-fix-planning.md` sequentially against the running OSE
       sign-in/authorization/account/company-admin handoffs and the synthetic dependent app's identity-
@@ -692,31 +692,31 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       fallback identity, unresolved finding, console/a11y/design regression, or unexplained gap blocks
       archival.
       acceptance: `grep -cE '^ *- \[ \].*(EWT|UWT|DWT)-[0-9]{3}'
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/delivery.md` prints 0.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/delivery.md` prints 0.
 - [ ] [AI] Run independent semantic security, architecture, logic, type-soundness, performance, and test-
       integrity review because the plan changes identity state, destructive cleanup, and scale contracts.
       Resolve validated findings and rerun affected/full gates.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run
-      --surface=pre-push` exits 0.
+  --surface=pre-push` exits 0.
 - [ ] [AI] Reconcile Automatic Rule-Impact Coverage. If public target/port/dependency behavior changed a
       durable rule/enforcement surface, complete full repository-local rules propagation: inventory,
       precedence/conflict, placement/eviction, canonical/enforcement edits, dispositions, generated
       bindings, verification, rules-quality-gate, manifest/final state, and sibling obligation. Otherwise
       record evidence-backed `none`.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run
-      --surface=pre-push` exits 0.
+  --surface=pre-push` exits 0.
 - [ ] [AI] Run `plan-execution-checker` across BRD outcomes, every AC, file-impact row, TDD/manual proof,
       state matrix, lifecycle/destructive safety, contract, rollback, license/deployment boundary, and
       knowledge capture. Reopen the earliest responsible phase for every validated gap.
       acceptance: `grep -l 'ose-id-init-09-local-scale-and-composition'
-      local-tmp/plan-execution/plan-execution__*__validation.md` prints at least one report path.
+  local-tmp/plan-execution/plan-execution__*__validation.md` prints at least one report path.
 
 ### Phase 6 Gate
 
 - [ ] [AI] Candidate has no unresolved identity, state, lifecycle, destructive-action, security, API/UI,
       test-integrity, performance, rule, license, plan, secret, scope, or cleanup finding.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run
-      --surface=pre-push` exits 0.
+  --surface=pre-push` exits 0.
 
 > **Pause Safety:** candidate is complete and reviewable but unpushed. Safe to stop. To resume:
 > `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`.
@@ -737,7 +737,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       each surviving non-code entry to one durable home; code ideas require separate literal plan
       authorization. Record routed/reported/discarded status or explicit no-learning reason; leave none open.
       acceptance: `grep -cE 'routed|reported|discarded|no-learning'
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/learnings.md` prints at least 1.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/learnings.md` prints at least 1.
 
 ### Commit Guidelines
 
@@ -745,7 +745,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       named action. Once authorized, use the fewest build-valid, reviewable, revertible Conventional
       Commits; keep contracts/tests/docs/scripts/generated files with the behavior they complete.
       acceptance: `rtk git log --format=%s origin/main..HEAD |
-      grep -cvE '^(feat|fix|docs|refactor|test|chore|build|ci|perf|style)(\(.+\))?!?: '` prints 0.
+  grep -cvE '^(feat|fix|docs|refactor|test|chore|build|ci|perf|style)(\(.+\))?!?: '` prints 0.
 
 ### Plan Archival
 
@@ -753,16 +753,16 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       row, tests/manual evidence, runner/cleanup, contract, guard/rollback, rule disposition, and learnings.
       Checked boxes alone are not proof.
       acceptance: `grep -l 'ose-id-init-09-local-scale-and-composition'
-      local-tmp/plan-execution/plan-execution__*__validation.md` prints at least one report path.
+  local-tmp/plan-execution/plan-execution__*__validation.md` prints at least one report path.
 - [ ] [AI] Confirm all gates and every AET/EWT/UWT/DWT defect fix; classify every observed execution branch
       delivered/unused/retained-escalated with proof. Register the workflow-owned post-delivery audit.
       acceptance: `grep -cE '^ *- \[ \].*(AET|EWT|UWT|DWT)-[0-9]{3}'
-      plans/in-progress/ose-id-init-09-local-scale-and-composition/delivery.md` prints 0.
+  plans/in-progress/ose-id-init-09-local-scale-and-composition/delivery.md` prints 0.
 - [ ] [AI] Run `rtk date +%F` only after preliminary gates pass. Move to
       `plans/done/<completion-date>__ose-id-init-09-local-scale-and-composition/`, update all relevant
       indexes/dependency links including the LMS blocker, and rerun plan/Markdown/Mermaid validation.
       acceptance: `test -d plans/done/<completion-date>__ose-id-init-09-local-scale-and-composition &&
-      rtk ./rhino md internal-link validate` exits 0.
+  rtk ./rhino md internal-link validate` exits 0.
 - [ ] [AI] After explicit authorization, push/update the PR; require exact-head/base Quality gate, clean
       current-head leak review, applicable API/UI/local-stack gates, and identity/security semantic review.
       Fix and repush every failure.
@@ -773,7 +773,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
 - [ ] [AI] After mandatory pre-removal checks, remove the plan worktree non-force, complete branch
       cleanup, and run `rtk git worktree prune`; ambiguous or retained work blocks removal.
       acceptance: `rtk git worktree list --porcelain |
-      grep -c 'worktrees/ose-id-init-09-local-scale-and-composition'` prints 0.
+  grep -c 'worktrees/ose-id-init-09-local-scale-and-composition'` prints 0.
 
 ### Phase 7 Gate
 

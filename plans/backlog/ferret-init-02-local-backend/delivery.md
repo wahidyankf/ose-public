@@ -235,21 +235,21 @@ rtk git diff --check
       Verify the author-time resolved ports `127.0.0.1:8601` and `127.0.0.1:5440` are available; stop and amend
       this plan on collision rather than silently choosing another wire/registry contract.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
-      ./rhino gate run --surface=pre-push` exits 0 only after the port checks find 8601 and 5440 free
+  ./rhino gate run --surface=pre-push` exits 0 only after the port checks find 8601 and 5440 free
 - [ ] [AI] Resolve/lock current compatible FastAPI, Uvicorn, Pydantic/settings, SQLAlchemy 2, Alembic, psycopg,
       pytest stack, PostgreSQL 18 image digest, and licenses using official sources. The contract toolchain is
       already resolved from repository precedent as Redocly bundle plus Spectral lint behind
       `ferret-contracts:{lint,bundle,test:quick}`. CLI runtime dependencies must remain empty.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
-      ./rhino gate run --surface=pre-push` exits 0 after the dependency checks resolve and lock the stack
+  ./rhino gate run --surface=pre-push` exits 0 after the dependency checks resolve and lock the stack
 - [ ] [AI] Reverify OpenAPI 3.1/FastAPI schema behaviour and current GraphQL/MCP official guidance only to confirm
       deferral/adapter boundaries. Do not add GraphQL/MCP dependencies or freeze a future protocol version.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
-      ./rhino gate run --surface=pre-push` exits 0 with no open architecture/API/schema decision remaining
+  ./rhino gate run --surface=pre-push` exits 0 with no open architecture/API/schema decision remaining
 - [ ] [AI] Run the delivered Plan 01 full matrix twice plus repository pre-push/docs/spec/rules/secret baselines.
       Fix failures at root cause. Create the exact file-impact ledger and generated-source map.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
-      ./rhino gate run --surface=pre-push` exits 0 on the repository pre-push baseline
+  ./rhino gate run --surface=pre-push` exits 0 on the repository pre-push baseline
 
 ### Phase 0 Gate
 
@@ -286,8 +286,8 @@ isolated RED adapters precede production code.
       uv lock, Pyright strict, Ruff, pytest/pytest-bdd/coverage, TypeScript/Playwright, exact cache inputs, and the
       `verify:delivery` target/script/unit test declared above.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . --
-      npm exec nx -- run-many -t build,typecheck,lint,test:quick
-      --projects=ferret-be,ferret-be-e2e,ferret-contracts` exits 0
+  npm exec nx -- run-many -t build,typecheck,lint,test:quick
+  --projects=ferret-be,ferret-be-e2e,ferret-contracts` exits 0
 - [ ] [AI] Inventory any lasting Python backend/Nx/API/harness/rules change and start a per-repository
       rules-propagation manifest. Do not edit a rule already made sufficient by Plan 01.
       acceptance: `test -f local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` exits 0
@@ -344,7 +344,7 @@ queries, analytics, capabilities, pruning, migrations, and post-commit notices.
 - [ ] [AI] Inspect compiled SQL and synthetic `EXPLAIN (ANALYZE, BUFFERS)` after the five packets; failures in
       bounds/projection/index use return to the owning BE-I packet, never to a widened timeout or blind index.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
-      npm exec nx -- run ferret-be:verify:delivery --args='--phase=2'` exits 0 with the query-plan checks passing
+  npm exec nx -- run ferret-be:verify:delivery --args='--phase=2'` exits 0 with the query-plan checks passing
 
 ### Change Publisher and Storage
 
@@ -355,7 +355,7 @@ queries, analytics, capabilities, pruning, migrations, and post-commit notices.
       Replace the provisional 1–2 KiB estimate with measured operational documentation and correct unjustified
       indexes/schema before proceeding.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
-      npm exec nx -- run ferret-be:verify:delivery --args='--phase=2'` exits 0 with the measured-storage checks passing
+  npm exec nx -- run ferret-be:verify:delivery --args='--phase=2'` exits 0 with the measured-storage checks passing
 
 ### Phase 2 Gate
 
@@ -398,7 +398,7 @@ deterministic.
       operation/schema/security difference returns to the contract or handler; never regenerate over the
       canonical document silently.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
-      npm exec nx -- run ferret-be:verify:delivery --args='--phase=3'` exits 0 with no OpenAPI drift
+  npm exec nx -- run ferret-be:verify:delivery --args='--phase=3'` exits 0 with no OpenAPI drift
 - [ ] [AI] Execute the API delta's literal `rtk curl` recipes for all success/failure cases using ignored
       synthetic fixtures. M1–M7 are the acceptance packets; their setup, response assertions, persistence
       assertions, and cleanup are mandatory. Never save a token or raw request body as evidence.
@@ -470,42 +470,42 @@ proof, and GraphQL/MCP remain genuinely deferred.
       a path no-edit with inspected evidence when Plan 01 already suffices. GraphQL and MCP surfaces are
       excluded.
       acceptance: `grep -c 'behaviour-coverage.mjs'
-      local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
+  local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Inventory:** enumerate every changed rule/enforcement surface across governance, instruction files,
       canonical/generated skills, `repo-config.yml`, CI/hooks, scripts, setup/style guides, API/schema rules, and
       project tags. Separate declarations from product enforcement.
       acceptance: `grep -c 'Inventory'
-      local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
+  local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Conflict/precedence:** compare Python backend/mixed E2E/local API/port/migration behaviour against
       repository hierarchy and Plan 01 rules. Resolve at the narrow owner; stop on contradiction.
       acceptance: `grep -c 'Conflict/precedence'
-      local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
+  local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Placement/eviction:** add only missing durable rules; remove/redirect duplicates and stale "no Python
       apps" statements. Do not make this product plan the permanent rule owner.
       acceptance: `grep -c 'Placement/eviction'
-      local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
+  local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Canonical/enforcement edits:** update exact Nx/Python/API/port/setup declarations and validators
       with failing-before/passing-after tests. If Plan 01 support is sufficient, record no-edit evidence.
       acceptance: `grep -c 'Canonical/enforcement edits'
-      local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
+  local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Enforcement dispositions:** map every normative change to an automated gate, an already-required
       named human review surface, or justified intentional non-enforcement.
       acceptance: `grep -c 'Enforcement dispositions'
-      local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
+  local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Bindings/generation:** hand-edit canonical sources only, run official generators for any affected
       binding, inspect generated diffs, and verify harness/catalog parity. No GraphQL/MCP binding is added.
       acceptance: `grep -c 'Bindings/generation'
-      local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
+  local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Verification/manifest:** run the structure/content/link/rule/BDD/project/API validation commands
       declared by this delivery and record every frozen input, manifest row, finding, fix, and final status.
       Do not invoke `rules-quality-gate`; it requires a separate user-named invocation or an authorized
       rules-grooming Step 8 and is not authorized by this product plan.
       acceptance: `grep -c 'Verification/manifest'
-      local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
+  local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 - [ ] [AI] **Sibling obligation:** record cloud deployment as a separately authorized future private infrastructure plan;
       make no private-repository mutation or parity claim.
       acceptance: `grep -c 'Sibling obligation'
-      local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
+  local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 
 ### Documentation, Manual, and Exploratory Proof
 
@@ -592,7 +592,7 @@ review.
       schema/migrations/reconciliation, sync crash/replay, auth/privacy, queries, pruning/storage, architecture,
       rules, reviews, rollback, non-goals, and cleanup. Reopen earliest unsupported phase.
       acceptance: `test -f
-      plans/in-progress/ferret-init-02-local-backend/evidence/preliminary-delivery-audit.md` exits 0
+  plans/in-progress/ferret-init-02-local-backend/evidence/preliminary-delivery-audit.md` exits 0
 - [ ] [AI] Reconcile the Phase 0 file ledger against `rtk git status --short`. After explicit commit
       authorization, stage exactly the implementation, contract, migration, spec, rule/binding, sanitized
       evidence, and still-in-progress plan paths; exclude every done-plan/index move. Require the cached
@@ -666,8 +666,8 @@ containment.
       clean authenticated current-head `pr-leak-review`. Semantic review is required only when the repository
       workflow or user requests it. All API exploratory fixes must be retested against this head.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
-      npm exec nx -- run ferret-be:verify:delivery
-      --args='--phase=7 --evidence-output=local-tmp/plan-execution/ferret-init-02-local-backend/phase-7-gate.txt'`
+  npm exec nx -- run ferret-be:verify:delivery
+  --args='--phase=7 --evidence-output=local-tmp/plan-execution/ferret-init-02-local-backend/phase-7-gate.txt'`
       exits 0, recording the current PR head/base Quality, leak, and API checks
 - [ ] [AI] After every hardened proof names the same current head/base and the archive is in the PR, mark the
       draft ready, recheck all five hardened merge preconditions, and squash-merge without requesting branch
@@ -700,7 +700,7 @@ containment.
 - [ ] [AI] Fetch `origin`, verify reviewed-head/merge ancestry and delivered app/spec/contract/migration/archive
       state. Any mismatch reopens Phase 7.
       acceptance: `rtk git cat-file -e
-      "$FERRET_MERGE_SHA:plans/done/<completion-date>__ferret-init-02-local-backend/delivery.md"` exits 0
+  "$FERRET_MERGE_SHA:plans/done/<completion-date>__ferret-init-02-local-backend/delivery.md"` exits 0
 - [ ] [AI] Continue the already-calling top-level plan-execution workflow at its terminal completeness step; do
       not recursively invoke it. Call `plan-execution-checker` with the archived plan path,
       `delivered-ref=$FERRET_MERGE_SHA`, and `reviewed-pr-head=$FERRET_REVIEWED_HEAD`; require `Status: Complete`,

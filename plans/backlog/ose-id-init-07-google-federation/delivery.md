@@ -293,7 +293,7 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       terms use provider issuer/subject consistently and never encode email as identity. Rerun static coverage;
       acceptance: mappings remain complete.
       acceptance: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx --
-      run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`
+  run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`
       outputs zero duplicate/undefined/unowned scenarios, with missing implementations only RED.
 
 ### Phase 1 Gate

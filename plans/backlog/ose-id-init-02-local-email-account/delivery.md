@@ -154,14 +154,14 @@ target/configuration, or unrelated failure blocks Phase 2.
 - [ ] [AI] Run Plan 01's documented four-project and full-stack baselines twice through HIPPO. Acceptance:
       all pass, production modes fail closed, and no resources survive. Fix baseline failures at root cause.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD` exits 0 on both runs.
+  npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD` exits 0 on both runs.
 
 ### Phase 0 Gate
 
 - [ ] [AI] Re-run the Plan 01 smoke/E2E target and repository affected baseline; acceptance: exit 0,
       clean resource inventory, and dependency/license record complete.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- run ose-id-be-e2e:test:e2e` exits 0 and leaves no owned resource.
+  npm exec nx -- run ose-id-be-e2e:test:e2e` exits 0 and leaves no owned resource.
 
 > **Pause Safety:** no account migration/code exists and the delivered foundation is verified. Safe to
 > stop. To resume, rerun the Plan 01 smoke target.
@@ -269,7 +269,7 @@ target/configuration, or unrelated failure blocks Phase 2.
       SqlKata types; prove no EF runtime query/change-tracking path exists. Run backend
       build/typecheck/lint/Unit/Integration; acceptance: green with no custom password hashing/token crypto.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e` exits 0.
+  npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e` exits 0.
 - [ ] [AI] Produce `evidence/phase-2-schema/` old/new catalog manifests and per-table stable counts/digests;
       record no-backfill/no-contract, Plan-01-code/new-schema compatibility, new-code/old-schema
       fail-closed readiness, retained-schema rollback, and forward-fix proof. Acceptance: no source row is
@@ -286,7 +286,7 @@ target/configuration, or unrelated failure blocks Phase 2.
 - [ ] [AI] **REFACTOR:** remove raw email from metric labels/audit where opaque identifiers suffice; scan
       focused logs and rerun regression. Acceptance: behavior remains green and redaction scan passes.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e` exits 0.
+  npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e` exits 0.
 
 ### Phase 2 Gate
 
@@ -317,7 +317,7 @@ target/configuration, or unrelated failure blocks Phase 2.
 - [ ] [AI] **REFACTOR:** isolate transport/template/config from account use cases and run backend plus
       lifecycle regression twice. Acceptance: no real network destination, stale message, or resource remains.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- run ose-id-be-e2e:test:e2e` exits 0 on both runs, with no stale message left.
+  npm exec nx -- run ose-id-be-e2e:test:e2e` exits 0 on both runs, with no stale message left.
 
 ### Phase 3 Gate
 
@@ -348,21 +348,21 @@ target/configuration, or unrelated failure blocks Phase 2.
 - [ ] [AI] **REFACTOR:** separate cookie transport, session policy, and application commands; run backend
       build/typecheck/lint/Unit/Integration/E2E. Acceptance: no JWT/OIDC/client token exists.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- run-many -t test:quick,test:integration,test:e2e --projects=ose-id-be,ose-id-be-e2e` exits 0.
+  npm exec nx -- run-many -t test:quick,test:integration,test:e2e --projects=ose-id-be,ose-id-be-e2e` exits 0.
 
 ### AC-ACC-05 — Recovery and security consequences
 
 - [ ] [AI] **RED:** add recovery known/unknown equivalence, purpose/expiry/single-use/concurrency, password
       policy, prior-password failure, and all-prior-session revocation tests. Run focused targets and save RED.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- run ose-id-be:test:quick` exits non-zero, failing only the new recovery tests.
+  npm exec nx -- run ose-id-be:test:quick` exits non-zero, failing only the new recovery tests.
 - [ ] [AI] **GREEN:** implement recovery request/reset using notification/capability ports and atomic
       security-version/session changes. Rerun focused tests; acceptance: one reset succeeds and old
       password/sessions fail consistently.
 - [ ] [AI] **REFACTOR:** consolidate capability consumption without merging purposes and rerun verification
       plus recovery suites. Acceptance: separate purpose/audit semantics remain explicit.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- run-many -t test:quick,test:integration,test:e2e --projects=ose-id-be,ose-id-be-e2e` exits 0.
+  npm exec nx -- run-many -t test:quick,test:integration,test:e2e --projects=ose-id-be,ose-id-be-e2e` exits 0.
 
 ### AC-ACC-10 — Auditable account cleanup
 
@@ -383,13 +383,13 @@ target/configuration, or unrelated failure blocks Phase 2.
 - [ ] [AI] **RED:** extend E2E to start on A and complete on B for registration, verification, sign-in,
       recovery, and revocation; add response/log/evidence forbidden-pattern scan. Run and observe missing proof.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- run ose-id-be-e2e:test:e2e` exits non-zero on the missing handoff or redaction proof.
+  npm exec nx -- run ose-id-be-e2e:test:e2e` exits non-zero on the missing handoff or redaction proof.
 - [ ] [AI] **GREEN:** move any discovered correctness state to PostgreSQL/shared key provider and correct
       redaction. Rerun with one instance stopped at each boundary; acceptance: outcomes remain consistent.
 - [ ] [AI] **REFACTOR:** remove affinity/test bypasses and run the complete suite twice; acceptance: no
       plaintext password/hash/capability/cookie/SMTP body/connection secret is retained.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      ./rhino gate run --surface=pre-push` exits 0, so no secret or credential is retained.
+  ./rhino gate run --surface=pre-push` exits 0, so no secret or credential is retained.
 
 ### Phase 4 Gate
 
@@ -581,7 +581,7 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 - [ ] [AI] Re-run rules/docs/spec/API gates and full manual cleanup; acceptance: implementation, contracts,
       and docs agree with no secret or absolute host path in evidence.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      ./rhino gate run --surface=pre-push` exits 0 on the current candidate.
+  ./rhino gate run --surface=pre-push` exits 0 on the current candidate.
 - [ ] [AI] Confirm the API Quality Gate reports `final-status: pass` and
       `lifecycle-status: verified`, its live exploratory matrix covers every added/retained contract,
       no unchecked `AET-###` remains, and the no-UI applicability proof matches the candidate diff.
@@ -612,7 +612,7 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 - [ ] [AI] Trace AC-ACC-01..10, approved scope, every file-impact row, physical schema/migration proof, old-code/new-schema compatibility, no-loss manifests, runtime guard, rollback/forward-fix, automated/manual evidence, rules propagation, license record, and Knowledge Capture into `plans/in-progress/ose-id-init-02-local-email-account/evidence/preliminary-delivery-audit.md`. Reopen the earliest failed phase for any unsupported row; checked boxes alone are not evidence.
 - [ ] [AI] Run full account, Mailpit, recovery, and multi-instance E2E from a fresh owned stack and the changed-surface documentation/spec/plan gates. Acceptance: all pass without retry/sleep, resources clean up, and no UI, OIDC, provider, company, product-token, or deployment behavior is present.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- run ose-id-be-e2e:test:e2e` exits 0 from a fresh owned stack, with no retry or sleep.
+  npm exec nx -- run ose-id-be-e2e:test:e2e` exits 0 from a fresh owned stack, with no retry or sleep.
 - [ ] [AI] Verify all applicable rule-15 EWT/UWT/DWT and rule-16 AET defects are fixed. A defect deferral requires explicit user permission; SG proposals/suggestions receive an explicit disposition.
       acceptance: `grep -cE '\[ \].*(AET|EWT|UWT|DWT)-[0-9]' delivery.md` prints 0 when run from the plan folder.
 
@@ -652,7 +652,7 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
       any failure reopens its owning phase.
 - [ ] [AI] Run the repository specs/OpenAPI, Markdown, plan, schema/migration, dependency/rules/binding, secret, and changed-surface gates required by the final diff. Acceptance: every gate exits 0 against the archive-containing HEAD.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      ./rhino gate run --surface=pre-push` exits 0 against the archive-containing HEAD.
+  ./rhino gate run --surface=pre-push` exits 0 against the archive-containing HEAD.
 - [ ] [AI] Run `ose-id-be:test:unit` with native coverage; acceptance: it enforces and reports
       **at least 99% Unit line coverage for authored production code**, with canonical exclusions only. Run all applicable backend/backend-E2E static
       `test:coverage:unit`, `:integration`, `:e2e`, and `:behaviour` targets; acceptance: retained
@@ -660,8 +660,8 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 - [ ] [AI] Inspect `rtk git diff --check`, `rtk git status --short`, and the full `origin/main...HEAD` diff. Acceptance: the tree is clean, generated files trace to exact sources, all plan lifecycle changes are present, and UI, OIDC, provider, company, product-token, or deployment remains absent.
 - [ ] [AI] Fix every failure, including preexisting failures encountered by these gates, at root cause. Any repair changes HEAD and invalidates all current-head review evidence; recommit only with user authorization, then rerun this phase from its first check. Never retry, sleep, widen, loosen, skip, or quarantine.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
-      npm exec nx -- affected -t build,typecheck,lint,test:quick,test:integration,test:e2e,test:coverage:behaviour
-      --base=origin/main --head=HEAD` exits 0 on the repaired HEAD, rerun from the first check.
+  npm exec nx -- affected -t build,typecheck,lint,test:quick,test:integration,test:e2e,test:coverage:behaviour
+  --base=origin/main --head=HEAD` exits 0 on the repaired HEAD, rerun from the first check.
 
 ### Push and Exact-Head Review
 

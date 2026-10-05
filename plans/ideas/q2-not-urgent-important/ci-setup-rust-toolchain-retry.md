@@ -56,9 +56,8 @@ workflow expects to stay aligned. That deferral is only sound if the follow-up a
 - **CI Blocker Resolution practice** — the rule that a CI blocker gets a root-cause fix rather than
   a bypass; a standing re-run habit is the symptom this brief proposes to remove.
   [ci-blocker-resolution](../../../repo-governance/development/quality/ci-blocker-resolution.md)
-- **`plan-parity-planning` workflow** — the mechanism for landing one change across the
-  three repos without creating divergence.
-  [workflow](../../../repo-governance/workflows/plan/plan-parity-planning.md)
+- **`plan-parity-planning` workflow (retired)** — removed when `ose-public` and its private
+  sibling became independent; any change here is made in this repository alone.
 - **SDLC Gate Standard** — defines the shared CI gate shape the three repos are held to, which is
   why the fix must span both parity repos rather than stay local.
   [sdlc-gate-standard](../../../docs/reference/sdlc-gate-standard.md)

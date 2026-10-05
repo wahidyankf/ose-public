@@ -49,15 +49,12 @@ subject. Record keep, amend, merge, delete, relocate, or supersede plus the surv
 home; keep needs a rationale. Consolidate redundancy only when every distinct obligation and
 necessary discovery path survives. Never widen this tidy into repository-wide cleanup.
 
-For any portable governance, agent, or skill rule, inventory every canonical consumer first. Mutate
-one repository per rules-propagation run, then record the other OSE repository as the Step 9 sibling
-obligation for a later run; no other repository is a propagation target. Never hold a ready PR
-solely to synchronize its merge with the sibling. Verify the declared portable manifest
-byte-for-byte when convergence is checked and record only explicit private-only operational
-exceptions. Preserve the active goal during runner contention:
-investigate and poll patiently, never cancel merely because a runner is queued. Require immediate
-exact-path cleanup only for worktrees the plan itself created and verified; never touch foreign
-worktrees. Regenerate bindings after every `.claude/` edit and validate synchronization.
+For any governance, agent, or skill rule, inventory every canonical consumer in this repository
+first. A rules-propagation run mutates this repository only and records no obligation for another;
+never hold a ready PR for another repository's timing. Preserve the active goal during runner
+contention: investigate and poll patiently, never cancel merely because a runner is queued. Require
+immediate exact-path cleanup only for worktrees the plan itself created and verified; never touch
+foreign worktrees. Regenerate bindings after every `.claude/` edit and validate synchronization.
 
 ## Reference Documentation
 

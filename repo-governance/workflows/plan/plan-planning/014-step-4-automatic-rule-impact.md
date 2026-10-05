@@ -21,7 +21,7 @@ bootcamp-executable actions:
 5. record the three-way enforcement disposition;
 6. generate declared harness adapters;
 7. run propagation's own verification, which never invokes `rules-quality-gate`; and
-8. record the repository-specific manifest, final status, and sibling obligation.
+8. record the repository-specific manifest and final status.
 
 Every action needs the exact repository, input, path or bounded discovery, copyable invocation,
 expected observation, failure handling, and evidence destination. Repeat the outcome per affected

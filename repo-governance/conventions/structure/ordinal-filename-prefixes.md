@@ -65,8 +65,7 @@ width reports a clean tree exactly when the tree is wrong.
 ## Width
 
 An ordinal that is kept is zero-padded to **three digits** — `003-user-review.md`, never `03-` or
-`3-`. The sibling repositories number the companions of a split plan document at the same width, so
-one workspace-wide width means a reader never has to remember which tree they are in.
+`3-`. One width across the trees means a reader never has to remember which tree they are in.
 
 Width is not a licence. A filename that fails either question above sheds its ordinal; it does not
 gain a digit.

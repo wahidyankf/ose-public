@@ -49,12 +49,6 @@ resolve the route against the selected repository root and reconcile the resulti
 `git worktree list --porcelain`; never commit that host-specific result in the plan. Missing or
 conflicting identity blocks removal; the initial branch proves provisioning, not final checkout.
 
-For a declared multi-repository parity objective, also include the common objective slug, worktree
-basename, and corresponding branch mapping defined by
-[Cross-Repository Parity Identity](../../../development/workflow/cross-repository-parity-identity.md).
-Every repository using a worktree records the same basename; every corresponding short-lived branch
-records the same name. Modes without either identity record `not applicable` with a reason.
-
 ### Delivery Branch Inventory
 
 Keep an append-only inventory beside the identity; add initial and plan-created branches before use:

@@ -40,10 +40,9 @@ rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exe
 
 **See**: [nx-targets.md](./repo-governance/development/infra/nx-targets.md)
 
-Local compute uses the checksum-pinned root `./hippo` consumer. HIPPO source, specifications, and
-releases stay in the independent [upstream](https://github.com/wahidyankf/hippo); never
-copy them here. Independent compute may overlap only through HIPPO admission; dependency,
-shared-output, Rhino byte-identity, transactional, and correctness edges still serialize.
+Local compute uses the checksum-pinned root `./hippo` consumer. Independent compute may overlap
+only through HIPPO admission; dependency, shared-output, byte-identity, transactional, and
+correctness edges still serialize.
 
 **See**: [resource-aware-development.md](./repo-governance/development/practice/resource-aware-development.md)
 
@@ -119,8 +118,8 @@ Verify UI/API behaviour manually; investigate CI failures at the root cause, nev
 ## AI Agents
 
 [Canonical agents](./.agents/agents/README.md) and skills under `.agents/skills/` are authoritative;
-regenerate and validate every route under `.claude/`, `.codex/`, and `.opencode/` with the pinned
-Rhino adapter commands, never by hand. Dispatch coding work to the fitting `swe-*` agent, except a
+regenerate and validate every generated route with the pinned Rhino adapter commands, never by
+hand. Dispatch coding work to the fitting `swe-*` agent, except a
 trivial edit or a harness without subagents, per [SWE Delegation](./repo-governance/development/agents/swe-delegation.md).
 
 **See**: [ai-agents.md](./repo-governance/development/agents/ai-agents.md)
@@ -139,11 +138,12 @@ Stage/commit only when explicitly instructed. License MIT; see
 
 ## Related Repositories
 
-The five **OSE Code Repositories** are a routing set — never a parent repo, parity group, or
-shared release. The private sibling is independently managed and not linked from this public
-tree. [RHINO](https://github.com/wahidyankf/rhino) supplies this repository's pinned
+The five **OSE Code Repositories** are a routing set: never a parent repo, synchronized group, or
+shared release. `ose-public` and its private sibling are independent, not linked from this public
+tree; neither is the other's source; either changes any rule or RHINO pin without consulting or
+notifying the other. [RHINO](https://github.com/wahidyankf/rhino) supplies the pinned
 repository-hygiene executable;
-[HIPPO](https://github.com/wahidyankf/hippo) resource coordination;
+[HIPPO](https://github.com/wahidyankf/hippo) resource coordination (never copied here);
 [BeaverNest](https://github.com/wahidyankf/beaver-nest) its own product.
 
 [Details](./docs/reference/related-repositories.md)

@@ -6,7 +6,7 @@ when_to_use: "Read this index to find the right Secrets and Environment-Variable
 # Secrets and Environment-Variable Standards
 
 - [Principles Implemented/Respected](./principles-implemented-respected.md) — The five software-engineering principles the secrets-and-env standard implements — Reproducibility First, Explicit Over Implicit, Automation Over Manual, Root Cause Orientation, Documentation First.
-- [Hard Iron Rule — No Secrets in Committed Files](./hard-iron-rule-no-secrets-in-committed-files.md) — The absolute rule that no system secret may enter any git-tracked file, why, where real secret values belong instead, and the cross-repo canonical doc name.
+- [Hard Iron Rule — No Secrets in Committed Files](./hard-iron-rule-no-secrets-in-committed-files.md) — The absolute rule that no system secret may enter any git-tracked file, why, where real secret values belong instead, and the doc's rename history.
 - [Secret-Exposure History Remediation](./secret-exposure-history-remediation.md) — The mandatory five-step incident procedure for a secret found in committed Git history — contain and rotate, inventory, rewrite, replace remote state, replace the PR.
 - [Environment Variable Naming Standard](./environment-variable-naming-standard.md) — The variable-class naming rules (app-defined, framework-reserved, shared-service, tier-forbidden) and the list of framework-reserved exempt names.
 - [Layout Standard — One Template per App](./layout-standard-one-template-per-app.md) — Where each app's env template lives, the no-duplication rule, the HUMAN-only rule for relocating real env files, and the library env-var declaration rule.

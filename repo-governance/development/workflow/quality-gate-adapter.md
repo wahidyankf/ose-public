@@ -30,7 +30,7 @@ live in [Gate Adapters](../quality/gate-adapters/README.md), never in a gate.
 
 ## Callers
 
-A gate runs only when its caller names it. The plan gate runs from Planning, Parity Planning, UX Review Fix Planning,
+A gate runs only when its caller names it. The plan gate runs from Planning, UX Review Fix Planning,
 Dependency Bump Planning, and Multi-Plans Execution. The UI web and API HTTP gates run as the surface-conditional
 tester gates of Planning and Plan Execution. The pr-review gate runs from [PR Review](../../workflows/quality/pr-review.md);
 every other gate runs on explicit request.
@@ -67,7 +67,7 @@ states what it needs from each. Red, green, refactor resolves to
 ## Local Rules Kept
 
 - [PR Review Disciplines](../quality/pr-review-disciplines.md) keeps this repository's scope guard, restatement by
-  value, the code-related test, and the sibling handoff record, which the catalog pr-review gate does not carry.
+  value, and the code-related test, which the catalog pr-review gate does not carry.
 - Where an earlier fixer used a different threshold from its gate, the gate's value wins, and the product adapter
   states it.
 

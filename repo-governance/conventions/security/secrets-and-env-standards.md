@@ -40,7 +40,7 @@ environment variables. The three prior docs that covered overlapping ground now 
 - [`no-secrets-in-committed-files.md`](../security/no-secrets-in-committed-files.md) — hard iron rule (stub)
 - [`env-file-access.md`](../security/env-file-access.md) — `guard-env-file-access` agent policy (stub)
 - [`reproducible-environments.md`](../../development/workflow/reproducible-environments.md) — environment setup (stub)
-- [`docs/explanation/standardize-secrets-and-env-parity-decisions.md`](../../../docs/explanation/standardize-secrets-and-env-parity-decisions.md) — cross-repo parity decisions
+- [`docs/explanation/standardize-secrets-and-env-parity-decisions.md`](../../../docs/explanation/standardize-secrets-and-env-parity-decisions.md) — historical decision log
 - [`repo-config.yml`](../../../repo-config.yml) — unified config hub (`env-contract:` and `env-injection:` sections)
 
 ## IaC Forward Scaffold

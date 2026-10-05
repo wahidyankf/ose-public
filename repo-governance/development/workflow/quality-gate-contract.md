@@ -57,12 +57,12 @@ never starts because another workflow implies it, and a caller joins that list o
 names the gate. The catalog's listed callers are below; each adopting repository lists in a gate's `## Entry` only the
 callers it has, chosen from this set:
 
-| Gate                 | Listed callers                                                    |
-| -------------------- | ----------------------------------------------------------------- |
-| `plan-quality-gate`  | `plan-planning`, `plan-parity-planning`, `ux-review-fix-planning` |
-| `docs-quality-gate`  | `release-cut`                                                     |
-| `rules-quality-gate` | `rules-grooming`, where the adopter chose that call               |
-| every other gate     | none; explicit request only                                       |
+| Gate                 | Listed callers                                      |
+| -------------------- | --------------------------------------------------- |
+| `plan-quality-gate`  | `plan-planning`, `ux-review-fix-planning`           |
+| `docs-quality-gate`  | `release-cut`                                       |
+| `rules-quality-gate` | `rules-grooming`, where the adopter chose that call |
+| every other gate     | none; explicit request only                         |
 
 ## Adoption
 

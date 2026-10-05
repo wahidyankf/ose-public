@@ -31,12 +31,10 @@ A learning routes **only** to the repo(s) it actually pertains to:
 - **Infra-private content** (Terraform, k3s, Proxmox, `coralpolyp`, on-prem infrastructure, real
   hostnames or inventories) MUST stay in the private sibling **only** and MUST NEVER cross-route into the
   public `ose-public` repo.
-- **Public-governance content** MAY propagate `ose-public` → the private sibling via the existing parity
-  loop (see the
-  [Multi-Repo Parity Planning workflow](../../../workflows/plan/plan-parity-planning.md)).
-  No other repository is a propagation target — a repository outside the parity set receives
-  nothing (see
-  [Related Repositories §Repositories outside the parity set](../../../../docs/reference/related-repositories.md#repositories-outside-the-parity-set)).
+- **Public-governance content** stays in `ose-public`. No other repository is a propagation target:
+  the private sibling adopts a change only by an explicit, one-off request through its own route, and
+  an upstream or product repository receives nothing (see
+  [Related Repositories §Independent repositories](../../../conventions/structure/related-repositories.md#independent-repositories)).
 - An **infra-specific** learning never appears in any file destined for a public repo, even in
   sanitized form — the gate is about which repo the knowledge belongs in, not just whether it is
   safe to publish.

@@ -16,6 +16,9 @@ created: 2026-06-10
 
 # Standardize Secrets and Env — Parity Decisions (2026-06-10)
 
+> **Historical record.** This log describes a 2026-06 cross-repository effort. `ose-public` and its
+> private sibling are now independent repositories, so nothing below binds either one to the other.
+
 This document records every cross-repo parity decision from the `standardize-secrets-and-env` plan
 (2026-06-10). The plan ships naming convention, `.env.example` layout, startup validation, the
 retired in-tree Rhino env toolchain, and the drift guard (`env-contract:` section in `repo-config.yml`) to ose-public. The full

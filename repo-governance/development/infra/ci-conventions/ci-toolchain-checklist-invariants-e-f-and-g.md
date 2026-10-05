@@ -3,7 +3,7 @@ description: Nx naming scheme, governance-currency checklist, Mermaid rules.
 when_to_use: Use when naming a target or writing a state diagram.
 ---
 
-# Parity Checklist — Invariants E, F, and G
+# Toolchain Checklist — Invariants E, F, and G
 
 ## Invariant E — Nx Target Naming (`{domain}:{work}`)
 
@@ -33,7 +33,7 @@ rename or command-surface change, update:
 5. Any index READMEs that reference renamed targets
 
 Stale `validate:*` or `spec-coverage` references in any of the above are bugs caught by
-`Rhino:links:validation` fragment checks and by the Parity Checklist gate in the plan delivery
+`Rhino:links:validation` fragment checks and by the toolchain checklist in the plan delivery
 process.
 
 ## Invariant G — Mermaid State Diagram Validation

@@ -1,13 +1,13 @@
 ---
-description: How to safely read a file out of a sibling repository by git ref, and the staleness hazard the ref form does not fix.
-when_to_use: Use when propagating a change across sibling repositories requires reading a file out of one repository while standing in another.
+description: How to safely read a file out of another repository by git ref, and the staleness hazard the ref form does not fix.
+when_to_use: Use when a task requires reading a file out of one repository while standing in another.
 ---
 
 # Reading a File From Another Repository
 
-This method is frequently used to propagate a change across sibling repositories, which means
-reading a file out of one repository while standing in another. Address it by **git ref, never by
-working-tree path**, and fetch immediately before the read:
+Reading a file out of one repository while standing in another, for example to adopt a change the
+owner explicitly requested, is addressed by **git ref, never by working-tree path**, with a fetch
+immediately before the read:
 
 ```console
 git -C <other-repo> fetch origin
@@ -31,5 +31,5 @@ that another session pushed to the shared remote and `<other-repo>`'s own `origi
 up yet, rather than `<other-repo>`'s local `main` lagging behind its own `origin/main`. Treat this read
 under the same discipline as that section's `rev-list` measurement: **always fetch in `<other-repo>`
 immediately before the `show`**, as the two-line recipe above does, never rely on a ref that was
-fetched at some earlier, unknown time. This is why the read across sibling repositories for a
-byte-identity check must be a fetch-then-show pair, not the `show` alone.
+fetched at some earlier, unknown time. This is why a read across repositories must be a
+fetch-then-show pair, not the `show` alone.

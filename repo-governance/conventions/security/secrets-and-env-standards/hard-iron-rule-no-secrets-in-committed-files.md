@@ -1,5 +1,5 @@
 ---
-description: The absolute rule that no system secret may enter any git-tracked file, why, where real secret values belong instead, and the cross-repo canonical doc name.
+description: The absolute rule that no system secret may enter any git-tracked file, why, where real secret values belong instead, and the doc's rename history.
 when_to_use: Use when deciding whether a value is safe to commit, or when explaining why a secret must never be committed even temporarily.
 ---
 
@@ -22,8 +22,7 @@ Real secret values go in:
 
 See also: [`no-secrets-in-committed-files.md`](../no-secrets-in-committed-files.md)
 
-## Cross-repo doc canonicalization
+## Doc rename history
 
-The cross-repo canonical name for this rule is `no-secrets-in-committed-files.md` (aligned with the
-private sibling). This repository previously used `no-secrets-in-git.md`; the file was renamed by
-the `standardize-secrets-and-env` plan to match the canonical name.
+This rule's document is `no-secrets-in-committed-files.md`. This repository previously used
+`no-secrets-in-git.md`; the file was renamed by the `standardize-secrets-and-env` plan.

@@ -676,8 +676,8 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       prints at least 1.
 - [ ] [AI] Reconcile Automatic Rule-Impact Coverage. If execution changed any durable rule or
       enforcement surface, stop and complete repository-local rules-propagation inventory, conflict/
-      precedence, canonical/enforcement edits, binding generation, rules-quality-gate, manifest, final
-      status, and sibling obligation before continuing. If none changed, record evidence-backed `none`.
+      precedence, canonical/enforcement edits, binding generation, rules-quality-gate, manifest, and final
+      status before continuing. If none changed, record evidence-backed `none`.
       acceptance:
       `grep -c 'Rule-Impact' plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`
       prints at least 1.

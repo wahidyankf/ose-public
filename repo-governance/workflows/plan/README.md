@@ -22,7 +22,7 @@ validation at the end.
 
 **✅ Workflows Here:**
 
-- Plan authoring and parity planning
+- Plan authoring
 - Plan execution tracking and execution checks
 - Multi-agent orchestration for plans/
 - Plan grooming and handover
@@ -40,7 +40,6 @@ validation at the end.
 - [plan-execution](./plan-execution.md) — Executes a project plan end-to-end — orchestration, delegation, quality gates, iteration, archival — split into per-topic children. Use when executing a plan, or looking up one step (worktree entry, a quality gate, finalization) of that execution.
 - [plan-execution-check](./plan-execution-check.md) — Evaluates finished execution in a fixed order and records the terminal verdict that permits or blocks archival. Use once every substantive delivery item is terminal, before a plan is archived.
 - [multi-plans-execution](./multi-plans-execution.md) — Schedules several ready plans together via a dependency DAG and bounded parallelism. Use when two or more gated plans should run together, not one at a time.
-- [plan-parity-planning](./plan-parity-planning.md) — Authors aligned-but-divergent plans across sibling repos, grilling every deviation to a decision. Use when a change spans sibling repos and drift between them must not be silent.
 - [plan-ideas-grooming](./plan-ideas-grooming.md) — Sweeps plans/ideas/ across repos, deduplicating, classifying into Eisenhower quadrants, and correcting cross-repo residency. Use when a repo's plans/ideas/ exceeds 60 files or 90 days have passed since the last grooming run.
 
 ## Orchestration Model Shared by These Workflows

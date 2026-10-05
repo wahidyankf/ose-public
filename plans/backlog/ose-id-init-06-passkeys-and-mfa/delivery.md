@@ -625,8 +625,7 @@ delivery branch without merge or archival yet.
       notices, recovery behavior, and production non-readiness. Do not add deployment instructions.
       acceptance: `rtk npm run check:pre-push` exits `0`.
 - [ ] [AI] If any project/test/network/port/rule/enforcement surface changes, execute the full repository-
-      local rules-propagation workflow and save intake, manifest, owner gates, final status, and sibling
-      obligation.
+      local rules-propagation workflow and save intake, manifest, owner gates, and final status.
       acceptance:
       `grep -ci 'propagation' plans/in-progress/ose-id-init-06-passkeys-and-mfa/evidence/phase-4-quality-gates.md`
       prints at least `1`.

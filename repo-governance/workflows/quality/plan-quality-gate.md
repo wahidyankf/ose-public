@@ -19,7 +19,6 @@ specific to plans.
 The gate starts only on an explicit request that names it, or from one of these callers:
 
 - [Planning](../plan/plan-planning.md), after the post-write gate;
-- [Parity Planning](../plan/plan-parity-planning.md), once per plan in the parity set;
 - [UX Review Fix Planning](ux-review-fix-planning.md), on the plan it authors;
 - [Dependency Bump Planning](../maintenance/dependency-bump-planning.md), on the backlog plan it authors; and
 - [Multi-Plans Execution](../plan/multi-plans-execution.md), on a named plan that has no recorded verdict.

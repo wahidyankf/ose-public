@@ -74,7 +74,6 @@ when_to_use: Use when executing a plan or locating one execution step.
 - [Status/Infra Gate](./plan-execution/041-finalization-status-logic-and-infra-gate.md) — pass/fail.
 - [Cleanup/Archival](./plan-execution/042-finalization-worktree-cleanup-and-pr-archival.md) — archival-in-PR.
 - [PR Merge/Status](./plan-execution/043-finalization-pr-merge-and-final-status.md) — merge/cleanup.
-- [Paired Handoff](./plan-execution/044-finalization-paired-repository-terminal-handoff.md) — successor pin.
 - [Task Rules](./plan-execution/045-task-management-rules-and-termination.md) — termination.
 - [Example Usage](./plan-execution/046-example-usage-and-iteration-example.md) — invocations.
 - [Safety Features](./plan-execution/047-safety-features-and-plan-specific-validation.md) — checker scope and complete cleanup safety.

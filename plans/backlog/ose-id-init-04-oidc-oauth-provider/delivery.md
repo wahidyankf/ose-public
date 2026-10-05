@@ -548,7 +548,7 @@ markdownlint-cli2 -- specs/apps/ose/id-be/README.md` exits 0.
 - [ ] [AI] If any registry, port, target, boundary, rule, or enforcement must change, execute the full
       repository-local rules-propagation workflow: intake, inventory, conflict/precedence analysis,
       narrow placement, enforcement disposition, binding generation when canonical sources change,
-      verification, rules-quality-gate, manifest, final status, and sibling obligation.
+      verification, rules-quality-gate, manifest, and final status.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run
 --surface=pre-push` exits 0.
 - [ ] [AI] Run mandatory semantic review under the repository BDD contract plus independent security

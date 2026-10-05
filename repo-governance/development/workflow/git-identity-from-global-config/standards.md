@@ -7,8 +7,7 @@ when_to_use: Use when checking whether a `.git/config` state, an `includeIf` set
 
 ## Standard 1: No `[user]` Section in Any Sibling Repo `.git/config`
 
-The `[user]` section MUST NOT appear in `.git/config` for any repository in the
-ecosystem (`ose-public`, the private sibling).
+The `[user]` section MUST NOT appear in `.git/config` for any OSE repository clone, including `ose-public`.
 
 **Violation:**
 

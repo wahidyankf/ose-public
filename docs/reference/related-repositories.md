@@ -17,12 +17,12 @@ so a reader can find every part of the project from any one of them. It is not a
 organization, not a parent or container repository, and not a shared release train — each of the
 five versions, gates, and releases on its own schedule.
 
-Within the set there is one two-repository parity pair plus independent public repositories that
-supply tools or product learnings. Each has a different job, so choose the repository that matches
-what you are trying to understand rather than treating them as interchangeable copies.
+All five are independent repositories: two supply OSE itself, two supply upstream tools, and one is a
+separate product. Each has a different job, so choose the repository that matches what you are
+trying to understand rather than treating them as interchangeable copies.
 
-This page is the descriptive catalogue. The canonical relationship, parity, propagation, and
-consumer-boundary rules are governed by the
+This page is the descriptive catalogue. The canonical independence and consumer-boundary rules are
+governed by the
 [Related Repositories Convention](../../repo-governance/conventions/structure/related-repositories.md).
 
 | Repository                                               | Visibility  | Role                                                             | Start there when…                                                  |
@@ -42,12 +42,12 @@ The private sibling is not a public setup target. Its documentation and local sa
 available only to authorized maintainers; public documentation intentionally does not describe its
 internal implementation, access model, or operational layout.
 
-## Repositories outside the parity set
+## Upstream and product repositories
 
-Some public repositories support or inform OSE without sharing parity obligations. **They carry no
-sync obligation in either direction**, sit outside OSE's local source boundaries, and are not
-propagation targets for governance, agent, skill, or workflow changes. No gate, agent, or workflow
-here may treat one as a parity peer.
+Some public repositories support or inform OSE. **They carry no sync obligation in either
+direction**, sit outside OSE's local source boundaries, and are not propagation targets for
+governance, agent, skill, or workflow changes. No gate, agent, or workflow here may treat one as a
+peer to keep in step.
 
 ### RHINO stays upstream
 
@@ -58,8 +58,9 @@ instruction body kept in parity across every declared coding harness. It holds n
 own — every value it enforces arrives from the inspected repository's own `repo-config.yml` — so it
 is usable far outside OSE and carries no OSE-specific defaults.
 
-RHINO is consumed only as a checksum-pinned release. Naming it here creates navigation, not a
-parity peer, and no manifest, gate, or propagation workflow may widen to include it. RHINO source,
+RHINO is consumed only as a checksum-pinned release, pinned by this repository's own `rhino.lock`.
+Naming it here creates navigation only, and no manifest, gate, or propagation workflow may widen to
+include it. RHINO source,
 behavior specifications, release automation, and generic tests stay upstream and are never copied,
 vendored, or forked into an OSE repository.
 
@@ -91,7 +92,7 @@ It also serves as an applied lab for learning how AI-assisted coding can support
 activities and development with a
 [dynamically typed language such as Elixir](https://hexdocs.pm/elixir/typespecs.html). Useful
 learnings can flow back selectively into `ose-public` and other OSE products; this knowledge
-transfer creates no parity or automatic propagation obligation.
+transfer creates no sync or automatic propagation obligation.
 
 It carries no OSE-local Rhino source, so there is no source-boundary relationship to cover.
 
@@ -102,48 +103,28 @@ or a published update post — not live work.
 This routing is **unenforced by decision**: determining whether proposed work belongs to the
 family product requires human product judgment.
 
-## Shared boundaries
+## Independent evolution
 
-The OSE parity pair shares portable governance through explicit sibling obligations. The Rhino
-release is checksum-pinned independently by each repository; there is no local Rhino source
-boundary to compare across the pair.
+`ose-public` and its private sibling are independent. Neither is the source of the other's
+governance, agents, skills, workflows, harness bindings, CI conventions, or RHINO pin, and each may
+add, change, or remove any of them without consulting, mirroring, or notifying the other. No change
+in one creates a sibling obligation, plan, identity record, divergence record, or byte comparison in
+the other. The canonical statement is the
+[Related Repositories Convention](../../repo-governance/conventions/structure/related-repositories.md#independent-repositories).
 
-### What is deliberately not identical
+### What is deliberately not shared
 
-`package.json` script names in particular may diverge. Resolve every command a cross-repo plan
-invokes against each repository's own `package.json` rather than assuming the name carries over.
+`package.json` script names, toolchain pins, CI runners, and gate composition are each repository's
+own. Resolve every command against the repository you are standing in rather than assuming a name
+or version carries over. Read a doctor warning about a toolchain version as a statement about this
+repository's pin, not about the host.
 
-The `volta` toolchain pins in `package.json` have diverged the same way: `ose-public` pins
-`npm` to `11.11.0` and the private sibling to `11.16.0`. Nothing compares them, so on one host with one
-installed npm, a repository doctor can report a version warning in `ose-public` and a clean
-16/16 in the private sibling — two verdicts from the same machine. Read a doctor warning about a
-toolchain version as a statement about that repo's pin, not about the host.
+### Adopting a change from another repository
 
-## Sync cadence
-
-Content parity and explicit sibling obligations answer **what** stays identical; this answers
-**how often** the private sibling is brought current with `ose-public`.
-
-**The private sibling is kept current through recorded sibling obligations.** `Rhino` and shared
-`repo-governance/` content (conventions, workflows, agent definitions) propagate from `ose-public`
-through a separate one-repository run, not an unrecorded batch. The repositories need not merge at
-the same time: each ready PR lands when its own hardened prerequisites and merge opportunity permit,
-and the unfinished counterpart remains an explicit sibling obligation until convergence. That repo
-backs live authorized-maintainer and infrastructure operations, so the gap should remain short and
-visible rather than silent.
-
-For portable governance, agent, and skill changes, public is the source and the private sibling is the
-only propagation target. Verify the portable manifest byte-for-byte at convergence; list
-private-only operational exceptions explicitly.
-
-### Private-only operational exceptions
-
-- **Elixir/Erlang CI toolchain provisioning.** `ose-public`'s `rust` job in `pr-quality-gate.yml`
-  installs Erlang/Elixir via `erlef/setup-beam` and sets `RHINO_REQUIRE_ELIXIR=1`, so the two
-  Elixir formatter-wrapper scenarios bound in
-  the upstream Rhino release validation run for real on every push. The private sibling carries no
-  Elixir source and provisions no such toolchain, so its consumer-specific coverage may self-skip —
-  a deliberate, not accidental, divergence: nothing in the private sibling needs that coverage.
+A change from the private sibling, or from a shared catalog such as
+[ose-rules](https://github.com/wahidyankf/ose-rules), is adopted only by an explicit, one-off request
+delivered through this repository's own route. After adoption this repository owns its copy; no
+sync cadence, recorded obligation, or later comparison follows.
 
 ## Contribution and access boundaries
 

@@ -39,9 +39,7 @@ and track each probe, anomaly, and cleanup candidate as its own task per
    before resuming anything; stop on an unresolved conflict.
 6. **Read the newest handover record as a lead** that narrows probes but proves nothing, and reconcile its rule
    decisions too.
-7. **Fix the candidates:** this repository, the parity sibling named in
-   [Related Repositories](../../../docs/reference/related-repositories.md), any repository the plan or a handover names,
-   and `repositories`.
+7. **Fix the candidates:** this repository, any repository the plan or a handover names, and `repositories`.
 8. **Probe each candidate, persisting every hit to the takeover report:** linked worktrees, local and remote branches,
    pull requests in any state, where the plan folder sits on the trunk, and each found copy's ticks and uncommitted
    state. Judge nothing stale.

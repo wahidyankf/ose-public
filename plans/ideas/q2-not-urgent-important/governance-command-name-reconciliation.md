@@ -35,7 +35,7 @@ though they were live gates:
   every other binding script, and `.github/scripts/test-hippo-consumer.sh` asserts it stays absent. The
   real check is `./rhino harness adapters validate`; the private sibling wraps it as
   `validate:harness-bindings`. ose-public cites the phantom name at:
-  - `repo-governance/development/infra/ci-conventions/ci-toolchain-parity-checklist-affected-first-pr-gate-principle.md:20`
+  - `repo-governance/development/infra/ci-conventions/ci-toolchain-checklist-affected-first-pr-gate-principle.md:20`
     (as `npm run harness:bindings-validation`);
   - `repo-governance/development/infra/nx-target-naming/domain-work-scheme.md:37`;
   - `repo-governance/development/infra/nx-targets/domain-work-naming-for-governance-targets.md:26`;

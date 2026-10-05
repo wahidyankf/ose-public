@@ -58,8 +58,8 @@ acting.
   and Proof; separate RED, GREEN, and REFACTOR actions; rule and C4 reconciliation; terminal recovery; natural seams,
   deployable state, the temporary-flag lifecycle, and nonnumeric boundaries.
 - **Rule impact.** Detect it independently from scope and file effects. Each affected repository needs the complete
-  repository-local `rules-propagation` runbook, enforcement dispositions, generated-binding proof, manifest, sibling
-  obligation, and `rules-quality-gate` in the rule-changing delivery unit; a generic workflow checkbox is a HIGH finding.
+  repository-local `rules-propagation` runbook, enforcement dispositions, generated-binding proof, manifest,
+  and `rules-quality-gate` in the rule-changing delivery unit; a generic workflow checkbox is a HIGH finding.
 - **Evidence and scope.** Treat project-local `test:coverage:behaviour` as delivery evidence for corpus, adapter,
   exemption, and journey-shape checks; semantic Gherkin journey review stays in scope. Reject archival steps that
   hardcode or predict a completion date. Raise no migration findings against `plans/done/` or the existing Rhino plan.

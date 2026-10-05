@@ -3,10 +3,10 @@ description: Requirement tables for CI Workflow Shape and Git Hook Lifecycle.
 when_to_use: Use when auditing a workflow's shape or a hook's steps.
 ---
 
-# Parity Checklist — Invariants A and B
+# Toolchain Checklist — Invariants A and B
 
-Seven workstream invariants define the converged toolchain across all repositories. Any deviation
-must be recorded here with a justification; undocumented deviations are always bugs.
+Seven invariants define this repository's CI and toolchain shape. Any deviation must be recorded here
+with a justification; undocumented deviations are always bugs.
 
 ## Invariant A — CI Workflow Shape
 

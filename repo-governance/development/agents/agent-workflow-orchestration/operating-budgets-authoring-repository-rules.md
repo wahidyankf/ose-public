@@ -5,7 +5,7 @@ when_to_use: Use when a rule change needs to be authored and propagated across t
 
 # Operating Budgets — Authoring and Propagating Repository Rules
 
-These budgets bound how agents spend two scarce resources — external API rate limits and token burn — and how repository rules themselves are created and kept in sync. They apply to every agent and to the main conversation, across the OSE repositories — the private sibling and `ose-public`.
+These budgets bound how agents spend two scarce resources — external API rate limits and token burn — and how repository rules themselves are created. They apply to every agent and to the main conversation in this repository.
 
 ## Authoring and Propagating Repository Rules
 
@@ -17,12 +17,6 @@ any write to a repo-rules surface. Neither _fails_. The reminder is warn-only by
 so that it can never deadlock the propagation workflow's own writes — and a check that cannot fail
 is not coverage. A blocking variant was considered and declined; enforcement is review-time.
 
-A portable rule is authored with `rules-maker` in one repository per rules-propagation run.
-When the run finishes, Step 9 records the other OSE repository as a sibling obligation and a later
-run carries the same canonical change there; no other repository is a propagation target. Each
-repository's ready PR merges on its own hardened prerequisites and merge opportunity — never hold
-one solely to synchronize with its sibling — while the recorded obligation keeps any temporary gap
-visible until convergence. Use
-[plan-parity-planning](../../../workflows/plan/plan-parity-planning.md) for a
-planned cross-repository change and see
-[Related Repositories §Sync cadence](../../../../docs/reference/related-repositories.md#sync-cadence).
+A rule is authored with `rules-maker` in one rules-propagation run for this repository only. The run
+records no obligation for any other repository, and a ready PR never waits on another repository's
+timing. See [Related Repositories](../../../conventions/structure/related-repositories.md#independent-repositories).

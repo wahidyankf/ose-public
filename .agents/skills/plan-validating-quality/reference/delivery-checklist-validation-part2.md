@@ -52,7 +52,7 @@
   repository-local outcome in the rule-changing delivery unit with separate actions for inventory,
   conflict/precedence and supersession, placement/eviction, canonical/config/enforcement/index
   edits, three-way enforcement dispositions, generated bindings, verification and
-  `rules-quality-gate`, manifest/final status, and sibling obligation. A missing outcome, generic
+  `rules-quality-gate`, and manifest/final status. A missing outcome, generic
   invocation, reusable checkbox template standing in for repeated concrete actions, or
   cross-repository evidence substitution is **HIGH**.
 

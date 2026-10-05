@@ -68,9 +68,9 @@ change starts here, without a separate request. Edits made inside one run start 
 8. **Verify** by exit codes rather than output, returning a failure to the step that owns it, and repair findings the
    run caused only while their count strictly decreases, per
    Bounded Convergence.
-9. **Hand delivery to the caller, and record obligations beyond this repository.** The run never commits; the work in
-   hand delivers through the repository's own route, stating each rule's home, disposition, and relocations. Sibling and
-   catalog obligations follow
+9. **Hand delivery to the caller.** The run never commits; the work in hand delivers through the repository's own
+   route, stating each rule's home, disposition, and relocations. It records no obligation for another repository;
+   shared-catalog proposals follow
    [Enforcement and Verification](rules-propagation/003-enforcement-and-verification.md#beyond-this-repository).
 
 ### Exit

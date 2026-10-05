@@ -29,8 +29,7 @@ not disappear into a generic final cleanup task.
      rationale; an unfalsifiable rule halts at intake, not as a successful delivery disposition;
   6. generate declared harness adapters instead of hand-editing mirrors;
   7. run the rules-propagation verification commands and `rules-quality-gate`; and
-  8. record the repository-specific propagation manifest path, final status, and sibling
-     obligation.
+  8. record the repository-specific propagation manifest path and final status.
 - Each action above follows the granular checklist rule: exact repository, inputs, paths or bounded
   discovery, copyable command/workflow invocation, expected observation, failure handling, and
   evidence destination. Multi-repository plans repeat the outcome per affected repository; one
@@ -53,5 +52,5 @@ when its trigger remains false.
 
 Plan quality review fails a rule-affecting plan that did not automatically include the complete
 per-repository propagation outcome. Execution review checks the as-built manifest, enforcement
-dispositions, bindings, gates, sibling obligation, exact C4 reconciliation, and a terminal
+dispositions, bindings, gates, exact C4 reconciliation, and a terminal
 disposition for every conditional packet.

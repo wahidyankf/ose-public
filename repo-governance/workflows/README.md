@@ -35,7 +35,7 @@ A workflow starts only on an explicit request or from a caller its own text list
 This directory holds only this index and three groups, per the
 [Workflow Pattern Convention](../conventions/structure/workflow-pattern.md#layout):
 
-- [Plan Workflows](plan/README.md) — The plan lifecycle: planning, parity planning, execution, execution checks,
+- [Plan Workflows](plan/README.md) — The plan lifecycle: planning, execution, execution checks,
   grooming, and handover. Use when routing to a workflow that authors, executes, or takes over a project plan.
 - [Quality Workflows](quality/README.md) — Every bounded, advisory quality gate with the one propagation that writes for
   its family, plus the single-pass reviews. Use when a review, a quality gate, or its propagation applies.

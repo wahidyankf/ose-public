@@ -11,18 +11,13 @@ when_to_use: Use when merging a plan's delivering PR, cleaning up its worktree a
    that case, hand off the ready-to-merge PR and STOP instead of merging. The preconditions are
    identical in both cases; only the actor differs. See
    [Delivery Mode](../../../conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode).
-2. **Paired-repository terminal handoff (when applicable)**: after the source merge and after opening
-   the successor PR, complete the
-   [authenticated terminal-handoff procedure](./044-finalization-paired-repository-terminal-handoff.md)
-   before any successor scout runs.
-
-3. **Terminal End-to-End Delivery Completeness Audit — before final status or cleanup**: after the
+2. **Terminal End-to-End Delivery Completeness Audit — before final status or cleanup**: after the
    merge or permitted direct push is confirmed, replace every `Pending final delivery` row with
    proof from the delivered head and record the result in `{final-report}`. The terminal audit is a
    workflow-owned post-delivery gate, not a delivery checkbox that may be pre-ticked. Any missing,
    stale, inferred, or unsupported row reopens the earliest affected action, leaves status non-pass,
    retains the worktree, and blocks cleanup.
-4. **Worktree cleanup — immediate (after terminal audit passes)**: once the delivery and terminal
+3. **Worktree cleanup — immediate (after terminal audit passes)**: once the delivery and terminal
    audit are confirmed,
    clean up a `worktree-to-pr` worktree in the same session. `main-to-pr` created no plan worktree,
    so this step is N/A for that mode.

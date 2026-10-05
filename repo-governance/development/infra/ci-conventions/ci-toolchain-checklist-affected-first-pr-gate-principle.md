@@ -3,7 +3,7 @@ description: Why PR checks scope to nx affected, and the exceptions.
 when_to_use: Use when adding a PR-gate check and deciding its scope.
 ---
 
-# Parity Checklist — Affected-First PR-Gate Principle
+# Toolchain Checklist — Affected-First PR-Gate Principle
 
 The PR quality gate runs `nx affected` for all per-project checks so only changed projects pay
 the cost of typecheck, lint, test, and coverage on each PR. Whole-repo checks that cannot be

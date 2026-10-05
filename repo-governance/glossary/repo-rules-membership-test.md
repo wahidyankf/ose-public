@@ -39,12 +39,11 @@ rewriting the rule to match the code.
 
 ## What Membership Costs
 
-Membership attaches four obligations:
+Membership attaches three obligations:
 
 - The governance word budget applies to every Markdown surface in the set.
 - A change propagates to **every** surface stating that rule, not only the one you found first.
 - Generated mirrors regenerate in the same commit and are never hand-edited.
-- A sibling repository carrying the same rule needs the same change, or a recorded divergence.
 
 ## Related Documents
 

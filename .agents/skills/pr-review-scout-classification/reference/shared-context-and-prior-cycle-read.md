@@ -41,17 +41,6 @@ fixer rejection whose effect is `dismisses-finding`. A fixer rejection marked
 and never list it as settled. Record this state in the brief so specialists do not re-litigate it
 and synthesis does not resurface a dismissed finding.
 
-For paired delivery, retrieve source/successor PR, review, comment, permission, and comparison
-objects. Authenticate one
-[`ose-pr-review-sibling-handoff:v1`](../../../../repo-governance/development/quality/pr-review-disciplines/sibling-handoff-record.md).
-Match every required source, merge, and successor coordinate. The first scout requires the live
-head to equal the recorded initial head; later scouts require that SHA in the same PR history. The
-immediate emission read-back alone compares `successor_base_sha` to live `base.sha`; later scouts
-retain that authenticated opening coordinate, require live `base.ref == main` and the same PR
-identity, and never compare it with a moving `base.sha`. Missing, duplicate, conflicting, blocked,
-unmerged, pre-merge, invalid, unreachable, or mismatched evidence stops scouting before body
-parsing or fan-out.
-
 ## Review-Route Read-Back
 
 Before fan-out, read the PR body and verify its review-route record names the pinned base/head,

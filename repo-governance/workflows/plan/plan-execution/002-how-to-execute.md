@@ -43,7 +43,7 @@ The calling context will:
    steps 4-8
 10. Pass the infrastructure gate, archive through the resolved delivery-mode path, and honor the
     applicable commit/merge authority. Push the archival commit, require replacement exact-head/base
-    CI and leak-review evidence where applicable, resolve paired-repository handoff, then merge or
+    CI and leak-review evidence where applicable, then merge or
     confirm the permitted direct push
 11. Run the **terminal** End-to-End Delivery Completeness Audit against the delivered head. Fill the
     final-delivery rows, reopen any unsupported requirement, and assign `pass` only when the full

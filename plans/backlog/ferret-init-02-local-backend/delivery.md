@@ -502,9 +502,9 @@ local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at 
       rules-grooming Step 8 and is not authorized by this product plan.
       acceptance: `grep -c 'Verification/manifest'
 local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
-- [ ] [AI] **Sibling obligation:** record cloud deployment as a separately authorized future private infrastructure plan;
-      make no private-repository mutation or parity claim.
-      acceptance: `grep -c 'Sibling obligation'
+- [ ] [AI] **Cloud deployment out of scope:** record cloud deployment as a separately authorized future plan;
+      make no private-repository mutation or cross-repository claim.
+      acceptance: `grep -c 'Cloud deployment out of scope'
 local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md` prints at least 1
 
 ### Documentation, Manual, and Exploratory Proof

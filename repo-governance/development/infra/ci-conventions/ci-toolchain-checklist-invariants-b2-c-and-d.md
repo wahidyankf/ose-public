@@ -1,9 +1,9 @@
 ---
 description: "Fast-gate, static-coverage, and canonical-command invariants"
-when_to_use: "Use when checking lifecycle execution or Rhino command-surface parity."
+when_to_use: "Use when checking lifecycle execution or the Rhino command surface."
 ---
 
-# Parity Checklist — Test Execution Boundaries and Command Surfaces
+# Toolchain Checklist — Test Execution Boundaries and Command Surfaces
 
 ## Invariant B2 — Closed Fast Gates
 

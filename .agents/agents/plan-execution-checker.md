@@ -57,7 +57,7 @@ against the delivered repository instead of the authored plan. Read every listed
   removal recorded.
 - **Rules propagation.** For every affected repository, the rule-changing unit completed the subject inventory,
   precedence and placement decisions, enforcement dispositions, generated bindings, `rules-quality-gate`, manifest,
-  final status, and sibling obligation. One repository's evidence cannot satisfy another's.
+  and final status. One repository's evidence cannot satisfy another's.
 - **Dates and scope.** The completion date was resolved only after every pre-archival gate, including the preliminary
   audit, passed, and one value names the done folder, index entry, and evidence. After delivery the final report
   carries the workflow-owned terminal audit before `pass` or cleanup. Raise no migration findings against archived

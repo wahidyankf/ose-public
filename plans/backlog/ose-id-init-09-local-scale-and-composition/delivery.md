@@ -701,7 +701,7 @@ plans/in-progress/ose-id-init-09-local-scale-and-composition/delivery.md` prints
 - [ ] [AI] Reconcile Automatic Rule-Impact Coverage. If public target/port/dependency behavior changed a
       durable rule/enforcement surface, complete full repository-local rules propagation: inventory,
       precedence/conflict, placement/eviction, canonical/enforcement edits, dispositions, generated
-      bindings, verification, rules-quality-gate, manifest/final state, and sibling obligation. Otherwise
+      bindings, verification, rules-quality-gate, and manifest/final state. Otherwise
       record evidence-backed `none`.
       acceptance: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run
 --surface=pre-push` exits 0.

@@ -32,4 +32,4 @@ default root. Operators run `./hippo status`, `./hippo watch --source ose-public
 BeaverNest's canonical
 [`hippo-bootstrap.feature`](https://github.com/wahidyankf/beaver-nest/blob/main/specs/tools/hippo-consumer/behaviours/hippo-bootstrap.feature)
 specifies portable bootstrap behavior; OSE binds those scenarios through its own hermetic adapter
-without copying the feature or making BeaverNest a parity sibling.
+without copying the feature or making BeaverNest a sync target.

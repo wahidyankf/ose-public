@@ -47,7 +47,6 @@ when_to_use: "Use to locate a plan-execution child document."
 - [Knowledge Capture Gate](./038-finalization-knowledge-capture.md) — Confirming every learnings.md entry reached a terminal state before archival.
 - [Finalization and Archival — End-to-End Delivery Completeness Audit](./039-finalization-end-to-end-completeness-audit.md) — Reconciles the full plan from its first requirement through final proof before completion can be declared. Use preliminarily after pre-archival gates pass, then repeat terminally after the final delivery is pushed or merged and before assigning pass.
 - [Exact-Head PR CI Gate](./040-finalization-pr-ci-gate.md) — A \*-to-pr plan approaches archival and must prove current-head/base CI plus applicable surface evidence before merge.
-- [Paired-Repository Terminal Handoff](./044-finalization-paired-repository-terminal-handoff.md) — Post-merge sibling-handoff emission and authenticated read-back before successor scouting.
 - [Status Logic, Infra-Execution Gate, and Direct-Push Archival](./041-finalization-status-logic-and-infra-gate.md) — The pass/partial/fail branching and the Infra-Execution Gate precondition.
 - [Direct-Push Worktree Cleanup and PR-Mode Archival](./042-finalization-worktree-cleanup-and-pr-archival.md) — Worktree cleanup for direct-push modes, archival-in-PR for \*-to-pr modes.
 - [PR Merge, Cleanup, and Final Status](./043-finalization-pr-merge-and-final-status.md) — The PR-mode merge, safe immediate worktree cleanup, and final pass/partial/fail status determination.

@@ -54,7 +54,7 @@ Validate that completed plan implementation:
 - For every repository whose delivered scope changed rules or enforcement, the repository-local
   rules-propagation outcome is complete: subject inventory, conflict/precedence and supersession,
   placement/eviction, canonical/config/enforcement/index changes, enforcement disposition,
-  generated bindings, `rules-quality-gate`, manifest/final status, and sibling obligation all have
+  generated bindings, `rules-quality-gate`, and manifest/final status all have
   evidence. Another repository's evidence cannot satisfy this check.
 - **Vercel MCP probe recorded (conditional)** — if the plan touches a Vercel-deployed surface, Phase
   0 records the availability probe outcome, and any step the probe forced to downgrade says so

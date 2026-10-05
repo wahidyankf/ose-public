@@ -51,7 +51,7 @@ rules surface. If any scoped repository may add, change, supersede, or delete a 
 [`rules-propagation`](../../../repo-governance/workflows/quality/rules-propagation.md) outcome in that
 delivery unit. Split inventory, conflict/precedence, placement/eviction, canonical and enforcement
 edits, enforcement dispositions, binding generation, verification plus `rules-quality-gate`,
-manifest/final status, and sibling obligation into granular bootcamp-executable checkboxes. Repeat
+and manifest/final status into granular bootcamp-executable checkboxes. Repeat
 per affected repository; a link, generic invocation, or reusable checkbox template is insufficient
 because every concrete repository/action pair must map to its own execution task.
 

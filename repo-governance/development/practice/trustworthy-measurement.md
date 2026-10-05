@@ -26,7 +26,7 @@ justifies anything.
 - [Rule 1 — Prove the Command Ran](./trustworthy-measurement/rule-1-prove-the-command-ran.md) — the false-zero timing-harness trap and how to guard against it.
 - [Rules 2-4](./trustworthy-measurement/rules-2-to-4.md) — measure the integrated path, establish the critical path, and treat a pre-authored remedy as a hypothesis.
 - [Rule 5 — Probes and Scans Must Assert Their Reach](./trustworthy-measurement/rule-5-probes-and-scans-must-assert-their-reach.md) — a probe must move the guarded byte; a scan must assert where it stopped.
-- [Rule 6 — An Assertion Must Outlive Its Moment](./trustworthy-measurement/rule-6-an-assertion-must-outlive-its-moment.md) — a baseline read from `HEAD` expires when the change lands; an assertion inside a parity boundary must hold in every repository.
+- [Rule 6 — An Assertion Must Outlive Its Moment](./trustworthy-measurement/rule-6-an-assertion-must-outlive-its-moment.md) — a baseline read from `HEAD` expires when the change lands; an executable assertion states the invariant that holds afterwards.
 - [Rule 7 — Prove the Run Finished](./trustworthy-measurement/rule-7-prove-the-run-finished.md) — a killed run's partial output reads as a finished one; a terminal exit marker is what tells them apart.
 
 ## Scope

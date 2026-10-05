@@ -1,6 +1,6 @@
 ---
 title: SDLC Gate Standard
-description: Target standard for gate mechanics across ose-public and the private sibling — identical check set, order, and invocation mechanism; only project/app set diverges
+description: Historical record of the 2026-07 gate-mechanics standardization, plus the current stable gate contract; it imposes no alignment obligation between repositories
 category: reference
 tags:
   - sdlc
@@ -19,7 +19,8 @@ This document preserves the 2026-07 cross-repository standardization record. It 
 current executable contract: RHINO is now an independently released executable pinned by version
 and per-platform SHA-256 digest in `rhino.lock`, and the repository no longer contains an in-tree
 Rhino application (retired 2026-09-19). The dated analyses below remain useful
-as history only.
+as history only. They bind no repository to another: `ose-public` and its private sibling are
+independent, neither is the source of the other's gates, and each evolves its own.
 
 ## Current stable v0.4 operating contract
 
@@ -181,8 +182,8 @@ everything the two local hooks run.
 
 ## Target Standard
 
-The gate-check standard is synthesized by picking the strongest wiring per surface, even where that
-means changing `ose-public`. The named winner per surface:
+Historical: the 2026-07 plan synthesized a gate-check standard by picking the strongest wiring per
+surface. It is a record, not a current target. The named winner per surface:
 
 > **An aggregate audit is not an enforcement path.** Gates invoke validators directly by `command:`;
 > nothing invokes an umbrella command such as a retired harness aggregate. Wiring a new validator into
@@ -208,9 +209,9 @@ means changing `ose-public`. The named winner per surface:
 
 ## Divergence Policy
 
-Per the identical-result invariant, the standardization layer is identical across both bound repos. The
-only sanctioned variation is what each repo actually ships (its project/app set) and the data that
-follows from it. Everything in "Drift" below must converge to one form.
+Historical: the 2026-07 plan held the standardization layer identical across both repos, with the
+only sanctioned variation being what each repo actually ships (its project/app set) and the data that
+follows from it. No such invariant binds any repository now.
 
 ### Rhino Byte-Identity Boundary
 
@@ -292,7 +293,7 @@ The following variations are not flagged as drift:
 
 ### Drift
 
-The following must converge — this is the work of the standardization plan:
+The 2026-07 plan listed these items to converge; they are history, not a current requirement:
 
 - Workflow **filenames** for the shared gates (PR gate, markdown, env).
 - The **validator set** inside the markdown workflow and the specs-gate.
@@ -307,12 +308,13 @@ The following must converge — this is the work of the standardization plan:
   lint-staged, not Nx targets), the env/governance/binding validators run as direct `./rhino` calls
   in gates (not `nx run Rhino:` targets).
 
-## Parity Status
+## Verification Snapshot (2026-07-01)
 
 > **Scope note (2026-08-16)**: the table below was verified on a run that also covered a repository
-> since removed from the bound set — see
-> [Related Repositories §Repositories outside the parity set](./related-repositories.md#repositories-outside-the-parity-set).
-> Rows have been re-scoped to the surviving pair; no row below obligates work against any other repo.
+> since removed from that run — see
+> [Related Repositories §Upstream and product repositories](./related-repositories.md#upstream-and-product-repositories).
+> Rows were re-scoped to the two repositories then verified; no row below obligates work against any
+> repo.
 
 Verified 2026-07-01 across `ose-public` and the private sibling by directly running the acceptance
 command for every mechanics row (not by inspecting config alone; corrected same-day after a follow-up
@@ -354,7 +356,7 @@ release-build `cargo run` dispatch (via `the upstream Rhino repository/Cargo.tom
 `./rhino` resolver shim created in this repo's `optimize-cis` PR
 (`./rhino`, added 2026-08-09). This note records the mechanism change
 without re-dating the table above, which remains a historical snapshot of the 2026-07-01
-cross-repo run; the private sibling's propagation of the shim is tracked separately (see
+cross-repo run; the private sibling's own resolver is its own concern (see
 AC-15 in `plans/done/2026-08-09__optimize-cis/delivery.md`).
 
 **Language-port note (2026-08-30, also not part of the 2026-07-01 verification pass above)**:
@@ -370,10 +372,8 @@ pinned in `rhino.lock`. The table itself is left as the historical 2026-07-01 sn
 schema" row was renamed to `governance-word-budget:` in `ose-public` by this repo's
 `optimize-governance-md` plan (Phase 1b). This note records the rename without re-dating the table
 above, which remains a historical snapshot of the 2026-07-01 cross-repo run and is accurate for
-that date — `instruction-size:` is still the live section name in the private sibling as of this note. The
-rename opens a cross-repo parity obligation (a `repo-config.yml` schema-section rename is exactly the
-class of change the [Parity Status](#parity-status) table exists to track); propagation to
-the private sibling is not yet scheduled against a specific plan at the time of this note.
+that date — `instruction-size:` was still the live section name in the private sibling as of this note. The
+rename creates no obligation in the private sibling, which owns its own `repo-config.yml`.
 
 **Gate-output-semantics note (2026-08-30, not part of the 2026-07-01 verification pass above)**: a
 single check's own verbose output text (e.g. `governance readme-index validate` printing

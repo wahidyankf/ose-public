@@ -13,7 +13,7 @@ Read in order. Each module holds the detail behind steps of the [Rules Propagati
 
 - **001 Statement and Conflict** holds falsifiable statements, the sufficiency test, and conflict by level.
 - **002 Placement** holds the root instruction file's admission test, owning documents, and making room.
-- **003 Enforcement and Verification** holds the three dispositions, the checks, obligations beyond the repository,
+- **003 Enforcement and Verification** holds the three dispositions, the checks, the no-other-repository rule,
   forbidden endings, and automatic entry.
 
 ## Directory Map

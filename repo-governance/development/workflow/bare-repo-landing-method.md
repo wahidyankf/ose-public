@@ -24,7 +24,7 @@ repository with this shape needs the identical procedure.
 - [Worked Example — the 2026-07-21 Sibling Drift](./bare-repo-landing-method/worked-example-the-2026-07-21-sibling-drift.md) — A real transcript of silent local-main lag.
 - [Measure After Fetching, Never Before](./bare-repo-landing-method/measure-after-fetching-never-before.md) — Why the drift check must run after a fetch.
 - [Remote-Branch Cleanup in a Bare Repository](./bare-repo-landing-method/remote-branch-cleanup-in-a-bare-repository.md) — Deleting a merged branch when the bare repo can't push it.
-- [Reading a File From Another Repository](./bare-repo-landing-method/reading-a-file-from-another-repository.md) — Reading a sibling repo's file safely by ref.
+- [Reading a File From Another Repository](./bare-repo-landing-method/reading-a-file-from-another-repository.md) — Reading another repository's file safely by ref.
 - [One Landing Path Per Unit Of Work](./bare-repo-landing-method/one-landing-path-per-unit-of-work.md) — Why a unit of work must land through exactly one path.
 - [Long-Lived WIP Belongs on a Branch, Not in the Index](./bare-repo-landing-method/long-lived-wip-belongs-on-a-branch-not-in-the-index.md) — Advisory guidance for long-lived WIP.
 - [Why There Is No Guard](./bare-repo-landing-method/why-there-is-no-guard.md) — Why no hook can enforce the terminal reconcile step.

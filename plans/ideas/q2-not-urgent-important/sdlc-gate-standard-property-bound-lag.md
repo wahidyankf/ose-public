@@ -43,9 +43,8 @@ exist, in a document whose job is recording what was verified.
 - **Bare-Repo Base-Worktree Landing Method** — the document that defines how to ask the bareness
   question properly (`git worktree list`, labelled `core.bare` read), which the corrected paragraph
   points at. [bare-repo-landing-method](../../../repo-governance/development/workflow/bare-repo-landing-method.md)
-- **`plan-parity-planning` workflow** — the mechanism for keeping the three copies
-  aligned, and the reason a lagging source of truth is a problem rather than a curiosity.
-  [workflow](../../../repo-governance/workflows/plan/plan-parity-planning.md)
+- **`plan-parity-planning` workflow (retired)** — removed when `ose-public` and its private
+  sibling became independent; no copy of this document is kept aligned with another repository.
 - **Propagation coverage** — a separately tracked sibling concern about how a sibling gets ahead of
   its source.
 

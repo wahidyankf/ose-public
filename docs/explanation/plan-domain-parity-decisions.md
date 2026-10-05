@@ -18,6 +18,9 @@ created: 2026-06-06
 
 # Plan Domain Parity — Design Decisions (2026-06-06)
 
+> **Historical record.** This log describes a 2026-06 cross-repository effort. `ose-public` and its
+> private sibling are now independent repositories, so nothing below binds either one to the other.
+
 This document records every decision made during the `plan-domain-parity` effort
 (2026-06-06). The effort aligned the planning-system files across the sibling
 repositories — ose-public and the private sibling — covering fourteen governance

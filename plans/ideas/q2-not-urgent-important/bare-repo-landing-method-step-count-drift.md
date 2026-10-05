@@ -67,9 +67,8 @@ that a "N-step" claim matches the number of numbered steps in the thing it descr
   [dynamic-collection-references](../../../repo-governance/conventions/writing/dynamic-collection-references.md)
 - **`./rhino md heading-hierarchy validate`** — precedent for a mechanical markdown-structure
   validator in this repo; a "declared step count matches numbered steps" check would live beside it.
-- **Multi-repo parity planning workflow** — the process any three-repo byte-identical correction must
-  run through.
-  [plan-parity-planning](../../../repo-governance/workflows/plan/plan-parity-planning.md)
+- **Multi-repo parity planning workflow (retired)** — removed when `ose-public` and its private
+  sibling became independent; a correction here is made in this repository alone.
 
 ## Proposed direction (sketch)
 

@@ -30,9 +30,9 @@ GitHub Actions, and naming.
 - [Naming Conventions and Adding a New App to CI](./ci-conventions/naming-conventions-and-adding-a-new-app-to-ci.md) — App/workflow filename grammar and the new-app checklist. Use when naming or onboarding a new app.
 - [E2E Test Pairing Rule and Environment Variable Standard](./ci-conventions/e2e-test-pairing-rule-and-environment-variable-standard.md) — E2E runner pairing and required env-variable rules. Use when wiring an E2E runner or env variable.
 
-## CI/toolchain Parity Checklist
+## CI/Toolchain Checklist
 
-- [Parity Checklist — Invariants A and B](./ci-conventions/ci-toolchain-parity-checklist-invariants-a-and-b.md) — Requirement tables for CI Workflow Shape and Git Hook Lifecycle. Use when auditing a workflow's shape or a hook's steps.
-- [Parity Checklist — Test Execution Boundaries and Command Surfaces](./ci-conventions/ci-toolchain-parity-checklist-invariants-b2-c-and-d.md) — Fast-gate, coverage, architecture, and command invariants.
-- [Parity Checklist — Invariants E, F, and G](./ci-conventions/ci-toolchain-parity-checklist-invariants-e-f-and-g.md) — Nx naming scheme, governance-currency checklist, Mermaid rules. Use when naming a target or writing a state diagram.
-- [Parity Checklist — Affected-First PR-Gate Principle](./ci-conventions/ci-toolchain-parity-checklist-affected-first-pr-gate-principle.md) — Why PR checks scope to `nx affected`, and the exceptions. Use when adding a PR-gate check and deciding its scope.
+- [Toolchain Checklist — Invariants A and B](./ci-conventions/ci-toolchain-checklist-invariants-a-and-b.md) — Requirement tables for CI Workflow Shape and Git Hook Lifecycle. Use when auditing a workflow's shape or a hook's steps.
+- [Toolchain Checklist — Test Execution Boundaries and Command Surfaces](./ci-conventions/ci-toolchain-checklist-invariants-b2-c-and-d.md) — Fast-gate, coverage, architecture, and command invariants.
+- [Toolchain Checklist — Invariants E, F, and G](./ci-conventions/ci-toolchain-checklist-invariants-e-f-and-g.md) — Nx naming scheme, governance-currency checklist, Mermaid rules. Use when naming a target or writing a state diagram.
+- [Toolchain Checklist — Affected-First PR-Gate Principle](./ci-conventions/ci-toolchain-checklist-affected-first-pr-gate-principle.md) — Why PR checks scope to `nx affected`, and the exceptions. Use when adding a PR-gate check and deciding its scope.

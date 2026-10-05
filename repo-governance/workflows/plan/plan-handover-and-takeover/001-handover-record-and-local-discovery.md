@@ -56,9 +56,8 @@ Every handover uses these headings in this order; takeover depends on the predic
 - **Records** live at `local-tmp/handovers/<date>__<plan-identifier>-implementation.md`. `local-tmp/` is gitignored, so
   a record serves the next session on the same machine only. Earlier dated records stay in place, takeover reads the
   newest by filename date, and finding none is a non-event.
-- **Candidates** always include the current repository and, when it exists as a sibling checkout, the parity sibling
-  named in [Related Repositories](../../../../docs/reference/related-repositories.md). The plan's documents or a handover
-  can widen that floor; nothing narrows it.
+- **Candidates** always include the current repository. The plan's documents or a handover can widen that floor;
+  nothing narrows it.
 - **Probes** look for `worktrees/<plan-identifier>/` per the
   [Worktree Path Convention](../../../conventions/structure/worktree-path.md). Within one repository they run in order,
   because a found branch narrows the next query. Independent repositories and independent cleanup candidates may fan

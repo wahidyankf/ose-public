@@ -33,8 +33,8 @@ platform, the Nx workspace, and the engineering systems that support an early pr
   workspace projects.
 - [Repository Adapter](../../repo-governance/development/quality/stacks/repository-adapter.md) — find which
   stack packs each project uses, the decisions they record, and each project's README.
-- [SDLC Gate Standard](./sdlc-gate-standard.md) — understand the target gate sequence and permitted
-  differences across the OSE repositories.
+- [SDLC Gate Standard](./sdlc-gate-standard.md) — understand the current gate contract and the
+  historical 2026-07 standardization record.
 
 ## Security and agent infrastructure
 
@@ -51,5 +51,5 @@ platform, the Nx workspace, and the engineering systems that support an early pr
 ## Understand the wider OSE ecosystem
 
 - [Related Repositories](./related-repositories.md) — the OSE Code Repositories catalogue:
-  distinguish OSE Public from its parity sibling and from the independent RHINO, HIPPO, and
+  distinguish OSE Public from its independent private sibling and from the RHINO, HIPPO, and
   BeaverNest repositories, and find the right home for a question or pattern.

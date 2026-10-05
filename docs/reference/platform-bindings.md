@@ -361,7 +361,7 @@ To add a new generated binding:
 5. Update this document's Translation Artifacts section.
 6. Stage the explicit source and generated paths, then run `./rhino harness adapters validate`.
    The generated adapter directories are one recoverable transaction; never hand-edit their
-   mirrors. Record any portable sibling obligation in the separate sibling delivery.
+   mirrors.
 
 ## Related
 

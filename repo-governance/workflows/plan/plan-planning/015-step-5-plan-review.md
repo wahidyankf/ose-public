@@ -62,7 +62,7 @@ Read the created plan files and verify structural completeness before the qualit
     repository, verify `delivery.md` automatically includes the complete repository-local
     rules-propagation outcome: inventory, conflict/precedence, placement/eviction,
     canonical/config/enforcement/index changes, enforcement dispositions, binding generation,
-    verification plus `rules-quality-gate`, manifest/final status, and sibling obligation. Reject a
+    verification plus `rules-quality-gate`, and manifest/final status. Reject a
     bare workflow link or generic “run propagation” checkbox.
 14. If structural gaps found: provide a focused prompt to `plan-maker` or fix trivially via `Edit`.
     Any reinvoked `plan-maker` response follows the same decision-envelope loop from Step 4; do not

@@ -2,7 +2,7 @@
 name: 003-enforcement-and-verification
 description: >-
   Gives every propagated rule one enforcement disposition proven in both directions, verifies a propagation run before
-  delivery, routing each failure back to the step that owns it, records obligations beyond the repository, and records
+  delivery, routing each failure back to the step that owns it, states that a rule binds no other repository, and records
   how entry becomes automatic.
 when_to_use: >-
   Use during Rules Propagation when deciding how a rule is enforced, or when verifying a run before it is delivered.
@@ -52,8 +52,9 @@ silence:
 
 ## Beyond This Repository
 
-A rule portable across a declared parity boundary records its sibling obligation per
-[Related Repositories](../../../conventions/structure/related-repositories.md), or records none with why. A repository
+A rule creates no obligation for another repository, per
+[Related Repositories](../../../conventions/structure/related-repositories.md#independent-repositories): the run
+records no sibling obligation, parity plan, or divergence record. A repository
 adopting from a shared catalog proposes a rule that holds beyond itself to that catalog, through the catalog's own
 delivery, published only after the catalog's outbound-safety screen passes.
 

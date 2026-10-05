@@ -8,7 +8,7 @@ when_to_use: Use when verifying what safeguards a run relies on, navigating to a
 - **Plan-only dry run** (`mode: plan-only`) surfaces the schedule before any execution.
 - **Conservative resource inference** — ambiguous footprints serialize, never parallelize.
 - **Work-location isolation** — worktrees isolate; a shared primary-checkout lock serializes.
-- **Byte-identity serialization** — Rhino-touching plans never propagate concurrently.
+- **Byte-identity serialization** — plans sharing a declared byte-identity boundary never run concurrently.
 - **Quarantine, not cascade** — a blocker confines to its plan + dependents.
 - **Harness-cap respect** — effective concurrency never exceeds the platform agent limit.
 - **Disk-is-truth resume** — re-entry rebuilds the union Task list from every plan's `delivery.md`.
@@ -25,9 +25,6 @@ when_to_use: Use when verifying what safeguards a run relies on, navigating to a
   `*-to-pr` plan (D1).
 - [PR Review Cycle](../../quality/pr-review-quality-gate.md) — an optional semantic cycle, run only when the
   user explicitly requests it.
-- [`plan-parity-planning.md`](../plan-parity-planning.md)
-  — the distinct concern of propagating one change byte-identically across the three bound repos
-  (a plan whose scope this scheduler treats as a single serialized unit).
 
 ## Principles Implemented/Respected
 

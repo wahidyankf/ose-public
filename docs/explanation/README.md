@@ -45,7 +45,7 @@ These guides introduce the engineering ideas used across the project. They are u
 
 ### Why did a cross-repository standard or convention take its current form?
 
-Decision logs record the context, options, and conclusions behind changes that affect multiple OSE repositories. Read them when a rule feels surprising or when you need the rationale before extending related work.
+Decision logs record the context, options, and conclusions behind past changes that touched multiple OSE repositories; they are historical and bind no repository to another. Read them when a rule feels surprising or when you need the rationale before extending related work.
 
 - [Plan Domain Parity — Design Decisions (2026-06-06)](./plan-domain-parity-decisions.md) — Decisions from the cross-repository parity effort, including resolved and rejected approaches.
 - [Gherkin Step-Keyword Cardinality — Parity Decisions (2026-06-07)](./gherkin-step-keyword-cardinality-parity-decisions.md) — Historical record of the superseded one-primary-keyword decision.

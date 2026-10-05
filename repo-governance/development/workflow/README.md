@@ -16,7 +16,6 @@ Git, verification, and reproducible environments.
 - [CI Monitoring Convention](./ci-monitoring.md) — Standards for monitoring CI runs without exhausting the GitHub API rate limit. Use when polling a CI run to completion.
 - [CI Post-Push Verification Convention](./ci-post-push-verification.md) — Trigger and verify related CI workflows after pushing app or lib code. Use immediately after pushing app or lib code.
 - [Commit Message Convention](./commit-messages.md) — Conventional Commits format and why we use it. Use when writing or troubleshooting a commit message.
-- [Cross-Repository Parity Identity](./cross-repository-parity-identity.md) — Aligns worktree basenames and corresponding short-lived branch names across repositories for one parity objective. Use before mutating a multi-repo parity set.
 - [Dependency Bump Stability & Safety Policy](./dependency-bump-policy.md) — Three-path decision tree governing every dependency bump. Use when bumping a dependency, runtime, or base image.
 - [Git Hook Lifecycle](./git-hook-lifecycle.md) — Registry-backed lifecycle for the three Husky hook shims. Use when a Husky hook fails or needs changing.
 - [Git Identity From Global Config Convention](./git-identity-from-global-config.md) — Prohibits per-repo [user] overrides; identity comes from global git config. Use when auditing or setting git author identity.

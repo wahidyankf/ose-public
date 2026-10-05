@@ -64,12 +64,6 @@ Append every plan-created delivery branch before use. A `*-to-pr` entry records 
 removal, classify every entry as delivered, unused, or retained/escalated; active or unrecorded
 branches block cleanup.
 
-For a declared multi-repository parity objective, add `### Cross-Repository Parity Identity` with
-the objective slug, one common worktree basename, and a per-repository corresponding short-lived
-branch mapping. Use the same basename and branch name across applicable repositories; use `not
-applicable` only when a repository's mode has no such identity. See
-[Cross-Repository Parity Identity](../../../../repo-governance/development/workflow/cross-repository-parity-identity.md).
-
 See [Worktree Path Convention](../../../../repo-governance/conventions/structure/worktree-path.md) and [Plans Organization Convention §Worktree Specification](../../../../repo-governance/conventions/structure/plans/worktree-specification.md#worktree-specification).
 ````
 

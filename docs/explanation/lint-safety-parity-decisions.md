@@ -17,6 +17,9 @@ created: 2026-06-12
 
 # Lint & Safety Parity — Decisions (2026-06-12)
 
+> **Historical record.** This log describes a 2026-06 cross-repository effort. `ose-public` and its
+> private sibling are now independent repositories, so nothing below binds either one to the other.
+
 This document records the ose-public decisions in the cross-repo
 `lint-safety-parity` effort (2026-06-12). The effort brings linting strictness
 and unsafe-code posture to an **equal** standard across the sibling

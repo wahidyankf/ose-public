@@ -27,8 +27,8 @@ Sibling plan:
 - The private sibling: `plans/done/2026-06-07__gherkin-step-keyword-cardinality/` (private repo)
 
 > **Historical record.** This log describes the `gherkin-step-keyword-cardinality` run of
-> 2026-06-07, re-scoped to the current parity pair. Read the decisions below as history, not as
-> current routing.
+> 2026-06-07. `ose-public` and its private sibling are now independent repositories, so nothing
+> below binds either one to the other. Read the decisions below as history, not as current routing.
 
 ## Background
 

@@ -5,15 +5,15 @@ when_to_use: Use when checking whether a value is safe to commit to this reposit
 
 # No Secrets in Committed Files
 
-> **Stub.** The full rule, rationale, remediation guidance, and cross-repo canonicalization note live
+> **Stub.** The full rule, rationale, remediation guidance, and rename history live
 > in [`secrets-and-env-standards.md` § 1](./secrets-and-env-standards/hard-iron-rule-no-secrets-in-committed-files.md).
 
 **Summary**: No system secret may enter any git-tracked file. Real values go in gitignored `.env*`
 files (except `.env.example`), `.secrets/`, or `secrets.json`. Git history is permanent — rotation
 is the only reliable remediation after a leak.
 
-**Cross-repo canonical identifier**: `no-secrets-in-committed-files` (previously `no-secrets-in-git`
-in this repository; renamed by the `standardize-secrets-and-env` plan for alignment with the private sibling).
+**Former name**: `no-secrets-in-git` (renamed to `no-secrets-in-committed-files` by the
+`standardize-secrets-and-env` plan).
 
 See: [`secrets-and-env-standards.md`](./secrets-and-env-standards.md)
 

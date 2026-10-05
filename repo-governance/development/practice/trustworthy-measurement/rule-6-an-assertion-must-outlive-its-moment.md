@@ -1,5 +1,5 @@
 ---
-description: A test that can only pass in one repository, or only before the change is committed, is a transcript of a moment rather than a regression test
+description: A test that can only pass before the change is committed is a transcript of a moment rather than a regression test
 when_to_use: Use when writing a test that reads the repository around it, or that states a before-and-after claim.
 ---
 
@@ -18,13 +18,3 @@ afterwards, forever.
 
 **Do**: assert the post-change invariant. Where a transition genuinely is the subject, build both
 states in a temp fixture the test controls.
-
-## An assertion inside a shared boundary must hold in every repository
-
-Code inside a byte-identical parity boundary ships unchanged to every sibling repository. An
-assertion there that names one repository's plan briefs, skill counts, or vendored directories
-passes where it was written and cannot pass anywhere else — and the failure surfaces during the
-parity port, long after the authoring context is gone.
-
-**Do**: derive the expectation from a declared source both repositories carry — the registry, the
-manifest, or the tree itself — and state the rule rather than the instance.

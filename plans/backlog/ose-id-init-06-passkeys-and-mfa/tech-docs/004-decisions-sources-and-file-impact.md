@@ -41,8 +41,7 @@ revocation. Instance-local state is rejected. Redis remains a future measured op
 
 OSE-authored source/docs inherit the root MIT license; framework/browser libraries retain their own
 licenses. Production WebAuthn RP/domain, key custody, support, operations, and deployment wait for a
-future deploy plan blocked at minimum by
-`private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus then-current
+future deploy plan blocked at minimum by the private infrastructure cluster plan plus then-current
 platform handoff gates.
 
 ## Primary Source and Prior-Art Record

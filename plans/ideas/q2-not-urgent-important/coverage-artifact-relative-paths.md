@@ -27,9 +27,8 @@ A coverage tool that writes absolute filesystem paths into a committed output fi
 environment-specific. The learning surfaced during the `baseerah-repo-reset` Phase 0 baseline
 `test:quick` sweep: running the suite from a different checkout regenerated the artifact with local
 paths and produced an 11-line diff carrying zero information about any code change, reverted with
-`git checkout --` as out of that plan's scope. In a workspace where `ose-public`, the private sibling, and
-`beaver-nest` all sit side by side under one parent directory, plus per-plan worktrees, that noise
-erodes trust in `git status`.
+`git checkout --` as out of that plan's scope. In a workspace where several repositories sit side by side under one parent directory, plus
+per-plan worktrees, that noise erodes trust in `git status`.
 
 Re-verifying in this repo on 2026-08-05 changed the picture substantially — **most known instances
 are already neutralized** — though a 2026-08-18 re-check found one of those findings overstated:

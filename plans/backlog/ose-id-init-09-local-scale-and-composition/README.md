@@ -70,8 +70,7 @@ flowchart TD
   failure status.
 - A dependent app cannot silently fall back to local credentials/debug identity when OSE ID is unavailable.
 - OSE ID source/docs inherit root MIT; every third-party component keeps its own license.
-- Deployment remains blocked at minimum on private plan
-  `start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and then-current platform handoff gates.
+- Deployment remains blocked at minimum on the private infrastructure cluster plan and then-current platform handoff gates.
 
 ## Reader Map
 

@@ -6,12 +6,15 @@ One-line summary: the Claude→OpenCode agent converter emits a fixed field set,
 frontmatter key on a mirrored agent would be silently dropped the moment that agent gained a
 `.claude/` source — which is one of two reasons a needed mirror currently cannot have one.
 
-> Surfaced 2026-08-17 during `optimize-gov` execution.
+> Surfaced 2026-08-17 during `optimize-gov` execution. Rewritten to `ose-public`-local scope: the
+> concrete incident below was measured in another repository; this repository declares its equivalent
+> hand-maintained harness files `vendored` instead (see the platform-bindings reference), so what
+> remains here is the converter limitation itself.
 
 ## Problem / context
 
-The private sibling carries `.opencode/agents/ci-monitor-subagent.md` with no `.claude/` counterpart, so
-Phase 0 Invariant 4 reports it as an orphan on every run. It declares `mode: subagent`, which is how
+A hand-maintained `.opencode/agents/` file with no `.claude/` counterpart is reported as an orphan by
+Phase 0 Invariant 4 on every run. In the measured case it declared `mode: subagent`, which is how
 OpenCode distinguishes a subagent from an ordinary agent.
 
 Authoring a `.claude/` counterpart to close that gap was attempted and reverted. Two independent
@@ -53,12 +56,10 @@ close this orphan without reading why it is open.
 
 ## Prior art / precedents
 
-- **[private-sibling-opencode-ci-monitor-orphan](./private-sibling-opencode-ci-monitor-orphan.md)** — read
-  this first; it owns the prior question of where the mirror file came from, and records that
-  `list_agent_files` hardcodes a skip for this exact filename. It proposes three outcomes, one of
-  which — restore the `.claude/` source and regenerate — the attempt described above **empirically
-  rules out**. That narrows its decision to delete-or-declare, and the two briefs should be settled
-  together.
+- **The `vendored` classification** — [platform bindings](../../../docs/reference/platform-bindings.md)
+  declares hand-maintained harness payloads `vendored`, so they survive regeneration untouched. The
+  attempt described above **empirically rules out** restoring a `.claude/` source and regenerating,
+  which narrows the decision for any such file to delete-or-declare.
 - **`.amazonq` emitter** (`bindings.rs`) — models the opposite discipline: it tracks which
   definitions it manages and removes only stale ones it owns.
 - **`.codex/config.toml`** — carries a hand-maintained `[agents.ci-monitor-subagent]` entry kept
@@ -93,8 +94,8 @@ itself, which behaved correctly throughout.
   Not yet verified — this decides whether the converter gap is a real defect or a cosmetic one.
 - Does a partial `permission` map deny unlisted tools in OpenCode, including MCP? If it does, any
   generated mirror of this agent is a functional narrowing.
-- `apps/rhino-cli/**` is the parity boundary across both repos, so a converter change is a
-  coordinated multi-repo change with a manifest regen.
+- The converter now lives in the upstream Rhino repository, so a field-handling change is made there
+  and consumed here by bumping the pinned release.
 - A blanket passthrough could let genuinely stale keys survive regeneration — the behaviour the
   generator exists to prevent.
 

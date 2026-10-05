@@ -36,7 +36,7 @@ is not planned through this workflow.
 - [Merge Timing, Feature Flags, worktree-to-pr Binding](./plan-planning/004-delivery-merge-timing-flags-and-worktree-to-pr-binding.md) — when PRs merge.
 - [Surface-Conditional Tester Gates](./plan-planning/005-surface-conditional-tester-gates.md) — routing table, three UI gates.
 - [Vercel MCP Availability](./plan-planning/006-vercel-mcp-availability.md) — probe and boundary.
-- [The Plan-Docs-Only Carve-Out (Superseded)](./plan-planning/007-plan-docs-only-carve-out.md) — retired, narrowed context.
+- [The Plan-Docs-Only Carve-Out (Superseded)](./plan-planning/007-plan-docs-only-carve-out.md) — retired, historical context.
 - [File-Touch Ledger](./plan-planning/008-file-touch-ledger.md) — the two obligations.
 - [Step 0 — Prompt Parsing and Repo Exploration](./plan-planning/009-step-0-prompt-parsing-and-repo-exploration.md) — pre-grill exploration.
 - [Step 1 — First Grill](./plan-planning/010-step-1-first-grill.md) — the ten decisions.

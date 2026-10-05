@@ -57,7 +57,7 @@ than decays.
 - [Anti-Pattern — Echo and No-Op Test Targets](../../../repo-governance/development/infra/nx-targets/anti-patterns-echo-placeholders.md)
   — the same prohibition given its own document, which is how much this repo cares about it.
 - [`markdownlint-ci-gate-lints-zero-files`](./markdownlint-ci-gate-lints-zero-files.md) — the closest
-  sibling in shape: a gate that has always passed while inspecting nothing.
+  relative in shape: a gate that has always passed while inspecting nothing.
 - [`2026-08-30__rewrite-rhino-cli-to-fsharp`](../../done/2026-08-30__rewrite-rhino-cli-to-fsharp/README.md)
   — Phase 9d surfaced the class and its `learnings.md` flagged it as "a separate, unopened cleanup".
 - [`port-registry-lacks-a-validator`](../q2-not-urgent-important/port-registry-lacks-a-validator.md)
@@ -85,8 +85,6 @@ confirmed individually.
 
 Out of scope:
 
-- The private sibling's equivalent stubs — a separate, independently-scoped sweep in that repo. This class
-  is not inside the `apps/rhino-cli` byte-identity boundary, so the two repos need not move together.
 - Adding `compat:min-version` anywhere it is missing. The convention makes it applicable-only, never
   universally mandatory.
 - Changing what any real min-version check does. There are none left in `ose-public` to change.
@@ -95,8 +93,8 @@ Out of scope:
 ## Risks & open questions
 
 - **Should this land as a validator instead of a sweep?** A one-time deletion fixes 24 files; a gate
-  fixes the class. The gate carries a TDD cycle, companion Gherkin under `specs/apps/rhino`,
-  `repo-config.yml` registration, and the four-repo parity obligation — uncosted here. (open)
+  fixes the class. The gate carries a TDD cycle, companion Gherkin,
+  `repo-config.yml` registration, and an upstream Rhino release — uncosted here. (open)
 - **Why did the count move 26 → 27 → 24?** Some projects were removed or restructured between
   measurements, but that is inferred, not verified. Any sweep should reconcile the delta rather than
   trust the latest number. (open)

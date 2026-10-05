@@ -65,8 +65,8 @@ A branch with no usable proof here may still qualify under [Patch-Equivalent Bra
 
 **Use `git push origin --delete <branch>`** only for a plan-pushed, still-live branch after its PR is
 `MERGED`. Verified GitHub auto-deletion needs no second command. **Never delete `main` or an
-environment branch.** Environment branches are repo-specific: `ose-public` has `prod-*`/`stag-*`;
-the private sibling currently has none. Confirm each repo with `git branch -a`.
+environment branch.** Environment branches are repo-specific: `ose-public` has `prod-*`/`stag-*`.
+Confirm with `git branch -a`.
 
 **Jurisdiction.** `git push origin --delete` deletes a remote ref; it is not history-rewriting
 force-push. It is governed by this convention's merged-check requirement, not the per-instance gate

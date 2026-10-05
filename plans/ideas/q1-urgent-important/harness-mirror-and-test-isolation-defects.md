@@ -46,7 +46,7 @@ routes them to a plan rather than an inline patch.
   cycle-9 review of the PR-review rules PR. Four files under `.agents/skills/` carry
   `../../../agents/...` links copied byte-for-byte from `.claude/skills/`, where they resolve to
   `.claude/agents/`. Under `.agents/`, which has no sibling `agents/` directory, they resolve to
-  nothing — and the private sibling carries the same four. These are not anchors that drifted: they are
+  nothing. These are not anchors that drifted: they are
   unresolvable the moment the mirror is written, for every such link, because the emitter copies
   bytes across trees of different depth without rewriting relative paths. Repointing the 47 anchors
   by hand leaves this class fully intact, so the emitter is the thing to change, not the link text.
@@ -89,10 +89,10 @@ adds a test to that binary, which makes it cheapest to fix before any workstream
 
 ## Rough scope & non-goals
 
-In scope: `apps/rhino-cli/src/application/agents/`, `src/commands/`, `tests/`, the companion Gherkin
-under `specs/apps/rhino`, and `.claude/skills/`. The first two workstreams touch the parity boundary
-and must land in `ose-public` and the private sibling as a paired merge with the manifest regenerated on
-both sides; the anchor repair is `ose-public` content only and carries no parity obligation.
+In scope: the retired in-tree `rhino-cli` agent-generation code and tests (promote any still-relevant
+product work to the upstream Rhino repository), the matching Gherkin, and `.claude/skills/`. The
+first two workstreams are upstream Rhino changes consumed here by a release bump; the anchor repair is
+`ose-public` content only.
 
 Out of scope (for now):
 
@@ -116,8 +116,8 @@ Out of scope (for now):
   rewrite. Unknown until each is resolved. (open)
 - Sequencing: the CWD fix must land before anything else adds tests to that binary, or the new tests
   inherit the flake.
-- Parity: any `apps/rhino-cli/**` edit desynchronizes the manifest unless regenerated and staged in
-  the same commit on both sides.
+- Upstream: the first two workstreams land in the upstream Rhino repository, so `ose-public` sees them
+  only after a release bump.
 
 ## What success looks like + promotion signal
 

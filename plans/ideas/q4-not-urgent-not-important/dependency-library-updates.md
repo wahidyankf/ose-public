@@ -4,7 +4,7 @@ One-line summary: a standing sweep to move the repo's pinned library dependencie
 soak windows clear, rather than letting them drift stale.
 
 > Idea, added (original capture undated; development-experience item — source line: "libraries update").
-> Relocated from private-sibling/plans/ideas/dependency-library-updates.md on 2026-08-06 by plan-ideas-grooming.
+> Relocated from a sibling repository's `plans/ideas/` on 2026-08-06 by plan-ideas-grooming.
 
 ## Problem / context
 
@@ -17,22 +17,17 @@ lockfiles has not been quantified.
 ### Measured baseline as of 2026-07-31 (was previously unquantified)
 
 The "no baseline measured" note above is now partly answered. The `deps-audit` CI job on `main` has
-been failing since before 2026-07-31 (run `30607494072`, 05:41Z), with three independent causes:
+been failing since before 2026-07-31 (run `30607494072`, 05:41Z), with two independent causes:
 
 1. **npm** — `34 vulnerabilities (2 low, 16 moderate, 13 high, 3 critical)`, concentrated in Next.js
    (multiple App Router / Server Actions SSRF, cache-confusion, and DoS advisories), plus `@babel/core`
    (GHSA-4x5r-pxfx-6jf8, high), `esbuild` (GHSA-g7r4-m6w7-qqqr, high), and `brace-expansion` DoS.
-2. **cargo** — `failed to get 'coralpolyp-contracts' as a dependency of package 'coralpolyp-be'`
-   (`No such file or directory`), alongside `Blocking waiting for file lock on package cache`. This
-   reads as a runner-workspace/path-resolution problem rather than a real dependency break, and is
-   **separable from the version sweep — probably a quick standalone fix**.
-3. **cargo-deny** — advisories check currently **skipped by design** (upstream RUSTSEC-2026-0124
+2. **cargo-deny** — advisories check currently **skipped by design** (upstream RUSTSEC-2026-0124
    advisory-db corruption); bans/licenses/sources still enforced.
 
-Surfaced during `expand-on-premise-fleet-using-node-c` (its `learnings.md` L-9) and deliberately not
-fixed there: a 34-advisory bump spanning Next.js, Babel, and esbuild is a framework-upgrade effort with
-its own regression surface, and folding it into an on-premise fleet plan would have mixed unrelated
-risk into an infra change.
+Surfaced during an unrelated infrastructure plan and deliberately not fixed there: a 34-advisory bump
+spanning Next.js, Babel, and esbuild is a framework-upgrade effort with its own regression surface, and
+folding it into that plan would have mixed unrelated risk into an infrastructure change.
 
 **This raises the urgency below from "not acutely urgent".** Three critical advisories sitting on
 `main` with a red `deps-audit` is a different posture from ordinary staleness drift — and a permanently

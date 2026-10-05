@@ -12,7 +12,7 @@ answer it, with different provenance, and one command is forbidden for this ques
 
 ```console
 $ git worktree list
-/Users/<name>/ose-projects/<sibling>  (bare)
+/Users/<name>/<workspace>/<bare-repo>  (bare)
 ```
 
 The `(bare)` marker on the entry for the repository's common directory is **upstream-prescribed**:

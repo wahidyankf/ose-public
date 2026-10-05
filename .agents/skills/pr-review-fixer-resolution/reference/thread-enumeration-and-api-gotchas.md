@@ -44,7 +44,7 @@ equivalent).
 ## Three Confirmed Live-API Gotchas
 
 **The `{pull_number}` segment is required** — the reply path without it returns 404, confirmed
-live against a sibling repo's PR on 2026-07-20. It is easy to omit because the sibling _read_
+live against a PR on 2026-07-20. It is easy to omit because the sibling _read_
 endpoint for a single review comment genuinely is `repos/{owner}/{repo}/pulls/comments/{comment_id}`,
 with no pull number; only the reply sub-resource is nested under the pull.
 

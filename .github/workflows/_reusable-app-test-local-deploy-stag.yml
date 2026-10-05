@@ -3,7 +3,7 @@ name: _reusable-app-test-local-deploy-stag
 # Reusable heavy-test pipeline for an app-group (web + be + e2e).
 # Spins the full stack locally via docker-compose, runs integration + e2e, then
 # on success force-pushes BOTH the staging web branch (Vercel builds it) and the
-# staging be branch (triggers {product}-be-build-deploy-stag.yml -> GHCR -> coralpolyp).
+# staging be branch (triggers {product}-be-build-deploy-stag.yml -> GHCR -> downstream private deployer).
 
 on:
   workflow_call:
@@ -185,10 +185,10 @@ jobs:
           fetch-depth: 0
       # Force-push the staging web branch: Vercel listens to it and builds the
       # preview. Allow ~2.5h before the *-app-test-stag run so the
-      # Vercel build + coralpolyp rollout have settled.
+      # Vercel build + downstream private deployer rollout have settled.
       - name: Deploy web to staging branch
         run: git push origin HEAD:${{ inputs.stag-web-branch }} --force
       # Force-push the staging be branch: triggers {product}-be-build-deploy-stag.yml
-      # which builds + pushes the GHCR image consumed by the private sibling's coralpolyp.
+      # which builds + pushes the GHCR image consumed by a downstream private deployer.
       - name: Deploy be to staging branch
         run: git push origin HEAD:${{ inputs.stag-be-branch }} --force

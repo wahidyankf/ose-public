@@ -1,8 +1,8 @@
 name: ose-be-build-deploy-stag
 
 # Fires when the app-tier local-deploy-stag run force-pushes stag-ose-be.
-# Builds the ose-be image and pushes it to GHCR; the private sibling's coralpolyp rolls it
-# out to the staging k3s cluster.
+# Builds the ose-be image and pushes it to GHCR; a downstream private deployer rolls it
+# out to the staging environment.
 
 on:
   push:

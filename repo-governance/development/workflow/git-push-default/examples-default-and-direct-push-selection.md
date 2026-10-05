@@ -1,6 +1,6 @@
 ---
-description: PASS and FAIL examples of the default worktree-to-pr flow versus an unauthorized direct push, and PASS for an eligible private main-to-origin-main selection.
-when_to_use: Use when checking whether a specific delivery transcript correctly used the default mode or a properly declared direct-push override.
+description: PASS and FAIL examples of the default worktree-to-pr flow versus an unauthorized direct push.
+when_to_use: Use when checking whether a specific delivery transcript correctly used the default mode.
 ---
 
 # Examples — Default and Direct-Push Selection
@@ -35,22 +35,3 @@ Done. Convention is now on main.
 
 No `## Delivery Mode` field and no invocation argument selected a direct-push mode. The default is
 `worktree-to-pr`; pushing straight to `origin main` here is wrong.
-
-## PASS: Correct behaviour for an eligible private `main-to-origin-main` selection
-
-The private-sibling plan's `## Delivery Mode` field is `main-to-origin-main`, and its `## Worktree`
-field is `Not applicable (N/A)`. It changes one stateful Terraform resource and requires the primary
-checkout's real credentials and local state; the change is small, understood, locally gated, and
-safe to integrate immediately.
-
-```
-Plan executor: Delivering eligible private stateful IaC from the primary checkout.
-
-  git switch main
-  git pull --rebase origin main
-  git add infra/prod/terraform/main.tf
-  git commit -m "fix(infra): correct Terraform resource state"
-  git push origin main
-
-Pushed directly to origin main under the plan's eligible private main-to-origin-main exception.
-```

@@ -6,7 +6,7 @@ when_to_use: Use when cleaning up a plan's worktree after a direct push, or movi
 # Finalization and Archival — Direct-Push Worktree Cleanup and PR-Mode Archival
 
 1. **Direct-push worktree compatibility cleanup — only after terminal audit and `pass`**:
-   `worktree-to-origin-main` is unavailable in both OSE repositories; `main-to-origin-main` creates
+   `worktree-to-origin-main` is unavailable in `ose-public`; `main-to-origin-main` creates
    no plan worktree. If this compatibility procedure is reused by a repository that permits such a
    worktree mode, require confirmed delivery, a passing workflow-owned terminal audit in
    `{final-report}`, and final `pass` before cleanup.

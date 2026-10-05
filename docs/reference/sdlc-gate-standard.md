@@ -128,7 +128,7 @@ workflow from configuring a service-account/bot identity in its own YAML (for ex
 
 ### Stage 2: commit-msg
 
-`.husky/commit-msg`. Identical in both bound repos:
+`.husky/commit-msg`:
 
 | #   | Command                              | Scope | What it does                                                                                                                          |
 | --- | ------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------- |
@@ -163,8 +163,8 @@ gate continues to cover `specs/**.md`.
 
 ### Stage 4: PR Quality Gate
 
-`pr-quality-gate.yml`. Job skeleton identical across repos (only language-gate jobs and infra-only IaC
-jobs differ). `$P` = `$(($(nproc)-1))`.
+`pr-quality-gate.yml`. Language-gate jobs exist only for languages present in the repository.
+`$P` = `$(($(nproc)-1))`.
 
 | Job                                                               | Exact command(s) CI runs                                                                                                                                       | Scope              |
 | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
@@ -194,101 +194,45 @@ surface. It is a record, not a current target. The named winner per surface:
 
 | Surface                                                                                | Standard (winner)                                                                                                                                                                 | Rationale                                                                                                                                                                                                                                                                                                              |
 | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **commit-msg**                                                                         | `npx --no -- commitlint --edit "$1"` + `@commitlint/config-conventional`                                                                                                          | Already identical in both — lock it.                                                                                                                                                                                                                                                                                   |
-| **Tool-lint (file-type, via lint-staged)**                                             | shellcheck/hadolint/actionlint as lint-staged entries (both bound repos), run at commit (staged) + CI (`--diff`)                                                                  | Tool-linting is pure file-type dispatch — lint-staged already does this for formatters, so one mechanism covers both; no per-project Nx graph, and changed-files-only avoids the whole-repo glob tripping on stray `local-tmp/*.sh`; standalone `shell:lint`/`dockerfiles:lint`/`actions:lint` Nx targets are dropped. |
-| **PR quality-gate filename**                                                           | `pr-quality-gate.yml`                                                                                                                                                             | Both repos already use it; "pr" is clearer than "commons" for the gate's role.                                                                                                                                                                                                                                         |
-| **Markdown workflow filename**                                                         | None — deleted in all 3                                                                                                                                                           | Markdown validation is folded into the gates (per-file md validators in the lint-staged job; `md internal-link validate` as the `md-links` gate job) — `validate-markdown.yml`/`markdown-validate.yml` is removed everywhere.                                                                                          |
-| **Env workflow filename**                                                              | `validate-env.yml` (standalone)                                                                                                                                                   | Infra style; the one check that keeps a standalone workflow (secrets-adjacent, parallels the env-staged-guard carve-out).                                                                                                                                                                                              |
+| **commit-msg**                                                                         | `npx --no -- commitlint --edit "$1"` + `@commitlint/config-conventional`                                                                                                          | Conventional Commits, locked.                                                                                                                                                                                                                                                                                          |
+| **Tool-lint (file-type, via lint-staged)**                                             | shellcheck/hadolint/actionlint as lint-staged entries, run at commit (staged) + CI (`--diff`)                                                                                     | Tool-linting is pure file-type dispatch — lint-staged already does this for formatters, so one mechanism covers both; no per-project Nx graph, and changed-files-only avoids the whole-repo glob tripping on stray `local-tmp/*.sh`; standalone `shell:lint`/`dockerfiles:lint`/`actions:lint` Nx targets are dropped. |
+| **PR quality-gate filename**                                                           | `pr-quality-gate.yml`                                                                                                                                                             | "pr" is clearer than "commons" for the gate's role.                                                                                                                                                                                                                                                                    |
+| **Markdown workflow filename**                                                         | None — deleted                                                                                                                                                                    | Markdown validation is folded into the gates (per-file md validators in the lint-staged job; `md internal-link validate` as the `md-links` gate job) — `validate-markdown.yml`/`markdown-validate.yml` is removed.                                                                                                     |
+| **Env workflow filename**                                                              | `validate-env.yml` (standalone)                                                                                                                                                   | The one check that keeps a standalone workflow (secrets-adjacent, parallels the env-staged-guard carve-out).                                                                                                                                                                                                           |
 | **Markdown validator set**                                                             | Per-file formatting/tool lint in lint-staged; cross-file links in the repo-wide gate                                                                                              | Identical authored-file safeguards; no runtime or corpus-wide test check runs pre-commit.                                                                                                                                                                                                                              |
 | **BDD coverage set (PR gate)**                                                         | Every applicable static `test:coverage:*` through affected `test:quick`; spec links via repo-wide validation                                                                      | Coverage validators never execute tests; repeated primary keywords are valid for a coherent journey.                                                                                                                                                                                                                   |
-| **pre-push scoped validator set**                                                      | Union including `governance:vendor-audit-validation`                                                                                                                              | Both bound repos include it.                                                                                                                                                                                                                                                                                           |
+| **pre-push scoped validator set**                                                      | Union including `governance:vendor-audit-validation`                                                                                                                              | Included.                                                                                                                                                                                                                                                                                                              |
 | **Hook/gate step order**                                                               | See [Lifecycle Stages](#lifecycle-stages)                                                                                                                                         | The normative registry-backed hook and PR-gate sequence is defined in the Lifecycle Stages section of this document.                                                                                                                                                                                                   |
-| **CRON pipeline shape**                                                                | `*-test-local-deploy-{stag,prod}.yml` + paired `*-test-{stag}.yml` calling shared `_reusable-*` workflows                                                                         | Public's reusable-workflow factoring is cleanest; infra keeps its own app set but adopts the naming and reusable-call shape.                                                                                                                                                                                           |
-| **Rhino source identity** (`src/` — including `src/tests/`, `project.json`, `LICENSE`) | Byte-identical across both bound repos — zero carve-outs, canonical source carries the union command surface (repo-inapplicable verbs dormant, not absent)                        | A committed manifest gate enforces the hermetic boundary and the scheduled parity audit detects cross-repository drift.                                                                                                                                                                                                |
-| **`repo-config.yml` schema parity**                                                    | `Rhino repo-config validate` — strict-deserialize schema check (deny-unknown-fields + required/enum checks), wired at pre-commit (staged-gated fast path) and the PR quality gate | Converts the "identical key set across `repo-config.yml`" boundary from prose review into an enforced, automated gate.                                                                                                                                                                                                 |
+| **CRON pipeline shape**                                                                | `*-test-local-deploy-{stag,prod}.yml` + paired `*-test-{stag}.yml` calling shared `_reusable-*` workflows                                                                         | Reusable-workflow factoring keeps the CRON pipeline shape in one place.                                                                                                                                                                                                                                                |
+| **Rhino source identity** (`src/` — including `src/tests/`, `project.json`, `LICENSE`) | Historical: the former in-tree source was held byte-identical with another repository, retired 2026-09-19                                                                         | The in-tree source and its parity machinery no longer exist; RHINO's source lives only upstream.                                                                                                                                                                                                                       |
+| **`repo-config.yml` schema validation**                                                | `Rhino repo-config validate` — strict-deserialize schema check (deny-unknown-fields + required/enum checks), wired at pre-commit (staged-gated fast path) and the PR quality gate | Converts the `repo-config.yml` schema boundary from prose review into an enforced, automated gate.                                                                                                                                                                                                                     |
 
 ## Divergence Policy
 
-Historical: the 2026-07 plan held the standardization layer identical across both repos, with the
-only sanctioned variation being what each repo actually ships (its project/app set) and the data that
-follows from it. No such invariant binds any repository now.
+Historical: the 2026-07 plan held the standardization layer identical across two repositories, with
+the only sanctioned variation being what each repository actually ships (its project/app set) and the
+data that follows from it. No such invariant binds any repository now.
 
 ### Rhino Byte-Identity Boundary
 
 Historical: this boundary applied to the former in-tree Rhino source, retired 2026-09-19 (PR #549).
-RHINO's source now lives only upstream, so no in-tree byte-identity boundary remains.
-
-`the upstream Rhino repository` is held to a stricter, second-pass target beyond the gate mechanics above: **zero
-carve-outs**. `the upstream Rhino repository`'s `src/` (including `src/tests/`), `project.json`, and `LICENSE`, plus
-the Gherkin behaviour tree at `the upstream Rhino specification corpus**` (every `.feature` file and
-every `README.md`), are byte-identical across `ose-public` and the private sibling. The
-canonical source carries the
-**union command surface** — every repo's `Rhino` binary exposes the full command superset, and a
-command with no applicable projects in a given repo (for example, `java` in `ose-public`) is
-**dormant, not absent**, rather than removed from the binary. A **schema-parity gate**
-(`Rhino repo-config validate`, run at pre-commit (staged-gated) and the PR quality gate in every
-repo) enforces
-that each repo's `repo-config.yml` carries an **identical key set** — values may differ per repo, but
-no repo may add an unknown key or omit a required one, so the byte-identical source can never
-silently drift out of sync with the data it reads.
-
-Within `the upstream Rhino repository` itself, the only sanctioned divergence anywhere is:
-
-1. **Each repo's app/language set** — the data `repo-config.yml` carries per repo (coverage
-   registry, env-validation scan paths) differs, driving which of the union's dormant commands are
-   actually exercised in that repo.
-2. **The CI runner label** (for example, the private sibling's `[self-hosted, linux, ose-self-hosted]`) — a
-   CI-workflow-YAML concern that lives outside `the upstream Rhino repository` entirely, so it never affects source
-   byte-identity.
-
-The archived 2026-07 technical record preserves the former synthesis approach and acceptance criteria.
-
-**Known exception (tracked, not yet reconciled): `doctor/tools.rs` tool-provisioning extensions.**
-The private sibling legitimately needs IaC tool provisioning (the same infra-only IaC surface named under
-[Allowed Divergence](#allowed-divergence) below) that the other bound repos do not, and its
-`doctor/tools.rs` was originally observed to carry extra tool-definition and test entries beyond the
-canonical set as a result. **Re-measured 2026-08-07** (see the linked brief's "Live re-measurement"
-section): as of that measurement the two files' `fn`-signature sets and `DOCTOR_TOOL_INVENTORY` are
-identical, and the file's entire diff is a separately-tracked, unpropagated fix (task #238) — not an
-extra-tool-definition surplus. The structural tension this note describes may still be real in
-principle, but the specific divergence that motivated writing it down is not currently observable; do
-not treat this note alone as evidence of present drift. The "zero carve-outs" target above is stated
-as the goal for the whole `src/` tree; this one file has a structural tension with that goal that
-predates and is independent of this document's propagation work — the byte-identity boundary either
-needs a narrower `BOUNDARY_PATHS` carve-out for this file, or the parity check needs an
-accepted-superset comparison mode (canonical subset + declared per-repo extensions) instead of a
-literal full-file match. Until one of those lands as a code change, treat drift reports naming only
-`doctor/tools.rs`'s known IaC-tooling additions as this tracked exception, not as a new propagation
-gap — but still diff the file in full on every byte-identity check, since a new, unrelated drift can
-hide alongside the known one. Tracked as a follow-up idea brief:
-[`Rhino-tools-superset-carveout`](../../plans/ideas/q2-not-urgent-important/Rhino-tools-superset-carveout.md).
-
-**Third resolution now available (2026-09-08, `lms-init` DU1).** The two fixes named above — a
-narrower `BOUNDARY_PATHS` carve-out, or an accepted-superset comparison mode — both work by
-loosening the byte-identity check. A third does not: `repo-config.yml` then carried
-`doctor.extra-tools` (since removed; toolchains are now declared under `toolchains.entries`), so a repository declares the tools it alone needs in a file that was never
-byte-identical, and `the upstream Rhino repository` stays literally identical with no carve-out and no superset
-mode. A per-repo tool no longer requires a per-repo source difference. This records the mechanism;
-it does not by itself close the linked brief, which also covers the test-entry surplus and is a
-separate decision.
+RHINO's source now lives only upstream, so no in-tree byte-identity boundary remains, and no repository
+holds another's source tree, command surface, or `repo-config.yml` key set identical. The archived
+2026-07 technical record preserves the former synthesis approach and acceptance criteria.
 
 ### Allowed Divergence
 
 The following variations are not flagged as drift:
 
 - **App set and per-app deploy CRONs** — `ose-public` ships content/web apps (`ose-www`,
-  `ayokoding-www`, `organiclever-www`, `*-app-web`, `*-be`); the private sibling ships
-  `coralpolyp`. Each repo keeps only the deploy CRON workflows for apps it actually ships, and both
-  repos' deploy CRONs push to real Vercel/self-hosted environments.
+  `ayokoding-www`, `organiclever-www`, `*-app-web`, `*-be`). It keeps only the deploy CRON workflows
+  for apps it actually ships, and those deploy CRONs push to real Vercel/self-hosted environments.
 - **Language gate jobs** — the PR gate's per-language jobs (golang, jvm, dotnet, python, rust, elixir,
-  clojure, dart, typescript) exist only for languages present in that repo.
-- **Infra-only IaC gates** — `terraform fmt`/`validate`/`tflint`, `ansible-lint`, `yamllint` exist
-  only in the private sibling, in both hooks and the PR gate.
-- **Self-hosted runner labels** — the private sibling runs on `[self-hosted, linux, ose-self-hosted]`.
+  clojure, dart, typescript) exist only for languages present in this repository.
 - **lint-staged formatter entries** — only for languages present (for example `*.go`, `*.{ex,exs}`
-  exist where that language ships). The common entries (`*.md`, `*.json`, `*.{yml,yaml}`,
-  `*.{css,scss}`, `*.rs`, `*.fs`) must match across all repos.
-- **Gate-entry data** — each repository declares only the formatter and language entries supported by
+  exist where that language ships). The common entries are `*.md`, `*.json`, `*.{yml,yaml}`,
+  `*.{css,scss}`, `*.rs`, `*.fs`.
+- **Gate-entry data** — the repository declares only the formatter and language entries supported by
   its tracked files, but every declared hook or CI command must be an entry in its own gate registry.
 
 ### Drift
@@ -310,44 +254,38 @@ The 2026-07 plan listed these items to converge; they are history, not a current
 
 ## Verification Snapshot (2026-07-01)
 
-> **Scope note (2026-08-16)**: the table below was verified on a run that also covered a repository
-> since removed from that run — see
-> [Related Repositories §Upstream and product repositories](./related-repositories.md#upstream-and-product-repositories).
-> Rows were re-scoped to the two repositories then verified; no row below obligates work against any
-> repo.
+> **Scope note (2026-08-16)**: this snapshot is a historical record; no row below obligates work
+> against any repository.
 
-Verified 2026-07-01 across `ose-public` and the private sibling by directly running the acceptance
-command for every mechanics row (not by inspecting config alone; corrected same-day after a follow-up
-audit found two rows below were marked ✅ while infra's pre-commit still ran `test:quick` in the wrong
-stage via a legacy monolith that bypassed lint-staged — both fixed before this table's final pass). ✅ =
-byte/behaviour-identical across both; ⚠️ = tracked, non-blocking divergence with a linked follow-up;
-allowed-divergence rows (app set, language gates, infra-only IaC, runner labels, lint-staged formatter
-entries) are excluded per [Divergence Policy](#divergence-policy).
+Verified 2026-07-01 in `ose-public` by directly running the acceptance command for every mechanics
+row (not by inspecting config alone). ✅ = verified; ⚠️ = tracked, non-blocking divergence with a
+linked follow-up; allowed-divergence rows (app set, language gates, lint-staged formatter entries)
+are excluded per [Divergence Policy](#divergence-policy).
 
-| Mechanics row                                                                                         | Status | Note                                                                                                                                                                                                                                                                                                                                                                                   |
-| ----------------------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PR-gate / markdown / env workflow filenames                                                           | ✅     | `pr-quality-gate.yml`, `validate-env.yml` in both; no standalone markdown workflow anywhere.                                                                                                                                                                                                                                                                                           |
-| Markdown validator set (per-file + repo-wide)                                                         | ✅     | markdownlint-cli2 + mermaid + heading-hierarchy + naming + frontmatter (lint-staged; heading-hierarchy and naming delegate to the pinned RHINO, and mermaid hands it each diagram file); `md internal-link validate` (repo-wide gate).                                                                                                                                                 |
-| lint-staged deterministic formatter/tool-linter set                                                   | ✅     | Identical entries in both `package.json` except allowed language formatter divergence.                                                                                                                                                                                                                                                                                                 |
-| Repo-wide cross-file pre-push gates (md-links, readme-index, harness-duplication, convention-license) | ✅     | All 4 present as direct `cargo run` calls in both repos' `.husky/pre-push` + both CI gates, accurate as of this row's 2026-07-01 verification pass (see the 2026-08-09 dispatch-mechanism note below the table for the current state).                                                                                                                                                 |
-| static BDD coverage set (`test:coverage:*`)                                                           | ✅     | Applicable validators run through quick without runtime execution.                                                                                                                                                                                                                                                                                                                     |
-| Lint invocation mechanism (lint-staged, no bare tool-lint Nx targets)                                 | ✅     | Confirmed in both; infra's D9 Terraform/Ansible/YAML lint is a documented allowed IaC-only addition.                                                                                                                                                                                                                                                                                   |
-| Pre-push governance-vendor presence                                                                   | ✅     | Path-gated in both.                                                                                                                                                                                                                                                                                                                                                                    |
-| Hook/gate step order                                                                                  | ✅     | Canonical 4-step pre-commit order (env-guard→lint-staged→bindings-generate→lockfile-sync) and pre-push order match [Lifecycle Stages](#lifecycle-stages) in both. infra's step-1 env-guard now runs the same `env staged-guard validate` Rust command as public (the former bash-script mechanism divergence and legacy pre-commit-monolith `test:quick` misplacement are both fixed). |
-| Rhino target-key set                                                                                  | ✅     | 21 identical sorted keys in both `the upstream Rhino repository/project.json` (verified via `jq -r '.targets\|keys[]'\|sort`, byte-diff clean).                                                                                                                                                                                                                                        |
-| Rhino command set, verb-last                                                                          | ✅     | `specs counts validate` and the `behaviour-coverage`/`domain-coverage` verbs are now identical in both; infra's former standalone `bc`/`ul` leaves (already-duplicate logic vs. `structure validate`) are removed.                                                                                                                                                                     |
-| `repo-config.yml` section schema                                                                      | ✅     | 6 identical top-level sections (`harness`, `coverage`, `specs`, `instruction-size`, `env-contract`, `env-injection`) in both, accurate as of this row's 2026-07-01 verification pass (see the 2026-08-13 schema-rename note below the table for the current state).                                                                                                                    |
-| Role-applicable targets on every project                                                              | ✅     | Every behaviour owner exposes `test:unit`; `test:integration` and `test:e2e` exist only where their real boundaries apply, with no no-op placeholders. Dedicated adapter projects expose only their owned runtime layer.                                                                                                                                                               |
-| `test:quick` composition (types/lint → Unit → all applicable static coverage)                         | ✅     | Serial, closed composition; Integration/E2E runtime is unreachable.                                                                                                                                                                                                                                                                                                                    |
-| Native Unit-runtime coverage ≥99% line, no runtime `test:coverage` target, no Codecov                 | ✅     | Native coverage is enforced by every behaviour-owning source project's `test:unit`, while `test:coverage:*` remains static. Dedicated E2E projects do not own a Unit threshold and do not exempt their source owner.                                                                                                                                                                   |
-| `format` via file-type lint-staged, no per-project `format` target                                    | ✅     | Confirmed in both.                                                                                                                                                                                                                                                                                                                                                                     |
-| pre-push ≡ PR quality gate runs only `test:quick`                                                     | ✅     | `test:integration`/`test:e2e` never appear in any gate surface; run manually for impacted scope and completely on schedule.                                                                                                                                                                                                                                                            |
-| Per-adapter static coverage (`test:coverage:*`)                                                       | ✅     | Project-native validators require Unit plus every applicable adapter or valid higher-layer exemption; no central registry, `@covers`, `@wip`, or echo placeholder remains.                                                                                                                                                                                                             |
-| Canonical CI workflow names present                                                                   | ✅     | `pr-quality-gate.yml` and `validate-env.yml` in every bound repository; CI matrix entries derive from the gate registry.                                                                                                                                                                                                                                                               |
-| Worktree-agnostic guardrails                                                                          | ✅     | Verified from both the primary checkout and a linked worktree in both (infra's bare-repo-only layout is the hard case — confirmed via its actual daily worktree execution, not a throwaway check).                                                                                                                                                                                     |
-| specs/ C4 structure (every app + every lib)                                                           | ✅     | Every spec area across both repos has its role-appropriate architecture artifacts and one recursive `behaviours/` corpus — including all app-level libs (4 in public, 2 in infra) that were missing this structure entirely before this pass.                                                                                                                                          |
+| Mechanics row                                                                                         | Status | Note                                                                                                                                                                                                                                              |
+| ----------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PR-gate / markdown / env workflow filenames                                                           | ✅     | `pr-quality-gate.yml`, `validate-env.yml`; no standalone markdown workflow anywhere.                                                                                                                                                              |
+| Markdown validator set (per-file + repo-wide)                                                         | ✅     | markdownlint-cli2 + mermaid + heading-hierarchy + naming + frontmatter (lint-staged; heading-hierarchy and naming delegate to the pinned RHINO, and mermaid hands it each diagram file); `md internal-link validate` (repo-wide gate).            |
+| lint-staged deterministic formatter/tool-linter set                                                   | ✅     | Entries in `package.json` follow the allowed language formatter divergence.                                                                                                                                                                       |
+| Repo-wide cross-file pre-push gates (md-links, readme-index, harness-duplication, convention-license) | ✅     | All 4 present as direct `cargo run` calls in `.husky/pre-push` and the CI gate, accurate as of this row's 2026-07-01 verification pass (see the 2026-08-09 dispatch-mechanism note below the table for the current state).                        |
+| static BDD coverage set (`test:coverage:*`)                                                           | ✅     | Applicable validators run through quick without runtime execution.                                                                                                                                                                                |
+| Lint invocation mechanism (lint-staged, no bare tool-lint Nx targets)                                 | ✅     | Confirmed.                                                                                                                                                                                                                                        |
+| Pre-push governance-vendor presence                                                                   | ✅     | Path-gated.                                                                                                                                                                                                                                       |
+| Hook/gate step order                                                                                  | ✅     | Canonical 4-step pre-commit order (env-guard→lint-staged→bindings-generate→lockfile-sync) and pre-push order match [Lifecycle Stages](#lifecycle-stages).                                                                                         |
+| Rhino target-key set                                                                                  | ✅     | 21 sorted keys in the then in-tree Rhino `project.json` (verified via `jq -r '.targets\|keys[]'\|sort`).                                                                                                                                          |
+| Rhino command set, verb-last                                                                          | ✅     | `specs counts validate` and the `behaviour-coverage`/`domain-coverage` verbs exist; the former standalone `bc`/`ul` leaves (already-duplicate logic vs. `structure validate`) were removed.                                                       |
+| `repo-config.yml` section schema                                                                      | ✅     | 6 top-level sections (`harness`, `coverage`, `specs`, `instruction-size`, `env-contract`, `env-injection`), accurate as of this row's 2026-07-01 verification pass (see the 2026-08-13 schema-rename note below the table for the current state). |
+| Role-applicable targets on every project                                                              | ✅     | Every behaviour owner exposes `test:unit`; `test:integration` and `test:e2e` exist only where their real boundaries apply, with no no-op placeholders. Dedicated adapter projects expose only their owned runtime layer.                          |
+| `test:quick` composition (types/lint → Unit → all applicable static coverage)                         | ✅     | Serial, closed composition; Integration/E2E runtime is unreachable.                                                                                                                                                                               |
+| Native Unit-runtime coverage ≥99% line, no runtime `test:coverage` target, no Codecov                 | ✅     | Native coverage is enforced by every behaviour-owning source project's `test:unit`, while `test:coverage:*` remains static. Dedicated E2E projects do not own a Unit threshold and do not exempt their source owner.                              |
+| `format` via file-type lint-staged, no per-project `format` target                                    | ✅     | Confirmed.                                                                                                                                                                                                                                        |
+| pre-push ≡ PR quality gate runs only `test:quick`                                                     | ✅     | `test:integration`/`test:e2e` never appear in any gate surface; run manually for impacted scope and completely on schedule.                                                                                                                       |
+| Per-adapter static coverage (`test:coverage:*`)                                                       | ✅     | Project-native validators require Unit plus every applicable adapter or valid higher-layer exemption; no central registry, `@covers`, `@wip`, or echo placeholder remains.                                                                        |
+| Canonical CI workflow names present                                                                   | ✅     | `pr-quality-gate.yml` and `validate-env.yml` present; CI matrix entries derive from the gate registry.                                                                                                                                            |
+| Worktree-agnostic guardrails                                                                          | ✅     | Verified from both the primary checkout and a linked worktree.                                                                                                                                                                                    |
+| specs/ C4 structure (every app + every lib)                                                           | ✅     | Every spec area has its role-appropriate architecture artifacts and one recursive `behaviours/` corpus — including all app-level libs that were missing this structure entirely before this pass.                                                 |
 
-All CI runs for the final commit on each repo's `main` are green (a transient jar-download flake on
+All CI runs for the final commit on `main` are green (a transient jar-download flake on
 one `ose-public` run was confirmed via a clean re-run with zero code changes).
 
 **Dispatch-mechanism note (2026-08-09, not part of the 2026-07-01 verification pass above)**: the
@@ -355,9 +293,7 @@ release-build `cargo run` dispatch (via `the upstream Rhino repository/Cargo.tom
 "Repo-wide cross-file pre-push gates" row was superseded in `ose-public` by the
 `./rhino` resolver shim created in this repo's `optimize-cis` PR
 (`./rhino`, added 2026-08-09). This note records the mechanism change
-without re-dating the table above, which remains a historical snapshot of the 2026-07-01
-cross-repo run; the private sibling's own resolver is its own concern (see
-AC-15 in `plans/done/2026-08-09__optimize-cis/delivery.md`).
+without re-dating the table above, which remains a historical snapshot of the 2026-07-01 run.
 
 **Language-port note (2026-08-30, also not part of the 2026-07-01 verification pass above)**:
 `Rhino` was ported from Rust to F# (`rewrite-Rhino-to-fsharp` plan), so the `cargo run`
@@ -371,9 +307,7 @@ pinned in `rhino.lock`. The table itself is left as the historical 2026-07-01 sn
 `repo-config.yml` `instruction-size:` top-level section cited by the "`repo-config.yml` section
 schema" row was renamed to `governance-word-budget:` in `ose-public` by this repo's
 `optimize-governance-md` plan (Phase 1b). This note records the rename without re-dating the table
-above, which remains a historical snapshot of the 2026-07-01 cross-repo run and is accurate for
-that date — `instruction-size:` was still the live section name in the private sibling as of this note. The
-rename creates no obligation in the private sibling, which owns its own `repo-config.yml`.
+above, which remains a historical snapshot of the 2026-07-01 run and is accurate for that date.
 
 **Gate-output-semantics note (2026-08-30, not part of the 2026-07-01 verification pass above)**: a
 single check's own verbose output text (e.g. `governance readme-index validate` printing

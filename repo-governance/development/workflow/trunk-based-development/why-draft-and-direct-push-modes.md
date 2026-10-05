@@ -1,6 +1,6 @@
 ---
-description: Why every worktree-to-pr branch opens as a draft, and the two direct-push modes' scope, restrictions, and delivery-checklist tagging rule.
-when_to_use: Use when deciding whether a PR should open as draft, or when checking whether a direct-push mode is permitted for a given repository.
+description: Why every worktree-to-pr branch opens as a draft, and the two direct-push modes' scope, restriction in ose-public, and delivery-checklist tagging rule.
+when_to_use: Use when deciding whether a PR should open as draft, or when checking whether a direct-push mode is permitted in this repository.
 ---
 
 # Why Draft, Not Ready-for-Review, on Open
@@ -13,7 +13,7 @@ Opening every `worktree-to-pr` branch as a draft is deliberate:
   done-definition, which is the natural place for the [PR Merge Protocol](../pr-merge-protocol.md)
   approval prompt to fire.
 
-## Direct-Push Modes Remain Available Where the Topology Supports Them
+## Direct-Push Modes Are Unavailable in ose-public
 
 Two modes commit and push directly to `origin main`, with `[AI]` performing the push itself -- no
 branch, no PR, no review gate:
@@ -26,13 +26,8 @@ branch, no PR, no review gate:
 `main` is branch-protected against direct pushes for every actor, including admins, in `ose-public`
 -- a `pull_request` ruleset rule is active with `bypass_actors: []` and
 `current_user_can_bypass: "never"`. **Neither direct-push mode has an executable path there,
-regardless of topology or worktree usage.** In
-the private sibling, `worktree-to-origin-main` is also unavailable. Only explicitly declared
-`main-to-origin-main` remains, and only for stateful IaC needing the primary checkout's real
-secrets/local state or CI-IaC changing the repository's own pipeline, runner, or toolchain
-provisioning where PR self-validation is circular. In either eligible category, the change must also
-be small, well-understood, and safe to integrate immediately. See the
-[Git Push Default Convention](../git-push-default.md) for the full push mechanics of the surviving mode,
+regardless of topology or worktree usage.** See the
+[Git Push Default Convention](../git-push-default.md) for the push mechanics,
 including the linear-history and rebase requirements, and
 [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../../conventions/structure/plans/per-repository-delivery-mode-restrictions.md#per-repository-delivery-mode-restrictions-hard-rule)
 for the full per-repository rule.

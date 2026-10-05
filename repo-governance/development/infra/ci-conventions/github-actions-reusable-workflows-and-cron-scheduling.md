@@ -25,18 +25,18 @@ variant-specific inputs.
 
 Scheduled full-quality workflows run twice daily aligned to WIB (UTC+7). The app tier uses a
 **staggered** schedule — `*-app-test-local-deploy-stag` fires first to produce the staging deploy,
-then `*-app-test-stag` fires **2.5 hours later** once Vercel and coralpolyp have
+then `*-app-test-stag` fires **2.5 hours later** once Vercel and the downstream private deployer have
 settled. The www tier is independent and runs after both app-tier passes.
 
 `*-be-build-deploy-stag` is **not** scheduled — it fires on push to the `stag-*-be` branch, which
 the `*-app-test-local-deploy-stag` deploy job force-pushes on success.
 
-| Pipeline                       | WIB           | UTC           | Rationale                                                           |
-| ------------------------------ | ------------- | ------------- | ------------------------------------------------------------------- |
-| `*-app-test-local-deploy-stag` | 03:00 / 15:00 | 20:00 / 08:00 | Earliest — produces the staging deploy the later stag-gate verifies |
-| `*-app-test-stag`              | 05:30 / 17:30 | 22:30 / 10:30 | **+2.5 h** after staging, so Vercel + coralpolyp have rolled out    |
-| `*-www-test-local-deploy-prod` | 06:00 / 18:00 | 23:00 / 11:00 | Independent of the app tier (direct www test → prod deploy)         |
-| `non-product-full-quality`     | 08:00 / 20:00 | 01:00 / 13:00 | Full library and executable-tool layers outside deployment flows    |
+| Pipeline                       | WIB           | UTC           | Rationale                                                                  |
+| ------------------------------ | ------------- | ------------- | -------------------------------------------------------------------------- |
+| `*-app-test-local-deploy-stag` | 03:00 / 15:00 | 20:00 / 08:00 | Earliest — produces the staging deploy the later stag-gate verifies        |
+| `*-app-test-stag`              | 05:30 / 17:30 | 22:30 / 10:30 | **+2.5 h** after staging, so Vercel + the private deployer have rolled out |
+| `*-www-test-local-deploy-prod` | 06:00 / 18:00 | 23:00 / 11:00 | Independent of the app tier (direct www test → prod deploy)                |
+| `non-product-full-quality`     | 08:00 / 20:00 | 01:00 / 13:00 | Full library and executable-tool layers outside deployment flows           |
 
 ## Full-Quality Test Order
 

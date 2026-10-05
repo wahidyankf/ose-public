@@ -73,6 +73,5 @@ or cleanup scripts. This plan turns those architecture claims into deterministic
 OSE-authored source/docs inherit root MIT. Mailpit and every other third-party runtime/test component keep
 their own license and exact-version notice; the runner must not imply that root MIT relicenses them.
 
-No deployment artifact is delivered. A later production plan is blocked at minimum on the private
-Kubernetes plan `start-infra-04-deploy-tencent-lighthouse-k3s-cluster`, then-current platform handoff
+No deployment artifact is delivered. A later production plan is blocked at minimum on the private infrastructure cluster plan, then-current platform handoff
 gates, and production-specific key/email/database/backup/observability/security decisions.

@@ -3,19 +3,19 @@ description: Worked console transcript showing why git merge fails in a bare rep
 when_to_use: Use when explaining or verifying why the bare-topology row of the Terminal Reconcile table uses a fetch refspec instead of merge --ff-only.
 ---
 
-# Why Merge --ff-only Cannot Run in the Bare Siblings
+# Why Merge --ff-only Cannot Run in a Bare Repository
 
 ```console
-$ git -C <private-sibling> worktree list
-/Users/<name>/ose-projects/<sibling>  (bare)
+$ git -C <bare-repo> worktree list
+/Users/<name>/<workspace>/<bare-repo>  (bare)
 
-$ git -C <private-sibling> merge --ff-only origin/main
+$ git -C <bare-repo> merge --ff-only origin/main
 fatal: this operation must be run in a work tree
 
-$ git -C <private-sibling> status --porcelain
+$ git -C <bare-repo> status --porcelain
 fatal: this operation must be run in a work tree
 
-$ git -C <private-sibling> fetch origin main:main
+$ git -C <bare-repo> fetch origin main:main
 ```
 
 Unlike the two commands above, this one exits `0` with no error — the point of this example.

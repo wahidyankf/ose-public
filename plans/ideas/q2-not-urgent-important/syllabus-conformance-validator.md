@@ -33,7 +33,7 @@ Not yet — that is the point of this brief. Two conditions must hold before bui
   corpora and may shift as a fourth learning-bearing plan lands. A validator built on a still-moving
   census would encode a frozen list the convention explicitly warns against.
 - **A second consumer must appear.** One recipe, run by hand, is adequate for three corpora. The cost
-  of a `rhino-cli` subcommand (parser, tests, Gherkin behaviour tree, byte-identity across three repos)
+  of a `rhino-cli` subcommand (parser, tests, Gherkin behaviour tree)
   is only justified once the recipe is run often enough that forgetting it becomes the failure mode.
 
 Filing now captures the design while it is fresh and names the promotion signal, so the decision to
@@ -49,7 +49,7 @@ build is a deliberate trigger rather than a rediscovery.
   A syllabus validator must actually parse the section shape, not merely count files.
 - The existing `./rhino md` family (`links validate`, `readme-index validate`, `heading-hierarchy
 validate`) — the established pattern a `md syllabus validate` subcommand would join, including its
-  pre-commit / pre-push / CI wiring and its byte-identity requirement across both parity repos.
+  pre-commit / pre-push / CI wiring.
 
 ## Proposed direction (sketch)
 
@@ -64,13 +64,11 @@ A `./rhino md syllabus validate [--corpus <path>]` subcommand that:
   two never disagree.
 
 Wire it into the same pre-commit / pre-push / CI positions as the other `md` validators, and add its
-Gherkin behaviour tree in the upstream Rhino specification corpus, under the retired
-byte-identity boundary.
+Gherkin behaviour tree in the upstream Rhino specification corpus.
 
 ## Rough scope & non-goals
 
-**In scope**: the subcommand, its unit + Gherkin coverage, its toolchain wiring, and byte-identical
-propagation across `ose-public` / the private sibling.
+**In scope**: the subcommand, its unit + Gherkin coverage, and its toolchain wiring.
 
 **Non-goals**: retrofitting existing course files to the shape (the convention grandfathers the 17-file
 ordered-list cohort and the capstone variant); validating course _body content_ (only structural
@@ -99,5 +97,4 @@ section presence); replacing `plan-checker` Step 5n (which gates the plan docs, 
 
 **Success**: a green `./rhino md syllabus validate` in pre-commit / pre-push / CI means every course
 file in every corpus carries its REQUIRED sections (capstone/grandfathered variants excepted), the
-documented recipe and the validator never disagree, and the check is byte-identical across all three
-repos.
+documented recipe and the validator never disagree.

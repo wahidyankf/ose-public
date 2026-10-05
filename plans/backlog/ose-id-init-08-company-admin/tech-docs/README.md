@@ -24,7 +24,7 @@ company membership, invitation, and entitlement APIs already owned by Plan 03.
 - Cross-company platform operations remain absent.
 - Web/backend processes stay stateless; PostgreSQL/shared key mechanisms hold correctness state.
 - Root MIT covers OSE-authored source/docs; third-party licenses remain distinct.
-- Local-only runtime remains production fail-closed; deployment depends on the private Kubernetes plan
+- Local-only runtime remains production fail-closed; deployment depends on the private infrastructure cluster plan
   and then-current handoff gates.
 
 ## Traceability

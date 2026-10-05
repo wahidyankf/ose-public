@@ -22,7 +22,7 @@ or under 25 chars.
 ## Why now
 
 The defect was discovered live during `parallel-orchestration-shared-machine-governance`, where a
-valid-but-clipped diagram shipped unnoticed. Every state diagram authored across the three repos is
+valid-but-clipped diagram shipped unnoticed. Every state diagram authored in this repository is
 another chance to reintroduce it, and today there is no signal at all — the gap is silent by
 construction.
 
@@ -58,8 +58,8 @@ state-diagram-specific until measured otherwise).
 
 - The calibration is renderer-specific — GitHub's Mermaid version can shift the clipping boundary, so
   the threshold needs a documented re-derivation path rather than a hard-coded magic number. (open)
-- The rule touches `apps/rhino-cli/**`, which must stay byte-identical across `ose-public` and
-  the private sibling — execution is a coordinated two-repo change plus companion Gherkin.
+- The rule belongs in the upstream Rhino repository, so execution is an upstream change plus companion
+  Gherkin, consumed here by a release bump.
 - What predictor actually generalizes (glyph-width estimate vs. something layout-dependent) is
   unknown until the sweep is run. (open)
 

@@ -9,7 +9,7 @@ The table below extends the naming standard's variable classes with the injectio
 
 | Class                      | Example                                                                     | `.env.example`?    | Injection home                                                                                 |
 | -------------------------- | --------------------------------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------- |
-| App-runtime (server)       | `DATABASE_URL`, `ORGANICLEVER_BE_NATS_URL`                                  | **yes**            | local `.env.local` · GitHub Env (CI) · Vercel encrypted env · k3s secret                       |
+| App-runtime (server)       | `DATABASE_URL`, `ORGANICLEVER_BE_NATS_URL`                                  | **yes**            | local `.env.local` · GitHub Env (CI) · Vercel encrypted env · backend container secret         |
 | App-runtime (public build) | `NEXT_PUBLIC_*`                                                             | **yes**            | same homes as server class, but **build-time** bundled by Next.js (never a secret)             |
 | CI test-harness            | `WEB_BASE_URL`, `VERCEL_AUTOMATION_BYPASS_SECRET`, `PLAYWRIGHT_GREP_INVERT` | **no** (test-only) | GitHub Environment `vars.`/`secrets.` only; registered in `env-injection:` (`repo-config.yml`) |
 | Platform-injected          | `VERCEL_GIT_COMMIT_REF`, `PORT`, `HOSTNAME`                                 | allowlisted        | supplied by the platform or framework; never declared by us, never set by us                   |

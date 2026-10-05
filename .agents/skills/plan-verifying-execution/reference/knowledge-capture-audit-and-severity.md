@@ -1,8 +1,8 @@
 # Knowledge Capture Routing Verification (Step 5h continued): Repo-Relevance, Audit Procedure, Severity
 
-1. **Repo-relevance gate satisfied** — confirm no infra-private content (Terraform, k3s, Proxmox,
-   `coralpolyp`, real hostnames/inventories) was routed into this repo's public surfaces (`docs/`,
-   `repo-governance/`, `.claude/`) when this repo is `ose-public`. Any cross-routed
+1. **Repo-relevance gate satisfied** — confirm no infra-private content (Terraform, cluster or
+   hypervisor internals, the private deployment controller, real hostnames/inventories) was routed into
+   this repo's public surfaces (`docs/`, `repo-governance/`, `.claude/`). Any cross-routed
    infra-private content: **CRITICAL** finding — archival is BLOCKED.
 2. **Mandatory phase presence carried through to archival** — if `plan-checker`'s silent-absence
    MEDIUM finding for the Knowledge Capture phase was never resolved before this archival check runs,
@@ -23,8 +23,8 @@
    `rtk ls plans/ideas/<quadrant>/<slug>.md` for authorized `plans/ideas/` two-pagers, handoff
    evidence for reported entries, and `rtk git log`/`rtk git diff` for inline commits.
 3. Run `Grep` for secret-shaped patterns across `learnings.md`.
-4. Run `Grep` for infra-private terms (Terraform, k3s, Proxmox, `coralpolyp`, real hostnames) across
-   any non-private-sibling routed destination named in the entries.
+4. Run `Grep` for infra-private terms (Terraform, cluster or hypervisor internals, real hostnames)
+   across any routed destination named in the entries.
 5. For any entry routed to `plans/ideas/`, `Bash git diff` this plan's commits for new files under
    `plans/ideas/`, then read `plans/ideas/README.md` as it stood before this plan's changes to check
    whether an existing brief already covered the same topic.

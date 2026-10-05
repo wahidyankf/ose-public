@@ -16,9 +16,8 @@ This practice respects the following core principles:
 
 - **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: The
   default must be stated, not assumed. `worktree-to-pr` is the stated repo-wide default; the
-  direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`) are explicit opt-ins, declared
-  via an invocation argument or a plan's `## Delivery Mode` field — never inferred from execution
-  context, change size, or past sessions.
+  direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`) are unavailable in
+  `ose-public` and never inferred from execution context, change size, or past sessions.
 
 - **[Deliberate Problem-Solving](../../../principles/general/deliberate-problem-solving.md)**: Before
   pushing directly to `origin main`, an agent must confirm a direct-push mode was actually selected

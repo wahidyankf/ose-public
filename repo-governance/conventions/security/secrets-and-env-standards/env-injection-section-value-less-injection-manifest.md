@@ -19,7 +19,7 @@ env-injection:
       runtime: { local: env-local, staging: vercel-preview, production: vercel-production }
       keys-from: apps/organiclever-app-web/.env.example
     - app: organiclever-be
-      runtime: { local-ci: compose, staging: k3s-coralpolyp }
+      runtime: { local-ci: compose, staging: private-controller }
       keys-from: apps/organiclever-be/.env.example
   ci-harness:
     # test-only keys, never in any .env.example
@@ -35,5 +35,5 @@ env-injection:
 and `.env.example` are the same conceptual surface (the env contract), and `env validate` is already
 wired into `.husky/pre-push` and `validate-env.yml`, so extending it adds the check with no
 new target wiring. The check remains static and value-free. Actual presence of secret values in
-GitHub, Vercel, or k3s is not machine-checkable from this repo and stays a wire-vercel / the private sibling
-`[HUMAN]` responsibility — the manifest is what they verify against.
+GitHub, Vercel, or the private deployment controller is not machine-checkable from this repo and stays a
+wire-vercel / private-controller `[HUMAN]` responsibility — the manifest is what they verify against.

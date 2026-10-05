@@ -36,8 +36,7 @@ contract.
 ### DR-05-05 — Local-only and MIT
 
 OSE-authored web source/docs inherit the root MIT license; third-party components retain their own
-licenses. Production deployment is intentionally absent and blocked at minimum on
-`private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus then-current
+licenses. Production deployment is intentionally absent and blocked at minimum on the private infrastructure cluster plan plus then-current
 platform handoff gates. Production mode rejects local settings before listen.
 
 ## Primary Source and Prior-Art Record
@@ -123,4 +122,4 @@ path to the delivered repository convention, but it must preserve the table, rol
 no-loss contract from document 007; an existing conflicting session mechanism blocks RED until the plan
 is amended. Any governance/rule change triggers full rules propagation. This plan excludes
 social-provider code/config/assets, passkey/MFA code, company admin, LMS source, deployment workflows/
-manifests, production environment files, and the private sibling edits.
+manifests, production environment files, and edits to any other repository.

@@ -54,8 +54,7 @@ renders safe state.
 - Enrollment/removal/regeneration uses recent server-proven authentication and preserves a safe access path.
 - OIDC `amr`/freshness reflect completed methods, not requested or configured methods.
 - No Google/Facebook provider enters this milestone.
-- Local/test mode is explicit; production fails closed until a future deploy plan, blocked at minimum on
-  `private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and its then-current
+- Local/test mode is explicit; production fails closed until a future deploy plan, blocked at minimum on the private infrastructure cluster plan and its then-current
   platform handoff gates.
 - OSE-authored source/docs inherit root MIT; dependencies retain their own licenses.
 - At least 99% Unit line coverage is required for authored C# and TypeScript production code, with only

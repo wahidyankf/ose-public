@@ -42,7 +42,7 @@ OSE-authored runner, tests, source, and docs inherit root MIT. Third-party image
 licenses; pin exact version/digest where repository policy requires and record notices.
 
 This plan creates no deployable infrastructure. The production plan remains blocked at minimum on
-private `plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster`, then-current platform
+the private infrastructure cluster plan, then-current platform
 handoff gates, and explicit production decisions for keys, database HA/backup, email, Google credentials,
 TLS/DNS, observability, incident response, and capacity.
 

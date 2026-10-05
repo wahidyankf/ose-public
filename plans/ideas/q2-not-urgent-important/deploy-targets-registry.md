@@ -43,7 +43,7 @@ declared, validated key.
 Nothing is on fire. This is a design-debt observation raised while investigating an unrelated
 incident, not a response to active harm — the phantom refs caused zero downstream breakage in the
 case that surfaced it. What makes it worth writing down now, while it is fresh, is that the pattern is
-general: any of the four repos can accumulate a stale or premature environment-branch ref at any time,
+general: any repository can accumulate a stale or premature environment-branch ref at any time,
 and the current design has no mechanism — human or automated — to flag the mismatch between what
 `git branch -r` shows and what the deployment docs claim.
 
@@ -107,9 +107,8 @@ Out of scope:
   "not worth a rule" for the phantom-refs finding in isolation. This brief exists because the
   _pattern_ (derivation over declaration) is the maintainer's stated general preference, not because
   the specific incident demands a fix. Worth re-confirming appetite before promoting. (open)
-- **Three-repo scope.** `repo-config.yml` and `rhino-cli` both fall under the byte-identity boundary
-  spanning ose-public and the private sibling with zero carve-outs; beaver-nest carries a fork of
-  `rhino-cli` and would need its own deliberate porting decision, separate from the other two. (open)
+- **Validator home.** The `repo-config.yml` schema and its validator live in the upstream Rhino
+  repository, so the new key needs an upstream release before this repository can declare it. (open)
 - **Registry staleness is a new failure mode, not a solved one.** A declared registry can itself drift
   from reality (an entry never updated after a branch is actually retired) — the live-ref comparison
   check is what keeps that honest, so it is load-bearing, not optional polish. (open)
@@ -118,11 +117,11 @@ Out of scope:
 
 ## What success looks like + promotion signal
 
-Success is narrow: `repo-config.yml` names every `prod-*`/`stag-*` branch the four repos intend to
+Success is narrow: `repo-config.yml` names every `prod-*`/`stag-*` branch this repository intends to
 have, `./rhino repo-config validate` rejects a malformed entry the same way it does for every other
 top-level key, and a single command reports any mismatch between the registry and live `git branch -r`
 output — in either direction — rather than that mismatch being discoverable only by a human noticing a
 contradiction across four unrelated documents, as happened here.
 
-Promotion signal: the maintainer confirms the derive-vs-declare tradeoff is worth the four-repo
+Promotion signal: the maintainer confirms the derive-vs-declare tradeoff is worth the
 schema change, or a second phantom/missing-ref incident occurs and the manual-discovery cost repeats.

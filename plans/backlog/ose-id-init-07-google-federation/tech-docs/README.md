@@ -25,7 +25,7 @@ personal/company context, OIDC/OAuth provider, Next.js BFF, and first-party emai
 - Provider state survives instance changes; no sticky session or process-local correlation store exists.
 - Only Google ships. The abstraction must not produce Facebook artifacts or speculative providers.
 - OSE-authored code/docs inherit root MIT; dependencies retain and disclose their own licenses.
-- Deployment is absent and remains gated by the private Kubernetes prerequisite and later handoff gates.
+- Deployment is absent and remains gated by the private infrastructure cluster prerequisite and later handoff gates.
 
 ## Traceability
 

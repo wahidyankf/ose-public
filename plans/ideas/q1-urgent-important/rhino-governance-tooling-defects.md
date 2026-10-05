@@ -28,7 +28,7 @@ Each defect was observed, not theorised, and each cost something concrete:
 - **`bindings validate` ignores the registry.** `repo-config.yml` carries a `harness:` registry
   naming every agent-bearing harness and its tier, but the command reads `.claude/agents` literally.
   Against a synthetic repo whose source tier sits at `.custom-src/agents` it fails outright. Adding a
-  twelfth harness therefore needs a Rust edit in four repos rather than a one-line config edit —
+  twelfth harness therefore needs a Rust edit rather than a one-line config edit —
   exactly the coupling the registry exists to remove. Cost: a spec had to be narrowed, so the repo
   now proves less than it did.
 - **`rewrite-paths` matches basenames and only reads `.md`.** It splits a link target at its last `/`
@@ -62,8 +62,6 @@ Two of the four have already caused a wrong verdict to be acted on.
 - [markdownlint-ci-gate-lints-zero-files](./markdownlint-ci-gate-lints-zero-files.md) and
   [mermaid-validator-does-not-check-syntax](./mermaid-validator-does-not-check-syntax.md) — the same
   family, in other tools: a gate whose green means less than its name implies.
-- [Related Repositories reference](../../../docs/reference/related-repositories.md) — the four-repo
-  parity-manifest obligation every `apps/rhino-cli` edit inherits.
 - **CommonMark's code-span rule** — backtick pairing is defined over the whole document, not per line;
   the vendor audit's per-line strip is a deviation from the spec every other markdown tool follows.
 
@@ -84,8 +82,8 @@ Two of the four have already caused a wrong verdict to be acted on.
 
 ## Rough scope & non-goals
 
-In scope: `apps/rhino-cli/src/` and `tests/`, companion Gherkin under `specs/apps/rhino`, and the
-parity checksum manifest — in `ose-public` and the private sibling, with the four-repo parity obligation.
+In scope: the retired in-tree `rhino-cli` source and tests, whose still-relevant product work is
+promoted to the upstream Rhino repository, and the companion Gherkin.
 
 Out of scope (for now):
 
@@ -110,8 +108,8 @@ Out of scope (for now):
 - **Is `unannotated` still worth dark-launching at 425?** Fixing the verdict line makes a permanently
   quiet 425 easier to ignore, not harder. Whether that kind should eventually gate is a separate
   decision this brief deliberately does not make. (open)
-- Parity drift: any `apps/rhino-cli` edit desynchronizes the four-repo manifest unless regenerated and
-  staged in the same commit.
+- Upstream: the fixes land in the upstream Rhino repository, so `ose-public` sees them only after a
+  release bump.
 
 ## What success looks like + promotion signal
 

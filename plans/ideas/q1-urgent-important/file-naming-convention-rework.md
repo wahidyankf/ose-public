@@ -3,8 +3,8 @@
 One-line summary: `file-naming.md` documents two of the eleven exemptions `md naming validate`
 actually applies, states a scope clause ("and similar locations") that cannot be evaluated, and lists
 six governed extensions of which the validator checks one — while `ordinal-filename-prefixes.md`
-contradicts its own worked example and has no verdict for the collision case that already made one
-sweep produce two different answers in two repos.
+contradicts its own worked example and has no verdict for the collision case that makes a sweep
+produce ambiguous answers.
 
 > Provenance: demoted from the full `backlog/` plan `file-naming-convention-rework/` to a two-pager
 > on 2026-08-21. Declared as WS-B but deliberately left unspecified by
@@ -13,7 +13,7 @@ sweep produce two different answers in two repos.
 
 ## Problem / context
 
-Executing a 2000-file rename sweep across two repos exposed that both governing conventions misstate
+Executing a 2000-file rename sweep exposed that both governing conventions misstate
 what is enforced:
 
 - **Eleven exemptions, two documented.** `md naming validate` hard-codes nine exempt basenames
@@ -36,16 +36,15 @@ what is enforced:
   when it is "that step's own number", then its table keeps the ordinal on
   `02-step-1-and-2-maker-and-checker.md` while that row's own verdict says the two numbering systems
   disagree. The reconciling range clause sits _below_ the table and is never applied to the row.
-- **No verdict exists for name collisions.** The private sibling holds 18 groups (40 files) whose basenames
-  were truncated to a fixed width by an earlier word-budget split, leaving pairs differing **only** by
-  ordinal. They are not steps, so the keep-clause does not apply; stripping collides, so the
-  strip-clause cannot be applied either. Those 40 kept their ordinals as the sole documented
-  deviation between the two repos' sweeps — 8 numbered paths left in `ose-public`, 46 in the private sibling.
+- **No verdict exists for name collisions.** A word-budget split can truncate basenames to a fixed
+  width, leaving pairs differing **only** by ordinal. They are not steps, so the keep-clause does not
+  apply; stripping collides, so the strip-clause cannot be applied either. Any such pair keeps its
+  ordinal as the sole documented deviation from a sweep, with nothing ruling on it.
 
 ## Why now
 
-The drift is already producing divergent outcomes: one rule, two repos, two answers, and the
-divergence stands until the collision case is ruled on. Meanwhile every contributor naming a
+The drift is already producing ambiguous outcomes, and they stand until the collision case is ruled
+on. Meanwhile every contributor naming a
 governance file pays a tax the repo never intended to charge, and the exemptions are discoverable only
 by reading Rust — which most contributors will not do. A convention is worth exactly its enforcement;
 when the published rule is both stricter and looser than the gate in the same document, it is worth
@@ -57,7 +56,7 @@ less than that.
   every item above; entries 6-8 of its `learnings.md` are the specification source.
 - [Iron Rule 3](../../../repo-governance/workflows/plan/plan-execution/012-iron-rules-1-5.md) — fix the
   class, not the sites a finding names; the propagation discipline any prose change here inherits.
-- [rhino-governance-tooling-defects](./rhino-governance-tooling-defects.md) — the sibling
+- [rhino-governance-tooling-defects](./rhino-governance-tooling-defects.md) — the related
   family, where the tool under-reports rather than the document.
 - **Rule reach** — the same underlying question one level up: which paths a governance rule actually
   reaches.
@@ -79,7 +78,7 @@ less than that.
 
 ## Rough scope & non-goals
 
-In scope: both conventions under `repo-governance/conventions/structure/` in both repos, plus any
+In scope: both conventions under `repo-governance/conventions/structure/`, plus any
 child shard the word budget forces; every rules-machinery surface restating either rule
 (`rules-checker`/`rules-maker`, the `rules-validating-governance` skill, and the
 `rules-quality-gate` and `rules-propagation` workflow shards — the fixer agent and its skill were
@@ -88,7 +87,7 @@ split emitter's collision refusal — the only code change.
 
 Out of scope (for now):
 
-- Renaming any existing file, including the 40 collision files. That needs the verdict this work
+- Renaming any existing file, including any collision pair. That needs the verdict this work
   produces and is its own delivery unit.
 - Widening `md naming validate` to the non-`.md` extensions. This makes the convention **honest**
   about what is enforced; widening enforcement is a separate decision with its own cost.
@@ -108,18 +107,16 @@ Out of scope (for now):
   must be evaluated against the current tree with the affected file count stated before landing. (open)
 - Documenting eleven exemptions can read as blessing sprawl and invite a twelfth — which is exactly
   why the criterion matters more than the list.
-- The two repos' conventions drift again unless both are changed in one delivery unit with
-  per-repo facts re-derived by command rather than copied.
 
 ## What success looks like + promotion signal
 
 Success: every basename the gate exempts is named in a convention and vice versa — checkable by
 comparing two lists; the scope is a path expression evaluable against the tree with no open-ended
 qualifier; the worked-cases table contains no row whose verdict contradicts the rule above it; a
-word-budget split cannot emit two names differing only by ordinal; and both repos' copies state the
-same rule with per-repo facts derived separately.
+word-budget split cannot emit two names differing only by ordinal; and the two conventions state the
+same rule.
 
 Promotion signal: the collision verdict is decided. It is a single judgement call that determines
-whether this is a prose-only change or a prose change plus a 40-file corrective sweep in the private sibling
-— two very different plans. Everything else here is mechanical reconciliation that can be specified
+whether this is a prose-only change or a prose change plus a corrective sweep — two very different
+plans. Everything else here is mechanical reconciliation that can be specified
 once that call is made.

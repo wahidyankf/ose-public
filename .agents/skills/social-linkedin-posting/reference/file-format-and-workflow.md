@@ -60,7 +60,7 @@ reach LinkedIn.
    the highest year folder's last file — do not stop at the current year, which is empty every
    January); take its `Window:` end timestamp as the new window start, and its week number + 1 as
    the new week. New window end = now (+0700).
-2. **Gather commits** across both repos at `~/ose-projects/{ose-public,private-sibling}`.
+2. **Gather commits** across both repos, each checked out at `<workspace>/<repo>`.
    Fetch safely, then use `git -C <repo> rev-list --count --since=<start> origin/main` for
    accurate totals and `git -C <repo> log origin/main --since=<start>` for subjects. RTK caps
    `git log` output at ~50 lines — use `rtk proxy git -C <repo> log ...` or `rev-list --count` when

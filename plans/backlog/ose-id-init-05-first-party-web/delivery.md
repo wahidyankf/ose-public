@@ -36,8 +36,7 @@ temporary local/test gate, and preserve production fail-closed behavior.
 Phase 0 resolves the archived predecessor path and proves `ose-id-init-04-oidc-oauth-provider` is
 complete on `origin/main` with the expected transaction, client, context, consent, and startup-guard
 contracts. This plan's pure backlog→in-progress promotion must be on `origin/main` before execution.
-Production deployment remains outside scope and blocked at minimum by
-`private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster`, followed by the
+Production deployment remains outside scope and blocked at minimum by the private infrastructure cluster plan, followed by the
 then-current platform handoff gates. This plan does not modify the private sibling.
 
 ## Parallelization Model

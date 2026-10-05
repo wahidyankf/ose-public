@@ -2,31 +2,29 @@
 
 > **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
 
-One-line summary: the cross-repo port registry now exists and answers where allocations are
-recorded, but it is prose that no tool reads — so a colliding or stale entry still surfaces only when
-two services fail to bind.
+One-line summary: this repository's port allocations are recorded in `docs/reference/web-sites.md`,
+but that table is prose no tool reads — so a colliding or stale entry still surfaces only when two
+services fail to bind.
 
 > Demoted from a full `backlog/` plan to a two-pager on 2026-08-05, when its two central decisions
 > (where the registry lives, where the validator lives) were both unmade.
-> Relocated from a sibling repo's `plans/ideas/` on 2026-08-06 by plan-ideas-grooming.
-> Rewritten 2026-08-19: the registry shipped, answering the first decision and voiding most of this
+> Relocated from a sibling repository's `plans/ideas/` on 2026-08-06 by plan-ideas-grooming.
+> Rewritten 2026-08-19: a registry shipped, answering the first decision and voiding most of this
 > brief's original problem statement.
 > Renamed from cross-repo-port-registry.md on 2026-08-19 by plan-ideas-grooming.
+> Rewritten to `ose-public`-local scope: each repository records only its own allocations, so the
+> registry in question is `docs/reference/web-sites.md`.
 
 ## Problem / context
 
-Half of this brief was answered on 2026-08-19. A single registry now records every port both
-repositories claim, `ose-public` continues to document its own allocations in
-`docs/reference/web-sites.md`, and all nine app listeners resolve their port through one contract
+Half of this brief was answered on 2026-08-19. `ose-public` documents its own allocations in
+`docs/reference/web-sites.md`, and every app listener resolves its port through one contract
 (`--port` flag, then a prefixed environment variable, then a compiled-in default) so each entry has a
-named override variable beside it. The scope also narrowed honestly: the registry covers the two
-repositories under active coordination, not four. `beaver-nest` is explicitly outside the parity set
-per `docs/reference/related-repositories.md` and carries no sync obligation in either direction, so
-the original "four sibling repos" framing was never right.
+named override variable beside it. The scope also narrowed honestly: the registry covers this
+repository only, since each repository records its own allocations.
 
-What did not get built is any check. The registry's own "Why this is hand-maintained" section records
-that decision deliberately rather than by omission. So the remaining failure mode is narrower than
-the original brief's but unchanged in kind: nothing compares a registry row against the port the app
+What did not get built is any check. The table is hand-maintained, so the remaining failure mode is
+narrower than the original brief's but unchanged in kind: nothing compares a registry row against the port the app
 actually binds, and nothing fails when two rows claim the same number. A row can drift from reality
 the moment someone changes a default, and the registry will keep asserting the old value with a
 straight face.
@@ -41,8 +39,8 @@ difference between fixing the problem and relocating it.
 
 ## Prior art / precedents
 
-- **The shipped registry** — the private sibling's `docs/reference/port-registry.md`, the artifact this
-  brief would give a checker, including its explicit no-validator rationale.
+- **The shipped table** — `docs/reference/web-sites.md`, the artifact this brief would give a
+  checker.
 - **[`repo-config.yml`](../../../repo-config.yml)** — the in-repo precedent for a central, machine-readable, validated
   declaration file, and the obvious candidate host for a per-repo port block.
 - **IANA service name and port registry** — the canonical example of a port registry with a formal
@@ -58,9 +56,7 @@ difference between fixing the problem and relocating it.
   variable name, then diff that against the registry, so drift is impossible rather than merely
   discouraged.
 - Add the collision check on top: any port claimed twice fails, naming both claimants.
-- Decide the enforcement point — a blocking gate or a checker-report warning — and accept that a
-  public-repo check cannot read the private repo's tree, so either the registry's private half stays
-  unvalidated or the check runs only where both are visible.
+- Decide the enforcement point — a blocking gate or a checker-report warning.
 
 ## Rough scope & non-goals
 
@@ -68,16 +64,12 @@ In scope: a validator for the registry that already exists, and whatever change 
 entries derivable from app configuration instead of hand-typed.
 
 Out of scope (for now): re-litigating any already-allocated port; changing any app's runtime port
-configuration, which the port contract work already settled; extending the registry to repositories
-outside the parity set; recording infrastructure ranges that belong to the private repo alone.
+configuration, which the port contract work already settled; recording allocations that belong to another repository.
 
 ## Risks & open questions
 
-- Where does the validator live — a new `rhino-cli` subcommand, or a script wired into an existing Nx
+- Where does the validator live — an upstream Rhino subcommand, or a script wired into an existing Nx
   target? (open — this was the second of the two original blockers and is still unanswered)
-- Can a check running in the public repo read the private repo at all, and under what auth model?
-  Without an answer, a validator either omits half the registry or can only run where both trees are
-  present. (open — the hardest question here)
 - Does a derived registry actually work for the non-app entries, which come from infrastructure
   configuration rather than an app's source? (open)
 - Is a validator proportionate for nine app listeners and a handful of test-stack ports, or is the
@@ -89,6 +81,6 @@ outside the parity set; recording infrastructure ranges that belong to the priva
 Success: a registry row cannot disagree with the port an app really binds, and a duplicate claim is
 reported by a check naming both claimants rather than by a developer debugging a bind failure.
 
-Promotion signal: promote when either the validator-home and cross-repo-read questions are both
-answered, or a registry row is first observed to have gone stale — that observation converts the
+Promotion signal: promote when either the validator-home question is
+answered, or a table row is first observed to have gone stale — that observation converts the
 staleness risk from theoretical to measured, and is the evidence this brief currently lacks.

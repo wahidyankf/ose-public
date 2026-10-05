@@ -55,8 +55,7 @@ plan 05 because each owns a separate behavior seam.
 - Silent account linking by email, automatic account merge, enterprise home-realm discovery, SAML, or
   SCIM.
 - Changing OIDC client semantics, company tenancy rules, passkeys/MFA, or company administration.
-- Product deployment. A future deploy plan remains blocked at minimum on the private-repository
-  `plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plan and then-current platform
+- Product deployment. A future deploy plan remains blocked at minimum on the private infrastructure cluster plan and then-current platform
   handoff gates.
 
 ## Invariants

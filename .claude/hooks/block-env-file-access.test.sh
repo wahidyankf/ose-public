@@ -45,8 +45,8 @@ assert_allow "Read .env.local" \
 assert_allow "Read .env.test" \
 	'{"tool_name":"Read","tool_input":{"file_path":".env.test"}}'
 
-assert_allow "Write apps/coralpolyp-be/.env.local" \
-	'{"tool_name":"Write","tool_input":{"file_path":"apps/coralpolyp-be/.env.local"}}'
+assert_allow "Write apps/example-be/.env.local" \
+	'{"tool_name":"Write","tool_input":{"file_path":"apps/example-be/.env.local"}}'
 
 assert_allow "Edit .env.production" \
 	'{"tool_name":"Edit","tool_input":{"file_path":".env.production"}}'
@@ -57,8 +57,8 @@ assert_allow "Write .env.whatever" \
 assert_allow "Read .env.example" \
 	'{"tool_name":"Read","tool_input":{"file_path":".env.example"}}'
 
-assert_allow "Write apps/coralpolyp-fe/.env.example" \
-	'{"tool_name":"Write","tool_input":{"file_path":"apps/coralpolyp-fe/.env.example"}}'
+assert_allow "Write apps/example-fe/.env.example" \
+	'{"tool_name":"Write","tool_input":{"file_path":"apps/example-fe/.env.example"}}'
 
 # File-tool DENY cases — the two restricted tiers, across Read/Edit/Write.
 assert_deny "Read .env.prod" \
@@ -152,10 +152,10 @@ assert_allow "Read apps/<app>/content/**/.env.local (dotfile)" \
 	'{"tool_name":"Read","tool_input":{"file_path":"/r/apps/ayokoding-www/content/en/c/.env.local"}}'
 
 assert_allow "Bash cat apps/<app>/src/secrets.env (not a restricted tier)" \
-	'{"tool_name":"Bash","tool_input":{"command":"cat /r/apps/coralpolyp-be/src/secrets.env"}}'
+	'{"tool_name":"Bash","tool_input":{"command":"cat /r/apps/example-be/src/secrets.env"}}'
 
 assert_allow "Bash echo X > /abs/path/.env.local" \
-	'{"tool_name":"Bash","tool_input":{"command":"echo X > /r/apps/coralpolyp-be/.env.local"}}'
+	'{"tool_name":"Bash","tool_input":{"command":"echo X > /r/apps/example-be/.env.local"}}'
 
 # SEC-1 regressions — default-deny closes the verb-enumeration gap: any command whose text
 # references a restricted tier is denied, regardless of which tool/verb touches it.

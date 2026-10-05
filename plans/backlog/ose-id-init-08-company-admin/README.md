@@ -72,8 +72,7 @@ flowchart TD
 - Company admins manage memberships/invitations/entitlements only within that company.
 - Process instances remain stateless; no admin correctness state lives in one web/backend process.
 - OSE ID source/docs inherit root MIT; dependencies/assets retain their own licenses.
-- Future deployment is blocked at minimum by the private plan
-  `start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and then-current platform handoff gates.
+- Future deployment is blocked at minimum by the private infrastructure cluster plan and then-current platform handoff gates.
 
 ## Reader Map
 

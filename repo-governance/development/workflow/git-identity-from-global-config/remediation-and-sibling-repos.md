@@ -1,6 +1,6 @@
 ---
-description: The commands to remove an existing per-repo [user] override, and how the behavioural guardrail applies across the sibling repositories.
-when_to_use: Use when an existing `[user]` override must be removed, or when verifying the guardrail's coverage across ose-public and the private sibling.
+description: The commands to remove an existing per-repo [user] override, and how to verify that no local clone carries one.
+when_to_use: Use when an existing `[user]` override must be removed, or when verifying that no local clone carries one.
 ---
 
 # Remediation and Sibling Repos

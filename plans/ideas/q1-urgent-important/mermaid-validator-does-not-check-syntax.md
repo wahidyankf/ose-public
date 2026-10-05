@@ -87,8 +87,7 @@ verifiable. Also out of scope: rendering diagrams to images in CI — parse-only
   the number is large, this becomes a remediation programme rather than a tooling fix, and it should
   probably merge with the existing mermaid remediation brief instead of standing alone. (open)
 - Invoking the real parser means a Node dependency inside a Rust CLI's validation path; whether that
-  belongs in `rhino-cli` or in a separate target is a genuine design question, given `rhino-cli` must
-  stay byte-identical across three repos. (open)
+  belongs in Rhino or in a separate target is a genuine design question. (open)
 - Any diagram currently passing that the parser rejects will fail the pre-push hook the moment this
   lands, so sequencing matters — measure first, then gate. (open)
 - Whether other `md * validate` subcommands have the same name-versus-behaviour gap is unexamined, and

@@ -32,8 +32,7 @@ and license evidence; no library enters merely to save a small adapter.
 ## Deployment Deferral
 
 No workflow, manifest, container registry, DNS, production callback, secret, or cloud resource is in
-scope. The future deployment plan remains blocked at minimum on private plan
-`start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and then-current security/platform handoff gates.
+scope. The future deployment plan remains blocked at minimum on the private infrastructure cluster plan and then-current security/platform handoff gates.
 
 ## File-Impact Analysis
 

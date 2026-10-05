@@ -20,7 +20,7 @@ repository with this shape needs the identical procedure.
 - [Verify Topology First](./bare-repo-landing-method/verify-topology-first.md) — Two valid bareness checks, one forbidden command.
 - [The Method, As Numbered Steps](./bare-repo-landing-method/the-method-as-numbered-steps.md) — The eight-step landing sequence.
 - [Terminal Reconcile](./bare-repo-landing-method/terminal-reconcile.md) — The topology-keyed reconcile command for step 8.
-- [Why Merge --ff-only Cannot Run in the Bare Siblings](./bare-repo-landing-method/why-merge-ff-only-cannot-run-in-the-bare-siblings.md) — Why the refspec fetch form is the only universal one.
+- [Why Merge --ff-only Cannot Run in a Bare Repository](./bare-repo-landing-method/why-merge-ff-only-cannot-run-in-the-bare-siblings.md) — Why the refspec fetch form is the only universal one.
 - [Worked Example — the 2026-07-21 Sibling Drift](./bare-repo-landing-method/worked-example-the-2026-07-21-sibling-drift.md) — A real transcript of silent local-main lag.
 - [Measure After Fetching, Never Before](./bare-repo-landing-method/measure-after-fetching-never-before.md) — Why the drift check must run after a fetch.
 - [Remote-Branch Cleanup in a Bare Repository](./bare-repo-landing-method/remote-branch-cleanup-in-a-bare-repository.md) — Deleting a merged branch when the bare repo can't push it.

@@ -5,7 +5,7 @@ codify the resulting licensing standard.
 
 > Idea, added (original capture undated; generic item — source line: "FSL standards"; FSL interpretation
 > unconfirmed).
-> Relocated from private-sibling/plans/ideas/fsl-standards.md on 2026-08-06 by plan-ideas-grooming.
+> Relocated from a sibling repository's `plans/ideas/` on 2026-08-06 by plan-ideas-grooming.
 
 ## Problem / context
 

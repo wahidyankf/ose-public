@@ -2,7 +2,7 @@
 
 One-line summary: the `setup-rust` composite action has no retry around the toolchain install, and
 its download from `static.rust-lang.org` flaked **seven times in a single plan phase** — gating a
-markdown-only changeset it could not have affected; wrap the install in a retry, in both parity repos.
+markdown-only changeset it could not have affected; wrap the install in a retry.
 
 > Surfaced 2026-07-22 during `bare-repo-governance-hardening` Phase 5. Routed as its own brief
 > because it is a CI/code change, which the Knowledge Capture routing matrix forbids landing inline
@@ -35,17 +35,12 @@ The mitigation gap is one step wide: the composite action delegates the toolchai
 third-party action that shells out to `rustup toolchain install`, with **no retry at any layer** —
 while the expensive, large, most-likely-to-fail download is exactly that one.
 
-**Verified complication:** the two parity copies of this action have already diverged.
-`ose-public` installs via `actions-rust-lang/setup-rust-toolchain@v1`; the private sibling
-uses `dtolnay/rust-toolchain@stable`. So "apply the same fix identically" is not a copy-paste.
-
 ## Why now
 
 The flake rate is measured, current, and high, and it falls on a shared action used by every Rust
-job in the parity set — including changesets with no Rust in them at all. It was deliberately not
-fixed inside the governance PR that hit it, because patching CI infrastructure inside a governance
-changeset would both scope-creep the PR and manufacture a one-repo divergence in a file the parity
-workflow expects to stay aligned. That deferral is only sound if the follow-up actually happens.
+job — including changesets with no Rust in them at all. It was deliberately not fixed inside the
+governance PR that hit it, because patching CI infrastructure inside a governance changeset would
+scope-creep the PR. That deferral is only sound if the follow-up actually happens.
 
 ## Prior art / precedents
 
@@ -56,10 +51,7 @@ workflow expects to stay aligned. That deferral is only sound if the follow-up a
 - **CI Blocker Resolution practice** — the rule that a CI blocker gets a root-cause fix rather than
   a bypass; a standing re-run habit is the symptom this brief proposes to remove.
   [ci-blocker-resolution](../../../repo-governance/development/quality/ci-blocker-resolution.md)
-- **`plan-parity-planning` workflow (retired)** — removed when `ose-public` and its private
-  sibling became independent; any change here is made in this repository alone.
-- **SDLC Gate Standard** — defines the shared CI gate shape the three repos are held to, which is
-  why the fix must span both parity repos rather than stay local.
+- **SDLC Gate Standard** — defines the CI gate shape this repository is held to.
   [sdlc-gate-standard](../../../docs/reference/sdlc-gate-standard.md)
 - **Retry-with-backoff around network fetches in CI** — standard practice (`curl --retry`,
   `nick-fields/retry`, package-manager retry flags); this is applying a well-known pattern one step
@@ -71,16 +63,13 @@ workflow expects to stay aligned. That deferral is only sound if the follow-up a
   between attempts, rather than failing the job on the first network fault.
 - Prefer backoff over immediate retry: the escalation pattern above shows the outage can be
   sustained, and an immediate retry against a sustained fault just spends the budget faster.
-- Apply the change in **all three** repos in one coordinated pass, reconciling the already-diverged
-  toolchain-action choice first so the copies converge rather than drift further.
 - Keep the existing MSRV pre-install step's protection intact — it solves a different problem
   (parallel-download race) and must not be traded away for the retry.
 
 ## Rough scope & non-goals
 
-In scope: a retry around the toolchain install in `setup-rust` in both parity repos; reconciling the
-divergent toolchain-action choice; a note in the action explaining what the retry defends against,
-matching the existing comment style.
+In scope: a retry around the toolchain install in `setup-rust`; a note in the action explaining what
+the retry defends against, matching the existing comment style.
 
 Out of scope: vendoring or pinning a toolchain tarball (heavier, and it trades a flake for a
 maintenance burden); retrying every network step in CI indiscriminately; changing the runner
@@ -92,21 +81,17 @@ infrastructure itself; any change to which Rust version is installed.
   component) would now fail slower, and the log gets noisier. Attempt count and delay need choosing
   with that in mind. (open)
 - The plan's `learnings.md` records that a retry wrapper already guarded the rustup _bootstrap_
-  while the toolchain install had none. That wrapper is **not** present in any of the three repos'
-  `.github/` trees, so where it actually lives — and therefore whether this fix belongs in the
+  while the toolchain install had none. That wrapper is **not** present in this repository's
+  `.github/` tree, so where it actually lives — and therefore whether this fix belongs in the
   action at all or one layer down — needs establishing before promotion. (open)
-- Converging the two different toolchain actions is a behaviour change beyond the retry, and could
-  surface its own differences (caching, component handling). It may deserve to be sequenced as a
-  separate step rather than bundled. (open)
 - Whether the underlying fault is upstream-wide or specific to this runner environment is unknown;
   if the latter, a retry is a workaround rather than a fix, and that should be recorded honestly.
 
 ## What success looks like + promotion signal
 
-Success: a transient failure of the toolchain download no longer fails the job, `setup-rust` is
-functionally equivalent across the three repos, and the re-run rate on markdown-only changesets
+Success: a transient failure of the toolchain download no longer fails the job, and the re-run rate on markdown-only changesets
 drops to zero over a comparable window. The honest measure is a before/after count of
 `gh run rerun --failed` invocations attributable to this step — seven in one phase is the baseline.
 
 Ready to promote once the wrapper-location question is answered, since it determines whether the
-change is one file per repo or something larger.
+change is one file or something larger.

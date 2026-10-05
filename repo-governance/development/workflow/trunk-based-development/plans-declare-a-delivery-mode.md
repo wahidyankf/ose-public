@@ -12,12 +12,8 @@ When creating project plans in `plans/` folder:
 - PASS: **Declare the mode explicitly** using a `## Delivery Mode` field only when overriding the
   default (see the [Plans Organization Convention — Delivery Mode](../../../conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode)
   for the field syntax and the three-tier precedence).
-- **If `main-to-origin-main` is chosen**: document why in the plan and confirm the mode is actually
-  permitted under the per-repository restriction. Neither direct-push mode has an executable path in
-  `ose-public`; `worktree-to-origin-main` is also unavailable in the private sibling. Only explicitly
-  declared `main-to-origin-main` remains there, for stateful IaC needing the primary checkout's real
-  secrets/local state or CI-IaC changing its own pipeline, runner, or toolchain provisioning where
-  PR self-validation is circular. See
+- **If a direct-push mode is chosen**: it is invalid here. Neither direct-push mode has an executable
+  path in `ose-public`. See
   [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../../conventions/structure/plans/per-repository-delivery-mode-restrictions.md#per-repository-delivery-mode-restrictions-hard-rule).
 
 **Example plan delivery.md (default mode, no field needed)**:

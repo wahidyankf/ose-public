@@ -83,6 +83,5 @@ OSE ID source and repository-authored docs inherit the root MIT license. Google 
 do not change that license; any library or asset introduced by execution keeps its own license and must
 pass the dependency/license gate.
 
-This is a local-run-only product slice. A separate deployment plan may begin only after the private
-Kubernetes prerequisite `start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and all then-current
+This is a local-run-only product slice. A separate deployment plan may begin only after the private infrastructure cluster plan and all then-current
 security, secret, key, email, observability, backup, and platform handoff gates complete.

@@ -14,11 +14,11 @@ created: 2026-08-30
 
 # Retired in-tree Rhino: Rust to F# Rewrite — Measured Outcome
 
-**The retired in-tree Rhino application was rewritten from Rust to F# and merged to `main` in both
-`ose-public` and the private sibling on 2026-08-30**, closing out that rewrite plan. This page is the
+**The retired in-tree Rhino application was rewritten from Rust to F# and merged to `main` in
+`ose-public` on 2026-08-30**, closing out that rewrite plan. This page is the
 durable home for that rewrite's measured comparison, so the next proposal to change a component's
-implementation language starts from data rather than argument. Full commands, both repositories'
-raw figures, and per-row methodology notes live in that plan's `benchmark.md` (archived with the
+implementation language starts from data rather than argument. Full commands, raw figures,
+and per-row methodology notes live in that plan's `benchmark.md` (archived with the
 plan); this page carries only the distilled, lasting comparison.
 
 ## The comparison

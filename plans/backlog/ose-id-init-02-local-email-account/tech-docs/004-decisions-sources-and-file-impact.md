@@ -10,7 +10,7 @@
 | ACC-DD-04 | Opaque server-side account sessions                            | Database lookup/state required; no product token confusion                                             |
 | ACC-DD-05 | Typed notification port and Mailpit Local/Test adapter         | Deterministic email proof; production delivery remains unresolved by design                            |
 | ACC-DD-06 | Shared PostgreSQL security/rate/session state                  | Supports stateless instances; revisit shared cache only with measured need                             |
-| ACC-DD-07 | Inherit production-disabled guard                              | Safe main state; future deploy blocked on private K3s cluster plan and platform gates                  |
+| ACC-DD-07 | Inherit production-disabled guard                              | Safe main state; future deploy blocked on private infrastructure cluster plan and platform gates       |
 | ACC-DD-08 | Root MIT covers OSE source/docs; dependencies retain licenses  | Notices must reflect exact resolved third-party terms                                                  |
 | ACC-DD-09 | SqlKata + Npgsql for all OSE-owned runtime persistence         | Visible SQL and explicit mapping; exact query, catalog, and plan tests offset weaker identifier typing |
 

@@ -71,5 +71,5 @@ OSE-authored source and docs inherit the root MIT license. Third-party UI, email
 components retain their licenses and require audit evidence.
 
 This plan stops at deterministic local operation. The separate production deployment plan cannot begin
-until the private Kubernetes plan `start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and all
+until the private infrastructure cluster plan and all
 then-current platform, security, email, key, observability, backup, and handoff gates complete.

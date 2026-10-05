@@ -2,7 +2,7 @@ name: organiclever-app-test-stag
 
 # Staging gate for the organiclever app: FE E2E against the deployed staging URL.
 # Scheduled +2.5h after organiclever-app-test-local-deploy-stag so the Vercel
-# build + coralpolyp rollout have settled. On pass it STOPS (prod CD deferred).
+# build + downstream private deployer rollout have settled. On pass it STOPS (prod CD deferred).
 
 on:
   schedule:

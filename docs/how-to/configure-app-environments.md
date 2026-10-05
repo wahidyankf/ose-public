@@ -149,7 +149,7 @@ any `.env.*` file on disk is by design, not an oversight.
 
 See the tiered injection standard in
 [Secrets and Environment-Variable Standards](../../repo-governance/conventions/security/secrets-and-env-standards/tiered-injection-standard.md#tiered-injection-standard)
-for the full mapping of which platform (GitHub Environment, Vercel, k3s) injects which key at
+for the full mapping of which platform (GitHub Environment, Vercel, the backend container platform) injects which key at
 each stage.
 
 ## The `NEXT_PUBLIC_*` build-time constraint

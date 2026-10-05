@@ -50,8 +50,7 @@ flowchart LR
   custom company roles, domain-specific LMS roles, or public company onboarding.
 - OIDC clients, consent, PKCE, ID/access/refresh tokens, JWKS, UserInfo, or LMS integration.
 - Google or other provider login, passkeys, TOTP, production email, SCIM, SAML, or database-per-company.
-- Production deployment. A future deploy plan is blocked at minimum on the private sibling
-  `plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and then-current platform handoff gates.
+- Production deployment. A future deploy plan is blocked at minimum on the private infrastructure cluster plan and then-current platform handoff gates.
 
 ## Resulting Main State
 

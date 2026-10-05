@@ -12,7 +12,7 @@
 | TEN-DD-06 | Context evaluation now, OIDC token issuance later            | Safe backend seam but no product integration yet                                                           |
 | TEN-DD-07 | Narrow shared-store resolver                                 | Preserves future dedicated stores without building sharding                                                |
 | TEN-DD-08 | Company/product creation is test bootstrap only              | Public onboarding remains a later product decision                                                         |
-| TEN-DD-09 | Inherit Local/Test-only guard; no deployment                 | Future deploy blocked on private K3s plan and platform handoff gates                                       |
+| TEN-DD-09 | Inherit Local/Test-only guard; no deployment                 | Future deploy blocked on private infrastructure cluster plan and platform handoff gates                    |
 | TEN-DD-10 | Root MIT covers OSE source/docs; third parties keep licenses | Exact notices remain dependency-specific                                                                   |
 | TEN-DD-11 | Admin roster exposes tenant contact and bounded prefix query | Recognizable, pageable people without private/cross-tenant identity                                        |
 | TEN-DD-12 | SqlKata + Npgsql for OSE-owned tenant persistence            | Visible SQL/RLS/transactions; centralized identifiers and query-plan contracts offset weaker schema typing |

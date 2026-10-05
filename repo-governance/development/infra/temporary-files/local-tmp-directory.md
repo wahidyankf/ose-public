@@ -23,8 +23,7 @@ Agent artifacts go under a per-family directory: `local-tmp/<agent-family>/`.
 Markdown body. The token is never inferred from a report filename, from a folder name, or from the
 agent's own name. Where a historical report-filename prefix disagrees with an agent's declared
 family, **the declaration wins** — the filenames record what an older convention spelled, not what
-the family is. A declaration's scope is one repository: the same collision may legitimately
-resolve to different tokens in `ose-public` and the private sibling, and neither reads the other's.
+the family is. A declaration's scope is this repository alone.
 
 **Agents create their own directory.** The tracked `.gitkeep` guarantees only that `local-tmp/`
 itself exists. It does not create family subdirectories, so an agent runs

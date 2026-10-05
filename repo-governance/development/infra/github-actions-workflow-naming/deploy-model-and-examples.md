@@ -18,7 +18,7 @@ flowchart TD
     A -->|force-push| B[stag-*-be branch]
     W -->|Vercel builds| VS[Vercel staging URL]
     B -->|triggers| BD[be-build-deploy-stag<br/>workflow]
-    BD -->|GHCR image| CP[private repo<br/>cluster rollout]
+    BD -->|GHCR image| CP[downstream private<br/>deployer rollout]
     A2[app-test-stag<br/>e2e vs staging] -->|on pass: STOP| X[prod CD = separate<br/>plan]
 
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
@@ -38,7 +38,7 @@ flowchart TD
   branches and builds from them. Workflows push the branch; Vercel does the rest.
 - **Backend (non-Vercel)**: The app-tier deploy force-pushes the `stag-*-be` branch. A separate
   `{product}-be-build-deploy-stag.yml` (triggered on push to that branch) builds and pushes the
-  GHCR image. The actual k3s rollout runs in the private sibling via `coralpolyp` — out of this repo.
+  GHCR image. The actual rollout runs in a downstream private deployer — out of this repo.
 - **Prod CD**: Production deployment for app-tier workflows is deferred to a separate follow-on
   plan. Because no prod deploy happens yet, the app-tier staging gate ends at the `test-stag` verb —
   it is named `{group}-app-test-stag.yml` (it runs e2e against the deployed staging URL and stops on

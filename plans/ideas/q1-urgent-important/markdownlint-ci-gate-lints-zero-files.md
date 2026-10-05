@@ -8,8 +8,8 @@ needs a positive pattern, so it receives none, lints `0 file(s)`, and reports PA
 
 > Surfaced 2026-08-17 during `optimize-gov` PR review, after twelve real violations reached a green
 > PR.
-> Absorbed the private sibling's parallel copy of this brief on 2026-08-19 by plan-ideas-grooming; the gate
-> is identical in both repos, so one brief now covers both.
+> Absorbed a parallel copy of this brief from another repository on 2026-08-19 by plan-ideas-grooming;
+> only the `ose-public` half is kept here.
 
 ## Problem / context
 
@@ -58,8 +58,7 @@ commits. They surfaced only when the changed set was linted by hand.
 `ci: { scope: affected-file-type }`, so a documentation-only change makes no Nx project affected and
 the gate is skipped outright — the same run logs show `Skipping gate format-verify-prettier` on a
 commit whose diff was ~34 Markdown files. Four `repo-governance/glossary/` files were committed
-having never been formatted at all. Note the private sibling already spells this one
-`ci: { scope: all-file-type }`, with a comment explaining the choice, so the two repos disagree.
+having never been formatted at all.
 
 Corroborated 2026-08-18 in `repo-clean-up`: a branch of ~60 changed Markdown files carried five
 prettier violations with every gate green, caught only by running the repo-pinned binary over the
@@ -97,9 +96,6 @@ SDK caches `.fvm/` and `.fvm-cache/`, which are absent from `.markdownlint-cli2.
 list. So arming the gate is cheap **provided** those two directories are ignored first — and
 guaranteed to fail loudly if they are not.
 
-The private sibling has no `.fvm` tree and reports 0 errors across 3127 files, so there the fix is the
-missing glob alone.
-
 The cost of leaving it is that every future Markdown defect lands unchallenged, exactly as twelve
 just did.
 
@@ -116,20 +112,17 @@ just did.
 
 1. Add `.fvm/**` and `.fvm-cache/**` to `.markdownlint-cli2.jsonc` `ignores` (this repo only).
 2. Give the `markdownlint` gate's `ci` surface `glob: "*.md"`, matching its own `pre-commit`
-   surface. Land in both repos — the config is identical today.
-3. Align `format-verify-prettier`'s `ci` scope with the private sibling's `all-file-type`.
-4. Capture the private sibling's own CI log for the gate to confirm the `0 file(s)` line there directly.
-   Its behaviour is currently **inferred** from a byte-identical `rhino-cli` and an identical gate
-   entry, not observed — its logs were unreadable during the 2026-08-17 GitHub incident, so that
-   capture is still outstanding.
-5. Then the general question: a gate that runs and checks nothing is indistinguishable from a gate
+   surface.
+3. Give `format-verify-prettier`'s `ci` surface `all-file-type` scope, so a documentation-only
+   change is still checked.
+4. Then the general question: a gate that runs and checks nothing is indistinguishable from a gate
    that runs and finds nothing. Emitting the candidate-file count per gate, and failing any `check`
    whose count is zero unless it declares `may-be-empty: true`, would have caught this on day one
    and would catch the next one.
 
 ## Rough scope & non-goals
 
-In scope: the `markdownlint` and `format-verify-prettier` gate entries in both repos, the
+In scope: the `markdownlint` and `format-verify-prettier` gate entries, the
 `.markdownlint-cli2.jsonc` ignore list, and a general zero-candidate assertion for `check` gates.
 
 **Out of scope (for now)**: fixing Markdown violations — there are none once the vendored caches are
@@ -145,9 +138,6 @@ it); the `.fvm` directories' presence in the repo at all, which is a separate qu
   same defect may be sitting in several. Nobody has enumerated them. (open)
 - Arming this cannot be verified without a CI run, so it should not land during a GitHub incident —
   which is precisely why it was filed rather than fixed inside `optimize-gov`.
-- `repo-config.yml` is not inside the `apps/rhino-cli` parity boundary, so the two repos can be
-  fixed independently; but leaving them divergent is what produced the `format-verify-prettier`
-  asymmetry in the first place.
 
 ## What success looks like + promotion signal
 

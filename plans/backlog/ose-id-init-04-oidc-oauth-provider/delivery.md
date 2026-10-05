@@ -41,8 +41,7 @@ Phase 0 resolves the predecessor's archived path and confirms
 `ose-id-init-03-company-tenancy-core` is complete on `origin/main`; the merged
 identity/session/tenancy contracts must match this plan. This backlog plan must then be promoted by a
 pure move to `plans/in-progress/ose-id-init-04-oidc-oauth-provider/` on `origin/main` before execution.
-Production deployment remains outside scope and blocked at minimum by
-`private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus the then-current
+Production deployment remains outside scope and blocked at minimum by the private infrastructure cluster plan plus the then-current
 platform handoff gates.
 
 ## Parallelization Model

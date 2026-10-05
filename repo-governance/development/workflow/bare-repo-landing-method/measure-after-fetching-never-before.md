@@ -11,19 +11,19 @@ it therefore reports the relationship between two refs that may both be equally 
 answer it gives is `0 0` — indistinguishable from a genuinely reconciled repository.
 
 That false clean is not hypothetical. Immediately after a merge landed on the remote, this sequence
-was observed in a bare sibling (transcript preserved verbatim — `ose-infra` is the repository now
-known as the private sibling):
+was observed in a bare repository (transcript preserved with the repository name replaced by
+`<bare-repo>`):
 
 ```console
-$ git -C ose-infra rev-list --left-right --count origin/main...main
+$ git -C <bare-repo> rev-list --left-right --count origin/main...main
 0 0
 
-$ git -C ose-infra fetch origin
-$ git -C ose-infra rev-list --left-right --count origin/main...main
+$ git -C <bare-repo> fetch origin
+$ git -C <bare-repo> rev-list --left-right --count origin/main...main
 1 0
 
-$ git -C ose-infra fetch origin main:main
-$ git -C ose-infra rev-list --left-right --count origin/main...main
+$ git -C <bare-repo> fetch origin main:main
+$ git -C <bare-repo> rev-list --left-right --count origin/main...main
 0 0
 ```
 

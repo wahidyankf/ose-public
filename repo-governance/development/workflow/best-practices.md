@@ -25,7 +25,7 @@ when_to_use: Use when looking for the recommended pattern for a workflow decisio
 - [Conflict Resolution Workflows](./best-practices/conflict-resolution-workflows.md) — Resolving conflicts under rebase vs merge.
 - [Safety Considerations](./best-practices/safety-considerations.md) — Never rebase pushed commits; abort paths.
 - [Best Practice in Daily Workflow](./best-practices/best-practice-in-daily-workflow.md) — A worked start-of-day-to-push walkthrough.
-- [Practice 12: Default to worktree-to-pr; Select a Direct-Push Mode Deliberately](./best-practices/practice-12-default-to-worktree-to-pr.md) — Deliberate opt-in for direct-push modes.
+- [Practice 12: Default to worktree-to-pr; Never Assume a Direct-Push Mode](./best-practices/practice-12-default-to-worktree-to-pr.md) — Direct-push modes are never the assumed path.
 - [Summary and Principles/Conventions Implemented](./best-practices/summary-and-principles-conventions-implemented.md) — Recap of all twelve practices.
 
 ## Related Documentation

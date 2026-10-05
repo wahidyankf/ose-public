@@ -55,5 +55,5 @@ Fails the secret/sensitivity gate outright (the captured line held the literal p
 documented here.
 ```
 
-Fails the repo-relevance gate: infra-specific content (a real k3s node/hostname) must stay in
-the private sibling only, never in `ose-public`.
+Fails the repo-relevance gate: infra-specific content (a real k3s node/hostname) must stay
+private, never in `ose-public`.

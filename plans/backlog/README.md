@@ -21,7 +21,7 @@ step-by-step execution record.
 FERRET (Framework for Evaluation, Regression, Reliability & Experiment Tracking) begins as a local-only,
 backend-optional telemetry system for coding-agent harness lifecycle metadata. The first plan proves safe
 standalone capture; the second adds a protocol-independent local backend and REST synchronization. Neither plan
-adds a frontend or cloud deployment. A later cloud plan belongs in the private sibling and requires separate
+adds a frontend or cloud deployment. A later cloud plan is outside this series and requires separate
 authorization.
 
 | Order | Plan                                                                                  | Locally verifiable outcome                                                                                                                   | Depends on |
@@ -49,8 +49,7 @@ series does not deploy the service.
 
 Plans 06, 07, and 08 are independent siblings after Plan 05. Plan 09 joins them; only after Plan 09
 may the blocked [`lms-user`](./lms-user/README.md) plan execute. A future OSE ID deployment
-plan is outside this series and must wait for the Kubernetes foundation in the private sibling, beginning with
-`start-infra-04-deploy-tencent-lighthouse-k3s-cluster`, plus any then-current platform handoff gates.
+plan is outside this series and must wait for the private infrastructure cluster plan, plus any then-current platform handoff gates.
 
 Three waves emptied this queue:
 
@@ -69,13 +68,11 @@ Three waves emptied this queue:
   [declare-vite-peer-dependency](../ideas/q2-not-urgent-important/declare-vite-peer-dependency.md).
 - **Demoted to two-pagers 2026-09-08** — the three follow-ups
   [`rewrite-rhino-cli-to-fsharp`](../done/2026-08-30__rewrite-rhino-cli-to-fsharp/README.md)'s Phase
-  12 Knowledge Capture triage had filed straight into this queue:
-  [remove-stale-compat-min-version-stubs](../ideas/q1-urgent-important/remove-stale-compat-min-version-stubs.md),
-  [remove-dead-shadow-diff-script](../ideas/q2-not-urgent-important/remove-dead-shadow-diff-script.md),
-  and
-  [rhino-bin-resolver-shim-coverage](../ideas/q2-not-urgent-important/rhino-bin-resolver-shim-coverage.md).
-  Knowledge Capture may not write here — see [Instructions](#instructions) below — so the three were
-  relocated to `../ideas/` rather than retained under a plan-local exception.
+  12 Knowledge Capture triage had filed straight into this queue were relocated to `../ideas/`
+  rather than retained under a plan-local exception, because Knowledge Capture may not write here —
+  see [Instructions](#instructions) below. Two have since been deleted as moot after the in-tree
+  Rhino source was retired; the survivor is
+  [remove-stale-compat-min-version-stubs](../ideas/q1-urgent-important/remove-stale-compat-min-version-stubs.md).
 
 The `ayokoding-learning-path-*` programme, which once filled this queue, has completed: plans `01`
 through `18` are archived in [`../done/`](../done/README.md). `rewrite-rhino-cli-to-fsharp` passed

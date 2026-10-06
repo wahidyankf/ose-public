@@ -27,6 +27,7 @@ from support.hook_payloads import (
     codex_tool,
     encode,
 )
+from support.results import value_of
 
 REGISTRATION_IDS = [f"{harness}-{event}" for harness, event, _ in REGISTRATIONS]
 HOOK_ARGV = ["capture-hook", "--harness", CLAUDE_CODE, "--event", "tool.started"]
@@ -35,7 +36,7 @@ HOOK_ARGV = ["capture-hook", "--harness", CLAUDE_CODE, "--event", "tool.started"
 def make_home(tmp_path: Path) -> Path:
     home = tmp_path / "home"
     home.mkdir(mode=0o700)
-    initialize_store(system_runtime({"HOME": str(home)}))
+    value_of(initialize_store(system_runtime({"HOME": str(home)})))
     return home
 
 
@@ -48,7 +49,7 @@ def repository(tmp_path: Path, name: str = "repo-a") -> Path:
 
 def capture(home: Path, harness: str, event: str, document: dict[str, Any]) -> str | None:
     runtime = system_runtime({"HOME": str(home)}, stdin=io.BytesIO(encode(document)))
-    return capture_hook(runtime, harness=harness, event=event)
+    return value_of(capture_hook(runtime, harness=harness, event=event))
 
 
 def rows(home: Path, sql: str) -> list[tuple[Any, ...]]:
@@ -120,6 +121,7 @@ def test_a_writer_blocked_beyond_the_busy_timeout_stores_nothing_and_fails_retry
     blocker = sqlite3.connect(home / ".local" / "share" / "ferret" / "ferret.sqlite3", autocommit=True)
     blocker.execute("BEGIN IMMEDIATE")
     try:
+        # The event repository port raises the busy timeout, so it is still raised until the port returns it.
         with pytest.raises(FerretError) as caught:
             capture(home, CLAUDE_CODE, "tool.started", claude_tool("PreToolUse"))
     finally:

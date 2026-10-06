@@ -11,7 +11,7 @@ import pytest
 
 from ferret import __version__
 from ferret.application.install import InstallOutcome, UninstallOutcome, install_user, uninstall_user
-from ferret.domain.errors import FAILURES, ErrorCode, FerretError
+from ferret.domain.errors import FAILURES, ErrorCode, FerretError, FerretResult
 from ferret.domain.install import LAUNCHER_MODE, MANIFEST_MODE, InstallPaths, Manifest, launcher_script
 from support.fakes import (
     AN_OLDER_VERSION,
@@ -26,7 +26,7 @@ from support.fakes import (
 )
 from support.invoke import run_cli
 from support.populate import stamp, world_with
-from support.results import value_of
+from support.results import refusal_of, value_of
 
 PATHS = InstallPaths(FAKE_HOME)
 OLD_BYTES = b"#!/usr/bin/env python3\nan older artifact\n"
@@ -61,18 +61,32 @@ def completed_tree(*, version: str = __version__, artifact: bytes = ARTIFACT_BYT
     }
 
 
-def install(world: World) -> InstallOutcome:
+def install_result(world: World) -> FerretResult[InstallOutcome]:
     return install_user(world.runtime)
 
 
-def uninstall(world: World, *, purge: bool = False, yes: bool = False) -> UninstallOutcome:
+def install(world: World) -> InstallOutcome:
+    return value_of(install_result(world))
+
+
+def uninstall_result(world: World, *, purge: bool = False, yes: bool = False) -> FerretResult[UninstallOutcome]:
     return uninstall_user(world.runtime, purge_data=purge, confirmed=yes)
 
 
+def uninstall(world: World, *, purge: bool = False, yes: bool = False) -> UninstallOutcome:
+    return value_of(uninstall_result(world, purge=purge, yes=yes))
+
+
 def failure(action: Callable[[], object]) -> str:
+    """The code of a failure a port raises, which the use case returns once its port does."""
     with pytest.raises(FerretError) as caught:
         action()
     return caught.value.code
+
+
+def refusal_code(result: FerretResult[object]) -> str:
+    """The code of the refusal a use case returned."""
+    return refusal_of(result).code
 
 
 def older_world() -> World:
@@ -275,7 +289,7 @@ def test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes(
     arrange(world.installer)
     before = world.installer.snapshot()
 
-    assert failure(lambda: install(world)) == "ferret.install.collision"
+    assert refusal_code(install_result(world)) == "ferret.install.collision"
 
     assert world.installer.snapshot() == before
     assert "stage" not in world.installer.steps
@@ -294,7 +308,7 @@ def test_a_path_the_launcher_cannot_quote_exactly_stops_before_anything_is_stage
     world = make_world()
     world.installer.interpreter = Path('/usr/local/bin/py"thon')
 
-    assert failure(lambda: install(world)) == "ferret.storage.unavailable"
+    assert refusal_code(install_result(world)) == "ferret.storage.unavailable"
 
     assert (world.installer.snapshot(), world.installer.steps) == ({}, ["recover"])
 
@@ -379,7 +393,7 @@ def test_crash_c_after_the_launcher_before_the_manifest_makes_removal_refuse_and
     crashed = world.installer.snapshot()
     assert crashed[str(PATHS.launcher)] == installed_launcher(__version__)
 
-    assert failure(lambda: uninstall(world)) == "ferret.install.ownership-mismatch"
+    assert refusal_code(uninstall_result(world)) == "ferret.install.ownership-mismatch"
 
     assert world.installer.snapshot() == crashed
 
@@ -423,7 +437,7 @@ def test_a_crashed_install_followed_by_a_different_build_of_the_same_version_is_
     world.installer.crash_before = None
     world.installer.artifact = b"a different build of the same version"
 
-    assert failure(lambda: install(world)) == "ferret.install.collision"
+    assert refusal_code(install_result(world)) == "ferret.install.collision"
 
 
 def test_crash_d_after_the_manifest_makes_the_new_install_authoritative_and_leaves_the_old_artifact_unowned() -> None:
@@ -560,7 +574,7 @@ def test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved(
     arrange(world.installer)
     before = world.installer.snapshot()
 
-    assert failure(lambda: uninstall(world)) == "ferret.install.ownership-mismatch"
+    assert refusal_code(uninstall_result(world)) == "ferret.install.ownership-mismatch"
 
     assert world.installer.snapshot() == before
     assert "remove" not in world.installer.steps
@@ -572,7 +586,7 @@ def test_purging_data_without_confirmation_fails_before_anything_is_removed() ->
     world.installer.arrange_install(__version__, ARTIFACT_BYTES)
     before = world.installer.snapshot()
 
-    assert failure(lambda: uninstall(world, purge=True)) == "ferret.args.confirmation-required"
+    assert refusal_code(uninstall_result(world, purge=True)) == "ferret.args.confirmation-required"
 
     assert (world.installer.snapshot(), world.installer.steps, world.files.purges) == (before, [], 0)
 
@@ -610,7 +624,7 @@ def test_an_unsafe_data_home_is_refused_before_any_owned_file_is_removed() -> No
     world.files.directory.mode = 0o755  # type: ignore[union-attr]
     before = world.installer.snapshot()
 
-    assert failure(lambda: uninstall(world, purge=True, yes=True)) == "ferret.storage.unsafe"
+    assert refusal_code(uninstall_result(world, purge=True, yes=True)) == "ferret.storage.unsafe"
 
     assert (world.installer.snapshot(), world.files.purges) == (before, 0)
 
@@ -651,7 +665,7 @@ def test_an_install_directory_that_is_not_a_directory_is_a_collision_and_nothing
     arrange(world.installer)
     before = world.installer.snapshot()
 
-    assert failure(lambda: install(world)) == "ferret.install.collision"
+    assert refusal_code(install_result(world)) == "ferret.install.collision"
 
     assert world.installer.snapshot() == before
     assert "stage" not in world.installer.steps
@@ -669,7 +683,7 @@ def test_a_manifest_that_vanishes_before_it_is_read_is_a_collision_for_install()
     world.installer.arrange_install(AN_OLDER_VERSION, OLD_BYTES)
     before = world.installer.snapshot()
 
-    assert failure(lambda: install(world)) == "ferret.install.collision"
+    assert refusal_code(install_result(world)) == "ferret.install.collision"
 
     assert world.installer.snapshot() == before
 
@@ -679,7 +693,7 @@ def test_a_manifest_that_vanishes_before_it_is_read_is_an_ownership_mismatch_for
     world.installer.arrange_install(__version__, ARTIFACT_BYTES)
     before = world.installer.snapshot()
 
-    assert failure(lambda: uninstall(world)) == "ferret.install.ownership-mismatch"
+    assert refusal_code(uninstall_result(world)) == "ferret.install.ownership-mismatch"
 
     assert world.installer.snapshot() == before
 

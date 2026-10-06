@@ -1,6 +1,7 @@
 """Initialization: where the data home is, and how one private store is created, verified, and completed."""
 
 import json
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,9 @@ from support.fakes import (
     World,
     make_world,
 )
+from support.invoke import run_cli
+from support.populate import world_with
+from support.results import refusal_of, value_of
 
 OTHER_UUID = "00000000-0000-4000-8000-0000000000ff"
 CREATED_IN_ORDER = [
@@ -32,14 +36,14 @@ CREATED_IN_ORDER = [
 
 def initialized_world() -> World:
     world = make_world()
-    initialize_store(world.runtime)
+    value_of(initialize_store(world.runtime))
     return world
 
 
 def test_private_machine_store() -> None:
     world = make_world()
 
-    first = initialize_store(world.runtime)
+    first = value_of(initialize_store(world.runtime))
 
     assert first.result == "created"
     assert first.data_home == FAKE_DATA_HOME
@@ -66,7 +70,7 @@ def test_private_machine_store() -> None:
     }
     assert world.files.files["ferret.sqlite3"].content == b""
 
-    second = initialize_store(world.runtime)
+    second = value_of(initialize_store(world.runtime))
 
     assert second.result == "already_initialized"
     assert second.installation_id == first.installation_id
@@ -80,7 +84,7 @@ def test_private_machine_store() -> None:
 def test_initialization_holds_the_exclusive_lock_around_every_write() -> None:
     world = make_world()
 
-    initialize_store(world.runtime)
+    value_of(initialize_store(world.runtime))
 
     assert world.files.lock_count == 1
     assert world.files.lock_depth == 0
@@ -214,12 +218,11 @@ def test_an_existing_unsafe_object_is_refused_and_nothing_is_changed(
         setattr(entry, attribute, value)
     creates_before = list(world.files.creates)
 
-    with pytest.raises(FerretError) as caught:
-        initialize_store(world.runtime)
+    refusal = refusal_of(initialize_store(world.runtime))
 
-    assert caught.value.code == "ferret.storage.unsafe"
-    assert caught.value.exit_code == 2
-    assert str(FAKE_HOME) not in str(caught.value)
+    assert refusal.code == "ferret.storage.unsafe"
+    assert refusal.exit_code == 2
+    assert str(FAKE_HOME) not in str(refusal)
     assert world.files.creates == creates_before
 
 
@@ -239,7 +242,7 @@ def test_an_interrupted_initialization_is_completed_and_keeps_any_identity_alrea
     assert len(world.files.creates) == crash_after
     world.files.crash_after_creates = None
 
-    result = initialize_store(world.runtime)
+    result = value_of(initialize_store(world.runtime))
 
     assert result.result == "created"
     assert world.files.creates[:crash_after] == CREATED_IN_ORDER[:crash_after]
@@ -259,7 +262,7 @@ def test_an_interrupted_schema_creation_is_completed_by_the_next_initialization(
     assert not world.schema.applied
     world.schema.crash = False
 
-    result = initialize_store(world.runtime)
+    result = value_of(initialize_store(world.runtime))
 
     assert result.result == "created"
     assert result.installation_id == INSTALLATION_ID
@@ -274,7 +277,7 @@ def test_a_missing_key_before_any_database_exists_is_recreated_under_the_same_id
     del world.files.files["identity.key"]
     world.files.crash_after_creates = None
 
-    result = initialize_store(world.runtime)
+    result = value_of(initialize_store(world.runtime))
 
     assert result.result == "created"
     assert result.installation_id == INSTALLATION_ID
@@ -288,11 +291,10 @@ def test_an_existing_database_without_its_companions_is_refused(missing: str) ->
     del world.files.files[missing]
     creates_before = list(world.files.creates)
 
-    with pytest.raises(FerretError) as caught:
-        initialize_store(world.runtime)
+    refusal = refusal_of(initialize_store(world.runtime))
 
-    assert caught.value.code == "ferret.storage.unavailable"
-    assert caught.value.exit_code == 2
+    assert refusal.code == "ferret.storage.unavailable"
+    assert refusal.exit_code == 2
     assert world.files.creates == creates_before
 
 
@@ -317,10 +319,7 @@ def test_an_invalid_identity_document_is_refused(content: bytes) -> None:
     world = initialized_world()
     world.files.files["identity.json"].content = content
 
-    with pytest.raises(FerretError) as caught:
-        initialize_store(world.runtime)
-
-    assert caught.value.code == "ferret.storage.unavailable"
+    assert refusal_of(initialize_store(world.runtime)).code == "ferret.storage.unavailable"
 
 
 @pytest.mark.parametrize("key", [b"", b"short", bytes(31), bytes(33)])
@@ -328,10 +327,7 @@ def test_an_identity_key_of_the_wrong_length_is_refused(key: bytes) -> None:
     world = initialized_world()
     world.files.files["identity.key"].content = key
 
-    with pytest.raises(FerretError) as caught:
-        initialize_store(world.runtime)
-
-    assert caught.value.code == "ferret.storage.unavailable"
+    assert refusal_of(initialize_store(world.runtime)).code == "ferret.storage.unavailable"
 
 
 @pytest.mark.parametrize(
@@ -347,7 +343,36 @@ def test_a_configuration_other_than_the_supported_one_is_refused(content: bytes)
     world = initialized_world()
     world.files.files["config.json"].content = content
 
-    with pytest.raises(FerretError) as caught:
-        initialize_store(world.runtime)
+    assert refusal_of(initialize_store(world.runtime)).code == "ferret.storage.unavailable"
 
-    assert caught.value.code == "ferret.storage.unavailable"
+
+def test_a_stored_configuration_that_cannot_be_encoded_is_answered_by_the_main_last_resort() -> None:
+    # A lone surrogate survives the JSON read but not the UTF-8 form the comparison needs. That has always escaped to
+    # ``main``, whose last resort answers it as storage that is unavailable, and this pins that code.
+    world = world_with()
+    world.files.files["config.json"].content = b'{"schemaVersion":"\\ud800"}'
+
+    ran = run_cli(world, ["init", "--json"])
+
+    assert (ran.code, ran.stdout) == (2, "")
+    assert json.loads(ran.stderr)["error"]["code"] == "ferret.storage.unavailable"
+
+
+def widen_the_key(world: World) -> None:
+    world.files.files["identity.key"].mode = 0o644
+
+
+def lose_the_identity(world: World) -> None:
+    del world.files.files["identity.json"]
+
+
+@pytest.mark.parametrize("damage", [widen_the_key, lose_the_identity], ids=lambda damage: damage.__name__)
+def test_a_refusal_made_while_the_lock_is_held_still_releases_it(damage: Callable[[World], None]) -> None:
+    world = world_with()
+    damage(world)
+
+    ran = run_cli(world, ["init", "--json"])
+
+    assert ran.code == 2
+    assert json.loads(ran.stderr)["error"]["code"] in ("ferret.storage.unsafe", "ferret.storage.unavailable")
+    assert (world.files.lock_count, world.files.lock_depth) == (2, 0)

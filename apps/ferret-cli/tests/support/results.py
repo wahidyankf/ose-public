@@ -1,4 +1,4 @@
-"""Taking a ``typekit.Result`` apart in a test: the value an ``Ok`` carries, or the refusal an ``Err`` carries."""
+"""Taking a ``typekit.Result`` apart in a test: the value an ``Ok`` carries, or what an ``Err`` carries."""
 
 from typekit import Err, Ok, Result
 
@@ -15,3 +15,9 @@ def refusal_of(result: FerretResult[object]) -> FerretError:
     """The ``FerretError`` an ``Err`` carries; an ``Ok`` fails the test."""
     assert isinstance(result, Err), f"expected an Err, got {result!r}"
     return result.error
+
+
+def fault_of(result: Result[object, Exception]) -> str:
+    """The message of the exception an ``Err`` carries; an ``Ok`` fails the test."""
+    assert isinstance(result, Err), f"expected an Err, got {result!r}"
+    return str(result.error)

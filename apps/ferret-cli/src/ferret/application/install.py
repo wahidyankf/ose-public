@@ -10,6 +10,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
+from typekit import Err
+
 from ferret import __version__
 from ferret.application.ports import InstalledFacts, Runtime, StagePlan, UserInstall
 from ferret.application.store import require_safe
@@ -62,10 +64,13 @@ def _read_manifest(installer: UserInstall, failure: ErrorCode) -> Manifest | Non
     content = installer.read_manifest()
     if content is None:
         raise FerretError(failure)
-    try:
-        return parse_manifest(content, installer.paths)
-    except ValueError:
-        raise FerretError(failure) from None
+    parsed = parse_manifest(content, installer.paths)
+    if isinstance(parsed, Err):
+        if isinstance(parsed.error, RecursionError):
+            # A manifest nested past the interpreter's limit: ``main`` has always answered that as storage unavailable.
+            raise FerretError("ferret.storage.unavailable")
+        raise FerretError(failure)
+    return parsed.value
 
 
 def _require_directory_or_nothing(facts: InstalledFacts) -> None:
@@ -116,11 +121,11 @@ def install_user(runtime: Runtime) -> InstallOutcome:
         if not (artifact.kind == "file" and artifact.owned_by_current_user and artifact.sha256 in ours):
             raise FerretError("ferret.install.collision")
     action = path_action(installer.path_variable, paths.bin)
-    try:
-        script = launcher_script(installer.interpreter, target)
-    except ValueError:
+    built = launcher_script(installer.interpreter, target)
+    if isinstance(built, Err):
         # A home or interpreter path the launcher cannot quote exactly; writing an approximate one is worse.
-        raise FerretError("ferret.storage.unavailable") from None
+        raise FerretError("ferret.storage.unavailable")
+    script = built.value
     if (
         previous is not None
         and previous.version == __version__

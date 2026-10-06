@@ -5,10 +5,12 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from typekit import Err, Ok
 
 from ferret.domain.install import (
     ARTIFACT_MODE,
     DIRECTORY_MODE,
+    LAUNCHER_NOTICE,
     MANIFEST_MEMBERS,
     MANIFEST_MODE,
     InstallPaths,
@@ -16,11 +18,14 @@ from ferret.domain.install import (
     is_ferret_artifact_path,
     is_stage_name,
     is_version,
+    launcher_artifact,
+    launcher_script,
     on_path,
     parse_manifest,
     path_action,
     stage_name,
 )
+from support.results import fault_of, value_of
 
 HOME = Path("/users/example")
 PATHS = InstallPaths(HOME)
@@ -32,6 +37,8 @@ MANIFEST = Manifest(
     launcher_path=PATHS.launcher,
     installed_at="2026-09-18T08:00:00.000Z",
 )
+INTERPRETER = Path("/usr/local/bin/python3.14")
+ARTIFACT = PATHS.artifact("0.1.0")
 
 
 def document(**changes: Any) -> dict[str, Any]:
@@ -80,11 +87,11 @@ def test_the_manifest_bytes_follow_the_normative_order() -> None:
 
 
 def test_a_manifest_reads_back_as_written() -> None:
-    assert parse_manifest(MANIFEST.to_bytes(), PATHS) == MANIFEST
+    assert parse_manifest(MANIFEST.to_bytes(), PATHS) == Ok(MANIFEST)
 
 
 def test_whitespace_between_tokens_is_not_significant() -> None:
-    assert parse_manifest(json.dumps(document(), indent=2).encode(), PATHS) == MANIFEST
+    assert parse_manifest(json.dumps(document(), indent=2).encode(), PATHS) == Ok(MANIFEST)
 
 
 DUPLICATE = MANIFEST.to_bytes().replace(b'"version":"0.1.0",', b'"version":"0.1.0","version":"0.1.0",')
@@ -118,13 +125,54 @@ REORDERED = encoded({name: document()[name] for name in reversed(MANIFEST_MEMBER
     ],
 )
 def test_anything_but_the_closed_manifest_for_these_paths_is_refused(content: bytes) -> None:
-    with pytest.raises(ValueError, match="manifest"):
-        parse_manifest(content, PATHS)
+    assert "manifest" in fault_of(parse_manifest(content, PATHS))
 
 
 def test_a_manifest_for_another_home_is_refused() -> None:
-    with pytest.raises(ValueError, match="manifest"):
-        parse_manifest(MANIFEST.to_bytes(), InstallPaths(Path("/users/other")))
+    assert "manifest" in fault_of(parse_manifest(MANIFEST.to_bytes(), InstallPaths(Path("/users/other"))))
+
+
+def test_a_manifest_nested_past_the_interpreters_limit_is_a_depth_fault_not_a_manifest_fault() -> None:
+    # A ``ValueError`` is a manifest fault; the interpreter's own depth limit is returned as it is.
+    result = parse_manifest(b"[" * 100_000, PATHS)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.error, RecursionError)
+
+
+def test_a_repeated_member_is_a_manifest_fault_even_when_nesting_too_deep_follows() -> None:
+    # The repeat closes its object before the nesting that is too deep, so it is the first fault met.
+    result = parse_manifest(b'{"a":{"x":1,"x":2},"b":' + b"[" * 100_000, PATHS)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.error, ValueError)
+    assert "manifest" in str(result.error)
+
+
+def test_a_launcher_execs_the_artifact_on_the_interpreter_it_names() -> None:
+    assert launcher_script(INTERPRETER, ARTIFACT) == Ok(
+        f'#!/bin/sh\n{LAUNCHER_NOTICE}\nexec "{INTERPRETER}" "{ARTIFACT}" "$@"\n'.encode()
+    )
+
+
+def test_a_launcher_reads_back_as_the_artifact_it_starts() -> None:
+    script = value_of(launcher_script(INTERPRETER, ARTIFACT))
+
+    assert launcher_artifact(script, PATHS) == ARTIFACT
+
+
+@pytest.mark.parametrize(
+    "character", ['"', "\\", "\n", "$", "`"], ids=["quote", "backslash", "line-feed", "dollar", "backtick"]
+)
+def test_a_path_the_launcher_cannot_quote_exactly_is_refused_in_either_position(character: str) -> None:
+    odd = Path(f"/odd{character}directory/ferret.pyz")
+
+    assert "quote" in fault_of(launcher_script(odd, ARTIFACT))
+    assert "quote" in fault_of(launcher_script(INTERPRETER, odd))
+
+
+def test_bytes_that_are_not_text_are_not_a_launcher_of_ours() -> None:
+    assert launcher_artifact(b"\xff\xfe", PATHS) is None
 
 
 @pytest.mark.parametrize(

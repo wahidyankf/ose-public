@@ -6,12 +6,13 @@ import os
 import shutil
 import stat
 import time
-from collections.abc import Generator
-from contextlib import contextmanager
+from collections.abc import Callable
 from pathlib import Path
 
+from typekit import Err, Ok, attempt
+
 from ferret.application.ports import FileFacts, Kind
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, FerretResult
 from ferret.domain.storage import LOCK_FILE, PRIVATE_FILE_MODE, is_private_mode
 
 LOCK_TIMEOUT_SECONDS = 5.0
@@ -33,6 +34,19 @@ def kind_of(mode: int) -> Kind:
     return "other"
 
 
+def unavailable() -> Err[FerretError]:
+    """The refusal of a call the operating system failed, which names no path and no cause."""
+    return Err(FerretError("ferret.storage.unavailable"))
+
+
+def tolerate(call: Callable[[], object], absent: type[OSError]) -> FerretResult[None]:
+    """Run ``call``: an ``absent`` failure counts as done, and any other ``OSError`` is unavailable storage."""
+    done = attempt(call, OSError)
+    if isinstance(done, Err) and not isinstance(done.error, absent):
+        return unavailable()
+    return Ok(None)
+
+
 def _open_failure(error: OSError) -> FerretError:
     """A refused symlink or planted object is unsafe storage; anything else is unavailable storage."""
     if error.errno in {errno.ELOOP, errno.EEXIST}:
@@ -47,40 +61,40 @@ class PosixDataHome:
         self._path = path
         self._lock_timeout_seconds = lock_timeout_seconds
 
-    def facts(self, name: str | None) -> FileFacts:
+    def facts(self, name: str | None) -> FerretResult[FileFacts]:
         target = self._path if name is None else self._path / name
-        try:
-            info = os.lstat(target)
-        except FileNotFoundError:
-            return FileFacts(kind="missing")
-        except OSError:
-            raise FerretError("ferret.storage.unavailable") from None
-        return FileFacts(
-            kind=kind_of(info.st_mode),
-            mode=stat.S_IMODE(info.st_mode),
-            owned_by_current_user=info.st_uid == os.geteuid(),
-            link_count=info.st_nlink,
-        )
+        match attempt(lambda: os.lstat(target), OSError):
+            case Err(FileNotFoundError()):
+                return Ok(FileFacts(kind="missing"))
+            case Err():
+                return unavailable()
+            case Ok(info):
+                return Ok(
+                    FileFacts(
+                        kind=kind_of(info.st_mode),
+                        mode=stat.S_IMODE(info.st_mode),
+                        owned_by_current_user=info.st_uid == os.geteuid(),
+                        link_count=info.st_nlink,
+                    )
+                )
 
-    def ensure_directory(self, mode: int) -> None:
-        try:
+    def ensure_directory(self, mode: int) -> FerretResult[None]:
+        def make() -> None:
             # The parents are ordinary base directories -- `~/.local/share` and the like -- so they are created
             # at the user's own umask. Only the leaf, which is FERRET's, is forced private: a data home is
             # private by policy, but forcing 0700 on a directory shared with every other application would be
             # this tool deciding something that is not its to decide.
             self._path.parent.mkdir(parents=True, exist_ok=True)
             os.mkdir(self._path, mode)
-        except FileExistsError:
-            return
-        except OSError:
-            raise FerretError("ferret.storage.unavailable") from None
 
-    def create_file(self, name: str, content: bytes, mode: int) -> None:
+        return tolerate(make, FileExistsError)
+
+    def create_file(self, name: str, content: bytes, mode: int) -> FerretResult[None]:
         target = self._path / name
         try:
             descriptor = os.open(target, _CREATE, mode)
         except OSError as error:
-            raise _open_failure(error) from None
+            return Err(_open_failure(error))
         try:
             try:
                 os.fchmod(descriptor, mode)
@@ -94,48 +108,50 @@ class PosixDataHome:
         except OSError:
             # A half-written file would poison the next initialization, so it never survives a failed write.
             target.unlink(missing_ok=True)
-            raise FerretError("ferret.storage.unavailable") from None
+            return unavailable()
+        return Ok(None)
 
-    def read_file(self, name: str) -> bytes:
+    def read_file(self, name: str) -> FerretResult[bytes]:
         try:
             descriptor = os.open(self._path / name, _READ)
         except OSError as error:
-            raise _open_failure(error) from None
+            return Err(_open_failure(error))
         try:
             content = os.read(descriptor, MAX_FILE_BYTES + 1)
         except OSError:
-            raise FerretError("ferret.storage.unavailable") from None
+            return unavailable()
         finally:
             os.close(descriptor)
         if len(content) > MAX_FILE_BYTES:
-            raise FerretError("ferret.storage.unavailable")
-        return content
+            return unavailable()
+        return Ok(content)
 
-    def purge(self) -> None:
-        try:
-            shutil.rmtree(self._path)
-        except FileNotFoundError:
-            return
-        except OSError:
-            raise FerretError("ferret.storage.unavailable") from None
+    def purge(self) -> FerretResult[None]:
+        return tolerate(lambda: shutil.rmtree(self._path), FileNotFoundError)
 
-    @contextmanager
-    def lock(self) -> Generator[None]:
-        descriptor = self._open_lock_file()
+    def with_lock[T](self, work: Callable[[], FerretResult[T]]) -> FerretResult[T]:
+        opened = self._open_lock_file()
+        if isinstance(opened, Err):
+            return opened
+        descriptor = opened.value
         try:
-            self._acquire(descriptor)
-            try:
-                yield
-            finally:
-                fcntl.flock(descriptor, fcntl.LOCK_UN)
+            return self._acquire(descriptor).flat_map(lambda _: self._work_under_lock(descriptor, work))
         finally:
             os.close(descriptor)
 
-    def _open_lock_file(self) -> int:
+    @staticmethod
+    def _work_under_lock[T](descriptor: int, work: Callable[[], FerretResult[T]]) -> FerretResult[T]:
+        """Run ``work`` and release the lock however it ends, which closing the descriptor then makes final."""
+        try:
+            return work()
+        finally:
+            fcntl.flock(descriptor, fcntl.LOCK_UN)
+
+    def _open_lock_file(self) -> FerretResult[int]:
         try:
             descriptor = os.open(self._path / LOCK_FILE, _LOCK, PRIVATE_FILE_MODE)
         except OSError as error:
-            raise _open_failure(error) from None
+            return Err(_open_failure(error))
         info = os.fstat(descriptor)
         if (
             not stat.S_ISREG(info.st_mode)
@@ -144,20 +160,19 @@ class PosixDataHome:
             or not is_private_mode(stat.S_IMODE(info.st_mode))
         ):
             os.close(descriptor)
-            raise FerretError("ferret.storage.unsafe")
-        return descriptor
+            return Err(FerretError("ferret.storage.unsafe"))
+        return Ok(descriptor)
 
-    def _acquire(self, descriptor: int) -> None:
+    def _acquire(self, descriptor: int) -> FerretResult[None]:
         deadline = time.monotonic() + self._lock_timeout_seconds
         while True:
-            try:
-                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except BlockingIOError:
-                if time.monotonic() >= deadline:
-                    raise FerretError("ferret.storage.unavailable", retryable=True) from None
-                time.sleep(LOCK_POLL_SECONDS)
-            else:
-                return
+            match attempt(lambda: fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB), BlockingIOError):
+                case Ok():
+                    return Ok(None)
+                case Err():
+                    if time.monotonic() >= deadline:
+                        return Err(FerretError("ferret.storage.unavailable", retryable=True))
+                    time.sleep(LOCK_POLL_SECONDS)
 
     def _sync_directory(self) -> None:
         descriptor = os.open(self._path, os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC)

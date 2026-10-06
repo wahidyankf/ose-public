@@ -31,6 +31,8 @@ PRIVATE_DIRECTORY = FileFacts(kind="directory", mode=0o700)
 IDENTITY = {"schemaVersion": "1.0", "installationId": INSTALLATION_ID, "createdAt": "2026-09-18T08:00:00.000Z"}
 # Nested deeper than the interpreter reads, so parsing it raises ``RecursionError`` rather than ``ValueError``.
 NESTED_PAST_THE_LIMIT = b"[" * 100_000
+# A failure no check of this module produces, so seeing this very object come back shows the check passed it on.
+THE_DATA_HOME_FAILED = FerretError("ferret.storage.unavailable", retryable=True)
 
 
 def assert_closed(error: FerretError, code: ErrorCode) -> None:
@@ -100,6 +102,26 @@ def test_an_unsafe_artifact_is_reported_as_unsafe_rather_than_as_a_missing_one()
     world.files.files[KEY_FILE].mode = 0o644
 
     assert_closed(refusal_of(require_initialized(world.files)), "ferret.storage.unsafe")
+
+
+@pytest.mark.parametrize("looked_up", ["", *ARTIFACTS], ids=lambda name: name or "the-directory")
+def test_a_lookup_the_data_home_fails_ends_the_check_with_that_failure_and_looks_up_nothing_further(
+    looked_up: str,
+) -> None:
+    world = world_with()
+    world.files.refusals[f"facts:{looked_up}"] = THE_DATA_HOME_FAILED
+
+    assert refusal_of(require_initialized(world.files)) is THE_DATA_HOME_FAILED
+
+    looked_before_and_at = [""] if not looked_up else ["", *ARTIFACTS[: ARTIFACTS.index(looked_up) + 1]]
+    assert world.files.touched[-len(looked_before_and_at) :] == looked_before_and_at
+
+
+def test_a_key_the_data_home_cannot_read_is_that_failure() -> None:
+    world = world_with()
+    world.files.refusals[f"read_file:{KEY_FILE}"] = THE_DATA_HOME_FAILED
+
+    assert refusal_of(read_key(world.files)) is THE_DATA_HOME_FAILED
 
 
 def test_a_stored_document_is_the_object_it_holds() -> None:

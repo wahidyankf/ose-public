@@ -2,12 +2,13 @@
 
 import hashlib
 import threading
-from collections.abc import Generator
-from contextlib import contextmanager
+from collections.abc import Callable
 from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Literal
+
+from typekit import Err, Ok
 
 from ferret.application.ports import (
     Budget,
@@ -27,7 +28,7 @@ from ferret.application.ports import (
     StoreCounts,
 )
 from ferret.domain.capability import CapabilitySnapshot
-from ferret.domain.errors import FerretError, or_raise
+from ferret.domain.errors import FerretError, FerretResult, or_raise
 from ferret.domain.event import Event
 from ferret.domain.identity import resolve_identity
 from ferret.domain.install import (
@@ -125,7 +126,11 @@ class SequenceRandomness:
 
 @dataclass(slots=True)
 class FakeDataHome:
-    """The data home as a dict, recording every create with its requested mode and every lock."""
+    """The data home as a dict, recording every create with its requested mode and every lock.
+
+    ``refusals`` makes a call return its ``Err`` instead of acting. The key is the method's name, followed by
+    ``:<name>`` for ``facts``, ``create_file``, and ``read_file`` to refuse one file, with ``facts:`` for the directory.
+    """
 
     directory: Entry | None = None
     files: dict[str, Entry] = field(default_factory=lambda: dict[str, Entry]())
@@ -135,40 +140,60 @@ class FakeDataHome:
     crash_after_creates: int | None = None
     touched: list[str] = field(default_factory=lambda: list[str]())
     purges: int = 0
+    refusals: dict[str, FerretError] = field(default_factory=lambda: dict[str, FerretError]())
 
-    def facts(self, name: str | None) -> FileFacts:
-        self.touched.append("" if name is None else name)
+    def _refused(self, key: str) -> Err[FerretError] | None:
+        refusal = self.refusals.get(key)
+        return None if refusal is None else Err(refusal)
+
+    def facts(self, name: str | None) -> FerretResult[FileFacts]:
+        label = "" if name is None else name
+        self.touched.append(label)
+        if (refused := self._refused(f"facts:{label}")) is not None:
+            return refused
         entry = self.directory if name is None else self.files.get(name)
-        return FileFacts(kind="missing") if entry is None else entry.facts()
+        return Ok(FileFacts(kind="missing") if entry is None else entry.facts())
 
-    def ensure_directory(self, mode: int) -> None:
+    def ensure_directory(self, mode: int) -> FerretResult[None]:
+        if (refused := self._refused("ensure_directory")) is not None:
+            return refused
         if self.directory is None:
             self.directory = Entry(kind="directory", mode=mode)
+        return Ok(None)
 
-    def create_file(self, name: str, content: bytes, mode: int) -> None:
+    def create_file(self, name: str, content: bytes, mode: int) -> FerretResult[None]:
         assert self.lock_depth > 0, "a file must be created while the exclusive lock is held"
         assert name not in self.files, f"{name} already exists: creation must be exclusive"
         if self.crash_after_creates is not None and len(self.creates) >= self.crash_after_creates:
             raise SimulatedCrash
+        if (refused := self._refused(f"create_file:{name}")) is not None:
+            return refused
         self.files[name] = Entry(content=content, mode=mode)
         self.creates.append((name, mode))
+        return Ok(None)
 
-    def read_file(self, name: str) -> bytes:
-        return self.files[name].content
+    def read_file(self, name: str) -> FerretResult[bytes]:
+        if (refused := self._refused(f"read_file:{name}")) is not None:
+            return refused
+        return Ok(self.files[name].content)
 
-    def purge(self) -> None:
+    def purge(self) -> FerretResult[None]:
+        if (refused := self._refused("purge")) is not None:
+            return refused
         self.purges += 1
         self.files.clear()
         self.directory = None
+        return Ok(None)
 
-    @contextmanager
-    def lock(self) -> Generator[None]:
+    def with_lock[T](self, work: Callable[[], FerretResult[T]]) -> FerretResult[T]:
         assert self.directory is not None, "the data home must exist before it can be locked"
+        if (refused := self._refused("with_lock")) is not None:
+            return refused
         self.lock_depth += 1
         self.lock_count += 1
         self.files.setdefault("ferret.lock", Entry())
         try:
-            yield
+            return work()
         finally:
             self.lock_depth -= 1
 
@@ -468,7 +493,8 @@ class FakeInstall:
     """The per-user install area as an in-memory tree.
 
     Every mutating step is recorded by name, and ``crash_before`` makes the process die just before the first step
-    of that name, so a test sees exactly the objects a crash at that point leaves behind.
+    of that name, so a test sees exactly the objects a crash at that point leaves behind. ``refusals`` makes a call
+    return its ``Err`` instead of acting, keyed by the method's name.
     """
 
     def __init__(self, home: Path = FAKE_HOME, *, artifact: bytes = ARTIFACT_BYTES, path_variable: str = "") -> None:
@@ -481,6 +507,7 @@ class FakeInstall:
         self.crash_before: str | None = None
         self.stage_fails = False
         self.source_fails = False
+        self.refusals: dict[str, FerretError] = {}
         self._stages = 0
 
     def put_directory(self, path: Path, mode: int = DIRECTORY_MODE) -> None:
@@ -517,36 +544,52 @@ class FakeInstall:
             for path, node in sorted(self.nodes.items())
         }
 
-    def _step(self, name: str) -> None:
+    def _refused(self, name: str) -> Err[FerretError] | None:
+        refusal = self.refusals.get(name)
+        return None if refusal is None else Err(refusal)
+
+    def _step(self, name: str) -> Err[FerretError] | None:
         self.steps.append(name)
         if name == self.crash_before:
             raise SimulatedCrash
+        return self._refused(name)
 
-    def source(self) -> SourceArtifact:
+    def source(self) -> FerretResult[SourceArtifact]:
         if self.source_fails:
-            raise FerretError("ferret.storage.unavailable")
-        return SourceArtifact(path=SOURCE_PATH, sha256=hashlib.sha256(self.artifact).hexdigest())
+            return Err(FerretError("ferret.storage.unavailable"))
+        if (refused := self._refused("source")) is not None:
+            return refused
+        return Ok(SourceArtifact(path=SOURCE_PATH, sha256=hashlib.sha256(self.artifact).hexdigest()))
 
-    def facts(self, path: Path) -> InstalledFacts:
+    def facts(self, path: Path) -> FerretResult[InstalledFacts]:
+        if (refused := self._refused("facts")) is not None:
+            return refused
         node = self.nodes.get(path)
         if node is None:
-            return InstalledFacts(kind="missing")
+            return Ok(InstalledFacts(kind="missing"))
         digest = hashlib.sha256(node.content).hexdigest() if node.kind == "file" else None
-        return InstalledFacts(
-            kind=node.kind, mode=node.mode, owned_by_current_user=node.owned, sha256=digest, target=node.target
+        return Ok(
+            InstalledFacts(
+                kind=node.kind, mode=node.mode, owned_by_current_user=node.owned, sha256=digest, target=node.target
+            )
         )
 
-    def read_manifest(self) -> bytes | None:
+    def read_manifest(self) -> FerretResult[bytes | None]:
+        if (refused := self._refused("read_manifest")) is not None:
+            return refused
         node = self.nodes.get(self.paths.manifest)
-        return None if node is None else node.content
+        return Ok(None if node is None else node.content)
 
-    def read_launcher(self) -> bytes | None:
+    def read_launcher(self) -> FerretResult[bytes | None]:
+        if (refused := self._refused("read_launcher")) is not None:
+            return refused
         node = self.nodes.get(self.paths.launcher)
         # A link reads as nothing here, exactly as O_NOFOLLOW makes it on a real filesystem.
-        return None if node is None or node.kind != "file" else node.content
+        return Ok(None if node is None or node.kind != "file" else node.content)
 
-    def recover(self) -> None:
-        self._step("recover")
+    def recover(self) -> FerretResult[None]:
+        if (refused := self._step("recover")) is not None:
+            return refused
         stray = [
             path
             for path, node in self.nodes.items()
@@ -556,11 +599,13 @@ class FakeInstall:
         ]
         for path in stray:
             del self.nodes[path]
+        return Ok(None)
 
-    def stage(self, plan: StagePlan) -> StagedInstall:
-        self._step("stage")
+    def stage(self, plan: StagePlan) -> FerretResult[StagedInstall]:
+        if (refused := self._step("stage")) is not None:
+            return refused
         if self.stage_fails:
-            raise FerretError("ferret.storage.unavailable")
+            return Err(FerretError("ferret.storage.unavailable"))
         self._stages += 1
         nonce = f"{self._stages:032x}"
         paths = self.paths
@@ -575,29 +620,39 @@ class FakeInstall:
         self.put_file(staged.artifact, self.artifact, ARTIFACT_MODE)
         self.put_file(staged.launcher, plan.launcher, LAUNCHER_MODE)
         self.put_file(staged.manifest, plan.manifest, MANIFEST_MODE)
-        return staged
+        return Ok(staged)
 
-    def replace_artifact(self, staged: StagedInstall) -> None:
-        self._step("replace_artifact")
+    def replace_artifact(self, staged: StagedInstall) -> FerretResult[None]:
+        if (refused := self._step("replace_artifact")) is not None:
+            return refused
         self.nodes[self.paths.artifact(staged.version)] = self.nodes.pop(staged.artifact)
+        return Ok(None)
 
-    def replace_launcher(self, staged: StagedInstall) -> None:
-        self._step("replace_launcher")
+    def replace_launcher(self, staged: StagedInstall) -> FerretResult[None]:
+        if (refused := self._step("replace_launcher")) is not None:
+            return refused
         self.nodes[self.paths.launcher] = self.nodes.pop(staged.launcher)
+        return Ok(None)
 
-    def replace_manifest(self, staged: StagedInstall) -> None:
-        self._step("replace_manifest")
+    def replace_manifest(self, staged: StagedInstall) -> FerretResult[None]:
+        if (refused := self._step("replace_manifest")) is not None:
+            return refused
         self.nodes[self.paths.manifest] = self.nodes.pop(staged.manifest)
+        return Ok(None)
 
-    def remove(self, path: Path) -> None:
-        self._step("remove")
+    def remove(self, path: Path) -> FerretResult[None]:
+        if (refused := self._step("remove")) is not None:
+            return refused
         assert self.nodes[path].kind in ("file", "symlink"), f"{path} is not a file or a link"
         del self.nodes[path]
+        return Ok(None)
 
-    def remove_empty_directory(self, path: Path) -> None:
-        self._step("remove_empty_directory")
+    def remove_empty_directory(self, path: Path) -> FerretResult[None]:
+        if (refused := self._step("remove_empty_directory")) is not None:
+            return refused
         if self.nodes.get(path, Node()).kind == "directory" and not any(other.parent == path for other in self.nodes):
             del self.nodes[path]
+        return Ok(None)
 
 
 @dataclass(slots=True)

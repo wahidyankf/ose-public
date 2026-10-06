@@ -36,8 +36,10 @@ def _installation(runtime: Runtime) -> FerretResult[tuple[bytes, str]]:
         require_initialized(files)
         .flat_map(lambda _: read_key(files))
         .flat_map(
-            lambda key: installation_id_from(files.read_file(IDENTITY_FILE)).map(
-                lambda installation: (key, installation)
+            lambda key: (
+                files.read_file(IDENTITY_FILE)
+                .flat_map(installation_id_from)
+                .map(lambda installation: (key, installation))
             )
         )
     )

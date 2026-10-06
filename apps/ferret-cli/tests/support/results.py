@@ -2,7 +2,7 @@
 
 from typekit import Err, Ok, Result
 
-from ferret.domain.errors import FerretError, FerretResult
+from ferret.domain.errors import ErrorCode, FerretError, FerretResult
 
 
 def value_of[T](result: Result[T, object]) -> T:
@@ -15,6 +15,12 @@ def refusal_of(result: FerretResult[object]) -> FerretError:
     """The ``FerretError`` an ``Err`` carries; an ``Ok`` fails the test."""
     assert isinstance(result, Err), f"expected an Err, got {result!r}"
     return result.error
+
+
+def refused(result: FerretResult[object]) -> tuple[ErrorCode, bool]:
+    """The code and the retryable flag of the refusal an ``Err`` carries; an ``Ok`` fails the test."""
+    refusal = refusal_of(result)
+    return (refusal.code, refusal.retryable)
 
 
 def fault_of(result: Result[object, Exception]) -> str:

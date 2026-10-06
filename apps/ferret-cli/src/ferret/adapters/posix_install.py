@@ -14,10 +14,12 @@ import sys
 import zipfile
 from pathlib import Path
 
+from typekit import Err, Ok, attempt
+
 import ferret
-from ferret.adapters.posix_storage import kind_of
+from ferret.adapters.posix_storage import kind_of, tolerate, unavailable
 from ferret.application.ports import InstalledFacts, SourceArtifact, StagedInstall, StagePlan
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, FerretResult
 from ferret.domain.install import (
     ARTIFACT_FILE,
     ARTIFACT_MODE,
@@ -92,10 +94,11 @@ def _sync_directory(directory: Path) -> None:
 
 
 def _names(directory: Path) -> list[str]:
-    try:
-        return os.listdir(directory)
-    except _GONE:
-        return []
+    match attempt(lambda: os.listdir(directory), FileNotFoundError, NotADirectoryError):
+        case Ok(names):
+            return names
+        case Err():
+            return []
 
 
 def _unlink_quietly(*paths: Path) -> None:
@@ -129,71 +132,68 @@ class PosixUserInstall:
         # bootstrap guard restarted the archive on it. Pinning that one is what spares the next call the restart.
         return Path(sys.executable)
 
-    def source(self) -> SourceArtifact:
+    def source(self) -> FerretResult[SourceArtifact]:
         path = running_artifact() if self._artifact is None else self._artifact
         if path is None:
-            raise FerretError("ferret.storage.unavailable")
+            return unavailable()
         try:
             with path.open("rb") as stream:
                 content = stream.read(MAX_ARTIFACT_BYTES + 1)
         except OSError:
-            raise FerretError("ferret.storage.unavailable") from None
+            return unavailable()
         if len(content) > MAX_ARTIFACT_BYTES:
-            raise FerretError("ferret.storage.unavailable")
+            return unavailable()
         # Staging copies these very bytes, so the digest reported here is the digest of what gets installed.
         self._content = content
-        return SourceArtifact(path=path, sha256=hashlib.sha256(content).hexdigest())
+        return Ok(SourceArtifact(path=path, sha256=hashlib.sha256(content).hexdigest()))
 
-    def facts(self, path: Path) -> InstalledFacts:
-        try:
-            info = os.lstat(path)
-        except _GONE:
-            return InstalledFacts(kind="missing")
-        except OSError:
-            raise FerretError("ferret.storage.unavailable") from None
-        kind = kind_of(info.st_mode)
-        owned = info.st_uid == os.geteuid()
-        mode = stat.S_IMODE(info.st_mode)
-        if kind == "file":
-            digest = "" if info.st_size > MAX_ARTIFACT_BYTES else _sha256_of(path)
-            return InstalledFacts(kind=kind, mode=mode, owned_by_current_user=owned, sha256=digest)
-        if kind == "symlink":
-            try:
-                target = os.readlink(path)
-            except OSError:
-                raise FerretError("ferret.storage.unavailable") from None
-            return InstalledFacts(kind=kind, mode=mode, owned_by_current_user=owned, target=target)
-        return InstalledFacts(kind=kind, mode=mode, owned_by_current_user=owned)
+    def facts(self, path: Path) -> FerretResult[InstalledFacts]:
+        match attempt(lambda: os.lstat(path), OSError):
+            case Err(error):
+                return Ok(InstalledFacts(kind="missing")) if isinstance(error, _GONE) else unavailable()
+            case Ok(info):
+                kind = kind_of(info.st_mode)
+                owned = info.st_uid == os.geteuid()
+                mode = stat.S_IMODE(info.st_mode)
+                if kind == "file":
+                    digest = "" if info.st_size > MAX_ARTIFACT_BYTES else _sha256_of(path)
+                    return Ok(InstalledFacts(kind=kind, mode=mode, owned_by_current_user=owned, sha256=digest))
+                if kind == "symlink":
+                    try:
+                        target = os.readlink(path)
+                    except OSError:
+                        return unavailable()
+                    return Ok(InstalledFacts(kind=kind, mode=mode, owned_by_current_user=owned, target=target))
+                return Ok(InstalledFacts(kind=kind, mode=mode, owned_by_current_user=owned))
 
-    def read_manifest(self) -> bytes | None:
+    def read_manifest(self) -> FerretResult[bytes | None]:
         # A symlinked manifest is a fault, not an absent one: the manifest is the ownership commit point, so
         # anything standing where it belongs that FERRET did not write must stop the command.
         return self._read_small(self._paths.manifest, MAX_MANIFEST_BYTES, tolerate_link=False)
 
-    def read_launcher(self) -> bytes | None:
+    def read_launcher(self) -> FerretResult[bytes | None]:
         # A link here is the shape installs had before the launcher became a script, so it reads as no script
         # rather than as a fault; the caller recognizes the link separately through ``facts``.
         return self._read_small(self._paths.launcher, MAX_LAUNCHER_BYTES, tolerate_link=True)
 
     @staticmethod
-    def _read_small(path: Path, limit: int, *, tolerate_link: bool) -> bytes | None:
+    def _read_small(path: Path, limit: int, *, tolerate_link: bool) -> FerretResult[bytes | None]:
         """One small file's bytes without following a symlink; an absent file reads as ``None``."""
+        opened = attempt(lambda: os.open(path, _READ), OSError)
+        if isinstance(opened, Err):
+            error = opened.error
+            if isinstance(error, _GONE) or (tolerate_link and error.errno in (errno.ELOOP, errno.EMLINK)):
+                return Ok(None)
+            return unavailable()
+        descriptor = opened.value
         try:
-            descriptor = os.open(path, _READ)
-        except _GONE:
-            return None
-        except OSError as error:
-            if tolerate_link and error.errno in (errno.ELOOP, errno.EMLINK):
-                return None
-            raise FerretError("ferret.storage.unavailable") from None
-        try:
-            return os.read(descriptor, limit + 1)
+            return Ok(os.read(descriptor, limit + 1))
         except OSError:
-            raise FerretError("ferret.storage.unavailable") from None
+            return unavailable()
         finally:
             os.close(descriptor)
 
-    def recover(self) -> None:
+    def recover(self) -> FerretResult[None]:
         paths = self._paths
         locations = [(paths.bin, LAUNCHER_FILE)]
         if os.path.isdir(paths.share) and not os.path.islink(paths.share):
@@ -209,117 +209,134 @@ class PosixUserInstall:
                     if is_stage_name(name, final):
                         self._unlink_leftover(directory / name)
         except OSError:
-            raise FerretError("ferret.storage.unavailable") from None
+            return unavailable()
+        return Ok(None)
 
     @staticmethod
     def _unlink_leftover(path: Path) -> None:
         """Delete one staged leftover, but only a regular file or a link this user owns."""
-        try:
+
+        def unlink_if_ours() -> None:
             info = os.lstat(path)
             if (stat.S_ISREG(info.st_mode) or stat.S_ISLNK(info.st_mode)) and info.st_uid == os.geteuid():
                 os.unlink(path)
-        except FileNotFoundError:
-            return
 
-    def stage(self, plan: StagePlan) -> StagedInstall:
+        # A leftover already gone is nothing to delete; any other failure is the caller's.
+        attempt(unlink_if_ours, FileNotFoundError)
+
+    def stage(self, plan: StagePlan) -> FerretResult[StagedInstall]:
         content = self._content
         if content is None:
-            raise FerretError("ferret.storage.unavailable")
+            return unavailable()
         paths = self._paths
-        version_directory = paths.version_directory(plan.version)
-        self._create_directories(paths.share, version_directory, paths.bin)
+        return self._create_directories(paths.share, paths.version_directory(plan.version), paths.bin).flat_map(
+            lambda _: self._stage_files(plan, content)
+        )
+
+    def _stage_files(self, plan: StagePlan, content: bytes) -> FerretResult[StagedInstall]:
+        """Write and verify the three staged files beside their final names, leaving none of them if that fails."""
+        paths = self._paths
         nonce = secrets.token_hex(16)
         staged = StagedInstall(
             version=plan.version,
-            artifact=version_directory / stage_name(ARTIFACT_FILE, nonce),
+            artifact=paths.version_directory(plan.version) / stage_name(ARTIFACT_FILE, nonce),
             launcher=paths.bin / stage_name(LAUNCHER_FILE, nonce),
             manifest=paths.share / stage_name(MANIFEST_FILE, nonce),
         )
+        written = self._write_and_verify(staged, plan, content)
+        if isinstance(written, Err):
+            _unlink_quietly(staged.artifact, staged.launcher, staged.manifest)
+        return written.map(lambda _: staged)
+
+    def _write_and_verify(self, staged: StagedInstall, plan: StagePlan, content: bytes) -> FerretResult[None]:
         try:
             _write_new(staged.artifact, content, ARTIFACT_MODE)
             _write_new(staged.manifest, plan.manifest, MANIFEST_MODE)
             _write_new(staged.launcher, plan.launcher, LAUNCHER_MODE)
-            self._verify(staged, content, plan.launcher)
+            return self._verify(staged, content, plan.launcher)
         except OSError:
-            _unlink_quietly(staged.artifact, staged.launcher, staged.manifest)
-            raise FerretError("ferret.storage.unavailable") from None
-        except FerretError:
-            _unlink_quietly(staged.artifact, staged.launcher, staged.manifest)
-            raise
-        return staged
+            return unavailable()
 
-    def _missing_directories(self, directory: Path) -> list[Path]:
+    def _missing_directories(self, directory: Path) -> FerretResult[list[Path]]:
         """The directories that must be created for ``directory`` to exist, or a refusal if something is in the way."""
         missing: list[Path] = []
         current = directory
         while not os.path.isdir(current):
             if os.path.lexists(current):
-                raise FerretError("ferret.install.collision")
+                return Err(FerretError("ferret.install.collision"))
             if current == self._paths.home or current == current.parent:
-                raise FerretError("ferret.storage.unavailable")
+                return unavailable()
             missing.append(current)
             current = current.parent
-        return missing
+        return Ok(missing)
 
-    def _create_directories(self, *directories: Path) -> None:
+    def _create_directories(self, *directories: Path) -> FerretResult[None]:
         """Make every directory ``0700`` whatever the umask, leaving each one that exists as it is.
 
         Every obstruction is found before the first directory is made, so a refused install creates nothing.
         """
-        missing = {path for directory in directories for path in self._missing_directories(directory)}
+        missing: set[Path] = set()
+        for directory in directories:
+            found = self._missing_directories(directory)
+            if isinstance(found, Err):
+                return found
+            missing.update(found.value)
         for path in sorted(missing, key=lambda candidate: len(candidate.parts)):
-            try:
-                os.mkdir(path, DIRECTORY_MODE)
-                os.chmod(path, DIRECTORY_MODE)
-            except FileExistsError:
-                continue
-            except OSError:
-                raise FerretError("ferret.storage.unavailable") from None
+            made = self._make_private(path)
+            if isinstance(made, Err):
+                return made
+        return Ok(None)
 
-    def _verify(self, staged: StagedInstall, content: bytes, launcher: bytes) -> None:
+    @staticmethod
+    def _make_private(path: Path) -> FerretResult[None]:
+        """Make one directory ``0700``; one that appeared in the meantime is left as it is."""
+
+        def make() -> None:
+            os.mkdir(path, DIRECTORY_MODE)
+            os.chmod(path, DIRECTORY_MODE)
+
+        return tolerate(make, FileExistsError)
+
+    def _verify(self, staged: StagedInstall, content: bytes, launcher: bytes) -> FerretResult[None]:
         """Read all three staged files back: every mode and owner, the artifact's digest, the launcher's bytes."""
         modes = ((staged.artifact, ARTIFACT_MODE), (staged.manifest, MANIFEST_MODE), (staged.launcher, LAUNCHER_MODE))
         for path, mode in modes:
             info = os.lstat(path)
             if not stat.S_ISREG(info.st_mode) or stat.S_IMODE(info.st_mode) != mode or info.st_uid != os.geteuid():
-                raise FerretError("ferret.storage.unavailable")
+                return unavailable()
         if _sha256_of(staged.artifact) != hashlib.sha256(content).hexdigest():
-            raise FerretError("ferret.storage.unavailable")
-        if self._read_small(staged.launcher, MAX_LAUNCHER_BYTES, tolerate_link=False) != launcher:
-            raise FerretError("ferret.storage.unavailable")
+            return unavailable()
+        return self._read_small(staged.launcher, MAX_LAUNCHER_BYTES, tolerate_link=False).flat_map(
+            lambda read: Ok(None) if read == launcher else unavailable()
+        )
 
-    def replace_artifact(self, staged: StagedInstall) -> None:
-        self._replace(staged.artifact, self._paths.artifact(staged.version))
+    def replace_artifact(self, staged: StagedInstall) -> FerretResult[None]:
+        return self._replace(staged.artifact, self._paths.artifact(staged.version))
 
-    def replace_launcher(self, staged: StagedInstall) -> None:
-        self._replace(staged.launcher, self._paths.launcher)
+    def replace_launcher(self, staged: StagedInstall) -> FerretResult[None]:
+        return self._replace(staged.launcher, self._paths.launcher)
 
-    def replace_manifest(self, staged: StagedInstall) -> None:
-        self._replace(staged.manifest, self._paths.manifest)
+    def replace_manifest(self, staged: StagedInstall) -> FerretResult[None]:
+        return self._replace(staged.manifest, self._paths.manifest)
 
     @staticmethod
-    def _replace(staged: Path, final: Path) -> None:
+    def _replace(staged: Path, final: Path) -> FerretResult[None]:
         try:
             os.replace(staged, final)
             _sync_directory(final.parent)
         except OSError:
-            raise FerretError("ferret.storage.unavailable") from None
+            return unavailable()
+        return Ok(None)
 
-    def remove(self, path: Path) -> None:
-        try:
-            os.unlink(path)
-        except FileNotFoundError:
-            return
-        except OSError:
-            raise FerretError("ferret.storage.unavailable") from None
+    def remove(self, path: Path) -> FerretResult[None]:
+        return tolerate(lambda: os.unlink(path), FileNotFoundError)
 
-    def remove_empty_directory(self, path: Path) -> None:
-        try:
-            os.rmdir(path)
-        except _GONE:
-            return
-        except OSError as error:
+    def remove_empty_directory(self, path: Path) -> FerretResult[None]:
+        removed = attempt(lambda: os.rmdir(path), OSError)
+        if isinstance(removed, Err):
+            error = removed.error
             # A directory that still holds anything, or is not a plain directory, is someone's and stays.
-            if error.errno in _KEPT:
-                return
-            raise FerretError("ferret.storage.unavailable") from None
+            if isinstance(error, _GONE) or error.errno in _KEPT:
+                return Ok(None)
+            return unavailable()
+        return Ok(None)

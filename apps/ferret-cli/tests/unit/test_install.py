@@ -8,9 +8,12 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from typekit import Err, Ok
 
 from ferret import __version__
+from ferret.application.initialization import initialize_store
 from ferret.application.install import InstallOutcome, UninstallOutcome, install_user, uninstall_user
+from ferret.application.ports import FileFacts
 from ferret.domain.errors import FAILURES, ErrorCode, FerretError, FerretResult
 from ferret.domain.install import LAUNCHER_MODE, MANIFEST_MODE, InstallPaths, Manifest, launcher_script
 from support.fakes import (
@@ -19,6 +22,7 @@ from support.fakes import (
     FAKE_HOME,
     FAKE_INTERPRETER,
     FIXED_NOW,
+    FakeDataHome,
     FakeInstall,
     SimulatedCrash,
     World,
@@ -26,11 +30,13 @@ from support.fakes import (
 )
 from support.invoke import run_cli
 from support.populate import stamp, world_with
-from support.results import refusal_of, value_of
+from support.results import refusal_of, refused, value_of
 
 PATHS = InstallPaths(FAKE_HOME)
 OLD_BYTES = b"#!/usr/bin/env python3\nan older artifact\n"
 Snapshot = dict[str, tuple[str, int, bytes | str | None]]
+# A failure no step of an install or an uninstall produces, so seeing this very object come back shows it was passed on.
+THE_AREA_FAILED = FerretError("ferret.storage.unavailable", retryable=True)
 
 
 def digest(content: bytes) -> str:
@@ -75,13 +81,6 @@ def uninstall_result(world: World, *, purge: bool = False, yes: bool = False) ->
 
 def uninstall(world: World, *, purge: bool = False, yes: bool = False) -> UninstallOutcome:
     return value_of(uninstall_result(world, purge=purge, yes=yes))
-
-
-def failure(action: Callable[[], object]) -> str:
-    """The code of a failure a port raises, which the use case returns once its port does."""
-    with pytest.raises(FerretError) as caught:
-        action()
-    return caught.value.code
 
 
 def refusal_code(result: FerretResult[object]) -> str:
@@ -239,6 +238,11 @@ def launcher_is_a_directory(installer: FakeInstall) -> None:
     installer.put_directory(PATHS.launcher)
 
 
+def launcher_belongs_to_someone_else(installer: FakeInstall) -> None:
+    installer.put_file(PATHS.launcher, b"#!/bin/sh\necho theirs\n", 0o755)
+    installer.nodes[PATHS.launcher].owned = False
+
+
 def artifact_is_someone_elses_file(installer: FakeInstall) -> None:
     installer.put_directory(PATHS.version_directory(__version__))
     installer.put_file(PATHS.artifact(__version__), b"not the FERRET artifact", 0o700)
@@ -272,6 +276,7 @@ COLLISIONS = [
     launcher_is_a_foreign_link,
     launcher_is_a_link_to_a_lookalike_path,
     launcher_is_a_directory,
+    launcher_belongs_to_someone_else,
     artifact_is_someone_elses_file,
     artifact_is_a_link,
     manifest_is_not_a_manifest,
@@ -299,7 +304,7 @@ def test_an_artifact_that_cannot_be_read_stops_before_anything_is_staged() -> No
     world = make_world()
     world.installer.source_fails = True
 
-    assert failure(lambda: install(world)) == "ferret.storage.unavailable"
+    assert refused(install_result(world)) == ("ferret.storage.unavailable", False)
 
     assert (world.installer.snapshot(), world.installer.steps) == ({}, ["recover"])
 
@@ -318,7 +323,7 @@ def test_a_failed_staging_leaves_the_previous_install_exactly_as_it_was() -> Non
     before = world.installer.snapshot()
     world.installer.stage_fails = True
 
-    assert failure(lambda: install(world)) == "ferret.storage.unavailable"
+    assert refused(install_result(world)) == ("ferret.storage.unavailable", False)
 
     assert world.installer.snapshot() == before
     assert world.installer.steps == ["recover", "stage"]
@@ -552,6 +557,15 @@ def mismatch_launcher_became_a_file(installer: FakeInstall) -> None:
     installer.put_file(PATHS.launcher, b"#!/bin/sh\n", 0o755)
 
 
+def mismatch_launcher_became_a_directory(installer: FakeInstall) -> None:
+    del installer.nodes[PATHS.launcher]
+    installer.put_directory(PATHS.launcher)
+
+
+def mismatch_launcher_belongs_to_someone_else(installer: FakeInstall) -> None:
+    installer.nodes[PATHS.launcher].owned = False
+
+
 MISMATCHES = [
     mismatch_manifest_is_not_a_manifest,
     mismatch_manifest_has_open_permissions,
@@ -562,6 +576,8 @@ MISMATCHES = [
     mismatch_artifact_belongs_to_someone_else,
     mismatch_launcher_points_elsewhere,
     mismatch_launcher_became_a_file,
+    mismatch_launcher_became_a_directory,
+    mismatch_launcher_belongs_to_someone_else,
 ]
 
 
@@ -674,8 +690,8 @@ def test_an_install_directory_that_is_not_a_directory_is_a_collision_and_nothing
 class VanishingManifest(FakeInstall):
     """A manifest that is there when it is looked at and gone by the time it is read."""
 
-    def read_manifest(self) -> bytes | None:
-        return None
+    def read_manifest(self) -> FerretResult[bytes | None]:
+        return Ok(None)
 
 
 def test_a_manifest_that_vanishes_before_it_is_read_is_a_collision_for_install() -> None:
@@ -696,6 +712,130 @@ def test_a_manifest_that_vanishes_before_it_is_read_is_an_ownership_mismatch_for
     assert refusal_code(uninstall_result(world)) == "ferret.install.ownership-mismatch"
 
     assert world.installer.snapshot() == before
+
+
+@pytest.mark.parametrize("read", ["source", "facts", "read_manifest", "read_launcher"])
+def test_an_install_read_that_fails_ends_the_install_with_that_failure_before_anything_is_staged(read: str) -> None:
+    world = older_world()
+    world.installer.refusals[read] = THE_AREA_FAILED
+    before = world.installer.snapshot()
+
+    assert refusal_of(install_result(world)) is THE_AREA_FAILED
+
+    assert world.installer.snapshot() == before
+    assert "stage" not in world.installer.steps
+
+
+class LauncherUnreadableTheSecondTime(FakeInstall):
+    """A launcher that reads fine while the install looks for room and fails when it is read to judge completeness."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.launcher_reads = 0
+
+    def read_launcher(self) -> FerretResult[bytes | None]:
+        self.launcher_reads += 1
+        return Err(THE_AREA_FAILED) if self.launcher_reads > 1 else super().read_launcher()
+
+
+def test_a_launcher_that_cannot_be_read_to_judge_completeness_ends_the_install_with_that_failure() -> None:
+    installer = LauncherUnreadableTheSecondTime()
+    world = make_world(installer=installer)
+    installer.arrange_install(__version__, ARTIFACT_BYTES)
+    before = installer.snapshot()
+
+    assert refusal_of(install_result(world)) is THE_AREA_FAILED
+
+    assert installer.launcher_reads == 2
+    assert installer.snapshot() == before
+    assert "stage" not in installer.steps
+
+
+@pytest.mark.parametrize(
+    "step",
+    [
+        "recover",
+        "stage",
+        "replace_artifact",
+        "replace_launcher",
+        "replace_manifest",
+        "remove",
+        "remove_empty_directory",
+    ],
+)
+def test_an_install_step_that_fails_ends_the_install_with_that_failure_and_no_step_runs_after_it(step: str) -> None:
+    world = older_world()
+    world.installer.refusals[step] = THE_AREA_FAILED
+
+    assert refusal_of(install_result(world)) is THE_AREA_FAILED
+
+    assert world.installer.steps[-1] == step
+
+
+@pytest.mark.parametrize("read", ["facts", "read_manifest", "read_launcher"])
+def test_an_uninstall_read_that_fails_ends_the_uninstall_with_that_failure_and_removes_nothing(read: str) -> None:
+    world = world_with()
+    world.installer.arrange_install(__version__, ARTIFACT_BYTES)
+    world.installer.refusals[read] = THE_AREA_FAILED
+    before = world.installer.snapshot()
+
+    assert refusal_of(uninstall_result(world)) is THE_AREA_FAILED
+
+    assert world.installer.snapshot() == before
+    assert "remove" not in world.installer.steps
+
+
+@pytest.mark.parametrize("step", ["remove", "remove_empty_directory"])
+def test_an_uninstall_step_that_fails_ends_the_uninstall_with_that_failure_and_the_manifest_is_still_there(
+    step: str,
+) -> None:
+    world = world_with()
+    world.installer.arrange_install(__version__, ARTIFACT_BYTES)
+    world.installer.refusals[step] = THE_AREA_FAILED
+
+    assert refusal_of(uninstall_result(world)) is THE_AREA_FAILED
+
+    assert world.installer.steps[-1] == step
+    assert str(PATHS.manifest) in world.installer.snapshot()
+
+
+@pytest.mark.parametrize("refusal", ["facts:", "purge"])
+def test_a_data_home_that_fails_ends_a_purging_uninstall_with_that_failure(refusal: str) -> None:
+    world = world_with()
+    world.installer.arrange_install(__version__, ARTIFACT_BYTES)
+    world.files.refusals[refusal] = THE_AREA_FAILED
+    files_before = dict(world.files.files)
+
+    assert refusal_of(uninstall_result(world, purge=True, yes=True)) is THE_AREA_FAILED
+
+    assert world.files.files == files_before
+    assert world.files.purges == 0
+
+
+class DirectoryUnreadableTheSecondTime(FakeDataHome):
+    """A data home that is found safe before the removal and fails the lookup that decides whether to purge it."""
+
+    directory_lookups: int = 0
+
+    def facts(self, name: str | None) -> FerretResult[FileFacts]:
+        if name is None:
+            self.directory_lookups += 1
+            if self.directory_lookups > 1:
+                return Err(THE_AREA_FAILED)
+        return super().facts(name)
+
+
+def test_a_data_home_that_cannot_be_looked_up_before_the_purge_ends_the_uninstall_with_that_failure() -> None:
+    files = DirectoryUnreadableTheSecondTime()
+    world = make_world(files=files)
+    value_of(initialize_store(world.runtime))
+    files.directory_lookups = 0
+    world.installer.arrange_install(__version__, ARTIFACT_BYTES)
+
+    assert refusal_of(uninstall_result(world, purge=True, yes=True)) is THE_AREA_FAILED
+
+    assert files.purges == 0
+    assert PATHS.manifest not in world.installer.nodes
 
 
 #: A JSON array opened 100,000 times: past what the interpreter's decoder can nest.

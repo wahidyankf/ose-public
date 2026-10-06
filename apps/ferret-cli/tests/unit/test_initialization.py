@@ -9,6 +9,7 @@ import pytest
 
 from ferret.adapters.filesystem import adopt_legacy_data_home, resolve_data_home
 from ferret.application.initialization import initialize_store
+from ferret.domain.errors import FerretError
 from support.fakes import (
     FAKE_DATA_HOME,
     FAKE_HOME,
@@ -25,6 +26,8 @@ from support.populate import world_with
 from support.results import refusal_of, value_of
 
 OTHER_UUID = "00000000-0000-4000-8000-0000000000ff"
+# A failure no step of an initialization produces, so seeing this very object come back shows it was passed on.
+THE_DATA_HOME_FAILED = FerretError("ferret.storage.unavailable", retryable=True)
 CREATED_IN_ORDER = [
     ("identity.key", 0o600),
     ("identity.json", 0o600),
@@ -88,6 +91,49 @@ def test_initialization_holds_the_exclusive_lock_around_every_write() -> None:
     assert world.files.lock_count == 1
     assert world.files.lock_depth == 0
     assert world.schema.calls == 1
+
+
+@pytest.mark.parametrize(
+    ("refusal", "created_before"),
+    [
+        pytest.param("ensure_directory", 0, id="the-directory-cannot-be-made"),
+        pytest.param("facts:", 0, id="the-directory-cannot-be-looked-up"),
+        pytest.param("with_lock", 0, id="the-lock-cannot-be-taken"),
+        pytest.param("facts:identity.key", 0, id="the-key-cannot-be-looked-up"),
+        pytest.param("facts:identity.json", 0, id="the-identity-cannot-be-looked-up"),
+        pytest.param("facts:config.json", 0, id="the-configuration-cannot-be-looked-up"),
+        pytest.param("facts:ferret.sqlite3", 0, id="the-database-cannot-be-looked-up"),
+        pytest.param("create_file:identity.key", 0, id="the-key-cannot-be-written"),
+        pytest.param("create_file:identity.json", 1, id="the-identity-cannot-be-written"),
+        pytest.param("create_file:config.json", 2, id="the-configuration-cannot-be-written"),
+        pytest.param("create_file:ferret.sqlite3", 3, id="the-database-cannot-be-written"),
+    ],
+)
+def test_a_failure_of_the_data_home_ends_the_initialization_with_that_failure_and_the_lock_is_released(
+    refusal: str, created_before: int
+) -> None:
+    world = make_world()
+    world.files.refusals[refusal] = THE_DATA_HOME_FAILED
+
+    assert refusal_of(initialize_store(world.runtime)) is THE_DATA_HOME_FAILED
+
+    assert world.files.creates == CREATED_IN_ORDER[:created_before]
+    assert world.files.lock_depth == 0
+    assert not world.schema.applied
+
+
+@pytest.mark.parametrize("name", ["identity.key", "identity.json", "config.json"])
+def test_a_stored_file_the_data_home_cannot_read_ends_the_initialization_with_that_failure(name: str) -> None:
+    world = initialized_world()
+    world.files.refusals[f"read_file:{name}"] = THE_DATA_HOME_FAILED
+    creates_before = list(world.files.creates)
+    migrations_before = world.schema.calls
+
+    assert refusal_of(initialize_store(world.runtime)) is THE_DATA_HOME_FAILED
+
+    assert world.files.creates == creates_before
+    assert world.schema.calls == migrations_before
+    assert world.files.lock_depth == 0
 
 
 @pytest.mark.parametrize(

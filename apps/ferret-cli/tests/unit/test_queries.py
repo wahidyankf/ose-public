@@ -4,30 +4,36 @@ import base64
 import hashlib
 import io
 import json
-from collections.abc import Mapping
+import sys
+from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import pytest
+from typekit import Ok
 
 from ferret import cli
 from ferret.application import queries
 from ferret.application.queries import export_events, list_events
 from ferret.commands import build_handlers
-from ferret.domain.errors import FerretError
+from ferret.domain.canonical import canonical_bytes
+from ferret.domain.errors import ErrorCode, FerretError
 from ferret.domain.query import (
     DEFAULT_LIMIT,
     MAX_LIMIT,
+    EventCriteria,
     Position,
     criteria_from_options,
     decode_cursor,
     encode_cursor,
     filter_digest,
     parse_limit,
+    single_value,
 )
 from support.fakes import FIXED_NOW
 from support.invoke import run_cli
 from support.populate import WORKSPACE_A, WORKSPACE_B, make_event, numbers, stamp, world_with
+from support.results import refusal_of, value_of
 
 Options = Mapping[str, tuple[str, ...]]
 
@@ -55,14 +61,48 @@ def oracle_digest(document: dict[str, Any]) -> str:
     return hashlib.sha256(json.dumps(document, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
 
 
+def default_cursor(position: Position, limit: int = 2) -> str:
+    """The cursor after ``position`` of a query with the default window at ``FIXED_NOW`` and the given page size."""
+    criteria = value_of(criteria_from_options({}, now=FIXED_NOW))
+    return value_of(encode_cursor(position, value_of(filter_digest(criteria, limit))))
+
+
 def test_the_fixed_default_filter_digest_and_cursor() -> None:
-    criteria = criteria_from_options({}, now=VECTOR_NOW)
+    criteria = value_of(criteria_from_options({}, now=VECTOR_NOW))
 
     assert (criteria.start, criteria.end) == ("2026-09-11T08:15:30.130Z", "2026-09-18T08:15:30.130Z")
     assert hashlib.sha256(VECTOR_DIGEST_INPUT.encode()).hexdigest() == VECTOR_DIGEST
-    assert filter_digest(criteria, DEFAULT_LIMIT) == VECTOR_DIGEST
-    assert encode_cursor(VECTOR_POSITION, VECTOR_DIGEST) == VECTOR_CURSOR
-    assert decode_cursor(VECTOR_CURSOR, VECTOR_DIGEST) == VECTOR_POSITION
+    assert filter_digest(criteria, DEFAULT_LIMIT) == Ok(VECTOR_DIGEST)
+    assert encode_cursor(VECTOR_POSITION, VECTOR_DIGEST) == Ok(VECTOR_CURSOR)
+    assert decode_cursor(VECTOR_CURSOR, VECTOR_DIGEST) == Ok(VECTOR_POSITION)
+
+
+def test_an_option_given_once_has_that_value_and_an_absent_one_has_none() -> None:
+    assert single_value({"--limit": ("5",)}, "--limit", refusal="ferret.args.invalid") == Ok("5")
+    assert single_value({}, "--limit", refusal="ferret.args.invalid") == Ok(None)
+
+
+@pytest.mark.parametrize("code", ["ferret.args.invalid", "ferret.filter.invalid"])
+def test_an_option_given_twice_is_refused_with_the_code_its_caller_names(code: ErrorCode) -> None:
+    error = refusal_of(single_value({"--harness": ("codex", "opencode")}, "--harness", refusal=code))
+
+    assert (error.code, error.exit_code, error.field, error.retryable) == (code, 2, None, False)
+
+
+def test_a_filter_holding_a_float_has_no_digest() -> None:
+    held: dict[str, Any] = {"start": None, "end": None, "harness": 1.5}
+
+    error = refusal_of(filter_digest(EventCriteria(**held), DEFAULT_LIMIT))
+
+    assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.internal.failure", 2, None, False)
+
+
+def test_a_position_holding_a_float_has_no_cursor() -> None:
+    held: dict[str, Any] = {"occurred_at": 1.5, "event_id": "00000000-0000-4000-8000-000000000001"}
+
+    error = refusal_of(encode_cursor(Position(**held), VECTOR_DIGEST))
+
+    assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.internal.failure", 2, None, False)
 
 
 def test_the_digest_covers_every_filter_and_the_limit_in_the_fixed_order() -> None:
@@ -92,26 +132,28 @@ def test_the_digest_covers_every_filter_and_the_limit_in_the_fixed_order() -> No
         }
     )
 
-    assert filter_digest(criteria_from_options(options, now=VECTOR_NOW), 25) == expected
+    assert filter_digest(value_of(criteria_from_options(options, now=VECTOR_NOW)), 25) == Ok(expected)
 
 
 def test_an_all_time_query_has_null_bounds_in_its_digest() -> None:
-    criteria = criteria_from_options({"--all-time": ()}, now=VECTOR_NOW)
+    criteria = value_of(criteria_from_options({"--all-time": ()}, now=VECTOR_NOW))
 
     assert (criteria.start, criteria.end) == (None, None)
-    assert filter_digest(criteria, 10) == oracle_digest(
-        {
-            "from": None,
-            "to": None,
-            "harness": None,
-            "workspace": None,
-            "eventType": None,
-            "agent": None,
-            "skill": None,
-            "tool": None,
-            "outcome": None,
-            "limit": 10,
-        }
+    assert filter_digest(criteria, 10) == Ok(
+        oracle_digest(
+            {
+                "from": None,
+                "to": None,
+                "harness": None,
+                "workspace": None,
+                "eventType": None,
+                "agent": None,
+                "skill": None,
+                "tool": None,
+                "outcome": None,
+                "limit": 10,
+            }
+        )
     )
 
 
@@ -161,7 +203,7 @@ def test_an_all_time_query_has_null_bounds_in_its_digest() -> None:
 def test_the_time_window_follows_the_default_and_bound_rules(
     options: Options, start: str | None, end: str | None
 ) -> None:
-    criteria = criteria_from_options(options, now=VECTOR_NOW)
+    criteria = value_of(criteria_from_options(options, now=VECTOR_NOW))
 
     assert (criteria.start, criteria.end) == (start, end)
 
@@ -205,7 +247,7 @@ def test_the_time_window_follows_the_default_and_bound_rules(
     ],
 )
 def test_a_malformed_filter_is_invalid_filter_without_echoing_its_value(options: Options) -> None:
-    error = refusal(criteria_from_options, options, now=VECTOR_NOW)
+    error = refusal_of(criteria_from_options(options, now=VECTOR_NOW))
 
     assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.filter.invalid", 2, None, False)
     assert all(value not in str(error) for values in options.values() for value in values if value)
@@ -215,16 +257,16 @@ def test_a_name_filter_is_matched_in_its_normalized_form() -> None:
     composed = "Caf\u00e9"
     decomposed = "Cafe\u0301"
 
-    criteria = criteria_from_options({"--tool": (decomposed,)}, now=VECTOR_NOW)
+    criteria = value_of(criteria_from_options({"--tool": (decomposed,)}, now=VECTOR_NOW))
 
     assert criteria.tool == composed
 
 
 def test_every_closed_event_type_and_outcome_is_an_accepted_filter() -> None:
     for event_type in ("session.started", "tool.failed", "skill.invoked"):
-        assert criteria_from_options({"--event-type": (event_type,)}, now=VECTOR_NOW).event_type == event_type
+        assert value_of(criteria_from_options({"--event-type": (event_type,)}, now=VECTOR_NOW)).event_type == event_type
     for outcome in ("success", "failure", "cancelled", "unknown", "not_applicable"):
-        assert criteria_from_options({"--outcome": (outcome,)}, now=VECTOR_NOW).outcome == outcome
+        assert value_of(criteria_from_options({"--outcome": (outcome,)}, now=VECTOR_NOW)).outcome == outcome
 
 
 @pytest.mark.parametrize(
@@ -239,7 +281,7 @@ def test_every_closed_event_type_and_outcome_is_an_accepted_filter() -> None:
 def test_the_page_size_defaults_to_one_hundred_and_accepts_one_through_two_hundred(
     options: Options, expected: int
 ) -> None:
-    assert parse_limit(options) == expected
+    assert parse_limit(options) == Ok(expected)
 
 
 @pytest.mark.parametrize(
@@ -247,13 +289,36 @@ def test_the_page_size_defaults_to_one_hundred_and_accepts_one_through_two_hundr
     ["0", "201", "-1", "1.5", "abc", "", " 5", "5 ", "+5", "\u0661\u0662", "1e2", "0x10"],
 )
 def test_a_page_size_outside_the_range_is_invalid_arguments(value: str) -> None:
-    error = refusal(parse_limit, {"--limit": (value,)})
+    error = refusal_of(parse_limit({"--limit": (value,)}))
 
     assert (error.code, error.exit_code, error.field) == ("ferret.args.invalid", 2, None)
 
 
 def test_a_repeated_page_size_is_invalid_arguments() -> None:
-    assert refusal(parse_limit, {"--limit": ("5", "6")}).code == "ferret.args.invalid"
+    assert refusal_of(parse_limit({"--limit": ("5", "6")})).code == "ferret.args.invalid"
+
+
+@pytest.fixture
+def narrow_integer_text() -> Iterator[None]:
+    """Pin the interpreter's limit on the digits an integer may be read from, whatever the environment sets."""
+    previous = sys.get_int_max_str_digits()
+    sys.set_int_max_str_digits(640)
+    yield
+    sys.set_int_max_str_digits(previous)
+
+
+@pytest.mark.usefixtures("narrow_integer_text")
+def test_a_page_size_of_more_zeros_than_an_integer_may_be_read_from_is_answered_as_unavailable_storage() -> None:
+    code, out, err = run_cli(world_with(), ["events", "list", "--json", "--limit", "0" * 700 + "5"])
+
+    assert (code, out) == (2, "")
+    assert json.loads(err)["error"]["code"] == "ferret.storage.unavailable"
+
+
+def test_a_clock_reading_with_no_time_zone_is_an_internal_failure() -> None:
+    error = refusal_of(criteria_from_options({}, now=datetime(2026, 9, 18, 8, 15, 30)))
+
+    assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.internal.failure", 2, None, False)
 
 
 @pytest.mark.parametrize(
@@ -272,7 +337,7 @@ def test_a_repeated_page_size_is_invalid_arguments() -> None:
     ],
 )
 def test_a_cursor_that_does_not_decode_is_invalid_cursor(cursor: str) -> None:
-    error = refusal(decode_cursor, cursor, VECTOR_DIGEST)
+    error = refusal_of(decode_cursor(cursor, VECTOR_DIGEST))
 
     assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.cursor.invalid", 2, None, False)
     assert cursor not in str(error) or cursor == ""
@@ -297,6 +362,7 @@ CURSOR_PARTS = (
         pytest.param("{" + CURSOR_PARTS.replace('"version":1', '"version":2') + "}", id="future-version"),
         pytest.param("{" + CURSOR_PARTS.replace('"version":1', '"version":"1"') + "}", id="string-version"),
         pytest.param("{" + CURSOR_PARTS.replace('"version":1', '"version":true') + "}", id="boolean-version"),
+        pytest.param("{" + CURSOR_PARTS.replace('"version":1', '"version":1.5') + "}", id="floating-point-version"),
         pytest.param(
             '{"occurredAt":"2026-09-18T08:15:30.123Z","version":1,'
             '"eventId":"00000000-0000-4000-8000-000000000001",' + f'"filterDigest":"{VECTOR_DIGEST}"' + "}",
@@ -317,13 +383,54 @@ CURSOR_PARTS = (
     ],
 )
 def test_a_cursor_whose_document_is_not_the_exact_shape_is_invalid_cursor(document: str) -> None:
-    assert refusal(decode_cursor, encoded(document), VECTOR_DIGEST).code == "ferret.cursor.invalid"
+    assert refusal_of(decode_cursor(encoded(document), VECTOR_DIGEST)).code == "ferret.cursor.invalid"
 
 
 def test_the_cursor_of_one_query_is_refused_by_a_query_with_other_filters() -> None:
-    other = filter_digest(criteria_from_options({"--harness": ("codex",)}, now=VECTOR_NOW), DEFAULT_LIMIT)
+    other = value_of(
+        filter_digest(value_of(criteria_from_options({"--harness": ("codex",)}, now=VECTOR_NOW)), DEFAULT_LIMIT)
+    )
 
-    assert refusal(decode_cursor, VECTOR_CURSOR, other).code == "ferret.cursor.invalid"
+    assert refusal_of(decode_cursor(VECTOR_CURSOR, other)).code == "ferret.cursor.invalid"
+
+
+def nested_object(depth: int) -> str:
+    """The compact JSON of an object holding arrays inside one another, ``depth`` containers deep in all."""
+    return '{"nested":' + "[" * (depth - 1) + "]" * (depth - 1) + "}"
+
+
+def listing_refusal(token: str) -> tuple[int, str]:
+    """The exit status and closed code of ``events list`` given ``token`` as its cursor, which it must refuse."""
+    code, out, err = run_cli(world_with(), ["events", "list", "--json", "--cursor", token])
+
+    assert out == ""
+    return code, json.loads(err)["error"]["code"]
+
+
+def test_a_canonical_cursor_nested_past_the_recursion_limit_is_invalid_cursor() -> None:
+    text = nested_object(1_200)
+    parsed = json.loads(text)
+    assert json.dumps(parsed, separators=(",", ":"), ensure_ascii=False) == text
+    with pytest.raises(RecursionError):
+        canonical_bytes(parsed)
+
+    assert listing_refusal(encoded(text)) == (2, "ferret.cursor.invalid")
+
+
+def test_a_cursor_nested_past_what_json_parses_is_invalid_cursor() -> None:
+    text = nested_object(100_000)
+    with pytest.raises(RecursionError):
+        json.loads(text)
+
+    assert listing_refusal(encoded(text)) == (2, "ferret.cursor.invalid")
+
+
+def test_a_cursor_whose_json_escapes_a_lone_surrogate_is_invalid_cursor() -> None:
+    text = '{"nested":"\\ud800"}'
+    with pytest.raises(UnicodeEncodeError):
+        canonical_bytes(json.loads(text))
+
+    assert listing_refusal(encoded(text)) == (2, "ferret.cursor.invalid")
 
 
 def test_events_list_returns_the_newest_first_with_the_event_id_breaking_ties_downward() -> None:
@@ -474,8 +581,7 @@ def test_the_cursor_names_the_last_item_and_the_digest_of_its_own_query() -> Non
     page = list_events(world.runtime, {"--limit": ("2",)})
 
     last = page.items[-1]
-    criteria = criteria_from_options({}, now=FIXED_NOW)
-    assert page.next_cursor == encode_cursor(Position(last.occurred_at, last.event_id), filter_digest(criteria, 2))
+    assert page.next_cursor == default_cursor(Position(last.occurred_at, last.event_id))
 
 
 def test_a_cursor_is_refused_when_the_filters_or_the_limit_differ() -> None:
@@ -506,10 +612,7 @@ def test_a_cursor_is_refused_once_its_referenced_row_has_expired_or_vanished() -
 
 def test_a_cursor_whose_position_disagrees_with_its_row_is_refused() -> None:
     world = world_with(*[make_event(number, ago=timedelta(minutes=number)) for number in range(1, 5)])
-    criteria = criteria_from_options({}, now=FIXED_NOW)
-    forged = encode_cursor(
-        Position("2026-09-18T07:00:00.000Z", world.events.stored[0].event_id), filter_digest(criteria, 2)
-    )
+    forged = default_cursor(Position("2026-09-18T07:00:00.000Z", world.events.stored[0].event_id))
 
     assert (
         refusal(list_events, world.runtime, {"--limit": ("2",), "--cursor": (forged,)}).code == "ferret.cursor.invalid"
@@ -589,9 +692,8 @@ def test_events_list_json_is_one_compact_object_of_canonical_events_and_a_cursor
     assert list(document) == ["schemaVersion", "command", "exitCode", "items", "nextCursor"]
     assert (document["schemaVersion"], document["command"], document["exitCode"]) == (1, "events.list", 0)
     assert document["items"] == [item.to_document() for item in world.events.stored[:2]]
-    assert document["nextCursor"] == encode_cursor(
-        Position(world.events.stored[1].occurred_at, world.events.stored[1].event_id),
-        filter_digest(criteria_from_options({}, now=FIXED_NOW), 2),
+    assert document["nextCursor"] == default_cursor(
+        Position(world.events.stored[1].occurred_at, world.events.stored[1].event_id)
     )
 
 

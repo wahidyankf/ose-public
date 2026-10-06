@@ -20,11 +20,12 @@ from support.busy import PLANNED_ATTEMPT_TIMEOUT_MS, PLANNED_BUSY_TIMEOUT_MS, re
 from support.fakes import FIXED_NOW, FakeMonotonic, FixedClock, SimulatedCrash, make_world
 from support.machine import Machine, make_machine
 from support.populate import WORKSPACE_A, WORKSPACE_B, numbers, stamp
+from support.results import value_of
 from support.retention import CUTOFF, aged_snapshot, edge_events, expired_events, fresh_events
 from support.vacuum import interrupt_every_vacuum
 
 NOW = FIXED_NOW
-EVERYTHING = criteria_from_options({"--all-time": ()}, now=NOW)
+EVERYTHING = value_of(criteria_from_options({"--all-time": ()}, now=NOW))
 SOURCE = Path(__file__).resolve().parents[2] / "src"
 
 

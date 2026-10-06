@@ -6,6 +6,7 @@ from typing import Any
 from ferret.domain.capability import CapabilitySnapshot, snapshot_from_document
 from ferret.domain.event import Event
 from support.populate import FAR_FUTURE, make_event, stamp
+from support.results import value_of
 from support.snapshots import snapshot_document
 
 CUTOFF = timedelta(days=30)
@@ -48,13 +49,15 @@ def edge_events(now: datetime) -> tuple[Event, Event]:
 
 def aged_snapshot(number: int, *, now: datetime, ago: timedelta, harness: str = "codex") -> CapabilitySnapshot:
     """A capability snapshot with two items, captured ``ago`` before ``now``."""
-    return snapshot_from_document(
-        snapshot_document(
-            snapshotId=f"00000000-0000-4000-8000-{SNAPSHOT_BASE + number:012d}",
-            capturedAt=stamp(now - ago),
-            harness=harness,
-        ),
-        now=FAR_FUTURE,
+    return value_of(
+        snapshot_from_document(
+            snapshot_document(
+                snapshotId=f"00000000-0000-4000-8000-{SNAPSHOT_BASE + number:012d}",
+                capturedAt=stamp(now - ago),
+                harness=harness,
+            ),
+            now=FAR_FUTURE,
+        )
     )
 
 

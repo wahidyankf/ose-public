@@ -260,7 +260,7 @@ class FakeEvents:
         with self.lock:
             self.reads += 1
             rows = sorted(
-                (held for held in self.stored if held.expires_at > horizon and _matches(criteria, held)),
+                (held for held in self.stored if or_raise(held.expires_at) > horizon and _matches(criteria, held)),
                 key=_position,
                 reverse=newest_first,
             )
@@ -273,7 +273,10 @@ class FakeEvents:
         """The unexpired event with ``event_id``, whatever filters a query had."""
         horizon = or_raise(format_timestamp(now))
         with self.lock:
-            return next((held for held in self.stored if held.event_id == event_id and held.expires_at > horizon), None)
+            return next(
+                (held for held in self.stored if held.event_id == event_id and or_raise(held.expires_at) > horizon),
+                None,
+            )
 
 
 def _recency(snapshot: CapabilitySnapshot) -> tuple[str, str]:
@@ -301,7 +304,7 @@ class FakeCapabilities:
     def latest_snapshot(self, harness: str, *, now: datetime) -> CapabilitySnapshot | None:
         horizon = or_raise(format_timestamp(now))
         with self.lock:
-            live = (held for held in self.stored if held.harness == harness and held.expires_at > horizon)
+            live = (held for held in self.stored if held.harness == harness and or_raise(held.expires_at) > horizon)
             return max(live, key=_recency, default=None)
 
 
@@ -346,12 +349,12 @@ class FakeTelemetry:
             return self._record(PruneResult("skipped"))
         horizon = or_raise(format_timestamp(now))
         expired_events = sorted(
-            (held for held in self.events.stored if held.expires_at <= horizon),
-            key=lambda held: (held.expires_at, held.event_id),
+            (held for held in self.events.stored if or_raise(held.expires_at) <= horizon),
+            key=lambda held: (or_raise(held.expires_at), held.event_id),
         )
         expired_snapshots = sorted(
-            (held for held in self.capabilities.stored if held.expires_at <= horizon),
-            key=lambda held: (held.expires_at, held.snapshot_id),
+            (held for held in self.capabilities.stored if or_raise(held.expires_at) <= horizon),
+            key=lambda held: (or_raise(held.expires_at), held.snapshot_id),
         )
         removed_events: list[Event] = []
         removed_snapshots: list[CapabilitySnapshot] = []
@@ -369,8 +372,8 @@ class FakeTelemetry:
         retained = {held.workspace_id for held in self.events.stored}
         orphaned = {gone.workspace_id for gone in removed_events} - retained
         deleted = len(removed_events) + len(removed_snapshots)
-        remaining = any(held.expires_at <= horizon for held in self.events.stored) or any(
-            held.expires_at <= horizon for held in self.capabilities.stored
+        remaining = any(or_raise(held.expires_at) <= horizon for held in self.events.stored) or any(
+            or_raise(held.expires_at) <= horizon for held in self.capabilities.stored
         )
         completed = deleted == 0 and not remaining
         self.local_total += deleted
@@ -407,14 +410,14 @@ class FakeTelemetry:
         """Live and expired rows counted the way the real store does: live means not expired at ``now``."""
         self._require_reachable()
         horizon, near = or_raise(format_timestamp(now)), or_raise(format_timestamp(now + near_expiry_within))
-        live_events = [held for held in self.events.stored if held.expires_at > horizon]
-        live_snapshots = [held for held in self.capabilities.stored if held.expires_at > horizon]
+        live_events = [held for held in self.events.stored if or_raise(held.expires_at) > horizon]
+        live_snapshots = [held for held in self.capabilities.stored if or_raise(held.expires_at) > horizon]
         stored = len(self.events.stored) + len(self.capabilities.stored)
         return StoreCounts(
             events=len(live_events),
             snapshots=len(live_snapshots),
             oldest_captured_at=min((held.captured_at for held in live_events), default=None),
-            near_expiry=sum(1 for held in (*live_events, *live_snapshots) if held.expires_at <= near),
+            near_expiry=sum(1 for held in (*live_events, *live_snapshots) if or_raise(held.expires_at) <= near),
             logically_expired=stored - len(live_events) - len(live_snapshots),
         )
 

@@ -7,6 +7,7 @@ from ferret.application.initialization import initialize_store
 from ferret.domain.event import Event, event_from_document
 from support.events import event_document
 from support.fakes import FIXED_NOW, World, make_world
+from support.results import value_of
 
 FAR_FUTURE = datetime(2030, 1, 1, tzinfo=UTC)
 WORKSPACE_A = "ws_00000000000000000000000000000001"
@@ -40,7 +41,7 @@ def make_event(
         "capturedAt": moment,
         **overrides,
     }
-    return event_from_document(event_document(**fields), now=FAR_FUTURE)
+    return value_of(event_from_document(event_document(**fields), now=FAR_FUTURE))
 
 
 def world_with(*events: Event, initialized: bool = True) -> World:

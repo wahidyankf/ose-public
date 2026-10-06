@@ -69,6 +69,7 @@ def capture_hook(runtime: Runtime, *, harness: str, event: str) -> CaptureResult
         outcome_visibility=facts.outcome_visibility,
         duration_visibility=facts.duration_visibility,
     )
-    sealed = event_from_document(replace(draft, event_hash=event_hash(draft)).to_document(), now=now)
+    digest = or_raise(event_hash(draft))
+    sealed = or_raise(event_from_document(replace(draft, event_hash=digest).to_document(), now=now))
     prune_due(runtime)
     return runtime.events.capture(sealed, budget=Budget.start(runtime.monotonic, HOOK_CAPTURE_BUDGET_MS))

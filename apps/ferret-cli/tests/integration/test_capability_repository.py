@@ -15,6 +15,7 @@ from ferret.adapters.system import SystemClock
 from ferret.domain.capability import Capability, CapabilitySnapshot, snapshot_from_document
 from ferret.domain.errors import FerretError
 from support.busy import PLANNED_ATTEMPT_TIMEOUT_MS, record_busy_timeouts
+from support.results import value_of
 from support.snapshots import VECTOR_DOCUMENT, VECTOR_HASH, capability, snapshot_document
 
 NOW = datetime(2026, 9, 18, 8, 0, 0, tzinfo=UTC)
@@ -54,7 +55,7 @@ def database(tmp_path: Path) -> Path:
 
 
 def make_snapshot(**overrides: Any) -> CapabilitySnapshot:
-    return snapshot_from_document(snapshot_document(**overrides), now=NOW)
+    return value_of(snapshot_from_document(snapshot_document(**overrides), now=NOW))
 
 
 def rows(database: Path, table: str) -> list[dict[str, Any]]:
@@ -243,7 +244,7 @@ def test_a_writer_blocked_beyond_the_busy_timeout_fails_retryably_and_leaves_no_
 
 def test_the_vector_document_is_what_the_row_read_back_produces(database: Path) -> None:
     repository = SQLiteCapabilityRepository(database)
-    repository.store_snapshot(snapshot_from_document(VECTOR_DOCUMENT, now=NOW))
+    repository.store_snapshot(value_of(snapshot_from_document(VECTOR_DOCUMENT, now=NOW)))
 
     latest = repository.latest_snapshot("codex", now=NOW)
 

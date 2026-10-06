@@ -20,6 +20,7 @@ from typing import Any
 from ferret.adapters.sqlite_repository import SQLiteEventRepository
 from ferret.domain.event import event_from_document
 from support.events import encode, event_document
+from support.results import value_of
 
 REPOSITORY_COUNT = 3
 BURST_SIZE = 20
@@ -93,7 +94,7 @@ def run_burst(database: Path, *, repositories: int = REPOSITORY_COUNT, size: int
         captures: list[Capture] = []
         for sequence in range(size):
             document = event_document(eventId=event_id(repository, sequence), workspaceId=workspace_id(repository))
-            event = event_from_document(document, now=NOW)
+            event = value_of(event_from_document(document, now=NOW))
             started = time.perf_counter()
             result = events.capture(event)
             captures.append(Capture(event.event_id, result, time.perf_counter() - started))

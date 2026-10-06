@@ -6,7 +6,7 @@ from datetime import datetime
 
 from ferret.application.maintenance import open_store
 from ferret.application.ports import EventRepository, Runtime
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, or_raise
 from ferret.domain.event import Event
 from ferret.domain.query import (
     EventCriteria,
@@ -50,11 +50,11 @@ def list_events(runtime: Runtime, options: Options) -> EventPage:
     Pagination is keyset based: the page holds one more event than it returns to learn whether another follows.
     """
     now = runtime.clock.now()
-    criteria = criteria_from_options(options, now=now)
-    limit = parse_limit(options)
-    digest = filter_digest(criteria, limit)
-    cursor = single_value(options, "--cursor", refusal="ferret.args.invalid")
-    after = None if cursor is None else decode_cursor(cursor, digest)
+    criteria = or_raise(criteria_from_options(options, now=now))
+    limit = or_raise(parse_limit(options))
+    digest = or_raise(filter_digest(criteria, limit))
+    cursor = or_raise(single_value(options, "--cursor", refusal="ferret.args.invalid"))
+    after = None if cursor is None else or_raise(decode_cursor(cursor, digest))
     open_store(runtime)
     if after is not None:
         _require_live(runtime, after, now)
@@ -63,7 +63,7 @@ def list_events(runtime: Runtime, options: Options) -> EventPage:
     if len(rows) <= limit:
         return EventPage(items, None)
     last = items[-1]
-    return EventPage(items, encode_cursor(Position(last.occurred_at, last.event_id), digest))
+    return EventPage(items, or_raise(encode_cursor(Position(last.occurred_at, last.event_id), digest)))
 
 
 def _batches(events: EventRepository, criteria: EventCriteria, now: datetime) -> Iterator[Event]:
@@ -85,7 +85,7 @@ def scan_events(runtime: Runtime, options: Options) -> Iterator[Event]:
     expiry cannot shift while the scan runs.
     """
     now = runtime.clock.now()
-    criteria = criteria_from_options(options, now=now)
+    criteria = or_raise(criteria_from_options(options, now=now))
     open_store(runtime)
     return _batches(runtime.events, criteria, now)
 

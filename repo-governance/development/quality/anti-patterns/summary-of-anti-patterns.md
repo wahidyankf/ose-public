@@ -11,7 +11,7 @@ when_to_use: "Use for a quick-reference summary of all anti-patterns."
 | **No Prioritization**     | Equal treatment of issues            | Criticality levels                |
 | **Blind Fixes**           | Incorrect automated changes          | Confidence assessment             |
 | **Deleting Content**      | Knowledge loss                       | Content preservation              |
-| **Running All Tests**     | Slow pre-push                        | Affected tests only               |
+| **Tests in a Git Hook**   | Slow pushes, skipped hooks           | Affected tests in the PR gate     |
 | **Ad-Hoc Validation**     | Inconsistent patterns                | Standardized methodology          |
 | **Ignoring Criticality**  | Random fix order                     | Priority-based execution          |
 | **No CI Quality Gates**   | Bad code merges                      | Fail build on violations          |

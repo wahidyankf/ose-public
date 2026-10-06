@@ -41,10 +41,11 @@ The checker reports none of these properties. The pipeline on the exact head run
 | Vendor names in governance                       | the vendor-term validator | `governance-vendor`                    |
 | Secrets and private references                   | the outbound leak screen  | `public-safety-*`                      |
 | Build, unit tests, and lint of affected projects | the Nx targets            | `nx affected -t build,test:quick,lint` |
+| Internal link targets                            | the link validator        | `md-internal-link`                     |
 
 These pass to each pass as its delegated checks. The leak screen's judgement stays with [PR Leak
-Review](pr-leak-review.md). No declared gate here runs the internal-link or word-budget validator, so links, anchors,
-and word budgets are judgeable.
+Review](pr-leak-review.md). No declared gate validates link anchors or word budgets, so anchors and
+word budgets are judgeable.
 
 ## Cycle
 

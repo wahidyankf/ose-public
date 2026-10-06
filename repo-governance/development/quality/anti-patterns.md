@@ -10,7 +10,7 @@ when_to_use: "Use when reviewing a change for a common quality anti-pattern."
 ## Documents
 
 - [Anti-Patterns 1-3](./anti-patterns/anti-patterns-1-3.md) — Manual quality checks, no issue prioritization, fixes without confidence assessment. Use when reviewing for these three quality anti-patterns.
-- [Anti-Patterns 4-6](./anti-patterns/anti-patterns-4-6.md) — Deleting content without preservation, running all tests pre-push, ad-hoc validation logic. Use when reviewing for these three quality anti-patterns.
+- [Anti-Patterns 4-6](./anti-patterns/anti-patterns-4-6.md) — Deleting content without preservation, running tests in a git hook, ad-hoc validation logic. Use when reviewing for these three quality anti-patterns.
 - [Anti-Patterns 7-9](./anti-patterns/anti-patterns-7-9.md) — Ignoring criticality in fixes, no CI quality gates, undocumented validation rules. Use when reviewing for these three quality anti-patterns.
 - [Anti-Patterns 10-11](./anti-patterns/anti-patterns-10-11.md) — Formatting the entire repo on every commit, mixing test levels. Use when reviewing for these two quality anti-patterns.
 - [Summary of Anti-Patterns](./anti-patterns/summary-of-anti-patterns.md) — A quick-reference summary table of all eleven anti-patterns. Use for a quick-reference summary of all anti-patterns.

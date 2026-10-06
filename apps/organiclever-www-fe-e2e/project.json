@@ -87,13 +87,6 @@
       },
       "cache": false
     },
-    "compat:min-version": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "echo 'compat:min-version: no standard min-version floor for TypeScript'"
-      },
-      "cache": true
-    },
     "test:coverage:e2e": {
       "executor": "nx:run-commands",
       "options": {

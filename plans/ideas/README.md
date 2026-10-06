@@ -23,7 +23,6 @@ Blocks an active plan or documents a live defect, and carries a cross-repo, secu
 - [mermaid-validator-does-not-check-syntax](./q1-urgent-important/mermaid-validator-does-not-check-syntax.md) — `md mermaid validate` is cited as the Mermaid-correctness gate but never parses syntax; broken diagrams pass clean.
 - [next-image-builds-cannot-resolve-ts-env-loader](./q1-urgent-important/next-image-builds-cannot-resolve-ts-env-loader.md) — all six Next.js images fail to build; four scheduled workflows have reported it twice daily for days, and the `prod-*` deploy path for four sites is dead.
 - [oxlint-upgrade-and-lint-reproducibility](./q1-urgent-important/oxlint-upgrade-and-lint-reproducibility.md) — 21 lint sites fetched `npx oxlint@latest`, so a publish turned a green PR red on an untouched file; the 1.78.0 pin froze a real `set-state-in-effect` defect and left the wider class unenumerated.
-- [remove-stale-compat-min-version-stubs](./q1-urgent-important/remove-stale-compat-min-version-stubs.md) — every surviving `compat:min-version` target in `ose-public` is a bare echo that checks nothing — 24 of 24, zero real checks left — while the Nx target convention states outright that echo and no-op targets are forbidden.
 
 ### Q2 — Important, Not Urgent
 
@@ -434,3 +433,17 @@ Directed repair of the follow-ups the entry above left open, authorized by the o
 
 Inbound links in `plans/backlog/README.md` and this file were repointed; archived plans under `plans/done/` keep their
 historical references.
+
+### 2026-10-06 — `compat:min-version` stubs removed, one brief delivered, not promoted
+
+Directed repair authorized by the owner ("benerin sisanya juga"); the recurrence clock in the `Last groomed` line is
+unchanged.
+
+- **`remove-stale-compat-min-version-stubs`** — deleted, delivered. Each of the 31 `project.json` files declaring
+  `compat:min-version` was read: 30 bodies were a bare `echo` and lost the target (19 TypeScript, 5 F#, 5 `be/contracts`
+  spec projects, and `ose-lms-be`, whose echo only pointed at the Gradle toolchain floor that compilation already
+  enforces). `roots-be` keeps the one real check, `scripts/compat-min-version.sh`, which asserts `go.mod`'s `go`
+  directive. Removal was textual, so no other line of any `project.json` changed. A validator for echo-bodied targets
+  stays unbuilt: the anti-pattern remains review-checked.
+
+Inbound links in `plans/backlog/README.md` were repointed.

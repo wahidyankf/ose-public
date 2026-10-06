@@ -11,15 +11,15 @@ repository the obvious command does not work, and the reason has nothing to do w
 
 ```console
 $ git -C <bare-repo> push origin --delete <branch>
-NX  Command failed: git diff --name-only --no-renames --relative HEAD .
-fatal: this operation must be run in a work tree
-husky - pre-push script failed (code 1)
+husky - pre-push script failed (code <non-zero>)
 error: failed to push some refs
 ```
 
-The `pre-push` hook runs `nx affected`, which shells out to a work-tree operation. A bare repository
-has none, so **every** push originating from it fails — including a pure ref deletion that carries
-no content and could not fail a quality gate even in principle.
+The `pre-push` hook needs a work tree: it starts `./hippo` and `./rhino` by relative path, and its
+first gate, `public-safety-tree`, runs `git rev-parse --show-toplevel` and then `git ls-files`. A bare
+repository has none, so
+**every** push originating from it fails — including a pure ref deletion that carries no content and
+could not fail a quality gate even in principle.
 
 Two routes work. Either delete the branch **from inside the linked worktree, before removing it**,
 while a work tree still exists for the hook to run in; or delete the ref through the forge's API

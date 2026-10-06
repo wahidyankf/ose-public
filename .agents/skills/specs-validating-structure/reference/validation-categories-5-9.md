@@ -11,8 +11,8 @@ context/container/component levels. **LOW**: no `classDef` styling.
 
 ## Category 6: Cross-Reference Semantics [LLM]
 
-Assess whether references are conceptually appropriate and current. No gate owns internal links,
-so use `./rhino md internal-link validate` for missing link targets; do not substitute LLM path
+Assess whether references are conceptually appropriate and current. The pull-request gate
+`md-internal-link` owns missing link targets, so use `./rhino md internal-link validate` for them; do not substitute LLM path
 arithmetic. It does not check `#fragment` anchors, so confirm each anchor against its target
 heading.
 

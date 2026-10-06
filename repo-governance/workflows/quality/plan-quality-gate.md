@@ -45,10 +45,11 @@ The checker reports none of these properties. The entry and exit checks run thei
 | Markdown formatting and lint | the formatter and linter | `format-staged`, `markdownlint` |
 | Front matter                 | the metadata validator   | `md-frontmatter`                |
 | Heading hierarchy            | the heading validator    | `md-heading-hierarchy`          |
+| Internal link targets        | the link validator       | `md-internal-link`              |
 
 A property no tool of its own owns leaves the table and becomes judgeable. No declared gate runs a plan structural
-validator here, so plan layout is judgeable. No declared gate here runs the internal-link or word-budget validator, so
-links, anchors, and word budgets are judgeable.
+validator here, so plan layout is judgeable. No declared gate validates link anchors or word budgets,
+so anchors and word budgets are judgeable.
 
 ## Cycle
 

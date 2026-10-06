@@ -33,15 +33,17 @@ specification tree. Any other `max-cycles` value, or a missing subject, refuses 
 
 The checker reports none of these properties. The entry and exit checks run their owners instead.
 
-| Property                                  | Owned by                 | This repository runs                         |
-| ----------------------------------------- | ------------------------ | -------------------------------------------- |
-| Scenarios pass against the implementation | the test suites          | `test:quick`, `test:integration`, `test:e2e` |
-| Markdown formatting and lint              | the formatter and linter | `format-staged`, `markdownlint`              |
-| Heading hierarchy                         | the heading validator    | `md-heading-hierarchy`                       |
+| Property                                  | Owned by                   | This repository runs                         |
+| ----------------------------------------- | -------------------------- | -------------------------------------------- |
+| Scenarios pass against the implementation | the test suites            | `test:quick`, `test:integration`, `test:e2e` |
+| Markdown formatting and lint              | the formatter and linter   | `format-staged`, `markdownlint`              |
+| Heading hierarchy                         | the heading validator      | `md-heading-hierarchy`                       |
+| Internal link targets                     | the link validator         | `md-internal-link`                           |
+| Each declared spec root's README index    | the README-index validator | `md-readme-index`                            |
 
 A property no tool of its own owns leaves the table and becomes judgeable, per [Deterministic and Judgement
 Validation](../../conventions/structure/deterministic-vs-ai-validation-split.md). No declared gate runs a specification
-validator or Gherkin linter here, so index existence, counts, syntax, and links are judgeable.
+validator or Gherkin linter here, so indexes below the declared roots, counts, syntax, and link anchors are judgeable.
 
 ## Cycle
 

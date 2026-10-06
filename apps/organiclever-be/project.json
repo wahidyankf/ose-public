@@ -136,13 +136,6 @@
       },
       "cache": false
     },
-    "compat:min-version": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "echo 'compat:min-version: no standard min-version floor for F#'"
-      },
-      "cache": true
-    },
     "test:coverage:unit": {
       "executor": "nx:run-commands",
       "options": {

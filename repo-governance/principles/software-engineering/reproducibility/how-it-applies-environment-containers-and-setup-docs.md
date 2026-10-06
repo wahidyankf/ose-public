@@ -66,13 +66,11 @@ services:
       POSTGRES_DB: ose_dev
       POSTGRES_USER: developer
       POSTGRES_PASSWORD: dev_password
-    ports:
-      - "5432:5432"
+    # No host port: the app reaches it on the Compose network, and a developer's own
+    # PostgreSQL keeps the stock 5432 (see docs/reference/web-sites.md).
 
   redis:
     image: redis:7.2.4
-    ports:
-      - "6379:6379"
 
   app:
     build: .

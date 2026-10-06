@@ -10,18 +10,18 @@ with a justification; undocumented deviations are always bugs.
 
 ## Invariant A — CI Workflow Shape
 
-| Requirement                                                                                                                                                       | Enforced by                                                         |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| All `checkout` steps use `actions/checkout@v6`                                                                                                                    | `actionlint` + PR quality gate                                      |
-| Workflow filenames follow the `{domain}-{action-chain}.yml` grammar (see [GitHub Actions Workflow Naming Convention](../github-actions-workflow-naming.md))       | `actionlint` syntax check; code review                              |
-| Non-TypeScript projects use `nx affected` (not `run-many`) in PR gate                                                                                             | `pr-quality-gate.yml` structure                                     |
-| Per-variant test workflows call reusable workflows (thin callers, ≤40 lines each)                                                                                 | Code review; reusable workflow structure                            |
-| All entry-point workflows carry a `concurrency` block: `${{ github.workflow }}-${{ github.ref }}`                                                                 | `actionlint`; PR quality gate                                       |
-| Lint gates named after the tool they run: `shellcheck`, `hadolint`, `actionlint`                                                                                  | `repo-config.yml` gate ids; CI `repository-policy` job              |
-| Affected quick runs every applicable `test:coverage:*`; spec-file link targets are checked only by running `./rhino md internal-link validate` (no declared gate) | `pr-quality-gate.yml` affected quick job                            |
-| Full quality gate runs on every PR event (`opened`/`synchronize`/`reopened`) **and** on every push to `main`                                                      | `pr-quality-gate.yml` `on.push` trigger                             |
-| App-tier scheduled workflows use staggered 2× WIB cadence: `*-app-test-local-deploy-stag` at 03:00/15:00, `*-app-test-stag` at 05:30/17:30 (+2.5 h)               | `*-app-test-local-deploy-stag.yml` and `*-app-test-stag-*.yml` CRON |
-| www-tier scheduled workflows run at 06:00/18:00 WIB (23:00/11:00 UTC)                                                                                             | `*-www-test-local-deploy-prod.yml` CRON expressions                 |
+| Requirement                                                                                                                                                 | Enforced by                                                         |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| All `checkout` steps use `actions/checkout@v6`                                                                                                              | `actionlint` + PR quality gate                                      |
+| Workflow filenames follow the `{domain}-{action-chain}.yml` grammar (see [GitHub Actions Workflow Naming Convention](../github-actions-workflow-naming.md)) | `actionlint` syntax check; code review                              |
+| Non-TypeScript projects use `nx affected` (not `run-many`) in PR gate                                                                                       | `pr-quality-gate.yml` structure                                     |
+| Per-variant test workflows call reusable workflows (thin callers, ≤40 lines each)                                                                           | Code review; reusable workflow structure                            |
+| All entry-point workflows carry a `concurrency` block: `${{ github.workflow }}-${{ github.ref }}`                                                           | `actionlint`; PR quality gate                                       |
+| Lint gates named after the tool they run: `shellcheck`, `hadolint`, `actionlint`                                                                            | `repo-config.yml` gate ids; CI `repository-policy` job              |
+| Affected quick runs every applicable `test:coverage:*`; spec-file link targets are checked by the pull-request gate `md-internal-link`                      | `pr-quality-gate.yml` affected quick job                            |
+| Full quality gate runs on every PR event (`opened`/`synchronize`/`reopened`) **and** on every push to `main`                                                | `pr-quality-gate.yml` `on.push` trigger                             |
+| App-tier scheduled workflows use staggered 2× WIB cadence: `*-app-test-local-deploy-stag` at 03:00/15:00, `*-app-test-stag` at 05:30/17:30 (+2.5 h)         | `*-app-test-local-deploy-stag.yml` and `*-app-test-stag-*.yml` CRON |
+| www-tier scheduled workflows run at 06:00/18:00 WIB (23:00/11:00 UTC)                                                                                       | `*-www-test-local-deploy-prod.yml` CRON expressions                 |
 
 Note: the former `naming:workflows-validation` check, which once validated
 `repo-governance/workflows/*.md` naming, was withdrawn — see

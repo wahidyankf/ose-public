@@ -1,5 +1,5 @@
 ---
-description: "Preserve content during refactoring, run affected tests only, use standardized validation patterns."
+description: "Preserve content during refactoring, run affected tests in the PR gate, use standardized validation patterns."
 when_to_use: "Use when applying these three quality best practices."
 ---
 
@@ -37,20 +37,21 @@ rm old-doc-1.md old-doc-2.md old-doc-3.md
 - Enables future reference
 - Respects Documentation First principle
 
-## Practice 5: Run Affected Tests Only in Pre-Push Using Canonical Target Names
+## Practice 5: Run Affected Tests in the PR Gate Using Canonical Target Names
 
-**Principle**: Use affected `test:quick` execution for fast, consistent feedback. Quick contains
-Unit runtime plus all applicable static `test:coverage:*` validators. Integration and E2E runtime
-never belongs in pre-push or PR gates; developers may run impacted higher-layer tests manually, and
-scheduled full-quality workflows run the complete higher layers.
+**Principle**: The PR workflow's language jobs run affected `test:quick` for fast, consistent
+feedback; no git hook runs tests. Quick contains Unit runtime plus all applicable static
+`test:coverage:*` validators. Integration and E2E runtime never belongs in hooks or PR gates;
+developers may run impacted higher-layer tests manually, and scheduled full-quality workflows run
+the complete higher layers.
 
 **See**: [Behaviour-Driven Development](../../behaviour-driven-development.md) for what belongs at each test level.
 
 **Good Example:**
 
 ```bash
-# .husky/pre-push
-nx affected -t test:quick
+# PR workflow language job
+nx affected -t typecheck,lint,test:quick
 # Only affected projects, using the canonical fast quality gate target
 ```
 
@@ -58,15 +59,15 @@ nx affected -t test:quick
 
 ```bash
 # .husky/pre-push
-nx test  # Non-standard target name; runs ALL tests (slow!)
+nx test  # Non-standard target name; runs ALL tests on every push (slow!)
 ```
 
 **Rationale:**
 
-- Fast feedback (seconds to a few minutes)
-- `test:quick` is the canonical fast quality gate (the PR workflow's language jobs run it) — every project must expose it
+- Fast feedback (seconds to a few minutes) on the exact PR head
+- `test:quick` is the canonical fast quality gate — every project must expose it
 - Using `nx affected -t` ensures consistent behaviour across all project types
-- Reduces friction for developers
+- Pushes stay fast, so hooks are never skipped
 - Maintains quality gate
 
 **See**: [Nx Target Standards](../../infra/nx-targets.md) for `test:quick` composition rules per project type.

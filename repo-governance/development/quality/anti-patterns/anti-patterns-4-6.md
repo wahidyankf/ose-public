@@ -1,5 +1,5 @@
 ---
-description: "Deleting content without preservation, running all tests pre-push, ad-hoc validation logic."
+description: "Deleting content without preservation, running tests in a git hook, ad-hoc validation logic."
 when_to_use: "Use when reviewing for these three quality anti-patterns."
 ---
 
@@ -38,9 +38,10 @@ rm deprecated-guide.md
 - Can reference later
 - Respects Documentation First principle
 
-## Anti-Pattern 5: Running All Tests in Pre-Push
+## Anti-Pattern 5: Running Tests in a Git Hook
 
-**Problem**: Pre-push hook runs the entire test suite or uses non-standard target names (slow, and breaks workspace-level automation).
+**Problem**: A hook that runs a test suite, or a non-standard target name, makes every push slow and
+invites skipping the hook. No hook in this repository runs `test:quick`.
 
 **Note**: `test:integration` and `test:e2e` must never be included in `test:quick`. See [Behaviour-Driven Development](../../behaviour-driven-development.md) for which test level runs where.
 
@@ -52,21 +53,24 @@ nx test  # Runs ALL tests (5+ minutes!) with non-standard target name
 # Developers skip hook due to slowness
 ```
 
-**Solution:**
+**Solution:** the hook stays a thin adapter over the registry's `pre-push` gates, and the PR
+workflow's language jobs run affected `test:quick`:
 
 ```bash
 # .husky/pre-push
-nx affected -t test:quick
-# Only affected projects, fast quality gate target (seconds to a few minutes)
+exec ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- \
+  ./rhino gate run --surface pre-push --push-updates-stdin
+
+# PR workflow language job
+nx affected -t typecheck,lint,test:quick
 ```
 
 **Rationale:**
 
-- Fast feedback encourages usage
-- Runs only relevant projects (Nx affected detection)
-- `test:quick` is the canonical fast quality gate (the PR workflow's language jobs run it) — every project must expose it
-- Prevents hook bypass
-- Maintains quality gate
+- Pushes stay fast, so nobody is tempted to skip the hook
+- Tests run once, on the exact PR head, only for affected projects
+- `test:quick` is the canonical fast quality gate — every project must expose it
+- The registry, not the hook script, decides what a hook runs
 
 **See**: [Nx Target Standards](../../infra/nx-targets.md) for `test:quick` composition rules per project type.
 

@@ -378,7 +378,7 @@ sudo usermod -aG docker $USER
 ### Integration test fails with "port already in use"
 
 This suite publishes PostgreSQL on host port **5434** (the container's own 5432 is remapped), so
-the conflict is on 5434 — not on the 5432 that the `infra/dev/ose-app` stack publishes. Find
+the conflict is on 5434 — not on the 5437 that the `infra/dev/ose-app` stack publishes. Find
 whatever holds it:
 
 ```bash

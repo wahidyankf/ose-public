@@ -1,17 +1,18 @@
 ---
-description: What mechanically validates a specs/ tree today (the behaviour-coverage target and on-demand link validation) and which structural properties stay review-owned
+description: What mechanically validates a specs/ tree today (the behaviour-coverage target and the link and README-index gates) and which structural properties stay review-owned
 when_to_use: Read this when deciding how to check a specs/ change mechanically.
 ---
 
 # Deterministic Validation: What Exists and What Is Review-Owned
 
-No declared gate and no pinned RHINO command validates a specs tree's layout. Two checks run
+No declared gate and no pinned RHINO command validates a specs tree's layout. Three checks run
 mechanically:
 
 | Check                                         | What it checks                                                                        | How it runs                                              |
 | --------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | `test:coverage:behaviour` (per owner project) | Gherkin corpus shape, scenario bindings, adapters, and exemption syntax; never layout | Through `test:quick`, in the PR workflow's language jobs |
-| `./rhino md internal-link validate`           | Markdown link integrity within the spec tree                                          | On demand; no declared gate                              |
+| `./rhino md internal-link validate`           | Markdown link targets within the spec tree exist; never `#anchor`s                    | The pull-request gate `md-internal-link`                 |
+| `./rhino md readme-index validate`            | Each declared spec root's README links every direct child                             | The pull-request gate `md-readme-index`                  |
 
 These properties have no deterministic check, so `specs-checker` judges them on request through the
 [Specs Quality Gate](../../../workflows/quality/specs-quality-gate.md):

@@ -275,7 +275,7 @@
     {
       "id": "agent/specs-checker",
       "path": ".agents/agents/specs-checker.md",
-      "digest": "b168b1f31acaf04da5b9c9c6200ee05386411f4268a17f2dd31f334446aad202"
+      "digest": "e856fb6df482a56a68f604020aac96ba604ea5f0104b7e102678711ac98ca37d"
     },
     {
       "id": "agent/specs-fixer",
@@ -725,7 +725,7 @@
     {
       "id": "skill/specs-validating-structure",
       "path": ".agents/skills/specs-validating-structure/SKILL.md",
-      "digest": "d3bafa67b3846b0e8aabbe0ba02d8390e4fc169ff24614bd6d96070110d05dab"
+      "digest": "2a169064d5e3ce59bb64ee58531c4c69271636b957bacb260ce59cfcfcffccc1"
     },
     {
       "id": "skill/tooling-nx",

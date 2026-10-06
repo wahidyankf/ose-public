@@ -38,12 +38,12 @@ one links to stays out of scope. Cross-folder consistency runs only when two or 
 Repositories keep corpora in different layouts and differ in whether a script checks their structure. The checker
 applies what the repository records.
 
-| Choice          | Option             | The checker                                                                         | Trade-off                                                             |
-| --------------- | ------------------ | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| layout          | Specification Tree | judges shape against it                                                             | every reader and tool finds a corpus alike; old trees need migration  |
-| layout          | a recorded layout  | judges shape against that record, reporting each departure as an adoption gap       | existing paths and bindings keep working; readers learn a local shape |
-| structure check | adopted            | carries the check's results verbatim; missing evidence for this revision is pending | exact and repeatable; the adopter maintains the check                 |
-| structure check | none               | records existence, counts, tree shape, and link resolution as not run               | nothing to maintain; those categories stay unverified in each report  |
+| Choice          | Option             | The checker                                                                             | Trade-off                                                             |
+| --------------- | ------------------ | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| layout          | Specification Tree | judges shape against it                                                                 | every reader and tool finds a corpus alike; old trees need migration  |
+| layout          | a recorded layout  | judges shape against that record, reporting each departure as an adoption gap           | existing paths and bindings keep working; readers learn a local shape |
+| structure check | adopted            | carries the check's results verbatim; missing evidence for this revision is pending     | exact and repeatable; the adopter maintains the check                 |
+| structure check | none               | judges existence, counts, and tree shape by reading, as the gate's judgeable properties | nothing to maintain; those judgements are not exactly repeatable      |
 
 With no layout recorded, it applies
 [Specification Tree](../../repo-governance/conventions/structure/specs-directory-structure.md) and reports the missing

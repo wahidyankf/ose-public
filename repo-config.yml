@@ -955,6 +955,28 @@ gates:
       run-on:
         pull-request:
           reason: "Pre-commit stays narrowed to staged paths; the pull-request surface checks the whole repository."
+    - id: md-readme-index
+      type: check
+      command:
+        executable: ./rhino
+        args:
+          - literal: md
+          - literal: readme-index
+          - literal: validate
+      run-on:
+        pull-request:
+          reason: "A README index can be broken by adding or removing a directory outside the staged paths, so only the whole-repository pull-request surface can check it."
+    - id: md-internal-link
+      type: check
+      command:
+        executable: ./rhino
+        args:
+          - literal: md
+          - literal: internal-link
+          - literal: validate
+      run-on:
+        pull-request:
+          reason: "A rename or deletion breaks links in files it never touches, so only the whole-repository pull-request surface can check them."
     - id: shellcheck
       type: check
       inputs:

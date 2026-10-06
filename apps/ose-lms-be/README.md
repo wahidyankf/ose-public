@@ -70,7 +70,6 @@ not follow fails to compile.
 | `nx run ose-lms-be:test:coverage:behaviour` | Static whole-corpus binding check              |
 | `nx run ose-lms-be:test:coverage`           | Both static coverage checks in order           |
 | `nx run ose-lms-be:deps:audit`              | Resolves and reports the runtime classpath     |
-| `nx run ose-lms-be:compat:min-version`      | Reports the toolchain floor                    |
 
 ## BDD and Testing
 

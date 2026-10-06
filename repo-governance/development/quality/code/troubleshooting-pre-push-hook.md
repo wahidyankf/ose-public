@@ -56,10 +56,6 @@ Push fewer commits at once if the range screen is the slow gate.
    - Invalid model: Must be empty, or a recognized model identifier (`sonnet`, `opus`, `haiku`)
    - Skill not found: Ensure skill exists in the platform binding skill directory (`.agents/skills/`)
 
-4. Bypass hook temporarily (emergency only):
-
-   ```bash
-   git push --no-verify
-   ```
-
-   Note: Fix validation errors before merging to main.
+4. Do not skip the hook to get past a failure. `--no-verify` needs explicit authorization naming
+   that one bypass, with no emergency exception; see the
+   [Bypass policy](../../workflow/git-hook-lifecycle.md#bypass-policy).

@@ -96,6 +96,9 @@ stacks can run at the same time (Nx runs affected projects in parallel).
 Host ports 5432 and 4222 stay unclaimed — they remain the defaults in each backend's `.env.example`
 for a developer-run PostgreSQL or NATS shared across apps by database name, not by port.
 
+The `infra/dev/ose-app` Compose scaffold publishes its PostgreSQL on host port 5437; inside the
+Compose network the backend still reaches it at `postgres:5432`.
+
 `ose-id-be-e2e`'s owned local-stack (`OSE_ID_POSTGRES_PORT`, default 5438) does not fit the table
 above — OSE ID uses no NATS container — so it is recorded here instead: the E2E project's
 self-contained PostgreSQL container publishes on host port 5438 by default, overridable the same way

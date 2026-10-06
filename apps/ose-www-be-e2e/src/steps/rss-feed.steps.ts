@@ -25,6 +25,16 @@ Then("the feed contains item elements for each update", async () => {
   expect(body).toContain("<item>");
 });
 
+Then("every feed link is on the canonical host {string}", async ({}, host: string) => {
+  const body = state.rssFeedBody as string;
+  // The channel link, the self link, and each item's link and guid.
+  const feedUrls = [...body.matchAll(/<(?:link|guid)>([^<]+)<\/(?:link|guid)>|<atom:link href="([^"]+)"/gu)].map(
+    (match) => match[1] ?? match[2]!,
+  );
+  expect(feedUrls.length).toBeGreaterThan(0);
+  expect(feedUrls.map((url) => new URL(url).host).filter((candidate) => candidate !== host)).toEqual([]);
+});
+
 Then("the feed entry has the title {string}", async ({}, expectedTitle: string) => {
   const body = state.rssFeedBody as string;
   // Titles may be CDATA-wrapped and the Gherkin title may be a partial match

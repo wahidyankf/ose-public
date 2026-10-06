@@ -123,7 +123,7 @@ describeFeature(feature, ({ Scenario }) => {
     let jsx: React.ReactElement;
 
     Given("a reader opens a course URL /en/learn/courses/<course-id> with no path context query parameter", () => {
-      const requestedUrl = new URL("https://ayokoding.com/en/learn/courses/just-enough-python");
+      const requestedUrl = new URL("https://www.ayokoding.com/en/learn/courses/just-enough-python");
       expect(requestedUrl.pathname).toBe("/en/learn/courses/just-enough-python");
       expect(requestedUrl.searchParams.has("path")).toBe(false);
     });

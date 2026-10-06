@@ -84,20 +84,18 @@ Feature: IA navigation revamp
     Then every content link resolves directly to its bare URL with status 200
     And no internal content link resolves through a 308 redirect
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Sitemap lists every content URL bare, with no distinct content namespace
-  @integration-exempt
   Scenario: Sitemap lists every content URL bare, with no distinct content namespace
     Given the sitemap is generated from the content index
     When the sitemap entries are produced
     Then every moved-content entry uses a bare URL
+    And every sitemap entry is on the canonical host "www.ayokoding.com"
     But top-level pages (about, terms, tools) use that same bare form — no longer namespace-distinct
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / RSS feed item links use bare content URLs
-  @integration-exempt
   Scenario: RSS feed item links use bare content URLs
     Given the feed is generated from the content index
     When the feed items are produced
     Then every content item link uses a bare URL
+    And every feed link is on the canonical host "www.ayokoding.com"
 
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Canonical link for moved content points to its bare URL
   @integration-exempt
@@ -106,3 +104,4 @@ Feature: IA navigation revamp
     When its metadata is generated
     Then the canonical alternate is "/en/learn/legacy/software-engineering"
     And the language alternates include en and x-default
+    And the canonical link and the language alternates are on the canonical host "www.ayokoding.com"

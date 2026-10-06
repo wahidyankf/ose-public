@@ -10,7 +10,7 @@ const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature"),
 );
 const contentDirectory = path.resolve(process.cwd(), "tests/e2e-fixtures/content");
-const siteUrl = "https://oseplatform.com";
+const siteUrl = "https://www.oseplatform.com";
 
 function realContentService(): ContentService {
   return new ContentService(new FileSystemContentRepository(contentDirectory, false), undefined, {
@@ -47,6 +47,14 @@ describeFeature(feature, ({ Background, Scenario }) => {
     And("the feed contains item elements for each update", () => {
       expect(feed.match(/<item>/gu)).toHaveLength(updates.length);
       expect(feed.match(/<\/item>/gu)).toHaveLength(updates.length);
+    });
+    And('every feed link is on the canonical host "www.oseplatform.com"', () => {
+      // The channel link, the self link, and each item's link and guid.
+      const feedUrls = [...feed.matchAll(/<(?:link|guid)>([^<]+)<\/(?:link|guid)>|<atom:link href="([^"]+)"/gu)].map(
+        (match) => match[1] ?? match[2]!,
+      );
+      expect(feedUrls).toHaveLength(2 + 2 * updates.length);
+      expect(feedUrls.map((url) => new URL(url).host)).toEqual(feedUrls.map(() => "www.oseplatform.com"));
     });
   });
 

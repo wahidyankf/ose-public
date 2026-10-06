@@ -1,7 +1,7 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { render, screen, cleanup } from "@testing-library/react";
-import { expect } from "vitest";
+import { expect, vi } from "vitest";
 import "./helpers/test-setup";
 import { BrowseIndex } from "@/features/content/shell/browse-index";
 import { Footer } from "@/features/app-shell/shell/footer";
@@ -11,9 +11,36 @@ import { Breadcrumb } from "@/features/navigation/shell/breadcrumb";
 import { contentUrl } from "@/features/content/core/content-url";
 import { PRIMARY_NAV_LINKS } from "@/features/app-shell/core/nav-links";
 import { t } from "@/features/i18n/core/translations";
+import { metadata as layoutMetadata } from "@/app/[locale]/layout";
+import sitemap from "@/app/sitemap";
+import { GET as getFeed } from "@/app/feed.xml/route";
+import { generateMetadata } from "@/app/[locale]/(content)/[...slug]/page";
 
 // Mocks required by Footer (no trpc/navigation needed — Footer is a server component)
 // next/link is already mocked in test-setup.ts
+
+// The content index the real sitemap and feed routes read, fixed to one en/id sample.
+const { indexedContent } = vi.hoisted(() => ({
+  indexedContent: [
+    { locale: "en", slug: "learn/software-engineering", isSection: false, date: null, title: "SE", description: null },
+    { locale: "en", slug: "about-ayokoding", isSection: false, date: null, title: "About", description: null },
+    { locale: "id", slug: "tentang-ayokoding", isSection: false, date: null, title: "Tentang", description: null },
+    { locale: "en", slug: "rants/my-post", isSection: false, date: null, title: "My post", description: null },
+  ],
+}));
+vi.mock("@/features/app-shell/shell/trpc-init", () => ({
+  createTRPCContext: () => ({
+    contentService: {
+      getIndex: async () => ({
+        contentMap: new Map(indexedContent.map((meta) => [`${meta.locale}:${meta.slug}`, meta])),
+      }),
+    },
+  }),
+}));
+
+// The content page lookup `generateMetadata` reads its title and description from.
+const { getBySlug } = vi.hoisted(() => ({ getBySlug: vi.fn() }));
+vi.mock("@/lib/trpc/server", () => ({ serverCaller: { content: { getBySlug } } }));
 
 const feature = await loadFeature(
   path.resolve(
@@ -331,77 +358,99 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     },
   );
 
-  Scenario("Sitemap lists every content URL bare, with no distinct content namespace", ({ Given, When, Then, But }) => {
-    const indexedSlugs = [
-      { locale: "en" as const, slug: "learn/software-engineering" },
-      { locale: "en" as const, slug: "about-ayokoding" },
-      { locale: "id" as const, slug: "tentang-ayokoding" },
-    ];
-    let sitemapUrls: string[] = [];
-    Given("the sitemap is generated from the content index", () => {
-      expect(indexedSlugs).toHaveLength(3);
-      expect(indexedSlugs.every(({ slug }) => slug.length > 0)).toBe(true);
-    });
+  Scenario(
+    "Sitemap lists every content URL bare, with no distinct content namespace",
+    ({ Given, When, Then, And, But }) => {
+      let sitemapUrls: string[] = [];
+      Given("the sitemap is generated from the content index", () => {
+        expect(indexedContent).toHaveLength(4);
+        expect(indexedContent.every(({ slug }) => slug.length > 0)).toBe(true);
+      });
 
-    When("the sitemap entries are produced", () => {
-      sitemapUrls = indexedSlugs.map(({ locale, slug }) => `https://ayokoding.com${contentUrl(locale, slug)}`);
-      expect(sitemapUrls.every((url) => URL.canParse(url))).toBe(true);
-    });
+      When("the sitemap entries are produced", async () => {
+        sitemapUrls = (await sitemap()).map(({ url }) => url);
+        expect(sitemapUrls).toHaveLength(indexedContent.length);
+        expect(sitemapUrls.every((url) => URL.canParse(url))).toBe(true);
+      });
 
-    Then("every moved-content entry uses a bare URL", () => {
-      expect(sitemapUrls[0]).toBe("https://ayokoding.com/en/learn/software-engineering");
-      expect(sitemapUrls[0]).not.toContain("/c/");
-    });
+      Then("every moved-content entry uses a bare URL", () => {
+        expect(sitemapUrls[0]).toBe("https://www.ayokoding.com/en/learn/software-engineering");
+        expect(sitemapUrls[0]).not.toContain("/c/");
+      });
 
-    But("top-level pages (about, terms, tools) use that same bare form — no longer namespace-distinct", () => {
-      // Loose pages and content pages now share the same uniform bare join — asserted in sitemap.unit.test.ts
-      expect(contentUrl("en", "about-ayokoding")).not.toContain("/c/");
-      expect(contentUrl("id", "tentang-ayokoding")).not.toContain("/c/");
-    });
-  });
+      And('every sitemap entry is on the canonical host "www.ayokoding.com"', () => {
+        expect(sitemapUrls.map((url) => new URL(url).host)).toEqual(sitemapUrls.map(() => "www.ayokoding.com"));
+      });
 
-  Scenario("RSS feed item links use bare content URLs", ({ Given, When, Then }) => {
-    let feedItem = { title: "", url: "" };
+      But("top-level pages (about, terms, tools) use that same bare form — no longer namespace-distinct", () => {
+        // Loose pages and content pages now share the same uniform bare join — asserted in sitemap.unit.test.ts
+        expect(sitemapUrls).toContain("https://www.ayokoding.com/en/about-ayokoding");
+        expect(sitemapUrls).toContain("https://www.ayokoding.com/id/tentang-ayokoding");
+        expect(sitemapUrls.some((url) => url.includes("/c/"))).toBe(false);
+      });
+    },
+  );
+
+  Scenario("RSS feed item links use bare content URLs", ({ Given, When, Then, And }) => {
+    let feedXml = "";
     Given("the feed is generated from the content index", () => {
-      feedItem = { title: "My post", url: "" };
-      expect(feedItem.title).toBe("My post");
+      expect(indexedContent.some(({ locale, slug }) => locale === "en" && slug === "rants/my-post")).toBe(true);
     });
 
-    When("the feed items are produced", () => {
-      feedItem.url = `https://ayokoding.com${contentUrl("en", "rants/my-post")}`;
-      expect(URL.canParse(feedItem.url)).toBe(true);
+    When("the feed items are produced", async () => {
+      feedXml = await (await getFeed()).text();
+      expect(feedXml).toContain("<item>");
     });
 
     Then("every content item link uses a bare URL", () => {
-      expect(feedItem.url).toBe("https://ayokoding.com/en/rants/my-post");
+      expect(feedXml).toContain("<link>https://www.ayokoding.com/en/rants/my-post</link>");
+      expect(feedXml).not.toContain("/c/");
+    });
+
+    And('every feed link is on the canonical host "www.ayokoding.com"', () => {
+      // The channel link, the self link, and each English item's link and guid.
+      const englishItems = indexedContent.filter(({ locale }) => locale === "en");
+      const feedUrls = [...feedXml.matchAll(/<(?:link|guid)>([^<]+)<\/(?:link|guid)>|<atom:link href="([^"]+)"/gu)].map(
+        (match) => match[1] ?? match[2]!,
+      );
+      expect(feedUrls).toHaveLength(2 + 2 * englishItems.length);
+      expect(feedUrls.map((url) => new URL(url).host)).toEqual(feedUrls.map(() => "www.ayokoding.com"));
     });
   });
 
   Scenario("Canonical link for moved content points to its bare URL", ({ Given, When, Then, And }) => {
-    let metadata: { canonical: string; languages: Record<string, string> };
+    let pageMetadata: Awaited<ReturnType<typeof generateMetadata>>;
     Given('the content page at "/en/learn/legacy/software-engineering"', () => {
-      expect(contentUrl("en", "learn/legacy/software-engineering")).toBe("/en/learn/legacy/software-engineering");
+      getBySlug.mockResolvedValue({ title: "Software Engineering", description: "Legacy overview" });
     });
 
-    When("its metadata is generated", () => {
-      metadata = {
-        canonical: contentUrl("en", "learn/legacy/software-engineering"),
-        languages: {
-          en: contentUrl("en", "learn/legacy/software-engineering"),
-          "x-default": contentUrl("en", "learn/legacy/software-engineering"),
-        },
-      };
+    When("its metadata is generated", async () => {
+      pageMetadata = await generateMetadata({
+        params: Promise.resolve({ locale: "en", slug: ["learn", "legacy", "software-engineering"] }),
+      });
     });
 
     Then('the canonical alternate is "/en/learn/legacy/software-engineering"', () => {
-      expect(metadata.canonical).toBe("/en/learn/legacy/software-engineering");
+      expect(pageMetadata.alternates?.canonical).toBe("/en/learn/legacy/software-engineering");
     });
 
     And("the language alternates include en and x-default", () => {
-      expect(metadata.languages).toEqual({
+      expect(pageMetadata.alternates?.languages).toEqual({
         en: "/en/learn/legacy/software-engineering",
         "x-default": "/en/learn/legacy/software-engineering",
       });
+    });
+
+    And('the canonical link and the language alternates are on the canonical host "www.ayokoding.com"', () => {
+      // Next resolves each relative alternate against the root layout's `metadataBase` when it renders
+      // the `<link>` tags, so that base decides the host every rendered canonical and hreflang carries.
+      const base = layoutMetadata.metadataBase;
+      expect(base).toBeInstanceOf(URL);
+      const { canonical, languages = {} } = pageMetadata.alternates ?? {};
+      const rendered = [canonical, ...Object.values(languages)].map((href) => new URL(String(href), base!));
+      expect(rendered).toHaveLength(3);
+      expect(rendered.map(({ host }) => host)).toEqual(rendered.map(() => "www.ayokoding.com"));
+      expect(rendered[0]?.href).toBe("https://www.ayokoding.com/en/learn/legacy/software-engineering");
     });
   });
 });

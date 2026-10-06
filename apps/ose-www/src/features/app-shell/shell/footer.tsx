@@ -15,7 +15,7 @@ export function Footer() {
             MIT
           </a>
         </p>
-        <a href="https://ayokoding.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
+        <a href="https://www.ayokoding.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
           AyoKoding
         </a>
       </div>

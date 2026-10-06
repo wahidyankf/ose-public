@@ -58,6 +58,7 @@ vi.mock("@/features/search/shell/use-search", () => ({
   SearchContext: React.createContext({ open: false, setOpen: vi.fn() }),
 }));
 
+import { Footer } from "@/features/app-shell/shell/footer";
 import { Header } from "@/features/app-shell/shell/header";
 import { Breadcrumb } from "@/features/content/shell/breadcrumb";
 import { PrevNext } from "@/features/content/shell/prev-next";
@@ -161,6 +162,19 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     And('a "Next" link is displayed with the next update title', () => {
       expect(screen.getByText("Next")).toBeInTheDocument();
       expect(screen.getByText("Next Update Title")).toBeInTheDocument();
+    });
+  });
+
+  Scenario("Footer links to AyoKoding on its canonical host", ({ When, Then }) => {
+    When("the footer component is rendered", () => {
+      render(<Footer />);
+    });
+
+    Then('the footer contains an external link to "AyoKoding" on the canonical host "www.ayokoding.com"', () => {
+      const link = screen.getByRole("link", { name: "AyoKoding" });
+      expect(new URL(link.getAttribute("href") ?? "").host).toBe("www.ayokoding.com");
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
     });
   });
 });

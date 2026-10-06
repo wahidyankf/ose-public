@@ -40,7 +40,7 @@ when its own evidence and dependencies are ready, not on one portfolio-wide stag
 
 The current product and public surfaces are:
 
-- **OSE Platform** — the platform’s public website at [oseplatform.com](https://oseplatform.com).
+- **OSE Platform** — the platform’s public website at [oseplatform.com](https://www.oseplatform.com).
 - **OrganicLever** — an active local-first productivity product workstream, with a marketing site,
   web client, backend, and end-to-end tests.
 - **AyoKoding** — public engineering research and learning drawn from work around the platform.

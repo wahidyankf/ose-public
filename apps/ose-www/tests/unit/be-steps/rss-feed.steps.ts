@@ -10,7 +10,7 @@ const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature"),
 );
 
-const SITE_URL = "https://oseplatform.com";
+const SITE_URL = "https://www.oseplatform.com";
 
 describeFeature(feature, ({ Scenario, Background }) => {
   Background(({ Given }) => {
@@ -62,6 +62,15 @@ describeFeature(feature, ({ Scenario, Background }) => {
     And("the feed contains item elements for each update", () => {
       expect(feedXml).toContain("<item>");
       expect(feedXml).toContain("</item>");
+    });
+
+    And('every feed link is on the canonical host "www.oseplatform.com"', () => {
+      // The channel link, the self link, and each item's link and guid.
+      const feedUrls = [...feedXml.matchAll(/<(?:link|guid)>([^<]+)<\/(?:link|guid)>|<atom:link href="([^"]+)"/gu)].map(
+        (match) => match[1] ?? match[2]!,
+      );
+      expect(feedUrls).toHaveLength(2 + 2 * updates.length);
+      expect(feedUrls.map((url) => new URL(url).host)).toEqual(feedUrls.map(() => "www.oseplatform.com"));
     });
   });
 

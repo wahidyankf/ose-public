@@ -34,8 +34,8 @@ graph LR
     end
 
     subgraph "Deployment Targets"
-        VERCEL_OSE[Vercel<br/>oseplatform.com]
-        VERCEL_AYO[Vercel<br/>ayokoding.com]
+        VERCEL_OSE[Vercel<br/>www.oseplatform.com]
+        VERCEL_AYO[Vercel<br/>www.ayokoding.com]
         VERCEL_OL[Vercel<br/>www.organiclever.com]
         LOCAL[Local Binary<br/>CLI Tools]
     end

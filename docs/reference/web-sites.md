@@ -13,8 +13,8 @@ created: 2026-08-14
 
 | App                  | Domain                                                   | Port | Prod Branch                 |
 | -------------------- | -------------------------------------------------------- | ---- | --------------------------- |
-| ose-www              | [oseplatform.com](https://oseplatform.com)               | 3100 | `prod-ose-www`              |
-| ayokoding-www        | [ayokoding.com](https://ayokoding.com)                   | 3101 | `prod-ayokoding-www`        |
+| ose-www              | [www.oseplatform.com](https://www.oseplatform.com/)      | 3100 | `prod-ose-www`              |
+| ayokoding-www        | [www.ayokoding.com](https://www.ayokoding.com/)          | 3101 | `prod-ayokoding-www`        |
 | organiclever-www     | [www.organiclever.com](https://www.organiclever.com/)    | 3200 | `prod-organiclever-www`     |
 | organiclever-app-web | TBD                                                      | 3202 | `prod-organiclever-app-web` |
 | ose-app-web          | [app.oseplatform.com](https://app.oseplatform.com) (TBD) | 3300 | `prod-ose-app-web` (TBD)    |

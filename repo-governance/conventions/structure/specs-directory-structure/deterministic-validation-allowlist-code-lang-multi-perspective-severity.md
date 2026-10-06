@@ -11,8 +11,8 @@ mechanically:
 | Check                                         | What it checks                                                                        | How it runs                                              |
 | --------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | `test:coverage:behaviour` (per owner project) | Gherkin corpus shape, scenario bindings, adapters, and exemption syntax; never layout | Through `test:quick`, in the PR workflow's language jobs |
-| `./rhino md internal-link validate`           | Markdown link targets within the spec tree exist; never `#anchor`s                    | The pull-request gate `md-internal-link`                 |
-| `./rhino md readme-index validate`            | Each declared spec root's README links every direct child                             | The pull-request gate `md-readme-index`                  |
+| `./rhino md internal-link validate`           | Markdown link targets within the spec tree exist; never `#anchor`s                    | Gate `md-internal-link` (pre-commit, PR)                 |
+| `./rhino md readme-index validate`            | Each declared spec root's README links every direct child                             | Gate `md-readme-index` (pre-commit, PR)                  |
 
 These properties have no deterministic check, so `specs-checker` judges them on request through the
 [Specs Quality Gate](../../../workflows/quality/specs-quality-gate.md):

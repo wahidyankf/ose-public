@@ -39,9 +39,9 @@ comes from `repo-assessing-criticality-confidence`.
 
 ## Input Parameters
 
-- No declared gate validates internal links, and `./rhino md internal-link validate` skips
-  `apps/ayokoding-www/content/**`, so internal path and fragment checks always run here alongside
-  external HTTP/cache validation.
+- The `md-internal-link` gate (`./rhino md internal-link validate`) skips
+  `apps/ayokoding-www/content/**`, so no gate validates this tree's links; internal path and fragment
+  checks always run here alongside external HTTP/cache validation.
 
 ## Web Research Delegation
 

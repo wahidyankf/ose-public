@@ -32,8 +32,9 @@ list` does not filter by surface. Run a declared surface with `./rhino gate run 
 The supported repository-level checks include `./rhino repo-config validate`, `./rhino gate
 validate`, `./rhino harness adapters generate`, `./rhino harness adapters validate`, `./rhino env
 validate`, `./rhino governance vendor validate`, `./rhino governance word-budget validate`, and
-`./rhino md internal-link validate`. Word-budget validation is the pull-request gate `word-budget`;
-internal-link validation is the pull-request gate `md-internal-link`, beside `md-readme-index`.
+`./rhino md internal-link validate`. Word-budget validation is the gate `word-budget`; internal-link
+validation is the gate `md-internal-link`, beside `md-readme-index`. All three run at pre-commit and
+on the pull-request surface.
 Generated adapters are routes to canonical `AGENTS.md`,
 `.agents/agents/`, and `.agents/skills/`; never hand-edit a generated adapter.
 
@@ -85,8 +86,8 @@ One composition rule, one formatter verification rule, and one exclusion govern 
 
 1. **The pull-request surface holds every local gate.** `repo-config.yml` declares
    `gates.composition.pull-request.relation: at-least`, and `./rhino gate validate` fails a local gate
-   that the pull-request surface lacks; today the surface also adds `md-mermaid-repository`,
-   `md-internal-link`, `md-readme-index`, and `word-budget`. Inspect
+   that the pull-request surface lacks; today the surface also adds
+   `md-mermaid-repository`. Inspect
    the sets with `./rhino gate list --output json`.
 
 2. **Every formatter mutation has one CI verifier.** `format-staged` declares both modes: locally it
@@ -110,15 +111,16 @@ Locally, each hook runs its gates in registry order and stops at the first failu
 `.husky/pre-commit` runs `./rhino gate run --surface pre-commit`: the declared gates, in registry
 order, stopping at the first failure:
 
-| #   | Gate                                                                                               | Scope              | What it does                                                                                                                                               |
-| --- | -------------------------------------------------------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `public-safety-tree`                                                                               | other              | Screens the tracked tree, its names, and the staged additions as outbound material.                                                                        |
-| 2   | `format-staged`                                                                                    | affected file-type | Formats staged files by extension and applies the formatted bytes to the index (a `mutation` gate).                                                        |
-| 3   | `repo-config`, `harness-adapters`, `governance-vendor`, `governance-quality-gates`, `env-validate` | other              | Validate `repo-config.yml`, the generated harness adapters, vendor neutrality of governance, the quality-gate layout, and the declared environment policy. |
-| 4   | `markdownlint`                                                                                     | all file-type      | Lints every Markdown file with `markdownlint-cli2`.                                                                                                        |
-| 5   | `md-mermaid`                                                                                       | affected file-type | Validates Mermaid diagrams in the staged Markdown files.                                                                                                   |
-| 6   | `shellcheck`, `hadolint`, `actionlint`                                                             | affected file-type | Lint staged shell scripts, Dockerfiles, and workflow files; a missing linter binary fails the gate.                                                        |
-| 7   | `md-heading-hierarchy`, `md-naming`, `md-frontmatter`, `convention-emoji`                          | all file-type      | Check heading structure, filenames, front matter, and the emoji convention.                                                                                |
+| #   | Gate                                                                                               | Scope              | What it does                                                                                                                                                      |
+| --- | -------------------------------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `public-safety-tree`                                                                               | other              | Screens the tracked tree, its names, and the staged additions as outbound material.                                                                               |
+| 2   | `format-staged`                                                                                    | affected file-type | Formats staged files by extension and applies the formatted bytes to the index (a `mutation` gate).                                                               |
+| 3   | `repo-config`, `harness-adapters`, `governance-vendor`, `governance-quality-gates`, `env-validate` | other              | Validate `repo-config.yml`, the generated harness adapters, vendor neutrality of governance, the quality-gate layout, and the declared environment policy.        |
+| 4   | `markdownlint`                                                                                     | all file-type      | Lints every Markdown file with `markdownlint-cli2`.                                                                                                               |
+| 5   | `md-mermaid`                                                                                       | affected file-type | Validates Mermaid diagrams in the staged Markdown files.                                                                                                          |
+| 6   | `md-readme-index`, `md-internal-link`, `word-budget`                                               | other              | Check every declared README index, every relative Markdown link target (never `#fragment` anchors), and every declared word-budget surface across the whole tree. |
+| 7   | `shellcheck`, `hadolint`, `actionlint`                                                             | affected file-type | Lint staged shell scripts, Dockerfiles, and workflow files; a missing linter binary fails the gate.                                                               |
+| 8   | `md-heading-hierarchy`, `md-naming`, `md-frontmatter`, `convention-emoji`                          | all file-type      | Check heading structure, filenames, front matter, and the emoji convention.                                                                                       |
 
 Pre-commit is the fast stage — it does not run `test:quick`. Per-project `typecheck`, `lint`, and
 `test:quick` run in the PR workflow's language jobs, never in a hook.
@@ -159,9 +161,9 @@ gates, in registry order, stopping at the first failure:
 | 4   | `env-validate`        | other | `./rhino env validate`: the declared environment policy.                                                                                                                         |
 
 Pre-push runs no `test:quick`, no Markdown lint, and none of `md internal-link validate`,
-`governance vendor validate`, `harness adapters validate`, or `governance word-budget validate`.
-Vendor and adapter validation run at pre-commit and on the pull-request surface. Internal-link,
-README-index, and word-budget validation run only on the pull-request surface.
+`md readme-index validate`, `governance vendor validate`, `harness adapters validate`, or
+`governance word-budget validate`. Those validators run at pre-commit and on the pull-request
+surface.
 
 Project BDD coverage runs inside `test:quick` through static targets:
 
@@ -171,8 +173,7 @@ Project BDD coverage runs inside `test:quick` through static targets:
 | `test:coverage:behaviour` | Recursive corpus, explicit When/Then, bindings, adapters, and exemption syntax   | Every owner/E2E project |
 
 Repeated primary keywords are valid for one continuous journey. Link targets under `specs/**.md`
-are checked by the pull-request gate `md-internal-link`; run `./rhino md internal-link validate` to check them before
-pushing.
+are checked by the gate `md-internal-link` at pre-commit and on the pull-request surface.
 
 ### Stage 4: PR Quality Gate
 

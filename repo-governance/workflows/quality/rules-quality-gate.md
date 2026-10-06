@@ -44,8 +44,7 @@ The checker reports none of these properties. The entry and exit checks run thei
 | README index entries for every direct child | the README-index validator | `md-readme-index`               |
 | Word budgets of declared surfaces           | the word-budget validator  | `word-budget`                   |
 
-A property no tool of its own owns leaves the table and becomes judgeable. No declared gate validates link anchors, so
-anchors are judgeable. How to bring a file back under its budget stays judgeable.
+A property no tool of its own owns leaves the table and becomes judgeable, including link anchors.
 
 ## Cycle
 

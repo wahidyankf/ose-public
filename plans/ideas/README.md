@@ -20,13 +20,11 @@ Blocks an active plan or documents a live defect, and carries a cross-repo, secu
 
 - [agents-md-progressive-disclosure](./q1-urgent-important/agents-md-progressive-disclosure.md) — `AGENTS.md` sits under 20 B beneath its 30,000 B ceiling; restore headroom via progressive disclosure.
 - [file-naming-convention-rework](./q1-urgent-important/file-naming-convention-rework.md) — `file-naming.md` documents 2 of the 11 exemptions the gate applies, its scope clause ("and similar locations") cannot be evaluated, and the ordinal convention contradicts its own worked example.
-- [harness-mirror-and-test-isolation-defects](./q1-urgent-important/harness-mirror-and-test-isolation-defects.md) — OpenCode loads `.opencode/agents/README.md` as an agent named `README`, `rhino-cli` smoke tests share one process CWD so a new test flakes a sibling, and 47 dangling anchors hid behind a prefix-keyed link exemption.
-- [markdownlint-ci-gate-lints-zero-files](./q1-urgent-important/markdownlint-ci-gate-lints-zero-files.md) — the `markdownlint` gate declares `all-file-type` with no glob, so CI runs it with empty argv, lints `0 file(s)`, and has always passed vacuously.
 - [mermaid-validator-does-not-check-syntax](./q1-urgent-important/mermaid-validator-does-not-check-syntax.md) — `md mermaid validate` is cited as the Mermaid-correctness gate but never parses syntax; broken diagrams pass clean.
 - [next-image-builds-cannot-resolve-ts-env-loader](./q1-urgent-important/next-image-builds-cannot-resolve-ts-env-loader.md) — all six Next.js images fail to build; four scheduled workflows have reported it twice daily for days, and the `prod-*` deploy path for four sites is dead.
 - [oxlint-upgrade-and-lint-reproducibility](./q1-urgent-important/oxlint-upgrade-and-lint-reproducibility.md) — 21 lint sites fetched `npx oxlint@latest`, so a publish turned a green PR red on an untouched file; the 1.78.0 pin froze a real `set-state-in-effect` defect and left the wider class unenumerated.
 - [remove-stale-compat-min-version-stubs](./q1-urgent-important/remove-stale-compat-min-version-stubs.md) — every surviving `compat:min-version` target in `ose-public` is a bare echo that checks nothing — 24 of 24, zero real checks left — while the Nx target convention states outright that echo and no-op targets are forbidden.
-- [rhino-governance-tooling-defects](./q1-urgent-important/rhino-governance-tooling-defects.md) — four governance tools that exit 0 while doing less than the caller believes: a mis-paired wrapped code span, a hard-coded `.claude/agents`, basename-keyed rename matching, and an `AUDIT FAILED` line above a green gate.
+- [skill-tree-links-hidden-by-link-exemption](./q1-urgent-important/skill-tree-links-hidden-by-link-exemption.md) — `.agents/skills/**` is exempt from `md internal-link validate`; lifting the exemption in a scratch copy shows 17 unresolvable links in 10 skill files, and 7 more `#fragment` anchors dangle unseen because the pinned validator never reads fragments.
 
 ### Q2 — Important, Not Urgent
 
@@ -38,7 +36,6 @@ No active plan waits on these and no live defect is running, but each carries a 
 - [ayokoding-database-internals-ruff-config](./q2-not-urgent-important/ayokoding-database-internals-ruff-config.md) — 22 sibling courses carry a scoped `ruff.toml` and this one does not, though `ruff format --check` currently passes clean.
 - [ayokoding-mermaid-diagram-remediation](./q2-not-urgent-important/ayokoding-mermaid-diagram-remediation.md) — 636 mermaid violations exposed by the `detect_kind` fix; remediate and drop the temporary CI exclude.
 - [ayokoding-www-app-shell-tap-targets](./q2-not-urgent-important/ayokoding-www-app-shell-tap-targets.md) — shared header/footer tap targets render 17-20 CSS px tall against WCAG 2.5.8's 24x24 floor, site-wide and unguarded by CI.
-- [bare-repo-landing-method-step-count-drift](./q2-not-urgent-important/bare-repo-landing-method-step-count-drift.md) — the landing method numbers eight steps but is summarized as "seven-step" in its own frontmatter and sub-folder index.
 - [behaviour-coverage-timing-per-adapter](./q2-not-urgent-important/behaviour-coverage-timing-per-adapter.md) — a new `.feature` file unregistered in its test project ran zero E2E scenarios while `dotnet test` reported green; the BDD contract places the static coverage check at a point in time, not at the event that needs it.
 - [ci-setup-rust-toolchain-retry](./q2-not-urgent-important/ci-setup-rust-toolchain-retry.md) — `setup-rust` flaked 7× in one phase on the toolchain download; add a retry.
 - [coverage-artifact-relative-paths](./q2-not-urgent-important/coverage-artifact-relative-paths.md) — generated coverage files bake in the last runner's absolute path; most instances are gitignored, but a 2026-08-18 re-check found one finding overstated.
@@ -371,3 +368,44 @@ they were deleted rather than carried:
   alongside the `apps/rhino-cli` rules.
 
 > Last groomed: 2026-09-16
+
+### 2026-10-06 — four briefs resolved or rewritten against the pinned RHINO, not promoted
+
+Directed resolution, not a sweep: the recurrence clock in the `Last groomed` line above is unchanged. Each brief was
+re-tested on the RHINO release `rhino.lock` pins (`v0.11.0`) with `./rhino` commands and minimal reproductions in a
+scratch directory, which was removed afterwards.
+
+- **`bare-repo-landing-method-step-count-drift`** — deleted, resolved by removing the count rather than correcting it.
+  The two frontmatter descriptions that said "seven-step" and the three summaries that said "eight-step" now name no
+  number, so the sequence cannot disagree with its own summary again. `rg "seven-step|eight-step"` over
+  `repo-governance/`, `.agents/`, and `docs/` finds nothing.
+- **`markdownlint-ci-gate-lints-zero-files`** — deleted, resolved. The `markdownlint` gate in `repo-config.yml` now
+  passes `"**/*.md"` explicitly; the gate command lints 7,366 files with 0 errors, a deliberate MD028 and MD009 in a
+  scratch copy fail it (exit 1), and the old argument-free form still lints 0 files, which is the shape the gate no
+  longer has. The brief's second hole is also closed: `format-verify-prettier` is gone, and `format-staged` verifies
+  the explicit pull-request range, so a documentation-only change is still checked. The `.fvm-cache` half had no
+  trace left: neither this worktree nor the primary checkout holds `.fvm/` or `.fvm-cache/`, and no Dart or Flutter
+  project remains.
+- **`rhino-governance-tooling-defects`** — deleted; none of its four defects reproduces. The vendor audit is a
+  case-sensitive substring match with no code-span handling (a wrapped span adds no finding, and a term after one is
+  still caught); adapter paths come from the `harness:` registry (moving one path in a scratch config regenerated and
+  validated there, and the profile count is a documented fixed three); `rewrite-paths` no longer exists (exit 2);
+  and the `readme-index` verdict line agrees with its exit code. A scan of 2,182 tracked non-Markdown text files found no
+  stale governance path.
+- **`harness-mirror-and-test-isolation-defects`** — rewritten and renamed to
+  [skill-tree-links-hidden-by-link-exemption](./q1-urgent-important/skill-tree-links-hidden-by-link-exemption.md). The
+  OpenCode `README` agent is gone (the harness lists 75 repository agents and none by that name, and a stray file in
+  the agent directory now fails `harness adapters validate`), and the `rhino-cli` smoke-test coupling died with the
+  retired in-tree crate. What remained is local: the exemption on `.agents/skills/**` hides unresolvable links. The
+  brief stays in Q1 under both rubrics: it documents an observed defect and concerns a rule a checker enforces.
+
+Inbound links in `plans/backlog/README.md`, `file-naming-convention-rework`, and
+`remove-stale-compat-min-version-stubs` were repointed or dropped; archived plans under `plans/done/` keep their
+historical references.
+
+**Unresolved follow-ups**:
+
+- **Fragment validation.** The pinned `./rhino md internal-link validate` strips `#fragment` and skips fragment-only
+  links by documented design, so no gate checks anchors; whether to ask upstream for it is an owner decision.
+- **Stale statement.** `docs/reference/sdlc-gate-standard.md` still says that gate resolves `#fragment` anchors, which
+  the linking convention contradicts.

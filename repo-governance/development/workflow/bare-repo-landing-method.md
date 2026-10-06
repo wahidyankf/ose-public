@@ -1,5 +1,5 @@
 ---
-description: The base-worktree procedure for landing changes into a repository with no primary checkout — topology verification, the seven-step landing sequence, and the terminal reconcile.
+description: The base-worktree procedure for landing changes into a repository with no primary checkout — topology verification, the landing sequence, and the terminal reconcile.
 when_to_use: Use when landing a change into a bare repository, or when a landing is performed from a side worktree rather than the branch's own checkout.
 ---
 
@@ -18,7 +18,7 @@ repository with this shape needs the identical procedure.
 - [Principles and Conventions Implemented](./bare-repo-landing-method/principles-and-conventions-implemented.md) — Why this method exists.
 - [When This Applies](./bare-repo-landing-method/when-this-applies.md) — The two triggering conditions.
 - [Verify Topology First](./bare-repo-landing-method/verify-topology-first.md) — Two valid bareness checks, one forbidden command.
-- [The Method, As Numbered Steps](./bare-repo-landing-method/the-method-as-numbered-steps.md) — The eight-step landing sequence.
+- [The Method, As Numbered Steps](./bare-repo-landing-method/the-method-as-numbered-steps.md) — The landing sequence.
 - [Terminal Reconcile](./bare-repo-landing-method/terminal-reconcile.md) — The topology-keyed reconcile command for step 8.
 - [Why Merge --ff-only Cannot Run in a Bare Repository](./bare-repo-landing-method/why-merge-ff-only-cannot-run-in-the-bare-siblings.md) — Why the refspec fetch form is the only universal one.
 - [Worked Example — the 2026-07-21 Sibling Drift](./bare-repo-landing-method/worked-example-the-2026-07-21-sibling-drift.md) — A real transcript of silent local-main lag.

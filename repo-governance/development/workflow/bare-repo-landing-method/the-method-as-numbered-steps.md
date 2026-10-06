@@ -1,5 +1,5 @@
 ---
-description: The eight-step numbered sequence for landing a change through a bare repository or a side worktree.
+description: The numbered sequence for landing a change through a bare repository or a side worktree.
 when_to_use: Use as the step-by-step checklist while executing a bare-repo or side-worktree landing.
 ---
 

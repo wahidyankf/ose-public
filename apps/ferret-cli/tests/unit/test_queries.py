@@ -51,9 +51,10 @@ VECTOR_CURSOR = (
 )
 
 
-def refusal(action: Any, *arguments: Any, **keywords: Any) -> FerretError:
+def raised_by_the_store_check(action: Any, *arguments: Any) -> FerretError:
+    """The refusal of an unusable data home, which ``open_store`` still raises until its own slice returns it."""
     with pytest.raises(FerretError) as caught:
-        action(*arguments, **keywords)
+        action(*arguments)
     return caught.value
 
 
@@ -442,7 +443,7 @@ def test_events_list_returns_the_newest_first_with_the_event_id_breaking_ties_do
         make_event(4, ago=same_moment),
     )
 
-    page = list_events(world.runtime, {})
+    page = value_of(list_events(world.runtime, {}))
 
     assert numbers(page.items) == [3, 4, 2, 1]
     assert page.next_cursor is None
@@ -457,7 +458,7 @@ def test_events_export_streams_the_oldest_first_with_the_event_id_breaking_ties_
         make_event(4, ago=same_moment),
     )
 
-    assert numbers(tuple(export_events(world.runtime, {}))) == [1, 2, 4, 3]
+    assert numbers(tuple(value_of(export_events(world.runtime, {})))) == [1, 2, 4, 3]
 
 
 @pytest.mark.parametrize(
@@ -515,8 +516,8 @@ def test_each_filter_narrows_the_result_and_they_combine_conjunctively(options: 
         ),
     )
 
-    assert sorted(numbers(list_events(world.runtime, options).items)) == sorted(expected)
-    assert sorted(numbers(tuple(export_events(world.runtime, options)))) == sorted(expected)
+    assert sorted(numbers(value_of(list_events(world.runtime, options)).items)) == sorted(expected)
+    assert sorted(numbers(tuple(value_of(export_events(world.runtime, options))))) == sorted(expected)
 
 
 def test_the_interval_includes_its_lower_bound_and_excludes_its_upper_bound() -> None:
@@ -527,7 +528,7 @@ def test_the_interval_includes_its_lower_bound_and_excludes_its_upper_bound() ->
     )
     lower, upper = stamp(FIXED_NOW - timedelta(hours=2)), stamp(FIXED_NOW - timedelta(hours=1))
 
-    page = list_events(world.runtime, {"--from": (lower,), "--to": (upper,)})
+    page = value_of(list_events(world.runtime, {"--from": (lower,), "--to": (upper,)}))
 
     assert numbers(page.items) == [2]
 
@@ -540,8 +541,8 @@ def test_the_default_window_is_the_seven_days_ending_now_and_all_time_widens_it(
         make_event(4, ago=timedelta(0)),
     )
 
-    assert numbers(list_events(world.runtime, {}).items) == [3, 2]
-    assert numbers(list_events(world.runtime, {"--all-time": ()}).items) == [4, 3, 2, 1]
+    assert numbers(value_of(list_events(world.runtime, {})).items) == [3, 2]
+    assert numbers(value_of(list_events(world.runtime, {"--all-time": ()})).items) == [4, 3, 2, 1]
 
 
 def test_an_event_that_expired_is_never_returned_even_for_all_time() -> None:
@@ -551,17 +552,17 @@ def test_an_event_that_expired_is_never_returned_even_for_all_time() -> None:
         make_event(3, ago=timedelta(days=29, hours=23)),
     )
 
-    assert numbers(list_events(world.runtime, {"--all-time": ()}).items) == [3]
-    assert numbers(tuple(export_events(world.runtime, {"--all-time": ()}))) == [3]
+    assert numbers(value_of(list_events(world.runtime, {"--all-time": ()})).items) == [3]
+    assert numbers(tuple(value_of(export_events(world.runtime, {"--all-time": ()})))) == [3]
 
 
 def test_pages_chain_by_cursor_without_a_gap_or_a_repeat() -> None:
     world = world_with(*[make_event(number, ago=timedelta(minutes=number)) for number in range(1, 8)])
     options: Options = {"--limit": ("3",)}
 
-    first = list_events(world.runtime, options)
-    second = list_events(world.runtime, {**options, "--cursor": (first.next_cursor or "",)})
-    third = list_events(world.runtime, {**options, "--cursor": (second.next_cursor or "",)})
+    first = value_of(list_events(world.runtime, options))
+    second = value_of(list_events(world.runtime, {**options, "--cursor": (first.next_cursor or "",)}))
+    third = value_of(list_events(world.runtime, {**options, "--cursor": (second.next_cursor or "",)}))
 
     assert [numbers(page.items) for page in (first, second, third)] == [[1, 2, 3], [4, 5, 6], [7]]
     assert (first.next_cursor is None, second.next_cursor is None, third.next_cursor is None) == (False, False, True)
@@ -570,7 +571,7 @@ def test_pages_chain_by_cursor_without_a_gap_or_a_repeat() -> None:
 def test_a_page_that_exactly_fills_the_limit_reports_no_further_cursor() -> None:
     world = world_with(*[make_event(number, ago=timedelta(minutes=number)) for number in range(1, 4)])
 
-    page = list_events(world.runtime, {"--limit": ("3",)})
+    page = value_of(list_events(world.runtime, {"--limit": ("3",)}))
 
     assert (numbers(page.items), page.next_cursor) == ([1, 2, 3], None)
 
@@ -578,7 +579,7 @@ def test_a_page_that_exactly_fills_the_limit_reports_no_further_cursor() -> None
 def test_the_cursor_names_the_last_item_and_the_digest_of_its_own_query() -> None:
     world = world_with(*[make_event(number, ago=timedelta(minutes=number)) for number in range(1, 5)])
 
-    page = list_events(world.runtime, {"--limit": ("2",)})
+    page = value_of(list_events(world.runtime, {"--limit": ("2",)}))
 
     last = page.items[-1]
     assert page.next_cursor == default_cursor(Position(last.occurred_at, last.event_id))
@@ -586,80 +587,82 @@ def test_the_cursor_names_the_last_item_and_the_digest_of_its_own_query() -> Non
 
 def test_a_cursor_is_refused_when_the_filters_or_the_limit_differ() -> None:
     world = world_with(*[make_event(number, ago=timedelta(minutes=number)) for number in range(1, 6)])
-    cursor = list_events(world.runtime, {"--limit": ("2",)}).next_cursor or ""
+    cursor = value_of(list_events(world.runtime, {"--limit": ("2",)})).next_cursor or ""
 
     for options in (
         {"--limit": ("3",), "--cursor": (cursor,)},
         {"--limit": ("2",), "--cursor": (cursor,), "--harness": ("claude_code",)},
         {"--limit": ("2",), "--cursor": (cursor,), "--all-time": ()},
     ):
-        assert refusal(list_events, world.runtime, options).code == "ferret.cursor.invalid"
+        assert refusal_of(list_events(world.runtime, options)).code == "ferret.cursor.invalid"
 
 
 def test_a_cursor_is_refused_once_its_referenced_row_has_expired_or_vanished() -> None:
     world = world_with(*[make_event(number, ago=timedelta(days=29, minutes=number)) for number in range(1, 5)])
     options: Options = {"--limit": ("2",), "--all-time": ()}
-    cursor = list_events(world.runtime, options).next_cursor or ""
+    cursor = value_of(list_events(world.runtime, options)).next_cursor or ""
     world.clock.advance(timedelta(days=1))
 
-    assert refusal(list_events, world.runtime, {**options, "--cursor": (cursor,)}).code == "ferret.cursor.invalid"
+    assert refusal_of(list_events(world.runtime, {**options, "--cursor": (cursor,)})).code == "ferret.cursor.invalid"
 
     fresh = world_with(*[make_event(number, ago=timedelta(minutes=number)) for number in range(1, 5)])
-    kept = list_events(fresh.runtime, {"--limit": ("2",)}).next_cursor or ""
+    kept = value_of(list_events(fresh.runtime, {"--limit": ("2",)})).next_cursor or ""
     fresh.events.stored.clear()
-    assert refusal(list_events, fresh.runtime, {"--limit": ("2",), "--cursor": (kept,)}).code == "ferret.cursor.invalid"
+    refusal = refusal_of(list_events(fresh.runtime, {"--limit": ("2",), "--cursor": (kept,)}))
+    assert refusal.code == "ferret.cursor.invalid"
 
 
 def test_a_cursor_whose_position_disagrees_with_its_row_is_refused() -> None:
     world = world_with(*[make_event(number, ago=timedelta(minutes=number)) for number in range(1, 5)])
     forged = default_cursor(Position("2026-09-18T07:00:00.000Z", world.events.stored[0].event_id))
 
-    assert (
-        refusal(list_events, world.runtime, {"--limit": ("2",), "--cursor": (forged,)}).code == "ferret.cursor.invalid"
-    )
+    refusal = refusal_of(list_events(world.runtime, {"--limit": ("2",), "--cursor": (forged,)}))
+
+    assert refusal.code == "ferret.cursor.invalid"
 
 
 def test_a_repeated_cursor_option_is_invalid_arguments() -> None:
     world = world_with(make_event(1))
 
-    assert (
-        refusal(list_events, world.runtime, {"--cursor": (VECTOR_CURSOR, VECTOR_CURSOR)}).code == "ferret.args.invalid"
-    )
+    refusal = refusal_of(list_events(world.runtime, {"--cursor": (VECTOR_CURSOR, VECTOR_CURSOR)}))
+
+    assert refusal.code == "ferret.args.invalid"
 
 
 def test_a_bad_filter_or_cursor_is_refused_before_storage_is_touched() -> None:
     world = world_with(initialized=False)
 
     for options in ({"--harness": ("Bad",)}, {"--cursor": ("!",)}, {"--limit": ("0",)}):
-        assert refusal(list_events, world.runtime, options).code in {
+        assert refusal_of(list_events(world.runtime, options)).code in {
             "ferret.filter.invalid",
             "ferret.cursor.invalid",
             "ferret.args.invalid",
         }
-    assert refusal(export_events, world.runtime, {"--harness": ("Bad",)}).code == "ferret.filter.invalid"
+    assert refusal_of(export_events(world.runtime, {"--harness": ("Bad",)})).code == "ferret.filter.invalid"
     assert world.files.touched == []
 
 
 def test_a_valid_query_needs_an_initialized_store() -> None:
     world = world_with(initialized=False)
 
-    assert refusal(list_events, world.runtime, {}).code == "ferret.storage.uninitialized"
-    assert refusal(export_events, world.runtime, {}).code == "ferret.storage.uninitialized"
+    assert raised_by_the_store_check(list_events, world.runtime, {}).code == "ferret.storage.uninitialized"
+    assert raised_by_the_store_check(export_events, world.runtime, {}).code == "ferret.storage.uninitialized"
     assert world.events.reads == 0
 
 
 def test_export_validates_when_called_rather_than_when_first_read() -> None:
     world = world_with(make_event(1))
 
-    with pytest.raises(FerretError):
-        export_events(world.runtime, {"--harness": ("Bad",)})
+    refused = refusal_of(export_events(world.runtime, {"--harness": ("Bad",)}))
+
+    assert (refused.code, world.events.reads) == ("ferret.filter.invalid", 0)
 
 
 def test_export_reads_in_batches_and_only_as_the_consumer_advances(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(queries, "BATCH_SIZE", 2)
     world = world_with(*[make_event(number, ago=timedelta(minutes=10 - number)) for number in range(1, 8)])
 
-    stream = export_events(world.runtime, {})
+    stream = value_of(export_events(world.runtime, {}))
     assert world.events.reads == 0
     first = next(stream)
     assert (numbers((first,)), world.events.reads) == ([1], 1)
@@ -670,7 +673,7 @@ def test_export_reads_in_batches_and_only_as_the_consumer_advances(monkeypatch: 
 
 
 def test_export_of_an_empty_result_yields_nothing() -> None:
-    assert list(export_events(world_with().runtime, {})) == []
+    assert list(value_of(export_events(world_with().runtime, {}))) == []
 
 
 def test_export_batches_are_windows_of_one_consistent_order_with_equal_timestamps(
@@ -679,7 +682,7 @@ def test_export_batches_are_windows_of_one_consistent_order_with_equal_timestamp
     monkeypatch.setattr(queries, "BATCH_SIZE", 2)
     world = world_with(*[make_event(number, ago=timedelta(minutes=1)) for number in range(1, 6)])
 
-    assert numbers(tuple(export_events(world.runtime, {}))) == [1, 2, 3, 4, 5]
+    assert numbers(tuple(value_of(export_events(world.runtime, {})))) == [1, 2, 3, 4, 5]
 
 
 def test_events_list_json_is_one_compact_object_of_canonical_events_and_a_cursor() -> None:

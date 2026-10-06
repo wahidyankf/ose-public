@@ -15,7 +15,7 @@ from ferret.application.ports import Runtime
 from ferret.application.queries import export_events, list_events
 from ferret.application.status import report_status
 from ferret.cli import EXIT_SUCCESS, CommandPath, Handler, Request, run_version
-from ferret.domain.errors import EXIT_NEGATIVE_RESULT, FerretError
+from ferret.domain.errors import EXIT_NEGATIVE_RESULT, FerretError, or_raise
 from ferret.rendering import (
     NO_ROWS,
     render_capture,
@@ -82,29 +82,29 @@ def build_handlers(runtime_factory: RuntimeFactory) -> Mapping[CommandPath, Hand
         return EXIT_SUCCESS
 
     def events_list(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        page = list_events(runtime_factory(), request.options)
+        page = or_raise(list_events(runtime_factory(), request.options))
         return _emit(render_events(page, request.output), stdout, stderr, page.items)
 
     def events_export(request: Request, stdout: TextIO, stderr: TextIO) -> int:
         # Each event is flushed as it is written, so a consumer sees it at once and a closed pipe ends the stream.
         # Counted rather than collected: the point of streaming is that the whole export never has to be held.
         exported = 0
-        for event in export_events(runtime_factory(), request.options):
+        for event in or_raise(export_events(runtime_factory(), request.options)):
             stdout.write(render_export_line(event))
             stdout.flush()
             exported += 1
         return EXIT_SUCCESS if exported else EXIT_NEGATIVE_RESULT
 
     def usage(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        summary = summarize_usage(runtime_factory(), request.options)
+        summary = or_raise(summarize_usage(runtime_factory(), request.options))
         return _emit(render_usage(summary, request.output), stdout, stderr, summary.rows)
 
     def outcomes(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        summary = summarize_outcomes(runtime_factory(), request.options)
+        summary = or_raise(summarize_outcomes(runtime_factory(), request.options))
         return _emit(render_outcomes(summary, request.output), stdout, stderr, summary.rows)
 
     def status(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        stdout.write(render_status(report_status(runtime_factory()), request.output))
+        stdout.write(render_status(or_raise(report_status(runtime_factory())), request.output))
         return EXIT_SUCCESS
 
     def maintenance(request: Request, stdout: TextIO, stderr: TextIO) -> int:

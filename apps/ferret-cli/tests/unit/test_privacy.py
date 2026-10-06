@@ -9,15 +9,14 @@ import pytest
 from ferret.application.privacy import CANONICAL_LIMIT_BYTES, RAW_LIMIT_BYTES, project_hook_payload, validate_capture
 from ferret.domain.errors import FerretError
 from support.events import VECTOR_DOCUMENT, VECTOR_HASH, encode, event_document
+from support.results import refusal_of, value_of
 
 NOW = datetime(2026, 9, 18, 8, 15, 31, tzinfo=UTC)
 CANARY = "canary-value-that-must-never-be-echoed"
 
 
 def rejected(raw: bytes) -> FerretError:
-    with pytest.raises(FerretError) as caught:
-        validate_capture(raw, now=NOW)
-    error = caught.value
+    error = refusal_of(validate_capture(raw, now=NOW))
     assert error.code == "ferret.event.invalid"
     assert error.exit_code == 2
     assert CANARY not in str(error)
@@ -26,7 +25,7 @@ def rejected(raw: bytes) -> FerretError:
 
 
 def test_a_valid_event_is_accepted_with_its_recomputed_hash() -> None:
-    event = validate_capture(encode(VECTOR_DOCUMENT), now=NOW)
+    event = value_of(validate_capture(encode(VECTOR_DOCUMENT), now=NOW))
 
     assert event.event_hash == VECTOR_HASH
     assert event.to_document() == VECTOR_DOCUMENT
@@ -102,7 +101,7 @@ def test_the_canonical_size_limit_is_exact() -> None:
     at_limit = body + b" " * (CANONICAL_LIMIT_BYTES - len(body))
     assert len(at_limit) == CANONICAL_LIMIT_BYTES
 
-    assert validate_capture(at_limit, now=NOW).event_hash == VECTOR_HASH
+    assert value_of(validate_capture(at_limit, now=NOW)).event_hash == VECTOR_HASH
     assert rejected(at_limit + b" ").field is None
 
 
@@ -175,7 +174,7 @@ def test_a_field_that_breaks_its_contract_names_only_that_field(overrides: dict[
 def test_a_logical_tool_identifier_may_carry_a_slash_and_unicode_letters(tool_name: str) -> None:
     document = event_document(toolName=tool_name)
 
-    assert validate_capture(encode(document), now=NOW).tool_name == tool_name
+    assert value_of(validate_capture(encode(document), now=NOW)).tool_name == tool_name
 
 
 @pytest.mark.parametrize("field", ["agentName", "skillName"])
@@ -198,7 +197,7 @@ def test_an_agent_or_skill_name_may_not_contain_a_slash(field: str) -> None:
 def test_a_forward_skew_of_just_under_a_day_is_tolerated() -> None:
     within = (NOW + timedelta(hours=23, minutes=59)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
-    assert validate_capture(encode(event_document(occurredAt=within)), now=NOW).occurred_at == within
+    assert value_of(validate_capture(encode(event_document(occurredAt=within)), now=NOW)).occurred_at == within
 
 
 @pytest.mark.parametrize(
@@ -261,7 +260,7 @@ def test_event_type_invariants(
     )
 
     if ok:
-        assert validate_capture(encode(document), now=NOW).event_type == event_type
+        assert value_of(validate_capture(encode(document), now=NOW)).event_type == event_type
     else:
         rejected(encode(document))
 
@@ -316,7 +315,7 @@ def test_subject_visibility_and_names_stay_consistent(visibility: str, names: di
     document = event_document(subjectVisibility=visibility, **names)
 
     if ok:
-        assert validate_capture(encode(document), now=NOW).subject_visibility == visibility
+        assert value_of(validate_capture(encode(document), now=NOW)).subject_visibility == visibility
     else:
         rejected(encode(document))
 
@@ -339,18 +338,20 @@ def test_hook_projection_keeps_only_allowlisted_scalars_by_path() -> None:
         }
     ).encode()
 
-    projected = project_hook_payload(
-        raw,
-        [
-            ("session_id",),
-            ("hook_event_name",),
-            ("cwd",),
-            ("tool_name",),
-            ("tool_response", "is_error"),
-            ("tool_response", "duration_ms"),
-            ("tool_input",),
-            ("missing",),
-        ],
+    projected = value_of(
+        project_hook_payload(
+            raw,
+            [
+                ("session_id",),
+                ("hook_event_name",),
+                ("cwd",),
+                ("tool_name",),
+                ("tool_response", "is_error"),
+                ("tool_response", "duration_ms"),
+                ("tool_input",),
+                ("missing",),
+            ],
+        )
     )
 
     assert projected == {
@@ -365,7 +366,9 @@ def test_hook_projection_keeps_only_allowlisted_scalars_by_path() -> None:
 
 
 def test_hook_projection_ignores_a_path_through_a_non_object() -> None:
-    assert project_hook_payload(b'{"tool_name":"Read","a":[1,2]}', [("tool_name", "x"), ("a", "b"), ("a",)]) == {}
+    projected = project_hook_payload(b'{"tool_name":"Read","a":[1,2]}', [("tool_name", "x"), ("a", "b"), ("a",)])
+
+    assert value_of(projected) == {}
 
 
 @pytest.mark.parametrize(
@@ -378,16 +381,19 @@ def test_hook_projection_ignores_a_path_through_a_non_object() -> None:
         b"",
         b'{"a":',
         b'{"a":NaN}',
+        b'{"a":Infinity}',
+        b'{"a":-Infinity}',
+        b'{"a":[NaN]}',
+        b'{"a":{"b":1,"b":2}}',
         b"[" * 100_000,
         b'{"a":"' + b"x" * RAW_LIMIT_BYTES + b'"}',
     ],
 )
 def test_hook_projection_rejects_malformed_or_oversized_raw_input(raw: bytes) -> None:
-    with pytest.raises(FerretError) as caught:
-        project_hook_payload(raw, [("a",)])
+    error = refusal_of(project_hook_payload(raw, [("a",)]))
 
-    assert caught.value.code == "ferret.event.invalid"
-    assert caught.value.field is None
+    assert error.code == "ferret.event.invalid"
+    assert error.field is None
 
 
 def test_the_raw_hook_limit_is_larger_than_the_canonical_limit() -> None:

@@ -6,6 +6,7 @@ from datetime import timedelta
 from typing import Any
 
 import pytest
+from typekit import Ok
 
 from ferret.application import queries
 from ferret.application.analytics import (
@@ -24,6 +25,7 @@ from ferret.domain.event import Event
 from ferret.help_text import COMMAND_HELP
 from support.invoke import run_cli
 from support.populate import NO_OUTCOME, make_event, world_with
+from support.results import refusal_of, value_of
 
 Options = Mapping[str, tuple[str, ...]]
 
@@ -90,7 +92,8 @@ def agent_ended_cancelled_derived(number: int, **overrides: Any) -> Event:
     )
 
 
-def refusal(action: Any, *arguments: Any) -> FerretError:
+def raised_by_the_store_check(action: Any, *arguments: Any) -> FerretError:
+    """The refusal of an unusable data home, which ``open_store`` still raises until its own slice returns it."""
     with pytest.raises(FerretError) as caught:
         action(*arguments)
     return caught.value
@@ -219,7 +222,7 @@ def test_aggregating_nothing_yields_no_rows() -> None:
     ],
 )
 def test_group_by_is_a_comma_separated_list_kept_in_caller_order(raw: str, expected: tuple[str, ...]) -> None:
-    assert parse_group_by({"--group-by": (raw,)}, USAGE_DIMENSIONS) == expected
+    assert parse_group_by({"--group-by": (raw,)}, USAGE_DIMENSIONS) == Ok(expected)
 
 
 @pytest.mark.parametrize(
@@ -242,7 +245,7 @@ def test_group_by_is_a_comma_separated_list_kept_in_caller_order(raw: str, expec
     ],
 )
 def test_a_malformed_group_by_is_invalid_arguments_for_usage(options: Options) -> None:
-    error = refusal(parse_group_by, options, USAGE_DIMENSIONS)
+    error = refusal_of(parse_group_by(options, USAGE_DIMENSIONS))
 
     assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.args.invalid", 2, None, False)
 
@@ -258,11 +261,10 @@ def test_the_two_commands_accept_exactly_their_own_closed_dimension_sets() -> No
         "outcome",
         "outcome_visibility",
     )
-    assert parse_group_by({"--group-by": ("outcome,outcome_visibility",)}, OUTCOME_DIMENSIONS) == (
-        "outcome",
-        "outcome_visibility",
+    assert parse_group_by({"--group-by": ("outcome,outcome_visibility",)}, OUTCOME_DIMENSIONS) == Ok(
+        ("outcome", "outcome_visibility")
     )
-    assert refusal(parse_group_by, {"--group-by": ("subject_visibility",)}, OUTCOME_DIMENSIONS).code == (
+    assert refusal_of(parse_group_by({"--group-by": ("subject_visibility",)}, OUTCOME_DIMENSIONS)).code == (
         "ferret.args.invalid"
     )
 
@@ -401,8 +403,8 @@ def test_preserve_one_provenance_dimension_independently(dimension: str, visibil
 def test_summaries_carry_their_closed_interpretation_and_group_order() -> None:
     world = world_with(tool_completed(1))
 
-    usage = summarize_usage(world.runtime, {"--group-by": ("skill,harness",)})
-    outcomes = summarize_outcomes(world.runtime, {"--group-by": ("tool",)})
+    usage = value_of(summarize_usage(world.runtime, {"--group-by": ("skill,harness",)}))
+    outcomes = value_of(summarize_outcomes(world.runtime, {"--group-by": ("tool",)}))
 
     assert (usage.group_by, usage.interpretation) == (("skill", "harness"), USAGE_INTERPRETATION)
     assert (outcomes.group_by, outcomes.interpretation) == (("tool",), OUTCOMES_INTERPRETATION)
@@ -420,9 +422,9 @@ def test_summaries_apply_the_same_filters_window_and_expiry_as_the_queries() -> 
         tool_completed(4, ago=timedelta(days=31)),
     )
 
-    default = summarize_usage(world.runtime, {"--group-by": ("harness",)})
-    codex = summarize_usage(world.runtime, {"--group-by": ("harness",), "--harness": ("codex",)})
-    everything = summarize_usage(world.runtime, {"--group-by": ("harness",), "--all-time": ()})
+    default = value_of(summarize_usage(world.runtime, {"--group-by": ("harness",)}))
+    codex = value_of(summarize_usage(world.runtime, {"--group-by": ("harness",), "--harness": ("codex",)}))
+    everything = value_of(summarize_usage(world.runtime, {"--group-by": ("harness",), "--all-time": ()}))
 
     assert [(row.dimensions[0][1], row.event_count) for row in default.rows] == [("claude_code", 1), ("codex", 1)]
     assert [(row.dimensions[0][1], row.event_count) for row in codex.rows] == [("codex", 1)]
@@ -435,7 +437,7 @@ def test_a_summary_reads_every_batch_of_the_stream(monkeypatch: pytest.MonkeyPat
         *[tool_completed(number, ago=timedelta(minutes=number), duration=number) for number in range(1, 8)]
     )
 
-    [row] = summarize_outcomes(world.runtime, {"--group-by": ("harness",)}).rows
+    [row] = value_of(summarize_outcomes(world.runtime, {"--group-by": ("harness",)})).rows
 
     assert (row.event_count, row.duration_sample_count, row.duration_total_ms) == (7, 7, 28)
     assert world.events.reads == 4
@@ -444,12 +446,13 @@ def test_a_summary_reads_every_batch_of_the_stream(monkeypatch: pytest.MonkeyPat
 def test_summaries_are_validated_before_storage_is_touched_and_need_an_initialized_store() -> None:
     world = world_with(initialized=False)
 
-    assert refusal(summarize_usage, world.runtime, {"--group-by": ("nope",)}).code == "ferret.args.invalid"
-    assert refusal(summarize_outcomes, world.runtime, {"--group-by": ("harness",), "--harness": ("Bad",)}).code == (
+    assert refusal_of(summarize_usage(world.runtime, {"--group-by": ("nope",)})).code == "ferret.args.invalid"
+    assert refusal_of(summarize_outcomes(world.runtime, {"--group-by": ("harness",), "--harness": ("Bad",)})).code == (
         "ferret.filter.invalid"
     )
     assert world.files.touched == []
-    assert refusal(summarize_usage, world.runtime, {"--group-by": ("harness",)}).code == "ferret.storage.uninitialized"
+    unusable = raised_by_the_store_check(summarize_usage, world.runtime, {"--group-by": ("harness",)})
+    assert unusable.code == "ferret.storage.uninitialized"
     assert world.events.reads == 0
 
 

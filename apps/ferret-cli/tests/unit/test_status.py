@@ -9,12 +9,14 @@ import pytest
 
 from ferret import __version__
 from ferret.application.ports import InterpreterFacts
+from ferret.application.status import report_status
 from ferret.domain.errors import FAILURES, FerretError
 from ferret.domain.retention import MAINTENANCE_INTERVAL
 from ferret.domain.space import MIB, StorageFacts
 from support.fakes import FAKE_DATA_HOME, FIXED_NOW, World
 from support.invoke import Ran, run_cli
 from support.populate import make_event, stamp, world_with
+from support.results import refusal_of, value_of
 from support.retention import CUTOFF, EXPIRED, aged_snapshot, expired_events, fresh_events
 from support.scenarios import expected_lines
 
@@ -317,3 +319,36 @@ def test_a_store_that_cannot_be_read_is_unavailable_and_says_it_may_be_retried()
 
     error = error_of(ran)["error"]
     assert (ran.code, error["code"], error["retryable"]) == (2, "ferret.storage.unavailable", True)
+
+
+def test_a_report_of_an_unusable_data_home_is_the_returned_refusal_and_reads_no_telemetry() -> None:
+    world = world_with(initialized=False)
+
+    error = refusal_of(report_status(world.runtime))
+
+    assert (error.code, error.exit_code, error.field) == ("ferret.storage.uninitialized", 2, None)
+    assert (world.telemetry.integrity_checks, world.telemetry.prunes) == ([], [])
+
+
+def test_a_report_of_a_store_that_failed_its_quick_integrity_probe_is_the_returned_refusal() -> None:
+    world = world_with()
+    world.telemetry.integrity_ok = False
+
+    error = refusal_of(report_status(world.runtime))
+
+    assert (error.code, error.exit_code, error.field) == ("ferret.storage.integrity-failure", 2, None)
+    assert world.telemetry.integrity_checks == [False]
+
+
+def test_a_report_of_a_usable_store_is_what_the_store_holds() -> None:
+    world = populated_world()
+
+    report = value_of(report_status(world.runtime))
+
+    assert (report.schema_number, report.counts.events, report.counts.snapshots) == (1, 4, 1)
+    assert (report.last_maintenance_at, report.maintenance_due) == (stamp(NOW - RECENT), False)
+    assert [(adapter.harness, adapter.configuration_state) for adapter in report.adapters] == [
+        ("claude_code", "not_configured"),
+        ("codex", "configured"),
+        ("opencode", "not_configured"),
+    ]

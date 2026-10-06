@@ -380,7 +380,7 @@ three reasons:
 
 The slugs `wahidyan-kresna-fridayokas-projects` and `ayokoding-www` are already public: they appear
 in every preview and production deployment hostname, e.g.
-`ayokoding-www-wahidyan-kresna-fridayokas-projects.vercel.app`. Publishing them adds no information.
+`<vercel-project-host>`. Publishing them adds no information.
 
 Related hardening found while checking this: the repo `.gitignore` had **no `.vercel/` entry**. No
 `.vercel/` directory is tracked or present today, but any future `vercel link` would create one

@@ -990,8 +990,8 @@ only hot-path work is dead.
     `x-pathname` or former i18n-middleware reference.
 - [x] `[AI]` Both redirects verified live against a preview deployment.
   - **Date**: 2026-08-02. **Status**: done.
-  - **Deployment**: `https://ayokoding-h9piujouo-wahidyan-kresna-fridayokas-projects.vercel.app`
-    (`dpl_A6yX9sQjkTm6hqrYMSB8NhY48i5v`, commit `3e147e1599ad5c6bdc0974f5476db773f84d3408`).
+  - **Deployment**: `<vercel-preview-url>`
+    (`<vercel-preview-deployment-id>`, commit `3e147e1599ad5c6bdc0974f5476db773f84d3408`).
   - **Result**: protected-preview `vercel curl` checks returned `308 Location: /en` for `/` and
     `308 Location: /en/learn` for `/EN/learn`; the latter is one canonical redirect hop. A repeated
     `/en/learn` request changed from `x-vercel-cache: PRERENDER` to `x-vercel-cache: HIT`.

@@ -13,7 +13,7 @@
 | **Prod Branch**     | prod-organiclever-www              | prod-ayokoding-www             | prod-ose-www            |
 | **Languages**       | English                            | Bilingual (Indonesian/English) | English only            |
 | **Complexity**      | Full life journal + local storage  | Fullstack bilingual platform   | Simple landing page     |
-| **Prod URL**        | www.organiclever.com               | ayokoding.com                  | oseplatform.com         |
+| **Prod URL**        | www.organiclever.com               | www.ayokoding.com              | www.oseplatform.com     |
 | **Primary Purpose** | Local-first life journal + landing | Educational platform           | Project landing page    |
 
 ## Development Commands

@@ -395,7 +395,7 @@
     {
       "id": "skill/apps-ayokoding-www-developing-content",
       "path": ".agents/skills/apps-ayokoding-www-developing-content/SKILL.md",
-      "digest": "beeffc820848cb717c0af0418775be52670827cd8ad2283ef663a92f9dcdaa6d"
+      "digest": "f4a255cec3956e7c2dff8b89c8226b855682a9d0f8d4a429fd61dd0574b18562"
     },
     {
       "id": "skill/apps-deploying-vercel-branches",
@@ -410,7 +410,7 @@
     {
       "id": "skill/apps-ose-www-developing-content",
       "path": ".agents/skills/apps-ose-www-developing-content/SKILL.md",
-      "digest": "c7aaa4800d590309941aaeda6c757b464f41f3bbe226fdf73dd8f73756d244b9"
+      "digest": "1c04f502775babd38ae65443984ec8dffd10159e68f78dd84586ef9451f6f872"
     },
     {
       "id": "skill/building-command-line-interfaces",

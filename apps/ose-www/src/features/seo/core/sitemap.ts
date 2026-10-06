@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import type { ContentMeta } from "@/features/content/core/types";
-
-const SITE_URL = "https://oseplatform.com";
+import { SITE_URL } from "@/lib/site-url";
 
 export function buildSitemapEntries(updates: ContentMeta[], now: Date = new Date()): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [

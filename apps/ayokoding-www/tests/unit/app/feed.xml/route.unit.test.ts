@@ -37,6 +37,14 @@ vi.mock("@/features/app-shell/shell/trpc-init", () => ({
 import { GET } from "../../../../src/app/feed.xml/route";
 
 describe("feed GET", () => {
+  it("emits the channel, self, and item links on the canonical www host", async () => {
+    const text = await (await GET()).text();
+    expect(text).toContain("<link>https://www.ayokoding.com</link>");
+    expect(text).toContain('<atom:link href="https://www.ayokoding.com/feed.xml" rel="self"');
+    expect(text).toContain("<link>https://www.ayokoding.com/en/learn/software-engineering</link>");
+    expect(text).toContain("<guid>https://www.ayokoding.com/en/learn/software-engineering</guid>");
+  });
+
   it("emits a bare URL for English content items (DD-48 — no /c/ namespace)", async () => {
     const response = await GET();
     const text = await response.text();

@@ -24,6 +24,12 @@ vi.mock("@/features/app-shell/shell/trpc-init", () => ({
 import sitemap from "../../../src/app/sitemap";
 
 describe("sitemap", () => {
+  it("emits every entry on the canonical www host", async () => {
+    const entries = await sitemap();
+    expect(entries).toHaveLength(2);
+    expect(entries.map(({ url }) => new URL(url).host)).toEqual(["www.ayokoding.com", "www.ayokoding.com"]);
+  });
+
   it("emits a bare URL for content pages (DD-48 — no /c/ namespace)", async () => {
     const entries = await sitemap();
     const contentEntry = entries.find((e) => e.url.includes("learn/software-engineering"));

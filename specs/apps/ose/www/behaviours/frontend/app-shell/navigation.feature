@@ -30,3 +30,9 @@ Feature: Navigation
     When an update detail page is rendered with adjacent updates
     Then a "Previous" link is displayed with the previous update title
     And a "Next" link is displayed with the next update title
+
+  # Exemption(integration): the local-resource boundary cannot observe the rendered footer link without crossing the public browser boundary; alternative-proof: ose-www-fe-e2e:test:e2e / Footer links to AyoKoding on its canonical host
+  @integration-exempt
+  Scenario: Footer links to AyoKoding on its canonical host
+    When the footer component is rendered
+    Then the footer contains an external link to "AyoKoding" on the canonical host "www.ayokoding.com"

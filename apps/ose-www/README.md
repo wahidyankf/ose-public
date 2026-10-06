@@ -1,7 +1,7 @@
 # OSE Platform website
 
 `ose-www` is the public website for Open Sharia Enterprise (OSE), available at
-[oseplatform.com](https://oseplatform.com). It gives product people and early engineers a clear
+[www.oseplatform.com](https://www.oseplatform.com). It gives product people and early engineers a clear
 starting point for understanding OSE: why trustworthy, Sharia-compliant enterprise products need
 to be designed as inspectable systems, what the platform is exploring, and how that work is
 developing.
@@ -97,7 +97,7 @@ The behaviour specifications that describe the web and tRPC perspectives are in
 
 ## Production delivery
 
-The production site runs on Vercel at <https://oseplatform.com>. A GitHub Actions workflow runs the
+The production site runs on Vercel at <https://www.oseplatform.com>. A GitHub Actions workflow runs the
 website quality gates and E2E checks; when `apps/ose-www/` has changed and the gates pass, it
 updates the `prod-ose-www` deployment branch. Vercel builds only from that branch.
 

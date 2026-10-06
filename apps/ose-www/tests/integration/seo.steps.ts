@@ -10,7 +10,7 @@ const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/seo/seo.feature"),
 );
 const contentDirectory = path.resolve(process.cwd(), "tests/e2e-fixtures/content");
-const siteUrl = "https://oseplatform.com";
+const siteUrl = "https://www.oseplatform.com";
 
 describeFeature(
   feature,
@@ -47,6 +47,10 @@ describeFeature(
         for (const { slug } of updates) {
           expect(sitemap.some(({ url }) => url === `${siteUrl}/${slug}/`)).toBe(true);
         }
+      });
+      And('every sitemap URL is on the canonical host "www.oseplatform.com"', () => {
+        expect(sitemap.length).toBeGreaterThan(0);
+        expect(sitemap.map(({ url }) => new URL(url).host)).toEqual(sitemap.map(() => "www.oseplatform.com"));
       });
     });
   },

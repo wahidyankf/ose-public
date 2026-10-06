@@ -22,7 +22,7 @@ The platform consists of the following applications across its technology stacks
 #### ose-www
 
 - **Purpose**: Public marketing website for OSE Platform
-- **URL**: <https://oseplatform.com>
+- **URL**: <https://www.oseplatform.com>
 - **Technology**: Next.js 16 (App Router) + TypeScript + tRPC
 - **Deployment**: Vercel (via `prod-ose-www` branch)
 - **Build Command**: `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build ose-www`
@@ -33,7 +33,7 @@ The platform consists of the following applications across its technology stacks
 #### ayokoding-www
 
 - **Purpose**: Educational platform for programming, AI, and security
-- **URL**: <https://ayokoding.com>
+- **URL**: <https://www.ayokoding.com>
 - **Technology**: Next.js 16 (App Router) + TypeScript + tRPC
 - **Languages**: Bilingual (default English)
 - **Deployment**: Vercel (via `prod-ayokoding-www` branch)

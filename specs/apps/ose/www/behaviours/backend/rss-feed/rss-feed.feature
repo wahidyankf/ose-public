@@ -12,6 +12,7 @@ Feature: RSS Feed
     Then the feed has a channel with title "OSE Platform Updates"
     And the feed has a channel link to the site URL
     And the feed contains item elements for each update
+    And every feed link is on the canonical host "www.oseplatform.com"
 
   Scenario: RSS feed entries contain required fields
     Given the content repository contains an update post with title "Phase 0 End" and date "2026-02-08"

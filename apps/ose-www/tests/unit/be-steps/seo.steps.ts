@@ -12,7 +12,7 @@ const feature = await loadFeature(
 );
 
 const FIXED_NOW = new Date("2026-01-01T00:00:00Z");
-const SITE_URL = "https://oseplatform.com";
+const SITE_URL = "https://www.oseplatform.com";
 
 describeFeature(feature, ({ Scenario, Background }) => {
   Background(({ Given }) => {
@@ -82,6 +82,11 @@ describeFeature(feature, ({ Scenario, Background }) => {
     And("the sitemap contains URLs for all update pages", () => {
       expect(sitemap.some((entry) => entry.url.includes("updates/2026-02-08-phase-0-end"))).toBe(true);
     });
+
+    And('every sitemap URL is on the canonical host "www.oseplatform.com"', () => {
+      expect(sitemap.length).toBeGreaterThan(0);
+      expect(sitemap.map((entry) => new URL(entry.url).host)).toEqual(sitemap.map(() => "www.oseplatform.com"));
+    });
   });
 
   Scenario("Robots.txt allows all crawlers", ({ When, Then, And }) => {
@@ -97,6 +102,10 @@ describeFeature(feature, ({ Scenario, Background }) => {
 
     And("it references the sitemap URL", () => {
       expect(robots.sitemap).toBe(`${SITE_URL}/sitemap.xml`);
+    });
+
+    And('the sitemap URL is on the canonical host "www.oseplatform.com"', () => {
+      expect(new URL(String(robots.sitemap)).host).toBe("www.oseplatform.com");
     });
   });
 });

@@ -23,7 +23,7 @@ This Skill provides guidance for creating and managing content on the **ose-web*
 
 **ose-web** (`apps/ose-www/`):
 
-- **Site**: oseplatform.com
+- **Site**: www.oseplatform.com
 - **Theme**: Next.js 16 (App Router, TypeScript, tRPC)
 - **Purpose**: English-only project landing page
 - **Content Types**: Platform updates, about page

@@ -48,7 +48,7 @@ def _compact(document: dict[str, Any]) -> bytes:
 
 
 def _verify_config(content: bytes) -> None:
-    if _compact(read_document(content)) != _compact(_CONFIG):
+    if _compact(or_raise(read_document(content))) != _compact(_CONFIG):
         raise FerretError("ferret.storage.unavailable")
 
 
@@ -60,11 +60,11 @@ def initialize_store(runtime: Runtime) -> InitResult:
     """
     files = runtime.files
     files.ensure_directory(PRIVATE_DIRECTORY_MODE)
-    require_safe(files.facts(None), "directory")
+    or_raise(require_safe(files.facts(None), "directory"))
     with files.lock():
         present = {name: files.facts(name) for name in ARTIFACTS}
         for facts in present.values():
-            require_safe(facts, "file")
+            or_raise(require_safe(facts, "file"))
         # The database is created last, so a database without its companions cannot come from an interrupted
         # initialization: refuse it rather than mint a second identity for stored telemetry.
         if present[DATABASE_FILE].kind != "missing" and any(present[name].kind == "missing" for name in _COMPANIONS):
@@ -73,7 +73,7 @@ def initialize_store(runtime: Runtime) -> InitResult:
         if present[KEY_FILE].kind == "missing":
             files.create_file(KEY_FILE, runtime.randomness.token_bytes(KEY_BYTES), PRIVATE_FILE_MODE)
         else:
-            read_key(files)
+            or_raise(read_key(files))
 
         if present[IDENTITY_FILE].kind == "missing":
             installation_id = runtime.randomness.uuid4()
@@ -84,7 +84,7 @@ def initialize_store(runtime: Runtime) -> InitResult:
             }
             files.create_file(IDENTITY_FILE, _compact(identity), PRIVATE_FILE_MODE)
         else:
-            installation_id = installation_id_from(files.read_file(IDENTITY_FILE))
+            installation_id = or_raise(installation_id_from(files.read_file(IDENTITY_FILE)))
 
         if present[CONFIG_FILE].kind == "missing":
             files.create_file(CONFIG_FILE, _compact(_CONFIG), PRIVATE_FILE_MODE)

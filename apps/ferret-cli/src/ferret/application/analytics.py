@@ -8,9 +8,11 @@ from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
 from typing import Final, Protocol
 
+from typekit import Err, Ok
+
 from ferret.application.ports import Runtime
 from ferret.application.queries import scan_events
-from ferret.domain.errors import FerretError, or_raise
+from ferret.domain.errors import FerretError, FerretResult
 from ferret.domain.event import KNOWN_VISIBILITIES, Event
 from ferret.domain.query import Options, single_value
 
@@ -129,13 +131,19 @@ class _OutcomeTally:
             self.longest = duration if self.longest is None else max(self.longest, duration)
 
 
-def parse_group_by(options: Options, allowed: tuple[str, ...]) -> tuple[str, ...]:
-    """One to three unique dimensions from ``allowed``, comma separated and kept in the order the caller wrote them."""
-    raw = or_raise(single_value(options, "--group-by", refusal="ferret.args.invalid"))
+def _dimensions(raw: str | None, allowed: tuple[str, ...]) -> FerretResult[tuple[str, ...]]:
+    """The names ``raw`` spells, when there are one to three of them, each unique and one of ``allowed``."""
     names = () if raw is None else tuple(raw.split(","))
     if not 1 <= len(names) <= MAX_DIMENSIONS or len(set(names)) != len(names) or not set(names) <= set(allowed):
-        raise FerretError("ferret.args.invalid")
-    return names
+        return Err(FerretError("ferret.args.invalid"))
+    return Ok(names)
+
+
+def parse_group_by(options: Options, allowed: tuple[str, ...]) -> FerretResult[tuple[str, ...]]:
+    """One to three unique dimensions from ``allowed``, comma separated and kept in the order the caller wrote them."""
+    return single_value(options, "--group-by", refusal="ferret.args.invalid").flat_map(
+        lambda raw: _dimensions(raw, allowed)
+    )
 
 
 def _order(values: tuple[str | None, ...]) -> tuple[tuple[bool, str], ...]:
@@ -186,13 +194,26 @@ def aggregate_outcomes(events: Iterable[Event], group_by: tuple[str, ...]) -> tu
     )
 
 
-def summarize_usage(runtime: Runtime, options: Options) -> Summary[UsageRow]:
+def _summary[Row](
+    runtime: Runtime,
+    options: Options,
+    allowed: tuple[str, ...],
+    aggregate: Callable[[Iterable[Event], tuple[str, ...]], tuple[Row, ...]],
+    interpretation: str,
+) -> FerretResult[Summary[Row]]:
+    """The summary ``aggregate`` makes of the events the filters select; the grouping is validated before storage."""
+    return parse_group_by(options, allowed).flat_map(
+        lambda group_by: scan_events(runtime, options).map(
+            lambda events: Summary(group_by, aggregate(events, group_by), interpretation)
+        )
+    )
+
+
+def summarize_usage(runtime: Runtime, options: Options) -> FerretResult[Summary[UsageRow]]:
     """Usage over the events the filters select, grouped as requested; arguments are validated before storage."""
-    group_by = parse_group_by(options, USAGE_DIMENSIONS)
-    return Summary(group_by, aggregate_usage(scan_events(runtime, options), group_by), USAGE_INTERPRETATION)
+    return _summary(runtime, options, USAGE_DIMENSIONS, aggregate_usage, USAGE_INTERPRETATION)
 
 
-def summarize_outcomes(runtime: Runtime, options: Options) -> Summary[OutcomeRow]:
+def summarize_outcomes(runtime: Runtime, options: Options) -> FerretResult[Summary[OutcomeRow]]:
     """Outcomes over the events the filters select, grouped as requested; arguments are validated before storage."""
-    group_by = parse_group_by(options, OUTCOME_DIMENSIONS)
-    return Summary(group_by, aggregate_outcomes(scan_events(runtime, options), group_by), OUTCOMES_INTERPRETATION)
+    return _summary(runtime, options, OUTCOME_DIMENSIONS, aggregate_outcomes, OUTCOMES_INTERPRETATION)

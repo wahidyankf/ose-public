@@ -72,7 +72,7 @@ def open_store(runtime: Runtime) -> None:
 
     Every argument the caller was given is validated before this runs, so a refused request never reaches the prune.
     """
-    require_initialized(runtime.files)
+    or_raise(require_initialized(runtime.files))
     prune_due(runtime)
 
 
@@ -129,7 +129,7 @@ def prune_to_exhaustion(runtime: Runtime) -> Pruned:
 
 def run_maintenance(runtime: Runtime, *, if_due: bool) -> MaintenanceReport:
     """Prune every expired row, then reclaim space; with ``if_due``, do nothing but measure until a run is due."""
-    require_initialized(runtime.files)
+    or_raise(require_initialized(runtime.files))
     telemetry = runtime.telemetry
     if if_due and not is_due(telemetry.last_completed_at(), runtime.clock.now()):
         facts = measure_storage(runtime)

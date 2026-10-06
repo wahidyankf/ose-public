@@ -204,7 +204,7 @@ def uninstall_user(runtime: Runtime, *, purge_data: bool, confirmed: bool) -> Un
     if purge_data and not confirmed:
         raise FerretError("ferret.args.confirmation-required")
     if purge_data:
-        require_safe(runtime.files.facts(None), "directory")
+        or_raise(require_safe(runtime.files.facts(None), "directory"))
     installer = runtime.installer
     paths = installer.paths
     manifest = _read_manifest(installer, "ferret.install.ownership-mismatch")

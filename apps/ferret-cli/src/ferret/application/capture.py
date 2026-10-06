@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from ferret.application.maintenance import open_store
 from ferret.application.ports import CaptureResult, Runtime
 from ferret.application.privacy import CANONICAL_LIMIT_BYTES, validate_capture
+from ferret.domain.errors import or_raise
 
 
 @dataclass(frozen=True, slots=True)
@@ -23,6 +24,6 @@ def capture_event(runtime: Runtime) -> CaptureOutcome:
     payload is validated before the data home is inspected, so a rejected event never touches storage.
     """
     raw = runtime.input.read(CANONICAL_LIMIT_BYTES + 1)
-    event = validate_capture(raw, now=runtime.clock.now())
+    event = or_raise(validate_capture(raw, now=runtime.clock.now()))
     open_store(runtime)
     return CaptureOutcome(runtime.events.capture(event), event.event_id, event.event_hash)

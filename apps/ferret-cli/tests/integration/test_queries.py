@@ -237,7 +237,7 @@ def test_an_export_that_a_writer_interleaves_with_still_returns_each_earlier_row
     machine.fill(before)
     monkeypatch.setattr(queries, "BATCH_SIZE", 3)
 
-    stream = export_events(machine.runtime(), {"--all-time": ()})
+    stream = value_of(export_events(machine.runtime(), {"--all-time": ()}))
     first_batch = [next(stream) for _ in range(3)]
     machine.fill(
         [
@@ -255,8 +255,8 @@ def test_list_and_export_over_real_storage_follow_the_documented_orders(tmp_path
     now = datetime.now(UTC)
     machine.fill(make_event(number, ago=timedelta(minutes=1 + number % 3), now=now) for number in range(1, 8))
 
-    listed = list_events(machine.runtime(), {})
-    exported = tuple(export_events(machine.runtime(), {}))
+    listed = value_of(list_events(machine.runtime(), {}))
+    exported = tuple(value_of(export_events(machine.runtime(), {})))
 
     assert numbers(listed.items) == [6, 3, 7, 4, 1, 5, 2]
     assert numbers(exported) == [2, 5, 1, 4, 7, 3, 6]
@@ -270,10 +270,10 @@ def test_a_cursor_chain_over_real_storage_walks_every_row_once(tmp_path: Path) -
     options: dict[str, tuple[str, ...]] = {"--limit": ("3",), "--all-time": ()}
     seen: list[int] = []
 
-    page = list_events(machine.runtime(), options)
+    page = value_of(list_events(machine.runtime(), options))
     seen.extend(numbers(page.items))
     while page.next_cursor is not None:
-        page = list_events(machine.runtime(), {**options, "--cursor": (page.next_cursor,)})
+        page = value_of(list_events(machine.runtime(), {**options, "--cursor": (page.next_cursor,)}))
         seen.extend(numbers(page.items))
 
     assert seen == [1, 2, 3, 4, 5, 6, 7]
@@ -284,7 +284,7 @@ def test_a_cursor_stops_working_when_its_row_is_deleted_underneath_it(tmp_path: 
     now = datetime.now(UTC)
     machine.fill(make_event(number, ago=timedelta(minutes=number), now=now) for number in range(1, 6))
     options: dict[str, tuple[str, ...]] = {"--limit": ("2",), "--all-time": ()}
-    cursor = list_events(machine.runtime(), options).next_cursor or ""
+    cursor = value_of(list_events(machine.runtime(), options)).next_cursor or ""
     with closing(sqlite3.connect(machine.data_home / "ferret.sqlite3")) as connection:
         connection.execute("DELETE FROM event WHERE event_id = ?", ("00000000-0000-4000-8000-000000000002",))
         connection.commit()

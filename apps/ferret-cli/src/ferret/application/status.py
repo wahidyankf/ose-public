@@ -9,11 +9,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import ClassVar, Literal
 
+from typekit import Err, Ok
+
 from ferret import __version__
 from ferret.application.ports import ExpiryCounters, InterpreterFacts, Runtime, StoreCounts
 from ferret.application.store import require_initialized
 from ferret.domain.capability import CapabilitySnapshot
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, FerretResult
 from ferret.domain.retention import NEAR_EXPIRY_WINDOW, is_due
 from ferret.domain.space import StorageFacts
 from ferret.domain.status import (
@@ -73,36 +75,42 @@ class StatusReport:
     adapters: tuple[AdapterStatus, ...]
 
 
-def report_status(runtime: Runtime) -> StatusReport:
+def _report(runtime: Runtime) -> FerretResult[StatusReport]:
+    """The report of a store that passed ``require_initialized``, or the failed integrity probe that ends it."""
+    telemetry = runtime.telemetry
+    facts = telemetry.storage_facts()
+    if not telemetry.check_integrity(thorough=False):
+        return Err(FerretError("ferret.storage.integrity-failure"))
+    now = runtime.clock.now()
+    last_maintenance_at = telemetry.last_completed_at()
+    hook_failure_count, last_hook_failure_at = runtime.hook_failures.read()
+    return Ok(
+        StatusReport(
+            ferret_version=__version__,
+            interpreter=runtime.interpreter,
+            interpreter_state=interpreter_state(runtime.interpreter.path, runtime.interpreter.version),
+            data_home=runtime.data_home,
+            database_path=runtime.data_home / DATABASE_FILE,
+            schema_number=telemetry.schema_number(),
+            counts=telemetry.counts(now=now, near_expiry_within=NEAR_EXPIRY_WINDOW),
+            facts=facts,
+            counters=telemetry.expiry_counters(),
+            last_maintenance_at=last_maintenance_at,
+            maintenance_due=is_due(last_maintenance_at, now),
+            hook_failure_count=hook_failure_count,
+            last_hook_failure_at=last_hook_failure_at,
+            adapters=tuple(
+                AdapterStatus(harness, support, runtime.capabilities.latest_snapshot(harness, now=now))
+                for harness, support in ADAPTERS
+            ),
+        )
+    )
+
+
+def report_status(runtime: Runtime) -> FerretResult[StatusReport]:
     """Read the store as it stands and describe it, failing closed on anything that makes a report untrustworthy.
 
     The file sizes come first, before any connection is opened, so a log left unfolded by another process is reported
     as it stands rather than as this command's own connections leave it.
     """
-    require_initialized(runtime.files)
-    telemetry = runtime.telemetry
-    facts = telemetry.storage_facts()
-    if not telemetry.check_integrity(thorough=False):
-        raise FerretError("ferret.storage.integrity-failure")
-    now = runtime.clock.now()
-    last_maintenance_at = telemetry.last_completed_at()
-    hook_failure_count, last_hook_failure_at = runtime.hook_failures.read()
-    return StatusReport(
-        ferret_version=__version__,
-        interpreter=runtime.interpreter,
-        interpreter_state=interpreter_state(runtime.interpreter.path, runtime.interpreter.version),
-        data_home=runtime.data_home,
-        database_path=runtime.data_home / DATABASE_FILE,
-        schema_number=telemetry.schema_number(),
-        counts=telemetry.counts(now=now, near_expiry_within=NEAR_EXPIRY_WINDOW),
-        facts=facts,
-        counters=telemetry.expiry_counters(),
-        last_maintenance_at=last_maintenance_at,
-        maintenance_due=is_due(last_maintenance_at, now),
-        hook_failure_count=hook_failure_count,
-        last_hook_failure_at=last_hook_failure_at,
-        adapters=tuple(
-            AdapterStatus(harness, support, runtime.capabilities.latest_snapshot(harness, now=now))
-            for harness, support in ADAPTERS
-        ),
-    )
+    return require_initialized(runtime.files).flat_map(lambda _: _report(runtime))

@@ -22,6 +22,7 @@ from support.hook_payloads import (
     opencode_tool,
 )
 from support.hook_payloads import encode as encode_payload
+from support.results import value_of
 
 UNKNOWN_OUTCOME: dict[str, Any] = {
     "outcome": "unknown",
@@ -32,7 +33,7 @@ UNKNOWN_OUTCOME: dict[str, Any] = {
 
 def facts(harness: str, event: str, document: dict[str, Any]) -> HookFacts | None:
     """What the mapper makes of one payload, having seen only what its allowlist lets through."""
-    return map_hook(harness, event, project_hook_payload(encode_payload(document), allowed_paths(harness)))
+    return map_hook(harness, event, value_of(project_hook_payload(encode_payload(document), allowed_paths(harness))))
 
 
 def expected(event_type: str, **fields: Any) -> HookFacts:
@@ -332,7 +333,7 @@ def test_an_opencode_document_with_no_input_at_all_maps_to_nothing() -> None:
 
 
 def raw_facts(harness: str, event: str, raw: bytes) -> HookFacts | None:
-    return map_hook(harness, event, project_hook_payload(raw, allowed_paths(harness)))
+    return map_hook(harness, event, value_of(project_hook_payload(raw, allowed_paths(harness))))
 
 
 def test_a_duration_too_large_to_be_a_finite_number_is_unknown() -> None:

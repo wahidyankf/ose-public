@@ -37,12 +37,12 @@ def capture_hook(runtime: Runtime, *, harness: str, event: str) -> CaptureResult
     paths = allowed_paths(harness)
     if not paths:
         return None
-    facts = map_hook(harness, event, project_hook_payload(runtime.input.read(RAW_LIMIT_BYTES + 1), paths))
+    facts = map_hook(harness, event, or_raise(project_hook_payload(runtime.input.read(RAW_LIMIT_BYTES + 1), paths)))
     if facts is None:
         return None
-    require_initialized(runtime.files)
-    key = read_key(runtime.files)
-    installation = installation_id_from(runtime.files.read_file(IDENTITY_FILE))
+    or_raise(require_initialized(runtime.files))
+    key = or_raise(read_key(runtime.files))
+    installation = or_raise(installation_id_from(runtime.files.read_file(IDENTITY_FILE)))
     now = runtime.clock.now()
     moment = or_raise(format_timestamp(now))
     draft = Event(

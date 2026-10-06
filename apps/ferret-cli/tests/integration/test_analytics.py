@@ -10,9 +10,8 @@ from typing import Any
 import pytest
 
 from ferret.application import queries
-from ferret.domain.timestamps import format_timestamp
 from support.machine import Machine, make_machine
-from support.populate import WORKSPACE_B, make_event, mixed_events
+from support.populate import WORKSPACE_B, make_event, mixed_events, stamp
 
 COLUMNS = {
     "harness": "harness",
@@ -100,7 +99,7 @@ def recount(
         f" WHERE expires_at > ? AND {where} GROUP BY {', '.join(columns)} ORDER BY {ordering}"
     )
     with closing(sqlite3.connect(machine.data_home / "ferret.sqlite3")) as connection:
-        return [tuple(row) for row in connection.execute(statement, (format_timestamp(datetime.now(UTC)), *parameters))]
+        return [tuple(row) for row in connection.execute(statement, (stamp(datetime.now(UTC)), *parameters))]
 
 
 def summary(machine: Machine, command: str, group_by: tuple[str, ...], *arguments: str) -> list[tuple[Any, ...]]:

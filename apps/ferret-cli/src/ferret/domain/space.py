@@ -4,6 +4,8 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Final, Literal
 
+from typekit import Err, Ok, Result
+
 KIB: Final = 1024
 MIB: Final = 1024 * KIB
 
@@ -33,12 +35,12 @@ class StorageFacts:
         return self.database_bytes + self.wal_bytes
 
 
-def high_water_bytes(measurements: Iterable[StorageFacts]) -> int:
+def high_water_bytes(measurements: Iterable[StorageFacts]) -> Result[int, ValueError]:
     """The largest footprint among ``measurements``, so a peak taken mid-operation is never reported as smaller."""
     footprints = [facts.footprint_bytes for facts in measurements]
     if not footprints:
-        raise ValueError("a high-water mark needs at least one measurement")
-    return max(footprints)
+        return Err(ValueError("a high-water mark needs at least one measurement"))
+    return Ok(max(footprints))
 
 
 def should_compact(facts: StorageFacts) -> bool:
@@ -49,17 +51,17 @@ def should_compact(facts: StorageFacts) -> bool:
     )
 
 
-def bytes_per_event(database_bytes: int, events: int) -> float:
+def bytes_per_event(database_bytes: int, events: int) -> Result[float, ValueError]:
     if events <= 0:
-        raise ValueError("bytes per event is undefined without events")
-    return database_bytes / events
+        return Err(ValueError("bytes per event is undefined without events"))
+    return Ok(database_bytes / events)
 
 
-def index_share(index_bytes: int, database_bytes: int) -> float:
+def index_share(index_bytes: int, database_bytes: int) -> Result[float, ValueError]:
     """The fraction of the database file that its indexes hold."""
     if database_bytes <= 0:
-        raise ValueError("the index share of an empty database is undefined")
-    return index_bytes / database_bytes
+        return Err(ValueError("the index share of an empty database is undefined"))
+    return Ok(index_bytes / database_bytes)
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,24 +81,32 @@ class SizeReport:
         return self.acceptance != "unexplained"
 
 
-def size_report(*, events: int, database_bytes: int, index_bytes: int, explanation: str | None = None) -> SizeReport:
+def size_report(
+    *, events: int, database_bytes: int, index_bytes: int, explanation: str | None = None
+) -> Result[SizeReport, ValueError]:
     """The storage acceptance gate: inside the envelope, or outside it and explained, or outside it and not.
 
-    An explanation is kept only when it is needed and is not blank; a size inside the envelope needs none.
+    An explanation is kept only when it is needed and is not blank; a size inside the envelope needs none. Either
+    figure the report divides by being zero makes it an ``Err``.
     """
-    per_event = bytes_per_event(database_bytes, events)
-    reason = (explanation or "").strip() or None
-    acceptance: Acceptance
-    if ENVELOPE_MIN_BYTES_PER_EVENT <= per_event <= ENVELOPE_MAX_BYTES_PER_EVENT:
-        acceptance, reason = "within_envelope", None
-    else:
-        acceptance = "unexplained" if reason is None else "explained"
-    return SizeReport(
-        events=events,
-        database_bytes=database_bytes,
-        index_bytes=index_bytes,
-        bytes_per_event=per_event,
-        index_share=index_share(index_bytes, database_bytes),
-        acceptance=acceptance,
-        explanation=reason,
+
+    def report(per_event: float, share: float) -> SizeReport:
+        reason = (explanation or "").strip() or None
+        acceptance: Acceptance
+        if ENVELOPE_MIN_BYTES_PER_EVENT <= per_event <= ENVELOPE_MAX_BYTES_PER_EVENT:
+            acceptance, reason = "within_envelope", None
+        else:
+            acceptance = "unexplained" if reason is None else "explained"
+        return SizeReport(
+            events=events,
+            database_bytes=database_bytes,
+            index_bytes=index_bytes,
+            bytes_per_event=per_event,
+            index_share=share,
+            acceptance=acceptance,
+            explanation=reason,
+        )
+
+    return bytes_per_event(database_bytes, events).flat_map(
+        lambda per_event: index_share(index_bytes, database_bytes).map(lambda share: report(per_event, share))
     )

@@ -1,8 +1,10 @@
 """The one timestamp spelling: UTC, exactly three fractional digits, and a trailing Z."""
 
+import re
 from datetime import UTC, datetime, timedelta, timezone
 
 import pytest
+from typekit import Err, Ok, Result
 
 from ferret.domain.timestamps import add_days, format_timestamp, parse_rfc3339, parse_timestamp
 
@@ -10,28 +12,33 @@ MOMENT = datetime(2026, 9, 18, 8, 15, 30, 123000, tzinfo=UTC)
 CANONICAL = "2026-09-18T08:15:30.123Z"
 
 
+def fault(result: Result[object, ValueError]) -> str:
+    """The message of the ``ValueError`` an ``Err`` carries; an ``Ok`` fails the test."""
+    assert isinstance(result, Err)
+    return str(result.error)
+
+
 def test_a_moment_formats_as_utc_with_millisecond_precision() -> None:
-    assert format_timestamp(MOMENT) == CANONICAL
+    assert format_timestamp(MOMENT) == Ok(CANONICAL)
 
 
 def test_finer_precision_is_truncated_not_rounded() -> None:
-    assert format_timestamp(MOMENT.replace(microsecond=123999)) == CANONICAL
+    assert format_timestamp(MOMENT.replace(microsecond=123999)) == Ok(CANONICAL)
 
 
 def test_a_moment_in_another_zone_is_converted_to_utc() -> None:
     local = MOMENT.astimezone(timezone(timedelta(hours=7)))
 
-    assert format_timestamp(local) == CANONICAL
+    assert format_timestamp(local) == Ok(CANONICAL)
 
 
 def test_a_naive_moment_is_refused() -> None:
-    with pytest.raises(ValueError, match="time zone"):
-        format_timestamp(datetime(2026, 9, 18, 8, 15, 30))
+    assert re.search("time zone", fault(format_timestamp(datetime(2026, 9, 18, 8, 15, 30))))
 
 
 def test_a_canonical_timestamp_round_trips() -> None:
-    assert parse_timestamp(CANONICAL) == MOMENT
-    assert format_timestamp(parse_timestamp(CANONICAL)) == CANONICAL
+    assert parse_timestamp(CANONICAL) == Ok(MOMENT)
+    assert parse_timestamp(CANONICAL).flat_map(format_timestamp) == Ok(CANONICAL)
 
 
 @pytest.mark.parametrize(
@@ -70,17 +77,16 @@ def test_a_canonical_timestamp_round_trips() -> None:
     ],
 )
 def test_any_other_spelling_is_refused(text: str) -> None:
-    with pytest.raises(ValueError, match=r"canonical|day|month|hour"):
-        parse_timestamp(text)
+    assert re.search(r"canonical|day|month|hour", fault(parse_timestamp(text)))
 
 
 def test_days_are_added_on_the_calendar() -> None:
-    assert format_timestamp(add_days(MOMENT, 30)) == "2026-10-18T08:15:30.123Z"
-    assert format_timestamp(add_days(MOMENT, 0)) == CANONICAL
+    assert format_timestamp(add_days(MOMENT, 30)) == Ok("2026-10-18T08:15:30.123Z")
+    assert format_timestamp(add_days(MOMENT, 0)) == Ok(CANONICAL)
 
 
 def test_a_year_before_one_thousand_is_padded_to_four_digits() -> None:
-    assert format_timestamp(datetime(5, 1, 2, 3, 4, 5, 678000, tzinfo=UTC)) == "0005-01-02T03:04:05.678Z"
+    assert format_timestamp(datetime(5, 1, 2, 3, 4, 5, 678000, tzinfo=UTC)) == Ok("0005-01-02T03:04:05.678Z")
 
 
 @pytest.mark.parametrize(
@@ -98,7 +104,7 @@ def test_a_year_before_one_thousand_is_padded_to_four_digits() -> None:
     ],
 )
 def test_an_rfc3339_timestamp_is_read_as_the_utc_moment_it_names(text: str, expected: str) -> None:
-    assert format_timestamp(parse_rfc3339(text)) == expected
+    assert parse_rfc3339(text).flat_map(format_timestamp) == Ok(expected)
 
 
 @pytest.mark.parametrize(
@@ -123,5 +129,4 @@ def test_an_rfc3339_timestamp_is_read_as_the_utc_moment_it_names(text: str, expe
     ],
 )
 def test_any_other_rfc3339_spelling_is_refused(text: str) -> None:
-    with pytest.raises(ValueError, match=r"RFC 3339|day|month|hour|offset|range"):
-        parse_rfc3339(text)
+    assert re.search(r"RFC 3339|day|month|hour|offset|range", fault(parse_rfc3339(text)))

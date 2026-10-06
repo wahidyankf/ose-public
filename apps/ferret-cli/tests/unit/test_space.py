@@ -1,6 +1,9 @@
 """Physical space rules: high-water accounting, the compaction policy, and the planning-envelope gate."""
 
+import re
+
 import pytest
+from typekit import Err, Ok, Result
 
 from ferret.domain.space import (
     COMPACTION_MIN_FREELIST_BYTES,
@@ -19,6 +22,18 @@ from ferret.domain.space import (
 )
 
 
+def fault(result: Result[object, ValueError]) -> str:
+    """The message of the ``ValueError`` an ``Err`` carries; an ``Ok`` fails the test."""
+    assert isinstance(result, Err)
+    return str(result.error)
+
+
+def report_of(result: Result[SizeReport, ValueError]) -> SizeReport:
+    """The report an ``Ok`` carries; an ``Err`` fails the test."""
+    assert isinstance(result, Ok)
+    return result.value
+
+
 def test_the_plan_fixes_the_envelope_and_the_compaction_thresholds() -> None:
     assert ENVELOPE_MIN_BYTES_PER_EVENT == 0.7 * KIB
     assert ENVELOPE_MAX_BYTES_PER_EVENT == 1.5 * KIB
@@ -35,14 +50,13 @@ def test_the_high_water_mark_is_the_largest_footprint_measured_and_never_falls_b
     rewriting = StorageFacts(48 * MIB, 48 * MIB, 0)
     after = StorageFacts(48 * MIB, 0, 0)
 
-    assert high_water_bytes([before, rewriting, after]) == 96 * MIB
-    assert high_water_bytes([after, before]) == 64 * MIB
-    assert high_water_bytes([after]) == 48 * MIB
+    assert high_water_bytes([before, rewriting, after]) == Ok(96 * MIB)
+    assert high_water_bytes([after, before]) == Ok(64 * MIB)
+    assert high_water_bytes([after]) == Ok(48 * MIB)
 
 
 def test_a_high_water_mark_needs_at_least_one_measurement() -> None:
-    with pytest.raises(ValueError, match="measurement"):
-        high_water_bytes([])
+    assert re.search("measurement", fault(high_water_bytes([])))
 
 
 @pytest.mark.parametrize(
@@ -64,21 +78,19 @@ def test_compaction_runs_only_when_free_pages_exceed_both_the_absolute_and_the_p
 
 
 def test_bytes_per_event_divides_the_database_by_its_events() -> None:
-    assert bytes_per_event(1_024_000, 1000) == 1024.0
+    assert bytes_per_event(1_024_000, 1000) == Ok(1024.0)
 
 
 def test_bytes_per_event_is_undefined_without_events() -> None:
-    with pytest.raises(ValueError, match="events"):
-        bytes_per_event(4096, 0)
+    assert re.search("events", fault(bytes_per_event(4096, 0)))
 
 
 def test_index_share_is_the_fraction_of_the_database_held_by_indexes() -> None:
-    assert index_share(250, 1000) == 0.25
+    assert index_share(250, 1000) == Ok(0.25)
 
 
 def test_index_share_is_undefined_for_an_empty_database() -> None:
-    with pytest.raises(ValueError, match="database"):
-        index_share(0, 0)
+    assert re.search("database", fault(index_share(0, 0)))
 
 
 @pytest.mark.parametrize(
@@ -94,15 +106,20 @@ def test_index_share_is_undefined_for_an_empty_database() -> None:
 def test_a_size_outside_the_planning_envelope_fails_the_gate_until_it_is_explained(
     per_event: float, acceptance: str
 ) -> None:
-    report = size_report(events=1000, database_bytes=round(per_event * 1000), index_bytes=0)
+    report = report_of(size_report(events=1000, database_bytes=round(per_event * 1000), index_bytes=0))
 
     assert report.acceptance == acceptance
     assert report.passes is (acceptance == "within_envelope")
 
 
 def test_an_explanation_lets_an_outside_size_pass_and_is_kept_with_the_figures() -> None:
-    report = size_report(
-        events=1000, database_bytes=2 * KIB * 1000, index_bytes=500_000, explanation="fixed page overhead dominates"
+    report = report_of(
+        size_report(
+            events=1000,
+            database_bytes=2 * KIB * 1000,
+            index_bytes=500_000,
+            explanation="fixed page overhead dominates",
+        )
     )
 
     assert report == SizeReport(
@@ -119,12 +136,25 @@ def test_an_explanation_lets_an_outside_size_pass_and_is_kept_with_the_figures()
 
 @pytest.mark.parametrize("explanation", ["", "   "])
 def test_a_blank_explanation_explains_nothing(explanation: str) -> None:
-    report = size_report(events=1000, database_bytes=3 * KIB * 1000, index_bytes=0, explanation=explanation)
+    report = report_of(size_report(events=1000, database_bytes=3 * KIB * 1000, index_bytes=0, explanation=explanation))
 
     assert (report.acceptance, report.explanation) == ("unexplained", None)
 
 
 def test_an_explanation_of_an_inside_size_is_not_needed_and_is_not_kept() -> None:
-    report = size_report(events=1000, database_bytes=1 * KIB * 1000, index_bytes=0, explanation="unneeded")
+    report = report_of(size_report(events=1000, database_bytes=1 * KIB * 1000, index_bytes=0, explanation="unneeded"))
 
     assert (report.acceptance, report.explanation) == ("within_envelope", None)
+
+
+@pytest.mark.parametrize(
+    ("events", "database_bytes", "undefined_figure"),
+    [
+        pytest.param(0, 4096, "events", id="no-events"),
+        pytest.param(10, 0, "database", id="an-empty-database"),
+    ],
+)
+def test_a_size_report_is_undefined_when_a_figure_it_divides_by_is_zero(
+    events: int, database_bytes: int, undefined_figure: str
+) -> None:
+    assert re.search(undefined_figure, fault(size_report(events=events, database_bytes=database_bytes, index_bytes=0)))

@@ -4,7 +4,7 @@ import json
 from typing import Any, Literal, cast
 
 from ferret.application.ports import DataHomeFiles, FileFacts
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, or_raise
 from ferret.domain.fields import UUID_V4
 from ferret.domain.storage import (
     CONFIG_FILE,
@@ -69,7 +69,7 @@ def installation_id_from(content: bytes) -> str:
     ):
         raise FerretError("ferret.storage.unavailable")
     try:
-        parse_timestamp(str(document["createdAt"]))
+        or_raise(parse_timestamp(str(document["createdAt"])))
     except ValueError:
         raise FerretError("ferret.storage.unavailable") from None
     return installation_id

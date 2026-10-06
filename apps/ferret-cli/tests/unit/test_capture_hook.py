@@ -14,7 +14,6 @@ from ferret.application.privacy import RAW_LIMIT_BYTES
 from ferret.domain.errors import FerretError
 from ferret.domain.event import Event
 from ferret.domain.identity import derive_identifier
-from ferret.domain.timestamps import format_timestamp
 from support.fakes import (
     FIXED_NOW,
     INSTALLATION_ID,
@@ -41,6 +40,7 @@ from support.hook_payloads import (
     encode,
     opencode_session_created,
 )
+from support.populate import stamp
 
 EVENT_ID = "00000000-0000-4000-8000-0000000000aa"
 KEY = bytes(range(32))
@@ -153,8 +153,8 @@ def test_the_event_is_stamped_with_the_current_time() -> None:
 
     capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started")
 
-    stamp = format_timestamp(FIXED_NOW + timedelta(minutes=5))
-    assert (only_event(world).occurred_at, only_event(world).captured_at) == (stamp, stamp)
+    expected = stamp(FIXED_NOW + timedelta(minutes=5))
+    assert (only_event(world).occurred_at, only_event(world).captured_at) == (expected, expected)
 
 
 def test_a_reported_duration_and_tool_name_are_kept_as_observed_metadata() -> None:
@@ -270,7 +270,7 @@ def test_the_bounded_prune_runs_before_the_event_is_stored(monkeypatch: pytest.M
 
 def test_a_prune_that_is_not_due_leaves_the_capture_alone() -> None:
     world = world_for(claude_tool("PreToolUse"))
-    world.telemetry.marker = format_timestamp(FIXED_NOW)
+    world.telemetry.marker = stamp(FIXED_NOW)
 
     assert capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started") == "stored"
     assert world.telemetry.prunes == []

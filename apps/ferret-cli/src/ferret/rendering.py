@@ -14,7 +14,6 @@ from ferret.application.status import StatusReport
 from ferret.cli import OutputMode
 from ferret.domain.errors import EXIT_NEGATIVE_RESULT, EXIT_SUCCESS
 from ferret.domain.event import Event
-from ferret.domain.space import high_water_bytes
 
 # The event columns a text listing shows, named by their document properties, in this order.
 LIST_COLUMNS: Final = (
@@ -206,7 +205,8 @@ def _scalar(value: object) -> str:
 
 def render_status(report: StatusReport, output: OutputMode) -> str:
     counts, facts, counters = report.counts, report.facts, report.counters
-    high_water = high_water_bytes([facts])
+    # A single measurement's high-water mark is that measurement's footprint.
+    high_water = facts.footprint_bytes
     if output == "json":
         return json_line(
             {

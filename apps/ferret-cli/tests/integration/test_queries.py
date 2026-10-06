@@ -13,7 +13,6 @@ from ferret.application import queries
 from ferret.application.queries import export_events, list_events
 from ferret.domain.event import Event
 from ferret.domain.query import EventCriteria, Position, criteria_from_options
-from ferret.domain.timestamps import format_timestamp
 from support.fakes import FakeEvents
 from support.machine import Machine, make_machine
 from support.populate import WORKSPACE_A, WORKSPACE_B, make_event, mixed_events, numbers, stamp
@@ -87,7 +86,7 @@ def test_the_real_reader_returns_exactly_what_the_fake_returns(
 
     assert from_sqlite == read_all(fake, criteria, newest_first=newest_first)
     assert bool(from_sqlite) is expects_rows
-    assert all(event.expires_at > format_timestamp(NOW) for event in from_sqlite)
+    assert all(event.expires_at > stamp(NOW) for event in from_sqlite)
 
 
 @pytest.mark.parametrize("limit", [1, 2, 7, 61])

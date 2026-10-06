@@ -27,7 +27,7 @@ from ferret.application.ports import (
     StoreCounts,
 )
 from ferret.domain.capability import CapabilitySnapshot
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, or_raise
 from ferret.domain.event import Event
 from ferret.domain.identity import resolve_identity
 from ferret.domain.install import (
@@ -240,7 +240,7 @@ class FakeEvents:
         with self.lock:
             self.captures += 1
             existing = next((held for held in self.stored if held.event_id == event.event_id), None)
-            outcome = resolve_identity(None if existing is None else existing.event_hash, event.event_hash)
+            outcome = or_raise(resolve_identity(None if existing is None else existing.event_hash, event.event_hash))
             if outcome == "duplicate":
                 return "duplicate"
             self.stored.append(event)
@@ -256,7 +256,7 @@ class FakeEvents:
         limit: int,
     ) -> tuple[Event, ...]:
         """Up to ``limit`` unexpired matches in one total order, strictly past ``after`` in the direction of travel."""
-        horizon = format_timestamp(now)
+        horizon = or_raise(format_timestamp(now))
         with self.lock:
             self.reads += 1
             rows = sorted(
@@ -271,7 +271,7 @@ class FakeEvents:
 
     def find(self, event_id: str, *, now: datetime) -> Event | None:
         """The unexpired event with ``event_id``, whatever filters a query had."""
-        horizon = format_timestamp(now)
+        horizon = or_raise(format_timestamp(now))
         with self.lock:
             return next((held for held in self.stored if held.event_id == event_id and held.expires_at > horizon), None)
 
@@ -290,14 +290,16 @@ class FakeCapabilities:
     def store_snapshot(self, snapshot: CapabilitySnapshot) -> CaptureResult:
         with self.lock:
             existing = next((held for held in self.stored if held.snapshot_id == snapshot.snapshot_id), None)
-            outcome = resolve_identity(None if existing is None else existing.snapshot_hash, snapshot.snapshot_hash)
+            outcome = or_raise(
+                resolve_identity(None if existing is None else existing.snapshot_hash, snapshot.snapshot_hash)
+            )
             if outcome == "duplicate":
                 return "duplicate"
             self.stored.append(snapshot)
             return "stored"
 
     def latest_snapshot(self, harness: str, *, now: datetime) -> CapabilitySnapshot | None:
-        horizon = format_timestamp(now)
+        horizon = or_raise(format_timestamp(now))
         with self.lock:
             live = (held for held in self.stored if held.harness == harness and held.expires_at > horizon)
             return max(live, key=_recency, default=None)
@@ -342,7 +344,7 @@ class FakeTelemetry:
             raise self.broken
         if budget.remaining_ms() == 0 or self.lock_held:
             return self._record(PruneResult("skipped"))
-        horizon = format_timestamp(now)
+        horizon = or_raise(format_timestamp(now))
         expired_events = sorted(
             (held for held in self.events.stored if held.expires_at <= horizon),
             key=lambda held: (held.expires_at, held.event_id),
@@ -404,7 +406,7 @@ class FakeTelemetry:
     def counts(self, *, now: datetime, near_expiry_within: timedelta) -> StoreCounts:
         """Live and expired rows counted the way the real store does: live means not expired at ``now``."""
         self._require_reachable()
-        horizon, near = format_timestamp(now), format_timestamp(now + near_expiry_within)
+        horizon, near = or_raise(format_timestamp(now)), or_raise(format_timestamp(now + near_expiry_within))
         live_events = [held for held in self.events.stored if held.expires_at > horizon]
         live_snapshots = [held for held in self.capabilities.stored if held.expires_at > horizon]
         stored = len(self.events.stored) + len(self.capabilities.stored)

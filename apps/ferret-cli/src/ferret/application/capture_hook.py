@@ -12,6 +12,7 @@ from ferret.application.maintenance import prune_due
 from ferret.application.ports import Budget, CaptureResult, Runtime
 from ferret.application.privacy import RAW_LIMIT_BYTES, project_hook_payload
 from ferret.application.store import installation_id_from, read_key, require_initialized
+from ferret.domain.errors import or_raise
 from ferret.domain.event import EVENT_SCHEMA_VERSION, Event, event_from_document, event_hash
 from ferret.domain.hook import allowed_paths, map_hook
 from ferret.domain.identity import derive_identifier
@@ -43,7 +44,7 @@ def capture_hook(runtime: Runtime, *, harness: str, event: str) -> CaptureResult
     key = read_key(runtime.files)
     installation = installation_id_from(runtime.files.read_file(IDENTITY_FILE))
     now = runtime.clock.now()
-    moment = format_timestamp(now)
+    moment = or_raise(format_timestamp(now))
     draft = Event(
         schema_version=EVENT_SCHEMA_VERSION,
         event_id=runtime.randomness.uuid4(),

@@ -10,7 +10,7 @@ from typing import Literal
 
 from ferret.application.ports import Budget, ExpiryCounters, PruneResult, Runtime
 from ferret.application.store import require_initialized
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, or_raise
 from ferret.domain.retention import PRUNE_BUDGET_MS, PRUNE_ROW_LIMIT, is_due
 from ferret.domain.space import StorageFacts, high_water_bytes, should_compact
 
@@ -134,7 +134,7 @@ def run_maintenance(runtime: Runtime, *, if_due: bool) -> MaintenanceReport:
     if if_due and not is_due(telemetry.last_completed_at(), runtime.clock.now()):
         facts = measure_storage(runtime)
         return MaintenanceReport(
-            "not_due", Pruned(), telemetry.expiry_counters(), facts, facts, high_water_bytes([facts])
+            "not_due", Pruned(), telemetry.expiry_counters(), facts, facts, or_raise(high_water_bytes([facts]))
         )
     before = measure_storage(runtime)
     pruned = prune_to_exhaustion(runtime)
@@ -146,5 +146,5 @@ def run_maintenance(runtime: Runtime, *, if_due: bool) -> MaintenanceReport:
         telemetry.expiry_counters(),
         before,
         after,
-        high_water_bytes([before, *reclamation.measurements]),
+        or_raise(high_water_bytes([before, *reclamation.measurements])),
     )

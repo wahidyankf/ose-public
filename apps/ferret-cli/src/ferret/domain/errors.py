@@ -3,7 +3,7 @@
 from collections.abc import Mapping
 from typing import Literal
 
-from typekit import Result
+from typekit import Err, Ok, Result
 
 #: The run happened and the answer was affirmative.
 EXIT_SUCCESS = 0
@@ -82,3 +82,16 @@ class FerretError(Exception):
 
 #: What a fallible FERRET function returns: its value, or the one closed failure that stopped it.
 type FerretResult[T] = Result[T, FerretError]
+
+
+def or_raise[T](result: Result[T, Exception]) -> T:
+    """The value of an ``Ok``, or the error of an ``Err`` raised again: the Transition bridge of tech-docs/004.
+
+    A caller in a module whose own slice has not run still raises and catches exceptions, so it takes a result apart
+    here. Each slice removes its module's uses; S10 removes the last one and then this function.
+    """
+    match result:
+        case Ok(value):
+            return value
+        case Err(error):
+            raise error

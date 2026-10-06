@@ -7,6 +7,8 @@ reading's moment. These limits only govern the removal, which has no scheduler a
 from datetime import datetime, timedelta
 from typing import Final
 
+from typekit import Err
+
 from ferret.domain.storage import MAINTENANCE_INTERVAL_SECONDS
 from ferret.domain.timestamps import parse_timestamp
 
@@ -28,8 +30,8 @@ def is_due(last_completed_at: str | None, now: datetime) -> bool:
     """
     if last_completed_at is None:
         return True
-    try:
-        completed = parse_timestamp(last_completed_at)
-    except ValueError:
+    parsed = parse_timestamp(last_completed_at)
+    if isinstance(parsed, Err):
         return True
+    completed = parsed.value
     return not completed <= now < completed + MAINTENANCE_INTERVAL

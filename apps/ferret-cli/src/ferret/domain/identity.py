@@ -7,7 +7,9 @@ import hashlib
 import hmac
 from typing import Final, Literal
 
-from ferret.domain.errors import FerretError
+from typekit import Err, Ok
+
+from ferret.domain.errors import FerretError, FerretResult
 
 type IdentityDecision = Literal["insert", "duplicate"]
 type IdentifierKind = Literal["ws", "ss"]
@@ -27,15 +29,15 @@ def derive_identifier(key: bytes, kind: IdentifierKind, *parts: str) -> str:
     return f"{kind}_{hmac.new(key, message, hashlib.sha256).hexdigest()[:_DIGEST_HEX_CHARACTERS]}"
 
 
-def resolve_identity(existing_hash: str | None, incoming_hash: str) -> IdentityDecision:
+def resolve_identity(existing_hash: str | None, incoming_hash: str) -> FerretResult[IdentityDecision]:
     """What an ID that may already be stored means for the incoming event or capability snapshot.
 
     An unseen ID is inserted. The same ID with the same hash is an idempotent duplicate, compared in constant time.
     The same ID with a different hash is a conflict: the ID is never reused for other content, and different IDs
-    are never deduplicated by hash alone.
+    are never deduplicated by hash alone, and a conflict is an ``Err``.
     """
     if existing_hash is None:
-        return "insert"
+        return Ok("insert")
     if hmac.compare_digest(existing_hash.encode("utf-8"), incoming_hash.encode("utf-8")):
-        return "duplicate"
-    raise FerretError("ferret.event.idempotency-conflict")
+        return Ok("duplicate")
+    return Err(FerretError("ferret.event.idempotency-conflict"))

@@ -1,5 +1,5 @@
 ---
-description: "The base-worktree procedure for landing changes into a repository with no primary checkout — topology verification, the seven-step landing sequence, and the terminal reconcile."
+description: "The base-worktree procedure for landing changes into a repository with no primary checkout — topology verification, the landing sequence, and the terminal reconcile."
 when_to_use: "Read this index to find the right Bare-Repo Base-Worktree Landing Method child document."
 ---
 
@@ -8,7 +8,7 @@ when_to_use: "Read this index to find the right Bare-Repo Base-Worktree Landing 
 - [Principles and Conventions Implemented](./principles-and-conventions-implemented.md) — The principles and companion conventions the bare-repo landing method implements and respects. Use when tracing why the bare-repo landing method exists back to the principles and conventions it respects.
 - [When This Applies](./when-this-applies.md) — The two conditions that trigger the bare-repo landing method, and the checked-out-branch trap to avoid. Use when deciding whether a landing needs this method — a bare target repository, or a landing performed from a side worktree.
 - [Verify Topology First](./verify-topology-first.md) — The two ways to check whether a repository is bare, and the one command that must never be used to answer that question. Use when you need to determine whether a repository is bare, before running any mutating git command against it.
-- [The Method, As Numbered Steps](./the-method-as-numbered-steps.md) — The eight-step numbered sequence for landing a change through a bare repository or a side worktree. Use as the step-by-step checklist while executing a bare-repo or side-worktree landing.
+- [The Method, As Numbered Steps](./the-method-as-numbered-steps.md) — The numbered sequence for landing a change through a bare repository or a side worktree. Use as the step-by-step checklist while executing a bare-repo or side-worktree landing.
 - [Terminal Reconcile](./terminal-reconcile.md) — The topology-keyed command for step 8 — reconciling local main after a bare-repo or side-worktree landing. Use when running step 8 of the method, to pick the correct reconcile command for the repository's topology.
 - [Why Merge --ff-only Cannot Run in a Bare Repository](./why-merge-ff-only-cannot-run-in-the-bare-siblings.md) — Worked console transcript showing why git merge fails in a bare repository and why the refspec fetch form is the only universal one. Use when explaining or verifying why the bare-topology row of the Terminal Reconcile table uses a fetch refspec instead of merge --ff-only.
 - [Worked Example — the 2026-07-21 Sibling Drift](./worked-example-the-2026-07-21-sibling-drift.md) — A real transcript of a repository found with local main silently behind origin/main, and how the reconcile closed the gap. Use as a concrete reference example when explaining why the terminal reconcile step is mandatory rather than conditional.

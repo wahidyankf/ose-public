@@ -56,8 +56,8 @@ than decays.
   — the rule being violated, stated as a prohibition rather than a preference.
 - [Anti-Pattern — Echo and No-Op Test Targets](../../../repo-governance/development/infra/nx-targets/anti-patterns-echo-placeholders.md)
   — the same prohibition given its own document, which is how much this repo cares about it.
-- [`markdownlint-ci-gate-lints-zero-files`](./markdownlint-ci-gate-lints-zero-files.md) — the closest
-  relative in shape: a gate that has always passed while inspecting nothing.
+- [`mermaid-validator-does-not-check-syntax`](./mermaid-validator-does-not-check-syntax.md) — the closest
+  relative in shape: a gate that passes while inspecting less than its name implies.
 - [`2026-08-30__rewrite-rhino-cli-to-fsharp`](../../done/2026-08-30__rewrite-rhino-cli-to-fsharp/README.md)
   — Phase 9d surfaced the class and its `learnings.md` flagged it as "a separate, unopened cleanup".
 - [`port-registry-lacks-a-validator`](../q2-not-urgent-important/port-registry-lacks-a-validator.md)

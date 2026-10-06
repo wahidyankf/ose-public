@@ -61,9 +61,10 @@ Three waves emptied this queue:
   [`repo-rules-sweep`](../done/2026-08-18__repo-rules-sweep/README.md) and
   [`update-harness-support`](../done/2026-08-20__update-harness-support/README.md):
   [oxlint-upgrade-and-lint-reproducibility](../ideas/q1-urgent-important/oxlint-upgrade-and-lint-reproducibility.md),
-  [rhino-governance-tooling-defects](../ideas/q1-urgent-important/rhino-governance-tooling-defects.md),
+  `rhino-governance-tooling-defects` (since resolved and deleted),
   [file-naming-convention-rework](../ideas/q1-urgent-important/file-naming-convention-rework.md),
-  [harness-mirror-and-test-isolation-defects](../ideas/q1-urgent-important/harness-mirror-and-test-isolation-defects.md),
+  `harness-mirror-and-test-isolation-defects` (since rewritten as
+  [skill-tree-links-hidden-by-link-exemption](../ideas/q1-urgent-important/skill-tree-links-hidden-by-link-exemption.md)),
   and
   [declare-vite-peer-dependency](../ideas/q2-not-urgent-important/declare-vite-peer-dependency.md).
 - **Demoted to two-pagers 2026-09-08** — the three follow-ups

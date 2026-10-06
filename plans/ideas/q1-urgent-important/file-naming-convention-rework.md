@@ -56,8 +56,6 @@ less than that.
   every item above; entries 6-8 of its `learnings.md` are the specification source.
 - [Iron Rule 3](../../../repo-governance/workflows/plan/plan-execution/012-iron-rules-1-5.md) — fix the
   class, not the sites a finding names; the propagation discipline any prose change here inherits.
-- [rhino-governance-tooling-defects](./rhino-governance-tooling-defects.md) — the related
-  family, where the tool under-reports rather than the document.
 - **Rule reach** — the same underlying question one level up: which paths a governance rule actually
   reaches.
 - **Hugo's `_index.md` contract** — the external mandate behind the exemption nobody documented; the

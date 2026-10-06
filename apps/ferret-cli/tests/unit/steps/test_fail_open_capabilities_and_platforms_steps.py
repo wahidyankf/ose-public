@@ -19,7 +19,7 @@ from pytest_bdd import given, parsers, scenario, then, when
 
 from ferret.application.initialization import initialize_store
 from ferret.application.ports import Budget, CaptureResult, InstalledFacts, Runtime, StagedInstall, StagePlan
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, FerretResult
 from ferret.domain.event import Event
 from ferret.domain.install import (
     ARTIFACT_MODE,
@@ -65,21 +65,21 @@ class RecordingInstall(FakeInstall):
         self.targets: list[Path] = []
         self.plans: list[StagePlan] = []
 
-    def facts(self, path: Path) -> InstalledFacts:
+    def facts(self, path: Path) -> FerretResult[InstalledFacts]:
         self.targets.append(path)
         return super().facts(path)
 
-    def stage(self, plan: StagePlan) -> StagedInstall:
+    def stage(self, plan: StagePlan) -> FerretResult[StagedInstall]:
         self.plans.append(plan)
         return super().stage(plan)
 
-    def remove(self, path: Path) -> None:
+    def remove(self, path: Path) -> FerretResult[None]:
         self.targets.append(path)
-        super().remove(path)
+        return super().remove(path)
 
-    def remove_empty_directory(self, path: Path) -> None:
+    def remove_empty_directory(self, path: Path) -> FerretResult[None]:
         self.targets.append(path)
-        super().remove_empty_directory(path)
+        return super().remove_empty_directory(path)
 
 
 def recording_world(*events: Event) -> tuple[World, RecordingInstall]:
@@ -236,7 +236,7 @@ def given_no_artifact_installed(session: Session, situation: str) -> None:
         installer.put_file(FAKE_HOME / name, content, 0o644)
     session.bystanders = objects_by_name(session, STARTUP_FILES)
     assert not any(path.is_relative_to(installer.paths.share) for path in installer.nodes)
-    assert installer.facts(installer.paths.launcher).kind == "missing"
+    assert value_of(installer.facts(installer.paths.launcher)).kind == "missing"
 
 
 @when("the user runs self install --target user")
@@ -267,7 +267,7 @@ def then_objects_are_owner_only(session: Session) -> None:
     # Integration and E2E read the modes a real install leaves on disk.
     assert (DIRECTORY_MODE, ARTIFACT_MODE, LAUNCHER_MODE, MANIFEST_MODE) == (0o700, 0o700, 0o700, 0o600)
     modes = {
-        name: installer.facts(path).mode
+        name: value_of(installer.facts(path)).mode
         for name, path in {
             "share": paths.share,
             "version": paths.version_directory(document["version"]),
@@ -358,7 +358,7 @@ def materialize(installer: RecordingInstall, home: Path, launcher: bytes) -> Non
         else:
             target.write_bytes(launcher if path == installer.paths.launcher else node.content)
         target.chmod(node.mode)
-    if installer.facts(installer.paths.launcher).kind == "file":
+    if value_of(installer.facts(installer.paths.launcher)).kind == "file":
         warm(home / installer.paths.launcher.relative_to(FAKE_HOME))
 
 
@@ -378,7 +378,7 @@ def given_harness_adapters_call_ferret(session: Session) -> None:
     session.data_before = {name: entry.content for name, entry in world.files.files.items()}
     session.creates_before = len(world.files.creates)
     session.captures_before = world.events.captures
-    assert installer.facts(installer.paths.launcher).kind == "file"
+    assert value_of(installer.facts(installer.paths.launcher)).kind == "file"
     installed = isolate(session.directory / "installed")
     materialize(installer, installed.home, call_logger(session.directory / "calls"))
     assert_silent_in_time(run_every_adapter(installed))

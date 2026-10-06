@@ -9,7 +9,7 @@ from typing import Any, Literal
 from typekit import Err, Ok
 
 from ferret.application.ports import FileFacts, Runtime
-from ferret.application.store import ARTIFACTS, installation_id_from, read_document, read_key, require_safe
+from ferret.application.store import artifact_facts, installation_id_from, read_document, read_key, require_safe
 from ferret.domain.errors import FerretError, FerretResult, as_internal_failure
 from ferret.domain.storage import (
     CONFIG_FILE,
@@ -81,8 +81,7 @@ def _ensure_key(runtime: Runtime, present: Mapping[str, FileFacts]) -> FerretRes
     """Create the key when it is missing, and otherwise check that the one stored is usable."""
     files = runtime.files
     if present[KEY_FILE].kind == "missing":
-        files.create_file(KEY_FILE, runtime.randomness.token_bytes(KEY_BYTES), PRIVATE_FILE_MODE)
-        return Ok(None)
+        return files.create_file(KEY_FILE, runtime.randomness.token_bytes(KEY_BYTES), PRIVATE_FILE_MODE)
     return read_key(files).map(lambda _: None)
 
 
@@ -90,12 +89,12 @@ def _ensure_identity(runtime: Runtime, present: Mapping[str, FileFacts]) -> Ferr
     """The installation ID: the one stored, or a new one written down with the moment it was made."""
     files = runtime.files
     if present[IDENTITY_FILE].kind != "missing":
-        return installation_id_from(files.read_file(IDENTITY_FILE))
+        return files.read_file(IDENTITY_FILE).flat_map(installation_id_from)
     installation_id = runtime.randomness.uuid4()
     return (
         format_timestamp(runtime.clock.now())
         .map_err(as_internal_failure)
-        .tap(
+        .flat_map(
             lambda created_at: files.create_file(
                 IDENTITY_FILE,
                 _compact(
@@ -116,15 +115,19 @@ def _ensure_config(runtime: Runtime, present: Mapping[str, FileFacts]) -> Ferret
     """Create the configuration when it is missing, and otherwise check that it is exactly the supported one."""
     files = runtime.files
     if present[CONFIG_FILE].kind == "missing":
-        files.create_file(CONFIG_FILE, _compact(_CONFIG), PRIVATE_FILE_MODE)
-        return Ok(None)
-    return _verify_config(files.read_file(CONFIG_FILE))
+        return files.create_file(CONFIG_FILE, _compact(_CONFIG), PRIVATE_FILE_MODE)
+    return files.read_file(CONFIG_FILE).flat_map(_verify_config)
 
 
-def _finish(runtime: Runtime, present: Mapping[str, FileFacts], installation_id: str) -> InitResult:
-    """Create the empty database file when it is missing, and migrate it, which makes the schema."""
+def _ensure_database(runtime: Runtime, present: Mapping[str, FileFacts]) -> FerretResult[None]:
+    """Create the empty database file when it is missing."""
     if present[DATABASE_FILE].kind == "missing":
-        runtime.files.create_file(DATABASE_FILE, b"", PRIVATE_FILE_MODE)
+        return runtime.files.create_file(DATABASE_FILE, b"", PRIVATE_FILE_MODE)
+    return Ok(None)
+
+
+def _migrated(runtime: Runtime, installation_id: str) -> InitResult:
+    """Migrate the database, which makes the schema, and report what this call found."""
     state = runtime.schema.migrate()
     return InitResult(
         result="created" if state.applied_now else "already_initialized",
@@ -137,26 +140,31 @@ def _finish(runtime: Runtime, present: Mapping[str, FileFacts], installation_id:
     )
 
 
-def _complete(runtime: Runtime) -> FerretResult[InitResult]:
-    """Verify every existing object, and then create or check each artifact in the order an interruption can leave."""
-    present = {name: runtime.files.facts(name) for name in ARTIFACTS}
+def _complete_from(runtime: Runtime, present: Mapping[str, FileFacts]) -> FerretResult[InitResult]:
+    """Judge what exists, and then create or check each artifact in the order an interruption can leave."""
     return (
         _require_private_artifacts(present)
         .flat_map(lambda _: _require_companions(present))
         .flat_map(lambda _: _ensure_key(runtime, present))
         .flat_map(lambda _: _ensure_identity(runtime, present))
         .flat_map(
-            lambda installation_id: _ensure_config(runtime, present).map(
-                lambda _: _finish(runtime, present, installation_id)
+            lambda installation_id: (
+                _ensure_config(runtime, present)
+                .flat_map(lambda _: _ensure_database(runtime, present))
+                .map(lambda _: _migrated(runtime, installation_id))
             )
         )
     )
 
 
+def _complete(runtime: Runtime) -> FerretResult[InitResult]:
+    """Verify every existing object, and then create or check each artifact in the order an interruption can leave."""
+    return artifact_facts(runtime.files).flat_map(lambda present: _complete_from(runtime, present))
+
+
 def _initialize_under_lock(runtime: Runtime) -> FerretResult[InitResult]:
-    """Complete the store while holding the lock, which every way out of the block releases, a refusal included."""
-    with runtime.files.lock():
-        return _complete(runtime)
+    """Complete the store while holding the lock, which every way out of the work releases, a refusal included."""
+    return runtime.files.with_lock(lambda: _complete(runtime))
 
 
 def initialize_store(runtime: Runtime) -> FerretResult[InitResult]:
@@ -166,5 +174,9 @@ def initialize_store(runtime: Runtime) -> FerretResult[InitResult]:
     concurrent initializations converge on one identity and an interrupted one is finished rather than replaced.
     """
     files = runtime.files
-    files.ensure_directory(PRIVATE_DIRECTORY_MODE)
-    return require_safe(files.facts(None), "directory").flat_map(lambda _: _initialize_under_lock(runtime))
+    return (
+        files.ensure_directory(PRIVATE_DIRECTORY_MODE)
+        .flat_map(lambda _: files.facts(None))
+        .flat_map(lambda directory: require_safe(directory, "directory"))
+        .flat_map(lambda _: _initialize_under_lock(runtime))
+    )

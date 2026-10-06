@@ -1,6 +1,7 @@
 """Checks every persistent command makes about the data home before it reads or writes anything in it."""
 
 import json
+from collections.abc import Mapping
 from typing import Any, Literal, cast
 
 from typekit import Err, Ok, attempt
@@ -39,16 +40,31 @@ def require_safe(facts: FileFacts, expected: Literal["file", "directory"]) -> Fe
     return Ok(None)
 
 
-def _require_artifacts(files: DataHomeFiles, directory: FileFacts) -> FerretResult[None]:
+def artifact_facts(files: DataHomeFiles) -> FerretResult[dict[str, FileFacts]]:
+    """The facts of every artifact in ``ARTIFACTS`` order, or the failure of the first lookup that fails."""
+    present: dict[str, FileFacts] = {}
+    for name in ARTIFACTS:
+        looked = files.facts(name)
+        if isinstance(looked, Err):
+            return looked
+        present[name] = looked.value
+    return Ok(present)
+
+
+def _refuse_unsafe_or_missing(present: Mapping[str, FileFacts], directory: FileFacts) -> FerretResult[None]:
     """Refuse an artifact that is unsafe, and then a directory or an artifact that is missing, in that order."""
-    present = [files.facts(name) for name in ARTIFACTS]
-    for facts in present:
+    for facts in present.values():
         safe = require_safe(facts, "file")
         if isinstance(safe, Err):
             return safe
-    if directory.kind == "missing" or any(facts.kind == "missing" for facts in present):
+    if directory.kind == "missing" or any(facts.kind == "missing" for facts in present.values()):
         return Err(FerretError("ferret.storage.uninitialized"))
     return Ok(None)
+
+
+def _require_artifacts(files: DataHomeFiles, directory: FileFacts) -> FerretResult[None]:
+    """The artifacts' facts, looked up only once the directory is safe, and then judged."""
+    return artifact_facts(files).flat_map(lambda present: _refuse_unsafe_or_missing(present, directory))
 
 
 def require_initialized(files: DataHomeFiles) -> FerretResult[None]:
@@ -57,8 +73,9 @@ def require_initialized(files: DataHomeFiles) -> FerretResult[None]:
     Safety is judged before absence, so a widened or linked object is reported as unsafe rather than as missing.
     Nothing is created or repaired.
     """
-    directory = files.facts(None)
-    return require_safe(directory, "directory").flat_map(lambda _: _require_artifacts(files, directory))
+    return files.facts(None).flat_map(
+        lambda directory: require_safe(directory, "directory").flat_map(lambda _: _require_artifacts(files, directory))
+    )
 
 
 def _json_object(document: object) -> FerretResult[dict[str, Any]]:
@@ -97,7 +114,4 @@ def installation_id_from(content: bytes) -> FerretResult[str]:
 
 def read_key(files: DataHomeFiles) -> FerretResult[bytes]:
     """The installation's HMAC key, which is exactly ``KEY_BYTES`` long or the store cannot be used."""
-    key = files.read_file(KEY_FILE)
-    if len(key) != KEY_BYTES:
-        return Err(_unavailable())
-    return Ok(key)
+    return files.read_file(KEY_FILE).flat_map(lambda key: Ok(key) if len(key) == KEY_BYTES else Err(_unavailable()))

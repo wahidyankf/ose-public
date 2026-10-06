@@ -12,8 +12,8 @@ import pytest
 
 from ferret.adapters.system import system_runtime
 from ferret.application.initialization import InitResult, initialize_store
-from ferret.domain.errors import FerretError, FerretResult
-from support.results import refusal_of, value_of
+from ferret.domain.errors import FerretResult
+from support.results import refusal_of, refused, value_of
 
 SOURCE = Path(__file__).resolve().parents[2] / "src"
 ARTIFACTS = ["config.json", "ferret.lock", "ferret.sqlite3", "identity.json", "identity.key"]
@@ -169,9 +169,5 @@ def test_a_lock_file_replaced_by_a_symlink_is_refused(tmp_path: Path) -> None:
     victim.write_text("keep", encoding="utf-8")
     (data_home / "ferret.lock").symlink_to(victim)
 
-    # The refusal comes from the data-home port as it takes the lock, which still raises until its own slice.
-    with pytest.raises(FerretError) as caught:
-        initialize(home)
-
-    assert caught.value.code == "ferret.storage.unsafe"
+    assert refused(initialize(home)) == ("ferret.storage.unsafe", False)
     assert victim.read_text(encoding="utf-8") == "keep"

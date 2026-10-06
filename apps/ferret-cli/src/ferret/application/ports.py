@@ -1,12 +1,13 @@
 """The ports every use case is written against; adapters implement them and Unit tests fake them."""
 
-from contextlib import AbstractContextManager
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Literal, Protocol
 
 from ferret.domain.capability import CapabilitySnapshot
+from ferret.domain.errors import FerretResult
 from ferret.domain.event import Event
 from ferret.domain.install import InstallPaths
 from ferret.domain.query import EventCriteria, Position
@@ -83,29 +84,37 @@ class Randomness(Protocol):
 
 
 class DataHomeFiles(Protocol):
-    """The private data-home directory and its files, all addressed by bare name."""
+    """The private data-home directory and its files, all addressed by bare name.
 
-    def facts(self, name: str | None) -> FileFacts:
+    A call the operating system fails, or that finds an unsafe object, returns an ``Err`` of one closed code instead
+    of raising.
+    """
+
+    def facts(self, name: str | None) -> FerretResult[FileFacts]:
         """Facts about the directory (``None``) or one file, never following a symlink."""
         ...
 
-    def ensure_directory(self, mode: int) -> None:
+    def ensure_directory(self, mode: int) -> FerretResult[None]:
         """Create the directory with ``mode`` if it is absent; an existing one is left alone."""
         ...
 
-    def create_file(self, name: str, content: bytes, mode: int) -> None:
+    def create_file(self, name: str, content: bytes, mode: int) -> FerretResult[None]:
         """Create a new file exclusively with ``mode`` and flush it; refuse an existing object or a symlink."""
         ...
 
-    def read_file(self, name: str) -> bytes:
+    def read_file(self, name: str) -> FerretResult[bytes]:
         """Read a small file without following a symlink."""
         ...
 
-    def lock(self) -> AbstractContextManager[None]:
-        """Hold the exclusive data-home lock, waiting a bounded time for another holder."""
+    def with_lock[T](self, work: Callable[[], FerretResult[T]]) -> FerretResult[T]:
+        """Run ``work`` while holding the exclusive data-home lock, waiting a bounded time for another holder.
+
+        An unsafe lock file, or a wait that runs out (a retryable refusal), is returned and ``work`` never runs. The
+        lock is released and its descriptor closed however ``work`` ends.
+        """
         ...
 
-    def purge(self) -> None:
+    def purge(self) -> FerretResult[None]:
         """Delete the data-home directory and everything in it; an absent directory is already purged."""
         ...
 
@@ -322,7 +331,11 @@ class StagedInstall:
 
 
 class UserInstall(Protocol):
-    """The current user's install area. Every mutating call is one step, so a crash can only fall between steps."""
+    """The current user's install area. Every mutating call is one step, so a crash can only fall between steps.
+
+    A call the operating system fails, or that finds something in the way, returns an ``Err`` of one closed code
+    instead of raising.
+    """
 
     @property
     def paths(self) -> InstallPaths:
@@ -339,50 +352,50 @@ class UserInstall(Protocol):
         """The interpreter running this process, which an install pins into the launcher it writes."""
         ...
 
-    def source(self) -> SourceArtifact:
-        """The running artifact and its digest, or ``storage_unavailable`` when it cannot be read as a file."""
+    def source(self) -> FerretResult[SourceArtifact]:
+        """The running artifact and its digest, or unavailable storage when it cannot be read as a file."""
         ...
 
-    def facts(self, path: Path) -> InstalledFacts:
+    def facts(self, path: Path) -> FerretResult[InstalledFacts]:
         """Facts about one object, never following a symlink; an object that cannot exist reads as missing."""
         ...
 
-    def read_manifest(self) -> bytes | None:
+    def read_manifest(self) -> FerretResult[bytes | None]:
         """The manifest file's bytes without following a symlink, or ``None`` when there is none."""
         ...
 
-    def read_launcher(self) -> bytes | None:
+    def read_launcher(self) -> FerretResult[bytes | None]:
         """The launcher file's bytes without following a symlink, or ``None`` when there is no readable file."""
         ...
 
-    def recover(self) -> None:
+    def recover(self) -> FerretResult[None]:
         """Delete every staged file an interrupted install left, and nothing else."""
         ...
 
-    def stage(self, plan: StagePlan) -> StagedInstall:
+    def stage(self, plan: StagePlan) -> FerretResult[StagedInstall]:
         """Create any missing private directory and write, flush, and verify the three staged files.
 
         Nothing final is touched, and a failure leaves no staged file of this call behind.
         """
         ...
 
-    def replace_artifact(self, staged: StagedInstall) -> None:
+    def replace_artifact(self, staged: StagedInstall) -> FerretResult[None]:
         """Atomically replace the version's artifact with its staged copy and flush the directory."""
         ...
 
-    def replace_launcher(self, staged: StagedInstall) -> None:
+    def replace_launcher(self, staged: StagedInstall) -> FerretResult[None]:
         """Atomically replace the launcher with its staged script and flush the directory."""
         ...
 
-    def replace_manifest(self, staged: StagedInstall) -> None:
+    def replace_manifest(self, staged: StagedInstall) -> FerretResult[None]:
         """Atomically replace the manifest with its staged copy and flush the directory: the ownership commit."""
         ...
 
-    def remove(self, path: Path) -> None:
+    def remove(self, path: Path) -> FerretResult[None]:
         """Delete one file or link; one already gone is not an error."""
         ...
 
-    def remove_empty_directory(self, path: Path) -> None:
+    def remove_empty_directory(self, path: Path) -> FerretResult[None]:
         """Delete a directory only if it is empty; a directory that is missing or still holds anything stays."""
         ...
 

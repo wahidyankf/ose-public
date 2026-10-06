@@ -4,7 +4,9 @@ version = "0.3.2"
 description = "FERRET: local-first, metadata-only telemetry for coding-agent harnesses."
 license = "MIT"
 requires-python = ">=3.14,<3.15"
-dependencies = []
+dependencies = [
+    "py-typekit",
+]
 
 [dependency-groups]
 dev = [
@@ -17,6 +19,9 @@ dev = [
 
 [tool.uv]
 package = false
+
+[tool.uv.sources]
+py-typekit = { git = "https://github.com/wahidyankf/py-typekit", tag = "v0.1.0" }
 
 [tool.pytest.ini_options]
 minversion = "9.0"

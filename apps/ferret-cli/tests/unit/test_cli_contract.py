@@ -128,7 +128,7 @@ def test_project_metadata_declares_the_same_version_as_the_package() -> None:
     metadata = tomllib.loads((PROJECT_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
 
     assert metadata["project"]["version"] == __version__
-    assert metadata["project"]["dependencies"] == []
+    assert metadata["project"]["dependencies"] == ["py-typekit"]
 
 
 def test_root_help_is_the_frozen_text_on_stdout() -> None:

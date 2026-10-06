@@ -32,8 +32,9 @@ generated-reports/
 # Local temporary files (AI agent scratch space, upstream clones)
 local-tmp/
 
-# Flutter generated files
+# Flutter generated files and the FVM SDK cache
 **/.dart_tool/
+.fvm-cache/
 
 # Playwright generated test reports and results
 apps/*/playwright-report/

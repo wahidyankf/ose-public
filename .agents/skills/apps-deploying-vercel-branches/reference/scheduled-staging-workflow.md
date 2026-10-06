@@ -34,7 +34,7 @@ GitHub Environment values — never literals committed to the repo:
 - **Secret** `VERCEL_AUTOMATION_BYPASS_SECRET`: the Vercel Protection Bypass for Automation token;
   without it the staging E2E gate 401s on the protected URL
 
-Per [Secrets and Env Standards](../../../repo-governance/conventions/security/secrets-and-env-standards.md),
+Per [Secrets and Env Standards](../../../../repo-governance/conventions/security/secrets-and-env-standards.md),
 these live only in Vercel + the GitHub Environment, never in a tracked file.
 
 ## Emergency Bypass

@@ -9,18 +9,18 @@ orchestrator owns every grill and passes resolved answers to a delegated `plan-m
 `plan-checker`; it MUST NOT delegate the user interaction itself.
 
 Use the harness-specific invocation contract in
-[Platform Binding Examples](#platform-binding-examples). In all bindings, put the Recommended
+[Platform Binding Examples](./platform-binding-examples.md#platform-binding-examples). In all bindings, put the Recommended
 option first and append `(Recommended)` to its label, place the rationale in its description,
 keep **"Let's chat about this"** as the final explicit option, and rely on the client-provided
 free-text **"Other"** entry for the blank-state type.
 
 **Delegated-agent handoff**: a subagent MUST NOT render markdown as if it were asking the user.
 It returns `## User Decisions Required` using the
-[canonical envelope schema](../../../../repo-governance/development/workflow/grilling-with-options.md#user-decisions-required-envelope)
+[canonical envelope schema](../../../../repo-governance/development/workflow/grilling-with-options/user-decisions-required-envelope.md)
 and stops before work that depends on those answers. Every `options` array exhaustively lists all
 substantive leaves; the root adds the standing chat option and relies on the client's implicit
 custom answer. The root invokes this skill through its native UI when available, then resumes or
-reinvokes the specialist with the canonical [Resolved User Decisions Envelope](../../../../repo-governance/development/workflow/grilling-with-options.md#resolved-user-decisions-envelope).
+reinvokes the specialist with the canonical [Resolved User Decisions Envelope](../../../../repo-governance/development/workflow/grilling-with-options/resolved-user-decisions-envelope.md).
 It builds that payload from the original IDs only after rendering and passes it verbatim; the
 specialist validates it before dependent work. Direct custom-agent callers receive the same
 envelope.
@@ -28,7 +28,7 @@ envelope.
 ## Staged native rendering
 
 When a native tool permits only 2–3 substantive options but the envelope has 3–4 leaves, preserve
-the whole envelope and use the [canonical staged procedure](../../../../repo-governance/development/workflow/grilling-with-options.md#staged-native-rendering).
+the whole envelope and use the [canonical staged procedure](../../../../repo-governance/development/workflow/grilling-with-options/staged-native-rendering.md).
 The root first presents two named branch groups that enumerate their contained leaves, plus chat and
 the client-provided type-your-own entry. A selected singleton group is terminal: record its original
 leaf ID immediately in the Resolved User Decisions Envelope. Render a follow-up only for a selected

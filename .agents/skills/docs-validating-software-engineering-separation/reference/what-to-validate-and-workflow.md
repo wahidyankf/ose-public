@@ -6,7 +6,7 @@
 
 **Validate Software Design Reference table**:
 
-1. Read [Software Design Reference](../../../docs/explanation/software-engineering/software-design-reference.md)
+1. Read [Software Design Reference](../../../../docs/explanation/software-engineering/software-design-reference.md)
 2. Extract "Specific Prerequisites" table
 3. For EACH row in table:
    - Verify docs/explanation path exists

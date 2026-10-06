@@ -12,7 +12,7 @@ is a raw whole-file `split_whitespace()` word count, not bytes, with no in-file 
 
 ## Monitored Surfaces
 
-Configured in the `governance-word-budget:` section of `repo-config.yml`; enforced by
+Configured in the `policies.governance.word-budget` section of `repo-config.yml`; enforced by
 `./rhino governance word-budget validate`.
 
 | Surface                                                             | Budget class  |
@@ -62,8 +62,8 @@ compression, splitting into another auto-loaded file, or an incomplete `See`-lin
 Threshold changes are class-wide policy recalibrations, never remediation for one file. Require
 evidence that the existing signal is broadly non-actionable or that harness capacity or repository
 policy changed; preserve minimal sufficiency, record the rationale as a YAML comment, edit the
-`governance-word-budget:` section of `repo-config.yml`, and run
-`./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run Rhino:governance-word-budget:validation`.
+`policies.governance.word-budget` section of `repo-config.yml`, and run
+`./hippo run --class ephemeral --resource-tier standard --disk-path . -- ./rhino governance word-budget validate`.
 Never adjust a threshold to paper over a bloated file or a specific change.
 
 ## Children

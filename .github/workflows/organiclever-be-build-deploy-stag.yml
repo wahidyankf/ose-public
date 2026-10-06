@@ -1,8 +1,8 @@
 name: organiclever-be-build-deploy-stag
 
 # Fires when the app-tier local-deploy-stag run force-pushes stag-organiclever-be.
-# Builds the organiclever-be image and pushes it to GHCR; a downstream private deployer
-# rolls it out to the staging environment.
+# Builds the organiclever-be image and pushes it to GHCR; rolling it out to the staging
+# environment is outside this repository's scope.
 
 on:
   push:

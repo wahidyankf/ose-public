@@ -21,4 +21,4 @@ reporting success.
 and an HTTP request against the live URL. Never report a successful deployment on the strength of the
 push alone — that is the specific failure this section exists to prevent.
 
-See [Vercel MCP Capability Convention](../../../repo-governance/development/infra/vercel-mcp.md).
+See [Vercel MCP Capability Convention](../../../../repo-governance/development/infra/vercel-mcp.md).

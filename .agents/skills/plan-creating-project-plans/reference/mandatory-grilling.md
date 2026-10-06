@@ -16,10 +16,10 @@ in a single multi-question prompt.
 **Interaction ownership**: the root owns native UI interaction and, when it is noninteractive or
 lacks a native tool, emits markdown choices to its caller. A plan specialist never questions the
 user directly. It returns `## User Decisions Required` using the
-[canonical envelope schema](../../../../repo-governance/development/workflow/grilling-with-options.md#user-decisions-required-envelope),
+[canonical envelope schema](../../../../repo-governance/development/workflow/grilling-with-options/user-decisions-required-envelope.md),
 with stable decision ID, question, recommended option and rationale, and exhaustive option objects
 with trade-offs, then stops. The root resolves the envelope and resumes or reinvokes the specialist
-with the canonical [Resolved User Decisions Envelope](../../../../repo-governance/development/workflow/grilling-with-options.md#resolved-user-decisions-envelope),
+with the canonical [Resolved User Decisions Envelope](../../../../repo-governance/development/workflow/grilling-with-options/resolved-user-decisions-envelope.md),
 constructed from the original IDs after rendering and passed verbatim. The specialist validates it
 before dependent work. A direct custom-agent or noninteractive specialist caller receives the same
 envelope.

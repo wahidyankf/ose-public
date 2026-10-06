@@ -5,7 +5,7 @@
 Word budgets for `AGENTS.md`, `CLAUDE.md`, and every other auto-loaded instruction surface are
 owned by the deterministic `./rhino governance word-budget validate` gate (wired at pre-push, CI,
 and as `governance-word-budget` in the `repo-governance audit` preflight, once armed). Thresholds
-live only in the `governance-word-budget:` section of `repo-config.yml` — never restate them here,
+live only in the `policies.governance.word-budget` section of `repo-config.yml` — never restate them here,
 since a second copy drifts from config and produces contradictory verdicts.
 
 Under `rules-quality-gate`, word counting is delegated by exact gate ID. Record evidence in the

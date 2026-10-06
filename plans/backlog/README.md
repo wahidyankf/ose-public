@@ -63,8 +63,7 @@ Three waves emptied this queue:
   [oxlint-upgrade-and-lint-reproducibility](../ideas/q1-urgent-important/oxlint-upgrade-and-lint-reproducibility.md),
   `rhino-governance-tooling-defects` (since resolved and deleted),
   [file-naming-convention-rework](../ideas/q1-urgent-important/file-naming-convention-rework.md),
-  `harness-mirror-and-test-isolation-defects` (since rewritten as
-  [skill-tree-links-hidden-by-link-exemption](../ideas/q1-urgent-important/skill-tree-links-hidden-by-link-exemption.md)),
+  `harness-mirror-and-test-isolation-defects` (since rewritten, delivered, and deleted),
   and
   [declare-vite-peer-dependency](../ideas/q2-not-urgent-important/declare-vite-peer-dependency.md).
 - **Demoted to two-pagers 2026-09-08** — the three follow-ups

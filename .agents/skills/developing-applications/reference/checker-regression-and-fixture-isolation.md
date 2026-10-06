@@ -4,7 +4,7 @@ Regression-test mandate and git-fixture isolation — run for every code change 
 
 ## Regression Test Mandate (Bug/Regression Fixes)
 
-Reference: [Regression Test Mandate](../../../repo-governance/development/quality/regression-test-mandate.md).
+Reference: [Regression Test Mandate](../../../../repo-governance/development/quality/regression-test-mandate.md).
 
 A `fix(...)` commit or any diff correcting wrong observable behaviour MUST land with a reproducing
 test in the same change set (fails before the fix, passes after) — blocking, no exemption, applies
@@ -18,7 +18,7 @@ behaviour to correct it).
 
 ## Git Fixture Isolation
 
-Reference: [Git Fixture Isolation Convention](../../../repo-governance/development/quality/git-fixture-isolation.md).
+Reference: [Git Fixture Isolation Convention](../../../../repo-governance/development/quality/git-fixture-isolation.md).
 
 For any test/fixture (any language) invoking a raw `git` subprocess to create or mutate a
 **throwaway** repository (`git init`, `commit`, `config`, `worktree add`, `branch`, `checkout -b`,

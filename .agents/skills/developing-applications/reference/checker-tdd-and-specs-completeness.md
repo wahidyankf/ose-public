@@ -36,7 +36,7 @@ Reference: `repo-governance/development/workflow/test-driven-development.md`.
 
 ## Specs & Gherkin Completeness (Direct-Code Path)
 
-Reference: [Feature Change Completeness Convention §Two Paths](../../../repo-governance/development/quality/feature-change-completeness.md)
+Reference: [Feature Change Completeness Convention §Two Paths](../../../../repo-governance/development/quality/feature-change-completeness.md)
 — the direct-change-without-plan counterpart to `plan-checker` Step 5j.
 
 - **Companion Gherkin present**: any `apps/**`/`libs/**` change altering observable behaviour

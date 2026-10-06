@@ -335,13 +335,12 @@ names, then run `npm run doctor` again.
 ### Pre-push hook times out
 
 The slow half of the pre-push gate set is its Nx targets: `test:quick` (which itself composes
-types/lint, `test:unit`, and every applicable static `test:coverage:*` per project),
-`compat:min-version`, and `specs:structure-validation`. On a cold cache this takes a while. Warm
-them first:
+types/lint, `test:unit`, and every applicable static `test:coverage:*` per project)
+and `compat:min-version`. On a cold cache this takes a while. Warm them first:
 
 ```bash
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- \
-  affected -t test:quick,compat:min-version,specs:structure-validation
+  affected -t test:quick,compat:min-version
 ```
 
 Subsequent pushes reuse cached results and complete in seconds.

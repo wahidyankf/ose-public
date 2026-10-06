@@ -1,6 +1,6 @@
 ---
 description: Derivation rules for Nx target names, covering the {domain}:{work} scheme for governance and validation targets and the lifecycle naming scheme for build/test targets
-when_to_use: Use when naming a new Nx target or Rhino subcommand, or deciding whether a check belongs in a staged-path registry gate.
+when_to_use: Use when naming a new Nx target, or deciding whether a check belongs in a staged-path registry gate.
 ---
 
 # Nx Target Naming Convention

@@ -10,21 +10,18 @@ Governance, validation, lint, and format targets use the `{domain}:{work}` schem
 operation. This distinguishes governance targets from language-level lifecycle targets
 (`test:quick`, `build`, etc.) and makes the Nx target list self-describing.
 
-**Canonical governance and validation targets** (defined on `Rhino`):
+**Canonical governance and validation Nx targets** (project-local, declared in `project.json`):
 
-| Target                               | What it validates                                                                          |
-| ------------------------------------ | ------------------------------------------------------------------------------------------ |
-| `specs:structure-validation`         | Adoption + tree shape + counts validated together (merged from three removed leaf targets) |
-| `links:validation`                   | Internal links in all non-excluded `.md` files                                             |
-| `mermaid:validation`                 | Mermaid diagram width, label, and syntax rules (flowchart + state)                         |
-| `headings:hierarchy-validation`      | Heading nesting in prose allowlist paths                                                   |
-| `env:validation`                     | `.env.example` surfaces match the `env-contract:` section in `repo-config.yml`             |
-| `governance:vendor-audit-validation` | `repo-governance/` docs contain no vendor-specific content                                 |
-| `cross-vendor:parity-validation`     | Cross-vendor behavioural parity (Phase 0 deterministic invariants)                         |
-| `governance-word-budget:validation`  | Word budget on auto-loaded instruction files (`AGENTS.md`, `CLAUDE.md`, harness surfaces)  |
-| `governance-readme-index:validation` | README index audit (`docs/`, `repo-governance/`, `specs/`, `.claude/`)                     |
-| `harness:bindings-validation`        | `.claude/` ↔ `.opencode/` ↔ `.codex/` binding parity                                       |
-| `compat:min-version`                 | Minimum Supported Rust Version compatibility                                               |
+| Target               | What it validates                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| `compat:min-version` | The project's declared minimum supported toolchain version                                 |
+| `deps:audit`         | The project's dependencies against the language's vulnerability audit (scheduled, no gate) |
+
+**Repository-wide validators are not Nx targets.** Link, Mermaid, heading-hierarchy, vendor, word-budget,
+adapter-parity, and env checks are `./rhino` commands. Those the lifecycle requires are registry
+gates in `repo-config.yml` (list them with `./rhino gate list`); the rest run on demand. Commands and
+gate ids live in [Markdown Quality Gates](../../quality/repository-validation/markdown-quality-gates.md)
+and the [SDLC Gate Standard](../../../../docs/reference/sdlc-gate-standard.md).
 
 **Rule**: governance/validation target keys are `{domain}:{work}` where both parts are lowercase
 kebab-case. The domain must be a recognizable noun (the scope); the work must be a verb phrase
@@ -32,6 +29,6 @@ ending in `-validation` (for pure checks) or a bare verb (`check`). Do not inven
 prefixes — use the canonical list above or follow the `{domain}:{work}` pattern.
 
 Project-local static `test:coverage` and `test:coverage:*` belong to the testing lifecycle family,
-not this repository-wide governance target list.
+not this governance target list.
 
 See [nx-target-naming.md](../nx-target-naming.md) for the full derivation rule and examples.

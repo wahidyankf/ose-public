@@ -3,8 +3,7 @@
 ## Drift Detection
 
 Outside a lifecycle-filtered quality gate, validate listed `specs/apps/<app-family>/` folders with
-`the declared spec-structure check` (or Nx target
-`Rhino:specs:structure-validation`). It aggregates adoption, tree, and app-tree counts. Use
+`the declared spec-structure check`. It aggregates adoption, tree, and app-tree counts. Use
 `the declared spec-count check` only for non-app trees that the aggregator cannot reach.
 Use `./rhino md internal-link validate` for missing Markdown link targets (it does not check
 `#fragment` anchors) and

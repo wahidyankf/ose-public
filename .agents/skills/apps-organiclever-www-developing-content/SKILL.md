@@ -46,14 +46,13 @@ See [Content Validation Checklist and Common Mistakes](./reference/validation-ch
 **Project Configuration**:
 
 - [apps/organiclever-www/project.json](../../../apps/organiclever-www/project.json) - Nx project config
-- [apps/organiclever-www/next.config.mjs](../../../apps/organiclever-www/next.config.mjs) - Next.js config
+- [apps/organiclever-www/next.config.ts](../../../apps/organiclever-www/next.config.ts) - Next.js config
 - [apps/organiclever-www/vercel.json](../../../apps/organiclever-www/vercel.json) - Vercel deployment config
 
 **Infrastructure**:
 
-- [infra/dev/organiclever-www/README.md](../../../infra/dev/organiclever-www/README.md) - Docker Compose setup for frontend
-- [infra/dev/organiclever-www/docker-compose.yml](../../../infra/dev/organiclever-www/docker-compose.yml) - Service definition
-- [infra/dev/organiclever-www/Dockerfile.web.dev](../../../infra/dev/organiclever-www/Dockerfile.web.dev) - Frontend container image
+- [infra/dev/organiclever-www/docker-compose.yml](../../../infra/dev/organiclever-www/docker-compose.yml) - Docker Compose service definition for the frontend
+- [apps/organiclever-www/Dockerfile](../../../apps/organiclever-www/Dockerfile) - Frontend container image
 
 **Related Skills**:
 

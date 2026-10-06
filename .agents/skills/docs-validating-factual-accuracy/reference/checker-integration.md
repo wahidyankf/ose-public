@@ -70,6 +70,6 @@ Prompt: "Verify whether <specific claim>. Return cited findings with confidence 
 
 `web-researcher` returns a synthesised, cited summary using the same `[Verified]/[Outdated]/[Unverified]/[Needs Verification]` confidence tags defined in this skill. You then translate those tags into dual-labelled findings (`[Verified]/[Error]/[Outdated]/[Unverified]` + `CRITICAL/HIGH/MEDIUM/LOW`) for your audit report.
 
-See [`web-researcher`](../../../agents/web/web-researcher.md) for the agent contract and the
+See [`web-researcher`](../../../agents/web-researcher.md) for the agent contract and the
 [Web Research Delegation Convention](../../../../repo-governance/conventions/writing/web-research-delegation.md)
 for the normative rule and its enumerated exceptions.

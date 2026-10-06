@@ -179,9 +179,9 @@ coverage.xml
 specs/apps/a-demo/contracts/generated/
 # The OSE LMS, OSE ID, and Roots contracts keep a hand-written README in their generated/ folder,
 # so the folder contents are ignored by glob and the README negated back in — required because
-# those trees are declared in `md-readme-index.trees`, whose gate walks the working tree and does
-# not read `.gitignore`. The a-demo sibling ignores the whole directory because it holds only build
-# output.
+# those trees are declared in `policies.markdown.readme-index.trees`, whose validator walks the
+# working tree and does not read `.gitignore`. The a-demo sibling ignores the whole directory
+# because it holds only build output.
 specs/apps/ose/lms-be/contracts/generated/*
 !specs/apps/ose/lms-be/contracts/generated/README.md
 specs/apps/ose/id-be/contracts/generated/*

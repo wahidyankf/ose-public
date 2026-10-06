@@ -22,7 +22,7 @@ running the declared Rhino governance checks.
    | `traceability-audit` | Step 7 Vision/Principles/Conventions traceability |
 
    **Not in this envelope**: file naming, frontmatter shape, emoji codepoints, heading hierarchy,
-   README index integrity, license presence, and agent/skill verbatim duplication run under the
+   README index presence, license presence, and agent/skill verbatim duplication run under the
    sibling `./rhino md`, `convention`, and `harness` subcommands (pre-commit/CI gates) — the
    per-step "deterministic-gate annotation" notes say which gate owns each.
 

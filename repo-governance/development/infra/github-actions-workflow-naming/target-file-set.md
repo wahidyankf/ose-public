@@ -59,8 +59,8 @@ canonical set, organized by tier:
 
 The set above is the one that plan established. A workflow added later is recorded here before it
 merges, so the table stays the lookup for whether a filename already exists. This entry is
-**unenforced by decision**: the README-completeness gate checks annotated indexes under the
-documentation trees, not this table, and no check reads `.github/workflows/` against it.
+**unenforced by decision**: the README-index validator checks only that declared documentation trees
+carry a README, not this table, and no check reads `.github/workflows/` against it.
 
 | Filename                 | Domain       | Purpose                                                                            |
 | ------------------------ | ------------ | ---------------------------------------------------------------------------------- |

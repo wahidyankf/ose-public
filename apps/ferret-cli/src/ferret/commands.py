@@ -143,4 +143,5 @@ def build_handlers(runtime_factory: RuntimeFactory) -> Mapping[CommandPath, Hand
 
 def default_handlers() -> Mapping[CommandPath, Handler]:
     """The registry wired to the real clock, filesystem, and SQLite."""
-    return build_handlers(system_runtime)
+    # Transition bridge (tech-docs/004): the handlers still raise, so a refusal to wire the runtime is raised again.
+    return build_handlers(lambda: or_raise(system_runtime()))

@@ -35,7 +35,7 @@ def mode_of(path: Path) -> int:
 
 
 def initialize(home: Path, **environment: str) -> FerretResult[InitResult]:
-    return initialize_store(system_runtime({"HOME": str(home), **environment}))
+    return initialize_store(value_of(system_runtime({"HOME": str(home), **environment})))
 
 
 def initialized(home: Path, **environment: str) -> InitResult:

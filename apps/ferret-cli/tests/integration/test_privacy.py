@@ -13,6 +13,7 @@ from ferret.adapters.system import system_runtime
 from ferret.application.initialization import initialize_store
 from ferret.application.privacy import CANONICAL_LIMIT_BYTES
 from support.events import VECTOR_DOCUMENT, encode
+from support.results import value_of
 
 SOURCE = Path(__file__).resolve().parents[2] / "src"
 RUNNER = (
@@ -75,7 +76,7 @@ def everything_on_disk(home: Path) -> bytes:
 def test_rejected_payload_writes_no_row(tmp_path: Path, payload: bytes, field: str | None) -> None:
     home = tmp_path / "home"
     home.mkdir(mode=0o700)
-    initialize_store(system_runtime({"HOME": str(home)}))
+    initialize_store(value_of(system_runtime({"HOME": str(home)})))
     before = everything_on_disk(home)
 
     completed = capture(home, payload)

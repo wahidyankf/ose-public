@@ -355,7 +355,10 @@ def _record_callback_failure(code: str) -> None:
         from ferret.adapters.hook_failures import record_hook_failure
         from ferret.adapters.system import home_directory
 
-        record_hook_failure(resolve_data_home(os.environ, home_directory(os.environ)), code)
+        # A home or data home that cannot be resolved ends the attempt: there is nowhere to write the record.
+        home_directory(os.environ).flat_map(lambda home: resolve_data_home(os.environ, home)).tap(
+            lambda data_home: record_hook_failure(data_home, code)
+        )
     except Exception:
         return
 

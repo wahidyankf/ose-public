@@ -9,7 +9,6 @@ import pytest
 
 from ferret.adapters.filesystem import adopt_legacy_data_home, resolve_data_home
 from ferret.application.initialization import initialize_store
-from ferret.domain.errors import FerretError
 from support.fakes import (
     FAKE_DATA_HOME,
     FAKE_HOME,
@@ -113,7 +112,7 @@ def test_initialization_holds_the_exclusive_lock_around_every_write() -> None:
 def test_the_data_home_follows_the_base_directory_specification_unless_overridden(
     environment: dict[str, str], expected: Path
 ) -> None:
-    assert resolve_data_home(environment, FAKE_HOME) == expected
+    assert value_of(resolve_data_home(environment, FAKE_HOME)) == expected
 
 
 def test_a_pre_specification_data_home_is_moved_once_into_the_new_location(tmp_path: Path) -> None:
@@ -172,19 +171,15 @@ def test_a_move_that_cannot_be_done_leaves_the_data_where_the_user_can_still_fin
     ],
 )
 def test_an_unsafe_override_is_refused_without_echoing_it(override: str) -> None:
-    with pytest.raises(FerretError) as caught:
-        resolve_data_home({"FERRET_DATA_HOME": override}, FAKE_HOME)
+    refusal = refusal_of(resolve_data_home({"FERRET_DATA_HOME": override}, FAKE_HOME))
 
-    assert caught.value.code == "ferret.storage.unsafe"
-    assert caught.value.exit_code == 2
-    assert override not in str(caught.value)
+    assert refusal.code == "ferret.storage.unsafe"
+    assert refusal.exit_code == 2
+    assert override not in str(refusal)
 
 
 def test_a_relative_home_is_refused() -> None:
-    with pytest.raises(FerretError) as caught:
-        resolve_data_home({}, Path("relative/home"))
-
-    assert caught.value.code == "ferret.storage.unsafe"
+    assert refusal_of(resolve_data_home({}, Path("relative/home"))).code == "ferret.storage.unsafe"
 
 
 @pytest.mark.parametrize(

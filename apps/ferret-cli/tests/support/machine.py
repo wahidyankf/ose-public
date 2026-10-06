@@ -16,6 +16,7 @@ from ferret.commands import build_handlers
 from ferret.domain.event import Event
 from ferret.domain.storage import DATABASE_FILE
 from support.invoke import Ran
+from support.results import value_of
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,10 +41,12 @@ class Machine:
         return self.data_home / DATABASE_FILE
 
     def runtime(self, stdin: bytes | None = None) -> Runtime:
-        real = system_runtime(
-            {"HOME": str(self.home), "PATH": self.path},
-            stdin=None if stdin is None else io.BytesIO(stdin),
-            artifact=self.artifact,
+        real = value_of(
+            system_runtime(
+                {"HOME": str(self.home), "PATH": self.path},
+                stdin=None if stdin is None else io.BytesIO(stdin),
+                artifact=self.artifact,
+            )
         )
         return replace(
             real,

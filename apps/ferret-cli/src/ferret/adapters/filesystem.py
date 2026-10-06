@@ -5,7 +5,9 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
-from ferret.domain.errors import FerretError
+from typekit import Err, Ok
+
+from ferret.domain.errors import FerretError, FerretResult
 from ferret.domain.storage import (
     DATA_HOME_NAME,
     DATA_HOME_VARIABLE,
@@ -72,8 +74,8 @@ def adopt_legacy_data_home(home: Path, data_home: Path) -> Path:
     return data_home
 
 
-def resolve_data_home(environment: Mapping[str, str], home: Path) -> Path:
-    """The absolute data-home path for this user, or ``unsafe_storage`` if the override cannot be trusted.
+def resolve_data_home(environment: Mapping[str, str], home: Path) -> FerretResult[Path]:
+    """The absolute data-home path for this user, or an ``Err`` of ``unsafe_storage`` if the override cannot be trusted.
 
     Precedence, highest first:
 
@@ -93,16 +95,16 @@ def resolve_data_home(environment: Mapping[str, str], home: Path) -> Path:
     if not override:
         base = environment.get(XDG_DATA_HOME_VARIABLE, "")
         if base and Path(base).is_absolute() and "\x00" not in base and ".." not in Path(base).parts:
-            return Path(base) / DATA_HOME_NAME
+            return Ok(Path(base) / DATA_HOME_NAME)
         if not home.is_absolute():
-            raise FerretError("ferret.storage.unsafe")
-        return home / XDG_DATA_HOME_DEFAULT / DATA_HOME_NAME
+            return Err(FerretError("ferret.storage.unsafe"))
+        return Ok(home / XDG_DATA_HOME_DEFAULT / DATA_HOME_NAME)
     if "\x00" in override or _URL_LIKE.match(override) is not None:
-        raise FerretError("ferret.storage.unsafe")
+        return Err(FerretError("ferret.storage.unsafe"))
     path = Path(override)
     if not path.is_absolute() or ".." in path.parts or len(path.parts) < 2:
-        raise FerretError("ferret.storage.unsafe")
-    return path
+        return Err(FerretError("ferret.storage.unsafe"))
+    return Ok(path)
 
 
 def parse_linux_mounts(text: str) -> list[Mount]:

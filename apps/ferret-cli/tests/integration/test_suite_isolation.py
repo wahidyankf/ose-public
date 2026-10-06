@@ -16,17 +16,18 @@ from ferret import cli
 from ferret.adapters.filesystem import resolve_data_home
 from ferret.adapters.hook_failures import read_hook_failures
 from ferret.adapters.system import home_directory
+from support.results import value_of
 
 
 def ambient_data_home() -> Path:
     """The data home a command run in this process would resolve, exactly as the CLI resolves it."""
-    return resolve_data_home(os.environ, home_directory(os.environ))
+    return value_of(resolve_data_home(os.environ, value_of(home_directory(os.environ))))
 
 
 def test_the_ambient_data_home_is_a_private_scratch_directory_of_this_run(
     tmp_path_factory: pytest.TempPathFactory,
 ) -> None:
-    home = home_directory(os.environ)
+    home = value_of(home_directory(os.environ))
 
     assert home.is_relative_to(tmp_path_factory.getbasetemp())
     assert ambient_data_home() == home / ".local" / "share" / "ferret"
@@ -49,4 +50,4 @@ def test_each_test_gets_its_own_scratch_home(tmp_path_factory: pytest.TempPathFa
     # Together with the test above, which left a record behind, this proves no state carries from one test to the
     # next: a fresh home holds no data home at all.
     assert not ambient_data_home().exists()
-    assert home_directory(os.environ).is_relative_to(tmp_path_factory.getbasetemp())
+    assert value_of(home_directory(os.environ)).is_relative_to(tmp_path_factory.getbasetemp())

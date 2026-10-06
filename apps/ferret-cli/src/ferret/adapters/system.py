@@ -13,6 +13,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import BinaryIO
 
+from typekit import Err, Ok, attempt
+
 from ferret.adapters.filesystem import (
     Mount,
     adopt_legacy_data_home,
@@ -32,7 +34,7 @@ from ferret.adapters.sqlite_repository import (
 )
 from ferret.adapters.sqlite_schema import SQLiteSchema
 from ferret.application.ports import InterpreterFacts, Runtime
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, FerretResult
 from ferret.domain.storage import DATA_HOME_VARIABLE, DATABASE_FILE
 
 LINUX_MOUNTS = Path("/proc/self/mountinfo")
@@ -65,39 +67,54 @@ class StandardInput:
         self._stream = stream
 
     def read(self, limit: int) -> bytes:
-        try:
-            stream = sys.stdin.buffer if self._stream is None else self._stream
-            return stream.read(limit)
-        except AttributeError, OSError, ValueError:
-            return b""
+        read = attempt(lambda: self._source().read(limit), AttributeError, OSError, ValueError)
+        match read:
+            case Ok(data):
+                return data
+            case Err():
+                return b""
+
+    def _source(self) -> BinaryIO:
+        return sys.stdin.buffer if self._stream is None else self._stream
 
 
-def home_directory(environment: Mapping[str, str]) -> Path:
-    """``$HOME``, or the account database's home directory when the variable is unset or empty."""
+def home_directory(environment: Mapping[str, str]) -> FerretResult[Path]:
+    """``$HOME``, or the account database's home directory when the variable is unset or empty.
+
+    A user the account database does not know, with no ``$HOME`` to say, has no home: ``unavailable_storage``.
+    """
     configured = environment.get("HOME", "")
     if configured:
-        return Path(configured)
-    try:
-        return Path(pwd.getpwuid(os.getuid()).pw_dir)
-    except KeyError:
-        raise FerretError("ferret.storage.unavailable") from None
+        return Ok(Path(configured))
+    return (
+        attempt(lambda: pwd.getpwuid(os.getuid()), KeyError)
+        .map(lambda account: Path(account.pw_dir))
+        .map_err(lambda _: FerretError("ferret.storage.unavailable"))
+    )
+
+
+def _reported_mounts() -> list[Mount]:
+    """The mount table as ``/proc`` or the ``mount`` command reports it; either may fail to run."""
+    if LINUX_MOUNTS.exists():
+        return parse_linux_mounts(LINUX_MOUNTS.read_text(encoding="utf-8", errors="replace"))
+    completed = subprocess.run(
+        [MACOS_MOUNT_COMMAND],
+        capture_output=True,
+        text=True,
+        timeout=MOUNT_TIMEOUT_SECONDS,
+        check=False,
+    )
+    return parse_macos_mounts(completed.stdout)
 
 
 def mount_table() -> list[Mount]:
     """The mounted filesystems as the platform reports them, or none when it cannot be read."""
-    try:
-        if LINUX_MOUNTS.exists():
-            return parse_linux_mounts(LINUX_MOUNTS.read_text(encoding="utf-8", errors="replace"))
-        completed = subprocess.run(
-            [MACOS_MOUNT_COMMAND],
-            capture_output=True,
-            text=True,
-            timeout=MOUNT_TIMEOUT_SECONDS,
-            check=False,
-        )
-    except OSError, subprocess.SubprocessError:
-        return []
-    return parse_macos_mounts(completed.stdout)
+    reported = attempt(_reported_mounts, OSError, subprocess.SubprocessError)
+    match reported:
+        case Ok(mounts):
+            return mounts
+        case Err():
+            return []
 
 
 def resolve_physical(path: Path) -> Path:
@@ -108,31 +125,26 @@ def resolve_physical(path: Path) -> Path:
     return Path(os.path.realpath(existing)).joinpath(*path.relative_to(existing).parts)
 
 
-def require_local(data_home: Path) -> None:
-    """Refuse a data home the platform cannot establish as a local filesystem: WAL does not work over a network."""
-    if not is_local_filesystem(resolve_physical(data_home), mount_table()):
-        raise FerretError("ferret.storage.unsafe")
+def require_local(data_home: Path) -> FerretResult[Path]:
+    """The data home, or an ``Err`` when the platform cannot establish it as local: WAL does not work over a network."""
+    if is_local_filesystem(resolve_physical(data_home), mount_table()):
+        return Ok(data_home)
+    return Err(FerretError("ferret.storage.unsafe"))
 
 
-def system_runtime(
-    environment: Mapping[str, str] | None = None,
-    *,
-    stdin: BinaryIO | None = None,
-    artifact: Path | None = None,
-) -> Runtime:
-    """Wire the real ports for one process.
-
-    Environment, input, and the artifact an install copies are injectable so tests never read the caller's; the
-    artifact defaults to the zipapp the process runs from.
-    """
-    env = os.environ if environment is None else environment
-    home = home_directory(env)
-    data_home = resolve_data_home(env, home)
+def _located_data_home(env: Mapping[str, str], home: Path) -> FerretResult[Path]:
+    """Where this process keeps its data: the named location if it is local, else FERRET's own, adopting an old one."""
+    located = resolve_data_home(env, home)
     if env.get(DATA_HOME_VARIABLE):
-        require_local(data_home)
-    else:
-        # Only when FERRET chose the location itself. A caller who named one is not asking to be moved.
-        data_home = adopt_legacy_data_home(home, data_home)
+        return located.flat_map(require_local)
+    # Only when FERRET chose the location itself. A caller who named one is not asking to be moved.
+    return located.map(lambda data_home: adopt_legacy_data_home(home, data_home))
+
+
+def _wired(
+    env: Mapping[str, str], home: Path, data_home: Path, *, stdin: BinaryIO | None, artifact: Path | None
+) -> Runtime:
+    """The real ports over one resolved home and data home."""
     clock = SystemClock()
     return Runtime(
         data_home=data_home,
@@ -149,4 +161,23 @@ def system_runtime(
         installer=PosixUserInstall(home, path_variable=env.get("PATH", ""), artifact=artifact),
         workspaces=PosixWorkspaceRoots(),
         hook_failures=PosixHookFailureLog(data_home),
+    )
+
+
+def system_runtime(
+    environment: Mapping[str, str] | None = None,
+    *,
+    stdin: BinaryIO | None = None,
+    artifact: Path | None = None,
+) -> FerretResult[Runtime]:
+    """Wire the real ports for one process, or the refusal that stops it: no home, or a data home it cannot trust.
+
+    Environment, input, and the artifact an install copies are injectable so tests never read the caller's; the
+    artifact defaults to the zipapp the process runs from.
+    """
+    env = os.environ if environment is None else environment
+    return home_directory(env).flat_map(
+        lambda home: _located_data_home(env, home).map(
+            lambda data_home: _wired(env, home, data_home, stdin=stdin, artifact=artifact)
+        )
     )

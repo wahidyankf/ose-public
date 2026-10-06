@@ -36,7 +36,7 @@ HOOK_ARGV = ["capture-hook", "--harness", CLAUDE_CODE, "--event", "tool.started"
 def make_home(tmp_path: Path) -> Path:
     home = tmp_path / "home"
     home.mkdir(mode=0o700)
-    value_of(initialize_store(system_runtime({"HOME": str(home)})))
+    value_of(initialize_store(value_of(system_runtime({"HOME": str(home)}))))
     return home
 
 
@@ -48,7 +48,7 @@ def repository(tmp_path: Path, name: str = "repo-a") -> Path:
 
 
 def capture(home: Path, harness: str, event: str, document: dict[str, Any]) -> str | None:
-    runtime = system_runtime({"HOME": str(home)}, stdin=io.BytesIO(encode(document)))
+    runtime = value_of(system_runtime({"HOME": str(home)}, stdin=io.BytesIO(encode(document))))
     return value_of(capture_hook(runtime, harness=harness, event=event))
 
 
@@ -134,7 +134,7 @@ def test_a_writer_blocked_beyond_the_busy_timeout_stores_nothing_and_fails_retry
 
 def run_command(home: Path, payload: bytes) -> tuple[int, str, str]:
     stdout, stderr = io.StringIO(), io.StringIO()
-    runtime = system_runtime({"HOME": str(home)}, stdin=io.BytesIO(payload))
+    runtime = value_of(system_runtime({"HOME": str(home)}, stdin=io.BytesIO(payload)))
     code = cli.main(HOOK_ARGV, stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: runtime))
     return code, stdout.getvalue(), stderr.getvalue()
 

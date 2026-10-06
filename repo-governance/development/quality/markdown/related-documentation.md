@@ -13,8 +13,9 @@ when_to_use: "Use when you need the rationale behind a specific markdown quality
 - [Diagram and Schema Convention](../../../conventions/formatting/diagrams.md) — Mermaid
   validation gate location (pre-commit + CI; not pre-push)
 - [Repository Validation Methodology Convention](.././repository-validation.md) — canonical
-  reference for all three Markdown Quality Gates (mermaid:validation, links:validation,
-  headings:hierarchy-validation), their commands, exclusions, and gate locations (Markdown
+  reference for all three Markdown Quality Gates (`./rhino md mermaid validate`,
+  `./rhino md internal-link validate`, `./rhino md heading-hierarchy validate`), their commands,
+  exclusions, and gate locations (Markdown
   validators run as `pre-commit` and `pull-request` registry gates; internal-link validation is a
   repo-wide `./rhino` command with no declared gate)
 - [Code Quality Convention](.././code.md)

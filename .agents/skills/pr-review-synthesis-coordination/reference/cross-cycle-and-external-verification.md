@@ -11,7 +11,7 @@ independently verified version on a fresh head under a new finding ID.
 
 ## External Fact Verification
 
-You may call the [`web-researcher`](../../../agents/web/web-researcher.md) agent for external fact
+You may call the [`web-researcher`](../../../agents/web-researcher.md) agent for external fact
 verification during tool-verify. Use in-context web tools only for a single known authoritative URL;
 delegate multi-page research under the
 [Web Research Delegation Convention](../../../../repo-governance/conventions/writing/web-research-delegation.md).

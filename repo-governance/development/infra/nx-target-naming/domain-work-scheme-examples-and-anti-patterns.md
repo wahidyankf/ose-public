@@ -7,21 +7,18 @@ when_to_use: Use when deriving a new `{domain}:{work}` target name from a subjec
 
 ## Derivation Examples
 
-| Subject scope              | Operation      | Derived target                       |
-| -------------------------- | -------------- | ------------------------------------ |
-| `specs` (Gherkin)          | check adoption | `specs:adoption-validation`          |
-| `links` (markdown)         | validate       | `links:validation`                   |
-| `mermaid` (diagrams)       | validate       | `mermaid:validation`                 |
-| `governance` (vendor docs) | audit          | `governance:vendor-audit-validation` |
-| `format` (Rust fmt)        | check          | `format:check`                       |
+| Subject scope        | Operation               | Derived target       |
+| -------------------- | ----------------------- | -------------------- |
+| `compat` (toolchain) | check minimum version   | `compat:min-version` |
+| `deps` (packages)    | audit for vulnerability | `deps:audit`         |
 
 ## Anti-Patterns
 
-| Forbidden                 | Correct                     | Reason                                 |
-| ------------------------- | --------------------------- | -------------------------------------- |
-| `validate:mermaid`        | `mermaid:validation`        | `validate:*` prefix abolished          |
-| `validate:links`          | `links:validation`          | same                                   |
-| `validate:specs-adoption` | `specs:adoption-validation` | same                                   |
-| `spec-coverage`           | `test:coverage:behaviour`   | Hyphen dropped; domain clarified       |
-| `fmt:check`               | `format:check`              | Domain must be the noun (`format`)     |
-| `check:msrv`              | `compat:min-version`        | Verb follows domain: `{domain}:{verb}` |
+| Forbidden          | Correct                                           | Reason                                                     |
+| ------------------ | ------------------------------------------------- | ---------------------------------------------------------- |
+| `validate:mermaid` | `./rhino md mermaid validate` (gate `md-mermaid`) | `validate:*` prefix abolished; repository-wide, not Nx     |
+| `validate:links`   | `./rhino md internal-link validate`               | same                                                       |
+| `validate:deps`    | `deps:audit`                                      | `validate:*` prefix abolished                              |
+| `spec-coverage`    | `test:coverage:behaviour`                         | Hyphen dropped; domain clarified                           |
+| `fmt:check`        | the `format-staged` registry gate (no Nx target)  | Formatting is a registry gate, not a per-project Nx target |
+| `check:msrv`       | `compat:min-version`                              | Verb follows domain: `{domain}:{verb}`                     |

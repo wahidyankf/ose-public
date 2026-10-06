@@ -29,7 +29,7 @@ flag if introduced without justification. **Advanced** (MEDIUM): check for trade
 
 ## 9. Examples-by-Level Section in Overview (CRITICAL)
 
-See the [Examples-by-Level Section rule](../../../repo-governance/conventions/tutorials/swe-by-example.md#examples-by-level-section-mandatory)
+See the [Examples-by-Level Section rule](../../../../repo-governance/conventions/tutorials/swe-by-example/file-naming-and-directory-structure.md#examples-by-level-section-mandatory)
 for the full standard. For each tutorial's `overview.md`:
 
 1. **Presence** — MUST contain an `## Examples by Level` heading. Flag CRITICAL if absent.

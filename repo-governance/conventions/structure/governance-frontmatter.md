@@ -51,8 +51,9 @@ unaffected.
 ## Consequences Worth Knowing
 
 - **`description` and `when_to_use` are load-bearing.** Both are Blocking in the validator, and
-  both are read by `./rhino governance directory-map validate` to build a README index entry's
-  annotation. A vague `description` produces a vague index.
+  an author copies both into a README index entry's annotation, per
+  [Governance README Completeness](./governance-readme-completeness.md). A vague `description`
+  produces a vague index.
 - **Quoting still matters.** Both values are prose that regularly contains a colon, so the
   [YAML syntax requirements](workflow-pattern/yaml-syntax-requirements.md)
   continue to apply.

@@ -14,8 +14,8 @@ when_to_use: Use when auditing which secret surfaces exist in this repo and whet
 | Ansible inventory         | `infra/ansible/**/inventory`                | Ansible            | Commented scaffold | Commented scaffold                               |
 | GitHub Environment secret | `{group}-app-staging` / `{group}-app-local` | GitHub Actions Env | No (platform)      | Manifest (`env-injection:` in `repo-config.yml`) |
 | Vercel project env        | Vercel project settings (per target)        | Vercel dashboard   | No (platform)      | Manifest (`env-injection:` in `repo-config.yml`) |
-| Backend staging secret    | The private deployment controller's store   | private controller | No (held outside)  | Outside this repo                                |
 
 Template files (`*.env.example`) are tracked in git — they are not secrets. Real gitignored files are
-the backup target. Injection-target rows (GitHub / Vercel / the private controller) hold real values outside this repo;
-the `env-injection:` section in `repo-config.yml` is the in-repo record of which key lives where.
+the backup target. Injection-target rows (GitHub / Vercel) hold real values outside this repo; values
+for a deployment not run from this repository are outside its scope. The `env-injection:` section in
+`repo-config.yml` is the in-repo record of which key lives where.

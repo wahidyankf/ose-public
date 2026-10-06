@@ -28,8 +28,8 @@ contain a secret, credential, token, API key, private IP/hostname, or insecure i
 
 A learning routes **only** to the repo(s) it actually pertains to:
 
-- **Infra-private content** (Terraform, cluster or hypervisor internals, the private deployment
-  controller, on-prem infrastructure, real hostnames or inventories) MUST stay private and MUST NEVER
+- **Infra-private content** (Terraform, cluster or hypervisor internals, deployment-controller
+  internals, on-prem infrastructure, real hostnames or inventories) MUST stay private and MUST NEVER
   be routed into this public repo.
 - **Public-governance content** stays in `ose-public`. No other repository is a propagation target:
   the private sibling adopts a change only by an explicit, one-off request through its own route, and

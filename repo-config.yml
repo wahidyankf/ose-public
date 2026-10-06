@@ -286,7 +286,6 @@ policies:
         - "apps/ayokoding-www/content/**"
         - "apps/ose-www/content/**"
         - ".claude/skills/**"
-        - ".agents/skills/**"
     mermaid:
       authoring-rule: rendered
       node-label-graphemes: 20

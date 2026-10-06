@@ -2,8 +2,8 @@
 
 Step-by-step execution guidance for `docs-tutorial-checker`, which validates pedagogical
 structure, narrative flow, visual completeness, and hands-on elements against the
-[Tutorial Convention](../../../repo-governance/conventions/tutorials/general.md) and
-[Tutorial Naming Convention](../../../repo-governance/conventions/tutorials/naming.md).
+[Tutorial Convention](../../../../repo-governance/conventions/tutorials/general.md) and
+[Tutorial Naming Convention](../../../../repo-governance/conventions/tutorials/naming.md).
 
 ## Validation Steps
 
@@ -22,11 +22,11 @@ forward references).
 
 **Step 4 — Visual completeness**: identify where diagrams would help (complex concepts, workflows,
 architecture), evaluate existing diagrams for sufficiency/integration/readability, and validate
-color accessibility per [Color Accessibility Convention](../../../repo-governance/conventions/formatting/color-accessibility.md)
+color accessibility per [Color Accessibility Convention](../../../../repo-governance/conventions/formatting/color-accessibility.md)
 — accessible palette (blue #0173B2, orange #DE8F05, teal #029E73, purple #CC78BC, brown #CA9161),
 never red/green/yellow, black (#000000) borders, WCAG AA 4.5:1 contrast, shape differentiation (not
 color alone), documented color-scheme comment. Also validate diagram splitting per
-[Diagram Size and Splitting](../../../repo-governance/conventions/formatting/diagrams/diagram-size-and-splitting-why-and-when.md):
+[Diagram Size and Splitting](../../../../repo-governance/conventions/formatting/diagrams/diagram-size-and-splitting-why-and-when.md):
 no subgraphs (HIGH — breaks mobile rendering), ≤4-5 branches per node (MEDIUM), one concept per
 diagram (MEDIUM), descriptive headers between diagrams (LOW).
 
@@ -52,7 +52,7 @@ numbers + severity + recommendation, Positive Findings, and Prioritized Recommen
 
 ## Anti-Patterns
 
-See [Tutorial Convention — Anti-Patterns](../../../repo-governance/conventions/tutorials/general.md)
+See [Tutorial Convention — Anti-Patterns](../../../../repo-governance/conventions/tutorials/general.md)
 for the full list of 12; the most common: reference material disguised as tutorial,
 goal-oriented instead of learning-oriented, missing prerequisites/visual aids, incorrect LaTeX
 delimiters, sudden difficulty jumps without scaffolding, solutions without explanations.

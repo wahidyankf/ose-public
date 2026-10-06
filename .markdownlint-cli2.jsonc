@@ -17,6 +17,7 @@
     "apps/*/public/**",
     "generated-reports/**",
     "**/.dart_tool/**",
+    ".fvm-cache/**",
     ".vscode/**",
     ".idea/**",
     "apps/*/playwright-report/**",

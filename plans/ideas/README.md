@@ -24,7 +24,6 @@ Blocks an active plan or documents a live defect, and carries a cross-repo, secu
 - [next-image-builds-cannot-resolve-ts-env-loader](./q1-urgent-important/next-image-builds-cannot-resolve-ts-env-loader.md) — all six Next.js images fail to build; four scheduled workflows have reported it twice daily for days, and the `prod-*` deploy path for four sites is dead.
 - [oxlint-upgrade-and-lint-reproducibility](./q1-urgent-important/oxlint-upgrade-and-lint-reproducibility.md) — 21 lint sites fetched `npx oxlint@latest`, so a publish turned a green PR red on an untouched file; the 1.78.0 pin froze a real `set-state-in-effect` defect and left the wider class unenumerated.
 - [remove-stale-compat-min-version-stubs](./q1-urgent-important/remove-stale-compat-min-version-stubs.md) — every surviving `compat:min-version` target in `ose-public` is a bare echo that checks nothing — 24 of 24, zero real checks left — while the Nx target convention states outright that echo and no-op targets are forbidden.
-- [skill-tree-links-hidden-by-link-exemption](./q1-urgent-important/skill-tree-links-hidden-by-link-exemption.md) — `.agents/skills/**` is exempt from `md internal-link validate`; lifting the exemption in a scratch copy shows 17 unresolvable links in 10 skill files, and 7 more `#fragment` anchors dangle unseen because the pinned validator never reads fragments.
 
 ### Q2 — Important, Not Urgent
 
@@ -393,7 +392,7 @@ scratch directory, which was removed afterwards.
   and the `readme-index` verdict line agrees with its exit code. A scan of 2,182 tracked non-Markdown text files found no
   stale governance path.
 - **`harness-mirror-and-test-isolation-defects`** — rewritten and renamed to
-  [skill-tree-links-hidden-by-link-exemption](./q1-urgent-important/skill-tree-links-hidden-by-link-exemption.md). The
+  `skill-tree-links-hidden-by-link-exemption` (delivered and deleted in the entry below). The
   OpenCode `README` agent is gone (the harness lists 75 repository agents and none by that name, and a stray file in
   the agent directory now fails `harness adapters validate`), and the `rhino-cli` smoke-test coupling died with the
   retired in-tree crate. What remained is local: the exemption on `.agents/skills/**` hides unresolvable links. The
@@ -409,3 +408,29 @@ historical references.
   links by documented design, so no gate checks anchors; whether to ask upstream for it is an owner decision.
 - **Stale statement.** `docs/reference/sdlc-gate-standard.md` still says that gate resolves `#fragment` anchors, which
   the linking convention contradicts.
+
+### 2026-10-06 — leftover findings repaired, one brief delivered and one re-tested, not promoted
+
+Directed repair of the follow-ups the entry above left open, authorized by the owner; the recurrence clock in the
+`Last groomed` line is unchanged. Each claim was re-tested on the RHINO release `rhino.lock` pins (`v0.11.0`) with
+`./rhino` commands and minimal reproductions in scratch directories, which were removed afterwards.
+
+- **`skill-tree-links-hidden-by-link-exemption`** — deleted, delivered. The 17 unresolvable links in `.agents/skills/**`
+  are repaired (12 gained the missing `../`, 2 follow the retired nested path to `.agents/agents/web-researcher.md`, 3
+  name files that exist now or were dropped), the 10 teaching examples sit in code spans, and the 7 dangling `#fragment`
+  anchors point at the child documents that now carry the headings. `.agents/skills/**` is gone from
+  `policies.markdown.internal-link.exclude-sources` (the generated `.claude/skills/**` stubs stay), and
+  `./rhino md internal-link validate` exits 0 over 13,487 links; a hand check of the skill tree's fragments by GitHub's
+  slug rules finds none dangling. The sentence in `docs/reference/sdlc-gate-standard.md` that said the gate resolves
+  `#fragment` anchors now matches the linking convention, so one account stands. Whether to ask upstream for fragment
+  validation is still an owner decision; the hand check in the convention is the only coverage.
+- **`mermaid-validator-does-not-check-syntax`** — kept, evidence refreshed: the defect still reproduces. On `v0.11.0`, a
+  well-formed flowchart and three syntactically broken blocks (a malformed shape plus an unclosed brace; an unclosed
+  bracket, a bogus arrow, and an unclosed `subgraph`; a malformed `sequenceDiagram` arrow) all print
+  `checked N diagram(s), no findings` and exit 0, while `mermaid@11.15.0`'s own parser accepts the first and rejects the
+  other three. A 46-grapheme label and an undeclared diagram type do exit 1, so the validator is not inert. The fix
+  belongs in upstream RHINO and nothing was filed. Two governance table rows that said the validator checks syntax now
+  say it does not, and its canonical gate document states the limit.
+
+Inbound links in `plans/backlog/README.md` and this file were repointed; archived plans under `plans/done/` keep their
+historical references.

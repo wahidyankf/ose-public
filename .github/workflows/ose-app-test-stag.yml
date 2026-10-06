@@ -2,7 +2,7 @@ name: ose-app-test-stag
 
 # Staging gate for the ose-app: FE E2E against the deployed staging URL.
 # Scheduled +2.5h after ose-app-test-local-deploy-stag so the Vercel build +
-# downstream private deployer rollout have settled. On pass it STOPS (prod CD deferred).
+# the backend rollout have settled. On pass it STOPS (prod CD deferred).
 
 on:
   schedule:

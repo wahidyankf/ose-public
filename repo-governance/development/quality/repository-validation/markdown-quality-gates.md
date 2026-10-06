@@ -33,6 +33,10 @@ mermaid fences nested in another code block. `mermaid.allowed-types`,
 `mermaid.forbid-theme-overrides`, and `mermaid.canvas-colors` refuse undeclared types and theme
 overrides and measure non-text contrast.
 
+It does not parse diagram syntax: RHINO v0.11.0 reports a diagram with a malformed shape or an unclosed
+bracket clean, the same as a well-formed one. A green result shows the rules above hold, never that the
+diagram renders.
+
 The `md-mermaid-repository` gate runs a bare `./rhino md mermaid validate` on the pull-request surface
 only. It scans every live diagram outside `mermaid.exclude`, so a diagram that drifts outside the
 palette in an untouched file still fails; pre-commit stays narrowed to staged paths. Its pull-request
@@ -44,7 +48,7 @@ composition is `at-least` because this surface holds a gate pre-commit does not.
 
 Full-repo link scan. Validates that every local Markdown link's target path resolves inside the
 repository; it does not check `#fragment` anchors. Sources matching `policies.markdown.internal-link.exclude-sources`
-(`plans/done/**`, the published content trees, and the skill trees) are skipped.
+(`plans/done/**`, the published content trees, and the generated `.claude/skills/**` route stubs) are skipped.
 
 **Surfaces**: none today — it is not a declared gate, so run it directly before pushing link
 changes. A repo-wide scan belongs outside pre-commit because adding, deleting, or renaming any

@@ -72,8 +72,8 @@ gain a digit.
 
 ## Where Order Comes From
 
-For plain-named files, order lives in the parent `README.md` index, which preserves entry order and
-annotations — see [README Completeness](./governance-readme-completeness.md).
+For plain-named files, order lives in the parent `README.md` index, which lists entries in
+authored order with annotations — see [README Completeness](./governance-readme-completeness.md).
 
 ## Related
 

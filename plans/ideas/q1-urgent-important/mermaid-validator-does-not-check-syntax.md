@@ -2,33 +2,49 @@
 
 > **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
 
-One-line summary: `./rhino md mermaid validate` is wired into pre-commit, pre-push and CI and is
+One-line summary: `./rhino md mermaid validate` is wired into the `pre-commit` and `pull-request` gates and is
 routinely cited as the Mermaid-correctness gate — but it does **not** parse diagram syntax, so a
 diagram that no renderer can draw sails through it clean.
 
 > Found 2026-07-22 by a quality-gate agent that deliberately corrupted a diagram to test its own
-> tooling, and independently reproduced before filing.
+> tooling, and independently reproduced before filing. Re-tested 2026-10-06 on the pinned RHINO `v0.11.0`: the
+> defect still reproduces (evidence below). The fix belongs in the upstream RHINO validator, which this
+> repository consumes as a pinned release and does not patch; nothing has been filed.
 
 ## Problem / context
 
-A file containing this block:
+A file containing this block (with the accessibility and default-class lines the policy requires, so the
+syntax is the only thing wrong):
 
 ```text
 flowchart TD
+    accTitle: Broken diagram
+    accDescr: A malformed shape and an unclosed brace follow a valid edge.
     A[Good node] --> B[Also good]
     C[[[malformed shape --> D
     E{{unclosed --> F
+
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
-produces `Found 0 violation(s) and 0 warning(s) in 1 file(s) (1 block(s) scanned)`. The block **was**
-scanned — the counter says so — and passed. A control run against a known-good diagram returns the
-same verdict, so the two are indistinguishable by this tool.
+makes `./rhino md mermaid validate --file <path>` print `[mermaid] checked 1 diagram, no findings` and
+exit 0. The block **was** scanned — the line says so — and passed. A control run against a well-formed
+diagram prints the same line and exits 0, so the two are indistinguishable by this tool. Re-tested on
+`v0.11.0` in a scratch directory passed as `--root` (a probe file below a `local-tmp/` directory is skipped by the
+policy's `exclude` and reports `checked 0 diagrams`):
 
-The validator does real work on other axes: it enforces node-label length caps (roughly 30 characters
-per `<br/>` segment, bounded segment count) and colour-blind-friendly palette rules, and it has caught
-genuine problems repeatedly — several plans this week fixed label-length violations it reported. The
-defect is not that it does nothing. **It is that its name and its position in the toolchain promise
-syntax validation it never performs**, and it is cited in plan documents as the check that Mermaid
+- A well-formed flowchart, a flowchart with the block above, a second flowchart with an unclosed bracket, a bogus
+  arrow, and an unclosed `subgraph`, and a `sequenceDiagram` with a malformed arrow: all exit 0 with no findings.
+- `mermaid@11.15.0`, already a repository dependency, parsed through `jsdom`: `mermaid.parse` accepts the
+  well-formed block and rejects all three broken ones with a parse error.
+- Controls showing the validator is not inert: a node label of 46 graphemes (limit 20) exits 1, and a first line
+  naming a type outside `allowed-types` exits 1.
+
+The validator does real work on other axes: it enforces `accTitle`/`accDescr`, node and edge label length caps
+(20 graphemes per `<br/>` segment), the declared colour palette and contrast, `classDef default`, and the
+allowed diagram types, and it has caught genuine problems repeatedly. The defect is not that it does nothing.
+**It is that its name and its position in the toolchain promise syntax validation it never performs** (its help
+text says only "label length and colour contrast"), and it is cited in plan documents as the check that Mermaid
 is correct.
 
 This is the vacuous-gate pattern: a check whose green result is read as evidence of a property it
@@ -54,7 +70,7 @@ Three independent forces make this the moment:
   [mermaid.js.org](https://mermaid.js.org/)
 - **`@mermaid-js/mermaid-cli`** — the maintained headless CLI whose whole purpose is rendering/parsing
   diagrams outside a browser. [github.com/mermaid-js/mermaid-cli](https://github.com/mermaid-js/mermaid-cli)
-- **The repo's own `md links validate`** — the counterexample worth copying: it actually resolves each
+- **The repo's own `md internal-link validate`** — the counterexample worth copying: it actually resolves each
   target and fails on a dead one, which is why a moved corpus is a hard push failure today.
 - **`ayokoding-mermaid-diagram-remediation`** ([idea brief](../q2-not-urgent-important/ayokoding-mermaid-diagram-remediation.md))
   — the downstream consumer that would be validated by this gate.
@@ -63,8 +79,10 @@ Three independent forces make this the moment:
 
 ## Proposed direction (sketch)
 
-- Add a **parse** stage to the existing validator, distinct from its current style/accessibility rules,
-  so the two failure classes stay separately reportable.
+- Ask the upstream RHINO owner for a **parse** stage in the existing validator, distinct from its current
+  style/accessibility rules, so the two failure classes stay separately reportable; whether and when to file it,
+  and the latest-trunk check that [Upstream Tool Defects](../../../repo-governance/development/workflow/upstream-tool-defects.md)
+  asks for first, are owner decisions.
 - Use the real parser rather than reimplementing one — `mermaid` is already a dependency, so a
   syntax check need not invent grammar knowledge that will drift from upstream.
 - Keep the current label-length and palette rules exactly as they are; they work and are relied upon.
@@ -88,7 +106,7 @@ verifiable. Also out of scope: rendering diagrams to images in CI — parse-only
   probably merge with the existing mermaid remediation brief instead of standing alone. (open)
 - Invoking the real parser means a Node dependency inside a Rust CLI's validation path; whether that
   belongs in Rhino or in a separate target is a genuine design question. (open)
-- Any diagram currently passing that the parser rejects will fail the pre-push hook the moment this
+- Any diagram currently passing that the parser rejects will fail the `pre-commit` and `pull-request` gates the moment this
   lands, so sequencing matters — measure first, then gate. (open)
 - Whether other `md * validate` subcommands have the same name-versus-behaviour gap is unexamined, and
   the same probe technique would answer it cheaply. (open)

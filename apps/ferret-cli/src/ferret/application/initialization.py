@@ -7,7 +7,7 @@ from typing import Any, Literal
 
 from ferret.application.ports import Runtime
 from ferret.application.store import ARTIFACTS, installation_id_from, read_document, read_key, require_safe
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, or_raise
 from ferret.domain.storage import (
     CONFIG_FILE,
     DATABASE_FILE,
@@ -80,7 +80,7 @@ def initialize_store(runtime: Runtime) -> InitResult:
             identity = {
                 "schemaVersion": DOCUMENT_SCHEMA_VERSION,
                 "installationId": installation_id,
-                "createdAt": format_timestamp(runtime.clock.now()),
+                "createdAt": or_raise(format_timestamp(runtime.clock.now())),
             }
             files.create_file(IDENTITY_FILE, _compact(identity), PRIVATE_FILE_MODE)
         else:

@@ -17,7 +17,7 @@ from ferret.adapters.sqlite_schema import (
 )
 from ferret.application.ports import Budget, CaptureResult, Compaction, ExpiryCounters, PruneResult, StoreCounts
 from ferret.domain.capability import Capability, CapabilitySnapshot
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, or_raise
 from ferret.domain.event import Event
 from ferret.domain.identity import resolve_identity
 from ferret.domain.query import EventCriteria, Position
@@ -124,7 +124,7 @@ def read_statement(
     unary plus keeps the planner from choosing the expiry index for the retention test, which would force a sort.
     """
     conditions = ["+expires_at > ?"]
-    parameters: list[str | int] = [format_timestamp(now)]
+    parameters: list[str | int] = [or_raise(format_timestamp(now))]
     if criteria.start is not None:
         conditions.append("occurred_at >= ?")
         parameters.append(criteria.start)
@@ -249,7 +249,7 @@ class SQLiteEventRepository:
         return self._select(statement, parameters)
 
     def find(self, event_id: str, *, now: datetime) -> Event | None:
-        found = self._select(_SELECT_LIVE, (event_id, format_timestamp(now)))
+        found = self._select(_SELECT_LIVE, (event_id, or_raise(format_timestamp(now))))
         return found[0] if found else None
 
     def _select(self, statement: str, parameters: tuple[str | int, ...]) -> tuple[Event, ...]:
@@ -257,7 +257,7 @@ class SQLiteEventRepository:
 
     def _capture(self, connection: sqlite3.Connection, event: Event) -> CaptureResult:
         row = connection.execute(_SELECT_HASH, (event.event_id,)).fetchone()
-        if resolve_identity(None if row is None else str(row[0]), event.event_hash) == "duplicate":
+        if or_raise(resolve_identity(None if row is None else str(row[0]), event.event_hash)) == "duplicate":
             return "duplicate"
         self._store(connection, event)
         return "stored"
@@ -307,7 +307,7 @@ class SQLiteCapabilityRepository:
     def store_snapshot(self, snapshot: CapabilitySnapshot) -> CaptureResult:
         with _write_transaction(self._database_path) as connection:
             row = connection.execute(_SELECT_SNAPSHOT_HASH, (snapshot.snapshot_id,)).fetchone()
-            if resolve_identity(None if row is None else str(row[0]), snapshot.snapshot_hash) == "duplicate":
+            if or_raise(resolve_identity(None if row is None else str(row[0]), snapshot.snapshot_hash)) == "duplicate":
                 return "duplicate"
             connection.execute(
                 _INSERT_SNAPSHOT,
@@ -329,7 +329,7 @@ class SQLiteCapabilityRepository:
             return "stored"
 
     def latest_snapshot(self, harness: str, *, now: datetime) -> CapabilitySnapshot | None:
-        found = _fetch(self._database_path, _SELECT_LATEST, (harness, format_timestamp(now)))
+        found = _fetch(self._database_path, _SELECT_LATEST, (harness, or_raise(format_timestamp(now))))
         if not found:
             return None
         snapshot_id, hash_, schema_version, captured_at, harness_version, installation_id = found[0][:6]
@@ -373,7 +373,10 @@ class SQLiteTelemetryRepository:
         return StorageFacts(database_bytes, wal_bytes, int(_fetch(self._database_path, _SELECT_FREE_BYTES)[0][0]))
 
     def counts(self, *, now: datetime, near_expiry_within: timedelta) -> StoreCounts:
-        parameters = {"now": format_timestamp(now), "near": format_timestamp(now + near_expiry_within)}
+        parameters = {
+            "now": or_raise(format_timestamp(now)),
+            "near": or_raise(format_timestamp(now + near_expiry_within)),
+        }
         events, snapshots, oldest, near_expiry, logically_expired = _fetch(
             self._database_path, _SELECT_COUNTS, parameters
         )[0]
@@ -422,7 +425,7 @@ class SQLiteTelemetryRepository:
             return PruneResult("skipped")
         try:
             with _write_transaction(self._database_path, budget_ms=remaining_ms) as connection:
-                return self._prune(connection, format_timestamp(now), limit, budget)
+                return self._prune(connection, or_raise(format_timestamp(now)), limit, budget)
         except FerretError as error:
             # A lock that could not be taken in time, or a transaction that lost it, changed nothing: skip.
             if error.retryable:

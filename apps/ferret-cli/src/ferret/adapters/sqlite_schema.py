@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ferret.application.ports import Clock, SchemaState
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, or_raise
 from ferret.domain.timestamps import format_timestamp
 
 BUSY_TIMEOUT_MS = 250
@@ -189,7 +189,7 @@ class SQLiteSchema:
                 connection.execute(statement)
             connection.execute(
                 "INSERT INTO schema_migration (version, checksum, applied_at) VALUES (?, ?, ?)",
-                (migration.version, migration.checksum, format_timestamp(self._clock.now())),
+                (migration.version, migration.checksum, or_raise(format_timestamp(self._clock.now()))),
             )
             applied_now = True
         return SchemaState(number=LATEST_SCHEMA, applied_now=applied_now)

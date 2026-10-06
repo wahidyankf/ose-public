@@ -13,7 +13,7 @@ from typing import Literal
 from ferret import __version__
 from ferret.application.ports import InstalledFacts, Runtime, StagePlan, UserInstall
 from ferret.application.store import require_safe
-from ferret.domain.errors import ErrorCode, FerretError
+from ferret.domain.errors import ErrorCode, FerretError, or_raise
 from ferret.domain.install import (
     ARTIFACT_MODE,
     LAUNCHER_MODE,
@@ -138,7 +138,7 @@ def install_user(runtime: Runtime) -> InstallOutcome:
         artifact_path=target,
         artifact_sha256=source.sha256,
         launcher_path=paths.launcher,
-        installed_at=format_timestamp(runtime.clock.now()),
+        installed_at=or_raise(format_timestamp(runtime.clock.now())),
     )
     staged = installer.stage(StagePlan(version=__version__, launcher=script, manifest=manifest.to_bytes()))
     installer.replace_artifact(staged)

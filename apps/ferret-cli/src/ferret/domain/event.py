@@ -10,7 +10,7 @@ from typing import Any, Final, NamedTuple
 
 from ferret.domain import fields
 from ferret.domain.canonical import canonical_bytes
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, or_raise
 from ferret.domain.storage import RETENTION_DAYS
 from ferret.domain.timestamps import add_days, format_timestamp, parse_timestamp
 
@@ -115,12 +115,15 @@ class Event:
     @property
     def expires_at(self) -> str:
         """The logical retention boundary: thirty days after the event was captured."""
-        return format_timestamp(add_days(parse_timestamp(self.captured_at), RETENTION_DAYS))
+        captured = or_raise(parse_timestamp(self.captured_at))
+        return or_raise(format_timestamp(add_days(captured, RETENTION_DAYS)))
 
 
 def canonical_event_bytes(event: Event) -> bytes:
     """The bytes the hash covers: every property except the hash, in the fixed order, compact and unescaped."""
-    return canonical_bytes({name: value for name, value in event.to_document().items() if name != "eventHash"})
+    return or_raise(
+        canonical_bytes({name: value for name, value in event.to_document().items() if name != "eventHash"})
+    )
 
 
 def event_hash(event: Event) -> str:
@@ -138,7 +141,7 @@ def _name(value: object, field: str, *, logical: bool) -> str | None:
     """An optional bounded identifier: see ``fields.is_name`` for what one is."""
     if value is None:
         return None
-    text = fields.text(value, field)
+    text = or_raise(fields.text(value, field))
     if not fields.is_name(text, logical=logical):
         raise fields.invalid(field)
     return text
@@ -214,25 +217,29 @@ def event_from_document(document: Mapping[str, Any], *, now: datetime) -> Event:
             raise fields.invalid(name)
     values: dict[str, Any] = {
         "schemaVersion": _schema_version(document["schemaVersion"]),
-        "eventId": fields.matching(document["eventId"], "eventId", fields.UUID_V4),
-        "eventHash": fields.matching(document["eventHash"], "eventHash", fields.HASH),
-        "occurredAt": fields.timestamp(document["occurredAt"], "occurredAt", now),
-        "capturedAt": fields.timestamp(document["capturedAt"], "capturedAt", now),
-        "harness": fields.matching(document["harness"], "harness", fields.HARNESS),
-        "harnessVersion": fields.optional(document["harnessVersion"], "harnessVersion", fields.HARNESS_VERSION),
-        "installationId": fields.matching(document["installationId"], "installationId", fields.UUID_V4),
-        "workspaceId": fields.matching(document["workspaceId"], "workspaceId", fields.WORKSPACE_ID),
-        "sessionId": fields.matching(document["sessionId"], "sessionId", _SESSION_ID),
-        "parentSessionId": fields.optional(document["parentSessionId"], "parentSessionId", _SESSION_ID),
-        "eventType": fields.member(document["eventType"], "eventType", EVENT_TYPES),
+        "eventId": or_raise(fields.matching(document["eventId"], "eventId", fields.UUID_V4)),
+        "eventHash": or_raise(fields.matching(document["eventHash"], "eventHash", fields.HASH)),
+        "occurredAt": or_raise(fields.timestamp(document["occurredAt"], "occurredAt", now)),
+        "capturedAt": or_raise(fields.timestamp(document["capturedAt"], "capturedAt", now)),
+        "harness": or_raise(fields.matching(document["harness"], "harness", fields.HARNESS)),
+        "harnessVersion": or_raise(
+            fields.optional(document["harnessVersion"], "harnessVersion", fields.HARNESS_VERSION)
+        ),
+        "installationId": or_raise(fields.matching(document["installationId"], "installationId", fields.UUID_V4)),
+        "workspaceId": or_raise(fields.matching(document["workspaceId"], "workspaceId", fields.WORKSPACE_ID)),
+        "sessionId": or_raise(fields.matching(document["sessionId"], "sessionId", _SESSION_ID)),
+        "parentSessionId": or_raise(fields.optional(document["parentSessionId"], "parentSessionId", _SESSION_ID)),
+        "eventType": or_raise(fields.member(document["eventType"], "eventType", EVENT_TYPES)),
         "agentName": _name(document["agentName"], "agentName", logical=False),
         "skillName": _name(document["skillName"], "skillName", logical=False),
         "toolName": _name(document["toolName"], "toolName", logical=True),
-        "outcome": fields.member(document["outcome"], "outcome", OUTCOMES),
+        "outcome": or_raise(fields.member(document["outcome"], "outcome", OUTCOMES)),
         "durationMs": _duration(document["durationMs"]),
-        "subjectVisibility": fields.member(document["subjectVisibility"], "subjectVisibility", VISIBILITIES),
-        "outcomeVisibility": fields.member(document["outcomeVisibility"], "outcomeVisibility", VISIBILITIES),
-        "durationVisibility": fields.member(document["durationVisibility"], "durationVisibility", VISIBILITIES),
+        "subjectVisibility": or_raise(fields.member(document["subjectVisibility"], "subjectVisibility", VISIBILITIES)),
+        "outcomeVisibility": or_raise(fields.member(document["outcomeVisibility"], "outcomeVisibility", VISIBILITIES)),
+        "durationVisibility": or_raise(
+            fields.member(document["durationVisibility"], "durationVisibility", VISIBILITIES)
+        ),
     }
     shape = _SHAPES[values["eventType"]]
     _check_subject(values, shape)

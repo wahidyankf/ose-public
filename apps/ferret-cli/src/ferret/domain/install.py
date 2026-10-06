@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Final, Literal, cast
 
+from ferret.domain.errors import or_raise
 from ferret.domain.storage import DOCUMENT_SCHEMA_VERSION
 from ferret.domain.timestamps import parse_timestamp
 
@@ -141,7 +142,7 @@ def parse_manifest(content: bytes, paths: InstallPaths) -> Manifest:
     if _SHA256.fullmatch(sha256) is None:
         raise ValueError("manifest digest is not a lowercase SHA-256")
     try:
-        parse_timestamp(installed_at)
+        or_raise(parse_timestamp(installed_at))
     except ValueError:
         raise ValueError("manifest installedAt is not a canonical UTC timestamp") from None
     if artifact_path != str(paths.artifact(version)) or launcher_path != str(paths.launcher):

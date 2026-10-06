@@ -16,7 +16,7 @@ from typing import Any, Final, cast
 
 from ferret.domain import fields
 from ferret.domain.canonical import canonical_bytes
-from ferret.domain.errors import ErrorCode, FerretError
+from ferret.domain.errors import ErrorCode, FerretError, or_raise
 from ferret.domain.event import EVENT_TYPES, OUTCOMES
 from ferret.domain.timestamps import format_timestamp, parse_rfc3339, parse_timestamp
 
@@ -69,7 +69,7 @@ def _timestamp_bound(options: Options, name: str) -> datetime | None:
     if raw is None:
         return None
     try:
-        return parse_rfc3339(raw)
+        return or_raise(parse_rfc3339(raw))
     except ValueError:
         raise FerretError("ferret.filter.invalid") from None
 
@@ -83,9 +83,10 @@ def _interval(options: Options, now: datetime) -> tuple[str | None, str | None]:
         return None, None
     end = upper if upper is not None else now
     start = lower if lower is not None else end - DEFAULT_WINDOW
-    if format_timestamp(start) >= format_timestamp(end):
+    start_text, end_text = or_raise(format_timestamp(start)), or_raise(format_timestamp(end))
+    if start_text >= end_text:
         raise FerretError("ferret.filter.invalid")
-    return format_timestamp(start), format_timestamp(end)
+    return start_text, end_text
 
 
 def _closed(allowed: frozenset[str]) -> Callable[[str], bool]:
@@ -150,7 +151,7 @@ def filter_digest(criteria: EventCriteria, limit: int) -> str:
         "outcome": criteria.outcome,
         "limit": limit,
     }
-    return hashlib.sha256(canonical_bytes(document)).hexdigest()
+    return hashlib.sha256(or_raise(canonical_bytes(document))).hexdigest()
 
 
 def encode_cursor(position: Position, digest: str) -> str:
@@ -161,7 +162,7 @@ def encode_cursor(position: Position, digest: str) -> str:
         "eventId": position.event_id,
         "filterDigest": digest,
     }
-    return base64.urlsafe_b64encode(canonical_bytes(document)).rstrip(b"=").decode("ascii")
+    return base64.urlsafe_b64encode(or_raise(canonical_bytes(document))).rstrip(b"=").decode("ascii")
 
 
 def _invalid_cursor() -> FerretError:
@@ -180,7 +181,7 @@ def _cursor_document(token: str) -> dict[str, Any]:
         if not isinstance(parsed, dict):
             raise ValueError("the token is not an object")
         document = cast(dict[str, Any], parsed)
-        if canonical_bytes(document) != raw:
+        if or_raise(canonical_bytes(document)) != raw:
             raise ValueError("the token is not in canonical form")
     except ValueError, TypeError, RecursionError:
         raise _invalid_cursor() from None
@@ -202,7 +203,7 @@ def decode_cursor(token: str, digest: str) -> Position:
         raise _invalid_cursor()
     occurred_at, event_id = _cursor_text(document, "occurredAt"), _cursor_text(document, "eventId")
     try:
-        parse_timestamp(occurred_at)
+        or_raise(parse_timestamp(occurred_at))
     except ValueError:
         raise _invalid_cursor() from None
     if fields.UUID_V4.fullmatch(event_id) is None or _cursor_text(document, "filterDigest") != digest:

@@ -14,6 +14,7 @@ from typing import Any, Final, cast
 
 from ferret.domain import fields
 from ferret.domain.canonical import canonical_bytes
+from ferret.domain.errors import or_raise
 from ferret.domain.storage import RETENTION_DAYS
 from ferret.domain.timestamps import add_days, format_timestamp, parse_timestamp
 
@@ -80,12 +81,15 @@ class CapabilitySnapshot:
     @property
     def expires_at(self) -> str:
         """The logical retention boundary: thirty days after the snapshot was captured."""
-        return format_timestamp(add_days(parse_timestamp(self.captured_at), RETENTION_DAYS))
+        captured = or_raise(parse_timestamp(self.captured_at))
+        return or_raise(format_timestamp(add_days(captured, RETENTION_DAYS)))
 
 
 def canonical_snapshot_bytes(snapshot: CapabilitySnapshot) -> bytes:
     """The bytes the hash covers: every property except the hash, in the fixed order, compact and unescaped."""
-    return canonical_bytes({name: value for name, value in snapshot.to_document().items() if name != "snapshotHash"})
+    return or_raise(
+        canonical_bytes({name: value for name, value in snapshot.to_document().items() if name != "snapshotHash"})
+    )
 
 
 def snapshot_hash(snapshot: CapabilitySnapshot) -> str:
@@ -110,9 +114,9 @@ def _capability(value: object) -> Capability:
     item = cast(dict[str, Any], value)
     if frozenset(item) != _ITEM_PROPERTIES:
         raise fields.invalid("capabilities")
-    name = fields.member(item["name"], "capabilities", CAPABILITY_NAMES)
-    state = fields.member(item["state"], "capabilities", CAPABILITY_STATES)
-    source = fields.member(item["source"], "capabilities", CAPABILITY_SOURCES)
+    name = or_raise(fields.member(item["name"], "capabilities", CAPABILITY_NAMES))
+    state = or_raise(fields.member(item["state"], "capabilities", CAPABILITY_STATES))
+    source = or_raise(fields.member(item["source"], "capabilities", CAPABILITY_SOURCES))
     if (state == "unknown") != (source == "unavailable"):
         raise fields.invalid("capabilities")
     return Capability(name, state, source)
@@ -142,12 +146,14 @@ def snapshot_from_document(document: Mapping[str, Any], *, now: datetime) -> Cap
             raise fields.invalid(name)
     values: dict[str, Any] = {
         "schemaVersion": _schema_version(document["schemaVersion"]),
-        "snapshotId": fields.matching(document["snapshotId"], "snapshotId", fields.UUID_V4),
-        "snapshotHash": fields.matching(document["snapshotHash"], "snapshotHash", fields.HASH),
-        "capturedAt": fields.timestamp(document["capturedAt"], "capturedAt", now),
-        "harness": fields.matching(document["harness"], "harness", fields.HARNESS),
-        "harnessVersion": fields.optional(document["harnessVersion"], "harnessVersion", fields.HARNESS_VERSION),
-        "installationId": fields.matching(document["installationId"], "installationId", fields.UUID_V4),
+        "snapshotId": or_raise(fields.matching(document["snapshotId"], "snapshotId", fields.UUID_V4)),
+        "snapshotHash": or_raise(fields.matching(document["snapshotHash"], "snapshotHash", fields.HASH)),
+        "capturedAt": or_raise(fields.timestamp(document["capturedAt"], "capturedAt", now)),
+        "harness": or_raise(fields.matching(document["harness"], "harness", fields.HARNESS)),
+        "harnessVersion": or_raise(
+            fields.optional(document["harnessVersion"], "harnessVersion", fields.HARNESS_VERSION)
+        ),
+        "installationId": or_raise(fields.matching(document["installationId"], "installationId", fields.UUID_V4)),
         "capabilities": _capabilities(document["capabilities"]),
     }
     snapshot = CapabilitySnapshot(**{attribute: values[name] for name, attribute in DOCUMENT_FIELDS})

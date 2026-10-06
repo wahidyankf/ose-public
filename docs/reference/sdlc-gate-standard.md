@@ -32,7 +32,8 @@ list` does not filter by surface. Run a declared surface with `./rhino gate run 
 The supported repository-level checks include `./rhino repo-config validate`, `./rhino gate
 validate`, `./rhino harness adapters generate`, `./rhino harness adapters validate`, `./rhino env
 validate`, `./rhino governance vendor validate`, `./rhino governance word-budget validate`, and
-`./rhino md internal-link validate`; the last two have no declared gate and run on demand.
+`./rhino md internal-link validate`. Word-budget validation has no declared gate and runs on demand; internal-link
+validation is the pull-request gate `md-internal-link`, beside `md-readme-index`.
 Generated adapters are routes to canonical `AGENTS.md`,
 `.agents/agents/`, and `.agents/skills/`; never hand-edit a generated adapter.
 
@@ -84,7 +85,8 @@ One composition rule, one formatter verification rule, and one exclusion govern 
 
 1. **The pull-request surface holds every local gate.** `repo-config.yml` declares
    `gates.composition.pull-request.relation: at-least`, and `./rhino gate validate` fails a local gate
-   that the pull-request surface lacks; today the surface also adds `md-mermaid-repository`. Inspect
+   that the pull-request surface lacks; today the surface also adds `md-mermaid-repository`,
+   `md-internal-link`, and `md-readme-index`. Inspect
    the sets with `./rhino gate list --output json`.
 
 2. **Every formatter mutation has one CI verifier.** `format-staged` declares both modes: locally it
@@ -158,8 +160,9 @@ gates, in registry order, stopping at the first failure:
 
 Pre-push runs no `test:quick`, no Markdown lint, and none of `md internal-link validate`,
 `governance vendor validate`, `harness adapters validate`, or `governance word-budget validate`.
-Vendor and adapter validation run at pre-commit and on the pull-request surface. Word-budget and
-internal-link validation have no declared gate: run them on demand.
+Vendor and adapter validation run at pre-commit and on the pull-request surface. Internal-link and
+README-index validation run only on the pull-request surface; word-budget validation has no declared gate: run it on
+demand.
 
 Project BDD coverage runs inside `test:quick` through static targets:
 
@@ -168,19 +171,20 @@ Project BDD coverage runs inside `test:quick` through static targets:
 | `test:coverage:<layer>`   | Exactly-one implementation or valid higher-layer exemption per expanded scenario | Each applicable adapter |
 | `test:coverage:behaviour` | Recursive corpus, explicit When/Then, bindings, adapters, and exemption syntax   | Every owner/E2E project |
 
-Repeated primary keywords are valid for one continuous journey. No gate resolves links under
-`specs/**.md`; run `./rhino md internal-link validate` on demand.
+Repeated primary keywords are valid for one continuous journey. Link targets under `specs/**.md`
+are checked by the pull-request gate `md-internal-link`; run `./rhino md internal-link validate` to check them before
+pushing.
 
 ### Stage 4: PR Quality Gate
 
 `pr-quality-gate.yml`. Language jobs run only for languages detected among the affected projects.
 
-| Job                                                        | Exact command(s) CI runs                                                                                                                                                                                                                      | Scope             |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| detect                                                     | `npx nx show projects --affected`, then each project's tags — derives which language jobs run. Runs no test.                                                                                                                                  | other             |
-| repository-policy                                          | `./rhino gate run --surface pull-request --base <sha> --head <sha>` — the whole `pull-request` surface: every local gate (with `format-staged` verifying clean), the commit-message and range screens, `md-mermaid-repository`, and the rest. | other             |
-| language job (TypeScript, .NET, Flutter, Java, Go, Python) | `nx affected -t typecheck,lint,test:quick` (plus `compat:min-version` where declared) — types/lint, Unit runtime, and applicable static coverage; no Integration/E2E runtime                                                                  | affected projects |
-| quality-gate                                               | Sentinel join — `needs: [repository-policy, typescript, dotnet, flutter, java, go, python]`; fails if any needed job failed. Runs no other command.                                                                                           | other             |
+| Job                                                        | Exact command(s) CI runs                                                                                                                                                                                                                                                             | Scope             |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| detect                                                     | `npx nx show projects --affected`, then each project's tags — derives which language jobs run. Runs no test.                                                                                                                                                                         | other             |
+| repository-policy                                          | `./rhino gate run --surface pull-request --base <sha> --head <sha>` — the whole `pull-request` surface: every local gate (with `format-staged` verifying clean), the commit-message and range screens, `md-mermaid-repository`, `md-internal-link`, `md-readme-index`, and the rest. | other             |
+| language job (TypeScript, .NET, Flutter, Java, Go, Python) | `nx affected -t typecheck,lint,test:quick` (plus `compat:min-version` where declared) — types/lint, Unit runtime, and applicable static coverage; no Integration/E2E runtime                                                                                                         | affected projects |
+| quality-gate                                               | Sentinel join — `needs: [repository-policy, typescript, dotnet, flutter, java, go, python]`; fails if any needed job failed. Runs no other command.                                                                                                                                  | other             |
 
 All jobs except the join run in parallel. No `test:integration`/`test:e2e`: the language jobs run the
 fast set that no local hook runs.

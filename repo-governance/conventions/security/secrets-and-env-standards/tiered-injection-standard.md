@@ -6,7 +6,7 @@ when_to_use: Use when you need the entry point for how an app-runtime env key ge
 # Tiered Injection Standard
 
 The declaration standards (naming convention, template layout, annotation format, and the
-`env-contract:` drift guard) standardize how an app **declares** its env vars locally. This
+`environment` drift guard) standardize how an app **declares** its env vars locally. This
 document closes the remaining gap: how a declared key is **injected** into each running surface across
 GitHub Actions, Vercel, and the backend container path at each deploy stage.
 

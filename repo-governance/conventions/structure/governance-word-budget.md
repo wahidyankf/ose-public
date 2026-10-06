@@ -8,20 +8,19 @@ when_to_use: Use when a governance or instruction file may be approaching or ove
 Coding-agent harnesses auto-load certain instruction files before the first user message. Past
 harness limits, instructions are **silently truncated or ignored**. This convention sets
 per-surface word thresholds and the one sanctioned remediation (progressive disclosure). The metric
-is a raw whole-file `split_whitespace()` word count, not bytes, with no in-file exclusions.
+is a whole-file whitespace-separated word count (`count: whitespace-separated`), not bytes, with no in-file exclusions.
 
 ## Monitored Surfaces
 
 Configured in the `policies.governance.word-budget` section of `repo-config.yml`; enforced by
 `./rhino governance word-budget validate`.
 
-| Surface                                                             | Budget class  |
-| ------------------------------------------------------------------- | ------------- |
-| `repo-governance/**/*.md`                                           | Instruction   |
-| `AGENTS.md` / `CLAUDE.md`                                           | Instruction   |
-| Every harness binding directory in the `harness:` registry (`*.md`) | Instruction   |
-| `**/README.md`                                                      | README        |
-| Resolved tree (`CLAUDE.md` + imports)                               | Resolved tree |
+| Surface                                                                                                                             | Budget class |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `repo-governance/**/*.md`, `.agents/**/*.md`, `.codex/**/*.md`, `.opencode/**/*.md`                                                 | Instruction  |
+| `AGENTS.md`, `CLAUDE.md`                                                                                                            | Instruction  |
+| `README.md` under `repo-governance/`, `.agents/`, `.codex/`, `.opencode/`, `apps/`, `libs/`, `.github/`, and `infra/`, at any depth | README       |
+| `scripts/README.md`, `social-media-posts/README.md`, and the root `README.md`                                                       | README       |
 
 The live `target`, `warn`, and `fail` values exist only in `repo-config.yml`. A file at or below
 its target produces no finding; a file above target through the fail value warns; a file above the
@@ -33,21 +32,20 @@ file becomes blocking.
 
 `repo-governance/**/*.md` is the largest surface by file count.
 
-**A surface is its glob minus the registered exclude prefixes** — the `args.exclude` path
-prefixes on the gate are part of the published rule, not an implementation detail. `plans/`,
-`docs/`, and `specs/` are among them, so a `plans/` README does not produce a word-budget finding.
-That scan exclusion is not an exemption from minimal sufficiency: active plans remain focused and
-must be reconciled when their canonical specs, configuration, or rules change. The full list is in
-the Excluded Prefixes child below.
+**A surface is exactly its declared glob.** There is no exclude list: README globs are declared
+tree by tree, so a README under `plans/`, `docs/`, or `specs/` matches no surface and produces no
+word-budget finding. Being unmeasured is not an exemption from minimal sufficiency: active plans
+remain focused and must be reconciled when their canonical specs, configuration, or rules change.
+See the Unmeasured Paths child below.
 
 When a path matches more than one surface glob, the **last-declared** surface wins (select, then
 classify). This is a declaration-order invariant, not a glob-specificity comparison: a
-more-specific glob MUST be declared after any more-general surface it overlaps. `**/README.md` is
-the only overlapping surface today — every other surface's directory glob also matches its
-README.md files — which is why it is declared last. A reorder, or a new general glob inserted after
-it, silently misclassifies every README.md with no error signal;
-`application::governance::word_budget::tests::surfaces_declares_readme_glob_last` enforces the
-order against the live config. Update that test if a change legitimately needs a different one.
+more-specific glob MUST be declared after any more-general surface it overlaps. Each tree's
+`**/README.md` glob overlaps that tree's `**/*.md` glob, which is why the README globs are declared
+after every directory glob. A reorder, or a new general glob inserted after them, silently
+reclassifies those READMEs with no error signal: an 800-word `repo-governance/` README passes under
+the README class and fails once the general glob comes last. No check guards the order; review of
+any `word-budget` change does.
 
 ## Enforcement Points
 
@@ -69,4 +67,4 @@ Never adjust a threshold to paper over a bloated file or a specific change.
 ## Children
 
 - [Vision and Principles](./governance-word-budget/vision-and-principles.md) — vision alignment, principles implemented, and related conventions.
-- [Excluded Prefixes](./governance-word-budget/excluded-prefixes.md) — The path prefixes the word-budget gate excludes, and why. Use when checking whether a file is actually measured.
+- [Unmeasured Paths](./governance-word-budget/unmeasured-paths.md) — Which paths no word-budget surface measures, and why. Use when checking whether a file is actually measured.

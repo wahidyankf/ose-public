@@ -1,6 +1,6 @@
 ---
-description: The ./rhino env command family (backup, restore, init, validate), the backup-scope registry, and the env-contract section that drives drift validation.
-when_to_use: Use when running or configuring ./rhino env backup/restore/init/validate, or when adding a new surface to the env-contract registry.
+description: The ./rhino env command family (backup, restore, init, validate), and the `environment` group that drives drift validation.
+when_to_use: Use when running or configuring ./rhino env backup/restore/init/validate, or when adding a new surface to the `environment` group.
 ---
 
 # `./rhino env` Toolchain

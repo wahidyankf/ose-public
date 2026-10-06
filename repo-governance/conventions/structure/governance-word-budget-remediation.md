@@ -14,8 +14,9 @@ word ceiling (progressive disclosure applied to itself).
 `./rhino governance word-budget validate` runs the pinned RHINO executable against every surface
 declared under `policies.governance.word-budget` in `repo-config.yml`. It is not a declared gate on
 any lifecycle surface today (see `./rhino gate list`), so run it before committing an edit to a
-covered surface. The rules quality gate passes exact word-budget evidence to `rules-checker`; the
-checker does not consume or rederive word-budget findings there.
+covered surface. Because no declared gate runs it, the
+[Rules Quality Gate](../../workflows/quality/rules-quality-gate.md#deterministic-boundary) treats word budgets as
+judgeable: `rules-checker` runs the command and reports each breach it prints, never a hand count.
 
 The retired in-tree convention audit did not include a word-budget member; the RHINO governance
 word-budget validator now owns that check.
@@ -33,7 +34,7 @@ index carries order. See [Ordinal Filename Prefixes](./ordinal-filename-prefixes
 
 1. **Delete a rule** — removes coverage; rules must stay reachable.
 2. **Compress to dense prose** — stripping line breaks hurts both agent and human readability.
-3. **Split into another auto-loaded file** — moves words without shrinking the resolved-tree total,
+3. **Split into another auto-loaded file** — moves words without shrinking what the harness loads,
    and may exceed a per-file harness limit.
 4. **Point at an incomplete target** — a `See` link to a table or section that omits cases the
    inline text covered is rule deletion in disguise. Diff the target against ground truth before

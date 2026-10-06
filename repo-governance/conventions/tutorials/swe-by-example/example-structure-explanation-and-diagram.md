@@ -47,7 +47,7 @@ Go's `context` package provides a standardized way to pass cancellation signals,
 - Use color-blind friendly palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 - Include descriptive labels on nodes and edges
 - Keep diagrams focused on the specific concept (avoid overwhelming detail)
-- Use appropriate diagram type (graph LR/TD, sequenceDiagram, stateDiagram)
+- Use appropriate diagram type (graph LR/TD, sequenceDiagram, stateDiagram-v2)
 
 ## Part 3: Heavily Annotated Code (Density Standard)
 

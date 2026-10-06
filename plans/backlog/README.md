@@ -71,8 +71,8 @@ Three waves emptied this queue:
   12 Knowledge Capture triage had filed straight into this queue were relocated to `../ideas/`
   rather than retained under a plan-local exception, because Knowledge Capture may not write here —
   see [Instructions](#instructions) below. Two have since been deleted as moot after the in-tree
-  Rhino source was retired; the survivor is
-  [remove-stale-compat-min-version-stubs](../ideas/q1-urgent-important/remove-stale-compat-min-version-stubs.md).
+  Rhino source was retired; the survivor, `remove-stale-compat-min-version-stubs`, was delivered and deleted on
+  2026-10-06 (see the [ideas grooming log](../ideas/README.md#grooming-log)).
 
 The `ayokoding-learning-path-*` programme, which once filled this queue, has completed: plans `01`
 through `18` are archived in [`../done/`](../done/README.md). `rewrite-rhino-cli-to-fsharp` passed

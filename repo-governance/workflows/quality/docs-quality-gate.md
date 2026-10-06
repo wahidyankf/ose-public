@@ -33,14 +33,16 @@ A change subject covers the documents it touches and every document citing what 
 
 The checker reports none of these properties. The entry and exit checks run their owners instead.
 
-| Property                     | Owned by                 | This repository runs            |
-| ---------------------------- | ------------------------ | ------------------------------- |
-| Markdown formatting and lint | the formatter and linter | `format-staged`, `markdownlint` |
-| Front matter                 | the metadata validator   | `md-frontmatter`                |
-| Heading hierarchy            | the heading validator    | `md-heading-hierarchy`          |
+| Property                                    | Owned by                   | This repository runs            |
+| ------------------------------------------- | -------------------------- | ------------------------------- |
+| Markdown formatting and lint                | the formatter and linter   | `format-staged`, `markdownlint` |
+| Front matter                                | the metadata validator     | `md-frontmatter`                |
+| Heading hierarchy                           | the heading validator      | `md-heading-hierarchy`          |
+| Internal link targets                       | the link validator         | `md-internal-link`              |
+| README index entries for every direct child | the README-index validator | `md-readme-index`               |
 
-A property no tool of its own owns leaves the table and becomes judgeable. No declared gate here runs the internal-link
-or word-budget validator, so links, anchors, and word budgets are judgeable.
+A property no tool of its own owns leaves the table and becomes judgeable. No declared gate validates link anchors or
+word budgets, so anchors and word budgets are judgeable.
 
 ## Cycle
 

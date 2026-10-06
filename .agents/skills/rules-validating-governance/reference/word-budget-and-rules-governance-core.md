@@ -8,10 +8,10 @@ surface runs (it is not a declared gate; see `./rhino gate list`), so it runs on
 live only in the `policies.governance.word-budget` section of `repo-config.yml` — never restate them here,
 since a second copy drifts from config and produces contradictory verdicts.
 
-Under `rules-quality-gate`, word counting is delegated by exact gate ID. Record evidence in the
-lifecycle ledger; if it is missing/stale, mark `pending` and do not count words. Continue only
-qualitative concerns a mechanical gate cannot measure (needless restatement, duplicate reachable
-content, or all-at-once complexity). Standalone invocation retains its configured fallback.
+Under `rules-quality-gate`, word budgets are judgeable because no declared gate runs the validator: run
+`./rhino governance word-budget validate` and report each breach it prints, never a hand count. Add only
+qualitative concerns the command cannot measure (needless restatement, duplicate reachable content, or
+all-at-once complexity).
 
 **Remediation guidance**: the only sanctioned fix is progressive disclosure (inline content →
 one-line summary + `See` link) — call out forbidden anti-fixes (deleting rules, dense compression,

@@ -42,7 +42,7 @@ Checks that fail one or both criteria stay outside staged-path gates:
 
 | Check                             | Fails because                                                                                           | Placement                                      |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| `md internal-link validate`       | Not per-file isolated — adding, deleting, or renaming any `.md` file can break links in untouched files | Repo-wide `./rhino` command (no declared gate) |
+| `md internal-link validate`       | Not per-file isolated — adding, deleting, or renaming any `.md` file can break links in untouched files | Pull-request gate `md-internal-link` (no hook) |
 | `harness adapters generate`       | Not file-type-based — regenerates every adapter from the canonical `.agents/` source                    | Explicit `./rhino` transaction (no gate)       |
 | `test:quick`, `typecheck`, `lint` | Not file-type-based — project-scoped compile / test                                                     | Nx target (PR quality gate language jobs)      |
 

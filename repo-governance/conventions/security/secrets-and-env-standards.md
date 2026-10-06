@@ -1,5 +1,5 @@
 ---
-description: "The authoritative hub for how this repository handles secrets and environment variables — naming convention, layout, annotation format, startup validation, tooling (./rhino env family), tiered injection standard (a hand-maintained injection matrix), storage tiers, and the env-contract drift guard."
+description: "The authoritative hub for how this repository handles secrets and environment variables — naming convention, layout, annotation format, startup validation, tooling (./rhino env family), tiered injection standard (a hand-maintained injection matrix), storage tiers, and the `environment` drift guard."
 when_to_use: Use when you need any rule about handling secrets or environment variables in this repository — naming, storage, injection, or agent access.
 ---
 
@@ -21,7 +21,7 @@ environment variables. The three prior docs that covered overlapping ground now 
 - [Layout Standard — One Template per App](./secrets-and-env-standards/layout-standard-one-template-per-app.md) — Where env templates live
 - [.env.example Annotation Format](./secrets-and-env-standards/env-example-annotation-format.md) — The required comment-block format
 - [Startup Validation](./secrets-and-env-standards/startup-validation.md) — Rust and TypeScript startup/build validation
-- [`./rhino env` Toolchain](./secrets-and-env-standards/Rhino-env-toolchain.md) — The backup/restore/init/validate commands
+- [`./rhino env` Toolchain](./secrets-and-env-standards/rhino-env-toolchain.md) — The backup/restore/init/validate commands
 - [Tiered Injection Standard](./secrets-and-env-standards/tiered-injection-standard.md) — How a key is injected — source of truth
 - [Variable Classes with Injection Homes](./secrets-and-env-standards/variable-classes-with-injection-homes.md) — The four variable classes
 - [Injection Matrix](./secrets-and-env-standards/injection-matrix.md) — Hand-maintained app-type × stage × platform mapping
@@ -42,10 +42,9 @@ environment variables. The three prior docs that covered overlapping ground now 
 - [`docs/explanation/standardize-secrets-and-env-parity-decisions.md`](../../../docs/explanation/standardize-secrets-and-env-parity-decisions.md) — historical decision log
 - [`repo-config.yml`](../../../repo-config.yml) — unified config hub (its `environment` group drives `./rhino env validate`)
 
-## IaC Forward Scaffold
+## IaC Surfaces
 
-Terraform and Ansible surfaces are documented in the `env-contract:` section of `repo-config.yml`
-as **commented forward-scaffold** entries — syntactically present but inactive. Uncomment and fill
-in `root` when IaC surfaces are added
-to the repository. This prevents the drift guard from producing false findings before IaC exists while
-ensuring the pattern is immediately available when it does.
+The `environment` group in `repo-config.yml` declares no Terraform or Ansible surface, and holds no
+commented scaffold for one. When IaC that reads environment variables is added, declare its
+`.env.example`, contract keys, and detectors in that group exactly as an app does, so
+`./rhino env validate` covers it from the first commit.

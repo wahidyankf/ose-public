@@ -6,7 +6,8 @@ services:
       POSTGRES_USER: ose_app
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ose_app}
     ports:
-      - "5432:5432"
+      # Host 5437, not the stock 5432 a developer-run PostgreSQL holds (docs/reference/web-sites.md).
+      - "5437:5432"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "ose_app", "-d", "ose_app_dev"]
       interval: 10s

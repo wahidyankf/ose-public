@@ -42,8 +42,10 @@ The checker reports none of these properties. The entry and exit checks run thei
 | Style-guide front matter          | the metadata validator   | `md-frontmatter`                |
 | Heading hierarchy in style guides | the heading validator    | `md-heading-hierarchy`          |
 | File names                        | the file-name validator  | `md-naming`                     |
+| Internal link targets             | the link validator       | `md-internal-link`              |
 
-No declared gate runs the internal-link validator here, so whether a cross-reference resolves is judgeable.
+The link validator checks that a cross-reference's target file exists, not its `#anchor`, so whether an anchor resolves
+is judgeable.
 
 ## Cycle
 

@@ -295,7 +295,7 @@ git commit -m "feat: add agent, update docs, fix dates"  # Too many changes in o
 
 ### Running Tests
 
-**Fast quality gate for affected projects** (recommended for pre-push):
+**Fast quality gate for affected projects** (recommended before pushing; the PR quality gate runs it):
 
 ```bash
 npm exec nx -- affected -t test:quick
@@ -424,7 +424,7 @@ npm run build
 # Build affected projects
 npm exec nx -- affected -t build
 
-# Run fast quality gate for affected projects (pre-push standard)
+# Run fast quality gate for affected projects (PR gate standard)
 npm exec nx -- affected -t test:quick
 
 # Run unit tests for a specific project

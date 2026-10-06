@@ -1,27 +1,26 @@
 ---
-description: The the retired spec validation surface validation commands and their default app selection
-when_to_use: Read this when running or configuring the retired spec validation surface validate-* commands.
+description: What mechanically validates a specs/ tree today (the behaviour-coverage target and on-demand link validation) and which structural properties stay review-owned
+when_to_use: Read this when deciding how to check a specs/ change mechanically.
 ---
 
-# Deterministic Validation (Rhino)
+# Deterministic Validation: What Exists and What Is Review-Owned
 
-The following `the retired spec validation surface` commands validate the directory structure mechanically:
+No declared gate and no pinned RHINO command validates a specs tree's layout. Two checks run
+mechanically:
 
-| Command                             | What it checks                                                             |
-| ----------------------------------- | -------------------------------------------------------------------------- |
-| `the declared spec-tree check`      | Top-level folders match the canonical five — no flat-root artifacts remain |
-| `the declared spec-count check`     | README count claims match actual `.feature` file counts                    |
-| `./rhino md internal-link validate` | Markdown link integrity within the spec tree                               |
-| `the declared adoption check`       | BDD/Contracts adoption gaps per surface profile                            |
+| Check                                         | What it checks                                                                        | How it runs                                              |
+| --------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `test:coverage:behaviour` (per owner project) | Gherkin corpus shape, scenario bindings, adapters, and exemption syntax; never layout | Through `test:quick`, in the PR workflow's language jobs |
+| `./rhino md internal-link validate`           | Markdown link integrity within the spec tree                                          | On demand; no declared gate                              |
 
-These commands run as part of the `specs-quality-gate` workflow deterministic-offload pass. See [Deterministic Offload](./pre-push-ci-llm-validation-deterministic-offload-and-related-documentation.md#deterministic-offload) in the next section.
+These properties have no deterministic check, so `specs-checker` judges them on request through the
+[Specs Quality Gate](../../../workflows/quality/specs-quality-gate.md):
 
-## Allowlist-driven default app selection
+- top-level folders match the canonical owner corpus, with no flat-root artifacts;
+- README count claims match actual `.feature` file counts; and
+- BDD/Contracts adoption gaps per surface profile.
 
-`validate-adoption`, `validate-tree`, `validate-counts`, and `validate-links` all accept the same three calling shapes:
-
-- Positional `<folder>` or `<app>` — single-target legacy behaviour preserved.
-- `--apps <csv>` — multi-app validation across an explicit list.
-- No positional, no flag — validates nothing; `specs structure validate` is the wired entry point and discovers every directory under `specs/apps/`.
-
-Pre-push and CI surfaces invoke `specs structure validate` without arguments, so a new app is picked up by folder discovery alone.
+The static coverage detail lives in
+[Deterministic Validation: Exact Bindings, Owner Corpora, and Drift Detection](./deterministic-validation-orphan-checks-combined-scopes-relationship-symmetry-drift.md),
+and the split between deterministic and LLM checks in
+[Deterministic Offload](./pre-push-ci-llm-validation-deterministic-offload-and-related-documentation.md#deterministic-offload).

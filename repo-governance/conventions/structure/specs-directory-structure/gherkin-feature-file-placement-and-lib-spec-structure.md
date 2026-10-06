@@ -52,7 +52,7 @@ specs/apps/crane/cli/behaviours/media/figure-check.feature
 specs/apps/crane/cli/behaviours/pdf/pdf-commands.feature
 ```
 
-A `behaviours/` tree is recursive, so `the declared spec-tree check` accepts a feature file at its root; the domain subdirectory is what keeps a growing surface navigable, not what the validator counts.
+A `behaviours/` tree is recursive, so `test:coverage:behaviour` accepts a feature file at its root; the domain subdirectory is what keeps a growing surface navigable, not what the validator counts.
 
 ## Lib Spec Structure
 

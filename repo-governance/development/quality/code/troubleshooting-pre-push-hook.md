@@ -7,38 +7,30 @@ when_to_use: "Use when pre-push is slow or a check fails."
 
 ## Pre-push Hook Times Out or Runs Slowly
 
-**Symptom**: Pre-push hook takes too long or times out on large changesets
+**Symptom**: Pre-push hook takes too long or times out on a large push
 
-**Solution** — warm the Nx cache before pushing, using the same registry-declared gate set
-`.husky/pre-push` invokes:
+**Solution** — the hook runs only the registry-declared `pre-push` gates (today the public-safety tree
+and range screens, the leak-review tests, and environment validation) and no Nx target, so no test
+cache is involved. The range screen reads every outgoing commit, so a push of many commits costs
+more. Run the same gate set directly to see which gate is slow:
 
 ```bash
-# Run the full pre-push gate set first (this warms the cache)
 ./rhino gate run --surface pre-push
-
-# Now push — the hook replays from cache (near-instant)
-git push
 ```
 
-**Why this works**: `test:quick` (the affected-projects-scoped gate in the pre-push set) is a
-cacheable Nx target (`cache: true` in `nx.json`). Running it manually stores results in the local
-Nx cache. When the pre-push hook runs the same target, Nx replays from cache instead of
-re-executing — making the hook near-instant regardless of how many projects are affected. The
-`.claude/hooks/warm-cache-before-push.sh` coding-agent hook automates this same warm-up on every
-`git push` invocation, deriving its target list from `gate list`
-rather than a hardcoded list.
+Push fewer commits at once if the range screen is the slow gate.
 
-## Tests Fail on Pre-push
+## A Gate Fails on Pre-push
 
-**Symptom**: Pre-push hook blocks push due to test failures
+**Symptom**: Pre-push hook blocks the push with a failing gate
 
 **Solutions**:
 
-1. Check which tests failed in the error output
-2. Run tests locally: `nx affected -t test:quick`
-3. Fix failing tests
-4. Commit fixes and push again
-5. If tests pass locally but fail in hook, ensure all changes are committed
+1. Check which gate failed — Rhino prints each gate id in its output
+2. Re-run the set locally: `./rhino gate run --surface pre-push`
+3. Fix the reported finding, commit the fix, and push again
+4. A test failure does not surface here: no hook runs `test:quick`. Reproduce it with the affected
+   `test:quick` run, as the PR quality gate would run it
 
 ## Config Validation Fails on Pre-commit
 

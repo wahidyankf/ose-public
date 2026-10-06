@@ -12,8 +12,12 @@ removed. That index must link every sibling `.md` file and every subdirectory, e
 frontmatter `description` and, if present, `when_to_use`. An annotation repeating its surroundings
 adds nothing.
 
-A `<dir-name>.md` parent stays audited as a second index over the same contents; linking it
-satisfies the subdirectory requirement — no index carries two links to one target.
+A `<dir-name>.md` parent stays audited as a second index over the same contents. Linking it does
+not satisfy the subdirectory requirement, so the README also links the directory itself, once.
+
+Link every subdirectory as `./<dir>/`. The validator counts a subdirectory as linked only by that
+directory link: `./<dir>/README.md` and `./<dir>.md` do not count. On GitHub, `./<dir>/` opens the
+directory listing with its `README.md` rendered beneath it.
 
 ## What the Validator Checks
 
@@ -21,7 +25,7 @@ satisfies the subdirectory requirement — no index carries two links to one tar
 `policies.markdown.readme-index.trees` in `repo-config.yml`. Each entry names a tree by `path` and may
 add `require-direct-children`, `annotations`, and `exclusions`. It exits `0` clean, `1` on findings,
 and `2` on an unusable declaration. It is not a `gates:` entry, so no hook or CI job runs it: run it
-after adding, moving, or deleting a README.
+after adding, moving, or deleting a README or a direct child of a declared tree.
 
 | Finding kind                 | Raised when                                           | Armed for a tree when                   |
 | ---------------------------- | ----------------------------------------------------- | --------------------------------------- |
@@ -29,10 +33,13 @@ after adding, moving, or deleting a README.
 | `missing-readme-index-child` | the README omits a direct child file or subdirectory  | it sets `require-direct-children: true` |
 | `missing-readme-annotation`  | a declared `annotations` file or its `text` is absent | it lists `annotations`                  |
 
-Every declared tree sets only `path` today, so the validator proves only that each tree's root
-`README.md` exists. Linking every child, annotating each link, and carrying a README in every
-directory below a tree root are authoring obligations it does not check yet. A tree adopts a check
-by adding its option to the entry, which is a configuration decision, not a wording change.
+Every declared tree sets `require-direct-children: true`, so the validator enforces that each
+tree's root `README.md` exists and links every direct child file and subdirectory. It checks that
+root only: carrying a README in every directory below it, and annotating each link, remain authoring
+obligations checked by review. No tree lists `annotations` by decision: that option checks that a
+declared file carries declared `text`, not that each link is annotated, so enabling it would imply
+coverage it does not give. A tree adopts or drops a check by editing its option on the entry, which
+is a configuration decision, not a wording change.
 
 ## Declared Trees
 
@@ -59,5 +66,5 @@ the rationale as a YAML comment.
 - [Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md) —
   which trees need an index, and which checks run on them, is declared rather than inferred.
 - [Automation Over Manual](../../principles/software-engineering/automation-over-manual.md) — the
-  validator detects a missing index and, where a tree declares them, omitted children and
-  missing annotations.
+  validator detects a missing index and, on every declared tree, an omitted child; where a tree
+  declares `annotations`, a missing annotation file or text.

@@ -722,7 +722,7 @@ class ZakatCalculator {
 # Build specific library
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ts-zakat-calculator
 
-# Run fast quality gate (pre-push standard)
+# Run fast quality gate (PR gate standard)
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-zakat-calculator:test:quick
 
 # Run isolated unit tests

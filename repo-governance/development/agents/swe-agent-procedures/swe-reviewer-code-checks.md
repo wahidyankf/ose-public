@@ -25,7 +25,8 @@ Moved verbatim from [swe-reviewer](../../../../.agents/agents/swe-reviewer.md), 
 3. **Stack rules** from the stacks the project lists, read from the repository's local copies as
    [Stack Packs](../../../conventions/structure/stack-packs.md) resolves them. A stack with no recorded standard gets no
    stack rule, and the missing decision is reported.
-4. **Test design.** Each test sits at its layer, per the test-boundary standard below; doubles follow
+4. **Test design.** Each test sits at its layer, per the [layer boundaries](../../behaviour-driven-development.md) and the
+   [Integration loopback boundary](../../infra/nx-targets/mandatory-targets-integration-tests.md#the-loopback-boundary); doubles follow
    [Test Doubles](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/testing/test-doubles.md), data follows
    [Test Data Isolation](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/testing/test-data-isolation.md), any git fixture follows
    [Git Fixture Isolation](../../quality/git-fixture-isolation.md), and a coverage number measures only what

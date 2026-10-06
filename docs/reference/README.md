@@ -18,14 +18,14 @@ platform, the Nx workspace, and the engineering systems that support an early pr
 
 - [Monorepo Structure](./monorepo-structure.md) — learn where applications, libraries, and shared
   repository assets live.
-- [System Architecture](./system-architecture/README.md) — see the current platform shape, its
+- [System Architecture](./system-architecture/) — see the current platform shape, its
   applications, components, deployment approach, and CI/CD model.
 - [Project Dependency Graph](./project-dependency-graph.md) — trace project dependencies and their
   related specifications.
 - [Nx Configuration](./nx-configuration.md) — understand workspace configuration, task caching, and
   build-system settings.
 - [Web Sites](./web-sites.md) — find every deployable app's domain, dev port, and production deploy
-  branch.
+  branch, and the stock service ports no app may claim.
 
 ## Build and verify with confidence
 
@@ -38,7 +38,7 @@ platform, the Nx workspace, and the engineering systems that support an early pr
 
 ## Security and agent infrastructure
 
-- [Security Reference](./security/README.md) — navigate security frameworks and compliance source
+- [Security Reference](./security/) — navigate security frameworks and compliance source
   material, including NIST SP 800-53 Rev. 5.
 - [Security Waivers and Functional Holds](./security-waivers.md) — consult the persistent register of
   approved dependency-security exceptions and functional holds.

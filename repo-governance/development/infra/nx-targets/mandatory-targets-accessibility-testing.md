@@ -7,8 +7,8 @@ when_to_use: Use when adding accessibility coverage to a new or existing UI proj
 
 Accessibility testing is compulsory for all UI-related projects. It operates at two levels:
 
-**Static a11y linting** (enforced via the `lint` target at all three gates: pre-push hook, PR
-quality gate, and scheduled Test CI workflows):
+**Static a11y linting** (enforced via the `lint` target at both gates: the PR quality gate and
+scheduled Test CI workflows):
 
 | Project                                                                               | Static a11y tool           |
 | ------------------------------------------------------------------------------------- | -------------------------- |

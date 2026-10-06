@@ -11,8 +11,8 @@ what it does have is a proven request-to-response path that later LMS work is ad
 
 - [Architecture](./architecture.md) — the current as-built system: its context, the process it
   deploys, its components, and the constraints that bind them.
-- [Behaviours](./behaviours/README.md) — the Gherkin corpus, grouped by domain.
-- [Contracts](./contracts/README.md) — the OpenAPI 3.1 specification the service generates its
+- [Behaviours](./behaviours/) — the Gherkin corpus, grouped by domain.
+- [Contracts](./contracts/) — the OpenAPI 3.1 specification the service generates its
   response models from.
 
 ## Related

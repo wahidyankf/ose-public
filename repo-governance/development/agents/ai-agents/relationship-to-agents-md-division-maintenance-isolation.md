@@ -36,8 +36,9 @@ when_to_use: Use when deciding whether new guidance belongs in AGENTS.md or in a
 
 **Size Limits:** governed solely by the
 [Governance Word-Budget Convention](../../../conventions/structure/governance-word-budget.md).
-Thresholds live in `repo-config.yml` and are enforced deterministically at pre-push and in CI — no
-agent judges the size by eye, and no other document restates the numbers.
+Thresholds live in `repo-config.yml` and are checked deterministically by
+`./rhino governance word-budget validate`, run on demand — no agent judges the size by eye, and no
+other document restates the numbers.
 
 **Agent Responsibilities:**
 

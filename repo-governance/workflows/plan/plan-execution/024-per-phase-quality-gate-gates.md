@@ -14,9 +14,10 @@ After completing all items in a delivery phase, verify the phase's authored gate
 
    ```bash
    ./rhino gate run --surface pre-push
+   ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- affected -t test:quick
    ```
 
-   (the same registry-declared gate set `.husky/pre-push` invokes; includes `nx affected -t test:quick`)
+   (the first is the registry-declared gate set `.husky/pre-push` invokes, which runs no `test:quick`; the second runs affected `test:quick`)
 
 2. If the plan involves integration or e2e tests, also run:
 

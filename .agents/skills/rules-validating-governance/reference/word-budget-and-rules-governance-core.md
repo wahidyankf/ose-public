@@ -3,8 +3,8 @@
 ## Step 6: Governance Word Budget — Delegated
 
 Word budgets for `AGENTS.md`, `CLAUDE.md`, and every other auto-loaded instruction surface are
-owned by the deterministic `./rhino governance word-budget validate` gate (wired at pre-push, CI,
-and as `governance-word-budget` in the `repo-governance audit` preflight, once armed). Thresholds
+owned by the deterministic `./rhino governance word-budget validate` command, which no lifecycle
+surface runs (it is not a declared gate; see `./rhino gate list`), so it runs on demand. Thresholds
 live only in the `policies.governance.word-budget` section of `repo-config.yml` — never restate them here,
 since a second copy drifts from config and produces contradictory verdicts.
 

@@ -338,7 +338,7 @@ Location: `apps/[app-name]/project.json` or `libs/[lib-name]/project.json`
 }
 ```
 
-**Target names follow [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md)**: Use `test:quick` for the mandatory pre-push gate, `test:unit` for isolated unit tests. Avoid generic `test` targets.
+**Target names follow [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md)**: Use `test:quick` for the mandatory fast quality gate, `test:unit` for isolated unit tests. Avoid generic `test` targets.
 
 **Fields**:
 

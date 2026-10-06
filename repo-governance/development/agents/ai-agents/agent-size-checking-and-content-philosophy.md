@@ -9,8 +9,9 @@ when_to_use: Use when the word-budget gate flags an agent, or when explaining wh
 
 Nobody counts by hand. The
 [Governance Word-Budget Convention](../../../conventions/structure/governance-word-budget.md)
-measures every agent definition deterministically at pre-push and in CI, so the only authoring
-obligation is to respond to what the gate reports.
+measures every agent definition deterministically through `./rhino governance word-budget validate`,
+which runs on demand rather than at a hook or in CI, so the only authoring obligation is to run it and
+respond to what it reports.
 
 **For all agent authors**:
 

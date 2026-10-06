@@ -10,7 +10,7 @@ a regulator document, load an internal policy, run a gap analysis, and read the 
 
 - [Architecture](./architecture.md) — the current as-built system: its context, the container it
   deploys, its bounded contexts, and the constraints that bind them.
-- [Behaviours](./behaviours/README.md) — the recursive Gherkin corpus, grouped by domain.
+- [Behaviours](./behaviours/) — the recursive Gherkin corpus, grouped by domain.
 
 ## Related
 

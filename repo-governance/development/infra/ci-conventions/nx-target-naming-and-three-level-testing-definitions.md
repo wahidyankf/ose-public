@@ -17,6 +17,6 @@ when_to_use: "Use when classifying a test or selecting its canonical target."
 Setup and assertions count when classifying a test. A Unit test may execute a shell script or
 harness plugin subject only under
 [Script-Subject Unit Proof](../../behaviour-driven-development/script-subject-unit-proof.md). Integration may own a loopback socket only
-when `repo-config.yml` allowlists the project; external network is always forbidden. E2E requires public-boundary observation, not merely permission to use
+where review accepts the project holding it; external network is always forbidden. E2E requires public-boundary observation, not merely permission to use
 network. See the [BDD standard](../../behaviour-driven-development.md) for full boundaries,
 applicability, and exemptions.

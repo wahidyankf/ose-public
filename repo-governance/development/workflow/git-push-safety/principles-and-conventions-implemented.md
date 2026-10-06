@@ -19,6 +19,6 @@ This practice respects the following core principles:
 
 This practice implements/respects the following conventions:
 
-- **[Code Quality Convention](../../quality/code.md)**: The pre-push hook runs `typecheck`, `lint`, and `test:quick` as mandatory quality gates. Using `--no-verify` bypasses these gates and must not be treated as a routine shortcut by agents or automation.
+- **[Code Quality Convention](../../quality/code.md)**: The pre-push hook runs the registry-declared public-safety and environment gates as mandatory quality gates. Using `--no-verify` bypasses these gates and must not be treated as a routine shortcut by agents or automation.
 
 - **[Commit Message Convention](../commit-messages.md)**: Conventional Commits format, checked by review, keeps history accurate. Force-pushing rewrites that history; only the user can decide when that trade-off is justified.

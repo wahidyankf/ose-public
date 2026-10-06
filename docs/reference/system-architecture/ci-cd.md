@@ -319,9 +319,9 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
    ```
 
    - Pre-commit hook runs:
-     - Formats code with Prettier
-     - Processes ayokoding-www content if affected
-     - Validates links
+     - Screens staged content for public safety
+     - Formats staged files (`format-staged`)
+     - Runs the declared file checks: configuration, Markdown, the emoji convention, and tool linters
    - Commit-msg hook runs the public-safety screen on the message (format is checked by review)
    - Commit created
 
@@ -336,8 +336,9 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
    ```
 
    - Pre-push hook runs (on any push target):
-     - Tests affected projects
-     - Lints markdown
+     - Screens the push for public safety (tree and outgoing commits)
+     - Runs the leak-review tests and validates the environment policy
+     - Runs no tests and no Markdown lint
 
 5. **Open a Pull Request** — the default path (`worktree-to-pr`); skip only under a declared direct-push mode:
    - GitHub Actions run the full quality gate on every PR event
@@ -363,20 +364,19 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
 ```mermaid
 graph TB
     accTitle: Quality Assurance Layers
-    accDescr: Code Changes leads to Prettier Auto-fix; Prettier Auto-fix leads to Content Processing Auto-fix; Content Processing Auto-fix leads to Link Validation Block; Link Validation Block leads to Tests Block; and 6 more links.
+    accDescr: Code Changes leads to Public Safety Block; Public Safety Block leads to Format Auto-fix; Format Auto-fix leads to Markdown Lint Block; Markdown Lint Block leads to PR Format Verify; and 5 more links.
     CODE[Code Changes]
 
     subgraph "Layer 1: Local Hooks"
-        L1_FORMAT[Prettier<br/>Auto-fix]
-        L1_CONTENT[Content Processing<br/>Auto-fix]
-        L1_LINKS[Link Validation<br/>Block]
-        L1_TEST[Tests<br/>Block]
+        L1_SAFE[Public Safety<br/>Block]
+        L1_FORMAT[Format<br/>Auto-fix]
         L1_MD[Markdown Lint<br/>Block]
     end
 
     subgraph "Layer 2: GitHub Actions"
-        L2_FORMAT[PR Format<br/>Auto-fix]
-        L2_LINKS[PR Links<br/>Block]
+        L2_FORMAT[PR Format<br/>Verify]
+        L2_POLICY[PR Gate Set<br/>Block]
+        L2_TEST[Affected Tests<br/>Block]
     end
 
     subgraph "Layer 3: Nx Caching"
@@ -386,16 +386,15 @@ graph TB
 
     DEPLOY[Deployment]
 
-    CODE --> L1_FORMAT
-    L1_FORMAT --> L1_CONTENT
-    L1_CONTENT --> L1_LINKS
-    L1_LINKS --> L1_TEST
-    L1_TEST --> L1_MD
+    CODE --> L1_SAFE
+    L1_SAFE --> L1_FORMAT
+    L1_FORMAT --> L1_MD
 
     L1_MD --> L2_FORMAT
-    L2_FORMAT --> L2_LINKS
+    L2_FORMAT --> L2_POLICY
+    L2_POLICY --> L2_TEST
 
-    L2_LINKS --> L3_BUILD
+    L2_TEST --> L3_BUILD
     L3_BUILD --> L3_CACHE
     L3_CACHE --> DEPLOY
 
@@ -405,8 +404,8 @@ graph TB
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     classDef brown fill:#CA9161,stroke:#000000,color:#000000
     class CODE blue
-    class L1_FORMAT,L1_CONTENT,DEPLOY teal
-    class L1_LINKS,L1_TEST,L1_MD,L2_LINKS orange
+    class L1_FORMAT,DEPLOY teal
+    class L1_SAFE,L1_MD,L2_POLICY,L2_TEST orange
     class L2_FORMAT purple
     class L3_BUILD,L3_CACHE brown
     classDef default fill:#FFFFFF,stroke:#000000,color:#000000
@@ -414,14 +413,16 @@ graph TB
 
 ### Quality Gate Categories
 
-**Auto-fix Gates** (Non-blocking with automatic fixes):
+**Auto-fix Gates** (apply fixes locally; the PR surface verifies and never fixes):
 
-- Prettier formatting
-- AyoKoding content processing
-- PR format workflow
+- Formatting (`format-staged`, pre-commit)
 
-**Blocking Gates** (Must pass to proceed):
+**Blocking Gates** (Must pass to proceed; the registry owns each surface, see `./rhino gate list`):
 
-- Link validation (pre-commit, PR)
-- Affected tests (pre-push)
-- Markdown linting (pre-push)
+- Public-safety screens (pre-commit, commit-msg, pre-push, PR)
+- Markdown linting and validators (pre-commit, PR)
+- Environment policy validation (pre-commit, pre-push, PR)
+- Format verification (PR)
+- Affected `typecheck`, `lint`, and `test:quick` (PR language jobs)
+
+Link validation (`./rhino md internal-link validate`) is on demand and has no declared gate.

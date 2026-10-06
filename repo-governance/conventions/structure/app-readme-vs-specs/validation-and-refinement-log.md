@@ -1,5 +1,5 @@
 ---
-description: The deterministic and LLM-semantic checks that enforce this convention, the forbidden-heading audit, and the history of refinements to the convention itself.
+description: The review-owned structural and semantic checks that enforce this convention, the forbidden-heading audit, and the history of refinements to the convention itself.
 when_to_use: Use when checking how this convention is enforced, or reviewing the history of changes to its rules.
 ---
 
@@ -7,16 +7,16 @@ when_to_use: Use when checking how this convention is enforced, or reviewing the
 
 ## Validation
 
-`rules-checker` and `specs-checker` enforce this convention. The `the retired spec validation surface` subcommands handle deterministic checks; `specs-checker` handles semantic and narrative checks.
+`rules-checker` and `specs-checker` enforce this convention by review. No declared gate or pinned RHINO command checks the structural rows below; `test:coverage:behaviour` checks only the Gherkin corpus, and `specs-checker` judges the rest per the [Specs Quality Gate](../../../workflows/quality/specs-quality-gate.md).
 
-### Deterministic checks (Rhino)
+### Structural checks (specs-checker, review-owned)
 
-| Check                                             | Command                         | Finding level |
-| ------------------------------------------------- | ------------------------------- | ------------- |
-| README line-count cap exceeded                    | `the declared spec-count check` | HIGH          |
-| Spec tree top-level folder names wrong            | `the declared spec-tree check`  | HIGH          |
-| README count claims differ from actual file count | `the declared spec-count check` | HIGH/MEDIUM   |
-| BDD/DDD/Contracts adoption gap                    | `the declared adoption check`   | HIGH/MEDIUM   |
+| Check                                             | Checked by      | Finding level |
+| ------------------------------------------------- | --------------- | ------------- |
+| README line-count cap exceeded                    | `specs-checker` | HIGH          |
+| Spec tree top-level folder names wrong            | `specs-checker` | HIGH          |
+| README count claims differ from actual file count | `specs-checker` | HIGH/MEDIUM   |
+| BDD/DDD/Contracts adoption gap                    | `specs-checker` | HIGH/MEDIUM   |
 
 ### LLM semantic checks (specs-checker)
 

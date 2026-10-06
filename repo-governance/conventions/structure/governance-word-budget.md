@@ -1,5 +1,5 @@
 ---
-description: Per-surface word thresholds for auto-loaded instruction files, enforced by Rhino and git hooks
+description: Per-surface word thresholds for auto-loaded instruction files, checked on demand by `./rhino governance word-budget validate`
 when_to_use: Use when a governance or instruction file may be approaching or over its word-count threshold.
 ---
 
@@ -51,8 +51,8 @@ order against the live config. Update that test if a change legitimately needs a
 
 ## Enforcement Points
 
-Runs at pre-push (changed-path gated), in CI, and as category 4 of `repo-governance audit`'s
-preflight. No pre-commit surface. See
+Not a declared gate on any lifecycle surface (see `./rhino gate list`): it runs on demand, so run
+it before committing an edit to a covered surface. See
 [Governance Word-Budget Remediation](../structure/governance-word-budget-remediation.md) for the enforcement
 breakdown, the progressive-disclosure fix, and forbidden anti-fixes (deleting a rule, dense
 compression, splitting into another auto-loaded file, or an incomplete `See`-link target).

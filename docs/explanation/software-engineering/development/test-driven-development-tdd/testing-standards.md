@@ -124,7 +124,7 @@ mod tests {
 - **Unit**: mandatory in-process production behaviour with filesystem, environment, process,
   network, clock, and randomness replaced by deterministic injected ports; a shell script or harness
   plugin subject follows [Script-Subject Unit Proof](../../../../../repo-governance/development/behaviour-driven-development/script-subject-unit-proof.md) instead.
-- **Integration**: at least one real isolated same-machine resource, optionally an allowlisted
+- **Integration**: at least one real isolated same-machine resource, optionally a review-accepted
   loopback socket the test owns, and zero external network. In-memory repositories and intercepted
   HTTP remain Unit proof.
 - **E2E**: a real public browser, HTTP/API, or published process boundary with isolated synthetic

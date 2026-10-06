@@ -21,7 +21,7 @@ when_to_use: Read this when adding a Gherkin feature file, onboarding a new app'
 3. Determine the surface profile (full-stack, web-only, CLI-only, multi-CLI)
 4. Create only the folders the project needs — see per-surface variant table
 5. Create `README.md` index files at each folder level
-6. Run `the declared spec-tree check` to verify the layout
+6. Verify the layout with a `specs-checker` pass; no deterministic check covers it
 
 ## Adding Specs for a New Lib
 

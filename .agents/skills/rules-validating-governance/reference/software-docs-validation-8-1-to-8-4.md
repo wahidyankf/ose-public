@@ -3,8 +3,8 @@
 **Deterministic-gate annotation**: file naming (8.3) and frontmatter shape and heading hierarchy
 (8.4) are enforced by the deterministic `./rhino md` gate (`naming`, `frontmatter`,
 `heading-hierarchy` validators) — not in the preflight envelope. README index integrity (8.7) is
-not: `readme-index` proves only that each declared tree's root README exists, so listing accuracy
-stays here. Re-evaluate content accuracy, principle-alignment judgement, cross-doc terminology
+not: `readme-index` checks only each declared tree's root README (it exists and links every direct
+child), so annotation accuracy and indexes below a tree root stay here. Re-evaluate content accuracy, principle-alignment judgement, cross-doc terminology
 consistency, and README index accuracy.
 
 **Scope**: `docs/explanation/software-engineering/` (~265 files, ~345k lines) — the authoritative

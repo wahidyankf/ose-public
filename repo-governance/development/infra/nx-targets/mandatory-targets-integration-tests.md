@@ -18,14 +18,15 @@ public origin. Network permission alone still does not make a test E2E — E2E i
 observing the public boundary.
 
 Loopback is denied by default and is not a licence a project grants itself. A project that needs it
-declares itself in the `integration-loopback:` allowlist of `repo-config.yml` with a reason. Every
-project outside that list keeps network-free Integration as a product invariant. The layer permits
-loopback; the repository still decides who holds it.
+gives its reason in the change that introduces the socket, and review accepts or refuses it. Every
+project without that acceptance keeps network-free Integration as a product invariant. The layer
+permits loopback; the repository still decides who holds it.
 
-**Enforcement**: the `test-boundary` gate (`./rhino governance test-boundary validate`,
-ci-group `governance`) scans each project's `tests/integration/` sources for network-API constructs
-and fails an unallowlisted use. It also fails an allowlist entry that names an unknown project or
-carries no reason, and warns on an entry no longer backed by any network use.
+**Enforcement**: unenforced by decision; checked by review. No declared gate or pinned RHINO command
+scans a project's `tests/integration/` sources for network constructs, and `repo-config.yml` declares
+no loopback allowlist, because whether a socket is test-owned and whether the project may hold it is a
+judgement no mechanical check settles. `swe-reviewer`'s test-design check judges each test against its
+layer, and `test:coverage:integration` proves only scenario coverage, never what a test touches.
 
 ## Target contract
 

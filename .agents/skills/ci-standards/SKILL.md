@@ -30,7 +30,7 @@ Unit replaces every OS-facing dependency through injection; a shell script or ha
 subject follows
 [Script-Subject Unit Proof](../../../repo-governance/development/behaviour-driven-development/script-subject-unit-proof.md)
 instead. Integration may use isolated local
-resources/processes plus an allowlisted loopback socket it owns, never an external network. E2E observes a real
+resources/processes plus a review-accepted loopback socket it owns, never an external network. E2E observes a real
 public browser, HTTP, or process boundary with synthetic isolated data.
 
 Runtime `test:*` targets execute tests. Static `test:coverage:*` targets never execute or depend on

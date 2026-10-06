@@ -12,7 +12,9 @@ account, or provider action.
 
 - [Architecture](./architecture.md) — the current as-built system: its context, the container it
   deploys, its components, and the constraints that bind them.
-- [Behaviours](./behaviours/README.md) — the recursive Gherkin corpus, grouped by domain.
+- [Architecture companions](./architecture/) — detail documents that each expand one section of the
+  architecture.
+- [Behaviours](./behaviours/) — the recursive Gherkin corpus, grouped by domain.
 
 ## Related
 

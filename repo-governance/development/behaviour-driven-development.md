@@ -69,8 +69,8 @@ symmetry.
   99% line coverage during `test:unit`. A qualifying shell script or harness plugin subject follows
   [Script-Subject Unit Proof](./behaviour-driven-development/script-subject-unit-proof.md) instead.
 - **Integration** may use isolated local files, embedded databases, environment state, child
-  processes, standard streams, and an
-  [allowlisted loopback socket](./infra/nx-targets/mandatory-targets-integration-tests.md) it owns.
+  processes, standard streams, and a
+  [review-accepted loopback socket](./infra/nx-targets/mandatory-targets-integration-tests.md) it owns.
   It must not reach an external network or a service it did not start. Isolate and clean resources
   deterministically.
 - **E2E** observes a real public browser, HTTP, or process boundary. It may use OS resources,

@@ -2,12 +2,13 @@
 
 ## Drift Detection
 
-Outside a lifecycle-filtered quality gate, validate listed `specs/apps/<app-family>/` folders with
-`the declared spec-structure check`. It aggregates adoption, tree, and app-tree counts. Use
-`the declared spec-count check` only for non-app trees that the aggregator cannot reach.
+No declared gate or pinned RHINO command checks a specs tree's layout, README counts, or adoption
+gaps; judge them from the listed folders (Categories 1, 2, 8, and 9), per the
+[Specs Quality Gate](../../../../repo-governance/workflows/quality/specs-quality-gate.md).
 Use `./rhino md internal-link validate` for missing Markdown link targets (it does not check
 `#fragment` anchors) and
-the project `test:coverage:behaviour` target for explicit When/Then and corpus structure.
+the project `test:coverage:behaviour` target for explicit When/Then and corpus structure (it checks
+the Gherkin corpus only, not the layout).
 
 In a quality-gate invocation, skip a command and any LLM substitute when the gate's Deterministic Boundary lists
 its property. No gate owns internal links, so the link command above always runs.
@@ -72,11 +73,11 @@ plan, not a stub.
 
 ## Validator Findings
 
-#### [HIGH] Structure gate — missing folder
+#### [HIGH] Internal link — missing target
 
-**App**: `wahidyankf`
-**Command**: `the declared spec-structure check`
-**Evidence**: `specs/apps/wahidyankf/containers: HIGH: missing required folder: containers`
-**Expected**: Add the canonical `containers/` folder with at least one spec .md file
+**Folder**: `specs/apps/wahidyankf`
+**Command**: `./rhino md internal-link validate`
+**Evidence**: The command's finding for the missing target, quoted verbatim
+**Expected**: Point the link at an existing file, or restore the target
 **Confidence**: HIGH
 ```

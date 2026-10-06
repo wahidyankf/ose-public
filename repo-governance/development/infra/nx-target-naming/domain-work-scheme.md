@@ -9,7 +9,8 @@ Governance, validation, lint, and format targets use `{domain}:{work}` where:
 
 - **domain**: lowercase noun naming the subject or scope of the check (e.g., `compat`, `deps`).
 - **work**: lowercase verb phrase naming the operation. Pure checks end in `-validation`.
-  Bare operations use a single verb (`check`).
+  Bare operations use a single verb (`check`, `audit`). The canonical `compat:min-version` is the one
+  established entry whose work part names the checked property instead of an operation.
 
 **Rule**: do not invent `validate:{thing}` prefixes. The old `validate:*` naming scheme was
 retired in P10 (2026-06-12); any `validate:` target in `project.json` or a caller script

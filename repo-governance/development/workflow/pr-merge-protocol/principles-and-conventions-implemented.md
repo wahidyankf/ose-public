@@ -26,9 +26,9 @@ This practice respects the following core principles:
 This practice implements/respects the following conventions:
 
 - **[Code Quality Convention](../../quality/code.md)**: The quality gates enforced by this protocol
-  are the same registry-defined gates enforced by pre-push. Affected `test:quick` includes Unit
-  runtime and every applicable static `test:coverage:*` validator. This convention extends the
-  same standard to the PR merge boundary.
+  are the registry-defined `pull-request` gates, a superset of the local hook gates, plus affected
+  `test:quick` in the language jobs, which includes Unit runtime and every applicable static
+  `test:coverage:*` validator. This convention extends the same standard to the PR merge boundary.
 
 - **[Trunk Based Development Convention](../trunk-based-development.md)**: `worktree-to-pr` -- a short-lived plan branch pushed to a PR -- is the repo-wide default TBD flavor. PRs also exist for `main-to-pr`, code review, and external contributions. This protocol governs the merge step for all of them.
 

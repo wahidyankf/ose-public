@@ -64,7 +64,7 @@ nx test  # Non-standard target name; runs ALL tests (slow!)
 **Rationale:**
 
 - Fast feedback (seconds to a few minutes)
-- `test:quick` is the canonical pre-push gate — every project must expose it
+- `test:quick` is the canonical fast quality gate (the PR workflow's language jobs run it) — every project must expose it
 - Using `nx affected -t` ensures consistent behaviour across all project types
 - Reduces friction for developers
 - Maintains quality gate

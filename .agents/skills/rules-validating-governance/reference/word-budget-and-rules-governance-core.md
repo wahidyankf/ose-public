@@ -3,15 +3,14 @@
 ## Step 6: Governance Word Budget — Delegated
 
 Word budgets for `AGENTS.md`, `CLAUDE.md`, and every other auto-loaded instruction surface are
-owned by the deterministic `./rhino governance word-budget validate` command, which no lifecycle
-surface runs (it is not a declared gate; see `./rhino gate list`), so it runs on demand. Thresholds
+owned by the deterministic `./rhino governance word-budget validate` command, declared as the
+`word-budget` gate on the `pull-request` surface (see `./rhino gate list`). Thresholds
 live only in the `policies.governance.word-budget` section of `repo-config.yml` — never restate them here,
 since a second copy drifts from config and produces contradictory verdicts.
 
-Under `rules-quality-gate`, word budgets are judgeable because no declared gate runs the validator: run
-`./rhino governance word-budget validate` and report each breach it prints, never a hand count. Add only
-qualitative concerns the command cannot measure (needless restatement, duplicate reachable content, or
-all-at-once complexity).
+Under `rules-quality-gate`, a budget breach is deterministic and belongs to the `word-budget` gate: never
+re-report it and never count by hand. Report only qualitative concerns the command cannot measure (needless
+restatement, duplicate reachable content, or all-at-once complexity).
 
 **Remediation guidance**: the only sanctioned fix is progressive disclosure (inline content →
 one-line summary + `See` link) — call out forbidden anti-fixes (deleting rules, dense compression,

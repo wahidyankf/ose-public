@@ -25,7 +25,7 @@ platform, the Nx workspace, and the engineering systems that support an early pr
 - [Nx Configuration](./nx-configuration.md) — understand workspace configuration, task caching, and
   build-system settings.
 - [Web Sites](./web-sites.md) — find every deployable app's domain, dev port, and production deploy
-  branch, and the stock service ports no app may claim.
+  branch, the host ports test stacks and tools bind, and the stock service ports no app may claim.
 
 ## Build and verify with confidence
 

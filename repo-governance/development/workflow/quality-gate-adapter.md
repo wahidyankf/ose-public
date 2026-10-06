@@ -40,8 +40,9 @@ every other gate runs on explicit request.
 `./rhino gate run --surface pre-commit` and `--surface pull-request` run the declared tools that each gate's
 Deterministic Boundary names: formatting, `markdownlint`, front matter, heading hierarchy, Markdown naming, both Mermaid
 validators, harness adapters, governance vendor independence, public safety, and this contract's own
-`governance-quality-gates` check. Affected Nx `build`, `test:quick`, and `lint` targets run under HIPPO. No gate here
-checks internal links or word budgets, so both stay judgeable.
+`governance-quality-gates` check. The pull-request surface alone adds internal links, README indexes, and word
+budgets (`md-internal-link`, `md-readme-index`, `word-budget`). Affected Nx `build`, `test:quick`, and `lint` targets
+run under HIPPO. No gate checks link anchors, so they stay judgeable.
 
 ## Local Skill Names
 

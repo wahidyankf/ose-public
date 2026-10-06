@@ -48,8 +48,8 @@ The checker reports none of these properties. The entry and exit checks run thei
 | Internal link targets        | the link validator       | `md-internal-link`              |
 
 A property no tool of its own owns leaves the table and becomes judgeable. No declared gate runs a plan structural
-validator here, so plan layout is judgeable. No declared gate validates link anchors or word budgets,
-so anchors and word budgets are judgeable.
+validator here, so plan layout is judgeable. No declared gate validates link anchors, so anchors are
+judgeable. Plans are not a declared word-budget surface.
 
 ## Cycle
 

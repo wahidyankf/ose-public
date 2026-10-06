@@ -1,6 +1,6 @@
 ---
 title: "Web Sites"
-description: Every deployable app in this repo — domain, dev port, and production deploy branch — and the stock service ports no app may claim.
+description: Every deployable app in this repo — domain, dev port, and production deploy branch — the host ports its test stacks and tools bind, and the stock service ports no app may claim.
 category: reference
 tags:
   - reference
@@ -103,6 +103,27 @@ Compose network the backend still reaches it at `postgres:5432`.
 above — OSE ID uses no NATS container — so it is recorded here instead: the E2E project's
 self-contained PostgreSQL container publishes on host port 5438 by default, overridable the same way
 as the app ports above.
+
+## Test and Tooling Ports
+
+Ports that a test suite or a developer tool binds on the host, outside the app and backend stack
+tables above:
+
+| Port | Owner                                     | Use                                                                                    |
+| ---- | ----------------------------------------- | -------------------------------------------------------------------------------------- |
+| 3190 | `ose-www-fe-e2e`, `ose-www-be-e2e`        | The `ose-www` server Playwright starts for the E2E suites                              |
+| 3501 | `ose-id-web-e2e`                          | The "backend unreachable" web shell                                                    |
+| 3502 | `ose-id-web-e2e`                          | The "backend reports unready" stack's web shell                                        |
+| 8502 | `ose-id-web-e2e`                          | The "backend reports unready" stack's backend                                          |
+| 5439 | `ose-id-web-e2e`                          | The "backend reports unready" stack's PostgreSQL (`BACKEND_UNREADY_STACK_PORTS`)       |
+| 3599 | `ose-id-web-e2e`                          | The runtime-mode guard probe; must stay free so a rejected start collides with nothing |
+| 8599 | `ose-id-web-e2e`, `ose-id-be` integration | Reserved and never bound: the unreachable backend origin and the refused-start port    |
+| 8403 | `ose-lms-be-e2e`                          | The suite's own backend, kept off `ose-lms-be`'s 8303                                  |
+| 6006 | `libs/web-ui`                             | Storybook (`storybook` target and its Playwright suite)                                |
+
+`ose-id-web-e2e`'s ready stack reuses `ose-id-be-e2e`'s ports (PostgreSQL 5438, backend 8501, web
+3500). A port listed here is claimed the same way as an app port: pick a new one listed nowhere on
+this page.
 
 Each app README at `apps/[app-name]/README.md` covers framework, deployment, E2E tests, and content
 details. Staging branches: `stag-organiclever-app-web`, `stag-ose-app-web`.

@@ -42,9 +42,9 @@ The checker reports none of these properties. The entry and exit checks run thei
 | Heading hierarchy                           | the heading validator      | `md-heading-hierarchy`          |
 | Internal link targets                       | the link validator         | `md-internal-link`              |
 | README index entries for every direct child | the README-index validator | `md-readme-index`               |
+| Word budgets of declared surfaces           | the word-budget validator  | `word-budget`                   |
 
-A property no tool of its own owns leaves the table and becomes judgeable. No declared gate validates link anchors or
-word budgets, so anchors and word budgets are judgeable.
+A property no tool of its own owns leaves the table and becomes judgeable, including link anchors.
 
 ## Cycle
 

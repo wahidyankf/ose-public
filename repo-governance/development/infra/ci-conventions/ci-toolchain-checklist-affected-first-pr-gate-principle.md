@@ -17,6 +17,7 @@ scoped to affected projects are an explicit exception and must be justified.
 | README indexes          | Gate `md-readme-index` (`./rhino md readme-index validate`)           | Adding or removing a directory changes an index file the change never touches                       |
 | Heading hierarchy       | Gate `md-heading-hierarchy` (`./rhino md heading-hierarchy validate`) | The gate scans the whole declared tree, a superset of the changed files                             |
 | Governance vendor audit | Gate `governance-vendor` (`./rhino governance vendor validate`)       | Scans the declared governance roots globally for vendor-specific content                            |
+| Governance word budgets | Gate `word-budget` (`./rhino governance word-budget validate`)        | A surface's glob or thresholds can change without the measured file changing                        |
 | Harness adapter parity  | Gate `harness-adapters` (`./rhino harness adapters validate`)         | Adapters come from one canonical source; partial sync leaves gaps                                   |
 | Env validation          | Gate `env-validate` (`./rhino env validate`)                          | All `.env.example` files are checked against the declared `env-contract:` policy                    |
 

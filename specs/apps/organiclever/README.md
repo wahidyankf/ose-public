@@ -7,11 +7,11 @@ Specifications for the OrganicLever product family. OrganicLever ships three log
 - [Product overview](./overview.md) — who OrganicLever is for, what ships today, and
   what is deferred.
 
-- [OrganicLever App Web](./app-web/README.md) — the specification corpus for
+- [OrganicLever App Web](./app-web/) — the specification corpus for
   `organiclever-app-web`, the local-first life journal: its architecture and its behaviours.
-- [OrganicLever BE](./be/README.md) — the specification corpus for `organiclever-be`, the F#/Giraffe
+- [OrganicLever BE](./be/) — the specification corpus for `organiclever-be`, the F#/Giraffe
   REST API: its architecture, its behaviours, and the OpenAPI contract both sides generate from.
-- [OrganicLever Web](./www/README.md) — the specification corpus for `organiclever-www`, the public
+- [OrganicLever Web](./www/) — the specification corpus for `organiclever-www`, the public
   marketing site: its architecture and its behaviours.
 
 ## Related

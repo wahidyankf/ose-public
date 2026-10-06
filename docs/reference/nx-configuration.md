@@ -392,7 +392,7 @@ Per-project:
 ```
 
 **Target names follow [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md)**:
-`test:quick` is the mandatory pre-push gate, `test:unit` runs isolated Unit tests with a 99% line
+`test:quick` is the mandatory fast quality gate, `test:unit` runs isolated Unit tests with a 99% line
 threshold configured in `vitest.config.ts`, and `test:coverage` aggregates the applicable static
 validators. Avoid generic `test` targets and no-op placeholders.
 
@@ -673,7 +673,7 @@ Nx wrapper scripts.
 }
 ```
 
-**Note**: Use `test:quick` (not `test`) as the standard pre-push quality gate target. See [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical target names.
+**Note**: Use `test:quick` (not `test`) as the standard fast quality gate target. See [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md) for canonical target names.
 
 #### `volta`
 

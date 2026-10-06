@@ -32,7 +32,7 @@ All code developed for the OSE Platform MUST follow the TDD methodology and stan
 
 - **Nx Monorepo**:
   `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run [project-name]:test:quick`
-  (pre-push gate),
+  (fast quality gate),
   `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run [project-name]:test:unit`
   (isolated unit tests), and
   `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:quick`
@@ -105,7 +105,7 @@ TDD standards in OSE Platform align with core software engineering principles:
 **[Three-Tier Testing Model](./three-tier-testing.md) — Authoritative OSE Platform definition of unit, integration, and E2E test tiers**
 
 - REQUIRED: Unit tests remain in-process and use no real filesystem, environment, process, network, clock, or random boundary; a shell script or harness plugin subject follows [Script-Subject Unit Proof](../../../../../repo-governance/development/behaviour-driven-development/script-subject-unit-proof.md) instead
-- REQUIRED: Integration tests may use deterministic local resources, processes, and an allowlisted loopback socket the test owns, but no external network
+- REQUIRED: Integration tests may use deterministic local resources, processes, and a review-accepted loopback socket the test owns, but no external network
 - REQUIRED: E2E tests exercise a public browser, HTTP/API, or process boundary with isolated synthetic data
 - REQUIRED: Separate unit, integration, and E2E tests by directory
 
@@ -117,7 +117,7 @@ TDD standards in OSE Platform align with core software engineering principles:
   filesystems, process environment, or subprocess streams only when the exercised boundary requires them
 - REQUIRED: Replace outbound network dependencies with in-process fakes; a loopback server the test did not start belongs to E2E
 - REQUIRED: Separate unit tests from integration tests
-- PROHIBITED: Networked databases, external HTTP/TCP/UDP, or an unallowlisted loopback socket in Integration tests
+- PROHIBITED: Networked databases, external HTTP/TCP/UDP, or a loopback socket review has not accepted in Integration tests
 
 ### 6. TDD with Domain-Driven Design
 
@@ -258,7 +258,7 @@ Before merging code, verify:
 - [ ] **Value objects immutable**: Tests verify immutability
 - [ ] **Domain events emitted**: Tests verify event emission on domain actions
 - [ ] **99% Unit line coverage minimum**: `test:unit` owns and enforces the native runtime threshold
-- [ ] **Integration boundary is real and owned**: Isolated local resources, plus loopback only when allowlisted; no external network
+- [ ] **Integration boundary is real and owned**: Isolated local resources, plus loopback only when review accepts it; no external network
 - [ ] **E2E enters through a public boundary**: Browser, HTTP/API, or process path with isolated synthetic data; no uncontrolled external service
 - [ ] **No flaky tests**: All tests pass consistently
 

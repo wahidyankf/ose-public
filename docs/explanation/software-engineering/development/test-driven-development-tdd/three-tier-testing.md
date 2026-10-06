@@ -74,7 +74,7 @@ owned on the same machine.
 embedded/local database reached without a socket. Setup and cleanup use unique synthetic resources.
 
 **Boundary rule**: No external network and no service the test did not start. A loopback socket the
-test starts and stops is Integration when `repo-config.yml` allowlists the project. MSW, WireMock,
+test starts and stops is Integration when review accepts the project holding it. MSW, WireMock,
 mockito, and in-memory repositories are Unit doubles, not Integration proof.
 
 **Speed**: Seconds per test. Dozens run in under a minute.
@@ -131,7 +131,7 @@ testing
 | ------------- | ----------------------------- | --------------------------------------- | ------------------------------------ |
 | Boundary      | In-process behaviour          | Real isolated local resource            | Real public browser/API/process      |
 | Files/env     | Injected or in-memory         | Real and isolated                       | Through public subject as applicable |
-| Network       | None                          | Owned loopback when allowlisted         | Allowed when it is the public path   |
+| Network       | None                          | Owned loopback when accepted            | Allowed when it is the public path   |
 | Clock/random  | Fixed/injected                | Controlled and restored                 | Isolated test identity/data          |
 | Applicability | Mandatory for every scenario  | Only for a genuine local boundary       | Only for a genuine public boundary   |
 | Execution     | Every `test:quick`            | Manual impacted; scheduled complete     | Manual impacted; scheduled complete  |

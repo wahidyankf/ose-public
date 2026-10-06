@@ -12,7 +12,7 @@ on them. Consumers branch off it; the shared ground stays here.
 
 - [Product overview](./overview.md) — what the family is for and who it serves.
 
-- [Roots BE](./be/README.md) — the specification corpus for `roots-be`, the Sharia-compliance
+- [Roots BE](./be/) — the specification corpus for `roots-be`, the Sharia-compliance
   API: its architecture, its behaviours, and the OpenAPI contract its clients generate from.
 
 ## Related

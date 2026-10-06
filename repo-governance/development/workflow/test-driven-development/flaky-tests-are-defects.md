@@ -58,7 +58,7 @@ users will eventually hit.
 
 **Unenforced by decision.** No validator can distinguish a timeout raised to model real latency
 from one raised to outlast a race, and intent is not mechanically observable. The nearest
-mechanical support is the pre-push and CI gate set, which fails on a red test rather than
+mechanical support is the PR quality gate's `test:quick` jobs, which fail on a red test rather than
 tolerating one; the judgement about how it is made green stays with the author and reviewer. The
 antecedent check above is unenforced for the same reason: what changed outside Nx's declared inputs
 between two runs is a fact about the machine, which no repository-local check can reconstruct

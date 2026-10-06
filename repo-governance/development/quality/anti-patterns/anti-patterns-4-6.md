@@ -64,7 +64,7 @@ nx affected -t test:quick
 
 - Fast feedback encourages usage
 - Runs only relevant projects (Nx affected detection)
-- `test:quick` is the canonical pre-push gate — every project must expose it
+- `test:quick` is the canonical fast quality gate (the PR workflow's language jobs run it) — every project must expose it
 - Prevents hook bypass
 - Maintains quality gate
 

@@ -27,7 +27,7 @@ for the governing class, retry, and serialization rules.
 
 > **Standard target names**: All target names follow
 > [Nx Target Standards](../../repo-governance/development/infra/nx-targets.md). Use `test:quick` for
-> the pre-push gate, `test:unit` for isolated unit tests, `dev` for development servers, and `start`
+> the fast quality gate, `test:unit` for isolated unit tests, `dev` for development servers, and `start`
 > for production server mode. Avoid `nx test`, `nx serve`, and other non-standard names.
 
 ### Run a Single Project
@@ -36,7 +36,7 @@ for the governing class, retry, and serialization rules.
 # Build a specific project
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build [project-name]
 
-# Run the fast pre-push quality gate
+# Run the fast quality gate (the PR quality gate runs it too)
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [project-name]:test:quick
 
 # Run isolated unit tests

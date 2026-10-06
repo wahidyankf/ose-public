@@ -1,5 +1,5 @@
 ---
-description: How the pre-push hook and plan-checker enforce TDD, and the five kinds of change TDD does not apply to.
+description: How the PR quality gate and plan-checker enforce TDD, and the five kinds of change TDD does not apply to.
 when_to_use: Use when checking whether TDD's enforcement mechanism would catch a given gap, or whether a change qualifies for an exception.
 ---
 
@@ -7,7 +7,7 @@ when_to_use: Use when checking whether TDD's enforcement mechanism would catch a
 
 ## Enforcement
 
-The pre-push hook runs `test:quick` for affected projects before every push. A code change with
+The PR quality gate runs `test:quick` for affected projects on every pull request; no hook runs it. A code change with
 no accompanying implementation is caught by mandatory static Unit/adaptor coverage when it maps to
 Gherkin. The semantic review catches placeholder bindings that static coverage cannot. TDD order
 remains an intent-level rule; CI is a safety net, not its only enforcement mechanism.

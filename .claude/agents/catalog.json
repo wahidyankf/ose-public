@@ -420,7 +420,7 @@
     {
       "id": "skill/ci-standards",
       "path": ".agents/skills/ci-standards/SKILL.md",
-      "digest": "245dc5dd02e93e07b155effe3024687aefd39724e09bae610a27166ebfebda99"
+      "digest": "1f173260015302e365e25625fd9323df740659a28f0290f9f17821c532b920f8"
     },
     {
       "id": "skill/developing-applications",
@@ -725,7 +725,7 @@
     {
       "id": "skill/specs-validating-structure",
       "path": ".agents/skills/specs-validating-structure/SKILL.md",
-      "digest": "e043cae23d9605ee32787dc6da9b71fb169ef2d377b079249717869552a448b7"
+      "digest": "d3bafa67b3846b0e8aabbe0ba02d8390e4fc169ff24614bd6d96070110d05dab"
     },
     {
       "id": "skill/tooling-nx",

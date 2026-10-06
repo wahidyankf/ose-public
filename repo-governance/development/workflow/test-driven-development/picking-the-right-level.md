@@ -9,8 +9,8 @@ Every observable behaviour begins with a failing Unit proof. Add failing Integra
 bindings whenever the project's applicable boundaries can express the scenario:
 
 - Unit isolates the production subject through injected dependencies.
-- Integration proves owned local files, databases, processes, environment state, streams, or an
-  allowlisted loopback socket the test starts and stops, with no external network reach.
+- Integration proves owned local files, databases, processes, environment state, streams, or a
+  review-accepted loopback socket the test starts and stops, with no external network reach.
 - E2E proves a public browser, HTTP, or process boundary.
 
 An inapplicable project-level adapter is omitted. A scenario-level higher-layer exemption is valid

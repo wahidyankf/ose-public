@@ -105,7 +105,8 @@ See [SDLC Gate Standard](../../../docs/reference/sdlc-gate-standard.md) for the 
 
 ## Conventions Implemented/Respected
 
-- [Specs Directory Structure](../../conventions/structure/specs-directory-structure.md) — its
-  structural and Gherkin checks are projected through this lifecycle.
-- [Governance Word Budget](../../conventions/structure/governance-word-budget.md) — its pre-push and
-  CI enforcement points are registry-owned.
+- [Specs Directory Structure](../../conventions/structure/specs-directory-structure.md) — no declared
+  gate runs a specs validator; structure is review-owned, and Gherkin coverage runs in the PR
+  workflow's `test:quick`.
+- [Governance Word Budget](../../conventions/structure/governance-word-budget.md) — its validator is
+  not a declared gate, so it runs on demand.

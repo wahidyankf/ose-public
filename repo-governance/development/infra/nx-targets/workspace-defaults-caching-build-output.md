@@ -61,7 +61,7 @@ when_to_use: Use when deciding whether a target should be cached, or where a pro
 | `build`            | Yes         | Declare `outputs` in `project.json` for cache restoration                                                |
 | `typecheck`        | Yes         | Pure analysis; safe to cache against source changes                                                      |
 | `lint`             | Yes         | Pure static analysis; safe to cache                                                                      |
-| `test:quick`       | Yes         | Cache hit skips redundant pre-push runs                                                                  |
+| `test:quick`       | Yes         | Cache hit skips redundant local and PR runs                                                              |
 | `test:unit`        | Yes         | Deterministic; safe to cache against source changes                                                      |
 | `test:coverage`    | Yes         | Aggregate of applicable static coverage validators                                                       |
 | `test:coverage:*`  | Yes         | Deterministic static test/corpus coverage; never executes runtime tests                                  |

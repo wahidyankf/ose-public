@@ -27,10 +27,9 @@ content must use the owning app/lib's durable domain language. A plan slug, plan
 delivery-unit name, or plan acceptance-criterion identifier in canonical Gherkin is **HIGH**: report
 the exact feature/scenario and require the plan metadata to move to its external traceability map.
 
-## Category 8: Spec Tree Shape Compliance [Deterministic via Rhino]
+## Category 8: Spec Tree Shape Compliance [LLM]
 
-Outside delegated quality-gate runs, shell out to `the declared spec-structure check`, parse
-JSONL. **HIGH**: top-level folder isn't
+No deterministic check exists; judge the tree shape from the listed folders. **HIGH**: top-level folder isn't
 one of the five canonical folders; a flat-root artifact exists (`be/`, `web/`, `cli/`, `c4/`,
 `contracts/` at app root); a BE/web/CLI feature file sits directly under
 `behaviour/<surface>/gherkin/` without a domain subdirectory (all surfaces require domain subdirs —
@@ -38,10 +37,10 @@ one of the five canonical folders; a flat-root artifact exists (`be/`, `web/`, `
 `gherkin/` without a package subdirectory. **MEDIUM**: domain subdirectory not kebab-case. **LOW**:
 domain subdirectory contains only one feature file named differently than the directory.
 
-## Category 9: Adoption Gaps (BDD/Contracts) [Deterministic via Rhino]
+## Category 9: Adoption Gaps (BDD/Contracts) [LLM]
 
-Outside delegated quality-gate runs, use `the declared spec-structure check` for structural
-adoption evidence, then apply narrative judgment per
+No deterministic check exists; find structural adoption evidence in the listed folders, then apply
+narrative judgment per
 [App README vs Specs Convention](../../../../repo-governance/conventions/structure/app-readme-vs-specs.md)
 Standard 6:
 

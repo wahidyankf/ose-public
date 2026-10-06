@@ -17,7 +17,7 @@ audits.
 **Related Development Standards:**
 
 - [CI Conventions](../ci-conventions.md) — Fast-gate test policy (no integration/e2e in PR gates),
-  workflow `environment:` scoping, and env-injection standards
+  workflow `environment:` scoping, and the e2e environment-variable standard
 - [Nx Target Standards](../nx-targets.md) — Consistent naming applied to Nx target identifiers
 - [Commit Message Convention](../../workflow/commit-messages.md) — Another naming consistency rule for
   developer-facing identifiers

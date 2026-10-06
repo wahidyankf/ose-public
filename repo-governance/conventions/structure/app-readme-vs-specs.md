@@ -26,7 +26,7 @@ Log, indexed below.
 - [Standard 6 and 7 — BDD/Contracts Adoption, and Cross-Link Integrity](./app-readme-vs-specs/standard-6-and-7.md) — adoption expectations by surface profile and app, plus README-to-specs navigation requirements.
 - [Examples: README Trim and PM-Readable Header](./app-readme-vs-specs/examples-readme-trim-and-pm-readable-header.md) — worked before/after examples of a README trim and a PM-readable spec header.
 - [Example: Spec Tree Migration](./app-readme-vs-specs/examples-spec-tree-migration.md) — a worked five-folder-to-corpus migration example and checklist.
-- [Validation and Refinement Log](./app-readme-vs-specs/validation-and-refinement-log.md) — deterministic and LLM-semantic enforcement checks, and the convention's change history.
+- [Validation and Refinement Log](./app-readme-vs-specs/validation-and-refinement-log.md) — review-owned structural and semantic enforcement checks, and the convention's change history.
 
 ## Related
 

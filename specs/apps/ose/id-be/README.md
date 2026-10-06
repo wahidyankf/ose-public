@@ -12,9 +12,11 @@ keep about itself.
 
 - [Architecture](./architecture.md) — the current as-built system: its context, the process it
   deploys, its components, and the constraints that bind them.
-- [Contracts](./contracts/README.md) — the OpenAPI source of truth for every HTTP method and path
+- [Architecture companions](./architecture/) — detail documents that each expand one section of the
+  architecture.
+- [Contracts](./contracts/) — the OpenAPI source of truth for every HTTP method and path
   this service publishes while identity stays switched off.
-- [Behaviours](./behaviours/README.md) — the recursive Gherkin corpus, grouped by domain.
+- [Behaviours](./behaviours/) — the recursive Gherkin corpus, grouped by domain.
 
 ## Related
 

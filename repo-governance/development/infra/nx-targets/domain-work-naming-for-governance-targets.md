@@ -24,9 +24,11 @@ gate ids live in [Markdown Quality Gates](../../quality/repository-validation/ma
 and the [SDLC Gate Standard](../../../../docs/reference/sdlc-gate-standard.md).
 
 **Rule**: governance/validation target keys are `{domain}:{work}` where both parts are lowercase
-kebab-case. The domain must be a recognizable noun (the scope); the work must be a verb phrase
-ending in `-validation` (for pure checks) or a bare verb (`check`). Do not invent `validate:*`
-prefixes — use the canonical list above or follow the `{domain}:{work}` pattern.
+kebab-case. The domain must be a recognizable noun (the scope); the work names the operation, as a
+verb phrase ending in `-validation` (for pure checks) or a bare verb (`check`, `audit`). The
+canonical `compat:min-version` is the one established entry whose work part names the checked
+property instead of an operation. Do not invent `validate:*` prefixes — use the canonical list above
+or follow the `{domain}:{work}` pattern.
 
 Project-local static `test:coverage` and `test:coverage:*` belong to the testing lifecycle family,
 not this governance target list.

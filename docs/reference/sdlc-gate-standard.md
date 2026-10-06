@@ -32,15 +32,19 @@ list` does not filter by surface. Run a declared surface with `./rhino gate run 
 The supported repository-level checks include `./rhino repo-config validate`, `./rhino gate
 validate`, `./rhino harness adapters generate`, `./rhino harness adapters validate`, `./rhino env
 validate`, `./rhino governance vendor validate`, `./rhino governance word-budget validate`, and
-`./rhino md internal-link validate`. Generated adapters are routes to canonical `AGENTS.md`,
+`./rhino md internal-link validate`; the last two have no declared gate and run on demand.
+Generated adapters are routes to canonical `AGENTS.md`,
 `.agents/agents/`, and `.agents/skills/`; never hand-edit a generated adapter.
 
-The remainder is a historical record, not a source of commands or current ownership claims.
+[Lifecycle Stages](#lifecycle-stages) restates the registry's current surfaces; every later
+section is a historical record, not a source of commands or current ownership claims.
 
 ## Lifecycle Stages
 
-This historical section records the former target mechanics. For current commands, use the stable
-contract above and the registry directly.
+This section restates each stage's declared gates as of the pinned RHINO. The registry is normative:
+when this section and `./rhino gate list` disagree, the registry wins, and
+[Git Hook Lifecycle](../../repo-governance/development/workflow/git-hook-lifecycle.md) owns the hook
+mechanics.
 
 | Stage              | Surface                                 | Trigger                       |
 | ------------------ | --------------------------------------- | ----------------------------- |
@@ -57,62 +61,68 @@ the gate. None runs in a hook or PR/main gate.
 
 ### Command Scope
 
-Every command carries exactly one of four controlled scope values:
+A gate's reach is one of four kinds. The registry expresses it through each gate's declared `inputs`
+and `run-on` bindings, not through a scope field.
 
-- **affected file-type** — files matching a glob, limited to the changed set (staged at pre-commit;
-  `--diff` at PR). For example: lint-staged formatters, tool-lint, per-file markdown validators.
-- **all file-type** — files matching a glob across the whole repository. For example: `md internal-link
-validate` and `env validate`.
-- **affected projects** — the touched Nx project graph (`nx affected`); per affected project only. For
-  example: `test:quick`, structural specs at pre-push and PR.
-- **other** — not file-type or project scoped: the commit-message text, binding regeneration from the
-  whole `.claude/` tree, the path-gated governance validators, and the `detect`/`quality-gate` CI
-  plumbing.
+- **affected file-type** — files matching a glob, limited to the changed set (the staged index at
+  pre-commit; the pull request's explicit base-to-head range on the pull-request surface). For
+  example: `format-staged`, `md-mermaid`, `shellcheck`, `hadolint`, `actionlint`.
+- **all file-type** — files matching a glob across the whole repository. For example:
+  `markdownlint`, `md-heading-hierarchy`, `md-naming`, `md-frontmatter`, `convention-emoji`.
+- **affected projects** — the touched Nx project graph (`nx affected`); per affected project only.
+  For example: `test:quick`, which only the pull-request workflow's language jobs run.
+- **other** — not file-type or project scoped: the commit-message and range screens, the
+  repository, adapter, vendor, quality-gate, and environment validators, and the `detect` and
+  `Quality gate` CI plumbing.
 
 The same check moves only along this scope axis between local and CI surfaces. For example,
-file-scoped checks are staged locally and recomputed from the PR or push change set in CI.
+file-scoped checks are staged locally and recomputed from the PR change set in CI.
 
 ### Gate Composition Rule
 
-One identity, one formatter verification rule, and one exclusion govern every stage:
+One composition rule, one formatter verification rule, and one exclusion govern every stage:
 
-1. **`(pre-commit ∪ pre-push) == PR gate`** — this was the former parity objective. The current
-   registry is normative; inspect it with `./rhino gate list --output json`.
+1. **The pull-request surface holds every local gate.** `repo-config.yml` declares
+   `gates.composition.pull-request.relation: at-least`, and `./rhino gate validate` fails a local gate
+   that the pull-request surface lacks; today the surface also adds `md-mermaid-repository`. Inspect
+   the sets with `./rhino gate list --output json`.
 
-2. **Every formatter mutation has one CI verifier.** The local mutation auto-fixes where permitted;
-   the linked `format-verify-*` check independently fails on unformatted pushed code.
+2. **Every formatter mutation has one CI verifier.** `format-staged` declares both modes: locally it
+   applies the formatted bytes to the index; on the pull-request surface it replays the formatters
+   and fails if any byte would change (`ci: verify-clean`).
 
 3. **Heavy/uncacheable tiers never run in any hook or PR/main gate.**
    Run impacted `test:integration` and `test:e2e` targets manually during development/review and
    complete suites on schedule. `deps:audit` remains scheduled; none belongs to a gate surface.
 
-**Gate rule summary**: `(pre-commit ∪ pre-push) == PR gate` — the registry-defined check set reaches
-the PR and push-to-main gate. `test:integration` and `test:e2e` run only through manual impacted or
-scheduled/manually dispatched full-quality workflows; `deps:audit` remains scheduled. None runs in
-a gate.
+**Gate rule summary**: the pull-request surface holds at least every local gate; `test:quick` runs
+only in the PR workflow's language jobs, and no hook runs it; `test:integration` and `test:e2e` run
+only through manual impacted or scheduled/manually dispatched full-quality workflows; `deps:audit`
+remains scheduled. None of the last three runs in a gate.
 
-Independent checks run in parallel within every stage: CI gates run as parallel GitHub Actions jobs;
-local hooks run the per-project `nx affected` leg concurrently with the repo-wide validators
-(`md internal-link validate`, `env validate`, governance). Ordering only matters where a real data dependency
-exists.
+In CI, the `Repository policy` job and the language jobs run in parallel and join at `Quality gate`.
+Locally, each hook runs its gates in registry order and stops at the first failure.
 
 ### Stage 1: pre-commit
 
-`.husky/pre-commit`, in this exact order; stops at first failure:
+`.husky/pre-commit` runs `./rhino gate run --surface pre-commit`: the declared gates, in registry
+order, stopping at the first failure:
 
-| #   | Command                             | Scope              | What it does                                                                                                                                                                                                                                                                                                                                   |
-| --- | ----------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `the public-safety tree check`      | affected file-type | Aborts the commit if any real `.env*` file is staged (the one exception is `.env.example`).                                                                                                                                                                                                                                                    |
-| 2   | `lint-staged`                       | affected file-type | Dispatches formatters and deterministic file-type linters over staged files. It never runs Unit, Integration, E2E, `test:quick`, or static cross-corpus coverage. **`md internal-link validate`, `md readme-index validate`, and `harness duplication validate` are not here** — they are cross-file validators (pre-push/PR/main, repo-wide). |
-| 3   | `./rhino harness adapters generate` | other              | Historical projection step. Current generation routes from the declared canonical `.agents/` source and is an explicit transaction; it does not author adapters by hand.                                                                                                                                                                       |
-| 4   | (lockfile-sync hook step)           | affected file-type | Regenerates and re-stages `package-lock.json` for any app whose `package.json` is staged (reproducible-envs guardrail).                                                                                                                                                                                                                        |
+| #   | Gate                                                                                               | Scope              | What it does                                                                                                                                               |
+| --- | -------------------------------------------------------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `public-safety-tree`                                                                               | other              | Screens the tracked tree, its names, and the staged additions as outbound material.                                                                        |
+| 2   | `format-staged`                                                                                    | affected file-type | Formats staged files by extension and applies the formatted bytes to the index (a `mutation` gate).                                                        |
+| 3   | `repo-config`, `harness-adapters`, `governance-vendor`, `governance-quality-gates`, `env-validate` | other              | Validate `repo-config.yml`, the generated harness adapters, vendor neutrality of governance, the quality-gate layout, and the declared environment policy. |
+| 4   | `markdownlint`                                                                                     | all file-type      | Lints every Markdown file with `markdownlint-cli2`.                                                                                                        |
+| 5   | `md-mermaid`                                                                                       | affected file-type | Validates Mermaid diagrams in the staged Markdown files.                                                                                                   |
+| 6   | `shellcheck`, `hadolint`, `actionlint`                                                             | affected file-type | Lint staged shell scripts, Dockerfiles, and workflow files; a missing linter binary fails the gate.                                                        |
+| 7   | `md-heading-hierarchy`, `md-naming`, `md-frontmatter`, `convention-emoji`                          | all file-type      | Check heading structure, filenames, front matter, and the emoji convention.                                                                                |
 
-Pre-commit is the fast stage — it does not run `test:quick`. Per-project `typecheck`/`lint`/`test:unit`
-run at pre-push via `test:quick`, never here.
+Pre-commit is the fast stage — it does not run `test:quick`. Per-project `typecheck`, `lint`, and
+`test:quick` run in the PR workflow's language jobs, never in a hook.
 
-The tool-linters (`shellcheck`/`hadolint`/`actionlint`) are pure file-type dispatch — exactly what
-lint-staged already does for formatters — so they are lint-staged entries, not `nx run` targets. They
-stay tool-gated (skip-with-hint when the linter is absent locally — CI is the hard gate).
+The tool linters are registry gates over staged paths (`scripts/lint-shell`,
+`scripts/lint-dockerfiles`, `scripts/lint-workflows`), not `nx run` targets.
 
 The `./scripts/git-identity-check.sh` script is removed and replaced by the Git Identity Guardrail: a
 behavioural rule, not a mechanical gate. **No AI agent may set or modify git user identity
@@ -128,28 +138,28 @@ workflow from configuring a service-account/bot identity in its own YAML (for ex
 
 ### Stage 2: commit-msg
 
-`.husky/commit-msg`:
+`.husky/commit-msg` runs `./rhino gate run --surface commit-msg --message-file "$1"`:
 
-| #   | Command                              | Scope | What it does                                                                                                                          |
-| --- | ------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `npx --no -- commitlint --edit "$1"` | other | Validates the commit message against Conventional Commits (`@commitlint/config-conventional`) — scope is the message text, not files. |
+| #   | Gate                           | Scope | What it does                                                                                                                                                                                                 |
+| --- | ------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | `public-safety-commit-message` | other | Screens the commit message as outbound material. The Conventional Commits format is not a hook gate; review checks it, per [Commit Messages](../../repo-governance/development/workflow/commit-messages.md). |
 
 ### Stage 3: pre-push
 
-`.husky/pre-push`, in this exact order; stops at first failure:
+`.husky/pre-push` runs `./rhino gate run --surface pre-push --push-updates-stdin`: the declared
+gates, in registry order, stopping at the first failure:
 
-| #   | Command                                   | Scope              | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| --- | ----------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `nx affected -t test:quick --parallel=1`  | affected projects  | Runs types/lint, Unit runtime for behaviour owners, and every applicable static `test:coverage:*` validator. No Integration/E2E runtime is reachable.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| 2   | `./rhino md internal-link validate`       | all file-type      | The cross-file markdown validator — every local link target path resolves repo-wide; it does not check `#fragment` anchors, which authors verify by hand per [Anchors, Images, and Link Validation](../../repo-governance/conventions/formatting/linking/anchors-images-and-link-validation.md). Repo-wide (not lint-staged) because adding, deleting, or renaming any markdown file can break links in untouched files.                                                                                                                                                                                                           |
-| 3   | `./rhino env validate`                    | all file-type      | Validates each app's `.env.example` against the repo env contract.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| 4   | `./rhino governance vendor validate`      | other (path-gated) | Governance docs and the canonical root instruction surface stay vendor-neutral, no vendor leakage. Two gate entries, one path each (the validator takes a single positional path). **Trigger:** `repo-governance/**.md`; `AGENTS.md`. `CLAUDE.md` is exempt by design — its Platform Binding Examples heading covers the whole body.                                                                                                                                                                                                                                                                                               |
-| 5   | `./rhino harness adapters validate`       | other (path-gated) | Split: `./rhino harness adapters validate` checks the instruction pair first; then all-harness binding parity across every harness listed in `repo-config.yml` `harness:`: generated-tier byte-parity (`.claude/` → `.opencode/`, `.codex/`, `.agents/`), catalog coverage, and color/tier translation-map coverage (absorbed from the former `cross-vendor:parity-validation` gate). **Trigger:** binding or parity surfaces — agents, `AGENTS.md`, `CLAUDE.md`, `repo-governance/**.md`, native-tier shadow files.                                                                                                               |
-| 6   | `./rhino governance word-budget validate` | other (path-gated) | Auto-loaded instruction files stay within their word budgets. Per-surface budgets run first in the pinned RHINO, from `repo-config.yml` top-level `governance-word-budget.surfaces` (no registry-merge): `repo-governance/**/*.md`, `AGENTS.md`, `CLAUDE.md`, `**/README.md`, and one glob per harness binding directory declared in `harness:`. The then in-tree Rhino remainder checked only the resolved `@`-import tree (`extensions.Rhino.governance-word-budget.resolved_tree`, since removed). Registered in the `gates:` registry and armed at pre-push and in CI. **Trigger:** any covered surface, or `repo-config.yml`. |
+| #   | Gate                  | Scope | What it does                                                                                                                                                                     |
+| --- | --------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `public-safety-tree`  | other | Screens the tracked tree, its names, and the refs being pushed as outbound material.                                                                                             |
+| 2   | `public-safety-range` | other | Screens every commit in the pushed range (ids, messages, names, and each commit's additions). The range comes from the push updates, falling back to `refs/remotes/origin/main`. |
+| 3   | `leak-review-tests`   | other | Runs the offline `scripts/leak-review/tests/run.sh` suite of the leak-review record check against a stand-in forge.                                                              |
+| 4   | `env-validate`        | other | `./rhino env validate`: the declared environment policy.                                                                                                                         |
 
-Each governance validator (rows 4–6) is path-gated — invoked only when its trigger path is in the
-changed set. Row 6 is registered in the `gates:` registry and blocks pre-push and CI like the rest;
-it also runs on demand and inside `repo-governance audit`.
+Pre-push runs no `test:quick`, no Markdown lint, and none of `md internal-link validate`,
+`governance vendor validate`, `harness adapters validate`, or `governance word-budget validate`.
+Vendor and adapter validation run at pre-commit and on the pull-request surface. Word-budget and
+internal-link validation have no declared gate: run them on demand.
 
 Project BDD coverage runs inside `test:quick` through static targets:
 
@@ -158,27 +168,22 @@ Project BDD coverage runs inside `test:quick` through static targets:
 | `test:coverage:<layer>`   | Exactly-one implementation or valid higher-layer exemption per expanded scenario | Each applicable adapter |
 | `test:coverage:behaviour` | Recursive corpus, explicit When/Then, bindings, adapters, and exemption syntax   | Every owner/E2E project |
 
-Repeated primary keywords are valid for one continuous journey. The repository-wide Markdown link
-gate continues to cover `specs/**.md`.
+Repeated primary keywords are valid for one continuous journey. No gate resolves links under
+`specs/**.md`; run `./rhino md internal-link validate` on demand.
 
 ### Stage 4: PR Quality Gate
 
-`pr-quality-gate.yml`. Language-gate jobs exist only for languages present in the repository.
-`$P` = `$(($(nproc)-1))`.
+`pr-quality-gate.yml`. Language jobs run only for languages detected among the affected projects.
 
-| Job                                                               | Exact command(s) CI runs                                                                                                                                       | Scope              |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| detect                                                            | `nx show projects --affected --base=origin/main --head=HEAD --json` — derives the affected-language set that drives the `<lang>` matrix. Runs no test.         | other              |
-| lint-staged                                                       | `lint-staged --diff="origin/main...HEAD"` — deterministic changed-file formatting and file-type linting; no runtime tests                                      | affected file-type |
-| `<lang>` gate (one job per affected language)                     | `nx affected -t test:quick --base=origin/main --head=HEAD --parallel=1` — types/lint, Unit runtime, and applicable static coverage; no Integration/E2E runtime | affected projects  |
-| md-links                                                          | `./rhino md internal-link validate` — repo-wide (NOT `--diff`: a deleted/renamed file breaks links in untouched files)                                         | all file-type      |
-| env                                                               | `./rhino env validate`                                                                                                                                         | all file-type      |
-| governance (each runs only if its trigger path is in the PR diff) | `./rhino harness adapters validate` · `./rhino governance vendor validate` · `./rhino governance word-budget validate`                                         | other (path-gated) |
-| quality-gate                                                      | Sentinel join — `needs: [detect, lint-staged, <lang>…, md-links, env, governance]`; green only when every required job is green. Runs no command.              | other              |
+| Job                                                        | Exact command(s) CI runs                                                                                                                                                                                                                      | Scope             |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| detect                                                     | `npx nx show projects --affected`, then each project's tags — derives which language jobs run. Runs no test.                                                                                                                                  | other             |
+| repository-policy                                          | `./rhino gate run --surface pull-request --base <sha> --head <sha>` — the whole `pull-request` surface: every local gate (with `format-staged` verifying clean), the commit-message and range screens, `md-mermaid-repository`, and the rest. | other             |
+| language job (TypeScript, .NET, Flutter, Java, Go, Python) | `nx affected -t typecheck,lint,test:quick` (plus `compat:min-version` where declared) — types/lint, Unit runtime, and applicable static coverage; no Integration/E2E runtime                                                                  | affected projects |
+| quality-gate                                               | Sentinel join — `needs: [repository-policy, typescript, dotnet, flutter, java, go, python]`; fails if any needed job failed. Runs no other command.                                                                                           | other             |
 
-All jobs run in parallel (matrix + independent jobs); `quality-gate` is the join point. No
-`test:integration`/`test:e2e` — same fast set as pre-push, recomputed server-side and widened to cover
-everything the two local hooks run.
+All jobs except the join run in parallel. No `test:integration`/`test:e2e`: the language jobs run the
+fast set that no local hook runs.
 
 ## Target Standard
 
@@ -202,7 +207,7 @@ surface. It is a record, not a current target. The named winner per surface:
 | **Markdown validator set**                                                             | Per-file formatting/tool lint in lint-staged; cross-file links in the repo-wide gate                                                                                              | Identical authored-file safeguards; no runtime or corpus-wide test check runs pre-commit.                                                                                                                                                                                                                              |
 | **BDD coverage set (PR gate)**                                                         | Every applicable static `test:coverage:*` through affected `test:quick`; spec links via repo-wide validation                                                                      | Coverage validators never execute tests; repeated primary keywords are valid for a coherent journey.                                                                                                                                                                                                                   |
 | **pre-push scoped validator set**                                                      | Union including `governance:vendor-audit-validation`                                                                                                                              | Included.                                                                                                                                                                                                                                                                                                              |
-| **Hook/gate step order**                                                               | See [Lifecycle Stages](#lifecycle-stages)                                                                                                                                         | The normative registry-backed hook and PR-gate sequence is defined in the Lifecycle Stages section of this document.                                                                                                                                                                                                   |
+| **Hook/gate step order**                                                               | See [Lifecycle Stages](#lifecycle-stages)                                                                                                                                         | The registry-backed hook and PR-gate sequence is restated in the Lifecycle Stages section of this document; the registry is normative.                                                                                                                                                                                 |
 | **CRON pipeline shape**                                                                | `*-test-local-deploy-{stag,prod}.yml` + paired `*-test-{stag}.yml` calling shared `_reusable-*` workflows                                                                         | Reusable-workflow factoring keeps the CRON pipeline shape in one place.                                                                                                                                                                                                                                                |
 | **Rhino source identity** (`src/` — including `src/tests/`, `project.json`, `LICENSE`) | Historical: the former in-tree source was held byte-identical with another repository, retired 2026-09-19                                                                         | The in-tree source and its parity machinery no longer exist; RHINO's source lives only upstream.                                                                                                                                                                                                                       |
 | **`repo-config.yml` schema validation**                                                | `Rhino repo-config validate` — strict-deserialize schema check (deny-unknown-fields + required/enum checks), wired at pre-commit (staged-gated fast path) and the PR quality gate | Converts the `repo-config.yml` schema boundary from prose review into an enforced, automated gate.                                                                                                                                                                                                                     |

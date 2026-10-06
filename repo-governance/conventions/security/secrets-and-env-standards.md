@@ -1,5 +1,5 @@
 ---
-description: "The authoritative hub for how this repository handles secrets and environment variables — naming convention, layout, annotation format, startup validation, tooling (./rhino env family), tiered injection standard (env-injection: section in repo-config.yml), storage tiers, and the env-contract drift guard."
+description: "The authoritative hub for how this repository handles secrets and environment variables — naming convention, layout, annotation format, startup validation, tooling (./rhino env family), tiered injection standard (a hand-maintained injection matrix), storage tiers, and the env-contract drift guard."
 when_to_use: Use when you need any rule about handling secrets or environment variables in this repository — naming, storage, injection, or agent access.
 ---
 
@@ -24,10 +24,9 @@ environment variables. The three prior docs that covered overlapping ground now 
 - [`./rhino env` Toolchain](./secrets-and-env-standards/Rhino-env-toolchain.md) — The backup/restore/init/validate commands
 - [Tiered Injection Standard](./secrets-and-env-standards/tiered-injection-standard.md) — How a key is injected — source of truth
 - [Variable Classes with Injection Homes](./secrets-and-env-standards/variable-classes-with-injection-homes.md) — The four variable classes
-- [Injection Matrix](./secrets-and-env-standards/injection-matrix.md) — App-type × stage × platform mapping
+- [Injection Matrix](./secrets-and-env-standards/injection-matrix.md) — Hand-maintained app-type × stage × platform mapping
 - [infra/dev/\<stack\> Compose Env](./secrets-and-env-standards/infra-dev-compose-env-no-duplicate-templates.md) — No duplicate templates rule
 - [GitHub Environment Key Registry](./secrets-and-env-standards/github-environment-key-registry.md) — vars./secrets. per environment
-- [`env-injection:` Manifest](./secrets-and-env-standards/env-injection-section-value-less-injection-manifest.md) — Per-app, per-stage injection homes
 - [Secret-Surface Census](./secrets-and-env-standards/secret-surface-census.md) — Inventory of secret-bearing surfaces
 - [Secret-Manager Item Naming](./secrets-and-env-standards/secret-manager-item-naming.md) — How secret-manager (Bitwarden) items are named
 - [`guard-env-file-access` Policy](./secrets-and-env-standards/guard-env-file-access-policy.md) — Which .env\* files agents may open
@@ -41,7 +40,7 @@ environment variables. The three prior docs that covered overlapping ground now 
 - [`env-file-access.md`](../security/env-file-access.md) — `guard-env-file-access` agent policy (stub)
 - [`reproducible-environments.md`](../../development/workflow/reproducible-environments.md) — environment setup (stub)
 - [`docs/explanation/standardize-secrets-and-env-parity-decisions.md`](../../../docs/explanation/standardize-secrets-and-env-parity-decisions.md) — historical decision log
-- [`repo-config.yml`](../../../repo-config.yml) — unified config hub (`env-contract:` and `env-injection:` sections)
+- [`repo-config.yml`](../../../repo-config.yml) — unified config hub (its `environment` group drives `./rhino env validate`)
 
 ## IaC Forward Scaffold
 

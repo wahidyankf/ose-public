@@ -360,28 +360,52 @@ policies:
         - "**/SECURITY.md"
         - "**/*__linkedin__*.md"
         - "**/pull_request_template.md"
+    # Owner: repo-governance/conventions/structure/governance-readme-completeness.md.
+    # Every tree sets require-direct-children, so its root README must link every direct child file
+    # and subdirectory; a subdirectory counts only when linked as ./<dir>/. `annotations` is
+    # deliberately not set: it checks declared file and text pairs, not that each link is annotated.
     readme-index:
       trees:
         - path: .agents/agents
+          require-direct-children: true
         - path: .agents/skills
+          require-direct-children: true
         - path: docs/explanation
+          require-direct-children: true
         - path: docs/how-to
+          require-direct-children: true
         - path: docs/reference
+          require-direct-children: true
         - path: docs/tutorials
+          require-direct-children: true
         - path: repo-governance
+          require-direct-children: true
         - path: specs/apps/ayokoding
+          require-direct-children: true
         - path: specs/apps/crane
+          require-direct-children: true
         - path: specs/apps/ferret
+          require-direct-children: true
         - path: specs/apps/organiclever
+          require-direct-children: true
         - path: specs/apps/ose/app-web
+          require-direct-children: true
         - path: specs/apps/ose/be
+          require-direct-children: true
         - path: specs/apps/ose/id-be
+          require-direct-children: true
         - path: specs/apps/ose/id-web
+          require-direct-children: true
         - path: specs/apps/ose/lms-be
+          require-direct-children: true
         - path: specs/apps/ose/www/behaviours/backend
+          require-direct-children: true
         - path: specs/apps/ose/www/behaviours/frontend/app-shell
+          require-direct-children: true
         - path: specs/apps/ose/www/behaviours/frontend/landing
+          require-direct-children: true
         - path: specs/apps/roots
+          require-direct-children: true
   governance:
     # Owner: repo-governance/conventions/structure/governance-vendor-independence.md.
     # The validator fails on any listed term found as a case-sensitive substring under `roots`.

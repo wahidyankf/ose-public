@@ -33,7 +33,7 @@ and file counts never define the boundary. See
   and then `rtk npm run doctor` again
 - Set up project-specific requirements (env vars, DB, Docker, etc.) as specified in the plan
 - Verify dev server starts for affected projects
-- Run existing quality gates to establish a baseline: `./rhino gate run --surface pre-push` (includes `nx affected -t test:quick`)
+- Run existing quality gates to establish a baseline: `./rhino gate run --surface pre-push` and affected `test:quick` (the pre-push surface runs no `test:quick`)
 - Note any preexisting failures — these MUST be fixed during execution (Iron Rule 3)
 - If the plan touches a Vercel-deployed surface, probe Vercel MCP availability and record the outcome
   (see [§Vercel MCP Availability](./007-vercel-mcp-availability.md)). Where the plan's

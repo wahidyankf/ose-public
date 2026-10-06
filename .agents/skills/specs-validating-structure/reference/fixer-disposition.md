@@ -15,8 +15,8 @@ files); Category 3 feature file naming (kebab-case via `git mv`); Category 5 C4 
 broken cross-references (fix relative paths from actual file locations); Category 8 directory
 structure violations (move feature files to correct nesting via `git mv`, per
 [Specs Directory Structure Convention](../../../../repo-governance/conventions/structure/specs-directory-structure.md));
-non-delegated `specs structure validate` findings (create missing folder + `README.md` + placeholder
-spec) and non-delegated `md internal-link validate` findings (repair or remove a broken link).
+a missing folder the audit reports (create the folder + `README.md` + placeholder spec) and
+non-delegated `md internal-link validate` findings (repair or remove a broken link).
 
 When the corresponding gate ID is delegated, these findings never enter the audit and the fixer
 must not reconstruct them.

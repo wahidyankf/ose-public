@@ -1,6 +1,6 @@
 ---
 title: "Web Sites"
-description: Every deployable app in this repo — domain, dev port, and production deploy branch.
+description: Every deployable app in this repo — domain, dev port, and production deploy branch — and the stock service ports no app may claim.
 category: reference
 tags:
   - reference
@@ -54,6 +54,32 @@ OSE_WWW_PORT=4000 ./hippo run --class service --resource-tier standard --disk-pa
 A bare `PORT` is deliberately not honoured — one exported `PORT` would otherwise retarget every app
 at once. See the
 [Environment Variable Naming Standard](../../repo-governance/conventions/security/secrets-and-env-standards/environment-variable-naming-standard.md).
+
+## Stock Service Ports
+
+An app, or the stack that serves it, claims no port that is the stock default of a common local
+service: a developer's own copy of that service already holds it, so the claim fails or silently
+reaches the wrong process. A stack that needs one of these services publishes it on another host port.
+
+| Port  | Service       |
+| ----- | ------------- |
+| 5432  | PostgreSQL    |
+| 3306  | MySQL         |
+| 6379  | Redis         |
+| 27017 | MongoDB       |
+| 4222  | NATS          |
+| 5672  | RabbitMQ      |
+| 9092  | Kafka         |
+| 9200  | Elasticsearch |
+| 11434 | Ollama        |
+
+An app that connects to one of these services at its stock port, such as the `.env.example` defaults
+below, is a client and claims nothing.
+
+**Enforcement**: unenforced by decision; checked by review. No declared gate scans listener ports or
+compose `ports:` entries, because telling a claim from a client connecting to a developer-run service
+is a judgement a mechanical scan cannot settle. Review checks every port added to this page, an
+`.env.example`, or a compose file against the table above.
 
 ## Supporting Service Ports
 

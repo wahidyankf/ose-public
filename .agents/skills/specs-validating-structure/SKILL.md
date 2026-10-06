@@ -28,7 +28,7 @@ Structural Completeness (README coverage), Feature File Inventory Accuracy, Gher
 Compliance, and Cross-Folder Consistency, and
 [reference/validation-categories-5-9.md](reference/validation-categories-5-9.md) for C4
 Diagram Consistency, Cross-Reference Integrity, Spec-to-Implementation Alignment, Spec Tree Shape
-Compliance and Adoption Gaps (deterministic via `the declared spec-structure check`).
+Compliance and Adoption Gaps (review-owned: no deterministic check exists).
 
 ## Drift Detection, Execution Pattern, and Report Format
 

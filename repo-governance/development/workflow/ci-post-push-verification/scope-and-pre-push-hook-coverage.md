@@ -26,19 +26,22 @@ This convention does not apply to pushes that exclusively touch:
 - `social-media-posts/` — social content only
 - `.agents/agents/`, `.agents/skills/`, and their generated harness routes — agent/skill definitions only, no app code impact
 
-The pre-push hook runs the registry-defined gates, including affected `test:quick`; quick owns Unit
-runtime and every applicable static `test:coverage:*` validator.
+The pre-push hook runs only the registry-declared `pre-push` gates (the public-safety screens, the
+leak-review tests, and environment validation) and runs no `test:quick`; quick owns Unit runtime and
+every applicable static `test:coverage:*` validator, and runs in the PR workflow's language jobs.
 
 ## What the Pre-Push Hook Covers vs. What This Convention Covers
 
-| Quality Gate              | Pre-Push Hook             | CI Post-Push Verification |
-| ------------------------- | ------------------------- | ------------------------- |
-| Typecheck                 | Yes                       | Yes (as part of CI)       |
-| Lint                      | Yes                       | Yes (as part of CI)       |
-| Unit tests (`test:quick`) | Yes                       | Yes (as part of CI)       |
-| Integration tests         | No                        | Yes                       |
-| E2E tests                 | No                        | Yes                       |
-| Deployment workflows      | No                        | Yes                       |
-| Static test coverage      | Yes, through `test:quick` | Yes, through `test:quick` |
+| Quality Gate                        | Pre-Push Hook | CI Post-Push Verification |
+| ----------------------------------- | ------------- | ------------------------- |
+| Public-safety screens               | Yes           | Yes (as part of CI)       |
+| Environment validation              | Yes           | Yes (as part of CI)       |
+| Typecheck                           | No            | Yes (as part of CI)       |
+| Lint                                | No            | Yes (as part of CI)       |
+| Unit tests (`test:quick`)           | No            | Yes (as part of CI)       |
+| Integration tests                   | No            | Yes                       |
+| E2E tests                           | No            | Yes                       |
+| Deployment workflows                | No            | Yes                       |
+| Static test coverage (`test:quick`) | No            | Yes, through `test:quick` |
 
 The pre-push hook is fast and local. CI workflows are comprehensive and environment-representative. Both are required.

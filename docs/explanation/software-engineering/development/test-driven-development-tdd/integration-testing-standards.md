@@ -19,8 +19,8 @@ Complete the AyoKoding TDD learning path, then read the canonical
 
 Integration tests exercise production code against at least one real resource that the project
 owns locally: a temporary filesystem, local database, environment state, child process, or standard
-stream. They may also bind a loopback socket the test starts and stops itself, when the project is
-allowlisted in `repo-config.yml`. They must not reach an external network or a service the test did
+stream. They may also bind a loopback socket the test starts and stops itself, when review accepts the
+project holding it. They must not reach an external network or a service the test did
 not start.
 
 An injected in-memory repository, MSW handler, WireMock endpoint, or other test double is Unit proof,

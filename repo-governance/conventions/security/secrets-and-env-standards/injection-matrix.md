@@ -1,11 +1,17 @@
 ---
-description: The full table mapping each app type and deploy stage to its injection platform, injection home, and value owner, plus the two load-bearing boundaries it implies.
+description: The hand-maintained table mapping each app type and deploy stage to its injection platform, injection home, and value owner, plus the two load-bearing boundaries it implies.
 when_to_use: Use when you need to know exactly which platform and environment owns a given app's env values at a specific deploy stage.
 ---
 
 # Injection Matrix
 
-The table below maps each app type and stage to its injection platform and value owner:
+The table below maps each app type and stage to its injection platform and value owner. It is
+hand-maintained: `repo-config.yml` declares no injection section and no gate or RHINO command reads
+the table, so a change to an app's injection home updates it in the same change.
+
+**Enforcement**: unenforced by decision; checked by review. `./rhino env validate` checks only
+declared `.env.example` contracts and detectors, never this table or the values held in GitHub or
+Vercel.
 
 | App type         | Stage      | Platform / target                               | Injection home                                                         | Values owned by                                |
 | ---------------- | ---------- | ----------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------- |
@@ -19,9 +25,10 @@ The table below maps each app type and stage to its injection platform and value
 
 Two load-bearing boundaries follow from the matrix:
 
-- **This plan writes only references** — the `environment:` names, the `vars.`/`secrets.` reads,
-  the compose env wiring sourced from committed placeholders, and the value-less `env-injection:`
-  manifest (in `repo-config.yml`). It creates no real values.
+- **This plan writes only references** — the `environment:` names, the `vars.`/`secrets.` reads, and
+  the compose env wiring sourced from committed placeholders. It creates no real values.
 - **`wire-vercel` populates the values** — GitHub Environment secrets/vars and Vercel project env
-  at each target. Values for a deployment not run from this repository are outside its scope. The
-  contract (key set) is defined here.
+  at each target. Values for a deployment not run from this repository are outside its scope. Whether
+  the values exist is not machine-checkable from this repository, so `wire-vercel` checks them against
+  this table by hand. The key set is defined by each app's `.env.example`, per the
+  [Tiered Injection Standard](./tiered-injection-standard.md).

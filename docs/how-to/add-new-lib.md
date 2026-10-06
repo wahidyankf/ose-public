@@ -228,7 +228,7 @@ const result = functionName("example");
 
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ts-[name]
 
-# Run fast quality gate (pre-push standard)
+# Run fast quality gate (PR gate standard)
 
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-[name]:test:quick
 
@@ -264,7 +264,7 @@ MIT
 # Build library
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ts-[name]
 
-# Run fast quality gate (pre-push standard)
+# Run fast quality gate (PR gate standard)
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-[name]:test:quick
 
 # Run isolated unit tests

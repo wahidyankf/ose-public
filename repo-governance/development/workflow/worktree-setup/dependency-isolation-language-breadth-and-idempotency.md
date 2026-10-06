@@ -15,7 +15,7 @@ When the Nx workspace resolves dependencies, it reads from `node_modules/` relat
 
 AI agents working on worktrees routinely touch apps across many languages: `ose-be` and `organiclever-be` (F#/Giraffe), `crane-cli` (F#), `ferret-cli` (Python), `roots-be` (Go), TypeScript frontends, and more. The probability that a new worktree session will need a toolchain that has drifted is high, and the cost of discovering the drift mid-task — through an obscure Gradle, Go, or `dotnet` error — is much higher than the cost of running `npm run doctor` deliberately upfront.
 
-Even worktree sessions whose stated intent is "I'm just editing docs" should run the full two-step init, because the pre-push hook runs `./rhino gate run --surface pre-push`, whose registry gates (including `nx affected -t test:quick`) can fan out to arbitrary language tasks depending on what the doc change touches.
+Even worktree sessions whose stated intent is "I'm just editing docs" should run the full two-step init, because the commit hook's `format-staged` and lint gates call per-extension formatters and linters from the toolchains on PATH, and the affected `test:quick` run before a push can fan out to arbitrary language tasks depending on what the doc change touches.
 
 ## Doctor Validation Is Read-Only and Fast When Healthy
 

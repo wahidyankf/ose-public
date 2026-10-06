@@ -1,16 +1,17 @@
 ---
-description: Explains the mermaid-diagrammed pre-push/PR quality-gate flow and the scheduled/on-demand testing tiers that Nx targets execute.
-when_to_use: Use when tracing how typecheck, lint, and test:quick run at pre-push/PR versus how test:integration and test:e2e run on scheduled CRON.
+description: Explains the mermaid-diagrammed pre-push and PR quality-gate flow and the scheduled/on-demand testing tiers that Nx targets execute.
+when_to_use: Use when tracing how typecheck, lint, and test:quick run in the PR quality gate (and what the pre-push hook runs instead) versus how test:integration and test:e2e run on scheduled CRON.
 ---
 
 # Execution Model
 
-## Quality Gates (pre-push enforcement)
+## Quality Gates (PR enforcement)
 
-Pre-push and PR CI execute their registry-declared projections; they are complementary lifecycle
-surfaces, not three hardcoded identical checkpoints. Discover each live projection with `gate
-list --surface=<surface>`. A successful PR aggregate is evidence for the exact repository, head,
-and applicable base it reports; it does not prove a later head.
+The pre-push hook runs only its registry-declared gates and no Nx target; the PR workflow runs the
+affected quality targets. They are complementary lifecycle surfaces, not hardcoded identical
+checkpoints. Discover each live gate set with `./rhino gate list`. A successful PR aggregate is
+evidence for the exact repository, head, and applicable base it reports; it does not prove a later
+head.
 
 For behaviour owners, `test:quick` composes typecheck where applicable, lint, Unit runtime, and all
 applicable static `test:coverage:*` validators. Dedicated E2E projects omit Unit runtime. Coverage
@@ -18,10 +19,10 @@ validators never execute tests; runtime code coverage belongs to its correspondi
 
 ```mermaid
 flowchart TD
-    accTitle: Quality Gates (pre-push enforcement)
-    accDescr: Developer pushes code leads to Pre-push hook; Pre-push hook leads to affected test:quick types + lint + Unit + static; affected test:quick types + lint + Unit + static leads to All pass?; and 6 more links.
+    accTitle: Quality Gates (PR enforcement)
+    accDescr: Developer pushes code leads to Pre-push hook; Pre-push hook leads to declared gates for public safety and env; declared gates for public safety and env leads to All pass?; and 6 more links.
     A[Developer pushes<br/>code] --> B[Pre-push hook]
-    B --> E["affected test:quick<br/>types + lint + Unit<br/>+ static"]
+    B --> E["declared gates<br/>(public safety,<br/>env)"]
     E --> F{All pass?}
     F -- No --> G[Push blocked]
     F -- Yes --> H[Push succeeds]
@@ -44,7 +45,7 @@ flowchart TD
 
 ## Scheduled and On-Demand Testing
 
-Deeper tests run outside the pre-push/PR cycle — on a schedule or triggered explicitly.
+Deeper tests run outside the push and PR cycle — on a schedule or triggered explicitly.
 
 Developers run impacted Integration/E2E scenarios manually. Scheduled workflows run full static
 coverage, then complete Integration, then complete unfiltered E2E outside the push/PR path.

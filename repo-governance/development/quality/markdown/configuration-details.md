@@ -11,7 +11,6 @@ when_to_use: "Use when auditing which files or directories implement markdown qu
 - `.markdownlintignore` - Files to ignore (deprecated, use `ignores` in config)
 - `.prettierignore` - Files to ignore for formatting
 - `package.json` - Added npm scripts
-- `.husky/pre-push` - Added markdown linting step
 - `.claude/settings.json` - PostToolUse hook configuration
 - `.claude/hooks/format-lint-markdown.sh` - Hook execution script
 

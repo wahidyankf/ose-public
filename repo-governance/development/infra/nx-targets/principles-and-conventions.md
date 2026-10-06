@@ -9,7 +9,7 @@ when_to_use: Use when justifying why the target-naming and echo-placeholder rule
 
 - **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: Every project declares its capabilities through explicit targets. No implicit build or test mechanisms — if a project supports unit tests, it declares `test:unit`; if it has integration tests, it declares `test:integration`; if it has a dev server, it declares `dev`. The composition of `test:quick` is explicit in each project's `project.json`.
 
-- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Targets integrate with Nx affected computation, caching, the pre-push hook, and the PR merge gate. Consistent naming allows workspace-level automation (`nx affected -t test:quick`) to work across all project types without special cases.
+- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Targets integrate with Nx affected computation, caching, and the PR merge gate. Consistent naming allows workspace-level automation (`nx affected -t test:quick`) to work across all project types without special cases.
 
 - **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Projects omit inapplicable targets instead of publishing no-op contracts. `test:coverage` composes applicable static validators, and `test:quick` remains the one closed fast gate.
 

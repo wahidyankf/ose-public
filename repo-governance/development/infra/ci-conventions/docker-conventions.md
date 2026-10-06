@@ -70,8 +70,8 @@ Three docker-compose file roles exist per app:
 
 Docker Compose is never an Integration-test classifier. A container the test did not start is not
 a resource it owns, so any test that reaches one belongs to E2E and must enter through the
-application's public boundary. Integration may use only local resources it owns, including an
-allowlisted loopback socket it starts and stops itself.
+application's public boundary. Integration may use only local resources it owns, including a
+review-accepted loopback socket it starts and stops itself.
 
 All compose files must pass `docker compose config` without errors before merging. The CI overlay
 is applied with `-f docker-compose.yml -f docker-compose.ci.yml` to keep dev and CI configs DRY.

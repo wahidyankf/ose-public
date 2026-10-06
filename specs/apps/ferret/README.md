@@ -6,7 +6,7 @@ one logical owner today.
 ## Contents
 
 - [Overview](./overview.md) — what FERRET records, who it serves, and the privacy promise it keeps.
-- [FERRET CLI](./cli/README.md) — the specification corpus for `ferret-cli`, the standalone local command-line tool:
+- [FERRET CLI](./cli/) — the specification corpus for `ferret-cli`, the standalone local command-line tool:
   its architecture and its Gherkin behaviours.
 
 ## Related

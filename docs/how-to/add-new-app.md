@@ -133,7 +133,8 @@ Create `apps/[app-name]/project.json`:
 > directly would silently opt the new app out of that contract. The same wrapper belongs in the app's
 > `Dockerfile` `CMD`, which must also `COPY` both `scripts/next-with-port.mjs` and
 > `libs/ts-env-loader/src/port-resolver.ts`, preserving their relative layout. Pick a `[port]` that no
-> other app claims — see [web-sites.md](../reference/web-sites.md).
+> other app claims and that is not a [stock service port](../reference/web-sites.md#stock-service-ports) —
+> see [web-sites.md](../reference/web-sites.md).
 
 **Express API Example**:
 
@@ -237,7 +238,7 @@ Create `apps/[app-name]/README.md`:
 
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build [app-name]
 
-# Run fast quality gate (pre-push standard)
+# Run fast quality gate (PR gate standard)
 
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [app-name]:test:quick
 
@@ -329,7 +330,7 @@ canonical explicit boundary reason and named alternative proof.
 
 **Integration setup**: Apps with `test:integration` isolate real local resources such as temporary
 files, embedded databases, process environment, or child-process standard streams. A loopback socket
-the test starts and stops is allowed only when `repo-config.yml` allowlists the project. The target
+the test starts and stops is allowed only where review accepts the project holding it. The target
 must reach no external network and no Docker-hosted service, and must set `"cache": false` in
 `project.json`.
 
@@ -356,7 +357,7 @@ specs/apps/[product]/
 
 See [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md) for per-surface variants and full rules.
 
-**Codegen dependency chain**: Both `typecheck` and `build` must declare `dependsOn: ["codegen"]`. This ensures contract violations surface during `nx affected -t typecheck` and the pre-push `test:quick` gate.
+**Codegen dependency chain**: Both `typecheck` and `build` must declare `dependsOn: ["codegen"]`. This ensures contract violations surface during `nx affected -t typecheck` and the PR quality gate's `test:quick`.
 
 **Canonical inputs for cache invalidation**: define a project-level `"namedInputs": {"specs": [...]}`
 block for the Gherkin glob, then reference it as `"specs"` in `test:unit` and `test:quick`'s `inputs`

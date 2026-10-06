@@ -18,9 +18,9 @@ once the hardened preconditions hold -- `[AI]` by default, `[HUMAN]` only where 
   **only where a plan's own step says so explicitly**; the preconditions are identical either way and
   only the actor differs. This mirrors the [PR Merge Protocol](../pr-merge-protocol.md) done-boundary:
   the merge sits outside it, so "done" is still not the same as "merged".
-- Quality gates run on every push to the PR branch via the registry-defined pre-push hook and on the
-  PR itself via CI. Affected `test:quick` owns Unit runtime plus every applicable static
-  `test:coverage:*` validator on both surfaces.
+- The registry-defined pre-push hook screens every push to the PR branch, and the PR itself runs the
+  quality gates via CI. Affected `test:quick` owns Unit runtime plus every applicable static
+  `test:coverage:*` validator in the PR workflow's language jobs.
 - Semantic review is absent by default. Run
   [`pr-review`](../../../workflows/quality/pr-review.md) or
   [`pr-review-quality-gate`](../../../workflows/quality/pr-review-quality-gate.md) only on explicit user request.

@@ -24,16 +24,15 @@ git checkout README.md
 **Success criteria**: Pre-commit hook runs every declared `pre-commit` gate without errors
 (including `format-staged` and `markdownlint`).
 
-## 13.2 Verify pre-push targets (cache warm)
+## 13.2 Verify pre-push gates
 
 ```bash
 # Run the registry gate set .husky/pre-push runs, with each gate's output
 ./rhino gate run --surface pre-push
 ```
 
-**Success criteria**: Every declared gate passes. This also warms the Nx cache (via the
-`test:quick` affected-projects gate) so subsequent pushes are fast. Discover the live gate set
-with `./rhino gate list`.
+**Success criteria**: Every declared gate passes. The pre-push set runs no Nx target, so this does
+not warm the Nx cache. Discover the live gate set with `./rhino gate list`.
 
 ## 13.3 Verify Integration tests (one backend)
 
@@ -43,7 +42,7 @@ nx run organiclever-be:test:integration
 ```
 
 **Success criteria**: Integration tests pass using isolated local files, embedded non-network
-resources, process environment, child-process streams, or an allowlisted loopback socket the test
+resources, process environment, child-process streams, or a review-accepted loopback socket the test
 owns. They reach no external network and no service the test did not start.
 
 **On failure**: Inspect the target's local fixture lifecycle and confirm every resource is isolated

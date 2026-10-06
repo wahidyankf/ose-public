@@ -4,17 +4,17 @@
 
 When a declared gate owns README existence or index membership (`./rhino gate list` shows none
 today), do not check or infer it. For READMEs that exist, retain semantic assessment of useful
-overview and contents. Without delegation, the lifecycle command owns existence for each owner
+overview and contents. Without delegation, judge existence yourself for each owner
 corpus's three required entries (`README.md`, `architecture.md`, `behaviours/`), the
 `behaviours/README.md` index, all domain subdirectories under `behaviours/<domain>/`, and
-`contracts/` when present. Check semantic quality recursively. **HIGH**: README exists but is empty
+`contracts/` when present; no declared command does. Check semantic quality recursively. **HIGH**: README exists but is empty
 or lacks required overview/contents information.
 
 ## Category 2: Feature File Inventory Accuracy [LLM]
 
 When `specs-structure` is delegated, do not recount registered folders/files or infer numeric
 mismatches. Retain narrative assessment that described domains and responsibilities are coherent.
-Without delegation, use current structure/count commands rather than LLM counting.
+Without delegation, compare the README's counts with the folder's contents yourself; no declared command counts them.
 
 ## Category 3: Gherkin Format Compliance [LLM]
 

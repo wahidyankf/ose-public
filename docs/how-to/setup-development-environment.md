@@ -334,16 +334,21 @@ names, then run `npm run doctor` again.
 
 ### Pre-push hook times out
 
-The slow half of the pre-push gate set is its Nx targets: `test:quick` (which itself composes
-types/lint, `test:unit`, and every applicable static `test:coverage:*` per project)
-and `compat:min-version`. On a cold cache this takes a while. Warm them first:
+The pre-push hook runs only its registry-declared gates (today the public-safety tree and range
+screens, the leak-review tests, and environment validation) and no Nx target. If it is slow, the range
+screen is reading many outgoing commits: run `./rhino gate run --surface pre-push` to see which gate is
+slow, and push fewer commits at once.
+
+The slow half of the local quality loop is the PR quality gate's Nx targets: `test:quick` (which itself
+composes types/lint, `test:unit`, and every applicable static `test:coverage:*` per project) and
+`compat:min-version`. On a cold cache this takes a while. Warm them before opening the pull request:
 
 ```bash
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- \
   affected -t test:quick,compat:min-version
 ```
 
-Subsequent pushes reuse cached results and complete in seconds.
+Subsequent runs reuse cached results and complete in seconds.
 
 ### Volta not switching Node.js version
 

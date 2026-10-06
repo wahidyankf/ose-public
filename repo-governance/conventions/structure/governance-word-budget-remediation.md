@@ -12,11 +12,12 @@ word ceiling (progressive disclosure applied to itself).
 ## Enforcement Points
 
 `./rhino governance word-budget validate` runs the pinned RHINO executable against every surface
-declared under `policies.governance.word-budget` in `repo-config.yml`. It is not a declared gate on
-any lifecycle surface today (see `./rhino gate list`), so run it before committing an edit to a
-covered surface. Because no declared gate runs it, the
-[Rules Quality Gate](../../workflows/quality/rules-quality-gate.md#deterministic-boundary) treats word budgets as
-judgeable: `rules-checker` runs the command and reports each breach it prints, never a hand count.
+declared under `policies.governance.word-budget` in `repo-config.yml`. It is the declared gate
+`word-budget` on the `pull-request` surface only (see `./rhino gate list`): no hook runs it, so run
+it before committing an edit to a covered surface. Because a declared gate owns the threshold, the
+[Rules Quality Gate](../../workflows/quality/rules-quality-gate.md#deterministic-boundary) treats a
+budget breach as deterministic: `rules-checker` neither counts words by hand nor re-reports the
+gate's findings. Choosing what to disclose progressively when a file fails stays judgeable.
 
 The retired in-tree convention audit did not include a word-budget member; the RHINO governance
 word-budget validator now owns that check.

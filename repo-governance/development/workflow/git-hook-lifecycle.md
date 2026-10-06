@@ -109,4 +109,4 @@ See [SDLC Gate Standard](../../../docs/reference/sdlc-gate-standard.md) for the 
   gate runs a specs validator; structure is review-owned, and Gherkin coverage runs in the PR
   workflow's `test:quick`.
 - [Governance Word Budget](../../conventions/structure/governance-word-budget.md) — its validator is
-  not a declared gate, so it runs on demand.
+  the `word-budget` gate on the pull-request surface; no hook runs it.

@@ -42,10 +42,10 @@ The checker reports none of these properties. The pipeline on the exact head run
 | Secrets and private references                   | the outbound leak screen  | `public-safety-*`                      |
 | Build, unit tests, and lint of affected projects | the Nx targets            | `nx affected -t build,test:quick,lint` |
 | Internal link targets                            | the link validator        | `md-internal-link`                     |
+| Word budgets of declared surfaces                | the word-budget validator | `word-budget`                          |
 
 These pass to each pass as its delegated checks. The leak screen's judgement stays with [PR Leak
-Review](pr-leak-review.md). No declared gate validates link anchors or word budgets, so anchors and
-word budgets are judgeable.
+Review](pr-leak-review.md). No declared gate validates link anchors, so anchors are judgeable.
 
 ## Cycle
 

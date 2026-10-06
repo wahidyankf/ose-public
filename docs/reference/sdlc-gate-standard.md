@@ -32,8 +32,8 @@ list` does not filter by surface. Run a declared surface with `./rhino gate run 
 The supported repository-level checks include `./rhino repo-config validate`, `./rhino gate
 validate`, `./rhino harness adapters generate`, `./rhino harness adapters validate`, `./rhino env
 validate`, `./rhino governance vendor validate`, `./rhino governance word-budget validate`, and
-`./rhino md internal-link validate`. Word-budget validation has no declared gate and runs on demand; internal-link
-validation is the pull-request gate `md-internal-link`, beside `md-readme-index`.
+`./rhino md internal-link validate`. Word-budget validation is the pull-request gate `word-budget`;
+internal-link validation is the pull-request gate `md-internal-link`, beside `md-readme-index`.
 Generated adapters are routes to canonical `AGENTS.md`,
 `.agents/agents/`, and `.agents/skills/`; never hand-edit a generated adapter.
 
@@ -86,7 +86,7 @@ One composition rule, one formatter verification rule, and one exclusion govern 
 1. **The pull-request surface holds every local gate.** `repo-config.yml` declares
    `gates.composition.pull-request.relation: at-least`, and `./rhino gate validate` fails a local gate
    that the pull-request surface lacks; today the surface also adds `md-mermaid-repository`,
-   `md-internal-link`, and `md-readme-index`. Inspect
+   `md-internal-link`, `md-readme-index`, and `word-budget`. Inspect
    the sets with `./rhino gate list --output json`.
 
 2. **Every formatter mutation has one CI verifier.** `format-staged` declares both modes: locally it
@@ -160,9 +160,8 @@ gates, in registry order, stopping at the first failure:
 
 Pre-push runs no `test:quick`, no Markdown lint, and none of `md internal-link validate`,
 `governance vendor validate`, `harness adapters validate`, or `governance word-budget validate`.
-Vendor and adapter validation run at pre-commit and on the pull-request surface. Internal-link and
-README-index validation run only on the pull-request surface; word-budget validation has no declared gate: run it on
-demand.
+Vendor and adapter validation run at pre-commit and on the pull-request surface. Internal-link,
+README-index, and word-budget validation run only on the pull-request surface.
 
 Project BDD coverage runs inside `test:quick` through static targets:
 

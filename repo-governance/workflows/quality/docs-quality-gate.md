@@ -41,8 +41,8 @@ The checker reports none of these properties. The entry and exit checks run thei
 | Internal link targets                       | the link validator         | `md-internal-link`              |
 | README index entries for every direct child | the README-index validator | `md-readme-index`               |
 
-A property no tool of its own owns leaves the table and becomes judgeable. No declared gate validates link anchors or
-word budgets, so anchors and word budgets are judgeable.
+A property no tool of its own owns leaves the table and becomes judgeable. No declared gate validates link anchors, so
+anchors are judgeable. Word budgets of declared surfaces belong to the `word-budget` gate.
 
 ## Cycle
 

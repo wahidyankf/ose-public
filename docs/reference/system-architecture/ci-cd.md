@@ -158,7 +158,7 @@ of truth for the `pull-request` surface; `gate validate` checks its composition.
 validators (markdownlint, mermaid, heading hierarchy, naming, front matter) run as declared
 `pre-commit` and `pull-request` gates; this workflow's Repository policy job runs the
 `pull-request` surface through `./rhino gate run`. The repo-wide
-`md-internal-link` and `md-readme-index` checks are declared on the `pull-request` surface only (see `./rhino gate list`).
+`md-internal-link`, `md-readme-index`, and `word-budget` checks are declared on the `pull-request` surface only (see `./rhino gate list`).
 
 ### Registry-derived CI matrix
 
@@ -425,5 +425,5 @@ graph TB
 - Format verification (PR)
 - Affected `typecheck`, `lint`, and `test:quick` (PR language jobs)
 
-Link-target validation (`md-internal-link`) and README-index validation (`md-readme-index`) run on the pull-request
-surface only. Link anchors are not validated by any gate.
+Link-target validation (`md-internal-link`), README-index validation (`md-readme-index`), and governance word
+budgets (`word-budget`) run on the pull-request surface only. Link anchors are not validated by any gate.

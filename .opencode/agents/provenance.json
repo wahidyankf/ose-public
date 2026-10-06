@@ -30,7 +30,7 @@
     {
       "id": "agent/apps-ayokoding-www-link-checker",
       "path": ".agents/agents/apps-ayokoding-www-link-checker.md",
-      "digest": "1bf2e06e0407dfbb974b6b7a85cbbb422fb500e6856128324f2268f40f86197b"
+      "digest": "d744ad97bbd4a0e4af47320f7e1f905cd46b8066f1e89f75c76e31ccb03bb0c1"
     },
     {
       "id": "agent/apps-ayokoding-www-link-fixer",
@@ -725,7 +725,7 @@
     {
       "id": "skill/specs-validating-structure",
       "path": ".agents/skills/specs-validating-structure/SKILL.md",
-      "digest": "2a169064d5e3ce59bb64ee58531c4c69271636b957bacb260ce59cfcfcffccc1"
+      "digest": "e132e415de8e7d1b7d8a978bbe1a268cbe3da8d736a06367cacc9ae2b9d11635"
     },
     {
       "id": "skill/tooling-nx",

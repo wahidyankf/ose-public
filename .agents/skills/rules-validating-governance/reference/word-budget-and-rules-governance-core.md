@@ -4,7 +4,7 @@
 
 Word budgets for `AGENTS.md`, `CLAUDE.md`, and every other auto-loaded instruction surface are
 owned by the deterministic `./rhino governance word-budget validate` command, declared as the
-`word-budget` gate on the `pull-request` surface (see `./rhino gate list`). Thresholds
+`word-budget` gate at `pre-commit` and on the `pull-request` surface (see `./rhino gate list`). Thresholds
 live only in the `policies.governance.word-budget` section of `repo-config.yml` — never restate them here,
 since a second copy drifts from config and produces contradictory verdicts.
 

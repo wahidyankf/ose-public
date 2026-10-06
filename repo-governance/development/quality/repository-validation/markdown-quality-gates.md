@@ -12,7 +12,7 @@ every command, argument, and surface below — read `repo-config.yml` when this 
 disagree, and run `./rhino gate list` to see the current surfaces.
 
 Nothing invokes these by hand. Each runs on the `pull-request` surface, and every one except the repo-wide
-`md-mermaid-repository`, `md-internal-link`, and `md-readme-index` also runs at `pre-commit`; the hooks and
+`md-mermaid-repository` also runs at `pre-commit`; the hooks and
 `pr-quality-gate.yml` reach them through `./rhino gate run`. Every `./rhino` command below runs
 the pinned external RHINO executable, which reads its policy from `repo-config.yml`
 `policies.markdown`.
@@ -52,9 +52,9 @@ Full-repo link scan. Validates that every local Markdown link's target path reso
 repository; it does not check `#fragment` anchors. Sources matching `policies.markdown.internal-link.exclude-sources`
 (`plans/done/**`, the published content trees, and the generated `.claude/skills/**` route stubs) are skipped.
 
-**Surfaces**: `pull-request` only, as gate `md-internal-link`; run it directly before pushing link
-changes. A repo-wide scan belongs outside pre-commit because adding, deleting, or renaming any
-file can break links in untouched files.
+**Surfaces**: `pre-commit` and `pull-request`, as gate `md-internal-link`. Both scan the whole tree,
+because adding, deleting, or renaming any file can break links in untouched files; the full scan
+takes about two seconds, so the commit that breaks a link is the one that fails.
 
 ## 3. README Index Validation
 
@@ -63,8 +63,8 @@ file can break links in untouched files.
 Checks that each tree in `policies.markdown.readme-index.trees` has a root `README.md` linking every direct child file and
 subdirectory; see [README Completeness](../../../conventions/structure/governance-readme-completeness.md).
 
-**Surfaces**: `pull-request` only, for the same reason as link validation: adding or removing a directory changes an
-index the staged paths never touch.
+**Surfaces**: `pre-commit` and `pull-request`, each over every declared tree, for the same reason as link
+validation: adding or removing a directory changes an index the staged paths never touch.
 
 ## 4. Heading Hierarchy Validation
 

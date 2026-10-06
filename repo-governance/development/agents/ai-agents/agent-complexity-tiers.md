@@ -11,7 +11,7 @@ Agent files are organized into **three complexity tiers**. The tiers describe sc
 depth, not file size: every agent definition is held to the same limit by the
 [Governance Word-Budget Convention](../../../conventions/structure/governance-word-budget.md),
 whose thresholds live in `repo-config.yml` and are checked by `./rhino governance word-budget validate`, the
-pull-request `word-budget` gate.
+`word-budget` gate at pre-commit and on pull requests.
 
 **Rationale**: Research shows LLMs follow ~150-200 instructions reliably, with quality degrading as count increases. While agents are only loaded when spawned (unlike AGENTS.md which is universally included), keeping them focused improves effectiveness.
 

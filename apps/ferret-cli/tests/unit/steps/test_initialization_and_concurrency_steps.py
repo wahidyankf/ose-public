@@ -19,6 +19,7 @@ from support.events import encode, event_document
 from support.fakes import FAKE_HOME, FIXED_NOW, FakeInput, FakeMonotonic, FakeTelemetry, World, make_world
 from support.invoke import run_runtime
 from support.populate import FAR_FUTURE
+from support.results import value_of
 from support.retention import expired_events
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature"
@@ -212,7 +213,7 @@ def then_every_row_matches_and_none_is_duplicated(session: Session) -> None:
     assert len(rows) == len(burst_rows(session))
     for attempt in submitted(session):
         assert rows[attempt.document["eventId"]].to_document() == attempt.document
-        assert rows[attempt.document["eventId"]] == event_from_document(attempt.document, now=FAR_FUTURE)
+        assert rows[attempt.document["eventId"]] == value_of(event_from_document(attempt.document, now=FAR_FUTURE))
 
 
 @then("every adapter returns within 1000 milliseconds")

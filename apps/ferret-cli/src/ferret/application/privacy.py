@@ -10,7 +10,7 @@ from collections.abc import Mapping, Sequence
 from datetime import datetime
 from typing import Any, Final, cast
 
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, or_raise
 from ferret.domain.event import Event, event_from_document
 
 CANONICAL_LIMIT_BYTES: Final = 16 * 1024
@@ -101,7 +101,7 @@ def validate_capture(raw: bytes, *, now: datetime) -> Event:
     category = forbidden_category(document)
     if category is not None:
         raise FerretError("ferret.event.invalid", field=category)
-    return event_from_document(document, now=now)
+    return or_raise(event_from_document(document, now=now))
 
 
 def project_hook_payload(raw: bytes, allowed_paths: Sequence[tuple[str, ...]]) -> dict[str, Scalar]:

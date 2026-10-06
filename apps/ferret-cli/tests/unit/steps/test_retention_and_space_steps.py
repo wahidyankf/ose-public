@@ -11,6 +11,7 @@ from ferret.domain.space import MIB, StorageFacts
 from support.fakes import FIXED_NOW, FakeMonotonic, World
 from support.invoke import Ran, run_cli, run_runtime
 from support.populate import stamp, world_with
+from support.results import value_of
 from support.retention import cutoff_stamp, edge_events, expired_events, fresh_events
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature"
@@ -45,7 +46,7 @@ def event_ids(ran: Ran | None) -> list[str]:
 
 def expired_held(world: World) -> int:
     """How many rows the fake store still holds whose retention has ended at the fixed moment."""
-    return sum(held.expires_at <= stamp(FIXED_NOW) for held in world.events.stored)
+    return sum(value_of(held.expires_at) <= stamp(FIXED_NOW) for held in world.events.stored)
 
 
 def status_of(world: World) -> dict[str, Any]:

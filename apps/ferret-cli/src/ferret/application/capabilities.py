@@ -7,6 +7,7 @@ from typing import Any, Final
 from ferret.application.maintenance import open_store
 from ferret.application.ports import CaptureResult, Runtime
 from ferret.domain.capability import CapabilitySnapshot, snapshot_from_document
+from ferret.domain.errors import or_raise
 
 # The reporting dimensions a capability gates. Every other dimension is read from a field each event states itself.
 CAPABILITY_OF_DIMENSION: Final[Mapping[str, str]] = {
@@ -36,7 +37,7 @@ def record_snapshot(runtime: Runtime, document: Mapping[str, Any]) -> CaptureRes
 
     The same snapshot ID with the same content is a duplicate, and with different content an idempotency conflict.
     """
-    snapshot = snapshot_from_document(document, now=runtime.clock.now())
+    snapshot = or_raise(snapshot_from_document(document, now=runtime.clock.now()))
     open_store(runtime)
     return runtime.capabilities.store_snapshot(snapshot)
 

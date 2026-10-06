@@ -19,6 +19,7 @@ from support.burst import expected_rows, integrity_check, run_burst, stored_rows
 from support.busy import PLANNED_ATTEMPT_TIMEOUT_MS, record_busy_timeouts, stepping_clock
 from support.events import VECTOR_DOCUMENT, VECTOR_HASH, event_document
 from support.fakes import FakeMonotonic
+from support.results import value_of
 
 NOW = datetime(2026, 9, 18, 8, 15, 31, tzinfo=UTC)
 LATER = datetime(2030, 1, 1, tzinfo=UTC)
@@ -55,7 +56,7 @@ def database(tmp_path: Path) -> Path:
 
 
 def make_event(*, now: datetime = NOW, **overrides: Any) -> Event:
-    return event_from_document(event_document(**overrides), now=now)
+    return value_of(event_from_document(event_document(**overrides), now=now))
 
 
 def rows(database: Path, table: str) -> list[dict[str, Any]]:

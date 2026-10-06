@@ -1,18 +1,18 @@
 """The canonical Event: its closed schema, per-field and cross-field invariants, and the fixed-order SHA-256 hash."""
 
 import hashlib
-import hmac
 import re
 from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Final, NamedTuple
 
+from typekit import Err, Ok
+
 from ferret.domain import fields
 from ferret.domain.canonical import canonical_bytes
-from ferret.domain.errors import FerretError, or_raise
-from ferret.domain.storage import RETENTION_DAYS
-from ferret.domain.timestamps import add_days, format_timestamp, parse_timestamp
+from ferret.domain.errors import FerretError, FerretResult, as_internal_failure
+from ferret.domain.retention import expiry_of
 
 EVENT_SCHEMA_VERSION: Final = "1.0"
 MAX_DURATION_MS: Final = 86_400_000
@@ -113,139 +113,148 @@ class Event:
         return {name: getattr(self, attribute) for name, attribute in DOCUMENT_FIELDS}
 
     @property
-    def expires_at(self) -> str:
+    def expires_at(self) -> FerretResult[str]:
         """The logical retention boundary: thirty days after the event was captured."""
-        captured = or_raise(parse_timestamp(self.captured_at))
-        return or_raise(format_timestamp(add_days(captured, RETENTION_DAYS)))
+        return expiry_of(self.captured_at)
 
 
-def canonical_event_bytes(event: Event) -> bytes:
-    """The bytes the hash covers: every property except the hash, in the fixed order, compact and unescaped."""
-    return or_raise(
-        canonical_bytes({name: value for name, value in event.to_document().items() if name != "eventHash"})
+def canonical_event_bytes(event: Event) -> FerretResult[bytes]:
+    """The bytes the hash covers: every property except the hash, in the fixed order, compact and unescaped.
+
+    A float among the typed fields is a defect no input reaches, so it is an internal failure.
+    """
+    hashed = {name: value for name, value in event.to_document().items() if name != "eventHash"}
+    return canonical_bytes(hashed).map_err(as_internal_failure)
+
+
+def event_hash(event: Event) -> FerretResult[str]:
+    """SHA-256 of the canonical bytes as 64 lowercase hexadecimal characters."""
+    return canonical_event_bytes(event).map(lambda document: hashlib.sha256(document).hexdigest())
+
+
+def _schema_version(value: object) -> FerretResult[str]:
+    return Ok(EVENT_SCHEMA_VERSION) if value == EVENT_SCHEMA_VERSION else Err(fields.invalid("schemaVersion"))
+
+
+def _name(value: object, field: str, *, logical: bool) -> FerretResult[str | None]:
+    """An optional bounded identifier: see ``fields.is_name`` for what one is."""
+    if value is None:
+        return Ok(None)
+    return fields.text(value, field).flat_map(
+        lambda text: Ok(text) if fields.is_name(text, logical=logical) else Err(fields.invalid(field))
     )
 
 
-def event_hash(event: Event) -> str:
-    """SHA-256 of the canonical bytes as 64 lowercase hexadecimal characters."""
-    return hashlib.sha256(canonical_event_bytes(event)).hexdigest()
-
-
-def _schema_version(value: object) -> str:
-    if value != EVENT_SCHEMA_VERSION:
-        raise fields.invalid("schemaVersion")
-    return EVENT_SCHEMA_VERSION
-
-
-def _name(value: object, field: str, *, logical: bool) -> str | None:
-    """An optional bounded identifier: see ``fields.is_name`` for what one is."""
+def _duration(value: object) -> FerretResult[int | None]:
     if value is None:
-        return None
-    text = or_raise(fields.text(value, field))
-    if not fields.is_name(text, logical=logical):
-        raise fields.invalid(field)
-    return text
-
-
-def _duration(value: object) -> int | None:
-    if value is None:
-        return None
+        return Ok(None)
     if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= MAX_DURATION_MS:
-        raise fields.invalid("durationMs")
-    return value
+        return Err(fields.invalid("durationMs"))
+    return Ok(value)
 
 
-def _check_subject(values: Mapping[str, Any], shape: _Shape) -> None:
+def _check_subject(values: Mapping[str, Any], shape: _Shape) -> FerretResult[None]:
     for name in _NAME_FIELDS:
         if values[name] is not None and name != shape.subject:
-            raise fields.invalid(name)
+            return Err(fields.invalid(name))
     visibility = values["subjectVisibility"]
     if shape.subject is None:
         if visibility != "not_applicable":
-            raise fields.invalid("subjectVisibility")
-        return
+            return Err(fields.invalid("subjectVisibility"))
+        return Ok(None)
     named = values[shape.subject] is not None
     if visibility in KNOWN_VISIBILITIES:
         if not named:
-            raise fields.invalid("subjectVisibility")
+            return Err(fields.invalid("subjectVisibility"))
     elif visibility != "unknown" or named:
-        raise fields.invalid("subjectVisibility")
+        return Err(fields.invalid("subjectVisibility"))
+    return Ok(None)
 
 
-def _check_outcome(values: Mapping[str, Any], shape: _Shape) -> None:
+def _check_outcome(values: Mapping[str, Any], shape: _Shape) -> FerretResult[None]:
     outcome, visibility = values["outcome"], values["outcomeVisibility"]
     if shape.outcome is None:
         if outcome != "not_applicable":
-            raise fields.invalid("outcome")
+            return Err(fields.invalid("outcome"))
         if visibility != "not_applicable":
-            raise fields.invalid("outcomeVisibility")
+            return Err(fields.invalid("outcomeVisibility"))
     elif visibility in KNOWN_VISIBILITIES:
         allowed = TERMINAL_OUTCOMES if shape.outcome == "terminal" else {shape.outcome}
         if outcome not in allowed:
-            raise fields.invalid("outcome")
+            return Err(fields.invalid("outcome"))
     elif visibility == "unknown" and shape.outcome == "terminal":
         if outcome != "unknown":
-            raise fields.invalid("outcome")
+            return Err(fields.invalid("outcome"))
     else:
-        raise fields.invalid("outcomeVisibility")
+        return Err(fields.invalid("outcomeVisibility"))
+    return Ok(None)
 
 
-def _check_duration(values: Mapping[str, Any], shape: _Shape) -> None:
+def _check_duration(values: Mapping[str, Any], shape: _Shape) -> FerretResult[None]:
     duration, visibility = values["durationMs"], values["durationVisibility"]
     if not shape.duration:
         if duration is not None:
-            raise fields.invalid("durationMs")
+            return Err(fields.invalid("durationMs"))
         if visibility != "not_applicable":
-            raise fields.invalid("durationVisibility")
+            return Err(fields.invalid("durationVisibility"))
     elif visibility in KNOWN_VISIBILITIES:
         if duration is None:
-            raise fields.invalid("durationMs")
+            return Err(fields.invalid("durationMs"))
     elif visibility != "unknown" or duration is not None:
-        raise fields.invalid("durationMs" if visibility == "unknown" else "durationVisibility")
+        return Err(fields.invalid("durationMs" if visibility == "unknown" else "durationVisibility"))
+    return Ok(None)
 
 
-def event_from_document(document: Mapping[str, Any], *, now: datetime) -> Event:
-    """Validate one decoded JSON object into an Event, or raise ``invalid_event`` naming at most one schema field.
+def _checks(now: datetime) -> tuple[tuple[str, fields.Check], ...]:
+    """One check per property, in document order: each reads the property's raw value and returns its normalized one."""
+    return (
+        ("schemaVersion", _schema_version),
+        ("eventId", lambda value: fields.matching(value, "eventId", fields.UUID_V4)),
+        ("eventHash", lambda value: fields.matching(value, "eventHash", fields.HASH)),
+        ("occurredAt", lambda value: fields.timestamp(value, "occurredAt", now)),
+        ("capturedAt", lambda value: fields.timestamp(value, "capturedAt", now)),
+        ("harness", lambda value: fields.matching(value, "harness", fields.HARNESS)),
+        ("harnessVersion", lambda value: fields.optional(value, "harnessVersion", fields.HARNESS_VERSION)),
+        ("installationId", lambda value: fields.matching(value, "installationId", fields.UUID_V4)),
+        ("workspaceId", lambda value: fields.matching(value, "workspaceId", fields.WORKSPACE_ID)),
+        ("sessionId", lambda value: fields.matching(value, "sessionId", _SESSION_ID)),
+        ("parentSessionId", lambda value: fields.optional(value, "parentSessionId", _SESSION_ID)),
+        ("eventType", lambda value: fields.member(value, "eventType", EVENT_TYPES)),
+        ("agentName", lambda value: _name(value, "agentName", logical=False)),
+        ("skillName", lambda value: _name(value, "skillName", logical=False)),
+        ("toolName", lambda value: _name(value, "toolName", logical=True)),
+        ("outcome", lambda value: fields.member(value, "outcome", OUTCOMES)),
+        ("durationMs", _duration),
+        ("subjectVisibility", lambda value: fields.member(value, "subjectVisibility", VISIBILITIES)),
+        ("outcomeVisibility", lambda value: fields.member(value, "outcomeVisibility", VISIBILITIES)),
+        ("durationVisibility", lambda value: fields.member(value, "durationVisibility", VISIBILITIES)),
+    )
+
+
+def _shaped(values: Mapping[str, Any]) -> FerretResult[Event]:
+    """The Event of normalized properties, provided they obey the invariants of its event type."""
+    shape = _SHAPES[values["eventType"]]
+    return (
+        _check_subject(values, shape)
+        .flat_map(lambda _: _check_outcome(values, shape))
+        .flat_map(lambda _: _check_duration(values, shape))
+        .map(lambda _: Event(**{attribute: values[name] for name, attribute in DOCUMENT_FIELDS}))
+    )
+
+
+def event_from_document(document: Mapping[str, Any], *, now: datetime) -> FerretResult[Event]:
+    """Validate one decoded JSON object into an Event, or an ``Err`` of ``invalid_event`` naming at most one field.
 
     The object must carry exactly the contract's properties. Each is checked in document order, then the
     event-type invariants, and last the declared hash against the one recomputed from the normalized fields.
     """
     if any(key not in _PROPERTIES for key in document):
-        raise FerretError("ferret.event.invalid")
+        return Err(FerretError("ferret.event.invalid"))
     for name, _ in DOCUMENT_FIELDS:
         if name not in document:
-            raise fields.invalid(name)
-    values: dict[str, Any] = {
-        "schemaVersion": _schema_version(document["schemaVersion"]),
-        "eventId": or_raise(fields.matching(document["eventId"], "eventId", fields.UUID_V4)),
-        "eventHash": or_raise(fields.matching(document["eventHash"], "eventHash", fields.HASH)),
-        "occurredAt": or_raise(fields.timestamp(document["occurredAt"], "occurredAt", now)),
-        "capturedAt": or_raise(fields.timestamp(document["capturedAt"], "capturedAt", now)),
-        "harness": or_raise(fields.matching(document["harness"], "harness", fields.HARNESS)),
-        "harnessVersion": or_raise(
-            fields.optional(document["harnessVersion"], "harnessVersion", fields.HARNESS_VERSION)
-        ),
-        "installationId": or_raise(fields.matching(document["installationId"], "installationId", fields.UUID_V4)),
-        "workspaceId": or_raise(fields.matching(document["workspaceId"], "workspaceId", fields.WORKSPACE_ID)),
-        "sessionId": or_raise(fields.matching(document["sessionId"], "sessionId", _SESSION_ID)),
-        "parentSessionId": or_raise(fields.optional(document["parentSessionId"], "parentSessionId", _SESSION_ID)),
-        "eventType": or_raise(fields.member(document["eventType"], "eventType", EVENT_TYPES)),
-        "agentName": _name(document["agentName"], "agentName", logical=False),
-        "skillName": _name(document["skillName"], "skillName", logical=False),
-        "toolName": _name(document["toolName"], "toolName", logical=True),
-        "outcome": or_raise(fields.member(document["outcome"], "outcome", OUTCOMES)),
-        "durationMs": _duration(document["durationMs"]),
-        "subjectVisibility": or_raise(fields.member(document["subjectVisibility"], "subjectVisibility", VISIBILITIES)),
-        "outcomeVisibility": or_raise(fields.member(document["outcomeVisibility"], "outcomeVisibility", VISIBILITIES)),
-        "durationVisibility": or_raise(
-            fields.member(document["durationVisibility"], "durationVisibility", VISIBILITIES)
-        ),
-    }
-    shape = _SHAPES[values["eventType"]]
-    _check_subject(values, shape)
-    _check_outcome(values, shape)
-    _check_duration(values, shape)
-    event = Event(**{attribute: values[name] for name, attribute in DOCUMENT_FIELDS})
-    if not hmac.compare_digest(event_hash(event), event.event_hash):
-        raise fields.invalid("eventHash")
-    return event
+            return Err(fields.invalid(name))
+    return (
+        fields.checked_values(document, _checks(now))
+        .flat_map(_shaped)
+        .flat_map(lambda event: fields.sealed(event, event_hash(event), event.event_hash, "eventHash"))
+    )

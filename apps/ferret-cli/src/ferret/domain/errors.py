@@ -84,6 +84,11 @@ class FerretError(Exception):
 type FerretResult[T] = Result[T, FerretError]
 
 
+def as_internal_failure(_cause: object) -> FerretError:
+    """The closed failure for a defect no input reaches, whatever its cause: for ``map_err`` to turn a cause into."""
+    return FerretError("ferret.internal.failure")
+
+
 def or_raise[T](result: Result[T, Exception]) -> T:
     """The value of an ``Ok``, or the error of an ``Err`` raised again: the Transition bridge of tech-docs/004.
 

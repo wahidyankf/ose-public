@@ -5,6 +5,7 @@ import json
 from typing import Any
 
 import pytest
+from typekit import Ok
 
 from ferret.application.capabilities import DimensionReport, dimension_visibility, record_snapshot, report_dimension
 from ferret.application.initialization import initialize_store
@@ -17,6 +18,7 @@ from ferret.domain.capability import (
 )
 from ferret.domain.errors import FerretError
 from support.fakes import FIXED_NOW, World, make_world
+from support.results import refusal_of, value_of
 from support.snapshots import (
     DOCUMENT_ORDER,
     HASHED_ORDER,
@@ -42,7 +44,7 @@ SECOND_ID = "00000000-0000-4000-8000-000000000005"
 
 
 def vector_snapshot() -> CapabilitySnapshot:
-    return snapshot_from_document(VECTOR_DOCUMENT, now=NOW)
+    return value_of(snapshot_from_document(VECTOR_DOCUMENT, now=NOW))
 
 
 def replaced(**fields: Any) -> dict[str, Any]:
@@ -73,9 +75,7 @@ def unchecked(document: dict[str, Any]) -> CapabilitySnapshot:
 
 
 def refusal(document: dict[str, Any]) -> FerretError:
-    with pytest.raises(FerretError) as caught:
-        snapshot_from_document(document, now=NOW)
-    return caught.value
+    return refusal_of(snapshot_from_document(document, now=NOW))
 
 
 def initialized_world() -> World:
@@ -93,8 +93,8 @@ def refused_recording(world: World, document: dict[str, Any]) -> FerretError:
 def test_fixed_snapshot_vector() -> None:
     snapshot = vector_snapshot()
 
-    assert canonical_snapshot_bytes(snapshot) == VECTOR_BYTES
-    assert snapshot_hash(snapshot) == VECTOR_HASH
+    assert canonical_snapshot_bytes(snapshot) == Ok(VECTOR_BYTES)
+    assert snapshot_hash(snapshot) == Ok(VECTOR_HASH)
     assert snapshot.snapshot_hash == VECTOR_HASH
 
 
@@ -107,7 +107,13 @@ def test_the_document_form_keeps_the_normative_property_and_item_order() -> None
 
 
 def test_the_snapshot_expires_thirty_days_after_it_was_captured() -> None:
-    assert vector_snapshot().expires_at == "2026-10-18T08:00:00.000Z"
+    assert vector_snapshot().expires_at == Ok("2026-10-18T08:00:00.000Z")
+
+
+def test_a_snapshot_captured_at_no_real_moment_has_no_expiry() -> None:
+    error = refusal_of(unchecked({**VECTOR_DOCUMENT, "capturedAt": "yesterday"}).expires_at)
+
+    assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.internal.failure", 2, None, False)
 
 
 def test_a_snapshot_is_immutable_and_holds_its_capabilities_as_a_tuple() -> None:
@@ -133,15 +139,29 @@ def test_altering_any_hashed_field_changes_the_digest(field: str) -> None:
     }
     altered = {**VECTOR_DOCUMENT, field: replacements[field]}
 
-    assert canonical_snapshot_bytes(unchecked(altered)) != VECTOR_BYTES
-    assert snapshot_hash(unchecked(altered)) != VECTOR_HASH
+    assert value_of(canonical_snapshot_bytes(unchecked(altered))) != VECTOR_BYTES
+    assert value_of(snapshot_hash(unchecked(altered))) != VECTOR_HASH
 
 
 def test_the_hash_excludes_the_hash_field_itself() -> None:
     tampered = {**VECTOR_DOCUMENT, "snapshotHash": "0" * 64}
 
-    assert canonical_snapshot_bytes(unchecked(tampered)) == VECTOR_BYTES
-    assert snapshot_hash(unchecked(tampered)) == VECTOR_HASH
+    assert canonical_snapshot_bytes(unchecked(tampered)) == Ok(VECTOR_BYTES)
+    assert snapshot_hash(unchecked(tampered)) == Ok(VECTOR_HASH)
+
+
+@pytest.mark.parametrize("field", ["harnessVersion", "capturedAt"])
+def test_a_snapshot_holding_a_float_has_no_canonical_bytes_and_no_hash(field: str) -> None:
+    snapshot = unchecked({**VECTOR_DOCUMENT, field: 1.5})
+
+    for result in (canonical_snapshot_bytes(snapshot), snapshot_hash(snapshot)):
+        error = refusal_of(result)
+        assert (error.code, error.exit_code, error.field, error.retryable) == (
+            "ferret.internal.failure",
+            2,
+            None,
+            False,
+        )
 
 
 def test_reordered_and_pretty_printed_input_hashes_identically() -> None:
@@ -149,10 +169,10 @@ def test_reordered_and_pretty_printed_input_hashes_identically() -> None:
     scrambled["capabilities"] = [dict(reversed(list(item.items()))) for item in VECTOR_DOCUMENT["capabilities"]]
     pretty = json.loads(json.dumps(scrambled, indent=4, sort_keys=True))
 
-    snapshot = snapshot_from_document(pretty, now=NOW)
+    snapshot = value_of(snapshot_from_document(pretty, now=NOW))
 
-    assert snapshot_hash(snapshot) == VECTOR_HASH
-    assert canonical_snapshot_bytes(snapshot) == VECTOR_BYTES
+    assert snapshot_hash(snapshot) == Ok(VECTOR_HASH)
+    assert canonical_snapshot_bytes(snapshot) == Ok(VECTOR_BYTES)
 
 
 VALID = [
@@ -173,11 +193,11 @@ VALID = [
 
 @pytest.mark.parametrize("document", VALID)
 def test_a_valid_snapshot_round_trips_through_its_document_form(document: dict[str, Any]) -> None:
-    snapshot = snapshot_from_document(document, now=NOW)
+    snapshot = value_of(snapshot_from_document(document, now=NOW))
 
     assert snapshot.to_document() == document
-    assert canonical_snapshot_bytes(snapshot) == oracle_bytes(document)
-    assert snapshot.snapshot_hash == snapshot_hash(snapshot)
+    assert canonical_snapshot_bytes(snapshot) == Ok(oracle_bytes(document))
+    assert Ok(snapshot.snapshot_hash) == snapshot_hash(snapshot)
 
 
 INVALID = [
@@ -380,8 +400,10 @@ CAPABILITY_OF = {
 @pytest.mark.parametrize("dimension", CAPABILITY_OF)
 def test_a_dimension_is_as_visible_as_its_capability_says(dimension: str, state: str) -> None:
     source = "unavailable" if state == "unknown" else "official_hook"
-    snapshot = snapshot_from_document(
-        snapshot_document(capabilities=[capability(CAPABILITY_OF[dimension], state, source)]), now=NOW
+    snapshot = value_of(
+        snapshot_from_document(
+            snapshot_document(capabilities=[capability(CAPABILITY_OF[dimension], state, source)]), now=NOW
+        )
     )
 
     assert dimension_visibility(snapshot, dimension) == state
@@ -389,7 +411,9 @@ def test_a_dimension_is_as_visible_as_its_capability_says(dimension: str, state:
 
 @pytest.mark.parametrize("dimension", CAPABILITY_OF)
 def test_a_dimension_whose_capability_the_snapshot_omits_is_unknown(dimension: str) -> None:
-    snapshot = snapshot_from_document(snapshot_document(capabilities=[capability("session_lifecycle")]), now=NOW)
+    snapshot = value_of(
+        snapshot_from_document(snapshot_document(capabilities=[capability("session_lifecycle")]), now=NOW)
+    )
 
     assert dimension_visibility(snapshot, dimension) == "unknown"
 
@@ -419,8 +443,8 @@ def test_a_zero_count_is_a_fact_only_where_the_dimension_is_visible(
     state: str, recorded: int, expected: DimensionReport
 ) -> None:
     source = "unavailable" if state == "unknown" else "official_hook"
-    snapshot = snapshot_from_document(
-        snapshot_document(capabilities=[capability("skill_invocation", state, source)]), now=NOW
+    snapshot = value_of(
+        snapshot_from_document(snapshot_document(capabilities=[capability("skill_invocation", state, source)]), now=NOW)
     )
 
     assert report_dimension(snapshot, "skill", recorded=recorded) == expected

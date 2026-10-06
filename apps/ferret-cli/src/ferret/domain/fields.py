@@ -2,18 +2,24 @@
 
 A rejected field is an ``Err`` of ``invalid_event`` naming only the schema field, never the offending value. That one
 closed code serves events and capability snapshots alike, because the failure contract has no other invalid-document
-code.
+code. The two checks that run over a whole document are here too: every property through its own check, and the
+declared hash against the recomputed one.
 """
 
+import hmac
 import re
 import unicodedata
+from collections.abc import Callable, Iterable, Mapping
 from datetime import datetime, timedelta
-from typing import Final
+from typing import Any, Final
 
 from typekit import Err, Ok
 
 from ferret.domain.errors import FerretError, FerretResult
 from ferret.domain.timestamps import parse_timestamp
+
+# One property's check: its raw value in, its normalized value or the refusal out.
+type Check = Callable[[Any], FerretResult[Any]]
 
 FUTURE_SKEW: Final = timedelta(hours=24)
 MAX_NAME_LENGTH: Final = 128
@@ -78,4 +84,22 @@ def timestamp(value: object, field: str, now: datetime) -> FerretResult[str]:
             .map_err(lambda _: invalid(field))
             .flat_map(lambda moment: _accepted(moment <= now + FUTURE_SKEW, normalized, field))
         )
+    )
+
+
+def checked_values(document: Mapping[str, Any], checks: Iterable[tuple[str, Check]]) -> FerretResult[dict[str, Any]]:
+    """Every named property of ``document`` normalized by its check, or the refusal of the first one that fails."""
+    values: dict[str, Any] = {}
+    for name, check in checks:
+        checked = check(document[name])
+        if isinstance(checked, Err):
+            return checked
+        values[name] = checked.value
+    return Ok(values)
+
+
+def sealed[T](value: T, recomputed: FerretResult[str], declared: str, field: str) -> FerretResult[T]:
+    """``value``, provided the hash recomputed from its fields is the one it declared."""
+    return recomputed.flat_map(
+        lambda digest: Ok(value) if hmac.compare_digest(digest, declared) else Err(invalid(field))
     )

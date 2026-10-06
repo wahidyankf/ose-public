@@ -10,7 +10,7 @@ from typing import Final, Protocol
 
 from ferret.application.ports import Runtime
 from ferret.application.queries import scan_events
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, or_raise
 from ferret.domain.event import KNOWN_VISIBILITIES, Event
 from ferret.domain.query import Options, single_value
 
@@ -131,7 +131,7 @@ class _OutcomeTally:
 
 def parse_group_by(options: Options, allowed: tuple[str, ...]) -> tuple[str, ...]:
     """One to three unique dimensions from ``allowed``, comma separated and kept in the order the caller wrote them."""
-    raw = single_value(options, "--group-by", refusal="ferret.args.invalid")
+    raw = or_raise(single_value(options, "--group-by", refusal="ferret.args.invalid"))
     names = () if raw is None else tuple(raw.split(","))
     if not 1 <= len(names) <= MAX_DIMENSIONS or len(set(names)) != len(names) or not set(names) <= set(allowed):
         raise FerretError("ferret.args.invalid")

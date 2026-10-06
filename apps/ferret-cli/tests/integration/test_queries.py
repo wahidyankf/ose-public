@@ -16,6 +16,7 @@ from ferret.domain.query import EventCriteria, Position, criteria_from_options
 from support.fakes import FakeEvents
 from support.machine import Machine, make_machine
 from support.populate import WORKSPACE_A, WORKSPACE_B, make_event, mixed_events, numbers, stamp
+from support.results import value_of
 
 NOW = datetime(2026, 9, 18, 8, 0, 0, tzinfo=UTC)
 CAPACITY = 500
@@ -80,13 +81,13 @@ def test_the_real_reader_returns_exactly_what_the_fake_returns(
     newest_first: bool,
 ) -> None:
     real, fake = filled
-    criteria = criteria_from_options(options, now=NOW)
+    criteria = value_of(criteria_from_options(options, now=NOW))
 
     from_sqlite = read_all(real, criteria, newest_first=newest_first)
 
     assert from_sqlite == read_all(fake, criteria, newest_first=newest_first)
     assert bool(from_sqlite) is expects_rows
-    assert all(event.expires_at > stamp(NOW) for event in from_sqlite)
+    assert all(value_of(event.expires_at) > stamp(NOW) for event in from_sqlite)
 
 
 @pytest.mark.parametrize("limit", [1, 2, 7, 61])
@@ -95,7 +96,7 @@ def test_a_limit_takes_the_first_rows_of_the_order(
     filled: tuple[SQLiteEventRepository, FakeEvents], limit: int, newest_first: bool
 ) -> None:
     real, _ = filled
-    criteria = criteria_from_options({"--all-time": ()}, now=NOW)
+    criteria = value_of(criteria_from_options({"--all-time": ()}, now=NOW))
     everything = read_all(real, criteria, newest_first=newest_first)
 
     assert real.read(criteria, now=NOW, newest_first=newest_first, after=None, limit=limit) == everything[:limit]
@@ -106,7 +107,7 @@ def test_every_row_is_a_resumption_point_that_continues_strictly_after_it(
     filled: tuple[SQLiteEventRepository, FakeEvents], newest_first: bool
 ) -> None:
     real, _ = filled
-    criteria = criteria_from_options({"--all-time": ()}, now=NOW)
+    criteria = value_of(criteria_from_options({"--all-time": ()}, now=NOW))
     everything = read_all(real, criteria, newest_first=newest_first)
 
     for index, event in enumerate(everything):
@@ -126,7 +127,7 @@ def test_paging_in_any_batch_size_visits_every_row_exactly_once(
     filled: tuple[SQLiteEventRepository, FakeEvents], newest_first: bool, size: int
 ) -> None:
     real, _ = filled
-    criteria = criteria_from_options({"--all-time": ()}, now=NOW)
+    criteria = value_of(criteria_from_options({"--all-time": ()}, now=NOW))
     everything = read_all(real, criteria, newest_first=newest_first)
     seen: list[Event] = []
     after: Position | None = None
@@ -143,8 +144,10 @@ def test_equal_timestamps_are_ordered_by_event_id_in_both_directions(
     filled: tuple[SQLiteEventRepository, FakeEvents],
 ) -> None:
     real, _ = filled
-    criteria = criteria_from_options(
-        {"--from": (stamp(NOW - timedelta(minutes=5)),), "--to": (stamp(NOW + timedelta(minutes=1)),)}, now=NOW
+    criteria = value_of(
+        criteria_from_options(
+            {"--from": (stamp(NOW - timedelta(minutes=5)),), "--to": (stamp(NOW + timedelta(minutes=1)),)}, now=NOW
+        )
     )
 
     newest = real.read(criteria, now=NOW, newest_first=True, after=None, limit=CAPACITY)
@@ -168,7 +171,7 @@ def test_expiry_is_judged_against_the_injected_now(
     event = make_event(1, ago=timedelta(days=10), now=NOW)
     repository.capture(event)
     moment = NOW + timedelta(days=20) + lead
-    criteria = criteria_from_options({"--all-time": ()}, now=moment)
+    criteria = value_of(criteria_from_options({"--all-time": ()}, now=moment))
 
     read = repository.read(criteria, now=moment, newest_first=True, after=None, limit=10)
     found = repository.find(event.event_id, now=moment)
@@ -214,7 +217,7 @@ def test_the_read_statement_walks_an_index_and_never_sorts(
     keyset: bool,
 ) -> None:
     _, fake = filled
-    criteria = criteria_from_options(options, now=NOW)
+    criteria = value_of(criteria_from_options(options, now=NOW))
     after = Position(fake.stored[20].occurred_at, fake.stored[20].event_id) if keyset else None
     statement, parameters = read_statement(criteria, now=NOW, newest_first=newest_first, after=after, limit=100)
 

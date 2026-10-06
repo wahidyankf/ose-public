@@ -57,11 +57,11 @@ def build_handlers(runtime_factory: RuntimeFactory) -> Mapping[CommandPath, Hand
     """The handler registry over one runtime factory, called once per invocation so ``version`` never needs it."""
 
     def init(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        stdout.write(render_init(initialize_store(runtime_factory()), request.output))
+        stdout.write(render_init(or_raise(initialize_store(runtime_factory())), request.output))
         return EXIT_SUCCESS
 
     def capture(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        stdout.write(render_capture(capture_event(runtime_factory()), request.output))
+        stdout.write(render_capture(or_raise(capture_event(runtime_factory())), request.output))
         return EXIT_SUCCESS
 
     def capture_from_hook(request: Request, stdout: TextIO, stderr: TextIO) -> int:
@@ -74,7 +74,7 @@ def build_handlers(runtime_factory: RuntimeFactory) -> Mapping[CommandPath, Hand
         # the record, and a callback that raised while writing one would be worse than one that wrote none.
         try:
             (harness,), (event,) = request.options["--harness"], request.options["--event"]
-            capture_hook(runtime_factory(), harness=harness, event=event)
+            or_raise(capture_hook(runtime_factory(), harness=harness, event=event))
         except FerretError as error:
             _record_failure(runtime_factory, error.code)
         except Exception:
@@ -108,17 +108,19 @@ def build_handlers(runtime_factory: RuntimeFactory) -> Mapping[CommandPath, Hand
         return EXIT_SUCCESS
 
     def maintenance(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        report = run_maintenance(runtime_factory(), if_due="--if-due" in request.options)
+        report = or_raise(run_maintenance(runtime_factory(), if_due="--if-due" in request.options))
         stdout.write(render_maintenance(report, request.output))
         return EXIT_SUCCESS
 
     def self_install(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        stdout.write(render_install(install_user(runtime_factory()), request.output))
+        stdout.write(render_install(or_raise(install_user(runtime_factory())), request.output))
         return EXIT_SUCCESS
 
     def self_uninstall(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        outcome = uninstall_user(
-            runtime_factory(), purge_data="--purge-data" in request.options, confirmed="--yes" in request.options
+        outcome = or_raise(
+            uninstall_user(
+                runtime_factory(), purge_data="--purge-data" in request.options, confirmed="--yes" in request.options
+            )
         )
         stdout.write(render_uninstall(outcome, request.output))
         return EXIT_SUCCESS

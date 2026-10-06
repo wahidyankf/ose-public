@@ -14,6 +14,7 @@ from ferret.commands import build_handlers
 from ferret.domain.errors import FerretError
 from support.events import VECTOR_DOCUMENT, VECTOR_HASH, encode, event_document
 from support.fakes import Entry, World, make_world
+from support.results import refusal_of, value_of
 
 ARTIFACTS = ["identity.key", "identity.json", "config.json", "ferret.sqlite3"]
 CAPTURE_TEXT = f"""\
@@ -36,7 +37,7 @@ class Outcome:
 
 def initialized_world(payload: bytes) -> World:
     world = make_world(input_data=payload)
-    initialize_store(world.runtime)
+    value_of(initialize_store(world.runtime))
     return world
 
 
@@ -47,15 +48,13 @@ def run(argv: list[str], world: World) -> Outcome:
 
 
 def refused(world: World) -> FerretError:
-    with pytest.raises(FerretError) as caught:
-        capture_event(world.runtime)
-    return caught.value
+    return refusal_of(capture_event(world.runtime))
 
 
 def test_a_valid_event_is_stored_once_and_the_outcome_names_it() -> None:
     world = initialized_world(encode(VECTOR_DOCUMENT))
 
-    outcome = capture_event(world.runtime)
+    outcome = value_of(capture_event(world.runtime))
 
     assert (outcome.result, outcome.event_id, outcome.event_hash) == ("stored", VECTOR_DOCUMENT["eventId"], VECTOR_HASH)
     assert [event.event_hash for event in world.events.stored] == [VECTOR_HASH]
@@ -65,7 +64,7 @@ def test_a_ready_store_is_verified_without_writing_anything() -> None:
     world = initialized_world(encode(VECTOR_DOCUMENT))
     creates_before = list(world.files.creates)
 
-    capture_event(world.runtime)
+    value_of(capture_event(world.runtime))
 
     assert world.files.creates == creates_before
 
@@ -73,7 +72,7 @@ def test_a_ready_store_is_verified_without_writing_anything() -> None:
 def test_only_one_byte_past_the_limit_is_read_to_detect_an_oversized_event() -> None:
     world = initialized_world(encode(VECTOR_DOCUMENT))
 
-    capture_event(world.runtime)
+    value_of(capture_event(world.runtime))
 
     assert world.input.reads == [CANONICAL_LIMIT_BYTES + 1]
 

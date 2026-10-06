@@ -20,7 +20,6 @@ from ferret.application.analytics import (
     summarize_outcomes,
     summarize_usage,
 )
-from ferret.domain.errors import FerretError
 from ferret.domain.event import Event
 from ferret.help_text import COMMAND_HELP
 from support.invoke import run_cli
@@ -90,13 +89,6 @@ def agent_ended_cancelled_derived(number: int, **overrides: Any) -> Event:
         durationVisibility="derived",
         **overrides,
     )
-
-
-def raised_by_the_store_check(action: Any, *arguments: Any) -> FerretError:
-    """The refusal of an unusable data home, which ``open_store`` still raises until its own slice returns it."""
-    with pytest.raises(FerretError) as caught:
-        action(*arguments)
-    return caught.value
 
 
 def dims(row: Any) -> list[tuple[str, str | None]]:
@@ -451,7 +443,7 @@ def test_summaries_are_validated_before_storage_is_touched_and_need_an_initializ
         "ferret.filter.invalid"
     )
     assert world.files.touched == []
-    unusable = raised_by_the_store_check(summarize_usage, world.runtime, {"--group-by": ("harness",)})
+    unusable = refusal_of(summarize_usage(world.runtime, {"--group-by": ("harness",)}))
     assert unusable.code == "ferret.storage.uninitialized"
     assert world.events.reads == 0
 

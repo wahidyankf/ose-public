@@ -41,6 +41,7 @@ from support.hook_payloads import (
     opencode_session_created,
 )
 from support.populate import stamp
+from support.results import refusal_of, value_of
 
 EVENT_ID = "00000000-0000-4000-8000-0000000000aa"
 KEY = bytes(range(32))
@@ -54,7 +55,7 @@ def world_for(payload: dict[str, Any] | bytes, *, workspaces: FakeWorkspaces | N
         randomness=SequenceRandomness((INSTALLATION_ID, EVENT_ID)),
         workspaces=workspaces,
     )
-    initialize_store(world.runtime)
+    value_of(initialize_store(world.runtime))
     return world
 
 
@@ -64,16 +65,14 @@ def only_event(world: World) -> Event:
 
 
 def refused(world: World, harness: str = CLAUDE_CODE, event: str = "tool.started") -> FerretError:
-    with pytest.raises(FerretError) as caught:
-        capture_hook(world.runtime, harness=harness, event=event)
-    return caught.value
+    return refusal_of(capture_hook(world.runtime, harness=harness, event=event))
 
 
 @pytest.mark.parametrize(("harness", "event", "payload"), REGISTRATIONS, ids=REGISTRATION_IDS)
 def test_every_registration_stores_one_event_of_its_own_type(harness: str, event: str, payload: dict[str, Any]) -> None:
     world = world_for(payload)
 
-    result = capture_hook(world.runtime, harness=harness, event=event)
+    result = value_of(capture_hook(world.runtime, harness=harness, event=event))
 
     stored = only_event(world)
     assert result == "stored"
@@ -86,7 +85,7 @@ def test_nothing_the_harness_sent_beyond_metadata_reaches_the_stored_event(
 ) -> None:
     world = world_for(payload)
 
-    capture_hook(world.runtime, harness=harness, event=event)
+    value_of(capture_hook(world.runtime, harness=harness, event=event))
 
     stored = json.dumps(only_event(world).to_document(), ensure_ascii=False)
     assert [canary for canary in CANARIES if canary in stored] == []
@@ -97,7 +96,7 @@ def test_nothing_the_harness_sent_beyond_metadata_reaches_the_stored_event(
 def test_identifiers_are_derived_under_the_installation_key_and_the_reported_values_are_not_kept() -> None:
     world = world_for(claude_tool("PreToolUse"))
 
-    capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started")
+    value_of(capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started"))
 
     stored = only_event(world)
     assert stored.workspace_id == derive_identifier(KEY, "ws", WORKSPACE)
@@ -110,7 +109,7 @@ def test_a_directory_inside_a_repository_is_reported_as_the_repository_root() ->
     inner = claude_tool("PreToolUse", cwd=f"{WORKSPACE}/packages/one")
     world = world_for(inner, workspaces=FakeWorkspaces(roots=(WORKSPACE,)))
 
-    capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started")
+    value_of(capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started"))
 
     assert world.workspaces.asked == [f"{WORKSPACE}/packages/one"]
     assert only_event(world).workspace_id == derive_identifier(KEY, "ws", WORKSPACE)
@@ -121,8 +120,8 @@ def test_two_directories_of_one_repository_share_a_workspace_identifier() -> Non
     first = world_for(claude_tool("PreToolUse", cwd=f"{WORKSPACE}/a"), workspaces=roots)
     second = world_for(claude_tool("PreToolUse", cwd=f"{WORKSPACE}/b"), workspaces=roots)
 
-    capture_hook(first.runtime, harness=CLAUDE_CODE, event="tool.started")
-    capture_hook(second.runtime, harness=CLAUDE_CODE, event="tool.started")
+    value_of(capture_hook(first.runtime, harness=CLAUDE_CODE, event="tool.started"))
+    value_of(capture_hook(second.runtime, harness=CLAUDE_CODE, event="tool.started"))
 
     assert only_event(first).workspace_id == only_event(second).workspace_id
 
@@ -131,8 +130,8 @@ def test_a_session_of_another_harness_gets_another_identifier() -> None:
     claude = world_for(claude_tool("PreToolUse"))
     codex = world_for(claude_tool("PreToolUse"))
 
-    capture_hook(claude.runtime, harness=CLAUDE_CODE, event="tool.started")
-    capture_hook(codex.runtime, harness=CODEX, event="tool.started")
+    value_of(capture_hook(claude.runtime, harness=CLAUDE_CODE, event="tool.started"))
+    value_of(capture_hook(codex.runtime, harness=CODEX, event="tool.started"))
 
     assert only_event(claude).session_id != only_event(codex).session_id
 
@@ -142,7 +141,7 @@ def test_a_child_session_carries_the_derived_identifier_of_its_parent() -> None:
     payload["input"]["event"]["properties"]["info"]["parentID"] = "native-parent-0001"
     world = world_for(payload)
 
-    capture_hook(world.runtime, harness=OPENCODE, event="session.started")
+    value_of(capture_hook(world.runtime, harness=OPENCODE, event="session.started"))
 
     assert only_event(world).parent_session_id == derive_identifier(KEY, "ss", OPENCODE, "native-parent-0001")
 
@@ -151,7 +150,7 @@ def test_the_event_is_stamped_with_the_current_time() -> None:
     world = world_for(claude_tool("PreToolUse"))
     world.clock.advance(timedelta(minutes=5))
 
-    capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started")
+    value_of(capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started"))
 
     expected = stamp(FIXED_NOW + timedelta(minutes=5))
     assert (only_event(world).occurred_at, only_event(world).captured_at) == (expected, expected)
@@ -160,7 +159,7 @@ def test_the_event_is_stamped_with_the_current_time() -> None:
 def test_a_reported_duration_and_tool_name_are_kept_as_observed_metadata() -> None:
     world = world_for(claude_tool("PostToolUse", duration_ms=27))
 
-    capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.completed")
+    value_of(capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.completed"))
 
     stored = only_event(world)
     assert (stored.tool_name, stored.duration_ms, stored.duration_visibility) == ("Read", 27, "observed")
@@ -169,7 +168,7 @@ def test_a_reported_duration_and_tool_name_are_kept_as_observed_metadata() -> No
 def test_a_harness_without_a_mapper_stores_nothing_and_reads_no_input() -> None:
     world = world_for(claude_tool("PreToolUse"))
 
-    result = capture_hook(world.runtime, harness="unknown-harness", event="tool.started")
+    result = value_of(capture_hook(world.runtime, harness="unknown-harness", event="tool.started"))
 
     assert result is None
     assert (world.events.captures, world.input.reads) == (0, [])
@@ -178,7 +177,7 @@ def test_a_harness_without_a_mapper_stores_nothing_and_reads_no_input() -> None:
 def test_an_event_the_payload_does_not_describe_stores_nothing() -> None:
     world = world_for(claude_code("Stop"))
 
-    assert capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started") is None
+    assert value_of(capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started")) is None
     assert world.events.captures == 0
 
 
@@ -201,7 +200,7 @@ def test_a_codex_view_image_completion_is_stored_however_large_its_image(size: i
     """Regression: every ``view_image`` completion was refused, because the image it returns outran a 256 KiB limit."""
     world = world_for(codex_view_image(size=size))
 
-    assert capture_hook(world.runtime, harness=CODEX, event="tool.completed") == "stored"
+    assert value_of(capture_hook(world.runtime, harness=CODEX, event="tool.completed")) == "stored"
 
     stored = only_event(world)
     assert (stored.event_type, stored.tool_name, stored.outcome, stored.outcome_visibility) == (
@@ -219,7 +218,7 @@ def test_a_payload_of_exactly_the_raw_limit_is_accepted() -> None:
     payload = encode(codex_view_image())
     world = world_for(payload + b" " * (RAW_LIMIT_BYTES - len(payload)))
 
-    assert capture_hook(world.runtime, harness=CODEX, event="tool.completed") == "stored"
+    assert value_of(capture_hook(world.runtime, harness=CODEX, event="tool.completed")) == "stored"
     assert world.input.reads == [RAW_LIMIT_BYTES + 1]
 
 
@@ -263,7 +262,7 @@ def test_the_bounded_prune_runs_before_the_event_is_stored(monkeypatch: pytest.M
 
     monkeypatch.setattr(FakeEvents, "capture", observe)
 
-    capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started")
+    value_of(capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started"))
 
     assert pruned_before_capture == [1]
 
@@ -272,7 +271,7 @@ def test_a_prune_that_is_not_due_leaves_the_capture_alone() -> None:
     world = world_for(claude_tool("PreToolUse"))
     world.telemetry.marker = stamp(FIXED_NOW)
 
-    assert capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started") == "stored"
+    assert value_of(capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started")) == "stored"
     assert world.telemetry.prunes == []
 
 
@@ -280,7 +279,7 @@ def test_a_prune_that_cannot_take_the_lock_still_lets_the_event_be_stored() -> N
     world = world_for(claude_tool("PreToolUse"))
     world.telemetry.lock_held = True
 
-    assert capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started") == "stored"
+    assert value_of(capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started")) == "stored"
     assert [prune.state for prune in world.telemetry.prunes] == ["skipped"]
 
 

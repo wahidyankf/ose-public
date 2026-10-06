@@ -152,7 +152,7 @@ def install_older(area: Area, monkeypatch: pytest.MonkeyPatch) -> None:
     """Install the older artifact as ``OLDER`` would have, so a real newer build has something to replace."""
     with monkeypatch.context() as patch:
         patch.setattr("ferret.application.install.__version__", OLDER)
-        assert install_user(runtime_for(area, area.older)).result == "installed"
+        assert value_of(install_user(runtime_for(area, area.older))).result == "installed"
 
 
 class DiesBefore:
@@ -179,7 +179,7 @@ def dying_before(runtime: Runtime, step: str) -> Runtime:
 def test_a_first_install_creates_exactly_the_private_objects_whatever_the_umask(area: Area) -> None:
     previous = os.umask(0)
     try:
-        outcome = install_user(runtime_for(area, area.current, path=f"/usr/bin:{area.paths.bin}"))
+        outcome = value_of(install_user(runtime_for(area, area.current, path=f"/usr/bin:{area.paths.bin}")))
     finally:
         os.umask(previous)
 
@@ -199,13 +199,13 @@ def test_directories_that_already_exist_keep_their_mode_and_their_files(area: Ar
     for directory in (area.home / ".local", area.paths.bin):
         directory.chmod(0o755)
 
-    install_user(runtime_for(area, area.current))
+    value_of(install_user(runtime_for(area, area.current)))
 
     assert {stat.S_IMODE(os.lstat(path).st_mode) for path in (area.home / ".local", area.paths.bin)} == {0o755}
     assert other.read_bytes() == b"#!/bin/sh\n"
     assert stat.S_IMODE(os.lstat(area.paths.share).st_mode) == DIRECTORY_MODE
 
-    uninstall_user(runtime_for(area, area.current), purge_data=False, confirmed=False)
+    value_of(uninstall_user(runtime_for(area, area.current), purge_data=False, confirmed=False))
 
     assert sorted(path.name for path in area.paths.bin.iterdir()) == ["other-tool"]
 
@@ -269,7 +269,7 @@ def test_a_crash_before_each_step_leaves_a_readable_state_and_the_next_install_r
     assert delta == expected[step]
 
     crashed = tree(area.home)
-    repaired = install_user(runtime_for(area, area.current))
+    repaired = value_of(install_user(runtime_for(area, area.current)))
 
     if step == "remove":
         # The manifest was already replaced, so the new install is authoritative and only the old artifact is left over.
@@ -287,7 +287,7 @@ def test_an_older_artifact_left_by_a_crash_after_the_manifest_is_unowned_and_sur
     with pytest.raises(SimulatedCrash):
         install_user(dying_before(runtime_for(area, area.current), "remove"))
 
-    outcome = uninstall_user(runtime_for(area, area.current), purge_data=False, confirmed=False)
+    outcome = value_of(uninstall_user(runtime_for(area, area.current), purge_data=False, confirmed=False))
 
     assert outcome.removed_paths == (area.paths.launcher, area.paths.artifact(__version__), area.paths.manifest)
     assert area.paths.artifact(OLDER).read_bytes() == area.older.read_bytes()
@@ -490,6 +490,7 @@ def test_a_file_where_a_directory_must_go_is_a_collision_and_nothing_is_written(
     (area.home / ".local" / "share").write_bytes(b"a file")
     before = tree(area.home)
 
+    # The install port raises this refusal while it makes the missing directories, so it is still raised.
     assert failure(lambda: install_user(runtime_for(area, area.current))) == "ferret.install.collision"
 
     assert tree(area.home) == before
@@ -500,6 +501,7 @@ def test_a_dangling_link_where_the_user_bin_directory_must_go_is_a_collision(are
     os.symlink("/nowhere/at/all", area.paths.bin)
     before = tree(area.home)
 
+    # The install port raises this refusal while it makes the missing directories, so it is still raised.
     assert failure(lambda: install_user(runtime_for(area, area.current))) == "ferret.install.collision"
 
     assert tree(area.home) == before
@@ -508,6 +510,7 @@ def test_a_dangling_link_where_the_user_bin_directory_must_go_is_a_collision(are
 def test_a_missing_home_directory_is_unavailable_storage(area: Area) -> None:
     absent = Area(home=area.home / "absent", current=area.current, older=area.older)
 
+    # The install port raises this refusal as it makes the missing directories, so it is still raised.
     assert failure(lambda: install_user(runtime_for(absent, area.current))) == "ferret.storage.unavailable"
 
 

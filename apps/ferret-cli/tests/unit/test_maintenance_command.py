@@ -6,7 +6,13 @@ from typing import Any
 
 import pytest
 
-from ferret.application.maintenance import Reclamation, measure_storage, reclaim_space
+from ferret.application.maintenance import (
+    Reclamation,
+    measure_storage,
+    prune_to_exhaustion,
+    reclaim_space,
+    run_maintenance,
+)
 from ferret.application.ports import ExpiryCounters
 from ferret.domain.errors import FerretError
 from ferret.domain.retention import MAINTENANCE_INTERVAL
@@ -14,6 +20,7 @@ from ferret.domain.space import MIB, StorageFacts
 from support.fakes import FIXED_NOW, World
 from support.invoke import run_cli
 from support.populate import WORKSPACE_A, WORKSPACE_B, numbers, stamp, world_with
+from support.results import refusal_of, value_of
 from support.retention import EXPIRED, aged_snapshot, expired_events, fresh_events
 
 NOW = FIXED_NOW
@@ -309,4 +316,79 @@ def test_reclaim_space_reports_what_it_did_and_every_measurement_it_took(
     world.telemetry.reader_open = reader_open
     world.telemetry.compaction_fails = compaction_fails
 
-    assert reclaim_space(world.runtime) == expected
+    assert value_of(reclaim_space(world.runtime)) == expected
+
+
+def test_reclaim_space_refuses_a_damaged_database_and_rewrites_nothing() -> None:
+    world = world_with()
+    world.telemetry.facts = WORTH_COMPACTING
+    world.telemetry.integrity_ok = False
+
+    refusal = refusal_of(reclaim_space(world.runtime))
+
+    assert (refusal.code, refusal.exit_code, refusal.retryable) == ("ferret.storage.integrity-failure", 2, False)
+    assert (world.telemetry.compactions, world.telemetry.facts) == ([], WORTH_COMPACTING)
+
+
+def test_pruning_to_exhaustion_returns_the_rows_it_removed() -> None:
+    world = world_with(*expired_events(250, now=NOW), *fresh_events(4, now=NOW))
+
+    pruned = value_of(prune_to_exhaustion(world.runtime))
+
+    assert (pruned.events, pruned.snapshots) == (250, 0)
+    assert numbers(tuple(world.events.stored)) == [1001, 1002, 1003, 1004]
+
+
+def test_pruning_to_exhaustion_returns_a_retryable_refusal_when_the_write_lock_cannot_be_taken() -> None:
+    world = world_with(*expired_events(3, now=NOW))
+    world.telemetry.lock_held = True
+
+    refusal = refusal_of(prune_to_exhaustion(world.runtime))
+
+    assert (refusal.code, refusal.exit_code, refusal.retryable) == ("ferret.storage.unavailable", 2, True)
+    assert len(world.events.stored) == 3
+
+
+def test_run_maintenance_returns_the_report_of_a_whole_run() -> None:
+    world = world_with(*expired_events(5, now=NOW))
+    world.telemetry.facts = SMALL
+
+    report = value_of(run_maintenance(world.runtime, if_due=False))
+
+    assert (report.result, report.pruned.events, report.before, report.high_water_bytes) == (
+        "completed",
+        5,
+        SMALL,
+        196608,
+    )
+
+
+def test_run_maintenance_returns_a_not_due_report_that_only_measures() -> None:
+    world = world_with(*expired_events(5, now=NOW))
+    world.telemetry.marker = stamp(NOW - timedelta(minutes=30))
+    world.telemetry.facts = SMALL
+
+    report = value_of(run_maintenance(world.runtime, if_due=True))
+
+    assert (report.result, report.pruned.events, report.before, report.after) == ("not_due", 0, SMALL, SMALL)
+    assert (report.high_water_bytes, world.telemetry.prunes) == (196608, [])
+
+
+def test_run_maintenance_returns_the_refusal_of_a_store_that_is_not_initialized_before_measuring() -> None:
+    world = world_with(initialized=False)
+
+    refusal = refusal_of(run_maintenance(world.runtime, if_due=False))
+
+    assert refusal.code == "ferret.storage.uninitialized"
+    assert (world.telemetry.prunes, world.telemetry.checkpoints, world.telemetry.integrity_checks) == ([], [], [])
+
+
+def test_run_maintenance_returns_the_refusal_of_a_damaged_database() -> None:
+    world = world_with()
+    world.telemetry.facts = WORTH_COMPACTING
+    world.telemetry.integrity_ok = False
+
+    refusal = refusal_of(run_maintenance(world.runtime, if_due=False))
+
+    assert refusal.code == "ferret.storage.integrity-failure"
+    assert world.telemetry.compactions == []

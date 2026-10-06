@@ -17,7 +17,7 @@ from ferret.application import queries
 from ferret.application.queries import export_events, list_events
 from ferret.commands import build_handlers
 from ferret.domain.canonical import canonical_bytes
-from ferret.domain.errors import ErrorCode, FerretError
+from ferret.domain.errors import ErrorCode
 from ferret.domain.query import (
     DEFAULT_LIMIT,
     MAX_LIMIT,
@@ -49,13 +49,6 @@ VECTOR_CURSOR = (
     "MDAwLTAwMDAwMDAwMDAwMSIsImZpbHRlckRpZ2VzdCI6IjRhNjMxNmIwYzFiZmM1ZmU5N2IzZWU3OTkyZWVmMTkxZDJiMjc3NGEwZDU0MjZkYmUy"
     "ZjU4ZWMzYjc0ZDg0ODEifQ"
 )
-
-
-def raised_by_the_store_check(action: Any, *arguments: Any) -> FerretError:
-    """The refusal of an unusable data home, which ``open_store`` still raises until its own slice returns it."""
-    with pytest.raises(FerretError) as caught:
-        action(*arguments)
-    return caught.value
 
 
 def oracle_digest(document: dict[str, Any]) -> str:
@@ -645,8 +638,8 @@ def test_a_bad_filter_or_cursor_is_refused_before_storage_is_touched() -> None:
 def test_a_valid_query_needs_an_initialized_store() -> None:
     world = world_with(initialized=False)
 
-    assert raised_by_the_store_check(list_events, world.runtime, {}).code == "ferret.storage.uninitialized"
-    assert raised_by_the_store_check(export_events, world.runtime, {}).code == "ferret.storage.uninitialized"
+    assert refusal_of(list_events(world.runtime, {})).code == "ferret.storage.uninitialized"
+    assert refusal_of(export_events(world.runtime, {})).code == "ferret.storage.uninitialized"
     assert world.events.reads == 0
 
 

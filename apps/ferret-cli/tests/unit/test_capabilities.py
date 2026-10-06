@@ -80,14 +80,20 @@ def refusal(document: dict[str, Any]) -> FerretError:
 
 def initialized_world() -> World:
     world = make_world()
-    initialize_store(world.runtime)
+    value_of(initialize_store(world.runtime))
     return world
 
 
 def refused_recording(world: World, document: dict[str, Any]) -> FerretError:
+    """The failure a port raises while a snapshot is stored, which ``record_snapshot`` returns once its port does."""
     with pytest.raises(FerretError) as caught:
         record_snapshot(world.runtime, document)
     return caught.value
+
+
+def returned_refusal(world: World, document: dict[str, Any]) -> FerretError:
+    """The refusal ``record_snapshot`` returns for an invalid snapshot or an unusable store."""
+    return refusal_of(record_snapshot(world.runtime, document))
 
 
 def test_fixed_snapshot_vector() -> None:
@@ -280,16 +286,16 @@ def test_a_rejected_snapshot_never_echoes_its_content() -> None:
 def test_a_new_snapshot_is_stored_once() -> None:
     world = initialized_world()
 
-    assert record_snapshot(world.runtime, VECTOR_DOCUMENT) == "stored"
+    assert value_of(record_snapshot(world.runtime, VECTOR_DOCUMENT)) == "stored"
 
     assert [held.snapshot_hash for held in world.capabilities.stored] == [VECTOR_HASH]
 
 
 def test_the_same_snapshot_twice_is_a_duplicate_that_stores_nothing_more() -> None:
     world = initialized_world()
-    record_snapshot(world.runtime, VECTOR_DOCUMENT)
+    value_of(record_snapshot(world.runtime, VECTOR_DOCUMENT))
 
-    assert record_snapshot(world.runtime, VECTOR_DOCUMENT) == "duplicate"
+    assert value_of(record_snapshot(world.runtime, VECTOR_DOCUMENT)) == "duplicate"
 
     assert len(world.capabilities.stored) == 1
 
@@ -310,7 +316,7 @@ def test_round_trip_the_same_capability_through_two_snapshots(first: tuple[str, 
         snapshotId=SECOND_ID, capturedAt=LATER, capabilities=[capability("skill_invocation", *second)]
     )
 
-    results = [record_snapshot(world.runtime, earlier), record_snapshot(world.runtime, later)]
+    results = [value_of(record_snapshot(world.runtime, earlier)), value_of(record_snapshot(world.runtime, later))]
 
     assert results == ["stored", "stored"]
     assert [held.to_document() for held in world.capabilities.stored] == [earlier, later]
@@ -325,8 +331,8 @@ def test_equal_capability_content_under_two_snapshot_ids_is_two_snapshots() -> N
     world = initialized_world()
     twin = snapshot_document(snapshotId=SECOND_ID)
 
-    assert record_snapshot(world.runtime, VECTOR_DOCUMENT) == "stored"
-    assert record_snapshot(world.runtime, twin) == "stored"
+    assert value_of(record_snapshot(world.runtime, VECTOR_DOCUMENT)) == "stored"
+    assert value_of(record_snapshot(world.runtime, twin)) == "stored"
 
     assert twin["snapshotHash"] != VECTOR_HASH
     assert [held.capabilities for held in world.capabilities.stored] == [vector_snapshot().capabilities] * 2
@@ -344,7 +350,7 @@ def test_equal_capability_content_under_two_snapshot_ids_is_two_snapshots() -> N
 )
 def test_reject_a_conflicting_capability_snapshot(changes: dict[str, Any]) -> None:
     world = initialized_world()
-    record_snapshot(world.runtime, VECTOR_DOCUMENT)
+    value_of(record_snapshot(world.runtime, VECTOR_DOCUMENT))
     conflicting = snapshot_document(**changes)
     assert conflicting["snapshotId"] == VECTOR_DOCUMENT["snapshotId"]
     assert conflicting["snapshotHash"] != VECTOR_HASH
@@ -364,7 +370,7 @@ def test_reject_a_conflicting_capability_snapshot(changes: dict[str, Any]) -> No
 def test_a_snapshot_is_validated_before_storage_is_touched() -> None:
     world = make_world()
 
-    error = refused_recording(world, replaced(harness="Codex"))
+    error = returned_refusal(world, replaced(harness="Codex"))
 
     assert (error.code, error.field) == ("ferret.event.invalid", "harness")
     assert world.files.touched == []
@@ -374,7 +380,7 @@ def test_a_snapshot_is_validated_before_storage_is_touched() -> None:
 def test_a_valid_snapshot_needs_an_initialized_store() -> None:
     world = make_world()
 
-    error = refused_recording(world, VECTOR_DOCUMENT)
+    error = returned_refusal(world, VECTOR_DOCUMENT)
 
     assert error.code == "ferret.storage.uninitialized"
     assert world.capabilities.stored == []
@@ -382,7 +388,7 @@ def test_a_valid_snapshot_needs_an_initialized_store() -> None:
 
 def test_no_snapshot_is_held_for_a_harness_that_never_reported() -> None:
     world = initialized_world()
-    record_snapshot(world.runtime, VECTOR_DOCUMENT)
+    value_of(record_snapshot(world.runtime, VECTOR_DOCUMENT))
 
     assert world.capabilities.latest_snapshot("claude_code", now=world.clock.now()) is None
 

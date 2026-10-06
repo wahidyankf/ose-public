@@ -7,7 +7,7 @@ from typing import Any, Final
 from ferret.application.maintenance import open_store
 from ferret.application.ports import CaptureResult, Runtime
 from ferret.domain.capability import CapabilitySnapshot, snapshot_from_document
-from ferret.domain.errors import or_raise
+from ferret.domain.errors import FerretResult
 
 # The reporting dimensions a capability gates. Every other dimension is read from a field each event states itself.
 CAPABILITY_OF_DIMENSION: Final[Mapping[str, str]] = {
@@ -32,14 +32,19 @@ class DimensionReport:
     observed_count: int | None
 
 
-def record_snapshot(runtime: Runtime, document: Mapping[str, Any]) -> CaptureResult:
+def _store(runtime: Runtime, snapshot: CapabilitySnapshot) -> FerretResult[CaptureResult]:
+    """Store a validated snapshot once the store has been opened."""
+    return open_store(runtime).map(lambda _: runtime.capabilities.store_snapshot(snapshot))
+
+
+def record_snapshot(runtime: Runtime, document: Mapping[str, Any]) -> FerretResult[CaptureResult]:
     """Validate one decoded snapshot before storage is touched, then store it.
 
     The same snapshot ID with the same content is a duplicate, and with different content an idempotency conflict.
     """
-    snapshot = or_raise(snapshot_from_document(document, now=runtime.clock.now()))
-    open_store(runtime)
-    return runtime.capabilities.store_snapshot(snapshot)
+    return snapshot_from_document(document, now=runtime.clock.now()).flat_map(
+        lambda snapshot: _store(runtime, snapshot)
+    )
 
 
 def dimension_visibility(snapshot: CapabilitySnapshot | None, dimension: str) -> str:

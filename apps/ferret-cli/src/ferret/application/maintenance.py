@@ -8,9 +8,11 @@ when enough of it is free, measuring the store around each step so that the repo
 from dataclasses import dataclass
 from typing import Literal
 
+from typekit import Err, Ok
+
 from ferret.application.ports import Budget, ExpiryCounters, PruneResult, Runtime
 from ferret.application.store import require_initialized
-from ferret.domain.errors import FerretError, or_raise
+from ferret.domain.errors import FerretError, FerretResult, as_internal_failure
 from ferret.domain.retention import PRUNE_BUDGET_MS, PRUNE_ROW_LIMIT, is_due
 from ferret.domain.space import StorageFacts, high_water_bytes, should_compact
 
@@ -67,13 +69,12 @@ def prune_due(runtime: Runtime) -> PruneResult | None:
         return PruneResult("skipped")
 
 
-def open_store(runtime: Runtime) -> None:
+def open_store(runtime: Runtime) -> FerretResult[None]:
     """Refuse an unusable data home, then give retention its turn before the caller touches storage itself.
 
     Every argument the caller was given is validated before this runs, so a refused request never reaches the prune.
     """
-    or_raise(require_initialized(runtime.files))
-    prune_due(runtime)
+    return require_initialized(runtime.files).tap(lambda _: prune_due(runtime))
 
 
 def measure_storage(runtime: Runtime) -> StorageFacts:
@@ -81,7 +82,7 @@ def measure_storage(runtime: Runtime) -> StorageFacts:
     return runtime.telemetry.storage_facts()
 
 
-def reclaim_space(runtime: Runtime) -> Reclamation:
+def reclaim_space(runtime: Runtime) -> FerretResult[Reclamation]:
     """Fold the log into the database and, when the free pages are worth it, rewrite the file without them.
 
     The checkpoint never waits for a reader: one that holds the log makes it skip, and the log is folded away by a
@@ -95,19 +96,19 @@ def reclaim_space(runtime: Runtime) -> Reclamation:
     settled = telemetry.storage_facts()
     measurements.append(settled)
     if not should_compact(settled):
-        return Reclamation(checkpoint, "not_needed", tuple(measurements))
+        return Ok(Reclamation(checkpoint, "not_needed", tuple(measurements)))
     if not telemetry.check_integrity(thorough=True):
-        raise FerretError("ferret.storage.integrity-failure")
+        return Err(FerretError("ferret.storage.integrity-failure"))
     compaction = telemetry.compact()
     measurements.append(compaction.measured)
     if compaction.outcome == "failed":
-        return Reclamation(checkpoint, "failed", tuple(measurements))
+        return Ok(Reclamation(checkpoint, "failed", tuple(measurements)))
     checkpoint = telemetry.checkpoint()
     measurements.append(telemetry.storage_facts())
-    return Reclamation(checkpoint, "compacted", tuple(measurements))
+    return Ok(Reclamation(checkpoint, "compacted", tuple(measurements)))
 
 
-def prune_to_exhaustion(runtime: Runtime) -> Pruned:
+def prune_to_exhaustion(runtime: Runtime) -> FerretResult[Pruned]:
     """Run bounded prune transactions until one finds nothing expired, counting what they removed.
 
     Each transaction has its own budget, and the moment ``now`` is fixed for the whole run, so a row that expires while
@@ -119,32 +120,51 @@ def prune_to_exhaustion(runtime: Runtime) -> Pruned:
         budget = Budget.start(runtime.monotonic, PRUNE_BUDGET_MS)
         result = runtime.telemetry.prune_batch(now=now, limit=PRUNE_ROW_LIMIT, budget=budget)
         if result.state == "skipped":
-            raise FerretError("ferret.storage.unavailable", retryable=True)
+            return Err(FerretError("ferret.storage.unavailable", retryable=True))
         events += result.events
         workspaces += result.workspaces
         snapshots += result.snapshots
         if result.completed:
-            return Pruned(events, workspaces, snapshots)
+            return Ok(Pruned(events, workspaces, snapshots))
 
 
-def run_maintenance(runtime: Runtime, *, if_due: bool) -> MaintenanceReport:
-    """Prune every expired row, then reclaim space; with ``if_due``, do nothing but measure until a run is due."""
-    or_raise(require_initialized(runtime.files))
+def _report_completed(
+    runtime: Runtime, before: StorageFacts, pruned: Pruned, reclamation: Reclamation
+) -> FerretResult[MaintenanceReport]:
+    """The report of a whole run, whose peak is the largest of the measurements taken around its steps."""
+    return (
+        high_water_bytes([before, *reclamation.measurements])
+        .map_err(as_internal_failure)
+        .map(
+            lambda peak: MaintenanceReport(
+                "completed",
+                pruned,
+                runtime.telemetry.expiry_counters(),
+                before,
+                reclamation.measurements[-1],
+                peak,
+            )
+        )
+    )
+
+
+def _maintain(runtime: Runtime, *, if_due: bool) -> FerretResult[MaintenanceReport]:
+    """The run of an initialized store: only a measurement when it is not yet due, and otherwise the whole of it."""
     telemetry = runtime.telemetry
     if if_due and not is_due(telemetry.last_completed_at(), runtime.clock.now()):
         facts = measure_storage(runtime)
-        return MaintenanceReport(
-            "not_due", Pruned(), telemetry.expiry_counters(), facts, facts, or_raise(high_water_bytes([facts]))
+        # One measurement, so the high-water mark is that measurement's own footprint.
+        return Ok(
+            MaintenanceReport("not_due", Pruned(), telemetry.expiry_counters(), facts, facts, facts.footprint_bytes)
         )
     before = measure_storage(runtime)
-    pruned = prune_to_exhaustion(runtime)
-    reclamation = reclaim_space(runtime)
-    after = reclamation.measurements[-1]
-    return MaintenanceReport(
-        "completed",
-        pruned,
-        telemetry.expiry_counters(),
-        before,
-        after,
-        or_raise(high_water_bytes([before, *reclamation.measurements])),
+    return prune_to_exhaustion(runtime).flat_map(
+        lambda pruned: reclaim_space(runtime).flat_map(
+            lambda reclamation: _report_completed(runtime, before, pruned, reclamation)
+        )
     )
+
+
+def run_maintenance(runtime: Runtime, *, if_due: bool) -> FerretResult[MaintenanceReport]:
+    """Prune every expired row, then reclaim space; with ``if_due``, do nothing but measure until a run is due."""
+    return require_initialized(runtime.files).flat_map(lambda _: _maintain(runtime, if_due=if_due))

@@ -7,7 +7,7 @@ from datetime import timedelta
 import pytest
 
 from ferret.application.capabilities import record_snapshot
-from ferret.application.maintenance import prune_due
+from ferret.application.maintenance import open_store, prune_due
 from ferret.application.ports import Budget, ExpiryCounters, PruneResult
 from ferret.domain.errors import FerretError
 from ferret.domain.retention import MAINTENANCE_INTERVAL, PRUNE_BUDGET_MS, PRUNE_ROW_LIMIT, is_due
@@ -16,6 +16,7 @@ from support.events import encode, event_document
 from support.fakes import FIXED_NOW, FakeMonotonic
 from support.invoke import run_cli
 from support.populate import WORKSPACE_A, WORKSPACE_B, numbers, stamp, world_with
+from support.results import refusal_of, value_of
 from support.retention import CUTOFF, aged_snapshot, edge_events, expired_events, fresh_events
 from support.snapshots import snapshot_document
 
@@ -253,7 +254,7 @@ def test_recording_a_capability_snapshot_also_attempts_the_prune() -> None:
     world = world_with()
     world.capabilities.stored.append(aged_snapshot(1, now=NOW, ago=timedelta(days=31)))
 
-    record_snapshot(world.runtime, snapshot_document())
+    value_of(record_snapshot(world.runtime, snapshot_document()))
 
     assert [result.snapshots for result in world.telemetry.prunes] == [1]
 
@@ -275,4 +276,20 @@ def test_an_uninitialized_store_is_refused_before_any_prune(operation: str) -> N
     ran = run_cli(world, READS[operation])
 
     assert ran.code == 2
+    assert world.telemetry.prunes == []
+
+
+def test_opening_a_ready_store_attempts_one_prune_and_returns_nothing() -> None:
+    world = world_with()
+
+    assert value_of(open_store(world.runtime)) is None
+    assert [result.state for result in world.telemetry.prunes] == ["pruned"]
+
+
+def test_opening_a_store_that_is_not_initialized_returns_the_refusal_and_never_prunes() -> None:
+    world = world_with(initialized=False)
+
+    refusal = refusal_of(open_store(world.runtime))
+
+    assert (refusal.code, refusal.exit_code) == ("ferret.storage.uninitialized", 2)
     assert world.telemetry.prunes == []

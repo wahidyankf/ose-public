@@ -90,8 +90,9 @@ def _read_page(runtime: Runtime, listing: _Listing, now: datetime) -> FerretResu
 
 def _page(runtime: Runtime, listing: _Listing, now: datetime) -> FerretResult[EventPage]:
     """The page of a validated request, once the store has been opened and a cursor has been found still live."""
-    open_store(runtime)
-    live = Ok(None) if listing.after is None else _require_live(runtime, listing.after, now)
+    live = open_store(runtime).flat_map(
+        lambda _: Ok(None) if listing.after is None else _require_live(runtime, listing.after, now)
+    )
     return live.flat_map(lambda _: _read_page(runtime, listing, now))
 
 
@@ -116,10 +117,9 @@ def _batches(events: EventRepository, criteria: EventCriteria, now: datetime) ->
         after = Position(last.occurred_at, last.event_id)
 
 
-def _scan(runtime: Runtime, criteria: EventCriteria, now: datetime) -> Iterator[Event]:
+def _scan(runtime: Runtime, criteria: EventCriteria, now: datetime) -> FerretResult[Iterator[Event]]:
     """The lazy batches of a validated scan, once the store has been opened."""
-    open_store(runtime)
-    return _batches(runtime.events, criteria, now)
+    return open_store(runtime).map(lambda _: _batches(runtime.events, criteria, now))
 
 
 def scan_events(runtime: Runtime, options: Options) -> FerretResult[Iterator[Event]]:
@@ -130,7 +130,7 @@ def scan_events(runtime: Runtime, options: Options) -> FerretResult[Iterator[Eve
     expiry cannot shift while the scan runs.
     """
     now = runtime.clock.now()
-    return criteria_from_options(options, now=now).map(lambda criteria: _scan(runtime, criteria, now))
+    return criteria_from_options(options, now=now).flat_map(lambda criteria: _scan(runtime, criteria, now))
 
 
 # An export writes exactly the scan, so it is the same function under the name its caller reads best.

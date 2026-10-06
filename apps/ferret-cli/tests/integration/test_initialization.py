@@ -12,7 +12,8 @@ import pytest
 
 from ferret.adapters.system import system_runtime
 from ferret.application.initialization import InitResult, initialize_store
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, FerretResult
+from support.results import refusal_of, value_of
 
 SOURCE = Path(__file__).resolve().parents[2] / "src"
 ARTIFACTS = ["config.json", "ferret.lock", "ferret.sqlite3", "identity.json", "identity.key"]
@@ -33,8 +34,12 @@ def mode_of(path: Path) -> int:
     return stat.S_IMODE(path.lstat().st_mode)
 
 
-def initialize(home: Path, **environment: str) -> InitResult:
+def initialize(home: Path, **environment: str) -> FerretResult[InitResult]:
     return initialize_store(system_runtime({"HOME": str(home), **environment}))
+
+
+def initialized(home: Path, **environment: str) -> InitResult:
+    return value_of(initialize(home, **environment))
 
 
 def test_two_repository_init_converges(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -45,7 +50,7 @@ def test_two_repository_init_converges(tmp_path: Path, monkeypatch: pytest.Monke
     results: list[InitResult] = []
     for repository in repositories:
         monkeypatch.chdir(repository)
-        results.append(initialize(home))
+        results.append(initialized(home))
     first, second = results
     data_home = home / ".local" / "share" / "ferret"
 
@@ -68,7 +73,7 @@ def test_a_permissive_umask_never_widens_a_created_artifact(tmp_path: Path) -> N
     home = make_home(tmp_path)
     previous = os.umask(0)
     try:
-        initialize(home)
+        initialized(home)
     finally:
         os.umask(previous)
     data_home = home / ".local" / "share" / "ferret"
@@ -81,7 +86,7 @@ def test_the_data_home_override_relocates_the_store(tmp_path: Path) -> None:
     home = make_home(tmp_path)
     relocated = tmp_path / "relocated"
 
-    result = initialize(home, FERRET_DATA_HOME=str(relocated))
+    result = initialized(home, FERRET_DATA_HOME=str(relocated))
 
     assert result.data_home == relocated
     assert sorted(path.name for path in relocated.iterdir()) == ARTIFACTS
@@ -123,10 +128,7 @@ def test_a_symlinked_data_home_is_refused(tmp_path: Path) -> None:
     (home / ".local" / "share").mkdir(parents=True, mode=0o700)
     (home / ".local" / "share" / "ferret").symlink_to(elsewhere)
 
-    with pytest.raises(FerretError) as caught:
-        initialize(home)
-
-    assert caught.value.code == "ferret.storage.unsafe"
+    assert refusal_of(initialize(home)).code == "ferret.storage.unsafe"
     assert list(elsewhere.iterdir()) == []
 
 
@@ -137,10 +139,7 @@ def test_a_group_readable_data_home_is_refused_and_left_unchanged(tmp_path: Path
     data_home.mkdir(mode=0o750)
     data_home.chmod(0o750)
 
-    with pytest.raises(FerretError) as caught:
-        initialize(home)
-
-    assert caught.value.code == "ferret.storage.unsafe"
+    assert refusal_of(initialize(home)).code == "ferret.storage.unsafe"
     assert mode_of(data_home) == 0o750
     assert list(data_home.iterdir()) == []
 
@@ -148,18 +147,16 @@ def test_a_group_readable_data_home_is_refused_and_left_unchanged(tmp_path: Path
 @pytest.mark.parametrize("victim", ["identity.key", "identity.json", "config.json", "ferret.sqlite3"])
 def test_an_existing_widened_or_linked_artifact_is_refused_and_not_repaired(tmp_path: Path, victim: str) -> None:
     home = make_home(tmp_path)
-    initialize(home)
+    initialized(home)
     target = home / ".local" / "share" / "ferret" / victim
     target.chmod(0o644)
 
-    with pytest.raises(FerretError) as widened:
-        initialize(home)
+    widened = refusal_of(initialize(home))
     target.chmod(0o600)
     os.link(target, tmp_path / "second-name")
-    with pytest.raises(FerretError) as linked:
-        initialize(home)
+    linked = refusal_of(initialize(home))
 
-    assert widened.value.code == linked.value.code == "ferret.storage.unsafe"
+    assert widened.code == linked.code == "ferret.storage.unsafe"
     assert mode_of(target) == 0o600
 
 
@@ -172,6 +169,7 @@ def test_a_lock_file_replaced_by_a_symlink_is_refused(tmp_path: Path) -> None:
     victim.write_text("keep", encoding="utf-8")
     (data_home / "ferret.lock").symlink_to(victim)
 
+    # The refusal comes from the data-home port as it takes the lock, which still raises until its own slice.
     with pytest.raises(FerretError) as caught:
         initialize(home)
 

@@ -3,6 +3,8 @@
 from collections.abc import Mapping
 from typing import Literal
 
+from typekit import Result
+
 #: The run happened and the answer was affirmative.
 EXIT_SUCCESS = 0
 #: The run happened and the answer was negative: a query that legitimately matched nothing.
@@ -76,3 +78,7 @@ class FerretError(Exception):
         self.message = message
         self.field = field
         self.retryable = retryable
+
+
+#: What a fallible FERRET function returns: its value, or the one closed failure that stopped it.
+type FerretResult[T] = Result[T, FerretError]

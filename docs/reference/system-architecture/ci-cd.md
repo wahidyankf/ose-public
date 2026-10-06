@@ -109,7 +109,8 @@ owns every gate's command and order; list them with `./rhino gate list`. See
    - Formats staged files by extension (Prettier and each language's formatter)
    - Applies the formatted bytes to the index
 3. **Deterministic checks**: repository configuration, environment policy, Markdown lint and
-   validators, the emoji convention, and `shellcheck`/`hadolint`/`actionlint` over staged paths
+   validators (including the whole-tree README-index, internal-link, and word-budget scans), the
+   emoji convention, and `shellcheck`/`hadolint`/`actionlint` over staged paths
 
 **Impact**: Ensures committed files are formatted and pass the declared file checks
 
@@ -426,4 +427,5 @@ graph TB
 - Affected `typecheck`, `lint`, and `test:quick` (PR language jobs)
 
 Link-target validation (`md-internal-link`), README-index validation (`md-readme-index`), and governance word
-budgets (`word-budget`) run on the pull-request surface only. Link anchors are not validated by any gate.
+budgets (`word-budget`) scan the whole tree at pre-commit and on the pull-request surface. Link anchors are not
+validated by any gate.

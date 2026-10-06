@@ -963,9 +963,11 @@ gates:
           - literal: md
           - literal: readme-index
           - literal: validate
+      # Whole-tree on both surfaces: a README index can break from a directory added or removed
+      # outside the staged paths, and the full scan is fast (~0.1 s), so pre-commit catches it first.
       run-on:
-        pull-request:
-          reason: "A README index can be broken by adding or removing a directory outside the staged paths, so only the whole-repository pull-request surface can check it."
+        pre-commit: {}
+        pull-request: {}
     - id: md-internal-link
       type: check
       command:
@@ -974,9 +976,11 @@ gates:
           - literal: md
           - literal: internal-link
           - literal: validate
+      # Whole-tree on both surfaces: a rename or deletion breaks links in files it never touches, and
+      # the full scan is fast (~2 s), so pre-commit catches it before a pull request exists.
       run-on:
-        pull-request:
-          reason: "A rename or deletion breaks links in files it never touches, so only the whole-repository pull-request surface can check them."
+        pre-commit: {}
+        pull-request: {}
     - id: word-budget
       type: check
       command:
@@ -985,9 +989,11 @@ gates:
           - literal: governance
           - literal: word-budget
           - literal: validate
+      # Whole-tree on both surfaces: a surface's glob or thresholds can change without the measured
+      # file being staged, and the full scan is fast (~2 s), so pre-commit checks every declared surface.
       run-on:
-        pull-request:
-          reason: "A budget is declared per surface glob, and a surface's thresholds or members can change without the measured file being staged, so the whole-repository pull-request surface checks every declared surface."
+        pre-commit: {}
+        pull-request: {}
     - id: shellcheck
       type: check
       inputs:

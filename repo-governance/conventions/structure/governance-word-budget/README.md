@@ -1,5 +1,5 @@
 ---
-description: "Per-surface word thresholds for auto-loaded instruction files, gated on pull requests by `./rhino governance word-budget validate`"
+description: "Per-surface word thresholds for auto-loaded instruction files, gated at pre-commit and on pull requests by `./rhino governance word-budget validate`"
 when_to_use: "Read this index to find the right Governance Word-Budget Convention child document."
 ---
 

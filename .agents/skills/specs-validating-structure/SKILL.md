@@ -17,7 +17,7 @@ single folder. Subfolders are always included automatically.
 ## Lifecycle Delegation
 
 Under a quality gate, do not re-derive, report, or fix a property the gate's Deterministic Boundary lists, per the
-[Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md). The pull-request gate `md-internal-link` owns missing link targets: outside a quality gate,
+[Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md). The gate `md-internal-link` (pre-commit and pull-request) owns missing link targets: outside a quality gate,
 run `./rhino md internal-link validate` for them, and check `#fragment` anchors yourself, because it does not. Keep Gherkin journey coherence,
 semantic, and cross-folder judgment.
 

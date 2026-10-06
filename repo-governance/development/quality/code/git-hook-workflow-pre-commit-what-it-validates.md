@@ -21,10 +21,12 @@ heading hierarchy, file naming, and front matter.
 
 **File-type linters**: `shellcheck`, `hadolint`, and `actionlint` over the staged paths they own.
 
-Pre-commit does **not** validate internal links; `./rhino md internal-link validate` is a
-repository-wide command with no declared gate. It does not generate or validate harness adapters;
-run `./rhino harness adapters generate` and `./rhino harness adapters validate` explicitly when a
-canonical `.agents/` source changes.
+**Whole-tree Markdown and governance checks**: README indexes (`md-readme-index`), internal link
+targets (`md-internal-link`, never `#fragment` anchors), and governance word budgets (`word-budget`).
+Each scans the whole tree, because a change can break a file it never touches.
+
+Pre-commit validates harness adapters (`harness-adapters`) but never generates them; run
+`./rhino harness adapters generate` explicitly when a canonical `.agents/` source changes.
 
 **What Happens on Failure**:
 

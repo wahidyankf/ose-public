@@ -18,6 +18,7 @@ from ferret.application.initialization import initialize_store
 from support.events import VECTOR_DOCUMENT, VECTOR_HASH, encode, event_document
 from support.hook_payloads import CANARIES, IMAGE_CANARY, claude_tool, codex_view_image
 from support.hook_payloads import encode as encode_payload
+from support.results import value_of
 from support.wrapper import in_tree
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature"
@@ -86,7 +87,7 @@ class Session:
 def session(tmp_path: Path) -> Session:
     home = tmp_path / "home"
     home.mkdir(mode=0o700)
-    initialize_store(system_runtime({"HOME": str(home)}))
+    initialize_store(value_of(system_runtime({"HOME": str(home)})))
     return Session(home=home)
 
 

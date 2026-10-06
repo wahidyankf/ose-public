@@ -219,7 +219,7 @@ class Steady:
             os._exit(9)
         return 0
 
-runtime = system_runtime({"HOME": sys.argv[1]})
+runtime = system_runtime({"HOME": sys.argv[1]}).value
 budget = Budget.start(Steady(int(sys.argv[2])), 100)
 runtime.telemetry.prune_batch(now=datetime(2026, 9, 18, 8, 0, tzinfo=UTC), limit=100, budget=budget)
 os._exit(9)

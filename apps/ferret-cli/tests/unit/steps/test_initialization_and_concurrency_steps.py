@@ -121,7 +121,7 @@ def when_init_from_two_repositories(session: Session) -> None:
     for repository in REPOSITORIES:
         # Each invocation resolves its own data home from the environment it starts in, which names its repository.
         environment = {"HOME": str(FAKE_HOME), "PWD": str(repository)}
-        data_home = resolve_data_home(environment, home_directory(environment))
+        data_home = value_of(resolve_data_home(environment, value_of(home_directory(environment))))
         ran = run_runtime(replace(session.world.runtime, data_home=data_home), ["init", "--json"])
         assert (ran.code, ran.stderr) == (0, "")
         session.documents.append(json.loads(ran.stdout))

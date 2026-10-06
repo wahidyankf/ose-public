@@ -13,6 +13,7 @@ import pytest
 
 from ferret import __version__, cli
 from ferret.cli import COMMANDS, GROUPS, SPECS, CommandPath, Request
+from ferret.domain.storage import HOOK_FAILURE_FILE
 from ferret.help_text import COMMAND_HELP, ROOT_HELP
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -218,6 +219,16 @@ def test_a_callback_that_cannot_even_record_its_failure_is_still_silent_and_stil
     # Recording is best-effort: an environment that makes the data home unresolvable must not turn the one
     # command that may never speak into one that raises.
     monkeypatch.setenv("FERRET_DATA_HOME", "relative/not-absolute")
+
+    assert run(["capture-hook"]) == Result(0, "", "")
+
+
+def test_a_callback_whose_record_fails_in_any_way_is_still_silent_and_still_zero(isolated_home: Path) -> None:
+    # Best-effort is not limited to the errors the filesystem reports: a record that is not valid text makes reading
+    # it back fail with something that is no OSError, and the callback must still say nothing and exit zero.
+    data_home = isolated_home / ".local" / "share" / "ferret"
+    data_home.mkdir(parents=True, mode=0o700)
+    (data_home / HOOK_FAILURE_FILE).write_bytes(b"\xff\xfe not text\n")
 
     assert run(["capture-hook"]) == Result(0, "", "")
 

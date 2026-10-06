@@ -79,7 +79,7 @@ def area(tmp_path: Path) -> Area:
 
 
 def runtime_for(area: Area, artifact: Path, *, path: str = "") -> Runtime:
-    return system_runtime({"HOME": str(area.home), "PATH": path}, artifact=artifact)
+    return value_of(system_runtime({"HOME": str(area.home), "PATH": path}, artifact=artifact))
 
 
 def failure(action: Callable[[], object]) -> str:

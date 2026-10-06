@@ -105,22 +105,33 @@ Then("no internal content link resolves through a 308 redirect", async () => {
 // Scenario: Sitemap lists every content URL bare, with no distinct content namespace (DD-48)
 // ---------------------------------------------------------------------------
 
+// The sitemap is read through the request context, not rendered, so a browser's XML viewer
+// cannot change what is parsed (Firefox renders XML differently).
+let sitemapBody = "";
+
 Given("the sitemap is generated from the content index", async ({ page }) => {
-  await page.goto("/sitemap.xml");
-  await page.waitForLoadState("networkidle");
+  // The precondition is a served sitemap route; the When reads it.
+  expect((await getResilient(page, "/sitemap.xml")).status()).toBe(200);
 });
 
 When("the sitemap entries are produced", async ({ page }) => {
-  const body = await page.content();
-  expect(body).toBeTruthy();
+  const response = await getResilient(page, "/sitemap.xml");
+  expect(response.status()).toBe(200);
+  sitemapBody = await response.text();
+  expect(sitemapBody).toContain("<loc>");
 });
 
-Then("every moved-content entry uses a bare URL", async ({ page }) => {
-  const body = await page.content();
+Then("every moved-content entry uses a bare URL", async () => {
   // A relocated legacy domain's URL is present, and no entry anywhere carries
   // a /c/ segment (the retired content namespace, DD-48).
-  expect(body).toContain("/en/learn/legacy/software-engineering");
-  expect(body).not.toContain("/c/");
+  expect(sitemapBody).toContain("/en/learn/legacy/software-engineering");
+  expect(sitemapBody).not.toContain("/c/");
+});
+
+Then("every sitemap entry is on the canonical host {string}", async ({}, host: string) => {
+  const hosts = [...sitemapBody.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((match) => new URL(match[1]!).host);
+  expect(hosts.length).toBeGreaterThan(0);
+  expect(hosts.filter((candidate) => candidate !== host)).toEqual([]);
 });
 
 // Escape the parentheses: playwright-bdd parses step text as a Cucumber
@@ -129,22 +140,18 @@ Then("every moved-content entry uses a bare URL", async ({ page }) => {
 // "(about, terms, tools)", leaving the scenario unbound (test.fixme). `\(` / `\)`
 // force a literal-parenthesis match. (The unit tier's vitest-cucumber matches
 // the same text literally, so its def keeps the bare parentheses.)
-Then(
-  "top-level pages \\(about, terms, tools\\) use that same bare form — no longer namespace-distinct",
-  async ({ page }) => {
-    const body = await page.content();
-    // about-ayokoding and terms-and-conditions must resolve at the SAME bare
-    // form content pages now use — never a /c/-prefixed variant.
-    const aboutIdx = body.indexOf("about-ayokoding");
-    const termsIdx = body.indexOf("terms-and-conditions");
-    expect(aboutIdx, "sitemap should list about-ayokoding").not.toBe(-1);
-    expect(termsIdx, "sitemap should list terms-and-conditions").not.toBe(-1);
-    const aboutSlice = body.slice(Math.max(0, aboutIdx - 10), aboutIdx);
-    const termsSlice = body.slice(Math.max(0, termsIdx - 10), termsIdx);
-    expect(aboutSlice).not.toContain("/c/");
-    expect(termsSlice).not.toContain("/c/");
-  },
-);
+Then("top-level pages \\(about, terms, tools\\) use that same bare form — no longer namespace-distinct", async () => {
+  // about-ayokoding and terms-and-conditions must resolve at the SAME bare
+  // form content pages now use — never a /c/-prefixed variant.
+  const aboutIdx = sitemapBody.indexOf("about-ayokoding");
+  const termsIdx = sitemapBody.indexOf("terms-and-conditions");
+  expect(aboutIdx, "sitemap should list about-ayokoding").not.toBe(-1);
+  expect(termsIdx, "sitemap should list terms-and-conditions").not.toBe(-1);
+  const aboutSlice = sitemapBody.slice(Math.max(0, aboutIdx - 10), aboutIdx);
+  const termsSlice = sitemapBody.slice(Math.max(0, termsIdx - 10), termsIdx);
+  expect(aboutSlice).not.toContain("/c/");
+  expect(termsSlice).not.toContain("/c/");
+});
 
 // ---------------------------------------------------------------------------
 // Scenario: RSS feed item links use bare content URLs (DD-48)
@@ -155,14 +162,16 @@ Then(
 let feedBody = "";
 
 Given("the feed is generated from the content index", async ({ page }) => {
+  // The precondition is a served feed route; the When reads it.
   // See `getResilient` — retries once on a load-induced ECONNRESET.
+  expect((await getResilient(page, "/feed.xml")).status()).toBe(200);
+});
+
+When("the feed items are produced", async ({ page }) => {
   const response = await getResilient(page, "/feed.xml");
   expect(response.status()).toBe(200);
   feedBody = await response.text();
-});
-
-When("the feed items are produced", async () => {
-  expect(feedBody.length).toBeGreaterThan(0);
+  expect(feedBody).toContain("<item>");
 });
 
 Then("every content item link uses a bare URL", async () => {
@@ -172,18 +181,31 @@ Then("every content item link uses a bare URL", async () => {
   expect(feedBody).not.toContain("/c/");
 });
 
+Then("every feed link is on the canonical host {string}", async ({}, host: string) => {
+  // The channel link, the self link, and each item's link and guid.
+  const feedUrls = [...feedBody.matchAll(/<(?:link|guid)>([^<]+)<\/(?:link|guid)>|<atom:link href="([^"]+)"/gu)].map(
+    (match) => match[1] ?? match[2]!,
+  );
+  expect(feedUrls.length).toBeGreaterThan(0);
+  expect(feedUrls.map((url) => new URL(url).host).filter((candidate) => candidate !== host)).toEqual([]);
+});
+
 // ---------------------------------------------------------------------------
 // Scenario: Canonical link for moved content points to its bare URL (DD-48)
 // ---------------------------------------------------------------------------
 
+let contentPageUrl = "";
+
 Given("the content page at {string}", async ({ page }, url: string) => {
-  await page.goto(url);
-  await page.waitForLoadState("networkidle");
+  // The precondition is a published content page; the When loads it in the browser.
+  expect((await getResilient(page, url)).status()).toBe(200);
+  contentPageUrl = url;
 });
 
 When("its metadata is generated", async ({ page }) => {
-  // Metadata is embedded in <head> — the page has loaded.
-  await expect(page.locator("head")).toBeDefined();
+  // The page's metadata is rendered into its <head>, so loading the page generates it.
+  await page.goto(contentPageUrl);
+  await expect(page.locator("link[rel='canonical']")).toHaveCount(1);
 });
 
 Then("the canonical alternate is {string}", async ({ page }, expectedCanonical: string) => {
@@ -197,3 +219,15 @@ Then("the language alternates include en and x-default", async ({ page }) => {
   expect(enAlternate).toBeTruthy();
   expect(xDefaultAlternate).toBeTruthy();
 });
+
+Then(
+  "the canonical link and the language alternates are on the canonical host {string}",
+  async ({ page }, host: string) => {
+    const hrefs = await page
+      .locator("link[rel='canonical'], link[rel='alternate'][hreflang]")
+      .evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
+    // The canonical link plus the en and x-default alternates.
+    expect(hrefs.length).toBeGreaterThanOrEqual(3);
+    expect(hrefs.map((href) => new URL(href).host).filter((candidate) => candidate !== host)).toEqual([]);
+  },
+);

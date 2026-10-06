@@ -24,6 +24,22 @@ Then("the header contains an external link to {string}", async ({ page }, text: 
   await expect(link.first()).toHaveAttribute("rel", /noopener/u);
 });
 
+When("the footer component is rendered", async ({ page }) => {
+  await page.goto("/");
+});
+
+Then(
+  "the footer contains an external link to {string} on the canonical host {string}",
+  async ({ page }, text: string, host: string) => {
+    const link = page.locator("footer").getByRole("link", { name: text });
+    await expect(link).toBeVisible();
+    const href = await link.getAttribute("href");
+    expect(new URL(href ?? "").host).toBe(host);
+    await expect(link).toHaveAttribute("target", "_blank");
+    await expect(link).toHaveAttribute("rel", /noopener/u);
+  },
+);
+
 When("the about page is rendered with breadcrumbs", async ({ page }) => {
   await page.goto("/about/");
 });

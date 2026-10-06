@@ -2,7 +2,7 @@
 
 Specifications for the OSE product family. Four distinct products share this tree — the OSE
 Application (`ose-app-web` + `ose-be`, the AI-assisted GRC platform at `app.oseplatform.com`), OSE
-Platform Web (`ose-www`, the marketing and updates site at `oseplatform.com`), OSE LMS
+Platform Web (`ose-www`, the marketing and updates site at `www.oseplatform.com`), OSE LMS
 (`ose-lms-be`, the learning-management backend), and OSE ID (`ose-id-be` + `ose-id-web`, the
 identity service and its local status shell) — across six logical owners.
 

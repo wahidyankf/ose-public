@@ -23,7 +23,7 @@ This Skill provides comprehensive knowledge for creating and managing content on
 
 **ayokoding-web** (`apps/ayokoding-www/`):
 
-- **Site**: ayokoding.com
+- **Site**: www.ayokoding.com
 - **Framework**: Next.js 16 (App Router, TypeScript, tRPC)
 - **Purpose**: Bilingual educational platform
 - **Languages**: Indonesian (id) and English (en)

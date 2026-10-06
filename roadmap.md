@@ -166,8 +166,8 @@ languages or architectures for future portfolio stages.
 Open Sharia Enterprise shares research and engineering lessons while the other workstreams
 progress:
 
-- [AyoKoding](https://ayokoding.com) publishes educational material.
-- [OSE Platform](https://oseplatform.com) communicates project direction and updates.
+- [AyoKoding](https://www.ayokoding.com) publishes educational material.
+- [OSE Platform](https://www.oseplatform.com) communicates project direction and updates.
 - Repository documentation, specifications, and governance preserve reusable knowledge.
 
 Public learning can draw from any active workstream while respecting security, privacy, licensing,
@@ -180,7 +180,7 @@ The following foundations already support the concurrent model and continue to e
 - Development tooling, reproducible environments, git hooks, and CI/CD
 - Diátaxis documentation and repository-governance systems
 - Specialized AI agents, skills, and quality workflows
-- [ayokoding.com](https://ayokoding.com) and [oseplatform.com](https://oseplatform.com)
+- [ayokoding.com](https://www.ayokoding.com) and [oseplatform.com](https://www.oseplatform.com)
 - Rust and F# command-line tooling
 - Nx-managed applications, libraries, end-to-end suites, and Gherkin specifications
 

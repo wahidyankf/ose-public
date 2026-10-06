@@ -7,6 +7,7 @@ import "../globals.css";
 import { SUPPORTED_LOCALES, isValidLocale } from "@/features/i18n/core/config";
 import { TRPCProvider } from "@/lib/trpc/provider";
 import { SearchProvider } from "@/features/search/shell/search-provider";
+import { SITE_URL } from "@/lib/site-url";
 import { Header } from "@/features/app-shell/shell/header";
 import { Footer } from "@/features/app-shell/shell/footer";
 import { SkipLink } from "@/features/app-shell/shell/skip-link";
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   },
   description:
     "Bilingual educational platform for software engineering - helping the Indonesian tech community learn and grow",
-  metadataBase: new URL("https://ayokoding.com"),
+  metadataBase: new URL(SITE_URL),
 };
 
 export function generateStaticParams() {

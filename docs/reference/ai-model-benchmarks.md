@@ -47,7 +47,7 @@ All docs that cite benchmark numbers link to this file. This file links to prima
 ### Current Composite (Independent Results Only)
 
 Since 2026-10-01 the generated tables below — and the
-[ayokoding.com AI benchmark tool](https://ayokoding.com/en/tools/ai-benchmark) — score models on
+[ayokoding.com AI benchmark tool](https://www.ayokoding.com/en/tools/ai-benchmark) — score models on
 three coding-agent benchmarks, equally weighted, using only results run by an independent operator.
 Vendor-reported figures are not recorded.
 

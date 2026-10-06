@@ -167,3 +167,5 @@ they self-verify against `origin/main` at their own Phase 0.
   `light` → `haiku`, then camelCase → kebab-case — and no unrated sort key exists at all.)
 - [`nx-affected-cross-worktree-contamination`](../../ideas/q2-not-urgent-important/nx-affected-cross-worktree-contamination.md)
   — filed two-pager; relevant because this plan spans three worktrees concurrently.
+
+> Deployment hosts redacted: the preview deployment's URL and ID and the project's `vercel.app` host in this plan's files were replaced with `<vercel-preview-url>`, `<vercel-preview-deployment-id>`, and `<vercel-project-host>`, so those records are not byte-verbatim.

@@ -4,18 +4,13 @@ import re
 from datetime import UTC, datetime, timedelta, timezone
 
 import pytest
-from typekit import Err, Ok, Result
+from typekit import Ok
 
 from ferret.domain.timestamps import add_days, format_timestamp, parse_rfc3339, parse_timestamp
+from support.results import fault_of
 
 MOMENT = datetime(2026, 9, 18, 8, 15, 30, 123000, tzinfo=UTC)
 CANONICAL = "2026-09-18T08:15:30.123Z"
-
-
-def fault(result: Result[object, ValueError]) -> str:
-    """The message of the ``ValueError`` an ``Err`` carries; an ``Ok`` fails the test."""
-    assert isinstance(result, Err)
-    return str(result.error)
 
 
 def test_a_moment_formats_as_utc_with_millisecond_precision() -> None:
@@ -33,7 +28,7 @@ def test_a_moment_in_another_zone_is_converted_to_utc() -> None:
 
 
 def test_a_naive_moment_is_refused() -> None:
-    assert re.search("time zone", fault(format_timestamp(datetime(2026, 9, 18, 8, 15, 30))))
+    assert re.search("time zone", fault_of(format_timestamp(datetime(2026, 9, 18, 8, 15, 30))))
 
 
 def test_a_canonical_timestamp_round_trips() -> None:
@@ -77,7 +72,7 @@ def test_a_canonical_timestamp_round_trips() -> None:
     ],
 )
 def test_any_other_spelling_is_refused(text: str) -> None:
-    assert re.search(r"canonical|day|month|hour", fault(parse_timestamp(text)))
+    assert re.search(r"canonical|day|month|hour", fault_of(parse_timestamp(text)))
 
 
 def test_days_are_added_on_the_calendar() -> None:
@@ -129,4 +124,4 @@ def test_an_rfc3339_timestamp_is_read_as_the_utc_moment_it_names(text: str, expe
     ],
 )
 def test_any_other_rfc3339_spelling_is_refused(text: str) -> None:
-    assert re.search(r"RFC 3339|day|month|hour|offset|range", fault(parse_rfc3339(text)))
+    assert re.search(r"RFC 3339|day|month|hour|offset|range", fault_of(parse_rfc3339(text)))

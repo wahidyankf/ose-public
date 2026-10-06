@@ -48,6 +48,7 @@ from ferret.domain.query import EventCriteria, Position
 from ferret.domain.space import StorageFacts
 from ferret.domain.storage import PRIVATE_FILE_MODE
 from ferret.domain.timestamps import format_timestamp
+from support.results import value_of
 
 FAKE_HOME = Path("/users/example")
 #: The interpreter a faked install pins, standing in for the one the real adapter reads from ``sys.executable``.
@@ -497,7 +498,8 @@ class FakeInstall:
         for directory in (paths.share, paths.version_directory(version), paths.bin):
             self.put_directory(directory)
         self.put_file(paths.artifact(version), artifact, ARTIFACT_MODE)
-        self.put_file(paths.launcher, launcher_script(FAKE_INTERPRETER, paths.artifact(version)), LAUNCHER_MODE)
+        launcher = value_of(launcher_script(FAKE_INTERPRETER, paths.artifact(version)))
+        self.put_file(paths.launcher, launcher, LAUNCHER_MODE)
         manifest = Manifest(
             version=version,
             artifact_path=paths.artifact(version),

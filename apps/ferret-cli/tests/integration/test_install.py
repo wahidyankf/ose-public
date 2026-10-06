@@ -40,6 +40,7 @@ from ferret.domain.install import (
 from support.artifacts import write_test_artifact
 from support.fakes import SimulatedCrash
 from support.machine import make_machine
+from support.results import value_of
 
 OLDER = "0.0.9"
 #: A stage plan for the cases that only care that staging fails; the launcher bytes are never read back.
@@ -110,7 +111,7 @@ def digest(path: Path) -> str:
 
 def launcher_for(area: Area, version: str) -> Entry:
     """The launcher a real install writes here: a script pinned to the interpreter these tests run on."""
-    return ("file", LAUNCHER_MODE, launcher_script(Path(sys.executable), area.paths.artifact(version)))
+    return ("file", LAUNCHER_MODE, value_of(launcher_script(Path(sys.executable), area.paths.artifact(version))))
 
 
 def finished_manifest(area: Area, version: str, source: Path, installed_at: str) -> bytes:
@@ -234,7 +235,7 @@ def test_a_crash_before_each_step_leaves_a_readable_state_and_the_next_install_r
         ".local/share/ferret/install.json" if step == "remove" else ".local/share/ferret/.install.json.stage-*"
     )
     assert (manifest[0], manifest[1]) == ("file", MANIFEST_MODE)
-    written = parse_manifest(cast(bytes, manifest[2]), area.paths)
+    written = value_of(parse_manifest(cast(bytes, manifest[2]), area.paths))
     assert written == Manifest(
         version=__version__,
         artifact_path=area.paths.artifact(__version__),

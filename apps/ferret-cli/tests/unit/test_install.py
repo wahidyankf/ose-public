@@ -1,16 +1,18 @@
 """The per-user install and removal use cases over an in-memory install area that can crash before any step."""
 
 import hashlib
+import json
 from collections.abc import Callable
 from datetime import timedelta
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 from ferret import __version__
 from ferret.application.install import InstallOutcome, UninstallOutcome, install_user, uninstall_user
-from ferret.domain.errors import FerretError
-from ferret.domain.install import LAUNCHER_MODE, InstallPaths, Manifest, launcher_script
+from ferret.domain.errors import FAILURES, ErrorCode, FerretError
+from ferret.domain.install import LAUNCHER_MODE, MANIFEST_MODE, InstallPaths, Manifest, launcher_script
 from support.fakes import (
     AN_OLDER_VERSION,
     ARTIFACT_BYTES,
@@ -22,7 +24,9 @@ from support.fakes import (
     World,
     make_world,
 )
+from support.invoke import run_cli
 from support.populate import stamp, world_with
+from support.results import value_of
 
 PATHS = InstallPaths(FAKE_HOME)
 OLD_BYTES = b"#!/usr/bin/env python3\nan older artifact\n"
@@ -35,7 +39,7 @@ def digest(content: bytes) -> str:
 
 def installed_launcher(version: str) -> tuple[str, int, bytes]:
     """The launcher a faked install leaves: a script pinned to the fake interpreter, naming that version."""
-    return ("file", LAUNCHER_MODE, launcher_script(FAKE_INTERPRETER, PATHS.artifact(version)))
+    return ("file", LAUNCHER_MODE, value_of(launcher_script(FAKE_INTERPRETER, PATHS.artifact(version))))
 
 
 def completed_tree(*, version: str = __version__, artifact: bytes = ARTIFACT_BYTES, installed_at: str = "") -> Snapshot:
@@ -280,6 +284,15 @@ def test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes(
 def test_an_artifact_that_cannot_be_read_stops_before_anything_is_staged() -> None:
     world = make_world()
     world.installer.source_fails = True
+
+    assert failure(lambda: install(world)) == "ferret.storage.unavailable"
+
+    assert (world.installer.snapshot(), world.installer.steps) == ({}, ["recover"])
+
+
+def test_a_path_the_launcher_cannot_quote_exactly_stops_before_anything_is_staged() -> None:
+    world = make_world()
+    world.installer.interpreter = Path('/usr/local/bin/py"thon')
 
     assert failure(lambda: install(world)) == "ferret.storage.unavailable"
 
@@ -668,4 +681,60 @@ def test_a_manifest_that_vanishes_before_it_is_read_is_an_ownership_mismatch_for
 
     assert failure(lambda: uninstall(world)) == "ferret.install.ownership-mismatch"
 
+    assert world.installer.snapshot() == before
+
+
+#: A JSON array opened 100,000 times: past what the interpreter's decoder can nest.
+TOO_DEEP = b"[" * 100_000
+#: A member repeated in an object that closes before the nesting that is too deep, so the repeat is the first fault met.
+REPEAT_BEFORE_TOO_DEEP = b'{"a":{"x":1,"x":2},"b":' + TOO_DEEP
+INSTALL_ARGV = ["self", "install", "--target", "user"]
+UNINSTALL_ARGV = ["self", "uninstall"]
+
+
+def failure_envelope(command: str, code: ErrorCode) -> dict[str, Any]:
+    """The JSON a closed failure writes to stderr: the code's fixed exit status and message, no field, not retryable."""
+    exit_code, message = FAILURES[code]
+    error = {"code": code, "message": message, "field": None, "retryable": False}
+    return {"schemaVersion": 1, "command": command, "exitCode": exit_code, "error": error}
+
+
+@pytest.mark.parametrize(
+    ("argv", "command"),
+    [(INSTALL_ARGV, "self.install"), (UNINSTALL_ARGV, "self.uninstall")],
+    ids=["install", "uninstall"],
+)
+def test_a_manifest_nested_past_the_interpreters_limit_answers_storage_unavailable(
+    argv: list[str], command: str
+) -> None:
+    world = make_world()
+    world.installer.put_file(PATHS.manifest, TOO_DEEP, MANIFEST_MODE)
+    before = world.installer.snapshot()
+
+    ran = run_cli(world, [*argv, "--json"])
+
+    assert (ran.code, ran.stdout) == (2, "")
+    assert json.loads(ran.stderr) == failure_envelope(command, "ferret.storage.unavailable")
+    assert world.installer.snapshot() == before
+
+
+@pytest.mark.parametrize(
+    ("argv", "command", "code"),
+    [
+        (INSTALL_ARGV, "self.install", "ferret.install.collision"),
+        (UNINSTALL_ARGV, "self.uninstall", "ferret.install.ownership-mismatch"),
+    ],
+    ids=["install", "uninstall"],
+)
+def test_a_manifest_that_repeats_a_member_before_nesting_too_deep_is_untrusted_not_a_storage_fault(
+    argv: list[str], command: str, code: ErrorCode
+) -> None:
+    world = make_world()
+    world.installer.put_file(PATHS.manifest, REPEAT_BEFORE_TOO_DEEP, MANIFEST_MODE)
+    before = world.installer.snapshot()
+
+    ran = run_cli(world, [*argv, "--json"])
+
+    assert (ran.code, ran.stdout) == (2, "")
+    assert json.loads(ran.stderr) == failure_envelope(command, code)
     assert world.installer.snapshot() == before

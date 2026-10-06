@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Final, Literal, cast
 
-from ferret.domain.errors import or_raise
+from typekit import Err, Ok, Result, attempt
+
 from ferret.domain.storage import DOCUMENT_SCHEMA_VERSION
 from ferret.domain.timestamps import parse_timestamp
 
@@ -37,6 +38,7 @@ _IDENTIFIERS = r"[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*"
 _VERSION = re.compile(rf"{_NUMBER}\.{_NUMBER}\.{_NUMBER}(?:-{_IDENTIFIERS})?(?:\+{_IDENTIFIERS})?")
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _NONCE = r"[0-9a-f]{32}"
+_NOT_STRICT_JSON: Final = "manifest is not strict JSON"
 
 # The launcher is a script rather than a link so it can name the interpreter the install resolved. A link would
 # leave the archive's ``#!/usr/bin/env python3`` in charge, and on a host whose ``python3`` is older than FERRET
@@ -102,57 +104,100 @@ def is_version(text: str) -> bool:
     return _VERSION.fullmatch(text) is not None
 
 
-def _no_duplicates(pairs: list[tuple[str, object]]) -> dict[str, object]:
-    document = dict(pairs)
-    if len(document) != len(pairs):
-        raise ValueError("manifest repeats a member")
-    return document
+def _json_object(parsed: object) -> Result[dict[str, object], ValueError]:
+    """``parsed`` when it is a JSON object, which is all a manifest may be."""
+    if not isinstance(parsed, dict):
+        return Err(ValueError("manifest is not an object"))
+    return Ok(cast(dict[str, object], parsed))
 
 
-def _text(document: dict[str, object], name: str) -> str:
-    value = document[name]
-    if not isinstance(value, str):
-        raise ValueError(f"manifest member {name} is not text")
-    return value
+def _strict_fault(fault: ValueError | RecursionError) -> ValueError | RecursionError:
+    """A document that is not JSON is a manifest fault; the interpreter's own depth limit is returned as it is."""
+    return fault if isinstance(fault, RecursionError) else ValueError(_NOT_STRICT_JSON)
 
 
-def parse_manifest(content: bytes, paths: InstallPaths) -> Manifest:
-    """Read a manifest for exactly these install paths, or raise ValueError naming the first rule it breaks.
+def _strict_object(content: bytes) -> Result[dict[str, object], ValueError | RecursionError]:
+    """The one JSON object ``content`` is, read strictly: UTF-8, no member repeated, nothing else in the document.
+
+    ``json.loads`` calls the hook for every object it closes, and a hook can only signal by raising, which this layer
+    never does. So the hook records a repeated member in ``repeated``, which this function owns, and the ``Err`` is
+    made here once the parse is done. A document nested past the interpreter's limit raises ``RecursionError``, which
+    stays an ``Err`` of its own unless a repeat was recorded first.
+    """
+    repeated: list[str] = []
+
+    def keep_unique(pairs: list[tuple[str, object]]) -> dict[str, object]:
+        document = dict(pairs)
+        if len(document) != len(pairs):
+            repeated.append("manifest repeats a member")
+        return document
+
+    def read() -> object:
+        return json.loads(content.decode("utf-8"), object_pairs_hook=keep_unique)
+
+    parsed = attempt(read, ValueError, RecursionError)
+    if repeated:
+        # The repeat's object closed before any nesting too deep was reached, so it is the first fault met, whatever
+        # the parse made of the rest of the document.
+        return Err(ValueError(_NOT_STRICT_JSON))
+    return parsed.map_err(_strict_fault).flat_map(_json_object)
+
+
+def _closed_members(document: dict[str, object]) -> Result[dict[str, object], ValueError]:
+    """``document`` when its members are exactly the closed set, in the normative order."""
+    if tuple(document) != MANIFEST_MEMBERS:
+        return Err(ValueError("manifest members are not the closed set in the normative order"))
+    return Ok(document)
+
+
+def _member_texts(document: dict[str, object]) -> Result[tuple[str, ...], ValueError]:
+    """The value of every member, in the normative order, provided each is text."""
+    texts: list[str] = []
+    for name in MANIFEST_MEMBERS:
+        value = document[name]
+        if not isinstance(value, str):
+            return Err(ValueError(f"manifest member {name} is not text"))
+        texts.append(value)
+    return Ok(tuple(texts))
+
+
+def _manifest_for(texts: tuple[str, ...], paths: InstallPaths) -> Result[Manifest, ValueError]:
+    """The manifest these member texts record, provided each is what the rules allow for these install paths."""
+    schema, version, artifact_path, sha256, launcher_path, installed_at = texts
+    if schema != DOCUMENT_SCHEMA_VERSION:
+        return Err(ValueError("manifest schema version is not supported"))
+    if not is_version(version):
+        return Err(ValueError("manifest version is not a semantic version"))
+    if _SHA256.fullmatch(sha256) is None:
+        return Err(ValueError("manifest digest is not a lowercase SHA-256"))
+    if isinstance(parse_timestamp(installed_at), Err):
+        return Err(ValueError("manifest installedAt is not a canonical UTC timestamp"))
+    if artifact_path != str(paths.artifact(version)) or launcher_path != str(paths.launcher):
+        return Err(ValueError("manifest paths are not this user's install paths"))
+    return Ok(
+        Manifest(
+            version=version,
+            artifact_path=paths.artifact(version),
+            artifact_sha256=sha256,
+            launcher_path=paths.launcher,
+            installed_at=installed_at,
+        )
+    )
+
+
+def parse_manifest(content: bytes, paths: InstallPaths) -> Result[Manifest, ValueError | RecursionError]:
+    """Read a manifest for exactly these install paths, or an ``Err`` of ``ValueError`` naming the first rule it breaks.
 
     The document must be strict JSON: one object with every member of the closed set, in the normative order, each
     a string, no member repeated, and nothing else. The artifact and launcher paths must be the ones ``paths``
-    derives from the recorded version, so a manifest can never point outside the install area.
+    derives from the recorded version, so a manifest can never point outside the install area. A document nested past
+    the interpreter's limit is an ``Err`` of ``RecursionError``: no rule of the manifest was broken, the reader gave up.
     """
-    try:
-        parsed: object = json.loads(content.decode("utf-8"), object_pairs_hook=_no_duplicates)
-    except ValueError:
-        raise ValueError("manifest is not strict JSON") from None
-    if not isinstance(parsed, dict):
-        raise ValueError("manifest is not an object")
-    document = cast(dict[str, object], parsed)
-    if tuple(document) != MANIFEST_MEMBERS:
-        raise ValueError("manifest members are not the closed set in the normative order")
-    schema, version, artifact_path, sha256, launcher_path, installed_at = (
-        _text(document, name) for name in MANIFEST_MEMBERS
-    )
-    if schema != DOCUMENT_SCHEMA_VERSION:
-        raise ValueError("manifest schema version is not supported")
-    if not is_version(version):
-        raise ValueError("manifest version is not a semantic version")
-    if _SHA256.fullmatch(sha256) is None:
-        raise ValueError("manifest digest is not a lowercase SHA-256")
-    try:
-        or_raise(parse_timestamp(installed_at))
-    except ValueError:
-        raise ValueError("manifest installedAt is not a canonical UTC timestamp") from None
-    if artifact_path != str(paths.artifact(version)) or launcher_path != str(paths.launcher):
-        raise ValueError("manifest paths are not this user's install paths")
-    return Manifest(
-        version=version,
-        artifact_path=paths.artifact(version),
-        artifact_sha256=sha256,
-        launcher_path=paths.launcher,
-        installed_at=installed_at,
+    return (
+        _strict_object(content)
+        .flat_map(_closed_members)
+        .flat_map(_member_texts)
+        .flat_map(lambda texts: _manifest_for(texts, paths))
     )
 
 
@@ -182,16 +227,16 @@ def is_quotable(path: str) -> bool:
     return '"' not in path and "\\" not in path and "\n" not in path and "$" not in path and "`" not in path
 
 
-def launcher_script(interpreter: Path, artifact: Path) -> bytes:
+def launcher_script(interpreter: Path, artifact: Path) -> Result[bytes, ValueError]:
     """The launcher that starts ``artifact`` on ``interpreter``, passing every argument through unchanged.
 
     ``exec`` replaces the shell, so the launcher costs no process of its own and the caller waits on FERRET
-    itself. A path the shell would not read back literally is refused rather than escaped, because an install
+    itself. A path the shell would not read back literally is an ``Err`` rather than escaped, because an install
     that cannot write an exact launcher must fail visibly instead of writing an approximate one.
     """
     if not (is_quotable(str(interpreter)) and is_quotable(str(artifact))):
-        raise ValueError("a path the launcher cannot quote")
-    return f'#!/bin/sh\n{LAUNCHER_NOTICE}\nexec "{interpreter}" "{artifact}" "$@"\n'.encode()
+        return Err(ValueError("a path the launcher cannot quote"))
+    return Ok(f'#!/bin/sh\n{LAUNCHER_NOTICE}\nexec "{interpreter}" "{artifact}" "$@"\n'.encode())
 
 
 def launcher_artifact(content: bytes, paths: InstallPaths) -> Path | None:
@@ -201,10 +246,10 @@ def launcher_artifact(content: bytes, paths: InstallPaths) -> Path | None:
     replaced. The interpreter it names is deliberately not checked: an install may legitimately have pinned one
     that has since moved, and that is a reason to rewrite the launcher, not to refuse the install.
     """
-    try:
-        matched = _LAUNCHER.fullmatch(content.decode("utf-8"))
-    except UnicodeDecodeError:
+    decoded = attempt(lambda: content.decode("utf-8"), UnicodeDecodeError)
+    if isinstance(decoded, Err):
         return None
+    matched = _LAUNCHER.fullmatch(decoded.value)
     if matched is None or not is_ferret_artifact_path(matched.group(2), paths):
         return None
     return Path(matched.group(2))

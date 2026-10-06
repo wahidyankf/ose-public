@@ -3,7 +3,7 @@
 import re
 
 import pytest
-from typekit import Err, Ok, Result
+from typekit import Ok, Result
 
 from ferret.domain.space import (
     COMPACTION_MIN_FREELIST_BYTES,
@@ -20,12 +20,7 @@ from ferret.domain.space import (
     should_compact,
     size_report,
 )
-
-
-def fault(result: Result[object, ValueError]) -> str:
-    """The message of the ``ValueError`` an ``Err`` carries; an ``Ok`` fails the test."""
-    assert isinstance(result, Err)
-    return str(result.error)
+from support.results import fault_of
 
 
 def report_of(result: Result[SizeReport, ValueError]) -> SizeReport:
@@ -56,7 +51,7 @@ def test_the_high_water_mark_is_the_largest_footprint_measured_and_never_falls_b
 
 
 def test_a_high_water_mark_needs_at_least_one_measurement() -> None:
-    assert re.search("measurement", fault(high_water_bytes([])))
+    assert re.search("measurement", fault_of(high_water_bytes([])))
 
 
 @pytest.mark.parametrize(
@@ -82,7 +77,7 @@ def test_bytes_per_event_divides_the_database_by_its_events() -> None:
 
 
 def test_bytes_per_event_is_undefined_without_events() -> None:
-    assert re.search("events", fault(bytes_per_event(4096, 0)))
+    assert re.search("events", fault_of(bytes_per_event(4096, 0)))
 
 
 def test_index_share_is_the_fraction_of_the_database_held_by_indexes() -> None:
@@ -90,7 +85,7 @@ def test_index_share_is_the_fraction_of_the_database_held_by_indexes() -> None:
 
 
 def test_index_share_is_undefined_for_an_empty_database() -> None:
-    assert re.search("database", fault(index_share(0, 0)))
+    assert re.search("database", fault_of(index_share(0, 0)))
 
 
 @pytest.mark.parametrize(
@@ -157,4 +152,6 @@ def test_an_explanation_of_an_inside_size_is_not_needed_and_is_not_kept() -> Non
 def test_a_size_report_is_undefined_when_a_figure_it_divides_by_is_zero(
     events: int, database_bytes: int, undefined_figure: str
 ) -> None:
-    assert re.search(undefined_figure, fault(size_report(events=events, database_bytes=database_bytes, index_bytes=0)))
+    assert re.search(
+        undefined_figure, fault_of(size_report(events=events, database_bytes=database_bytes, index_bytes=0))
+    )

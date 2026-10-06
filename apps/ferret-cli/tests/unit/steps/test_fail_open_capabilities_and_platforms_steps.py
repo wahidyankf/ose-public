@@ -34,6 +34,7 @@ from support.hook_payloads import OPENCODE_EMPTY_CALL, WORKSPACE, claude_tool, c
 from support.hook_payloads import encode as encode_payload
 from support.invoke import Ran, run_cli, run_runtime
 from support.populate import NO_OUTCOME, make_event, world_with
+from support.results import value_of
 from support.wrapper import (
     DEADLINE_SECONDS,
     Behaviour,
@@ -256,7 +257,7 @@ def then_objects_are_owner_only(session: Session) -> None:
     assert installer.steps == ["recover", "stage", "replace_artifact", "replace_launcher", "replace_manifest"]
     [plan] = installer.plans
     assert launcher_artifact(plan.launcher, paths) == artifact
-    manifest = parse_manifest(plan.manifest, paths)
+    manifest = value_of(parse_manifest(plan.manifest, paths))
     assert (manifest.artifact_path, manifest.artifact_sha256) == (
         artifact,
         hashlib.sha256(installer.artifact).hexdigest(),

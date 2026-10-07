@@ -1,5 +1,5 @@
 ---
-description: Declares ose-public and its private sibling independent repositories, names the five OSE Code Repositories, independent upstream/product boundaries, and required awareness surfaces.
+description: Declares ose-public and its private sibling independent repositories, names the seven OSE Code Repositories (`ose-projects`), independent upstream/product boundaries, and required awareness surfaces.
 when_to_use: Use when adding or changing a cross-repository reference, consumer integration, or independent-repository boundary, or when a change here seems to need action in the private sibling.
 ---
 
@@ -11,13 +11,18 @@ sync target. The descriptive catalogue is
 
 ## The OSE Code Repositories
 
-**OSE Code Repositories** names the five repositories this project is built and maintained in:
-`ose-public`, the private sibling, [RHINO](https://github.com/wahidyankf/rhino),
-[HIPPO](https://github.com/wahidyankf/hippo), and
-[BeaverNest](https://github.com/wahidyankf/beaver-nest). The name labels that set for routing and
-nothing else: not a GitHub organization, parent repository, synchronized group, or shared release.
-Membership obligates each repository to name the other four so a contributor can find them, and
-obligates nothing further.
+**OSE Code Repositories** (`ose-projects`) names exactly the seven repositories this project is
+built and maintained in: [`ose-public`](https://github.com/wahidyankf/ose-public), the private
+sibling [`ose-private`](https://github.com/wahidyankf/ose-private) (Private),
+[RHINO](https://github.com/wahidyankf/rhino), [HIPPO](https://github.com/wahidyankf/hippo),
+[BeaverNest](https://github.com/wahidyankf/beaver-nest),
+[ose-rules](https://github.com/wahidyankf/ose-rules), and
+[py-typekit](https://github.com/wahidyankf/py-typekit). The name labels that set for routing and
+nothing else: not a GitHub organization, parent repository, synchronized group, or shared release;
+each member versions, gates, and releases independently. Membership obligates each repository to
+name the other six so a contributor can find them, and obligates nothing further. Only
+`ose-private`'s name and URL are public, per
+[Public Outbound Safety](../security/public-outbound-safety.md).
 
 ## Independent repositories
 
@@ -28,8 +33,8 @@ without consulting, mirroring, or notifying the other. No change made in one cre
 obligation, parity plan, parity identity record, deviation or divergence record, or byte comparison
 in the other. A change from the other repository is adopted only by an explicit, one-off request
 delivered through the adopting repository's own route, after which the adopting repository owns its
-copy. A shared catalog such as [ose-rules](https://github.com/wahidyankf/ose-rules) is adopted the
-same way.
+copy. The shared catalog [ose-rules](https://github.com/wahidyankf/ose-rules), related by knowledge
+sharing, is adopted the same way.
 
 Followed when no normative surface here asks that a change be checked against, proposed to,
 recorded for, or compared with the private sibling. Violated when a normative surface states or
@@ -55,8 +60,7 @@ governance, agent, skill, workflow, or tool changes.
 
 [py-typekit](https://github.com/wahidyankf/py-typekit) is an independent MIT-licensed Python library
 of typed result and option values, related by upstream consumption: `ferret-cli` consumes it through
-a tag pinned in its `uv.lock` and bundles it into its zipapp. It is a library dependency, not one of
-the OSE Code Repositories.
+a tag pinned in its `uv.lock` and bundles it into its zipapp.
 
 Naming a repository creates navigation only: no sync target, comparison, gate, propagation
 workflow, or byte-identity manifest follows from it.

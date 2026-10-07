@@ -3,6 +3,10 @@
 > Canonical contributor instructions aligned with the
 > [AGENTS.md standard](https://agents.md/).
 
+For English replies and repository text, use
+[clear, simple, natural English](./repo-governance/conventions/writing/repository-working-language.md);
+preserve localized content and user-facing values.
+
 ## Repository Overview
 
 **open-sharia-enterprise** — Sharia-compliant Nx monorepo, pre-alpha.
@@ -87,9 +91,6 @@ formal plans follow the
 [plans convention](./repo-governance/conventions/structure/plans.md). PR bodies state new-code cost/benefit;
 tests exempt.
 
-Use [English](./repo-governance/conventions/writing/repository-working-language.md) for repository-authored
-material and developer-facing source text; declared localized content and user-facing values are exempt.
-
 ### Reproducible Environments
 
 Never commit secrets; real values only in uncommitted `.env*` (except `.env.example`). Never touch
@@ -138,13 +139,15 @@ Stage/commit only when explicitly instructed. License MIT; see
 
 ## Related Repositories
 
-The five **OSE Code Repositories** are a routing set: never a parent repo, synchronized group, or
-shared release. `ose-public` and its private sibling are independent, not linked from this public
-tree; neither is the other's source; either changes any rule or RHINO pin without consulting or
-notifying the other. [RHINO](https://github.com/wahidyankf/rhino) supplies the pinned
-repository-hygiene executable;
-[HIPPO](https://github.com/wahidyankf/hippo) resource coordination (never copied here);
-[BeaverNest](https://github.com/wahidyankf/beaver-nest) its own product.
+The seven **OSE Code Repositories** (`ose-projects`), this one included, are a routing set: never a
+parent repo, synchronized group, or shared release. Independence: the private sibling
+[ose-private](https://github.com/wahidyankf/ose-private) (Private); neither is the other's source;
+either changes any rule or RHINO pin without
+consulting or notifying the other. Upstream consumption, pinned, never copied here:
+[RHINO](https://github.com/wahidyankf/rhino), [HIPPO](https://github.com/wahidyankf/hippo),
+[py-typekit](https://github.com/wahidyankf/py-typekit). Knowledge sharing:
+[BeaverNest](https://github.com/wahidyankf/beaver-nest),
+[ose-rules](https://github.com/wahidyankf/ose-rules).
 
 [Details](./docs/reference/related-repositories.md)
 

@@ -20,7 +20,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { stripTypeScriptTypes, syncBuiltinESMExports } from "node:module";
 
 const [, , pluginPath] = process.argv;
-const { directory, calls, spawnLog } = JSON.parse(readFileSync(0, "utf8"));
+const { directory, calls, spawnLog, timerLog } = JSON.parse(readFileSync(0, "utf8"));
 
 if (spawnLog) {
   const spawned = [];
@@ -32,6 +32,15 @@ if (spawnLog) {
   };
   syncBuiltinESMExports();
   process.on("exit", () => writeFileSync(spawnLog, spawned.map((instant) => `${instant}\n`).join("")));
+}
+if (timerLog) {
+  const requested = [];
+  const original = globalThis.setTimeout;
+  globalThis.setTimeout = (callback, milliseconds, ...args) => {
+    requested.push(milliseconds);
+    return original(callback, milliseconds, ...args);
+  };
+  process.on("exit", () => writeFileSync(timerLog, JSON.stringify(requested)));
 }
 const source = stripTypeScriptTypes(readFileSync(pluginPath, "utf8"));
 const exported = await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}`);

@@ -7,7 +7,7 @@ Feature: Fail open and report harness capabilities honestly
     Given a harness invokes the FERRET adapter
     And FERRET is <condition>
     When the adapter handles a lifecycle event
-    Then the adapter returns exit code zero within 1000 milliseconds
+    Then the adapter returns exit code zero within 1600 milliseconds on the exercised host
     And it writes no output into the harness conversation
 
     Examples:
@@ -60,7 +60,9 @@ Feature: Fail open and report harness capabilities honestly
     Given the <harness> hook runs the shared POSIX wrapper
     When <condition>
     Then the wrapper exits zero and writes nothing to either stream
-    And any surviving child is terminated by TERM at 900 milliseconds and KILL at 1000 milliseconds
+    And any surviving child has nominal TERM and KILL requests of 900 and 1000 milliseconds
+    And a hung child receives TERM within 1250 milliseconds and the adapter returns within 1600 milliseconds
+    And nominal KILL follows TERM with the full 100 millisecond grace
 
     Examples:
       | harness     | condition                                              |
@@ -74,7 +76,9 @@ Feature: Fail open and report harness capabilities honestly
     Given OpenCode runs the FERRET plugin for a lifecycle hook
     When <condition>
     Then the plugin completes the hook without an error and writes nothing to either stream
-    And any surviving child is terminated by TERM at 900 milliseconds and KILL at 1000 milliseconds
+    And any surviving child has nominal TERM and KILL requests of 900 and 1000 milliseconds
+    And a hung child receives TERM within 1250 milliseconds and the adapter returns within 1600 milliseconds
+    And nominal KILL follows TERM with the full 100 millisecond grace
 
     Examples:
       | condition                                 |

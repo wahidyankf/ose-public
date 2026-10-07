@@ -1,4 +1,4 @@
-"""Raw vendor payloads for the three harnesses, each carrying content the privacy boundary must discard.
+"""Raw vendor payloads for the supported harnesses, each carrying content the privacy boundary must discard.
 
 The shapes follow the field lists each vendor documents for its lifecycle hooks. Every payload also carries prompt
 text, tool arguments or results, a transcript path, and environment values, so a test can prove that none of them
@@ -21,6 +21,7 @@ CANARIES = (PROMPT_CANARY, ARGUMENT_CANARY, RESULT_CANARY, ENVIRONMENT_CANARY, T
 CLAUDE_CODE = "claude_code"
 CODEX = "codex"
 OPENCODE = "opencode"
+COMMANDCODE = "commandcode"
 
 
 def encode(document: dict[str, Any]) -> bytes:
@@ -38,6 +39,28 @@ def claude_code(hook: str, **fields: Any) -> dict[str, Any]:
         "hook_event_name": hook,
         "prompt": PROMPT_CANARY,
         "env": {"API_TOKEN": ENVIRONMENT_CANARY},
+        **fields,
+    }
+
+
+def commandcode(hook: str, **fields: object) -> dict[str, object]:
+    """Command Code's official command-hook shape, with poison fields outside its four safe scalar paths."""
+    return {
+        "session_id": SESSION,
+        "cwd": WORKSPACE,
+        "hook_event_name": hook,
+        "tool_name": "read_file",
+        "tool_use_id": "call_0001",
+        "tool_input": {"file_path": ARGUMENT_CANARY},
+        "tool_response": RESULT_CANARY,
+        "tool_display_name": PROMPT_CANARY,
+        "transcript_path": TRANSCRIPT_CANARY,
+        "prompt": PROMPT_CANARY,
+        "env": {"API_TOKEN": ENVIRONMENT_CANARY},
+        "agent_type": "must-not-be-inferred",
+        "duration_ms": 27,
+        "success": True,
+        "exit_code": 0,
         **fields,
     }
 
@@ -159,6 +182,9 @@ REGISTRATIONS: tuple[tuple[str, str, dict[str, Any]], ...] = (
     ),
     (CODEX, "tool.started", codex_tool("PreToolUse")),
     (CODEX, "tool.completed", codex_tool("PostToolUse", tool_response={"output": RESULT_CANARY})),
+    (COMMANDCODE, "session.started", commandcode("SessionStart")),
+    (COMMANDCODE, "tool.started", commandcode("PreToolUse")),
+    (COMMANDCODE, "tool.completed", commandcode("PostToolUse")),
     (OPENCODE, "session.started", opencode_session_created()),
     (OPENCODE, "tool.started", opencode_tool("tool.execute.before")),
     (OPENCODE, "skill.invoked", opencode_skill()),

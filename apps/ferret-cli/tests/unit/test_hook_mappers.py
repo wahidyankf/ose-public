@@ -9,6 +9,7 @@ from ferret.application.privacy import project_hook_payload
 from ferret.domain.hook import CLAUDE_CODE, CODEX, OPENCODE, HookFacts, allowed_paths, map_hook
 from support.hook_payloads import (
     CANARIES,
+    COMMANDCODE,
     REGISTRATIONS,
     SESSION,
     SKILL,
@@ -17,6 +18,7 @@ from support.hook_payloads import (
     claude_tool,
     codex,
     codex_tool,
+    commandcode,
     opencode,
     opencode_session_created,
     opencode_tool,
@@ -47,6 +49,9 @@ def tool_facts(event_type: str, name: str, **fields: Any) -> HookFacts:
 CLAUDE_SUCCESS: dict[str, Any] = {"outcome": "success", "outcome_visibility": "observed"}
 REGISTRATION_IDS = [f"{harness}-{event}" for harness, event, _ in REGISTRATIONS]
 EXPECTED = {
+    (COMMANDCODE, "session.started"): expected("session.started"),
+    (COMMANDCODE, "tool.started"): tool_facts("tool.started", "read_file"),
+    (COMMANDCODE, "tool.completed"): tool_facts("tool.completed", "read_file", **UNKNOWN_OUTCOME),
     (CLAUDE_CODE, "session.started"): expected("session.started"),
     (CLAUDE_CODE, "session.ended"): expected("session.ended", **UNKNOWN_OUTCOME),
     (CLAUDE_CODE, "agent.started"): expected("agent.started", agent_name="Explore", subject_visibility="observed"),
@@ -349,3 +354,28 @@ def test_a_session_value_that_is_not_valid_text_maps_to_nothing() -> None:
     raw = b'{"session_id":"\\ud800","cwd":"/work","hook_event_name":"PreToolUse","tool_name":"Read"}'
 
     assert raw_facts(CLAUDE_CODE, "tool.started", raw) is None
+
+
+def test_commandcode_projects_only_its_four_documented_metadata_scalars() -> None:
+    assert allowed_paths(COMMANDCODE) == (("session_id",), ("cwd",), ("hook_event_name",), ("tool_name",))
+    projected = value_of(project_hook_payload(encode_payload(commandcode("PostToolUse")), allowed_paths(COMMANDCODE)))
+    assert projected == {
+        "session_id": SESSION,
+        "cwd": WORKSPACE,
+        "hook_event_name": "PostToolUse",
+        "tool_name": "read_file",
+    }
+
+
+@pytest.mark.parametrize("tool", ["read_file", "write_file", "edit_file", "shell_command", "server/tool.v2"])
+def test_commandcode_keeps_the_reported_tool_identifier(tool: str) -> None:
+    assert facts(COMMANDCODE, "tool.started", commandcode("PreToolUse", tool_name=tool)) == tool_facts(
+        "tool.started", tool
+    )
+
+
+@pytest.mark.parametrize("tool", [None, 7, "", "bad name"])
+def test_commandcode_keeps_an_unusable_tool_subject_unknown(tool: object) -> None:
+    assert facts(COMMANDCODE, "tool.started", commandcode("PreToolUse", tool_name=tool)) == expected(
+        "tool.started", subject_visibility="unknown"
+    )

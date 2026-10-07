@@ -57,6 +57,9 @@ environment, write into that store. A test that needs a particular data home set
 
 ## Manual evidence helpers
 
+The helper invocations in this section were not exercised during this documentation pass. Existing automated test
+results do not establish execution of these hand-run recipes.
+
 Two non-production helpers drive the built artifact for hand-run evidence. Both accept only the raw root
 `local-tmp/ferret-plan01/<run-id>` and reuse an existing one only when it carries their run marker, give every child
 its own `HOME`, XDG data home, and data home, and write only labels, exit codes, byte counts, SHA-256 values, and

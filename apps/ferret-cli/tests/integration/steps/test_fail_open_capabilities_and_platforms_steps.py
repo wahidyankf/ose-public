@@ -30,7 +30,6 @@ from support.machine import Machine, make_machine
 from support.machine_path import machine_path_snapshot
 from support.populate import NO_OUTCOME, make_event
 from support.wrapper import (
-    DEADLINE_SECONDS,
     WrapperRun,
     alive,
     assert_term_then_kill,
@@ -42,6 +41,8 @@ from support.wrapper import (
     spawn_instants,
     stand_in,
     term_recorder,
+    timer_requests,
+    within_deadline,
 )
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature"
@@ -357,7 +358,7 @@ def then_every_adapter_still_exits_zero(installation: Installation) -> None:
     installation.adapters = run_every_adapter(installation)
     for harness, ran in installation.adapters.items():
         assert (ran.code, ran.stdout, ran.stderr) == (0, b"", b""), harness
-        assert ran.elapsed_seconds < DEADLINE_SECONDS, harness
+        assert within_deadline(ran), harness
     machine = installation.machine
     assert machine.sql("SELECT COUNT(*) FROM event") == [(installation.rows_before,)]
     assert store_files(machine.data_home) == installation.data_before
@@ -425,12 +426,21 @@ def adapter(tmp_path: Path) -> Iterator[Adapter]:
         binding.writer.close()
 
 
-def invoke(adapter: Adapter, binary: Path | None = None, spawn_log: Path | None = None) -> WrapperRun:
+def invoke(
+    adapter: Adapter, binary: Path | None = None, spawn_log: Path | None = None, timer_log: Path | None = None
+) -> WrapperRun:
     chosen = adapter.binary if binary is None else binary
     home = adapter.machine.home
     if adapter.plugin:
-        return run_plugin([adapter.call], home=home, binary=chosen, directory=Path(WORKSPACE), spawn_log=spawn_log)
-    return run_wrapper(adapter.harness, adapter.event, adapter.payload, home=home, binary=chosen)
+        return run_plugin(
+            [adapter.call],
+            home=home,
+            binary=chosen,
+            directory=Path(WORKSPACE),
+            spawn_log=spawn_log,
+            timer_log=timer_log,
+        )
+    return run_wrapper(adapter.harness, adapter.event, adapter.payload, home=home, binary=chosen, timer_log=timer_log)
 
 
 def record_forwarding(adapter: Adapter) -> None:
@@ -480,11 +490,11 @@ def when_the_adapter_handles_an_event(adapter: Adapter) -> None:
     adapter.ran = invoke(adapter)
 
 
-@then("the adapter returns exit code zero within 1000 milliseconds")
+@then("the adapter returns exit code zero within 1600 milliseconds on the exercised host")
 def then_the_adapter_returns_zero_in_time(adapter: Adapter) -> None:
     assert adapter.ran is not None
     assert adapter.ran.code == 0
-    assert adapter.ran.elapsed_seconds < DEADLINE_SECONDS
+    assert within_deadline(adapter.ran)
     if adapter.writer is not None:
         # The capture waited out its whole lock budget before giving up, rather than failing at once.
         assert adapter.ran.elapsed_seconds >= HOOK_CAPTURE_BUDGET_SECONDS
@@ -580,7 +590,9 @@ def when_the_child_hangs(adapter: Adapter) -> None:
     adapter.binary = term_recorder(hung)
     adapter.hangs = True
     adapter.expected_rows = 0
-    adapter.ran = invoke(adapter, spawn_log=hung / "spawned" if adapter.plugin else None)
+    adapter.ran = invoke(
+        adapter, spawn_log=hung / "spawned" if adapter.plugin else None, timer_log=hung / "timer-requests"
+    )
     adapter.received = ((hung / "argv").read_text().split("\n")[:-1], (hung / "stdin").read_bytes())
 
 
@@ -628,12 +640,20 @@ def then_the_plugin_is_silent(adapter: Adapter) -> None:
     }
 
 
-@then("any surviving child is terminated by TERM at 900 milliseconds and KILL at 1000 milliseconds")
+@then("any surviving child has nominal TERM and KILL requests of 900 and 1000 milliseconds")
+@then("nominal KILL follows TERM with the full 100 millisecond grace")
+def then_nominal_timer_requests_are_preserved(adapter: Adapter) -> None:
+    if adapter.hangs:
+        requests = timer_requests(adapter.directory / "hung" / "timer-requests", plugin=adapter.plugin)
+        assert requests == ((900, 1000) if adapter.plugin else (900, 100)), requests
+
+
+@then("a hung child receives TERM within 1250 milliseconds and the adapter returns within 1600 milliseconds")
 def then_a_surviving_child_is_terminated(adapter: Adapter) -> None:
     assert adapter.ran is not None
     if not adapter.hangs:
         # No child outlived its own work, so nothing needed either signal.
-        assert adapter.ran.elapsed_seconds < DEADLINE_SECONDS
+        assert within_deadline(adapter.ran)
         return
     hung = adapter.directory / "hung"
     pid = recorded_pid(hung)

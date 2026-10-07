@@ -54,3 +54,30 @@ Feature: Capture strict metadata
     When an adapter submits an otherwise valid event with a property the schema does not define
     Then capture rejects the complete event without storing a partial row
     And the diagnostic names no field and echoes neither the unknown property name nor its value
+
+  Scenario Outline: Capture only the lifecycle fact a Command Code hook reports
+    Given an initialized store and a Command Code <hook> payload carrying private content
+    When capture-hook receives the registered <event> event
+    Then it silently stores one <event> event naming <tool>
+    And the event reports outcome <outcome> with visibility <visibility>
+    And the store contains no private content or inferred lifecycle metadata
+
+    Examples:
+      | hook        | event           | tool      | outcome        | visibility     |
+      | SessionStart | session.started | none      | not_applicable | not_applicable |
+      | PreToolUse   | tool.started    | read_file | not_applicable | not_applicable |
+      | PostToolUse  | tool.completed  | read_file | unknown        | unknown        |
+
+  Scenario Outline: Refuse unsupported or unusable Command Code hook input silently
+    Given an initialized store and a Command Code payload with <condition>
+    When capture-hook receives the registered <event> event
+    Then it silently stores no event
+
+    Examples:
+      | condition             | event           |
+      | an end-of-turn Stop   | session.ended   |
+      | an unknown event      | tool.failed     |
+      | a mismatched hook     | tool.started    |
+      | a missing session     | tool.started    |
+      | a relative directory  | tool.started    |
+      | malformed JSON        | tool.started    |

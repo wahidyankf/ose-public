@@ -17,6 +17,7 @@ from ferret.domain.event import MAX_DURATION_MS
 CLAUDE_CODE: Final = "claude_code"
 CODEX: Final = "codex"
 OPENCODE: Final = "opencode"
+COMMANDCODE: Final = "commandcode"
 
 MAX_NATIVE_LENGTH: Final = 256
 MAX_DIRECTORY_LENGTH: Final = 4096
@@ -52,7 +53,8 @@ class HookFacts:
 class Profile:
     """What one harness's hooks let FERRET claim about a tool call.
 
-    ``tool_outcome`` is how the outcome is known: the harness reports it, or it is derived from which hook fired.
+    ``tool_outcome`` is how the outcome is known: observed, derived from the hook, or unknown when the hook
+    only reports that the tool returned.
     ``tool_duration`` is how a duration is known, or ``None`` when the harness never times a tool call.
     """
 
@@ -64,12 +66,14 @@ PROFILES: Final[Mapping[str, Profile]] = {
     CLAUDE_CODE: Profile(tool_outcome="observed", tool_duration="observed"),
     CODEX: Profile(tool_outcome="derived", tool_duration=None),
     OPENCODE: Profile(tool_outcome="derived", tool_duration=None),
+    COMMANDCODE: Profile(tool_outcome="unknown", tool_duration=None),
 }
 
 _COMMON: Final[tuple[PayloadPath, ...]] = (("session_id",), ("cwd",), ("hook_event_name",))
 _ALLOWED: Final[Mapping[str, tuple[PayloadPath, ...]]] = {
     CLAUDE_CODE: (*_COMMON, ("agent_type",), ("tool_name",), ("tool_input", "skill"), ("duration_ms",)),
     CODEX: (*_COMMON, ("agent_type",), ("tool_name",)),
+    COMMANDCODE: (*_COMMON, ("tool_name",)),
     OPENCODE: (
         ("hook",),
         ("directory",),
@@ -83,7 +87,7 @@ _ALLOWED: Final[Mapping[str, tuple[PayloadPath, ...]]] = {
     ),
 }
 
-# The hook each registered event arrives as, per harness. Claude Code and Codex name it in ``hook_event_name``.
+# The hook each registered event arrives as, per harness, named in ``hook_event_name``.
 _VENDOR_EVENTS: Final[Mapping[str, Mapping[str, str]]] = {
     CLAUDE_CODE: {
         "session.started": "SessionStart",
@@ -94,6 +98,11 @@ _VENDOR_EVENTS: Final[Mapping[str, Mapping[str, str]]] = {
         "skill.invoked": "PreToolUse",
         "tool.completed": "PostToolUse",
         "tool.failed": "PostToolUseFailure",
+    },
+    COMMANDCODE: {
+        "session.started": "SessionStart",
+        "tool.started": "PreToolUse",
+        "tool.completed": "PostToolUse",
     },
     CODEX: {
         "session.started": "SessionStart",
@@ -193,7 +202,13 @@ def _facts(
         base,
         tool_name=name,
         subject_visibility=subject,
-        outcome="success" if event_type == "tool.completed" else "failure",
+        outcome=(
+            "unknown"
+            if profile.tool_outcome == "unknown"
+            else "success"
+            if event_type == "tool.completed"
+            else "failure"
+        ),
         outcome_visibility=profile.tool_outcome,
         duration_ms=duration if timed else None,
         duration_visibility=profile.tool_duration if timed and profile.tool_duration else "unknown",
@@ -201,7 +216,7 @@ def _facts(
 
 
 def _vendor_hook(harness: str, event: str, values: Projected) -> HookFacts | None:
-    """A Claude Code or Codex payload, when its own event name is the one this registration is for."""
+    """A command-hook payload whose event name matches its registered lifecycle fact."""
     hook = _VENDOR_EVENTS[harness].get(event)
     session, directory = _native(values, "session_id"), _directory(values, "cwd")
     if hook is None or values.get("hook_event_name") != hook or session is None or directory is None:

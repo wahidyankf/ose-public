@@ -19,6 +19,9 @@ private `HOME`, and real stdin, stdout, stderr, and exit codes.
 
 ## Measuring tools
 
+The benchmark command below was not exercised during this documentation pass. Retrospective test and measurement
+results do not record this recipe at the current revision.
+
 `src/storage_benchmark.py` builds deterministic synthetic stores and reports the bytes per event, index share, log
 high-water mark, and what retention gives back; `src/adapter_latency.py` times whole adapter calls per condition
 against their budgets. Both run against the built artifact in an isolated home:

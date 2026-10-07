@@ -11,12 +11,14 @@ change as product, research, assurance, and platform work develops.
 This is the active OSE product monorepo, not a generic project starter. It holds OSE product work,
 its supporting research, and the governance and automation that carry them.
 
-This repository is one of the **OSE Code Repositories**, the five repositories OSE is built and
-maintained in. The other four have distinct roles: the independent private sibling holds
+This repository is one of the **OSE Code Repositories** (`ose-projects`), the seven repositories OSE
+is built and maintained in. The other six have distinct roles: the independent private sibling holds
 authorized operations, [RHINO](https://github.com/wahidyankf/rhino) supplies repository hygiene,
-[HIPPO](https://github.com/wahidyankf/hippo) supplies resource coordination, and
+[HIPPO](https://github.com/wahidyankf/hippo) supplies resource coordination,
+[py-typekit](https://github.com/wahidyankf/py-typekit) supplies typed result values,
+[ose-rules](https://github.com/wahidyankf/ose-rules) is a shared rules catalog, and
 [BeaverNest](https://github.com/wahidyankf/beaver-nest) is an independent family product. Each of
-the five versions and releases on its own schedule; the name is navigation, not a shared release.
+the seven versions and releases on its own schedule; the name is navigation, not a shared release.
 
 The [repository comparison](./docs/reference/related-repositories.md) says which repository answers
 which question.

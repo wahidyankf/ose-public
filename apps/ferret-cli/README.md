@@ -2,8 +2,9 @@
 
 FERRET keeps a private, local record of what coding-agent harnesses do: which agents, skills, and tools ran, and how
 they ended. It stores metadata only — never prompts, responses, tool arguments, transcripts, or environment values —
-and nothing leaves the machine. `ferret` is a standard-library-only Python 3.14 command-line tool shipped as one
-zipapp.
+and nothing leaves the machine. `ferret` is a Python 3.14 command-line tool shipped as one zipapp, which bundles its
+one library dependency, [`typekit`](https://github.com/wahidyankf/py-typekit), so nothing is installed beside it.
+Inside, a failure is a returned `typekit.Result` value that Pyright checks, not a raised exception.
 
 ## Start with the command help
 

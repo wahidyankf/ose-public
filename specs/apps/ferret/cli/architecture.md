@@ -28,12 +28,12 @@ boundary FERRET does not control, so it is designed to be unable to hurt the har
 
 ## Containers
 
-| Container        | What it is                                                              | How it is reached                                     |
-| ---------------- | ----------------------------------------------------------------------- | ----------------------------------------------------- |
-| `ferret` zipapp  | one Python 3.14 archive with no third-party runtime dependency          | `python ferret.pyz`, or the per-user launcher symlink |
-| Local data home  | the SQLite store in WAL mode, the installation identity, and its secret | read and written only by `ferret`                     |
-| Harness adapters | a POSIX wrapper for Claude Code and Codex, and a plugin for OpenCode    | registered in each harness's own configuration        |
-| Per-user install | the versioned artifact, a launcher symlink, and an ownership manifest   | `ferret self install`, `ferret self uninstall`        |
+| Container        | What it is                                                                                                            | How it is reached                                     |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `ferret` zipapp  | one Python 3.14 archive with its one library dependency, `typekit`, bundled inside, so nothing is installed beside it | `python ferret.pyz`, or the per-user launcher symlink |
+| Local data home  | the SQLite store in WAL mode, the installation identity, and its secret                                               | read and written only by `ferret`                     |
+| Harness adapters | a POSIX wrapper for Claude Code and Codex, and a plugin for OpenCode                                                  | registered in each harness's own configuration        |
+| Per-user install | the versioned artifact, a launcher symlink, and an ownership manifest                                                 | `ferret self install`, `ferret self uninstall`        |
 
 The data home is `~/.ferret` and is created owner-only. The per-user install lives under `~/.local/share/ferret/` with
 its launcher in `~/.local/bin/`; installing never edits a shell startup file or `PATH`.

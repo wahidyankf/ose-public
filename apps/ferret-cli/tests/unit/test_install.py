@@ -16,6 +16,7 @@ from ferret.application.install import InstallOutcome, UninstallOutcome, install
 from ferret.application.ports import FileFacts
 from ferret.domain.errors import FAILURES, ErrorCode, FerretError, FerretResult
 from ferret.domain.install import LAUNCHER_MODE, MANIFEST_MODE, InstallPaths, Manifest, launcher_script
+from support.decoder import gives_up_on
 from support.fakes import (
     AN_OLDER_VERSION,
     ARTIFACT_BYTES,
@@ -838,10 +839,12 @@ def test_a_data_home_that_cannot_be_looked_up_before_the_purge_ends_the_uninstal
     assert PATHS.manifest not in world.installer.nodes
 
 
-#: A JSON array opened 100,000 times: past what the interpreter's decoder can nest.
+#: A JSON array opened 100,000 times: whether the real decoder gives up on it follows the platform's C stack.
 TOO_DEEP = b"[" * 100_000
 #: A member repeated in an object that closes before the nesting that is too deep, so the repeat is the first fault met.
 REPEAT_BEFORE_TOO_DEEP = b'{"a":{"x":1,"x":2},"b":' + TOO_DEEP
+#: The member list of that object, which the decoder hands to the hook when it closes it.
+REPEATED_MEMBER = [("x", 1), ("x", 2)]
 INSTALL_ARGV = ["self", "install", "--target", "user"]
 UNINSTALL_ARGV = ["self", "uninstall"]
 
@@ -859,8 +862,9 @@ def failure_envelope(command: str, code: ErrorCode) -> dict[str, Any]:
     ids=["install", "uninstall"],
 )
 def test_a_manifest_nested_past_the_interpreters_limit_answers_storage_unavailable(
-    argv: list[str], command: str
+    argv: list[str], command: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    gives_up_on(monkeypatch, TOO_DEEP)
     world = make_world()
     world.installer.put_file(PATHS.manifest, TOO_DEEP, MANIFEST_MODE)
     before = world.installer.snapshot()
@@ -872,17 +876,33 @@ def test_a_manifest_nested_past_the_interpreters_limit_answers_storage_unavailab
     assert world.installer.snapshot() == before
 
 
-@pytest.mark.parametrize(
-    ("argv", "command", "code"),
-    [
-        (INSTALL_ARGV, "self.install", "ferret.install.collision"),
-        (UNINSTALL_ARGV, "self.uninstall", "ferret.install.ownership-mismatch"),
-    ],
-    ids=["install", "uninstall"],
-)
+UNTRUSTED_MANIFEST_FAILURES = [
+    (INSTALL_ARGV, "self.install", "ferret.install.collision"),
+    (UNINSTALL_ARGV, "self.uninstall", "ferret.install.ownership-mismatch"),
+]
+
+
+@pytest.mark.parametrize(("argv", "command", "code"), UNTRUSTED_MANIFEST_FAILURES, ids=["install", "uninstall"])
 def test_a_manifest_that_repeats_a_member_before_nesting_too_deep_is_untrusted_not_a_storage_fault(
     argv: list[str], command: str, code: ErrorCode
 ) -> None:
+    world = make_world()
+    world.installer.put_file(PATHS.manifest, REPEAT_BEFORE_TOO_DEEP, MANIFEST_MODE)
+    before = world.installer.snapshot()
+
+    ran = run_cli(world, [*argv, "--json"])
+
+    assert (ran.code, ran.stdout) == (2, "")
+    assert json.loads(ran.stderr) == failure_envelope(command, code)
+    assert world.installer.snapshot() == before
+
+
+@pytest.mark.parametrize(("argv", "command", "code"), UNTRUSTED_MANIFEST_FAILURES, ids=["install", "uninstall"])
+def test_a_manifest_that_repeats_a_member_before_the_decoder_gives_up_is_untrusted_not_a_storage_fault(
+    argv: list[str], command: str, code: ErrorCode, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Where the decoder reaches the depth limit, it has closed the repeat's object first and handed it to the hook.
+    gives_up_on(monkeypatch, REPEAT_BEFORE_TOO_DEEP, after_closing=[REPEATED_MEMBER])
     world = make_world()
     world.installer.put_file(PATHS.manifest, REPEAT_BEFORE_TOO_DEEP, MANIFEST_MODE)
     before = world.installer.snapshot()

@@ -8,11 +8,14 @@ import pytest
 
 from ferret.application.privacy import CANONICAL_LIMIT_BYTES, RAW_LIMIT_BYTES, project_hook_payload, validate_capture
 from ferret.domain.errors import FerretError
+from support.decoder import gives_up_on
 from support.events import VECTOR_DOCUMENT, VECTOR_HASH, encode, event_document
 from support.results import refusal_of, value_of
 
 NOW = datetime(2026, 9, 18, 8, 15, 31, tzinfo=UTC)
 CANARY = "canary-value-that-must-never-be-echoed"
+# A JSON array opened 100,000 times: whether the real decoder gives up on it follows the platform's C stack.
+VERY_DEEP = b"[" * 100_000
 
 
 def rejected(raw: bytes) -> FerretError:
@@ -86,7 +89,7 @@ def test_an_event_missing_a_property_names_the_missing_schema_field() -> None:
         ("a JSON root that is a string", b'"text"'),
         ("a JSON root that is null", b"null"),
         ("a non-finite number", b'{"durationMs":NaN}'),
-        ("very deep nesting", b"[" * 100_000),
+        ("very deep nesting", VERY_DEEP),
         ("a canonical event larger than 16 KiB", encode({**VECTOR_DOCUMENT, "toolName": "x" * CANONICAL_LIMIT_BYTES})),
     ],
 )
@@ -94,6 +97,17 @@ def test_a_malformed_or_oversized_input_is_rejected_without_echoing_it(label: st
     error = rejected(raw)
 
     assert error.field is None, label
+
+
+def test_a_decoder_that_gives_up_on_deep_nesting_is_an_invalid_event_not_a_crash(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Where the decoder gives up with ``RecursionError`` rather than ``ValueError``, both entry points still refuse.
+    gives_up_on(monkeypatch, VERY_DEEP)
+
+    assert rejected(VERY_DEEP).field is None
+    error = refusal_of(project_hook_payload(VERY_DEEP, [("a",)]))
+    assert (error.code, error.field) == ("ferret.event.invalid", None)
 
 
 def test_the_canonical_size_limit_is_exact() -> None:
@@ -385,7 +399,7 @@ def test_hook_projection_ignores_a_path_through_a_non_object() -> None:
         b'{"a":-Infinity}',
         b'{"a":[NaN]}',
         b'{"a":{"b":1,"b":2}}',
-        b"[" * 100_000,
+        VERY_DEEP,
         b'{"a":"' + b"x" * RAW_LIMIT_BYTES + b'"}',
     ],
 )

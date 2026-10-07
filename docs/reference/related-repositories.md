@@ -12,11 +12,11 @@ created: 2026-04-18
 # Related Repositories
 
 The **OSE Code Repositories** (`ose-projects`) are exactly the seven repositories Open Sharia
-Enterprise is built and maintained in: `ose-public`, the private sibling, RHINO, HIPPO, BeaverNest,
-ose-rules, and py-typekit. The name labels that set so a reader can find every part of the project
-from any one of them. It is navigation only: not a GitHub organization, not a parent or container
-repository, not a parity group, and not a shared release train — each of the seven versions, gates,
-and releases on its own schedule.
+Enterprise is built and maintained in: `ose-public`, the private sibling `ose-private`, RHINO,
+HIPPO, BeaverNest, ose-rules, and py-typekit. The name labels that set so a reader can find every
+part of the project from any one of them. It is navigation only: not a GitHub organization, not a
+parent or container repository, not a parity group, and not a shared release train — each of the
+seven versions, gates, and releases on its own schedule.
 
 All seven are independent repositories: two supply OSE itself, three supply upstream tools, one is a
 separate product, and one is a shared rules catalog. Each has a different job, so choose the
@@ -27,24 +27,25 @@ This page is the descriptive catalogue. The canonical independence and consumer-
 governed by the
 [Related Repositories Convention](../../repo-governance/conventions/structure/related-repositories.md).
 
-| Repository                                               | Visibility  | Role                                                             | Start there when…                                                  |
-| -------------------------------------------------------- | ----------- | ---------------------------------------------------------------- | ------------------------------------------------------------------ |
-| [`ose-public`](https://github.com/wahidyankf/ose-public) | Public, MIT | The OSE product platform and its public research                 | You want to understand or run OSE itself.                          |
-| The private sibling                                      | Private     | Authorized product operations and infrastructure work            | You are an authorized maintainer following its private onboarding. |
-| [RHINO](https://github.com/wahidyankf/rhino)             | Public, MIT | Upstream repository-hygiene validation, specifications, releases | You are changing RHINO behavior rather than OSE integration.       |
-| [HIPPO](https://github.com/wahidyankf/hippo)             | Public, MIT | Upstream resource coordination, specifications, releases         | You are changing HIPPO behavior rather than OSE integration.       |
-| [BeaverNest](https://github.com/wahidyankf/beaver-nest)  | Public, MIT | Independent family product and applied learning lab              | You are changing the BeaverNest product.                           |
-| [py-typekit](https://github.com/wahidyankf/py-typekit)   | Public, MIT | Upstream typed-result library `ferret-cli` bundles               | You are changing py-typekit rather than FERRET's use of it.        |
-| [ose-rules](https://github.com/wahidyankf/ose-rules)     | Public, MIT | Shared rules catalog, adopted here only by explicit copy         | You want to propose a rule that holds beyond this repository.      |
+| Repository                                                 | Visibility  | Role                                                             | Start there when…                                                  |
+| ---------------------------------------------------------- | ----------- | ---------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [`ose-public`](https://github.com/wahidyankf/ose-public)   | Public, MIT | The OSE product platform and its public research                 | You want to understand or run OSE itself.                          |
+| [`ose-private`](https://github.com/wahidyankf/ose-private) | Private     | Authorized product operations and infrastructure work            | You are an authorized maintainer following its private onboarding. |
+| [RHINO](https://github.com/wahidyankf/rhino)               | Public, MIT | Upstream repository-hygiene validation, specifications, releases | You are changing RHINO behavior rather than OSE integration.       |
+| [HIPPO](https://github.com/wahidyankf/hippo)               | Public, MIT | Upstream resource coordination, specifications, releases         | You are changing HIPPO behavior rather than OSE integration.       |
+| [BeaverNest](https://github.com/wahidyankf/beaver-nest)    | Public, MIT | Independent family product and applied learning lab              | You are changing the BeaverNest product.                           |
+| [py-typekit](https://github.com/wahidyankf/py-typekit)     | Public, MIT | Upstream typed-result library `ferret-cli` bundles               | You are changing py-typekit rather than FERRET's use of it.        |
+| [ose-rules](https://github.com/wahidyankf/ose-rules)       | Public, MIT | Shared rules catalog, adopted here only by explicit copy         | You want to propose a rule that holds beyond this repository.      |
 
 ## The reader path that matters most
 
 Choose **OSE Public** when the question is about the OSE product, its public website, research, or
 product engineering. Start with [Getting started with OSE Public](../tutorials/getting-started-with-ose-public.md).
 
-The private sibling is not a public setup target. Its documentation and local sandbox instructions are
-available only to authorized maintainers; public documentation intentionally does not describe its
-internal implementation, access model, or operational layout.
+The private sibling, `ose-private`, is not a public setup target, and its link resolves only for
+authorized maintainers. Its documentation and local sandbox instructions are available only to
+authorized maintainers; public documentation intentionally does not describe its internal
+implementation, access model, or operational layout.
 
 ## Upstream and product repositories
 

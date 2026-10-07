@@ -122,7 +122,8 @@ survives; an unrecognized record shape counts as a scan error, and a scan error 
 
 Secrets and credentials; personal data that was never meant to be public; absolute home paths of maintainers; internal
 hostnames, addresses, and topology; identifiers of private repositories; and raw detector output from which any of these
-could be recovered.
+could be recovered. The one exception, the private sibling's name and URL, is defined in
+[Public Outbound Safety](../../repo-governance/conventions/security/public-outbound-safety.md#what-is-prohibited).
 
 Make examples safe by swapping in semantic placeholders — `<api-token>`, `<private-host>`, `<repository-path>`. When a
 placeholder would destroy what the artifact means, the artifact has no place in a public repository.

@@ -13,14 +13,15 @@ sync target. The descriptive catalogue is
 
 **OSE Code Repositories** (`ose-projects`) names exactly the seven repositories this project is
 built and maintained in: [`ose-public`](https://github.com/wahidyankf/ose-public), the private
-sibling, [RHINO](https://github.com/wahidyankf/rhino), [HIPPO](https://github.com/wahidyankf/hippo),
+sibling [`ose-private`](https://github.com/wahidyankf/ose-private) (Private),
+[RHINO](https://github.com/wahidyankf/rhino), [HIPPO](https://github.com/wahidyankf/hippo),
 [BeaverNest](https://github.com/wahidyankf/beaver-nest),
 [ose-rules](https://github.com/wahidyankf/ose-rules), and
 [py-typekit](https://github.com/wahidyankf/py-typekit). The name labels that set for routing and
 nothing else: not a GitHub organization, parent repository, synchronized group, or shared release;
 each member versions, gates, and releases independently. Membership obligates each repository to
-name the other six so a contributor can find them, and obligates nothing further. The private
-sibling stays unnamed and unlinked here, per
+name the other six so a contributor can find them, and obligates nothing further. Only
+`ose-private`'s name and URL are public, per
 [Public Outbound Safety](../security/public-outbound-safety.md).
 
 ## Independent repositories

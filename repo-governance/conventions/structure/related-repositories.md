@@ -53,6 +53,11 @@ they must not be copied, vendored, or forked into an OSE repository.
 Useful learnings may inform OSE, but neither repository automatically receives the other's product,
 governance, agent, skill, workflow, or tool changes.
 
+[py-typekit](https://github.com/wahidyankf/py-typekit) is an independent MIT-licensed Python library
+of typed result and option values, related by upstream consumption: `ferret-cli` consumes it through
+a tag pinned in its `uv.lock` and bundles it into its zipapp. It is a library dependency, not one of
+the OSE Code Repositories.
+
 Naming a repository creates navigation only: no sync target, comparison, gate, propagation
 workflow, or byte-identity manifest follows from it.
 

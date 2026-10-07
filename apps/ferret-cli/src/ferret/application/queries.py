@@ -68,7 +68,11 @@ def _require_live(runtime: Runtime, position: Position, now: datetime) -> Ferret
 
     The agreement check means a cursor forged around a real event ID cannot steer the scan to an arbitrary place.
     """
-    referenced = runtime.events.find(position.event_id, now=now)
+    return runtime.events.find(position.event_id, now=now).flat_map(lambda referenced: _agrees(referenced, position))
+
+
+def _agrees(referenced: Event | None, position: Position) -> FerretResult[None]:
+    """Whether ``referenced``, the live event the cursor names, exists and has the timestamp the cursor states."""
     if referenced is None or (referenced.occurred_at, referenced.event_id) != (position.occurred_at, position.event_id):
         return Err(FerretError("ferret.cursor.invalid"))
     return Ok(None)
@@ -76,9 +80,13 @@ def _require_live(runtime: Runtime, position: Position, now: datetime) -> Ferret
 
 def _read_page(runtime: Runtime, listing: _Listing, now: datetime) -> FerretResult[EventPage]:
     """One more row than the page size is read, so a row left over says a cursor is owed."""
-    rows = runtime.events.read(
+    return runtime.events.read(
         listing.criteria, now=now, newest_first=True, after=listing.after, limit=listing.limit + 1
-    )
+    ).flat_map(lambda rows: _paged(rows, listing))
+
+
+def _paged(rows: tuple[Event, ...], listing: _Listing) -> FerretResult[EventPage]:
+    """The page the first ``limit`` of ``rows`` make, with the cursor after them when a further row was read."""
     items = rows[: listing.limit]
     if len(rows) <= listing.limit:
         return Ok(EventPage(items, None))
@@ -106,28 +114,35 @@ def list_events(runtime: Runtime, options: Options) -> FerretResult[EventPage]:
     return _listing(options, now).flat_map(lambda listing: _page(runtime, listing, now))
 
 
-def _batches(events: EventRepository, criteria: EventCriteria, now: datetime) -> Iterator[Event]:
+def _batches(events: EventRepository, criteria: EventCriteria, now: datetime) -> Iterator[FerretResult[Event]]:
+    """Each event of the scan as an ``Ok``; a batch that fails to read yields its one ``Err`` and ends the scan."""
     after: Position | None = None
     while True:
-        batch = events.read(criteria, now=now, newest_first=False, after=after, limit=BATCH_SIZE)
-        yield from batch
-        if len(batch) < BATCH_SIZE:
-            return
-        last = batch[-1]
-        after = Position(last.occurred_at, last.event_id)
+        match events.read(criteria, now=now, newest_first=False, after=after, limit=BATCH_SIZE):
+            case Err() as failure:
+                yield failure
+                return
+            case Ok(batch):
+                yield from (Ok(event) for event in batch)
+                if len(batch) < BATCH_SIZE:
+                    return
+                last = batch[-1]
+                after = Position(last.occurred_at, last.event_id)
 
 
-def _scan(runtime: Runtime, criteria: EventCriteria, now: datetime) -> FerretResult[Iterator[Event]]:
+def _scan(runtime: Runtime, criteria: EventCriteria, now: datetime) -> FerretResult[Iterator[FerretResult[Event]]]:
     """The lazy batches of a validated scan, once the store has been opened."""
     return open_store(runtime).map(lambda _: _batches(runtime.events, criteria, now))
 
 
-def scan_events(runtime: Runtime, options: Options) -> FerretResult[Iterator[Event]]:
+def scan_events(runtime: Runtime, options: Options) -> FerretResult[Iterator[FerretResult[Event]]]:
     """Every event matching the filters, oldest first by ``(occurredAt, eventId)``, read in batches on demand.
 
     The filters are validated and the store checked when this is called rather than when the first event is read, so
     a refusal comes back before the caller has produced any output. The clock is read once, so the window and the
-    expiry cannot shift while the scan runs.
+    expiry cannot shift while the scan runs. A later batch can still fail, after the caller has consumed the earlier
+    ones, so each item is itself a result: the failure is the last item, and a consumer stops at the first ``Err`` and
+    returns it.
     """
     now = runtime.clock.now()
     return criteria_from_options(options, now=now).flat_map(lambda criteria: _scan(runtime, criteria, now))

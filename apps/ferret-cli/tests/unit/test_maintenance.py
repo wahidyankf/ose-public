@@ -85,10 +85,10 @@ def test_a_row_expiring_exactly_now_is_hidden_from_every_read_path_before_any_pr
     assert [json.loads(line)["eventId"] for line in exported] == [visible.event_id]
     assert [row["eventCount"] for row in usage] == [1]
     assert [row["eventCount"] for row in outcomes] == [1]
-    assert world.events.find(hidden.event_id, now=NOW) is None
-    assert world.events.find(visible.event_id, now=NOW) == visible
-    assert world.capabilities.latest_snapshot("codex", now=NOW) == new_snapshot
-    assert world.capabilities.latest_snapshot("codex", now=NOW + timedelta(milliseconds=1)) is None
+    assert value_of(world.events.find(hidden.event_id, now=NOW)) is None
+    assert value_of(world.events.find(visible.event_id, now=NOW)) == visible
+    assert value_of(world.capabilities.latest_snapshot("codex", now=NOW)) == new_snapshot
+    assert value_of(world.capabilities.latest_snapshot("codex", now=NOW + timedelta(milliseconds=1))) is None
     assert world.telemetry.prunes == []
     assert len(world.events.stored) == 5
 
@@ -124,7 +124,7 @@ def test_each_due_prune_takes_one_bounded_batch_and_only_an_empty_one_advances_t
     ]
     assert world.telemetry.marker == stamp(NOW)
     assert numbers(tuple(world.events.stored)) == [1001, 1002, 1003, 1004]
-    assert world.telemetry.expiry_counters() == ExpiryCounters(local_total=250, before_ack_total=0)
+    assert value_of(world.telemetry.expiry_counters()) == ExpiryCounters(local_total=250, before_ack_total=0)
 
 
 def test_a_partial_batch_leaves_the_marker_unchanged_so_the_next_operation_continues() -> None:
@@ -159,7 +159,7 @@ def test_the_row_limit_counts_events_and_snapshots_together_with_events_first() 
 
     assert result == PruneResult("pruned", events=60, snapshots=40, workspaces=1, remaining=True)
     assert (len(world.events.stored), len(world.capabilities.stored)) == (0, 20)
-    assert world.telemetry.expiry_counters() == ExpiryCounters(local_total=100, before_ack_total=0)
+    assert value_of(world.telemetry.expiry_counters()) == ExpiryCounters(local_total=100, before_ack_total=0)
 
 
 def test_ties_in_expiry_are_broken_by_event_id() -> None:
@@ -197,11 +197,11 @@ def test_the_counters_only_move_by_what_a_prune_deleted_and_never_reclassify_his
     world.telemetry.local_total = 7
 
     prune_due(world.runtime)
-    assert world.telemetry.expiry_counters() == ExpiryCounters(local_total=14, before_ack_total=0)
+    assert value_of(world.telemetry.expiry_counters()) == ExpiryCounters(local_total=14, before_ack_total=0)
 
     world.telemetry.marker = None
     prune_due(world.runtime)
-    assert world.telemetry.expiry_counters() == ExpiryCounters(local_total=14, before_ack_total=0)
+    assert value_of(world.telemetry.expiry_counters()) == ExpiryCounters(local_total=14, before_ack_total=0)
 
 
 def test_a_prune_that_cannot_take_the_lock_is_skipped_and_the_operation_still_succeeds() -> None:
@@ -213,7 +213,7 @@ def test_a_prune_that_cannot_take_the_lock_is_skipped_and_the_operation_still_su
 
     assert ran.code == 0
     assert world.telemetry.prunes == [PruneResult("skipped")]
-    assert (world.telemetry.marker, world.telemetry.expiry_counters()) == (None, ExpiryCounters(0, 0))
+    assert (world.telemetry.marker, value_of(world.telemetry.expiry_counters())) == (None, ExpiryCounters(0, 0))
     assert len(world.events.stored) == 4
 
 
@@ -230,6 +230,24 @@ def test_a_prune_failure_never_reaches_the_operation(failure: FerretError) -> No
 
     # `1` because the store is empty, not because the prune failed: the prune's failure never reaches the caller.
     assert (ran.code, json.loads(ran.stdout)["items"]) == (1, [])
+
+
+@pytest.mark.parametrize("call", ["last_completed_at", "prune_batch"])
+@pytest.mark.parametrize(
+    "failure",
+    [FerretError("ferret.storage.unavailable", retryable=True), FerretError("ferret.storage.integrity-failure")],
+    ids=["unavailable", "integrity"],
+)
+def test_a_prune_whose_either_port_call_fails_is_reported_as_skipped_and_changes_nothing(
+    call: str, failure: FerretError
+) -> None:
+    world = world_with(*expired_events(3, now=NOW))
+    world.telemetry.refusals[call] = failure
+
+    result = prune_due(world.runtime)
+
+    assert result == PruneResult("skipped")
+    assert (world.telemetry.prunes, world.telemetry.marker, len(world.events.stored)) == ([], None, 3)
 
 
 @pytest.mark.parametrize("operation", [*READS, "capture"])

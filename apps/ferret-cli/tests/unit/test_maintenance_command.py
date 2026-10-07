@@ -247,14 +247,14 @@ def test_maintenance_twice_leaves_only_the_latest_completion() -> None:
 
     assert (first["expiredEventCount"], second["expiredEventCount"]) == (2, 3)
     assert world.telemetry.marker == stamp(NOW + timedelta(hours=25))
-    assert world.telemetry.expiry_counters() == ExpiryCounters(local_total=5, before_ack_total=0)
+    assert value_of(world.telemetry.expiry_counters()) == ExpiryCounters(local_total=5, before_ack_total=0)
 
 
 def test_measure_storage_reads_the_three_physical_figures_from_the_store() -> None:
     world = world_with()
     world.telemetry.facts = SMALL
 
-    assert measure_storage(world.runtime) == SMALL
+    assert value_of(measure_storage(world.runtime)) == SMALL
 
 
 @pytest.mark.parametrize(
@@ -330,6 +330,29 @@ def test_reclaim_space_refuses_a_damaged_database_and_rewrites_nothing() -> None
     assert (world.telemetry.compactions, world.telemetry.facts) == ([], WORTH_COMPACTING)
 
 
+@pytest.mark.parametrize(
+    ("call", "from_call"),
+    [
+        pytest.param("storage_facts", 1, id="the-first-measurement"),
+        pytest.param("checkpoint", 1, id="the-first-checkpoint"),
+        pytest.param("storage_facts", 2, id="the-measurement-after-it"),
+        pytest.param("check_integrity", 1, id="the-integrity-check"),
+        pytest.param("compact", 1, id="the-compaction"),
+        pytest.param("checkpoint", 2, id="the-checkpoint-after-the-compaction"),
+        pytest.param("storage_facts", 3, id="the-last-measurement"),
+    ],
+)
+def test_reclaim_space_ends_with_the_failure_of_any_store_call_it_makes(call: str, from_call: int) -> None:
+    world = world_with()
+    world.telemetry.facts = WORTH_COMPACTING
+    failure = FerretError("ferret.storage.unavailable", retryable=True)
+    world.telemetry.refusals[call] = failure
+    world.telemetry.refuse_from[call] = from_call
+
+    assert refusal_of(reclaim_space(world.runtime)) is failure
+    assert world.telemetry.calls[call] == from_call
+
+
 def test_pruning_to_exhaustion_returns_the_rows_it_removed() -> None:
     world = world_with(*expired_events(250, now=NOW), *fresh_events(4, now=NOW))
 
@@ -392,3 +415,70 @@ def test_run_maintenance_returns_the_refusal_of_a_damaged_database() -> None:
 
     assert refusal.code == "ferret.storage.integrity-failure"
     assert world.telemetry.compactions == []
+
+
+FAILURES = [
+    pytest.param(FerretError("ferret.storage.unavailable", retryable=True), id="retryable"),
+    pytest.param(FerretError("ferret.storage.integrity-failure"), id="integrity"),
+]
+
+
+@pytest.mark.parametrize("failure", FAILURES)
+@pytest.mark.parametrize(
+    "call", ["storage_facts", "prune_batch", "checkpoint", "check_integrity", "compact", "expiry_counters"]
+)
+def test_a_telemetry_call_that_fails_ends_a_whole_run_with_its_own_failure(call: str, failure: FerretError) -> None:
+    world = world_with(*expired_events(3, now=NOW))
+    world.telemetry.facts = WORTH_COMPACTING
+    world.telemetry.refusals[call] = failure
+
+    refusal = refusal_of(run_maintenance(world.runtime, if_due=False))
+
+    assert (refusal.code, refusal.exit_code, refusal.retryable) == (failure.code, 2, failure.retryable)
+
+
+@pytest.mark.parametrize("failure", FAILURES)
+@pytest.mark.parametrize("call", ["last_completed_at", "storage_facts", "expiry_counters"])
+def test_a_telemetry_call_that_fails_ends_a_run_that_is_not_due_with_its_own_failure(
+    call: str, failure: FerretError
+) -> None:
+    world = world_with()
+    world.telemetry.marker = stamp(NOW - timedelta(minutes=30))
+    world.telemetry.refusals[call] = failure
+
+    refusal = refusal_of(run_maintenance(world.runtime, if_due=True))
+
+    assert (refusal.code, refusal.exit_code, refusal.retryable) == (failure.code, 2, failure.retryable)
+
+
+@pytest.mark.parametrize("failure", FAILURES)
+@pytest.mark.parametrize("call", ["storage_facts", "checkpoint", "check_integrity", "compact"])
+def test_reclaiming_space_ends_with_the_failure_of_the_call_that_failed_and_rewrites_nothing(
+    call: str, failure: FerretError
+) -> None:
+    world = world_with()
+    world.telemetry.facts = WORTH_COMPACTING
+    world.telemetry.refusals[call] = failure
+
+    refusal = refusal_of(reclaim_space(world.runtime))
+
+    assert (refusal.code, refusal.retryable) == (failure.code, failure.retryable)
+    assert (world.telemetry.compactions, world.telemetry.facts) == ([], WORTH_COMPACTING)
+
+
+@pytest.mark.parametrize("failure", FAILURES)
+def test_pruning_to_exhaustion_ends_with_the_failure_of_a_batch_that_fails(failure: FerretError) -> None:
+    world = world_with(*expired_events(3, now=NOW))
+    world.telemetry.refusals["prune_batch"] = failure
+
+    refusal = refusal_of(prune_to_exhaustion(world.runtime))
+
+    assert (refusal.code, refusal.retryable) == (failure.code, failure.retryable)
+    assert len(world.events.stored) == 3
+
+
+def test_measuring_storage_returns_the_failure_of_a_store_that_cannot_be_read() -> None:
+    world = world_with()
+    world.telemetry.refusals["storage_facts"] = FerretError("ferret.storage.integrity-failure")
+
+    assert refusal_of(measure_storage(world.runtime)).code == "ferret.storage.integrity-failure"

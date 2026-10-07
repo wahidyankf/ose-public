@@ -148,6 +148,27 @@ def test_an_unsafe_store_is_refused_without_being_repaired(target: str | None, e
     assert world.events.captures == 0
 
 
+@pytest.mark.parametrize(
+    "failure",
+    [FerretError("ferret.storage.unavailable", retryable=True), FerretError("ferret.storage.integrity-failure")],
+    ids=["retryable", "integrity"],
+)
+def test_a_store_that_cannot_take_the_event_ends_the_capture_with_the_failure_it_returned(
+    failure: FerretError,
+) -> None:
+    world = initialized_world(encode(VECTOR_DOCUMENT))
+    world.events.refusals["capture"] = failure
+
+    error = refused(world)
+    outcome = run(["capture", "--json"], world)
+
+    assert (error.code, error.exit_code, error.retryable) == (failure.code, 2, failure.retryable)
+    assert (outcome.code, outcome.stdout) == (2, "")
+    envelope = json.loads(outcome.stderr)["error"]
+    assert (envelope["code"], envelope["retryable"]) == (failure.code, failure.retryable)
+    assert world.events.stored == []
+
+
 def test_capture_json_is_the_frozen_success_object() -> None:
     world = initialized_world(encode(VECTOR_DOCUMENT))
 

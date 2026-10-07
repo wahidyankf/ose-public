@@ -34,7 +34,7 @@ class DimensionReport:
 
 def _store(runtime: Runtime, snapshot: CapabilitySnapshot) -> FerretResult[CaptureResult]:
     """Store a validated snapshot once the store has been opened."""
-    return open_store(runtime).map(lambda _: runtime.capabilities.store_snapshot(snapshot))
+    return open_store(runtime).flat_map(lambda _: runtime.capabilities.store_snapshot(snapshot))
 
 
 def record_snapshot(runtime: Runtime, document: Mapping[str, Any]) -> FerretResult[CaptureResult]:

@@ -2,11 +2,14 @@
 
 import hashlib
 import sqlite3
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+from typekit import Err, Ok
+
 from ferret.application.ports import Clock, SchemaState
-from ferret.domain.errors import FerretError, or_raise
+from ferret.domain.errors import FerretError, FerretResult, as_internal_failure
 from ferret.domain.timestamps import format_timestamp
 
 BUSY_TIMEOUT_MS = 250
@@ -119,29 +122,69 @@ def translate_error(error: sqlite3.Error) -> FerretError:
     return FerretError("ferret.storage.unavailable")
 
 
-def connect(path: Path, *, busy_timeout_ms: int = BUSY_TIMEOUT_MS) -> sqlite3.Connection:
-    """Open one connection in autocommit mode with the four required pragmas applied and verified."""
-    connection: sqlite3.Connection | None = None
+def connect(path: Path, *, busy_timeout_ms: int = BUSY_TIMEOUT_MS) -> FerretResult[sqlite3.Connection]:
+    """Open one connection in autocommit mode with the four required pragmas applied and verified.
+
+    A connection that cannot be opened or whose pragmas are not what was asked for is closed and returned as an ``Err``.
+    """
     try:
         connection = sqlite3.connect(path, timeout=busy_timeout_ms / 1000, autocommit=True)
+    except sqlite3.Error as error:
+        return Err(translate_error(error))
+    ready = _verified(connection, busy_timeout_ms)
+    if isinstance(ready, Err):
+        connection.close()
+    return ready
+
+
+def _verified(connection: sqlite3.Connection, busy_timeout_ms: int) -> FerretResult[sqlite3.Connection]:
+    """The connection with its four pragmas applied and read back, or the failure of applying or reading one."""
+    try:
         journal = connection.execute("PRAGMA journal_mode = WAL").fetchone()
         connection.execute("PRAGMA synchronous = FULL")
         connection.execute("PRAGMA foreign_keys = ON")
         connection.execute(f"PRAGMA busy_timeout = {int(busy_timeout_ms)}")
-        verified = (
+        honoured = (
             str(journal[0]).lower() == "wal",
             connection.execute("PRAGMA synchronous").fetchone()[0] == _SYNCHRONOUS_FULL,
             connection.execute("PRAGMA foreign_keys").fetchone()[0] == 1,
             connection.execute("PRAGMA busy_timeout").fetchone()[0] == busy_timeout_ms,
         )
     except sqlite3.Error as error:
-        if connection is not None:
-            connection.close()
-        raise translate_error(error) from None
-    if not all(verified):
+        return Err(translate_error(error))
+    if not all(honoured):
+        return Err(FerretError("ferret.storage.unavailable"))
+    return Ok(connection)
+
+
+def run_on[T](connection: sqlite3.Connection, work: Callable[[sqlite3.Connection], FerretResult[T]]) -> FerretResult[T]:
+    """Run ``work`` on ``connection``, closing it on every way out.
+
+    A SQLite failure ``work`` or the close-out of a transaction raises is returned as the translated ``Err``. Any
+    other exception propagates after the connection is closed.
+    """
+    try:
+        return work(connection)
+    except sqlite3.Error as error:
+        return Err(translate_error(error))
+    finally:
         connection.close()
-        raise FerretError("ferret.storage.unavailable")
-    return connection
+
+
+def within_transaction[T](connection: sqlite3.Connection, work: Callable[[], FerretResult[T]]) -> FerretResult[T]:
+    """Run ``work`` in the transaction ``connection`` has begun: ``COMMIT`` on an ``Ok``, ``ROLLBACK`` on anything else.
+
+    Whatever the way out of ``work`` or of the ``COMMIT``, a transaction still open is rolled back. A SQLite failure
+    raised by either is the caller's to translate, so this is for use inside ``run_on``, which does.
+    """
+    try:
+        result = work()
+        if isinstance(result, Ok):
+            connection.execute("COMMIT")
+        return result
+    finally:
+        if connection.in_transaction:
+            connection.execute("ROLLBACK")
 
 
 class SQLiteSchema:
@@ -151,24 +194,14 @@ class SQLiteSchema:
         self._database_path = database_path
         self._clock = clock
 
-    def migrate(self) -> SchemaState:
-        connection = connect(self._database_path)
-        try:
-            connection.execute("BEGIN IMMEDIATE")
-            try:
-                state = self._apply(connection)
-                connection.execute("COMMIT")
-            except BaseException:
-                if connection.in_transaction:
-                    connection.execute("ROLLBACK")
-                raise
-        except sqlite3.Error as error:
-            raise translate_error(error) from None
-        finally:
-            connection.close()
-        return state
+    def migrate(self) -> FerretResult[SchemaState]:
+        return connect(self._database_path).flat_map(lambda connection: run_on(connection, self._migrate))
 
-    def _apply(self, connection: sqlite3.Connection) -> SchemaState:
+    def _migrate(self, connection: sqlite3.Connection) -> FerretResult[SchemaState]:
+        connection.execute("BEGIN IMMEDIATE")
+        return within_transaction(connection, lambda: self._apply(connection))
+
+    def _apply(self, connection: sqlite3.Connection) -> FerretResult[SchemaState]:
         known = connection.execute("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'schema_migration'")
         applied: dict[int, str] = {}
         if known.fetchone() is not None:
@@ -178,18 +211,28 @@ class SQLiteSchema:
             }
         # A schema newer than this build is refused before anything is written.
         if applied and max(applied) > LATEST_SCHEMA:
-            raise FerretError("ferret.storage.unavailable")
+            return Err(FerretError("ferret.storage.unavailable"))
         applied_now = False
         for migration in MIGRATIONS:
             if migration.version in applied:
                 if applied[migration.version] != migration.checksum:
-                    raise FerretError("ferret.storage.integrity-failure")
+                    return Err(FerretError("ferret.storage.integrity-failure"))
                 continue
             for statement in migration.statements:
                 connection.execute(statement)
-            connection.execute(
-                "INSERT INTO schema_migration (version, checksum, applied_at) VALUES (?, ?, ?)",
-                (migration.version, migration.checksum, or_raise(format_timestamp(self._clock.now()))),
-            )
+            recorded = self._record(connection, migration)
+            if isinstance(recorded, Err):
+                return recorded
             applied_now = True
-        return SchemaState(number=LATEST_SCHEMA, applied_now=applied_now)
+        return Ok(SchemaState(number=LATEST_SCHEMA, applied_now=applied_now))
+
+    def _record(self, connection: sqlite3.Connection, migration: Migration) -> FerretResult[None]:
+        """Note in the database that ``migration`` ran, and when."""
+        applied_at = format_timestamp(self._clock.now()).map_err(as_internal_failure)
+        if isinstance(applied_at, Err):
+            return applied_at
+        connection.execute(
+            "INSERT INTO schema_migration (version, checksum, applied_at) VALUES (?, ?, ?)",
+            (migration.version, migration.checksum, applied_at.value),
+        )
+        return Ok(None)

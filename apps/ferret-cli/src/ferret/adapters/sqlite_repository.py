@@ -2,22 +2,25 @@
 
 import sqlite3
 import time
-from collections.abc import Generator, Mapping, Sequence
-from contextlib import contextmanager
+from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal
+
+from typekit import Err, Ok, attempt
 
 from ferret.adapters.sqlite_schema import (
     BUSY_TIMEOUT_MS,
     LOCK_ATTEMPT_TIMEOUT_MS,
     WRITE_LOCK_BUDGET_MS,
     connect,
+    run_on,
     translate_error,
+    within_transaction,
 )
 from ferret.application.ports import Budget, CaptureResult, Compaction, ExpiryCounters, PruneResult, StoreCounts
 from ferret.domain.capability import Capability, CapabilitySnapshot
-from ferret.domain.errors import FerretError, or_raise
+from ferret.domain.errors import FerretError, FerretResult, as_internal_failure
 from ferret.domain.event import Event
 from ferret.domain.identity import resolve_identity
 from ferret.domain.query import EventCriteria, Position
@@ -114,17 +117,25 @@ _SELECT_COUNTS = (
 )
 
 
+def _timestamp(moment: datetime) -> FerretResult[str]:
+    """``moment`` in the stored spelling; one with no time zone is a defect no caller reaches."""
+    return format_timestamp(moment).map_err(as_internal_failure)
+
+
 def read_statement(
     criteria: EventCriteria, *, now: datetime, newest_first: bool, after: Position | None, limit: int
-) -> tuple[str, tuple[str | int, ...]]:
-    """The one parameterized statement behind an event read, and its parameters.
+) -> FerretResult[tuple[str, tuple[str | int, ...]]]:
+    """The one parameterized statement behind an event read, and its parameters, or the failure of stamping ``now``.
 
     Only column names taken from a fixed table are ever written into the text; every value is a parameter. The order
     is the ``(occurred_at, event_id)`` index order, so a page is found by walking an index rather than sorting. The
     unary plus keeps the planner from choosing the expiry index for the retention test, which would force a sort.
     """
+    horizon = _timestamp(now)
+    if isinstance(horizon, Err):
+        return horizon
     conditions = ["+expires_at > ?"]
-    parameters: list[str | int] = [or_raise(format_timestamp(now))]
+    parameters: list[str | int] = [horizon.value]
     if criteria.start is not None:
         conditions.append("occurred_at >= ?")
         parameters.append(criteria.start)
@@ -141,42 +152,48 @@ def read_statement(
         parameters.extend((after.occurred_at, after.event_id))
     direction = "DESC" if newest_first else "ASC"
     parameters.append(limit)
-    return (
-        f"SELECT {_EVENT_COLUMNS} FROM event WHERE {' AND '.join(conditions)}"
-        f" ORDER BY occurred_at {direction}, event_id {direction} LIMIT ?",
-        tuple(parameters),
+    return Ok(
+        (
+            f"SELECT {_EVENT_COLUMNS} FROM event WHERE {' AND '.join(conditions)}"
+            f" ORDER BY occurred_at {direction}, event_id {direction} LIMIT ?",
+            tuple(parameters),
+        )
     )
 
 
 def _fetch(
     database_path: Path, statement: str, parameters: Sequence[str | int] | Mapping[str, str | int] = ()
-) -> list[tuple[Any, ...]]:
+) -> FerretResult[list[tuple[Any, ...]]]:
     """One consistent read on a fresh verified connection that is closed before its rows are returned."""
-    connection = connect(database_path)
-    try:
-        return connection.execute(statement, parameters).fetchall()
-    except sqlite3.Error as error:
-        raise translate_error(error) from None
-    finally:
-        connection.close()
+    return connect(database_path).flat_map(
+        lambda connection: run_on(connection, lambda held: Ok(held.execute(statement, parameters).fetchall()))
+    )
 
 
-def _size(path: Path) -> int:
+def _events(rows: list[tuple[Any, ...]]) -> tuple[Event, ...]:
+    """The events the rows of an event statement hold, in order."""
+    return tuple(Event(*row) for row in rows)
+
+
+def _size(path: Path) -> FerretResult[int]:
     """The size of one file, zero when it does not exist, as the log does not while no connection keeps it alive."""
-    try:
-        return path.stat().st_size
-    except FileNotFoundError:
-        return 0
-    except OSError:
-        raise FerretError("ferret.storage.unavailable") from None
+    match attempt(lambda: path.stat().st_size, OSError):
+        case Ok(size):
+            return Ok(size)
+        case Err(FileNotFoundError()):
+            return Ok(0)
+        case Err():
+            return Err(FerretError("ferret.storage.unavailable"))
 
 
-def _file_sizes(database_path: Path) -> tuple[int, int]:
+def _file_sizes(database_path: Path) -> FerretResult[tuple[int, int]]:
     """The database file's bytes and its write-ahead log's bytes."""
-    return _size(database_path), _size(Path(f"{database_path}-wal"))
+    return _size(database_path).flat_map(
+        lambda database_bytes: _size(Path(f"{database_path}-wal")).map(lambda wal_bytes: (database_bytes, wal_bytes))
+    )
 
 
-def _acquire(database_path: Path, *, budget_ms: int) -> sqlite3.Connection:
+def _acquire(database_path: Path, *, budget_ms: int) -> FerretResult[sqlite3.Connection]:
     """One verified connection holding the write lock, taken inside a real wall-clock budget.
 
     SQLite's busy timeout is not a bound on how long ``BEGIN IMMEDIATE`` takes: a contended acquisition runs several
@@ -190,40 +207,59 @@ def _acquire(database_path: Path, *, budget_ms: int) -> sqlite3.Connection:
     deadline = time.monotonic() + budget_ms / 1000
     attempt_ms = min(LOCK_ATTEMPT_TIMEOUT_MS, budget_ms)
     while True:
-        connection = connect(database_path, busy_timeout_ms=attempt_ms)
+        opened = connect(database_path, busy_timeout_ms=attempt_ms)
+        if isinstance(opened, Err):
+            return opened
+        connection = opened.value
         try:
             connection.execute("BEGIN IMMEDIATE")
         except sqlite3.Error as error:
             connection.close()
             failure = translate_error(error)
             if not failure.retryable or time.monotonic() >= deadline:
-                raise failure from None
+                return Err(failure)
         else:
             connection.execute(f"PRAGMA busy_timeout = {int(BUSY_TIMEOUT_MS)}")
-            return connection
+            return Ok(connection)
 
 
-@contextmanager
-def _write_transaction(database_path: Path, *, budget_ms: int = WRITE_LOCK_BUDGET_MS) -> Generator[sqlite3.Connection]:
-    """One verified connection inside one ``BEGIN IMMEDIATE`` transaction.
+def _store_once(
+    connection: sqlite3.Connection,
+    select_hash: str,
+    identifier: str,
+    content_hash: str,
+    insert: Callable[[], FerretResult[CaptureResult]],
+) -> FerretResult[CaptureResult]:
+    """Apply the identity policy to what is stored under ``identifier``.
 
-    The transaction commits when the block finishes and rolls back on any failure, and the connection is closed on
-    every path. A SQLite failure is translated onto the closed failure contract without carrying its message.
-    ``budget_ms`` is how long the wait for the write lock may last, measured on the monotonic clock.
+    An unseen ID is inserted, the same ID and hash is a duplicate, and the same ID with another hash is a conflict.
     """
-    connection = _acquire(database_path, budget_ms=budget_ms)
-    try:
-        try:
-            yield connection
-            connection.execute("COMMIT")
-        except BaseException:
-            if connection.in_transaction:
-                connection.execute("ROLLBACK")
-            raise
-    except sqlite3.Error as error:
-        raise translate_error(error) from None
-    finally:
-        connection.close()
+    row = connection.execute(select_hash, (identifier,)).fetchone()
+    match resolve_identity(None if row is None else str(row[0]), content_hash):
+        case Err() as conflict:
+            return conflict
+        case Ok("duplicate"):
+            return Ok("duplicate")
+        case Ok():
+            return insert()
+
+
+def _in_write_transaction[T](
+    database_path: Path,
+    work: Callable[[sqlite3.Connection], FerretResult[T]],
+    *,
+    budget_ms: int = WRITE_LOCK_BUDGET_MS,
+) -> FerretResult[T]:
+    """Run ``work`` on one verified connection inside one ``BEGIN IMMEDIATE`` transaction.
+
+    The transaction commits when ``work`` returns an ``Ok`` and rolls back on an ``Err`` or any other way out, and the
+    connection is closed on every path. A SQLite failure is translated onto the closed failure contract without
+    carrying its message. ``budget_ms`` is how long the wait for the write lock may last, measured on the monotonic
+    clock.
+    """
+    return _acquire(database_path, budget_ms=budget_ms).flat_map(
+        lambda connection: run_on(connection, lambda held: within_transaction(held, lambda: work(held)))
+    )
 
 
 class SQLiteEventRepository:
@@ -237,60 +273,68 @@ class SQLiteEventRepository:
     def __init__(self, database_path: Path) -> None:
         self._database_path = database_path
 
-    def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
+    def capture(self, event: Event, *, budget: Budget | None = None) -> FerretResult[CaptureResult]:
         budget_ms = WRITE_LOCK_BUDGET_MS if budget is None else budget.remaining_ms()
-        with _write_transaction(self._database_path, budget_ms=budget_ms) as connection:
-            return self._capture(connection, event)
+        return _in_write_transaction(
+            self._database_path, lambda connection: self._capture(connection, event), budget_ms=budget_ms
+        )
 
     def read(
         self, criteria: EventCriteria, *, now: datetime, newest_first: bool, after: Position | None, limit: int
-    ) -> tuple[Event, ...]:
-        statement, parameters = read_statement(criteria, now=now, newest_first=newest_first, after=after, limit=limit)
-        return self._select(statement, parameters)
+    ) -> FerretResult[tuple[Event, ...]]:
+        built = read_statement(criteria, now=now, newest_first=newest_first, after=after, limit=limit)
+        if isinstance(built, Err):
+            return built
+        return self._select(*built.value)
 
-    def find(self, event_id: str, *, now: datetime) -> Event | None:
-        found = self._select(_SELECT_LIVE, (event_id, or_raise(format_timestamp(now))))
-        return found[0] if found else None
+    def find(self, event_id: str, *, now: datetime) -> FerretResult[Event | None]:
+        return (
+            _timestamp(now)
+            .flat_map(lambda horizon: self._select(_SELECT_LIVE, (event_id, horizon)))
+            .map(lambda found: found[0] if found else None)
+        )
 
-    def _select(self, statement: str, parameters: tuple[str | int, ...]) -> tuple[Event, ...]:
-        return tuple(Event(*row) for row in _fetch(self._database_path, statement, parameters))
+    def _select(self, statement: str, parameters: tuple[str | int, ...]) -> FerretResult[tuple[Event, ...]]:
+        return _fetch(self._database_path, statement, parameters).map(_events)
 
-    def _capture(self, connection: sqlite3.Connection, event: Event) -> CaptureResult:
-        row = connection.execute(_SELECT_HASH, (event.event_id,)).fetchone()
-        if or_raise(resolve_identity(None if row is None else str(row[0]), event.event_hash)) == "duplicate":
-            return "duplicate"
-        self._store(connection, event)
-        return "stored"
+    def _capture(self, connection: sqlite3.Connection, event: Event) -> FerretResult[CaptureResult]:
+        return _store_once(
+            connection, _SELECT_HASH, event.event_id, event.event_hash, lambda: self._store(connection, event)
+        )
 
     @staticmethod
-    def _store(connection: sqlite3.Connection, event: Event) -> None:
-        connection.execute(_UPSERT_WORKSPACE, (event.workspace_id, event.captured_at, event.captured_at))
-        connection.execute(
-            _INSERT_EVENT,
-            (
-                event.event_id,
-                event.event_hash,
-                event.schema_version,
-                event.occurred_at,
-                event.captured_at,
-                or_raise(event.expires_at),
-                event.harness,
-                event.harness_version,
-                event.installation_id,
-                event.workspace_id,
-                event.session_id,
-                event.parent_session_id,
-                event.event_type,
-                event.agent_name,
-                event.skill_name,
-                event.tool_name,
-                event.outcome,
-                event.duration_ms,
-                event.subject_visibility,
-                event.outcome_visibility,
-                event.duration_visibility,
-            ),
-        )
+    def _store(connection: sqlite3.Connection, event: Event) -> FerretResult[CaptureResult]:
+        def insert(expires_at: str) -> CaptureResult:
+            connection.execute(_UPSERT_WORKSPACE, (event.workspace_id, event.captured_at, event.captured_at))
+            connection.execute(
+                _INSERT_EVENT,
+                (
+                    event.event_id,
+                    event.event_hash,
+                    event.schema_version,
+                    event.occurred_at,
+                    event.captured_at,
+                    expires_at,
+                    event.harness,
+                    event.harness_version,
+                    event.installation_id,
+                    event.workspace_id,
+                    event.session_id,
+                    event.parent_session_id,
+                    event.event_type,
+                    event.agent_name,
+                    event.skill_name,
+                    event.tool_name,
+                    event.outcome,
+                    event.duration_ms,
+                    event.subject_visibility,
+                    event.outcome_visibility,
+                    event.duration_visibility,
+                ),
+            )
+            return "stored"
+
+        return event.expires_at.map(insert)
 
 
 class SQLiteCapabilityRepository:
@@ -304,11 +348,21 @@ class SQLiteCapabilityRepository:
     def __init__(self, database_path: Path) -> None:
         self._database_path = database_path
 
-    def store_snapshot(self, snapshot: CapabilitySnapshot) -> CaptureResult:
-        with _write_transaction(self._database_path) as connection:
-            row = connection.execute(_SELECT_SNAPSHOT_HASH, (snapshot.snapshot_id,)).fetchone()
-            if or_raise(resolve_identity(None if row is None else str(row[0]), snapshot.snapshot_hash)) == "duplicate":
-                return "duplicate"
+    def store_snapshot(self, snapshot: CapabilitySnapshot) -> FerretResult[CaptureResult]:
+        return _in_write_transaction(
+            self._database_path,
+            lambda connection: _store_once(
+                connection,
+                _SELECT_SNAPSHOT_HASH,
+                snapshot.snapshot_id,
+                snapshot.snapshot_hash,
+                lambda: self._store(connection, snapshot),
+            ),
+        )
+
+    @staticmethod
+    def _store(connection: sqlite3.Connection, snapshot: CapabilitySnapshot) -> FerretResult[CaptureResult]:
+        def insert(expires_at: str) -> CaptureResult:
             connection.execute(
                 _INSERT_SNAPSHOT,
                 (
@@ -316,7 +370,7 @@ class SQLiteCapabilityRepository:
                     snapshot.snapshot_hash,
                     snapshot.schema_version,
                     snapshot.captured_at,
-                    or_raise(snapshot.expires_at),
+                    expires_at,
                     snapshot.harness,
                     snapshot.harness_version,
                     snapshot.installation_id,
@@ -328,8 +382,18 @@ class SQLiteCapabilityRepository:
             )
             return "stored"
 
-    def latest_snapshot(self, harness: str, *, now: datetime) -> CapabilitySnapshot | None:
-        found = _fetch(self._database_path, _SELECT_LATEST, (harness, or_raise(format_timestamp(now))))
+        return snapshot.expires_at.map(insert)
+
+    def latest_snapshot(self, harness: str, *, now: datetime) -> FerretResult[CapabilitySnapshot | None]:
+        return (
+            _timestamp(now)
+            .flat_map(lambda horizon: _fetch(self._database_path, _SELECT_LATEST, (harness, horizon)))
+            .map(lambda found: self._latest(harness, found))
+        )
+
+    @staticmethod
+    def _latest(harness: str, found: list[tuple[Any, ...]]) -> CapabilitySnapshot | None:
+        """The snapshot the header row of ``found`` names, with one capability for each row that has an item."""
         if not found:
             return None
         snapshot_id, hash_, schema_version, captured_at, harness_version, installation_id = found[0][:6]
@@ -356,81 +420,107 @@ class SQLiteTelemetryRepository:
     def __init__(self, database_path: Path) -> None:
         self._database_path = database_path
 
-    def last_completed_at(self) -> str | None:
-        rows = _fetch(self._database_path, _SELECT_MARKER)
-        return rows[0][0] if rows else None
+    def last_completed_at(self) -> FerretResult[str | None]:
+        return _fetch(self._database_path, _SELECT_MARKER).map(lambda rows: rows[0][0] if rows else None)
 
-    def expiry_counters(self) -> ExpiryCounters:
-        counters = {str(name): int(value) for name, value in _fetch(self._database_path, _SELECT_COUNTERS)}
+    def expiry_counters(self) -> FerretResult[ExpiryCounters]:
+        return _fetch(self._database_path, _SELECT_COUNTERS).map(self._counters)
+
+    @staticmethod
+    def _counters(rows: list[tuple[Any, ...]]) -> ExpiryCounters:
+        counters = {str(name): int(value) for name, value in rows}
         return ExpiryCounters(counters.get("expired_local_total", 0), counters.get("expired_before_ack_total", 0))
 
-    def schema_number(self) -> int:
-        return int(_fetch(self._database_path, _SELECT_SCHEMA)[0][0])
+    def schema_number(self) -> FerretResult[int]:
+        return _fetch(self._database_path, _SELECT_SCHEMA).map(lambda rows: int(rows[0][0]))
 
-    def storage_facts(self) -> StorageFacts:
+    def storage_facts(self) -> FerretResult[StorageFacts]:
         # The files are sized before a connection is opened: closing the last connection folds the log away.
-        database_bytes, wal_bytes = _file_sizes(self._database_path)
-        return StorageFacts(database_bytes, wal_bytes, int(_fetch(self._database_path, _SELECT_FREE_BYTES)[0][0]))
+        sizes = _file_sizes(self._database_path)
+        if isinstance(sizes, Err):
+            return sizes
+        return _fetch(self._database_path, _SELECT_FREE_BYTES).map(lambda rows: self._facts(sizes.value, rows))
 
-    def counts(self, *, now: datetime, near_expiry_within: timedelta) -> StoreCounts:
-        parameters = {
-            "now": or_raise(format_timestamp(now)),
-            "near": or_raise(format_timestamp(now + near_expiry_within)),
-        }
-        events, snapshots, oldest, near_expiry, logically_expired = _fetch(
-            self._database_path, _SELECT_COUNTS, parameters
-        )[0]
-        return StoreCounts(events, snapshots, oldest, near_expiry, logically_expired)
+    @staticmethod
+    def _facts(sizes: tuple[int, int], rows: list[tuple[Any, ...]]) -> StorageFacts:
+        return StorageFacts(*sizes, int(rows[0][0]))
 
-    def check_integrity(self, *, thorough: bool) -> bool:
+    def counts(self, *, now: datetime, near_expiry_within: timedelta) -> FerretResult[StoreCounts]:
+        horizon = _timestamp(now)
+        if isinstance(horizon, Err):
+            return horizon
+        near = _timestamp(now + near_expiry_within)
+        if isinstance(near, Err):
+            return near
+        parameters = {"now": horizon.value, "near": near.value}
+        return _fetch(self._database_path, _SELECT_COUNTS, parameters).map(self._store_counts)
+
+    @staticmethod
+    def _store_counts(rows: list[tuple[Any, ...]]) -> StoreCounts:
+        return StoreCounts(*rows[0])
+
+    def check_integrity(self, *, thorough: bool) -> FerretResult[bool]:
         rows = _fetch(self._database_path, "PRAGMA integrity_check" if thorough else "PRAGMA quick_check")
+        return rows.map(self._passes)
+
+    @staticmethod
+    def _passes(rows: list[tuple[Any, ...]]) -> bool:
         return [tuple(row) for row in rows] == [("ok",)]
 
-    def checkpoint(self) -> Literal["truncated", "skipped"]:
+    def checkpoint(self) -> FerretResult[Literal["truncated", "skipped"]]:
         # No busy timeout: a reader or writer that holds the log makes the checkpoint report busy instead of waiting.
-        connection = connect(self._database_path, busy_timeout_ms=0)
-        try:
-            busy = int(connection.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()[0])
-        except sqlite3.Error as error:
-            raise translate_error(error) from None
-        finally:
-            connection.close()
-        return "skipped" if busy else "truncated"
+        return connect(self._database_path, busy_timeout_ms=0).flat_map(
+            lambda connection: run_on(connection, self._checkpoint)
+        )
 
-    def compact(self) -> Compaction:
+    @staticmethod
+    def _checkpoint(connection: sqlite3.Connection) -> FerretResult[Literal["truncated", "skipped"]]:
+        busy = int(connection.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()[0])
+        return Ok("skipped" if busy else "truncated")
+
+    def compact(self) -> FerretResult[Compaction]:
         """Rewrite the file with ``VACUUM``, which is transactional: an interrupted or failed one changes no byte."""
-        connection = connect(self._database_path)
-        try:
-            # The rewrite goes through the log. Without an automatic checkpoint the old file and the whole rewritten
-            # log are both on disk when it commits, which is the run's peak, and the caller folds the log away next.
-            connection.execute("PRAGMA wal_autocheckpoint = 0")
-            try:
-                connection.execute("VACUUM")
-            except sqlite3.Error:
-                measured = None
-            else:
-                free_bytes = int(connection.execute(_SELECT_FREE_BYTES).fetchone()[0])
-                measured = StorageFacts(*_file_sizes(self._database_path), free_bytes)
-        except sqlite3.Error as error:
-            raise translate_error(error) from None
-        finally:
-            connection.close()
-        if measured is None:
-            return Compaction("failed", self.storage_facts())
-        return Compaction("compacted", measured)
+        return (
+            connect(self._database_path)
+            .flat_map(lambda connection: run_on(connection, self._vacuum))
+            .flat_map(self._compaction)
+        )
 
-    def prune_batch(self, *, now: datetime, limit: int, budget: Budget) -> PruneResult:
+    def _vacuum(self, connection: sqlite3.Connection) -> FerretResult[StorageFacts | None]:
+        """The files as they stood the moment the rewrite committed, or ``None`` when ``VACUUM`` refused it."""
+        # The rewrite goes through the log. Without an automatic checkpoint the old file and the whole rewritten
+        # log are both on disk when it commits, which is the run's peak, and the caller folds the log away next.
+        connection.execute("PRAGMA wal_autocheckpoint = 0")
+        try:
+            connection.execute("VACUUM")
+        except sqlite3.Error:
+            return Ok(None)
+        free_bytes = int(connection.execute(_SELECT_FREE_BYTES).fetchone()[0])
+        sizes = _file_sizes(self._database_path)
+        if isinstance(sizes, Err):
+            return sizes
+        return Ok(StorageFacts(*sizes.value, free_bytes))
+
+    def _compaction(self, measured: StorageFacts | None) -> FerretResult[Compaction]:
+        if measured is None:
+            return self.storage_facts().map(lambda facts: Compaction("failed", facts))
+        return Ok(Compaction("compacted", measured))
+
+    def prune_batch(self, *, now: datetime, limit: int, budget: Budget) -> FerretResult[PruneResult]:
         remaining_ms = budget.remaining_ms()
         if remaining_ms == 0:
-            return PruneResult("skipped")
-        try:
-            with _write_transaction(self._database_path, budget_ms=remaining_ms) as connection:
-                return self._prune(connection, or_raise(format_timestamp(now)), limit, budget)
-        except FerretError as error:
-            # A lock that could not be taken in time, or a transaction that lost it, changed nothing: skip.
-            if error.retryable:
-                return PruneResult("skipped")
-            raise
+            return Ok(PruneResult("skipped"))
+        pruned = _in_write_transaction(
+            self._database_path,
+            lambda connection: _timestamp(now).map(lambda horizon: self._prune(connection, horizon, limit, budget)),
+            budget_ms=remaining_ms,
+        )
+        match pruned:
+            case Err(error) if error.retryable:
+                # A lock that could not be taken in time, or a transaction that lost it, changed nothing: skip.
+                return Ok(PruneResult("skipped"))
+            case _:
+                return pruned
 
     @staticmethod
     def _prune(connection: sqlite3.Connection, horizon: str, limit: int, budget: Budget) -> PruneResult:

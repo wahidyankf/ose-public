@@ -8,7 +8,7 @@ import pytest
 from pytest_bdd import given, parsers, scenario, then, when
 
 from ferret.application.ports import Budget, CaptureResult, Runtime
-from ferret.domain.errors import FAILURES
+from ferret.domain.errors import FAILURES, FerretResult
 from ferret.domain.event import Event
 from ferret.domain.query import EventCriteria, Position
 from support.events import encode
@@ -52,7 +52,7 @@ class ReadSpy:
     inner: FakeEvents
     reads: list[tuple[EventCriteria, bool]] = field(default_factory=lambda: list[tuple[EventCriteria, bool]]())
 
-    def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
+    def capture(self, event: Event, *, budget: Budget | None = None) -> FerretResult[CaptureResult]:
         return self.inner.capture(event, budget=budget)
 
     def read(
@@ -63,11 +63,11 @@ class ReadSpy:
         newest_first: bool,
         after: Position | None,
         limit: int,
-    ) -> tuple[Event, ...]:
+    ) -> FerretResult[tuple[Event, ...]]:
         self.reads.append((criteria, newest_first))
         return self.inner.read(criteria, now=now, newest_first=newest_first, after=after, limit=limit)
 
-    def find(self, event_id: str, *, now: datetime) -> Event | None:
+    def find(self, event_id: str, *, now: datetime) -> FerretResult[Event | None]:
         return self.inner.find(event_id, now=now)
 
     def taken(self) -> list[tuple[EventCriteria, bool]]:

@@ -20,6 +20,7 @@ from support.burst import integrity_check
 from support.fakes import FIXED_NOW, FakeMonotonic, FixedClock
 from support.machine import Machine, make_machine
 from support.populate import make_event, stamp
+from support.results import value_of
 from support.retention import CUTOFF, aged_snapshot, expired_events, fresh_events
 
 NOW = FIXED_NOW
@@ -51,7 +52,7 @@ def run_json(machine: Machine, *arguments: str) -> dict[str, Any]:
 
 
 def facts_of(machine: Machine) -> StorageFacts:
-    return machine.runtime().telemetry.storage_facts()
+    return value_of(machine.runtime().telemetry.storage_facts())
 
 
 def test_the_storage_figures_are_the_sizes_of_the_real_files(machine: Machine) -> None:
@@ -79,7 +80,7 @@ def test_a_checkpoint_folds_the_log_into_the_database_and_truncates_it(machine: 
         machine.fill(fresh_events(300, now=NOW))
         before = facts_of(machine)
 
-        outcome = machine.runtime().telemetry.checkpoint()
+        outcome = value_of(machine.runtime().telemetry.checkpoint())
         after = facts_of(machine)
 
         assert outcome == "truncated"
@@ -96,10 +97,10 @@ def test_a_checkpoint_is_skipped_while_a_reader_holds_the_log_and_forces_nothing
         reader.execute("SELECT count(*) FROM event").fetchone()
         before = facts_of(machine)
 
-        skipped = machine.runtime().telemetry.checkpoint()
+        skipped = value_of(machine.runtime().telemetry.checkpoint())
         unchanged = facts_of(machine)
         reader.execute("COMMIT")
-        truncated = machine.runtime().telemetry.checkpoint()
+        truncated = value_of(machine.runtime().telemetry.checkpoint())
 
         assert (skipped, truncated) == ("skipped", "truncated")
         assert before.wal_bytes > 0
@@ -124,7 +125,7 @@ def test_pruned_rows_become_free_pages_that_maintenance_and_status_both_report(m
 def test_status_reads_the_store_as_it_stands_and_changes_nothing(machine: Machine) -> None:
     nearly_expired = make_event(4, ago=CUTOFF - timedelta(hours=12), now=NOW)
     machine.fill([*fresh_events(3, now=NOW), nearly_expired, *expired_events(2, now=NOW)])
-    machine.runtime().capabilities.store_snapshot(aged_snapshot(1, now=NOW, ago=timedelta(hours=1)))
+    value_of(machine.runtime().capabilities.store_snapshot(aged_snapshot(1, now=NOW, ago=timedelta(hours=1))))
     machine.set_marker(stamp(NOW - RECENT))
     rows_before = machine.sql("SELECT event_id FROM event ORDER BY event_id")
 

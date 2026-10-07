@@ -14,6 +14,7 @@ import pytest
 
 from ferret.adapters import sqlite_repository
 from ferret.adapters.sqlite_schema import connect
+from ferret.domain.errors import FerretResult
 
 PLANNED_BUSY_TIMEOUT_MS = 250
 PLANNED_ATTEMPT_TIMEOUT_MS = 20
@@ -45,10 +46,12 @@ def record_busy_timeouts(monkeypatch: pytest.MonkeyPatch) -> list[int]:
     """Note the busy timeout of every connection a repository opens, as the connection itself reports it."""
     budgets: list[int] = []
 
-    def connect_and_note(path: Path, *, busy_timeout_ms: int = PLANNED_BUSY_TIMEOUT_MS) -> sqlite3.Connection:
-        connection = connect(path, busy_timeout_ms=busy_timeout_ms)
-        budgets.append(connection.execute("PRAGMA busy_timeout").fetchone()[0])
-        return connection
+    def connect_and_note(
+        path: Path, *, busy_timeout_ms: int = PLANNED_BUSY_TIMEOUT_MS
+    ) -> FerretResult[sqlite3.Connection]:
+        return connect(path, busy_timeout_ms=busy_timeout_ms).tap(
+            lambda connection: budgets.append(connection.execute("PRAGMA busy_timeout").fetchone()[0])
+        )
 
     monkeypatch.setattr(sqlite_repository, "connect", connect_and_note)
     return budgets

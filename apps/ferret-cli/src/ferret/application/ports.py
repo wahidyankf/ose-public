@@ -120,8 +120,12 @@ class DataHomeFiles(Protocol):
 
 
 class Schema(Protocol):
-    def migrate(self) -> SchemaState:
-        """Apply every known forward migration transactionally; refuse a schema newer than this build."""
+    def migrate(self) -> FerretResult[SchemaState]:
+        """Apply every known forward migration transactionally; refuse a schema newer than this build.
+
+        A store that cannot be opened or migrated, or a schema this build does not know, is returned as an ``Err`` of
+        one closed code, and nothing is written.
+        """
         ...
 
 
@@ -132,11 +136,14 @@ class Input(Protocol):
 
 
 class EventRepository(Protocol):
-    def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
+    """Every call returns an ``Err`` of one closed code when the store fails it, and holds nothing open afterwards."""
+
+    def capture(self, event: Event, *, budget: Budget | None = None) -> FerretResult[CaptureResult]:
         """Durably store one validated event, or report that the same event is already stored.
 
         ``budget`` is how long the wait for the write lock may last, for a caller that has a deadline of its own;
-        ``None`` means the durable default, which waits rather than dropping an event.
+        ``None`` means the durable default, which waits rather than dropping an event. The same ID with different
+        content is an ``Err`` of ``ferret.event.idempotency-conflict``, and nothing is changed.
         """
         ...
 
@@ -148,7 +155,7 @@ class EventRepository(Protocol):
         newest_first: bool,
         after: Position | None,
         limit: int,
-    ) -> tuple[Event, ...]:
+    ) -> FerretResult[tuple[Event, ...]]:
         """Up to ``limit`` events that match ``criteria`` and have not expired at ``now``, in one total order.
 
         The order is ``(occurredAt, eventId)``, descending when ``newest_first``. With ``after`` set, only events
@@ -157,20 +164,23 @@ class EventRepository(Protocol):
         """
         ...
 
-    def find(self, event_id: str, *, now: datetime) -> Event | None:
+    def find(self, event_id: str, *, now: datetime) -> FerretResult[Event | None]:
         """The event with ``event_id`` if it has not expired at ``now``, whatever any query's filters were."""
         ...
 
 
 class CapabilityRepository(Protocol):
-    def store_snapshot(self, snapshot: CapabilitySnapshot) -> CaptureResult:
+    """Every call returns an ``Err`` of one closed code when the store fails it, and holds nothing open afterwards."""
+
+    def store_snapshot(self, snapshot: CapabilitySnapshot) -> FerretResult[CaptureResult]:
         """Durably store one validated snapshot with its items, or report that it is already stored.
 
-        The same snapshot ID with different content is an idempotency conflict, and nothing is changed.
+        The same snapshot ID with different content is an idempotency conflict, returned as an ``Err``, and nothing is
+        changed.
         """
         ...
 
-    def latest_snapshot(self, harness: str, *, now: datetime) -> CapabilitySnapshot | None:
+    def latest_snapshot(self, harness: str, *, now: datetime) -> FerretResult[CapabilitySnapshot | None]:
         """The newest snapshot for ``harness`` that has not expired at ``now``, or ``None`` when there is none."""
         ...
 
@@ -236,31 +246,35 @@ class InterpreterFacts:
 
 
 class TelemetryRepository(Protocol):
-    """Physical retention and space, and the counters and marker they keep; logical expiry is the readers' job."""
+    """Physical retention and space, and the counters and marker they keep; logical expiry is the readers' job.
 
-    def last_completed_at(self) -> str | None:
+    Every call returns an ``Err`` of one closed code when the store fails it, and holds nothing open afterwards.
+    """
+
+    def last_completed_at(self) -> FerretResult[str | None]:
         """When a prune last found nothing left to delete, or ``None`` when none ever did."""
         ...
 
-    def prune_batch(self, *, now: datetime, limit: int, budget: Budget) -> PruneResult:
+    def prune_batch(self, *, now: datetime, limit: int, budget: Budget) -> FerretResult[PruneResult]:
         """Delete up to ``limit`` rows that expired at or before ``now`` in one transaction, inside ``budget``.
 
         Events and then capability snapshots are taken in ``(expires_at, id)`` order, and a snapshot takes its items
         with it. Workspaces left with no event go too. The local expiry counter grows in the same commit by the events
         and snapshots deleted, and the completion marker moves only when nothing was deleted and nothing expired
-        remains. A lock that cannot be taken inside the remaining budget, or any failure, changes nothing.
+        remains. A lock that cannot be taken inside the remaining budget, or a transaction that lost it, is an
+        ``Ok`` of ``PruneResult("skipped")``; any other failure is an ``Err``, and every failure changes nothing.
         """
         ...
 
-    def expiry_counters(self) -> ExpiryCounters:
+    def expiry_counters(self) -> FerretResult[ExpiryCounters]:
         """The two expiry counters as they stand now."""
         ...
 
-    def schema_number(self) -> int:
+    def schema_number(self) -> FerretResult[int]:
         """The newest schema migration applied to the database."""
         ...
 
-    def storage_facts(self) -> StorageFacts:
+    def storage_facts(self) -> FerretResult[StorageFacts]:
         """The sizes of the database file and its log, and the free pages, taken before this call opens anything.
 
         An absent log is zero bytes. Reading the sizes first means a log left unfolded is reported as it stands and not
@@ -268,22 +282,22 @@ class TelemetryRepository(Protocol):
         """
         ...
 
-    def counts(self, *, now: datetime, near_expiry_within: timedelta) -> StoreCounts:
+    def counts(self, *, now: datetime, near_expiry_within: timedelta) -> FerretResult[StoreCounts]:
         """Live and expired rows as of ``now``, one consistent read; near expiry ends within ``near_expiry_within``."""
         ...
 
-    def check_integrity(self, *, thorough: bool) -> bool:
+    def check_integrity(self, *, thorough: bool) -> FerretResult[bool]:
         """Whether the database passes SQLite's integrity check: the quick probe, or the whole file when thorough."""
         ...
 
-    def checkpoint(self) -> Literal["truncated", "skipped"]:
+    def checkpoint(self) -> FerretResult[Literal["truncated", "skipped"]]:
         """Fold the log into the database and truncate it, unless an active reader or writer holds it, and never wait.
 
         A skipped checkpoint changes nothing.
         """
         ...
 
-    def compact(self) -> Compaction:
+    def compact(self) -> FerretResult[Compaction]:
         """Rewrite the database without its free pages, or fail with the original readable and unchanged."""
         ...
 

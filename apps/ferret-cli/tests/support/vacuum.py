@@ -8,6 +8,7 @@ import pytest
 
 from ferret.adapters import sqlite_repository
 from ferret.adapters.sqlite_schema import connect
+from ferret.domain.errors import FerretResult
 from support.busy import PLANNED_BUSY_TIMEOUT_MS
 
 
@@ -29,7 +30,9 @@ class InterruptedVacuum:
 def interrupt_every_vacuum(monkeypatch: pytest.MonkeyPatch) -> None:
     """Make every connection the SQLite adapters open abort the compaction it runs, until the patch is undone."""
 
-    def connect_and_interrupt(path: Path, *, busy_timeout_ms: int = PLANNED_BUSY_TIMEOUT_MS) -> InterruptedVacuum:
-        return InterruptedVacuum(connect(path, busy_timeout_ms=busy_timeout_ms))
+    def connect_and_interrupt(
+        path: Path, *, busy_timeout_ms: int = PLANNED_BUSY_TIMEOUT_MS
+    ) -> FerretResult[InterruptedVacuum]:
+        return connect(path, busy_timeout_ms=busy_timeout_ms).map(InterruptedVacuum)
 
     monkeypatch.setattr(sqlite_repository, "connect", connect_and_interrupt)

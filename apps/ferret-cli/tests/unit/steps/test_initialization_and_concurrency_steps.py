@@ -14,6 +14,7 @@ from ferret.adapters.filesystem import resolve_data_home
 from ferret.adapters.system import home_directory
 from ferret.application.initialization import initialize_store
 from ferret.application.ports import Budget, PruneResult, Runtime
+from ferret.domain.errors import FerretResult
 from ferret.domain.event import Event, event_from_document
 from support.events import encode, event_document
 from support.fakes import FAKE_HOME, FIXED_NOW, FakeInput, FakeMonotonic, FakeTelemetry, World, make_world
@@ -43,7 +44,7 @@ class SerializedTelemetry(FakeTelemetry):
 
     __slots__ = ()
 
-    def prune_batch(self, *, now: datetime, limit: int, budget: Budget) -> PruneResult:
+    def prune_batch(self, *, now: datetime, limit: int, budget: Budget) -> FerretResult[PruneResult]:
         with self.events.lock:
             return super().prune_batch(now=now, limit=limit, budget=budget)
 

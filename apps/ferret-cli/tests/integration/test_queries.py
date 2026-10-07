@@ -16,7 +16,7 @@ from ferret.domain.query import EventCriteria, Position, criteria_from_options
 from support.fakes import FakeEvents
 from support.machine import Machine, make_machine
 from support.populate import WORKSPACE_A, WORKSPACE_B, make_event, mixed_events, numbers, stamp
-from support.results import value_of
+from support.results import value_of, values_of
 
 NOW = datetime(2026, 9, 18, 8, 0, 0, tzinfo=UTC)
 CAPACITY = 500
@@ -37,15 +37,15 @@ def filled(repository: SQLiteEventRepository) -> tuple[SQLiteEventRepository, Fa
     """The real repository and a fake, both holding the same sixty-two events."""
     fake = FakeEvents()
     for event in mixed_events(NOW):
-        repository.capture(event)
-        fake.capture(event)
+        value_of(repository.capture(event))
+        value_of(fake.capture(event))
     return repository, fake
 
 
 def read_all(
     source: SQLiteEventRepository | FakeEvents, criteria: EventCriteria, *, newest_first: bool
 ) -> tuple[Event, ...]:
-    return source.read(criteria, now=NOW, newest_first=newest_first, after=None, limit=CAPACITY)
+    return value_of(source.read(criteria, now=NOW, newest_first=newest_first, after=None, limit=CAPACITY))
 
 
 WINDOWED: dict[str, tuple[dict[str, tuple[str, ...]], bool]] = {
@@ -99,7 +99,10 @@ def test_a_limit_takes_the_first_rows_of_the_order(
     criteria = value_of(criteria_from_options({"--all-time": ()}, now=NOW))
     everything = read_all(real, criteria, newest_first=newest_first)
 
-    assert real.read(criteria, now=NOW, newest_first=newest_first, after=None, limit=limit) == everything[:limit]
+    assert (
+        value_of(real.read(criteria, now=NOW, newest_first=newest_first, after=None, limit=limit))
+        == (everything[:limit])
+    )
 
 
 @pytest.mark.parametrize("newest_first", [True, False])
@@ -111,12 +114,14 @@ def test_every_row_is_a_resumption_point_that_continues_strictly_after_it(
     everything = read_all(real, criteria, newest_first=newest_first)
 
     for index, event in enumerate(everything):
-        rest = real.read(
-            criteria,
-            now=NOW,
-            newest_first=newest_first,
-            after=Position(event.occurred_at, event.event_id),
-            limit=CAPACITY,
+        rest = value_of(
+            real.read(
+                criteria,
+                now=NOW,
+                newest_first=newest_first,
+                after=Position(event.occurred_at, event.event_id),
+                limit=CAPACITY,
+            )
         )
         assert rest == everything[index + 1 :]
 
@@ -132,7 +137,7 @@ def test_paging_in_any_batch_size_visits_every_row_exactly_once(
     seen: list[Event] = []
     after: Position | None = None
 
-    while batch := real.read(criteria, now=NOW, newest_first=newest_first, after=after, limit=size):
+    while batch := value_of(real.read(criteria, now=NOW, newest_first=newest_first, after=after, limit=size)):
         seen.extend(batch)
         after = Position(batch[-1].occurred_at, batch[-1].event_id)
 
@@ -150,8 +155,8 @@ def test_equal_timestamps_are_ordered_by_event_id_in_both_directions(
         )
     )
 
-    newest = real.read(criteria, now=NOW, newest_first=True, after=None, limit=CAPACITY)
-    oldest = real.read(criteria, now=NOW, newest_first=False, after=None, limit=CAPACITY)
+    newest = value_of(real.read(criteria, now=NOW, newest_first=True, after=None, limit=CAPACITY))
+    oldest = value_of(real.read(criteria, now=NOW, newest_first=False, after=None, limit=CAPACITY))
 
     assert numbers(newest) == [4, 3, 2, 1]
     assert numbers(oldest) == [1, 2, 3, 4]
@@ -169,12 +174,12 @@ def test_expiry_is_judged_against_the_injected_now(
     repository: SQLiteEventRepository, lead: timedelta, visible: bool
 ) -> None:
     event = make_event(1, ago=timedelta(days=10), now=NOW)
-    repository.capture(event)
+    value_of(repository.capture(event))
     moment = NOW + timedelta(days=20) + lead
     criteria = value_of(criteria_from_options({"--all-time": ()}, now=moment))
 
-    read = repository.read(criteria, now=moment, newest_first=True, after=None, limit=10)
-    found = repository.find(event.event_id, now=moment)
+    read = value_of(repository.read(criteria, now=moment, newest_first=True, after=None, limit=10))
+    found = value_of(repository.find(event.event_id, now=moment))
 
     assert (read, found) == (((event,), event) if visible else ((), None))
 
@@ -185,9 +190,9 @@ def test_find_returns_a_row_by_id_whatever_the_filters_and_none_for_a_stranger(
     real, fake = filled
     stored = fake.stored[10]
 
-    assert real.find(stored.event_id, now=NOW) == stored
-    assert real.find("00000000-0000-4000-8000-999999999999", now=NOW) is None
-    assert real.find(fake.stored[60].event_id, now=NOW) is None
+    assert value_of(real.find(stored.event_id, now=NOW)) == stored
+    assert value_of(real.find("00000000-0000-4000-8000-999999999999", now=NOW)) is None
+    assert value_of(real.find(fake.stored[60].event_id, now=NOW)) is None
 
 
 PLANNED: dict[str, dict[str, tuple[str, ...]]] = {
@@ -219,7 +224,9 @@ def test_the_read_statement_walks_an_index_and_never_sorts(
     _, fake = filled
     criteria = value_of(criteria_from_options(options, now=NOW))
     after = Position(fake.stored[20].occurred_at, fake.stored[20].event_id) if keyset else None
-    statement, parameters = read_statement(criteria, now=NOW, newest_first=newest_first, after=after, limit=100)
+    statement, parameters = value_of(
+        read_statement(criteria, now=NOW, newest_first=newest_first, after=after, limit=100)
+    )
 
     with closing(sqlite3.connect(database)) as connection:
         plan = [str(row[3]) for row in connection.execute("EXPLAIN QUERY PLAN " + statement, parameters)]
@@ -238,14 +245,14 @@ def test_an_export_that_a_writer_interleaves_with_still_returns_each_earlier_row
     monkeypatch.setattr(queries, "BATCH_SIZE", 3)
 
     stream = value_of(export_events(machine.runtime(), {"--all-time": ()}))
-    first_batch = [next(stream) for _ in range(3)]
+    first_batch = [value_of(next(stream)) for _ in range(3)]
     machine.fill(
         [
             make_event(50, ago=timedelta(minutes=200), now=now),
             make_event(51, ago=timedelta(minutes=1), now=now),
         ]
     )
-    rest = list(stream)
+    rest = values_of(stream)
 
     assert numbers((*first_batch, *rest)) == [1, 2, 3, 4, 5, 6, 7, 8, 51]
 
@@ -256,7 +263,7 @@ def test_list_and_export_over_real_storage_follow_the_documented_orders(tmp_path
     machine.fill(make_event(number, ago=timedelta(minutes=1 + number % 3), now=now) for number in range(1, 8))
 
     listed = value_of(list_events(machine.runtime(), {}))
-    exported = tuple(value_of(export_events(machine.runtime(), {})))
+    exported = values_of(value_of(export_events(machine.runtime(), {})))
 
     assert numbers(listed.items) == [6, 3, 7, 4, 1, 5, 2]
     assert numbers(exported) == [2, 5, 1, 4, 7, 3, 6]

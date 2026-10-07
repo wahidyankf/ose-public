@@ -17,7 +17,7 @@ from ferret.application import queries
 from ferret.application.queries import export_events, list_events
 from ferret.commands import build_handlers
 from ferret.domain.canonical import canonical_bytes
-from ferret.domain.errors import ErrorCode
+from ferret.domain.errors import ErrorCode, FerretError
 from ferret.domain.query import (
     DEFAULT_LIMIT,
     MAX_LIMIT,
@@ -33,7 +33,7 @@ from ferret.domain.query import (
 from support.fakes import FIXED_NOW
 from support.invoke import run_cli
 from support.populate import WORKSPACE_A, WORKSPACE_B, make_event, numbers, stamp, world_with
-from support.results import refusal_of, value_of
+from support.results import refusal_of, value_of, values_of
 
 Options = Mapping[str, tuple[str, ...]]
 
@@ -451,7 +451,7 @@ def test_events_export_streams_the_oldest_first_with_the_event_id_breaking_ties_
         make_event(4, ago=same_moment),
     )
 
-    assert numbers(tuple(value_of(export_events(world.runtime, {})))) == [1, 2, 4, 3]
+    assert numbers(values_of(value_of(export_events(world.runtime, {})))) == [1, 2, 4, 3]
 
 
 @pytest.mark.parametrize(
@@ -510,7 +510,7 @@ def test_each_filter_narrows_the_result_and_they_combine_conjunctively(options: 
     )
 
     assert sorted(numbers(value_of(list_events(world.runtime, options)).items)) == sorted(expected)
-    assert sorted(numbers(tuple(value_of(export_events(world.runtime, options))))) == sorted(expected)
+    assert sorted(numbers(values_of(value_of(export_events(world.runtime, options))))) == sorted(expected)
 
 
 def test_the_interval_includes_its_lower_bound_and_excludes_its_upper_bound() -> None:
@@ -546,7 +546,7 @@ def test_an_event_that_expired_is_never_returned_even_for_all_time() -> None:
     )
 
     assert numbers(value_of(list_events(world.runtime, {"--all-time": ()})).items) == [3]
-    assert numbers(tuple(value_of(export_events(world.runtime, {"--all-time": ()})))) == [3]
+    assert numbers(values_of(value_of(export_events(world.runtime, {"--all-time": ()})))) == [3]
 
 
 def test_pages_chain_by_cursor_without_a_gap_or_a_repeat() -> None:
@@ -614,6 +614,36 @@ def test_a_cursor_whose_position_disagrees_with_its_row_is_refused() -> None:
     assert refusal.code == "ferret.cursor.invalid"
 
 
+@pytest.mark.parametrize(
+    "failure",
+    [FerretError("ferret.storage.unavailable", retryable=True), FerretError("ferret.storage.integrity-failure")],
+    ids=["retryable", "integrity"],
+)
+def test_a_page_ends_with_the_failure_of_the_read_that_failed(failure: FerretError) -> None:
+    world = world_with(make_event(1))
+    world.events.refusals["read"] = failure
+
+    error = refusal_of(list_events(world.runtime, {}))
+
+    assert (error.code, error.retryable) == (failure.code, failure.retryable)
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [FerretError("ferret.storage.unavailable", retryable=True), FerretError("ferret.storage.integrity-failure")],
+    ids=["retryable", "integrity"],
+)
+def test_a_page_after_a_cursor_ends_with_the_failure_of_the_lookup_that_failed(failure: FerretError) -> None:
+    world = world_with(*[make_event(number, ago=timedelta(minutes=number)) for number in range(1, 4)])
+    cursor = value_of(list_events(world.runtime, {"--limit": ("1",)})).next_cursor or ""
+    world.events.refusals["find"] = failure
+
+    error = refusal_of(list_events(world.runtime, {"--limit": ("1",), "--cursor": (cursor,)}))
+
+    assert (error.code, error.retryable) == (failure.code, failure.retryable)
+    assert world.events.reads == 1
+
+
 def test_a_repeated_cursor_option_is_invalid_arguments() -> None:
     world = world_with(make_event(1))
 
@@ -657,11 +687,11 @@ def test_export_reads_in_batches_and_only_as_the_consumer_advances(monkeypatch: 
 
     stream = value_of(export_events(world.runtime, {}))
     assert world.events.reads == 0
-    first = next(stream)
+    first = value_of(next(stream))
     assert (numbers((first,)), world.events.reads) == ([1], 1)
-    remaining = list(stream)
+    remaining = values_of(stream)
 
-    assert numbers(tuple(remaining)) == [2, 3, 4, 5, 6, 7]
+    assert numbers(remaining) == [2, 3, 4, 5, 6, 7]
     assert world.events.reads == 4
 
 
@@ -675,7 +705,7 @@ def test_export_batches_are_windows_of_one_consistent_order_with_equal_timestamp
     monkeypatch.setattr(queries, "BATCH_SIZE", 2)
     world = world_with(*[make_event(number, ago=timedelta(minutes=1)) for number in range(1, 6)])
 
-    assert numbers(tuple(value_of(export_events(world.runtime, {})))) == [1, 2, 3, 4, 5]
+    assert numbers(values_of(value_of(export_events(world.runtime, {})))) == [1, 2, 3, 4, 5]
 
 
 def test_events_list_json_is_one_compact_object_of_canonical_events_and_a_cursor() -> None:

@@ -4,7 +4,7 @@ A summary is an operational proxy, never a quality or causal claim. A value that
 its own unknown bucket rather than folded into zero, and a statistic with no sample is absent rather than zero.
 """
 
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from dataclasses import dataclass
 from typing import Final, Protocol
 
@@ -194,6 +194,32 @@ def aggregate_outcomes(events: Iterable[Event], group_by: tuple[str, ...]) -> tu
     )
 
 
+def _until_failure(scan: Iterable[FerretResult[Event]], failures: list[FerretError]) -> Iterator[Event]:
+    """The events of ``scan`` up to its first failure, which ends them and is noted in ``failures``.
+
+    The aggregation reads one event at a time, so a scan that fails after a million events never holds them all.
+    """
+    for item in scan:
+        if isinstance(item, Err):
+            failures.append(item.error)
+            return
+        yield item.value
+
+
+def _summarized[Row](
+    scan: Iterable[FerretResult[Event]],
+    group_by: tuple[str, ...],
+    aggregate: Callable[[Iterable[Event], tuple[str, ...]], tuple[Row, ...]],
+    interpretation: str,
+) -> FerretResult[Summary[Row]]:
+    """The summary ``aggregate`` makes of every event of ``scan``, or the failure that ended the scan early."""
+    failures: list[FerretError] = []
+    rows = aggregate(_until_failure(scan, failures), group_by)
+    if failures:
+        return Err(failures[0])
+    return Ok(Summary(group_by, rows, interpretation))
+
+
 def _summary[Row](
     runtime: Runtime,
     options: Options,
@@ -203,8 +229,8 @@ def _summary[Row](
 ) -> FerretResult[Summary[Row]]:
     """The summary ``aggregate`` makes of the events the filters select; the grouping is validated before storage."""
     return parse_group_by(options, allowed).flat_map(
-        lambda group_by: scan_events(runtime, options).map(
-            lambda events: Summary(group_by, aggregate(events, group_by), interpretation)
+        lambda group_by: scan_events(runtime, options).flat_map(
+            lambda scan: _summarized(scan, group_by, aggregate, interpretation)
         )
     )
 

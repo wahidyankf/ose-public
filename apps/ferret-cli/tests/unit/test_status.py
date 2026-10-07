@@ -352,3 +352,36 @@ def test_a_report_of_a_usable_store_is_what_the_store_holds() -> None:
         ("codex", "configured"),
         ("opencode", "not_configured"),
     ]
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [FerretError("ferret.storage.unavailable", retryable=True), FerretError("ferret.storage.integrity-failure")],
+    ids=["retryable", "integrity"],
+)
+@pytest.mark.parametrize(
+    ("owner", "call"),
+    [
+        *[
+            ("telemetry", call)
+            for call in (
+                "storage_facts",
+                "check_integrity",
+                "last_completed_at",
+                "schema_number",
+                "counts",
+                "expiry_counters",
+            )
+        ],
+        ("capabilities", "latest_snapshot"),
+    ],
+)
+def test_a_report_ends_with_the_failure_of_the_port_call_that_failed(
+    owner: str, call: str, failure: FerretError
+) -> None:
+    world = populated_world()
+    getattr(world, owner).refusals[call] = failure
+
+    error = refusal_of(report_status(world.runtime))
+
+    assert (error.code, error.exit_code, error.retryable) == (failure.code, 2, failure.retryable)

@@ -75,7 +75,7 @@ class Machine:
         """Store ``events`` through the real event repository, one transaction each."""
         repository = self.runtime().events
         for event in events:
-            repository.capture(event)
+            value_of(repository.capture(event))
 
     def run(self, argv: Sequence[str], *, stdin: bytes | None = None) -> Ran:
         """Invoke ``ferret`` in process over this machine's real ports, with ``stdin`` as any input a command reads."""

@@ -126,17 +126,22 @@ def _ensure_database(runtime: Runtime, present: Mapping[str, FileFacts]) -> Ferr
     return Ok(None)
 
 
-def _migrated(runtime: Runtime, installation_id: str) -> InitResult:
+def _migrated(runtime: Runtime, installation_id: str) -> FerretResult[InitResult]:
     """Migrate the database, which makes the schema, and report what this call found."""
-    state = runtime.schema.migrate()
-    return InitResult(
-        result="created" if state.applied_now else "already_initialized",
-        data_home=runtime.data_home,
-        database_path=runtime.data_home / DATABASE_FILE,
-        schema_number=state.number,
-        installation_id=installation_id,
-        retention_days=RETENTION_DAYS,
-        permissions_state="private",
+    migrated = runtime.schema.migrate()
+    if isinstance(migrated, Err):
+        return migrated
+    state = migrated.value
+    return Ok(
+        InitResult(
+            result="created" if state.applied_now else "already_initialized",
+            data_home=runtime.data_home,
+            database_path=runtime.data_home / DATABASE_FILE,
+            schema_number=state.number,
+            installation_id=installation_id,
+            retention_days=RETENTION_DAYS,
+            permissions_state="private",
+        )
     )
 
 
@@ -151,7 +156,7 @@ def _complete_from(runtime: Runtime, present: Mapping[str, FileFacts]) -> Ferret
             lambda installation_id: (
                 _ensure_config(runtime, present)
                 .flat_map(lambda _: _ensure_database(runtime, present))
-                .map(lambda _: _migrated(runtime, installation_id))
+                .flat_map(lambda _: _migrated(runtime, installation_id))
             )
         )
     )

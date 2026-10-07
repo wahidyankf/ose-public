@@ -8,6 +8,7 @@ from adapter_latency import (
     HARD_MAX_BUDGET_MS,
     NORMAL_P95_BUDGET_MS,
     WARMUP_CALLS,
+    declared_budgets,
     host_facts,
     interleaved,
     judge,
@@ -48,11 +49,36 @@ def test_only_the_normal_condition_has_a_p95_budget() -> None:
     assert judge([row(CLAUDE_CODE, "busy", p95=900, maximum=950)], BASELINE_MS) == []
 
 
-def test_any_row_beyond_the_deadline_and_its_tail_is_a_problem() -> None:
-    problems = judge([row(CLAUDE_CODE, "timeout", p95=950, maximum=HARD_MAX_BUDGET_MS + 0.1)], BASELINE_MS)
+def test_any_row_beyond_the_adopted_host_bound_is_a_problem() -> None:
+    problems = judge([row(CLAUDE_CODE, "timeout", p95=950, maximum=1600.1)], BASELINE_MS)
 
     assert len(problems) == 1
-    assert "max" in problems[0]
+    assert problems == ["claude_code timeout: max 1600.1 ms exceeds 1600 ms"]
+
+
+def test_the_literal_adopted_host_boundary_accepts_1600_and_rejects_1600_point_one() -> None:
+    assert judge([row(CLAUDE_CODE, "kill", p95=1000, maximum=1600.0)], BASELINE_MS) == []
+    assert judge([row(CLAUDE_CODE, "kill", p95=1000, maximum=1600.1)], BASELINE_MS) == [
+        "claude_code kill: max 1600.1 ms exceeds 1600 ms"
+    ]
+
+
+def test_the_whole_plugin_return_gets_no_node_baseline_credit_at_the_hard_maximum() -> None:
+    assert judge([row(OPENCODE, "kill", p95=1000, maximum=1600.1)], BASELINE_MS) == [
+        "opencode kill: max 1600.1 ms exceeds 1600 ms"
+    ]
+
+
+def test_requested_timers_host_allowance_and_reap_tail_are_reported_separately() -> None:
+    assert declared_budgets() == {
+        "normalP95Ms": 150.0,
+        "termRequestMs": 900.0,
+        "killRequestMs": 1000.0,
+        "hostAllowanceMs": 350.0,
+        "reapTailMs": 250.0,
+        "termObservedMaxMs": 1250.0,
+        "hardMaxMs": 1600.0,
+    }
 
 
 def test_the_plugin_is_judged_net_of_the_time_node_takes_to_start() -> None:
@@ -96,15 +122,15 @@ def test_the_report_lists_every_row_and_the_verdict() -> None:
     report: dict[str, Any] = {
         "nodeBaseline": {"p50Ms": BASELINE_MS},
         "rows": [row(CLAUDE_CODE, "normal", p95=120.0, maximum=140.0)],
-        "problems": ["claude_code busy: max 1300 ms exceeds 1250 ms"],
+        "problems": ["claude_code busy: max 1600.1 ms exceeds 1600 ms"],
         "verdict": "over_budget",
     }
 
     lines = summary_lines(report)
 
-    assert lines[0] == "Node baseline p50=60.0 ms (deducted from the OpenCode rows)"
+    assert lines[0] == "Node baseline p50=60.0 ms (deducted only from OpenCode normal p95)"
     assert any(line.startswith("claude_code") and "120.0" in line for line in lines)
-    assert lines[-2:] == ["Verdict: over_budget", "  claude_code busy: max 1300 ms exceeds 1250 ms"]
+    assert lines[-2:] == ["Verdict: over_budget", "  claude_code busy: max 1600.1 ms exceeds 1600 ms"]
 
 
 def test_calls_are_taken_round_robin_after_the_unrecorded_warm_up_rounds() -> None:

@@ -94,7 +94,7 @@ def test_every_registered_command_names_a_harness_and_an_event_the_mapper_knows(
     ]
     pairs = {tuple(re.findall(r"ferret-capture\.sh (\w+) ([\w.]+)$", command)[0]) for command in commands}
 
-    assert pairs == {(harness, event) for harness, event, _ in REGISTRATIONS if harness != OPENCODE}
+    assert pairs == {(harness, event) for harness, event, _ in REGISTRATIONS if harness in (CLAUDE_CODE, CODEX)}
 
 
 def test_the_opencode_plugin_forwards_each_event_the_mappers_support_for_it() -> None:

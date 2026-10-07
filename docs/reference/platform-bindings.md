@@ -152,6 +152,28 @@ because the plugin does not register `message.part.updated` and a session-end pa
 Evidence for every row is `evidence/phase-0/harness-probe.txt` and `evidence/phase-4/smoke.txt` in the archived FERRET
 Init 01 plan.
 
+### Command Code capture mapper
+
+The Command Code mapper is available as `ferret capture-hook --harness commandcode --event <event>`. Its native
+[hook events](https://commandcode.ai/docs/hooks), verified for this rollout on 2026-10-07, map as follows:
+
+| Native event   | FERRET event      | Recorded result                                        |
+| -------------- | ----------------- | ------------------------------------------------------ |
+| `SessionStart` | `session.started` | Opaque session and workspace identifiers               |
+| `PreToolUse`   | `tool.started`    | Tool name when valid                                   |
+| `PostToolUse`  | `tool.completed`  | Tool name; unknown outcome and visibility; no duration |
+
+The projection admits only four scalar fields: `session_id`, `cwd`, `hook_event_name`, and `tool_name`. Session and
+workspace identifiers are derived before persistence. Tool input, responses, transcript paths, permission state,
+display names, and tool-use identifiers are ignored. A response string proves neither an exit status nor success.
+`Stop` ends a turn, so it is not mapped to `session.ended`. Failure, skill, subagent, and session-end capture remain
+unavailable through this mapper. `status` reports Command Code platform support as `probe_required` pending a live
+probe; the mapper alone does not establish live repository registration or adapter discovery.
+
+Documented hooks and [mods](https://commandcode.ai/docs/mods) expose no permission-request event. The accepted setup
+limitation is therefore no permission-request notification hook. The capture command and authenticated live session
+were not exercised in this documentation pass; the feature executor owns those checks.
+
 ### Provenance of pre-existing partial bindings
 
 One binding-adjacent directory exists in the repository but was **not produced by `Rhino agents

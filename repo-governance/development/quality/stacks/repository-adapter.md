@@ -67,12 +67,25 @@ Each label below is the exact Adopter Decision label in the adopted `swe-*` agen
 
 ## Skill Names
 
-The adopted `swe-*` agents load six catalog skills under local names: `applying-maker-checker-fixer` as
+The adopted `swe-*` agents load five catalog skills under local names: `applying-maker-checker-fixer` as
 `repo-applying-maker-checker-fixer`, `assessing-criticality-confidence` as `repo-assessing-criticality-confidence`,
 `generating-validation-reports` as `repo-generating-validation-reports`, `design-fidelity-review` as
-`web-testing-design-fidelity`, `usability-heuristic-evaluation` as `web-testing-usability-heuristics`, and
-`cutting-releases` as `apps-deploying-vercel-branches`, because this repository cuts no versioned release and ships by
-moving environment branches. Every other adopted skill keeps its catalog name.
+`web-testing-design-fidelity`, and `usability-heuristic-evaluation` as `web-testing-usability-heuristics`.
+Every other adopted skill keeps its catalog name. The local `apps-deploying-vercel-branches` skill serves Deploy mode;
+[SWE Releaser Cut](../../../../.agents/agents/swe-releaser.md#cut) adopts the pinned Release Cut workflow and
+Cutting Releases skill directly for versioned releases.
+
+## Release Build Location
+
+FERRET CLI uses the Release Cut workflow's **native runners** choice. Its existing
+[release workflow](../../../../.github/workflows/ferret-cli-release.yml) runs on a native Linux runner after an
+annotated `ferret-cli/vX.Y.Z` tag, builds a platform-independent Python zipapp, compares digests across two builds,
+checks the artifact version, and publishes the artifact with checksums. Release Cut's clean exact-revision and
+default-branch readiness requirements apply; the tag remains spent if its build or publication fails.
+
+For FERRET CLI 0.4.0 only, audit the current Command Code working-tree change, all FERRET human documentation, and
+affected references. Enumerate paths/exclusions first; do not label this subject `all`.
+Other release preconditions remain.
 
 ## Details
 

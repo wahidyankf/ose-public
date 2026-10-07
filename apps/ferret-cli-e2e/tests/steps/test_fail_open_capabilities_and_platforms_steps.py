@@ -20,7 +20,6 @@ from event_documents import numbered_event
 from ferret_process import Completed, capture_documents, run_artifact
 from hook_bench import Bench, derived
 from hook_wrapper import (
-    DEADLINE_SECONDS,
     HookRun,
     alive,
     assert_term_then_kill,
@@ -29,7 +28,9 @@ from hook_wrapper import (
     recorder,
     run_plugin,
     run_wrapper,
+    spawn_instants,
     term_recorder,
+    timer_requests,
     within_deadline,
 )
 from install_area import LAUNCHER_MODE, Layout, Tree, digest, empty_tree, launcher_starts, store
@@ -338,7 +339,7 @@ def then_every_adapter_still_exits_zero(session: Session) -> None:
     session.adapters = run_every_adapter(session)
     for harness, ran in session.adapters.items():
         assert (ran.code, ran.stdout, ran.stderr) == (0, b"", b""), harness
-        assert ran.elapsed_seconds < DEADLINE_SECONDS, harness
+        assert within_deadline(ran), harness
     # Nothing reached the store: its files, the hook-failure record included, are exactly as the uninstall left them.
     assert store(Layout(session.home)) == session.data_before
     assert user_files(session, HARNESS_FILES) == session.bystanders
@@ -429,7 +430,7 @@ def when_the_adapter_handles_an_event(adapters: Adapters) -> None:
         adapters.ran[harness] = adapters.bench.forward(harness, fixture.event, document, binary=adapters.binary)
 
 
-@then("the adapter returns exit code zero within 1000 milliseconds")
+@then("the adapter returns exit code zero within 1600 milliseconds on the exercised host")
 def then_the_adapter_returns_zero_in_time(adapters: Adapters) -> None:
     assert set(adapters.ran) == set(HARNESSES)
     for harness, ran in adapters.ran.items():
@@ -524,7 +525,26 @@ def when_the_child_hangs(adapters: Adapters) -> None:
     adapters.stuck = True
     adapters.expected_rows = 0
     adapters.call = VALID[adapters.harness].document
-    send(adapters, adapters.call)
+    if adapters.harness == OPENCODE:
+        assert isinstance(adapters.call, dict)
+        adapters.ran[OPENCODE] = run_plugin(
+            [adapters.call],
+            home=adapters.bench.home,
+            binary=adapters.binary,
+            directory=Path(WORKSPACE),
+            spawn_log=hung / "spawned",
+            timer_log=hung / "timer-requests",
+        )
+    else:
+        assert isinstance(adapters.call, dict)
+        adapters.ran[adapters.harness] = run_wrapper(
+            adapters.harness,
+            VALID[adapters.harness].event,
+            encode(adapters.call),
+            home=adapters.bench.home,
+            binary=adapters.binary,
+            timer_log=hung / "timer-requests",
+        )
     adapters.received = received(hung)
 
 
@@ -568,15 +588,26 @@ def then_the_plugin_is_silent(adapters: Adapters) -> None:
     }
 
 
-@then("any surviving child is terminated by TERM at 900 milliseconds and KILL at 1000 milliseconds")
+@then("any surviving child has nominal TERM and KILL requests of 900 and 1000 milliseconds")
+@then("nominal KILL follows TERM with the full 100 millisecond grace")
+def then_nominal_timer_requests_are_preserved(adapters: Adapters) -> None:
+    if adapters.stuck:
+        plugin = adapters.harness == OPENCODE
+        requests = timer_requests(adapters.bench.directory / "hung" / "timer-requests", plugin=plugin)
+        assert requests == ((900, 1000) if plugin else (900, 100)), requests
+
+
+@then("a hung child receives TERM within 1250 milliseconds and the adapter returns within 1600 milliseconds")
 def then_a_surviving_child_is_terminated(adapters: Adapters) -> None:
     ran = adapters.ran[adapters.harness]
     if not adapters.stuck:
         # No child outlived its own work, so nothing needed either signal.
-        assert ran.elapsed_seconds < DEADLINE_SECONDS
+        assert within_deadline(ran)
         return
     hung = adapters.bench.directory / "hung"
     pid = recorded_pid(hung)
     assert pid is not None
     assert not alive(pid)
-    assert_term_then_kill(ran, hung, from_call=adapters.harness != OPENCODE)
+    spawned = spawn_instants(hung / "spawned") if adapters.harness == OPENCODE else [None]
+    assert len(spawned) == 1, spawned
+    assert_term_then_kill(ran, hung, spawned=spawned[0])

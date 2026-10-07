@@ -95,6 +95,7 @@
         "{projectRoot}/.python-version",
         "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature",
         "{projectRoot}/tests/support/opencode_driver.mjs",
+        "{projectRoot}/tests/support/opencode_timer_driver.mjs",
         "{workspaceRoot}/.claude/hooks/ferret-capture.sh",
         "{workspaceRoot}/.opencode/plugins/ferret.ts"
       ]

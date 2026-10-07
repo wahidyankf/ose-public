@@ -15,7 +15,7 @@ harness, and never stores content. Everything runs as short-lived local processe
 flowchart LR
     accTitle: System Context
     accDescr: Coding-agent harnesses call harness adapters, which call ferret-cli; the developer runs ferret-cli directly; ferret-cli reads and writes one local data home.
-    HARNESS[Coding-agent<br/>harness<br/>Claude Code, Codex,<br/>OpenCode] --> ADAPTER[Harness adapter<br/>hook or plugin]
+    HARNESS[Coding-agent<br/>harness<br/>Claude Code, Codex,<br/>OpenCode,<br/>Command Code] --> ADAPTER[Harness adapter<br/>hook or plugin]
     ADAPTER --> CLI[ferret-cli]
     DEV[Developer<br/>or script] --> CLI
     CLI --> HOME[(Local data home<br/>SQLite store and<br/>identity)]
@@ -32,11 +32,13 @@ boundary FERRET does not control, so it is designed to be unable to hurt the har
 | ---------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
 | `ferret` zipapp  | one Python 3.14 archive with its one library dependency, `typekit`, bundled inside, so nothing is installed beside it | `python ferret.pyz`, or the per-user launcher symlink |
 | Local data home  | the SQLite store in WAL mode, the installation identity, and its secret                                               | read and written only by `ferret`                     |
-| Harness adapters | a POSIX wrapper for Claude Code and Codex, and a plugin for OpenCode                                                  | registered in each harness's own configuration        |
+| Harness adapters | command hooks for Claude Code, Codex, and Command Code, and a plugin for OpenCode                                     | registered in each harness's own configuration        |
 | Per-user install | the versioned artifact, a launcher symlink, and an ownership manifest                                                 | `ferret self install`, `ferret self uninstall`        |
 
-The data home is `~/.ferret` and is created owner-only. The per-user install lives under `~/.local/share/ferret/` with
-its launcher in `~/.local/bin/`; installing never edits a shell startup file or `PATH`.
+The data home is `$XDG_DATA_HOME/ferret` for a valid absolute XDG base, or `$HOME/.local/share/ferret` when the base is
+unset, empty, or relative. An absolute, normalized `FERRET_DATA_HOME` overrides both. The data home is created
+owner-only. The per-user install lives under `~/.local/share/ferret/` with its launcher in `~/.local/bin/`; installing
+never edits a shell startup file or `PATH`.
 
 ## Components
 
@@ -74,14 +76,33 @@ set of metadata fields before anything is written.
   skill, and tool names, outcome, duration, and three visibility markers that record whether each value was observed,
   derived, or unknown.
 - **Never kept:** prompts, responses, tool arguments or results, transcripts, file contents, paths, or environment
-  values. A payload field that could carry content is rejected, and the rejection names the field, never its value.
+  values. Raw hook projection discards fields outside its allowlist. Direct canonical capture rejects forbidden
+  content fields, and its diagnostic names the field category, never its value.
 - **Opaque identifiers.** Workspace and session identifiers are derived with a per-installation secret held in the data
   home and never stored in the database or exported.
+
+Command Code mapping projects only the scalar `session_id`, `cwd`, `hook_event_name`, and `tool_name` fields.
+The mapper uses the session identifier and directory to derive opaque identifiers; it stores no raw identifier or
+path. It ignores `tool_input`, `tool_response`, `transcript_path`, permission fields, display names, and tool-use
+identifiers before mapping.
+
+`SessionStart`, `PreToolUse`, and `PostToolUse` map to `session.started`, `tool.started`, and `tool.completed`.
+Command Code completion has `outcome=unknown`, `outcomeVisibility=unknown`, no duration, and unknown duration
+visibility. Observed or derived completion still requires success, and `tool.failed` still requires failure.
+`Stop` is a turn end and yields no session-end event. Platform support remains `probe_required` until a live probe.
 
 ## Constraints
 
 **Fail open.** The adapters and `capture-hook` always exit 0 and write nothing to stdout or stderr. A missing binary,
-an invalid payload, a busy or full database, or a slow start ends within a fixed deadline and never delays a harness.
+an invalid payload, a busy or full database, or a slow start ends quietly so the harness can carry on.
+
+The shared POSIX wrapper and OpenCode plugin request TERM at 900 ms and KILL at 1,000 ms. Controlled tests of the
+actual adapters prove these requests, signal order, the nominal 100 ms grace, and early-exit cleanup. Real-host tests
+allow 350 ms of cumulative scheduling and launch delay plus a 250 ms reap tail: observed TERM must arrive within
+1,250 ms and a hung call must return within 1,600 ms. POSIX measurements start at invocation; OpenCode signal
+measurements start at recorded spawn, and its whole-driver return includes Node startup. A host result beyond these
+finite limits fails; they are acceptance limits, not an operating-system scheduling guarantee. Direct capture and
+lock budgets remain 250 ms, and normal capture p95 remains 150 ms.
 
 **Bounded, private storage.** Every object in the data home is owner-only, symbolic and hard links are refused, and the
 store keeps no telemetry older than 30 days: reads exclude it first and a bounded prune removes it.

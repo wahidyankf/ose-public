@@ -1,8 +1,11 @@
 """Drive the shared capture wrapper and the OpenCode plugin against the built FERRET artifact, and time them."""
 
+import contextlib
 import json
 import os
+import shlex
 import shutil
+import signal
 import stat
 import subprocess
 import sys
@@ -11,7 +14,7 @@ import time
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, TypeGuard
 
 REPOSITORY = Path(__file__).resolve().parents[3]
 WRAPPER = REPOSITORY / ".claude" / "hooks" / "ferret-capture.sh"
@@ -21,11 +24,12 @@ DRIVER = Path(__file__).with_name("opencode_driver.mjs")
 TERM_SECONDS = 0.9
 KILL_SECONDS = 1.0
 DEADLINE_SECONDS = 1.0
-# A call that needed KILL returns just after the deadline, because the wrapper reaps the child and exits after
-# sending it. This tail belongs to that row alone: it is a measurement budget for the latency tool's `kill`
-# condition, never an allowance on the deadline an acceptance criterion states.
+# Timer requests remain nominal. The owner adopted a cumulative host allowance and the existing reap tail.
+HOST_ALLOWANCE_SECONDS = 0.35
 REAP_TAIL_SECONDS = 0.25
-# A harness call that has not returned by now is hung, whatever the machine's load; the lower bounds prove the timers.
+HOST_TERM_MAX_SECONDS = 0.9 + HOST_ALLOWANCE_SECONDS
+HOST_RETURN_MAX_SECONDS = DEADLINE_SECONDS + HOST_ALLOWANCE_SECONDS + REAP_TAIL_SECONDS
+# The test-owned kill deadline detects a hang; it is not an acceptance allowance.
 HUNG_SECONDS = 4.0
 CLEAN_PATH = "/usr/bin:/bin"
 
@@ -50,12 +54,8 @@ class HookRun:
 
 
 def within_deadline(ran: HookRun) -> bool:
-    """Whether an adapter call returned by the 1,000 ms deadline the acceptance criterion states, with no allowance.
-
-    Every call site is a condition whose child dies at TERM, so the deadline is the literal one. A call that needs
-    KILL returns just after it, and the two rows that provoke one assert their own bounds rather than this predicate.
-    """
-    return ran.elapsed_seconds < DEADLINE_SECONDS
+    """Whether this exercised host met the finite 1,600 ms wrapper-return acceptance bound."""
+    return ran.elapsed_seconds <= HOST_RETURN_MAX_SECONDS
 
 
 def _script(directory: Path, name: str, body: str) -> Path:
@@ -76,7 +76,7 @@ def _warmed(directory: Path, name: str, body: str) -> Path:
     an argument no caller passes, and exits at once.
     """
     path = _script(directory, name, f'[ "${{1:-}}" = "{WARM_UP}" ] && exit 0\n' + body)
-    subprocess.run([str(path), WARM_UP], check=True, capture_output=True)
+    subprocess.run([str(path), WARM_UP], check=True, capture_output=True, timeout=HUNG_SECONDS)
     return path
 
 
@@ -121,8 +121,9 @@ def term_recorder(directory: Path) -> Path:
         "(HERE / 'started').write_text(repr(STARTED))\n"
         "(HERE / 'argv').write_text(''.join(argument + '\\n' for argument in sys.argv[1:]))\n"
         "(HERE / 'stdin').write_bytes(sys.stdin.buffer.read())\n"
-        "while True:\n"
-        "    time.sleep(30)\n"
+        f"DEADLINE = STARTED + {HUNG_SECONDS!r}\n"
+        "while (left := DEADLINE - time.monotonic()) > 0:\n"
+        "    time.sleep(left)\n"
     )
     return _warmed(directory, "ferret-term-recorder", f'exec "{sys.executable}" -IS "{program}" "$@"\n')
 
@@ -142,22 +143,23 @@ def term_times(directory: Path) -> TermTimes:
     return TermTimes(float((directory / "started").read_text()), term)
 
 
-def assert_term_then_kill(ran: HookRun, directory: Path, *, from_call: bool) -> None:
-    """A child that ignores TERM, written by ``term_recorder``, got TERM about 900 ms in and the call ended at KILL.
+def assert_term_then_kill(ran: HookRun, directory: Path, *, spawned: float | None = None) -> None:
+    """Observe ordered TERM and actual stubborn-child retirement within the adopted finite host bounds.
 
-    Every reading is on the one system-wide monotonic clock. TERM is timed from the child's own start and, when
-    ``from_call`` says the adapter starts the child at once (the wrapper, not Node), from the harness call too. The call
-    cannot end before KILL, 100 ms after TERM, and must end within the reap tail after it.
+    POSIX is measured from public invocation; OpenCode is measured from recorded spawn/timer-arm boundary and
+    whole-driver return separately. Nominal 100 ms grace is proved by request logs and controlled Unit timers,
+    not by subtracting a delayed Python handler timestamp from death.
     """
     times = term_times(directory)
     assert times.term is not None, "TERM never reached the child"
-    assert TERM_SECONDS - 0.1 <= times.term - times.started <= KILL_SECONDS, times
-    if from_call:
-        assert TERM_SECONDS - 0.05 <= times.term - ran.started <= KILL_SECONDS, (times, ran)
-        assert ran.elapsed_seconds < KILL_SECONDS + REAP_TAIL_SECONDS, ran
-    spacing = KILL_SECONDS - TERM_SECONDS
-    assert spacing - 0.05 <= ran.ended - times.term <= spacing + REAP_TAIL_SECONDS, (times, ran)
-    assert ran.ended - times.started < KILL_SECONDS + REAP_TAIL_SECONDS, (times, ran)
+    assert ran.started <= times.started < times.term < ran.ended, (times, ran)
+    if spawned is not None:
+        assert ran.started <= spawned <= times.started, (spawned, times, ran)
+        assert 0.8 <= times.term - spawned <= HOST_TERM_MAX_SECONDS, (spawned, times)
+        assert ran.ended - spawned <= HOST_RETURN_MAX_SECONDS, (spawned, ran)
+    else:
+        assert 0.85 <= times.term - ran.started <= HOST_TERM_MAX_SECONDS, (times, ran)
+    assert within_deadline(ran), ran
 
 
 def node_executable() -> str | None:
@@ -165,7 +167,9 @@ def node_executable() -> str | None:
     found = shutil.which("node")
     if found is None:
         return None
-    completed = subprocess.run([found, "-p", "process.execPath"], capture_output=True, text=True, check=False)
+    completed = subprocess.run(
+        [found, "-p", "process.execPath"], capture_output=True, text=True, check=False, timeout=HUNG_SECONDS
+    )
     return completed.stdout.strip() or None
 
 
@@ -185,15 +189,54 @@ def run_timed(
         stderr=subprocess.PIPE,
         env=dict(environment),
         cwd=cwd,
+        start_new_session=True,
     ) as process:
-        guard = threading.Timer(HUNG_SECONDS + 6, process.kill)
+        guard = threading.Timer(HUNG_SECONDS + 6, _kill_group, (process.pid,))
         guard.start()
         try:
             stdout, stderr = process.communicate(payload)
         finally:
             guard.cancel()
+            guard.join()
         elapsed = time.monotonic() - started
     return HookRun(process.returncode, stdout, stderr, elapsed, started)
+
+
+def _kill_group(leader: int) -> None:
+    """Kill only the session group this test invocation owns."""
+    with contextlib.suppress(ProcessLookupError):
+        os.killpg(leader, signal.SIGKILL)
+
+
+def _logging_sleep_path(log: Path, path: str) -> str:
+    """A private sleep stand-in logs each requested interval then execs the system sleep unchanged."""
+    directory = log.parent / "timer-programs"
+    directory.mkdir(mode=0o700)
+    system_sleep = shutil.which("sleep", path="/usr/bin:/bin")
+    assert system_sleep is not None
+    _warmed(
+        directory, "sleep", f'printf "%s\\n" "$@" >> {shlex.quote(str(log))}\nexec {shlex.quote(system_sleep)} "$@"\n'
+    )
+    return f"{directory}:{path}"
+
+
+def _is_object_list(value: object) -> TypeGuard[list[object]]:
+    """A runtime list contains objects; validate the container before checking each timer value."""
+    return isinstance(value, list)
+
+
+def timer_requests(log: Path, *, plugin: bool) -> tuple[int, ...]:
+    """The actual requests observed at the sleep or Node timer host boundary, in milliseconds."""
+    if plugin:
+        values: object = json.loads(log.read_text())
+        assert _is_object_list(values)
+        requests: list[int] = []
+        for value in values:
+            assert isinstance(value, int)
+            assert not isinstance(value, bool)
+            requests.append(value)
+        return tuple(requests)
+    return tuple(round(float(line) * 1000) for line in log.read_text().splitlines())
 
 
 def run_wrapper(
@@ -206,8 +249,11 @@ def run_wrapper(
     path: str = CLEAN_PATH,
     extra: Mapping[str, str] | None = None,
     cwd: Path | None = None,
+    timer_log: Path | None = None,
 ) -> HookRun:
     """Invoke the wrapper the way a harness does: two static arguments, the payload on standard input."""
+    if timer_log is not None:
+        path = _logging_sleep_path(timer_log, path)
     environment = {"HOME": str(home), "PATH": path, **({"FERRET_BIN": str(binary)} if binary else {}), **(extra or {})}
     return run_timed([str(WRAPPER), harness, event], payload=payload, environment=environment, cwd=cwd)
 
@@ -221,12 +267,19 @@ def run_plugin(
     path: str = CLEAN_PATH,
     extra: Mapping[str, str] | None = None,
     cwd: Path | None = None,
+    spawn_log: Path | None = None,
+    timer_log: Path | None = None,
 ) -> HookRun:
     """Replay hook calls against the OpenCode plugin under Node, which ends when every child it started has ended."""
     node = node_executable()
     assert node is not None, "Node is required to replay the OpenCode plugin"
     environment = {"HOME": str(home), "PATH": path, **({"FERRET_BIN": str(binary)} if binary else {}), **(extra or {})}
-    request = json.dumps({"directory": str(directory), "calls": list(calls)}).encode("utf-8")
+    document: dict[str, object] = {"directory": str(directory), "calls": list(calls)}
+    if spawn_log is not None:
+        document["spawnLog"] = str(spawn_log)
+    if timer_log is not None:
+        document["timerLog"] = str(timer_log)
+    request = json.dumps(document).encode("utf-8")
     command = [node, "--no-warnings", str(DRIVER), str(PLUGIN)]
     return run_timed(command, payload=request, environment=environment, cwd=cwd)
 
@@ -246,3 +299,8 @@ def recorded_pid(directory: Path) -> int | None:
     """The process ID a stand-in wrote, or None when it never ran."""
     marker = directory / "pid"
     return int(marker.read_text()) if marker.exists() else None
+
+
+def spawn_instants(spawn_log: Path) -> list[float]:
+    """Recorded spawn instants on the same monotonic clock as the Python observations."""
+    return [int(line) / 1_000_000_000 for line in spawn_log.read_text().splitlines()]

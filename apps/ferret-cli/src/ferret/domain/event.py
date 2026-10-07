@@ -182,7 +182,9 @@ def _check_outcome(values: Mapping[str, Any], shape: _Shape) -> FerretResult[Non
         allowed = TERMINAL_OUTCOMES if shape.outcome == "terminal" else {shape.outcome}
         if outcome not in allowed:
             return Err(fields.invalid("outcome"))
-    elif visibility == "unknown" and shape.outcome == "terminal":
+    elif visibility == "unknown" and (
+        shape.outcome == "terminal" or (shape.outcome == "success" and outcome == "unknown")
+    ):
         if outcome != "unknown":
             return Err(fields.invalid("outcome"))
     else:

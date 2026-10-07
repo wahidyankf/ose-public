@@ -8,6 +8,27 @@ Entries describe what a consumer can observe: commands, flags, exit codes, error
 They are not a commit list. For the commits behind any release, see its
 [comparison on GitHub](https://github.com/wahidyankf/ose-public/releases).
 
+## [v0.4.0] — 2026-10-07
+
+Command Code can now send native hook metadata to the same local event store.
+
+### Added
+
+- `capture-hook --harness commandcode` maps native `SessionStart`, `PreToolUse`, and `PostToolUse` events to session
+  start, tool start, and tool completion. Only the allowlisted `session_id`, `cwd`, `hook_event_name`, and `tool_name`
+  scalar fields are projected; tool input, response, transcript paths, and other payload fields are discarded.
+- Command Code tool completion records an unknown outcome, outcome visibility, and duration because the native hook
+  provides no success or failure signal. `Stop` ends a turn and does not fabricate a session-end event. Invalid,
+  unsupported, mismatched, or incomplete payloads retain the silent fail-open capture behavior.
+- `status` includes Command Code with `probe_required` capability evidence until a native observation supplies a
+  stored capability snapshot. Previously supported harness profiles and known completion outcomes are unchanged.
+
+### Changed
+
+- The [adapter deadline contract](../../specs/apps/ferret/cli/architecture.md#constraints) distinguishes unchanged
+  production timer requests from finite host acceptance limits. Deterministic tests prove timer requests and signal
+  order; real-host tests include scheduling delay and process reaping. Normal capture and lock budgets are unchanged.
+
 ## [v0.3.3] — 2026-10-07
 
 Nothing a caller can observe changed. Failures are now typed values, and the artifact bundles the `typekit` library.

@@ -90,8 +90,8 @@ Flat structure - all apps at the same level, no subdirectories.
 - `ayokoding-www-be-e2e` - Playwright BE E2E tests for ayokoding-www tRPC API
 - `ayokoding-www-fe-e2e` - Playwright FE E2E tests for ayokoding-www UI
 - `crane-cli` - PDF-to-Markdown pipeline CLI (F# application)
-- `ferret-cli` - Local metadata-only telemetry CLI for coding-agent harnesses (Python 3.14 zipapp, no runtime
-  dependencies)
+- `ferret-cli` - Local metadata-only telemetry CLI for coding-agent harnesses (Python 3.14 zipapp with `typekit`
+  bundled inside; no separate library installation)
 - `ferret-cli-e2e` - Process-level E2E tests for the built `ferret-cli` artifact (Python, pytest)
 - `organiclever-www` - OrganicLever marketing website (Next.js 16, port 3200)
 - `organiclever-www-fe-e2e` - Playwright FE E2E tests for organiclever-www

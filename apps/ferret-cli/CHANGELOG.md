@@ -8,6 +8,17 @@ Entries describe what a consumer can observe: commands, flags, exit codes, error
 They are not a commit list. For the commits behind any release, see its
 [comparison on GitHub](https://github.com/wahidyankf/ose-public/releases).
 
+## [v0.3.3] — 2026-10-07
+
+Nothing a caller can observe changed. Failures are now typed values, and the artifact bundles the `typekit` library.
+
+### Changed
+
+- Every expected failure inside FERRET is a returned `typekit.Result` value instead of a raised exception. Commands,
+  flags, exit codes, error codes, configuration, and output are unchanged.
+- The zipapp bundles its one library dependency, `typekit` from py-typekit `v0.1.0`, so it still runs on a bare Python
+  3.14 with nothing installed beside it.
+
 ## [v0.3.2] — 2026-09-23
 
 Nothing a caller can observe changed. The artifact is rebuilt because two internal seams moved, and the version moves

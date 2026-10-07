@@ -46,6 +46,8 @@ defers to it. Placement, inheritance, and the inventory that selects them follow
   base, real inferred targets, and complete cache inputs
 - [Python Standards](python-standards.md) — annotated signatures checked by Pyright in strict mode, formatter and linter
   gates, validated boundaries, narrow exceptions, and branch coverage
+- [Python Standards Modules](python-standards/README.md) — Python test layering, branch coverage, and recursion-depth
+  give-ups
 - [React Standards](react-standards.md) — typed function components, hooks and accessibility lint, state in its
   narrowest home, server data in a query cache, and client security
 - [React Standards Modules](react-standards/README.md) — store, query, and form library decisions, and example tools

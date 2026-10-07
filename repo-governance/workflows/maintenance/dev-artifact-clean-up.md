@@ -44,7 +44,8 @@ the only copies, and nothing there is removable except regenerable build output.
 5. **Delete the branches**, local and remote, under the proof gate:
    [Branch Cleanup](../../development/workflow/worktree-and-artifact-cleanup/branch-cleanup.md), or
    [Patch-Equivalent Branch Cleanup](../../development/workflow/worktree-and-artifact-cleanup/patch-equivalent-branch-cleanup.md)
-   where the branch carries no change `main` lacks.
+   where the branch carries no change `main` lacks or is a task branch stale for over 72 hours, its tip
+   preserved first.
 6. **Purge regenerable build output**, in the worktree and the primary checkout, preserving
    diagnostics and shared caches:
    [Build-Artifact Cleanup](../../development/workflow/worktree-and-artifact-cleanup/build-artifact-cleanup.md).

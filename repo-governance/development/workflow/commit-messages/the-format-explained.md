@@ -27,12 +27,10 @@ when_to_use: Use when writing a commit message and needing the exact rules for t
 
 ## Body (Optional)
 
-The body provides additional context about the change:
+The body explains why the change was needed when the subject alone is not enough:
 
 ```
-A more detailed explanation of what changed and why.
-
-Can span multiple paragraphs if needed.
+Close the gap that let expired sessions remain active after sign-out.
 ```
 
 **Rules:**
@@ -40,7 +38,7 @@ Can span multiple paragraphs if needed.
 - Blank line required between header and body
 - Each line must be 100 characters or less
 - Use imperative mood
-- Explain _what_ and _why_, not _how_
+- Explain the reason for the change without narrating what the code does
 
 ## Footer (Optional)
 

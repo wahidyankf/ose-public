@@ -31,3 +31,9 @@ wrong question — ask what it destroys and whether you created it.
 | `git worktree remove --force` (single or doubled)                  | Another actor's working tree and its uncommitted contents       | Non-force `git worktree remove`                             |
 | `rm -rf <worktree>`                                                | The worktree, leaving orphaned administrative state behind      | `git worktree remove`; `git worktree repair` if moved       |
 | `git checkout -- <path>` / `git restore <path>` over unstaged work | Unstaged edits at those paths                                   | Commit or stash first, then restore                         |
+
+**One standing exception.** `git branch -D` on a task branch needs no per-instance approval when
+[Branch Cleanup](../worktree-and-artifact-cleanup/branch-cleanup.md) proves it merged at its reviewed
+head, or [Patch-Equivalent Branch Cleanup](../worktree-and-artifact-cleanup/patch-equivalent-branch-cleanup.md)
+proves it landed, or stale for over 72 hours with its tip preserved first. Any other `-D` still
+needs approval.

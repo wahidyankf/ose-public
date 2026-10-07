@@ -12,7 +12,9 @@ These bound every action the gate takes.
   before that session ends. Deferring is what accumulates the branch backlog this convention exists
   to prevent, and "it was not a plan" is not an exemption.
 - **Self-created only.** Delete only what this plan created. Anything else requires positive evidence
-  it is idle — not merely the absence of evidence that it is busy.
+  it is idle — not merely the absence of evidence that it is busy. For a task branch, that evidence is
+  the stale route of [Patch-Equivalent Branch Cleanup](./patch-equivalent-branch-cleanup.md): no
+  worktree, no open PR, a tip over 72 hours old, and the tip preserved first.
 - **Bounded cache exception.** An exact ignored, nonshared cache such as `.fvm-cache/` may be scratch even when
   another task created it, but only after recorded regeneration, non-use, and secret-free evidence. This never makes
   a shared cache removable.

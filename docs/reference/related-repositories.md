@@ -25,13 +25,14 @@ This page is the descriptive catalogue. The canonical independence and consumer-
 governed by the
 [Related Repositories Convention](../../repo-governance/conventions/structure/related-repositories.md).
 
-| Repository                                               | Visibility  | Role                                                             | Start there when…                                                  |
-| -------------------------------------------------------- | ----------- | ---------------------------------------------------------------- | ------------------------------------------------------------------ |
-| [`ose-public`](https://github.com/wahidyankf/ose-public) | Public, MIT | The OSE product platform and its public research                 | You want to understand or run OSE itself.                          |
-| The private sibling                                      | Private     | Authorized product operations and infrastructure work            | You are an authorized maintainer following its private onboarding. |
-| [RHINO](https://github.com/wahidyankf/rhino)             | Public, MIT | Upstream repository-hygiene validation, specifications, releases | You are changing RHINO behavior rather than OSE integration.       |
-| [HIPPO](https://github.com/wahidyankf/hippo)             | Public, MIT | Upstream resource coordination, specifications, releases         | You are changing HIPPO behavior rather than OSE integration.       |
-| [BeaverNest](https://github.com/wahidyankf/beaver-nest)  | Public, MIT | Independent family product and applied learning lab              | You are changing the BeaverNest product.                           |
+| Repository                                               | Visibility  | Role                                                                    | Start there when…                                                  |
+| -------------------------------------------------------- | ----------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [`ose-public`](https://github.com/wahidyankf/ose-public) | Public, MIT | The OSE product platform and its public research                        | You want to understand or run OSE itself.                          |
+| The private sibling                                      | Private     | Authorized product operations and infrastructure work                   | You are an authorized maintainer following its private onboarding. |
+| [RHINO](https://github.com/wahidyankf/rhino)             | Public, MIT | Upstream repository-hygiene validation, specifications, releases        | You are changing RHINO behavior rather than OSE integration.       |
+| [HIPPO](https://github.com/wahidyankf/hippo)             | Public, MIT | Upstream resource coordination, specifications, releases                | You are changing HIPPO behavior rather than OSE integration.       |
+| [BeaverNest](https://github.com/wahidyankf/beaver-nest)  | Public, MIT | Independent family product and applied learning lab                     | You are changing the BeaverNest product.                           |
+| [py-typekit](https://github.com/wahidyankf/py-typekit)   | Public, MIT | Upstream typed-result library `ferret-cli` bundles; not one of the five | You are changing py-typekit rather than FERRET's use of it.        |
 
 ## The reader path that matters most
 

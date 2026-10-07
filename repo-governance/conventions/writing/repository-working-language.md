@@ -24,6 +24,12 @@ Write repository-authored governance, contributor instructions, documentation, p
 specifications, source-code identifiers, comments and docstrings, logs, error messages, test names
 and descriptions, and other developer-facing text in English.
 
+Keep comments, commit messages, and work notes brief.
+
+Use clear, simple, natural English in those texts so readers who use English as an additional language can follow.
+
+When a comment or work note explains code, state why it is needed rather than narrating what the code does.
+
 Use British `behaviour`, `behavioural`, and `behaviour-driven` in repository-authored generic
 prose, locally owned identifiers, and paths. Preserve American `behavior` only when a third-party
 API or required identifier, exact quotation, proper name, URL, vendored/generated material, or an
@@ -55,7 +61,8 @@ not by itself an exception.
 deterministic language or dialect gate would misclassify code, names, quotations, required
 third-party identifiers, and deliberately localized text, so no mechanical gate is declared.
 Non-English repository-authored text or generic American `behavior` vocabulary outside the
-exceptions above is a violation.
+exceptions above is a violation. Review also judges brevity, natural wording, and whether an explanation gives a
+reason; a mechanical check cannot distinguish useful context from needless narration.
 
 ## Related Documentation
 

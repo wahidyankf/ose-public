@@ -18,6 +18,8 @@ import build_zipapp
 from ferret import __version__
 
 SOURCE = Path(__file__).resolve().parents[2] / "src"
+#: The sources of ``typekit`` the archive bundles, as py-typekit's pinned tag holds them; ``py.typed`` is not one.
+TYPEKIT_SOURCES = {f"typekit/{module}.py" for module in ("__init__", "result", "option", "boundary", "pipeline")}
 
 
 def copy_source(destination: Path, *, modified: int) -> Path:
@@ -77,6 +79,7 @@ def test_the_archive_lists_its_entry_point_first_then_the_package_sorted(tmp_pat
     assert names[0] == "__main__.py"
     assert names[1:] == sorted(names[1:])
     assert {"ferret/__init__.py", "ferret/cli.py", "ferret/help_text.py"} <= set(names)
+    assert set(names) >= TYPEKIT_SOURCES
 
 
 def test_only_package_sources_are_archived(tmp_path: Path) -> None:
@@ -92,6 +95,10 @@ def test_only_package_sources_are_archived(tmp_path: Path) -> None:
         names = archive.namelist()
     assert not [name for name in names if "__pycache__" in name]
     assert "ferret/notes.txt" not in names
+    assert {name.split("/")[0] for name in names} == {"__main__.py", "ferret", "typekit"}
+    assert {name for name in names if name.startswith("typekit/")} == TYPEKIT_SOURCES | {
+        source + "c" for source in TYPEKIT_SOURCES
+    }
 
 
 def test_the_artifact_starts_with_a_shebang_and_is_executable(tmp_path: Path) -> None:
@@ -120,12 +127,71 @@ def test_the_built_artifact_runs_and_reports_its_version(tmp_path: Path) -> None
     assert completed.stderr == ""
 
 
+def test_the_artifact_runs_on_an_interpreter_that_holds_no_typekit_beside_it(tmp_path: Path) -> None:
+    """The artifact bundles ``typekit``, so alone in an empty directory it still starts and answers.
+
+    The interpreter is the one under the virtual environment, resolved to where it really lives: a bare
+    ``python3.14`` on ``PATH`` is the environment's own, whose ``site-packages`` hold ``typekit``, so a run on it
+    would pass whether or not the archive bundled anything. ``-I`` drops ``PYTHONPATH`` and the user site.
+    """
+    interpreter = str(Path(sys.executable).resolve())
+    environment = {"PATH": "/usr/bin:/bin"}
+    alone = subprocess.run(  # the interpreter is the one running these tests
+        [interpreter, "-I", "-c", "import typekit"], capture_output=True, check=False, env=environment
+    )
+    assert alone.returncode != 0, "this interpreter holds typekit itself, so a run on it proves nothing"
+    built = tmp_path / "built" / "ferret.pyz"
+    build_zipapp.build(SOURCE, built)
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    artifact = empty / "ferret.pyz"
+    shutil.copy2(built, artifact)
+
+    completed = subprocess.run(  # the interpreter is the one running these tests; the artifact is this test's own
+        [interpreter, "-I", str(artifact), "version"],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=empty,
+        env=environment,
+    )
+
+    assert (completed.returncode, completed.stdout, completed.stderr) == (0, f"ferret {__version__}\n", "")
+
+
 def test_the_command_line_builds_the_named_source_to_the_named_artifact(tmp_path: Path) -> None:
     target = tmp_path / "out" / "ferret.pyz"
 
     assert build_zipapp.main(["--source", str(SOURCE), "--output", str(target)]) == 0
 
     assert zipfile.is_zipfile(target)
+
+
+def test_the_command_line_bundles_each_package_it_names_in_place_of_the_default(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    for name in ("alpha", "beta"):
+        (tmp_path / "libraries" / name).mkdir(parents=True)
+        (tmp_path / "libraries" / name / "__init__.py").write_text(f"NAME = {name!r}\n", encoding="utf-8")
+    monkeypatch.setattr(sys, "path", [str(tmp_path / "libraries"), *sys.path])
+    target = tmp_path / "out" / "ferret.pyz"
+    arguments = ["--source", str(SOURCE), "--output", str(target), "--package", "alpha", "--package", "beta"]
+
+    assert build_zipapp.main(arguments) == 0
+
+    with zipfile.ZipFile(target) as archive:
+        names = archive.namelist()
+    assert {name.split("/")[0] for name in names} == {"__main__.py", "ferret", "alpha", "beta"}
+
+
+def test_a_package_that_is_not_installed_stops_the_build_instead_of_being_left_out(tmp_path: Path) -> None:
+    target = tmp_path / "ferret.pyz"
+    arguments = ["--source", str(SOURCE), "--output", str(target), "--package", "no_such_package_installed"]
+
+    with pytest.raises(ModuleNotFoundError, match="not an installed package"):
+        build_zipapp.main(arguments)
+
+    assert not target.exists()
 
 
 def test_the_command_line_defaults_to_the_project_layout(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

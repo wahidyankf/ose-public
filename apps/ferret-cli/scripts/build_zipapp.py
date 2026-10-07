@@ -1,14 +1,16 @@
 """Build the reproducible FERRET zipapp.
 
-The archive holds the ``ferret`` package sources, their bytecode, and a generated ``__main__.py``. Python never
-writes bytecode back into an archive, so without it every run would compile every module again; a hook that runs at
-every tool call cannot afford that. The bytecode is unchecked-hash, named for its place in the archive rather than
-for where it was built, and made from the very sources beside it. Every entry has a fixed timestamp, permission, and
-order, and nothing is compressed, so the same sources always produce the same bytes whatever the checkout time, user,
-platform, or hash seed.
+The archive holds the ``ferret`` package sources, those of each bundled library (``typekit`` unless ``--package``
+names others), their bytecode, and a generated ``__main__.py``. A library is read from where it is installed, so the
+archive runs on a host that has none of them installed beside it. Python never writes bytecode back into an archive,
+so without it every run would compile every module again; a hook that runs at every tool call cannot afford that. The
+bytecode is unchecked-hash, named for its place in the archive rather than for where it was built, and made from the
+very sources beside it. Every entry has a fixed timestamp, permission, and order, and nothing is compressed, so the
+same sources always produce the same bytes whatever the checkout time, user, platform, or hash seed.
 """
 
 import argparse
+import importlib.util
 import py_compile
 import stat
 import sys
@@ -61,6 +63,8 @@ ENTRY_POINT = (
 FIXED_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 FILE_MODE = 0o644
 ARTIFACT_MODE = 0o755
+#: The libraries bundled when ``--package`` names none. The entry point and ``ferret._bootstrap`` never import one.
+DEFAULT_PACKAGES = ("typekit",)
 
 
 def _entry(name: str, data: bytes) -> tuple[zipfile.ZipInfo, bytes]:
@@ -85,16 +89,35 @@ def _bytecode(path: Path, name: str, scratch: Path) -> bytes:
     return compiled.read_bytes()
 
 
-def build(source: Path, target: Path) -> None:
-    """Write the zipapp for the package rooted at ``source`` to ``target``, replacing any earlier file."""
-    packages = sorted(
-        (path for path in source.rglob("*.py") if "__pycache__" not in path.parts),
-        key=lambda path: path.relative_to(source).as_posix(),
-    )
+def _package_directory(name: str) -> Path:
+    """The directory the installed package ``name`` lives in, found without importing it."""
+    spec = importlib.util.find_spec(name)
+    if spec is None or not spec.submodule_search_locations:
+        raise ModuleNotFoundError(f"cannot bundle {name}: it is not an installed package", name=name)
+    return Path(spec.submodule_search_locations[0])
+
+
+def _sources(root: Path, prefix: str) -> list[tuple[str, Path]]:
+    """Each ``.py`` file under ``root`` outside any ``__pycache__``, with its archive path under ``prefix``."""
+    return [
+        (prefix + path.relative_to(root).as_posix(), path)
+        for path in root.rglob("*.py")
+        if "__pycache__" not in path.relative_to(root).parts
+    ]
+
+
+def build(source: Path, target: Path, packages: Sequence[str] = DEFAULT_PACKAGES) -> None:
+    """Write the zipapp for the package rooted at ``source`` and the installed ``packages`` to ``target``.
+
+    An earlier file at ``target`` is replaced. Each bundled package is archived under its own name, beside ``ferret``.
+    """
+    sources = _sources(source, "")
+    for package in packages:
+        sources += _sources(_package_directory(package), package + "/")
+    sources.sort(key=lambda archived: archived[0])
     entries = [_entry("__main__.py", ENTRY_POINT.encode())]
     with tempfile.TemporaryDirectory() as scratch:
-        for path in packages:
-            name = path.relative_to(source).as_posix()
+        for name, path in sources:
             entries.append(_entry(name, path.read_bytes()))
             entries.append(_entry(name + "c", _bytecode(path, name, Path(scratch))))
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -112,8 +135,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument(
         "--output", type=Path, default=Path("dist/ferret.pyz"), help="artifact path; defaults to dist/ferret.pyz"
     )
+    parser.add_argument(
+        "--package",
+        action="append",
+        metavar="NAME",
+        help="installed package to bundle beside ferret, repeatable; defaults to typekit",
+    )
     arguments = parser.parse_args(argv)
-    build(arguments.source, arguments.output)
+    build(arguments.source, arguments.output, arguments.package or DEFAULT_PACKAGES)
     return 0
 
 

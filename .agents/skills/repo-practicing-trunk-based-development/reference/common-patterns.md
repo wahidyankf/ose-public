@@ -70,7 +70,9 @@ git branch -d experimental-graphql
 
 # If rejecting: preserve diagnostics, prove this self-created branch has no unpushed work worth
 # retaining, then follow the canonical non-force plan-created branch cleanup. If its checks cannot
-# pass, retain and escalate the branch; never substitute `git branch -D`.
+# pass, retain and escalate the branch. `git branch -D` replaces that only under the task-branch
+# exception of forbidden-operations.md: its PR merged with the head equal to the tip, or the branch
+# stale for over 72 hours (no worktree, no open PR) with its tip preserved first.
 ```
 
 ## Pattern 3: External Contribution

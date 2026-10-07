@@ -13,8 +13,9 @@ from ferret import cli
 from ferret.adapters.system import system_runtime
 from ferret.application.capture_hook import capture_hook
 from ferret.application.initialization import initialize_store
+from ferret.application.ports import CaptureResult
 from ferret.commands import build_handlers
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretResult
 from ferret.domain.identity import derive_identifier
 from support.busy import record_busy_timeouts
 from support.hook_payloads import (
@@ -27,7 +28,7 @@ from support.hook_payloads import (
     codex_tool,
     encode,
 )
-from support.results import value_of
+from support.results import refused, value_of
 
 REGISTRATION_IDS = [f"{harness}-{event}" for harness, event, _ in REGISTRATIONS]
 HOOK_ARGV = ["capture-hook", "--harness", CLAUDE_CODE, "--event", "tool.started"]
@@ -47,9 +48,13 @@ def repository(tmp_path: Path, name: str = "repo-a") -> Path:
     return root
 
 
-def capture(home: Path, harness: str, event: str, document: dict[str, Any]) -> str | None:
+def captured(home: Path, harness: str, event: str, document: dict[str, Any]) -> FerretResult[CaptureResult | None]:
     runtime = value_of(system_runtime({"HOME": str(home)}, stdin=io.BytesIO(encode(document))))
-    return value_of(capture_hook(runtime, harness=harness, event=event))
+    return capture_hook(runtime, harness=harness, event=event)
+
+
+def capture(home: Path, harness: str, event: str, document: dict[str, Any]) -> str | None:
+    return value_of(captured(home, harness, event, document))
 
 
 def rows(home: Path, sql: str) -> list[tuple[Any, ...]]:
@@ -121,14 +126,12 @@ def test_a_writer_blocked_beyond_the_busy_timeout_stores_nothing_and_fails_retry
     blocker = sqlite3.connect(home / ".local" / "share" / "ferret" / "ferret.sqlite3", autocommit=True)
     blocker.execute("BEGIN IMMEDIATE")
     try:
-        # The event repository port raises the busy timeout, so it is still raised until the port returns it.
-        with pytest.raises(FerretError) as caught:
-            capture(home, CLAUDE_CODE, "tool.started", claude_tool("PreToolUse"))
+        failure = captured(home, CLAUDE_CODE, "tool.started", claude_tool("PreToolUse"))
     finally:
         blocker.execute("ROLLBACK")
         blocker.close()
 
-    assert (caught.value.code, caught.value.retryable) == ("ferret.storage.unavailable", True)
+    assert refused(failure) == ("ferret.storage.unavailable", True)
     assert rows(home, "SELECT COUNT(*) FROM event") == [(0,)]
 
 

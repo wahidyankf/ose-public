@@ -6,6 +6,7 @@ an unreadable database each end the command with the error that names them.
 """
 
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import ClassVar, Literal
 
@@ -75,15 +76,45 @@ class StatusReport:
     adapters: tuple[AdapterStatus, ...]
 
 
+def _adapters(runtime: Runtime, now: datetime) -> FerretResult[tuple[AdapterStatus, ...]]:
+    """Each adapter with its latest live snapshot, or the failure of the first snapshot that cannot be read."""
+    adapters: list[AdapterStatus] = []
+    for harness, support in ADAPTERS:
+        snapshot = runtime.capabilities.latest_snapshot(harness, now=now)
+        if isinstance(snapshot, Err):
+            return snapshot
+        adapters.append(AdapterStatus(harness, support, snapshot.value))
+    return Ok(tuple(adapters))
+
+
 def _report(runtime: Runtime) -> FerretResult[StatusReport]:
     """The report of a store that passed ``require_initialized``, or the failed integrity probe that ends it."""
     telemetry = runtime.telemetry
     facts = telemetry.storage_facts()
-    if not telemetry.check_integrity(thorough=False):
+    if isinstance(facts, Err):
+        return facts
+    intact = telemetry.check_integrity(thorough=False)
+    if isinstance(intact, Err):
+        return intact
+    if not intact.value:
         return Err(FerretError("ferret.storage.integrity-failure"))
     now = runtime.clock.now()
     last_maintenance_at = telemetry.last_completed_at()
+    if isinstance(last_maintenance_at, Err):
+        return last_maintenance_at
     hook_failure_count, last_hook_failure_at = runtime.hook_failures.read()
+    schema_number = telemetry.schema_number()
+    if isinstance(schema_number, Err):
+        return schema_number
+    counts = telemetry.counts(now=now, near_expiry_within=NEAR_EXPIRY_WINDOW)
+    if isinstance(counts, Err):
+        return counts
+    counters = telemetry.expiry_counters()
+    if isinstance(counters, Err):
+        return counters
+    adapters = _adapters(runtime, now)
+    if isinstance(adapters, Err):
+        return adapters
     return Ok(
         StatusReport(
             ferret_version=__version__,
@@ -91,18 +122,15 @@ def _report(runtime: Runtime) -> FerretResult[StatusReport]:
             interpreter_state=interpreter_state(runtime.interpreter.path, runtime.interpreter.version),
             data_home=runtime.data_home,
             database_path=runtime.data_home / DATABASE_FILE,
-            schema_number=telemetry.schema_number(),
-            counts=telemetry.counts(now=now, near_expiry_within=NEAR_EXPIRY_WINDOW),
-            facts=facts,
-            counters=telemetry.expiry_counters(),
-            last_maintenance_at=last_maintenance_at,
-            maintenance_due=is_due(last_maintenance_at, now),
+            schema_number=schema_number.value,
+            counts=counts.value,
+            facts=facts.value,
+            counters=counters.value,
+            last_maintenance_at=last_maintenance_at.value,
+            maintenance_due=is_due(last_maintenance_at.value, now),
             hook_failure_count=hook_failure_count,
             last_hook_failure_at=last_hook_failure_at,
-            adapters=tuple(
-                AdapterStatus(harness, support, runtime.capabilities.latest_snapshot(harness, now=now))
-                for harness, support in ADAPTERS
-            ),
+            adapters=adapters.value,
         )
     )
 

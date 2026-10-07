@@ -2,7 +2,7 @@
 
 import hashlib
 import threading
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -28,7 +28,7 @@ from ferret.application.ports import (
     StoreCounts,
 )
 from ferret.domain.capability import CapabilitySnapshot
-from ferret.domain.errors import FerretError, FerretResult, or_raise
+from ferret.domain.errors import FerretError, FerretResult
 from ferret.domain.event import Event
 from ferret.domain.identity import resolve_identity
 from ferret.domain.install import (
@@ -198,22 +198,41 @@ class FakeDataHome:
             self.lock_depth -= 1
 
 
+def _refusal(refusals: Mapping[str, FerretError], name: str) -> Err[FerretError] | None:
+    """The ``Err`` a repository call named ``name`` returns instead of acting, when ``refusals`` holds one for it."""
+    refusal = refusals.get(name)
+    return None if refusal is None else Err(refusal)
+
+
+def _stamp(moment: datetime) -> str:
+    """``moment`` in the stored spelling. The fakes are given aware moments only, so a failure here fails the test."""
+    return value_of(format_timestamp(moment))
+
+
+def _expiry(held: Event | CapabilitySnapshot) -> str:
+    """When ``held`` expires. Every row a fake holds was captured at a real moment, so a failure fails the test."""
+    return value_of(held.expires_at)
+
+
 @dataclass(slots=True)
 class FakeSchema:
-    """A schema that reports the current number and whether this call created it."""
+    """A schema that reports the current number and whether this call created it, or refuses with ``refusal``."""
 
     number: int = 1
     applied: bool = False
     calls: int = 0
     crash: bool = False
+    refusal: FerretError | None = None
 
-    def migrate(self) -> SchemaState:
+    def migrate(self) -> FerretResult[SchemaState]:
         self.calls += 1
         if self.crash:
             raise SimulatedCrash
+        if self.refusal is not None:
+            return Err(self.refusal)
         applied_now = not self.applied
         self.applied = True
-        return SchemaState(number=self.number, applied_now=applied_now)
+        return Ok(SchemaState(number=self.number, applied_now=applied_now))
 
 
 class FakeInput:
@@ -254,23 +273,30 @@ def _matches(criteria: EventCriteria, event: Event) -> bool:
 class FakeEvents:
     """The event repository as a list under one lock, applying the same identity policy as the real one.
 
-    ``reads`` counts ``read`` calls, so a test can prove how many batches a consumer pulled.
+    ``reads`` counts ``read`` calls, so a test can prove how many batches a consumer pulled. ``refusals`` makes the
+    call named by its key (``capture``, ``read``, or ``find``) return its ``Err`` instead of acting; a refused call is
+    still counted.
     """
 
     stored: list[Event] = field(default_factory=lambda: list[Event]())
     captures: int = 0
     reads: int = 0
     lock: threading.Lock = field(default_factory=threading.Lock)
+    refusals: dict[str, FerretError] = field(default_factory=lambda: dict[str, FerretError]())
 
-    def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
+    def capture(self, event: Event, *, budget: Budget | None = None) -> FerretResult[CaptureResult]:
         with self.lock:
             self.captures += 1
+            if (refused := _refusal(self.refusals, "capture")) is not None:
+                return refused
             existing = next((held for held in self.stored if held.event_id == event.event_id), None)
-            outcome = or_raise(resolve_identity(None if existing is None else existing.event_hash, event.event_hash))
-            if outcome == "duplicate":
-                return "duplicate"
+            decision = resolve_identity(None if existing is None else existing.event_hash, event.event_hash)
+            if isinstance(decision, Err):
+                return decision
+            if decision.value == "duplicate":
+                return Ok("duplicate")
             self.stored.append(event)
-            return "stored"
+            return Ok("stored")
 
     def read(
         self,
@@ -280,28 +306,31 @@ class FakeEvents:
         newest_first: bool,
         after: Position | None,
         limit: int,
-    ) -> tuple[Event, ...]:
+    ) -> FerretResult[tuple[Event, ...]]:
         """Up to ``limit`` unexpired matches in one total order, strictly past ``after`` in the direction of travel."""
-        horizon = or_raise(format_timestamp(now))
+        horizon = _stamp(now)
         with self.lock:
             self.reads += 1
+            if (refused := _refusal(self.refusals, "read")) is not None:
+                return refused
             rows = sorted(
-                (held for held in self.stored if or_raise(held.expires_at) > horizon and _matches(criteria, held)),
+                (held for held in self.stored if _expiry(held) > horizon and _matches(criteria, held)),
                 key=_position,
                 reverse=newest_first,
             )
         if after is not None:
             edge = (after.occurred_at, after.event_id)
             rows = [row for row in rows if (_position(row) < edge if newest_first else _position(row) > edge)]
-        return tuple(rows[:limit])
+        return Ok(tuple(rows[:limit]))
 
-    def find(self, event_id: str, *, now: datetime) -> Event | None:
+    def find(self, event_id: str, *, now: datetime) -> FerretResult[Event | None]:
         """The unexpired event with ``event_id``, whatever filters a query had."""
-        horizon = or_raise(format_timestamp(now))
+        horizon = _stamp(now)
         with self.lock:
-            return next(
-                (held for held in self.stored if held.event_id == event_id and or_raise(held.expires_at) > horizon),
-                None,
+            if (refused := _refusal(self.refusals, "find")) is not None:
+                return refused
+            return Ok(
+                next((held for held in self.stored if held.event_id == event_id and _expiry(held) > horizon), None)
             )
 
 
@@ -311,35 +340,47 @@ def _recency(snapshot: CapabilitySnapshot) -> tuple[str, str]:
 
 @dataclass(slots=True)
 class FakeCapabilities:
-    """The capability repository as a list under one lock, applying the same identity policy as the real one."""
+    """The capability repository as a list under one lock, applying the same identity policy as the real one.
+
+    ``refusals`` makes the call named by its key (``store_snapshot`` or ``latest_snapshot``) return its ``Err``
+    instead of acting.
+    """
 
     stored: list[CapabilitySnapshot] = field(default_factory=lambda: list[CapabilitySnapshot]())
     lock: threading.Lock = field(default_factory=threading.Lock)
+    refusals: dict[str, FerretError] = field(default_factory=lambda: dict[str, FerretError]())
 
-    def store_snapshot(self, snapshot: CapabilitySnapshot) -> CaptureResult:
+    def store_snapshot(self, snapshot: CapabilitySnapshot) -> FerretResult[CaptureResult]:
         with self.lock:
+            if (refused := _refusal(self.refusals, "store_snapshot")) is not None:
+                return refused
             existing = next((held for held in self.stored if held.snapshot_id == snapshot.snapshot_id), None)
-            outcome = or_raise(
-                resolve_identity(None if existing is None else existing.snapshot_hash, snapshot.snapshot_hash)
-            )
-            if outcome == "duplicate":
-                return "duplicate"
+            decision = resolve_identity(None if existing is None else existing.snapshot_hash, snapshot.snapshot_hash)
+            if isinstance(decision, Err):
+                return decision
+            if decision.value == "duplicate":
+                return Ok("duplicate")
             self.stored.append(snapshot)
-            return "stored"
+            return Ok("stored")
 
-    def latest_snapshot(self, harness: str, *, now: datetime) -> CapabilitySnapshot | None:
-        horizon = or_raise(format_timestamp(now))
+    def latest_snapshot(self, harness: str, *, now: datetime) -> FerretResult[CapabilitySnapshot | None]:
+        horizon = _stamp(now)
         with self.lock:
-            live = (held for held in self.stored if held.harness == harness and or_raise(held.expires_at) > horizon)
-            return max(live, key=_recency, default=None)
+            if (refused := _refusal(self.refusals, "latest_snapshot")) is not None:
+                return refused
+            live = (held for held in self.stored if held.harness == harness and _expiry(held) > horizon)
+            return Ok(max(live, key=_recency, default=None))
 
 
 @dataclass(slots=True)
 class FakeTelemetry:
     """Retention and counters over the fake event and snapshot stores, following the port's contract row for row.
 
-    ``lock_held`` makes every prune skip as if the write lock could not be taken inside the budget, and ``broken``
-    makes every call raise that failure. ``prunes`` keeps every result so a test can read the whole history.
+    ``lock_held`` makes every prune skip as if the write lock could not be taken inside the budget. ``broken`` makes
+    every call return that failure as an ``Err``, and ``refusals`` makes the call named by its key (a method of the
+    port) return its own, which takes precedence over ``broken``. ``refuse_from`` holds back a refusal until the
+    method has been called that many times, for a test of a failure that comes after the first calls succeeded;
+    ``calls`` counts each method's calls. ``prunes`` keeps every result so a test can read the whole history.
     """
 
     events: FakeEvents
@@ -349,6 +390,9 @@ class FakeTelemetry:
     before_ack_total: int = 0
     lock_held: bool = False
     broken: FerretError | None = None
+    refusals: dict[str, FerretError] = field(default_factory=lambda: dict[str, FerretError]())
+    refuse_from: dict[str, int] = field(default_factory=lambda: dict[str, int]())
+    calls: dict[str, int] = field(default_factory=lambda: dict[str, int]())
     prunes: list[PruneResult] = field(default_factory=lambda: list[PruneResult]())
     facts: StorageFacts = field(default_factory=lambda: StorageFacts(0, 0, 0))
     stored_schema: int = 1
@@ -359,28 +403,37 @@ class FakeTelemetry:
     compactions: list[str] = field(default_factory=lambda: list[str]())
     integrity_checks: list[bool] = field(default_factory=lambda: list[bool]())
 
-    def last_completed_at(self) -> str | None:
-        if self.broken is not None:
-            raise self.broken
-        return self.marker
+    def _refused(self, name: str) -> Err[FerretError] | None:
+        """The failure the call named ``name`` returns instead of acting, if the test has broken it."""
+        self.calls[name] = self.calls.get(name, 0) + 1
+        failure = self.refusals.get(name, self.broken)
+        if failure is None or self.calls[name] < self.refuse_from.get(name, 1):
+            return None
+        return Err(failure)
 
-    def expiry_counters(self) -> ExpiryCounters:
-        self._require_reachable()
-        return ExpiryCounters(self.local_total, self.before_ack_total)
+    def last_completed_at(self) -> FerretResult[str | None]:
+        if (refused := self._refused("last_completed_at")) is not None:
+            return refused
+        return Ok(self.marker)
 
-    def prune_batch(self, *, now: datetime, limit: int, budget: Budget) -> PruneResult:
-        if self.broken is not None:
-            raise self.broken
+    def expiry_counters(self) -> FerretResult[ExpiryCounters]:
+        if (refused := self._refused("expiry_counters")) is not None:
+            return refused
+        return Ok(ExpiryCounters(self.local_total, self.before_ack_total))
+
+    def prune_batch(self, *, now: datetime, limit: int, budget: Budget) -> FerretResult[PruneResult]:
+        if (refused := self._refused("prune_batch")) is not None:
+            return refused
         if budget.remaining_ms() == 0 or self.lock_held:
-            return self._record(PruneResult("skipped"))
-        horizon = or_raise(format_timestamp(now))
+            return Ok(self._record(PruneResult("skipped")))
+        horizon = _stamp(now)
         expired_events = sorted(
-            (held for held in self.events.stored if or_raise(held.expires_at) <= horizon),
-            key=lambda held: (or_raise(held.expires_at), held.event_id),
+            (held for held in self.events.stored if _expiry(held) <= horizon),
+            key=lambda held: (_expiry(held), held.event_id),
         )
         expired_snapshots = sorted(
-            (held for held in self.capabilities.stored if or_raise(held.expires_at) <= horizon),
-            key=lambda held: (or_raise(held.expires_at), held.snapshot_id),
+            (held for held in self.capabilities.stored if _expiry(held) <= horizon),
+            key=lambda held: (_expiry(held), held.snapshot_id),
         )
         removed_events: list[Event] = []
         removed_snapshots: list[CapabilitySnapshot] = []
@@ -398,21 +451,23 @@ class FakeTelemetry:
         retained = {held.workspace_id for held in self.events.stored}
         orphaned = {gone.workspace_id for gone in removed_events} - retained
         deleted = len(removed_events) + len(removed_snapshots)
-        remaining = any(or_raise(held.expires_at) <= horizon for held in self.events.stored) or any(
-            or_raise(held.expires_at) <= horizon for held in self.capabilities.stored
+        remaining = any(_expiry(held) <= horizon for held in self.events.stored) or any(
+            _expiry(held) <= horizon for held in self.capabilities.stored
         )
         completed = deleted == 0 and not remaining
         self.local_total += deleted
         if completed:
             self.marker = horizon
-        return self._record(
-            PruneResult(
-                "pruned",
-                events=len(removed_events),
-                snapshots=len(removed_snapshots),
-                workspaces=len(orphaned),
-                remaining=remaining,
-                completed=completed,
+        return Ok(
+            self._record(
+                PruneResult(
+                    "pruned",
+                    events=len(removed_events),
+                    snapshots=len(removed_snapshots),
+                    workspaces=len(orphaned),
+                    remaining=remaining,
+                    completed=completed,
+                )
             )
         )
 
@@ -420,56 +475,62 @@ class FakeTelemetry:
         self.prunes.append(result)
         return result
 
-    def _require_reachable(self) -> None:
-        if self.broken is not None:
-            raise self.broken
+    def schema_number(self) -> FerretResult[int]:
+        if (refused := self._refused("schema_number")) is not None:
+            return refused
+        return Ok(self.stored_schema)
 
-    def schema_number(self) -> int:
-        self._require_reachable()
-        return self.stored_schema
+    def storage_facts(self) -> FerretResult[StorageFacts]:
+        if (refused := self._refused("storage_facts")) is not None:
+            return refused
+        return Ok(self.facts)
 
-    def storage_facts(self) -> StorageFacts:
-        self._require_reachable()
-        return self.facts
-
-    def counts(self, *, now: datetime, near_expiry_within: timedelta) -> StoreCounts:
+    def counts(self, *, now: datetime, near_expiry_within: timedelta) -> FerretResult[StoreCounts]:
         """Live and expired rows counted the way the real store does: live means not expired at ``now``."""
-        self._require_reachable()
-        horizon, near = or_raise(format_timestamp(now)), or_raise(format_timestamp(now + near_expiry_within))
-        live_events = [held for held in self.events.stored if or_raise(held.expires_at) > horizon]
-        live_snapshots = [held for held in self.capabilities.stored if or_raise(held.expires_at) > horizon]
+        if (refused := self._refused("counts")) is not None:
+            return refused
+        horizon, near = _stamp(now), _stamp(now + near_expiry_within)
+        live_events = [held for held in self.events.stored if _expiry(held) > horizon]
+        live_snapshots = [held for held in self.capabilities.stored if _expiry(held) > horizon]
         stored = len(self.events.stored) + len(self.capabilities.stored)
-        return StoreCounts(
-            events=len(live_events),
-            snapshots=len(live_snapshots),
-            oldest_captured_at=min((held.captured_at for held in live_events), default=None),
-            near_expiry=sum(1 for held in (*live_events, *live_snapshots) if or_raise(held.expires_at) <= near),
-            logically_expired=stored - len(live_events) - len(live_snapshots),
+        return Ok(
+            StoreCounts(
+                events=len(live_events),
+                snapshots=len(live_snapshots),
+                oldest_captured_at=min((held.captured_at for held in live_events), default=None),
+                near_expiry=sum(1 for held in (*live_events, *live_snapshots) if _expiry(held) <= near),
+                logically_expired=stored - len(live_events) - len(live_snapshots),
+            )
         )
 
-    def check_integrity(self, *, thorough: bool) -> bool:
-        self._require_reachable()
+    def check_integrity(self, *, thorough: bool) -> FerretResult[bool]:
+        if (refused := self._refused("check_integrity")) is not None:
+            return refused
         self.integrity_checks.append(thorough)
-        return self.integrity_ok
+        return Ok(self.integrity_ok)
 
-    def checkpoint(self) -> Literal["truncated", "skipped"]:
+    def checkpoint(self) -> FerretResult[Literal["truncated", "skipped"]]:
         """Fold the log into the database unless a reader is open; a skipped checkpoint leaves every byte as it was."""
+        if (refused := self._refused("checkpoint")) is not None:
+            return refused
         if self.reader_open:
             self.checkpoints.append("skipped")
-            return "skipped"
+            return Ok("skipped")
         self.facts = replace(self.facts, wal_bytes=0)
         self.checkpoints.append("truncated")
-        return "truncated"
+        return Ok("truncated")
 
-    def compact(self) -> Compaction:
+    def compact(self) -> FerretResult[Compaction]:
         """Rewrite the database without its free pages, through the log like the real thing, or fail unchanged."""
+        if (refused := self._refused("compact")) is not None:
+            return refused
         if self.compaction_fails:
             self.compactions.append("failed")
-            return Compaction("failed", self.facts)
+            return Ok(Compaction("failed", self.facts))
         shrunk = self.facts.database_bytes - self.facts.freelist_bytes
         self.facts = StorageFacts(database_bytes=shrunk, wal_bytes=self.facts.wal_bytes + shrunk, freelist_bytes=0)
         self.compactions.append("compacted")
-        return Compaction("compacted", self.facts)
+        return Ok(Compaction("compacted", self.facts))
 
 
 ARTIFACT_BYTES = b"#!/usr/bin/env python3\nthe artifact under test\n"

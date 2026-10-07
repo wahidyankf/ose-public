@@ -92,7 +92,7 @@ def _seal(runtime: Runtime, harness: str, facts: HookFacts, held: tuple[bytes, s
     )
 
 
-def _store(runtime: Runtime, sealed: Event) -> CaptureResult:
+def _store(runtime: Runtime, sealed: Event) -> FerretResult[CaptureResult]:
     """Give retention its bounded turn, and then store the event inside the hook's own deadline."""
     prune_due(runtime)
     return runtime.events.capture(sealed, budget=Budget.start(runtime.monotonic, HOOK_CAPTURE_BUDGET_MS))
@@ -105,7 +105,7 @@ def _capture(runtime: Runtime, harness: str, facts: HookFacts | None) -> FerretR
     return (
         _installation(runtime)
         .flat_map(lambda held: _seal(runtime, harness, facts, held))
-        .map(lambda sealed: _store(runtime, sealed))
+        .flat_map(lambda sealed: _store(runtime, sealed))
     )
 
 

@@ -96,7 +96,7 @@ def run_burst(database: Path, *, repositories: int = REPOSITORY_COUNT, size: int
             document = event_document(eventId=event_id(repository, sequence), workspaceId=workspace_id(repository))
             event = value_of(event_from_document(document, now=NOW))
             started = time.perf_counter()
-            result = events.capture(event)
+            result = value_of(events.capture(event))
             captures.append(Capture(event.event_id, result, time.perf_counter() - started))
         return captures
 

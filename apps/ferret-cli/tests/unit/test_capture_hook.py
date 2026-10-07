@@ -11,7 +11,7 @@ from ferret.application.capture_hook import capture_hook
 from ferret.application.initialization import initialize_store
 from ferret.application.ports import Budget, CaptureResult
 from ferret.application.privacy import RAW_LIMIT_BYTES
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, FerretResult
 from ferret.domain.event import Event
 from ferret.domain.identity import derive_identifier
 from support.fakes import (
@@ -256,7 +256,7 @@ def test_the_bounded_prune_runs_before_the_event_is_stored(monkeypatch: pytest.M
     original = FakeEvents.capture
     pruned_before_capture: list[int] = []
 
-    def observe(self: FakeEvents, event: Event, *, budget: Budget | None = None) -> CaptureResult:
+    def observe(self: FakeEvents, event: Event, *, budget: Budget | None = None) -> FerretResult[CaptureResult]:
         pruned_before_capture.append(len(world.telemetry.prunes))
         return original(self, event, budget=budget)
 
@@ -265,6 +265,21 @@ def test_the_bounded_prune_runs_before_the_event_is_stored(monkeypatch: pytest.M
     value_of(capture_hook(world.runtime, harness=CLAUDE_CODE, event="tool.started"))
 
     assert pruned_before_capture == [1]
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [FerretError("ferret.storage.unavailable", retryable=True), FerretError("ferret.storage.integrity-failure")],
+    ids=["retryable", "integrity"],
+)
+def test_a_store_that_cannot_take_the_event_is_the_failure_the_hook_returns(failure: FerretError) -> None:
+    world = world_for(claude_tool("PreToolUse"))
+    world.events.refusals["capture"] = failure
+
+    error = refused(world)
+
+    assert (error.code, error.exit_code, error.retryable) == (failure.code, 2, failure.retryable)
+    assert (world.events.captures, world.events.stored) == (1, [])
 
 
 def test_a_prune_that_is_not_due_leaves_the_capture_alone() -> None:

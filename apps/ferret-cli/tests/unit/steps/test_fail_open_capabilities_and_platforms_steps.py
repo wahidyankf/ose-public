@@ -16,6 +16,7 @@ from typing import Any
 
 import pytest
 from pytest_bdd import given, parsers, scenario, then, when
+from typekit import Err
 
 from ferret.application.initialization import initialize_store
 from ferret.application.ports import Budget, CaptureResult, InstalledFacts, Runtime, StagedInstall, StagePlan
@@ -447,11 +448,11 @@ class BrokenEvents(FakeEvents):
     monotonic: FakeMonotonic | None = None
     budgets: list[Budget | None] = field(default_factory=lambda: list[Budget | None]())
 
-    def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
+    def capture(self, event: Event, *, budget: Budget | None = None) -> FerretResult[CaptureResult]:
         self.budgets.append(budget)
         if self.monotonic is not None and budget is not None:
             self.monotonic.advance(budget.remaining_ms() + 1)
-        raise self.failure
+        return Err(self.failure)
 
 
 @dataclass(slots=True)
@@ -500,7 +501,7 @@ def given_ferret_is_in_a_condition(adapter: Adapter, condition: str) -> None:
         adapter.world.input.data = TRUNCATED_METADATA
         adapter.expected_codes = ["ferret.event.invalid"]
     elif condition == "unable to open SQLite":
-        # What the real repository raises for a database file SQLite cannot read as one.
+        # What the real repository returns for a database file SQLite cannot read as one.
         adapter.broken = BrokenEvents(failure=FerretError("ferret.storage.integrity-failure"))
         adapter.expected_codes = ["ferret.storage.integrity-failure"]
     else:

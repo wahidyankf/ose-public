@@ -89,8 +89,8 @@ def build_handlers(runtime_factory: RuntimeFactory) -> Mapping[CommandPath, Hand
         # Each event is flushed as it is written, so a consumer sees it at once and a closed pipe ends the stream.
         # Counted rather than collected: the point of streaming is that the whole export never has to be held.
         exported = 0
-        for event in or_raise(export_events(runtime_factory(), request.options)):
-            stdout.write(render_export_line(event))
+        for item in or_raise(export_events(runtime_factory(), request.options)):
+            stdout.write(render_export_line(or_raise(item)))
             stdout.flush()
             exported += 1
         return EXIT_SUCCESS if exported else EXIT_NEGATIVE_RESULT

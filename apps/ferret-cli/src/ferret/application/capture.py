@@ -25,7 +25,9 @@ def capture_event(runtime: Runtime) -> FerretResult[CaptureOutcome]:
     """
     raw = runtime.input.read(CANONICAL_LIMIT_BYTES + 1)
     return validate_capture(raw, now=runtime.clock.now()).flat_map(
-        lambda event: open_store(runtime).map(
-            lambda _: CaptureOutcome(runtime.events.capture(event), event.event_id, event.event_hash)
+        lambda event: open_store(runtime).flat_map(
+            lambda _: runtime.events.capture(event).map(
+                lambda result: CaptureOutcome(result, event.event_id, event.event_hash)
+            )
         )
     )

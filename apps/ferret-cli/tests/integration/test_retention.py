@@ -54,7 +54,7 @@ def marker(machine: Machine) -> str | None:
 def store_snapshots(machine: Machine, count: int, *, ago: timedelta = timedelta(days=31)) -> None:
     repository = machine.runtime().capabilities
     for number in range(count):
-        repository.store_snapshot(aged_snapshot(number, now=NOW, ago=ago))
+        value_of(repository.store_snapshot(aged_snapshot(number, now=NOW, ago=ago)))
 
 
 def prune(machine: Machine) -> PruneResult | None:
@@ -64,19 +64,19 @@ def prune(machine: Machine) -> PruneResult | None:
 def test_reads_hide_a_row_expiring_exactly_now_before_any_prune(machine: Machine) -> None:
     hidden, visible = edge_events(NOW)
     machine.fill([hidden, visible, *expired_events(3, now=NOW)])
-    machine.runtime().capabilities.store_snapshot(aged_snapshot(1, now=NOW, ago=CUTOFF))
+    value_of(machine.runtime().capabilities.store_snapshot(aged_snapshot(1, now=NOW, ago=CUTOFF)))
     newest = aged_snapshot(2, now=NOW, ago=CUTOFF - timedelta(milliseconds=1))
-    machine.runtime().capabilities.store_snapshot(newest)
+    value_of(machine.runtime().capabilities.store_snapshot(newest))
     machine.set_marker(stamp(NOW))
     runtime = machine.runtime()
 
-    listed = runtime.events.read(EVERYTHING, now=NOW, newest_first=True, after=None, limit=200)
+    listed = value_of(runtime.events.read(EVERYTHING, now=NOW, newest_first=True, after=None, limit=200))
 
     assert listed == (visible,)
-    assert runtime.events.find(hidden.event_id, now=NOW) is None
-    assert runtime.events.find(visible.event_id, now=NOW) == visible
-    assert runtime.capabilities.latest_snapshot("codex", now=NOW) == newest
-    assert runtime.capabilities.latest_snapshot("codex", now=NOW + timedelta(milliseconds=1)) is None
+    assert value_of(runtime.events.find(hidden.event_id, now=NOW)) is None
+    assert value_of(runtime.events.find(visible.event_id, now=NOW)) == visible
+    assert value_of(runtime.capabilities.latest_snapshot("codex", now=NOW)) == newest
+    assert value_of(runtime.capabilities.latest_snapshot("codex", now=NOW + timedelta(milliseconds=1))) is None
     assert machine.sql("SELECT count(*) FROM event") == [(5,)]
     assert machine.run(["events", "list", "--all-time", "--json"]).stdout.count('"eventId"') == 1
 
@@ -260,7 +260,7 @@ def test_counters_keep_their_history_across_a_migration_pass_and_never_reclassif
     machine.write_sql("UPDATE operational_counter SET value = 7 WHERE name = 'expired_local_total'")
     machine.fill(expired_events(3, now=NOW))
 
-    SQLiteSchema(machine.database, FixedClock(NOW)).migrate()
+    value_of(SQLiteSchema(machine.database, FixedClock(NOW)).migrate())
     assert counters(machine) == ExpiryCounters(7, 0)
 
     prune(machine)
@@ -321,7 +321,7 @@ def test_the_fake_and_the_real_prune_agree_batch_for_batch(
     aged = [aged_snapshot(number, now=NOW, ago=timedelta(days=31)) for number in range(snapshots)]
     machine.fill(seed)
     for snapshot in aged:
-        machine.runtime().capabilities.store_snapshot(snapshot)
+        value_of(machine.runtime().capabilities.store_snapshot(snapshot))
     world.events.stored.extend(seed)
     world.capabilities.stored.extend(aged)
     fake_runtime = replace(world.runtime, monotonic=FakeMonotonic(step))
@@ -331,7 +331,7 @@ def test_the_fake_and_the_real_prune_agree_batch_for_batch(
 
     assert real == fake
     assert event_numbers(machine) == numbers(tuple(world.events.stored))
-    assert counters(machine) == world.telemetry.expiry_counters()
+    assert counters(machine) == value_of(world.telemetry.expiry_counters())
     assert marker(machine) == world.telemetry.marker
 
 
@@ -344,7 +344,7 @@ def test_failed_compaction_preserves_readable_original(machine: Machine, monkeyp
     free_pages = machine.sql("PRAGMA freelist_count")
 
     interrupt_every_vacuum(monkeypatch)
-    compaction = machine.runtime().telemetry.compact()
+    compaction = value_of(machine.runtime().telemetry.compact())
     monkeypatch.undo()
 
     assert compaction.outcome == "failed"

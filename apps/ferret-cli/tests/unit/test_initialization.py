@@ -311,6 +311,20 @@ def test_an_interrupted_schema_creation_is_completed_by_the_next_initialization(
     assert world.schema.applied
 
 
+def test_a_schema_that_cannot_be_migrated_ends_the_initialization_with_that_failure_and_is_tried_again() -> None:
+    world = make_world(schema=FakeSchema(refusal=THE_DATA_HOME_FAILED))
+
+    assert refusal_of(initialize_store(world.runtime)) is THE_DATA_HOME_FAILED
+
+    assert (world.schema.calls, world.schema.applied, world.files.lock_depth) == (1, False, 0)
+    assert world.files.creates == CREATED_IN_ORDER
+    world.schema.refusal = None
+
+    result = value_of(initialize_store(world.runtime))
+
+    assert (result.result, result.installation_id, world.schema.applied) == ("created", INSTALLATION_ID, True)
+
+
 def test_a_missing_key_before_any_database_exists_is_recreated_under_the_same_identity() -> None:
     world = make_world(files=FakeDataHome(crash_after_creates=2))
     with pytest.raises(SimulatedCrash):

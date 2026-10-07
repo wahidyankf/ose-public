@@ -6,11 +6,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+from typekit import Err, Ok
 
 from ferret import __version__, cli
 from ferret.application.ports import Runtime
 from ferret.commands import build_handlers, default_handlers
-from ferret.domain.errors import FerretError
+from ferret.domain.errors import FerretError, FerretResult
 from support.fakes import FAKE_DATA_HOME, INSTALLATION_ID, World, make_world
 
 INIT_JSON_CREATED = (
@@ -27,6 +28,8 @@ Installation: {INSTALLATION_ID}
 Retention days: 30
 Permissions: private
 """
+HOOK_ARGV = ["capture-hook", "--harness", "claude_code", "--event", "session-start"]
+STAMP = "2026-09-18T08:00:00Z"
 
 
 @dataclass(frozen=True, slots=True)
@@ -38,7 +41,7 @@ class Outcome:
 
 def run(argv: list[str], world: World) -> Outcome:
     stdout, stderr = io.StringIO(), io.StringIO()
-    code = cli.main(argv, stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: world.runtime))
+    code = cli.main(argv, stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: Ok(world.runtime)))
     return Outcome(code, stdout.getvalue(), stderr.getvalue())
 
 
@@ -91,8 +94,8 @@ def test_a_closed_failure_keeps_its_code_and_exit_status_and_carries_no_value(ou
 
 
 def test_a_retryable_failure_says_so() -> None:
-    def busy() -> Runtime:
-        raise FerretError("ferret.storage.unavailable", retryable=True)
+    def busy() -> FerretResult[Runtime]:
+        return Err(FerretError("ferret.storage.unavailable", retryable=True))
 
     stdout, stderr = io.StringIO(), io.StringIO()
     code = cli.main(["init", "--json"], stdout=stdout, stderr=stderr, handlers=build_handlers(busy))
@@ -108,8 +111,8 @@ def test_a_retryable_failure_says_so() -> None:
 
 
 def test_a_field_named_failure_reports_the_safe_field() -> None:
-    def invalid() -> Runtime:
-        raise FerretError("ferret.event.invalid", field="toolName")
+    def invalid() -> FerretResult[Runtime]:
+        return Err(FerretError("ferret.event.invalid", field="toolName"))
 
     stderr = io.StringIO()
     code = cli.main(["init", "--json"], stdout=io.StringIO(), stderr=stderr, handlers=build_handlers(invalid))
@@ -124,7 +127,7 @@ def test_a_field_named_failure_reports_the_safe_field() -> None:
 
 
 def test_the_runtime_is_only_built_for_a_command_that_needs_it() -> None:
-    def forbidden() -> Runtime:
+    def forbidden() -> FerretResult[Runtime]:
         raise AssertionError("version must not build a runtime")
 
     stdout = io.StringIO()
@@ -154,12 +157,12 @@ def test_the_callback_swallows_a_fault_that_is_not_a_closed_failure_and_still_ex
     # A bug in FERRET itself, on the one command a harness runs for every event: it may not speak and it may not
     # take a status a harness would read as trouble, so all that is left is the record -- and here even that
     # cannot be written, because what broke is the runtime the recorder would need.
-    def broken() -> Runtime:
+    def broken() -> FerretResult[Runtime]:
         raise RuntimeError("a fault the closed contract does not name")
 
     stdout, stderr = io.StringIO(), io.StringIO()
     code = cli.main(
-        ["capture-hook", "--harness", "claude_code", "--event", "session-start"],
+        HOOK_ARGV,
         stdout=stdout,
         stderr=stderr,
         handlers=build_handlers(broken),
@@ -175,11 +178,54 @@ def test_the_callback_records_the_closed_failure_it_swallowed() -> None:
 
     stdout, stderr = io.StringIO(), io.StringIO()
     code = cli.main(
-        ["capture-hook", "--harness", "claude_code", "--event", "session-start"],
+        HOOK_ARGV,
         stdout=stdout,
         stderr=stderr,
-        handlers=build_handlers(lambda: world.runtime),
+        handlers=build_handlers(lambda: Ok(world.runtime)),
     )
 
     assert (code, stdout.getvalue(), stderr.getvalue()) == (0, "", "")
-    assert world.hook_failures.records == [("2026-09-18T08:00:00Z", "ferret.event.invalid")]
+    assert world.hook_failures.records == [(STAMP, "ferret.event.invalid")]
+
+
+def test_a_runtime_refused_for_the_first_build_only_still_gets_the_refusal_recorded() -> None:
+    # The record is written through a second build, so a refusal that has lifted by then is still written down
+    # under the code it was refused with.
+    world = make_world()
+    builds: list[FerretResult[Runtime]] = [
+        Err(FerretError("ferret.storage.unavailable", retryable=True)),
+        Ok(world.runtime),
+    ]
+
+    stdout, stderr = io.StringIO(), io.StringIO()
+    code = cli.main(HOOK_ARGV, stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: builds.pop(0)))
+
+    assert (code, stdout.getvalue(), stderr.getvalue()) == (0, "", "")
+    assert builds == []
+    assert world.hook_failures.records == [(STAMP, "ferret.storage.unavailable")]
+
+
+def test_a_runtime_refused_for_both_builds_is_silent_and_writes_nothing() -> None:
+    builds: list[int] = []
+
+    def refused() -> FerretResult[Runtime]:
+        builds.append(1)
+        return Err(FerretError("ferret.storage.unsafe"))
+
+    stdout, stderr = io.StringIO(), io.StringIO()
+    code = cli.main(HOOK_ARGV, stdout=stdout, stderr=stderr, handlers=build_handlers(refused))
+
+    assert (code, stdout.getvalue(), stderr.getvalue()) == (0, "", "")
+    assert len(builds) == 2
+
+
+def test_a_callback_that_cannot_unpack_its_options_records_an_internal_failure_through_the_runtime() -> None:
+    # A repeated option is a bug in the harness wiring, not a closed failure: it is the last resort that records it.
+    world = make_world()
+    argv = ["capture-hook", "--harness", "claude_code", "--harness", "codex", "--event", "session-start"]
+
+    stdout, stderr = io.StringIO(), io.StringIO()
+    code = cli.main(argv, stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: Ok(world.runtime)))
+
+    assert (code, stdout.getvalue(), stderr.getvalue()) == (0, "", "")
+    assert world.hook_failures.records == [(STAMP, "ferret.internal.failure")]

@@ -30,6 +30,7 @@ from ferret.domain.query import (
     parse_limit,
     single_value,
 )
+from support.decoder import gives_up_on
 from support.fakes import FIXED_NOW
 from support.invoke import run_cli
 from support.populate import WORKSPACE_A, WORKSPACE_B, make_event, numbers, stamp, world_with
@@ -411,12 +412,18 @@ def test_a_canonical_cursor_nested_past_the_recursion_limit_is_invalid_cursor() 
     assert listing_refusal(encoded(text)) == (2, "ferret.cursor.invalid")
 
 
-def test_a_cursor_nested_past_what_json_parses_is_invalid_cursor() -> None:
+def test_a_cursor_nested_past_what_json_parses_is_invalid_cursor(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Whether the real decoder gives up on this depth follows the platform's C stack, so the give-up is forced.
     text = nested_object(100_000)
-    with pytest.raises(RecursionError):
-        json.loads(text)
+    gives_up_on(monkeypatch, text.encode())
 
     assert listing_refusal(encoded(text)) == (2, "ferret.cursor.invalid")
+
+
+def test_a_cursor_nested_a_hundred_thousand_deep_is_invalid_cursor_whichever_check_gives_up_on_it() -> None:
+    # A real decoder on a small stack gives up on this depth; on a larger one the canonical-form check does. Either way
+    # the cursor is refused with the same code, so this holds on every platform without naming the stage.
+    assert listing_refusal(encoded(nested_object(100_000))) == (2, "ferret.cursor.invalid")
 
 
 def test_a_cursor_whose_json_escapes_a_lone_surrogate_is_invalid_cursor() -> None:

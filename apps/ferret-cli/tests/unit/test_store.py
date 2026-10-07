@@ -18,6 +18,7 @@ from ferret.application.store import (
 )
 from ferret.domain.errors import ErrorCode, FerretError
 from ferret.domain.storage import CONFIG_FILE, IDENTITY_FILE, KEY_BYTES, KEY_FILE
+from support.decoder import gives_up_on
 from support.fakes import INSTALLATION_ID, Entry, make_world
 from support.hook_payloads import CLAUDE_CODE, claude_tool, encode
 from support.invoke import run_cli
@@ -29,7 +30,8 @@ type Expected = Literal["file", "directory"]
 PRIVATE_FILE = FileFacts(kind="file", mode=0o600)
 PRIVATE_DIRECTORY = FileFacts(kind="directory", mode=0o700)
 IDENTITY = {"schemaVersion": "1.0", "installationId": INSTALLATION_ID, "createdAt": "2026-09-18T08:00:00.000Z"}
-# Nested deeper than the interpreter reads, so parsing it raises ``RecursionError`` rather than ``ValueError``.
+# Nested deeper than the interpreter reads, so parsing it raises ``RecursionError`` rather than ``ValueError``. Whether
+# the real decoder gets that far depends on the platform's C stack, so each test forces the give-up.
 NESTED_PAST_THE_LIMIT = b"[" * 100_000
 # A failure no check of this module produces, so seeing this very object come back shows the check passed it on.
 THE_DATA_HOME_FAILED = FerretError("ferret.storage.unavailable", retryable=True)
@@ -136,14 +138,19 @@ def test_a_stored_document_that_is_not_an_object_is_unavailable_storage(content:
     assert_closed(refusal_of(read_document(content)), "ferret.storage.unavailable")
 
 
-def test_a_stored_document_nested_past_the_limit_is_still_raised_not_refused() -> None:
+def test_a_stored_document_nested_past_the_limit_is_still_raised_not_refused(monkeypatch: pytest.MonkeyPatch) -> None:
     # Only a ``ValueError`` is a refusal here, as the ``except`` this replaced named only that. A deeper document has
     # always escaped to the caller's last resort, and the two tests below pin the code each last resort gives it.
+    gives_up_on(monkeypatch, NESTED_PAST_THE_LIMIT)
+
     with pytest.raises(RecursionError):
         read_document(NESTED_PAST_THE_LIMIT)
 
 
-def test_a_stored_configuration_nested_past_the_limit_is_answered_by_the_main_last_resort() -> None:
+def test_a_stored_configuration_nested_past_the_limit_is_answered_by_the_main_last_resort(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    gives_up_on(monkeypatch, NESTED_PAST_THE_LIMIT)
     world = world_with()
     world.files.files[CONFIG_FILE].content = NESTED_PAST_THE_LIMIT
 
@@ -153,7 +160,10 @@ def test_a_stored_configuration_nested_past_the_limit_is_answered_by_the_main_la
     assert json.loads(ran.stderr)["error"]["code"] == "ferret.storage.unavailable"
 
 
-def test_a_stored_identity_nested_past_the_limit_is_recorded_by_the_hook_as_an_internal_failure() -> None:
+def test_a_stored_identity_nested_past_the_limit_is_recorded_by_the_hook_as_an_internal_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    gives_up_on(monkeypatch, NESTED_PAST_THE_LIMIT)
     world = world_with()
     world.input.data = encode(claude_tool("PreToolUse"))
     world.files.files[IDENTITY_FILE].content = NESTED_PAST_THE_LIMIT

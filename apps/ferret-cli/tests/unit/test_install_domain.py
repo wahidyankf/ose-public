@@ -25,6 +25,7 @@ from ferret.domain.install import (
     path_action,
     stage_name,
 )
+from support.decoder import gives_up_on
 from support.results import fault_of, value_of
 
 HOME = Path("/users/example")
@@ -39,6 +40,11 @@ MANIFEST = Manifest(
 )
 INTERPRETER = Path("/usr/local/bin/python3.14")
 ARTIFACT = PATHS.artifact("0.1.0")
+# A JSON array opened 100,000 times: whether the real decoder gives up on it follows the platform's C stack.
+TOO_DEEP = b"[" * 100_000
+# An object that repeats a member and closes, before the nesting that is too deep: the repeat is the first fault met.
+REPEAT_BEFORE_TOO_DEEP = b'{"a":{"x":1,"x":2},"b":' + TOO_DEEP
+REPEATED_MEMBER = [("x", 1), ("x", 2)]
 
 
 def document(**changes: Any) -> dict[str, Any]:
@@ -132,9 +138,13 @@ def test_a_manifest_for_another_home_is_refused() -> None:
     assert "manifest" in fault_of(parse_manifest(MANIFEST.to_bytes(), InstallPaths(Path("/users/other"))))
 
 
-def test_a_manifest_nested_past_the_interpreters_limit_is_a_depth_fault_not_a_manifest_fault() -> None:
+def test_a_manifest_nested_past_the_interpreters_limit_is_a_depth_fault_not_a_manifest_fault(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # A ``ValueError`` is a manifest fault; the interpreter's own depth limit is returned as it is.
-    result = parse_manifest(b"[" * 100_000, PATHS)
+    gives_up_on(monkeypatch, TOO_DEEP)
+
+    result = parse_manifest(TOO_DEEP, PATHS)
 
     assert isinstance(result, Err)
     assert isinstance(result.error, RecursionError)
@@ -142,7 +152,20 @@ def test_a_manifest_nested_past_the_interpreters_limit_is_a_depth_fault_not_a_ma
 
 def test_a_repeated_member_is_a_manifest_fault_even_when_nesting_too_deep_follows() -> None:
     # The repeat closes its object before the nesting that is too deep, so it is the first fault met.
-    result = parse_manifest(b'{"a":{"x":1,"x":2},"b":' + b"[" * 100_000, PATHS)
+    result = parse_manifest(REPEAT_BEFORE_TOO_DEEP, PATHS)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.error, ValueError)
+    assert "manifest" in str(result.error)
+
+
+def test_a_repeated_member_is_a_manifest_fault_even_when_the_decoder_gives_up_after_it(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Where the decoder reaches the depth limit, it has closed the repeat's object first and handed it to the hook.
+    gives_up_on(monkeypatch, REPEAT_BEFORE_TOO_DEEP, after_closing=[REPEATED_MEMBER])
+
+    result = parse_manifest(REPEAT_BEFORE_TOO_DEEP, PATHS)
 
     assert isinstance(result, Err)
     assert isinstance(result.error, ValueError)

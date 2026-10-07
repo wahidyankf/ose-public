@@ -18,7 +18,3 @@ def test_an_err_carries_the_exit_status_and_the_fixed_message_of_its_code() -> N
         2,
         "unrecognized or incomplete arguments",
     )
-
-
-def test_a_ferret_error_is_still_an_exception_until_the_last_raise_of_it_is_gone() -> None:
-    assert Exception in FerretError.__mro__

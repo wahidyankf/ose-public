@@ -1,6 +1,7 @@
 """The closed failure contract: every code, its exit status, and the fixed value-free message it carries."""
 
 from collections.abc import Mapping
+from dataclasses import KW_ONLY, dataclass
 from typing import Literal
 
 from typekit import Result
@@ -67,17 +68,28 @@ ADVICE: Mapping[ErrorCode, str] = {
 }
 
 
-class FerretError(Exception):
-    """One closed failure. It carries a code, never a value: the message is fixed per code."""
+@dataclass(frozen=True, slots=True)
+class FerretError:
+    """One closed failure, a value and no exception. It carries a code, never an input value.
 
-    def __init__(self, code: ErrorCode, *, field: str | None = None, retryable: bool = False) -> None:
-        exit_code, message = FAILURES[code]
-        super().__init__(message)
-        self.code: ErrorCode = code
-        self.exit_code = exit_code
-        self.message = message
-        self.field = field
-        self.retryable = retryable
+    ``field`` names a property of the FERRET contract, never what a caller sent, and the exit status and message are
+    looked up from the code, so neither the error nor its text form (the code, the field, and the flag) holds one.
+    """
+
+    code: ErrorCode
+    _: KW_ONLY
+    field: str | None = None
+    retryable: bool = False
+
+    @property
+    def exit_code(self) -> int:
+        """The exit status ``FAILURES`` holds for the code."""
+        return FAILURES[self.code][0]
+
+    @property
+    def message(self) -> str:
+        """The fixed, value-free message ``FAILURES`` holds for the code."""
+        return FAILURES[self.code][1]
 
 
 #: What a fallible FERRET function returns: its value, or the one closed failure that stopped it.

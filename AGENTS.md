@@ -3,6 +3,10 @@
 > Canonical contributor instructions aligned with the
 > [AGENTS.md standard](https://agents.md/).
 
+For English replies and repository text, use
+[clear, simple, natural English](./repo-governance/conventions/writing/repository-working-language.md);
+preserve localized content and user-facing values.
+
 ## Repository Overview
 
 **open-sharia-enterprise** — Sharia-compliant Nx monorepo, pre-alpha.
@@ -86,9 +90,6 @@ authorization or per [Upstream Tool Defects](./repo-governance/development/workf
 formal plans follow the
 [plans convention](./repo-governance/conventions/structure/plans.md). PR bodies state new-code cost/benefit;
 tests exempt.
-
-Use [English](./repo-governance/conventions/writing/repository-working-language.md) for repository-authored
-material and developer-facing source text; declared localized content and user-facing values are exempt.
 
 ### Reproducible Environments
 

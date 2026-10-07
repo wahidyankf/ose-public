@@ -57,18 +57,6 @@ annotation at runtime, so an unannotated signature is a contract nothing verifie
 - A handler catches the narrowest exception type. A bare `except:` is never written, since it also catches interrupts,
   and an exception deliberately ignored names its type and reason.
 
-## Tests
-
-Suites are separated by layer. A fixture that creates a temporary directory or sets an environment variable reaches a
-boundary the unit layer excludes, so a test using one is integration, as
-[Test Boundaries and Gates](../../behaviour-driven-development.md) classifies it. Example: pytest, whose `tmp_path`
-and `monkeypatch.setenv` are integration tools in this sense.
-
-Coverage is measured with branch measurement on, in the unit run. A partial branch that cannot be taken is excluded with
-its reason, per [Meaningful Coverage](../testing/meaningful-coverage.md). Example: coverage.py with `branch = true` and
-`fail_under` ([branch coverage](https://coverage.readthedocs.io/en/latest/branch.html)). Any floor is recorded under
-[Layers and Adapters](../../behaviour-driven-development.md).
-
 ## Documentation
 
 Public modules, classes, and functions carry docstrings that state behaviour, not the types the annotations already
@@ -86,6 +74,10 @@ Public Contract.
 |                     | returned result values                  | the checker forces every caller to handle | every raising library call needs wrapping    |
 
 Record each choice in the repository adapter [Stack Packs](../../../conventions/structure/stack-packs.md) defines.
+
+## Modules
+
+1. [Tests](python-standards/tests.md)
 
 ## Enforcement
 

@@ -140,8 +140,9 @@ Stage/commit only when explicitly instructed. License MIT; see
 ## Related Repositories
 
 The seven **OSE Code Repositories** (`ose-projects`), this one included, are a routing set: never a
-parent repo, synchronized group, or shared release. Independence: the private sibling, not linked
-from this public tree; neither is the other's source; either changes any rule or RHINO pin without
+parent repo, synchronized group, or shared release. Independence: the private sibling
+[ose-private](https://github.com/wahidyankf/ose-private) (Private); neither is the other's source;
+either changes any rule or RHINO pin without
 consulting or notifying the other. Upstream consumption, pinned, never copied here:
 [RHINO](https://github.com/wahidyankf/rhino), [HIPPO](https://github.com/wahidyankf/hippo),
 [py-typekit](https://github.com/wahidyankf/py-typekit). Knowledge sharing:

@@ -7,6 +7,7 @@ from dataclasses import dataclass
 
 import pytest
 from pytest_bdd import given, parsers, scenario, then, when
+from typekit import Ok
 
 from ferret import cli
 from ferret.application.initialization import initialize_store
@@ -57,7 +58,7 @@ def session() -> Session:
 def submit(session: Session, document: dict[str, object]) -> None:
     session.world.input.data = encode(document)
     stdout, stderr = io.StringIO(), io.StringIO()
-    handlers = build_handlers(lambda: session.world.runtime)
+    handlers = build_handlers(lambda: Ok(session.world.runtime))
     code = cli.main(["capture", "--json"], stdout=stdout, stderr=stderr, handlers=handlers)
     session.outcome = Outcome(code, stdout.getvalue(), stderr.getvalue())
 
@@ -219,7 +220,7 @@ def given_a_raw_payload_with_content(session: Session) -> None:
 @when("capture-hook maps it through that harness's allowlist mapper")
 def when_capture_hook_maps_the_payload(session: Session) -> None:
     stdout, stderr = io.StringIO(), io.StringIO()
-    handlers = build_handlers(lambda: session.world.runtime)
+    handlers = build_handlers(lambda: Ok(session.world.runtime))
     argv = ["capture-hook", "--harness", session.harness, "--event", "tool.completed"]
     code = cli.main(argv, stdout=stdout, stderr=stderr, handlers=handlers)
     session.outcome = Outcome(code, stdout.getvalue(), stderr.getvalue())

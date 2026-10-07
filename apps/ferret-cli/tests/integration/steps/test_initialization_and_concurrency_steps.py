@@ -5,7 +5,6 @@ import json
 import os
 import sqlite3
 import stat
-from collections.abc import Mapping
 from contextlib import closing
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -19,7 +18,6 @@ from pytest_bdd import given, scenario, then, when
 from ferret import cli
 from ferret.adapters.system import system_runtime
 from ferret.application.initialization import initialize_store
-from ferret.application.ports import Runtime
 from ferret.commands import build_handlers
 from support.burst import (
     HARNESSES,
@@ -35,11 +33,6 @@ from support.populate import stamp
 from support.results import value_of
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature"
-
-
-def real_runtime(environment: Mapping[str, str]) -> Runtime:
-    """The runtime ``system_runtime`` wires for ``environment``; a refusal fails the test."""
-    return value_of(system_runtime(environment))
 
 
 @dataclass(slots=True)
@@ -81,7 +74,7 @@ def when_init_from_two_repositories(session: Session, monkeypatch: pytest.Monkey
         monkeypatch.chdir(repository)
         stdout, stderr = io.StringIO(), io.StringIO()
         environment = {"HOME": str(session.home), "PWD": str(repository)}
-        handlers = build_handlers(partial(real_runtime, environment))
+        handlers = build_handlers(partial(system_runtime, environment))
         assert cli.main(["init", "--json"], stdout=stdout, stderr=stderr, handlers=handlers) == 0
         assert stderr.getvalue() == ""
         session.documents.append(json.loads(stdout.getvalue()))

@@ -8,8 +8,10 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, Literal, NoReturn, Protocol, TextIO, cast
 
+from typekit import Err, Ok
+
 from ferret import __version__
-from ferret.domain.errors import ADVICE, EXIT_CALLER_ERROR, EXIT_SUCCESS, FAILURES, ErrorCode, FerretError
+from ferret.domain.errors import ADVICE, EXIT_CALLER_ERROR, EXIT_SUCCESS, FAILURES, ErrorCode, FerretResult
 from ferret.help_text import COMMAND_HELP, ROOT_HELP, ROOT_USAGE
 
 type CommandPath = tuple[str, ...]
@@ -117,7 +119,8 @@ class Request:
     options: Mapping[str, tuple[str, ...]]
 
 
-type Handler = Callable[[Request, TextIO, TextIO], int]
+#: One command: it writes to the streams it is given and answers its exit status, or the closed failure that stopped it.
+type Handler = Callable[[Request, TextIO, TextIO], FerretResult[int]]
 
 
 class UsageError(Exception):
@@ -321,9 +324,9 @@ def fail(
     return exit_code
 
 
-def run_version(request: Request, stdout: TextIO, stderr: TextIO) -> int:
+def run_version(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
     stdout.write(VERSION_LINE + "\n")
-    return EXIT_SUCCESS
+    return Ok(EXIT_SUCCESS)
 
 
 def _prepare_process_stdout() -> None:
@@ -415,10 +418,17 @@ def main(
             _record_callback_failure("ferret.args.invalid")
             return EXIT_SUCCESS
         try:
-            return registry[request.command](request, out, err)
+            result = registry[request.command](request, out, err)
         except Exception:
-            _record_callback_failure("ferret.internal.failure")
-            return EXIT_SUCCESS
+            result = None
+        match result:
+            case Ok(code):
+                return code
+            case _:
+                # A handler that raised and one that answered with a closed failure are alike here: the callback
+                # fails open, and what it writes down is that its handler did not finish.
+                _record_callback_failure("ferret.internal.failure")
+                return EXIT_SUCCESS
     if arguments[0] == "help":
         requested_help = help_for(arguments)
         if requested_help is None:
@@ -451,18 +461,7 @@ def main(
         )
 
     try:
-        return registry[request.command](request, out, err)
-    except FerretError as error:
-        return fail(
-            err,
-            command=request.command,
-            output=request.output,
-            code=error.code,
-            exit_code=error.exit_code,
-            message=error.message,
-            retryable=error.retryable,
-            field=error.field,
-        )
+        result = registry[request.command](request, out, err)
     except Exception:
         # The closed failure contract maps every unknown internal failure to storage_unavailable, and the
         # exception text is dropped so no path or value can leak.
@@ -474,6 +473,20 @@ def main(
             exit_code=EXIT_CALLER_ERROR,
             message=STORAGE_UNAVAILABLE_MESSAGE,
         )
+    match result:
+        case Ok(code):
+            return code
+        case Err(error):
+            return fail(
+                err,
+                command=request.command,
+                output=request.output,
+                code=error.code,
+                exit_code=error.exit_code,
+                message=error.message,
+                retryable=error.retryable,
+                field=error.field,
+            )
 
 
 def run(

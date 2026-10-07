@@ -1,8 +1,10 @@
 """Command handlers: each turns one parsed request into one use-case call and one rendered result."""
 
-from collections.abc import Callable, Mapping, Sized
+from collections.abc import Callable, Iterator, Mapping, Sized
 from contextlib import suppress
 from typing import TextIO
+
+from typekit import Err, Ok
 
 from ferret.adapters.system import system_runtime
 from ferret.application.analytics import summarize_outcomes, summarize_usage
@@ -14,8 +16,9 @@ from ferret.application.maintenance import run_maintenance
 from ferret.application.ports import Runtime
 from ferret.application.queries import export_events, list_events
 from ferret.application.status import report_status
-from ferret.cli import EXIT_SUCCESS, CommandPath, Handler, Request, run_version
-from ferret.domain.errors import EXIT_NEGATIVE_RESULT, FerretError, or_raise
+from ferret.cli import EXIT_SUCCESS, CommandPath, Handler, OutputMode, Request, run_version
+from ferret.domain.errors import EXIT_NEGATIVE_RESULT, FerretResult
+from ferret.domain.event import Event
 from ferret.rendering import (
     NO_ROWS,
     render_capture,
@@ -31,13 +34,23 @@ from ferret.rendering import (
     result_status,
 )
 
-type RuntimeFactory = Callable[[], Runtime]
+type RuntimeFactory = Callable[[], FerretResult[Runtime]]
 
 
 def _record_failure(runtime_factory: RuntimeFactory, code: str) -> None:
     """Write down one lost event, or give up quietly when even that cannot be done."""
     with suppress(Exception):
-        runtime_factory().hook_failures.record(code)
+        runtime_factory().tap(lambda runtime: runtime.hook_failures.record(code))
+
+
+def _writing[T](stdout: TextIO, request: Request, render: Callable[[T, OutputMode], str]) -> Callable[[T], int]:
+    """The step that renders a result for ``request`` onto stdout: the command that produced it succeeded."""
+
+    def write(result: T) -> int:
+        stdout.write(render(result, request.output))
+        return EXIT_SUCCESS
+
+    return write
 
 
 def _emit(text: str, stdout: TextIO, stderr: TextIO, rows: Sized) -> int:
@@ -53,18 +66,35 @@ def _emit(text: str, stdout: TextIO, stderr: TextIO, rows: Sized) -> int:
     return result_status(rows)
 
 
+def _stream_export(events: Iterator[FerretResult[Event]], stdout: TextIO) -> FerretResult[int]:
+    """Write each event the moment it is read, and end at the first failure, which is the answer.
+
+    Each event is flushed as it is written, so a consumer sees it at once and a closed pipe ends the stream. Counted
+    rather than collected: the point of streaming is that the whole export never has to be held. The events before a
+    failure stay written, so the failure follows a partial export instead of replacing it.
+    """
+    exported = 0
+    for item in events:
+        match item:
+            case Err():
+                return item
+            case Ok(event):
+                stdout.write(render_export_line(event))
+                stdout.flush()
+                exported += 1
+    return Ok(EXIT_SUCCESS if exported else EXIT_NEGATIVE_RESULT)
+
+
 def build_handlers(runtime_factory: RuntimeFactory) -> Mapping[CommandPath, Handler]:
     """The handler registry over one runtime factory, called once per invocation so ``version`` never needs it."""
 
-    def init(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        stdout.write(render_init(or_raise(initialize_store(runtime_factory())), request.output))
-        return EXIT_SUCCESS
+    def init(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        return runtime_factory().flat_map(initialize_store).map(_writing(stdout, request, render_init))
 
-    def capture(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        stdout.write(render_capture(or_raise(capture_event(runtime_factory())), request.output))
-        return EXIT_SUCCESS
+    def capture(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        return runtime_factory().flat_map(capture_event).map(_writing(stdout, request, render_capture))
 
-    def capture_from_hook(request: Request, stdout: TextIO, stderr: TextIO) -> int:
+    def capture_from_hook(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
         # The one command a harness runs for every event, so it is silent and exits zero whatever happens: an
         # unsupported payload, an unusable store, and a bug in this code alike must never reach the conversation.
         #
@@ -74,56 +104,64 @@ def build_handlers(runtime_factory: RuntimeFactory) -> Mapping[CommandPath, Hand
         # the record, and a callback that raised while writing one would be worse than one that wrote none.
         try:
             (harness,), (event,) = request.options["--harness"], request.options["--event"]
-            or_raise(capture_hook(runtime_factory(), harness=harness, event=event))
-        except FerretError as error:
-            _record_failure(runtime_factory, error.code)
+            runtime_factory().flat_map(lambda runtime: capture_hook(runtime, harness=harness, event=event)).tap_err(
+                lambda failure: _record_failure(runtime_factory, failure.code)
+            )
         except Exception:
             _record_failure(runtime_factory, "ferret.internal.failure")
-        return EXIT_SUCCESS
+        return Ok(EXIT_SUCCESS)
 
-    def events_list(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        page = or_raise(list_events(runtime_factory(), request.options))
-        return _emit(render_events(page, request.output), stdout, stderr, page.items)
-
-    def events_export(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        # Each event is flushed as it is written, so a consumer sees it at once and a closed pipe ends the stream.
-        # Counted rather than collected: the point of streaming is that the whole export never has to be held.
-        exported = 0
-        for item in or_raise(export_events(runtime_factory(), request.options)):
-            stdout.write(render_export_line(or_raise(item)))
-            stdout.flush()
-            exported += 1
-        return EXIT_SUCCESS if exported else EXIT_NEGATIVE_RESULT
-
-    def usage(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        summary = or_raise(summarize_usage(runtime_factory(), request.options))
-        return _emit(render_usage(summary, request.output), stdout, stderr, summary.rows)
-
-    def outcomes(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        summary = or_raise(summarize_outcomes(runtime_factory(), request.options))
-        return _emit(render_outcomes(summary, request.output), stdout, stderr, summary.rows)
-
-    def status(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        stdout.write(render_status(or_raise(report_status(runtime_factory())), request.output))
-        return EXIT_SUCCESS
-
-    def maintenance(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        report = or_raise(run_maintenance(runtime_factory(), if_due="--if-due" in request.options))
-        stdout.write(render_maintenance(report, request.output))
-        return EXIT_SUCCESS
-
-    def self_install(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        stdout.write(render_install(or_raise(install_user(runtime_factory())), request.output))
-        return EXIT_SUCCESS
-
-    def self_uninstall(request: Request, stdout: TextIO, stderr: TextIO) -> int:
-        outcome = or_raise(
-            uninstall_user(
-                runtime_factory(), purge_data="--purge-data" in request.options, confirmed="--yes" in request.options
-            )
+    def events_list(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        return (
+            runtime_factory()
+            .flat_map(lambda runtime: list_events(runtime, request.options))
+            .map(lambda page: _emit(render_events(page, request.output), stdout, stderr, page.items))
         )
-        stdout.write(render_uninstall(outcome, request.output))
-        return EXIT_SUCCESS
+
+    def events_export(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        return (
+            runtime_factory()
+            .flat_map(lambda runtime: export_events(runtime, request.options))
+            .flat_map(lambda events: _stream_export(events, stdout))
+        )
+
+    def usage(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        return (
+            runtime_factory()
+            .flat_map(lambda runtime: summarize_usage(runtime, request.options))
+            .map(lambda summary: _emit(render_usage(summary, request.output), stdout, stderr, summary.rows))
+        )
+
+    def outcomes(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        return (
+            runtime_factory()
+            .flat_map(lambda runtime: summarize_outcomes(runtime, request.options))
+            .map(lambda summary: _emit(render_outcomes(summary, request.output), stdout, stderr, summary.rows))
+        )
+
+    def status(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        return runtime_factory().flat_map(report_status).map(_writing(stdout, request, render_status))
+
+    def maintenance(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        return (
+            runtime_factory()
+            .flat_map(lambda runtime: run_maintenance(runtime, if_due="--if-due" in request.options))
+            .map(_writing(stdout, request, render_maintenance))
+        )
+
+    def self_install(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        return runtime_factory().flat_map(install_user).map(_writing(stdout, request, render_install))
+
+    def self_uninstall(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        return (
+            runtime_factory()
+            .flat_map(
+                lambda runtime: uninstall_user(
+                    runtime, purge_data="--purge-data" in request.options, confirmed="--yes" in request.options
+                )
+            )
+            .map(_writing(stdout, request, render_uninstall))
+        )
 
     return {
         ("version",): run_version,
@@ -143,5 +181,4 @@ def build_handlers(runtime_factory: RuntimeFactory) -> Mapping[CommandPath, Hand
 
 def default_handlers() -> Mapping[CommandPath, Handler]:
     """The registry wired to the real clock, filesystem, and SQLite."""
-    # Transition bridge (tech-docs/004): the handlers still raise, so a refusal to wire the runtime is raised again.
-    return build_handlers(lambda: or_raise(system_runtime()))
+    return build_handlers(system_runtime)

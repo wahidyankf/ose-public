@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from typekit import Ok
 
 from ferret import cli
 from ferret.adapters.system import system_runtime
@@ -138,7 +139,7 @@ def test_a_writer_blocked_beyond_the_busy_timeout_stores_nothing_and_fails_retry
 def run_command(home: Path, payload: bytes) -> tuple[int, str, str]:
     stdout, stderr = io.StringIO(), io.StringIO()
     runtime = value_of(system_runtime({"HOME": str(home)}, stdin=io.BytesIO(payload)))
-    code = cli.main(HOOK_ARGV, stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: runtime))
+    code = cli.main(HOOK_ARGV, stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: Ok(runtime)))
     return code, stdout.getvalue(), stderr.getvalue()
 
 

@@ -5,6 +5,7 @@ import json
 from dataclasses import dataclass, replace
 
 import pytest
+from typekit import Ok
 
 from ferret import cli
 from ferret.application.capture import capture_event
@@ -43,7 +44,7 @@ def initialized_world(payload: bytes) -> World:
 
 def run(argv: list[str], world: World) -> Outcome:
     stdout, stderr = io.StringIO(), io.StringIO()
-    code = cli.main(argv, stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: world.runtime))
+    code = cli.main(argv, stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: Ok(world.runtime)))
     return Outcome(code, stdout.getvalue(), stderr.getvalue())
 
 

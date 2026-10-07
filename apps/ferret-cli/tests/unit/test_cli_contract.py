@@ -10,9 +10,11 @@ from pathlib import Path
 from typing import TextIO
 
 import pytest
+from typekit import Err, Ok
 
 from ferret import __version__, cli
 from ferret.cli import COMMANDS, GROUPS, SPECS, CommandPath, Request
+from ferret.domain.errors import FAILURES, ErrorCode, FerretError, FerretResult
 from ferret.domain.storage import HOOK_FAILURE_FILE
 from ferret.help_text import COMMAND_HELP, ROOT_HELP
 
@@ -115,9 +117,9 @@ def recorded(argv: list[str]) -> Request:
     """Run a command whose handler only records the parsed request."""
     seen: list[Request] = []
 
-    def record(request: Request, stdout: object, stderr: object) -> int:
+    def record(request: Request, stdout: object, stderr: object) -> FerretResult[int]:
         seen.append(request)
-        return 0
+        return Ok(0)
 
     path = cli.parse_arguments(argv).command
     result = run(argv, {path: record})
@@ -205,7 +207,7 @@ def test_only_the_word_help_is_the_help_command() -> None:
 
 def test_a_fault_in_the_callbacks_own_handler_is_still_silent_and_still_zero() -> None:
     # The handler is where a bug in FERRET would surface. On this one command it may not reach the conversation.
-    def breaks(request: Request, stdout: TextIO, stderr: TextIO) -> int:
+    def breaks(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
         raise RuntimeError("a fault inside the callback")
 
     assert run(
@@ -231,6 +233,33 @@ def test_a_callback_whose_record_fails_in_any_way_is_still_silent_and_still_zero
     (data_home / HOOK_FAILURE_FILE).write_bytes(b"\xff\xfe not text\n")
 
     assert run(["capture-hook"]) == Result(0, "", "")
+
+
+@pytest.mark.parametrize(
+    "outcome",
+    [
+        pytest.param(RuntimeError("a fault inside the callback"), id="a-bug"),
+        pytest.param(Err(FerretError("ferret.storage.unavailable", retryable=True)), id="a-closed-failure"),
+    ],
+)
+def test_a_callback_handler_that_fails_in_any_way_is_recorded_as_an_internal_failure(
+    isolated_home: Path, outcome: RuntimeError | FerretResult[int]
+) -> None:
+    # Whether the handler raises or answers with a closed failure, the callback stays silent and exits zero, and what
+    # is written down is the one code for a handler that did not finish: not the code the failure happened to carry.
+    data_home = isolated_home / ".local" / "share" / "ferret"
+    data_home.mkdir(parents=True, mode=0o700)
+
+    def fails(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
+        if isinstance(outcome, RuntimeError):
+            raise outcome
+        return outcome
+
+    assert run(
+        ["capture-hook", "--harness", "claude_code", "--event", "session-start"], {("capture-hook",): fails}
+    ) == Result(0, "", "")
+    lines = (data_home / HOOK_FAILURE_FILE).read_text(encoding="utf-8").splitlines()
+    assert [line.split("\t")[1] for line in lines] == ["ferret.internal.failure"]
 
 
 def test_a_fault_outside_everything_main_answers_for_is_one_value_free_line_and_two(
@@ -485,7 +514,7 @@ def test_command_names_are_dotted_for_a_leaf_and_absent_for_the_root_and_a_group
 
 @pytest.mark.parametrize("output", [[], ["--json"]])
 def test_an_unknown_internal_failure_is_storage_unavailable_without_its_detail(output: list[str]) -> None:
-    def explode(request: Request, stdout: object, stderr: object) -> int:
+    def explode(request: Request, stdout: object, stderr: object) -> FerretResult[int]:
         raise RuntimeError(f"/private/{LEAK_CANARY}")
 
     result = run(["init", *output], {("init",): explode})
@@ -510,11 +539,65 @@ def test_an_unknown_internal_failure_is_storage_unavailable_without_its_detail(o
         assert result.stderr == "ferret: [ferret.storage.unavailable] storage is unavailable\n"
 
 
+@pytest.mark.parametrize("output", [[], ["--json"]])
+def test_a_handler_that_returns_a_closed_failure_is_answered_with_its_code_and_exit_two(output: list[str]) -> None:
+    def busy(request: Request, stdout: object, stderr: object) -> FerretResult[int]:
+        return Err(FerretError("ferret.storage.unavailable", retryable=True))
+
+    result = run(["init", *output], {("init",): busy})
+
+    assert (result.code, result.stdout) == (2, "")
+    if output:
+        assert json.loads(result.stderr) == {
+            "schemaVersion": 1,
+            "command": "init",
+            "exitCode": 2,
+            "error": {
+                "code": "ferret.storage.unavailable",
+                "message": "storage is unavailable",
+                "field": None,
+                "retryable": True,
+            },
+        }
+        assert result.stderr == json.dumps(json.loads(result.stderr), separators=(",", ":")) + "\n"
+    else:
+        assert result.stderr == "ferret: [ferret.storage.unavailable] storage is unavailable\n"
+
+
+@pytest.mark.parametrize(
+    ("code", "field", "advice"),
+    [
+        pytest.param("ferret.event.invalid", "toolName", None, id="a-named-field"),
+        pytest.param("ferret.storage.uninitialized", None, "try 'ferret init'", id="a-code-with-advice"),
+        pytest.param("ferret.install.collision", None, None, id="a-code-without-either"),
+    ],
+)
+def test_a_returned_failure_keeps_its_field_and_its_advice(
+    code: ErrorCode, field: str | None, advice: str | None
+) -> None:
+    def refuses(request: Request, stdout: object, stderr: object) -> FerretResult[int]:
+        return Err(FerretError(code, field=field))
+
+    as_json = run(["status", "--json"], {("status",): refuses})
+    as_text = run(["status"], {("status",): refuses})
+
+    assert json.loads(as_json.stderr)["error"] == {
+        "code": code,
+        "message": FAILURES[code][1],
+        "field": field,
+        "retryable": False,
+    }
+    assert (as_json.code, as_json.stdout, as_text.code, as_text.stdout) == (2, "", 2, "")
+    assert as_text.stderr == f"ferret: [{code}] {FAILURES[code][1]}\n" + (
+        "" if advice is None else f"ferret: {advice}\n"
+    )
+
+
 def test_a_handler_owns_its_streams_and_exit_code() -> None:
-    def speak(request: Request, stdout: TextIO, stderr: TextIO) -> int:
+    def speak(request: Request, stdout: TextIO, stderr: TextIO) -> FerretResult[int]:
         stdout.write("data\n")
         stderr.write("diagnostic\n")
-        return 4
+        return Ok(4)
 
     assert run(["status"], {("status",): speak}) == Result(4, "data\n", "diagnostic\n")
 

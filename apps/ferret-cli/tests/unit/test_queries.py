@@ -766,7 +766,7 @@ def test_events_export_writes_one_canonical_event_per_line_and_flushes_each() ->
         ["events", "export", "--format", "jsonl"],
         stdout=stdout,
         stderr=stderr,
-        handlers=build_handlers(lambda: world.runtime),
+        handlers=build_handlers(lambda: Ok(world.runtime)),
     )
 
     lines = stdout.getvalue().splitlines(keepends=True)

@@ -8,6 +8,8 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
+from typekit import Ok
+
 from ferret import cli
 from ferret.adapters.system import system_runtime
 from ferret.application.initialization import initialize_store
@@ -80,7 +82,7 @@ class Machine:
     def run(self, argv: Sequence[str], *, stdin: bytes | None = None) -> Ran:
         """Invoke ``ferret`` in process over this machine's real ports, with ``stdin`` as any input a command reads."""
         stdout, stderr = io.StringIO(), io.StringIO()
-        handlers = build_handlers(lambda: self.runtime(stdin))
+        handlers = build_handlers(lambda: Ok(self.runtime(stdin)))
         code = cli.main(list(argv), stdout=stdout, stderr=stderr, handlers=handlers)
         return Ran(code, stdout.getvalue(), stderr.getvalue())
 

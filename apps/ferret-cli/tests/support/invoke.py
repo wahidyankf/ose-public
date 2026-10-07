@@ -4,6 +4,8 @@ import io
 from collections.abc import Sequence
 from typing import NamedTuple
 
+from typekit import Ok
+
 from ferret import cli
 from ferret.application.ports import Runtime
 from ferret.commands import build_handlers
@@ -21,12 +23,12 @@ class Ran(NamedTuple):
 def run_cli(world: World, argv: Sequence[str]) -> Ran:
     """Invoke ``ferret`` with ``argv`` over ``world``'s ports."""
     stdout, stderr = io.StringIO(), io.StringIO()
-    code = cli.main(list(argv), stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: world.runtime))
+    code = cli.main(list(argv), stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: Ok(world.runtime)))
     return Ran(code, stdout.getvalue(), stderr.getvalue())
 
 
 def run_runtime(runtime: Runtime, argv: Sequence[str]) -> Ran:
     """Invoke ``ferret`` with ``argv`` over an explicit runtime, for a test that swaps one port for a failing one."""
     stdout, stderr = io.StringIO(), io.StringIO()
-    code = cli.main(list(argv), stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: runtime))
+    code = cli.main(list(argv), stdout=stdout, stderr=stderr, handlers=build_handlers(lambda: Ok(runtime)))
     return Ran(code, stdout.getvalue(), stderr.getvalue())

@@ -24,6 +24,20 @@ Write repository-authored governance, contributor instructions, documentation, p
 specifications, source-code identifiers, comments and docstrings, logs, error messages, test names
 and descriptions, and other developer-facing text in English.
 
+Keep comments, commit messages, work notes, plans, and other documentation concise without omitting
+the facts, decisions, steps, or evidence each document requires.
+
+Use clear, simple, natural English in all English writing, including agent messages to users and
+repository-authored material, so readers who use English as an additional language can follow.
+
+When a comment, work note, plan, or other document explains a choice, state why it is needed rather
+than repeating what the code or a checklist already shows. Describe behaviour and steps where the
+document's purpose requires them.
+
+For example, a plan's technical shape explains why its design was selected and retains the required
+design details. Rewording the delivery checklist without rationale, or dropping required details for
+brevity, violates this rule.
+
 Use British `behaviour`, `behavioural`, and `behaviour-driven` in repository-authored generic
 prose, locally owned identifiers, and paths. Preserve American `behavior` only when a third-party
 API or required identifier, exact quotation, proper name, URL, vendored/generated material, or an
@@ -55,7 +69,9 @@ not by itself an exception.
 deterministic language or dialect gate would misclassify code, names, quotations, required
 third-party identifiers, and deliberately localized text, so no mechanical gate is declared.
 Non-English repository-authored text or generic American `behavior` vocabulary outside the
-exceptions above is a violation.
+exceptions above is a violation. Review also judges concision without lost required detail, natural
+wording, and whether an explanation gives a reason; a mechanical check cannot distinguish useful
+context from needless narration.
 
 ## Related Documentation
 

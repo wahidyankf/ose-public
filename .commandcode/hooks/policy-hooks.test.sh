@@ -148,7 +148,7 @@ check 'malformed payload refuses without a delegate effect' test "$code" -ne 0
 check 'malformed payload has no delegate effect' test ! -e "$fixture/delegate.effect"
 run_bridge '../outside' '{}' refusal
 check 'unlisted delegate name refuses' test "$code" -eq 2
-# Parse and execute the actual repository registrations, using only fake capture and private Git metadata.
+# Check current registrations and preserve the capture helper contract in the private Git fixture.
 cp "$repo/.commandcode/settings.json" "$fixture/.commandcode/"
 cp "$repo/.claude/hooks/ferret-capture.sh" "$fixture/.claude/hooks/"
 cat >"$fixture/fake-ferret" <<'CAPTURE'
@@ -159,23 +159,21 @@ cat >"$CAPTURE_ROOT/payload"
 CAPTURE
 chmod +x "$fixture/fake-ferret"
 printf ' {"tool_name":"write_file","content":"synthetic raw payload"}\n\n' >"$scratch/raw"
-check 'exactly three capture registrations are present' jq -e \
-	'[.hooks[][]?.hooks[]?.command | select(contains("ferret-capture.sh"))] | length == 3' "$fixture/.commandcode/settings.json"
-for entry in 'SessionStart session.started' 'PreToolUse tool.started' 'PostToolUse tool.completed'; do
-	read -r native event <<<"$entry"
-	command=$(jq -er --arg native "$native" --arg event "$event" \
-		'[.hooks[$native][]?.hooks[]?.command | select(endswith("commandcode " + $event))] | if length == 1 then .[0] else error("missing or duplicate registration") end' "$fixture/.commandcode/settings.json")
-	expected='bash "$(git rev-parse --show-toplevel)/.claude/hooks/ferret-capture.sh" commandcode '
-	check 'capture registration targets only the shared repository wrapper' test "$command" = "$expected$event"
-	# A failed source assertion must never execute a different registration.
-	[[ $command == "$expected$event" ]] || continue
+check 'capture is global and has no repository registration' jq -e \
+	'[.hooks[][]?.hooks[]?.command | select(contains("ferret-capture.sh"))] | length == 0' "$fixture/.commandcode/settings.json"
+for event in session.started tool.started tool.completed; do
 	(cd "$fixture" && "${fixture_environment[@]}" CAPTURE_ROOT="$scratch" \
-		FERRET_BIN="$fixture/fake-ferret" /bin/bash -c "$command" <"$scratch/raw")
+		FERRET_BIN="$fixture/fake-ferret" /bin/bash "$fixture/.claude/hooks/ferret-capture.sh" commandcode "$event" <"$scratch/raw")
 	check 'capture receives original input bytes' cmp "$scratch/raw" "$scratch/payload"
 	check 'capture receives normalized static harness and event arguments' jq -e -Rn --arg event "$event" \
 		'[inputs] == ["capture-hook","--harness","commandcode","--event",$event]' <"$scratch/arguments"
 done
-check 'HIPPO and environment native hooks fail closed' jq -e \
-	'[.hooks.PreToolUse[]?.hooks[]? | select(.command | test("run-policy-hook.sh.*(require-hippo-boundary|block-env-file-access)$"))] as $h | ($h | length) == 3 and all($h[]; .failClosed == true)' "$fixture/.commandcode/settings.json"
+check 'neutral native policy covers every approved family and fails closed' jq -e \
+	'[.hooks.PreToolUse[]? | select(.matcher == "^(SHELL|READ|READ_MULTI|LIST|WRITE|EDIT|SEARCH|GLOB)$") | .hooks[]? | select(.command | test("run-policy-hook.sh.*agent-policy$"))] as $h | ($h | length) == 1 and all($h[]; .failClosed == true and .timeout == 30)' "$fixture/.commandcode/settings.json"
+check 'legacy HIPPO and environment registrations are replaced' jq -e \
+	'[.hooks.PreToolUse[]?.hooks[]? | select(.command | test("run-policy-hook.sh.*(require-hippo-boundary|block-env-file-access)$"))] | length == 0' "$fixture/.commandcode/settings.json"
 printf 'Native public policy transport: %s passed, %s failed\n' "$pass" "$fail"
 [[ $fail == 0 ]]
+
+# Exercise the neutral selector after all original native adapter assertions.
+bash "$repo/.commandcode/hooks/agent-policy-selector.test.sh"

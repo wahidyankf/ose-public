@@ -15,16 +15,20 @@ container init because no OSE container runs HIPPO yet.
 `.claude/hooks/require-hippo-boundary.sh` refuses a compute-bearing agent command that carries no
 outer boundary, **before the process spawns**. It decides only _whether_ a boundary is present — a
 binary, mechanical property — and never _which_ class is correct, so it leaves the judgment boundary
-above untouched. All four harnesses bind it: `.claude/settings.json`, `.codex/hooks.json`,
-`.opencode/opencode.json`'s `permission.bash` map, and [Command Code settings](../../../../.commandcode/settings.json)
-through the [native policy bridge](../../../../.commandcode/hooks/run-policy-hook.sh).
+above untouched. The `.claude/`, `.opencode/`, and `.commandcode/` bindings route native policy through the repository-owned
+`scripts/agent-policy-hook.sh`. The endpoint composes
+compute admission and repository-protected paths; subagents use the same bindings. Command Code's
+[native settings](../../../../.commandcode/settings.json) and
+[policy bridge](../../../../.commandcode/hooks/run-policy-hook.sh) remain repository-owned.
 
-The same file is also installed machine-wide, and the two placements do different jobs. The
-repository copy is the durable, reviewable one — version-controlled, travelling to other machines
-and to contributors, keeping the rule and its enforcement in one place. The machine-wide copy covers
-what a repository copy structurally cannot: a repository that does not carry one yet, a fresh clone,
-a scratch directory. A guard is skipped in any tree with no `./hippo` consumer, because a correction
-naming an absent tool is one that gets switched off.
+Codex 0.161 retains its existing global and repository-native guards; Serena and new destination routing are deferred.
+Its role loader omits MCP overrides, and shell hook payloads omit the requested working directory.
+
+The repository owns the guard and its policy. The three migrated user-global settings allow ordinary operations
+without approval prompts. A neutral machine adapter routes cross-repository operations to the
+destination checkout's endpoint and contains no HIPPO or secret classifier. Repository-native
+hooks evaluate their own physical checkout, avoiding a duplicate decision in the global adapter.
+Existing compute-admission exemptions remain governed by each checkout's owning policy.
 
 An unadmitted node is invisible to the ledger, so the host can reach critical pressure while
 `hippo status` still reports `normal`: nothing on the HIPPO side can defer or shed work it was never

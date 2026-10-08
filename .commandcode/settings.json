@@ -1,46 +1,13 @@
 {
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/ferret-capture.sh\" commandcode session.started",
-            "timeout": 3
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
-        "matcher": "^SHELL$",
+        "matcher": "^(SHELL|READ|READ_MULTI|LIST|WRITE|EDIT|SEARCH|GLOB)$",
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/.commandcode/hooks/run-policy-hook.sh\" require-hippo-boundary",
-            "timeout": 3,
-            "failClosed": true
-          }
-        ]
-      },
-      {
-        "matcher": "^(READ|READ_MULTI|LIST|WRITE|EDIT|SEARCH|GLOB)$",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/.commandcode/hooks/run-policy-hook.sh\" block-env-file-access",
-            "timeout": 3,
-            "failClosed": true
-          }
-        ]
-      },
-      {
-        "matcher": "^SHELL$",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/.commandcode/hooks/run-policy-hook.sh\" block-env-file-access",
-            "timeout": 3,
+            "command": "bash \"$(git rev-parse --show-toplevel)/.commandcode/hooks/run-policy-hook.sh\" agent-policy",
+            "timeout": 30,
             "failClosed": true
           }
         ]
@@ -54,15 +21,6 @@
             "timeout": 3
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/ferret-capture.sh\" commandcode tool.started",
-            "timeout": 3
-          }
-        ]
       }
     ],
     "PostToolUse": [
@@ -73,15 +31,6 @@
             "type": "command",
             "command": "bash \"$(git rev-parse --show-toplevel)/.commandcode/hooks/run-policy-hook.sh\" format-lint-markdown",
             "timeout": 600
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/.claude/hooks/ferret-capture.sh\" commandcode tool.completed",
-            "timeout": 3
           }
         ]
       }

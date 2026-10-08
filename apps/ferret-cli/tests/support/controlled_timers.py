@@ -4,6 +4,7 @@ import contextlib
 import json
 import os
 import selectors
+import shutil
 import signal
 import subprocess
 import sys
@@ -12,7 +13,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-from support.wrapper import PLUGIN, WRAPPER, WrapperRun, alive, node_executable
+from support.wrapper import PLUGIN, SYSTEM_DIRECTORIES, WRAPPER, WrapperRun, alive, node_executable
 
 
 @dataclass(frozen=True, slots=True)
@@ -41,7 +42,14 @@ def _kill_owned_group(pid: int) -> None:
 
 
 def controlled_wrapper(
-    directory: Path, harness: str, event: str, payload: bytes, *, early_exit: bool = False, subject: Path = WRAPPER
+    directory: Path,
+    harness: str,
+    event: str,
+    payload: bytes,
+    *,
+    early_exit: bool = False,
+    timer_ignores_term: bool = False,
+    subject: Path = WRAPPER,
 ) -> TimerProof:
     """Release the real shell subject's two sleep requests, observing TERM before the second expiry and actual KILL.
 
@@ -53,6 +61,10 @@ def controlled_wrapper(
     home.mkdir(mode=0o700)
     programs = directory / "programs"
     programs.mkdir(mode=0o700)
+    for utility in ("mktemp", "rm"):
+        found = shutil.which(utility, path=SYSTEM_DIRECTORIES)
+        assert found is not None, f"{utility} is required in {SYSTEM_DIRECTORIES}"
+        (programs / utility).symlink_to(found)
     read_events, write_events = os.pipe()
     read_release, write_release = os.pipe()
     prefix = (
@@ -62,7 +74,9 @@ def controlled_wrapper(
     )
     _program(
         programs / "sleep",
-        prefix + "note('sleep ' + sys.argv[1] + ' ' + str(os.getpid()))\nassert os.read(RELEASE, 1) == b'x'\n",
+        prefix
+        + ("signal.signal(signal.SIGTERM, signal.SIG_IGN)\n" if timer_ignores_term else "")
+        + "note('sleep ' + sys.argv[1] + ' ' + str(os.getpid()))\nassert os.read(RELEASE, 1) == b'x'\n",
     )
     child = _program(
         directory / "ferret",
@@ -74,7 +88,7 @@ def controlled_wrapper(
         "note('ready ' + str(os.getpid()))\n"
         + ("assert os.read(RELEASE, 1) == b'x'\n" if early_exit else "while True: signal.pause()\n"),
     )
-    environment = {"HOME": str(home), "PATH": str(programs), "FERRET_BIN": str(child)}
+    environment = {"HOME": str(home), "TMPDIR": str(home), "PATH": str(programs), "FERRET_BIN": str(child)}
     requested: list[int] = []
     sleepers: list[int] = []
     seen: list[str] = []
@@ -155,6 +169,7 @@ def controlled_wrapper(
         assert (ran.code, ran.stdout, ran.stderr) == (0, b"", b"")
         assert not alive(child_pid), "owned capture child survived actual wrapper return"
         assert all(not alive(pid) for pid in sleepers), "owned timer sleeper survived actual wrapper return"
+        assert not list(home.glob("ferret-watchdog.*")), "owned job certificate survived actual wrapper return"
         if not early_exit:
             seen.append("KILL")  # A TERM-ignoring child died only after the second controlled expiry.
         return TimerProof(

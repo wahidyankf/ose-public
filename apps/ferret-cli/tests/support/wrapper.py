@@ -56,8 +56,8 @@ class WrapperRun:
         return self.started + self.elapsed_seconds
 
 
-#: The only programs a Unit binding's search path offers: the wrapper sleeps, and the stand-ins read their input.
-SYSTEM_UTILITIES = ("cat", "sleep")
+#: A Unit binding exposes only the named timer/certificate utilities and stand-in input reader.
+SYSTEM_UTILITIES = ("cat", "sleep", "mktemp", "rm")
 SYSTEM_DIRECTORIES = "/usr/bin:/bin"
 
 
@@ -273,7 +273,13 @@ def run_wrapper(
     """Invoke the wrapper the way a harness does: two static arguments, the payload on standard input."""
     if timer_log is not None:
         path = _logging_sleep_path(timer_log, path)
-    environment = {"HOME": str(home), "PATH": path, **({"FERRET_BIN": str(binary)} if binary else {}), **(extra or {})}
+    environment = {
+        "HOME": str(home),
+        "TMPDIR": str(home),
+        "PATH": path,
+        **({"FERRET_BIN": str(binary)} if binary else {}),
+        **(extra or {}),
+    }
     return _run_timed([str(WRAPPER), harness, event], payload, environment, timeout=timeout, cwd=cwd)
 
 

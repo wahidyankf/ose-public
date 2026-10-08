@@ -254,7 +254,13 @@ def run_wrapper(
     """Invoke the wrapper the way a harness does: two static arguments, the payload on standard input."""
     if timer_log is not None:
         path = _logging_sleep_path(timer_log, path)
-    environment = {"HOME": str(home), "PATH": path, **({"FERRET_BIN": str(binary)} if binary else {}), **(extra or {})}
+    environment = {
+        "HOME": str(home),
+        "TMPDIR": str(home),
+        "PATH": path,
+        **({"FERRET_BIN": str(binary)} if binary else {}),
+        **(extra or {}),
+    }
     return run_timed([str(WRAPPER), harness, event], payload=payload, environment=environment, cwd=cwd)
 
 

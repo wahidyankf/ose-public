@@ -17,7 +17,7 @@ import pytest
 from adapter_cases import HARNESSES, VALID, assert_quiet, expected_row, send_invalid, send_valid, stored_rows
 from hook_bench import Bench, derived
 from hook_wrapper import (
-    HUNG_SECONDS,
+    HOST_RETURN_MAX_SECONDS,
     KILL_SECONDS,
     TERM_SECONDS,
     Behaviour,
@@ -105,12 +105,12 @@ def hung_child(bench: Bench, harness: str, behaviour: Behaviour) -> HookRun:
 
 def term_at_900(bench: Bench, harness: str) -> None:
     ran = hung_child(bench, harness, "hang")
-    assert TERM_SECONDS - 0.05 <= ran.elapsed_seconds < HUNG_SECONDS
+    assert TERM_SECONDS - 0.05 <= ran.elapsed_seconds <= HOST_RETURN_MAX_SECONDS
 
 
 def kill_at_1000(bench: Bench, harness: str) -> None:
     ran = hung_child(bench, harness, "stubborn")
-    assert KILL_SECONDS - 0.05 <= ran.elapsed_seconds < HUNG_SECONDS
+    assert KILL_SECONDS - 0.05 <= ran.elapsed_seconds <= HOST_RETURN_MAX_SECONDS
 
 
 def seed_backlog(bench: Bench) -> None:

@@ -1,3 +1,3 @@
 """FERRET: local-first, metadata-only telemetry for coding-agent harnesses."""
 
-__version__ = "0.3.3"
+__version__ = "0.4.0"

@@ -4,8 +4,8 @@ Every sample is one whole adapter call as a harness makes it: the shared wrapper
 OpenCode plugin under Node, against the built artifact in an isolated HOME. The conditions are the ones an adapter must
 survive: a normal capture, a missing ``ferret``, an invalid payload, a store held by a concurrent writer, a child that
 hangs, and a child that ignores TERM. Calls are taken round-robin across every harness and condition, so a burst of
-load on the host is shared by every row instead of landing on one. The plugin's rows are judged net of the time Node
-itself takes to start, because OpenCode is already running and a hook call never waits for the child it starts.
+load on the host is shared by every row instead of landing on one. Only the plugin's normal-capture p95 is judged net
+of Node startup. The hard maximum measures the whole driver call, including startup, on the exercised host.
 """
 
 import argparse
@@ -21,12 +21,22 @@ from typing import Any
 
 from adapter_cases import HARNESSES, INVALID, VALID
 from hook_bench import Bench
-from hook_wrapper import DEADLINE_SECONDS, REAP_TAIL_SECONDS, HookRun, run_plugin, stand_in
+from hook_wrapper import (
+    HOST_ALLOWANCE_SECONDS,
+    HOST_RETURN_MAX_SECONDS,
+    HOST_TERM_MAX_SECONDS,
+    KILL_SECONDS,
+    REAP_TAIL_SECONDS,
+    TERM_SECONDS,
+    HookRun,
+    run_plugin,
+    stand_in,
+)
 from storage_benchmark import distribution
 from vendor_payloads import OPENCODE, WORKSPACE
 
 NORMAL_P95_BUDGET_MS = 150.0
-HARD_MAX_BUDGET_MS = (DEADLINE_SECONDS + REAP_TAIL_SECONDS) * 1000
+HARD_MAX_BUDGET_MS = HOST_RETURN_MAX_SECONDS * 1000
 WARMUP_CALLS = 2
 DEFAULT_SAMPLES = 100
 DEFAULT_SLOW_SAMPLES = 8
@@ -43,12 +53,24 @@ def milliseconds(ran: HookRun) -> float:
     return ran.elapsed_seconds * 1000
 
 
+def declared_budgets() -> dict[str, float]:
+    """Report nominal requests, cumulative host acceptance and the existing reap tail as distinct facts."""
+    return {
+        "normalP95Ms": NORMAL_P95_BUDGET_MS,
+        "termRequestMs": TERM_SECONDS * 1000,
+        "killRequestMs": KILL_SECONDS * 1000,
+        "hostAllowanceMs": HOST_ALLOWANCE_SECONDS * 1000,
+        "reapTailMs": REAP_TAIL_SECONDS * 1000,
+        "termObservedMaxMs": HOST_TERM_MAX_SECONDS * 1000,
+        "hardMaxMs": HARD_MAX_BUDGET_MS,
+    }
+
+
 def judge(rows: Sequence[Row], baseline_ms: float) -> list[str]:
     """Every budget the measured rows break; an empty list means the adapters are as fast and as bounded as promised.
 
-    The normal-capture 95th percentile must be within its budget, and no row may take longer than the deadline plus
-    the reap tail the `kill` row needs. The plugin's normal row is judged net of the Node start-up the driver adds
-    around it.
+    Normal capture retains its 150 ms p95 budget. Whole-wrapper return retains no startup deduction and must stay
+    within the adopted 1,600 ms host limit. Only the plugin's normal p95 receives the Node startup deduction.
     """
     problems: list[str] = []
     for row in rows:
@@ -131,7 +153,7 @@ def measure(artifact: Path, *, samples: int, slow_samples: int) -> dict[str, Any
     rows = [summarize(harness, name, runs[(harness, name)]) for harness in HARNESSES for name in plans[harness]]
     problems = judge(rows, baseline["p50Ms"])
     return {
-        "budgets": {"normalP95Ms": NORMAL_P95_BUDGET_MS, "hardMaxMs": HARD_MAX_BUDGET_MS},
+        "budgets": declared_budgets(),
         "warmupCalls": WARMUP_CALLS,
         "hostBefore": before,
         "hostAfter": host_facts(),
@@ -143,7 +165,14 @@ def measure(artifact: Path, *, samples: int, slow_samples: int) -> dict[str, Any
 
 
 def summary_lines(report: dict[str, Any]) -> list[str]:
-    lines = [f"Node baseline p50={report['nodeBaseline']['p50Ms']} ms (deducted from the OpenCode rows)"]
+    lines = [f"Node baseline p50={report['nodeBaseline']['p50Ms']} ms (deducted only from OpenCode normal p95)"]
+    if "budgets" in report:
+        budgets = report["budgets"]
+        lines.append(
+            f"Budgets: TERM request={budgets['termRequestMs']} ms, KILL request={budgets['killRequestMs']} ms, "
+            f"cumulative host allowance={budgets['hostAllowanceMs']} ms, reap tail={budgets['reapTailMs']} ms, "
+            f"whole-wrapper maximum={budgets['hardMaxMs']} ms"
+        )
     if "hostBefore" in report:
         lines.append(
             f"Host: {report['hostBefore']['cpuCount']} CPUs, load {report['hostBefore']['loadAverage']}"

@@ -163,3 +163,35 @@ def test_a_declared_hash_that_does_not_match_the_fields_is_refused() -> None:
 
     assert error.code == "ferret.event.invalid"
     assert error.field == "eventHash"
+
+
+def test_a_tool_completion_can_report_an_unknown_outcome_without_claiming_success() -> None:
+    document = event_document(outcome="unknown", outcomeVisibility="unknown")
+    parsed = value_of(event_from_document(document, now=NOW))
+    assert (parsed.event_type, parsed.outcome, parsed.outcome_visibility) == ("tool.completed", "unknown", "unknown")
+
+
+@pytest.mark.parametrize(
+    ("outcome", "visibility", "field"),
+    [
+        ("success", "unknown", "outcomeVisibility"),
+        ("unknown", "observed", "outcome"),
+        ("unknown", "derived", "outcome"),
+        ("failure", "unknown", "outcomeVisibility"),
+        ("unknown", "not_applicable", "outcomeVisibility"),
+    ],
+)
+def test_unknown_tool_completion_is_not_a_waiver_for_an_inconsistent_outcome(
+    outcome: str, visibility: str, field: str
+) -> None:
+    error = refusal_of(event_from_document(event_document(outcome=outcome, outcomeVisibility=visibility), now=NOW))
+    assert (error.code, error.field) == ("ferret.event.invalid", field)
+
+
+def test_a_failed_tool_still_requires_a_known_failure_outcome() -> None:
+    error = refusal_of(
+        event_from_document(
+            event_document(eventType="tool.failed", outcome="unknown", outcomeVisibility="unknown"), now=NOW
+        )
+    )
+    assert (error.code, error.field) == ("ferret.event.invalid", "outcomeVisibility")

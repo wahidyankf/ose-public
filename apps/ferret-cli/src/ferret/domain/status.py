@@ -14,12 +14,13 @@ type ConfigurationState = Literal["configured", "not_configured"]
 SUPPORTED_INTERPRETER: Final = (3, 14)
 _VERSION: Final = re.compile(r"(\d+)\.(\d+)")
 
-# Every harness with an adapter in this plan, in report order, and whether its platform support is already established
+# Every harness with a mapper, in report order, and whether its platform support is already established
 # or still has to be probed on the machine.
 ADAPTERS: Final[tuple[tuple[str, PlatformSupport], ...]] = (
     ("claude_code", "supported"),
     ("codex", "supported"),
     ("opencode", "probe_required"),
+    ("commandcode", "probe_required"),
 )
 
 

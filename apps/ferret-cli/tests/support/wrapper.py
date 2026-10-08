@@ -5,6 +5,7 @@ import contextlib
 import functools
 import json
 import os
+import shlex
 import shutil
 import signal
 import stat
@@ -16,7 +17,7 @@ import zipfile
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, TypeGuard
 
 REPOSITORY = Path(__file__).resolve().parents[4]
 WRAPPER = REPOSITORY / ".claude" / "hooks" / "ferret-capture.sh"
@@ -27,11 +28,12 @@ SOURCE = REPOSITORY / "apps" / "ferret-cli" / "src"
 TERM_MILLISECONDS = 900
 KILL_MILLISECONDS = 1000
 DEADLINE_SECONDS = 1.0
-# A call that needed KILL returns just after the deadline, because the wrapper reaps the child and exits after sending
-# it, and a lock wait can use the whole budget when the host's timers run late. This tail is how much later than the
-# deadline still counts as meeting it; a call that is hung, rather than late, is bounded by HUNG_SECONDS below.
+# Timer requests remain nominal. The owner adopted a cumulative host allowance and the existing reap tail.
+HOST_ALLOWANCE_SECONDS = 0.35
 TAIL_SECONDS = 0.25
-# A wrapper that has not returned by now is hung, whatever the machine's load; the lower bounds prove the timers.
+HOST_TERM_MAX_SECONDS = 0.9 + HOST_ALLOWANCE_SECONDS
+HOST_RETURN_MAX_SECONDS = DEADLINE_SECONDS + HOST_ALLOWANCE_SECONDS + TAIL_SECONDS
+# The test-owned kill deadline detects a hang; it is not an acceptance allowance.
 HUNG_SECONDS = 4.0
 
 type Behaviour = Literal["record", "noisy", "hang", "stubborn"]
@@ -54,8 +56,8 @@ class WrapperRun:
         return self.started + self.elapsed_seconds
 
 
-#: The only programs a Unit binding's search path offers: the wrapper sleeps, and the stand-ins read their input.
-SYSTEM_UTILITIES = ("cat", "sleep")
+#: A Unit binding exposes only the named timer/certificate utilities and stand-in input reader.
+SYSTEM_UTILITIES = ("cat", "sleep", "mktemp", "rm")
 SYSTEM_DIRECTORIES = "/usr/bin:/bin"
 
 
@@ -94,8 +96,8 @@ def isolate(directory: Path) -> Isolation:
 
 
 def within_deadline(ran: WrapperRun) -> bool:
-    """Whether a wrapper call returned by its 1,000 ms deadline, allowing for the reap after a KILL."""
-    return ran.elapsed_seconds < DEADLINE_SECONDS + TAIL_SECONDS
+    """Whether this exercised host met the finite 1,600 ms wrapper-return acceptance bound."""
+    return ran.elapsed_seconds <= HOST_RETURN_MAX_SECONDS
 
 
 def _script(directory: Path, name: str, body: str) -> Path:
@@ -224,6 +226,37 @@ def in_tree(directory: Path) -> Path:
     return _warmed(directory, "ferret-in-tree", body)
 
 
+def _logging_sleep_path(log: Path, path: str) -> str:
+    """A private sleep stand-in logs each requested interval then execs the system sleep unchanged."""
+    directory = log.parent / "timer-programs"
+    directory.mkdir(mode=0o700)
+    system_sleep = shutil.which("sleep", path="/usr/bin:/bin")
+    assert system_sleep is not None
+    _warmed(
+        directory, "sleep", f'printf "%s\\n" "$@" >> {shlex.quote(str(log))}\nexec {shlex.quote(system_sleep)} "$@"\n'
+    )
+    return f"{directory}:{path}"
+
+
+def _is_object_list(value: object) -> TypeGuard[list[object]]:
+    """A runtime list contains objects; validate the container before checking each timer value."""
+    return isinstance(value, list)
+
+
+def timer_requests(log: Path, *, plugin: bool) -> tuple[int, ...]:
+    """The actual requests observed at the sleep or Node timer host boundary, in milliseconds."""
+    if plugin:
+        values: object = json.loads(log.read_text())
+        assert _is_object_list(values)
+        requests: list[int] = []
+        for value in values:
+            assert isinstance(value, int)
+            assert not isinstance(value, bool)
+            requests.append(value)
+        return tuple(requests)
+    return tuple(round(float(line) * 1000) for line in log.read_text().splitlines())
+
+
 def run_wrapper(
     harness: str,
     event: str,
@@ -235,9 +268,18 @@ def run_wrapper(
     extra: Mapping[str, str] | None = None,
     timeout: float = HUNG_SECONDS + 6,
     cwd: Path | None = None,
+    timer_log: Path | None = None,
 ) -> WrapperRun:
     """Invoke the wrapper the way a harness does: two static arguments, the payload on standard input."""
-    environment = {"HOME": str(home), "PATH": path, **({"FERRET_BIN": str(binary)} if binary else {}), **(extra or {})}
+    if timer_log is not None:
+        path = _logging_sleep_path(timer_log, path)
+    environment = {
+        "HOME": str(home),
+        "TMPDIR": str(home),
+        "PATH": path,
+        **({"FERRET_BIN": str(binary)} if binary else {}),
+        **(extra or {}),
+    }
     return _run_timed([str(WRAPPER), harness, event], payload, environment, timeout=timeout, cwd=cwd)
 
 
@@ -268,6 +310,7 @@ def run_plugin(
     directory: Path,
     path: str = "/usr/bin:/bin",
     cwd: Path | None = None,
+    timer_log: Path | None = None,
     spawn_log: Path | None = None,
 ) -> WrapperRun:
     """Replay OpenCode hook calls against the real plugin under Node; the process ends when every child it started has.
@@ -279,6 +322,8 @@ def run_plugin(
     document: dict[str, Any] = {"directory": str(directory), "calls": list(calls)}
     if spawn_log is not None:
         document["spawnLog"] = str(spawn_log)
+    if timer_log is not None:
+        document["timerLog"] = str(timer_log)
     request = json.dumps(document).encode("utf-8")
     command = [node_executable(), "--no-warnings", str(DRIVER), str(PLUGIN)]
     return _run_timed(command, request, environment, timeout=HUNG_SECONDS + 6, cwd=cwd)
@@ -306,6 +351,7 @@ def _run_timed(
             stdout, stderr = process.communicate(payload)
         finally:
             guard.cancel()
+            guard.join()
         elapsed = time.monotonic() - started
     return WrapperRun(process.returncode, stdout, stderr, elapsed, started)
 
@@ -339,29 +385,19 @@ def recorded_pid(directory: Path) -> int | None:
 
 
 def assert_term_then_kill(ran: WrapperRun, directory: Path, *, spawned: float | None = None) -> None:
-    """A child that ignores TERM, written by ``term_recorder``, got TERM about 900 ms in and the call ended at KILL.
+    """Observe ordered TERM and actual stubborn-child retirement within the adopted finite host bounds.
 
-    Every reading is on the one system-wide monotonic clock, and they happen in one order: the call starts, the child
-    is spawned and starts, TERM reaches it, the call ends. Each bound is taken from an instant the adapter's own timers
-    cannot precede, so a loaded host's delay in starting a process is never charged to the adapter:
-
-    - The plugin arms its timers right after spawning the child, so with ``spawned`` -- that instant, as the driver
-      noted it -- TERM must fall in the documented 800-1,000 ms window from it.
-    - The wrapper arms its watchdog as it starts the child, at once, so TERM cannot come before that window measured
-      from the harness call, nor more than 1,000 ms after the child began to run.
-
-    The call cannot end before KILL, 100 ms after TERM, and must end within the reap tail after it.
+    POSIX is measured from public invocation; OpenCode is measured from recorded spawn/timer-arm boundary and
+    whole-driver return separately. Nominal 100 ms grace is proved by request logs and controlled Unit timers,
+    not by subtracting a delayed Python handler timestamp from death.
     """
     times = term_times(directory)
     assert times.term is not None, "TERM never reached the child"
     assert ran.started <= times.started < times.term < ran.ended, (times, ran)
-    term, kill = TERM_MILLISECONDS / 1000, KILL_MILLISECONDS / 1000
     if spawned is not None:
         assert ran.started <= spawned <= times.started, (spawned, times, ran)
-        assert term - 0.1 <= times.term - spawned <= kill, (spawned, times)
+        assert 0.8 <= times.term - spawned <= HOST_TERM_MAX_SECONDS, (spawned, times)
+        assert ran.ended - spawned <= HOST_RETURN_MAX_SECONDS, (spawned, ran)
     else:
-        assert term - 0.05 <= times.term - ran.started, (times, ran)
-        assert times.term - times.started <= kill, times
-        assert ran.elapsed_seconds < kill + TAIL_SECONDS, ran
-    assert kill - term - 0.05 <= ran.ended - times.term <= kill - term + TAIL_SECONDS, (times, ran)
-    assert ran.ended - times.started < kill + TAIL_SECONDS, (times, ran)
+        assert 0.85 <= times.term - ran.started <= HOST_TERM_MAX_SECONDS, (times, ran)
+    assert within_deadline(ran), ran

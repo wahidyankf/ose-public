@@ -33,6 +33,9 @@ mistake goes to stderr with exit `2` and leaves stdout empty.
 
 ## Use it
 
+The initialization, user-installation, status, and usage sequence below was not exercised during this documentation
+pass. Retrospective tests do not record this guide sequence.
+
 ```bash
 ferret init                        # create the private data home and store, once
 ferret self install --target user  # copy the artifact under ~/.local/share/ferret and link ~/.local/bin/ferret
@@ -47,6 +50,11 @@ reads up to 64 MiB and keeps none of it. Only a payload over 64 MiB is refused, 
 event. What each harness can and cannot report is in
 [Platform Bindings](../../docs/reference/platform-bindings.md#ferret-lifecycle-registrations).
 
+Command Code capture maps `SessionStart` to `session.started`, `PreToolUse` to `tool.started`, and `PostToolUse`
+to `tool.completed`. Completion records an unknown outcome and visibility, with no duration: a response string does
+not prove success. `Stop` ends a turn and is not a session-end event. `status` reports Command Code as
+`probe_required` pending a live platform probe.
+
 ## Install a published release
 
 Every `ferret-cli/vX.Y.Z` tag publishes one platform-independent zipapp and its digest.
@@ -58,7 +66,8 @@ shasum -a 256 -c checksums.txt
 python3 ferret-cli_v0.3.3.pyz self install --target user
 ```
 
-Verify the digest before running it.
+Verify the digest before running it. These download and installation commands were not exercised in this documentation
+pass; they fetch a published artifact and change the user installation.
 
 FERRET needs Python 3.14 or newer, and most hosts still answer `python3` with something older. You do not have to
 find the right one: the artifact looks for a `python3.14` or newer on `PATH` and in the usual install locations,

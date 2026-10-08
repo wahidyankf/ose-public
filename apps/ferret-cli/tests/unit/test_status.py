@@ -113,7 +113,7 @@ def test_status_is_one_json_object_in_the_documented_key_order() -> None:
     document = json.loads(ran.stdout)
     assert list(document) == TOP_LEVEL_KEYS
     assert list(document["runtime"]) == RUNTIME_KEYS
-    assert [list(adapter) for adapter in document["adapters"]] == [ADAPTER_KEYS] * 3
+    assert [list(adapter) for adapter in document["adapters"]] == [ADAPTER_KEYS] * 4
 
 
 def test_status_reports_the_store_as_it_stands() -> None:
@@ -176,6 +176,15 @@ def test_status_reports_the_store_as_it_stands() -> None:
         },
         {
             "harness": "opencode",
+            "platformSupport": "probe_required",
+            "configurationState": "not_configured",
+            "latestSnapshotId": None,
+            "latestSnapshotHash": None,
+            "snapshotCapturedAt": None,
+            "capabilities": [],
+        },
+        {
+            "harness": "commandcode",
             "platformSupport": "probe_required",
             "configurationState": "not_configured",
             "latestSnapshotId": None,
@@ -351,6 +360,7 @@ def test_a_report_of_a_usable_store_is_what_the_store_holds() -> None:
         ("claude_code", "not_configured"),
         ("codex", "configured"),
         ("opencode", "not_configured"),
+        ("commandcode", "not_configured"),
     ]
 
 
@@ -385,3 +395,17 @@ def test_a_report_ends_with_the_failure_of_the_port_call_that_failed(
     error = refusal_of(report_status(world.runtime))
 
     assert (error.code, error.exit_code, error.retryable) == (failure.code, 2, failure.retryable)
+
+
+def test_a_commandcode_adapter_reports_the_capabilities_its_snapshot_actually_states() -> None:
+    world = world_with()
+    snapshot = aged_snapshot(1, now=NOW, ago=RECENT, harness="commandcode")
+    world.capabilities.stored.append(snapshot)
+    matches = [item for item in status(world)["adapters"] if item["harness"] == "commandcode"]
+    assert len(matches) == 1
+    [adapter] = matches
+    assert (adapter["platformSupport"], adapter["configurationState"]) == ("probe_required", "configured")
+    assert adapter["latestSnapshotId"] == snapshot.snapshot_id
+    assert adapter["capabilities"] == [
+        {"name": item.name, "state": item.state, "source": item.source} for item in snapshot.capabilities
+    ]

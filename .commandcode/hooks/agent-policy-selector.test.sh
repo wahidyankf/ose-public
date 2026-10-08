@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 # Verify raw native transport and physical destination policy in disposable read-only Git fixtures.
 set -euo pipefail
+# Git hooks export selectors; discover every native name before any fixture Git operation.
+git_local_env_vars=$(git rev-parse --local-env-vars) || exit 1
+while IFS= read -r git_local_env_var; do
+	unset "$git_local_env_var"
+done <<<"$git_local_env_vars"
+while IFS= read -r git_config_env_var; do
+	case "$git_config_env_var" in GIT_CONFIG_KEY_* | GIT_CONFIG_VALUE_*) unset "$git_config_env_var" ;; esac
+done < <(compgen -e)
+unset GIT_TEMPLATE_DIR
 repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)
 python3 - "$repo" <<'PY'
 import json, os, pathlib, shutil, subprocess, sys, tempfile
@@ -18,9 +27,9 @@ native_command = bindings[0]['command']
 with tempfile.TemporaryDirectory(prefix='cc-selector-') as directory:
     base = pathlib.Path(directory).resolve()
     env = dict(os.environ)
-    selectors = {'GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_OBJECT_DIRECTORY',
-                 'GIT_ALTERNATE_OBJECT_DIRECTORIES', 'GIT_COMMON_DIR', 'GIT_NAMESPACE',
-                 'GIT_PREFIX', 'GIT_CONFIG', 'GIT_CONFIG_COUNT', 'GIT_CONFIG_PARAMETERS', 'GIT_TEMPLATE_DIR'}
+    selectors = set(subprocess.run(['git', 'rev-parse', '--local-env-vars'], env=env,
+                                   text=True, capture_output=True, check=True).stdout.splitlines())
+    selectors.add('GIT_TEMPLATE_DIR')
     for key in list(env):
         if key in selectors or key.startswith('GIT_CONFIG_KEY_') or key.startswith('GIT_CONFIG_VALUE_'):
             del env[key]
@@ -32,7 +41,7 @@ with tempfile.TemporaryDirectory(prefix='cc-selector-') as directory:
             (root / relative).mkdir(parents=True, exist_ok=True)
         (root / '.git/HEAD').write_text('ref: refs/heads/main\n')
         (root / '.git/config').write_text('[core]\n\tbare = false\n\tworktree = ..\n')
-        top = subprocess.run(['git', '-C', str(root), 'rev-parse', '--show-toplevel'], env=env,
+        top = subprocess.run(['git', '--git-dir', str(root / '.git'), '-C', str(root), 'rev-parse', '--show-toplevel'], env=env,
                              text=True, capture_output=True, check=True).stdout.strip()
         assert pathlib.Path(top).resolve() == root
         shutil.copyfile(wrapper, root / '.commandcode/hooks/run-policy-hook.sh')

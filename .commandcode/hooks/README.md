@@ -14,6 +14,9 @@ The [selector regression](agent-policy-selector.test.sh) runs from the policy tr
   directories refuse before delegation. Exit 2 reports invalid transport, and delegate failures propagate.
 - [Policy transport tests](policy-hooks.test.sh) — Synthetic payloads, an isolated repository, fake formatter admission,
   and retained legacy transport behavior; the selector regression covers current local policy registration. The initial RED proved the missing adapter assertion before fixture setup.
+- [Git fixture isolation regression](git-fixture-isolation.test.sh) — Checks native Git-local environment purge,
+  physical fixture ownership, and unchanged disposable parent config, index and HEAD. The
+  [policy driver](policy-hooks.test.sh) runs it once after the selector regression without recursively invoking the full driver.
 
 Run the test through one ordinary HIPPO admission after independent review and with a finite owned process deadline.
 It uses private Git metadata and a fake capture executable, with no provider session or real learning data. Passing

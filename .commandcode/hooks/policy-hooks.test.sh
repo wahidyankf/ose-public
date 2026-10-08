@@ -177,3 +177,5 @@ printf 'Native public policy transport: %s passed, %s failed\n' "$pass" "$fail"
 
 # Exercise the neutral selector after all original native adapter assertions.
 bash "$repo/.commandcode/hooks/agent-policy-selector.test.sh"
+
+bash "$repo/.commandcode/hooks/git-fixture-isolation.test.sh"

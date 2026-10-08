@@ -24,9 +24,13 @@ bindings = [hook for entry in settings.get('hooks', {}).get('PreToolUse', []) if
 assert len(bindings) == 1, 'current native family registration is missing or duplicated'
 assert bindings[0].get('failClosed') is True and bindings[0].get('timeout') == 30
 native_command = bindings[0]['command']
+# Keep the source project's selected runtime when copied routers enter unpinned fixtures.
+node = pathlib.Path(subprocess.run(['node', '-p', 'process.execPath'], cwd=source,
+                                  capture_output=True, text=True, check=True).stdout.strip())
 with tempfile.TemporaryDirectory(prefix='cc-selector-') as directory:
     base = pathlib.Path(directory).resolve()
     env = dict(os.environ)
+    env['PATH'] = str(node.parent) + os.pathsep + env.get('PATH', '')
     selectors = set(subprocess.run(['git', 'rev-parse', '--local-env-vars'], env=env,
                                    text=True, capture_output=True, check=True).stdout.splitlines())
     selectors.add('GIT_TEMPLATE_DIR')

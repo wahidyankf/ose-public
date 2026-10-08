@@ -3,9 +3,12 @@
 set -euo pipefail
 repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)
 python3 - "$repo" <<'PY'
-import hashlib, json, os, pathlib, re, shutil, subprocess, sys, tempfile
+import hashlib, json, os, pathlib, re, shlex, shutil, subprocess, sys, tempfile
 
 source = pathlib.Path(sys.argv[1])
+# Resolve the current project's selected runtime before entering an unpinned fixture.
+node = pathlib.Path(subprocess.run(['node', '-p', 'process.execPath'], cwd=source,
+                                  capture_output=True, text=True, check=True).stdout.strip())
 # Discovery needs no repository context; never let inherited selectors affect even this query.
 discovery_env = {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
 local_names = subprocess.run(['git', 'rev-parse', '--local-env-vars'], cwd=source,
@@ -15,10 +18,31 @@ for key in list(clean):
     if key in local_names or key.startswith('GIT_CONFIG_KEY_') or key.startswith('GIT_CONFIG_VALUE_'):
         del clean[key]
 clean.update(GIT_CONFIG_GLOBAL='/dev/null', GIT_CONFIG_SYSTEM='/dev/null', GIT_CONFIG_NOSYSTEM='1')
+clean['PATH'] = str(node.parent) + os.pathsep + clean.get('PATH', '')
 assets = ['.commandcode/settings.json', '.commandcode/hooks/run-policy-hook.sh', '.commandcode/hooks/agent-policy-selector.test.sh', 'scripts/agent-policy-router.sh', 'scripts/agent-policy-router.mjs', 'scripts/agent-policy-endpoint.mjs', 'scripts/agent-secret-guard.mjs', '.claude/hooks/require-hippo-boundary.sh']
 failures = []
 with tempfile.TemporaryDirectory(prefix='git-fixture-isolation-') as directory:
     base = pathlib.Path(directory).resolve()
+    # A project-aware chooser must never be asked to select Node inside an unpinned fixture.
+    chooser = base / 'project chooser'
+    chooser.mkdir()
+    shim = chooser / 'node'
+    shim.write_text('#!/bin/bash\nset -euo pipefail\n'
+                    + '[[ $(pwd -P) == ' + shlex.quote(str(source)) + ' ]] || exit 126\n'
+                    + 'exec ' + shlex.quote(str(node)) + ' \"$@\"\n')
+    shim.chmod(0o755)
+    context_env = dict(clean, PATH=str(chooser) + os.pathsep + clean['PATH'])
+    project_runtime = subprocess.run(['node', '--version'], cwd=source, env=context_env,
+                                     capture_output=True, text=True, check=True)
+    expected_runtime = subprocess.run([str(node), '--version'], cwd=source, env=clean,
+                                      capture_output=True, text=True, check=True)
+    assert project_runtime.stdout == expected_runtime.stdout
+    unpinned_runtime = subprocess.run(['node', '--version'], cwd=chooser, env=context_env,
+                                      capture_output=True, text=True)
+    assert unpinned_runtime.returncode == 126, 'runtime chooser control did not reject unpinned cwd'
+    selected = subprocess.run(['/bin/bash', str(source / '.commandcode/hooks/agent-policy-selector.test.sh')],
+                              cwd=source, env=context_env, capture_output=True, text=True, timeout=30)
+    assert selected.returncode == 0, f'source runtime selection crossed fixture boundary: exit {selected.returncode}'
     template = base / 'empty-template'
     template.mkdir()
     clean['GIT_CEILING_DIRECTORIES'] = str(base)

@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/features/i18n/shell/use-locale";
 import { t } from "@/features/i18n/core/translations";
+import { DEFAULT_SUBSTITUTE_HARNESS } from "@/features/ai-benchmark/core/data/benchmarks";
 import { dataset } from "@/features/ai-benchmark/core/data/models";
 import type { Dataset } from "@/features/ai-benchmark/core/data/types";
 import { filterModels } from "@/features/ai-benchmark/core/filter";
@@ -33,7 +34,7 @@ export function BenchmarkContent() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // The URL is the single source of truth for the filters and the finder's target.
+  // The URL is the single source of truth for the filters and the finder's target and harness.
   const state = decodeState(searchParams, (id) => FRONTIER_IDS.has(id));
   const shown: Dataset = { ...dataset, models: filterModels(dataset, state, dataset) };
   const isEmpty = shown.models.length === 0;
@@ -81,8 +82,10 @@ export function BenchmarkContent() {
       <SubstituteFinder
         dataset={dataset}
         selectedId={state.sub}
+        harness={state.subHarness ?? DEFAULT_SUBSTITUTE_HARNESS}
         locale={locale}
         onSelect={(sub) => navigate({ sub })}
+        onSelectHarness={(subHarness) => navigate({ subHarness })}
       />
 
       <BenchmarkFilters

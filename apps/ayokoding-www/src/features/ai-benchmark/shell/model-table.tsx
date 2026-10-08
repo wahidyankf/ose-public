@@ -11,7 +11,7 @@ import { blendedPrice } from "../core/price";
 import { scoredFigure } from "../core/score";
 import { byIndexDesc, tierRank, type ScoredModel } from "../core/tiers";
 import { formatIndex, formatPercent, formatUsd, tf } from "./format";
-import { LimitedChip, modelNotes } from "./model-bits";
+import { LimitedChip, listedRateLabel, modelNotes } from "./model-bits";
 import { TAP_TARGET_MIN_CLASS } from "./tap-target";
 import { TierSwatch, tierLabel } from "./tier-style";
 
@@ -70,10 +70,8 @@ function ScoreCell({
 function Row({ s, locale }: { s: ScoredModel; locale: Locale }) {
   const { model } = s;
   const blended = blendedPrice(model.price);
-  const notes = [
-    ...(model.price?.listedBy === "opencode" ? [t(locale, "aiBenchOpencodeRate")] : []),
-    ...modelNotes(model, locale),
-  ];
+  const rateLabel = listedRateLabel(model.price, locale);
+  const notes = [...(rateLabel === undefined ? [] : [rateLabel]), ...modelNotes(model, locale)];
   return (
     <tr data-testid="ai-bench-table-row" data-model-id={model.id} data-tier={s.tier} className="border-b last:border-0">
       <th scope="row" className={`${TD} ${PINNED} min-w-36 bg-background text-left font-normal sm:min-w-48`}>

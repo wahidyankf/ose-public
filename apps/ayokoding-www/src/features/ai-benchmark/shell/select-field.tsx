@@ -10,8 +10,11 @@ export type SelectFieldProps = {
   id: string;
   label: string;
   value: string;
-  /** The empty option's label; it maps to the empty string. */
-  emptyLabel: string;
+  /**
+   * The empty option's label; it maps to the empty string. Omit it when a choice is always
+   * required and the select has no "none" state.
+   */
+  emptyLabel?: string;
   /** Flat options, or option groups (rendered as <optgroup>). */
   options: readonly SelectOption[] | readonly SelectGroup[];
   onChange: (value: string) => void;
@@ -34,7 +37,7 @@ export function SelectField({ id, label, value, emptyLabel, options, onChange }:
           onChange={(e) => onChange(e.target.value)}
           className="h-11 w-full min-w-0 appearance-none rounded-md border border-input bg-background py-1 pr-9 pl-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
-          <option value="">{emptyLabel}</option>
+          {emptyLabel !== undefined && <option value="">{emptyLabel}</option>}
           {isGrouped(options)
             ? options.map((g) => (
                 <optgroup key={g.label} label={g.label}>

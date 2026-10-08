@@ -17,8 +17,8 @@ export function fig(benchmark: BenchmarkId, value: number, version?: string): Fi
   };
 }
 
-export function price(input: number, output: number): ApiPrice {
-  return { input, output, source: SRC, listedBy: "vendor" };
+export function price(input: number, output: number, listedBy: ApiPrice["listedBy"] = "vendor"): ApiPrice {
+  return { input, output, source: SRC, listedBy };
 }
 
 type ModelExtras = Partial<Omit<Model, "id" | "figures">>;
@@ -42,11 +42,24 @@ export function flat(id: string, score: number, extras: ModelExtras = {}): Model
   return model(id, [fig("deep-swe", score), fig("terminal-bench", score), fig("swe-atlas-qna", score)], extras);
 }
 
-export function goModel(id: string, score: number | undefined, extras: ModelExtras = {}): Model {
-  const harnesses: HarnessId[] = ["opencode-go"];
+/**
+ * An open-weights model exposed only by `harness`. A `score` of `undefined` leaves it with a single
+ * figure — too little data to tier.
+ */
+export function harnessModel(
+  harness: HarnessId,
+  id: string,
+  score: number | undefined,
+  extras: ModelExtras = {},
+): Model {
+  const harnesses: HarnessId[] = [harness];
   return score === undefined
     ? model(id, [fig("deep-swe", 50)], { vendor: "OpenWeights", harnesses, ...extras })
     : flat(id, score, { vendor: "OpenWeights", harnesses, ...extras });
+}
+
+export function goModel(id: string, score: number | undefined, extras: ModelExtras = {}): Model {
+  return harnessModel("opencode-go", id, score, extras);
 }
 
 export function dataset(models: Model[]): Dataset {

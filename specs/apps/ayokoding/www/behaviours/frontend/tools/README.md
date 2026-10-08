@@ -6,9 +6,10 @@ Interactive calculator tools at `/[locale]/tools/`.
 
 - [cost-of-living-calculator.feature](./cost-of-living-calculator.feature) — Cost of living, savings,
   and minimum software-engineering role calculator at `/[locale]/tools/cost-of-living-calculator`.
-- [ai-benchmark.feature](./ai-benchmark.feature) — AI model benchmark tool (an OpenCode Go
-  substitute finder, four anchored capability tiers ranked by a composite index of independent
-  results, API prices, and a full data table) at `/[locale]/tools/ai-benchmark`.
+- [ai-benchmark.feature](./ai-benchmark.feature) — AI model benchmark tool (a substitute finder over
+  Command Code Pro, Command Code, or OpenCode Go, four anchored capability tiers ranked by a
+  composite index of independent results, API prices, and a full data table) at
+  `/[locale]/tools/ai-benchmark`.
 
 ## Bounded context
 

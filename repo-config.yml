@@ -38,6 +38,8 @@ scan:
     - fixtures
     - raw
     - done
+    # RHINO excludes directory names at any depth, not path globs; no tracked taste tree exists.
+    - taste
 
 harness:
   canonical:
@@ -192,6 +194,129 @@ harness:
           - { when: denies, capability: shell, field: permission, entries: { bash: deny } }
           - { when: constrains, capability: read-only, field: permission, entries: { edit: deny } }
           - { when: no-dispatches, field: permission, entries: { task: deny } }
+
+    - id: commandcode
+      supports:
+        capabilities: [repository-read, repository-write, shell, network, subagent]
+        constraints: [read-only, no-edit, no-glob, no-read, no-write]
+        routes: [canonical-import]
+        identities: [description]
+      agent-adapter:
+        path: ".commandcode/agents/{name}.md"
+        format: front-matter
+        route-field: body
+        route: |-
+          Before acting, read the complete canonical agent definition at the repository-root path
+          {path} and follow it as authoritative.
+          If it cannot be read, stop and report the missing path.
+        identity: { name: name, description: description }
+        agents:
+          - agent-maker
+          - apps-ayokoding-www-annotated-concept-maker
+          - apps-ayokoding-www-by-example-maker
+          - apps-ayokoding-www-general-maker
+          - apps-ayokoding-www-in-the-field-maker
+          - apps-ayokoding-www-link-checker
+          - apps-ayokoding-www-link-fixer
+          - apps-ayokoding-www-primer-maker
+          - apps-ose-www-content-maker
+          - ci-checker
+          - ci-fixer
+          - content-checker
+          - content-fixer
+          - docs-checker
+          - docs-file-manager
+          - docs-fixer
+          - docs-link-checker
+          - docs-maker
+          - docs-software-engineering-separation-checker
+          - docs-software-engineering-separation-fixer
+          - docs-tutorial-checker
+          - docs-tutorial-fixer
+          - docs-tutorial-maker
+          - harness-checker
+          - harness-fixer
+          - pdf-to-md-checker
+          - pdf-to-md-fixer
+          - pdf-to-md-maker
+          - plan-checker
+          - plan-execution-checker
+          - plan-fixer
+          - plan-maker
+          - pr-review-checker
+          - pr-review-docs-checker
+          - pr-review-fixer
+          - pr-review-governance-checker
+          - pr-review-instruction-checker
+          - pr-review-integrity-checker
+          - pr-review-logic-checker
+          - pr-review-performance-checker
+          - pr-review-scout
+          - pr-review-security-checker
+          - pr-review-types-checker
+          - readme-checker
+          - readme-fixer
+          - readme-maker
+          - repo-setup-manager
+          - repo-workflow-checker
+          - repo-workflow-fixer
+          - repo-workflow-maker
+          - rules-checker
+          - rules-fixer
+          - rules-maker
+          - social-linkedin-post-maker
+          - specs-checker
+          - specs-fixer
+          - specs-maker
+          - swe-api-tester
+          - swe-architect
+          - swe-debugger
+          - swe-developer
+          - swe-releaser
+          - swe-reviewer
+          - swe-usability-tester
+          - swe-web-tester
+          - tutorial-annotated-concept-checker
+          - tutorial-annotated-concept-fixer
+          - tutorial-by-example-checker
+          - tutorial-by-example-fixer
+          - tutorial-in-the-field-checker
+          - tutorial-in-the-field-fixer
+          - tutorial-primer-checker
+          - tutorial-primer-fixer
+          - web-researcher
+        absent: [model, featureModels, effort, reasoningEffort]
+        translations:
+          - { when: always, field: tools, members: [read_file] }
+          - { when: always, field: disallowedTools, members: [agent, agent_output] }
+          - { when: requires, capability: repository-read, field: tools, members: [read_directory, grep, glob] }
+          - { when: requires, capability: repository-write, field: tools, members: [write_file, edit_file] }
+          - { when: requires, capability: shell, field: tools, members: [shell_command, run_command, kill_shell] }
+          - { when: requires, capability: network, field: tools, members: [web_search, web_fetch] }
+          - { when: constrains, capability: read-only, field: disallowedTools, members: [write_file, edit_file] }
+          - { when: constrains, capability: no-edit, field: disallowedTools, members: [edit_file] }
+          - { when: constrains, capability: no-glob, field: disallowedTools, members: [glob] }
+          - { when: constrains, capability: no-read, field: disallowedTools, members: [read_file] }
+          - { when: constrains, capability: no-write, field: disallowedTools, members: [write_file] }
+          - {
+              when: denies,
+              capability: repository-read,
+              field: disallowedTools,
+              members: [read_file, read_directory, grep, glob],
+            }
+          - { when: denies, capability: repository-write, field: disallowedTools, members: [write_file, edit_file] }
+          - {
+              when: denies,
+              capability: shell,
+              field: disallowedTools,
+              members: [shell_command, run_command, kill_shell],
+            }
+          - { when: denies, capability: network, field: disallowedTools, members: [web_search, web_fetch] }
+      tiers:
+        ultra: {}
+        plan: {}
+        execution: {}
+        fast: {}
 
 policies:
   markdown:
@@ -1261,6 +1386,10 @@ extensions:
         stacks: [shell]
       agent-hooks:
         path: .claude/hooks
+        kind: tooling
+        stacks: [shell]
+      commandcode-hooks:
+        path: .commandcode/hooks
         kind: tooling
         stacks: [shell]
       opencode-plugins:

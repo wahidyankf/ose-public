@@ -28,7 +28,7 @@ Trunk-Based Dev on `main`. Node.js 24 (Volta), npm.
 ## Project Structure
 
 `apps/` (deployable), `libs/` (flat), `.agents/` (canonical harness content), and generated
-platform routes under `.claude/`, `.codex/`, and `.opencode/`.
+platform routes under the declared harness directories (see the [platform catalog](./docs/reference/platform-bindings.md)).
 Filenames: lowercase kebab-case.
 
 **See**: [add-new-app.md](./docs/how-to/add-new-app.md),

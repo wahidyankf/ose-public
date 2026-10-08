@@ -9,6 +9,15 @@
 # looking "non-empty" to a length check — the exact way a hook can pass its own suite and still let
 # the host run out of memory.
 set -uo pipefail
+# Git hooks export selectors; discover every native name before any fixture Git operation.
+git_local_env_vars=$(git rev-parse --local-env-vars) || exit 1
+while IFS= read -r git_local_env_var; do
+	unset "$git_local_env_var"
+done <<<"$git_local_env_vars"
+while IFS= read -r git_config_env_var; do
+	case "$git_config_env_var" in GIT_CONFIG_KEY_* | GIT_CONFIG_VALUE_*) unset "$git_config_env_var" ;; esac
+done < <(compgen -e)
+unset GIT_TEMPLATE_DIR
 
 # Absolute, because the consumer cases below run from another directory: a relative path would
 # miss the hook there, and the resulting silence would pass as a correct allow.
@@ -179,10 +188,18 @@ consumer_case() {
 }
 
 scratch="$(mktemp -d)"
+scratch=$(cd "$scratch" && pwd -P) || exit 1
 trap 'rm -rf "$scratch"' EXIT
 consumer_case "outside any git repository" "$scratch"
 
-git -C "$scratch" init -q 2>/dev/null
+[[ -d $scratch && ! -e $scratch/.git ]] || exit 1
+mkdir "$scratch/git-template" || exit 1
+GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null GIT_CONFIG_NOSYSTEM=1 \
+	GIT_CEILING_DIRECTORIES="$scratch" GIT_TEMPLATE_DIR="$scratch/git-template" \
+	git --git-dir="$scratch/.git" --work-tree="$scratch" -C "$scratch" init -q 2>/dev/null || exit 1
+fixture_root=$(GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null \
+	GIT_CEILING_DIRECTORIES="$scratch" git --git-dir="$scratch/.git" -C "$scratch" rev-parse --show-toplevel) || exit 1
+[[ $fixture_root == "$scratch" ]] || exit 1
 consumer_case "git repository with no ./hippo consumer" "$scratch"
 
 # HIPPO's own source checkout: an executable `./hippo` bootstrap with no `hippo.lock`. HIPPO cannot

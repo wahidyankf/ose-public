@@ -555,7 +555,7 @@
     {
       "id": "skill/harness-compatibility-protocol",
       "path": ".agents/skills/harness-compatibility-protocol/SKILL.md",
-      "digest": "b9507a657083b1333cce3d8e0623c9c09b1583fd9a9018a2a2fe93bdf3378d2d"
+      "digest": "dda452f4e35fb05e250ac50c3848195b3a2544395eb945527791eec1d4cf5d90"
     },
     {
       "id": "skill/modeling-threats",
@@ -755,7 +755,7 @@
     {
       "id": "instruction",
       "path": "AGENTS.md",
-      "digest": "3a1a433a2b9c8f87073c249e9de8036966261a9553c037e5ae2fbe8c1aed46f5"
+      "digest": "214fbbffda04a184812104c70637a1d53f683f4b2fde95d4cef312defd9f77c8"
     }
   ],
   "resolvedModels": {

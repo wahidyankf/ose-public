@@ -15,8 +15,9 @@ container init because no OSE container runs HIPPO yet.
 `.claude/hooks/require-hippo-boundary.sh` refuses a compute-bearing agent command that carries no
 outer boundary, **before the process spawns**. It decides only _whether_ a boundary is present — a
 binary, mechanical property — and never _which_ class is correct, so it leaves the judgment boundary
-above untouched. All three harnesses bind it: `.claude/settings.json`, `.codex/hooks.json`, and
-`.opencode/opencode.json`'s `permission.bash` map.
+above untouched. All four harnesses bind it: `.claude/settings.json`, `.codex/hooks.json`,
+`.opencode/opencode.json`'s `permission.bash` map, and [Command Code settings](../../../../.commandcode/settings.json)
+through the [native policy bridge](../../../../.commandcode/hooks/run-policy-hook.sh).
 
 The same file is also installed machine-wide, and the two placements do different jobs. The
 repository copy is the durable, reviewable one — version-controlled, travelling to other machines

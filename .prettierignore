@@ -27,6 +27,7 @@ graph.html
 .claude/skills/
 .codex/agents/
 .opencode/agents/
+.commandcode/agents/
 
 # Language-specific build artifacts
 libs/*/deps/
@@ -73,3 +74,6 @@ plans/**/raw/
 # apps/organiclever-be/db/migrations/, apps/ose-be/db/migrations/) are
 # intentionally NOT covered by this exclusion and remain prettier-formatted.
 apps/ayokoding-www/content/**/code/**/*.sql
+
+# Command Code personal learning data
+.commandcode/taste/**

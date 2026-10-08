@@ -16,36 +16,40 @@ agent to this repository. Governance prose lives in `repo-governance/` (vendor-n
 bindings live in their own directories and are explicitly excluded from the
 [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md).
 
-## Current stable v0.4 contract
+## Current stable v0.12 contract
 
-The checksum-pinned v0.4 Rhino configuration is authoritative. Canonical content is `AGENTS.md`,
+The checksum-pinned v0.12 Rhino configuration is authoritative. Canonical content is `AGENTS.md`,
 `.agents/agents/*.md`, and `.agents/skills/*/SKILL.md`. The current profiles generate only the
 declared routes: Claude receives `CLAUDE.md`, one route `.claude/agents/{name}.md` per canonical
 agent, and one pointer `.claude/skills/{name}/SKILL.md` per canonical skill; Codex receives
 `.codex/agents/` and OpenCode receives `.opencode/agents/` for every canonical agent, and OpenCode
-reads `.agents/skills/` natively. Each Claude agent route
+reads `.agents/skills/` natively. Command Code receives only the declared native leaf set under
+`.commandcode/agents/`; coordinating roles that need nested dispatch remain canonical main-session instructions.
+Command Code routes omit model and effort fields at every tier. Each Claude agent route
 carries `tools` from the agent's `capabilities`, `constraints`, and `dispatches`, `model` and `effort`
 from its `tier` through the Tier Registry, and its `skills` list; no route carries a color. No other mirror of a canonical skill
 exists. Run `./rhino harness adapters generate` followed by
 `./rhino harness adapters validate`; do not hand-edit those generated routes.
 
 The catalog and migration discussion below record the predecessor binding model. They are retained
-for provenance, not as instructions for the v0.4 adapter layout.
+for provenance, not as instructions for the current adapter layout.
 
 ## Platform Binding Directories
 
-The table below catalogs the three supported coding-agent harnesses — exactly the entries declared
+The table below catalogs the four supported coding-agent harnesses — exactly the entries declared
 in `repo-config.yml` `harness:`. Columns record every surface each harness exposes so contributors
 know which files to create or extend. Harnesses absent from the registry are not supported; adding
 one starts with a registry entry, not a row here.
 
-**Verified 2026-08-26.**
+The predecessor rows were verified on 2026-08-26. The Command Code declaration is added on 2026-10-08;
+its actual repository leaf discovery and authenticated lifecycle remain unverified.
 
-| Platform         | Reads root `AGENTS.md` natively?           | Tool-specific instruction surface                                           | Project MCP config                         | Custom-agent surface                                                                                    | Skills surface                                    | Status                                                                                            |
-| ---------------- | ------------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| Claude Code      | No — reads `CLAUDE.md` (shim `@AGENTS.md`) | `CLAUDE.md`, `.claude/`                                                     | `.mcp.json`                                | `.claude/agents/*.md`                                                                                   | `.agents/skills/*/SKILL.md`                       | Active                                                                                            |
-| OpenCode         | Yes                                        | `.opencode/agents/` (auto-synced); reads `.agents/skills/` natively         | `opencode.json`                            | `.opencode/agents/*.md`                                                                                 | reads `.agents/skills/` **and** `.agents/skills/` | Active                                                                                            |
-| OpenAI Codex CLI | Yes (since Apr 2025)                       | `AGENTS.md`, `AGENTS.override.md` (overrides), `.codex/config.toml`[^trust] | `.codex/config.toml` `[mcp_servers]`[^mcp] | `.codex/agents/<name>.toml` standalone files **and** `[agents.<name>]` tables in `config.toml`[^agents] | `.agents/skills/`[^skills]                        | Partial (custom agents do not spawn by name from `codex exec`, 0.160.0, 2026-10-03)[^codex-spawn] |
+| Platform         | Reads root `AGENTS.md` natively?                  | Tool-specific instruction surface                                           | Project MCP config                                        | Custom-agent surface                                                                                    | Skills surface                                    | Status                                                                                            |
+| ---------------- | ------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Claude Code      | No — reads `CLAUDE.md` (shim `@AGENTS.md`)        | `CLAUDE.md`, `.claude/`                                                     | `.mcp.json`                                               | `.claude/agents/*.md`                                                                                   | `.agents/skills/*/SKILL.md`                       | Active                                                                                            |
+| OpenCode         | Yes                                               | `.opencode/agents/` (auto-synced); reads `.agents/skills/` natively         | `opencode.json`                                           | `.opencode/agents/*.md`                                                                                 | reads `.agents/skills/` **and** `.agents/skills/` | Active                                                                                            |
+| OpenAI Codex CLI | Yes (since Apr 2025)                              | `AGENTS.md`, `AGENTS.override.md` (overrides), `.codex/config.toml`[^trust] | `.codex/config.toml` `[mcp_servers]`[^mcp]                | `.codex/agents/<name>.toml` standalone files **and** `[agents.<name>]` tables in `config.toml`[^agents] | `.agents/skills/`[^skills]                        | Partial (custom agents do not spawn by name from `codex exec`, 0.160.0, 2026-10-03)[^codex-spawn] |
+| Command Code     | Yes; actual binding discovery still needs a probe | `.commandcode/settings.json`                                                | `.commandcode/settings.json` `mcpServers` when configured | `.commandcode/agents/*.md` native leaves                                                                | Canonical `.agents/skills/` references            | Declared; runtime support remains `probe_required`                                                |
 
 [^codex-spawn]:
     The project `.codex/config.toml`, root `AGENTS.md`, and `.agents/skills/` load. On 2026-10-03, with codex-cli
@@ -136,11 +140,12 @@ live in the
 [Harness Compatibility Protocol](../../.agents/skills/harness-compatibility-protocol/SKILL.md). Documentation and
 installed CLIs were verified 2026-09-21 against Claude Code 2.1.278, Codex 0.155.1, and OpenCode 1.18.7.
 
-| Harness     | Registration source                                           | Documented lifecycle events available to register                                                             | Trust and timing                                                                                                                                                                                   |
-| ----------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Claude Code | `.claude/settings.json` to `.claude/hooks/ferret-capture.sh`  | SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse, PostToolUse, PostToolUseFailure            | An interactive session holds hooks until the workspace trust dialog is accepted; `claude -p` runs them and kills async hooks still running at teardown; SessionEnd hooks share a 1.5 s budget      |
-| Codex       | `.codex/hooks.json` to `.claude/hooks/ferret-capture.sh`      | SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse, PostToolUse                                | The project `.codex/` layer must be trusted and each hook's exact hash reviewed in `/hooks`, so editing `hooks.json` re-prompts; SessionEnd defaults to 1 s and takes an explicit larger `timeout` |
-| OpenCode    | `.opencode/plugins/ferret.ts` (auto-loaded, plural directory) | session.created, session.deleted, session.idle, tool.execute.before, tool.execute.after, message.part.updated | No trust step is documented for project plugins; hooks run in sequence with no documented timeout, so the plugin never awaits the child on frequent events and swallows every exception            |
+| Harness      | Registration source                                               | Documented lifecycle events available to register                                                             | Trust and timing                                                                                                                                                                                   |
+| ------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Claude Code  | `.claude/settings.json` to `.claude/hooks/ferret-capture.sh`      | SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse, PostToolUse, PostToolUseFailure            | An interactive session holds hooks until the workspace trust dialog is accepted; `claude -p` runs them and kills async hooks still running at teardown; SessionEnd hooks share a 1.5 s budget      |
+| Codex        | `.codex/hooks.json` to `.claude/hooks/ferret-capture.sh`          | SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse, PostToolUse                                | The project `.codex/` layer must be trusted and each hook's exact hash reviewed in `/hooks`, so editing `hooks.json` re-prompts; SessionEnd defaults to 1 s and takes an explicit larger `timeout` |
+| OpenCode     | `.opencode/plugins/ferret.ts` (auto-loaded, plural directory)     | session.created, session.deleted, session.idle, tool.execute.before, tool.execute.after, message.part.updated | No trust step is documented for project plugins; hooks run in sequence with no documented timeout, so the plugin never awaits the child on frequent events and swallows every exception            |
+| Command Code | `.commandcode/settings.json` to `.claude/hooks/ferret-capture.sh` | SessionStart, PreToolUse, PostToolUse                                                                         | Raw stdin forwarding under the shared wrapper deadline; live registration and leaf discovery still require a probe                                                                                 |
 
 Capabilities a harness does not expose stay `unknown` rather than inferred. FERRET registers eight Claude Code
 events (the tool start, completion, and failure events and a `Skill`-matched `PreToolUse` for skill invocation, which
@@ -168,11 +173,29 @@ workspace identifiers are derived before persistence. Tool input, responses, tra
 display names, and tool-use identifiers are ignored. A response string proves neither an exit status nor success.
 `Stop` ends a turn, so it is not mapped to `session.ended`. Failure, skill, subagent, and session-end capture remain
 unavailable through this mapper. `status` reports Command Code platform support as `probe_required` pending a live
-probe; the mapper alone does not establish live repository registration or adapter discovery.
+probe; the mapper and repository registrations do not establish live enforcement or adapter discovery.
 
 Documented hooks and [mods](https://commandcode.ai/docs/mods) expose no permission-request event. The accepted setup
 limitation is therefore no permission-request notification hook. The capture command and authenticated live session
 were not exercised in this documentation pass; the feature executor owns those checks.
+
+### Command Code repository configuration
+
+[Settings](../../.commandcode/settings.json) register the three events above and the existing Public policies through
+[the native bridge](../../.commandcode/hooks/run-policy-hook.sh). Native payloads retain their fields while file paths,
+multi-read paths, shell argv, and requested cwd are supplied to the existing delegates. HIPPO and environment guards
+fail closed. The Markdown formatter has one transactional standard admission; other calls do not request it.
+
+The `commandcode` profile declares native tool grants and denials, imports canonical agent bodies, and rejects nested
+native dispatch for its leaves. It emits no `model`, `featureModels`, `effort`, or `reasoningEffort` selectors.
+The active session chooses the model. Installed Command Code 1.77 pure caller/resolver evidence shows inherited-model
+leaves receive supported session reasoning effort; absent or unsupported effort supplies no override. This is scoped
+native evidence, not a provider-call or discovery proof, and omission is not a claim about every runtime version.
+
+`.commandcode/settings.local.json` and all `.commandcode/taste/` contents are personal and ignored by Git, Prettier,
+and Markdownlint. RHINO excludes directory names, so the declared `taste` scanner exclusion matches that name at any
+depth; no governed tracked `taste` directory exists when it is added. This does not disable learning or alter global
+Git settings. No optional instruction shim or duplicated skills tree is shipped.
 
 ### Provenance of pre-existing partial bindings
 

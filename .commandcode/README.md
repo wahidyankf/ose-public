@@ -6,9 +6,11 @@ Roles that dispatch nested agents remain canonical main-session instructions, ra
 
 ## Contents
 
-- [Settings](settings.json) — Repository policy and three FERRET lifecycle registrations.
+- [Settings](settings.json) — One repository policy endpoint and existing reminder/formatter registrations.
 - [Hooks](hooks/README.md) — Native policy transport and its synthetic checks.
 
 No repository model or reasoning-effort pin is declared. Personal settings in `settings.local.json` and the entire
 `taste/` learning tree stay outside Git and repository checks; learning remains enabled. See the
 [platform catalog](../docs/reference/platform-bindings.md) for representation and runtime proof limits.
+
+FERRET capture belongs to global configuration; repository settings contain no duplicate capture registrations.

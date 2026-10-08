@@ -115,6 +115,124 @@ harness:
           - { when: constrains, capability: no-glob, field: tools, absent-members: [Glob] }
           - { when: constrains, capability: no-read, field: tools, absent-members: [Read] }
           - { when: constrains, capability: no-write, field: tools, absent-members: [Write] }
+          # Serena base mappings: ose-rules@cc58f5227238d01995cb581857a91d12170e1ade; local overlays retained.
+          - when: requires
+            capability: repository-read
+            field: tools
+            members:
+              - mcp__serena__activate_project
+              - mcp__serena__initial_instructions
+              - mcp__serena__get_current_config
+              - mcp__serena__get_symbols_overview
+              - mcp__serena__find_symbol
+              - mcp__serena__find_referencing_symbols
+              - mcp__serena__find_implementations
+              - mcp__serena__find_declaration
+              - mcp__serena__get_diagnostics_for_file
+              - mcp__serena__get_diagnostics_for_symbol
+              - mcp__serena__search_for_pattern
+              - mcp__serena__read_memory
+              - mcp__serena__list_memories
+          - when: requires
+            capability: repository-write
+            field: tools
+            members:
+              - mcp__serena__replace_symbol_body
+              - mcp__serena__insert_after_symbol
+              - mcp__serena__insert_before_symbol
+              - mcp__serena__rename_symbol
+              - mcp__serena__safe_delete_symbol
+              - mcp__serena__replace_content
+              - mcp__serena__replace_in_files
+              - mcp__serena__create_text_file
+              - mcp__serena__delete_lines
+              - mcp__serena__replace_lines
+              - mcp__serena__insert_at_line
+              - mcp__serena__write_memory
+              - mcp__serena__delete_memory
+              - mcp__serena__rename_memory
+              - mcp__serena__edit_memory
+              - mcp__serena__execute_shell_command
+              - mcp__serena__remove_project
+          - when: constrains
+            capability: read-only
+            field: disallowedTools
+            members:
+              - mcp__serena__replace_symbol_body
+              - mcp__serena__insert_after_symbol
+              - mcp__serena__insert_before_symbol
+              - mcp__serena__rename_symbol
+              - mcp__serena__safe_delete_symbol
+              - mcp__serena__replace_content
+              - mcp__serena__replace_in_files
+              - mcp__serena__create_text_file
+              - mcp__serena__delete_lines
+              - mcp__serena__replace_lines
+              - mcp__serena__insert_at_line
+              - mcp__serena__write_memory
+              - mcp__serena__delete_memory
+              - mcp__serena__rename_memory
+              - mcp__serena__edit_memory
+              - mcp__serena__execute_shell_command
+              - mcp__serena__remove_project
+          - when: constrains
+            capability: no-write
+            field: disallowedTools
+            members:
+              - mcp__serena__replace_symbol_body
+              - mcp__serena__insert_after_symbol
+              - mcp__serena__insert_before_symbol
+              - mcp__serena__rename_symbol
+              - mcp__serena__safe_delete_symbol
+              - mcp__serena__replace_content
+              - mcp__serena__replace_in_files
+              - mcp__serena__create_text_file
+              - mcp__serena__delete_lines
+              - mcp__serena__replace_lines
+              - mcp__serena__insert_at_line
+              - mcp__serena__write_memory
+              - mcp__serena__delete_memory
+              - mcp__serena__rename_memory
+              - mcp__serena__edit_memory
+              - mcp__serena__execute_shell_command
+              - mcp__serena__remove_project
+          - when: constrains
+            capability: no-edit
+            field: disallowedTools
+            members:
+              - mcp__serena__replace_symbol_body
+              - mcp__serena__insert_after_symbol
+              - mcp__serena__insert_before_symbol
+              - mcp__serena__rename_symbol
+              - mcp__serena__safe_delete_symbol
+              - mcp__serena__replace_content
+              - mcp__serena__replace_in_files
+              - mcp__serena__delete_lines
+              - mcp__serena__replace_lines
+              - mcp__serena__insert_at_line
+              - mcp__serena__delete_memory
+              - mcp__serena__rename_memory
+              - mcp__serena__edit_memory
+              - mcp__serena__remove_project
+          - when: constrains
+            capability: no-read
+            field: disallowedTools
+            members:
+              - mcp__serena__get_symbols_overview
+              - mcp__serena__find_symbol
+              - mcp__serena__find_referencing_symbols
+              - mcp__serena__find_implementations
+              - mcp__serena__find_declaration
+              - mcp__serena__get_diagnostics_for_file
+              - mcp__serena__get_diagnostics_for_symbol
+              - mcp__serena__search_for_pattern
+              - mcp__serena__read_memory
+              - mcp__serena__list_memories
+          - when: constrains
+            capability: no-glob
+            field: disallowedTools
+            members:
+              - mcp__serena__find_file
       skill-adapter:
         path: ".claude/skills/{name}/SKILL.md"
         format: front-matter
@@ -312,6 +430,124 @@ harness:
               members: [shell_command, run_command, kill_shell],
             }
           - { when: denies, capability: network, field: disallowedTools, members: [web_search, web_fetch] }
+          # Serena base mappings: ose-rules@cc58f5227238d01995cb581857a91d12170e1ade; local overlays retained.
+          - when: requires
+            capability: repository-read
+            field: tools
+            members:
+              - mcp__serena__activate_project
+              - mcp__serena__initial_instructions
+              - mcp__serena__get_current_config
+              - mcp__serena__get_symbols_overview
+              - mcp__serena__find_symbol
+              - mcp__serena__find_referencing_symbols
+              - mcp__serena__find_implementations
+              - mcp__serena__find_declaration
+              - mcp__serena__get_diagnostics_for_file
+              - mcp__serena__get_diagnostics_for_symbol
+              - mcp__serena__search_for_pattern
+              - mcp__serena__read_memory
+              - mcp__serena__list_memories
+          - when: requires
+            capability: repository-write
+            field: tools
+            members:
+              - mcp__serena__replace_symbol_body
+              - mcp__serena__insert_after_symbol
+              - mcp__serena__insert_before_symbol
+              - mcp__serena__rename_symbol
+              - mcp__serena__safe_delete_symbol
+              - mcp__serena__replace_content
+              - mcp__serena__replace_in_files
+              - mcp__serena__create_text_file
+              - mcp__serena__delete_lines
+              - mcp__serena__replace_lines
+              - mcp__serena__insert_at_line
+              - mcp__serena__write_memory
+              - mcp__serena__delete_memory
+              - mcp__serena__rename_memory
+              - mcp__serena__edit_memory
+              - mcp__serena__execute_shell_command
+              - mcp__serena__remove_project
+          - when: constrains
+            capability: read-only
+            field: disallowedTools
+            members:
+              - mcp__serena__replace_symbol_body
+              - mcp__serena__insert_after_symbol
+              - mcp__serena__insert_before_symbol
+              - mcp__serena__rename_symbol
+              - mcp__serena__safe_delete_symbol
+              - mcp__serena__replace_content
+              - mcp__serena__replace_in_files
+              - mcp__serena__create_text_file
+              - mcp__serena__delete_lines
+              - mcp__serena__replace_lines
+              - mcp__serena__insert_at_line
+              - mcp__serena__write_memory
+              - mcp__serena__delete_memory
+              - mcp__serena__rename_memory
+              - mcp__serena__edit_memory
+              - mcp__serena__execute_shell_command
+              - mcp__serena__remove_project
+          - when: constrains
+            capability: no-write
+            field: disallowedTools
+            members:
+              - mcp__serena__replace_symbol_body
+              - mcp__serena__insert_after_symbol
+              - mcp__serena__insert_before_symbol
+              - mcp__serena__rename_symbol
+              - mcp__serena__safe_delete_symbol
+              - mcp__serena__replace_content
+              - mcp__serena__replace_in_files
+              - mcp__serena__create_text_file
+              - mcp__serena__delete_lines
+              - mcp__serena__replace_lines
+              - mcp__serena__insert_at_line
+              - mcp__serena__write_memory
+              - mcp__serena__delete_memory
+              - mcp__serena__rename_memory
+              - mcp__serena__edit_memory
+              - mcp__serena__execute_shell_command
+              - mcp__serena__remove_project
+          - when: constrains
+            capability: no-edit
+            field: disallowedTools
+            members:
+              - mcp__serena__replace_symbol_body
+              - mcp__serena__insert_after_symbol
+              - mcp__serena__insert_before_symbol
+              - mcp__serena__rename_symbol
+              - mcp__serena__safe_delete_symbol
+              - mcp__serena__replace_content
+              - mcp__serena__replace_in_files
+              - mcp__serena__delete_lines
+              - mcp__serena__replace_lines
+              - mcp__serena__insert_at_line
+              - mcp__serena__delete_memory
+              - mcp__serena__rename_memory
+              - mcp__serena__edit_memory
+              - mcp__serena__remove_project
+          - when: constrains
+            capability: no-read
+            field: disallowedTools
+            members:
+              - mcp__serena__get_symbols_overview
+              - mcp__serena__find_symbol
+              - mcp__serena__find_referencing_symbols
+              - mcp__serena__find_implementations
+              - mcp__serena__find_declaration
+              - mcp__serena__get_diagnostics_for_file
+              - mcp__serena__get_diagnostics_for_symbol
+              - mcp__serena__search_for_pattern
+              - mcp__serena__read_memory
+              - mcp__serena__list_memories
+          - when: constrains
+            capability: no-glob
+            field: disallowedTools
+            members:
+              - mcp__serena__find_file
       tiers:
         ultra: {}
         plan: {}
@@ -995,11 +1231,10 @@ gates:
     - id: harness-adapters
       type: check
       command:
-        executable: ./rhino
+        executable: bash
         args:
-          - literal: harness
-          - literal: adapters
-          - literal: validate
+          - literal: -c
+          - literal: "./rhino harness adapters validate && exec bash .commandcode/hooks/policy-hooks.test.sh"
       run-on:
         pre-commit: {}
         pull-request: {}

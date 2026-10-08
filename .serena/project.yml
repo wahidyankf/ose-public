@@ -1,0 +1,19 @@
+project_name: "ose-public"
+language_servers:
+  - typescript
+  - go
+  - python
+  - java
+  - kotlin
+  - rust
+  - csharp
+  - fsharp
+  - bash
+encoding: utf-8
+ignore_all_files_in_gitignore: true
+ignored_paths:
+  - "**/.[eE][nN][vV].[pP][rR][oO][dD]"
+  - "**/.[eE][nN][vV].[sS][tT][aA][gG]"
+  - "!**/.[eE][nN][vV].[eE][xX][aA][mM][pP][lL][eE]"
+  - "**/[sS][eE][cC][rR][eE][tT][sS]/**"
+  - "**/[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL][sS]/**"

@@ -1,20 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "zai-coding-plan/glm-5.2",
-  "small_model": "zai-coding-plan/glm-5.2",
-  "provider": {
-    "zai-coding-plan": {
-      "options": {
-        "baseURL": "https://api.z.ai/api/coding/paas/v4",
-        "apiKey": "{env:ZHIPU_API_KEY}"
-      }
-    },
-    "opencode-go": {
-      "options": {
-        "apiKey": "{env:OPENCODE_GO_API_KEY}"
-      }
-    }
-  },
   "tools": {
     "websearch": true,
     "codesearch": true
@@ -22,29 +7,19 @@
   "permission": {
     "read": {
       "*": "allow",
-      "**/.env": "deny",
-      "**/.env.local": "deny",
-      "**/.env.development": "deny",
-      "**/.env.production": "deny",
-      "**/.env.staging": "deny",
       "**/.env.prod": "deny",
       "**/.env.stag": "deny",
-      "**/.env.test": "deny",
       "**/.env.example": "allow",
-      "apps/*/content/**/*.env": "allow"
+      "**/secrets/**": "deny",
+      "**/credentials/**": "deny"
     },
     "edit": {
       "*": "allow",
-      "**/.env": "deny",
-      "**/.env.local": "deny",
-      "**/.env.development": "deny",
-      "**/.env.production": "deny",
-      "**/.env.staging": "deny",
       "**/.env.prod": "deny",
       "**/.env.stag": "deny",
-      "**/.env.test": "deny",
       "**/.env.example": "allow",
-      "apps/*/content/**/*.env": "allow"
+      "**/secrets/**": "deny",
+      "**/credentials/**": "deny"
     },
     "bash": {
       "*": "allow",
@@ -105,7 +80,8 @@
     "task": "allow",
     "external_directory": {
       "/tmp/**": "allow"
-    }
+    },
+    "*": "allow"
   },
   "mcp": {
     "playwright": {

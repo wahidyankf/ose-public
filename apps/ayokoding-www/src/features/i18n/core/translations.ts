@@ -23,7 +23,7 @@ const translations: Record<Locale, Record<string, string>> = {
     toolsPageCalcDesc: "Compare monthly living costs, savings, and the minimum role needed across cities.",
     toolsPageAiBenchLink: "AI Model Benchmark",
     toolsPageAiBenchDesc:
-      "Compare coding models by independently measured capability tier and API price, and find OpenCode Go substitutes.",
+      "Compare coding models by independently measured capability tier and API price, and find substitutes in Command Code or OpenCode Go.",
     breadcrumbHome: "Home",
     breadcrumbCalculator: "Calculator",
 
@@ -32,21 +32,22 @@ const translations: Record<Locale, Record<string, string>> = {
     // placeholders are filled by `fill()` in `features/ai-benchmark/shell/format.ts`.
     aiBenchTitle: "AI Model Benchmark",
     aiBenchSubtitle:
-      "Which coding model is good enough for the job, what it costs, and which OpenCode Go model can stand in for it.",
+      "Which coding model is good enough for the job, what it costs, and which Command Code or OpenCode Go model can stand in for it.",
     aiBenchLastUpdatedLabel: "Last updated",
     aiBenchIndependentOnly:
       "Scores come only from benchmarks run by independent operators. Results that a model's own vendor reports are neither shown nor counted.",
     aiBenchJumpToMethod: "How the score works",
 
-    aiBenchFinderHeading: "Find an OpenCode Go substitute",
+    aiBenchFinderHeading: "Find a substitute in {harness}",
     aiBenchFinderIntro:
-      "Pick a frontier model to see which OpenCode Go models reach at least its tier, and how their price compares.",
+      "Pick a frontier model to see which {harness} models reach at least its tier, and how their price compares.",
     aiBenchFinderLabel: "Frontier model",
+    aiBenchFinderHarnessLabel: "Substitute harness",
     aiBenchFinderPlaceholder: "Choose a model…",
     aiBenchFinderTarget: "{model} is in the {tier} tier, index {index}, blended price {price}.",
     aiBenchFinderTargetNoPrice: "{model} is in the {tier} tier, index {index}; no public API price.",
-    aiBenchFinderMatches: "OpenCode Go models in the same tier or higher:",
-    aiBenchFinderNearest: "No OpenCode Go model reaches the {tier} tier yet. The closest options:",
+    aiBenchFinderMatches: "{harness} models in the same tier or higher:",
+    aiBenchFinderNearest: "No {harness} model reaches the {tier} tier yet. The closest options:",
     aiBenchFinderInsufficient:
       "{model} has too few independent results to compare. Its available scores are in the table below.",
     aiBenchFinderNoneCheaper: "None of these is cheaper per token than {model}.",
@@ -113,14 +114,14 @@ const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodWeight: "weight {weight}",
     aiBenchMethodSourceOrderIntro: "Sources, in order of preference:",
     aiBenchMethodRoster:
-      "Roster: models from the frontier vendors ({frontier}), every {substitute} model with a named vendor, and each listed harness's own in-house models ({inHouse}), up to three generations per model line.",
+      "Roster: models from the frontier vendors ({frontier}), every {catalogs} model with a named vendor, and each listed harness's own in-house models ({inHouse}), up to three generations per model line.",
     aiBenchMethodIndex:
       "Index: the average of a model's scores on the benchmarks it has. A model needs at least {min} to get an index and a tier.",
     aiBenchMethodTiers:
       "Tiers: each one is defined by a previous-generation anchor model. A model goes in the highest tier whose anchor's index it matches or beats, so a model's tier always follows its index.",
     aiBenchMethodAnchorsIntro: "Tier anchors:",
     aiBenchMethodPrice:
-      "Price: the vendor's standard API rate per 1M tokens. Blended = (3 × input + output) ÷ 4, a typical coding-agent mix. Where a vendor publishes no price page, the rate OpenCode lists is used and marked “OpenCode rate”.",
+      "Price: the vendor's standard API rate per 1M tokens. Blended = (3 × input + output) ÷ 4, a typical coding-agent mix. Where a vendor publishes no price page, the rate OpenCode lists is used and marked “OpenCode rate”; where OpenCode does not carry the model either, the rate Command Code lists is used and marked “Command Code rate”.",
     aiBenchMethodCostPerTask:
       "Cost per task: Artificial Analysis' average spend per benchmark task, where it publishes one.",
     aiBenchMethodCaveat:
@@ -134,6 +135,7 @@ const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodMeets: "reaches that tier",
     aiBenchMethodMisses: "stays below that tier",
     aiBenchOpencodeRate: "OpenCode rate",
+    aiBenchCommandCodeRate: "Command Code rate",
 
     aiBenchSourcesHeading: "Sources and checked dates",
     aiBenchSourcesBenchmarks: "Benchmark results",
@@ -410,7 +412,7 @@ const translations: Record<Locale, Record<string, string>> = {
       "Bandingkan biaya hidup bulanan, tabungan, dan jabatan minimum yang dibutuhkan di berbagai kota.",
     toolsPageAiBenchLink: "Tolok Ukur Model AI",
     toolsPageAiBenchDesc:
-      "Bandingkan model koding berdasarkan tingkat kemampuan yang diukur independen dan harga API, serta cari pengganti di OpenCode Go.",
+      "Bandingkan model koding berdasarkan tingkat kemampuan yang diukur independen dan harga API, serta cari pengganti di Command Code atau OpenCode Go.",
     breadcrumbHome: "Beranda",
     breadcrumbCalculator: "Kalkulator",
 
@@ -418,21 +420,22 @@ const translations: Record<Locale, Record<string, string>> = {
     // sebagai ID mentahnya, dan tes halaman memastikan tidak ada token "aiBench" yang bocor.
     aiBenchTitle: "Tolok Ukur Model AI",
     aiBenchSubtitle:
-      "Model koding mana yang cukup untuk pekerjaanmu, berapa biayanya, dan model OpenCode Go mana yang bisa menggantikannya.",
+      "Model koding mana yang cukup untuk pekerjaanmu, berapa biayanya, dan model Command Code atau OpenCode Go mana yang bisa menggantikannya.",
     aiBenchLastUpdatedLabel: "Terakhir diperbarui",
     aiBenchIndependentOnly:
       "Skor hanya berasal dari benchmark yang dijalankan pihak independen. Hasil yang dilaporkan vendor modelnya sendiri tidak ditampilkan dan tidak dihitung.",
     aiBenchJumpToMethod: "Cara skor dihitung",
 
-    aiBenchFinderHeading: "Cari pengganti di OpenCode Go",
+    aiBenchFinderHeading: "Cari pengganti di {harness}",
     aiBenchFinderIntro:
-      "Pilih model frontier untuk melihat model OpenCode Go mana yang setidaknya setingkat, dan bagaimana perbandingan harganya.",
+      "Pilih model frontier untuk melihat model {harness} mana yang setidaknya setingkat, dan bagaimana perbandingan harganya.",
     aiBenchFinderLabel: "Model frontier",
+    aiBenchFinderHarnessLabel: "Harness pengganti",
     aiBenchFinderPlaceholder: "Pilih model…",
     aiBenchFinderTarget: "{model} ada di tingkat {tier}, indeks {index}, harga gabungan {price}.",
     aiBenchFinderTargetNoPrice: "{model} ada di tingkat {tier}, indeks {index}; belum ada harga API publik.",
-    aiBenchFinderMatches: "Model OpenCode Go di tingkat yang sama atau lebih tinggi:",
-    aiBenchFinderNearest: "Belum ada model OpenCode Go yang mencapai tingkat {tier}. Pilihan terdekat:",
+    aiBenchFinderMatches: "Model {harness} di tingkat yang sama atau lebih tinggi:",
+    aiBenchFinderNearest: "Belum ada model {harness} yang mencapai tingkat {tier}. Pilihan terdekat:",
     aiBenchFinderInsufficient:
       "{model} belum punya cukup hasil independen untuk dibandingkan. Skor yang ada tercantum di tabel di bawah.",
     aiBenchFinderNoneCheaper: "Tidak ada yang lebih murah per token daripada {model}.",
@@ -499,14 +502,14 @@ const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodWeight: "bobot {weight}",
     aiBenchMethodSourceOrderIntro: "Sumber, urut prioritas:",
     aiBenchMethodRoster:
-      "Daftar model: model dari vendor frontier ({frontier}), semua model {substitute} yang vendornya jelas, dan model buatan sendiri tiap harness yang tercantum ({inHouse}), hingga tiga generasi per lini model.",
+      "Daftar model: model dari vendor frontier ({frontier}), semua model {catalogs} yang vendornya jelas, dan model buatan sendiri tiap harness yang tercantum ({inHouse}), hingga tiga generasi per lini model.",
     aiBenchMethodIndex:
       "Indeks: rata-rata skor model pada benchmark yang dimilikinya. Model butuh setidaknya {min} benchmark untuk mendapat indeks dan tingkat.",
     aiBenchMethodTiers:
       "Tingkat: masing-masing ditentukan oleh satu model patokan generasi sebelumnya. Model masuk ke tingkat tertinggi yang indeks patokannya ia samai atau lampaui, jadi tingkat model selalu mengikuti indeksnya.",
     aiBenchMethodAnchorsIntro: "Model patokan tiap tingkat:",
     aiBenchMethodPrice:
-      "Harga: tarif API standar vendor per 1 juta token. Gabungan = (3 × input + output) ÷ 4, campuran yang umum untuk agen koding. Bila vendor tidak menerbitkan halaman harga, tarif yang dicantumkan OpenCode dipakai dan ditandai “tarif OpenCode”.",
+      "Harga: tarif API standar vendor per 1 juta token. Gabungan = (3 × input + output) ÷ 4, campuran yang umum untuk agen koding. Bila vendor tidak menerbitkan halaman harga, tarif yang dicantumkan OpenCode dipakai dan ditandai “tarif OpenCode”; bila OpenCode juga tidak menyediakan modelnya, tarif yang dicantumkan Command Code dipakai dan ditandai “tarif Command Code”.",
     aiBenchMethodCostPerTask:
       "Biaya per tugas: rata-rata biaya per tugas benchmark menurut Artificial Analysis, bila mereka menerbitkannya.",
     aiBenchMethodCaveat:
@@ -520,6 +523,7 @@ const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodMeets: "mencapai tingkat itu",
     aiBenchMethodMisses: "masih di bawah tingkat itu",
     aiBenchOpencodeRate: "tarif OpenCode",
+    aiBenchCommandCodeRate: "tarif Command Code",
 
     aiBenchSourcesHeading: "Sumber dan tanggal pengecekan",
     aiBenchSourcesBenchmarks: "Hasil benchmark",

@@ -7,7 +7,8 @@ when_to_use: "Use when starting a refresh or working out what the research and d
 
 Paths starting `core/` or `shell/` are relative to `apps/ayokoding-www/src/features/ai-benchmark/`. The
 [Data-Sourcing Prompt](../../../../apps/ayokoding-www/docs/ai-benchmark/data-sourcing-prompt.md) names the
-roster, the boards, and the substitute harness; this page uses neutral terms for them.
+roster, the boards, the catalog harnesses, and the substitute harnesses; this page uses neutral terms for
+them.
 
 ## 0. Worktree (Procedure, Sequential)
 
@@ -28,8 +29,9 @@ compute runs through `./hippo run`, per
 
 - **Roster and prices**: Prompt 1 item 2, the frontier vendors' roster and API prices
 - **Results**: Prompt 2, the independent benchmark results and each board's last-updated date
-- **Substitute harness and availability**: Prompt 1 items 1 and 3, the substitute-harness roster with
-  its prices, and per-model harness availability
+- **Catalog harnesses and availability**: Prompt 1 items 1, 3, and 4, each catalog harness's roster
+  with its listed prices, the plan's own model list behind each plan-scoped harness, and per-model
+  harness availability
 
 - **Args**: the matching prompt in the Data-Sourcing Prompt; its rules govern the research
 - **Output**: cited rows plus each board's last-updated date. The researcher is read-only, so the main

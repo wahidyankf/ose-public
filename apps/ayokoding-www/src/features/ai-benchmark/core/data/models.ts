@@ -1,9 +1,10 @@
-// AI BENCHMARK DATASET — last updated 2026-10-01.
+// AI BENCHMARK DATASET — last updated 2026-10-08.
 //
 // Roster: every model from the four frontier vendors (Anthropic, OpenAI, Google, xAI), every model
-// on OpenCode Go with an identified vendor, and each listed harness's own in-house models
-// (`HARNESS_IN_HOUSE_LINES`, e.g. Cursor Composer), keeping up to three generations of each line (the
-// latest and the two before it) that are still served by the vendor's API or a listed harness.
+// on the catalog harnesses (OpenCode Go and Command Code) with an identified vendor, and each listed
+// harness's own in-house models (`HARNESS_IN_HOUSE_LINES`, e.g. Cursor Composer), keeping up to three
+// generations of each line (the latest and the two before it) that are still served by the vendor's
+// API or a listed harness. A serving variant a catalog lists under its own id is its own row.
 //
 // Figures: independent runs only. For each (model, benchmark) the first available source wins:
 //   1. Artificial Analysis Coding Agent Index v1.5 — the model's best published configuration in
@@ -11,8 +12,9 @@
 //   2. DeepSWE: Datacurve's v1.1 board (best effort level);
 //      Terminal-Bench 4.0: Artificial Analysis' evaluation page → the official board → Vals AI;
 //      SWE-Atlas QnA: Scale AI's board.
-// Prices: the vendor's standard API rate per 1M tokens; the OpenCode-listed rate only where the
-// vendor publishes no reachable price page (`listedBy: "opencode"`).
+// Prices: the vendor's standard API rate per 1M tokens; where the vendor publishes no reachable price
+// page, the OpenCode-listed rate for a model an OpenCode harness sells (`listedBy: "opencode"`), else
+// the Command Code-listed rate (`listedBy: "commandcode"`).
 //
 // To re-source this data, follow ../../../../../docs/ai-benchmark/data-sourcing-prompt.md.
 
@@ -21,6 +23,8 @@ import { operatorById } from "./operators";
 import type { ApiPrice, BenchmarkId, CostPerTask, Dataset, Figure, OperatorId } from "./types";
 
 const AA_TB4_EVAL = "https://artificialanalysis.ai/evaluations/terminalbench-4-0";
+/** An Artificial Analysis model comparison page, which carries the same Terminal-Bench 4.0 evaluation data. */
+const aaCmp = (slug: string) => `https://artificialanalysis.ai/models/comparisons/${slug}`;
 
 function figure(benchmark: BenchmarkId, value: number, operator: OperatorId, config: string, source?: string): Figure {
   return {
@@ -44,9 +48,8 @@ function aa(config: string, deepSwe: number, terminalBench: number, qna: number)
 
 const datacurve = (value: number, effort: string) =>
   figure("deep-swe", value, "datacurve", `mini-SWE-agent, ${effort} effort`);
-const aaTb4 = (value: number, config: string) =>
-  figure("terminal-bench", value, "artificial-analysis", config, AA_TB4_EVAL);
-const tbench = (value: number, agent: string) => figure("terminal-bench", value, "terminal-bench", agent);
+const aaTb4 = (value: number, config: string, source: string = AA_TB4_EVAL) =>
+  figure("terminal-bench", value, "artificial-analysis", config, source);
 const vals = (value: number) => figure("terminal-bench", value, "vals", "mini-SWE-agent");
 const scale = (value: number, config: string) => figure("swe-atlas-qna", value, "scale", config);
 /** An Artificial Analysis Terminal-Bench 4.0 figure read from a model comparison page, shown as a whole percent. */
@@ -71,8 +74,14 @@ const PRICE_URL = {
   alibaba: "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
   minimax: "https://platform.minimax.io/docs/guides/pricing-paygo",
   meta: "https://dev.meta.ai/docs/pricing-rate-limits",
+  xiaomi: "https://mimo.mi.com/models/en-US/mimo-v2.6-pro-ultraspeed",
+  mistral: "https://docs.mistral.ai/models/mistral-large-4-0",
+  stepfun: "https://platform.stepfun.ai/docs/en/guides/pricing/details",
+  thinkingMachines: "https://tinker-docs.thinkingmachines.ai/tinker/models/models_and_pricing/index.md",
+  sakana: "https://sakana.ai/fugu",
   opencodeGo: "https://opencode.ai/docs/go/",
   opencodeZen: "https://opencode.ai/docs/zen/",
+  commandCode: "https://commandcode.ai/models",
 } as const;
 
 function vendorPrice(input: number, output: number, source: string, note?: string): ApiPrice {
@@ -83,13 +92,18 @@ function opencodePrice(input: number, output: number, source: string, note?: str
   return { input, output, source, listedBy: "opencode", note };
 }
 
+function commandCodePrice(input: number, output: number, note?: string): ApiPrice {
+  return { input, output, source: PRICE_URL.commandCode, listedBy: "commandcode", note };
+}
+
 const GROK_LONG = "Prompts of 200K tokens or more: $4 / $12.";
 const GEMINI_FLASH_PROMO = "Promotional through 2026-12-31; $1.50 / $7.50 from 2027-01-01.";
 const DEEPSEEK_PEAK = "Peak-hour rate; off-peak is half.";
-const MUSE_CONTRIBUTOR = "OpenCode Go carries the cheaper Contributor tier, on which Meta may train on submissions.";
+const MUSE_CONTRIBUTOR = "Meta's cheaper Contributor tier, on which Meta may train on submissions.";
+const TINKER_BETA = "Tinker serverless inference (beta).";
 
 export const dataset: Dataset = {
-  lastUpdated: "2026-10-01",
+  lastUpdated: "2026-10-08",
   models: [
     // ── Anthropic ───────────────────────────────────────────────────────────────
     {
@@ -99,7 +113,7 @@ export const dataset: Dataset = {
       line: "Fable",
       releaseDate: "2026-09-01",
       access: "general",
-      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      harnesses: ["claude-code", "command-code", "cursor", "opencode-zen"],
       figures: aa("Claude Code, max effort (provider fallback on 74 attempts)", 64.31, 57.58, 64.78),
       price: vendorPrice(10, 50, PRICE_URL.anthropic),
       costPerTask: aaCost(12.39),
@@ -111,10 +125,10 @@ export const dataset: Dataset = {
       line: "Fable",
       releaseDate: "2026-06-09",
       access: "general",
-      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      harnesses: ["claude-code", "command-code", "cursor", "opencode-zen"],
       figures: [
         datacurve(69.91, "xhigh"),
-        tbench(44.55, "Claude Code"),
+        aaTb4(42.42, "mini-SWE-agent (with provider fallback)", aaCmp("claude-fable-5-vs-claude-opus-5-5")),
         scale(39.0, "Claude Code, xhigh effort (refusals scored as failures)"),
       ],
       price: vendorPrice(10, 50, PRICE_URL.anthropic),
@@ -126,7 +140,7 @@ export const dataset: Dataset = {
       line: "Opus",
       releaseDate: "2026-09-22",
       access: "general",
-      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      harnesses: ["claude-code", "command-code", "cursor", "opencode-zen"],
       figures: aa("Claude Code, max effort (provider fallback on 78 attempts)", 68.44, 63.13, 66.4),
       price: vendorPrice(4, 20, PRICE_URL.anthropic),
       costPerTask: aaCost(13.04),
@@ -138,7 +152,7 @@ export const dataset: Dataset = {
       line: "Opus",
       releaseDate: "2026-07-24",
       access: "general",
-      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      harnesses: ["claude-code", "command-code", "cursor", "opencode-zen"],
       figures: aa("Claude Code, max effort (provider fallback on 3 attempts)", 62.54, 54.55, 62.1),
       price: vendorPrice(5, 25, PRICE_URL.anthropic),
       costPerTask: aaCost(10.79),
@@ -150,10 +164,10 @@ export const dataset: Dataset = {
       line: "Opus",
       releaseDate: "2026-05-28",
       access: "general",
-      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      harnesses: ["claude-code", "command-code", "cursor", "opencode-zen"],
       figures: [
         datacurve(58.97, "max"),
-        tbench(23.64, "Claude Code, max effort"),
+        aaTb4(21.72, "mini-SWE-agent, max effort", aaCmp("claude-opus-4-8-vs-claude-sonnet-5")),
         scale(57.26, "Claude Code, xhigh effort"),
       ],
       price: vendorPrice(5, 25, PRICE_URL.anthropic),
@@ -165,7 +179,7 @@ export const dataset: Dataset = {
       line: "Sonnet",
       releaseDate: "2026-09-28",
       access: "general",
-      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      harnesses: ["claude-code", "command-code", "command-code-pro", "cursor", "opencode-zen"],
       figures: aa("Claude Code, max effort (provider fallback on 45 attempts)", 71.98, 66.16, 66.94),
       price: vendorPrice(2, 10, PRICE_URL.anthropic),
       costPerTask: aaCost(14.19),
@@ -177,8 +191,11 @@ export const dataset: Dataset = {
       line: "Sonnet",
       releaseDate: "2026-06-30",
       access: "general",
-      harnesses: ["claude-code", "cursor", "opencode-zen"],
-      figures: [datacurve(53.85, "max"), tbench(12.42, "Claude Code")],
+      harnesses: ["claude-code", "command-code", "command-code-pro", "cursor", "opencode-zen"],
+      figures: [
+        datacurve(53.85, "max"),
+        aaTb4(14.14, "mini-SWE-agent, max effort", aaCmp("claude-opus-4-8-vs-claude-sonnet-5")),
+      ],
       price: vendorPrice(2, 10, PRICE_URL.anthropic),
     },
     {
@@ -188,9 +205,21 @@ export const dataset: Dataset = {
       line: "Sonnet",
       releaseDate: "2026-02-17",
       access: "general",
-      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      harnesses: ["claude-code", "command-code", "command-code-pro", "cursor", "opencode-zen"],
       figures: [datacurve(29.93, "high"), scale(31.2, "Claude Code")],
       price: vendorPrice(3, 15, PRICE_URL.anthropic),
+    },
+    {
+      id: "claude-haiku-5-5",
+      name: "Claude Haiku 5.5",
+      vendor: "Anthropic",
+      line: "Haiku",
+      releaseDate: "2026-10-07",
+      access: "general",
+      harnesses: ["claude-code", "command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+      figures: aa("Claude Code, xhigh effort (provider fallback on 1 attempt)", 48.97, 23.74, 51.61),
+      price: vendorPrice(0.1, 0.5, PRICE_URL.anthropic, "Prompts over 100K tokens: $0.50 / $2.50."),
+      costPerTask: aaCost(0.61),
     },
     {
       id: "claude-haiku-4-5",
@@ -199,7 +228,7 @@ export const dataset: Dataset = {
       line: "Haiku",
       releaseDate: "2025-10-15",
       access: "general",
-      harnesses: ["claude-code", "cursor", "opencode-zen"],
+      harnesses: ["claude-code", "command-code", "command-code-pro", "cursor", "opencode-zen"],
       figures: [],
       price: vendorPrice(1, 5, PRICE_URL.anthropic),
     },
@@ -236,7 +265,7 @@ export const dataset: Dataset = {
       line: "Astra",
       releaseDate: "2026-09-03",
       access: "limited",
-      harnesses: ["codex-cli", "opencode-zen"],
+      harnesses: ["codex-cli", "command-code", "opencode-zen"],
       figures: aa("Codex, max effort", 67.55, 55.56, 61.83),
       price: vendorPrice(10, 50, PRICE_URL.openai, "Prompts over 272K tokens: 2× input, 1.5× output."),
       costPerTask: aaCost(7.47),
@@ -249,7 +278,7 @@ export const dataset: Dataset = {
       line: "Sol",
       releaseDate: "2026-09-29",
       access: "general",
-      harnesses: ["codex-cli", "opencode-zen"],
+      harnesses: ["codex-cli", "command-code", "opencode-zen"],
       figures: aa("Codex, xhigh effort", 73.16, 54.55, 61.02),
       price: vendorPrice(2, 10, PRICE_URL.openai),
       costPerTask: aaCost(1.04),
@@ -261,7 +290,7 @@ export const dataset: Dataset = {
       line: "Sol",
       releaseDate: "2026-09-22",
       access: "general",
-      harnesses: ["codex-cli", "opencode-zen"],
+      harnesses: ["codex-cli", "command-code", "command-code-pro", "opencode-zen"],
       figures: aa("Codex, max effort", 69.03, 43.43, 57.53),
       price: vendorPrice(2, 10, PRICE_URL.openai),
       costPerTask: aaCost(2.99),
@@ -273,7 +302,7 @@ export const dataset: Dataset = {
       line: "Sol",
       releaseDate: "2026-07-09",
       access: "general",
-      harnesses: ["codex-cli", "cursor", "opencode-zen"],
+      harnesses: ["codex-cli", "command-code", "command-code-pro", "cursor", "opencode-zen"],
       figures: aa("Codex, max effort", 72.27, 37.37, 54.03),
       price: vendorPrice(4, 20, PRICE_URL.openai, "Promotional price, held at least through 2026-11-21."),
       costPerTask: aaCost(6.35),
@@ -285,8 +314,8 @@ export const dataset: Dataset = {
       line: "Terra",
       releaseDate: "2026-07-09",
       access: "general",
-      harnesses: ["codex-cli", "cursor", "opencode-zen"],
-      figures: [datacurve(69.62, "max"), tbench(21.52, "Codex")],
+      harnesses: ["codex-cli", "command-code", "command-code-pro", "cursor", "opencode-zen"],
+      figures: [datacurve(69.62, "max"), aaTb4(35.35, "mini-SWE-agent, max effort", aaCmp("gpt-5-6-terra-vs-glm-5-2"))],
       price: vendorPrice(2, 12, PRICE_URL.openai),
     },
     {
@@ -296,8 +325,8 @@ export const dataset: Dataset = {
       line: "Terra",
       releaseDate: "2026-03-17",
       access: "general",
-      harnesses: ["codex-cli", "cursor", "opencode-zen"],
-      figures: [vals(2.52)],
+      harnesses: ["codex-cli", "command-code", "command-code-pro", "cursor", "opencode-zen"],
+      figures: [aaTb4(2.02, "mini-SWE-agent, xhigh effort", aaCmp("gpt-5-4-mini-vs-glm-5-2"))],
       price: vendorPrice(0.75, 4.5, PRICE_URL.openai),
       note: "The mini tier that Terra succeeds. Codex CLI only with an API key.",
     },
@@ -308,7 +337,7 @@ export const dataset: Dataset = {
       line: "Luna",
       releaseDate: "2026-09-22",
       access: "general",
-      harnesses: ["codex-cli", "opencode-go", "opencode-zen"],
+      harnesses: ["codex-cli", "command-code", "command-code-pro", "opencode-go", "opencode-zen"],
       figures: aa("Codex, max effort", 63.72, 15.15, 44.35),
       price: vendorPrice(0.1, 0.5, PRICE_URL.openai),
       costPerTask: aaCost(0.18),
@@ -320,7 +349,7 @@ export const dataset: Dataset = {
       line: "Luna",
       releaseDate: "2026-07-09",
       access: "general",
-      harnesses: ["codex-cli", "cursor", "opencode-go", "opencode-zen"],
+      harnesses: ["codex-cli", "command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
       figures: aa("Codex, max effort", 66.37, 14.65, 48.66),
       price: vendorPrice(0.2, 1.2, PRICE_URL.openai),
       costPerTask: aaCost(0.44),
@@ -333,7 +362,7 @@ export const dataset: Dataset = {
       releaseDate: "2026-03-17",
       access: "general",
       harnesses: ["cursor", "opencode-zen"],
-      figures: [],
+      figures: [aaTb4(0.51, "mini-SWE-agent, xhigh effort", aaCmp("gpt-5-4-nano-vs-glm-5-2"))],
       price: vendorPrice(0.2, 1.25, PRICE_URL.openai),
       note: "The nano tier that Luna succeeds.",
     },
@@ -359,7 +388,11 @@ export const dataset: Dataset = {
       releaseDate: "2026-02-19",
       access: "general",
       harnesses: ["cursor", "opencode-zen"],
-      figures: [datacurve(11.73, "high"), vals(2.52), scale(13.5, "mini-SWE-agent")],
+      figures: [
+        datacurve(11.73, "high"),
+        aaTb4(4.04, "mini-SWE-agent", aaCmp("gemini-3-8-flash-vs-gemini-3-1-pro-preview")),
+        scale(13.5, "mini-SWE-agent"),
+      ],
       price: vendorPrice(2, 12, PRICE_URL.google, "Prompts over 200K tokens: $4 / $18."),
     },
     {
@@ -369,7 +402,7 @@ export const dataset: Dataset = {
       line: "Gemini Flash",
       releaseDate: "2026-09-02",
       access: "general",
-      harnesses: ["cursor", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-zen"],
       figures: aa("Antigravity SDK, high effort", 65.78, 14.65, 45.16),
       price: vendorPrice(0.75, 3.75, PRICE_URL.google, GEMINI_FLASH_PROMO),
       costPerTask: aaCost(2.47),
@@ -381,8 +414,11 @@ export const dataset: Dataset = {
       line: "Gemini Flash",
       releaseDate: "2026-08-13",
       access: "general",
-      harnesses: ["cursor", "opencode-zen"],
-      figures: [datacurve(65.49, "medium"), tbench(11.21, "mini-SWE-agent")],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-zen"],
+      figures: [
+        datacurve(65.49, "medium"),
+        aaTb4(13.64, "mini-SWE-agent, high effort", aaCmp("gpt-5-6-terra-vs-gemini-3-7-flash")),
+      ],
       price: vendorPrice(0.75, 3.75, PRICE_URL.google, GEMINI_FLASH_PROMO),
     },
     {
@@ -392,8 +428,11 @@ export const dataset: Dataset = {
       line: "Gemini Flash",
       releaseDate: "2026-07-21",
       access: "general",
-      harnesses: ["cursor", "opencode-zen"],
-      figures: [datacurve(46.68, "high")],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-zen"],
+      figures: [
+        datacurve(46.68, "high"),
+        aaTb4(7.07, "mini-SWE-agent, high effort", aaCmp("gemini-3-6-flash-vs-glm-5-2")),
+      ],
       price: vendorPrice(0.75, 3.75, PRICE_URL.google, GEMINI_FLASH_PROMO),
     },
     {
@@ -403,8 +442,8 @@ export const dataset: Dataset = {
       line: "Gemini Flash-Lite",
       releaseDate: "2026-07-21",
       access: "general",
-      harnesses: ["opencode-zen"],
-      figures: [],
+      harnesses: ["command-code", "command-code-pro", "opencode-zen"],
+      figures: [aaTb4(1.01, "mini-SWE-agent", aaCmp("gemini-3-5-flash-lite-vs-glm-5-2"))],
       price: vendorPrice(0.3, 2.5, PRICE_URL.google),
     },
     {
@@ -414,7 +453,7 @@ export const dataset: Dataset = {
       line: "Gemini Flash-Lite",
       releaseDate: "2026-05-07",
       access: "general",
-      harnesses: [],
+      harnesses: ["command-code", "command-code-pro"],
       figures: [],
       price: vendorPrice(0.25, 1.5, PRICE_URL.google, "Shuts down 2027-05-07."),
     },
@@ -427,7 +466,7 @@ export const dataset: Dataset = {
       line: "Grok",
       releaseDate: "2026-09-21",
       access: "general",
-      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
       figures: aa("Grok Build, xhigh effort", 72.57, 33.33, 62.9),
       price: vendorPrice(2, 6, PRICE_URL.xai, GROK_LONG),
       costPerTask: aaCost(8.82),
@@ -439,7 +478,7 @@ export const dataset: Dataset = {
       line: "Grok",
       releaseDate: "2026-08-12",
       access: "general",
-      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
       figures: aa("Grok Build, xhigh effort", 64.9, 17.68, 58.33),
       price: vendorPrice(2, 6, PRICE_URL.xai, GROK_LONG),
       costPerTask: aaCost(3.57),
@@ -451,8 +490,8 @@ export const dataset: Dataset = {
       line: "Grok",
       releaseDate: "2026-07-16",
       access: "general",
-      harnesses: ["cursor", "opencode-zen"],
-      figures: [datacurve(53.76, "high"), tbench(12.42, "Grok Build, high effort")],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-zen"],
+      figures: [datacurve(53.76, "high"), aaTb4(10.61, "mini-SWE-agent, high effort", aaCmp("grok-4-5-vs-grok-4-6"))],
       price: vendorPrice(2, 6, PRICE_URL.xai, GROK_LONG),
     },
     {
@@ -488,7 +527,7 @@ export const dataset: Dataset = {
       line: "GLM",
       releaseDate: "2026-08-18",
       access: "general",
-      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
       figures: aa("OpenCode, max effort", 61.36, 39.9, 59.41),
       price: vendorPrice(1.4, 4.4, PRICE_URL.zai),
       costPerTask: aaCost(4.24),
@@ -500,8 +539,12 @@ export const dataset: Dataset = {
       line: "GLM",
       releaseDate: "2026-06-16",
       access: "general",
-      harnesses: ["cursor", "opencode-go", "opencode-zen"],
-      figures: [datacurve(43.78, "max"), scale(48.12, "mini-SWE-agent")],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+      figures: [
+        datacurve(43.78, "max"),
+        aaTb4(1.01, "mini-SWE-agent, max effort", aaCmp("glm-5-2-vs-glm-5-1")),
+        scale(48.12, "mini-SWE-agent"),
+      ],
       price: vendorPrice(1.4, 4.4, PRICE_URL.zai),
     },
     {
@@ -511,9 +554,29 @@ export const dataset: Dataset = {
       line: "GLM",
       releaseDate: "2026-04-07",
       access: "general",
-      harnesses: ["opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "opencode-zen"],
       figures: [aaTb4Rounded(2, "https://artificialanalysis.ai/models/comparisons/glm-5-2-vs-glm-5-1")],
       price: vendorPrice(1.4, 4.4, PRICE_URL.zai),
+    },
+    {
+      id: "glm-5.2-fast",
+      name: "GLM-5.2 Fast",
+      vendor: "Z.ai",
+      line: "GLM",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      price: commandCodePrice(3, 10.25),
+    },
+    {
+      id: "glm-5.3-flashx",
+      name: "GLM-5.3 FlashX",
+      vendor: "Z.ai",
+      line: "GLM Flash",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      price: vendorPrice(0.37, 1.25, PRICE_URL.zai),
     },
     {
       id: "glm-5.3-flash",
@@ -522,7 +585,7 @@ export const dataset: Dataset = {
       line: "GLM Flash",
       releaseDate: "2026-08-26",
       access: "general",
-      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
       figures: [datacurve(63.39, "max"), aaTb4(32.8, "mini-SWE-agent")],
       price: vendorPrice(0.15, 0.5, PRICE_URL.zai),
     },
@@ -546,7 +609,7 @@ export const dataset: Dataset = {
       line: "Kimi",
       releaseDate: "2026-07-17",
       access: "general",
-      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
       figures: aa("Kimi Code CLI", 68.44, 21.21, 66.13),
       price: vendorPrice(3, 15, PRICE_URL.moonshot),
       costPerTask: aaCost(5.05),
@@ -558,9 +621,20 @@ export const dataset: Dataset = {
       line: "Kimi",
       releaseDate: "2026-04-20",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
-      figures: [],
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+      figures: [aaTb4(0.51, "mini-SWE-agent", aaCmp("kimi-k2-6-vs-glm-5-2"))],
       price: vendorPrice(0.95, 4, PRICE_URL.moonshot),
+    },
+    {
+      id: "kimi-k2.5",
+      name: "Kimi K2.5",
+      vendor: "Moonshot AI",
+      line: "Kimi",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [scale(13.1, "mini-SWE-agent")],
+      price: commandCodePrice(0.6, 3),
+      note: "Moonshot discontinued this model on 2026-08-31; Command Code still serves it.",
     },
     {
       id: "kimi-k2.7-code",
@@ -569,9 +643,19 @@ export const dataset: Dataset = {
       line: "Kimi Code",
       releaseDate: "2026-06-12",
       access: "general",
-      harnesses: ["cursor", "opencode-go", "opencode-zen"],
-      figures: [datacurve(30.53, "default")],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+      figures: [datacurve(30.53, "default"), aaTb4(1.01, "mini-SWE-agent", aaCmp("kimi-k2-7-code-vs-glm-5-2"))],
       price: vendorPrice(0.95, 4, PRICE_URL.moonshot),
+    },
+    {
+      id: "kimi-k2.7-code-highspeed",
+      name: "Kimi K2.7 Code HighSpeed",
+      vendor: "Moonshot AI",
+      line: "Kimi Code",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      price: vendorPrice(1.9, 8, PRICE_URL.moonshot),
     },
 
     // ── DeepSeek ────────────────────────────────────────────────────────────────
@@ -582,7 +666,7 @@ export const dataset: Dataset = {
       line: "DeepSeek Pro",
       releaseDate: "2026-08-13",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
       figures: aa("Codex, max effort (V4 Pro 0813)", 57.23, 10.1, 61.83),
       price: vendorPrice(1.32, 3.96, PRICE_URL.deepseek, DEEPSEEK_PEAK),
       costPerTask: aaCost(0.24),
@@ -595,9 +679,29 @@ export const dataset: Dataset = {
       line: "DeepSeek Flash",
       releaseDate: "2026-09-10",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
       figures: [aaTb4(26.8, "mini-SWE-agent, max effort")],
       price: vendorPrice(0.3, 1.2, PRICE_URL.deepseek, DEEPSEEK_PEAK),
+    },
+    {
+      id: "deepseek-v4.1-flash-fast",
+      name: "DeepSeek V4.1 Flash Fast",
+      vendor: "DeepSeek",
+      line: "DeepSeek Flash",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      price: commandCodePrice(0.32, 1.16, DEEPSEEK_PEAK),
+    },
+    {
+      id: "deepseek-v4-flash-fast",
+      name: "DeepSeek V4 Flash Fast",
+      vendor: "DeepSeek",
+      line: "DeepSeek Flash",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      price: commandCodePrice(0.28, 0.56),
     },
     {
       id: "deepseek-v4-flash",
@@ -606,7 +710,7 @@ export const dataset: Dataset = {
       line: "DeepSeek Flash",
       releaseDate: "2026-04-24",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
       figures: aa("Codex, max effort (V4 Flash 0731)", 54.28, 10.61, 51.34),
       price: opencodePrice(0.3, 1.2, PRICE_URL.opencodeGo, "DeepSeek routes this name to V4.1 Flash; peak-hour rate."),
       costPerTask: aaCost(0.09),
@@ -617,7 +721,7 @@ export const dataset: Dataset = {
       vendor: "DeepSeek",
       line: "DeepSeek Flash Vision",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
       figures: [],
       price: opencodePrice(0.3, 1.2, PRICE_URL.opencodeGo, DEEPSEEK_PEAK),
       note: "Retired by DeepSeek on 2026-09-10; the name is now served by V4.1 Flash.",
@@ -631,10 +735,20 @@ export const dataset: Dataset = {
       line: "Qwen Max",
       releaseDate: "2026-08-03",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
       figures: aa("Claude Code", 51.03, 16.67, 62.1),
       price: vendorPrice(2, 6, PRICE_URL.alibaba),
       costPerTask: aaCost(3.48),
+    },
+    {
+      id: "qwen3.8-max-0902",
+      name: "Qwen3.8 Max (0902)",
+      vendor: "Alibaba",
+      line: "Qwen Max",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [aaTb4(38.89, "mini-SWE-agent")],
+      price: vendorPrice(2, 6, PRICE_URL.alibaba),
     },
     {
       id: "qwen3.7-max",
@@ -643,7 +757,7 @@ export const dataset: Dataset = {
       line: "Qwen Max",
       releaseDate: "2026-05-20",
       access: "general",
-      harnesses: ["opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "opencode-zen"],
       figures: [aaTb4Rounded(2, "https://artificialanalysis.ai/models/comparisons/qwen3-7-max-vs-glm-5-2")],
       price: vendorPrice(2.5, 7.5, PRICE_URL.alibaba),
     },
@@ -654,7 +768,7 @@ export const dataset: Dataset = {
       line: "Qwen Max",
       releaseDate: "2026-04-20",
       access: "general",
-      harnesses: [],
+      harnesses: ["command-code", "command-code-pro"],
       figures: [],
       price: vendorPrice(1.3, 7.8, PRICE_URL.alibaba, "Prompts over 128K tokens: $2 / $12."),
     },
@@ -665,7 +779,7 @@ export const dataset: Dataset = {
       line: "Qwen Flash",
       releaseDate: "2026-08-28",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
       figures: [],
       price: vendorPrice(0.15, 0.47, PRICE_URL.alibaba),
     },
@@ -676,7 +790,7 @@ export const dataset: Dataset = {
       line: "Qwen Flash",
       releaseDate: "2026-07-21",
       access: "general",
-      harnesses: [],
+      harnesses: ["command-code", "command-code-pro"],
       figures: [],
       price: vendorPrice(
         0.1,
@@ -697,14 +811,34 @@ export const dataset: Dataset = {
       price: vendorPrice(0.25, 1.5, PRICE_URL.alibaba, "Prompts over 256K tokens: $1 / $4."),
     },
     {
+      id: "qwen3.8-omni-flash",
+      name: "Qwen3.8 Omni Flash",
+      vendor: "Alibaba",
+      line: "Qwen Omni Flash",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      price: vendorPrice(0.15, 0.47, PRICE_URL.alibaba),
+    },
+    {
+      id: "qwen3.8-27b",
+      name: "Qwen3.8 27B",
+      vendor: "Alibaba",
+      line: "Qwen 27B",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [aaTb4(5.56, "mini-SWE-agent, xhigh effort")],
+      price: vendorPrice(0.5, 3, PRICE_URL.alibaba),
+    },
+    {
       id: "qwen3.7-plus",
       name: "Qwen3.7 Plus",
       vendor: "Alibaba",
       line: "Qwen Plus",
       releaseDate: "2026-06-01",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
-      figures: [],
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+      figures: [aaTb4(1.01, "mini-SWE-agent", aaCmp("qwen3-7-plus-vs-glm-5-2"))],
       price: vendorPrice(0.4, 1.6, PRICE_URL.alibaba, "Prompts over 256K tokens: $1.20 / $4.80."),
     },
     {
@@ -714,7 +848,7 @@ export const dataset: Dataset = {
       line: "Qwen Plus",
       releaseDate: "2026-04-02",
       access: "general",
-      harnesses: ["opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "opencode-zen"],
       figures: [],
       price: vendorPrice(0.5, 3, PRICE_URL.alibaba, "Prompts over 256K tokens: $2 / $6."),
     },
@@ -738,9 +872,9 @@ export const dataset: Dataset = {
       line: "Muse Spark",
       releaseDate: "2026-09-02",
       access: "general",
-      harnesses: ["cursor", "opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-zen"],
       figures: aa("Muse Code, max effort", 71.68, 31.82, 59.41),
-      price: opencodePrice(1.25, 4.25, PRICE_URL.opencodeZen, MUSE_CONTRIBUTOR),
+      price: vendorPrice(1.25, 4.25, PRICE_URL.meta),
       costPerTask: aaCost(3.98),
     },
     {
@@ -749,9 +883,32 @@ export const dataset: Dataset = {
       vendor: "Meta",
       line: "Muse Spark",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
-      figures: [datacurve(54.87, "xhigh"), vals(6.06)],
-      price: opencodePrice(1.25, 4.25, PRICE_URL.opencodeZen, MUSE_CONTRIBUTOR),
+      harnesses: ["command-code", "command-code-pro", "opencode-zen"],
+      figures: [
+        datacurve(54.87, "xhigh"),
+        aaTb4(7.07, "mini-SWE-agent, xhigh effort", aaCmp("muse-spark-1-2-vs-glm-5-2")),
+      ],
+      price: vendorPrice(1.25, 4.25, PRICE_URL.meta),
+    },
+    {
+      id: "muse-spark-1.3-contributor",
+      name: "Muse Spark 1.3 Contributor",
+      vendor: "Meta",
+      line: "Muse Spark",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+      figures: [],
+      price: vendorPrice(0.1, 0.2, PRICE_URL.meta, MUSE_CONTRIBUTOR),
+    },
+    {
+      id: "muse-spark-1.2-contributor",
+      name: "Muse Spark 1.2 Contributor",
+      vendor: "Meta",
+      line: "Muse Spark",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+      figures: [],
+      price: vendorPrice(0.1, 0.2, PRICE_URL.meta, MUSE_CONTRIBUTOR),
     },
     {
       id: "muse-spark-1.1",
@@ -760,7 +917,7 @@ export const dataset: Dataset = {
       line: "Muse Spark",
       releaseDate: "2026-07-09",
       access: "general",
-      harnesses: [],
+      harnesses: ["command-code", "command-code-pro"],
       figures: [
         datacurve(53.32, "xhigh"),
         aaTb4Rounded(6, "https://artificialanalysis.ai/models/comparisons/muse-spark-1-1-vs-glm-5-2"),
@@ -777,7 +934,7 @@ export const dataset: Dataset = {
       line: "MiniMax",
       releaseDate: "2026-06-01",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
       figures: [aaTb4(2.0, "mini-SWE-agent")],
       price: vendorPrice(
         0.3,
@@ -793,8 +950,8 @@ export const dataset: Dataset = {
       line: "MiniMax",
       releaseDate: "2026-03-18",
       access: "general",
-      harnesses: ["opencode-go", "opencode-zen"],
-      figures: [],
+      harnesses: ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+      figures: [aaTb4(0, "mini-SWE-agent", aaCmp("minimax-m2-7-vs-glm-5-2"))],
       price: vendorPrice(0.3, 1.2, PRICE_URL.minimax),
     },
     {
@@ -804,7 +961,7 @@ export const dataset: Dataset = {
       line: "MiniMax",
       releaseDate: "2026-02-12",
       access: "general",
-      harnesses: [],
+      harnesses: ["command-code", "command-code-pro"],
       figures: [scale(10.3, "mini-SWE-agent")],
       price: vendorPrice(0.3, 1.2, PRICE_URL.minimax, "Listed by MiniMax as a legacy model."),
     },
@@ -817,9 +974,19 @@ export const dataset: Dataset = {
       line: "MiMo Pro",
       releaseDate: "2026-09-21",
       access: "general",
-      harnesses: ["opencode-go"],
+      harnesses: ["command-code", "command-code-pro", "opencode-go"],
       figures: [aaTb4(34.8, "mini-SWE-agent")],
       price: opencodePrice(0.435, 0.87, PRICE_URL.opencodeGo),
+    },
+    {
+      id: "mimo-v2.6-pro-ultraspeed",
+      name: "MiMo V2.6 Pro UltraSpeed",
+      vendor: "Xiaomi",
+      line: "MiMo Pro",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      price: vendorPrice(4.35, 8.7, PRICE_URL.xiaomi),
     },
     {
       id: "mimo-v2.5-pro",
@@ -828,8 +995,8 @@ export const dataset: Dataset = {
       line: "MiMo Pro",
       releaseDate: "2026-04-22",
       access: "general",
-      harnesses: ["opencode-go"],
-      figures: [vals(0.51)],
+      harnesses: ["command-code", "command-code-pro", "opencode-go"],
+      figures: [aaTb4(0, "mini-SWE-agent", aaCmp("minimax-m3-vs-mimo-v2-5-pro"))],
       price: opencodePrice(0.435, 0.87, PRICE_URL.opencodeGo),
       note: "Xiaomi takes this model offline on 2026-10-21.",
     },
@@ -840,8 +1007,8 @@ export const dataset: Dataset = {
       line: "MiMo Flash",
       releaseDate: "2026-09-21",
       access: "general",
-      harnesses: ["opencode-go"],
-      figures: [vals(24.24)],
+      harnesses: ["command-code", "command-code-pro", "opencode-go"],
+      figures: [aaTb4(22.73, "mini-SWE-agent", aaCmp("mimo-v2-6-flash-vs-glm-5-3-flash"))],
       price: opencodePrice(0.14, 0.28, PRICE_URL.opencodeGo),
     },
     {
@@ -851,8 +1018,8 @@ export const dataset: Dataset = {
       line: "MiMo Flash",
       releaseDate: "2026-04-22",
       access: "general",
-      harnesses: ["opencode-go"],
-      figures: [],
+      harnesses: ["command-code", "command-code-pro", "opencode-go"],
+      figures: [aaTb4(0, "mini-SWE-agent", aaCmp("minimax-m3-vs-mimo-v2-5-0424"))],
       price: opencodePrice(0.14, 0.28, PRICE_URL.opencodeGo),
       note: "Xiaomi takes this model offline on 2026-10-21.",
     },
@@ -865,7 +1032,7 @@ export const dataset: Dataset = {
       line: "Hy",
       releaseDate: "2026-08-28",
       access: "general",
-      harnesses: ["opencode-go"],
+      harnesses: ["command-code", "command-code-pro", "opencode-go"],
       figures: [vals(8.08)],
       price: opencodePrice(0.834, 2.501, PRICE_URL.opencodeGo),
     },
@@ -876,7 +1043,7 @@ export const dataset: Dataset = {
       line: "Hy",
       releaseDate: "2026-07-06",
       access: "general",
-      harnesses: ["opencode-go"],
+      harnesses: ["command-code", "command-code-pro", "opencode-go"],
       figures: [],
       price: opencodePrice(0.14, 0.58, PRICE_URL.opencodeGo),
     },
@@ -899,9 +1066,143 @@ export const dataset: Dataset = {
       line: "LongCat",
       releaseDate: "2026-06-30",
       access: "general",
-      harnesses: ["opencode-go"],
-      figures: [],
+      harnesses: ["command-code", "command-code-pro", "opencode-go"],
+      figures: [aaTb4(0, "mini-SWE-agent", aaCmp("longcat-2-0-vs-glm-5-2"))],
       price: opencodePrice(0.3, 1.2, PRICE_URL.opencodeGo, "Promotional rate with no published end date."),
+    },
+
+    // ── Mistral AI ──────────────────────────────────────────────────────────────
+    {
+      id: "mistral-large-4",
+      name: "Mistral Large 4",
+      vendor: "Mistral AI",
+      line: "Mistral Large",
+      releaseDate: "2026-10-06",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro", "opencode-zen"],
+      figures: [aaTb4(26.77, "mini-SWE-agent (run as Mistral Large 4 Preview)", aaCmp("mistral-large-4-vs-glm-5-2"))],
+      price: vendorPrice(
+        0.68,
+        2.09,
+        PRICE_URL.mistral,
+        "Two-week launch promotion from 2026-10-06; $1.36 / $4.18 after.",
+      ),
+    },
+
+    // ── NVIDIA (Nemotron) ───────────────────────────────────────────────────────
+    {
+      id: "nemotron-3-ultra",
+      name: "Nemotron 3 Ultra",
+      vendor: "NVIDIA",
+      line: "Nemotron Ultra",
+      releaseDate: "2026-06-04",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro", "opencode-zen"],
+      figures: [aaTb4(0.51, "mini-SWE-agent")],
+      price: commandCodePrice(0.6, 2.4, "Free on OpenCode Zen."),
+    },
+
+    // ── StepFun ─────────────────────────────────────────────────────────────────
+    {
+      id: "step-5-preview",
+      name: "Step 5 (preview)",
+      vendor: "StepFun",
+      line: "Step",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [aaTb4(33.33, "mini-SWE-agent")],
+      price: vendorPrice(1, 2.7, PRICE_URL.stepfun),
+    },
+    {
+      id: "step-3.7-flash",
+      name: "Step 3.7 Flash",
+      vendor: "StepFun",
+      line: "Step Flash",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      price: vendorPrice(0.2, 1.15, PRICE_URL.stepfun),
+    },
+    {
+      id: "step-3.5-flash",
+      name: "Step 3.5 Flash",
+      vendor: "StepFun",
+      line: "Step Flash",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      price: vendorPrice(0.1, 0.3, PRICE_URL.stepfun),
+    },
+
+    // ── Thinking Machines (Inkling) ─────────────────────────────────────────────
+    {
+      id: "inkling",
+      name: "Inkling",
+      vendor: "Thinking Machines",
+      line: "Inkling",
+      releaseDate: "2026-07-15",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [aaTb4(1.01, "mini-SWE-agent, xhigh effort", aaCmp("inkling-vs-glm-5-2"))],
+      price: vendorPrice(1, 4.05, PRICE_URL.thinkingMachines, TINKER_BETA),
+    },
+    {
+      id: "inkling-small",
+      name: "Inkling Small",
+      vendor: "Thinking Machines",
+      line: "Inkling Small",
+      releaseDate: "2026-07-30",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [aaTb4(1.01, "mini-SWE-agent", aaCmp("qwen3-8-27b-vs-inkling-small"))],
+      price: vendorPrice(0.3, 1.2, PRICE_URL.thinkingMachines, TINKER_BETA),
+    },
+
+    // ── Sakana AI (Fugu) ────────────────────────────────────────────────────────
+    {
+      id: "fugu-ultra",
+      name: "Fugu Ultra",
+      vendor: "Sakana AI",
+      line: "Fugu Ultra",
+      releaseDate: "2026-09-11",
+      access: "general",
+      harnesses: ["command-code"],
+      figures: [],
+      price: vendorPrice(5, 30, PRICE_URL.sakana, "Prompts over 272K tokens: $10 / $45."),
+    },
+
+    // ── Poolside (Laguna) ───────────────────────────────────────────────────────
+    {
+      id: "laguna-s-2.1",
+      name: "Laguna S 2.1",
+      vendor: "Poolside",
+      line: "Laguna S",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      note: "Free on Command Code while capacity lasts; no API price published.",
+    },
+
+    // ── inclusionAI (Ling) ──────────────────────────────────────────────────────
+    {
+      id: "ling-3.1-flash",
+      name: "Ling 3.1 Flash",
+      vendor: "inclusionAI",
+      line: "Ling Flash",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro", "opencode-zen"],
+      figures: [aaTb4(33.33, "mini-SWE-agent", aaCmp("claude-haiku-5-5-vs-glm-5-2"))],
+      note: "Free on Command Code and OpenCode Zen for a limited time; no API price published.",
+    },
+    {
+      id: "ling-3.0-flash-sante",
+      name: "Ling 3.0 Flash Sante",
+      vendor: "inclusionAI",
+      line: "Ling Flash",
+      access: "general",
+      harnesses: ["command-code", "command-code-pro"],
+      figures: [],
+      note: "Free on Command Code for a limited time; no API price published.",
     },
   ],
 };

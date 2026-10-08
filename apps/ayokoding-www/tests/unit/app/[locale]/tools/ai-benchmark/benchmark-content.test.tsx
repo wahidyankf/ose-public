@@ -83,6 +83,85 @@ describe("BenchmarkContent — clearing state", () => {
   });
 });
 
+describe("BenchmarkContent — substitute harness", () => {
+  const harnessSelect = () => screen.getByLabelText("Substitute harness") as HTMLSelectElement;
+
+  it("starts on Command Code Pro when the URL names no substitute harness", () => {
+    render(<BenchmarkContent />);
+    expect(harnessSelect().value).toBe("command-code-pro");
+  });
+
+  it("reads the substitute harness from the URL", () => {
+    nav.search = "sub-harness=opencode-go";
+    render(<BenchmarkContent />);
+    expect(harnessSelect().value).toBe("opencode-go");
+  });
+
+  it("falls back to Command Code Pro for an unknown or unoffered substitute harness", () => {
+    for (const search of ["sub-harness=vim", "sub-harness=cursor", "sub-harness="]) {
+      nav.search = search;
+      render(<BenchmarkContent />);
+      expect(harnessSelect().value, search).toBe("command-code-pro");
+      cleanup();
+    }
+  });
+
+  it("pushes the chosen substitute harness under its own key", () => {
+    render(<BenchmarkContent />);
+    change("Substitute harness", "command-code");
+    expect(pushed(0).get("sub-harness")).toBe("command-code");
+    expect(pushed(0).has("harness")).toBe(false);
+  });
+
+  it("drops the parameter when the default harness is chosen again", () => {
+    nav.search = "sub=gpt-5.6-terra&sub-harness=opencode-go";
+    render(<BenchmarkContent />);
+    change("Substitute harness", "command-code-pro");
+    expect(pushed(0).has("sub-harness")).toBe(false);
+    expect(pushed(0).get("sub")).toBe("gpt-5.6-terra");
+  });
+
+  it("composes a finder choice followed immediately by a substitute harness change", () => {
+    render(<BenchmarkContent />);
+    change("Frontier model", "gpt-5.6-terra");
+    change("Substitute harness", "command-code");
+    expect(pushed(1).get("sub")).toBe("gpt-5.6-terra");
+    expect(pushed(1).get("sub-harness")).toBe("command-code");
+  });
+
+  it("keeps the page's harness filter apart from the finder's harness", () => {
+    nav.search = "harness=cursor";
+    render(<BenchmarkContent />);
+    expect((screen.getByLabelText("Harness") as HTMLSelectElement).value).toBe("cursor");
+    expect(harnessSelect().value).toBe("command-code-pro");
+    change("Substitute harness", "opencode-go");
+    expect(pushed(0).get("harness")).toBe("cursor");
+    expect(pushed(0).get("sub-harness")).toBe("opencode-go");
+  });
+
+  it("keeps the substitute harness when the finder target is cleared or the filters are reset", () => {
+    nav.search = "sub=gpt-5.6-terra&sub-harness=command-code&harness=cursor";
+    render(<BenchmarkContent />);
+    change("Frontier model", "");
+    expect(pushed(0).get("sub-harness")).toBe("command-code");
+    fireEvent.click(screen.getByTestId("ai-bench-filter-reset"));
+    expect(pushed(1).get("sub-harness")).toBe("command-code");
+    expect(pushed(1).has("harness")).toBe(false);
+  });
+
+  it("lists only models of the chosen substitute harness", () => {
+    nav.search = "sub=gpt-5.6-terra&sub-harness=opencode-go";
+    render(<BenchmarkContent />);
+    const items = screen.getAllByTestId("ai-bench-sub-item");
+    expect(items.length).toBeGreaterThan(0);
+    const table = screen.getByTestId("ai-bench-table");
+    for (const item of items) {
+      const row = table.querySelector(`tr[data-model-id="${item.getAttribute("data-model-id")}"]`)!;
+      expect(row.querySelector('[data-testid="ai-bench-table-harnesses"]')!.textContent).toContain("OpenCode Go");
+    }
+  });
+});
+
 describe("BenchmarkContent — structure", () => {
   it("orders header → finder → filters → tier map → insufficient → table → methodology → sources", () => {
     render(<BenchmarkContent />);

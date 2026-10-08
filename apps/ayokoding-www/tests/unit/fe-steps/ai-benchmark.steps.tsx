@@ -30,12 +30,15 @@ import "./helpers/test-setup";
 import AiBenchmarkPage from "@/app/[locale]/tools/ai-benchmark/page";
 import {
   BENCHMARK_SPECS,
+  DEFAULT_SUBSTITUTE_HARNESS,
   FRONTIER_VENDORS,
+  HARNESS_DISPLAY_NAMES,
   HARNESS_IN_HOUSE_LINES,
   METHOD_EXAMPLE,
   MIN_SCORED_BENCHMARKS,
   NEAREST_OPTION_COUNT,
-  SUBSTITUTE_HARNESS,
+  ROSTER_CATALOG_HARNESSES,
+  SUBSTITUTE_HARNESSES,
   TIERS,
   TIER_ANCHORS,
   rosterScopeParams,
@@ -46,7 +49,7 @@ import type { HarnessId, Model, Tier } from "@/features/ai-benchmark/core/data/t
 import { HARNESS_IDS, filterModels } from "@/features/ai-benchmark/core/filter";
 import { blendedPrice, priceRatio } from "@/features/ai-benchmark/core/price";
 import { compositeIndex, scoreOver, scoredBenchmarks, scoredFigure } from "@/features/ai-benchmark/core/score";
-import { substitutesFor, type SubstituteResult } from "@/features/ai-benchmark/core/substitute";
+import { frontierModels, substitutesFor, type SubstituteResult } from "@/features/ai-benchmark/core/substitute";
 import {
   assignTier,
   byIndexDesc,
@@ -72,6 +75,7 @@ import {
   fig,
   flat,
   goModel,
+  harnessModel,
   model,
   price,
 } from "../features/ai-benchmark/core/fixtures";
@@ -97,6 +101,8 @@ type Ctx = {
   result?: SubstituteResult;
   locale?: Locale;
   harness?: HarnessId;
+  /** The harness the reader picked in the substitute finder; unset = the default. */
+  finderHarness?: HarnessId;
   filterTier?: Tier;
   subIds?: string[];
   viewportWidth?: number;
@@ -127,12 +133,43 @@ function followPush() {
   view!.rerender(<AiBenchmarkPage />);
 }
 
-function chooseTarget(name: string) {
-  const target = full.models.find((m) => m.name === name)!;
+function chooseModel(target: Model) {
   fireEvent.change(screen.getByLabelText(t("en", "aiBenchFinderLabel")), { target: { value: target.id } });
   followPush();
   ctx.model = target;
 }
+
+function chooseTarget(name: string) {
+  chooseModel(full.models.find((m) => m.name === name)!);
+}
+
+const harnessIdByName = (name: string): HarnessId => HARNESS_IDS.find((h) => HARNESS_DISPLAY_NAMES[h] === name)!;
+const finderHarnessSelect = () => screen.getByLabelText(t("en", "aiBenchFinderHarnessLabel")) as HTMLSelectElement;
+const selectedLabel = (select: HTMLSelectElement) => select.selectedOptions[0]!.textContent;
+
+function chooseFinderHarness(harness: HarnessId) {
+  fireEvent.change(finderHarnessSelect(), { target: { value: harness } });
+  followPush();
+  ctx.finderHarness = harness;
+}
+
+/**
+ * The first finder harness (default first) and frontier model whose tier no model of that harness
+ * reaches, so the finder can only offer nearest options. Picked from the live roster, so the check
+ * holds whatever each harness lists.
+ */
+function nearestCombination(): { harness: HarnessId; target: Model } {
+  for (const harness of SUBSTITUTE_HARNESSES) {
+    for (const target of frontierModels(full)) {
+      const result = substitutesFor(target, full, harness);
+      if (result.kind === "nearest" && result.models.length > 0) return { harness, target };
+    }
+  }
+  throw new Error("every frontier model has a same-tier substitute in every finder harness");
+}
+
+/** The blended-price cell text for a listed substitute: a dash where no price is published. */
+const blendedText = (m: Model) => (blendedPrice(m.price) === undefined ? "—" : formatUsd(blendedPrice(m.price)!, "en"));
 
 function idsIn(testId: string, root: ParentNode = document): string[] {
   return Array.from(root.querySelectorAll(`[data-testid="${testId}"]`), (el) => el.getAttribute("data-model-id")!);
@@ -354,50 +391,85 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Substitute finder ────────────────────────────────────────────────────────
 
-  Scenario("Substitutes are OpenCode Go models in the same or a higher tier", ({ Given, And, When, Then }) => {
-    Given('a frontier fixture model in the "planning" tier', () => {
-      ctx.model = flat("frontier", 57, { vendor: "OpenAI" });
-      ctx.roster = [...anchors(60, 55, 45), ctx.model];
-      expect(assignTier(ctx.model, fixtureDataset(ctx.roster))).toBe("planning");
-    });
-    And(
-      'OpenCode Go fixture models in the "ultra", "planning", and "execution" tiers and one with insufficient data',
-      () => {
-        ctx.roster!.push(
-          goModel("go-planning", 56),
-          goModel("go-ultra", 65),
-          goModel("go-execution", 50),
-          goModel("go-insufficient", undefined),
-        );
-      },
-    );
-    When("substitutes are listed for the frontier model", () => {
-      ctx.result = substitutesFor(ctx.model!, fixtureDataset(ctx.roster!));
-    });
-    Then('the substitutes are only the "ultra" and "planning" OpenCode Go models', () => {
-      expect(ctx.result!.kind).toBe("matches");
-      expect(sorted(ctx.result!.models.map((s) => s.model.id))).toEqual(["go-planning", "go-ultra"]);
-    });
-    And("the substitutes are ordered by composite index from highest to lowest", () => {
-      expect(ctx.result!.models.map((s) => s.model.id)).toEqual(["go-ultra", "go-planning"]);
-    });
-  });
+  Scenario(
+    "Substitutes are models of the chosen harness in the same or a higher tier",
+    ({ Given, And, When, Then }) => {
+      Given('a frontier fixture model in the "planning" tier', () => {
+        ctx.model = flat("frontier", 57, { vendor: "OpenAI" });
+        ctx.roster = [...anchors(60, 55, 45), ctx.model];
+        expect(assignTier(ctx.model, fixtureDataset(ctx.roster))).toBe("planning");
+      });
+      And(
+        'fixture models of the "command-code-pro" harness in the "ultra", "planning", and "execution" tiers and one with insufficient data',
+        () => {
+          ctx.roster!.push(
+            harnessModel("command-code-pro", "pro-planning", 56),
+            harnessModel("command-code-pro", "pro-ultra", 65),
+            harnessModel("command-code-pro", "pro-execution", 50),
+            harnessModel("command-code-pro", "pro-insufficient", undefined),
+          );
+        },
+      );
+      And('fixture models of the "opencode-go" harness in the "ultra" and "planning" tiers', () => {
+        ctx.roster!.push(goModel("go-ultra", 66), goModel("go-planning", 57));
+      });
+      When('substitutes are listed for the frontier model from the "command-code-pro" harness', () => {
+        ctx.result = substitutesFor(ctx.model!, fixtureDataset(ctx.roster!), "command-code-pro");
+      });
+      Then('the substitutes are only the "ultra" and "planning" models of the "command-code-pro" harness', () => {
+        expect(ctx.result!.kind).toBe("matches");
+        expect(sorted(ctx.result!.models.map((s) => s.model.id))).toEqual(["pro-planning", "pro-ultra"]);
+        for (const s of ctx.result!.models) expect(s.model.harnesses).toContain("command-code-pro");
+      });
+      And("the substitutes are ordered by composite index from highest to lowest", () => {
+        expect(ctx.result!.models.map((s) => s.model.id)).toEqual(["pro-ultra", "pro-planning"]);
+      });
+    },
+  );
 
   Scenario(
-    "Choosing a frontier model lists its OpenCode Go substitutes with a price comparison",
+    "The substitute finder offers three harnesses with Command Code Pro chosen first",
+    ({ Given, When, Then, And }) => {
+      let select: HTMLSelectElement;
+      Given("the AI benchmark page is open", () => {
+        renderPage();
+      });
+      When("the reader looks at the substitute finder's harness choice", () => {
+        select = finderHarnessSelect();
+      });
+      Then('it offers "Command Code Pro", "Command Code", and "OpenCode Go" in that order', () => {
+        const labels = Array.from(select.options, (o) => o.textContent);
+        expect(labels).toEqual(["Command Code Pro", "Command Code", "OpenCode Go"]);
+        expect(labels).toEqual(SUBSTITUTE_HARNESSES.map((h) => HARNESS_DISPLAY_NAMES[h]));
+      });
+      And('"Command Code Pro" is chosen by default', () => {
+        expect(DEFAULT_SUBSTITUTE_HARNESS).toBe("command-code-pro");
+        expect(select.value).toBe(DEFAULT_SUBSTITUTE_HARNESS);
+        expect(selectedLabel(select)).toBe("Command Code Pro");
+      });
+    },
+  );
+
+  Scenario(
+    "Choosing a frontier model lists its Command Code Pro substitutes with a price comparison",
     ({ Given, When, Then, And }) => {
       Given("the AI benchmark page is open", () => {
         renderPage();
       });
-      When('the reader chooses "GPT-5.6 Terra" in the substitute finder', () => {
-        chooseTarget("GPT-5.6 Terra");
+      When("the reader chooses a frontier model that has Command Code Pro models in its tier or higher", () => {
+        const target = frontierModels(full).find(
+          (m) => substitutesFor(m, full, DEFAULT_SUBSTITUTE_HARNESS).kind === "matches",
+        );
+        if (target === undefined)
+          throw new Error("no frontier model has a Command Code Pro model in its tier or higher");
+        chooseModel(target);
       });
-      Then("the finder lists OpenCode Go models with their tier, composite index, and blended price", () => {
-        const expected = substitutesFor(ctx.model!, full);
+      Then("the finder lists Command Code Pro models with their tier, composite index, and blended price", () => {
+        const expected = substitutesFor(ctx.model!, full, "command-code-pro");
         expect(expected.kind).toBe("matches");
         expect(subIds()).toEqual(expected.models.map((s) => s.model.id));
         for (const s of expected.models) {
-          expect(s.model.harnesses).toContain(SUBSTITUTE_HARNESS);
+          expect(s.model.harnesses).toContain("command-code-pro");
           const item = document.querySelector(`[data-testid="ai-bench-sub-item"][data-model-id="${s.model.id}"]`)!;
           expect(within(item as HTMLElement).getByTestId("ai-bench-sub-tier").textContent).toBe(
             tierLabel(s.tier, "en"),
@@ -406,12 +478,12 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
             formatIndex(s.index!, "en"),
           );
           expect(within(item as HTMLElement).getByTestId("ai-bench-sub-blended").textContent).toBe(
-            formatUsd(blendedPrice(s.model.price)!, "en"),
+            blendedText(s.model),
           );
         }
       });
       And("each listed model states how its blended price compares with the chosen model's", () => {
-        for (const s of substitutesFor(ctx.model!, full).models) {
+        for (const s of substitutesFor(ctx.model!, full, "command-code-pro").models) {
           const item = document.querySelector(`[data-testid="ai-bench-sub-item"][data-model-id="${s.model.id}"]`)!;
           expect(within(item as HTMLElement).getByTestId("ai-bench-sub-compare").textContent).toBe(
             priceComparison(priceRatio(s.model, ctx.model!), "en"),
@@ -422,23 +494,72 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
   );
 
   Scenario(
-    "A frontier model with no same-tier OpenCode Go model shows the nearest options",
+    "A frontier model above every model of the chosen harness shows the nearest options",
     ({ Given, When, Then, And }) => {
       Given("the AI benchmark page is open", () => {
         renderPage();
       });
-      When('the reader chooses "Claude Sonnet 5.5" in the substitute finder', () => {
-        chooseTarget("Claude Sonnet 5.5");
+      When("the reader chooses a harness and a frontier model whose tier is above every model of that harness", () => {
+        const { harness, target } = nearestCombination();
+        if (harness !== DEFAULT_SUBSTITUTE_HARNESS) chooseFinderHarness(harness);
+        ctx.finderHarness = harness;
+        chooseModel(target);
       });
-      Then("the finder states that no OpenCode Go model reaches that model's tier", () => {
+      Then("the finder states that no model of that harness reaches that model's tier", () => {
         expect(screen.getByTestId("ai-bench-finder-lead").textContent).toBe(
-          tf("en", "aiBenchFinderNearest", { tier: tierLabel(assignTier(ctx.model!, full), "en") }),
+          tf("en", "aiBenchFinderNearest", {
+            harness: HARNESS_DISPLAY_NAMES[ctx.finderHarness!],
+            tier: tierLabel(assignTier(ctx.model!, full), "en"),
+          }),
         );
       });
-      And("the finder lists the highest-scoring OpenCode Go models as the nearest options", () => {
-        const go = rated.filter((s) => s.model.harnesses.includes(SUBSTITUTE_HARNESS)).sort(byIndexDesc);
-        expect(subIds()).toEqual(go.slice(0, NEAREST_OPTION_COUNT).map((s) => s.model.id));
+      And("the finder lists the highest-scoring models of that harness as the nearest options", () => {
+        const harness = ctx.finderHarness!;
+        const candidates = rated
+          .filter((s) => s.model.harnesses.includes(harness) && s.model.id !== ctx.model!.id)
+          .sort(byIndexDesc);
+        const listed = subIds().map((id) => scored.find((s) => s.model.id === id)!);
+        // Compare indexes, not ids: equal-index models may swap places without changing the claim.
+        expect(listed.map((s) => s.index)).toEqual(candidates.slice(0, NEAREST_OPTION_COUNT).map((s) => s.index));
+        for (const s of listed) expect(s.model.harnesses).toContain(harness);
         expect(screen.getByTestId("ai-bench-sub-list").getAttribute("data-kind")).toBe("nearest");
+      });
+    },
+  );
+
+  ScenarioOutline(
+    "Changing the finder's harness lists that harness's models",
+    ({ Given, When, Then, And }, variables) => {
+      Given("the AI benchmark page is open", () => {
+        renderPage();
+      });
+      When('the reader chooses "GPT-5.6 Terra" in the substitute finder', () => {
+        chooseTarget("GPT-5.6 Terra");
+      });
+      And('the reader changes the finder\'s harness to "<harness>"', () => {
+        chooseFinderHarness(harnessIdByName(variables.harness!));
+      });
+      Then('the finder lists only "<harness>" models', () => {
+        const harness = harnessIdByName(variables.harness!);
+        const expected = substitutesFor(ctx.model!, full, harness);
+        expect(expected.models.length).toBeGreaterThan(0);
+        expect(subIds()).toEqual(expected.models.map((s) => s.model.id));
+        for (const s of expected.models) expect(s.model.harnesses).toContain(harness);
+        expect(finderHarnessSelect().value).toBe(harness);
+      });
+      And('the finder\'s lead line names "<harness>"', () => {
+        const harness = harnessIdByName(variables.harness!);
+        const kind = substitutesFor(ctx.model!, full, harness).kind;
+        const lead = screen.getByTestId("ai-bench-finder-lead").textContent;
+        expect(lead).toContain(variables.harness);
+        expect(lead).toBe(
+          kind === "matches"
+            ? tf("en", "aiBenchFinderMatches", { harness: variables.harness! })
+            : tf("en", "aiBenchFinderNearest", {
+                harness: variables.harness!,
+                tier: tierLabel(assignTier(ctx.model!, full), "en"),
+              }),
+        );
       });
     },
   );
@@ -460,6 +581,50 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       renderPage("en", search);
       expect(subIds()).toEqual(ctx.subIds);
       expect(subIds().length).toBeGreaterThan(0);
+    });
+  });
+
+  Scenario("The chosen substitute harness is kept in the URL", ({ Given, When, Then, And }) => {
+    Given("the AI benchmark page is open", () => {
+      renderPage();
+    });
+    When('the reader chooses "GPT-5.6 Terra" in the substitute finder', () => {
+      chooseTarget("GPT-5.6 Terra");
+    });
+    And('the reader changes the finder\'s harness to "Command Code"', () => {
+      chooseFinderHarness(harnessIdByName("Command Code"));
+      ctx.subIds = subIds();
+    });
+    Then("the URL carries that harness as the substitute harness", () => {
+      const params = new URLSearchParams(navState.search);
+      expect(params.get("sub-harness")).toBe("command-code");
+      expect(params.get("sub")).toBe(ctx.model!.id);
+      expect(params.has("harness")).toBe(false);
+    });
+    And("reloading that URL shows the same harness and the same substitute list", () => {
+      const search = navState.search;
+      cleanup();
+      renderPage("en", search);
+      expect(finderHarnessSelect().value).toBe("command-code");
+      expect(subIds()).toEqual(ctx.subIds);
+      expect(subIds().length).toBeGreaterThan(0);
+    });
+  });
+
+  Scenario("An unrecognized substitute harness falls back to Command Code Pro", ({ Given, When, Then, But }) => {
+    Given("the URL carries a substitute harness parameter with an unknown value", () => {
+      ctx.errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    });
+    When("the page renders", () => {
+      renderPage("en", "sub-harness=not-a-harness");
+    });
+    Then('the finder\'s harness is "Command Code Pro"', () => {
+      expect(finderHarnessSelect().value).toBe("command-code-pro");
+      expect(selectedLabel(finderHarnessSelect())).toBe("Command Code Pro");
+    });
+    But("no error is surfaced to the reader", () => {
+      expect(screen.queryByRole("alert")).toBeNull();
+      expect(ctx.errorSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -809,6 +974,8 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       const roster = within(details).getByTestId("ai-bench-method-roster").textContent;
       expect(roster).toBe(tf("en", "aiBenchMethodRoster", rosterScopeParams()));
       for (const vendor of FRONTIER_VENDORS) expect(roster).toContain(vendor);
+      expect(roster).toContain("every OpenCode Go and Command Code model with a named vendor");
+      for (const h of ROSTER_CATALOG_HARNESSES) expect(roster).toContain(HARNESS_DISPLAY_NAMES[h]);
       for (const l of HARNESS_IN_HOUSE_LINES) expect(roster).toContain(`${l.vendor} ${l.line}`);
     });
     And("it states the operator order used to pick each figure", () => {
@@ -936,6 +1103,31 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       expect(sorted(tableIds())).toEqual(sorted(expected));
     });
   });
+
+  ScenarioOutline(
+    "Every listed harness is a known harness parameter value",
+    ({ Given, When, Then, And }, variables) => {
+      Given('the URL carries the harness parameter "<harness>"', () => {
+        ctx.harness = variables.harness as HarnessId;
+      });
+      When("the page renders", () => {
+        renderPage("en", `harness=${ctx.harness}`);
+      });
+      Then('the harness filter shows "<name>"', () => {
+        const select = screen.getByLabelText(t("en", "aiBenchFilterHarness")) as HTMLSelectElement;
+        expect(HARNESS_IDS).toContain(ctx.harness);
+        expect(HARNESS_DISPLAY_NAMES[ctx.harness!]).toBe(variables.name);
+        expect(select.value).toBe(ctx.harness);
+        expect(selectedLabel(select)).toBe(variables.name);
+      });
+      And("the result count equals the number of models that harness exposes", () => {
+        const count = filterModels(full, { harness: ctx.harness }).length;
+        expect(screen.getByTestId("ai-bench-result-count").textContent).toBe(
+          tf("en", "aiBenchFilterResultCount", { count, total: full.models.length }),
+        );
+      });
+    },
+  );
 
   Scenario("A tier parameter narrows the tier map and the table", ({ Given, When, Then, And }) => {
     Given("the URL carries a tier parameter naming a known tier", () => {

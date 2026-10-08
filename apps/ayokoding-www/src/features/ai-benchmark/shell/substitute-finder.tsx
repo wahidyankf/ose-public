@@ -1,12 +1,13 @@
-// AI BENCHMARK — "find an OpenCode Go substitute": pick a frontier model, see the OpenCode Go
-// models that reach at least its tier, with a price comparison. Always judged on the full roster.
+// AI BENCHMARK — "find a substitute": pick a frontier model and a harness (Command Code Pro,
+// Command Code, or OpenCode Go), see that harness's models that reach at least its tier, with a
+// price comparison. Always judged on the full roster.
 
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
-import { FRONTIER_VENDORS } from "../core/data/benchmarks";
-import type { Dataset, Model } from "../core/data/types";
+import { FRONTIER_VENDORS, HARNESS_DISPLAY_NAMES, SUBSTITUTE_HARNESSES } from "../core/data/benchmarks";
+import type { Dataset, HarnessId, Model } from "../core/data/types";
 import { blendedPrice, priceRatio } from "../core/price";
-import { frontierModels, substitutesFor } from "../core/substitute";
+import { frontierModels, isSubstituteHarness, substitutesFor } from "../core/substitute";
 import { compositeIndex } from "../core/score";
 import { assignTier, type ScoredModel } from "../core/tiers";
 import { formatIndex, formatUsd, isCheaper, priceComparison, tf } from "./format";
@@ -17,8 +18,11 @@ import { TierSwatch, tierLabel } from "./tier-style";
 export type SubstituteFinderProps = {
   dataset: Dataset;
   selectedId: string | undefined;
+  /** The harness whose models are suggested. */
+  harness: HarnessId;
   locale: Locale;
   onSelect: (id: string | undefined) => void;
+  onSelectHarness: (harness: HarnessId) => void;
 };
 
 function TargetSummary({ target, dataset, locale }: { target: Model; dataset: Dataset; locale: Locale }) {
@@ -89,10 +93,18 @@ function SubstituteItem({ s, target, locale }: { s: ScoredModel; target: Model; 
   );
 }
 
-export function SubstituteFinder({ dataset, selectedId, locale, onSelect }: SubstituteFinderProps) {
+export function SubstituteFinder({
+  dataset,
+  selectedId,
+  harness,
+  locale,
+  onSelect,
+  onSelectHarness,
+}: SubstituteFinderProps) {
   const frontier = frontierModels(dataset);
   const target = frontier.find((m) => m.id === selectedId);
-  const result = target === undefined ? undefined : substitutesFor(target, dataset);
+  const result = target === undefined ? undefined : substitutesFor(target, dataset, harness);
+  const harnessName = HARNESS_DISPLAY_NAMES[harness];
   const groups = FRONTIER_VENDORS.map((vendor) => ({
     label: vendor,
     options: frontier.filter((m) => m.vendor === vendor).map((m) => ({ value: m.id, label: m.name })),
@@ -106,11 +118,11 @@ export function SubstituteFinder({ dataset, selectedId, locale, onSelect }: Subs
     >
       <div className="space-y-1">
         <h2 id="ai-bench-finder-heading" className="text-lg font-semibold">
-          {t(locale, "aiBenchFinderHeading")}
+          {tf(locale, "aiBenchFinderHeading", { harness: harnessName })}
         </h2>
-        <p className="text-sm text-muted-foreground">{t(locale, "aiBenchFinderIntro")}</p>
+        <p className="text-sm text-muted-foreground">{tf(locale, "aiBenchFinderIntro", { harness: harnessName })}</p>
       </div>
-      <div className="max-w-md">
+      <div className="grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
         <SelectField
           id="ai-bench-finder-select"
           label={t(locale, "aiBenchFinderLabel")}
@@ -118,6 +130,15 @@ export function SubstituteFinder({ dataset, selectedId, locale, onSelect }: Subs
           emptyLabel={t(locale, "aiBenchFinderPlaceholder")}
           options={groups}
           onChange={(v) => onSelect(v === "" ? undefined : v)}
+        />
+        <SelectField
+          id="ai-bench-finder-harness"
+          label={t(locale, "aiBenchFinderHarnessLabel")}
+          value={harness}
+          options={SUBSTITUTE_HARNESSES.map((h) => ({ value: h, label: HARNESS_DISPLAY_NAMES[h] }))}
+          onChange={(v) => {
+            if (isSubstituteHarness(v)) onSelectHarness(v);
+          }}
         />
       </div>
       <div aria-live="polite" data-testid="ai-bench-finder-result" className="space-y-2">
@@ -127,8 +148,11 @@ export function SubstituteFinder({ dataset, selectedId, locale, onSelect }: Subs
             {result.kind !== "insufficient" && (
               <p data-testid="ai-bench-finder-lead" className="text-sm font-medium">
                 {result.kind === "matches"
-                  ? t(locale, "aiBenchFinderMatches")
-                  : tf(locale, "aiBenchFinderNearest", { tier: tierLabel(assignTier(target, dataset), locale) })}
+                  ? tf(locale, "aiBenchFinderMatches", { harness: harnessName })
+                  : tf(locale, "aiBenchFinderNearest", {
+                      harness: harnessName,
+                      tier: tierLabel(assignTier(target, dataset), locale),
+                    })}
               </p>
             )}
             {result.models.length > 0 && (

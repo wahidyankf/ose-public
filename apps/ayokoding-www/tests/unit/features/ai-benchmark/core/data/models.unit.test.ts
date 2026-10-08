@@ -37,8 +37,47 @@ describe("roster invariants", () => {
     }
   });
 
-  it("includes every OpenCode Go model with an identified vendor (29 as of 2026-10-01)", () => {
-    expect(models.filter((m) => m.harnesses.includes("opencode-go"))).toHaveLength(29);
+  it("includes every OpenCode Go model with an identified vendor (30 as of 2026-10-08)", () => {
+    expect(models.filter((m) => m.harnesses.includes("opencode-go"))).toHaveLength(30);
+  });
+
+  it("includes every Command Code model with an identified vendor inside the generation window (80 as of 2026-10-08)", () => {
+    expect(models.filter((m) => m.harnesses.includes("command-code"))).toHaveLength(80);
+  });
+
+  it("includes every model on Command Code's Pro plan list (72 as of 2026-10-08)", () => {
+    expect(models.filter((m) => m.harnesses.includes("command-code-pro"))).toHaveLength(72);
+  });
+
+  it("offers every Command Code Pro model in the Command Code catalog", () => {
+    for (const m of models.filter((x) => x.harnesses.includes("command-code-pro"))) {
+      expect(m.harnesses).toContain("command-code");
+    }
+  });
+
+  it("keeps Claude Opus, Claude Fable, GPT-6 Astra, GPT-6.1 Sol, and Fugu Ultra off the Pro plan (as of 2026-10-08)", () => {
+    const maxOnly = models.filter(
+      (m) => m.harnesses.includes("command-code") && !m.harnesses.includes("command-code-pro"),
+    );
+    expect(maxOnly.map((m) => m.id).sort()).toEqual(
+      [
+        "claude-fable-5",
+        "claude-fable-5-1",
+        "claude-opus-4-8",
+        "claude-opus-5",
+        "claude-opus-5-5",
+        "fugu-ultra",
+        "gpt-6-astra",
+        "gpt-6.1-sol",
+      ].sort(),
+    );
+  });
+
+  it("prices a model at the Command Code-listed rate only when it has no vendor price", () => {
+    for (const m of models.filter((x) => x.price?.listedBy === "commandcode")) {
+      expect(m.harnesses).toContain("command-code");
+      expect(m.price?.source).toBe("https://commandcode.ai/models");
+    }
   });
 
   it("includes Cursor Composer 2.5 as a Cursor-only model with Cursor's API price (as of 2026-10-01)", () => {

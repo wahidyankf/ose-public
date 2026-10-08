@@ -11,10 +11,19 @@ export type BenchmarkId = "deep-swe" | "terminal-bench" | "swe-atlas-qna";
 export type OperatorId = "artificial-analysis" | "datacurve" | "terminal-bench" | "vals" | "scale";
 
 /**
- * The five harnesses used as page filters. claude-code = Claude Code, codex-cli = Codex CLI,
- * cursor = Cursor, opencode-go = OpenCode Go, opencode-zen = OpenCode Zen.
+ * The seven harnesses used as page filters. claude-code = Claude Code, codex-cli = Codex CLI,
+ * command-code = Command Code (every model in its catalog), command-code-pro = Command Code Pro
+ * (the models its $20 Pro plan includes), cursor = Cursor, opencode-go = OpenCode Go,
+ * opencode-zen = OpenCode Zen.
  */
-export type HarnessId = "claude-code" | "codex-cli" | "cursor" | "opencode-go" | "opencode-zen";
+export type HarnessId =
+  | "claude-code"
+  | "codex-cli"
+  | "command-code"
+  | "command-code-pro"
+  | "cursor"
+  | "opencode-go"
+  | "opencode-zen";
 
 /** The three tiers defined by an anchor model, highest first. */
 export type AnchoredTier = "ultra" | "planning" | "execution";
@@ -46,9 +55,11 @@ export type ApiPrice = {
   source: string;
   /**
    * `vendor` = the model vendor's own pricing page; `opencode` = the rate OpenCode lists, used only
-   * when the vendor publishes no reachable price page.
+   * when the vendor publishes no reachable price page; `commandcode` = the rate Command Code lists
+   * at https://commandcode.ai/models, used only when the vendor publishes no reachable price page
+   * and no OpenCode harness carries the model.
    */
-  listedBy: "vendor" | "opencode";
+  listedBy: "vendor" | "opencode" | "commandcode";
   /** Promotions, peak/off-peak schedules, or long-context surcharges worth knowing. */
   note?: string;
 };

@@ -1,6 +1,7 @@
 # The page ranks coding models by a composite index built only from independently run benchmark
 # results, places each model in one of four capability tiers anchored on previous-generation
-# models, compares API prices, and suggests OpenCode Go substitutes for frontier models.
+# models, compares API prices, and suggests substitutes for frontier models from a chosen harness
+# (Command Code Pro by default).
 Feature: AI model benchmark tool
 
   Background:
@@ -117,32 +118,55 @@ Feature: AI model benchmark tool
 
   # ── Substitute finder ─────────────────────────────────────────────────────────
 
-  # Exemption(integration): substitute selection is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Substitutes are OpenCode Go models in the same or a higher tier
+  # Exemption(integration): substitute selection is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Substitutes are models of the chosen harness in the same or a higher tier
   @integration-exempt
-  # Exemption(e2e): the fixture roster is a private input with no public browser control; alternative-proof: ayokoding-www:test:unit / Substitutes are OpenCode Go models in the same or a higher tier
+  # Exemption(e2e): the fixture roster is a private input with no public browser control; alternative-proof: ayokoding-www:test:unit / Substitutes are models of the chosen harness in the same or a higher tier
   @e2e-exempt
-  Scenario: Substitutes are OpenCode Go models in the same or a higher tier
+  Scenario: Substitutes are models of the chosen harness in the same or a higher tier
     Given a frontier fixture model in the "planning" tier
-    And OpenCode Go fixture models in the "ultra", "planning", and "execution" tiers and one with insufficient data
-    When substitutes are listed for the frontier model
-    Then the substitutes are only the "ultra" and "planning" OpenCode Go models
+    And fixture models of the "command-code-pro" harness in the "ultra", "planning", and "execution" tiers and one with insufficient data
+    And fixture models of the "opencode-go" harness in the "ultra" and "planning" tiers
+    When substitutes are listed for the frontier model from the "command-code-pro" harness
+    Then the substitutes are only the "ultra" and "planning" models of the "command-code-pro" harness
     And the substitutes are ordered by composite index from highest to lowest
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Choosing a frontier model lists its OpenCode Go substitutes with a price comparison
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The substitute finder offers three harnesses with Command Code Pro chosen first
   @integration-exempt
-  Scenario: Choosing a frontier model lists its OpenCode Go substitutes with a price comparison
+  Scenario: The substitute finder offers three harnesses with Command Code Pro chosen first
     Given the AI benchmark page is open
-    When the reader chooses "GPT-5.6 Terra" in the substitute finder
-    Then the finder lists OpenCode Go models with their tier, composite index, and blended price
+    When the reader looks at the substitute finder's harness choice
+    Then it offers "Command Code Pro", "Command Code", and "OpenCode Go" in that order
+    And "Command Code Pro" is chosen by default
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Choosing a frontier model lists its Command Code Pro substitutes with a price comparison
+  @integration-exempt
+  Scenario: Choosing a frontier model lists its Command Code Pro substitutes with a price comparison
+    Given the AI benchmark page is open
+    When the reader chooses a frontier model that has Command Code Pro models in its tier or higher
+    Then the finder lists Command Code Pro models with their tier, composite index, and blended price
     And each listed model states how its blended price compares with the chosen model's
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A frontier model with no same-tier OpenCode Go model shows the nearest options
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A frontier model above every model of the chosen harness shows the nearest options
   @integration-exempt
-  Scenario: A frontier model with no same-tier OpenCode Go model shows the nearest options
+  Scenario: A frontier model above every model of the chosen harness shows the nearest options
     Given the AI benchmark page is open
-    When the reader chooses "Claude Sonnet 5.5" in the substitute finder
-    Then the finder states that no OpenCode Go model reaches that model's tier
-    And the finder lists the highest-scoring OpenCode Go models as the nearest options
+    When the reader chooses a harness and a frontier model whose tier is above every model of that harness
+    Then the finder states that no model of that harness reaches that model's tier
+    And the finder lists the highest-scoring models of that harness as the nearest options
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Changing the finder's harness lists that harness's models
+  @integration-exempt
+  Scenario Outline: Changing the finder's harness lists that harness's models
+    Given the AI benchmark page is open
+    When the reader chooses "GPT-5.6 Terra" in the substitute finder
+    And the reader changes the finder's harness to "<harness>"
+    Then the finder lists only "<harness>" models
+    And the finder's lead line names "<harness>"
+
+    Examples:
+      | harness      |
+      | Command Code |
+      | OpenCode Go  |
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The chosen substitute target is kept in the URL
   @integration-exempt
@@ -151,6 +175,23 @@ Feature: AI model benchmark tool
     When the reader chooses "GPT-5.6 Terra" in the substitute finder
     Then the URL carries that model as the substitute target
     And reloading that URL shows the same substitute list
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The chosen substitute harness is kept in the URL
+  @integration-exempt
+  Scenario: The chosen substitute harness is kept in the URL
+    Given the AI benchmark page is open
+    When the reader chooses "GPT-5.6 Terra" in the substitute finder
+    And the reader changes the finder's harness to "Command Code"
+    Then the URL carries that harness as the substitute harness
+    And reloading that URL shows the same harness and the same substitute list
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / An unrecognized substitute harness falls back to Command Code Pro
+  @integration-exempt
+  Scenario: An unrecognized substitute harness falls back to Command Code Pro
+    Given the URL carries a substitute harness parameter with an unknown value
+    When the page renders
+    Then the finder's harness is "Command Code Pro"
+    But no error is surfaced to the reader
 
   # ── Page header and dates ─────────────────────────────────────────────────────
 
@@ -326,6 +367,24 @@ Feature: AI model benchmark tool
     When the page renders
     Then only models that harness exposes are shown in the tier map
     And only models that harness exposes are shown in the data table
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Every listed harness is a known harness parameter value
+  @integration-exempt
+  Scenario Outline: Every listed harness is a known harness parameter value
+    Given the URL carries the harness parameter "<harness>"
+    When the page renders
+    Then the harness filter shows "<name>"
+    And the result count equals the number of models that harness exposes
+
+    Examples:
+      | harness          | name             |
+      | claude-code      | Claude Code      |
+      | codex-cli        | Codex CLI        |
+      | command-code     | Command Code     |
+      | command-code-pro | Command Code Pro |
+      | cursor           | Cursor           |
+      | opencode-go      | OpenCode Go      |
+      | opencode-zen     | OpenCode Zen     |
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A tier parameter narrows the tier map and the table
   @integration-exempt

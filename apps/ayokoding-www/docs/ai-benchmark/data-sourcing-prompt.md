@@ -28,16 +28,26 @@ a summarizing fetch can drop rows or digits.
 
 These are enforced by the dataset invariant tests (`tests/unit/features/ai-benchmark/core/data/models.unit.test.ts`).
 
-- **Roster**: every model from Anthropic, OpenAI, Google, and xAI, every model listed on OpenCode
-  Go whose vendor is identified, and each listed harness's own in-house models (Cursor Composer;
-  `HARNESS_IN_HOUSE_LINES` in `core/data/benchmarks.ts`). Keep up to three generations of each line (the latest and
-  the two before it), as long as the vendor's API or one of the five harnesses still serves them.
+- **Roster**: every model from Anthropic, OpenAI, Google, and xAI, every model listed on the two
+  catalog harnesses — OpenCode Go and Command Code — whose vendor is identified, and each listed
+  harness's own in-house models (Cursor Composer; `HARNESS_IN_HOUSE_LINES` in
+  `core/data/benchmarks.ts`). Keep up to three generations of each line (the latest and the two before
+  it), as long as the vendor's API or one of the harnesses still serves them; a catalog model outside
+  that window stays out. A serving variant a catalog lists under its own id (a Fast, HighSpeed,
+  UltraSpeed, Contributor, or dated snapshot) is its own row, with figures only from an operator that
+  ran that variant. Models a catalog lists with no identified vendor (stealth models) or that are not
+  selectable chat models (Command Code's Jev decision model and `taste-1`) stay out.
   Tier anchors (`TIER_ANCHORS` in `core/data/benchmarks.ts`) stay in the roster even when they fall
   out of that window. Invitation-only or staged-rollout models are kept with `access: "limited"` and
   a `note`.
-- **Harness ids**: `claude-code`, `codex-cli`, `cursor`, `opencode-go`, `opencode-zen` — native
-  pickers only (Claude Code lists Anthropic models, Codex CLI lists OpenAI models).
-- **Model ids**: the vendor's or OpenCode's own API id (`gpt-5.6-terra`, `glm-5.3`, `claude-opus-5`).
+- **Harness ids**: `claude-code`, `codex-cli`, `command-code`, `command-code-pro`, `cursor`,
+  `opencode-go`, `opencode-zen` — native pickers only (Claude Code lists Anthropic models, Codex CLI
+  lists OpenAI models). `command-code` is Command Code's whole catalog
+  (`https://api.commandcode.ai/provider/v1/models`); `command-code-pro` is the model list on its Pro
+  plan page (`https://commandcode.ai/docs/plans/pro`), read from the list itself rather than its prose.
+- **Model ids**: the vendor's or OpenCode's own API id (`gpt-5.6-terra`, `glm-5.3`, `claude-opus-5`);
+  for a model only Command Code carries, its Command Code id without the provider prefix, lowercased
+  (`mistral-large-4`).
 - **Benchmarks** (versions pinned in `BENCHMARK_SPECS`): DeepSWE **1.1**, Terminal-Bench **4.0**,
   SWE-Atlas **QnA**. A result on any other version is not recorded.
 - **Independent results only**: a figure must come from an operator that ran the model itself.
@@ -52,8 +62,10 @@ These are enforced by the dataset invariant tests (`tests/unit/features/ai-bench
 - **Cost per task**: only from Artificial Analysis, and only for a model it scored.
 - **Prices**: one standard API price per model, USD per 1M tokens, from the vendor's own pricing
   page (`listedBy: "vendor"`). Only where no vendor page is reachable, use the OpenCode-listed rate
-  (`listedBy: "opencode"`). Record the price that applies today; dated promotions, peak/off-peak
-  schedules, and long-context surcharges go in `note`. No subscriptions.
+  (`listedBy: "opencode"`) for a model an OpenCode harness sells at a paid rate, otherwise the rate
+  Command Code lists at `https://commandcode.ai/models` (`listedBy: "commandcode"`). Record the
+  price that applies today; dated promotions, peak/off-peak schedules, and long-context surcharges go
+  in `note`. No subscriptions.
 - **Never invent a number** not present in a cited source; leave a figure or price out instead.
 - **Dates**: set `dataset.lastUpdated` and each source's `checkedOn` in `core/data/operators.ts`.
 
@@ -61,9 +73,13 @@ These are enforced by the dataset invariant tests (`tests/unit/features/ai-bench
 
 ```text
 You are a coding-model roster researcher. As of today, list:
-1. Every model selectable on OpenCode Go (https://opencode.ai/docs/go/), with its vendor, OpenCode id,
-   and per-1M-token price as listed there. Flag entries with no identified vendor. For each of those
-   model lines, also find up to two older generations still served by the vendor's API or a harness.
+1. Every model selectable on OpenCode Go (https://opencode.ai/docs/go/) and on Command Code
+   (https://api.commandcode.ai/provider/v1/models, prices at https://commandcode.ai/models), with its
+   vendor, harness id, and per-1M-token price as listed there. Flag entries with no identified vendor
+   and entries that are not selectable chat models. For each of those model lines, also find up to two
+   older generations still served by the vendor's API or a harness. Separately, list exactly which
+   catalog models the model list on Command Code's Pro plan page (https://commandcode.ai/docs/plans/pro)
+   includes.
 2. For Anthropic, OpenAI, Google, and xAI: up to three generations of each model line (the latest
    and the two before it) that the vendor's API or a harness still serves,
    with API id, release date, standard API input/output price per 1M tokens, and whether access is
@@ -71,8 +87,9 @@ You are a coding-model roster researcher. As of today, list:
 3. Each listed harness's own in-house models (Cursor Composer today): up to three generations of
    each line still served, with release date, the harness vendor's own per-1M-token price, and
    where the model can be used. Cite the harness's models and pricing page.
-4. For every model above, whether it is selectable in Claude Code, Codex CLI, Cursor, and OpenCode
-   Zen (https://opencode.ai/docs/zen/), citing each harness's docs.
+4. For every model above, whether it is selectable in Claude Code, Codex CLI, Cursor, OpenCode
+   Zen (https://opencode.ai/docs/zen/), OpenCode Go, and Command Code (and its Pro plan), citing each
+   harness's docs.
 State the date each page says it was last updated. Do not invent entries; say when a page could not
 be fetched.
 ```
@@ -104,9 +121,10 @@ own "last updated" date.
    `src/features/ai-benchmark/shell/note-text.ts` for every model or price `note` you added, changed, or
    dropped. The entry is keyed by the English note text verbatim, and its unit test fails both ways: a
    note with no entry, and an entry no note uses.
-4. When the OpenCode Go roster changes, update the hard-coded Go model count in
-   `tests/unit/features/ai-benchmark/core/data/models.unit.test.ts`: the count and as-of date in the
-   "includes every OpenCode Go model" test title, and the count in its `toHaveLength` assertion.
+4. When a catalog harness's roster changes, update its hard-coded model count in
+   `tests/unit/features/ai-benchmark/core/data/models.unit.test.ts` (OpenCode Go, Command Code, and
+   Command Code Pro): the count and as-of date in the test title, and the count in its `toHaveLength`
+   assertion.
 5. Check the tiers still make sense: every anchor must land in its own tier (an invariant test), and
    any model that moves tier should be explainable from its figures.
 6. Run the guards:

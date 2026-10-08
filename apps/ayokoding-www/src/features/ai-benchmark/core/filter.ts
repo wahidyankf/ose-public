@@ -5,7 +5,15 @@ import { TIERS } from "./data/benchmarks";
 import type { Dataset, HarnessId, Model, Tier } from "./data/types";
 import { assignTier } from "./tiers";
 
-export const HARNESS_IDS: readonly HarnessId[] = ["claude-code", "codex-cli", "cursor", "opencode-go", "opencode-zen"];
+export const HARNESS_IDS: readonly HarnessId[] = [
+  "claude-code",
+  "codex-cli",
+  "command-code",
+  "command-code-pro",
+  "cursor",
+  "opencode-go",
+  "opencode-zen",
+];
 
 export function isKnownHarness(v: string): v is HarnessId {
   return (HARNESS_IDS as readonly string[]).includes(v);

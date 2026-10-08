@@ -2,7 +2,7 @@
 
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
-import type { Model } from "../core/data/types";
+import type { ApiPrice, Model } from "../core/data/types";
 import { formatUsd, tf } from "./format";
 import { noteText } from "./note-text";
 
@@ -31,14 +31,29 @@ export function AnchorChip({ locale }: { locale: Locale }) {
   return <span className={`${CHIP} bg-muted`}>{t(locale, "aiBenchAnchorBadge")}</span>;
 }
 
-/** "$4.00 / $20.00 per 1M tokens", flagged when the rate is OpenCode's; or "No public API price". */
+/** Translation key of the label for a rate a harness lists in place of the vendor's own. */
+const LISTED_RATE_KEYS: Readonly<Record<Exclude<ApiPrice["listedBy"], "vendor">, string>> = {
+  opencode: "aiBenchOpencodeRate",
+  commandcode: "aiBenchCommandCodeRate",
+};
+
+/** "OpenCode rate" or "Command Code rate" for a harness-listed price; undefined for a vendor rate. */
+export function listedRateLabel(price: ApiPrice | undefined, locale: Locale): string | undefined {
+  return price === undefined || price.listedBy === "vendor" ? undefined : t(locale, LISTED_RATE_KEYS[price.listedBy]);
+}
+
+/**
+ * "$4.00 / $20.00 per 1M tokens", flagged when the rate is one a harness lists (OpenCode's or
+ * Command Code's); or "No public API price".
+ */
 export function PriceText({ model, locale }: { model: Model; locale: Locale }) {
   const p = model.price;
   if (p === undefined) return <span data-testid="ai-bench-price">{t(locale, "aiBenchNoPrice")}</span>;
+  const listed = listedRateLabel(p, locale);
   return (
     <span data-testid="ai-bench-price">
       {tf(locale, "aiBenchPriceInOut", { input: formatUsd(p.input, locale), output: formatUsd(p.output, locale) })}
-      {p.listedBy === "opencode" ? ` (${t(locale, "aiBenchOpencodeRate")})` : ""}
+      {listed === undefined ? "" : ` (${listed})`}
     </span>
   );
 }

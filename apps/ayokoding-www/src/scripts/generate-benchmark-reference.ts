@@ -90,7 +90,6 @@ function renderRoster(ds: Dataset, scored: ScoredModel[]): string {
     ]);
   const caption =
     `> Last updated ${ds.lastUpdated} — ${rows.length} OpenCode Go models with an identified vendor. ` +
-    "Muse Spark is listed on OpenCode Go under its `-contributor` id. " +
     "Derived from `apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts`.";
   return block(caption, formatTable(["Model ID", "Name", "Vendor", "Tier", "Index", "Other harnesses"], rows));
 }
@@ -107,7 +106,9 @@ function renderPricing(ds: Dataset): string {
   ]);
   const caption =
     `> Standard API prices, USD per 1M tokens, last updated ${ds.lastUpdated}. Blended = (3 × input + ` +
-    "output) ÷ 4. `opencode` = the rate OpenCode lists, used only where the vendor publishes no reachable price page.";
+    "output) ÷ 4. `opencode` = the rate OpenCode lists, used only where the vendor publishes no reachable price " +
+    "page. `commandcode` = the rate Command Code lists, used only where the vendor publishes no reachable " +
+    "price page and no OpenCode harness carries the model.";
   return block(caption, formatTable(["Model", "Vendor", "Input", "Output", "Blended", "Listed by", "Note"], rows));
 }
 

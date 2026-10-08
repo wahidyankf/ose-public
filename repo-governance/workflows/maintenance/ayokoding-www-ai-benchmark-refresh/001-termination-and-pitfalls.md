@@ -89,5 +89,8 @@ Scenario: Clean-up retains an artifact
   [Recovery and Safe Retry](../../../development/practice/resource-aware-development/recovery-and-safe-retry.md)
   and rerun the same target; never swap the system under test. When it still cannot run, the run ends as
   `failed`.
+- **A plan page's prose understates its model list.** A plan-scoped harness takes its members from the
+  plan page's own model list, not from the sentence naming which models need a higher plan. Fix: diff the
+  catalog against that list and record every model it leaves out.
 - **The pre-commit `convention-emoji` gate scans the gitignored, regenerable
   `apps/ayokoding-www/generated/`.** Fix: delete it before committing.

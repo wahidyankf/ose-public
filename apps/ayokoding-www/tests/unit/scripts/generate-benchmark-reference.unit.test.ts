@@ -139,7 +139,7 @@ describe("renderTables — pure derivation from the dataset", () => {
   it("names the operator of every non-AA figure and dashes a missing one", () => {
     const { "capability-summary": summary } = renderTables(dataset);
     expect(summary).toMatch(
-      /\| GPT-5\.6 Terra +\| OpenAI +\| 69\.62% \(Datacurve\) +\| 21\.52% \(TB official\) +\| — +\| 45\.57 +\| execution +\| — +\|/,
+      /\| GPT-5\.6 Terra +\| OpenAI +\| 69\.62% \(Datacurve\) +\| 35\.35% \(AA\) +\| — +\| 52\.48 +\| execution +\| — +\|/,
     );
   });
 

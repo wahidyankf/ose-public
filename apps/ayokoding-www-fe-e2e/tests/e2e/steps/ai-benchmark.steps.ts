@@ -3,11 +3,14 @@ import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import {
   BENCHMARK_SPECS,
+  DEFAULT_SUBSTITUTE_HARNESS,
+  HARNESS_DISPLAY_NAMES,
   HARNESS_IN_HOUSE_LINES,
   METHOD_EXAMPLE,
   MIN_SCORED_BENCHMARKS,
   NEAREST_OPTION_COUNT,
-  SUBSTITUTE_HARNESS,
+  ROSTER_CATALOG_HARNESSES,
+  SUBSTITUTE_HARNESSES,
   TIER_ANCHORS,
   TIERS,
   rosterScopeParams,
@@ -22,7 +25,7 @@ import {
   scoredBenchmarks,
   scoredFigure,
 } from "../../../../ayokoding-www/src/features/ai-benchmark/core/score";
-import { substitutesFor } from "../../../../ayokoding-www/src/features/ai-benchmark/core/substitute";
+import { frontierModels, substitutesFor } from "../../../../ayokoding-www/src/features/ai-benchmark/core/substitute";
 import { byIndexDesc, scoreModels, tierAnchors } from "../../../../ayokoding-www/src/features/ai-benchmark/core/tiers";
 import { t } from "../../../../ayokoding-www/src/features/i18n/core/translations";
 
@@ -44,6 +47,7 @@ const tierOf = (id: string): Tier => scored.find((s) => s.model.id === id)!.tier
 let scenarioLocale = "en";
 let target: Model | undefined;
 let subIdsBefore: string[] = [];
+let finderHarness: HarnessId = DEFAULT_SUBSTITUTE_HARNESS;
 let harness: HarnessId = "codex-cli";
 let filterTier: Tier = "planning";
 let pageErrors: string[] = [];
@@ -110,6 +114,52 @@ const tableRow = (page: Page, id: string) => page.locator(`[data-testid="ai-benc
 const filterSelect = (page: Page, key: "aiBenchFilterHarness" | "aiBenchFilterTier") =>
   page.getByTestId("ai-bench-filters").getByLabel(t("en", key), { exact: true });
 
+const finderHarnessSelect = (page: Page) =>
+  page.getByTestId("ai-bench-finder").getByLabel(t("en", "aiBenchFinderHarnessLabel"), { exact: true });
+
+const harnessIdByName = (name: string): HarnessId => HARNESS_IDS.find((h) => HARNESS_DISPLAY_NAMES[h] === name)!;
+
+/** The blended-price cell text for a listed substitute: a dash where no price is published. */
+const blendedText = (m: Model) => (blendedPrice(m.price) === undefined ? "—" : fmtUsd(blendedPrice(m.price)!));
+
+/** Pick `model` in the finder and remember the list it produced. */
+async function chooseFinderModel(page: Page, model: Model): Promise<void> {
+  target = model;
+  await page.getByLabel(t("en", "aiBenchFinderLabel")).selectOption(model.id);
+  await expect(page).toHaveURL(new RegExp(`[?&]sub=${model.id.replace(/\./g, "\\.")}(&|$)`));
+  await expect(page.getByTestId("ai-bench-finder-summary")).toBeVisible();
+  subIdsBefore = await subIds(page);
+}
+
+/** Pick `id` in the finder's harness select; the default leaves the URL without the parameter. */
+async function chooseFinderHarness(page: Page, id: HarnessId): Promise<void> {
+  finderHarness = id;
+  await finderHarnessSelect(page).selectOption(id);
+  if (id === DEFAULT_SUBSTITUTE_HARNESS) await expect(page).not.toHaveURL(/[?&]sub-harness=/);
+  else await expect(page).toHaveURL(new RegExp(`[?&]sub-harness=${id}(&|$)`));
+  await expect(finderHarnessSelect(page)).toHaveValue(id);
+  if (target !== undefined) {
+    // The lead line is rendered in the same pass as the list, so it marks the list as current.
+    await expect(page.getByTestId("ai-bench-finder-lead")).toContainText(HARNESS_DISPLAY_NAMES[id]);
+    subIdsBefore = await subIds(page);
+  }
+}
+
+/**
+ * The first finder harness (default first) and frontier model whose tier no model of that harness
+ * reaches, so the finder can only offer nearest options. Picked from the live roster, so the check
+ * holds whatever each harness lists.
+ */
+function nearestCombination(): { harness: HarnessId; model: Model } {
+  for (const h of SUBSTITUTE_HARNESSES) {
+    for (const model of frontierModels(full)) {
+      const result = substitutesFor(model, full, h);
+      if (result.kind === "nearest" && result.models.length > 0) return { harness: h, model };
+    }
+  }
+  throw new Error("every frontier model has a same-tier substitute in every finder harness");
+}
+
 async function openMethodology(page: Page) {
   await page.getByRole("link", { name: t("en", "aiBenchJumpToMethod") }).click();
   await expect(page.getByTestId("ai-bench-methodology")).toHaveAttribute("open", "");
@@ -122,6 +172,7 @@ Given("the AI benchmark dataset is loaded", async ({ page }) => {
   scenarioLocale = "en";
   target = undefined;
   subIdsBefore = [];
+  finderHarness = DEFAULT_SUBSTITUTE_HARNESS;
   pageErrors = [];
   measured = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
@@ -185,42 +236,105 @@ Then(
 // ── Substitute finder ─────────────────────────────────────────────────────────
 
 When("the reader chooses {string} in the substitute finder", async ({ page }, name: string) => {
-  target = full.models.find((m) => m.name === name)!;
-  await page.getByLabel(t("en", "aiBenchFinderLabel")).selectOption(target.id);
-  await expect(page).toHaveURL(new RegExp(`[?&]sub=${target.id.replace(/\./g, "\\.")}(&|$)`));
-  await expect(page.getByTestId("ai-bench-finder-summary")).toBeVisible();
-  subIdsBefore = await subIds(page);
+  await chooseFinderModel(page, full.models.find((m) => m.name === name)!);
 });
 
-Then("the finder lists OpenCode Go models with their tier, composite index, and blended price", async ({ page }) => {
-  const expected = substitutesFor(target!, full);
-  expect(expected.kind).toBe("matches");
-  expect(await subIds(page)).toEqual(expected.models.map((s) => s.model.id));
-  for (const s of expected.models) {
-    expect(s.model.harnesses).toContain(SUBSTITUTE_HARNESS);
-    const item = page.locator(`[data-testid="ai-bench-sub-item"][data-model-id="${s.model.id}"]`);
-    await expect(item.getByTestId("ai-bench-sub-tier")).toHaveText(tierLabel(s.tier));
-    await expect(item.getByTestId("ai-bench-sub-index")).toHaveText(fmtIndex(s.index!));
-    await expect(item.getByTestId("ai-bench-sub-blended")).toHaveText(fmtUsd(blendedPrice(s.model.price)!));
-  }
+When("the reader looks at the substitute finder's harness choice", async ({ page }) => {
+  await expect(finderHarnessSelect(page)).toBeVisible();
 });
+
+Then("it offers {string}, {string}, and {string} in that order", async ({ page }, a: string, b: string, c: string) => {
+  const labels = await finderHarnessSelect(page).locator("option").allTextContents();
+  expect(labels).toEqual([a, b, c]);
+  expect(labels).toEqual(SUBSTITUTE_HARNESSES.map((h) => HARNESS_DISPLAY_NAMES[h]));
+});
+
+Then("{string} is chosen by default", async ({ page }, name: string) => {
+  await expect(finderHarnessSelect(page)).toHaveValue(DEFAULT_SUBSTITUTE_HARNESS);
+  await expect(finderHarnessSelect(page).locator("option:checked")).toHaveText(name);
+});
+
+When("the reader chooses a frontier model that has Command Code Pro models in its tier or higher", async ({ page }) => {
+  const pick = frontierModels(full).find((m) => substitutesFor(m, full, DEFAULT_SUBSTITUTE_HARNESS).kind === "matches");
+  if (pick === undefined) throw new Error("no frontier model has a Command Code Pro model in its tier or higher");
+  await chooseFinderModel(page, pick);
+});
+
+Then(
+  "the finder lists Command Code Pro models with their tier, composite index, and blended price",
+  async ({ page }) => {
+    const expected = substitutesFor(target!, full, "command-code-pro");
+    expect(expected.kind).toBe("matches");
+    expect(await subIds(page)).toEqual(expected.models.map((s) => s.model.id));
+    for (const s of expected.models) {
+      expect(s.model.harnesses).toContain("command-code-pro");
+      const item = page.locator(`[data-testid="ai-bench-sub-item"][data-model-id="${s.model.id}"]`);
+      await expect(item.getByTestId("ai-bench-sub-tier")).toHaveText(tierLabel(s.tier));
+      await expect(item.getByTestId("ai-bench-sub-index")).toHaveText(fmtIndex(s.index!));
+      await expect(item.getByTestId("ai-bench-sub-blended")).toHaveText(blendedText(s.model));
+    }
+  },
+);
 
 Then("each listed model states how its blended price compares with the chosen model's", async ({ page }) => {
-  for (const s of substitutesFor(target!, full).models) {
+  for (const s of substitutesFor(target!, full, "command-code-pro").models) {
     const item = page.locator(`[data-testid="ai-bench-sub-item"][data-model-id="${s.model.id}"]`);
     await expect(item.getByTestId("ai-bench-sub-compare")).toHaveText(priceComparison(priceRatio(s.model, target!)));
   }
 });
 
-Then("the finder states that no OpenCode Go model reaches that model's tier", async ({ page }) => {
+When(
+  "the reader chooses a harness and a frontier model whose tier is above every model of that harness",
+  async ({ page }) => {
+    const pick = nearestCombination();
+    if (pick.harness !== DEFAULT_SUBSTITUTE_HARNESS) await chooseFinderHarness(page, pick.harness);
+    finderHarness = pick.harness;
+    await chooseFinderModel(page, pick.model);
+  },
+);
+
+Then("the finder states that no model of that harness reaches that model's tier", async ({ page }) => {
   await expect(page.getByTestId("ai-bench-finder-lead")).toHaveText(
-    fill(t("en", "aiBenchFinderNearest"), { tier: tierLabel(tierOf(target!.id)) }),
+    fill(t("en", "aiBenchFinderNearest"), {
+      harness: HARNESS_DISPLAY_NAMES[finderHarness],
+      tier: tierLabel(tierOf(target!.id)),
+    }),
   );
 });
 
-Then("the finder lists the highest-scoring OpenCode Go models as the nearest options", async ({ page }) => {
-  const go = rated.filter((s) => s.model.harnesses.includes(SUBSTITUTE_HARNESS)).sort(byIndexDesc);
-  expect(await subIds(page)).toEqual(go.slice(0, NEAREST_OPTION_COUNT).map((s) => s.model.id));
+Then("the finder lists the highest-scoring models of that harness as the nearest options", async ({ page }) => {
+  const candidates = rated
+    .filter((s) => s.model.harnesses.includes(finderHarness) && s.model.id !== target!.id)
+    .sort(byIndexDesc);
+  const listed = (await subIds(page)).map((id) => scored.find((s) => s.model.id === id)!);
+  // Compare indexes, not ids: equal-index models may swap places without changing the claim.
+  expect(listed.map((s) => s.index)).toEqual(candidates.slice(0, NEAREST_OPTION_COUNT).map((s) => s.index));
+  for (const s of listed) expect(s.model.harnesses).toContain(finderHarness);
+  await expect(page.getByTestId("ai-bench-sub-list")).toHaveAttribute("data-kind", "nearest");
+});
+
+When("the reader changes the finder's harness to {string}", async ({ page }, name: string) => {
+  await chooseFinderHarness(page, harnessIdByName(name));
+});
+
+Then("the finder lists only {string} models", async ({ page }, name: string) => {
+  const id = harnessIdByName(name);
+  const expected = substitutesFor(target!, full, id);
+  expect(expected.models.length).toBeGreaterThan(0);
+  expect(await subIds(page)).toEqual(expected.models.map((s) => s.model.id));
+  for (const s of expected.models) expect(s.model.harnesses).toContain(id);
+  await expect(finderHarnessSelect(page)).toHaveValue(id);
+});
+
+Then("the finder's lead line names {string}", async ({ page }, name: string) => {
+  const kind = substitutesFor(target!, full, harnessIdByName(name)).kind;
+  const lead = page.getByTestId("ai-bench-finder-lead");
+  await expect(lead).toContainText(name);
+  await expect(lead).toHaveText(
+    kind === "matches"
+      ? fill(t("en", "aiBenchFinderMatches"), { harness: name })
+      : fill(t("en", "aiBenchFinderNearest"), { harness: name, tier: tierLabel(tierOf(target!.id)) }),
+  );
 });
 
 Then("the URL carries that model as the substitute target", async ({ page }) => {
@@ -233,6 +347,30 @@ Then("reloading that URL shows the same substitute list", async ({ page }) => {
   await expect(page.getByLabel(t("en", "aiBenchFinderLabel"))).toHaveValue(target!.id);
   expect(subIdsBefore.length).toBeGreaterThan(0);
   expect(await subIds(page)).toEqual(subIdsBefore);
+});
+
+Then("the URL carries that harness as the substitute harness", async ({ page }) => {
+  const params = new URL(page.url()).searchParams;
+  expect(params.get("sub-harness")).toBe(finderHarness);
+  expect(params.get("sub")).toBe(target!.id);
+  expect(params.has("harness")).toBe(false);
+});
+
+Then("reloading that URL shows the same harness and the same substitute list", async ({ page }) => {
+  await page.reload();
+  await page.waitForLoadState("networkidle");
+  await expect(finderHarnessSelect(page)).toHaveValue(finderHarness);
+  expect(subIdsBefore.length).toBeGreaterThan(0);
+  expect(await subIds(page)).toEqual(subIdsBefore);
+});
+
+Given("the URL carries a substitute harness parameter with an unknown value", async ({ page }) => {
+  await load(page, "?sub-harness=not-a-harness");
+});
+
+Then("the finder's harness is {string}", async ({ page }, name: string) => {
+  await expect(finderHarnessSelect(page)).toHaveValue(harnessIdByName(name));
+  await expect(finderHarnessSelect(page).locator("option:checked")).toHaveText(name);
 });
 
 // ── Header ────────────────────────────────────────────────────────────────────
@@ -505,6 +643,8 @@ Then("it lists every composite benchmark with its version and weight", async ({ 
 Then("it states which models the roster covers", async ({ page }) => {
   const roster = page.getByTestId("ai-bench-method-roster");
   await expect(roster).toHaveText(fill(t("en", "aiBenchMethodRoster"), rosterScopeParams()));
+  await expect(roster).toContainText("every OpenCode Go and Command Code model with a named vendor");
+  for (const h of ROSTER_CATALOG_HARNESSES) await expect(roster).toContainText(HARNESS_DISPLAY_NAMES[h]);
   for (const l of HARNESS_IN_HOUSE_LINES) await expect(roster).toContainText(`${l.vendor} ${l.line}`);
 });
 
@@ -606,6 +746,25 @@ Then("only models that harness exposes are shown in the tier map", async ({ page
 
 Then("only models that harness exposes are shown in the data table", async ({ page }) => {
   expect(sorted(await tableIds(page))).toEqual(sorted(filterModels(full, { harness }).map((m) => m.id)));
+});
+
+Given("the URL carries the harness parameter {string}", async ({ page }, id: string) => {
+  harness = id as HarnessId;
+  await load(page, `?harness=${id}`);
+});
+
+Then("the harness filter shows {string}", async ({ page }, name: string) => {
+  expect(HARNESS_IDS).toContain(harness);
+  expect(HARNESS_DISPLAY_NAMES[harness]).toBe(name);
+  await expect(filterSelect(page, "aiBenchFilterHarness")).toHaveValue(harness);
+  await expect(filterSelect(page, "aiBenchFilterHarness").locator("option:checked")).toHaveText(name);
+});
+
+Then("the result count equals the number of models that harness exposes", async ({ page }) => {
+  const count = filterModels(full, { harness }).length;
+  await expect(page.getByTestId("ai-bench-result-count")).toHaveText(
+    fill(t("en", "aiBenchFilterResultCount"), { count, total: full.models.length }),
+  );
 });
 
 Given("the URL carries a tier parameter naming a known tier", async ({ page }) => {

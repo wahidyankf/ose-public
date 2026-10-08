@@ -89,8 +89,17 @@ export const HARNESS_IN_HOUSE_LINES: readonly { harness: HarnessId; vendor: stri
   { harness: "cursor", vendor: "Cursor", line: "Composer" },
 ];
 
-/** The harness whose models the substitute finder suggests. */
-export const SUBSTITUTE_HARNESS: HarnessId = "opencode-go";
+/** The harnesses the substitute finder can search, in menu order. */
+export const SUBSTITUTE_HARNESSES: readonly HarnessId[] = ["command-code-pro", "command-code", "opencode-go"];
+
+/** The harness the substitute finder searches until the reader picks another. */
+export const DEFAULT_SUBSTITUTE_HARNESS: HarnessId = "command-code-pro";
+
+/**
+ * Harnesses whose whole catalog the roster covers: every model they offer that names a vendor.
+ * Command Code Pro is a plan inside the Command Code catalog, so it adds no models of its own.
+ */
+export const ROSTER_CATALOG_HARNESSES: readonly HarnessId[] = ["opencode-go", "command-code"];
 
 /** How many nearest options the finder shows when no substitute reaches the target's tier. */
 export const NEAREST_OPTION_COUNT = 3;
@@ -105,20 +114,27 @@ export const METHOD_EXAMPLE = {
   compareTier: "execution",
 } as const satisfies { indexModel: string; compareModel: string; compareTier: AnchoredTier };
 
-/** Display names for the five harnesses — proper nouns, not translated. */
+/** Display names for the seven harnesses — proper nouns, not translated. */
 export const HARNESS_DISPLAY_NAMES: Readonly<Record<HarnessId, string>> = {
   "claude-code": "Claude Code",
   "codex-cli": "Codex CLI",
+  "command-code": "Command Code",
+  "command-code-pro": "Command Code Pro",
   cursor: "Cursor",
   "opencode-go": "OpenCode Go",
   "opencode-zen": "OpenCode Zen",
 };
 
-/** Values for the methodology's roster sentence, read from the constants that define the roster. */
-export function rosterScopeParams(): { frontier: string; substitute: string; inHouse: string } {
+/**
+ * Values for the methodology's roster sentence, read from the constants that define the roster.
+ * `locale` is a BCP 47 tag; it only picks the conjunction that joins the catalog names.
+ */
+export function rosterScopeParams(locale = "en"): { frontier: string; catalogs: string; inHouse: string } {
   return {
     frontier: FRONTIER_VENDORS.join(", "),
-    substitute: HARNESS_DISPLAY_NAMES[SUBSTITUTE_HARNESS],
+    catalogs: new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(
+      ROSTER_CATALOG_HARNESSES.map((h) => HARNESS_DISPLAY_NAMES[h]),
+    ),
     inHouse: HARNESS_IN_HOUSE_LINES.map((l) => `${l.vendor} ${l.line}`).join(", "),
   };
 }

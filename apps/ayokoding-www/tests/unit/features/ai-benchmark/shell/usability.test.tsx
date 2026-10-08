@@ -9,14 +9,24 @@ import { scoreModels } from "../../../../../src/features/ai-benchmark/core/tiers
 import { ModelTable } from "../../../../../src/features/ai-benchmark/shell/model-table";
 import { ID_NOTES, noteText } from "../../../../../src/features/ai-benchmark/shell/note-text";
 import { SubstituteFinder } from "../../../../../src/features/ai-benchmark/shell/substitute-finder";
+import { anchors, dataset as fixtureDataset, flat, harnessModel, price } from "../core/fixtures";
 
 afterEach(cleanup);
 
 const allNotes = [...new Set(dataset.models.flatMap((m) => [m.note, m.price?.note]).filter((n) => n !== undefined))];
-const byId = (id: string) => dataset.models.find((m) => m.id === id)!;
 
+// These regressions were found on the OpenCode Go list, so they keep pinning that harness.
 function finder(id: string, locale: "en" | "id" = "en") {
-  render(<SubstituteFinder dataset={dataset} selectedId={id} locale={locale} onSelect={() => undefined} />);
+  render(
+    <SubstituteFinder
+      dataset={dataset}
+      selectedId={id}
+      harness="opencode-go"
+      locale={locale}
+      onSelect={() => undefined}
+      onSelectHarness={() => undefined}
+    />,
+  );
 }
 
 describe("noteText", () => {
@@ -35,21 +45,43 @@ describe("noteText", () => {
   });
 });
 
+// A fixture substitute carrying a model note and a price note, each one the dataset has an
+// Indonesian rendering for, so the card checks hold whichever models the roster lists.
+const [MODEL_NOTE, PRICE_NOTE] = Object.keys(ID_NOTES) as [string, string];
+const notedRoster = fixtureDataset([
+  ...anchors(),
+  flat("frontier-target", 57, { vendor: "OpenAI" }),
+  harnessModel("opencode-go", "noted-substitute", 62, {
+    note: MODEL_NOTE,
+    price: { ...price(1, 1), note: PRICE_NOTE },
+  }),
+]);
+
+function notedCard(locale: "en" | "id" = "en"): HTMLElement {
+  render(
+    <SubstituteFinder
+      dataset={notedRoster}
+      selectedId="frontier-target"
+      harness="opencode-go"
+      locale={locale}
+      onSelect={() => undefined}
+      onSelectHarness={() => undefined}
+    />,
+  );
+  return screen.getByTestId("ai-bench-sub-item");
+}
+
 describe("SubstituteFinder caveats and price basis", () => {
   it("shows a substitute's model and price notes on its card", () => {
-    finder("claude-opus-4-8");
-    const muse = byId("muse-spark-1.3");
-    const card = screen.getAllByTestId("ai-bench-sub-item").find((li) => li.dataset.modelId === muse.id)!;
-    for (const note of [muse.note, muse.price?.note].filter((n) => n !== undefined)) {
-      expect(within(card).getByText(note)).toBeTruthy();
-    }
+    const card = notedCard();
+    expect(within(card).getByText(MODEL_NOTE)).toBeTruthy();
+    expect(within(card).getByText(PRICE_NOTE)).toBeTruthy();
   });
 
   it("localizes a substitute's notes on the Indonesian page", () => {
-    finder("claude-opus-4-8", "id");
-    const muse = byId("muse-spark-1.3");
-    const card = screen.getAllByTestId("ai-bench-sub-item").find((li) => li.dataset.modelId === muse.id)!;
-    expect(within(card).getByText(ID_NOTES[muse.price!.note!]!)).toBeTruthy();
+    const card = notedCard("id");
+    expect(within(card).getByText(ID_NOTES[MODEL_NOTE]!)).toBeTruthy();
+    expect(within(card).getByText(ID_NOTES[PRICE_NOTE]!)).toBeTruthy();
   });
 
   it("names the per-token basis of the price comparison", () => {

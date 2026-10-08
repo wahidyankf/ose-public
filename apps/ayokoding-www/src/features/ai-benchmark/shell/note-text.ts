@@ -38,8 +38,22 @@ export const ID_NOTES: Readonly<Record<string, string>> = {
   "Prompts over 256K tokens: $1.20 / $4.80.": "Prompt di atas 256K token: US$1,20 / US$4,80.",
   "Prompts over 256K tokens: $2 / $6.": "Prompt di atas 256K token: US$2 / US$6.",
   "Prompts over 256K tokens cost more.": "Prompt di atas 256K token lebih mahal.",
-  "OpenCode Go carries the cheaper Contributor tier, on which Meta may train on submissions.":
-    "OpenCode Go memakai tingkat Contributor yang lebih murah, dan Meta boleh melatih modelnya dengan data yang dikirim.",
+  "Meta's cheaper Contributor tier, on which Meta may train on submissions.":
+    "Tingkat Contributor Meta yang lebih murah; Meta boleh melatih modelnya dengan data yang dikirim.",
+  "Prompts over 100K tokens: $0.50 / $2.50.": "Prompt di atas 100K token: US$0,50 / US$2,50.",
+  "Moonshot discontinued this model on 2026-08-31; Command Code still serves it.":
+    "Moonshot menghentikan model ini pada 2026-08-31; Command Code masih menyediakannya.",
+  "Two-week launch promotion from 2026-10-06; $1.36 / $4.18 after.":
+    "Promo peluncuran dua minggu sejak 2026-10-06; setelahnya US$1,36 / US$4,18.",
+  "Free on OpenCode Zen.": "Gratis di OpenCode Zen.",
+  "Tinker serverless inference (beta).": "Inferensi serverless Tinker (beta).",
+  "Prompts over 272K tokens: $10 / $45.": "Prompt di atas 272K token: US$10 / US$45.",
+  "Free on Command Code while capacity lasts; no API price published.":
+    "Gratis di Command Code selama kapasitas tersedia; belum ada harga API yang dipublikasikan.",
+  "Free on Command Code and OpenCode Zen for a limited time; no API price published.":
+    "Gratis di Command Code dan OpenCode Zen untuk sementara; belum ada harga API yang dipublikasikan.",
+  "Free on Command Code for a limited time; no API price published.":
+    "Gratis di Command Code untuk sementara; belum ada harga API yang dipublikasikan.",
   "Up to 512K tokens, after a vendor discount with no stated end date.":
     "Sampai 512K token, setelah diskon vendor tanpa tanggal berakhir.",
   "Listed by MiniMax as a legacy model.": "Dicantumkan MiniMax sebagai model lama (legacy).",

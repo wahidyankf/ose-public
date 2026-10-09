@@ -43,3 +43,7 @@ test-results
 # Re-include the OSE website's matcher type setup for Next.js type-checking
 !apps/ose-www/src/test
 !apps/ose-www/src/test/**
+# Re-include the AyoKoding website's matcher type setup for Next.js type-checking
+!apps/ayokoding-www/src/test
+apps/ayokoding-www/src/test/**
+!apps/ayokoding-www/src/test/setup.ts

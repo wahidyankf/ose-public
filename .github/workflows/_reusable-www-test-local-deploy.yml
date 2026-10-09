@@ -116,7 +116,10 @@ jobs:
           fetch-depth: 2
       - id: check
         run: |
-          CHANGED=$(git diff --name-only HEAD~1 HEAD -- "apps/${{ inputs.app-name }}/" 2>/dev/null || echo "")
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- \
+            "apps/${{ inputs.app-name }}/" \
+            .dockerignore \
+            .github/workflows/_reusable-www-test-local-deploy.yml 2>/dev/null || echo "")
           if [ -n "$CHANGED" ]; then
             echo "has-changes=true" >> "$GITHUB_OUTPUT"
           else

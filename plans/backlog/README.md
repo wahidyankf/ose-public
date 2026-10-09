@@ -51,6 +51,36 @@ Plans 06, 07, and 08 are independent siblings after Plan 05. Plan 09 joins them;
 may the blocked [`lms-user`](./lms-user/README.md) plan execute. A future OSE ID deployment
 plan is outside this series and must wait for the private infrastructure cluster plan, plus any then-current platform handoff gates.
 
+### AyoKoding Learn Revamp series
+
+The `learn` section of `apps/ayokoding-www` is reworked from a pile of documents into learning paths
+with complete, runnable courses, and `learn/legacy` is removed. The work is split into 14 plans. Each
+plan is one worktree and one PR, and the plans run **strictly in numeric order**: the next plan starts
+only after the previous one is merged, deployed, verified, and cleaned up. The "Depends on" column
+names the earlier plans each one builds on directly. Every plan's Phase 0 first runs the deferred
+`plan-quality-gate` (at most 2 cycles); none has a verdict yet.
+
+| Order | Plan                                                                                                | Locally verifiable outcome                                                                          | Depends on  |
+| ----: | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------- |
+|     1 | [Navigation and display](./ayokoding-learn-revamp-01-navigation-and-display/README.md)              | No `NN ·` title prefixes, path position numbers, sidebar auto-scroll, render fixes                  | —           |
+|     2 | [Path model](./ayokoding-learn-revamp-02-path-model/README.md)                                      | Phases, goals, `assumes`, outline marker, prerequisite revision, closure checks, career copy        | 01          |
+|     3 | [Catalog and metadata](./ayokoding-learn-revamp-03-catalog-and-metadata/README.md)                  | Course metadata schema and backfill, categories, catalog page, course landing header                | 01          |
+|     4 | [Learning experience](./ayokoding-learn-revamp-04-learning-experience/README.md)                    | Browser progress, phase roadmap page, context bar, mark complete (and undo), Learn home             | 02, 03      |
+|     5 | [Code harness](./ayokoding-learn-revamp-05-code-harness/README.md)                                  | Go + Cobra `ayokoding-cli`, `run.yaml` contract, runners, Nx target, CI, quality-gate propagation   | —           |
+|     6 | [Accounting courses](./ayokoding-learn-revamp-06-accounting-courses/README.md)                      | 24 accounting courses written; both accounting paths restructured in the same PR                    | 02, 03, 05  |
+|     7 | [ERP courses](./ayokoding-learn-revamp-07-erp-courses/README.md)                                    | 30 ERP courses written; both ERP paths restructured in the same PR                                  | 06          |
+|     8 | [Capstone courses](./ayokoding-learn-revamp-08-capstone-courses/README.md)                          | 8 skeleton capstones rewritten; the AI Engineer path gets its goal                                  | 02, 03, 05  |
+|     9 | [Filler rewrites](./ayokoding-learn-revamp-09-filler-rewrites/README.md)                            | 8 templated filler courses rewritten                                                                | 03, 05      |
+|    10 | [Legacy unique migration](./ayokoding-learn-revamp-10-legacy-unique-migration/README.md)            | 48 new courses for legacy topics with no equivalent; the legacy-to-course map recorded              | 03, 05      |
+|    11 | [Audit: languages and tooling](./ayokoding-learn-revamp-11-audit-languages-and-tooling/README.md)   | 32 language, tooling, and infrastructure courses audited and fixed, every example in the harness    | 03, 05      |
+|    12 | [Audit: CS, systems, and data](./ayokoding-learn-revamp-12-audit-cs-systems-and-data/README.md)     | 34 CS, systems, concurrency, distributed, database, and architecture courses audited and fixed      | 05          |
+|    13 | [Audit: product, security, and AI](./ayokoding-learn-revamp-13-audit-product-security-ai/README.md) | 45 application, AI, product, interview, and security courses audited and fixed                      | 03, 05      |
+|    14 | [Legacy removal](./ayokoding-learn-revamp-14-legacy-removal/README.md)                              | `learn/legacy` deleted, 308 redirects added, `docs/` links repointed, series-completion gate passed | 10 (+11–13) |
+
+The end state is a catalog of 229 courses, none in `status: outline`, each with runnable examples.
+Nothing in this series has started: every plan is planning documents only until the user orders
+execution.
+
 Three waves emptied this queue:
 
 - **Demoted to two-pagers 2026-08-05** — the Ruff config, the bulk-link concurrency fix, merge-queue

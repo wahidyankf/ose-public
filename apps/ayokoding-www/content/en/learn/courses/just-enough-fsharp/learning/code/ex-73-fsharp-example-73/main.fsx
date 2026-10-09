@@ -1,4 +1,6 @@
-// ex-73 · fsharp-example-73
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => The anchors require the whole string to match.
+let pattern = System.Text.RegularExpressions.Regex("^[A-Z]{2}[0-9]{2}$")
+// => IsMatch returns a Boolean.
+let accepted = pattern.IsMatch "AB12"
+// => This prints true.
+printfn "%b" accepted

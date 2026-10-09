@@ -1,3 +1,4 @@
-// ex-01 · fsharp-example-01
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => printfn writes a line; %s formats a string.
+let greeting = "Hello, F#!"
+// => The binding supplies the value for the placeholder.
+printfn "%s" greeting

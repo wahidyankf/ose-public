@@ -1,10 +1,10 @@
-try
+try // => begins the protected withdrawal
 {
-    throw new BalanceException("insufficient");
-} // => domain failure
-catch (BalanceException e)
+    throw new BalanceException("insufficient"); // => throws the domain-specific error
+} // => BalanceException transfers control to catch
+catch (BalanceException e) // => handles this exception type
 {
-    Console.WriteLine(e.Message);
-} // => Output: insufficient
+    Console.WriteLine(e.Message); // => Output: insufficient
+}
 
-class BalanceException(string message) : Exception(message);
+class BalanceException(string message) : Exception(message); // => passes the message to Exception

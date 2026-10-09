@@ -1,27 +1,13 @@
-// => interface implicit: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => interface implicit: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => interface implicit: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Stringer interface{ String() string }
+type Stringer interface{ String() string } // => Requires exactly this method signature.
 
-// => interface implicit: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Release struct{ Name string }
+type Release struct{ Name string } // => Concrete type has no implements declaration.
 
-// => interface implicit: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func (release Release) String() string { return release.Name }
+func (release Release) String() string { return release.Name } // => Makes Release satisfy Stringer.
 
-// => interface implicit: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func printValue(value Stringer) { fmt.Println(value.String()) }
+func printValue(value Stringer) { fmt.Println(value.String()) } // => Calls through the interface.
 
-// => interface implicit: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { printValue(Release{Name: "ship"}) }
+func main() { printValue(Release{Name: "ship"}) } // => Output: ship.

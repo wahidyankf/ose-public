@@ -1,4 +1,6 @@
-// ex-64 · fsharp-example-64
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => A Set retains one copy of each ID.
+let ids = ["a"; "b"; "a"]
+// => Comparing counts detects at least one duplicate.
+let hasDuplicates = List.length ids <> (ids |> Set.ofList |> Set.count)
+// => This prints true.
+printfn "%b" hasDuplicates

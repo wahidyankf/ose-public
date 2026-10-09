@@ -1,4 +1,8 @@
-// ex-74 · fsharp-example-74
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => The serializer can read the record's public properties.
+type Item = { Name: string; Count: int }
+// => Construct a value to cross the JSON boundary.
+let item = { Name = "book"; Count = 2 }
+// => Serialize those properties into JSON text.
+let json = System.Text.Json.JsonSerializer.Serialize item
+// => This prints JSON with Name and Count.
+printfn "%s" json

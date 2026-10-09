@@ -1,4 +1,14 @@
-// ex-73 · streams-pipeline-full · co-18, co-19, co-20
 import java.util.List;
-public final class Example73 { public static void main(String[] args){ var result=List.of(1,2,2,3).stream().filter(value -> value > 1).map(value -> value * 10).distinct().toList(); System.out.println(result); } }
-
+public final class Example73 {
+    public static void main(String[] args) {
+        int total = List.of(1, 2, 3, 4).stream()
+        // => The stream starts with four integers.
+                .filter(number -> number % 2 == 0) // => 2, 4
+                // => The odd values 1 and 3 are removed.
+                .map(number -> number * 10) // => 20, 40
+                // => The surviving values become 20 and 40.
+                .reduce(0, Integer::sum); // => 60
+                // => The identity 0 and two mapped values produce 60.
+        System.out.println(total); // => 60
+    }
+}

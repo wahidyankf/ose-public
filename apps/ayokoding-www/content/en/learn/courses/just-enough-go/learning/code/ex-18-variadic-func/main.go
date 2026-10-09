@@ -1,38 +1,16 @@
-// => variadic func: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => variadic func: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => variadic func: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func sum(values ...int) int {
-	// => variadic func: marks one deliberate step in the variadic func example.
-	// => keeps the mechanism inspectable before it is composed with another concern.
-	total := 0
-	// => variadic func: uses Go’s single loop keyword for iteration.
-	// => keeps the loop state and termination condition local.
-	for _, value := range values {
-		total += value
+func sum(values ...int) int { // => values is a []int inside sum, regardless of call argument count.
+	total := 0                     // => The running total starts at zero, so an empty call returns zero.
+	for _, value := range values { // => Visit each supplied integer once.
+		total += value // => Add the current element to the accumulated total.
 	}
-	// => variadic func: returns a value through Go’s ordinary control-flow mechanism.
-	// => keeps the caller responsible for the next decision.
-	return total
-	// => variadic func: marks one deliberate step in the variadic func example.
-	// => keeps the mechanism inspectable before it is composed with another concern.
+	return total // => Return the sum after all arguments have been consumed.
 }
 
-// => variadic func: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-	// => variadic func: marks one deliberate step in the variadic func example.
-	// => keeps the mechanism inspectable before it is composed with another concern.
-	values := []int{4, 5}
-	// => variadic func: makes the observable result visible in stdout.
-	// => gives the learner a direct value to verify.
-	fmt.Println(sum(1, 2, 3), sum(values...))
-	// => variadic func: marks one deliberate step in the variadic func example.
-	// => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => The two calls use direct arguments and a spread slice.
+	values := []int{4, 5}                     // => values is [4, 5] before expansion at the call site.
+	fmt.Println(sum(1, 2, 3), sum(values...)) // => Output: 6 9.
 }

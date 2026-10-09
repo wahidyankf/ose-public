@@ -1,3 +1,6 @@
-// ex-07 · fsharp-example-07
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => add receives left, then right, and returns their sum.
+let add left right = left + right
+// => Spaces apply the two arguments in order.
+let answer = add 2 5
+// => The result is 7.
+printfn "%d" answer

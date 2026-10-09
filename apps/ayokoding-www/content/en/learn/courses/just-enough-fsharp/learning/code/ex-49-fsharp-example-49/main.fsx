@@ -1,3 +1,8 @@
-// ex-49 · fsharp-example-49
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => The constructor accepts a name.
+type Greeter(name: string) =
+    // => Each Greeter uses the name captured by its own constructor.
+    member _.Greet() = $"Hello, {name}"
+// => Create an instance and call its method.
+let greeter = Greeter("Ayu")
+// => This prints Hello, Ayu.
+printfn "%s" (greeter.Greet())

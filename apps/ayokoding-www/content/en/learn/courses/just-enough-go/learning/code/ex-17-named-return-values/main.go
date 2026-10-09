@@ -1,40 +1,18 @@
-// => named return values: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => named return values: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => named return values: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func bounds(values []int) (small, large int) {
-	// => named return values: marks one deliberate step in the named return values example.
-	// => keeps the mechanism inspectable before it is composed with another concern.
-	small, large = values[0], values[0]
-	// => named return values: uses Go’s single loop keyword for iteration.
-	// => keeps the loop state and termination condition local.
-	for _, value := range values {
-		// => named return values: makes the branch condition explicit rather than exceptional.
-		// => keeps success and failure control flow visible.
-		if value < small {
-			small = value
+func bounds(values []int) (small, large int) { // => Named results start at zero and are local variables inside bounds.
+	small, large = values[0], values[0] // => Seed both bounds from the first element; this example requires a nonempty slice.
+	for _, value := range values {      // => Visit every candidate, including the first seeded value.
+		if value < small { // => A smaller candidate replaces the current minimum.
+			small = value // => small now holds the lowest value seen so far.
 		}
-		// => named return values: makes the branch condition explicit rather than exceptional.
-		// => keeps success and failure control flow visible.
-		if value > large {
-			large = value
+		if value > large { // => A larger candidate replaces the current maximum.
+			large = value // => large now holds the highest value seen so far.
 		}
-		// => named return values: marks one deliberate step in the named return values example.
-		// => keeps the mechanism inspectable before it is composed with another concern.
 	}
-	// => named return values: returns a value through Go’s ordinary control-flow mechanism.
-	// => keeps the caller responsible for the next decision.
-	return
-	// => named return values: marks one deliberate step in the named return values example.
-	// => keeps the mechanism inspectable before it is composed with another concern.
+	return // => Bare return sends the current small and large results to the caller.
 }
 
-// => named return values: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { fmt.Println(bounds([]int{3, 1, 4})) }
+func main() { fmt.Println(bounds([]int{3, 1, 4})) } // => Output: 1 4, in the same order as the named results.

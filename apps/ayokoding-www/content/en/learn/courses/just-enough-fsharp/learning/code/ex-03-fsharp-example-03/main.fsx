@@ -1,3 +1,6 @@
-// ex-03 · fsharp-example-03
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => The parameter and return type are both int.
+let double (value: int) : int = value * 2
+// => Calling the function produces another int.
+let answer = double 6
+// => Print the computed answer.
+printfn "%d" answer

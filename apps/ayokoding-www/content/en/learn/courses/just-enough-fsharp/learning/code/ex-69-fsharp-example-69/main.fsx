@@ -1,4 +1,10 @@
-// ex-69 · fsharp-example-69
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => async describes deferred work.
+let work = async {
+    // => The workflow returns 42 as its result.
+    return 6 * 7
+}
+// => RunSynchronously waits for this small local example.
+// => RunSynchronously obtains the deferred value at the script boundary.
+let answer = Async.RunSynchronously work
+// => This prints 42.
+printfn "%d" answer

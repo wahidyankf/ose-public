@@ -1,3 +1,14 @@
-// ex-66 · interface-default-method · co-05
-public final class Example66 { enum Priority { LOW(1), HIGH(2); final int score; Priority(int score){this.score=score;} } public static void main(String[] args){ System.out.println(Priority.HIGH.score); } }
-
+public final class Example66 {
+    interface Named {
+        // => The contract requires every implementor to provide name().
+        String name();
+        // => The abstract method supplies data to the default method.
+        default String label() { return "task:" + name(); } // => prefixes implementor name
+    }
+    record Task(String name) implements Named {} // => supplies name()
+    // => The generated record accessor satisfies the contract.
+    public static void main(String[] args) {
+        System.out.println(new Task("read").label()); // => task:read
+        // => The inherited default method calls Task.name().
+    }
+}

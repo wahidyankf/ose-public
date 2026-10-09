@@ -1,4 +1,11 @@
-// ex-72 · build-run-test · co-01, co-26
-// The executable JUnit 6 test lives in learning/capstone/code; this source demonstrates a testable assertion boundary.
-public final class Example72 { static int add(int left,int right){return left+right;} public static void main(String[] args){ if(add(2,3)!=5) throw new AssertionError("expected five"); System.out.println("assertion passed"); } }
-
+public final class Example72 {
+    static int square(int number) { return number * number; }
+    // => square(4) computes 4 × 4.
+    public static void main(String[] args) {
+        int actual = square(4); // => 16
+        // => The assertion below checks the returned value, not compilation.
+        if (actual != 16) throw new AssertionError("expected 16, got " + actual); // => fails if behavior changes
+        System.out.println("build, run, assertion passed"); // => only after the check succeeds
+        // => The message is reached only if actual equals 16.
+    }
+}

@@ -1,8 +1,10 @@
 """Example 39: Return Tuple."""
 
+# => The two unpacked values are quotient 3 and remainder 1.
+
 
 # Returns a 2-tuple of (quotient, remainder).
-def divide(a: int, b: int) -> tuple[int, int]:
+def divide(a: int, b: int) -> tuple[int, int]:  # => quotient and remainder
     return a // b, a % b  # => a bare comma builds a tuple -- two values, one return
 
 

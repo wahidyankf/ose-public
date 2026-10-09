@@ -1,29 +1,22 @@
-// => func multiple return: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => func multiple return: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import (
-	// => func multiple return: marks one deliberate step in the func multiple return example.
-	// => keeps the mechanism inspectable before it is composed with another concern.
 	"errors"
-	// => func multiple return: marks one deliberate step in the func multiple return example.
-	// => keeps the mechanism inspectable before it is composed with another concern.
 	"fmt"
-	// => func multiple return: marks one deliberate step in the func multiple return example.
-	// => keeps the mechanism inspectable before it is composed with another concern.
 )
 
-// => func multiple return: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func divide(a, b int) (int, error) {
-	if b == 0 {
-		return 0, errors.New("zero divisor")
+func divide(a, b int) (int, error) { // => The two return positions carry the quotient and failure status.
+	if b == 0 { // => Zero cannot be used as a divisor.
+		return 0, errors.New("zero divisor") // => On failure, return a placeholder quotient and non-nil error.
 	}
-	return a / b, nil
+	return a / b, nil // => On success, return integer division and nil error.
 }
 
-// => func multiple return: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { q, err := divide(8, 2); fmt.Println(q, err) }
+func main() { // => The caller handles the error before using q.
+	q, err := divide(8, 2) // => This call returns q=4 and err=nil.
+	if err != nil {        // => Only a failed call enters this branch.
+		fmt.Println("divide failed:", err) // => The failure branch reports the error instead of printing q.
+		return                             // => Stop main after reporting a failure.
+	}
+	fmt.Println(q) // => Output: 4 for the successful call.
+}

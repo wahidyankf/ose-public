@@ -5,33 +5,30 @@ draft: false
 weight: 1
 ---
 
-## Concepts
+Work through the examples in order, even if you already know another functional language. Each example
+stands alone, so you can return to a single concept without copying earlier code.
 
-1. **co-01 · dotnet-new** — console scaffolding creates an F# project.
-2. **co-02 · dotnet-run** — run compiles and executes it.
-3. **co-03 · dotnet-build** — build reports compile diagnostics.
-4. **co-04 · dotnet-test** — tests execute under the CLI.
-5. **co-05 · dotnet-fsi** — FSI evaluates expressions incrementally.
-6. **co-06 · let-binding** — let is immutable; reusing a name shadows it.
-7. **co-07 · mutable-binding** — mutable and assignment opt into mutation.
-8. **co-08 · function-definition** — functions are curried bindings.
-9. **co-09 · significant-whitespace** — indentation defines blocks.
-10. **co-10 · type-inference** — types can be inferred without annotations.
-11. **co-11 · tuples** — tuples group and destructure values.
-12. **co-12 · lists** — immutable lists use literals, cons, and ranges.
-13. **co-13 · records** — records have named fields and copy-update.
-14. **co-14 · discriminated-unions** — unions model legal variants.
-15. **co-15 · pattern-matching** — match deconstructs values.
-16. **co-16 · exhaustiveness-warning** — missing cases yield FS0025.
-17. **co-17 · active-patterns** — active patterns define reusable matches.
-18. **co-18 · option-type** — Option models expected absence.
-19. **co-19 · result-type** — Result models expected failure.
-20. **co-20 · pipeline-operator** — pipeline makes data flow left-to-right.
-21. **co-21 · function-composition** — composition combines functions.
-22. **co-22 · higher-order-functions** — map, filter, and fold accept functions.
-23. **co-23 · recursion** — recursive bindings define repeated logic.
-24. **co-24 · recursive-du** — recursive unions model expression trees.
-25. **co-25 · dotnet-interop** — F# calls .NET APIs.
-26. **co-26 · modules-namespaces** — modules organize definitions.
+## Route through the primer
 
-All 78 examples have colocated artifacts in [learning/code](./code/README.md).
+1. [Beginner examples 1–26](./beginner.md) cover bindings, functions, core collections, records, unions,
+   `Option`, `Result`, and data transformation.
+2. [Intermediate examples 27–52](./intermediate.md) add recursion, matching, keyed collections,
+   .NET interop, and simple object boundaries.
+3. [Advanced examples 53–78](./advanced.md) combine the core features in parsing, tree traversal,
+   error propagation, lazy and asynchronous workflows, and the final evaluator sketch.
+4. [Capstone: Expression Evaluator](./capstone/overview.md) asks you to consolidate the central ideas
+   in one short program. Use the [drills](../drilling/overview.md) to check recall and transfer.
+
+## Run and check an example
+
+Install a .NET 10 SDK. From an example's folder under [learning/code](./code/README.md), run
+`dotnet fsi main.fsx`. Read the code, predict the printed value, and then compare it with the
+**Observe** block. Change one input and explain the result before moving on. The code on each
+lesson page is the complete source of its colocated script.
+
+## Learning goals
+
+By the end, you should be able to choose a record for named data, a union for alternatives,
+`Option` for expected absence, and `Result` when a failure needs an explanation. You should also
+be able to trace a pipeline and a recursive match without hidden mutation. The capstone is the
+boundary of this primer; more elaborate compiler or application design belongs in later study.

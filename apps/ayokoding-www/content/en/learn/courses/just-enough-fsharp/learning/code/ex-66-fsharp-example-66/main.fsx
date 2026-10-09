@@ -1,4 +1,6 @@
-// ex-66 · fsharp-example-66
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => Map.map receives both key and value.
+let prices = Map.ofList ["tea", 3; "coffee", 5]
+// => Ignore the key because only the price changes.
+let increased = prices |> Map.map (fun _ price -> price + 1)
+// => Tea now costs 4 in the new map.
+printfn "%A" (Map.tryFind "tea" increased)

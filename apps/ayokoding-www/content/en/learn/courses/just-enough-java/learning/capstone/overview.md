@@ -18,12 +18,21 @@ a generic list owns tasks, a stream creates the open-task report, and JUnit veri
 The Maven project declares Java 21 because its sealed-switch syntax is final there. JUnit is only a
 test dependency; no application framework is introduced.
 
+## Try an extension
+
+Before running the application, predict which name its current fixture prints. Then add an `Open`
+task named `plan review` to the fixture in `TaskBoard.main`. Update
+`TaskBoardTest.reportsOnlySortedOpenTasks` with the same new task and assert the three expected names
+in alphabetical order. Run `mvn test` and the application again; explain why the `Done` task is absent
+from both reports.
+
 ## Acceptance checks
 
 - Task value equality works through its record components.
 - The sealed state hierarchy has no default switch branch.
 - Open task names are filtered and sorted through a stream pipeline.
-- The JUnit test suite passes under Maven.
+- The JUnit test suite checks sorted open names, every sealed state, blank names through parameterized inputs, and a missing state.
+- `mvn test` passes under Java 25 (the project compiles the Java 21 language level).
 
 ## Why this stays small
 

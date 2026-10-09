@@ -1,3 +1,6 @@
-// ex-15 · fsharp-example-15
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => seq describes a range without making a list first.
+let numbers = seq { 1..1000000 }
+// => take requests only the first three values.
+let firstThree = numbers |> Seq.take 3 |> Seq.toList
+// => This prints [1; 2; 3].
+printfn "%A" firstThree

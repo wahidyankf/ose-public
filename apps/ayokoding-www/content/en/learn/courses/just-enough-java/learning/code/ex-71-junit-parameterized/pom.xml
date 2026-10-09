@@ -1,0 +1,38 @@
+<!-- => The Maven POM namespace identifies the project model that Maven reads. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <!-- => This declares Maven POM model version 4.0.0, not the Java release. -->
+  <modelVersion>4.0.0</modelVersion>
+  <!-- => groupId names the publishing group in the project coordinates. -->
+  <groupId>org.ayokoding</groupId>
+  <!-- => artifactId identifies this JUnit lesson project. -->
+  <artifactId>primer-junit-example-71</artifactId>
+  <!-- => This is the example artifact version, separate from plugin versions. -->
+  <version>1.0.0</version>
+  <properties>
+    <!-- => The compiler targets Java 21 language and platform APIs. -->
+    <!-- => The generated class files remain compatible with Java 21 runtimes. -->
+    <maven.compiler.release>21</maven.compiler.release>
+    <!-- => Source decoding is fixed to UTF-8 across different machines. -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- => The JUnit Jupiter version is declared once for the dependency below. -->
+    <!-- => Pinning 6.0.1 keeps test behavior consistent across builds. -->
+    <junit.version>6.0.1</junit.version>
+  </properties>
+  <dependencies>
+    <!-- => junit-jupiter provides the test annotations and assertion APIs. -->
+    <!-- => The dependency version reuses junit.version rather than repeating a number. -->
+    <!-- => Test scope keeps JUnit off the application runtime classpath. -->
+    <!-- => JUnit supplies the parameterized test and its values. -->
+    <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>${junit.version}</version><scope>test</scope></dependency>
+  </dependencies>
+  <build><plugins>
+    <!-- => The compiler plugin compiles sources at the declared Java release. -->
+    <!-- => Version 3.14.1 is pinned independently of the application version. -->
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.14.1</version></plugin>
+    <!-- => Surefire discovers and runs test classes during mvn test. -->
+    <!-- => Its pinned 3.5.4 version supports the chosen JUnit platform. -->
+    <!-- => A failed assertion makes the Maven test phase fail. -->
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.5.4</version></plugin>
+  </plugins></build>
+</project>

@@ -1,4 +1,6 @@
-// ex-65 · fsharp-example-65
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => The initial map has one entry.
+let original = Map.ofList ["tea", 2]
+// => Map.add returns a new map.
+let updated = Map.add "coffee" 3 original
+// => The old map lacks coffee; the new one has it.
+printfn "%A, %A" (Map.tryFind "coffee" original) (Map.tryFind "coffee" updated)

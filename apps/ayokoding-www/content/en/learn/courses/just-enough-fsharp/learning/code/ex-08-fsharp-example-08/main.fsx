@@ -1,3 +1,6 @@
-// ex-08 · fsharp-example-08
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => add is a two-argument curried function.
+let add left right = left + right
+// => Fix the first argument and keep the second open.
+let addTax = add 10
+// => Applying the remaining argument yields 35.
+printfn "%d" (addTax 25)

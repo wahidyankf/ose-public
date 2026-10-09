@@ -9,9 +9,9 @@ weight: 1
 
 **What makes a record different from an ordinary mutable class?**
 
-<details><summary>Answer</summary>A record declares a transparent immutable data carrier and gets
-component accessors plus value-oriented equals and hashCode; it is not merely shorter syntax for
-every domain object.</details>
+<details><summary>Answer</summary>A record declares a transparent data carrier with final component
+fields and gets component accessors plus value-oriented equals and hashCode. A component may still
+refer to a mutable object, so a record does not guarantee deep immutability.</details>
 
 **Why prefer a sealed hierarchy before an exhaustive pattern switch?**
 
@@ -26,7 +26,7 @@ an arbitrary subtype because the concrete element type is unknown.</details>
 ## Calculation practice
 
 A list contains 4, 7, 9, 10. Write a streams pipeline that filters even values and sums them. The
-answer is 10; state where the pipeline becomes a value rather than a lazy stream.
+answer is 14; state where the pipeline becomes a value rather than a lazy stream.
 
 ## Scenario judgment
 

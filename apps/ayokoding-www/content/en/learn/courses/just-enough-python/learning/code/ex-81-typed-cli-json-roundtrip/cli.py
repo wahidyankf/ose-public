@@ -1,7 +1,9 @@
 """Example 81: Fully-typed argparse CLI that reads, transforms, and writes JSON."""
 
+# => The CLI doubles count while preserving the label.
+
 # Defers annotation evaluation (portability, as in Example 68).
-from __future__ import annotations
+from __future__ import annotations  # => defers evaluation on older Python
 
 import argparse  # => imports the standard-library CLI-parsing module
 import json  # => imports the standard-library json module
@@ -27,14 +29,16 @@ def main() -> None:  # => defines the entry point, called only when run directly
     # description shows up at the top of the auto-generated --help text.
     parser = argparse.ArgumentParser(  # => creates the parser
         description="Double the count field in a JSON file.",  # => shown in --help
-    )  # => closes ArgumentParser(...)
-    parser.add_argument("input", type=str, help="path to the input JSON file")
-    # => a required positional argument -- the source file path
+    )  # => parser now has the CLI help description
     parser.add_argument(
+        "input", type=str, help="path to the input JSON file"
+    )  # => requires the source JSON path
+    # => a required positional argument -- the source file path
+    parser.add_argument(  # => adds a second positional argument for output
         "output",  # => the second required positional argument
         type=str,  # => argparse converts the raw string; str is a no-op conversion
-        help="path to write the transformed JSON file",
-    )  # => closes add_argument(...)
+        help="path to write the transformed JSON file",  # => help describes the destination path
+    )  # => finishes defining the required output path
     args = parser.parse_args()  # => args.input and args.output hold the two paths
 
     # Path gives filesystem-safe join/read/write methods.

@@ -1,8 +1,10 @@
 """Example 37: Keyword Args."""
 
+# => Both binding styles return the same integer result.
+
 
 # Defines subtract, which takes two ints and returns an int.
-def subtract(a: int, b: int) -> int:
+def subtract(a: int, b: int) -> int:  # => 10 minus 3 is 7 below
     return a - b  # => returns a minus b
 
 

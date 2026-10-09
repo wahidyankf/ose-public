@@ -1,3 +1,6 @@
-// ex-04 · fsharp-example-04
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => Multiplication happens before addition.
+let total = 2 + 3 * 4
+// => Parentheses change the grouping.
+let grouped = (2 + 3) * 4
+// => The two results are 14 and 20.
+printfn "%d, %d" total grouped

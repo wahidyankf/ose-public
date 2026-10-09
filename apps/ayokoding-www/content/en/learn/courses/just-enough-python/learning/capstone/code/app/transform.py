@@ -7,6 +7,7 @@ without touching a filesystem or a CLI.
 
 from __future__ import annotations
 
+import math
 from typing import TypedDict
 
 
@@ -30,19 +31,54 @@ class SummaryRecord(TypedDict):
     total_value: float
 
 
-def validate_records(records: list[InventoryRecord]) -> list[InventoryRecord]:
-    """Reject any record with a negative quantity or price.
+def validate_records(records: object) -> list[InventoryRecord]:
+    """Check the JSON shape and return typed, nonnegative records.
 
-    Raising a custom, named exception (rather than a bare ValueError) lets the CLI
-    layer catch exactly this failure mode and print a clean message instead of a
-    raw traceback -- the same distinction Example 65 draws in the learning track.
+    A type hint on json.load would not validate its runtime data. This function
+    narrows each field before constructing an InventoryRecord for the rest of the
+    program to use.
     """
-    for record in records:  # => a plain for loop -- fails fast on the FIRST bad record
-        if record["quantity"] < 0:
-            raise InvalidRecordError(f"{record['name']!r} has a negative quantity")
-        if record["price"] < 0:
-            raise InvalidRecordError(f"{record['name']!r} has a negative price")
-    return records  # => unchanged -- this function validates, it never mutates
+    if not isinstance(records, list):
+        raise InvalidRecordError("expected a top-level JSON array")
+
+    validated: list[InventoryRecord] = []
+    for index, raw_record in enumerate(records, start=1):
+        if not isinstance(raw_record, dict):
+            raise InvalidRecordError(f"record {index} must be an object")
+
+        name: object = raw_record.get("name")
+        quantity: object = raw_record.get("quantity")
+        price: object = raw_record.get("price")
+        if not isinstance(name, str):
+            raise InvalidRecordError(f"record {index} needs a string name")
+        if isinstance(quantity, bool) or not isinstance(quantity, int):
+            raise InvalidRecordError(f"record {index} needs an integer quantity")
+        if quantity < 0:
+            raise InvalidRecordError(f"{name!r} has a negative quantity")
+        if isinstance(price, bool) or not isinstance(price, (int, float)):
+            raise InvalidRecordError(f"record {index} needs a numeric price")
+        try:
+            numeric_price = float(price)
+        except OverflowError as err:
+            raise InvalidRecordError(f"record {index} needs a finite price") from err
+        if not math.isfinite(numeric_price):
+            raise InvalidRecordError(f"record {index} needs a finite price")
+        if numeric_price < 0:
+            raise InvalidRecordError(f"{name!r} has a negative price")
+
+        validated.append({"name": name, "quantity": quantity, "price": numeric_price})
+    return validated
+
+
+def _total_value(record: InventoryRecord) -> float:
+    """Compute one row, rejecting results outside the finite float range."""
+    try:
+        value = record["quantity"] * record["price"]
+    except OverflowError as err:
+        raise InvalidRecordError(f"{record['name']!r} needs a finite total") from err
+    if not math.isfinite(value):
+        raise InvalidRecordError(f"{record['name']!r} needs a finite total")
+    return round(value, 2)
 
 
 def summarize(records: list[InventoryRecord]) -> list[SummaryRecord]:
@@ -51,8 +87,8 @@ def summarize(records: list[InventoryRecord]) -> list[SummaryRecord]:
         {
             "name": record["name"],
             "quantity": record["quantity"],
-            "total_value": round(record["quantity"] * record["price"], 2),
-            # => round(..., 2) keeps prices display-friendly -- Example 6's float lesson, applied
+            "total_value": _total_value(record),
+            # => reject overflow before rounding; round is for display, not exact money arithmetic
         }
         for record in records  # => one comprehension replaces a build-up loop (Example 29's pattern)
     ]
@@ -60,5 +96,8 @@ def summarize(records: list[InventoryRecord]) -> list[SummaryRecord]:
 
 def grand_total(summary: list[SummaryRecord]) -> float:
     """Sum every summary row's total_value -- a generator expression, not a loop."""
-    return round(sum(row["total_value"] for row in summary), 2)
+    total = sum(row["total_value"] for row in summary)
     # => sum(... for ...) is Example 33's generator-expression pattern, not a materialized list
+    if not math.isfinite(total):
+        raise InvalidRecordError("expected a finite grand total")
+    return round(total, 2)

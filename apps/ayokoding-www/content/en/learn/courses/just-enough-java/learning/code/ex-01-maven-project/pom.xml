@@ -1,0 +1,30 @@
+<!-- => The Maven POM namespace identifies the project model that Maven reads. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <!-- => This declares Maven POM model version 4.0.0, not the Java release. -->
+  <modelVersion>4.0.0</modelVersion>
+  <!-- => groupId names the publishing group in the project coordinates. -->
+  <groupId>org.ayokoding</groupId>
+  <!-- => artifactId distinguishes this example project inside the group. -->
+  <!-- => Together with groupId and version, it forms the artifact coordinates. -->
+  <artifactId>primer-example-01</artifactId>
+  <!-- => This is the example artifact version, separate from plugin versions. -->
+  <version>1.0.0</version>
+  <properties>
+    <!-- => The compiler targets Java 21 language and platform APIs. -->
+    <!-- => The generated class files remain compatible with Java 21 runtimes. -->
+    <maven.compiler.release>21</maven.compiler.release>
+    <!-- => Source decoding is fixed to UTF-8 across different machines. -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <build><plugins>
+    <!-- => The compiler plugin runs javac during the Maven compile phase. -->
+    <!-- => Its version is pinned to 3.14.1 for repeatable builds. -->
+    <!-- => It reads the Java release property declared above. -->
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.14.1</version></plugin>
+    <!-- => The exec plugin launches the compiled main class from the project. -->
+    <!-- => Its version is pinned to 3.5.0 independently of the artifact version. -->
+    <!-- => The command supplies exec.mainClass, so the POM needs no fixed application class. -->
+    <plugin><groupId>org.codehaus.mojo</groupId><artifactId>exec-maven-plugin</artifactId><version>3.5.0</version></plugin>
+  </plugins></build>
+</project>

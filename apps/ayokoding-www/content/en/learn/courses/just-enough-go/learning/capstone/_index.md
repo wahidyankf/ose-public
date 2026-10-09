@@ -5,4 +5,4 @@ draft: false
 weight: 100
 ---
 
-- [Capstone: Concurrent JSON Status Check](/en/learn/courses/just-enough-go/learning/capstone/overview)
+- [Capstone: Status Check with a Goroutine](/en/learn/courses/just-enough-go/learning/capstone/overview)

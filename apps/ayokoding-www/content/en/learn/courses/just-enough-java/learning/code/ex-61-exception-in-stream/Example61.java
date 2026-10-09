@@ -1,3 +1,15 @@
-// ex-61 · exception-in-stream · co-24, co-18
-public final class Example61 { static String read(boolean available) throws Exception { if(!available) throw new Exception("missing"); return "value"; } public static void main(String[] args){ try { System.out.println(read(false)); } catch(Exception problem) { System.out.println(problem.getMessage()); } } }
-
+import java.util.List;
+public final class Example61 {
+    static int parse(String text) {
+        // => The helper converts each input String to an int.
+        try { return Integer.parseInt(text); } // => valid digits become int
+        catch (NumberFormatException problem) { return 0; } // => explicit local fallback
+        // => Only malformed text takes the zero fallback.
+    }
+    public static void main(String[] args) {
+        int sum = List.of("2", "bad", "3").stream().mapToInt(Example61::parse).sum(); // => 2 + 0 + 3
+        // => The mapped values are 2, 0, and 3.
+        System.out.println(sum); // => 5
+        // => The terminal sum yields 5 after fallback conversion.
+    }
+}

@@ -7,7 +7,7 @@ weight: 1
 
 ## Goal
 
-Write one small (roughly 100-line), multi-module Python CLI that reads an inventory JSON file,
+Write one small multi-module Python CLI that reads an inventory JSON file,
 validates it, summarizes each item's total value, writes the summary back out as JSON, and ships a
 `pytest` suite -- a light consolidation, not a new project: every mechanism it combines was already
 taught, individually, somewhere in the Beginner, Intermediate, or Advanced tiers of this primer.
@@ -40,12 +40,12 @@ flowchart LR
 - [x] `try`/`except` with a raised custom error
 - [x] `json` read/write with `with`
 - [x] `if __name__` guard
-- [x] one `pytest` test (this capstone ships four)
+- [x] focused `pytest` tests for valid data and failure paths
 
 All colocated code lives under `learning/capstone/code/`: the pure logic in `app/transform.py`, the
-CLI entry point in `app/__main__.py`, the package marker `app/__init__.py`, and the test suite in
-`tests/test_transform.py`. Every listing below is the complete, verbatim file -- nothing on this page
-is truncated or paraphrased.
+CLI entry point in `app/__main__.py`, the package marker `app/__init__.py`, and the tests in
+`tests/test_transform.py` and `tests/test_cli.py`. Every listing below is the complete file --
+nothing on this page is truncated or paraphrased.
 
 ## Step 1: A fresh venv, installed with `pytest`
 
@@ -67,17 +67,23 @@ Version: 9.1.1
 ```
 
 A version string printed by `pip show pytest`, with exit code `0`, confirms the venv is real and
-`pytest` is installed into it -- not the system Python.
+`pytest` is installed into it -- not the system Python. The displayed version is a captured
+example; your installed patch may differ.
 
 ## Step 2: `app/transform.py` -- pure functions, unit-tested in isolation
 
 _exercises co-06, co-11, co-14, co-17, co-21, co-24_
 
-`transform.py` has no file I/O and no `argparse` in it on purpose: every function is pure (same
-input always produces the same output, no side effects), which is exactly what makes it trivially
-testable without touching a filesystem or a CLI -- the same discipline Example 74's `calc.add`
-followed. A `TypedDict` documents each record's exact shape (Example 81's pattern); a custom
-`InvalidRecordError` (Example 65's pattern) signals bad data, rather than a bare `ValueError`.
+`transform.py` has no file I/O and no `argparse`: its functions are testable without a filesystem
+or a CLI. `json.load` can return any JSON shape, so `validate_records` checks the root and each
+field before constructing typed records. A `TypedDict` documents the accepted shape (Example 81's
+pattern); `InvalidRecordError` (Example 65's pattern) reports a rejected record cleanly. The
+transform also rejects prices that cannot fit in a finite float and totals that overflow during
+multiplication or addition.
+
+This capstone uses `float` to practice a small JSON transformation. For money calculations that
+require exact decimal behavior, use a suitable representation such as Python's
+[`decimal` module](https://docs.python.org/3/library/decimal.html).
 
 **`learning/capstone/code/app/transform.py`** (complete file)
 
@@ -91,6 +97,7 @@ without touching a filesystem or a CLI.
 
 from __future__ import annotations
 
+import math
 from typing import TypedDict
 
 
@@ -114,19 +121,54 @@ class SummaryRecord(TypedDict):
     total_value: float
 
 
-def validate_records(records: list[InventoryRecord]) -> list[InventoryRecord]:
-    """Reject any record with a negative quantity or price.
+def validate_records(records: object) -> list[InventoryRecord]:
+    """Check the JSON shape and return typed, nonnegative records.
 
-    Raising a custom, named exception (rather than a bare ValueError) lets the CLI
-    layer catch exactly this failure mode and print a clean message instead of a
-    raw traceback -- the same distinction Example 65 draws in the learning track.
+    A type hint on json.load would not validate its runtime data. This function
+    narrows each field before constructing an InventoryRecord for the rest of the
+    program to use.
     """
-    for record in records:  # => a plain for loop -- fails fast on the FIRST bad record
-        if record["quantity"] < 0:
-            raise InvalidRecordError(f"{record['name']!r} has a negative quantity")
-        if record["price"] < 0:
-            raise InvalidRecordError(f"{record['name']!r} has a negative price")
-    return records  # => unchanged -- this function validates, it never mutates
+    if not isinstance(records, list):
+        raise InvalidRecordError("expected a top-level JSON array")
+
+    validated: list[InventoryRecord] = []
+    for index, raw_record in enumerate(records, start=1):
+        if not isinstance(raw_record, dict):
+            raise InvalidRecordError(f"record {index} must be an object")
+
+        name: object = raw_record.get("name")
+        quantity: object = raw_record.get("quantity")
+        price: object = raw_record.get("price")
+        if not isinstance(name, str):
+            raise InvalidRecordError(f"record {index} needs a string name")
+        if isinstance(quantity, bool) or not isinstance(quantity, int):
+            raise InvalidRecordError(f"record {index} needs an integer quantity")
+        if quantity < 0:
+            raise InvalidRecordError(f"{name!r} has a negative quantity")
+        if isinstance(price, bool) or not isinstance(price, (int, float)):
+            raise InvalidRecordError(f"record {index} needs a numeric price")
+        try:
+            numeric_price = float(price)
+        except OverflowError as err:
+            raise InvalidRecordError(f"record {index} needs a finite price") from err
+        if not math.isfinite(numeric_price):
+            raise InvalidRecordError(f"record {index} needs a finite price")
+        if numeric_price < 0:
+            raise InvalidRecordError(f"{name!r} has a negative price")
+
+        validated.append({"name": name, "quantity": quantity, "price": numeric_price})
+    return validated
+
+
+def _total_value(record: InventoryRecord) -> float:
+    """Compute one row, rejecting results outside the finite float range."""
+    try:
+        value = record["quantity"] * record["price"]
+    except OverflowError as err:
+        raise InvalidRecordError(f"{record['name']!r} needs a finite total") from err
+    if not math.isfinite(value):
+        raise InvalidRecordError(f"{record['name']!r} needs a finite total")
+    return round(value, 2)
 
 
 def summarize(records: list[InventoryRecord]) -> list[SummaryRecord]:
@@ -135,8 +177,8 @@ def summarize(records: list[InventoryRecord]) -> list[SummaryRecord]:
         {
             "name": record["name"],
             "quantity": record["quantity"],
-            "total_value": round(record["quantity"] * record["price"], 2),
-            # => round(..., 2) keeps prices display-friendly -- Example 6's float lesson, applied
+            "total_value": _total_value(record),
+            # => reject overflow before rounding; round is for display, not exact money arithmetic
         }
         for record in records  # => one comprehension replaces a build-up loop (Example 29's pattern)
     ]
@@ -144,8 +186,11 @@ def summarize(records: list[InventoryRecord]) -> list[SummaryRecord]:
 
 def grand_total(summary: list[SummaryRecord]) -> float:
     """Sum every summary row's total_value -- a generator expression, not a loop."""
-    return round(sum(row["total_value"] for row in summary), 2)
+    total = sum(row["total_value"] for row in summary)
     # => sum(... for ...) is Example 33's generator-expression pattern, not a materialized list
+    if not math.isfinite(total):
+        raise InvalidRecordError("expected a finite grand total")
+    return round(total, 2)
 ```
 
 **`learning/capstone/code/tests/test_transform.py`** (complete file)
@@ -176,9 +221,35 @@ def test_validate_records_rejects_negative_quantity() -> None:
         validate_records(records)
 
 
+@pytest.mark.parametrize(
+    ("records", "message"),
+    [
+        ({"name": "widget"}, "top-level JSON array"),
+        ([{"name": "widget", "quantity": 1}], "price"),
+        ([{"name": "widget", "quantity": True, "price": 2.5}], "quantity"),
+        ([{"name": "widget", "quantity": 1, "price": True}], "price"),
+        ([{"name": "widget", "quantity": 1, "price": "2.5"}], "price"),
+        ([{"name": "widget", "quantity": 1, "price": -2.5}], "negative price"),
+        ([{"name": "widget", "quantity": 1, "price": float("nan")}], "finite price"),
+        ([{"name": "widget", "quantity": 1, "price": 10**400}], "finite price"),
+    ],
+)
+def test_validate_records_rejects_invalid_json_shape(
+    records: object, message: str
+) -> None:
+    with pytest.raises(InvalidRecordError, match=message):
+        validate_records(records)
+
+
 def test_summarize_computes_total_value() -> None:
     records: list[InventoryRecord] = [{"name": "widget", "quantity": 3, "price": 2.5}]
     assert summarize(records) == [{"name": "widget", "quantity": 3, "total_value": 7.5}]
+
+
+def test_summarize_rejects_nonfinite_total() -> None:
+    records: list[InventoryRecord] = [{"name": "widget", "quantity": 2, "price": 1e308}]
+    with pytest.raises(InvalidRecordError, match="finite total"):
+        summarize(records)
 
 
 def test_grand_total_sums_every_row() -> None:
@@ -187,6 +258,119 @@ def test_grand_total_sums_every_row() -> None:
         {"name": "gadget", "quantity": 1, "total_value": 12.0},
     ]
     assert grand_total(summary) == 19.5
+
+
+def test_grand_total_rejects_nonfinite_sum() -> None:
+    summary: list[SummaryRecord] = [
+        {"name": "a", "quantity": 1, "total_value": 1e308},
+        {"name": "b", "quantity": 1, "total_value": 1e308},
+    ]
+    with pytest.raises(InvalidRecordError, match="finite grand total"):
+        grand_total(summary)
+```
+
+**`learning/capstone/code/tests/test_cli.py`** (complete file)
+
+```python
+"""CLI regression tests for invalid input files."""
+
+import subprocess
+import sys
+from pathlib import Path
+
+
+def test_malformed_json_reports_one_line_without_writing_output(tmp_path: Path) -> None:
+    input_path = tmp_path / "bad.json"
+    output_path = tmp_path / "out.json"
+    input_path.write_text("{bad json", encoding="utf-8")
+
+    result = subprocess.run(
+        [sys.executable, "-m", "app", str(input_path), str(output_path)],
+        cwd=Path(__file__).parents[1],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert "invalid JSON" in result.stderr
+    assert "Traceback" not in result.stderr
+    assert not output_path.exists()
+
+
+def test_invalid_text_encoding_reports_error_without_writing_output(
+    tmp_path: Path,
+) -> None:
+    input_path = tmp_path / "invalid-utf8.json"
+    output_path = tmp_path / "out.json"
+    input_path.write_bytes(b"\xff")
+
+    result = subprocess.run(
+        [sys.executable, "-m", "app", str(input_path), str(output_path)],
+        cwd=Path(__file__).parents[1],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert "cannot decode input" in result.stderr
+    assert "Traceback" not in result.stderr
+    assert not output_path.exists()
+
+
+def test_missing_input_reports_one_line_without_writing_output(tmp_path: Path) -> None:
+    output_path = tmp_path / "out.json"
+
+    result = subprocess.run(
+        [sys.executable, "-m", "app", str(tmp_path / "missing.json"), str(output_path)],
+        cwd=Path(__file__).parents[1],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert "cannot read input" in result.stderr
+    assert "Traceback" not in result.stderr
+    assert not output_path.exists()
+
+
+def test_unwritable_output_reports_one_line(tmp_path: Path) -> None:
+    input_path = Path(__file__).parents[1] / "in.json"
+
+    result = subprocess.run(
+        [sys.executable, "-m", "app", str(input_path), str(tmp_path)],
+        cwd=Path(__file__).parents[1],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert "cannot write output" in result.stderr
+    assert "Traceback" not in result.stderr
+
+
+def test_overflowing_total_reports_error_without_writing_output(tmp_path: Path) -> None:
+    input_path = tmp_path / "large.json"
+    output_path = tmp_path / "out.json"
+    input_path.write_text(
+        '[{"name":"widget","quantity":2,"price":1e308}]', encoding="utf-8"
+    )
+
+    result = subprocess.run(
+        [sys.executable, "-m", "app", str(input_path), str(output_path)],
+        cwd=Path(__file__).parents[1],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert "finite total" in result.stderr
+    assert "Traceback" not in result.stderr
+    assert not output_path.exists()
 ```
 
 (`tests/__init__.py` is an empty file -- it exists only to make `tests` an importable package
@@ -196,18 +380,18 @@ alongside `app`.)
 
 ```text
 $ .venv/bin/pytest -q
-....                                                                     [100%]
-4 passed in 0.01s
+...................                                                      [100%]
+19 passed
 ```
 
 ## Step 3: `app/__main__.py` -- wire `argparse` around the pure functions
 
 _exercises co-20, co-22, co-23_
 
-`app/__main__.py` is the only part of this capstone that touches the filesystem, `argparse`, or
-`sys.exit` -- it reads `in.json` (Example 58's pattern), calls `validate_records` and `summarize`,
-catches `InvalidRecordError` and reports a clean one-line message on `stderr` with a non-zero exit
-code (never a raw traceback), then writes and prints the resulting JSON (Example 57's pattern).
+`app/__main__.py` is the only part of this capstone that touches the filesystem or `argparse`.
+It reports read, decode, shape, nonfinite total, and write failures as one-line messages on
+`stderr` with a nonzero exit code. It checks strict JSON serialization before opening the output
+file; on success it writes and prints the same JSON.
 `app/__init__.py` is a one-line docstring -- its only job is making `app` a package runnable with
 `python3 -m app` (Example 64's shape).
 
@@ -246,7 +430,7 @@ from app.transform import (
 )
 
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Summarize an inventory JSON file's total value per item."
     )
@@ -258,40 +442,58 @@ def main() -> None:
     input_path = Path(args.input)
     output_path = Path(args.output)
 
-    # `with` guarantees the file closes (Example 52's pattern).
-    with input_path.open() as f:
-        # Example 58's json.load pattern -- reads the whole file as one JSON value.
-        records: list[InventoryRecord] = json.load(f)
+    try:
+        # json.load returns untrusted data; a type hint alone cannot validate it.
+        with input_path.open(encoding="utf-8") as f:
+            raw_records: object = json.load(f)
+    except OSError as err:
+        print(f"cannot read input: {err}", file=sys.stderr)
+        return 1
+    except json.JSONDecodeError as err:
+        print(f"invalid JSON: {err.msg} at line {err.lineno}", file=sys.stderr)
+        return 1
+    except UnicodeError as err:
+        print(f"cannot decode input: {err}", file=sys.stderr)
+        return 1
 
     try:
-        validate_records(records)
+        records: list[InventoryRecord] = validate_records(raw_records)
+        summary = summarize(records)
+        payload = {"items": summary, "grand_total": grand_total(summary)}
+        # Strict JSON rejects NaN and Infinity before opening the output file.
+        serialized = json.dumps(payload, allow_nan=False)
     except InvalidRecordError as err:
         # Example 65's custom-exception-class pattern: a clean message, not a raw traceback.
         print(f"invalid inventory data: {err}", file=sys.stderr)
-        sys.exit(1)  # a distinct, deliberate non-zero exit code for bad input
+        return 1
+    except ValueError as err:
+        print(f"invalid inventory data: {err}", file=sys.stderr)
+        return 1
 
-    summary = summarize(records)
-    payload = {"items": summary, "grand_total": grand_total(summary)}
-
-    with output_path.open("w") as f:
-        json.dump(payload, f)  # Example 57's json.dump-to-file pattern
+    try:
+        with output_path.open("w", encoding="utf-8") as f:
+            f.write(serialized)
+    except OSError as err:
+        print(f"cannot write output: {err}", file=sys.stderr)
+        return 1
 
     # Echoes the same payload to stdout for the caller to see.
-    print(json.dumps(payload))
+    print(serialized)
+    return 0
 
 
 # Example 46's guard -- app.__main__ only runs main() when invoked directly
 # (e.g. via `python3 -m app`), never when merely imported.
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
 ```
 
 **Verify**
 
 ```text
 $ .venv/bin/pytest -q
-....                                                                     [100%]
-4 passed in 0.01s
+...................                                                      [100%]
+19 passed
 ```
 
 Re-running Step 2's full test suite against the now-complete package confirms adding `__main__.py`
@@ -340,8 +542,8 @@ quantity:
 invalid inventory data: 'widget' has a negative quantity
 ```
 
-**Exit code**: `1` -- and, critically, `out_bad.json` is never written, because `sys.exit(1)` runs
-before the `output_path.open("w")` call is ever reached.
+**Exit code**: `1` -- and `out_bad.json` is never written, because `main()` returns before the
+`output_path.open("w")` call is reached.
 
 **Quality gates**: `ruff check .` (from inside `learning/capstone/code/`) reports `All checks
 passed!`; `pyright --pythonpath .venv/bin/python .` reports `0 errors, 0 warnings, 0 informations`
@@ -354,23 +556,25 @@ resolve the `pytest` import in `tests/test_transform.py` the same way `pytest` i
   echoes the identical JSON to stdout.
 - `python3 -m app in_invalid.json out_bad.json` exits `1`, prints a clean one-line message to
   `stderr` (never a raw traceback), and never writes `out_bad.json` at all.
-- `.venv/bin/pytest -q` reports `4 passed` against `tests/test_transform.py`, covering both the
-  accept and reject paths of `validate_records`, plus `summarize` and `grand_total`.
+- A malformed JSON file, invalid UTF-8, missing input file, invalid record shape, nonfinite
+  calculated total, or unwritable output exits
+  nonzero with a one-line error and no raw traceback.
+- `.venv/bin/pytest -q` reports `19 passed` across the transform and CLI tests.
 - `ruff check .` and `pyright --pythonpath .venv/bin/python .` both report zero findings.
 - Every listing on this page (`app/__init__.py`, `app/transform.py`, `app/__main__.py`,
-  `tests/test_transform.py`) is the complete file, runnable exactly as shown -- nothing here is a
+  `tests/test_transform.py`, `tests/test_cli.py`) is the complete file, runnable exactly as shown -- nothing here is a
   fragment that depends on code the page does not also show.
 
 ## Done bar
 
-This capstone is runnable end to end: a reader who copies the four files above into a
+This capstone is runnable end to end: a reader who copies the five files above into a
 `learning/capstone/code/`-shaped tree, creates a venv, installs `pytest`, and runs `python3 -m app
-in.json out.json` there reaches the identical output block shown in Step 4, verified against a real
-CPython 3.14.3 interpreter run (not merely described). Every mechanism combined here --
+in.json out.json` there reaches the identical output block shown in Step 4, verified with CPython
+3.14.7. Every mechanism combined here --
 `argparse`-CLIs (co-20), collections-and-comprehensions (co-14), `try`/`except` with a custom
 exception (co-21), `json`-file-I/O (co-22/co-23), the `if __name__` guard (co-20), and `pytest`
 (co-17) -- traces to a primary source already cited in this primer's Accuracy notes and DD-35
-citations; no new fact was needed to write this page.
+citations.
 
 ---
 

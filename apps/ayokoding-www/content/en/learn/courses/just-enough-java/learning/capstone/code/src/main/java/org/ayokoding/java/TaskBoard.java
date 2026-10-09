@@ -2,6 +2,7 @@ package org.ayokoding.java;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public final class TaskBoard {
     private TaskBoard() {}
@@ -11,6 +12,7 @@ public final class TaskBoard {
             if (name == null || name.isBlank()) {
                 throw new IllegalArgumentException("name is required");
             }
+            Objects.requireNonNull(state, "state is required");
         }
     }
 

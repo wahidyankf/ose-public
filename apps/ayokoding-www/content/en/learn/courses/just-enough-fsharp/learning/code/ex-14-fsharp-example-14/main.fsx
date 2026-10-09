@@ -1,3 +1,6 @@
-// ex-14 · fsharp-example-14
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => [| |] creates an array, distinct from a list.
+let colors = [|"red"; "blue"|]
+// => Index zero reads the first item.
+let first = colors.[0]
+// => This prints red.
+printfn "%s" first

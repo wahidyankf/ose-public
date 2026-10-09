@@ -6,6 +6,7 @@ weight: 140
 prerequisites: ["capstone-forge-ready"]
 ---
 
+- [Overview](/en/learn/courses/just-enough-python/overview)
 - [Learning](/en/learn/courses/just-enough-python/learning)
   - [Overview](/en/learn/courses/just-enough-python/learning/overview)
   - [Beginner Examples](/en/learn/courses/just-enough-python/learning/beginner)

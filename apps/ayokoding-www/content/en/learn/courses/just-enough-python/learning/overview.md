@@ -11,9 +11,10 @@ weight: 1
   be comfortable opening, editing, and saving files before writing and running Python scripts; the
   [Pass 0 forge capstone](../../capstone-forge-ready/overview.md) is recommended but not
   required.
-- **Tools & environment**: a macOS/Linux terminal; **Python 3.x** installed (`python3 --version`) with
-  `venv` and `pip` (both ship with CPython); the `black`, `ruff`, and `pyright` CLIs, installable via
-  `pip`. Python is licensed under the **PSF License Version 2**, a Tier-1 free-to-teach license.
+- **Tools & environment**: a macOS/Linux terminal; **Python 3.14** installed (`python3 --version`)
+  with `venv` and `pip` available. Some Linux distributions package these separately, so follow
+  your distribution's instructions if `python3 -m venv` or `python3 -m pip` fails. Install the
+  `black`, `ruff`, and `pyright` CLIs in a virtual environment when you reach their examples.
 - **Assumed knowledge**: basic terminal use. No prior Python is required -- this is the reader's Python
   starting point.
 
@@ -34,24 +35,20 @@ throughout this primer's worked examples, not just in this opening section.
 
 ## Install and run your first script
 
-Install Python 3 for your platform (macOS: `brew install python@3.14`; Debian/Ubuntu: your
-distribution's current `python3` package, or download from
-[python.org/downloads](https://www.python.org/downloads/)), then confirm the version:
+Install Python 3.14 from [python.org/downloads](https://www.python.org/downloads/) or your
+platform's package manager, then confirm the version:
 
 ```text
 $ python3 --version
-Python 3.14.3
+Python 3.14.7
 ```
 
-**A note on versions**: this primer's examples were authored and verified against CPython **3.14.3**,
-the version installed in the sandbox that produced every captured "Output" block on this site.
-[python.org](https://www.python.org/downloads/release/python-3146/) lists **3.14.6** (2026-06-10) as
-the current published patch release at authoring time -- any 3.14.x patch behaves identically for
-everything this primer teaches (f-strings, type hints, comprehensions, `match`, and the standard
-library surface used here are all stable across 3.14 patch releases). `black` **26.5.1** and `ruff`
-**0.15.21** are the exact versions this primer's `black`/`ruff` examples (4, 5, 68, 81) were run
-against; `pyright` **1.1.411** is the exact version Examples 83-84 were run against. All three are
-CVE-clean at authoring time. Strict mode for `pyright` is set via config
+**A note on versions**: the captured outputs were produced with CPython **3.14.3**. The commands
+and examples were also checked with **3.14.7**; output from version-printing commands naturally
+depends on the tool you install. For current Python patch releases, see the
+[official downloads page](https://www.python.org/downloads/). `black` **26.5.1**, `ruff` **0.15.21**,
+and `pyright` **1.1.411** were used for the tool-specific examples when this course was authored;
+their versions and diagnostic wording may change. Strict mode for `pyright` is set via config
 (`"typeCheckingMode": "strict"`) or an inline `# pyright: strict` comment -- there is **no** `--strict`
 CLI flag.
 
@@ -81,9 +78,9 @@ line.
   context managers, JSON pipelines, `pytest` unit tests, and static type checking with `pyright`
   (including the one case where `pyright` catches a bug that `python3` itself does not).
 
-Every example cites the concept (`co-NN`) it exercises, and every claim about Python's version,
-license, and tooling traces to `python.org`, `docs.python.org`, `peps.python.org`, PyPI, and
-`docs.pytest.org`, web-verified 2026-07-12/13 and re-confirmed 2026-07-14.
+Every example cites the concept (`co-NN`) it exercises. For the language and environment rules,
+use the [Python 3.14 documentation](https://docs.python.org/3.14/) and its
+[virtual environment guide](https://docs.python.org/3.14/tutorial/venv.html).
 
 ## Scope: just enough, not comprehensive
 

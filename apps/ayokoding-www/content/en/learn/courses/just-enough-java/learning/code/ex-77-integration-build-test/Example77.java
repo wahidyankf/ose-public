@@ -1,4 +1,12 @@
-// ex-77 · integration-build-test · co-01, co-26
-// The executable JUnit 6 test lives in learning/capstone/code; this source demonstrates a testable assertion boundary.
-public final class Example77 { static int add(int left,int right){return left+right;} public static void main(String[] args){ if(add(2,3)!=5) throw new AssertionError("expected five"); System.out.println("assertion passed"); } }
-
+import java.util.List;
+public final class Example77 {
+    static List<String> report(List<String> names) { return names.stream().sorted().toList(); } // => alphabetical report
+    // => The helper leaves its input untouched.
+    public static void main(String[] args) {
+        List<String> actual = report(List.of("zebra", "alpha")); // => [alpha, zebra]
+        // => The report is sorted independently of input order.
+        if (!actual.equals(List.of("alpha", "zebra"))) throw new AssertionError(actual); // => checks expected order
+        // => A wrong order causes an assertion failure.
+        System.out.println(actual); // => [alpha, zebra]
+    }
+}

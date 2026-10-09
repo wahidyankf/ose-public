@@ -1,3 +1,6 @@
-// ex-24 · fsharp-example-24
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => map calls the function once for each item.
+let doubled = [2; 4; 6] |> List.map (fun value -> value * 2)
+// => The original literals remain unchanged.
+let result = doubled
+// => This prints [4; 8; 12].
+printfn "%A" result

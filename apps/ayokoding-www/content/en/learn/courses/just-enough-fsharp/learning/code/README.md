@@ -1,83 +1,82 @@
-# F# source map
+## F# runnable example map
 
-Each ex-NN folder contains an original script artifact. The capstone contains a runnable dotnet
-console/test pair.
+From each folder, run `dotnet fsi main.fsx` with a .NET 10 SDK. The matching lesson contains the same complete script and explains its result. Each script stands alone and uses only the SDK.
 
-- ex-01 · fsharp-example-01
-- ex-02 · fsharp-example-02
-- ex-03 · fsharp-example-03
-- ex-04 · fsharp-example-04
-- ex-05 · fsharp-example-05
-- ex-06 · fsharp-example-06
-- ex-07 · fsharp-example-07
-- ex-08 · fsharp-example-08
-- ex-09 · fsharp-example-09
-- ex-10 · fsharp-example-10
-- ex-11 · fsharp-example-11
-- ex-12 · fsharp-example-12
-- ex-13 · fsharp-example-13
-- ex-14 · fsharp-example-14
-- ex-15 · fsharp-example-15
-- ex-16 · fsharp-example-16
-- ex-17 · fsharp-example-17
-- ex-18 · fsharp-example-18
-- ex-19 · fsharp-example-19
-- ex-20 · fsharp-example-20
-- ex-21 · fsharp-example-21
-- ex-22 · fsharp-example-22
-- ex-23 · fsharp-example-23
-- ex-24 · fsharp-example-24
-- ex-25 · fsharp-example-25
-- ex-26 · fsharp-example-26
-- ex-27 · fsharp-example-27
-- ex-28 · fsharp-example-28
-- ex-29 · fsharp-example-29
-- ex-30 · fsharp-example-30
-- ex-31 · fsharp-example-31
-- ex-32 · fsharp-example-32
-- ex-33 · fsharp-example-33
-- ex-34 · fsharp-example-34
-- ex-35 · fsharp-example-35
-- ex-36 · fsharp-example-36
-- ex-37 · fsharp-example-37
-- ex-38 · fsharp-example-38
-- ex-39 · fsharp-example-39
-- ex-40 · fsharp-example-40
-- ex-41 · fsharp-example-41
-- ex-42 · fsharp-example-42
-- ex-43 · fsharp-example-43
-- ex-44 · fsharp-example-44
-- ex-45 · fsharp-example-45
-- ex-46 · fsharp-example-46
-- ex-47 · fsharp-example-47
-- ex-48 · fsharp-example-48
-- ex-49 · fsharp-example-49
-- ex-50 · fsharp-example-50
-- ex-51 · fsharp-example-51
-- ex-52 · fsharp-example-52
-- ex-53 · fsharp-example-53
-- ex-54 · fsharp-example-54
-- ex-55 · fsharp-example-55
-- ex-56 · fsharp-example-56
-- ex-57 · fsharp-example-57
-- ex-58 · fsharp-example-58
-- ex-59 · fsharp-example-59
-- ex-60 · fsharp-example-60
-- ex-61 · fsharp-example-61
-- ex-62 · fsharp-example-62
-- ex-63 · fsharp-example-63
-- ex-64 · fsharp-example-64
-- ex-65 · fsharp-example-65
-- ex-66 · fsharp-example-66
-- ex-67 · fsharp-example-67
-- ex-68 · fsharp-example-68
-- ex-69 · fsharp-example-69
-- ex-70 · fsharp-example-70
-- ex-71 · fsharp-example-71
-- ex-72 · fsharp-example-72
-- ex-73 · fsharp-example-73
-- ex-74 · fsharp-example-74
-- ex-75 · fsharp-example-75
-- ex-76 · fsharp-example-76
-- ex-77 · fsharp-example-77
-- ex-78 · fsharp-example-78
+- [Example 1: Print a value](./ex-01-fsharp-example-01/main.fsx)
+- [Example 2: Immutable bindings and shadowing](./ex-02-fsharp-example-02/main.fsx)
+- [Example 3: Explicit type annotations](./ex-03-fsharp-example-03/main.fsx)
+- [Example 4: Arithmetic expressions](./ex-04-fsharp-example-04/main.fsx)
+- [Example 5: String interpolation](./ex-05-fsharp-example-05/main.fsx)
+- [Example 6: If expressions](./ex-06-fsharp-example-06/main.fsx)
+- [Example 7: Curried functions](./ex-07-fsharp-example-07/main.fsx)
+- [Example 8: Partial application](./ex-08-fsharp-example-08/main.fsx)
+- [Example 9: Lambda expressions](./ex-09-fsharp-example-09/main.fsx)
+- [Example 10: Tuples and destructuring](./ex-10-fsharp-example-10/main.fsx)
+- [Example 11: List literals](./ex-11-fsharp-example-11/main.fsx)
+- [Example 12: Cons and the empty list](./ex-12-fsharp-example-12/main.fsx)
+- [Example 13: Integer ranges](./ex-13-fsharp-example-13/main.fsx)
+- [Example 14: Arrays and indexed access](./ex-14-fsharp-example-14/main.fsx)
+- [Example 15: Sequences](./ex-15-fsharp-example-15/main.fsx)
+- [Example 16: Records with named fields](./ex-16-fsharp-example-16/main.fsx)
+- [Example 17: Record copy and update](./ex-17-fsharp-example-17/main.fsx)
+- [Example 18: Discriminated union cases](./ex-18-fsharp-example-18/main.fsx)
+- [Example 19: Pattern matching on cases](./ex-19-fsharp-example-19/main.fsx)
+- [Example 20: Option for expected absence](./ex-20-fsharp-example-20/main.fsx)
+- [Example 21: Result for explained failure](./ex-21-fsharp-example-21/main.fsx)
+- [Example 22: Pipeline operator](./ex-22-fsharp-example-22/main.fsx)
+- [Example 23: Function composition](./ex-23-fsharp-example-23/main.fsx)
+- [Example 24: Map without mutation](./ex-24-fsharp-example-24/main.fsx)
+- [Example 25: Filter with a predicate](./ex-25-fsharp-example-25/main.fsx)
+- [Example 26: Fold an aggregate](./ex-26-fsharp-example-26/main.fsx)
+- [Example 27: Recursive functions](./ex-27-fsharp-example-27/main.fsx)
+- [Example 28: Tail-recursive accumulation](./ex-28-fsharp-example-28/main.fsx)
+- [Example 29: For loops at the effect boundary](./ex-29-fsharp-example-29/main.fsx)
+- [Example 30: Mutable local state](./ex-30-fsharp-example-30/main.fsx)
+- [Example 31: Choose present results](./ex-31-fsharp-example-31/main.fsx)
+- [Example 32: Pairwise neighbors](./ex-32-fsharp-example-32/main.fsx)
+- [Example 33: Group by a key](./ex-33-fsharp-example-33/main.fsx)
+- [Example 34: Maps for keyed lookup](./ex-34-fsharp-example-34/main.fsx)
+- [Example 35: Sets for uniqueness](./ex-35-fsharp-example-35/main.fsx)
+- [Example 36: Match guards](./ex-36-fsharp-example-36/main.fsx)
+- [Example 37: Active patterns](./ex-37-fsharp-example-37/main.fsx)
+- [Example 38: Exception handling](./ex-38-fsharp-example-38/main.fsx)
+- [Example 39: TryParse for untrusted text](./ex-39-fsharp-example-39/main.fsx)
+- [Example 40: Bind dependent Result steps](./ex-40-fsharp-example-40/main.fsx)
+- [Example 41: Map a successful Result](./ex-41-fsharp-example-41/main.fsx)
+- [Example 42: Default an Option at the edge](./ex-42-fsharp-example-42/main.fsx)
+- [Example 43: Nested record values](./ex-43-fsharp-example-43/main.fsx)
+- [Example 44: Recursive union for a tree](./ex-44-fsharp-example-44/main.fsx)
+- [Example 45: Evaluate a recursive union](./ex-45-fsharp-example-45/main.fsx)
+- [Example 46: Modules as namespaces for functions](./ex-46-fsharp-example-46/main.fsx)
+- [Example 47: Members on a record](./ex-47-fsharp-example-47/main.fsx)
+- [Example 48: Interfaces for a small contract](./ex-48-fsharp-example-48/main.fsx)
+- [Example 49: Classes and constructors](./ex-49-fsharp-example-49/main.fsx)
+- [Example 50: Update an array item](./ex-50-fsharp-example-50/main.fsx)
+- [Example 51: Dictionary interop](./ex-51-fsharp-example-51/main.fsx)
+- [Example 52: Generic function inference](./ex-52-fsharp-example-52/main.fsx)
+- [Example 53: Partial active pattern](./ex-53-fsharp-example-53/main.fsx)
+- [Example 54: Partition by a predicate](./ex-54-fsharp-example-54/main.fsx)
+- [Example 55: Aggregate grouped data](./ex-55-fsharp-example-55/main.fsx)
+- [Example 56: Zip aligned lists](./ex-56-fsharp-example-56/main.fsx)
+- [Example 57: Memoize a recursive calculation](./ex-57-fsharp-example-57/main.fsx)
+- [Example 58: Fold a recursive tree](./ex-58-fsharp-example-58/main.fsx)
+- [Example 59: Safe division with Result](./ex-59-fsharp-example-59/main.fsx)
+- [Example 60: Traverse a list of Results](./ex-60-fsharp-example-60/main.fsx)
+- [Example 61: Convert Option to Result](./ex-61-fsharp-example-61/main.fsx)
+- [Example 62: Nested record copy and update](./ex-62-fsharp-example-62/main.fsx)
+- [Example 63: Custom sorting](./ex-63-fsharp-example-63/main.fsx)
+- [Example 64: Detect duplicates with a Set](./ex-64-fsharp-example-64/main.fsx)
+- [Example 65: Update a Map immutably](./ex-65-fsharp-example-65/main.fsx)
+- [Example 66: Transform Map values](./ex-66-fsharp-example-66/main.fsx)
+- [Example 67: Lazy sequence evaluation](./ex-67-fsharp-example-67/main.fsx)
+- [Example 68: Cache an enumerated sequence](./ex-68-fsharp-example-68/main.fsx)
+- [Example 69: Async workflows](./ex-69-fsharp-example-69/main.fsx)
+- [Example 70: Combine independent async work](./ex-70-fsharp-example-70/main.fsx)
+- [Example 71: Task computation expression](./ex-71-fsharp-example-71/main.fsx)
+- [Example 72: Call a .NET date API](./ex-72-fsharp-example-72/main.fsx)
+- [Example 73: Regular expression matching](./ex-73-fsharp-example-73/main.fsx)
+- [Example 74: Serialize a record as JSON](./ex-74-fsharp-example-74/main.fsx)
+- [Example 75: Assert a concrete behavior](./ex-75-fsharp-example-75/main.fsx)
+- [Example 76: Check an invariant over inputs](./ex-76-fsharp-example-76/main.fsx)
+- [Example 77: Add context to a Result error](./ex-77-fsharp-example-77/main.fsx)
+- [Example 78: Assemble a small evaluator](./ex-78-fsharp-example-78/main.fsx)

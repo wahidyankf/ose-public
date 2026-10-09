@@ -1,4 +1,8 @@
-// ex-56 · fsharp-example-56
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => Each name aligns with one score by position.
+let names = ["Ayu"; "Budi"]
+// => Both scores align positionally with the two names.
+let scores = [8; 9]
+// => List.zip creates a pair for each position.
+let rows = List.zip names scores
+// => This prints [("Ayu", 8); ("Budi", 9)].
+printfn "%A" rows

@@ -1,21 +1,16 @@
-// => generic function: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => generic function: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => generic function: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func Map[T, U any](values []T, transform func(T) U) []U {
-	result := make([]U, len(values))
-	for i, value := range values {
-		result[i] = transform(value)
+func Map[T, U any](values []T, transform func(T) U) []U { // => Input and output types may differ.
+	result := make([]U, len(values)) // => One output slot per input.
+	for i, value := range values {   // => Keep each transformed value at its input index.
+		result[i] = transform(value) // => Here int 1 becomes string "n=1".
 	}
-	return result
+	return result // => []U is []string for the call below.
 }
 
-// => generic function: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { fmt.Println(Map([]int{1, 2}, func(value int) string { return fmt.Sprint(value) })) }
+func main() { // => Calls Map with integer input and string output.
+	words := Map([]int{1, 2}, func(value int) string { return fmt.Sprintf("n=%d", value) }) // => T=int, U=string.
+	fmt.Println(words)                                                                      // => Output: [n=1 n=2].
+}

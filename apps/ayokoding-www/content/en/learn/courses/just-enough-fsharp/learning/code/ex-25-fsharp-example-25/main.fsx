@@ -1,3 +1,6 @@
-// ex-25 · fsharp-example-25
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => The predicate returns true for positive values.
+let positives = [-2; 0; 3; 5] |> List.filter (fun value -> value > 0)
+// => Filter retains the original order.
+let result = positives
+// => This prints [3; 5].
+printfn "%A" result

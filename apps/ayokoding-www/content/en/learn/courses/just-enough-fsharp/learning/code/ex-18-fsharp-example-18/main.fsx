@@ -1,3 +1,6 @@
-// ex-18 · fsharp-example-18
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => Each case may carry its own data.
+type Shape = Circle of float | Rectangle of float * float
+// => Construct the Circle case with its radius.
+let shape = Circle 2.0
+// => %A prints the case and payload.
+printfn "%A" shape

@@ -1,14 +1,16 @@
 """Example 59: Class Basics."""
 
+# => Moving by (3, 4) changes the point to (4, 6).
+
 
 class Point:  # => defines a new class named Point
     # Runs automatically on Point(...) -- the constructor.
-    def __init__(self, x: int, y: int) -> None:
+    def __init__(self, x: int, y: int) -> None:  # => starts at (1, 2) below
         self.x = x  # => stores x as an instance attribute
         self.y = y  # => stores y as an instance attribute
 
     # self is the instance the method was called on; this mutates it in place.
-    def move(self, dx: int, dy: int) -> None:
+    def move(self, dx: int, dy: int) -> None:  # => deltas are (3, 4) below
         self.x += dx  # => adds dx to the instance's current x
         self.y += dy  # => adds dy to the instance's current y
 

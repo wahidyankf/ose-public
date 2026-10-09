@@ -38,6 +38,7 @@ weight: 95
 - [Pass 0 Capstone · Forge-Ready](/en/learn/courses/capstone-forge-ready)
   - [Overview](/en/learn/courses/capstone-forge-ready/overview)
 - [4 · Just Enough Python](/en/learn/courses/just-enough-python)
+  - [Overview](/en/learn/courses/just-enough-python/overview)
   - [Learning](/en/learn/courses/just-enough-python/learning)
   - [Drilling](/en/learn/courses/just-enough-python/drilling)
 - [5 · Just Enough Bash](/en/learn/courses/just-enough-bash)

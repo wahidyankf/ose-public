@@ -1,3 +1,6 @@
-// ex-42 · fsharp-example-42
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => None represents the missing preference.
+let selected: string option = None
+// => defaultValue resolves absence for display.
+let label = selected |> Option.defaultValue "Guest"
+// => This prints Guest.
+printfn "%s" label

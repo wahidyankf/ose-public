@@ -1,3 +1,6 @@
-// ex-13 · fsharp-example-13
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => The range includes both endpoints.
+let oneToFour = [1..4]
+// => A step of two selects odd numbers.
+let odds = [1..2..7]
+// => The two lists are printed side by side.
+printfn "%A; %A" oneToFour odds

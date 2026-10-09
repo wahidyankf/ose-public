@@ -1,4 +1,8 @@
-// ex-76 · fsharp-example-76
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => Doubling a nonnegative integer remains nonnegative here.
+let double value = value * 2
+// => Keep values small enough to avoid integer overflow.
+let samples = [0; 1; 5; 100]
+// => Every sample must satisfy the same property.
+assert (samples |> List.forall (fun value -> double value >= 0))
+// => This prints passed.
+printfn "passed"

@@ -6,6 +6,6 @@ CREATE TABLE author(
     name TEXT NOT NULL             -- => TEXT column; NOT NULL forbids a missing name value
 );
 
--- .schema prints the stored definition back verbatim -- proof of what the engine kept.
+-- .schema prints SQLite's stored definition (which may normalize the original SQL).
 -- NOTE: dot-commands take the rest of their line as arguments -- no trailing "--" comment here.
 .schema author

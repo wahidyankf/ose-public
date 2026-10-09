@@ -1,4 +1,4 @@
--- Capstone: schema.sql -- a 3NF, 4-table design (author/publisher/book/tag) with PK/FK
+-- Capstone: schema.sql -- four entity tables plus one junction (five tables) with PK/FK
 -- constraints throughout, following the exact shape Example 77 taught (co-01, co-05, co-07).
 PRAGMA foreign_keys = ON;          -- => enforcement on -- CASCADE below actually fires (co-03)
 

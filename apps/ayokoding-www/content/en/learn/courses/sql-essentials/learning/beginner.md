@@ -20,9 +20,9 @@ and inserts its own rows, so none of them depend on state left behind by an earl
 _ex-01 &middot; exercises co-07, co-02, co-01_
 
 `CREATE TABLE` is how a relation (co-01) comes into existence: a name, a column list, and the
-constraints that apply to every future row. `.schema <table>` proves what the engine actually stored,
-byte-for-byte -- SQLite keeps the original `CREATE TABLE` text (including its comments) in its
-internal `sqlite_master` table and echoes it back verbatim.
+constraints that apply to every future row. `.schema <table>` shows the definition the engine stored
+in `sqlite_schema` (also called `sqlite_master`). SQLite
+[normalizes parts of the original SQL text](https://www.sqlite.org/schematab.html).
 
 **`learning/code/ex-01-create-author-table/example.sql`**
 
@@ -35,7 +35,7 @@ CREATE TABLE author(
     name TEXT NOT NULL             -- => TEXT column; NOT NULL forbids a missing name value
 );
 
--- .schema prints the stored definition back verbatim -- proof of what the engine kept.
+-- .schema prints SQLite's stored definition (which may normalize the original SQL).
 -- NOTE: dot-commands take the rest of their line as arguments -- no trailing "--" comment here.
 .schema author
 ```
@@ -52,13 +52,13 @@ CREATE TABLE author(
 );
 ```
 
-**Key takeaway**: `.schema` echoes the exact `CREATE TABLE` text SQLite stored, comments included --
-there is no separate, normalized "schema representation" hiding underneath.
+**Key takeaway**: `.schema` displays the stored `CREATE TABLE` definition. SQLite normalizes parts of
+the input text, and later `ALTER TABLE` statements may change it; this example's comments survive.
 
 **Why it matters**: Production teams rely on `.schema` (and its programmatic cousin,
 `sqlite_master`) to answer "what does this database actually look like right now?" without trusting
-stale documentation. Because SQLite stores the literal DDL text, a well-commented `CREATE TABLE`
-statement becomes living, self-verifying documentation -- exactly the kind of source of truth
+stale documentation. Because SQLite stores a normalized form of the DDL text, the stored schema
+becomes living, self-verifying documentation -- exactly the kind of source of truth
 migration tooling (Example 59, Advanced tier) depends on when deciding whether a column already
 exists.
 

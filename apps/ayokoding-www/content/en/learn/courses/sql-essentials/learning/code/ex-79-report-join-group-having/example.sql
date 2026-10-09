@@ -23,6 +23,6 @@ SELECT author.name, count(*) AS book_count, sum(book.price) AS total_value
 FROM author
 JOIN book ON book.author_id = author.id
                                     -- => the JOIN -- recombines the two normalized tables (co-13)
-GROUP BY author.name
-                                    -- => collapses per-book rows into per-author groups (co-15)
+GROUP BY author.id, author.name
+                                    -- => id keeps same-name authors in distinct groups (co-15)
 HAVING count(*) > 1;               -- => only Ada survives -- Grace's single-book group is filtered out

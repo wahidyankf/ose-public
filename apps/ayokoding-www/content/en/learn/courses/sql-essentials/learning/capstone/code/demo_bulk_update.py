@@ -28,7 +28,7 @@ def main() -> None:
     conn.execute("PRAGMA foreign_keys = ON")  # => matches schema.sql's own PRAGMA line
     conn.executescript(
         (CODE_DIR / "schema.sql").read_text()
-    )  # => applies the 4-table 3NF design
+    )  # => applies the five-table 3NF design
     conn.executescript(
         (CODE_DIR / "seed.sql").read_text()
     )  # => applies the same seed rows as Step 1

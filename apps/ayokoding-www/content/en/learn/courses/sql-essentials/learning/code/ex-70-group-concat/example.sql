@@ -19,6 +19,7 @@ INSERT INTO book(id, title, author_id) VALUES
 .separator " | "
 -- list mode (pipe-separated, no column wrapping) keeps the long concatenated string on one line.
 -- group_concat(X, sep) folds every GROUPed row's X value into ONE string, sep-joined (co-15).
+-- Without ORDER BY inside the aggregate, the title order is unspecified.
 SELECT author_id, group_concat(title, '; ') AS titles
 FROM book
 GROUP BY author_id;                -- => one row per author_id -- titles collapsed into one string

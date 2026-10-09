@@ -8,7 +8,7 @@ weight: 1
 ## Goal
 
 Build a small "job scheduler" that ingests tasks with priorities and dependencies and emits a valid
-run order -- exercising a heap (priority), a `dict`/`set` (lookup and unresolved-dependency
+run order -- exercising a heap (priority), `dict`s (lookup and unresolved-dependency
 tracking), a queue-driven traversal (Kahn's algorithm, BFS's dependency-ordering cousin), and cycle
 detection, all in one runnable program with a `pytest` suite. Every mechanism this capstone combines
 was already taught individually somewhere in the Beginner, Intermediate, or Advanced tiers of this
@@ -18,9 +18,9 @@ topic; this is a light consolidation, not a new set of ideas.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: tasks.json id, priority, deps, parse_tasks O(n), build_graph O(n + e), schedule Kahns + heap tie-break O((n + e) log n), run order or SchedulerCycleError. Connections: tasks.json id, priority, deps to parse_tasks O(n), parse_tasks O(n) to build_graph O(n + e), build_graph O(n + e) to schedule Kahns + heap tie-break O((n + e) log n), schedule Kahns + heap tie-break O((n + e) log n) to run order or SchedulerCycleError.
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: tasks.json id, priority, deps, parse_tasks O(n + e), build_graph O(n + e), schedule Kahns + heap tie-break O((n + e) log n), run order or SchedulerCycleError. Connections: tasks.json id, priority, deps to parse_tasks O(n + e), parse_tasks O(n + e) to build_graph O(n + e), build_graph O(n + e) to schedule Kahns + heap tie-break O((n + e) log n), schedule Kahns + heap tie-break O((n + e) log n) to run order or SchedulerCycleError.
     A["tasks.json<br/>id, priority, deps"]:::blue
-    B["parse_tasks<br/>O(n)"]:::orange
+    B["parse_tasks<br/>O(n + e)"]:::orange
     C["build_graph<br/>O(n + e)"]:::teal
     D["schedule<br/>Kahn's + heap<br/>tie-break<br/>O((n + e) log n)"]:::purple
     E["run order<br/>or<br/>SchedulerCycleError"]:::brown
@@ -37,7 +37,7 @@ flowchart LR
 ## Concepts exercised
 
 - [x] `heapq` priority queue (co-12) -- `schedule()`'s ready-task heap, tie-broken by priority
-- [x] `dict`/`set` lookups (co-08, co-09) -- the id-to-`Task` map, the adjacency map, and in-degree
+- [x] `dict` lookups (co-08) -- the id-to-`Task` map, the adjacency map, and in-degree
       counters
 - [x] BFS over an adjacency dict (co-21, co-05) -- Kahn's algorithm's queue-driven dependency
       relaxation, generalized to a heap for the priority tie-break
@@ -87,23 +87,23 @@ an in-degree counter per task -- the count of that task's still-unresolved depen
 Ingests tasks shaped {id, priority, deps} and emits a valid run order: every
 task's dependencies run before it, and among tasks with no remaining
 dependencies, the higher-priority task always runs first. Combines a heap
-(priority), a dict/set (lookup + seen-tracking), a queue/BFS-style traversal
+(priority), dicts (lookup + in-degree tracking), a queue/BFS-style traversal
 (dependency relaxation via Kahn's algorithm), and cycle detection in one
 runnable program.
 
 Big-O per phase (n = number of tasks, e = number of dependency edges):
 
-- ``parse_tasks``: O(n) -- one pass building the id -> Task lookup dict.
+- ``parse_tasks``: O(n + e) -- one pass over tasks and their dependency IDs.
 - ``build_graph``: O(n + e) -- one pass initializing every task's adjacency
   list and in-degree counter, plus one pass per dependency edge to link
   each task to the tasks that depend on it.
 - ``schedule`` (Kahn's algorithm, heap-ordered instead of plain-queue-ordered):
-  O((n + e) log n) -- every task is pushed and popped from the priority
-  heap exactly once (O(log n) per push/pop), and every dependency edge is
-  relaxed exactly once, when its source task is emitted.
-- Cycle detection: folded into ``schedule`` at O(1) marginal cost -- if the
-  emitted order's length is less than the total task count, whatever tasks
-  never reached in-degree 0 are stuck in a cycle (or depend on one).
+  O((n + e) log n) -- every schedulable task is pushed and popped from the priority
+  heap at most once (O(log n) per push/pop), and every dependency edge is
+  relaxed at most once, when its source task is emitted.
+- Cycle detection: the length check costs O(1). If it finds a cycle, collecting
+  and sorting the tasks with positive in-degree costs O(n log n) for a
+  deterministic diagnostic; those tasks are cyclic or depend on a cycle.
 """
 
 from __future__ import annotations
@@ -128,10 +128,12 @@ class Task:
 
 
 def parse_tasks(raw_tasks: list[dict[str, object]]) -> dict[str, Task]:
-    """Build an id -> Task lookup from raw dicts -- O(n)."""
+    """Build an id -> Task lookup from raw dicts -- O(n + e)."""
     tasks: dict[str, Task] = {}  # => the id -> Task map every later phase queries by id
     for raw in raw_tasks:  # => one pass over the input, O(n)
         task_id = str(raw["id"])
+        if task_id in tasks:  # => reject collisions before they overwrite a task
+            raise ValueError(f"duplicate task id: {task_id!r}")
         priority = int(raw["priority"])  # type: ignore[arg-type]
         deps = tuple(str(d) for d in raw.get("deps", []))  # type: ignore[union-attr]
         tasks[task_id] = Task(id=task_id, priority=priority, deps=deps)
@@ -185,8 +187,8 @@ def schedule(tasks: dict[str, Task]) -> list[str]:
         tasks
     ):  # => O(1): fewer emissions than tasks means a cycle exists
         stuck = sorted(
-            tid for tid in tasks if tid not in order
-        )  # => O(n log n), diagnostics only
+            tid for tid, degree in in_degree.items() if degree > 0
+        )  # => O(n log n) worst case; all and only blocked tasks remain
         raise SchedulerCycleError(
             f"dependency cycle detected among: {', '.join(stuck)}"
         )
@@ -246,7 +248,7 @@ negation is Example 41's max-heap-via-negation trick, applied directly.
 **`learning/capstone/code/test_scheduler.py`** (complete file)
 
 ```python
-"""pytest coverage for scheduler.py -- an acyclic fixture and a cyclic fixture."""
+"""pytest coverage for ordering, duplicate IDs, and cycle diagnostics."""
 
 import pytest
 
@@ -314,6 +316,31 @@ def test_cyclic_graph_error_names_the_stuck_tasks() -> None:
     assert "a" in str(excinfo.value)
     assert "b" in str(excinfo.value)
     assert "independent" not in str(excinfo.value)  # the healthy task is not implicated
+
+
+def test_duplicate_task_id_is_rejected_before_scheduling() -> None:
+    """Duplicate IDs must never silently replace an earlier task."""
+    raw_tasks: list[dict[str, object]] = [
+        {"id": "compile", "priority": 5, "deps": []},
+        {"id": "compile", "priority": 1, "deps": []},
+    ]
+
+    with pytest.raises(ValueError, match="duplicate task id: 'compile'"):
+        parse_tasks(raw_tasks)
+
+
+def test_cycle_diagnostic_names_only_stuck_tasks_in_sorted_order() -> None:
+    """Cycle diagnostics stay deterministic even with many completed tasks."""
+    raw_tasks: list[dict[str, object]] = [
+        {"id": f"free-{index}", "priority": index, "deps": []} for index in range(200)
+    ] + [
+        {"id": "z-cycle", "priority": 0, "deps": ["a-cycle"]},
+        {"id": "a-cycle", "priority": 0, "deps": ["z-cycle"]},
+    ]
+
+    with pytest.raises(SchedulerCycleError) as excinfo:
+        schedule(parse_tasks(raw_tasks))
+    assert str(excinfo.value) == "dependency cycle detected among: a-cycle, z-cycle"
 ```
 
 **Verify**
@@ -321,7 +348,7 @@ def test_cyclic_graph_error_names_the_stuck_tasks() -> None:
 ```text
 $ .venv/bin/pytest -q
 ....                                                                     [100%]
-4 passed in 0.00s
+6 passed in 0.01s
 ```
 
 `test_acyclic_order_breaks_ties_by_priority` is the test that specifically proves the heap tie-break
@@ -336,7 +363,7 @@ the dependency-respecting guarantee itself is untouched by that swap.
 
 _exercises co-21_
 
-`schedule()` detects a cycle for free, as a direct consequence of Kahn's algorithm's own termination
+`schedule()` detects a cycle from Kahn's algorithm's own termination
 condition: if any tasks are stuck at a nonzero in-degree when the heap empties, those tasks (and
 whatever waits on them) can never become "ready," which is only possible if they sit on -- or depend
 on -- a cycle. No separate cycle-detection pass (like Example 73's three-color DFS) is needed here.
@@ -369,7 +396,7 @@ SchedulerCycleError: dependency cycle detected among: a, b
 excludes the unrelated, healthy `independent` task -- the diagnostic is specific enough to act on, not
 a generic "something went wrong."
 
-**Why it matters**: getting cycle detection "for free" out of an existing algorithm, rather than as a
+**Why it matters**: getting cycle detection from an existing algorithm, rather than as a
 bolted-on separate pass, is a direct payoff of understanding Kahn's algorithm's termination condition
 deeply enough to recognize what an incomplete run actually _means_.
 
@@ -398,13 +425,14 @@ the way.
 
 - `python3 scheduler.py`, run from `learning/capstone/code/`, exits `0` and prints the exact run order
   shown in Step 5's Output block.
-- `.venv/bin/pytest -q` reports `4 passed` against `test_scheduler.py`, covering both the
-  dependency-respecting order, the priority tie-break, and both cyclic-fixture cases (a bare raise
-  and a raise whose message names the stuck tasks).
-- A dependency cycle raises `SchedulerCycleError` naming exactly the tasks caught in the cycle, never
-  silently dropping tasks from the emitted order.
-- Every phase's Big-O is documented in `scheduler.py`'s module docstring: `parse_tasks` O(n),
-  `build_graph` O(n + e), `schedule` O((n + e) log n), cycle detection at O(1) marginal cost.
+- `.venv/bin/pytest -q` reports `6 passed` against `test_scheduler.py`, covering dependency order,
+  priority ties, duplicate-ID rejection, and three cyclic fixtures, including one with many
+  unrelated tasks and a deterministic diagnostic.
+- A dependency cycle raises `SchedulerCycleError` naming the tasks on or blocked by the cycle,
+  without silently dropping them from the emitted order.
+- Every phase's Big-O is documented in `scheduler.py`'s module docstring: `parse_tasks` O(n + e),
+  `build_graph` O(n + e), `schedule` O((n + e) log n), the cycle length check O(1), and
+  deterministic diagnostic construction O(n log n) on a cyclic input.
 - Every listing on this page (`scheduler.py`, `tasks.json`, `test_scheduler.py`) is the complete file,
   runnable exactly as shown -- nothing here is a fragment that depends on code the page does not also
   show.
@@ -413,9 +441,9 @@ the way.
 
 This capstone is runnable end to end: a reader who copies the three files above into a
 `learning/capstone/code/`-shaped directory, creates a venv, installs `pytest`, and runs `python3
-scheduler.py` there reaches the identical output block shown in Step 5, verified against a real
-CPython 3.14.3 interpreter run (not merely described). Every mechanism combined here -- a `heapq`
-priority queue (co-12), `dict`/`set` lookups (co-08, co-09), a queue/BFS-style traversal generalized
+scheduler.py` there reaches the output block shown in Step 5. The scheduler ran on Python 3.10.5
+and 3.14.7, and the six regression tests passed with `pytest`. Every mechanism combined here -- a `heapq`
+priority queue (co-12), `dict` lookups (co-08), a queue/BFS-style traversal generalized
 by Kahn's algorithm (co-21, co-05), and cycle detection folded into that same traversal -- traces to a
 worked example already taught earlier in this topic's Beginner, Intermediate, or Advanced tiers; no
 new algorithmic idea was needed to write this capstone.

@@ -37,5 +37,5 @@ INSERT INTO book (id, title, author_id, price) VALUES -- => 5 books across 3 aut
 SELECT a.name, sum(b.price) AS total_price     -- => sum(price) per author, after the join
 FROM author a                                   -- => left side of the join -- one row per author
 JOIN book b ON b.author_id = a.id              -- => recombine author with its books
-GROUP BY a.name                                 -- => then collapse into per-author totals
-ORDER BY a.id;                                  -- => deterministic group order
+GROUP BY a.id, a.name                           -- => id keeps same-name authors separate
+ORDER BY a.id;                                  -- => deterministic group order using a grouping key

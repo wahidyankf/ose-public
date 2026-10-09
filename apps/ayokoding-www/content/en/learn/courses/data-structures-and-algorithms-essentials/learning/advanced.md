@@ -868,7 +868,7 @@ ex-70 OK
 
 _ex-71 &middot; exercises co-12, co-21_
 
-Dijkstra's algorithm generalizes BFS's unweighted shortest path (Example 59) to **weighted** edges: a min-heap always expands the currently-cheapest-known node next, and relaxes (potentially improves) every neighbor's distance from there. This example finds shortest distances from one node across a small weighted graph.
+Dijkstra's algorithm generalizes BFS's unweighted shortest path (Example 59) to **nonnegative weighted** edges: a min-heap always expands the currently-cheapest-known node next, and relaxes (potentially improves) every neighbor's distance from there. Negative edges invalidate that guarantee, so this example rejects them before the search. It finds shortest distances from one node across a small weighted graph.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
@@ -897,7 +897,7 @@ graph LR
 ```python
 """Example 71: Dijkstra's Shortest Paths with a Min-Heap."""
 
-# Dijkstra generalizes Example 59's unweighted BFS to WEIGHTED edges: a min-heap
+# Dijkstra handles NONNEGATIVE weighted edges: a min-heap
 # always expands the currently-cheapest-known node next (co-12, co-21).
 import heapq  # => imports the stdlib binary-heap functions
 
@@ -916,6 +916,10 @@ def dijkstra(  # => a heap-driven shortest-path function
     graph: dict[str, list[tuple[str, int]]],
     start: str,  # => the graph plus the source node
 ) -> dict[str, int]:  # => returns node -> shortest distance from start
+    for edges in graph.values():  # => validate the entire graph before searching
+        for _, weight in edges:  # => visit each edge once, O(E)
+            if weight < 0:  # => Dijkstra cannot finalize distances with negative edges
+                raise ValueError("Dijkstra requires nonnegative edge weights")
     distances: dict[str, int] = {start: 0}  # => best known distance to each node so far
     heap: list[tuple[int, str]] = [
         (0, start)
@@ -950,6 +954,15 @@ assert (
     result["b"] == 3
 )  # => confirms a->c->b (cost 3) beat the direct a->b edge (cost 4)
 assert result["d"] == 4  # => confirms a->c->b->d (1+2+1=4) is the cheapest route to d
+assert (
+    dijkstra({"a": [("b", 0)], "b": []}, "a")["b"] == 0
+)  # => zero-cost edges are valid
+try:  # => prove that unsupported negative edge weights fail clearly
+    dijkstra({"a": [("b", -1)], "b": []}, "a")
+except ValueError as exc:  # => a negative edge must be rejected, not miscomputed
+    assert str(exc) == "Dijkstra requires nonnegative edge weights"
+else:  # => guard against accepting a graph outside Dijkstra's precondition
+    raise AssertionError("negative edge weight was accepted")
 print("ex-71 OK")  # => Output: ex-71 OK
 ```
 
@@ -962,9 +975,9 @@ print("ex-71 OK")  # => Output: ex-71 OK
 ex-71 OK
 ```
 
-**Key takeaway**: Dijkstra replaces BFS's plain queue with a min-heap ordered by distance-so-far, which is exactly what lets it handle edges of different weights, unlike BFS's "every edge costs 1" assumption.
+**Key takeaway**: Dijkstra replaces BFS's plain queue with a min-heap ordered by distance-so-far, which lets it handle nonnegative edges of different weights, unlike BFS's "every edge costs 1" assumption.
 
-**Why it matters**: This is the direct answer to the limitation Example 59 flagged: plain BFS's "level = distance" trick only works on unweighted graphs, and Dijkstra's heap-based relaxation is precisely the generalization that restores a correct shortest-path guarantee once edges carry different costs. A road-mapping service computing "fastest route by travel time," where each edge's weight is minutes rather than a uniform 1, could not use BFS at all -- Dijkstra's heap-based relaxation is the minimum viable algorithm for that exact problem.
+**Why it matters**: This is the direct answer to the limitation Example 59 flagged: plain BFS's "level = distance" trick only works on unweighted graphs, and Dijkstra's heap-based relaxation restores a correct shortest-path guarantee when edge costs are nonnegative. A road-mapping service computing "fastest route by travel time," where each edge's weight is nonnegative minutes rather than a uniform 1, needs a weighted shortest-path algorithm.
 
 ---
 

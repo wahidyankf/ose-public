@@ -24,7 +24,7 @@ cheapest to priciest, and give one concrete Python operation as an example of ea
 <details>
 <summary>Answer</summary>
 
-O(1) constant (a `dict` lookup), O(log n) logarithmic (one step of binary search), O(n) linear (a
+O(1) constant (a `dict` lookup), O(log n) logarithmic (a complete binary search), O(n) linear (a
 full list scan), O(n log n) linearithmic (`sorted()`/merge sort), and O(n²) quadratic (bubble
 sort's nested loop). Big-O describes how cost scales with input size, independent of any one
 machine's raw speed -- it says nothing about which of two same-order algorithms is faster in
@@ -40,9 +40,9 @@ absolute terms.
 
 Amortized cost is the average cost per operation across a long sequence of calls, not the cost of
 any single call in isolation. Most `.append()` calls are genuinely O(1) because there's spare
-capacity in the backing array; occasionally the array is full and Python reallocates a larger one
-(roughly doubling it), which is O(n) for that one call -- but doubling means that expensive step
-happens rarely enough that its cost, spread across all the O(1) calls since the last resize,
+capacity in the backing array; occasionally the array is full and CPython allocates spare capacity
+proportional to the new size, which can cost O(n) for that one call -- but those expensive steps
+happen rarely enough that their cost, spread across the cheap calls between resizes,
 averages out to O(1) per call.
 
 </details>
@@ -169,22 +169,23 @@ default, and how do you get the opposite behavior out of it?
 <details>
 <summary>Answer</summary>
 
-`heapq` only implements a min-heap -- the smallest element is always at the root and pops first.
-To simulate a max-heap, negate every value on the way in (`heappush(heap, -value)`) and negate it
-back on the way out (`-heappop(heap)`) -- the smallest negated value corresponds to the largest
-original value.
+The original `heapq` operations implement a min-heap -- the smallest element is at the root and pops
+first. Python 3.14 adds dedicated max-heap operations. To simulate a max-heap on Python 3.10+,
+negate every value on the way in (`heappush(heap, -value)`) and negate it back on the way out
+(`-heappop(heap)`) -- the smallest negated value corresponds to the largest original value.
 
 </details>
 
-**Q13 (co-13 -- linear-search).** Under what single condition is linear search the _only_ viable
-search strategy, no matter how cleverly it's coded?
+**Q13 (co-13 -- linear-search).** For one search through an unsorted list with no index or
+preprocessing, why might you need to inspect every element?
 
 <details>
 <summary>Answer</summary>
 
-When the data is unsorted. Without a sortedness precondition there is no way to know which
-direction to skip in, so every element potentially has to be checked -- O(n) is the best any
-search can guarantee on genuinely unsorted data.
+The list gives no ordering clue or separate lookup structure, so a target could be at the last
+position or absent: a scan takes O(n) in the worst case. For repeated membership queries, build a
+`set` or `dict` index once and then use average-O(1) lookups; if the data is sorted, binary search
+can use O(log n) comparisons.
 
 </details>
 
@@ -375,15 +376,16 @@ score gets compared against for possible eviction (co-12).
 
 </details>
 
-**AP6.** Log entries in a text file are already sorted by timestamp, and you need to find whether
-a specific timestamp exists, on a file with millions of lines, without scanning line by line.
+**AP6.** Log timestamps are already held in a sorted, in-memory list, and you need to find whether
+a specific timestamp exists among millions of entries without scanning one by one.
 
 <details>
 <summary>Worked solution</summary>
 
-Binary search (or `bisect` on an in-memory sorted list of timestamps) -- O(log n) instead of a
-linear scan's O(n). Sortedness is the precondition that unlocks it; without it, this would degrade
-straight back to co-13's linear search (co-14).
+Binary search (or `bisect` on that list) -- O(log n) comparisons instead of a linear scan's O(n).
+Sortedness lets you discard half the remaining range each step. If the list were unsorted and you
+needed only one query, a scan could be simpler; for repeated queries, a `set` index is another
+option (co-14, co-08).
 
 </details>
 
@@ -416,14 +418,15 @@ a back-edge to a node still "in progress" on the current path (co-21, co-05, co-
 </details>
 
 **AP9.** A delivery-routing service needs the cheapest route between two warehouses on a road
-network where each road segment has a different travel cost -- not every edge is equally cheap.
+network where each road segment has a different, nonnegative travel cost -- not every edge is equally
+cheap.
 
 <details>
 <summary>Worked solution</summary>
 
-Dijkstra's algorithm with a min-heap: always expand the currently-cheapest-known frontier node
-next. Plain unweighted BFS would treat every edge as equally costly and give the wrong answer the
-moment edge weights differ from one another (co-12, co-21).
+Dijkstra's algorithm with a min-heap: with nonnegative edge weights, always expand the
+currently-cheapest-known frontier node next. Plain unweighted BFS would treat every edge as equally
+costly and give the wrong answer the moment edge weights differ from one another (co-12, co-21).
 
 </details>
 
@@ -1090,7 +1093,8 @@ kata-12 OK
 ### Kata 13 -- Dijkstra's shortest paths
 
 **Task.** Implement `dijkstra(graph: dict[str, list[tuple[str, int]]], start: str) -> dict[str,
-int]` using a min-heap, on a small weighted graph. (co-12, co-21)
+int]` using a min-heap, on a small graph with nonnegative weights. Reject negative edge weights
+with a clear error before the search. (co-12, co-21)
 
 <details>
 <summary>Reference solution</summary>
@@ -1100,6 +1104,10 @@ import heapq
 
 
 def dijkstra(graph: dict[str, list[tuple[str, int]]], start: str) -> dict[str, int]:  # => co-12/co-21
+    for edges in graph.values():  # => validate every edge before shortest-path search
+        for _, weight in edges:  # => O(E) precondition check
+            if weight < 0:  # => Dijkstra cannot finalize distances with negative weights
+                raise ValueError("Dijkstra requires nonnegative edge weights")
     distances: dict[str, int] = {start: 0}  # => best known distance so far -- start is 0 by definition
     heap: list[tuple[int, str]] = [(0, start)]  # => (distance, node) -- heapq orders by distance first
     while heap:  # => O((V + E) log V) overall
@@ -1126,6 +1134,12 @@ print(result)  # => Output: {'s': 0, 'a': 2, 'b': 3, 'c': 4}
 # => s->a->b (2+1=3) beats the direct s->b edge (5); s->a->b->c (2+1+1=4) beats s->a->c (2+4=6)
 
 assert result == {"s": 0, "a": 2, "b": 3, "c": 4}
+try:  # => negative weights are outside the algorithm's supported input
+    dijkstra({"s": [("a", -1)], "a": []}, "s")
+except ValueError as exc:  # => reject with a deterministic explanation
+    assert str(exc) == "Dijkstra requires nonnegative edge weights"
+else:  # => never silently accept an invalid weighted graph
+    raise AssertionError("negative edge weight was accepted")
 print("kata-13 OK")
 ```
 
@@ -1688,10 +1702,10 @@ another pass.
       breadth-first. (co-10)
 - [ ] I can state the BST invariant from memory and explain exactly why it makes an inorder
       traversal yield sorted output. (co-11)
-- [ ] I can explain why `heapq` only gives a min-heap and how to simulate a max-heap with it.
-      (co-12)
-- [ ] I can explain the one precondition that makes linear search the only viable search
-      strategy. (co-13)
+- [ ] I can explain the default min-heap API, Python 3.14's max-heap API, and max-heap simulation by
+      negation. (co-12)
+- [ ] I can explain when an unsorted list needs an O(n) scan and when an index is worth building.
+      (co-13)
 - [ ] I can implement binary search iteratively from memory and state its complexity, with the
       precondition it depends on. (co-14)
 - [ ] I can name the algorithm behind `sorted()`/`.sort()`, its complexity, and what "stable"

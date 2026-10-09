@@ -946,9 +946,9 @@ aggregation then summarizes the joined result, exactly how a per-author revenue 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73 -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 44: Aggregate Over Join
-    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: author JOIN book 5 joined rows, GROUP BY a.name collapse into 3 groups, sum(price) per group 3 totals. Connections: author JOIN book 5 joined rows to GROUP BY a.name collapse into 3 groups, GROUP BY a.name collapse into 3 groups to sum(price) per group 3 totals.
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: author JOIN book 5 joined rows, GROUP BY a.id and a.name collapse into 3 groups, sum(price) per group 3 totals. Connections: author JOIN book 5 joined rows to GROUP BY a.id and a.name collapse into 3 groups, GROUP BY a.id and a.name collapse into 3 groups to sum(price) per group 3 totals.
     A["author JOIN book<br/>5 joined rows"]:::blue
-    B["GROUP BY a.name<br/>collapse into 3<br/>groups"]:::orange
+    B["GROUP BY a.id,<br/>a.name<br/>3 groups"]:::orange
     C["sum#40;price#41; per<br/>group<br/>3 totals"]:::teal
     A --> B --> C
 
@@ -1000,8 +1000,8 @@ INSERT INTO book (id, title, author_id, price) VALUES -- => 5 books across 3 aut
 SELECT a.name, sum(b.price) AS total_price     -- => sum(price) per author, after the join
 FROM author a                                   -- => left side of the join -- one row per author
 JOIN book b ON b.author_id = a.id              -- => recombine author with its books
-GROUP BY a.name                                 -- => then collapse into per-author totals
-ORDER BY a.id;                                  -- => deterministic group order
+GROUP BY a.id, a.name                           -- => id keeps same-name authors separate
+ORDER BY a.id;                                  -- => deterministic group order using a grouping key
 ```
 
 **Run**: `sqlite3 app.db < example.sql`
@@ -1016,9 +1016,8 @@ Grace Hopper  40.5
 Alan Turing   45.0
 ```
 
-**Key takeaway**: the `JOIN` runs first, recombining each book with its author; `GROUP BY a.name` then
-collapses the joined rows into one total per author -- the two operations compose in that order, not
-in parallel.
+**Key takeaway**: the `JOIN` runs first, recombining each book with its author; grouping by the stable
+`a.id` plus its display name then produces one total per author, even if two authors share a name.
 
 **Why it matters**: This exact pattern -- join to recombine normalized data, then aggregate the result
 -- is how the vast majority of real reporting queries are built. A normalized schema (co-05) splits

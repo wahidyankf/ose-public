@@ -89,6 +89,22 @@ def test_report_by_author_matches_hand_computed_values(
     assert report_by_author(conn) == expected
 
 
+def test_report_keeps_distinct_authors_with_the_same_name(
+    conn: sqlite3.Connection,
+) -> None:
+    # Names are display values, not keys: author 3 has Ada's name but a separate book.
+    conn.execute("INSERT INTO author(id, name) VALUES (?, ?)", (3, "Ada Lovelace"))
+    conn.execute(
+        "INSERT INTO book(id, title, author_id, publisher_id, price) VALUES (?, ?, ?, ?, ?)",
+        (4, "A Different Ada's Book", 3, None, 7.0),
+    )
+    assert report_by_author(conn) == [
+        ("Ada Lovelace", 2, 21.5),
+        ("Ada Lovelace", 1, 7.0),
+        ("Grace Hopper", 1, 15.0),
+    ]
+
+
 def test_bulk_update_prices_commits_when_all_succeed(conn: sqlite3.Connection) -> None:
     bulk_update_prices(conn, [(1, 13.0), (2, 10.0)])
     assert list_books_by_author(conn, 1) == [

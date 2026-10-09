@@ -689,14 +689,14 @@ ex-40 OK
 
 _ex-41 &middot; exercises co-12_
 
-Python's `heapq` only implements a min-heap -- there is no built-in max-heap. Negating every value on the way in (and negating it back on the way out) simulates a max-heap: the "smallest" negated value is the largest original value. This example pushes negated values and confirms the largest original value pops first.
+The original `heapq` API is min-heap-first. Python 3.14 adds dedicated max-heap functions, but negating values still simulates a max-heap on every supported version of this course (3.10+): the "smallest" negated value is the largest original value. This example pushes negated values and confirms the largest original value pops first.
 
 **`learning/code/ex-41-max-heap-via-negation/example.py`**
 
 ```python
 """Example 41: Max-Heap via Negation."""
 
-# heapq only implements a MIN-heap. Negating every value on the way in flips the
+# The original heapq API uses a MIN-heap; negating values flips the
 # ordering: the smallest negative (== the largest original value) pops first (co-12).
 import heapq  # => imports the stdlib binary-heap functions
 
@@ -726,7 +726,7 @@ print("ex-41 OK")  # => Output: ex-41 OK
 ex-41 OK
 ```
 
-**Key takeaway**: Negating values on push and pop is the standard trick for simulating a max-heap with `heapq`'s min-heap-only implementation.
+**Key takeaway**: Negating values on push and pop simulates a max-heap with `heapq`'s original min-heap API, including on versions before Python 3.14's dedicated max-heap functions.
 
 **Why it matters**: This is a small but genuinely useful trick worth knowing cold -- reaching for a hand-rolled max-heap class when negation solves the problem in two lines is a common source of unnecessary complexity in real code that needs "largest first" ordering. Writing and maintaining a full max-heap class -- duplicating every comparison in `heapq`'s min-heap logic just with flipped operators -- adds real code surface and real bugs for a problem this negation trick solves in a single line.
 

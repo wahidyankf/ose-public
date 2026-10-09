@@ -7,8 +7,8 @@ weight: 1
 
 ## Goal
 
-Design and populate a small, normalized SQLite database (4 tables: `author`, `publisher`, `book`,
-`tag`, plus the `book_tag` junction) and ship a Python data-access layer with parameterized queries, a
+Design and populate a small, normalized SQLite database (four entity tables: `author`, `publisher`,
+`book`, `tag`, plus the `book_tag` junction, five tables total) and ship a Python data-access layer with parameterized queries, a
 `GROUP BY` reporting aggregation, a batch update that rolls back atomically on failure, and a safe
 additive migration -- runnable from the CLI end to end. Every mechanism this capstone combines was
 already taught, individually, somewhere in this topic's Beginner, Intermediate, or Advanced tiers.
@@ -17,10 +17,10 @@ already taught, individually, somewhere in this topic's Beginner, Intermediate, 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
     accTitle: Goal
-    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: schema.sql + seed.sql 4-table 3NF design, dal.py parameterized CRUD + report, pytest -q 9 tests, seeded fixture DB, bulk_update_prices() rolls back on CHECK failure, migrate_add_column. sql additive ALTER TABLE. Connections: schema.sql + seed.sql 4-table 3NF design to dal.py parameterized CRUD + report, dal.py parameterized CRUD + report to pytest -q 9 tests, seeded fixture DB, dal.py parameterized CRUD + report to bulk_update_prices() rolls back on CHECK failure, schema.sql + seed.sql 4-table 3NF design to migrate_add_column. sql additive ALTER TABLE.
-    A["schema.sql +<br/>seed.sql<br/>4-table 3NF design"]:::blue
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: schema.sql + seed.sql five-table 3NF design, dal.py parameterized CRUD + report, pytest -q 10 tests, seeded fixture DB, bulk_update_prices() rolls back on CHECK failure, migrate_add_column. sql additive ALTER TABLE. Connections: schema.sql + seed.sql five-table 3NF design to dal.py parameterized CRUD + report, dal.py parameterized CRUD + report to pytest -q 10 tests, seeded fixture DB, dal.py parameterized CRUD + report to bulk_update_prices() rolls back on CHECK failure, schema.sql + seed.sql five-table 3NF design to migrate_add_column. sql additive ALTER TABLE.
+    A["schema.sql +<br/>seed.sql<br/>five tables, 3NF"]:::blue
     B["dal.py<br/>parameterized CRUD +<br/>report"]:::orange
-    C["pytest -q<br/>9 tests, seeded<br/>fixture DB"]:::teal
+    C["pytest -q<br/>10 tests, seeded<br/>fixture DB"]:::teal
     D["bulk_update_prices()<br/>rolls back on CHECK<br/>failure"]:::purple
     E["migrate_add_column.<br/>sql<br/>additive ALTER TABLE"]:::brown
     A --> B --> C
@@ -47,8 +47,8 @@ flowchart LR
 All colocated code lives under `learning/capstone/code/`: `schema.sql` and `seed.sql` (the database
 structure and its seed data), `dal.py` (the typed data-access layer), `demo_bulk_update.py` (a runnable
 rollback demonstration), `migrate_add_column.sql` (the additive migration), and the test suite in
-`tests/test_dal.py`. Every listing below is the complete, verbatim file -- nothing on this page is
-truncated or paraphrased.
+`tests/test_dal.py`. The listings show the complete runnable programs. The colocated files are
+authoritative; Markdown formatting may differ from the file bytes.
 
 ## Step 1: `schema.sql` + `seed.sql` -- a 3NF design, applied via the CLI
 
@@ -63,7 +63,7 @@ Four fact-type tables (`author`, `publisher`, `book`, `tag`) plus one composite-
 **`learning/capstone/code/schema.sql`** (complete file)
 
 ```sql
--- Capstone: schema.sql -- a 3NF, 4-table design (author/publisher/book/tag) with PK/FK
+-- Capstone: schema.sql -- four entity tables plus one junction (five tables) with PK/FK
 -- constraints throughout, following the exact shape Example 77 taught (co-01, co-05, co-07).
 PRAGMA foreign_keys = ON;
 
@@ -150,9 +150,9 @@ CREATE TABLE book(
 );
 ```
 
-All 5 tables exist after `schema.sql` runs, and `.schema book` confirms `book`'s foreign keys and
-`CHECK` constraint landed exactly as written -- including the inline comments, since SQLite stores the
-original `CREATE TABLE` text verbatim.
+All five tables exist after `schema.sql` runs, and `.schema book` confirms `book`'s foreign keys and
+`CHECK` constraint. SQLite stores a normalized form of the original `CREATE` text, and later schema
+changes can modify it; the comments shown here are present in this example's stored definition.
 
 ## Step 2: `dal.py` -- parameterized CRUD + a `GROUP BY` report, tested with `pytest`
 
@@ -228,12 +228,12 @@ def report_by_author(conn: sqlite3.Connection) -> list[tuple[str, int, float]]:
         SELECT author.name, count(*), sum(book.price)
         FROM author
         JOIN book ON book.author_id = author.id
-        GROUP BY author.name
-        ORDER BY author.name
+        GROUP BY author.id, author.name
+        ORDER BY author.name, author.id
         """
     )
     rows: list[tuple[str, int, float]] = cur.fetchall()
-    return rows  # => [(name, book_count, total_price), ...] -- one row per author WITH books
+    return rows  # => [(name, book_count, total_price), ...] -- one row per author ID WITH books
 
 
 def bulk_update_prices(conn: sqlite3.Connection, updates: list[tuple[int, float]]) -> None:
@@ -339,6 +339,20 @@ def test_report_by_author_matches_hand_computed_values(conn: sqlite3.Connection)
     assert report_by_author(conn) == expected
 
 
+def test_report_keeps_distinct_authors_with_the_same_name(conn: sqlite3.Connection) -> None:
+    # Names are display values, not keys: author 3 has Ada's name but a separate book.
+    conn.execute("INSERT INTO author(id, name) VALUES (?, ?)", (3, "Ada Lovelace"))
+    conn.execute(
+        "INSERT INTO book(id, title, author_id, publisher_id, price) VALUES (?, ?, ?, ?, ?)",
+        (4, "A Different Ada's Book", 3, None, 7.0),
+    )
+    assert report_by_author(conn) == [
+        ("Ada Lovelace", 2, 21.5),
+        ("Ada Lovelace", 1, 7.0),
+        ("Grace Hopper", 1, 15.0),
+    ]
+
+
 def test_bulk_update_prices_commits_when_all_succeed(conn: sqlite3.Connection) -> None:
     bulk_update_prices(conn, [(1, 13.0), (2, 10.0)])
     assert list_books_by_author(conn, 1) == [
@@ -363,15 +377,14 @@ def test_bulk_update_prices_rolls_back_the_whole_batch_on_failure(conn: sqlite3.
 
 ```text
 $ pytest -q
-.........                                                                [100%]
-9 passed in 0.02s
-$ pyright dal.py
+..........                                                               [100%]
+10 passed
+$ pyright --pythonversion 3.10 dal.py
 0 errors, 0 warnings, 0 informations
 ```
 
-All 9 tests pass against the real, on-disk `schema.sql` + `seed.sql` fixture -- including
-`test_report_by_author_matches_hand_computed_values`, which checks `report_by_author`'s `JOIN` +
-`GROUP BY` output against numbers computed by hand from `seed.sql`.
+All 10 tests pass against the real, on-disk `schema.sql` + `seed.sql` fixture. The report checks both
+hand-computed seed values and two distinct authors who share the same display name.
 
 ## Step 3: a transaction that partially fails and rolls back
 
@@ -408,7 +421,7 @@ def main() -> None:
     DB_PATH.unlink(missing_ok=True)  # => deletes any leftover demo.db from a prior run first
     conn: sqlite3.Connection = sqlite3.connect(DB_PATH)  # => a real on-disk file, not :memory:
     conn.execute("PRAGMA foreign_keys = ON")  # => matches schema.sql's own PRAGMA line
-    conn.executescript((CODE_DIR / "schema.sql").read_text())  # => applies the 4-table 3NF design
+    conn.executescript((CODE_DIR / "schema.sql").read_text())  # => applies the five-table 3NF design
     conn.executescript((CODE_DIR / "seed.sql").read_text())  # => applies the same seed rows as Step 1
 
     before: list[tuple[int, str, float]] = list_books_by_author(conn, 1)  # => Ada's 2 seeded books
@@ -438,8 +451,6 @@ before: [(1, 'Notes on the Analytical Engine', 12.5), (2, 'Sketch of the Analyti
 caught: CHECK constraint failed: price >= 0
 after: [(1, 'Notes on the Analytical Engine', 12.5), (2, 'Sketch of the Analytical Engine', 9.0)]
 unchanged: True
-$ pyright .
-0 errors, 0 warnings, 0 informations
 ```
 
 `before` and `after` are identical -- book 1's individually-valid price update (`99.0`) never persisted
@@ -487,30 +498,30 @@ against a database that already has real data in it.
 
 ## Acceptance criteria
 
-- `pytest -q` reports `9 passed` against `tests/test_dal.py`, covering every CRUD function, the
+- `pytest -q` reports `10 passed` against `tests/test_dal.py`, covering every CRUD function, the
   optional-`publisher_id` path, `report_by_author`, and both the success and rollback paths of
   `bulk_update_prices`.
 - `report_by_author`'s output matches the hand-computed expected values from `seed.sql`: Ada Lovelace
   has 2 books totaling `21.5`, Grace Hopper has 1 book totaling `15.0`.
 - `demo_bulk_update.py` proves the rollback leaves no partial write: `before == after` for every
-  account row involved in the failed batch, and the CLI's own exit is clean (the `IntegrityError` is
+  book row involved in the failed batch, and the CLI's own exit is clean (the `IntegrityError` is
   caught, not left to crash the script).
 - No query anywhere in `dal.py`, `demo_bulk_update.py`, or `tests/test_dal.py` uses string
   interpolation to build SQL -- every value is bound through a `?` placeholder (co-20).
 - `migrate_add_column.sql` runs cleanly against the already-seeded database from Step 1, and every
   pre-existing row -- including the one with a `NULL` `publisher_id` -- still reads back valid.
-- `pyright dal.py` and `pyright .` (run from inside `learning/capstone/code/`) both report `0 errors, 0
-warnings, 0 informations`.
+- `pyright --pythonversion 3.10 dal.py` (run from inside `learning/capstone/code/`) reports `0 errors,
+0 warnings, 0 informations`.
 - Every listing on this page (`schema.sql`, `seed.sql`, `dal.py`, `tests/__init__.py`,
-  `tests/test_dal.py`, `demo_bulk_update.py`, `migrate_add_column.sql`) is the complete file, runnable
-  exactly as shown -- nothing here is a fragment that depends on code the page does not also show.
+  `tests/test_dal.py`, `demo_bulk_update.py`, `migrate_add_column.sql`) shows a complete runnable
+  program; the colocated files are the source of truth when formatting differs.
 
 ## Done bar
 
 This capstone is runnable end to end: a reader who copies the files above into a
 `learning/capstone/code/`-shaped tree, applies `schema.sql` then `seed.sql` with the `sqlite3` CLI, runs
 `pytest -q`, runs `demo_bulk_update.py`, and finally applies `migrate_add_column.sql` reaches the
-identical output blocks shown in Steps 1 through 4, verified against a real SQLite 3.53.3 engine and a
+output blocks shown in Steps 1 through 4, verified against SQLite and a
 real CPython interpreter run (not merely described). Every mechanism combined here -- a 3NF schema with
 PK/FK constraints (co-01, co-05, co-07), parameterized CRUD (co-19, co-20), a `JOIN` + `GROUP BY` report
 (co-13, co-15), a `with conn:` rollback-on-failure transaction (co-18), and a safe additive migration
@@ -519,4 +530,4 @@ was needed to write this page.
 
 ---
 
-← Previous: [Advanced Examples](../advanced.md)
+← Previous: [Advanced Examples](../advanced.md) · Next: [Drilling](../../drilling/overview.md) →

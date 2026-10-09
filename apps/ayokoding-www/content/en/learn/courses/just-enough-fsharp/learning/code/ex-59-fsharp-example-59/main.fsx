@@ -1,4 +1,8 @@
-// ex-59 · fsharp-example-59
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => A zero divisor is a normal rejected input.
+let divide numerator denominator =
+    // => Reject a zero divisor before doing integer division.
+    if denominator = 0 then Error "division by zero"
+    // => A nonzero divisor produces the quotient in Ok.
+    else Ok(numerator / denominator)
+// => The caller sees an Error case.
+printfn "%A" (divide 9 0)

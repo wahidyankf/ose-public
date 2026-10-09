@@ -1,9 +1,11 @@
 """Example 60: Class __repr__."""
 
+# => The representation includes both stored coordinate names and values.
+
 
 class Point:  # => defines a new class named Point
     # The constructor, called automatically by Point(x, y).
-    def __init__(self, x: int, y: int) -> None:
+    def __init__(self, x: int, y: int) -> None:  # => stores coordinates 1, 2 below
         self.x = x  # => stores x as an instance attribute
         self.y = y  # => stores y as an instance attribute
 

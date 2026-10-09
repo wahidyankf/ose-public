@@ -1,3 +1,8 @@
-// ex-43 · fsharp-example-43
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => Address and Customer each name their fields.
+type Address = { City: string; Postcode: string }
+// => A Customer owns a complete Address value.
+type Customer = { Name: string; Address: Address }
+// => Construct the nested value explicitly.
+let customer = { Name = "Ayu"; Address = { City = "Bandung"; Postcode = "40111" } }
+// => Dot access follows the nested fields.
+printfn "%s" customer.Address.City

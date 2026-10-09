@@ -1,2 +1,2 @@
-string name = "Ada"; // non-nullable by default when nullable analysis is enabled
-Console.WriteLine(name.Length); // Output: 3
+string name = "Ada"; // => non-nullable string under enabled analysis
+Console.WriteLine(name.Length); // => Output: 3

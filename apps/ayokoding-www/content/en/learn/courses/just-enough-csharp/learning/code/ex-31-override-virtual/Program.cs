@@ -1,12 +1,12 @@
-Animal animal = new Dog(); // => base-typed reference
+Animal animal = new Dog(); // => Animal variable contains a Dog instance
 Console.WriteLine(animal.Sound()); // => Output: bark
 
-class Animal
+class Animal // => declares the base sound behavior
 {
-    public virtual string Sound() => "?";
+    public virtual string Sound() => "?"; // => virtual member can be overridden
 }
 
-class Dog : Animal
+class Dog : Animal // => inherits from Animal
 {
-    public override string Sound() => "bark";
+    public override string Sound() => "bark"; // => replaces base sound with bark
 }

@@ -1,3 +1,6 @@
-// ex-12 · fsharp-example-12
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => [] is the empty list.
+let tail = [2; 3]
+// => :: adds 1 at the front without changing tail.
+let values = 1 :: tail
+// => This prints [1; 2; 3].
+printfn "%A" values

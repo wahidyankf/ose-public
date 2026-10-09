@@ -17,7 +17,18 @@ dotnet test code/CatalogReport.Tests/CatalogReport.Tests.csproj
 
 The program prints a sorted report and reports a missing requested ID as `unavailable`. The test
 project uses `Microsoft.NET.Test.Sdk`, `xunit`, and `xunit.runner.visualstudio` package references to
-verify both behaviors through `dotnet test`.
+verify missing lookup handling, alphabetical report order, and an empty request through `dotnet test`.
+
+## Extend the report
+
+Before running the program, predict the report order and the text shown for the missing ID. Then add
+one more missing ID to the request list in `code/CatalogReport/Program.cs`. Add that ID to the
+request in `KeepsMissingProductSafe` and expect a second `unavailable` line. The existing order
+test should still confirm that found products are alphabetical. Run both commands above again.
+
+You are done when the printed report matches your prediction, has one `unavailable` line for each
+missing ID, and all tests pass. Keep the lookup result nullable: the exercise is to handle absence
+at the report boundary, not to invent a placeholder product.
 
 ## Why this capstone stays small
 

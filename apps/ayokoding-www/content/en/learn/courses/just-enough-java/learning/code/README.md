@@ -1,8 +1,13 @@
 # Java example source map
 
-Each ex-NN directory holds an original Java source artifact. Compile one supported example from its
-directory with javac ExampleNN.java, then run java ExampleNN. Files using JUnit need the capstone
-Maven project; ex-33 and ex-80 require a Java 25 compiler/runtime as documented by JEP 512.
+Each `ex-NN` directory holds a runnable Java example. Examples 1 and 3 are conventional Maven
+projects with `pom.xml` and source under `src/main/java`; run the commands in their lessons.
+For examples 2, 4–68, and 72–78, compile in the example directory with `javac ExampleNN.java`
+and run `java ExampleNN`. Examples 69–71 are separate JUnit Maven projects with tests under
+`src/test/java`; run `mvn -f code/ex-NN-*/pom.xml test` from `learning/`. Example 79 uses `java Hello.java` (single-file launch). Example 80 uses
+`java CompactHello.java` on Java 25, which finalized compact source files and instance main
+methods. The guarded switch in example 33 is supported from Java 21. Example 72 contains a standalone assertion for the build/run/test loop; the capstone Maven
+project adds JUnit tests over a small task board.
 
 ## Syllabus mapping
 

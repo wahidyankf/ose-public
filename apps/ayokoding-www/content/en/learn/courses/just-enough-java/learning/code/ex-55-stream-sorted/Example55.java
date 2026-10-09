@@ -1,4 +1,10 @@
-// ex-55 · stream-sorted · co-18
 import java.util.List;
-public final class Example55 { public static void main(String[] args){ var result=List.of(1,2,2,3).stream().filter(value -> value > 1).map(value -> value * 10).distinct().toList(); System.out.println(result); } }
-
+public final class Example55 {
+    public static void main(String[] args) {
+        List<Integer> ascending = List.of(3, 1, 2).stream().sorted().toList(); // => [1, 2, 3]
+        // => The source order is 3, 1, 2.
+        // => Natural Integer order produces 1, 2, 3.
+        System.out.println(ascending); // => [1, 2, 3]
+        // => toList evaluates the sorted pipeline before printing.
+    }
+}

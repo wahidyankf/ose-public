@@ -1,24 +1,12 @@
-// => for range: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => for range: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => for range: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-	// => for range: uses Go’s single loop keyword for iteration.
-	// => keeps the loop state and termination condition local.
-	for index, value := range []string{"go", "rust"} {
-		fmt.Println(index, value)
+func main() { // => main demonstrates range on a slice and a map.
+	for index, value := range []string{"go", "rust"} { // => Slice iteration yields indexes 0 and 1 with their values.
+		fmt.Println(index, value) // => Output: 0 go, then 1 rust.
 	}
-	// => for range: uses Go’s single loop keyword for iteration.
-	// => keeps the loop state and termination condition local.
-	for key, value := range map[string]int{"ok": 1} {
-		fmt.Println(key, value)
+	for key, value := range map[string]int{"ok": 1} { // => Map iteration yields a key and value; order is unspecified for multiple keys.
+		fmt.Println(key, value) // => This one-entry map prints ok 1.
 	}
-	// => for range: marks one deliberate step in the for range example.
-	// => keeps the mechanism inspectable before it is composed with another concern.
 }

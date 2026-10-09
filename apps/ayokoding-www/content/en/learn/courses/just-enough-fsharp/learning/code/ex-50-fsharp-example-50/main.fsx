@@ -1,3 +1,6 @@
-// ex-50 · fsharp-example-50
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => An array's elements can change in place.
+let counters = [|1; 2; 3|]
+// => The indexed assignment changes element one.
+counters.[1] <- 5
+// => This prints [|1; 5; 3|].
+printfn "%A" counters

@@ -1,3 +1,11 @@
-// ex-67 · gc-object-lifecycle · co-25
-public final class Example67 { public static void main(String[] args){ Object value=new Object(); Object alias=value; System.out.println(value == alias); System.out.println(value.equals(alias)); } }
-
+public final class Example67 {
+    public static void main(String[] args) {
+        Object task = new Object(); // => reachable through task
+        Object alias = task;        // => second reference to same object
+        // => task and alias compare identical by reference.
+        task = null;                // => object still reachable through alias
+        // => Clearing one reference does not clear the other.
+        System.out.println(alias != null); // => true; alias still references the object
+        // This does not promise when, or whether, garbage collection runs.
+    }
+}

@@ -1,4 +1,10 @@
-// ex-61 · fsharp-example-61
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => List.tryHead reports only presence or absence.
+let firstOrError values =
+    // => Check whether the input list has a first item.
+    match List.tryHead values with
+    // => A present head becomes an Ok value.
+    | Some first -> Ok first
+    // => An empty list gets an explanatory Error.
+    | None -> Error "list is empty"
+// => This prints Error "list is empty".
+printfn "%A" (firstOrError [])

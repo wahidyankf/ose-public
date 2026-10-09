@@ -1,4 +1,6 @@
-// ex-72 · fsharp-example-72
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => DateOnly is a .NET value type.
+let date = System.DateOnly(2026, 10, 9)
+// => AddDays returns a new date value.
+let next = date.AddDays 1
+// => ISO formatting produces 2026-10-10.
+printfn "%s" (next.ToString("yyyy-MM-dd"))

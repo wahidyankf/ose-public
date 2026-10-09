@@ -8,1149 +8,810 @@ weight: 20
 Examples 27–54 cover collections, pointers, composition, receivers, interfaces, error values, and
 JSON. Each has a colocated runnable source.
 
-### Example 27: Compare an Array and Slice
+## Example 27: Compare an Array and Slice
 
 _ex-27 · exercises co-10_
 
-Compare an Array and Slice is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-27-array-vs-slice/main.go` so
-the page and runnable artifact cannot drift.
+Arrays have a fixed length in their type; slices are views over an array. Identical printed elements do not make the array and slice interchangeable types. The code block is rendered from `learning/code/ex-27-array-vs-slice/main.go`.
 
 ```go
-// => array vs slice: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => array vs slice: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => array vs slice: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => array vs slice: marks one deliberate step in the array vs slice example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  array := [3]int{1, 2, 3}
-  // => array vs slice: marks one deliberate step in the array vs slice example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  slice := []int{1, 2, 3}
-  // => array vs slice: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println(array, slice)
-  // => array vs slice: marks one deliberate step in the array vs slice example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Compares equal printed values with different array and slice types.
+	array := [3]int{1, 2, 3}  // => Its length 3 is part of its type.
+	slice := []int{1, 2, 3}   // => The slice type has no fixed length.
+	fmt.Println(array, slice) // => Both print [1 2 3] here.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: Both values print `[1 2 3]`, although their types differ.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: Arrays have a fixed length in their type; slices are views over an array.
 
-### Example 28: Append to a Slice
+**Why it matters**: The output looks identical, so inspect the declarations to see the type distinction. Slices suit variable-length collection APIs; arrays make fixed length part of the type and are copied as values. When debugging a collection, check its type rather than inferring it from how `fmt` prints it. Change the array length and compare the resulting types.
+
+## Example 28: Append to a Slice
 
 _ex-28 · exercises co-10_
 
-Append to a Slice is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-28-slice-append/main.go` so
-the page and runnable artifact cannot drift.
+`append` returns a slice with the new element and may allocate a new backing array. The returned slice header carries the new length, even if its backing array was reused. The code block is rendered from `learning/code/ex-28-slice-append/main.go`.
 
 ```go
-// => slice append: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => slice append: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => slice append: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => slice append: marks one deliberate step in the slice append example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  values := []int{1, 2}
-  // => slice append: marks one deliberate step in the slice append example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  values = append(values, 3)
-  // => slice append: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println(values)
-  // => slice append: marks one deliberate step in the slice append example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Shows why append’s returned slice must be retained.
+	values := []int{1, 2}      // => Initial length is 2.
+	values = append(values, 3) // => Assign the returned slice; length becomes 3.
+	fmt.Println(values)        // => Output: [1 2 3].
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The resulting slice prints `[1 2 3]`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: `append` returns a slice with the new element and may allocate a new backing array.
 
-### Example 29: Inspect Slice Length and Capacity
+**Why it matters**: Keep the returned slice header after `append`; ignoring it can lose the updated length. This matters when a helper receives a slice and appends to it: its caller must receive the result if it needs the expanded view. Mutation of underlying elements and change of slice length are separate effects. Try appending without assigning the result and inspect the compiler response.
+
+## Example 29: Inspect Slice Length and Capacity
 
 _ex-29 · exercises co-10_
 
-Inspect Slice Length and Capacity is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-29-slice-len-cap/main.go` so
-the page and runnable artifact cannot drift.
+Slice length counts visible elements; capacity measures available backing storage. Observe length as data grows and treat the capacity numbers as allocation details. The code block is rendered from `learning/code/ex-29-slice-len-cap/main.go`.
 
 ```go
-// => slice len cap: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => slice len cap: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => slice len cap: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => slice len cap: marks one deliberate step in the slice len cap example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  values := make([]int, 0, 2)
-  // => slice len cap: uses Go’s single loop keyword for iteration.
-  // => keeps the loop state and termination condition local.
-  for i := 0; i < 3; i++ {
-    values = append(values, i)
-    fmt.Println(len(values), cap(values))
-  }
-  // => slice len cap: marks one deliberate step in the slice len cap example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Tracks length and capacity through three appends.
+	values := make([]int, 0, 2) // => Zero elements, space reserved for two.
+	// => Append 0, 1, then 2; the third append exceeds initial capacity.
+	for i := 0; i < 3; i++ { // => i takes values 0, 1, then 2.
+		values = append(values, i)            // => Length increases each time.
+		fmt.Println(len(values), cap(values)) // => Capacity may grow when needed.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: Length grows after `append`; exact capacity growth is implementation dependent.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: Slice length counts visible elements; capacity measures available backing storage.
 
-### Example 30: Allocate Slice Capacity
+**Why it matters**: Capacity can help reduce allocations, but the precise growth pattern is not a program contract. Use length for bounds and data count. A later Go release or input size may produce a different capacity while the same slice behavior remains correct. This example separates correctness from an optimization detail. Predict which indexes are legal after each append.
+
+## Example 30: Allocate Slice Capacity
 
 _ex-30 · exercises co-10_
 
-Allocate Slice Capacity is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-30-make-slice-capacity/main.go` so
-the page and runnable artifact cannot drift.
+`make([]T, 0, capacity)` reserves storage without creating visible elements. Reserving ten slots does not make any of them indexable while length remains zero. The code block is rendered from `learning/code/ex-30-make-slice-capacity/main.go`.
 
 ```go
-// => make slice capacity: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => make slice capacity: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => make slice capacity: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => make slice capacity: marks one deliberate step in the make slice capacity example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  values := make([]int, 0, 10)
-  // => make slice capacity: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println(len(values), cap(values))
-  // => make slice capacity: marks one deliberate step in the make slice capacity example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Separates a slice’s readable length from reserved capacity.
+	values := make([]int, 0, 10)          // => Length 0 means no readable elements yet.
+	fmt.Println(len(values), cap(values)) // => Output: 0 10.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The program prints `0 10` for length and capacity.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: `make([]T, 0, capacity)` reserves storage without creating visible elements.
 
-### Example 31: Share a Slice Backing Array
+**Why it matters**: Preallocating a known approximate size can avoid repeated allocations during append-heavy work. Capacity does not permit indexing past length: a slice with length zero still has no element at index zero. Distinguish reservation from population when building a result collection or passing it to another function. Try indexing element zero before appending.
+
+## Example 31: Share a Slice Backing Array
 
 _ex-31 · exercises co-10_
 
-Share a Slice Backing Array is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-31-slice-shares-backing/main.go` so
-the page and runnable artifact cannot drift.
+Two slices can share one backing array, so mutation through either view is visible to both. One assignment changes both printed views because they overlap in the same storage. The code block is rendered from `learning/code/ex-31-slice-shares-backing/main.go`.
 
 ```go
-// => slice shares backing: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => slice shares backing: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => slice shares backing: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => slice shares backing: marks one deliberate step in the slice shares backing example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  values := []int{1, 2, 3}
-  // => slice shares backing: marks one deliberate step in the slice shares backing example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  view := values[:2]
-  // => slice shares backing: marks one deliberate step in the slice shares backing example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  view[0] = 9
-  // => slice shares backing: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println(values, view)
-  // => slice shares backing: marks one deliberate step in the slice shares backing example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Shows a subslice changing the original backing array.
+	values := []int{1, 2, 3}  // => Original backing array holds three integers.
+	view := values[:2]        // => View covers the first two elements of that array.
+	view[0] = 9               // => The write also changes values[0].
+	fmt.Println(values, view) // => Output: [9 2 3] [9 2].
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: Changing one view produces `[9 2 3] [9 2]`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: Two slices can share one backing array, so mutation through either view is visible to both.
 
-### Example 32: Create a Map
+**Why it matters**: Sharing avoids copies but makes ownership important. A function that returns a subslice may leave the original data mutable through another reference. If callers require independent state, copy the elements. This is also why retaining a tiny subslice can keep a much larger backing array alive. Change a different shared element and predict both outputs.
+
+## Example 32: Create a Map
 
 _ex-32 · exercises co-11_
 
-Create a Map is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-32-map-basic/main.go` so
-the page and runnable artifact cannot drift.
+A map literal creates keyed values for fast lookup. Lookup uses a key, while ordered presentation needs a separate sorting step. The code block is rendered from `learning/code/ex-32-map-basic/main.go`.
 
 ```go
-// => map basic: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => map basic: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => map basic: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => map basic: marks one deliberate step in the map basic example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  counts := map[string]int{"ok": 1}
-  // => map basic: marks one deliberate step in the map basic example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  counts["warn"] = 2
-  // => map basic: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println(counts)
-  // => map basic: marks one deliberate step in the map basic example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Starts with one map entry and inserts another.
+	counts := map[string]int{"ok": 1} // => The key "ok" starts at 1.
+	counts["warn"] = 2                // => Assignment inserts a second key.
+	fmt.Println(counts)               // => Both entries appear; map order is unspecified.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: `fmt` prints `map[ok:1 warn:2]` for this map.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: A map literal creates keyed values for fast lookup.
 
-### Example 33: Use Map Comma-Ok
+**Why it matters**: Maps provide convenient lookup but do not promise iteration order. `fmt` formats keys predictably here; a `for range` loop is a different operation. If an API or test needs stable order, sort keys before visiting them. Also notice that map keys must be comparable types. Add a third key, then inspect the map and a range loop.
+
+## Example 33: Use Map Comma-Ok
 
 _ex-33 · exercises co-11_
 
-Use Map Comma-Ok is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-33-map-comma-ok/main.go` so
-the page and runnable artifact cannot drift.
+The comma-ok lookup distinguishes a missing key from a present zero value. The second result reports presence independently of the integer zero value. The code block is rendered from `learning/code/ex-33-map-comma-ok/main.go`.
 
 ```go
-// => map comma ok: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => map comma ok: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => map comma ok: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => map comma ok: marks one deliberate step in the map comma ok example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  counts := map[string]int{"ok": 0}
-  // => map comma ok: marks one deliberate step in the map comma ok example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  value, present := counts["missing"]
-  // => map comma ok: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println(value, present)
-  // => map comma ok: marks one deliberate step in the map comma ok example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Distinguishes absent key from a stored zero.
+	counts := map[string]int{"ok": 0}   // => An existing key can also hold zero.
+	value, present := counts["missing"] // => Missing key gives zero and false.
+	fmt.Println(value, present)         // => Output: 0 false.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The lookup prints `0 false` for an absent key.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: The comma-ok lookup distinguishes a missing key from a present zero value.
 
-### Example 34: Delete and Iterate a Map
+**Why it matters**: A single lookup returns the value type’s zero value on a miss, which can be useful for counters but ambiguous for configuration or IDs. The second result tells you whether the key existed. Check it whenever absence needs different handling from a stored zero. Insert the key with value zero and compare both results.
+
+## Example 34: Delete and Iterate a Map
 
 _ex-34 · exercises co-11_
 
-Delete and Iterate a Map is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-34-map-delete-iterate/main.go` so
-the page and runnable artifact cannot drift.
+`delete` removes a map entry; `range` visits the remaining entries. The remaining key appears after deletion; adding more keys would not promise visit order. The code block is rendered from `learning/code/ex-34-map-delete-iterate/main.go`.
 
 ```go
-// => map delete iterate: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => map delete iterate: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => map delete iterate: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => map delete iterate: marks one deliberate step in the map delete iterate example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  counts := map[string]int{"ok": 1, "warn": 2}
-  // => map delete iterate: marks one deliberate step in the map delete iterate example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  delete(counts, "warn")
-  // => map delete iterate: uses Go’s single loop keyword for iteration.
-  // => keeps the loop state and termination condition local.
-  for key, value := range counts {
-    fmt.Println(key, value)
-  }
-  // => map delete iterate: marks one deliberate step in the map delete iterate example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Deletes one entry before iteration.
+	counts := map[string]int{"ok": 1, "warn": 2} // => Two initial entries.
+	delete(counts, "warn")                       // => Only "ok" remains.
+	// => The single remaining key makes this output deterministic.
+	for key, value := range counts { // => Only the ok entry can be visited.
+		fmt.Println(key, value) // => Output: ok 1.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: Only `ok 1` remains after deletion.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: `delete` removes a map entry; `range` visits the remaining entries.
 
-### Example 35: Read through a Pointer
+**Why it matters**: Deleting an absent key is safe, so cleanup code need not check first. Range order remains unspecified when several keys exist. This matters for tests and user-facing output: sort keys if ordering is part of the result. A map is a lookup structure, not an ordered list. Add another remaining key and avoid assuming which prints first.
+
+## Example 35: Read through a Pointer
 
 _ex-35 · exercises co-12_
 
-Read through a Pointer is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-35-pointer-basics/main.go` so
-the page and runnable artifact cannot drift.
+A pointer holds an address; dereferencing reads the value at that address. The pointer refers to the existing integer rather than storing another independent integer. The code block is rendered from `learning/code/ex-35-pointer-basics/main.go`.
 
 ```go
-// => pointer basics: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => pointer basics: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => pointer basics: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => pointer basics: marks one deliberate step in the pointer basics example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  value := 7
-  // => pointer basics: marks one deliberate step in the pointer basics example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  pointer := &value
-  // => pointer basics: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println(*pointer)
-  // => pointer basics: marks one deliberate step in the pointer basics example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Takes an address and reads through the resulting pointer.
+	value := 7            // => An addressable integer variable.
+	pointer := &value     // => Stores value's address, not a copy of 7.
+	fmt.Println(*pointer) // => Dereference reads 7.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The dereference prints `7`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: A pointer holds an address; dereferencing reads the value at that address.
 
-### Example 36: Modify through a Pointer
+**Why it matters**: Pointers allow sharing a value instead of copying it, but they can also be nil. In this example the address is valid. Before passing a pointer to another function, decide whether it may mutate the value and who keeps ownership; that decision affects how easy the call is to reason about. Set the pointer to nil and explain why dereferencing changes behavior.
+
+## Example 36: Modify through a Pointer
 
 _ex-36 · exercises co-12_
 
-Modify through a Pointer is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-36-pointer-modify/main.go` so
-the page and runnable artifact cannot drift.
+Dereferencing a pointer for assignment changes the caller’s original value. The assignment through the pointer changes what the caller reads after the function returns. The code block is rendered from `learning/code/ex-36-pointer-modify/main.go`.
 
 ```go
-// => pointer modify: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => pointer modify: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => pointer modify: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func increment(value *int) { *value++ }
+func increment(value *int) { *value++ } // => Dereference then increment the caller's integer.
 
-// => pointer modify: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => pointer modify: marks one deliberate step in the pointer modify example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  value := 7
-  // => pointer modify: marks one deliberate step in the pointer modify example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  increment(&value)
-  // => pointer modify: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println(value)
-  // => pointer modify: marks one deliberate step in the pointer modify example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Passes an address so increment can update the caller’s variable.
+	value := 7         // => Initial value before the call.
+	increment(&value)  // => Pass its address so the function can write to it.
+	fmt.Println(value) // => Output: 8.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The caller sees `8` after the update.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: Dereferencing a pointer for assignment changes the caller’s original value.
 
-### Example 37: Recover a Nil Pointer Panic
+**Why it matters**: A pointer parameter gives the callee the ability to mutate state visible elsewhere. Use that when identity or in-place change is the contract, and prefer returning a new value when a copy is clearer. The difference matters when debugging a value that changes after a function call. Pass a copied value instead and compare the effect.
+
+## Example 37: Recover a Nil Pointer Panic
 
 _ex-37 · exercises co-12_
 
-Recover a Nil Pointer Panic is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-37-nil-pointer-panic/main.go` so
-the page and runnable artifact cannot drift.
+A nil-pointer dereference panics; this example recovers only to expose that fact. `recover` captures the panic during deferred cleanup; the nil pointer remains invalid. The code block is rendered from `learning/code/ex-37-nil-pointer-panic/main.go`.
 
 ```go
-// => nil pointer panic: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => nil pointer panic: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => nil pointer panic: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func dereference(pointer *int) (recovered any) {
-  // => nil pointer panic: marks one deliberate step in the nil pointer panic example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  defer func() { recovered = recover() }()
-  // => nil pointer panic: marks one deliberate step in the nil pointer panic example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  _ = *pointer
-  // => nil pointer panic: returns a value through Go’s ordinary control-flow mechanism.
-  // => keeps the caller responsible for the next decision.
-  return nil
-  // => nil pointer panic: marks one deliberate step in the nil pointer panic example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func dereference(pointer *int) (recovered any) { // => Named result captures the recovered panic.
+	defer func() { recovered = recover() }() // => Runs during panic unwinding.
+	_ = *pointer                             // => A nil pointer causes the panic being demonstrated.
+	// => A non-nil pointer reaches this return without invoking recover.
+	return nil // => A non-nil pointer reaches this line without recovery.
 }
 
-// => nil pointer panic: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { fmt.Println(dereference(nil) != nil) }
+func main() { fmt.Println(dereference(nil) != nil) } // => Output: true; the panic was recovered.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The program prints `true` because `recover()` returns a non-nil panic value for the nil dereference.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: A nil-pointer dereference panics; this example recovers only to expose that fact.
 
-### Example 38: Define a Struct
+**Why it matters**: Recovery is not normal input validation. Ordinary invalid input should be checked and returned as an error before a dereference. A boundary may recover to keep a larger process alive, but the failed operation still failed. This example teaches recognition of a programming error, not a pattern for routine control flow. Remove the recovery and inspect the failing stack trace.
+
+## Example 38: Define a Struct
 
 _ex-38 · exercises co-13_
 
-Define a Struct is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-38-struct-definition/main.go` so
-the page and runnable artifact cannot drift.
+A struct groups related named fields into one value type. The field selector reads a named part of the grouped value. The code block is rendered from `learning/code/ex-38-struct-definition/main.go`.
 
 ```go
-// => struct definition: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => struct definition: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => struct definition: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Release struct {
-  Name   string
-  Number int
+type Release struct { // => Defines two fields with distinct types.
+	Name   string // => Text field accessed below.
+	Number int    // => Independent integer field; zero if omitted.
 }
 
-// => struct definition: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { release := Release{Name: "ship", Number: 1}; fmt.Println(release.Name) }
+func main() { release := Release{Name: "ship", Number: 1}; fmt.Println(release.Name) } // => Prints ship from Name.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: Reading the field prints `ship`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: A struct groups related named fields into one value type.
 
-### Example 39: Build a Struct Literal
+**Why it matters**: Named fields make a small domain value clearer than unrelated variables and let the compiler check field names and types. Struct values can be copied, passed, and later given methods. Start with this simple grouping before layering on JSON tags, interfaces, or pointer receivers. Add another field and decide its useful zero value.
+
+## Example 39: Build a Struct Literal
 
 _ex-39 · exercises co-13_
 
-Build a Struct Literal is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-39-struct-literal/main.go` so
-the page and runnable artifact cannot drift.
+A keyed struct literal supplies named fields; omitted fields receive zero values. The field omitted from the literal still exists and receives its zero value. The code block is rendered from `learning/code/ex-39-struct-literal/main.go`.
 
 ```go
-// => struct literal: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => struct literal: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => struct literal: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Release struct {
-  Name   string
-  Number int
+type Release struct { // => Only Name is set in the literal below.
+	Name   string // => Set explicitly by the literal.
+	Number int    // => Omitted field defaults to zero.
 }
 
-// => struct literal: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { release := Release{Name: "ship"}; fmt.Println(release.Name, release.Number) }
+func main() { release := Release{Name: "ship"}; fmt.Println(release.Name, release.Number) } // => Output: ship 0.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The fields print `ship 0`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: A keyed struct literal supplies named fields; omitted fields receive zero values.
 
-### Example 40: Embed a Struct
+**Why it matters**: Keyed literals explain which value belongs to which field and tolerate changes in field order. An omitted field might be intentionally optional or might mean required data was forgotten. The compiler checks shape but not domain completeness, so validate required fields at the boundary where values enter. Supply the second field and compare the output.
+
+## Example 40: Embed a Struct
 
 _ex-40 · exercises co-13_
 
-Embed a Struct is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-40-embedded-struct/main.go` so
-the page and runnable artifact cannot drift.
+Embedding a struct promotes its fields and methods for convenient selectors. The promoted selector is shorthand for a field reached through the embedded value. The code block is rendered from `learning/code/ex-40-embedded-struct/main.go`.
 
 ```go
-// => embedded struct: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => embedded struct: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => embedded struct: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Metadata struct{ Owner string }
+type Metadata struct{ Owner string } // => Owner belongs to Metadata.
 
-// => embedded struct: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Release struct {
-  Metadata
-  Name string
+type Release struct { // => Embedding promotes Metadata.Owner.
+	Metadata        // => Embedding promotes Owner to Release.Owner.
+	Name     string // => Name remains a field of Release.
 }
 
-// => embedded struct: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  release := Release{Metadata: Metadata{Owner: "Ada"}, Name: "ship"}
-  fmt.Println(release.Owner)
+func main() { // => Initializes the embedded struct before reading Owner.
+	release := Release{Metadata: Metadata{Owner: "Ada"}, Name: "ship"} // => Initialize embedded value explicitly.
+	fmt.Println(release.Owner)                                         // => Output: Ada via the promoted field.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The promoted field prints `Ada`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: Embedding a struct promotes its fields and methods for convenient selectors.
 
-### Example 41: Use a Value Receiver
+**Why it matters**: Embedding is composition: the inner value remains a field even when callers use a shortened selector. This is useful for small, deliberate reuse, but exposing an entire embedded type can enlarge an API unexpectedly. Check which fields and methods become reachable before choosing this shape for a public type. Use the explicit embedded-field selector and compare the value.
+
+## Example 41: Use a Value Receiver
 
 _ex-41 · exercises co-14_
 
-Use a Value Receiver is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-41-method-value-receiver/main.go` so
-the page and runnable artifact cannot drift.
+A value receiver reads a copy and returns a new `Counter`; this method never mutates either value. Compare the returned `2` with the original `1` to see value semantics without mutation. The code block is rendered from `learning/code/ex-41-method-value-receiver/main.go`.
 
 ```go
-// => method value receiver: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => method value receiver: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => method value receiver: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Counter int
+type Counter int // => Defined integer type can have methods.
 
-// => method value receiver: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func (counter Counter) Incremented() Counter { return counter + 1 }
+func (counter Counter) Incremented() Counter { return counter + 1 } // => Returns 2 without changing caller's 1.
 
-// => method value receiver: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { counter := Counter(1); fmt.Println(counter.Incremented(), counter) }
+func main() { counter := Counter(1); fmt.Println(counter.Incremented(), counter) } // => Output: 2 1.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The output `2 1` contrasts the returned value with the unchanged original.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: This value receiver computes a new `Counter`; the original stays `1`.
 
-### Example 42: Use a Pointer Receiver
+**Why it matters**: Method call syntax does not reveal whether a receiver is copied. Here `Incremented` computes a new `Counter` from its value receiver and leaves the caller’s value at `1`; it does not update a copy in place. Choose value receivers for small value-like types and pointer receivers when a method must mutate the original. Call this method twice and predict the unchanged original value.
+
+## Example 42: Use a Pointer Receiver
 
 _ex-42 · exercises co-14_
 
-Use a Pointer Receiver is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-42-method-pointer-receiver/main.go` so
-the page and runnable artifact cannot drift.
+A pointer receiver can update the original named integer value through its address. The receiver’s address lets the method mutate the value that the caller retains. The code block is rendered from `learning/code/ex-42-method-pointer-receiver/main.go`.
 
 ```go
-// => method pointer receiver: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => method pointer receiver: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => method pointer receiver: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Counter int
+type Counter int // => Defined integer type, not a struct.
 
-// => method pointer receiver: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func (counter *Counter) Increment() { *counter++ }
+func (counter *Counter) Increment() { *counter++ } // => Pointer receiver writes the caller's value.
 
-// => method pointer receiver: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { counter := Counter(1); counter.Increment(); fmt.Println(counter) }
+func main() { counter := Counter(1); counter.Increment(); fmt.Println(counter) } // => Output: 2.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The modified value prints `2`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: A pointer receiver can update the original named integer through its address.
 
-### Example 43: Choose a Receiver
+**Why it matters**: Pointer receivers support mutation; on a larger type, they can also avoid copying. They also influence the method set used for interface satisfaction, even when call syntax automatically takes the address of a local variable. Decide receiver kind for a type consistently so its API behaves predictably. Try calling the method through an addressable value and a pointer.
+
+## Example 43: Choose a Receiver
 
 _ex-43 · exercises co-14_
 
-Choose a Receiver is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-43-receiver-choice/main.go` so
-the page and runnable artifact cannot drift.
+Receiver choice expresses whether a method needs mutation, identity, or value semantics. Receiver kind also affects the type’s method set when it is used as an interface. The code block is rendered from `learning/code/ex-43-receiver-choice/main.go`.
 
 ```go
-// => receiver choice: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => receiver choice: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => receiver choice: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Release struct{ Name string }
+type Release struct{ Name string } // => The field both methods use.
 
-// => receiver choice: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func (release Release) Label() string { return release.Name }
+func (release Release) Label() string { return release.Name } // => Reading a copy does not mutate Release.
 
-// => receiver choice: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func (release *Release) Rename(name string) { release.Name = name }
+func (release *Release) Rename(name string) { release.Name = name } // => Pointer receiver changes the original Name.
 
-// => receiver choice: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { release := Release{Name: "ship"}; release.Rename("dock"); fmt.Println(release.Label()) }
+func main() { release := Release{Name: "ship"}; release.Rename("dock"); fmt.Println(release.Label()) } // => Output: dock.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The method returns `dock`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: Receiver choice expresses whether a method needs mutation, identity, or value semantics.
 
-### Example 44: Satisfy an Interface Implicitly
+**Why it matters**: A receiver is part of a method’s public contract. Switching from value to pointer can change which value forms satisfy an interface. Use a value receiver for small immutable values, and a pointer receiver where mutation or shared identity is needed; avoid mixing choices without reason. Explain whether copying the receiver changes this method’s result.
+
+## Example 44: Satisfy an Interface Implicitly
 
 _ex-44 · exercises co-15_
 
-Satisfy an Interface Implicitly is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-44-interface-implicit/main.go` so
-the page and runnable artifact cannot drift.
+A type satisfies an interface when its method set has the required method. Assigning the concrete value to the interface is where the compiler checks its method set. The code block is rendered from `learning/code/ex-44-interface-implicit/main.go`.
 
 ```go
-// => interface implicit: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => interface implicit: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => interface implicit: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Stringer interface{ String() string }
+type Stringer interface{ String() string } // => Requires exactly this method signature.
 
-// => interface implicit: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Release struct{ Name string }
+type Release struct{ Name string } // => Concrete type has no implements declaration.
 
-// => interface implicit: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func (release Release) String() string { return release.Name }
+func (release Release) String() string { return release.Name } // => Makes Release satisfy Stringer.
 
-// => interface implicit: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func printValue(value Stringer) { fmt.Println(value.String()) }
+func printValue(value Stringer) { fmt.Println(value.String()) } // => Calls through the interface.
 
-// => interface implicit: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { printValue(Release{Name: "ship"}) }
+func main() { printValue(Release{Name: "ship"}) } // => Output: ship.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The interface call prints `ship`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: A type satisfies an interface when its method set has the required method.
 
-### Example 45: Use Two Interface Implementations
+**Why it matters**: No `implements` declaration binds the concrete type to its consumer. That lets a consumer define the smallest behavior it needs, but a mismatch may first surface at assignment or call time during compilation. Check method names, signatures, and receiver kinds when the compiler reports missing implementation. Change the method signature and read the compile error.
+
+## Example 45: Use Two Interface Implementations
 
 _ex-45 · exercises co-15_
 
-Use Two Interface Implementations is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-45-interface-two-impls/main.go` so
-the page and runnable artifact cannot drift.
+Two concrete types can implement the same small interface independently. The caller makes the same method call on two different concrete implementations. The code block is rendered from `learning/code/ex-45-interface-two-impls/main.go`.
 
 ```go
-// => interface two impls: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => interface two impls: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => interface two impls: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Runner interface{ Run() string }
+type Runner interface{ Run() string } // => Both concrete types below satisfy this contract.
 
-// => interface two impls: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Check struct{}
+type Check struct{} // => Has no data fields; behavior comes from Run.
 
-func (Check) Run() string { return "checked" }
+func (Check) Run() string { return "checked" } // => First implementation's result.
 
-// => interface two impls: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Publish struct{}
+type Publish struct{} // => Second empty type with different Run behavior.
 
-func (Publish) Run() string { return "published" }
+func (Publish) Run() string { return "published" } // => Second implementation's result.
 
-// => interface two impls: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  for _, runner := range []Runner{Check{}, Publish{}} {
-    fmt.Println(runner.Run())
-  }
+func main() { // => Calls two implementations through one interface slice.
+	for _, runner := range []Runner{Check{}, Publish{}} { // => Interface slice preserves this order.
+		fmt.Println(runner.Run()) // => Prints checked, then published.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: Their calls print `checked` and `published`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: Two concrete types can implement the same small interface independently.
 
-### Example 46: Store Values in any
+**Why it matters**: An interface is valuable when a caller truly accepts interchangeable behavior, such as real and test implementations. Each type can keep its own state and logic. Avoid introducing an interface merely because one type has a method; let the consuming code’s need establish the abstraction. Add a third implementation without changing the caller.
+
+## Example 46: Store Values in any
 
 _ex-46 · exercises co-15_
 
-Store Values in any is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-46-empty-interface-any/main.go` so
-the page and runnable artifact cannot drift.
+`any` is an alias for `interface{}` and can hold values of different concrete types. Each element retains its dynamic type even though the slice element type is `any`. The code block is rendered from `learning/code/ex-46-empty-interface-any/main.go`.
 
 ```go
-// => empty interface any: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => empty interface any: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => empty interface any: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  values := []any{"ship", 7, true}
-  for _, value := range values {
-    fmt.Printf("%T %v\n", value, value)
-  }
+func main() { // => Stores three concrete types behind any values.
+	values := []any{"ship", 7, true} // => Elements retain different dynamic types.
+	for _, value := range values {   // => Visits string, int, then bool.
+		fmt.Printf("%T %v\n", value, value) // => Prints each dynamic type and value.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The program reports `string ship`, `int 7`, and `bool true`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: `any` is an alias for `interface{}` and can hold values of different concrete types.
 
-### Example 47: Use a Safe Type Assertion
+**Why it matters**: The dynamic type remains present, but type-specific operations require inspection or assertion. This flexibility is useful at generic decoding or formatting boundaries; it sacrifices compile-time guarantees within that boundary. Prefer a concrete type or a generic function when the permitted value type is known. Try assigning each value to an `int` without an assertion.
+
+## Example 47: Use a Safe Type Assertion
 
 _ex-47 · exercises co-15_
 
-Use a Safe Type Assertion is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-47-type-assertion/main.go` so
-the page and runnable artifact cannot drift.
+The comma-ok type assertion reports a mismatch without panicking. A failed comma-ok assertion produces `false` instead of a panic. The code block is rendered from `learning/code/ex-47-type-assertion/main.go`.
 
 ```go
-// => type assertion: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => type assertion: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => type assertion: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  var value any = "ship"
-  name, ok := value.(string)
-  fmt.Println(name, ok)
-  _, ok = value.(int)
-  fmt.Println(ok)
+func main() { // => Tests a successful and an unsuccessful assertion.
+	var value any = "ship"     // => Dynamic type is string.
+	name, ok := value.(string) // => Matching assertion returns ship, true.
+	fmt.Println(name, ok)      // => Output: ship true.
+	_, ok = value.(int)        // => Mismatch returns zero int and false, no panic.
+	fmt.Println(ok)            // => Output: false.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The string assertion yields `ship true`; the other yields `false`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: The comma-ok type assertion reports a mismatch without panicking.
 
-### Example 48: Use a Type Switch
+**Why it matters**: A one-result assertion is appropriate only when the dynamic type is guaranteed. At uncertain boundaries, the second boolean gives a normal branch for another type. This avoids turning ordinary data variation into a panic and makes the caller state what it will do when the type differs. Replace comma-ok with one-result assertion and run the failing case.
+
+## Example 48: Use a Type Switch
 
 _ex-48 · exercises co-15_
 
-Use a Type Switch is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-48-type-switch/main.go` so
-the page and runnable artifact cannot drift.
+A type switch branches on the concrete type stored in an interface value. Each case narrows the interface value to the concrete type named in that branch. The code block is rendered from `learning/code/ex-48-type-switch/main.go`.
 
 ```go
-// => type switch: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => Type switching makes a dynamic any value explicit at its boundary.
-// => Each case below narrows the value before it is used.
-
-// => type switch: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => type switch: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func describe(value any) string {
-  switch item := value.(type) {
-  case string:
-    return "string " + item
-  case int:
-    return fmt.Sprintf("int %d", item)
-  default:
-    return "other"
-  }
+func describe(value any) string { // => Accepts values of different dynamic types.
+	switch item := value.(type) { // => Binds item at the type in each matching case.
+	case string: // => Item is a string in this branch.
+		return "string " + item // => "ship" becomes "string ship".
+	case int: // => Item is an int in this branch.
+		return fmt.Sprintf("int %d", item) // => 7 becomes "int 7".
+	default: // => No known case matched.
+		return "other" // => All unhandled dynamic types use this result.
+	}
 }
 
-// => type switch: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { fmt.Println(describe("ship"), describe(7)) }
+func main() { fmt.Println(describe("ship"), describe(7)) } // => Output: string ship int 7.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The two handled cases print `string ship` and `int 7`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: A type switch branches on the concrete type stored in an interface value.
 
-### Example 49: Check an Error Value
+**Why it matters**: Type switches are useful for a small known set of dynamic types, especially at a boundary that receives `any`. Include a default when other types can arrive. If the switch becomes long or repeated, consider whether an interface method or generic function better expresses the common operation. Add a boolean input and decide what the default should report.
+
+## Example 49: Check an Error Value
 
 _ex-49 · exercises co-16_
 
-Check an Error Value is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-49-error-value-check/main.go` so
-the page and runnable artifact cannot drift.
+The function returns an error for invalid input and the caller checks it. The invalid name is represented as an error result that the caller checks explicitly. The code block is rendered from `learning/code/ex-49-error-value-check/main.go`.
 
 ```go
-// => error value check: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => error value check: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import (
-  // => error value check: marks one deliberate step in the error value check example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "errors"
-  // => error value check: marks one deliberate step in the error value check example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "fmt"
-  // => error value check: marks one deliberate step in the error value check example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+	"errors"
+	"fmt"
 )
 
-// => error value check: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func open(name string) error {
-  if name == "" {
-    return errors.New("name is required")
-  }
-  return nil
+func open(name string) error { // => Returns only an error, no success value.
+	if name == "" { // => Empty input is the failure case.
+		return errors.New("name is required") // => Caller receives this error value.
+	}
+	return nil // => Nonempty name succeeds.
 }
 
-// => error value check: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  if err := open(""); err != nil {
-    fmt.Println(err)
-  }
+func main() { // => Calls the failure path to demonstrate explicit error handling.
+	if err := open(""); err != nil { // => Check the error before proceeding.
+		fmt.Println(err) // => Output: name is required.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The invalid name reports `name is required`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: The function returns an error for invalid input and the caller checks it.
 
-### Example 50: Create an Error
+**Why it matters**: Error values make expected failure visible in a function signature and at the call site. The caller can then recover, add context, or show a message instead of continuing with an invalid result. This pattern is used by file, parser, and network APIs throughout Go. Pass a valid name and observe that `open` returns only a nil error; this function has no value result.
+
+## Example 50: Create an Error
 
 _ex-50 · exercises co-16_
 
-Create an Error is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-50-errors-new/main.go` so
-the page and runnable artifact cannot drift.
+`errors.New` constructs a simple error with a fixed message. The constructed error value can be returned or wrapped by another function. The code block is rendered from `learning/code/ex-50-errors-new/main.go`.
 
 ```go
-// => errors new: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => errors new: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import (
-  // => errors new: marks one deliberate step in the errors new example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "errors"
-  // => errors new: marks one deliberate step in the errors new example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "fmt"
-  // => errors new: marks one deliberate step in the errors new example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+	"errors"
+	"fmt"
 )
 
-// => errors new: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { err := errors.New("release unavailable"); fmt.Println(err.Error()) }
+func main() { err := errors.New("release unavailable"); fmt.Println(err.Error()) } // => Prints release unavailable.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The error prints `release unavailable`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: `errors.New` constructs a simple error with a fixed message.
 
-### Example 51: Implement a Custom Error
+**Why it matters**: Messages explain failures to people, but callers should not parse the string to choose behavior. If callers need a stable category or structured details, use an error identity or type. Start with this form when the failure only needs to be reported or wrapped by the next layer. Change the message and see why string matching would be brittle.
+
+## Example 51: Implement a Custom Error
 
 _ex-51 · exercises co-16_
 
-Implement a Custom Error is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-51-custom-error-type/main.go` so
-the page and runnable artifact cannot drift.
+A custom type implements `error` with an `Error() string` method. The error message includes a status field supplied by the custom type. The code block is rendered from `learning/code/ex-51-custom-error-type/main.go`.
 
 ```go
-// => custom error type: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => custom error type: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => custom error type: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type StatusError struct{ Code int }
+type StatusError struct{ Code int } // => Carries the status for its message.
 
-// => custom error type: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func (err StatusError) Error() string { return fmt.Sprintf("status %d", err.Code) }
+func (err StatusError) Error() string { return fmt.Sprintf("status %d", err.Code) } // => Satisfies error.
 
-// => custom error type: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { var err error = StatusError{Code: 503}; fmt.Println(err) }
+func main() { var err error = StatusError{Code: 503}; fmt.Println(err) } // => Output: status 503.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The reported error includes `status 503`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: A custom type implements `error` with an `Error() string` method.
 
-### Example 52: Wrap an Error
+**Why it matters**: A structured error can expose data such as a status code without forcing callers to parse prose. Add such a type when a caller can act on that field, and keep its contract small. Later inspection through `errors.As` can recover the type after contextual wrapping. Change the status field and inspect the formatted message.
+
+## Example 52: Wrap an Error
 
 _ex-52 · exercises co-17_
 
-Wrap an Error is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-52-error-wrap-w/main.go` so
-the page and runnable artifact cannot drift.
+`fmt.Errorf` with `%w` wraps a cause while adding operation context. `%w` keeps the underlying cause available to callers that inspect the chain. The code block is rendered from `learning/code/ex-52-error-wrap-w/main.go`.
 
 ```go
-// => error wrap w: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => error wrap w: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import (
-  // => error wrap w: marks one deliberate step in the error wrap w example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "errors"
-  // => error wrap w: marks one deliberate step in the error wrap w example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "fmt"
-  // => error wrap w: marks one deliberate step in the error wrap w example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+	"errors"
+	"fmt"
 )
 
-// => error wrap w: marks one deliberate step in the error wrap w example.
-// => keeps the mechanism inspectable before it is composed with another concern.
-var ErrMissing = errors.New("missing")
+var ErrMissing = errors.New("missing") // => Sentinel retained inside wrapped error.
 
-// => error wrap w: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func load() error { return fmt.Errorf("load config: %w", ErrMissing) }
+func load() error { return fmt.Errorf("load config: %w", ErrMissing) } // => %w preserves unwrap behavior.
 
-// => error wrap w: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { err := load(); fmt.Println(errors.Unwrap(err)) }
+func main() { err := load(); fmt.Println(errors.Unwrap(err)) } // => Output: missing.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The wrapped cause remains discoverable as `missing`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: `fmt.Errorf` with `%w` wraps a cause while adding operation context.
 
-### Example 53: Inspect Wrapped Errors
+**Why it matters**: Wrapping tells the next caller which operation failed without destroying the original error identity. That is what makes `errors.Is` and `errors.As` useful through layers. Add context where meaning changes, rather than stacking nearly identical text at every function call. Replace `%w` with `%v` and test whether unwrapping still works. The wrapper remains inspectable by the caller.
+
+## Example 53: Inspect Wrapped Errors
 
 _ex-53 · exercises co-17_
 
-Inspect Wrapped Errors is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-53-errors-is-as/main.go` so
-the page and runnable artifact cannot drift.
+`errors.Is` checks an error identity; `errors.As` extracts a matching error type. Both operations follow wrappers to reach the original condition or structured details. The code block is rendered from `learning/code/ex-53-errors-is-as/main.go`.
 
 ```go
-// => errors is as: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => errors is as: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import (
-  // => errors is as: marks one deliberate step in the errors is as example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "errors"
-  // => errors is as: marks one deliberate step in the errors is as example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "fmt"
-  // => errors is as: marks one deliberate step in the errors is as example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+	"errors"
+	"fmt"
 )
 
-// => errors is as: marks one deliberate step in the errors is as example.
-// => keeps the mechanism inspectable before it is composed with another concern.
-var ErrMissing = errors.New("missing")
+var ErrMissing = errors.New("missing") // => Target for errors.Is.
 
-// => errors is as: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type StatusError struct{ Code int }
+type StatusError struct{ Code int } // => Target type for errors.As.
 
-// => errors is as: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func (err *StatusError) Error() string { return "status error" }
+func (err *StatusError) Error() string { return "status error" } // => Pointer implements error.
 
-// => errors is as: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  cause := &StatusError{Code: 503}
-  err := fmt.Errorf("wrapped: %w", cause)
-  var status *StatusError
-  fmt.Println(errors.Is(fmt.Errorf("wrapped: %w", ErrMissing), ErrMissing))
-  fmt.Println(errors.As(err, &status), status.Code)
+func main() { // => Compares a sentinel and extracts a wrapped concrete error.
+	cause := &StatusError{Code: 503}                                          // => Concrete cause carries code 503.
+	err := fmt.Errorf("wrapped: %w", cause)                                   // => Preserve cause in error chain.
+	var status *StatusError                                                   // => As writes matched pointer here.
+	fmt.Println(errors.Is(fmt.Errorf("wrapped: %w", ErrMissing), ErrMissing)) // => Output: true.
+	fmt.Println(errors.As(err, &status), status.Code)                         // => Output: true 503.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: Both checks print `true`, and the extracted status is `503`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: `errors.Is` checks an error identity; `errors.As` extracts a matching error type.
 
-### Example 54: Marshal Struct Tags
+**Why it matters**: An error can be wrapped several times before it reaches a caller that must choose a response. Direct equality or a direct type assertion may then miss the cause. Use `Is` or `As` when a real decision depends on identity or structured details, rather than comparing text. Add one more `%w` wrapper and repeat the checks.
+
+## Example 54: Marshal Struct Tags
 
 _ex-54 · exercises co-18_
 
-Marshal Struct Tags is a self-contained source slice. The code is rendered verbatim from `learning/code/ex-54-struct-tags-json/main.go` so
-the page and runnable artifact cannot drift.
+A JSON struct tag maps an exported Go field to a chosen wire name. The JSON key differs from the exported Go field, while the secret field is omitted. The code block is rendered from `learning/code/ex-54-struct-tags-json/main.go`.
 
 ```go
-// => struct tags json: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => struct tags json: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import (
-  // => struct tags json: marks one deliberate step in the struct tags json example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "encoding/json"
-  // => struct tags json: marks one deliberate step in the struct tags json example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "fmt"
-  // => struct tags json: marks one deliberate step in the struct tags json example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+	"encoding/json"
+	"fmt"
 )
 
-// => struct tags json: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type Release struct {
-  Name   string `json:"name"`
-  Secret string `json:"-"`
+type Release struct { // => Tags govern JSON field names and exclusion.
+	Name   string `json:"name"` // => Encodes under the lower-case JSON key.
+	Secret string `json:"-"`    // => Excluded from JSON even though exported.
 }
 
-// => struct tags json: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  bytes, _ := json.Marshal(Release{Name: "ship", Secret: "hidden"})
-  fmt.Println(string(bytes))
+func main() { // => Marshals a value containing one public and one hidden field.
+	bytes, err := json.Marshal(Release{Name: "ship", Secret: "hidden"}) // => Only Name enters JSON.
+	if err != nil {                                                     // => Marshal may fail for unsupported field values.
+		fmt.Println("encode failed:", err) // => Report the actual encoding error.
+		return                             // => Do not print unusable bytes.
+	}
+	fmt.Println(string(bytes)) // => Output: {"name":"ship"}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the stated Go value, interface, error, JSON, generic, concurrency, test,
-formatting, or cancellation rule is visible in the output.
+**Expected observation**: The JSON output is `{"name":"ship"}`.
 
-**Key takeaway**: keep the smallest useful Go mechanism explicit before composing it.
+**Key takeaway**: A JSON struct tag maps an exported Go field to a chosen wire name.
+
+**Why it matters**: Wire formats often use names that differ from exported Go identifiers. Tags make that relationship explicit and help preserve an external JSON contract while keeping readable Go fields. Remember that `encoding/json` ignores unexported fields; a tag alone cannot expose one. Remove the tag, then compare the resulting key name.
+The field remains exported within Go.

@@ -1,4 +1,10 @@
-// ex-71 · fsharp-example-71
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => task creates a Task<int>.
+let work = task {
+    // => The Task returns 42 as its integer result.
+    return 21 * 2
+}
+// => Awaiting through GetAwaiter is only for this standalone script.
+// => GetResult obtains the value for this standalone script.
+let answer = work.GetAwaiter().GetResult()
+// => This prints 42.
+printfn "%d" answer

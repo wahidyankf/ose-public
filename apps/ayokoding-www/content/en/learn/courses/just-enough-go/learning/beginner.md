@@ -8,1024 +8,738 @@ weight: 10
 Examples 1–26 establish Go's daily toolchain, executable package shape, modules, values, types,
 functions, control flow, and deterministic cleanup. Each source lives beside the rendered example.
 
-### Example 1: Hello World and Run
+## Example 1: Hello World and Run
 
 _ex-01 · exercises co-02, co-01_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-01-hello-world-run/main.go`.
+A `main` package and `main` function form an executable Go command; `fmt.Println` writes its first result. Run the file by name and notice that no separate build artifact remains in this directory. The code block is rendered from `learning/code/ex-01-hello-world-run/main.go`.
 
 ```go
-// => hello world run: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => hello world run: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => hello world run: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { fmt.Println("hello, Go") }
+func main() { fmt.Println("hello, Go") } // => Go starts this function when the command runs.; Output: hello, Go
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `hello, Go` appears on standard output.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: An executable Go program needs `package main` and `func main()`.
 
-### Example 2: Initialize a Module
+**Why it matters**: This is the smallest complete command you can run while learning the toolchain. Keep its package boundary and entry point in mind when a later example adds functions or imports: those additions still execute only because `main` calls them. Change the greeting, then run the file again to separate source edits from compiler or runtime behavior.
+
+## Example 2: Initialize a Module
 
 _ex-02 · exercises co-03, co-01_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-02-go-mod-init/main.go`.
+The `go.mod` beside this source names a module; `go mod init example/hello` would create that file in a new directory. The printed sentence is only a message; inspect `go.mod` to see the actual module declaration. The code block is rendered from `learning/code/ex-02-go-mod-init/main.go`.
 
 ```go
-// => go mod init: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => go mod init: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => go mod init: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // Run: go mod init example/hello
-  // That command writes go.mod; this program belongs to that module.
-  // => go mod init: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println("module example/hello is ready")
-  // => go mod init: marks one deliberate step in the go mod init example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => A module path is recorded in go.mod, outside this function.
+	// Run: go mod init example/hello
+	// That command writes go.mod; this program belongs to that module.
+	fmt.Println("module example/hello is ready") // => Output after the module already exists.
 }
 ```
 
-**Run**: `go run main.go` from this example directory.
+**Run**: inspect the colocated `go.mod`, then run `go run .`. To practice creating a module, copy `main.go` into a fresh directory there and run `go mod init example/hello` followed by `go run .`.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `module example/hello is ready` appears; inspect `go.mod` for the actual module path.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: A module path comes from `go.mod`, not from a print statement.
 
-### Example 3: Build a Binary
+**Why it matters**: Modules give related packages one import-path prefix and record the Go version and dependencies. The printed line is only a message: it does not create or validate a module. Compare it with `go.mod`, then try `go mod init` in an empty scratch directory to see which artifact the command really creates.
+
+## Example 3: Build a Binary
 
 _ex-03 · exercises co-01_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-03-go-build-binary/main.go`.
+`go build -o hello main.go` leaves an executable file; running the source with `go run` does not leave that named artifact. The companion script first builds `hello` and then executes that saved binary. The code block is rendered from `learning/code/ex-03-go-build-binary/main.go`.
 
 ```go
-// => go build binary: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => go build binary: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => go build binary: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // Build with: go build -o hello main.go
-  // The resulting hello executable can run without go run.
-  // => go build binary: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println("hello binary")
-  // => go build binary: marks one deliberate step in the go build binary example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => go build compiles this entry point into the named binary.
+	// Build with: go build -o hello main.go
+	// The resulting hello executable can run without go run.
+	fmt.Println("hello binary") // => Output when ./hello runs.
 }
 ```
 
-**Run**: `go run main.go` from this example directory.
+**Run**: `sh build.sh` from this example directory; it builds `hello` and runs that binary.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: the built `hello` binary prints `hello binary`.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Use `go build` when you need a binary to keep or distribute.
 
-### Example 4: Compare Run and Build
+**Why it matters**: The distinction matters when moving from a tutorial command to deployment or automation. `go run` is convenient for a quick check, while `go build` produces the executable you can test and ship. The program output cannot prove which command built it, so inspect the binary created by the companion build script.
+
+## Example 4: Compare Run and Build
 
 _ex-04 · exercises co-01_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-04-go-run-vs-build/main.go`.
+The source prints a reminder of the two command paths; the companion script demonstrates a persistent build artifact. Both paths compile the source, but only the build path leaves a named file to inspect. The code block is rendered from `learning/code/ex-04-go-run-vs-build/main.go`.
 
 ```go
-// => go run vs build: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => go run vs build: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => go run vs build: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // go run compiles and immediately executes a temporary program.
-  // go build leaves a named executable as the release artifact.
-  // => go run vs build: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println("compare go run . with go build -o hello")
-  // => go run vs build: marks one deliberate step in the go run vs build example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => The build script shows what each tool command leaves behind.
+	// go run compiles and immediately executes a temporary program.
+	// go build leaves a named executable as the release artifact.
+	fmt.Println("compare go run main.go with go build -o hello main.go") // => Program output is the same.
 }
 ```
 
-**Run**: `go run main.go` from this example directory.
+**Run**: `sh build.sh` from this example directory; it runs the source, builds `hello`, and checks that the binary exists.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `compare go run main.go with go build -o hello main.go` appears.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: `go run` executes a compiled temporary program; `go build` writes an executable.
 
-### Example 5: Use a Package and Import
+**Why it matters**: A command can produce the same application output through both paths, so observing stdout alone does not show how it was launched. Use this comparison to decide whether you need fast iteration or a retained artifact. The compiler still checks the same source in either case, but the workflow around the result differs.
+
+## Example 5: Use a Package and Import
 
 _ex-05 · exercises co-02_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-05-package-and-import/main.go`.
+The `greet` subpackage exports `Message`; `main` imports it by its module path and calls it. The capital M in `Message` makes the function callable from `main` across the package boundary. The code block is rendered from `learning/code/ex-05-package-and-import/main.go`.
 
 ```go
-// => package and import: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => package and import: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import (
-  // => package and import: marks one deliberate step in the package and import example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "fmt"
-  // => package and import: marks one deliberate step in the package and import example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "example/package-import/greet"
-  // => package and import: marks one deliberate step in the package and import example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+	"example/package-import/greet"
+	"fmt"
 )
 
-// => package and import: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // Imports are explicit; an unused import is a compile error.
-  // => package and import: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println(greet.Message("Go"))
-  // => package and import: marks one deliberate step in the package and import example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => The import path comes from go.mod plus the greet directory.
+	// Imports are explicit; an unused import is a compile error.
+	fmt.Println(greet.Message("Go")) // => Output: hello, Go
 }
 ```
 
 **Run**: `go run .` from this example directory; inspect `greet/greet.go` for the imported package.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `hello, Go` comes from the imported package.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: An import path joins the module path and subdirectory.
 
-### Example 6: Declare Variables
+**Why it matters**: Separating a reusable function into a package makes its boundary visible. The capital M in `Message` matters: lowercase names are unavailable to another package. This example is a useful bridge from one-file commands to multi-package programs, and it shows why an import must match the path declared in `go.mod`. The import path is part of that boundary.
+
+## Example 6: Declare Variables
 
 _ex-06 · exercises co-04_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-06-var-declaration/main.go`.
+A `var` declaration can state a type explicitly or let Go infer it from an initializer. The compiler checks that each initializer matches the type stated beside its variable. The code block is rendered from `learning/code/ex-06-var-declaration/main.go`.
 
 ```go
-// => var declaration: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => var declaration: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => var declaration: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { var name string = "Ada"; var year int = 2026; fmt.Println(name, year) }
+func main() { // => The explicit types are checked against their initializers.
+	var name string = "Ada" // => name is a string containing Ada.
+	var year int = 2026     // => year is an int containing 2026.
+	fmt.Println(name, year) // => Output: Ada 2026.
+}
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `Ada 2026` appears.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Use `var` when declaration form or an explicit type helps the reader.
 
-### Example 7: Use Short Variable Declarations
+**Why it matters**: Variable declarations are common at package scope and when a zero value is useful before assignment. In a function, an initializer can often provide the type without repeating it. Inspect the declarations here and identify which information is supplied by source text and which information the compiler infers. Each form communicates a slightly different intention.
+
+## Example 7: Use Short Variable Declarations
 
 _ex-07 · exercises co-04_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-07-short-var-decl/main.go`.
+The `:=` form declares and initializes variables inside a function from their right-hand values. `name` remains statically typed even though its declaration does not spell out `string`. The code block is rendered from `learning/code/ex-07-short-var-decl/main.go`.
 
 ```go
-// => short var decl: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => short var decl: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => short var decl: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { name := "Ada"; fmt.Printf("%s is %T\n", name, name) }
+func main() { // => Short declarations are legal inside functions.
+	name := "Ada"                        // => name has inferred type string.
+	fmt.Printf("%s is %T\n", name, name) // => Output: Ada is string.
+}
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `Ada is string` appears.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: `:=` declares a new local variable; it is not a general assignment operator.
 
-### Example 8: Inspect Zero Values
+**Why it matters**: Short declarations make local code concise without giving up compile-time types. They are restricted to function bodies and need at least one new variable on the left. Knowing that boundary prevents confusion when a similar-looking `=` updates an existing variable later in a function or in a loop. The compiler makes that distinction visible.
+
+## Example 8: Inspect Zero Values
 
 _ex-08 · exercises co-04_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-08-zero-values/main.go`.
+Declared values receive their type’s zero value before explicit assignment. The four outputs differ because each declared type has its own zero-value rule. The code block is rendered from `learning/code/ex-08-zero-values/main.go`.
 
 ```go
-// => zero values: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => zero values: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => zero values: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  var n int
-  var s string
-  var ok bool
-  var p *int
-  fmt.Printf("%d %q %t %v\n", n, s, ok, p)
+func main() { // => The declarations below begin with their type-specific zero values.
+	var n int                                // => n is 0 before assignment.
+	var s string                             // => s is the empty string before assignment.
+	var ok bool                              // => ok is false before assignment.
+	var p *int                               // => p is nil before it points at an integer.
+	fmt.Printf("%d %q %t %v\n", n, s, ok, p) // => Output: 0 "" false <nil>.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `0 "" false <nil>` shows zero values for an integer, string, bool, and pointer.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Zero values are defined by type; a nil pointer is not an empty object.
 
-### Example 9: Group Constants
+**Why it matters**: A Go declaration without an initializer is still usable for many ordinary values. Zero values reduce boilerplate for counters and flags, but a nil pointer or map may need initialization before use. Read the four outputs as different type-specific states, then decide which one can safely be read or updated.
+
+## Example 9: Group Constants
 
 _ex-09 · exercises co-05_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-09-const-block/main.go`.
+A grouped `const` declaration gives stable names to values used together. The names describe a fixed application label and port rather than anonymous literals at their use sites. The code block is rendered from `learning/code/ex-09-const-block/main.go`.
 
 ```go
-// => const block: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => const block: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => const block: marks one deliberate step in the const block example.
-// => keeps the mechanism inspectable before it is composed with another concern.
-const (
-  AppName     = "ship"
-  DefaultPort = 8080
+const ( // => Groups immutable application settings.
+	AppName     = "ship" // => AppName is an untyped string constant.
+	DefaultPort = 8080   // => DefaultPort is an untyped integer constant.
 )
 
-// => const block: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { fmt.Println(AppName, DefaultPort) }
+func main() { fmt.Println(AppName, DefaultPort) } // => Output: ship 8080.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `ship 8080` appears.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Constants name fixed values and are checked at compile time.
 
-### Example 10: Generate an Enum with iota
+**Why it matters**: Named constants make configuration-like literals easier to read and change consistently in source. They do not replace runtime configuration: a port that differs by environment should be read from outside the binary. Use this example to distinguish an immutable source-level value from a variable that a running program must receive.
+
+## Example 10: Generate an Enum with iota
 
 _ex-10 · exercises co-05_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-10-iota-enum/main.go`.
+`iota` supplies successive untyped integer constants inside one const group. The declarations share a const group, so `iota` advances once per specification. The code block is rendered from `learning/code/ex-10-iota-enum/main.go`.
 
 ```go
-// => iota enum: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => iota enum: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => iota enum: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type state int
+type state int // => state is a distinct named type whose underlying type is int.
 
-// => iota enum: marks one deliberate step in the iota enum example.
-// => keeps the mechanism inspectable before it is composed with another concern.
-const (
-  queued state = iota
-  running
-  done
+const ( // => iota resets to zero for this declaration group.
+	queued  state = iota // => queued is state(0), starting this const group.
+	running              // => The omitted expression repeats the prior specification with iota at 1.
+	done                 // => iota advances again, giving done the value 2.
 )
 
-// => iota enum: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { fmt.Println(queued, running, done) }
+func main() { fmt.Println(queued, running, done) } // => Output: 0 1 2.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `0 1 2` shows the successive values.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: `iota` restarts at zero for each const group.
 
-### Example 11: Convert Numeric Types
+**Why it matters**: This pattern is useful for a compact set of internal states, but the numeric values can become a compatibility concern if they are persisted or sent over a wire. Inserting a new line changes later values. Prefer explicit values whenever those numbers are part of an external contract. Review the values before exposing them externally.
+
+## Example 11: Convert Numeric Types
 
 _ex-11 · exercises co-06_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-11-int-float-types/main.go`.
+Go does not silently mix `int` and `float64`; the program converts before arithmetic. Go requires `float64(n)` before the integer can participate in floating-point multiplication. The code block is rendered from `learning/code/ex-11-int-float-types/main.go`.
 
 ```go
-// => int float types: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => int float types: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => int float types: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { n := 3; f := 2.5; fmt.Println(float64(n) * f) }
+func main() { // => Go needs an explicit conversion before multiplying unlike numeric types.
+	n := 3                      // => n has inferred type int.
+	f := 2.5                    // => f has inferred type float64.
+	fmt.Println(float64(n) * f) // => 3 becomes 3.0; output is 7.5.
+}
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `7.5` appears after converting `3` to `float64` and multiplying by `2.5`.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Convert numeric values explicitly when their types differ.
 
-### Example 12: Compare Bytes and Runes
+**Why it matters**: Explicit conversion makes the point where precision or range may change visible. That matters when a calculation combines counts, measurements, or parsed input. The conversion does not validate whether the number is suitable for the operation; it only changes its type according to Go’s conversion rules. The type checker makes this boundary explicit.
+
+## Example 12: Compare Bytes and Runes
 
 _ex-12 · exercises co-06_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-12-string-rune-byte/main.go`.
+A UTF-8 string has bytes, while a `rune` represents a Unicode code point. Compare byte length, decoded code point, and first byte for the same visible symbol. The code block is rendered from `learning/code/ex-12-string-rune-byte/main.go`.
 
 ```go
-// => string rune byte: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => string rune byte: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => string rune byte: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { s := "€"; fmt.Println(len(s), []rune(s), s[0]) }
+func main() { // => The euro sign occupies three bytes in UTF-8.
+	s := "€"                             // => One rune, stored as three UTF-8 bytes.
+	fmt.Println(len(s), []rune(s), s[0]) // => Output: 3 [8364] 226.
+}
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `3 [8364] 226` contrasts the euro sign’s byte length, code point, and first byte.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: String byte length and rune count answer different questions.
 
-### Example 13: Convert Explicitly
+**Why it matters**: Unicode text can look like one character while occupying several UTF-8 bytes. Indexing a string retrieves a byte, not a full code point; ranging decodes code points. This distinction matters for text validation, truncation, and indexing. Even rune count is not always the same as user-perceived character count. A code point may still span multiple display cells.
+
+## Example 13: Convert Explicitly
 
 _ex-13 · exercises co-06_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-13-type-conversion/main.go`.
+The explicit conversion changes a value from one numeric type to another. The two conversion expressions make the destination type visible at each step. The code block is rendered from `learning/code/ex-13-type-conversion/main.go`.
 
 ```go
-// => type conversion: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => type conversion: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => type conversion: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { n := 7; var wide int64 = int64(n); fmt.Println(float64(wide)) }
+func main() { // => Each conversion names its destination type.
+	n := 7                     // => n has inferred type int.
+	var wide int64 = int64(n)  // => wide is the same value in int64 form.
+	fmt.Println(float64(wide)) // => Output: 7 as a float64.
+}
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `7` appears in default float formatting after `int` → `int64` → `float64` conversion.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: The example converts `int` to `int64` and then to `float64`; it does not start with a fractional value.
 
-### Example 14: Use Boolean Short-Circuiting
+**Why it matters**: Go requires the programmer to state many conversions that other languages perform implicitly. That clarity helps reviewers notice where representation changes. Here the integer value `7` survives both conversions, even though the final value has type `float64`. Try a large integer and ask whether every integer can still be represented exactly as a float. Numeric conversion does not validate suitability for money or indexes.
+
+## Example 14: Use Boolean Short-Circuiting
 
 _ex-14 · exercises co-06_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-14-bool-and-comparison/main.go`.
+Boolean expressions use short-circuit evaluation, so a later operand is skipped when the result is already known. The skipped operand leaves the counter unchanged, exposing the short-circuit rule. The code block is rendered from `learning/code/ex-14-bool-and-comparison/main.go`.
 
 ```go
-// => bool and comparison: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => bool and comparison: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => bool and comparison: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  calls := 0
-  ready := false && func() bool { calls++; return true }()
-  fmt.Println(ready, calls)
+func main() { // => The function call in the right operand records whether it ran.
+	calls := 0                                               // => calls starts at zero.
+	ready := false && func() bool { calls++; return true }() // => false makes && skip the function call; ready stays false.
+	fmt.Println(ready, calls)                                // => Output: false 0, proving the right operand was skipped.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `false 0` shows the result and the unchanged counter.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Use short-circuiting to guard work that should occur only when an earlier condition permits it.
 
-### Example 15: Write a Basic Function
+**Why it matters**: A guard such as `value != nil && value.Ready()` relies on the second expression not running when the first is false. This example makes that control flow observable through a counter. Keep side effects in conditions modest so a reader can still tell which work happens and why. This guard prevents an unnecessary operation.
+
+## Example 15: Write a Basic Function
 
 _ex-15 · exercises co-07_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-15-func-basic/main.go`.
+The named function accepts typed arguments and returns a typed result. The function call supplies values for the parameters declared in its signature. The code block is rendered from `learning/code/ex-15-func-basic/main.go`.
 
 ```go
-// => func basic: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => func basic: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => func basic: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func twice(n int) int { return n * 2 }
-func main()           { fmt.Println(twice(4)) }
+func twice(n int) int { return n * 2 }          // => twice receives an int and returns twice that value.
+func main()           { fmt.Println(twice(4)) } // => twice(4) returns 8, which main prints.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `8` appears from the function call.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Function signatures make inputs and outputs explicit.
 
-### Example 16: Return a Value and Error
+**Why it matters**: A small function gives a repeated calculation a name and a testable boundary. Go requires types in its signature, allowing the compiler to reject unsuitable calls. Change one argument and predict the return value before rerunning; that is the foundation for later examples with multiple results and errors. The caller supplies every required argument.
+
+## Example 16: Return a Value and Error
 
 _ex-16 · exercises co-07_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-16-func-multiple-return/main.go`.
+The function returns both a useful value and an `error`, and the caller checks the error before using the value. The caller receives both results and can distinguish success from a recoverable failure. The code block is rendered from `learning/code/ex-16-func-multiple-return/main.go`.
 
 ```go
-// => func multiple return: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => func multiple return: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import (
-  // => func multiple return: marks one deliberate step in the func multiple return example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "errors"
-  // => func multiple return: marks one deliberate step in the func multiple return example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "fmt"
-  // => func multiple return: marks one deliberate step in the func multiple return example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+	"errors"
+	"fmt"
 )
 
-// => func multiple return: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func divide(a, b int) (int, error) {
-  if b == 0 {
-    return 0, errors.New("zero divisor")
-  }
-  return a / b, nil
+func divide(a, b int) (int, error) { // => The two return positions carry the quotient and failure status.
+	if b == 0 { // => Zero cannot be used as a divisor.
+		return 0, errors.New("zero divisor") // => On failure, return a placeholder quotient and non-nil error.
+	}
+	return a / b, nil // => On success, return integer division and nil error.
 }
 
-// => func multiple return: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { q, err := divide(8, 2); fmt.Println(q, err) }
+func main() { // => The caller handles the error before using q.
+	q, err := divide(8, 2) // => This call returns q=4 and err=nil.
+	if err != nil {        // => Only a failed call enters this branch.
+		fmt.Println("divide failed:", err) // => The failure branch reports the error instead of printing q.
+		return                             // => Stop main after reporting a failure.
+	}
+	fmt.Println(q) // => Output: 4 for the successful call.
+}
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `4` appears after the caller checks the nil error and prints the quotient.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Treat the error result as part of the function contract.
 
-### Example 17: Return Named Values
+**Why it matters**: A value plus error lets expected failures travel through ordinary control flow instead of a panic. The successful run shows only one branch; try an input that fails and verify the caller does not use an invalid result. This shape appears throughout Go’s standard library and later course examples. The nil error marks success; the caller checks it before using the quotient.
+
+## Example 17: Return Named Values
 
 _ex-17 · exercises co-07_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-17-named-return-values/main.go`.
+Named result parameters are initialized to zero values and can be assigned before an explicit return. The returned names are local variables initialized before the function body runs. The code block is rendered from `learning/code/ex-17-named-return-values/main.go`.
 
 ```go
-// => named return values: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => named return values: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => named return values: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func bounds(values []int) (small, large int) {
-  // => named return values: marks one deliberate step in the named return values example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  small, large = values[0], values[0]
-  // => named return values: uses Go’s single loop keyword for iteration.
-  // => keeps the loop state and termination condition local.
-  for _, value := range values {
-    // => named return values: makes the branch condition explicit rather than exceptional.
-    // => keeps success and failure control flow visible.
-    if value < small {
-      small = value
-    }
-    // => named return values: makes the branch condition explicit rather than exceptional.
-    // => keeps success and failure control flow visible.
-    if value > large {
-      large = value
-    }
-    // => named return values: marks one deliberate step in the named return values example.
-    // => keeps the mechanism inspectable before it is composed with another concern.
-  }
-  // => named return values: returns a value through Go’s ordinary control-flow mechanism.
-  // => keeps the caller responsible for the next decision.
-  return
-  // => named return values: marks one deliberate step in the named return values example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func bounds(values []int) (small, large int) { // => Named results start at zero and are local variables inside bounds.
+	small, large = values[0], values[0] // => Seed both bounds from the first element; this example requires a nonempty slice.
+	for _, value := range values {      // => Visit every candidate, including the first seeded value.
+		if value < small { // => A smaller candidate replaces the current minimum.
+			small = value // => small now holds the lowest value seen so far.
+		}
+		if value > large { // => A larger candidate replaces the current maximum.
+			large = value // => large now holds the highest value seen so far.
+		}
+	}
+	return // => Bare return sends the current small and large results to the caller.
 }
 
-// => named return values: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { fmt.Println(bounds([]int{3, 1, 4})) }
+func main() { fmt.Println(bounds([]int{3, 1, 4})) } // => Output: 1 4, in the same order as the named results.
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `1 4` shows both returned values.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Use named results only when their names clarify the return contract.
 
-### Example 18: Accept Variadic Arguments
+**Why it matters**: Named results can make several same-typed outputs easier to distinguish, especially in a short function. They also create local variables that a bare `return` would use. In longer functions, bare returns can hide which values leave the function, so this example uses the names to explain the mechanism rather than prescribe it everywhere.
+
+## Example 18: Accept Variadic Arguments
 
 _ex-18 · exercises co-07_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-18-variadic-func/main.go`.
+A variadic parameter collects zero or more arguments into a slice inside the function. Each call supplies a different number of values to the same typed variadic parameter. The code block is rendered from `learning/code/ex-18-variadic-func/main.go`.
 
 ```go
-// => variadic func: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => variadic func: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => variadic func: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func sum(values ...int) int {
-  // => variadic func: marks one deliberate step in the variadic func example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  total := 0
-  // => variadic func: uses Go’s single loop keyword for iteration.
-  // => keeps the loop state and termination condition local.
-  for _, value := range values {
-    total += value
-  }
-  // => variadic func: returns a value through Go’s ordinary control-flow mechanism.
-  // => keeps the caller responsible for the next decision.
-  return total
-  // => variadic func: marks one deliberate step in the variadic func example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func sum(values ...int) int { // => values is a []int inside sum, regardless of call argument count.
+	total := 0                     // => The running total starts at zero, so an empty call returns zero.
+	for _, value := range values { // => Visit each supplied integer once.
+		total += value // => Add the current element to the accumulated total.
+	}
+	return total // => Return the sum after all arguments have been consumed.
 }
 
-// => variadic func: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => variadic func: marks one deliberate step in the variadic func example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  values := []int{4, 5}
-  // => variadic func: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println(sum(1, 2, 3), sum(values...))
-  // => variadic func: marks one deliberate step in the variadic func example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => The two calls use direct arguments and a spread slice.
+	values := []int{4, 5}                     // => values is [4, 5] before expansion at the call site.
+	fmt.Println(sum(1, 2, 3), sum(values...)) // => Output: 6 9.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `6 9` shows calls with different argument counts.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Use `...T` when a function naturally accepts a variable number of values of one type.
 
-### Example 19: Scope a Value in an if
+**Why it matters**: Variadic calls are useful for aggregations and convenience APIs. Inside the function, the arguments are a slice, so normal slice operations apply. A caller can also expand an existing slice with `values...`; without the expansion, the call has a different shape and may fail to compile. The empty call also has a defined result.
+
+## Example 19: Scope a Value in an if
 
 _ex-19 · exercises co-08_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-19-if-with-init/main.go`.
+An `if` statement can initialize a local value whose scope includes the condition and its branches. The initialized value exists inside this decision and does not leak into later statements. The code block is rendered from `learning/code/ex-19-if-with-init/main.go`.
 
 ```go
-// => if with init: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => if with init: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import (
-  // => if with init: marks one deliberate step in the if with init example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "errors"
-  // => if with init: marks one deliberate step in the if with init example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  "fmt"
-  // => if with init: marks one deliberate step in the if with init example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+	"errors"
+	"fmt"
 )
 
-// => if with init: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func lookup(ok bool) (string, error) {
-  // => if with init: makes the branch condition explicit rather than exceptional.
-  // => keeps success and failure control flow visible.
-  if !ok {
-    return "", errors.New("missing")
-  }
-  // => if with init: returns a value through Go’s ordinary control-flow mechanism.
-  // => keeps the caller responsible for the next decision.
-  return "release", nil
-  // => if with init: marks one deliberate step in the if with init example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func lookup(ok bool) (string, error) { // => lookup returns either a name or an error, according to ok.
+	if !ok { // => false selects the missing-value path.
+		return "", errors.New("missing") // => The name is empty whenever the error is non-nil.
+	}
+	return "release", nil // => true returns the release name and a nil error.
 }
 
-// => if with init: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => if with init: makes the branch condition explicit rather than exceptional.
-  // => keeps success and failure control flow visible.
-  if name, err := lookup(true); err != nil {
-    fmt.Println(err)
-  } else {
-    fmt.Println(name)
-  }
-  // => if with init: marks one deliberate step in the if with init example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => main keeps name and err scoped to this one if statement.
+	if name, err := lookup(true); err != nil { // => lookup(true) initializes both values before err is tested.
+		fmt.Println(err) // => The failure branch would print the error.
+	} else { // => This branch runs only when err is nil.
+		fmt.Println(name) // => This run prints release from the success branch.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `release` appears for the chosen branch.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Use an `if` initializer to keep a short-lived value near its decision.
 
-### Example 20: Use a C-Style for Loop
+**Why it matters**: Narrow scope keeps later code from accidentally reusing a temporary value. This form is common when a call returns a value and error and the error only matters for the immediate branch. The variable still exists inside both branches, so choose names that make the condition easy to follow. This keeps the temporary out of later statements.
+
+## Example 20: Use a C-Style for Loop
 
 _ex-20 · exercises co-08_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-20-for-c-style/main.go`.
+A `for` loop can include an initializer, condition, and post statement. Trace initialization, condition, and increment to predict the three printed indexes. The code block is rendered from `learning/code/ex-20-for-c-style/main.go`.
 
 ```go
-// => for c style: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => for c style: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => for c style: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => for c style: uses Go’s single loop keyword for iteration.
-  // => keeps the loop state and termination condition local.
-  for i := 0; i < 3; i++ {
-    // => for c style: makes the observable result visible in stdout.
-    // => gives the learner a direct value to verify.
-    fmt.Println(i)
-    // => for c style: marks one deliberate step in the for c style example.
-    // => keeps the mechanism inspectable before it is composed with another concern.
-  }
-  // => for c style: marks one deliberate step in the for c style example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => main runs a counted loop and then exits.
+	for i := 0; i < 3; i++ { // => Start at zero, continue while i is below three, then increment.
+		fmt.Println(i) // => Output: 0, then 1, then 2 on separate lines.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `0`, `1`, and `2` appear on separate lines.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Go uses `for` for counted loops.
 
-### Example 21: Use a While-Style for Loop
+**Why it matters**: The three-part form is familiar from several languages, but Go has no separate `while` keyword. It suits a known iteration count or index progression. Check the initial value, termination comparison, and update together; an off-by-one error usually comes from one of those three pieces. The condition is checked before each iteration.
+
+## Example 21: Use a While-Style for Loop
 
 _ex-21 · exercises co-08_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-21-for-while-style/main.go`.
+A `for` loop can use only a condition, repeating while that condition remains true. The condition is checked again after each update, which ends the countdown at zero. The code block is rendered from `learning/code/ex-21-for-while-style/main.go`.
 
 ```go
-// => for while style: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => for while style: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => for while style: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => for while style: marks one deliberate step in the for while style example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  remaining := 3
-  // => for while style: uses Go’s single loop keyword for iteration.
-  // => keeps the loop state and termination condition local.
-  for remaining > 0 {
-    // => for while style: makes the observable result visible in stdout.
-    // => gives the learner a direct value to verify.
-    fmt.Println(remaining)
-    // => for while style: marks one deliberate step in the for while style example.
-    // => keeps the mechanism inspectable before it is composed with another concern.
-    remaining--
-    // => for while style: marks one deliberate step in the for while style example.
-    // => keeps the mechanism inspectable before it is composed with another concern.
-  }
-  // => for while style: marks one deliberate step in the for while style example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => main owns the countdown state.
+	remaining := 3      // => First printed value is three.
+	for remaining > 0 { // => The loop stops once remaining reaches zero.
+		fmt.Println(remaining) // => Print the current positive count.
+		remaining--            // => Decrement before the condition is checked again.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `3`, `2`, `1` appear before the value reaches zero.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: A condition-only `for` is Go’s while-style loop.
 
-### Example 22: Range over Collections
+**Why it matters**: This form works when termination depends on changing state rather than a fixed count. The body must make progress toward stopping or arrange an explicit `break` or cancellation path. Trace the changing variable here to see why the loop ends and which value is never printed. The final zero fails the condition.
+
+## Example 22: Range over Collections
 
 _ex-22 · exercises co-08_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-22-for-range/main.go`.
+`range` gives an index and value for a slice and can also iterate other collection types. The slice retains index order, and the loop receives each index with its value. The code block is rendered from `learning/code/ex-22-for-range/main.go`.
 
 ```go
-// => for range: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => for range: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => for range: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => for range: uses Go’s single loop keyword for iteration.
-  // => keeps the loop state and termination condition local.
-  for index, value := range []string{"go", "rust"} {
-    fmt.Println(index, value)
-  }
-  // => for range: uses Go’s single loop keyword for iteration.
-  // => keeps the loop state and termination condition local.
-  for key, value := range map[string]int{"ok": 1} {
-    fmt.Println(key, value)
-  }
-  // => for range: marks one deliberate step in the for range example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => main demonstrates range on a slice and a map.
+	for index, value := range []string{"go", "rust"} { // => Slice iteration yields indexes 0 and 1 with their values.
+		fmt.Println(index, value) // => Output: 0 go, then 1 rust.
+	}
+	for key, value := range map[string]int{"ok": 1} { // => Map iteration yields a key and value; order is unspecified for multiple keys.
+		fmt.Println(key, value) // => This one-entry map prints ok 1.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `0 go`, `1 rust`, then `ok 1` appear.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Choose only the `range` values you need; use `_` to discard one.
 
-### Example 23: Dispatch with switch
+**Why it matters**: Range loops express collection traversal without manual index bounds. For maps, iteration order is unspecified, while slices retain index order. This example uses a slice so its output is predictable. Recognizing the collection type matters before writing a test that assumes any particular iteration order. This loop keeps element order for slices.
+
+## Example 23: Dispatch with switch
 
 _ex-23 · exercises co-08_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-23-switch-statement/main.go`.
+A `switch` chooses one matching case and does not fall through by default. Only the matching branch runs unless the source explicitly requests fallthrough. The code block is rendered from `learning/code/ex-23-switch-statement/main.go`.
 
 ```go
-// => switch statement: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => switch statement: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => switch statement: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => switch statement: selects one explicit branch without implicit fallthrough.
-  // => keeps dispatch readable at the call site.
-  switch command := "check"; command {
-  // => switch statement: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  case "check":
-    fmt.Println("validating")
-  // => switch statement: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  case "publish":
-    fmt.Println("releasing")
-  // => switch statement: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  default:
-    fmt.Println("unknown")
-    // => switch statement: marks one deliberate step in the switch statement example.
-    // => keeps the mechanism inspectable before it is composed with another concern.
-  }
-  // => switch statement: marks one deliberate step in the switch statement example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => main selects a message for one command value.
+	switch command := "check"; command { // => command is scoped to the switch statement.
+	case "check": // => This case matches the current command.
+		fmt.Println("validating") // => Output: validating.
+	case "publish": // => This branch would run for publish, without fallthrough from check.
+		fmt.Println("releasing") // => Its output would be releasing.
+	default: // => Unknown commands use the fallback branch.
+		fmt.Println("unknown") // => Its output would be unknown.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `validating` appears for the selected case.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Use `switch` when several discrete cases describe one decision.
 
-### Example 24: Use a Conditionless switch
+**Why it matters**: Grouping related cases makes branching easier to scan than a long chain of `if` statements. Go stops after a matching case unless `fallthrough` is requested explicitly. Change the input to exercise a different branch and check whether a default case handles values you did not enumerate. An unmatched value may need an explicit default.
+
+## Example 24: Use a Conditionless switch
 
 _ex-24 · exercises co-08_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-24-switch-no-condition/main.go`.
+A conditionless `switch` evaluates boolean case expressions in order. The first true case wins when the cases are boolean expressions rather than values. The code block is rendered from `learning/code/ex-24-switch-no-condition/main.go`.
 
 ```go
-// => switch no condition: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => switch no condition: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => switch no condition: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => switch no condition: marks one deliberate step in the switch no condition example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  n := -2
-  // => switch no condition: selects one explicit branch without implicit fallthrough.
-  // => keeps dispatch readable at the call site.
-  switch {
-  // => switch no condition: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  case n > 0:
-    fmt.Println("positive")
-  // => switch no condition: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  case n < 0:
-    fmt.Println("negative")
-  // => switch no condition: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  default:
-    fmt.Println("zero")
-    // => switch no condition: marks one deliberate step in the switch no condition example.
-    // => keeps the mechanism inspectable before it is composed with another concern.
-  }
-  // => switch no condition: marks one deliberate step in the switch no condition example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => main evaluates ordered boolean cases against one integer.
+	n := -2  // => The negative value will match the second case.
+	switch { // => Without an expression after switch, each case is a condition.
+	case n > 0: // => This branch is skipped because -2 is not positive.
+		fmt.Println("positive") // => It would print positive for a value above zero.
+	case n < 0: // => This is the first true case for -2.
+		fmt.Println("negative") // => Output: negative.
+	default: // => Zero reaches this fallback.
+		fmt.Println("zero") // => It would print zero.
+	}
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `negative` appears for the first matching condition.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: A conditionless `switch` can replace a clear ordered `if` chain.
 
-### Example 25: Defer Cleanup
+**Why it matters**: This form is useful when cases are related predicates rather than equality checks against one value. Order still matters if conditions overlap: the first true case wins. Keep cases simple enough that readers can see precedence without simulating a complicated expression or hidden side effect. Put the most specific condition first.
+
+## Example 25: Defer Cleanup
 
 _ex-25 · exercises co-09_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-25-defer-basic/main.go`.
+`defer` schedules a call for execution when the surrounding function returns. Cleanup is registered before work and executes when the surrounding function returns. The code block is rendered from `learning/code/ex-25-defer-basic/main.go`.
 
 ```go
-// => defer basic: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => defer basic: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => defer basic: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func closeResource() { fmt.Println("cleanup") }
+func closeResource() { fmt.Println("cleanup") } // => The named cleanup function prints when it is called.
 
-// => defer basic: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => defer basic: marks one deliberate step in the defer basic example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
-  defer closeResource()
-  // => defer basic: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println("work")
-  // => defer basic: marks one deliberate step in the defer basic example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => main registers cleanup before doing work.
+	defer closeResource() // => Run closeResource when main returns.
+	fmt.Println("work")   // => Output first: work; deferred cleanup prints afterward.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `work` appears before `cleanup`.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Place cleanup after acquiring a resource so every later return executes it.
 
-### Example 26: Observe Defer LIFO Order
+**Why it matters**: A deferred close or unlock keeps cleanup tied to the function that owns a resource. The call is registered now and runs on return, including early returns. This example prints the order; later code must also handle errors from operations whose cleanup result matters, rather than silently discarding them. Defer runs after the body, before the caller resumes.
+
+## Example 26: Observe Defer LIFO Order
 
 _ex-26 · exercises co-09_
 
-This small program isolates the Go rule before later examples combine it with data structures,
-interfaces, errors, or concurrency. The code block is rendered verbatim from `learning/code/ex-26-defer-lifo-order/main.go`.
+Multiple deferred calls run in last-in, first-out order when the function returns. The final registered deferred call runs first, which reverses the declaration order. The code block is rendered from `learning/code/ex-26-defer-lifo-order/main.go`.
 
 ```go
-// => defer lifo order: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => defer lifo order: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => defer lifo order: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() {
-  // => defer lifo order: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  defer fmt.Println("first deferred")
-  // => defer lifo order: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  defer fmt.Println("second deferred")
-  // => defer lifo order: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  defer fmt.Println("third deferred")
-  // => defer lifo order: makes the observable result visible in stdout.
-  // => gives the learner a direct value to verify.
-  fmt.Println("body")
-  // => defer lifo order: marks one deliberate step in the defer lifo order example.
-  // => keeps the mechanism inspectable before it is composed with another concern.
+func main() { // => Deferred calls belong to the surrounding main function.
+	defer fmt.Println("first deferred")  // => Register the first call; it will run last.
+	defer fmt.Println("second deferred") // => Register the second call; it will run second.
+	defer fmt.Println("third deferred")  // => Register the third call; it will run first.
+	fmt.Println("body")                  // => Output body now, then third, second, first deferred.
 }
 ```
 
 **Run**: `go run main.go` from this example directory.
 
-**Expected observation**: the output demonstrates the stated language rule without relying on a
-previous example.
+**Expected observation**: `body`, then `third deferred`, `second deferred`, and `first deferred` appear.
 
-**Key takeaway**: Go favors a small, explicit surface that is easy to read and verify.
+**Key takeaway**: Defers form a stack within one function.
+
+**Why it matters**: Last-in, first-out execution matters when cleanup steps depend on each other, such as releasing nested resources or restoring temporary state. Read the registration order and predict the output before running it. Avoid making correctness depend on a long, surprising stack of deferred actions when straightforward code would be clearer.
+That order is visible in the printed trace.

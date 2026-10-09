@@ -1,3 +1,6 @@
-// ex-05 · fsharp-example-05
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => A dollar-prefixed string interpolates the name.
+let name = "Ayu"
+// => The expression inside braces supplies the value.
+let message = $"Hello, {name}!"
+// => The result is Hello, Ayu!.
+printfn "%s" message

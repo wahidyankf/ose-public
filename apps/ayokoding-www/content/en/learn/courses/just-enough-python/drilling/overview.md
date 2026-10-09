@@ -35,9 +35,10 @@ does it solve?
 <details>
 <summary>Answer</summary>
 
-An isolated, per-project Python interpreter and `pip` under `.venv/`. It solves dependency
-collision: without one, every project's packages install into one shared system Python, so two
-projects needing different versions of the same package cannot coexist.
+A per-project Python environment under `.venv/`, with its own interpreter path and package
+installation location. A typical CPython `venv` also bootstraps `pip`, when that component is
+available. The isolation lets projects install different versions of the same dependency without
+colliding in one shared environment.
 
 </details>
 
@@ -67,26 +68,26 @@ name.
 
 </details>
 
-**Q5 (co-05 -- primitive-types).** Name Python's five atomic value types.
+**Q5 (co-05 -- primitive-types).** Name four basic value types in this primer and the singleton
+value used to mean "no value."
 
 <details>
 <summary>Answer</summary>
 
-`int`, `float`, `str`, `bool`, and `None` -- each with its own literal syntax (`3`, `1.5`, `"x"`,
-`True`/`False`, `None`) and its own set of operators.
+`int`, `float`, `str`, and `bool` (for example `3`, `1.5`, `"x"`, and `True`). The singleton value
+`None` has type `NoneType`, which you can inspect with `type(None)`.
 
 </details>
 
-**Q6 (co-06 -- type-hints).** Do type hints change what a Python program does at runtime? What
-actually checks them?
+**Q6 (co-06 -- type-hints).** Do type hints enforce value types at runtime? What can inspect or
+check them?
 
 <details>
 <summary>Answer</summary>
 
-No -- type hints are pure documentation as far as `python3` is concerned; nothing about `x: int`
-stops you from later assigning a `str` to `x` at runtime (Example 84 proves this directly). A
-separate static type checker, `pyright`, reads the hints and reports mismatches without ever running
-the code.
+No. An annotation such as `x: int` does not stop a later assignment of a `str` at runtime
+(Example 84 shows this). Annotations are metadata that runtime tools can inspect. A separate
+static type checker such as `pyright` reads them and reports mismatches without running the code.
 
 </details>
 
@@ -96,8 +97,8 @@ the code.
 <summary>Answer</summary>
 
 `//` is floor division -- it discards the remainder and always rounds toward negative infinity,
-returning an `int` when both operands are `int`. `/` is true division and always returns a `float`,
-even when the operands divide evenly.
+returning an `int` when both operands are `int`. For two `int` operands, `/` is true division and
+returns a `float`, even when they divide evenly.
 
 </details>
 
@@ -165,7 +166,8 @@ one-liner to reverse any sequence?
 <summary>Answer</summary>
 
 No -- `stop` is always exclusive in a slice, so `nums[1:4]` returns indices `1, 2, 3` only.
-`nums[::-1]` (empty start, empty stop, step `-1`) reverses any sequence -- list, tuple, or string.
+`nums[::-1]` (empty start, empty stop, step `-1`) reverses common sliceable sequences such as a
+list, tuple, or string.
 
 </details>
 

@@ -1,4 +1,11 @@
-// ex-35 · generic-method · co-13
-import java.util.List;
-public final class Example35 { static <T> T first(List<? extends T> values){ return values.get(0); } public static void main(String[] args){ System.out.println(first(List.of("safe"))); } }
-
+public final class Example35 {
+    static <T> T choose(T first, T second, boolean useFirst) {
+        // => The type variable relates both arguments to the return type.
+        return useFirst ? first : second; // => result and arguments share T
+        // => True selects first; false selects second.
+    }
+    public static void main(String[] args) {
+        System.out.println(choose("left", "right", true)); // => left
+        // => String is inferred for T at this call.
+    }
+}

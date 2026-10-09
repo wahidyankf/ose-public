@@ -1,4 +1,14 @@
-// ex-43 · stream-collect-list · co-19
 import java.util.List;
-public final class Example43 { public static void main(String[] args){ var result=List.of(1,2,2,3).stream().filter(value -> value > 1).map(value -> value * 10).distinct().toList(); System.out.println(result); } }
-
+import java.util.stream.Collectors;
+public final class Example43 {
+    public static void main(String[] args) {
+        List<String> result = List.of("a", "b").stream() // => The input holds two lowercase strings.
+        // => The source list itself is unmodifiable.
+                .map(String::toUpperCase).collect(Collectors.toList()); // => The collected list holds A and B and can be mutated here.
+                // => The method reference produces A, then B.
+        result.add("C"); // => The mutable result now holds A, B, C.
+        // => This mutation is on the collected result, not the source.
+        System.out.println(result); // => [A, B, C]
+        // => C appears after the two mapped elements.
+    }
+}

@@ -1,4 +1,8 @@
-// ex-63 · fsharp-example-63
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => The record carries a name and a score.
+type Player = { Name: string; Score: int }
+// => Budi’s score of 10 is higher than Ayu’s 8.
+let players = [{ Name = "Ayu"; Score = 8 }; { Name = "Budi"; Score = 10 }]
+// => sortByDescending chooses Score as the key.
+let ranked = players |> List.sortByDescending (fun player -> player.Score)
+// => Budi appears first.
+printfn "%s" ranked.Head.Name

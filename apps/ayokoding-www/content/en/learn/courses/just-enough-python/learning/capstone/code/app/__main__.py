@@ -24,7 +24,7 @@ from app.transform import (
 )
 
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Summarize an inventory JSON file's total value per item."
     )
@@ -36,29 +36,47 @@ def main() -> None:
     input_path = Path(args.input)
     output_path = Path(args.output)
 
-    # `with` guarantees the file closes (Example 52's pattern).
-    with input_path.open() as f:
-        # Example 58's json.load pattern -- reads the whole file as one JSON value.
-        records: list[InventoryRecord] = json.load(f)
+    try:
+        # json.load returns untrusted data; a type hint alone cannot validate it.
+        with input_path.open(encoding="utf-8") as f:
+            raw_records: object = json.load(f)
+    except OSError as err:
+        print(f"cannot read input: {err}", file=sys.stderr)
+        return 1
+    except json.JSONDecodeError as err:
+        print(f"invalid JSON: {err.msg} at line {err.lineno}", file=sys.stderr)
+        return 1
+    except UnicodeError as err:
+        print(f"cannot decode input: {err}", file=sys.stderr)
+        return 1
 
     try:
-        validate_records(records)
+        records: list[InventoryRecord] = validate_records(raw_records)
+        summary = summarize(records)
+        payload = {"items": summary, "grand_total": grand_total(summary)}
+        # Strict JSON rejects NaN and Infinity before opening the output file.
+        serialized = json.dumps(payload, allow_nan=False)
     except InvalidRecordError as err:
         # Example 65's custom-exception-class pattern: a clean message, not a raw traceback.
         print(f"invalid inventory data: {err}", file=sys.stderr)
-        sys.exit(1)  # a distinct, deliberate non-zero exit code for bad input
+        return 1
+    except ValueError as err:
+        print(f"invalid inventory data: {err}", file=sys.stderr)
+        return 1
 
-    summary = summarize(records)
-    payload = {"items": summary, "grand_total": grand_total(summary)}
-
-    with output_path.open("w") as f:
-        json.dump(payload, f)  # Example 57's json.dump-to-file pattern
+    try:
+        with output_path.open("w", encoding="utf-8") as f:
+            f.write(serialized)
+    except OSError as err:
+        print(f"cannot write output: {err}", file=sys.stderr)
+        return 1
 
     # Echoes the same payload to stdout for the caller to see.
-    print(json.dumps(payload))
+    print(serialized)
+    return 0
 
 
 # Example 46's guard -- app.__main__ only runs main() when invoked directly
 # (e.g. via `python3 -m app`), never when merely imported.
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

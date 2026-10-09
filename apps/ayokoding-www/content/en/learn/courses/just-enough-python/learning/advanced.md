@@ -13,12 +13,13 @@ from inside its own directory unless a caption says otherwise.
 
 ---
 
-### Example 61: argparse CLI with a Positional Argument
+## Example 61: argparse CLI with a Positional Argument
 
 _ex-61 &middot; exercises co-20_
 
 `argparse` is the standard library's CLI-argument parser -- `add_argument("name", ...)` with no
 leading dashes declares a **required positional** argument.
+Without a name argument the parser rejects the call; with Ada it prints a greeting.
 
 **`learning/code/ex-61-argparse-cli/cli.py`**
 
@@ -55,16 +56,19 @@ string the caller passed as the first positional argument.
 
 **Why it matters**: `argparse` is the standard-library default for building command-line tools --
 every later CLI in this primer (Examples 62-63, 81) builds directly on this same
-`ArgumentParser`/`add_argument`/`parse_args` shape.
+`ArgumentParser`/`add_argument`/`parse_args` shape. The parser turns raw command-line text into a
+named argument value and provides a usage error when the required value is missing. Test both paths
+before treating a CLI as finished.
 
 ---
 
-### Example 62: argparse Optional `store_true` Flag
+## Example 62: argparse Optional `store_true` Flag
 
 _ex-62 &middot; exercises co-20_
 
 `action="store_true"` declares an optional boolean flag -- present on the command line means `True`,
 absent means `False`, and no value needs to follow it.
+The flag changes whether the greeting is uppercased without requiring a value after the flag.
 
 **`learning/code/ex-62-argparse-optional-flag/cli.py`**
 
@@ -84,7 +88,7 @@ def main() -> None:  # => defines the entry point, called only when run directly
         "--upper",  # => the flag's name -- accessed later as args.upper
         action="store_true",  # => present -> True, absent -> False; no value needed
         help="uppercase the greeting",  # => shown in --help output
-    )  # => closes add_argument(...)
+    )  # => finishes defining the optional flag
     args = parser.parse_args()  # => parses sys.argv, matching --upper if present
     message = f"Hello, {args.name}"  # => the base greeting, before any uppercasing
     print(message.upper() if args.upper else message)  # => branches on the flag
@@ -108,35 +112,40 @@ HELLO, ADA
 
 **Why it matters**: `store_true`/`store_false` cover the overwhelming majority of real CLI flags
 (`--verbose`, `--dry-run`, `--force`) -- most command-line tools have far more boolean switches than
-value-taking options.
+value-taking options. A boolean switch should change one clear behavior without requiring the user
+to spell `true` or `false`. Run with and without the flag to verify its default.
 
 ---
 
-### Example 63: argparse `-h`/`--help`
+## Example 63: argparse `-h`/`--help`
 
 _ex-63 &middot; exercises co-20_
 
 `argparse` auto-generates a `-h`/`--help` flag for every parser -- no code needed to add it, and it
 prints a usage block built from the `description` and every `add_argument(..., help=...)` call.
+Requesting help prints usage text and exits before a required name is parsed.
 
 **`learning/code/ex-63-argparse-help/cli.py`**
 
 ```python
 """Example 63: argparse -h/--help."""
+# => The help flag exits before a positional name is required.
 
 import argparse  # => imports the standard-library CLI-parsing module
 
 
 def main() -> None:  # => defines the entry point, called only when run directly
     # prog fixes the shown program name, regardless of the real filename.
-    parser = argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(  # => parser names the command and help description
         prog="cli.py",  # => overrides sys.argv[0] in the usage/help text
         description="Greet someone by name.",  # => shown at the top of --help output
-    )  # => closes ArgumentParser(...)
-    parser.add_argument("name", type=str, help="the name to greet")
+    )  # => parser now has its program name and help description
+    parser.add_argument(
+        "name", type=str, help="the name to greet"
+    )  # => requires a positional name argument
     # argparse auto-generates -h/--help -- no code needed for it.
     # parse_args() itself exits before returning if -h/--help was passed.
-    args = parser.parse_args()
+    args = parser.parse_args()  # => normal invocation supplies the parsed name
     print(f"Hello, {args.name}")  # => prints the greeting using the parsed name
 
 
@@ -168,17 +177,20 @@ considered successful execution, not a failure.
 
 **Why it matters**: Every `add_argument(..., help="...")` string you write becomes part of this
 auto-generated usage block -- writing a clear `help=` string for every argument is effectively free
-documentation your CLI's users see without you writing a separate `--help` handler.
+documentation your CLI's users see without you writing a separate `--help` handler. The generated
+help also includes positional names and option defaults, so the parser definition becomes part of
+the user interface. Keep those words accurate as behavior changes.
 
 ---
 
-### Example 64: Multi-Module Package
+## Example 64: Multi-Module Package
 
 _ex-64 &middot; exercises co-20_
 
 A directory with an `__init__.py` is a Python **package** -- `__main__.py` inside it is the file
 `python3 -m <package>` runs automatically, and modules within the package import each other with a
 plain `from app.util import ...`.
+Running `python3 -m app` finds the package entry point and prints its helper-produced greeting.
 
 **`learning/code/ex-64-multi-module-package/app/__init__.py`**
 
@@ -227,16 +239,19 @@ itself a package with a `__main__.py`).
 
 **Why it matters**: This exact three-file shape (`__init__.py`, a logic module, `__main__.py`) is
 the minimal, complete pattern the capstone scales up: one `app/` package with `transform.py` and
-`__main__.py`, run the identical way with `python3 -m app`.
+`__main__.py`, run the identical way with `python3 -m app`. The `__main__.py` file provides a
+package entry point while ordinary modules hold reusable logic. Importing the package and running it
+with `-m` exercise different paths.
 
 ---
 
-### Example 65: Custom Exception Class
+## Example 65: Custom Exception Class
 
 _ex-65 &middot; exercises co-21, co-24_
 
 Subclassing the built-in `Exception` class creates a brand-new, specific exception type -- combining
 Example 59's class syntax with Example 48's `try`/`except` handling.
+The validation failure can be caught by its dedicated type and reported with a clear message.
 
 **`learning/code/ex-65-custom-exception-class/example.py`**
 
@@ -278,31 +293,35 @@ exception type -- `f"{err}"` automatically renders whatever message string was p
 `InvalidInputError(...)`.
 
 **Why it matters**: A custom exception class documents intent far better than reusing a generic
-`ValueError` for every failure mode -- catching `except InvalidInputError:` specifically (rather than
-`except ValueError:`) tells a reader exactly which failure this handler is designed for, and the
-capstone's own input-validation path raises a custom exception for exactly this reason.
+`ValueError` for every failure mode -- catching `except InvalidInputError:` specifically (rather
+than `except ValueError:`) tells a reader exactly which failure this handler is designed for, and
+the capstone's own input-validation path raises a custom exception for exactly this reason.
 
 ---
 
-### Example 66: Re-raise With Context (`raise ... from err`)
+## Example 66: Re-raise With Context (`raise ... from err`)
 
 _ex-66 &middot; exercises co-21_
 
 `raise NewError(...) from original_err` chains one exception into another's traceback -- the reader
 sees both the root cause and the higher-level error it triggered, in order.
+The raised runtime error retains the original conversion error as its explicit cause.
 
 **`learning/code/ex-66-reraise-with-context/example.py`**
 
 ```python
 """Example 66: Re-raise With Context (`raise ... from err`)."""
+# => The uncaught traceback retains the original conversion failure.
 
 
 # Defines load_config, which converts raw or raises with the original error chained.
-def load_config(raw: str) -> int:
+def load_config(raw: str) -> int:  # => conversion returns an int or raises
     try:  # => wraps the conversion so a ValueError can be re-raised as a RuntimeError
         return int(raw)  # => raises ValueError here when raw isn't numeric
     except ValueError as err:  # => catches the ORIGINAL exception to chain it below
-        raise RuntimeError("config value must be an integer") from err
+        raise RuntimeError(
+            "config value must be an integer"
+        ) from err  # => new RuntimeError retains the ValueError as its cause
         # => `from err` chains the ORIGINAL exception into the new one's traceback
 
 
@@ -341,16 +360,18 @@ accidental rather than a deliberate chain.
 **Why it matters**: Wrapping a low-level exception (`ValueError: invalid literal for int()...`) in a
 higher-level, more meaningful one (`RuntimeError: config value must be an integer`) is a common,
 useful pattern -- `from err` is what keeps the original diagnostic detail visible instead of losing
-it.
+it. The exception chain lets a debugger see both the domain-level message and the conversion error
+that caused it. Avoid replacing an error with vague text that discards the cause.
 
 ---
 
-### Example 67: dataclass
+## Example 67: dataclass
 
 _ex-67 &middot; exercises co-24, co-06_
 
 `@dataclass` auto-generates `__init__` and `__repr__` from a class's annotated fields -- Example 59's
 `__init__` and Example 60's `__repr__`, both written for free.
+The generated representation prints the two annotated coordinates without a hand-written method.
 
 **`learning/code/ex-67-dataclass/example.py`**
 
@@ -383,31 +404,36 @@ Point(x=1, y=2)
 constructor and `__repr__` from them.
 
 **Why it matters**: This is the same `Point` class from Examples 59-60, four lines shorter --
-`@dataclass` is the idiomatic Python shortcut whenever a class is mostly typed data with little or no
-custom behavior, which describes a large share of real-world classes.
+`@dataclass` is the idiomatic Python shortcut whenever a class is mostly typed data with little or
+no custom behavior, which describes a large share of real-world classes. Generated methods such as
+`__init__` and `__repr__` reduce boilerplate, but the declared fields remain the contract. Add
+custom behavior only when the data type actually needs it.
 
 ---
 
-### Example 68: Typed Signatures, ruff-clean
+## Example 68: Typed Signatures, ruff-clean
 
 _ex-68 &middot; exercises co-06, co-03_
 
 `str | None` (PEP 604) is the modern union-type syntax, replacing the older `Optional[str]` spelling
 -- this example's whole point is that `ruff check` reports zero findings against it.
+When the separator is omitted, `join_names` inserts a comma and space between Ada and Grace.
 
 **`learning/code/ex-68-typed-signatures-ruff-clean/example.py`**
 
 ```python
 """Example 68: Typed Signatures, ruff-clean."""
 
+# => The default separator puts comma and space between Ada and Grace.
+
 # Defers annotation evaluation (not needed on 3.14, kept here for portability).
-from __future__ import annotations
+from __future__ import annotations  # => defers evaluation on older Python
 
 
 # `str | None` (PEP 604) is the modern spelling of `Optional[str]`.
-def join_names(names: list[str], sep: str | None = None) -> str:
+def join_names(names: list[str], sep: str | None = None) -> str:  # => joins names
     # sep defaults to ", " when the caller omits it or passes None explicitly.
-    separator = sep if sep is not None else ", "
+    separator = sep if sep is not None else ", "  # => None uses comma-space
     return separator.join(names)  # => joins names using the resolved separator
 
 
@@ -429,22 +455,26 @@ Ada, Grace
 All checks passed!
 ```
 
-**Key takeaway**: `sep: str | None = None` combined with `sep if sep is not None else ", "` is the
-idiomatic "optional string parameter with a real default" pattern -- `ruff check` confirms the
-signature and its usage are clean by every rule in its default rule set.
+**Key takeaway**: `sep: str | None = None` combined with `sep if sep is not None else ", "` gives
+the optional parameter a concrete value before use. `ruff check` reports no selected lint finding
+in this file; a type checker answers a separate question.
 
-**Why it matters**: A "clean" example in this primer means both `ruff check` (linting) and, later,
-`pyright` (type checking, Examples 83-84) pass -- two distinct, complementary quality gates this
-entire book holds every example to (DD-39).
+**Why it matters**: This file shows a passing Ruff lint check alongside an annotated function.
+Ruff's selected lint rules and Pyright's type analysis answer different questions, so neither
+passing result substitutes for the other. The primer also includes deliberate counterexamples:
+Example 5 leaves an unused import for Ruff to report, and Example 84 passes a wrong argument type
+for Pyright to report. Read each diagnostic as the point of that lesson, not as an unexplained
+failure of this example.
 
 ---
 
-### Example 69: Comprehension + JSON Transform
+## Example 69: Comprehension + JSON Transform
 
 _ex-69 &middot; exercises co-14, co-23_
 
 A list comprehension reshaping JSON-parsed data is one of the most common real Python scripts: read
 JSON, transform each record, write JSON back out.
+The output file receives uppercase copies of the names while the input file remains unchanged.
 
 **`learning/code/ex-69-comprehension-json-transform/people.json`**
 
@@ -456,6 +486,7 @@ JSON, transform each record, write JSON back out.
 
 ```python
 """Example 69: Comprehension + JSON Transform."""
+# => The output file contains uppercase copies of the three names.
 
 import json  # => imports the standard-library json module
 
@@ -463,15 +494,17 @@ with open("people.json") as f:  # => opens the source data file for reading
     people: list[dict[str, str]] = json.load(f)  # => a list of {"name": ...} records
 
 # Builds a NEW list -- the original `people` list is untouched.
-uppercased: list[dict[str, str]] = [{"name": p["name"].upper()} for p in people]
+uppercased: list[dict[str, str]] = [
+    {"name": p["name"].upper()} for p in people
+]  # => new records hold uppercase names without changing people
 
 # Writes the transformed list to a separate output file, not overwriting the source.
-with open("people_out.json", "w") as f:
+with open("people_out.json", "w") as f:  # => write mode creates a separate output file
     json.dump(uppercased, f)  # => serializes uppercased directly to the open file
 
 # Reopening proves the write actually landed on disk, not just in memory.
 with open("people_out.json") as f:  # => reopens the file just written, to verify it
-    print(json.load(f))
+    print(json.load(f))  # => prints records restored from the written JSON file
 # => Output: [{'name': 'ADA'}, {'name': 'GRACE'}, {'name': 'ALAN'}]
 ```
 
@@ -487,25 +520,30 @@ with open("people_out.json") as f:  # => reopens the file just written, to verif
 dicts -- the original `people` list (and its dicts) is never mutated.
 
 **Why it matters**: "Read JSON, comprehend/transform, write JSON" is the exact shape of the
-capstone's own pipeline (Example 72 does the filtering variant of this same shape) -- this three-step
-pattern covers a large share of real small-script data work.
+capstone's own pipeline (Example 72 does the filtering variant of this same shape) -- this
+three-step pattern covers a large share of real small-script data work. Keep the transformation
+separate from loading and saving so it can be tested with an in-memory value. The JSON boundary then
+becomes a small, observable shell.
 
 ---
 
-### Example 70: Generator Function with `yield`
+## Example 70: Generator Function with `yield`
 
 _ex-70 &middot; exercises co-14_
 
 A `def` containing `yield` becomes a generator **function** -- calling it doesn't run the body
 immediately; it returns an iterator that runs the body lazily, one `yield` at a time.
+Converting the returned iterator to a list requests each value and prints `[0, 1, 2]`.
 
 **`learning/code/ex-70-generator-function-yield/example.py`**
 
 ```python
 """Example 70: Generator Function with yield."""
 
+# => Collecting the iterator yields integers 0, 1, and 2.
+
 # Imports Iterator for typing the generator's return.
-from collections.abc import Iterator
+from collections.abc import Iterator  # => describes yielded int values
 
 
 def count_up_to(n: int) -> Iterator[int]:  # => a generator function -- contains yield
@@ -532,15 +570,18 @@ it's exhausted.
 **Why it matters**: A generator function is the `def`-based counterpart to Example 33's generator
 _expression_ -- both are lazy, but a generator function can hold arbitrarily complex logic (loops,
 conditionals, multiple `yield` points) that a single-expression generator expression cannot.
+Iteration resumes after each `yield`, so local state can carry from one item to the next. This makes
+a generator useful for a streaming transformation without constructing all results first.
 
 ---
 
-### Example 71: Custom Context Manager (`__enter__`/`__exit__`)
+## Example 71: Custom Context Manager (`__enter__`/`__exit__`)
 
 _ex-71 &middot; exercises co-24, co-22_
 
 Implementing `__enter__` and `__exit__` on a class makes it usable in a `with` block -- this is the
 exact protocol `open()` itself implements, made visible by writing one from scratch.
+The three printed lines show entry, body execution, and exit in that order.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
@@ -565,8 +606,10 @@ flowchart LR
 ```python
 """Example 71: Custom Context Manager (__enter__/__exit__)."""
 
+# => Normal block exit calls exit after the body print.
+
 # Imports the type used to annotate __exit__'s traceback argument.
-from types import TracebackType
+from types import TracebackType  # => types the optional traceback argument
 
 
 class Session:  # => defines a class implementing the context-manager protocol
@@ -576,7 +619,7 @@ class Session:  # => defines a class implementing the context-manager protocol
 
     # Runs when the `with` block exits, whether normally or via an exception.
     # All three exception args are None below, since the body raises nothing.
-    def __exit__(
+    def __exit__(  # => exit receives exception details after the body
         self,  # => the instance itself, bound automatically like any other method
         exc_type: type[BaseException] | None,  # => exception class, or None if no error
         exc_value: BaseException | None,  # => exception instance, or None if no error
@@ -605,16 +648,19 @@ body raises.
 
 **Why it matters**: Every `with open(...)` in Examples 52-54, 57-58 relies on `open()`'s own
 `__enter__`/`__exit__` implementation to guarantee the file closes -- writing `Session` here makes
-that previously-invisible mechanism concrete and inspectable.
+that previously-invisible mechanism concrete and inspectable. The context manager protocol defines
+what happens on entering and leaving the block, including when the body raises. Inspect both methods
+to see where acquisition and release belong.
 
 ---
 
-### Example 72: JSON File Roundtrip Pipeline
+## Example 72: JSON File Roundtrip Pipeline
 
 _ex-72 &middot; exercises co-22, co-23, co-14_
 
 Reading, filtering with a comprehension, and writing JSON back out -- the filtering sibling of
 Example 69's transforming pipeline.
+Only the two records with truthy `active` fields reach the written output.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
@@ -651,13 +697,15 @@ flowchart LR
 ```python
 """Example 72: JSON File Roundtrip Pipeline."""
 
+# => Only records with truthy active values reach the destination.
+
 import json  # => imports the standard-library json module
 
 with open("in.json") as f:  # => opens the source data file for reading
     records: list[dict[str, object]] = json.load(f)  # => 3 records, mixed active flags
 
 # Drops every record whose "active" field is falsy.
-kept: list[dict[str, object]] = [r for r in records if r["active"]]
+kept: list[dict[str, object]] = [r for r in records if r["active"]]  # => two kept
 
 with open("out.json", "w") as f:  # => opens the destination file for writing
     json.dump(kept, f)  # => serializes the filtered list directly to the open file
@@ -686,12 +734,13 @@ shape is known ahead of time.
 
 ---
 
-### Example 73: Uncaught Exception -> Non-zero Exit Code
+## Example 73: Uncaught Exception -> Non-zero Exit Code
 
 _ex-73 &middot; exercises co-21, co-01_
 
 An uncaught exception doesn't just print a traceback -- it also sets the process's exit code to
 non-zero, which is how shell scripts and CI pipelines detect that a Python program failed.
+The missing dictionary key leaves the exception uncaught, making the process report failure.
 
 **`learning/code/ex-73-exception-exit-code/crash.py`**
 
@@ -722,15 +771,18 @@ KeyError: 'missing'
 **Why it matters**: This is exactly the mechanism a shell script, a CI job, or a `Makefile` target
 relies on to know a Python program failed -- a non-zero exit code is the universal cross-language
 signal, and Python raises it automatically on any uncaught exception, with zero extra code required.
+Catch and convert an error only when the CLI can explain or recover from it. Otherwise the nonzero
+exit and traceback are more honest than silently printing success.
 
 ---
 
-### Example 74: pytest Unit Test
+## Example 74: pytest Unit Test
 
 _ex-74 &middot; exercises co-17_
 
 `pytest` discovers any function named `test_*` automatically -- no test-registration boilerplate, no
 base class to inherit from, just a bare `assert`.
+A simple addition assertion lets the test runner verify the function result automatically.
 
 **`learning/code/ex-74-pytest-unit-test/calc.py`**
 
@@ -771,19 +823,22 @@ def test_add() -> None:
 **Key takeaway**: `pytest` finds `test_add` purely by its `test_` name prefix -- no `@test` decorator
 or registry needed, and a bare `assert` is a complete, valid test body.
 
-**Why it matters**: `add()` here is a pure function -- same inputs always produce the same output, no
-side effects -- which is exactly what makes it trivial to test in isolation. This repo's own
+**Why it matters**: `add()` here is a pure function -- same inputs always produce the same output,
+no side effects -- which is exactly what makes it trivial to test in isolation. This repo's own
 functional-core convention prefers exactly this shape for testability, and the capstone's
-`transform.py` follows the identical pure-function-plus-`pytest`-test pattern.
+`transform.py` follows the identical pure-function-plus-`pytest`-test pattern. Add a second
+assertion for a boundary case to see how a named test records behavior. The test should fail if the
+function breaks, giving future changes a useful signal.
 
 ---
 
-### Example 75: pytest.raises
+## Example 75: pytest.raises
 
 _ex-75 &middot; exercises co-21_
 
 `pytest.raises(ExceptionType)` is a context manager that asserts a specific exception is raised
 inside its `with` block -- the test **passes** precisely because the exception happens.
+The test supplies zero, then passes because the function raises the expected `ValueError`.
 
 **`learning/code/ex-75-pytest-raises/validators.py`**
 
@@ -831,16 +886,19 @@ test would fail instead.
 
 **Why it matters**: Testing that a function correctly **rejects** bad input is just as important as
 testing that it accepts good input -- `pytest.raises` is the standard tool for that, and it appears
-again in the capstone's own test suite around its input-validation path.
+again in the capstone's own test suite around its input-validation path. A test expecting an
+exception also guards against a silent fallback that would hide invalid input. Match the exception
+type narrowly so a different defect does not accidentally satisfy it.
 
 ---
 
-### Example 76: Nested Dict Access with Chained `.get(...)`
+## Example 76: Nested Dict Access with Chained `.get(...)`
 
 _ex-76 &middot; exercises co-11_
 
 Chaining `.get(key, default)` calls navigates nested dicts safely -- no `KeyError` risk at any level,
 because each `.get()` falls back to its own default instead of raising.
+The absent `port` key selects the fallback string `8080` without raising `KeyError`.
 
 **`learning/code/ex-76-nested-dict-access/example.py`**
 
@@ -869,17 +927,20 @@ second `.get("port", "8080")` always has something safe to call `.get()` on, eve
 missing entirely.
 
 **Why it matters**: `config["server"]["port"]` would raise `KeyError` the moment either key is
-missing -- the chained-`.get()` pattern is the idiomatic way to read optional, possibly-absent nested
-configuration without wrapping every access in its own `try`/`except`.
+missing -- the chained-`.get()` pattern is the idiomatic way to read optional, possibly-absent
+nested configuration without wrapping every access in its own `try`/`except`. Choose defaults
+deliberately: a missing server object and a configured zero port may mean different things. Chained
+lookups are useful only when the chosen fallback matches the application rule.
 
 ---
 
-### Example 77: Sort Dicts by Key
+## Example 77: Sort Dicts by Key
 
 _ex-77 &middot; exercises co-19, co-11_
 
 `.sort(key=lambda d: d["field"])` sorts a list of dicts by one of their fields -- combining Example
 40's lambda-sort with dict indexing.
+Sorting by age moves Ada ahead of Grace and Alan before the loop prints them.
 
 **`learning/code/ex-77-sort-dicts-by-key/example.py`**
 
@@ -912,16 +973,19 @@ their `"age"` value -- the dicts themselves are unchanged, only their position i
 
 **Why it matters**: Sorting a list of dict-shaped records by one field is an extremely common
 real-world need (sort users by signup date, sort products by price) -- this exact `key=lambda d:
-d["field"]` shape is the idiomatic way to do it without writing a custom comparison function.
+d["field"]` shape is the idiomatic way to do it without writing a custom comparison function. The
+key function must return comparable values for every record. If a field may be missing, validate it
+first or define an explicit missing-value order.
 
 ---
 
-### Example 78: Counter Frequency
+## Example 78: Counter Frequency
 
 _ex-78 &middot; exercises co-20, co-11_
 
 `collections.Counter` tallies element frequencies in one pass; `.most_common(n)` returns the top `n`
 `(element, count)` pairs, most-frequent first.
+The repeated word Ada wins the tally with a count of three.
 
 **`learning/code/ex-78-counter-frequency/example.py`**
 
@@ -956,12 +1020,13 @@ types worth knowing exist before reaching for a hand-rolled loop.
 
 ---
 
-### Example 79: Enumerate File Lines
+## Example 79: Enumerate File Lines
 
 _ex-79 &middot; exercises co-16, co-22_
 
 Iterating an open file object directly yields it line by line; `enumerate(f, 1)` pairs each line
 with a 1-based line number, using `start=1` instead of the default `0`.
+The printed numbers start at one, and each source line keeps its original newline.
 
 **`learning/code/ex-79-enumerate-file-lines/notes.txt`**
 
@@ -976,11 +1041,13 @@ third note
 ```python
 """Example 79: Enumerate File Lines."""
 
+# => File lines retain their own newline when printed.
+
 with open("notes.txt") as f:  # => opens the file for reading (default mode "r")
     # start=1 -- files are usually numbered from line 1, not line 0.
     # enumerate() pairs each element with a running index, starting at 1 here.
-    for line_number, line in enumerate(f, 1):
-        print(f"{line_number}: {line}", end="")  # line already ends in \n
+    for line_number, line in enumerate(f, 1):  # => first line number is 1
+        print(f"{line_number}: {line}", end="")  # => no extra newline
 ```
 
 **Run**: `python3 example.py`
@@ -999,16 +1066,19 @@ without a manual counter.
 
 **Why it matters**: Iterating a file object directly (`for line in f:`) reads it lazily, one line at
 a time, without ever loading the whole file into memory -- unlike `f.read()` (Example 52), which
-loads everything at once. For large files, this distinction matters.
+loads everything at once. For large files, this distinction matters. The line number from
+`enumerate` gives each streamed record a location for errors or reports. Keep the file inside its
+context manager while iterating so the handle stays open.
 
 ---
 
-### Example 80: f-string Debug Specifier
+## Example 80: f-string Debug Specifier
 
 _ex-80 &middot; exercises co-08_
 
 A trailing `=` inside an f-string's `{}` (Python 3.8+) prints **both** the expression's source text
 and its value -- a fast, no-typing-required debugging tool.
+For `value` equal to 42, the debug form prints the literal text `value=42`.
 
 **`learning/code/ex-80-fstring-debug/example.py`**
 
@@ -1031,19 +1101,22 @@ value=42
 **Key takeaway**: `f"{value=}"` expands to `f"value={value!r}"` under the hood -- the literal source
 text `value` plus `=` plus the value itself, all from one `=` character added inside the braces.
 
-**Why it matters**: This works for **any** expression, not just a bare variable -- `f"{len(items)=}"`
-or `f"{a + b=}"` both print the full expression text alongside its value, which is often faster than
-writing a matching `print(f"a + b: {a + b}")` by hand for a quick debugging session.
+**Why it matters**: This works for **any** expression, not just a bare variable --
+`f"{len(items)=}"` or `f"{a + b=}"` both print the full expression text alongside its value, which
+is often faster than writing a matching `print(f"a + b: {a + b}")` by hand for a quick debugging
+session. The `=` form is useful during exploration because it shows both question and answer. Remove
+or replace ad hoc debug prints when they would leak data or clutter normal output.
 
 ---
 
-### Example 81: Fully-Typed CLI, JSON Roundtrip
+## Example 81: Fully-Typed CLI, JSON Roundtrip
 
 _ex-81 &middot; exercises co-06, co-20, co-23_
 
 This example combines nearly everything so far: a `TypedDict` for a precise JSON record shape, an
 `argparse` CLI with two positional arguments, and `pathlib.Path` for filesystem-safe read/write --
 all fully typed.
+The command doubles the JSON count while preserving the label in a separate output file.
 
 **`learning/code/ex-81-typed-cli-json-roundtrip/sample.json`**
 
@@ -1056,8 +1129,10 @@ all fully typed.
 ```python
 """Example 81: Fully-typed argparse CLI that reads, transforms, and writes JSON."""
 
+# => The CLI doubles count while preserving the label.
+
 # Defers annotation evaluation (portability, as in Example 68).
-from __future__ import annotations
+from __future__ import annotations  # => defers evaluation on older Python
 
 import argparse  # => imports the standard-library CLI-parsing module
 import json  # => imports the standard-library json module
@@ -1083,14 +1158,16 @@ def main() -> None:  # => defines the entry point, called only when run directly
     # description shows up at the top of the auto-generated --help text.
     parser = argparse.ArgumentParser(  # => creates the parser
         description="Double the count field in a JSON file.",  # => shown in --help
-    )  # => closes ArgumentParser(...)
-    parser.add_argument("input", type=str, help="path to the input JSON file")
-    # => a required positional argument -- the source file path
+    )  # => parser now has the CLI help description
     parser.add_argument(
+        "input", type=str, help="path to the input JSON file"
+    )  # => requires the source JSON path
+    # => a required positional argument -- the source file path
+    parser.add_argument(  # => adds a second positional argument for output
         "output",  # => the second required positional argument
         type=str,  # => argparse converts the raw string; str is a no-op conversion
-        help="path to write the transformed JSON file",
-    )  # => closes add_argument(...)
+        help="path to write the transformed JSON file",  # => help describes the destination path
+    )  # => finishes defining the required output path
     args = parser.parse_args()  # => args.input and args.output hold the two paths
 
     # Path gives filesystem-safe join/read/write methods.
@@ -1124,18 +1201,21 @@ if __name__ == "__main__":  # => True only when cli.py is run directly, not impo
 `pyright` wherever a `Record` is expected.
 
 **Why it matters**: This is the most complete example in the primer, and deliberately so -- it is a
-compressed preview of the capstone's own shape: `argparse` for input, `Path` for file access, a typed
-record shape, a pure transform function, and a JSON write-back, all in one small, fully-typed file.
+compressed preview of the capstone's own shape: `argparse` for input, `Path` for file access, a
+typed record shape, a pure transform function, and a JSON write-back, all in one small, fully-typed
+file. Each layer has a checkable responsibility: parse paths, transform a typed record, and write
+the result. Test the pure transformation separately from file behavior to isolate a failure.
 
 ---
 
-### Example 82: Module Docstring and `main()` Under the Guard
+## Example 82: Module Docstring and `main()` Under the Guard
 
 _ex-82 &middot; exercises co-20_
 
 A module's top-level string literal (before any other code) is its docstring -- accessible at
 `module.__doc__` -- and it survives being imported even when the `if __name__ == "__main__":` guard
 prevents `main()` from running.
+Importing the module exposes its docstring without running the guarded `main` function.
 
 **`learning/code/ex-82-module-docstring-and-main/app.py`**
 
@@ -1174,31 +1254,36 @@ guard behavior from Example 46, applied here to a module that also documents its
 
 **Why it matters**: `__doc__` is how `help(some_module)` in the REPL, and documentation-generation
 tools, extract a module's description automatically -- a top docstring is cheap, standard,
-machine-readable documentation for free.
+machine-readable documentation for free. Import the module to inspect `__doc__`, then run it
+directly to see the guarded output. Those two actions prove that documentation remains available
+without starting the program.
 
 ---
 
-### Example 83: pyright-Clean Pass
+## Example 83: pyright-Clean Pass
 
 _ex-83 &middot; exercises co-25, co-06_
 
 `pyright` reads a module's type hints and checks every call site against them, statically, without
 running any code -- this example's every local variable and function signature is fully annotated,
 and `pyright` reports zero findings.
+The typed calculation prints four widgets at 2.5 each as a total of 10.00.
 
 **`learning/code/ex-83-pyright-clean-pass/example.py`**
 
 ```python
 """Example 83: a fully type-annotated module -- pyright-clean."""
 
+# => Four widgets at 2.5 each total 10.00.
+
 
 # A fully typed pure function -- unit_price, quantity, and the return are all annotated.
-def total_price(unit_price: float, quantity: int) -> float:
+def total_price(unit_price: float, quantity: int) -> float:  # => returns float
     return unit_price * quantity  # => float * int -- Python promotes to float
 
 
 # Builds a one-line summary string from three typed arguments.
-def describe(name: str, price: float, quantity: int) -> str:
+def describe(name: str, price: float, quantity: int) -> str:  # => summary text
     # Every local has an explicit annotation.
     total: float = total_price(price, quantity)  # => calls the function above
     return f"{quantity}x {name} = {total:.2f}"  # => formats total to 2 decimal places
@@ -1226,19 +1311,24 @@ print(describe("widget", 2.5, 4))  # => Output: 4x widget = 10.00
 just a typed parameter -- `pyright` verifies this annotation matches what `total_price` actually
 returns.
 
-**Why it matters**: "pyright-clean" is the bar DD-39 holds every Python example in this book to --
-this example is what that bar looks like in practice: every parameter, every return type, and every
-local variable's declared type is honored throughout the file.
+**Why it matters**: This is a passing demonstration of static checking: Pyright reads the declared
+parameter, return, and local types and finds no mismatch in this file. A passing runtime result
+alone would not establish that property. Example 84 deliberately supplies a wrong argument type to
+show the diagnostic path, so it is an expected exception to a clean Pyright run. Compare the two
+files to see what information the annotations give the checker. The float price here illustrates
+typing and formatting; exact money calculations may need Python's
+[decimal type](https://docs.python.org/3/library/decimal.html).
 
 ---
 
-### Example 84: pyright Catches a Type Error
+## Example 84: pyright Catches a Type Error
 
 _ex-84 &middot; exercises co-25, co-06_
 
 This is the primer's single most important example about typing: passing a `str` where an `int` is
 annotated is a genuine bug `pyright` catches statically -- but `python3` itself never checks type
 hints at runtime, so the script still runs to completion.
+The runtime prints `3 3`, while the static checker rejects the mismatched argument type.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
@@ -1296,15 +1386,15 @@ happens to work correctly whether `label` is already a `str` or an `int`.
 1 error, 0 warnings, 0 informations
 ```
 
-**Key takeaway**: `python3 example.py` exits `0` and prints correct-looking output; `pyright
-example.py` reports exactly `1 error` on the exact line where `"3"` (a `str`) is passed to a parameter
+**Key takeaway**: `python3 example.py` exits `0` and prints correct-looking output; `pyright example.py`
+reports exactly `1 error` on the exact line where `"3"` (a `str`) is passed to a parameter
 annotated `int`. Both tools are "right" -- they check different things.
 
-**Why it matters**: This is DD-33's `correctness-vs-pragmatism` big idea made concrete: Python's type
-hints are optional and unenforced at runtime by design, which lets you ship first and add static
-verification (`pyright`) as a separate, deliberate step, rather than forcing "provably correct" before
-anything can run at all. A codebase that runs pyright-clean in CI catches this exact class of bug
-before it ever reaches a user -- but only if that separate step actually runs.
+**Why it matters**: Python does not enforce these annotations at runtime, so this call produces
+plausible output even though its argument violates the declared type. The mismatch is intentional:
+this lesson needs Pyright to fail so you can see the `reportArgumentType` diagnostic. In normal
+checked code, pass an integer or change the contract before shipping. Running the static check
+separately catches a class of mistakes that a successful script run cannot reveal.
 
 ---
 

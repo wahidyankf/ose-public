@@ -1,8 +1,8 @@
-// ex-02 · hello-main · exercises co-02
-// Original primer artifact. Compile this directory's source independently with a supported JDK.
 public final class Example02 {
+    // => The public class is named Example02, matching the source filename.
     public static void main(String[] args) {
-        System.out.println("ex-02: hello-main");
+        // => The Java launcher starts execution at this method.
+        String name = "Java"; // => name holds Java for the greeting.
+        System.out.println("Hello, " + name + "!"); // => Hello, Java!
     }
 }
-

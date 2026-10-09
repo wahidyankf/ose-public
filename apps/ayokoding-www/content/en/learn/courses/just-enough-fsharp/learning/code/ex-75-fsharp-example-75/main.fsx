@@ -1,4 +1,6 @@
-// ex-75 · fsharp-example-75
-type Expr = Number of int | Add of Expr * Expr
-let rec evaluate expr = match expr with | Number n -> n | Add (l, r) -> evaluate l + evaluate r
-printfn "%d" (evaluate (Add (Number 1, Number 2)))
+// => A small pure function has one clear contract.
+let double value = value * 2
+// => An assertion fails the script when the value is wrong.
+assert (double 4 = 8)
+// => Reaching this line means the check passed.
+printfn "passed"

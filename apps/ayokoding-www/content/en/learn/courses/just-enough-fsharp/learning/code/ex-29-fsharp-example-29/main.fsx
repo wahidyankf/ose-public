@@ -1,3 +1,4 @@
-// ex-29 · fsharp-example-29
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => The loop iterates over each integer in the range.
+for number in 1..3 do
+    // => Printing is an intentional side effect.
+    printfn "%d" number

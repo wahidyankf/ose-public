@@ -1,7 +1,9 @@
 """Example 70: Generator Function with yield."""
 
+# => Collecting the iterator yields integers 0, 1, and 2.
+
 # Imports Iterator for typing the generator's return.
-from collections.abc import Iterator
+from collections.abc import Iterator  # => describes yielded int values
 
 
 def count_up_to(n: int) -> Iterator[int]:  # => a generator function -- contains yield

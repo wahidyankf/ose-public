@@ -1,3 +1,6 @@
-// ex-09 · fsharp-example-09
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => fun introduces an unnamed function.
+let square = fun value -> value * value
+// => The function can still be bound and reused.
+let result = square 4
+// => This prints 16.
+printfn "%d" result

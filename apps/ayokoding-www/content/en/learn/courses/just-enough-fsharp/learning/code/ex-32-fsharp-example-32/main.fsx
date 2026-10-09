@@ -1,3 +1,6 @@
-// ex-32 · fsharp-example-32
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => pairwise overlaps neighboring values.
+let changes = [3; 7; 6] |> List.pairwise
+// => Map each pair to the difference between its members.
+let differences = changes |> List.map (fun (left, right) -> right - left)
+// => This prints [4; -1].
+printfn "%A" differences

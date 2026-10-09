@@ -1,23 +1,13 @@
-// => iota enum: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => iota enum: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => iota enum: defines the type that carries this example’s data or contract.
-// => makes the following operations statically checkable.
-type state int
+type state int // => state is a distinct named type whose underlying type is int.
 
-// => iota enum: marks one deliberate step in the iota enum example.
-// => keeps the mechanism inspectable before it is composed with another concern.
-const (
-	queued state = iota
-	running
-	done
+const ( // => iota resets to zero for this declaration group.
+	queued  state = iota // => queued is state(0), starting this const group.
+	running              // => The omitted expression repeats the prior specification with iota at 1.
+	done                 // => iota advances again, giving done the value 2.
 )
 
-// => iota enum: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { fmt.Println(queued, running, done) }
+func main() { fmt.Println(queued, running, done) } // => Output: 0 1 2.

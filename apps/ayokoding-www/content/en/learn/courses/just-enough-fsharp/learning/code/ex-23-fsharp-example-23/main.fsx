@@ -1,3 +1,8 @@
-// ex-23 · fsharp-example-23
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => Both functions accept and return int.
+let double value = value * 2
+// => The second function adds one after doubling.
+let addOne value = value + 1
+// => >> applies double, then addOne.
+let transform = double >> addOne
+// => Transforming 3 produces 7.
+printfn "%d" (transform 3)

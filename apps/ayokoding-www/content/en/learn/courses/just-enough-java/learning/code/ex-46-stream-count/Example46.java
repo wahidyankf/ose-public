@@ -1,4 +1,11 @@
-// ex-46 · stream-count · co-20
 import java.util.List;
-public final class Example46 { public static void main(String[] args){ var result=List.of(1,2,2,3).stream().filter(value -> value > 1).map(value -> value * 10).distinct().toList(); System.out.println(result); } }
-
+public final class Example46 {
+    public static void main(String[] args) {
+        long count = List.of("red", "blue", "rose").stream() // => Two of the three words begin with r.
+        // => The source has three words before filtering.
+                .filter(word -> word.startsWith("r")).count(); // => terminal count
+                // => The filter keeps red and rose before count evaluates.
+        System.out.println(count); // => 2
+        // => count returns a long, so the variable is long.
+    }
+}

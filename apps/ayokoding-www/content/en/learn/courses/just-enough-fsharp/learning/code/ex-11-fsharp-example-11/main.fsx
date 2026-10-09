@@ -1,3 +1,6 @@
-// ex-11 · fsharp-example-11
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => Semicolons separate list items.
+let scores = [4; 7; 9]
+// => List.length reads without changing the list.
+let count = List.length scores
+// => The list contains three items.
+printfn "%d" count

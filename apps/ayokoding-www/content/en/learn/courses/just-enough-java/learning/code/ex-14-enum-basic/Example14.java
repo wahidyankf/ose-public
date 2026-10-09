@@ -1,3 +1,10 @@
-// ex-14 · enum-basic · co-09
-public final class Example14 { enum Status { TODO, DONE } public static void main(String[] args){ Status status=Status.DONE; String message=switch(status){case TODO -> "open"; case DONE -> "closed";}; System.out.println(message); } }
-
+public final class Example14 {
+    enum Status { OPEN, DONE }
+    // => Only these two named Status values can be selected.
+    public static void main(String[] args) {
+        Status status = Status.OPEN; // => status holds one of the declared enum constants.
+        // => The variable's value is the OPEN constant, not the text "OPEN".
+        System.out.println(status.name()); // => OPEN
+        // => name() returns the identifier spelling of the constant.
+    }
+}

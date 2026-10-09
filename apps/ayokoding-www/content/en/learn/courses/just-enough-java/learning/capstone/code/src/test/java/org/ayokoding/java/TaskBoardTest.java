@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 final class TaskBoardTest {
     @Test
@@ -23,9 +25,15 @@ final class TaskBoardTest {
         assertEquals("review: done", TaskBoard.render(new TaskBoard.Task("review", new TaskBoard.Done())));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    void rejectsBlankTaskNames(String name) {
+        assertThrows(IllegalArgumentException.class, () -> new TaskBoard.Task(name, new TaskBoard.Open()));
+    }
+
     @Test
-    void rejectsBlankTaskNames() {
-        assertThrows(IllegalArgumentException.class, () -> new TaskBoard.Task(" ", new TaskBoard.Open()));
+    void rejectsMissingTaskState() {
+        assertThrows(NullPointerException.class, () -> new TaskBoard.Task("read", null));
     }
 }
 

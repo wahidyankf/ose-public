@@ -1,3 +1,6 @@
-// ex-20 · fsharp-example-20
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => Some contains a value; None means no match.
+let findEven values = values |> List.tryFind (fun value -> value % 2 = 0)
+// => The first even number is present.
+let found = findEven [1; 3; 4]
+// => This prints Some 4.
+printfn "%A" found

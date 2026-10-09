@@ -1,3 +1,6 @@
-// ex-06 · fsharp-example-06
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => Both branches produce a string.
+let temperature = 31
+// => An if expression must produce one compatible result type.
+let label = if temperature >= 30 then "hot" else "mild"
+// => This prints hot.
+printfn "%s" label

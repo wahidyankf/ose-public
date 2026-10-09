@@ -5,7 +5,9 @@ draft: false
 weight: 1
 ---
 
-This learning track has 78 source-matched examples, in the same order as the C# syllabus. Each
+This track teaches just enough C# to read and make small, safe changes in the paired Windows App
+Development course. It covers language and SDK foundations before UI frameworks or desktop
+packaging. The 78 examples follow the C# syllabus in order. Each
 normal block is a complete `Program.cs` for a nullable-enabled console project; create one with
 `dotnet new console` and run it with `dotnet run`.
 

@@ -1,11 +1,9 @@
-// => type conversion: declares the executable package boundary.
-// => lets the Go tool recognize this as a runnable command.
 package main
 
-// => type conversion: introduces only the standard-library dependency this slice needs.
-// => keeps dependencies explicit so unused imports fail at compile time.
 import "fmt"
 
-// => type conversion: names the behavior being demonstrated.
-// => keeps the example callable from main or a test.
-func main() { n := 7; var wide int64 = int64(n); fmt.Println(float64(wide)) }
+func main() { // => Each conversion names its destination type.
+	n := 7                     // => n has inferred type int.
+	var wide int64 = int64(n)  // => wide is the same value in int64 form.
+	fmt.Println(float64(wide)) // => Output: 7 as a float64.
+}

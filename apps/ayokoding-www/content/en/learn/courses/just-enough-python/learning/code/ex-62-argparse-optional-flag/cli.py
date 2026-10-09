@@ -13,7 +13,7 @@ def main() -> None:  # => defines the entry point, called only when run directly
         "--upper",  # => the flag's name -- accessed later as args.upper
         action="store_true",  # => present -> True, absent -> False; no value needed
         help="uppercase the greeting",  # => shown in --help output
-    )  # => closes add_argument(...)
+    )  # => finishes defining the optional flag
     args = parser.parse_args()  # => parses sys.argv, matching --upper if present
     message = f"Hello, {args.name}"  # => the base greeting, before any uppercasing
     print(message.upper() if args.upper else message)  # => branches on the flag

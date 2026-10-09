@@ -1,3 +1,8 @@
-// ex-30 · fsharp-example-30
-let values = [1; 2; 3]
-values |> List.map (fun value -> value + 1) |> printfn "%A"
+// => mutable permits assignment to this binding.
+let mutable total = 0
+// => <- changes the existing binding on each iteration.
+for value in [2; 3; 4] do
+    // => Assignment updates the existing total for each input value.
+    total <- total + value
+// => This prints 9.
+printfn "%d" total

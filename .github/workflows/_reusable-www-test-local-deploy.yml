@@ -21,6 +21,10 @@ on:
         required: false
         type: boolean
         default: false
+      stop-docker-before-fe-e2e:
+        required: false
+        type: boolean
+        default: false
 permissions:
   contents: write
 
@@ -101,6 +105,9 @@ jobs:
           if npx nx show project "$be_project" --json > /dev/null 2>&1; then
             npx nx run "${be_project}:test:e2e"
           fi
+          if [ "${{ inputs.stop-docker-before-fe-e2e }}" = "true" ]; then
+            docker compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml down
+          fi
           npx nx run ${{ inputs.app-name }}-fe-e2e:test:e2e
       - if: always()
         run: docker compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml down -v
@@ -116,7 +123,10 @@ jobs:
           fetch-depth: 2
       - id: check
         run: |
-          CHANGED=$(git diff --name-only HEAD~1 HEAD -- "apps/${{ inputs.app-name }}/" 2>/dev/null || echo "")
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- \
+            "apps/${{ inputs.app-name }}/" \
+            .dockerignore \
+            .github/workflows/_reusable-www-test-local-deploy.yml 2>/dev/null || echo "")
           if [ -n "$CHANGED" ]; then
             echo "has-changes=true" >> "$GITHUB_OUTPUT"
           else

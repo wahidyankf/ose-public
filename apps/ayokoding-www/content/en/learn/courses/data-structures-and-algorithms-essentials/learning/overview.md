@@ -10,7 +10,7 @@ weight: 1
 - **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) -- every
   example in this topic is a complete Python module, and this topic assumes you can already read and
   write functions, `list`/`dict`/`set` literals, and loops the way that primer taught them.
-- **Tools & environment**: a macOS/Linux terminal; **Python 3.x** installed (`python3 --version`); a
+- **Tools & environment**: a macOS/Linux terminal; **Python 3.10 or newer** installed (`python3 --version`); a
   `venv` with `pytest` installed for the capstone's test suite. No third-party packages are needed for
   any of the 82 learning examples -- every one of them uses only the standard library
   (`collections`, `heapq`, `bisect`, `functools`).
@@ -32,32 +32,31 @@ its own worked examples (9, 24, 61, 80) before anything else leans on it. `co-02
 is the reason a single expensive step (growing a `list`'s backing array) does not make every
 `.append()` call expensive -- it is the cost model every "O(1) average" and "O(1) amortized" claim in
 this topic's Concepts section quietly depends on, and Example 1 makes it concrete on the very first
-worked example. `co-22 static-type-hints` is not confined to its own two examples (25, 26) -- every
-single one of the 82 `.py` files in this topic annotates its parameters and return types, so this
-concept is really taught by osmosis across the entire topic, not just in the two examples that name
-it directly.
+worked example. `co-22 static-type-hints` is not confined to its own two examples (25, 26) --
+function examples throughout the course annotate parameters and return types, reinforcing the
+concept beyond the examples that name it directly.
 
 `abstraction-and-its-cost` is this topic's other cross-cutting idea: every structure below trades one
-operation's cost for another. A hash map (`dict`) buys O(1) average lookup and charges you ordering; a
-plain list buys insertion order and charges you O(n) search; a heap buys O(log n) access to the
-smallest element and charges you the ability to peek cheaply at anything else. Nothing here is free --
+operation's cost for another. A hash map (`dict`) buys O(1) average key lookup and preserves insertion
+order, but it does not keep keys sorted; a plain list buys O(1) indexing and charges you O(n) search;
+a min-heap buys O(1) access to the smallest element and O(log n) insertion/removal, but finding an
+arbitrary item still takes O(n). Nothing here is free --
 the skill this topic teaches is knowing exactly which cost you are choosing to pay, and why.
 
 ## Install and run your first example
 
-Confirm Python 3 is installed:
+Confirm Python 3.10 or newer is installed:
 
 ```text
 $ python3 --version
 Python 3.14.3
 ```
 
-**A note on versions**: this topic's examples were authored and verified against CPython **3.14.3**,
-the version installed in the sandbox that produced every captured "Output" block on this site.
-[python.org](https://www.python.org/downloads/release/python-3146/) lists **3.14.6** (2026-06-10) as
-the current published patch release at authoring time -- any 3.14.x patch behaves identically for
-everything this topic teaches (the `heapq`, `collections.deque`, and `bisect` standard-library
-surfaces used here are stable across 3.14 patch releases).
+**A note on versions**: the recorded outputs below came from CPython 3.14.3. The minimum is
+Python 3.10 because Example 79 uses the `X | None` union type syntax introduced in that release.
+The examples use standard-library features available from that minimum. Check your interpreter's
+version with `python3 --version`; exact patch versions and printed representations may differ.
+See the [Python 3.10 union type documentation](https://docs.python.org/3.10/library/stdtypes.html#union-type).
 
 Every example in this topic is a complete, self-contained `.py` file colocated under
 `learning/code/`. The command you will run for every one of them is exactly this:
@@ -144,9 +143,11 @@ both print the observed counts rather than merely asserting a formula.
 
 Some operations are cheap on average even when an occasional individual step is costly: `list.append`
 is **amortized O(1)** because Python occasionally reallocates a larger backing array, but that
-reallocation happens rarely enough (roughly doubling capacity each time) that the _average_ cost per
-append across many calls stays O(1). `dict` and `set` operations average O(1) the same way, for a
-different reason (hashing, not resizing).
+reallocation happens rarely enough, using spare capacity from overallocation, that the _amortized_
+cost per append across many calls stays O(1). `dict` and `set` lookup and membership are average O(1)
+because they use hash tables; that average-case claim differs from amortized append cost.
+CPython's [list resize source](https://github.com/python/cpython/blob/v3.14.7/Objects/listobject.c)
+shows proportional overallocation rather than capacity doubling.
 
 **Why it matters**: without amortized analysis, "`list.append` is O(1)" looks false the instant you
 watch one particular call trigger a resize and take longer than its neighbors -- amortized analysis is
@@ -237,6 +238,8 @@ binary search tree (co-11), a `dict` is **not** key-sorted -- but Python 3.7+ gu
 **insertion-order iteration** as a language-specification guarantee, not merely a CPython
 implementation detail, so iterating a `dict` always visits keys in the order they were first set
 (updates never move a key's position).
+See the [Python 3.14 `dict` documentation](https://docs.python.org/3.14/library/stdtypes.html#mapping-types-dict)
+for the ordering guarantee.
 
 **Why it matters**: this is the single most-used structure in this entire topic for the "have I seen
 this before, and what did I learn about it" pattern -- frequency counting, memoization caches (co-19),
@@ -301,8 +304,10 @@ afterward.
 
 `heapq` maintains a binary **min-heap** directly over a plain `list`, giving O(log n) push
 (`heappush`) and O(log n) pop-of-the-minimum (`heappop`) -- the basis of a priority queue, where the
-"highest priority" item is always the one that pops next. Python only ships a min-heap; a max-heap is
-simulated by negating values on the way in and out (Example 41), and tuples let you push
+"highest priority" item is always the one that pops next. This topic simulates a max-heap by
+negating values on the way in and out (Example 41), which works from Python 3.10 onward; Python
+3.14 also adds dedicated [max-heap functions](https://docs.python.org/3.14/library/heapq.html#heapq.heapify_max).
+Tuples let you push
 `(priority, item)` pairs so the tuple's first field controls pop order (Example 40).
 
 **Why it matters**: whenever "give me the smallest (or, via negation, largest) thing I've seen so far,
@@ -317,8 +322,9 @@ existing `list` into a valid heap in place with `heapq.heapify`; Example 71 (Dij
 ### co-13 · Linear Search
 
 Linear search scans a sequence element by element, in O(n), stopping the moment it finds a match (or
-exhausting the whole sequence if it never does). It is the **only** option on unsorted data -- there
-is no way to skip ahead without first knowing the data is ordered.
+exhausting the whole sequence if it never does). For a one-off query over an unsorted list with no
+index, no ordering clue lets you skip part of the list; repeated queries may justify building a
+`set` or `dict` index first.
 
 **Why it matters**: linear search is the baseline every "smarter" search technique in this topic (co-14
 binary search, co-08 hash-map lookup) is explicitly compared against -- without it as a reference
@@ -481,94 +487,94 @@ confirms the function still runs correctly on typed inputs.
 
 ### Beginner (Examples 1–28)
 
-- [Example 1: List Append and Index](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-1-list-append-and-index)
-- [Example 2: List Slicing](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-2-list-slicing)
-- [Example 3: List Reverse In Place](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-3-list-reverse-in-place)
-- [Example 4: List Reverse via Slice](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-4-list-reverse-via-slice)
-- [Example 5: Stack with Push and Pop](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-5-stack-with-push-and-pop)
-- [Example 6: Balanced Parentheses via Stack](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-6-balanced-parentheses-via-stack)
-- [Example 7: Queue with collections.deque](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-7-queue-with-collectionsdeque)
-- [Example 8: Deque Operations at Both Ends](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-8-deque-operations-at-both-ends)
-- [Example 9: list.pop(0) vs deque.popleft -- Same Result, Different Cost](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-9-listpop0-vs-dequepopleft----same-result-different-cost)
-- [Example 10: Dict Lookup with .get](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-10-dict-lookup-with-get)
-- [Example 11: Count Character Frequencies with a Dict](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-11-count-character-frequencies-with-a-dict)
-- [Example 12: Set Membership Testing](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-12-set-membership-testing)
-- [Example 13: Deduplicate a List with a Set](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-13-deduplicate-a-list-with-a-set)
-- [Example 14: Two Sum, Solved with a Dict](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-14-two-sum-solved-with-a-dict)
-- [Example 15: Linear Search -- Value Found](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-15-linear-search----value-found)
-- [Example 16: Linear Search -- Value Not Found](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-16-linear-search----value-not-found)
-- [Example 17: Built-in sorted()](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-17-built-in-sorted)
-- [Example 18: sorted() with a key Function](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-18-sorted-with-a-key-function)
-- [Example 19: sorted() with reverse=True](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-19-sorted-with-reversetrue)
-- [Example 20: Sort Tuples by a Field](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-20-sort-tuples-by-a-field)
-- [Example 21: Recursive Factorial](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-21-recursive-factorial)
-- [Example 22: Recursively Sum a List](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-22-recursively-sum-a-list)
-- [Example 23: Countdown -- Iterative vs Recursive, Same Output](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-23-countdown----iterative-vs-recursive-same-output)
-- [Example 24: Big-O in Practice -- O(1) Dict Lookup vs O(n) List Scan](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-24-big-o-in-practice----o1-dict-lookup-vs-on-list-scan)
-- [Example 25: Type Hints on a Function Signature](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-25-type-hints-on-a-function-signature)
-- [Example 26: Type Hints on Collection Parameters](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-26-type-hints-on-collection-parameters)
-- [Example 27: Build a Singly Linked List](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-27-build-a-singly-linked-list)
-- [Example 28: Linked List Length by Traversal](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-28-linked-list-length-by-traversal)
+- [Example 1: List Append and Index](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-1-list-append-and-index)
+- [Example 2: List Slicing](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-2-list-slicing)
+- [Example 3: List Reverse In Place](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-3-list-reverse-in-place)
+- [Example 4: List Reverse via Slice](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-4-list-reverse-via-slice)
+- [Example 5: Stack with Push and Pop](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-5-stack-with-push-and-pop)
+- [Example 6: Balanced Parentheses via Stack](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-6-balanced-parentheses-via-stack)
+- [Example 7: Queue with collections.deque](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-7-queue-with-collectionsdeque)
+- [Example 8: Deque Operations at Both Ends](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-8-deque-operations-at-both-ends)
+- [Example 9: list.pop(0) vs deque.popleft -- Same Result, Different Cost](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-9-listpop0-vs-dequepopleft----same-result-different-cost)
+- [Example 10: Dict Lookup with .get](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-10-dict-lookup-with-get)
+- [Example 11: Count Character Frequencies with a Dict](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-11-count-character-frequencies-with-a-dict)
+- [Example 12: Set Membership Testing](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-12-set-membership-testing)
+- [Example 13: Deduplicate a List with a Set](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-13-deduplicate-a-list-with-a-set)
+- [Example 14: Two Sum, Solved with a Dict](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-14-two-sum-solved-with-a-dict)
+- [Example 15: Linear Search -- Value Found](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-15-linear-search----value-found)
+- [Example 16: Linear Search -- Value Not Found](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-16-linear-search----value-not-found)
+- [Example 17: Built-in sorted()](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-17-built-in-sorted)
+- [Example 18: sorted() with a key Function](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-18-sorted-with-a-key-function)
+- [Example 19: sorted() with reverse=True](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-19-sorted-with-reversetrue)
+- [Example 20: Sort Tuples by a Field](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-20-sort-tuples-by-a-field)
+- [Example 21: Recursive Factorial](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-21-recursive-factorial)
+- [Example 22: Recursively Sum a List](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-22-recursively-sum-a-list)
+- [Example 23: Countdown -- Iterative vs Recursive, Same Output](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-23-countdown----iterative-vs-recursive-same-output)
+- [Example 24: Big-O in Practice -- O(1) Dict Lookup vs O(n) List Scan](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-24-big-o-in-practice----o1-dict-lookup-vs-on-list-scan)
+- [Example 25: Type Hints on a Function Signature](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-25-type-hints-on-a-function-signature)
+- [Example 26: Type Hints on Collection Parameters](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-26-type-hints-on-collection-parameters)
+- [Example 27: Build a Singly Linked List](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-27-build-a-singly-linked-list)
+- [Example 28: Linked List Length by Traversal](/en/learn/courses/data-structures-and-algorithms-essentials/learning/beginner#example-28-linked-list-length-by-traversal)
 
 ### Intermediate (Examples 29–60)
 
-- [Example 29: Reverse a Singly Linked List Iteratively](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-29-reverse-a-singly-linked-list-iteratively)
-- [Example 30: Find the Middle Node with Slow/Fast Pointers](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-30-find-the-middle-node-with-slowfast-pointers)
-- [Example 31: Iterative Binary Search](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-31-iterative-binary-search)
-- [Example 32: Binary Search -- Value Not Found](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-32-binary-search----value-not-found)
-- [Example 33: Binary Search -- Leftmost (First) Occurrence](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-33-binary-search----leftmost-first-occurrence)
-- [Example 34: Binary Search -- Rightmost (Last) Occurrence](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-34-binary-search----rightmost-last-occurrence)
-- [Example 35: bisect.bisect_left -- Sorted Insertion Point](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-35-bisectbisect_left----sorted-insertion-point)
-- [Example 36: bisect.insort -- Insert While Staying Sorted](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-36-bisectinsort----insert-while-staying-sorted)
-- [Example 37: Min-Heap with heapq.heappush and heappop](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-37-min-heap-with-heapqheappush-and-heappop)
-- [Example 38: heapq.heapify -- Turn a List into a Heap In Place](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-38-heapqheapify----turn-a-list-into-a-heap-in-place)
-- [Example 39: Top-K Largest with heapq.nlargest](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-39-top-k-largest-with-heapqnlargest)
-- [Example 40: Priority Queue with (priority, task) Tuples](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-40-priority-queue-with-priority-task-tuples)
-- [Example 41: Max-Heap via Negation](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-41-max-heap-via-negation)
-- [Example 42: Merge Two Sorted Lists with heapq.merge](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-42-merge-two-sorted-lists-with-heapqmerge)
-- [Example 43: Insertion Sort](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-43-insertion-sort)
-- [Example 44: Selection Sort](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-44-selection-sort)
-- [Example 45: Bubble Sort](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-45-bubble-sort)
-- [Example 46: Recursive Merge Sort](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-46-recursive-merge-sort)
-- [Example 47: Recursive Quicksort](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-47-recursive-quicksort)
-- [Example 48: Build a Binary Tree](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-48-build-a-binary-tree)
-- [Example 49: Recursive Inorder Traversal](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-49-recursive-inorder-traversal)
-- [Example 50: Preorder and Postorder Traversals](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-50-preorder-and-postorder-traversals)
-- [Example 51: Level-Order (BFS) Traversal, Grouped by Level](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-51-level-order-bfs-traversal-grouped-by-level)
-- [Example 52: Compute Tree Height Recursively](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-52-compute-tree-height-recursively)
-- [Example 53: Insert into a Binary Search Tree](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-53-insert-into-a-binary-search-tree)
-- [Example 54: Search a Binary Search Tree](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-54-search-a-binary-search-tree)
-- [Example 55: BST Minimum and Maximum](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-55-bst-minimum-and-maximum)
-- [Example 56: Build a Graph as a Dict-of-Lists Adjacency Map](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-56-build-a-graph-as-a-dict-of-lists-adjacency-map)
-- [Example 57: Breadth-First Search over a Graph](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-57-breadth-first-search-over-a-graph)
-- [Example 58: Depth-First Search over a Graph](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-58-depth-first-search-over-a-graph)
-- [Example 59: BFS Shortest-Path Length in an Unweighted Graph](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-59-bfs-shortest-path-length-in-an-unweighted-graph)
-- [Example 60: Maximum Sum of a Length-k Sliding Window](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-60-maximum-sum-of-a-length-k-sliding-window)
+- [Example 29: Reverse a Singly Linked List Iteratively](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-29-reverse-a-singly-linked-list-iteratively)
+- [Example 30: Find the Middle Node with Slow/Fast Pointers](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-30-find-the-middle-node-with-slowfast-pointers)
+- [Example 31: Iterative Binary Search](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-31-iterative-binary-search)
+- [Example 32: Binary Search -- Value Not Found](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-32-binary-search----value-not-found)
+- [Example 33: Binary Search -- Leftmost (First) Occurrence](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-33-binary-search----leftmost-first-occurrence)
+- [Example 34: Binary Search -- Rightmost (Last) Occurrence](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-34-binary-search----rightmost-last-occurrence)
+- [Example 35: bisect.bisect_left -- Sorted Insertion Point](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-35-bisectbisect_left----sorted-insertion-point)
+- [Example 36: bisect.insort -- Insert While Staying Sorted](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-36-bisectinsort----insert-while-staying-sorted)
+- [Example 37: Min-Heap with heapq.heappush and heappop](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-37-min-heap-with-heapqheappush-and-heappop)
+- [Example 38: heapq.heapify -- Turn a List into a Heap In Place](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-38-heapqheapify----turn-a-list-into-a-heap-in-place)
+- [Example 39: Top-K Largest with heapq.nlargest](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-39-top-k-largest-with-heapqnlargest)
+- [Example 40: Priority Queue with (priority, task) Tuples](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-40-priority-queue-with-priority-task-tuples)
+- [Example 41: Max-Heap via Negation](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-41-max-heap-via-negation)
+- [Example 42: Merge Two Sorted Lists with heapq.merge](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-42-merge-two-sorted-lists-with-heapqmerge)
+- [Example 43: Insertion Sort](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-43-insertion-sort)
+- [Example 44: Selection Sort](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-44-selection-sort)
+- [Example 45: Bubble Sort](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-45-bubble-sort)
+- [Example 46: Recursive Merge Sort](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-46-recursive-merge-sort)
+- [Example 47: Recursive Quicksort](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-47-recursive-quicksort)
+- [Example 48: Build a Binary Tree](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-48-build-a-binary-tree)
+- [Example 49: Recursive Inorder Traversal](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-49-recursive-inorder-traversal)
+- [Example 50: Preorder and Postorder Traversals](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-50-preorder-and-postorder-traversals)
+- [Example 51: Level-Order (BFS) Traversal, Grouped by Level](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-51-level-order-bfs-traversal-grouped-by-level)
+- [Example 52: Compute Tree Height Recursively](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-52-compute-tree-height-recursively)
+- [Example 53: Insert into a Binary Search Tree](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-53-insert-into-a-binary-search-tree)
+- [Example 54: Search a Binary Search Tree](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-54-search-a-binary-search-tree)
+- [Example 55: BST Minimum and Maximum](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-55-bst-minimum-and-maximum)
+- [Example 56: Build a Graph as a Dict-of-Lists Adjacency Map](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-56-build-a-graph-as-a-dict-of-lists-adjacency-map)
+- [Example 57: Breadth-First Search over a Graph](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-57-breadth-first-search-over-a-graph)
+- [Example 58: Depth-First Search over a Graph](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-58-depth-first-search-over-a-graph)
+- [Example 59: BFS Shortest-Path Length in an Unweighted Graph](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-59-bfs-shortest-path-length-in-an-unweighted-graph)
+- [Example 60: Maximum Sum of a Length-k Sliding Window](/en/learn/courses/data-structures-and-algorithms-essentials/learning/intermediate#example-60-maximum-sum-of-a-length-k-sliding-window)
 
 ### Advanced (Examples 61–82)
 
-- [Example 61: Naive Recursive Fibonacci -- and Its Exponential Cost](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-61-naive-recursive-fibonacci----and-its-exponential-cost)
-- [Example 62: Memoized Fibonacci with a Dict Cache](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-62-memoized-fibonacci-with-a-dict-cache)
-- [Example 63: Memoized Fibonacci with functools.lru_cache](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-63-memoized-fibonacci-with-functoolslru_cache)
-- [Example 64: Bottom-Up Iterative Fibonacci](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-64-bottom-up-iterative-fibonacci)
-- [Example 65: Minimum Coins to Make Change, via Memoized Recursion](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-65-minimum-coins-to-make-change-via-memoized-recursion)
-- [Example 66: Count Unique Grid Paths, via Memoization](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-66-count-unique-grid-paths-via-memoization)
-- [Example 67: Delete a Node from a BST -- All Three Cases](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-67-delete-a-node-from-a-bst----all-three-cases)
-- [Example 68: Iterative Inorder Traversal with an Explicit Stack](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-68-iterative-inorder-traversal-with-an-explicit-stack)
-- [Example 69: Check Whether a Binary Tree Is Height-Balanced](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-69-check-whether-a-binary-tree-is-height-balanced)
-- [Example 70: Lowest Common Ancestor in a BST](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-70-lowest-common-ancestor-in-a-bst)
-- [Example 71: Dijkstra's Shortest Paths with a Min-Heap](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-71-dijkstras-shortest-paths-with-a-min-heap)
-- [Example 72: Topological Sort via Kahn's Algorithm](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-72-topological-sort-via-kahns-algorithm)
-- [Example 73: Detect a Cycle in a Directed Graph via DFS Coloring](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-73-detect-a-cycle-in-a-directed-graph-via-dfs-coloring)
-- [Example 74: Merge k Sorted Linked Lists with a Heap](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-74-merge-k-sorted-linked-lists-with-a-heap)
-- [Example 75: Kth Smallest via Quickselect](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-75-kth-smallest-via-quickselect)
-- [Example 76: Two-Pointer Pair Sum on a Sorted Array](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-76-two-pointer-pair-sum-on-a-sorted-array)
-- [Example 77: Longest Substring Without Repeating Characters](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-77-longest-substring-without-repeating-characters)
-- [Example 78: LRU Cache from Scratch -- Dict + Doubly Linked List](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-78-lru-cache-from-scratch----dict--doubly-linked-list)
-- [Example 79: Prefix Trie with Dict-Based Children](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-79-prefix-trie-with-dict-based-children)
-- [Example 80: Empirical Doubling -- Linear vs Binary Search Step Counts](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-80-empirical-doubling----linear-vs-binary-search-step-counts)
-- [Example 81: Stable Multi-Key Sort with a Tuple Key](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-81-stable-multi-key-sort-with-a-tuple-key)
-- [Example 82: Convert Deep Recursion to Iteration to Avoid RecursionError](/en/c/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-82-convert-deep-recursion-to-iteration-to-avoid-recursionerror)
+- [Example 61: Naive Recursive Fibonacci -- and Its Exponential Cost](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-61-naive-recursive-fibonacci----and-its-exponential-cost)
+- [Example 62: Memoized Fibonacci with a Dict Cache](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-62-memoized-fibonacci-with-a-dict-cache)
+- [Example 63: Memoized Fibonacci with functools.lru_cache](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-63-memoized-fibonacci-with-functoolslru_cache)
+- [Example 64: Bottom-Up Iterative Fibonacci](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-64-bottom-up-iterative-fibonacci)
+- [Example 65: Minimum Coins to Make Change, via Memoized Recursion](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-65-minimum-coins-to-make-change-via-memoized-recursion)
+- [Example 66: Count Unique Grid Paths, via Memoization](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-66-count-unique-grid-paths-via-memoization)
+- [Example 67: Delete a Node from a BST -- All Three Cases](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-67-delete-a-node-from-a-bst----all-three-cases)
+- [Example 68: Iterative Inorder Traversal with an Explicit Stack](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-68-iterative-inorder-traversal-with-an-explicit-stack)
+- [Example 69: Check Whether a Binary Tree Is Height-Balanced](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-69-check-whether-a-binary-tree-is-height-balanced)
+- [Example 70: Lowest Common Ancestor in a BST](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-70-lowest-common-ancestor-in-a-bst)
+- [Example 71: Dijkstra's Shortest Paths with a Min-Heap](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-71-dijkstras-shortest-paths-with-a-min-heap)
+- [Example 72: Topological Sort via Kahn's Algorithm](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-72-topological-sort-via-kahns-algorithm)
+- [Example 73: Detect a Cycle in a Directed Graph via DFS Coloring](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-73-detect-a-cycle-in-a-directed-graph-via-dfs-coloring)
+- [Example 74: Merge k Sorted Linked Lists with a Heap](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-74-merge-k-sorted-linked-lists-with-a-heap)
+- [Example 75: Kth Smallest via Quickselect](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-75-kth-smallest-via-quickselect)
+- [Example 76: Two-Pointer Pair Sum on a Sorted Array](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-76-two-pointer-pair-sum-on-a-sorted-array)
+- [Example 77: Longest Substring Without Repeating Characters](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-77-longest-substring-without-repeating-characters)
+- [Example 78: LRU Cache from Scratch -- Dict + Doubly Linked List](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-78-lru-cache-from-scratch----dict--doubly-linked-list)
+- [Example 79: Prefix Trie with Dict-Based Children](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-79-prefix-trie-with-dict-based-children)
+- [Example 80: Empirical Doubling -- Linear vs Binary Search Step Counts](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-80-empirical-doubling----linear-vs-binary-search-step-counts)
+- [Example 81: Stable Multi-Key Sort with a Tuple Key](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-81-stable-multi-key-sort-with-a-tuple-key)
+- [Example 82: Convert Deep Recursion to Iteration to Avoid RecursionError](/en/learn/courses/data-structures-and-algorithms-essentials/learning/advanced#example-82-convert-deep-recursion-to-iteration-to-avoid-recursionerror)
 
 ---
 

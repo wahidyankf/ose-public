@@ -1,6 +1,6 @@
 """Example 71: Dijkstra's Shortest Paths with a Min-Heap."""
 
-# Dijkstra generalizes Example 59's unweighted BFS to WEIGHTED edges: a min-heap
+# Dijkstra handles NONNEGATIVE weighted edges: a min-heap
 # always expands the currently-cheapest-known node next (co-12, co-21).
 import heapq  # => imports the stdlib binary-heap functions
 
@@ -19,6 +19,10 @@ def dijkstra(  # => a heap-driven shortest-path function
     graph: dict[str, list[tuple[str, int]]],
     start: str,  # => the graph plus the source node
 ) -> dict[str, int]:  # => returns node -> shortest distance from start
+    for edges in graph.values():  # => validate the entire graph before searching
+        for _, weight in edges:  # => visit each edge once, O(E)
+            if weight < 0:  # => Dijkstra cannot finalize distances with negative edges
+                raise ValueError("Dijkstra requires nonnegative edge weights")
     distances: dict[str, int] = {start: 0}  # => best known distance to each node so far
     heap: list[tuple[int, str]] = [
         (0, start)
@@ -53,4 +57,13 @@ assert (
     result["b"] == 3
 )  # => confirms a->c->b (cost 3) beat the direct a->b edge (cost 4)
 assert result["d"] == 4  # => confirms a->c->b->d (1+2+1=4) is the cheapest route to d
+assert (
+    dijkstra({"a": [("b", 0)], "b": []}, "a")["b"] == 0
+)  # => zero-cost edges are valid
+try:  # => prove that unsupported negative edge weights fail clearly
+    dijkstra({"a": [("b", -1)], "b": []}, "a")
+except ValueError as exc:  # => a negative edge must be rejected, not miscomputed
+    assert str(exc) == "Dijkstra requires nonnegative edge weights"
+else:  # => guard against accepting a graph outside Dijkstra's precondition
+    raise AssertionError("negative edge weight was accepted")
 print("ex-71 OK")  # => Output: ex-71 OK

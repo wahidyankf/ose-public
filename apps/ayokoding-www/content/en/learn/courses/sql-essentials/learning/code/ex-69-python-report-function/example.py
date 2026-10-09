@@ -13,7 +13,7 @@ def setup(
         -- a minimal author/book fixture -- just enough for one GROUP BY report
         CREATE TABLE author(id INTEGER PRIMARY KEY, name TEXT NOT NULL);  -- 1 parent table
         CREATE TABLE book(id INTEGER PRIMARY KEY, title TEXT NOT NULL, author_id INTEGER NOT NULL);
-        -- author_id is a plain integer column -- report() below GROUPs by the author's NAME
+        -- author_id links each book to a stable author id, even when names coincide
         -- 2 authors -- Ada ends up with 2 books, Grace with 1
         INSERT INTO author(id, name) VALUES (1, 'Ada Lovelace'), (2, 'Grace Hopper');  -- 2 rows
         -- 3 books, split 2-and-1 -- the exact counts main()'s hand-computed assert checks
@@ -37,8 +37,8 @@ def report(
         SELECT author.name, count(*)
         FROM author
         JOIN book ON book.author_id = author.id
-        GROUP BY author.name
-        ORDER BY author.name
+        GROUP BY author.id, author.name
+        ORDER BY author.name, author.id
         """
     )  # => GROUP BY collapses per-book rows into per-author counts (co-15)
     rows: list[tuple[str, int]] = (

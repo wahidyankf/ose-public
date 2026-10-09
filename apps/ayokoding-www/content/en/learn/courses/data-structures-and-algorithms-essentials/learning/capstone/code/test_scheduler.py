@@ -1,4 +1,4 @@
-"""pytest coverage for scheduler.py -- an acyclic fixture and a cyclic fixture."""
+"""pytest coverage for ordering, duplicate IDs, and cycle diagnostics."""
 
 import pytest
 
@@ -66,3 +66,28 @@ def test_cyclic_graph_error_names_the_stuck_tasks() -> None:
     assert "a" in str(excinfo.value)
     assert "b" in str(excinfo.value)
     assert "independent" not in str(excinfo.value)  # the healthy task is not implicated
+
+
+def test_duplicate_task_id_is_rejected_before_scheduling() -> None:
+    """Duplicate IDs must never silently replace an earlier task."""
+    raw_tasks: list[dict[str, object]] = [
+        {"id": "compile", "priority": 5, "deps": []},
+        {"id": "compile", "priority": 1, "deps": []},
+    ]
+
+    with pytest.raises(ValueError, match="duplicate task id: 'compile'"):
+        parse_tasks(raw_tasks)
+
+
+def test_cycle_diagnostic_names_only_stuck_tasks_in_sorted_order() -> None:
+    """Cycle diagnostics stay deterministic even with many completed tasks."""
+    raw_tasks: list[dict[str, object]] = [
+        {"id": f"free-{index}", "priority": index, "deps": []} for index in range(200)
+    ] + [
+        {"id": "z-cycle", "priority": 0, "deps": ["a-cycle"]},
+        {"id": "a-cycle", "priority": 0, "deps": ["z-cycle"]},
+    ]
+
+    with pytest.raises(SchedulerCycleError) as excinfo:
+        schedule(parse_tasks(raw_tasks))
+    assert str(excinfo.value) == "dependency cycle detected among: a-cycle, z-cycle"

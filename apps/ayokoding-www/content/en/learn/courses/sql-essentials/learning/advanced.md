@@ -173,8 +173,11 @@ reviewable diffs, rather than one opaque statement.
 _ex-61 &middot; exercises co-22, co-24_
 
 `PRAGMA user_version` stores a plain integer inside the database file's own header, with no extra
-tracking table required -- a thin shell wrapper reads it before deciding whether to apply a migration,
-making the whole runner safe to invoke any number of times.
+tracking table required. A thin shell wrapper checks it before applying the migration. The migration
+uses `BEGIN IMMEDIATE` and `COMMIT` so the schema change and version marker succeed or roll back
+together; sequential retries can safely skip a completed migration. SQLite documents the
+[transaction behavior](https://www.sqlite.org/lang_transaction.html) and the
+[`user_version` header field](https://www.sqlite.org/pragma.html#pragma_user_version).
 
 **`learning/code/ex-61-migration-version-tracking/schema.sql`**
 
@@ -199,7 +202,10 @@ VALUES
 **`learning/code/ex-61-migration-version-tracking/migration.sql`**
 
 ```sql
--- Example 61: the migration body itself -- only ever meant to run ONCE, guarded by migrate.sh.
+-- Example 61: both the schema change and version marker commit together or roll back together.
+BEGIN IMMEDIATE;
+
+-- => starts a write transaction before any schema change
 ALTER TABLE book
 ADD COLUMN edition INTEGER DEFAULT 1;
 
@@ -207,6 +213,10 @@ ADD COLUMN edition INTEGER DEFAULT 1;
 -- PRAGMA user_version stores a plain integer INSIDE the database file's header (co-24) --
 -- no extra "schema_migrations" table needed to remember which migration already ran.
 PRAGMA user_version = 1;
+
+COMMIT;
+
+-- => interruption before COMMIT leaves version 0 and no edition
 ```
 
 **`learning/code/ex-61-migration-version-tracking/migrate.sh`**
@@ -218,11 +228,14 @@ PRAGMA user_version = 1;
 set -euo pipefail                  # => fail fast on any error, unset variable, or pipe failure
 
 DB="app.db"                        # => the single database file this runner targets
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+                                    # => resolve the migration beside this script
 CURRENT=$(sqlite3 "$DB" "PRAGMA user_version;")
                                     # => reads the CURRENT version straight out of the file header
 
 if [ "$CURRENT" -lt 1 ]; then      # => version 0 (or lower) means migration.sql has NOT run yet
-    sqlite3 "$DB" < migration.sql  # => applies the ALTER TABLE + bumps PRAGMA user_version to 1
+    sqlite3 -bail "$DB" < "$SCRIPT_DIR/migration.sql"
+                                    # => stop on SQL errors; unfinished transaction rolls back
     NEW=$(sqlite3 "$DB" "PRAGMA user_version;")
                                     # => re-reads the version -- confirms the bump actually landed
     echo "migrated to version $NEW"
@@ -235,6 +248,11 @@ fi
 ```
 
 **Run**: `sqlite3 app.db < schema.sql`, then `chmod +x migrate.sh && ./migrate.sh` twice in a row.
+
+**Check an interrupted run**: `pytest -q tests/test_migration.py` injects a SQL error after the
+`ALTER TABLE` and verifies that both the column and version marker remain absent. It also runs the
+normal migration twice to check the skip path. Coordinate separate deployment processes so they do
+not run migrations concurrently.
 
 **Output**:
 
@@ -250,9 +268,9 @@ id  title                            price  edition
 2   Sketch of the Analytical Engine  9.0    1
 ```
 
-**Key takeaway**: the first `migrate.sh` run bumps `PRAGMA user_version` from 0 to 1 and applies the
-migration; the second run reads that same version, sees it is no longer 0, and skips -- no
-`schema_migrations` table was ever needed.
+**Key takeaway**: the first `migrate.sh` run changes the schema and bumps `PRAGMA user_version` from 0
+to 1 in one transaction; an interruption before `COMMIT` rolls both back. The second run sees version
+1 and skips -- no `schema_migrations` table is needed.
 
 **Why it matters**: a migration script that is not idempotent is a landmine -- rerunning it after a
 deploy hiccup (or a CI retry) either fails outright (`duplicate column name`) or silently corrupts data.
@@ -940,7 +958,7 @@ def setup(conn: sqlite3.Connection) -> None:  # => builds the fixture report() r
         -- a minimal author/book fixture -- just enough for one GROUP BY report
         CREATE TABLE author(id INTEGER PRIMARY KEY, name TEXT NOT NULL);  -- 1 parent table
         CREATE TABLE book(id INTEGER PRIMARY KEY, title TEXT NOT NULL, author_id INTEGER NOT NULL);
-        -- author_id is a plain integer column -- report() below GROUPs by the author's NAME
+        -- author_id links each book to a stable author id, even when names coincide
         -- 2 authors -- Ada ends up with 2 books, Grace with 1
         INSERT INTO author(id, name) VALUES (1, 'Ada Lovelace'), (2, 'Grace Hopper');  -- 2 rows
         -- 3 books, split 2-and-1 -- the exact counts main()'s hand-computed assert checks
@@ -962,8 +980,8 @@ def report(conn: sqlite3.Connection) -> list[tuple[str, int]]:  # => the functio
         SELECT author.name, count(*)
         FROM author
         JOIN book ON book.author_id = author.id
-        GROUP BY author.name
-        ORDER BY author.name
+        GROUP BY author.id, author.name
+        ORDER BY author.name, author.id
         """
     )  # => GROUP BY collapses per-book rows into per-author counts (co-15)
     rows: list[tuple[str, int]] = cur.fetchall()  # => drains the cursor into a typed list
@@ -1046,6 +1064,7 @@ INSERT INTO book(id, title, author_id) VALUES
 .separator " | "
 -- list mode (pipe-separated, no column wrapping) keeps the long concatenated string on one line.
 -- group_concat(X, sep) folds every GROUPed row's X value into ONE string, sep-joined (co-15).
+-- Without ORDER BY inside the aggregate, the title order is unspecified.
 SELECT author_id, group_concat(title, '; ') AS titles
 FROM book
 GROUP BY author_id;                -- => one row per author_id -- titles collapsed into one string
@@ -1054,16 +1073,18 @@ GROUP BY author_id;                -- => one row per author_id -- titles collaps
 
 **Run**: `sqlite3 app.db < example.sql`
 
-**Output**:
+**Possible output** (the query does not specify the order of titles within `group_concat`):
 
 ```text
 author_id | titles
 1 | Notes on the Analytical Engine; Sketch of the Analytical Engine
 ```
 
-**Key takeaway**: `group_concat(title, '; ')` produced one row per `author_id`, with both of that
-author's book titles folded into a single `;`-joined string -- no client-side loop needed to build
-that summary.
+**Key takeaway**: `group_concat(title, '; ')` produces one row per `author_id`, with both of that
+author's book titles folded into a single `;`-joined string -- no client-side loop needed. Without an
+`ORDER BY` argument inside the aggregate, SQLite may concatenate the titles in either order. SQLite
+3.44+ supports `group_concat(title, '; ' ORDER BY id)` when a stable title order is part of the
+report's contract; see the [SQLite 3.44 release notes](https://www.sqlite.org/releaselog/3_44_0.html).
 
 **Why it matters**: `group_concat` is the SQL-native answer to "give me a comma-separated (or any
 separator) summary per group" -- a common reporting need that would otherwise require fetching every
@@ -1398,7 +1419,7 @@ know it is under test.
 connection" (the caller, or the test fixture) is the core idea behind a data-access layer -- it makes
 every CRUD operation independently unit-testable against a throwaway fixture, with zero risk of one
 test's rows leaking into another. The capstone's own `dal.py` extends this exact pattern to a
-4-table schema with a reporting query and a rollback-on-failure batch update.
+five-table schema with a reporting query and a rollback-on-failure batch update.
 
 ---
 
@@ -1684,7 +1705,7 @@ CREATE TABLE book_tag(              -- => the many-to-many JUNCTION -- not a "5t
 
 **Run**: `sqlite3 app.db < example.sql`
 
-**Output** (`.schema` echoes every stored `CREATE TABLE` back verbatim, comments included):
+**Output** (`.schema` shows the stored definitions; comments survive in this example):
 
 ```text
 CREATE TABLE author(                -- => relation 1 of 4 -- one row per author
@@ -1718,8 +1739,8 @@ CREATE TABLE book_tag(              -- => the many-to-many JUNCTION -- not a "5t
 );
 ```
 
-**Key takeaway**: `.schema`'s output proves SQLite stored the `CREATE TABLE` text verbatim, comments
-included -- and reading through the 5 tables confirms no column anywhere repeats a fact that already
+**Key takeaway**: `.schema`'s output shows SQLite's stored, normalized `CREATE TABLE` definitions --
+and reading through the five tables confirms no column anywhere repeats a fact that already
 lives in another table's row (an author's name, a publisher's city).
 
 **Why it matters**: this is the same normalization discipline Intermediate Examples 45-46 walked
@@ -1796,9 +1817,9 @@ not the raw rows -- down to authors with more than one book.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC -- color-blind friendly, WCAG AA
 flowchart LR
     accTitle: Example 79: Join, Group, and Having Report
-    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: author JOIN book, GROUP BY author.name, HAVING count(*) > 1, authors with 2+ books. Connections: author JOIN book to GROUP BY author.name, GROUP BY author.name to HAVING count(*) > 1, HAVING count(*) > 1 to authors with 2+ books.
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: author JOIN book, GROUP BY author.id and author.name, HAVING count(*) > 1, authors with 2+ books. Connections: author JOIN book to GROUP BY author.id and author.name, GROUP BY author.id and author.name to HAVING count(*) > 1, HAVING count(*) > 1 to authors with 2+ books.
     A["author JOIN book"]:::blue
-    B["GROUP BY author.name"]:::orange
+    B["GROUP BY author.id,<br/>author.name"]:::orange
     C["HAVING<br/>count#40;*#41; > 1"]:::teal
     D["authors with 2+<br/>books"]:::purple
     A --> B --> C --> D
@@ -1838,8 +1859,8 @@ SELECT author.name, count(*) AS book_count, sum(book.price) AS total_value
 FROM author
 JOIN book ON book.author_id = author.id
                                     -- => the JOIN -- recombines the two normalized tables (co-13)
-GROUP BY author.name
-                                    -- => collapses per-book rows into per-author groups (co-15)
+GROUP BY author.id, author.name
+                                    -- => id keeps same-name authors in distinct groups (co-15)
 HAVING count(*) > 1;               -- => only Ada survives -- Grace's single-book group is filtered out
 ```
 

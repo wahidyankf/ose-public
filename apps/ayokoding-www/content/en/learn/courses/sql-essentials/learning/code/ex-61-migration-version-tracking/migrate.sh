@@ -4,11 +4,14 @@
 set -euo pipefail # => fail fast on any error, unset variable, or pipe failure
 
 DB="app.db" # => the single database file this runner targets
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+# => resolve the migration beside this script, regardless of the caller's working directory
 CURRENT=$(sqlite3 "$DB" "PRAGMA user_version;")
 # => reads the CURRENT version straight out of the file header
 
 if [ "$CURRENT" -lt 1 ]; then # => version 0 (or lower) means migration.sql has NOT run yet
-	sqlite3 "$DB" <migration.sql # => applies the ALTER TABLE + bumps PRAGMA user_version to 1
+	sqlite3 -bail "$DB" <"$SCRIPT_DIR/migration.sql"
+	# => stop on SQL errors; an unfinished transaction rolls back on connection close
 	NEW=$(sqlite3 "$DB" "PRAGMA user_version;")
 	# => re-reads the version -- confirms the bump actually landed
 	echo "migrated to version $NEW"

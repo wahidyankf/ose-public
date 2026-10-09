@@ -51,8 +51,10 @@ explicitly opt into it in SQLite?
 <details>
 <summary>Answer</summary>
 
-A foreign key constrains a column to only hold values that already exist as a primary key in another
-table (or be NULL), and, when enforced, drives `ON DELETE` actions like `CASCADE` or `RESTRICT`.
+A foreign key constrains a column to values matching a parent key (or to `NULL` when the child key
+allows it). In SQLite, the referenced parent columns must be a primary key or collectively unique;
+an enforced key also drives `ON DELETE` actions like `CASCADE` or `RESTRICT` (see
+[SQLite foreign keys](https://www.sqlite.org/foreignkeys.html)).
 SQLite disables foreign key enforcement by default for backward compatibility with older schemas --
 you must run `PRAGMA foreign_keys = ON` on every connection where you want orphan rows rejected.
 
@@ -103,9 +105,11 @@ definition SQLite stored?
 <summary>Answer</summary>
 
 `CREATE TABLE` declares a new relation: its name, its column list, and every constraint on it.
-`.schema <table>` (a CLI dot-command) echoes back the literal `CREATE TABLE` text SQLite stored in
-its internal `sqlite_master` table, comments included -- proof of what the engine actually has, not
-what you remember writing.
+`.schema <table>` (a CLI dot-command) displays the table definition stored in `sqlite_schema`
+(historically also called `sqlite_master`). SQLite normalizes parts of the original `CREATE` text
+and later `ALTER TABLE` statements may change it, so inspect the stored definition rather than
+assuming it is a byte-for-byte copy of your input (see
+[SQLite's schema table](https://www.sqlite.org/schematab.html)).
 
 </details>
 
@@ -115,8 +119,9 @@ what you remember writing.
 <details>
 <summary>Answer</summary>
 
-The `SELECT` column list performs _projection_ -- choosing which columns come back, never changing
-the row count. `WHERE` performs _selection_ -- choosing which rows come back, using comparisons,
+The `SELECT` column list performs _projection_ -- choosing which columns come back; a plain
+projection preserves rows, while `DISTINCT` or aggregates can reduce their number. `WHERE` performs
+_selection_ -- choosing which rows come back, using comparisons,
 `AND`/`OR`, `LIKE`, `IN`, `CASE`, or a subquery, never changing which columns are visible.
 
 </details>

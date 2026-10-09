@@ -1,6 +1,6 @@
 """Example 41: Max-Heap via Negation."""
 
-# heapq only implements a MIN-heap. Negating every value on the way in flips the
+# The original heapq API uses a MIN-heap; negating values flips the
 # ordering: the smallest negative (== the largest original value) pops first (co-12).
 import heapq  # => imports the stdlib binary-heap functions
 

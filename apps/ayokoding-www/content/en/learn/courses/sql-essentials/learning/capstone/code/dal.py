@@ -76,12 +76,12 @@ def report_by_author(conn: sqlite3.Connection) -> list[tuple[str, int, float]]:
         SELECT author.name, count(*), sum(book.price)
         FROM author
         JOIN book ON book.author_id = author.id
-        GROUP BY author.name
-        ORDER BY author.name
+        GROUP BY author.id, author.name
+        ORDER BY author.name, author.id
         """
     )
     rows: list[tuple[str, int, float]] = cur.fetchall()
-    return rows  # => [(name, book_count, total_price), ...] -- one row per author WITH books
+    return rows  # => [(name, book_count, total_price), ...] -- one row per author ID WITH books
 
 
 def bulk_update_prices(

@@ -10,8 +10,8 @@ weight: 1
 - **Prior topics**: [4 · Just Enough Python](../just-enough-python/learning/overview.md) -- every
   example in this topic is Python, and this topic assumes you can already read and write functions,
   lists, dicts, and loops the way that primer taught them.
-- **Tools & environment**: a macOS/Linux terminal; **Python 3.x** (`python3 --version`) with `pytest`
-  installed in a `venv` for the capstone's test suite.
+- **Tools & environment**: a macOS/Linux terminal; **Python 3.10 or newer** (`python3 --version`)
+  with `pytest` installed in a `venv` for the capstone's test suite.
 - **Assumed knowledge**: basic Python syntax from Just Enough Python. No prior algorithms background
   is required -- this topic is where that background starts.
 
@@ -26,9 +26,10 @@ data-structure choice is the real decision, and the algorithm you reach for ofte
 from it.
 
 **Cross-cutting big idea**: `abstraction-and-its-cost` -- every structure in this topic trades one
-operation's cost for another. A hash map (`dict`) buys O(1) average lookup and charges you ordering; a
-plain list buys insertion order and charges you O(n) search; a heap buys O(log n) access to the
-smallest element and charges you the ability to peek at anything else cheaply. Nothing here is free --
+operation's cost for another. A hash map (`dict`) buys O(1) average key lookup and preserves insertion
+order, but it does not keep keys sorted; a plain list buys O(1) indexing and charges you O(n) search;
+a min-heap buys O(1) access to the smallest element and O(log n) insertion/removal, but finding an
+arbitrary item still takes O(n). Nothing here is free --
 the skill this topic teaches is knowing exactly which cost you are choosing to pay, and why.
 
 This topic covers the **usable slice**: the structures and algorithms a working engineer reaches for

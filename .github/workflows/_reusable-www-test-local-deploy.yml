@@ -21,6 +21,10 @@ on:
         required: false
         type: boolean
         default: false
+      stop-docker-before-fe-e2e:
+        required: false
+        type: boolean
+        default: false
 permissions:
   contents: write
 
@@ -100,6 +104,9 @@ jobs:
           be_project="${{ inputs.app-name }}-be-e2e"
           if npx nx show project "$be_project" --json > /dev/null 2>&1; then
             npx nx run "${be_project}:test:e2e"
+          fi
+          if [ "${{ inputs.stop-docker-before-fe-e2e }}" = "true" ]; then
+            docker compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml down
           fi
           npx nx run ${{ inputs.app-name }}-fe-e2e:test:e2e
       - if: always()

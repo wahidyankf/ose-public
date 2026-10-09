@@ -5,6 +5,7 @@ FROM node:24-alpine AS deps
 WORKDIR /workspace
 COPY package.json package-lock.json ./
 COPY apps/ayokoding-www/package.json ./apps/ayokoding-www/
+COPY libs/ts-env-loader/package.json ./libs/ts-env-loader/
 COPY libs/web-ui/package.json ./libs/web-ui/
 COPY libs/web-ui-token/package.json ./libs/web-ui-token/
 RUN npm ci --ignore-scripts
@@ -14,6 +15,7 @@ WORKDIR /workspace
 COPY --from=deps /workspace/node_modules ./node_modules
 COPY --from=deps /workspace/apps/ayokoding-www/node_modules ./apps/ayokoding-www/node_modules
 COPY apps/ayokoding-www/ ./apps/ayokoding-www/
+COPY libs/ts-env-loader/ ./libs/ts-env-loader/
 # Provide shared libs as resolvable node_modules packages
 COPY libs/web-ui/src/ ./node_modules/@open-sharia-enterprise/web-ui/src/
 COPY libs/web-ui/package.json ./node_modules/@open-sharia-enterprise/web-ui/

@@ -1,7 +1,7 @@
 # AyoKoding Learn Revamp 01 — Navigation and Display
 
-> **Status:** Backlog. Do not execute until the user gives an explicit execution command. This plan
-> has no predecessor in the series and can start first.
+> **Status:** In Progress. The user gave the explicit execution command on 2026-10-10. This plan
+> has no predecessor in the series and started first.
 
 Quick display fixes on the **existing** AyoKoding Learn UI (`apps/ayokoding-www`). Course titles
 lose their stale catalogue numbers, and the only order number a reader sees becomes the course's

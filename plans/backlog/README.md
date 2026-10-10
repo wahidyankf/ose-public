@@ -58,11 +58,10 @@ with complete, runnable courses, and `learn/legacy` is removed. The work is spli
 plan is one worktree and one PR, and the plans run **strictly in numeric order**: the next plan starts
 only after the previous one is merged, deployed, verified, and cleaned up. The "Depends on" column
 names the earlier plans each one builds on directly. Every plan's Phase 0 first runs the deferred
-`plan-quality-gate` (at most 2 cycles); none has a verdict yet.
+`plan-quality-gate` (at most 2 cycles); plan 01's verdict is recorded in its `delivery.md`.
 
 | Order | Plan                                                                                                | Locally verifiable outcome                                                                          | Depends on  |
 | ----: | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------- |
-|     1 | [Navigation and display](./ayokoding-learn-revamp-01-navigation-and-display/README.md)              | No `NN ·` title prefixes, path position numbers, sidebar auto-scroll, render fixes                  | —           |
 |     2 | [Path model](./ayokoding-learn-revamp-02-path-model/README.md)                                      | Phases, goals, `assumes`, outline marker, prerequisite revision, closure checks, career copy        | 01          |
 |     3 | [Catalog and metadata](./ayokoding-learn-revamp-03-catalog-and-metadata/README.md)                  | Course metadata schema and backfill, categories, catalog page, course landing header                | 01          |
 |     4 | [Learning experience](./ayokoding-learn-revamp-04-learning-experience/README.md)                    | Browser progress, phase roadmap page, context bar, mark complete (and undo), Learn home             | 02, 03      |
@@ -78,8 +77,9 @@ names the earlier plans each one builds on directly. Every plan's Phase 0 first 
 |    14 | [Legacy removal](./ayokoding-learn-revamp-14-legacy-removal/README.md)                              | `learn/legacy` deleted, 308 redirects added, `docs/` links repointed, series-completion gate passed | 10 (+11–13) |
 
 The end state is a catalog of 229 courses, none in `status: outline`, each with runnable examples.
-Nothing in this series has started: every plan is planning documents only until the user orders
-execution.
+Plan 01 is in progress (see
+[`../in-progress/ayokoding-learn-revamp-01-navigation-and-display/README.md`](../in-progress/ayokoding-learn-revamp-01-navigation-and-display/README.md));
+the remaining plans are planning documents only until the user orders execution.
 
 Three waves emptied this queue:
 

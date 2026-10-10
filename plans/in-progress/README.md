@@ -11,7 +11,11 @@ execution checklist.
 
 ## Active Plans
 
-_No plans are currently in progress._
+### AyoKoding Learn Revamp series
+
+| Order | Plan                                                                                   | Locally verifiable outcome                                                         | Depends on |
+| ----: | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------- |
+|     1 | [Navigation and display](./ayokoding-learn-revamp-01-navigation-and-display/README.md) | No `NN ·` title prefixes, path position numbers, sidebar auto-scroll, render fixes | —          |
 
 ## Instructions
 

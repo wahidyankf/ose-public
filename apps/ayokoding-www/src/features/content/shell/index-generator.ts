@@ -96,7 +96,11 @@ export async function processAllIndexFiles(
   const allContent = await repository.readAllContent();
   const trees = buildTrees(allContent);
 
-  const knownSlugs = new Set(allContent.map((c) => `${c.locale}:${c.slug}`));
+  // Draft pages never belong in a generated index: their visibility is a request-scoped
+  // concern (the repository's AYOKODING_WEB_SHOW_DRAFTS flag), and the E2E build runs with
+  // that flag on — admitting draft entries here wrote them into the tracked index files and
+  // changed the nav/drawer rendering (discovered via the learn-revamp plan's drawer test).
+  const knownSlugs = new Set(allContent.filter((c) => !c.draft).map((c) => `${c.locale}:${c.slug}`));
   const sectionFiles = allContent.filter((c) => c.isSection);
   const changed: string[] = [];
   const errors: string[] = [];

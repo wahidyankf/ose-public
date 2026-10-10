@@ -218,8 +218,10 @@ Then("the single role card renders with an inline first-phase syllabus preview",
   await expect(card).toHaveAttribute("href", "/en/learn/paths/careers/interview-ready/backend-track");
   const previewItems = card.locator("xpath=..").locator("ol > li");
   await expect(previewItems).toHaveCount(2);
-  await expect(previewItems.nth(0)).toContainText("Just Enough Python");
-  await expect(previewItems.nth(1)).toContainText("Data Structures & Algorithms Essentials");
+  // Numbered preview (plan ayokoding-learn-revamp-01 §4.2): each inline item renders its path
+  // position before the title, separated by " · " from the previous item.
+  await expect(previewItems.nth(0)).toContainText("1 Just Enough Python");
+  await expect(previewItems.nth(1)).toContainText("2 Data Structures & Algorithms Essentials");
 });
 
 Then("the layout does not reserve or render a visibly empty second card", async ({ page }) => {
@@ -673,4 +675,115 @@ Then(
 Then("the only course order number on the page is the course's position in the active path", async ({ page }) => {
   const nav = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
   await expect(nav.getByText("Course 2 of 3", { exact: true })).toBeVisible();
+});
+
+// ---------------------------------------------------------------------------
+// path-position-numbers.feature, scenarios 2–4 (plan ayokoding-learn-revamp-01, Phase 4 RED) —
+// S1 syllabus numbers, S2 rail numbers, S3 arc-card preview numbers. S2's Given ("a reader opens
+// a course in path context on a desktop-width viewport") and S3's Given/When are already bound
+// above; only the numbering steps are new here, plus the updated preview expectations in the
+// Cycle 3.1c-ii section.
+// ---------------------------------------------------------------------------
+
+// S1 — syllabus rows on the backend-track fixture path's landing page.
+Given("a learning path lists its courses in manifest order", async ({ page }) => {
+  const manifest = (await loadPublishedManifests(page)).find(
+    (candidate) => candidate.pathId === "careers/immediately-effective/backend-track",
+  );
+  expect(manifest?.courseOrder).toEqual(["just-enough-bash", "backend-essentials", "sql-essentials"]);
+});
+
+When("a reader opens that path's landing page", async ({ page }) => {
+  await page.goto("/en/learn/paths/careers/immediately-effective/backend-track");
+  await page.waitForLoadState("networkidle");
+});
+
+Then("each syllabus row shows its position number starting at 1 before the course title", async ({ page }) => {
+  const syllabus = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) syllabus" });
+  const rows = syllabus.getByRole("listitem");
+  await expect(rows).toHaveCount(3);
+  const expected = [
+    { position: "1", title: "Just Enough Bash" },
+    { position: "2", title: "Backend Essentials" },
+    { position: "3", title: "SQL Essentials" },
+  ];
+  for (const [index, { position, title }] of expected.entries()) {
+    await expect(rows.nth(index)).toHaveText(new RegExp(`^${position}\\s*${title}$`, "u"));
+    // The number sits outside the link (tech-docs §4.2), so the link's accessible name stays
+    // exactly the title (WCAG 2.5.3 Label in Name).
+    await expect(rows.nth(index).getByRole("link", { name: title, exact: true })).toBeVisible();
+  }
+});
+
+Then("the position numbers follow the manifest order with no gaps", async ({ page }) => {
+  const syllabus = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) syllabus" });
+  const rows = syllabus.getByRole("listitem");
+  const count = await rows.count();
+  expect(count).toBe(3);
+  for (let index = 0; index < count; index += 1) {
+    const leading = ((await rows.nth(index).textContent()) ?? "").match(/^\d+/u)?.[0] ?? "";
+    expect(leading).toBe(String(index + 1));
+  }
+});
+
+// S2 — rail rows on backend-essentials in path context. The already-bound Given navigates to
+// /en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track and the
+// already-bound "the page renders" waits for network idle.
+Then("each rail row shows its position number before the course title", async ({ page }) => {
+  const rail = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+  const rows = rail.getByRole("listitem");
+  await expect(rows).toHaveCount(3);
+  const expected = [
+    { position: "1", title: "Just Enough Bash" },
+    { position: "2", title: "Backend Essentials" },
+    { position: "3", title: "SQL Essentials" },
+  ];
+  for (const [index, { position, title }] of expected.entries()) {
+    // The current row's ▸ marker sits between the number and the title inside the link.
+    await expect(rows.nth(index)).toHaveText(new RegExp(`^${position}\\s*▸?\\s*${title}$`, "u"));
+    // The link keeps its aria-label={title}; the row number never leaks into the name
+    // (tech-docs §4.2, Decision D4).
+    await expect(rows.nth(index).getByRole("link", { name: title, exact: true })).toBeVisible();
+  }
+});
+
+Then("the current course's row shows its own position number with the current-course marker", async ({ page }) => {
+  const rail = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+  const currentRow = rail.locator('li:has(a[aria-current="page"])');
+  await expect(currentRow).toHaveCount(1);
+  const currentLink = currentRow.getByRole("link", { name: "Backend Essentials", exact: true });
+  await expect(currentLink).toContainText("▸");
+  await expect(currentLink).toHaveClass(/\bbg-accent\b/);
+  // backend-essentials is position 2 of 3, and its number renders before the ▸ marker.
+  await expect(currentRow).toHaveText(/^2\s*▸/u);
+});
+
+// S3 — the interview-ready arc card's inline first-phase preview (Given/When bound in the
+// Cycle 3.1c-ii section above).
+Then('the role card\'s "Starts with" preview numbers its courses 1, 2, and so on in path order', async ({ page }) => {
+  const nav = page.getByRole("navigation", { name: "interview-ready paths" });
+  const card = nav.getByRole("link", { name: /^Start the Backend Track \(Interview-Ready\) path/ });
+  const previewItems = card.locator("xpath=..").locator("ol > li");
+  await expect(previewItems).toHaveCount(2);
+  const texts = await previewItems.allTextContents();
+  // The inline separator " · " precedes every number except the first, so the second item's
+  // textContent starts with it; trailing/leading whitespace is trimmed here only.
+  expect(texts[0]?.trim()).toBe("1 Just Enough Python");
+  expect(texts[1]?.trim()).toBe("· 2 Data Structures & Algorithms Essentials");
+});
+
+Then("no preview item shows a second number inside the course title", async ({ page }) => {
+  const nav = page.getByRole("navigation", { name: "interview-ready paths" });
+  const card = nav.getByRole("link", { name: /^Start the Backend Track \(Interview-Ready\) path/ });
+  const previewItems = card.locator("xpath=..").locator("ol > li");
+  await expect(previewItems).toHaveCount(2);
+  // Strip the rendered position number and its separator; only the bare title must remain — a
+  // second number inside the title (the old DWT-002 collision) would survive this strip.
+  const bareTitles = (await previewItems.allTextContents()).map((text) =>
+    text
+      .trim()
+      .replace(/^·\s*/u, "")
+      .replace(/^\d+\s*/u, ""),
+  );
+  expect(bareTitles).toEqual(["Just Enough Python", "Data Structures & Algorithms Essentials"]);
 });

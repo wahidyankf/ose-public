@@ -5,6 +5,7 @@ import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
 import type { PathManifest } from "../core/schemas";
 import { coursePositionInManifest, manifestCourseOrder, slugForCourseId } from "./course-path-nav";
+import { PathPositionNumber } from "./path-position-number";
 
 /**
  * Shared base classes for the ordered course-row `Link`s — factored out (rather than duplicated
@@ -52,12 +53,16 @@ export function PathRail({ locale, manifest, currentCourseId, courseTitles }: Pa
         {t(locale as Locale, "pathsCourseWordCapital")} {index} {t(locale as Locale, "pathsOfWord")} {total}
       </p>
       <ol className="flex flex-col gap-1">
-        {courses.map((course) => {
+        {courses.map((course, index) => {
           const isCurrent = course.id === currentCourseId;
           const title = courseTitles[course.id] ?? course.id;
 
           return (
-            <li key={course.id}>
+            <li key={course.id} className="flex items-center gap-1">
+              {/* Position number (plan ayokoding-learn-revamp-01 §4.2): outside the link, so the
+                  link's aria-label stays exactly the title, and the number stays visible on the
+                  current row too (Decision D4). */}
+              <PathPositionNumber position={index + 1} />
               <Link
                 href={contentUrl(locale as Locale, slugForCourseId(course.id), manifest.pathId)}
                 aria-label={title}

@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
 
@@ -61,6 +61,39 @@ describe("PathRail (Cycle 2.8 — Screen 3 Option B)", () => {
     expect(current.getAttribute("aria-current")).toBe("page");
     expect(current.textContent).toContain("▸");
     expect(current.className).toContain("font-semibold");
+  });
+
+  it("shows each row's position number before its title while the current row keeps every current-course signal (plan ayokoding-learn-revamp-01 §4.2)", () => {
+    const { container } = render(
+      <PathRail locale="en" manifest={manifest} currentCourseId="just-enough-python" courseTitles={courseTitles} />,
+    );
+
+    const ol = container.querySelector("ol");
+    expect(ol).not.toBeNull();
+    const items = within(ol as HTMLElement).getAllByRole("listitem");
+    const expected = [
+      { position: "1", title: "Git" },
+      { position: "2", title: "Just Enough Python" },
+      { position: "3", title: "Data Structures & Algorithms" },
+    ];
+    expected.forEach(({ position, title }, index) => {
+      const rowText = items[index]?.textContent ?? "";
+      expect(
+        rowText,
+        `rail row ${index + 1} should render its position number "${position}" before the title (rendered: "${rowText}")`,
+      ).toMatch(new RegExp(`^${position}\\s*▸?\\s*${title}$`, "u"));
+      // The link keeps its aria-label={title}; the row number stays outside the link, so the
+      // link's accessible name is never a numbered title (tech-docs §4.2, Decision D4).
+      expect(within(items[index]!).getByRole("link", { name: title })).toBeTruthy();
+    });
+
+    // The current row (position 2 of 3) keeps aria-current="page", the ▸ marker, and bg-accent,
+    // and its own position number renders before them.
+    const current = screen.getByRole("link", { name: "Just Enough Python" });
+    expect(current.getAttribute("aria-current")).toBe("page");
+    expect(current.textContent).toContain("▸");
+    expect(current.className).toContain("bg-accent");
+    expect(current.closest("li")?.textContent ?? "").toMatch(/^2\s*▸/u);
   });
 
   it("every row link carries the path context, and the row's aria-label holds the untruncated title", () => {

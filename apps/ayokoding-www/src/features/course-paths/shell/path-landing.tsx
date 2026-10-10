@@ -7,6 +7,7 @@ import { MarkdownRenderer } from "@/features/content/shell/markdown-renderer";
 import type { PathManifest } from "../core/schemas";
 import { hueCssVars, hueForManifest } from "../core/path-hue";
 import { manifestCourseOrder, slugForCourseId } from "./course-path-nav";
+import { PathPositionNumber } from "./path-position-number";
 
 export interface PathLandingProps {
   locale: string;
@@ -22,8 +23,10 @@ export interface PathLandingProps {
 
 /**
  * Path landing (Cycles 3.1/3.1d, Screen 2) — a manifest rendered as a numbered, ordered syllabus.
- * The visible number **is** the `courseOrder` index (semantic `<ol>`); every course link carries
- * `?path=`. For a `skills/` path, `bodyHtml` (the shipped `content.getBySlug` procedure's `html`
+ * The visible number **is** the `courseOrder` index, rendered per row by the shared
+ * `PathPositionNumber` (plan ayokoding-learn-revamp-01 §4.2 — plain text, because Preflight strips
+ * list markers); every course link carries `?path=`. For a `skills/` path, `bodyHtml` (the shipped
+ * `content.getBySlug` procedure's `html`
  * for this path's own `_index.md`) renders via the shipped `MarkdownRenderer` between the
  * title/arc-summary and the syllabus — the rendering surface for the ramp can/cannot table,
  * runway-justification paragraph, and linked-prerequisite outbound links. A careers path's
@@ -57,11 +60,14 @@ export function PathLanding({ locale, manifest, courseTitles, bodyHtml }: PathLa
             {t(locale as Locale, "pathsSyllabus")}
           </h2>
           <ol className="mt-3 space-y-1">
-            {courses.map((course) => {
+            {courses.map((course, index) => {
               const title = courseTitles[course.id] ?? course.id;
 
               return (
-                <li key={course.id}>
+                <li key={course.id} className="flex items-baseline gap-2">
+                  {/* Position number (plan ayokoding-learn-revamp-01 §4.2): outside the link, so
+                      the link's accessible name stays exactly the title (WCAG 2.5.3). */}
+                  <PathPositionNumber position={index + 1} />
                   <Link
                     href={contentUrl(locale as Locale, slugForCourseId(course.id), manifest.pathId)}
                     // `underline underline-offset-2` (UWT-003 fix, phase-5 rule-15 retest): the

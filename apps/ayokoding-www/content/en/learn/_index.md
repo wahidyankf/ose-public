@@ -5,6 +5,7 @@ draft: false
 weight: 10
 ---
 
+- [Overview](/en/learn/overview)
 - [Paths](/en/learn/paths)
   - [Careers](/en/learn/paths/careers)
   - [Skills](/en/learn/paths/skills)
@@ -198,4 +199,3 @@ weight: 10
   - [IT Governance](/en/learn/legacy/it-governance)
   - [Business](/en/learn/legacy/business)
   - [Personal Development](/en/learn/legacy/personal-development)
-- [Overview](/en/learn/overview)

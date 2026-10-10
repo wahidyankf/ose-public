@@ -68,3 +68,10 @@ Feature: Site Navigation
     When the page is rendered to HTML
     Then the rendered link's href should be resolved relative to the section's own directory
     And the href should not contain a literal ".md" extension
+
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The learn overview is the first entry under Learn in the sidebar
+  @integration-exempt
+  Scenario: The learn overview is the first entry under Learn in the sidebar
+    When a visitor opens the learn overview page
+    Then the first entry under Learn in the sidebar is "Overview"
+    And it is followed by Paths, Courses, and Legacy in that order

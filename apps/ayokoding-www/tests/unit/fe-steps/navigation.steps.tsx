@@ -1,13 +1,17 @@
+import fs from "node:fs";
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { expect, vi } from "vitest";
+import matter from "gray-matter";
 
 let mockPathname = "/en/unrelated";
 vi.mock("next/navigation", () => ({
   usePathname: () => mockPathname,
 }));
 import "./helpers/test-setup";
+import { sortTreeByWeight } from "@/features/content/core/tree-builder";
+import type { TreeNode } from "@/features/content/core/types";
 import { Breadcrumb } from "@/features/navigation/shell/breadcrumb";
 import { TableOfContents } from "@/features/navigation/shell/toc";
 import { PrevNext } from "@/features/navigation/shell/prev-next";
@@ -255,4 +259,43 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       });
     },
   );
+
+  Scenario("The learn overview is the first entry under Learn in the sidebar", ({ When, Then, And }) => {
+    // The real learn entries the sidebar lists under Learn, keyed to the files that back them.
+    // Slugs and isSection flags mirror what the app derives from these paths
+    // (src/features/content/shell/repository-fs.ts deriveSlug): `overview.md` is the learn
+    // overview page itself; each `_index.md` is a section.
+    const learnEntryFiles: Array<{ file: string; slug: string; isSection: boolean }> = [
+      { file: "content/en/learn/overview.md", slug: "learn/overview", isSection: false },
+      { file: "content/en/learn/paths/_index.md", slug: "learn/paths", isSection: true },
+      { file: "content/en/learn/courses/_index.md", slug: "learn/courses", isSection: true },
+      { file: "content/en/learn/legacy/_index.md", slug: "learn/legacy", isSection: true },
+    ];
+    let sidebarNodes: TreeNode[] = [];
+
+    When("a visitor opens the learn overview page", () => {
+      // Build the sidebar entries the way the app does: TreeNode nodes carrying the real
+      // frontmatter title/weight read from the content files at the app root (process.cwd()).
+      sidebarNodes = learnEntryFiles.map(({ file, slug, isSection }) => {
+        const { data } = matter(fs.readFileSync(path.resolve(process.cwd(), file), "utf8"));
+        return {
+          title: String(data.title),
+          slug,
+          weight: Number(data.weight),
+          isSection,
+          children: [],
+        };
+      });
+      // ...and ordered the way the app orders tree nodes (tree-builder.ts sortTreeByWeight).
+      sortTreeByWeight(sidebarNodes);
+    });
+
+    Then('the first entry under Learn in the sidebar is "Overview"', () => {
+      expect(sidebarNodes[0]?.title).toBe("Overview");
+    });
+
+    And("it is followed by Paths, Courses, and Legacy in that order", () => {
+      expect(sidebarNodes.map((node) => node.title)).toEqual(["Overview", "Paths", "Courses", "Legacy"]);
+    });
+  });
 });

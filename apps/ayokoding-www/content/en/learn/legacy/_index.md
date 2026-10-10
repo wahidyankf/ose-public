@@ -3,7 +3,7 @@ title: "Legacy"
 description: "Older subject-organized material, kept for reference while the course library fills. See Courses and Paths for the current learning experience."
 date: 2026-07-23T00:00:00+07:00
 draft: false
-weight: 96
+weight: 103
 ---
 
 - [Overview](/en/learn/legacy/overview)

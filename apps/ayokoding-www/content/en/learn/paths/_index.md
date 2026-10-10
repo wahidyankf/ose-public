@@ -3,7 +3,7 @@ title: "Paths"
 description: "Choose a learning path — an ordered route through the course library toward a goal. Each path publishes as its manifest ships."
 date: 2026-07-23T00:00:00+07:00
 draft: false
-weight: 90
+weight: 101
 ---
 
 - [Careers](/en/learn/paths/careers)

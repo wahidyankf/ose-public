@@ -1,5 +1,5 @@
 import { createBdd } from "playwright-bdd";
-import { expect, type Page, type Response } from "@playwright/test";
+import { expect, type Locator, type Page, type Response } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
 const navigationResponses = new WeakMap<Page, Response>();
@@ -216,4 +216,62 @@ Then("the href should not be a raw filesystem-relative path", async ({ page }) =
     .first()
     .getAttribute("href");
   expect(href).not.toMatch(/^\.\.?(?:\/|$)/);
+});
+
+// The four sidebar entries under Learn, by their public hrefs (contentUrl of the learn
+// overview page and the three section indexes).
+const learnSidebarHrefs = ["/en/learn/overview", "/en/learn/paths", "/en/learn/courses", "/en/learn/legacy"] as const;
+
+/**
+ * The docs sidebar's desktop `<aside>` (resizable-sidebar.tsx) — the `md:block` shell the
+ * generic sidebar tree renders inside. Below `md` the aside is display:none, so every
+ * lookup here is scoped to the desktop rail only.
+ */
+function desktopSidebarAside(page: Page): Locator {
+  return page.locator("aside").filter({ has: page.getByRole("navigation", { name: /sidebar/i }) });
+}
+
+/**
+ * The Learn sidebar entries positioned top to bottom on the page: each entry's `href` with
+ * the `y` of its `boundingBox()`, sorted ascending. The sidebar renders its entries in
+ * content-tree weight order, so the y sequence is the rendered order.
+ */
+async function learnSidebarEntriesTopToBottom(aside: Locator): Promise<Array<{ href: string; y: number }>> {
+  const entries: Array<{ href: string; y: number }> = [];
+  for (const href of learnSidebarHrefs) {
+    const link = aside.locator(`a[href="${href}"]`);
+    await expect(link, `the Learn sidebar entry ${href} should render in the desktop aside`).toBeVisible();
+    const box = await link.boundingBox();
+    expect(box, `the Learn sidebar entry ${href} should expose a bounding box`).not.toBeNull();
+    entries.push({ href, y: box!.y });
+  }
+  return entries.sort((a, b) => a.y - b.y);
+}
+
+When("a visitor opens the learn overview page", async ({ page }) => {
+  await page.goto("/en/learn/overview");
+  await page.waitForLoadState("networkidle");
+});
+
+Then("the first entry under Learn in the sidebar is {string}", async ({ page }, expectedTitle: string) => {
+  const aside = desktopSidebarAside(page);
+  const entries = await learnSidebarEntriesTopToBottom(aside);
+  const firstHref = entries[0]?.href;
+  expect(
+    firstHref,
+    `the topmost Learn sidebar entry should be /en/learn/overview, but the rendered y-order was: ${entries
+      .map((entry) => `${entry.href}@y=${entry.y}`)
+      .join(", ")}`,
+  ).toBe("/en/learn/overview");
+  await expect(aside.locator(`a[href="${firstHref}"]`)).toHaveText(expectedTitle);
+});
+
+Then("it is followed by Paths, Courses, and Legacy in that order", async ({ page }) => {
+  const entries = await learnSidebarEntriesTopToBottom(desktopSidebarAside(page));
+  expect(
+    entries.map((entry) => entry.href),
+    `the Learn sidebar entries should read Overview, Paths, Courses, Legacy top to bottom, but the rendered y-order was: ${entries
+      .map((entry) => `${entry.href}@y=${entry.y}`)
+      .join(", ")}`,
+  ).toEqual(["/en/learn/overview", "/en/learn/paths", "/en/learn/courses", "/en/learn/legacy"]);
 });

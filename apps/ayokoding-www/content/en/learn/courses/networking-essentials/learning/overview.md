@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) --
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) --
   every socket example in this topic is Python, and this topic assumes you can already read and
   write functions, `list`/`dict` literals, and loops the way that primer taught them.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.x** installed (`python3 --version`);

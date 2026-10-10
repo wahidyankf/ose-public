@@ -1,5 +1,5 @@
 ---
-title: "15 · Software Testing"
+title: "Software Testing"
 date: 2026-07-15T00:00:00+07:00
 draft: false
 weight: 250

@@ -2188,5 +2188,4 @@ measurable reduction in how many times the underlying data actually gets touched
 
 ---
 
-← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [27 · Data Access: ORMs &
-Query Builders](../../data-access-orms-and-query-builders/learning/overview.md) →
+← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [Data Access: ORMs & Query Builders](../../data-access-orms-and-query-builders/learning/overview.md) →

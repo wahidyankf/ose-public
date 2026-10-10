@@ -19,7 +19,7 @@ weight: 1
   (where an adapter is actually served);
   `data-engineering` (the dataset pipeline) -- `[Unverified]` this course is not yet present in the
   AyoKoding course library on disk, so no link is given here; **just enough python**
-  ([4 · Just Enough Python](../just-enough-python/learning/overview.md)) is assumed for reading and
+  ([Just Enough Python](../just-enough-python/learning/overview.md)) is assumed for reading and
   writing fully type-annotated Python.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13**; a small open-weights base model
   and a parameter-efficient fine-tuning library, both pinned CVE-clean at authoring; a training

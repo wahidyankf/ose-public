@@ -7,12 +7,12 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) -- every
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) -- every
   script in this topic is fully type-annotated Python, and you should already be comfortable reading
   functions, classes, exceptions, context managers, and `dict`/`list` literals the way that primer
-  taught them; [7 · Data Structures & Algorithms Essentials](../../data-structures-and-algorithms-essentials/learning/overview.md)
+  taught them; [Data Structures & Algorithms Essentials](../../data-structures-and-algorithms-essentials/learning/overview.md)
   -- this topic leans on the queue and deque shapes you already built there for the producer/consumer
-  and work-stealing examples; [22 · Programming Paradigms](../../programming-paradigms/learning/overview.md)
+  and work-stealing examples; [Programming Paradigms](../../programming-paradigms/learning/overview.md)
   -- the "reduce shared mutable state" mindset that topic introduced through the functional lens is the
   same discipline this topic applies under real concurrent execution, where an unprotected mutable
   variable is not just harder to reason about, it is actively unsafe.
@@ -291,4 +291,4 @@ and honestly on whichever interpreter actually executes them, standard or free-t
 
 ---
 
-← Previous: [23 · Functional Programming Drilling](../../functional-programming/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →
+← Previous: [Functional Programming Drilling](../../functional-programming/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →

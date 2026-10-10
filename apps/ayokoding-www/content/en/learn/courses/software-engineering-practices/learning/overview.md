@@ -7,13 +7,13 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [5 · Just Enough Bash](../../just-enough-bash/learning/overview.md) -- every
+- **Prior topics**: [Just Enough Bash](../../just-enough-bash/learning/overview.md) -- every
   worked example in this topic is driven from a terminal, and you should already be comfortable
   with the `git` CLI's surrounding shell habits (piping, exit codes, editing a file, rerunning a
-  command); [15 · Software Testing](../../software-testing/learning/overview.md) -- this topic
+  command); [Software Testing](../../software-testing/learning/overview.md) -- this topic
   wraps a workflow _around_ the testing discipline that topic teaches (the test pyramid, coverage,
   TDD's red-green-refactor loop), it does not re-teach testing mechanics; and a working app from
-  Pass 1, e.g. [11 · Backend Essentials](../../backend-essentials/learning/overview.md), to
+  Pass 1, e.g. [Backend Essentials](../../backend-essentials/learning/overview.md), to
   actually practice the workflow on -- every example below assumes you have _something_ small and
   real to commit, branch, review, and ship.
 - **Tools & environment**: a macOS/Linux terminal; **`git`**; **Python 3.x** with a linter/formatter
@@ -183,4 +183,4 @@ practice for the failure it prevents, not because it's on a checklist.
 
 ---
 
-← Previous: [29 · Advanced Networking Drilling](../../advanced-networking/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →
+← Previous: [Advanced Networking Drilling](../../advanced-networking/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →

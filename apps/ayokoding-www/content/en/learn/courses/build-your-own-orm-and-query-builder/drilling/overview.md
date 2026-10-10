@@ -1617,4 +1617,4 @@ invisible until a caller passes the wrong type into a boundary that should have 
 
 ---
 
-← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [29 · Advanced Networking](../../advanced-networking/learning/overview.md) →
+← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [Advanced Networking](../../advanced-networking/learning/overview.md) →

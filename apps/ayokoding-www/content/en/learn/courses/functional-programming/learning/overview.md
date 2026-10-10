@@ -7,11 +7,10 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) covers the
-  functions, closures, comprehensions, and generators this topic builds on directly; [7 · Data
-  Structures & Algorithms Essentials](../../data-structures-and-algorithms-essentials/learning/overview.md)
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) covers the
+  functions, closures, comprehensions, and generators this topic builds on directly; [Data Structures & Algorithms Essentials](../../data-structures-and-algorithms-essentials/learning/overview.md)
   supplies the sequences and trees the transformation pipelines below operate over. This topic
-  deliberately contrasts against [8 · Object-Oriented Programming Essentials](../../object-oriented-programming-essentials/learning/overview.md) --
+  deliberately contrasts against [Object-Oriented Programming Essentials](../../object-oriented-programming-essentials/learning/overview.md) --
   bundling state and behavior together is the opposite move from keeping functions pure and data
   immutable. Topic 22, Programming Paradigms, already introduced the functional lens through contrast
   and explicitly deferred the deep dive to this topic -- reading it first is a natural on-ramp but not
@@ -710,4 +709,4 @@ error handling, and an applicative combine into one end-to-end report.
 
 ---
 
-← Previous: [22 · Programming Paradigms Drilling](../../programming-paradigms/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →
+← Previous: [Programming Paradigms Drilling](../../programming-paradigms/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →

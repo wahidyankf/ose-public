@@ -7,8 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) (functions, modules,
-  typed collections) and [11 · Backend Essentials](../../backend-essentials/learning/overview.md) (HTTP, routing,
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) (functions, modules,
+  typed collections) and [Backend Essentials](../../backend-essentials/learning/overview.md) (HTTP, routing,
   persistence, a first FastAPI route served under `uvicorn`) -- this topic deepens both toward the async idiom
   and a production FastAPI service, and assumes you can already parameterize a SQL query from Python.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13** managed by **`uv`**; pinned CVE-clean

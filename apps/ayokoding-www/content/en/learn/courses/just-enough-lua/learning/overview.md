@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [1 · Just Enough Nvim](../../just-enough-nvim/learning/overview.md) -- you should
+- **Prior topics**: [Just Enough Nvim](../../just-enough-nvim/learning/overview.md) -- you should
   be comfortable opening, editing, and saving files before writing and running Lua scripts.
 - **Tools & environment**: a macOS/Linux terminal; the standalone **`lua`** interpreter installed
   (verify with `lua -v`) for running scripts outside Neovim. Lua is licensed **MIT**, a Tier-1
@@ -17,7 +17,7 @@ weight: 1
 
 ## Why this exists -- the big idea
 
-[3 · Extending Neovim](../../extending-neovim/learning/overview.md) configures Neovim in Lua, and
+[Extending Neovim](../../extending-neovim/learning/overview.md) configures Neovim in Lua, and
 learning the config language and the editor-extension concept at the same time doubles the
 difficulty -- so this primer gets you just enough Lua first, before you ever touch a `.lua` config
 file. The one idea worth keeping if you forget everything else: a single structure, the **table**,
@@ -95,7 +95,7 @@ license, and Neovim's embedded dialect traces to `lua.org`, `luajit.org`, and Ne
 ## Scope: just enough, not comprehensive
 
 This is a **Primer**, not a comprehensive Lua reference: it covers exactly the language surface
-[3 · Extending Neovim](../../extending-neovim/learning/overview.md) depends on, and deliberately
+[Extending Neovim](../../extending-neovim/learning/overview.md) depends on, and deliberately
 excludes LPeg, the `utf8` library, `string.pack`/`string.unpack`, `os.date` formatting, file and
 process I/O beyond the `io.write` calls already shown, `__newindex`/`__lt`/`__le` and the rest of
 the metamethod family beyond what OOP and operator
@@ -105,5 +105,5 @@ by oversight.
 
 ---
 
-← Previous: [1 · Just Enough Nvim](../../just-enough-nvim/learning/advanced.md) · Next:
+← Previous: [Just Enough Nvim](../../just-enough-nvim/learning/advanced.md) · Next:
 [Beginner Examples](./beginner.md) →

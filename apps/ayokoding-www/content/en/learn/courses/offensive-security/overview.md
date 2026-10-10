@@ -13,9 +13,9 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [58 · IT and Application Security](../it-and-application-security/overview.md)
-  supplies threat and application-security vocabulary; [17 · Security Essentials](../security-essentials/learning/overview.md)
-  supplies safe defensive controls; and [5 · Just Enough Bash](../just-enough-bash/learning/overview.md)
+- **Prior topics**: [IT and Application Security](../it-and-application-security/overview.md)
+  supplies threat and application-security vocabulary; [Security Essentials](../security-essentials/learning/overview.md)
+  supplies safe defensive controls; and [Just Enough Bash](../just-enough-bash/learning/overview.md)
   supplies terminal basics.
 - **Tools and environment**: Python 3.13+, POSIX shell, and a self-owned local lab. The included
   programs read synthetic fixtures and reject any target other than `localhost` or `127.0.0.1`.

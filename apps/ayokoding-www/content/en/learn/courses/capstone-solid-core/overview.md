@@ -21,7 +21,7 @@ underneath it.
 **Prerequisites** -- restated from this capstone's anchoring spec in
 [`syllabus/33-engineering-management.md`](https://github.com/wahidyankf/ose-public/blob/main/plans/in-progress/fundamentally-strong-software-engineer/syllabus/33-engineering-management.md):
 
-- **Starting point**: [Pass 1 Capstone · First Working Software](../capstone-first-working-software/overview.md)
+- **Starting point**: [Capstone · First Working Software](../capstone-first-working-software/overview.md)
   -- this capstone's `code/` is a re-engineering of that one, not a new app.
 - **Prior topics**: [19 Computer Science Foundations](../computer-science-foundations/learning/overview.md),
   [21 Object-Oriented Design & Patterns](../object-oriented-design-and-patterns/learning/overview.md),
@@ -2765,5 +2765,5 @@ current major versions as of this page's authoring.
 
 ---
 
-← Previous: [33 · Engineering Management Drilling](../engineering-management/drilling/overview.md) ·
+← Previous: [Engineering Management Drilling](../engineering-management/drilling/overview.md) ·
 Next: 34 · NoSQL Databases (not yet published in the course library)

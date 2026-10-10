@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [11 · Backend Essentials](../backend-essentials/learning/overview.md) -- HTTP
+- **Prior topics**: [Backend Essentials](../backend-essentials/learning/overview.md) -- HTTP
   verbs, status codes, routing, and JSON request/response handling, the direct foundation every
   example in this course's Beginner tier builds on; `backend-at-scale` --
   `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is given here --
@@ -39,7 +39,7 @@ throughput` -- pagination strategy, rate limiting, and the REST/GraphQL/gRPC cho
 throughput-and-latency decisions dressed up as an API-style preference.
 
 > **Scope guard -- API design vs. the backend that serves it vs. the architecture around it.**
-> [11 · Backend Essentials](../backend-essentials/learning/overview.md) owns the **serving
+> [Backend Essentials](../backend-essentials/learning/overview.md) owns the **serving
 > mechanics**: routing, request parsing, and returning a JSON response from a running web framework.
 > This course assumes that mechanical layer already works and owns a different, narrower question:
 > what SHAPE should the contract itself take, and what PROMISES does that shape make to a caller who

@@ -17,7 +17,7 @@ weight: 1
   [Inference Serving & Model Deployment](../../inference-serving-and-model-deployment/overview.md)
   (where an adapter is actually served); `data-engineering` (the
   dataset pipeline) -- `[Unverified]` not yet present in the AyoKoding course library on disk; **just
-  enough python** ([4 · Just Enough Python](../../just-enough-python/learning/overview.md)) is
+  enough python** ([Just Enough Python](../../just-enough-python/learning/overview.md)) is
   assumed for reading and writing fully type-annotated Python.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13**, the standard library only
   (`json`, `math`, `dataclasses`, `pathlib`, `typing`) -- no fine-tuning library, no network call, no

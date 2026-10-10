@@ -9,7 +9,7 @@ This code-first route applies the Dart vocabulary from the prerequisite to Flutt
 
 ## Prerequisites
 
-Complete [72 · Just Enough Dart](../../just-enough-dart/learning/overview.md) and [Frontend Essentials](../../frontend-essentials/learning/overview.md). Install a current stable Flutter SDK and one target runner. Use `flutter doctor` to find host-specific setup gaps before treating a course example as a product release.
+Complete [Just Enough Dart](../../just-enough-dart/learning/overview.md) and [Frontend Essentials](../../frontend-essentials/learning/overview.md). Install a current stable Flutter SDK and one target runner. Use `flutter doctor` to find host-specific setup gaps before treating a course example as a product release.
 
 ## Learning route
 

@@ -7,10 +7,9 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) -- every
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) -- every
   example in this topic is a complete Python module, and this topic assumes you can already read and
-  write functions, modules, and typed collections the way that primer taught them; 10 · SQL
-  Essentials -- the persistence examples later in this topic assume a parameterized SQL query written
+  write functions, modules, and typed collections the way that primer taught them; SQL Essentials -- the persistence examples later in this topic assume a parameterized SQL query written
   from Python.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.x** installed (`python3 --version`); a
   `venv` with the pinned, CVE-clean `fastapi`, `uvicorn`, and `flask` packages installed; **`curl`** to

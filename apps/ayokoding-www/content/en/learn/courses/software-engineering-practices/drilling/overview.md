@@ -1199,4 +1199,4 @@ X because of the specific thing it protects against."
 ---
 
 ← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next:
-[31 · Agentic Coding](../../agentic-coding/learning/overview.md) →
+[Agentic Coding](../../agentic-coding/learning/overview.md) →

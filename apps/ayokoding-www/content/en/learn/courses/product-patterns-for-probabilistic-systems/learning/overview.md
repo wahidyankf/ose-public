@@ -11,8 +11,8 @@ weight: 1
   `[Unverified]` not yet present in the AyoKoding course library on disk);
   [Evaluating AI Output -- Essentials](../../evaluating-ai-output-essentials/learning/overview.md)
   for the pass-rate framing Theme D's ship criteria extend with a confidence interval (co-21);
-  [32 · Software Product Engineering](../../software-product-engineering/learning/overview.md) for
-  product framing, scoping, and release practice; [14 · Frontend Essentials](../../frontend-essentials/learning/overview.md)
+  [Software Product Engineering](../../software-product-engineering/learning/overview.md) for
+  product framing, scoping, and release practice; [Frontend Essentials](../../frontend-essentials/learning/overview.md)
   for interface vocabulary and the accessibility baseline every uncertainty signal in this course
   must clear.
 - **Tools & environment**: a Markdown editor for the decision artifacts (tables, memos, criteria

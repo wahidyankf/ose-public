@@ -7,8 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../just-enough-python/learning/overview.md) and 10 · SQL
-  Essentials -- the service this topic builds persists to a relational database, so both a working
+- **Prior topics**: [Just Enough Python](../just-enough-python/learning/overview.md) and SQL Essentials -- the service this topic builds persists to a relational database, so both a working
   knowledge of Python functions/modules and a parameterized SQL query written from Python are assumed.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.x** in a `venv`; a pinned CVE-clean web
   framework (FastAPI or Flask) plus `uvicorn`; **`curl`** to exercise endpoints; SQLite (from topic 10)

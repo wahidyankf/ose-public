@@ -7,8 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) covers the
-  base language syntax used throughout; [8 · Object-Oriented Programming Essentials](../../object-oriented-programming-essentials/learning/overview.md)
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) covers the
+  base language syntax used throughout; [Object-Oriented Programming Essentials](../../object-oriented-programming-essentials/learning/overview.md)
   covers the OO mechanics this topic's OO examples assume. Topic 21, Object-Oriented Design & Patterns,
   deepens the OO paradigm specifically and is a natural companion read, though this topic does not
   require it. Functional style is cross-referenced forward to a dedicated deep-dive topic, Functional

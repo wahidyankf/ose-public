@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [11 · Backend Essentials](../../backend-essentials/learning/overview.md) --
+- **Prior topics**: [Backend Essentials](../../backend-essentials/learning/overview.md) --
   HTTP verbs, status codes, routing, and JSON handling, assumed familiar throughout every tier's
   examples; `backend-at-scale` -- `[Unverified]` not yet present in the AyoKoding course library on
   disk, so no link is given here -- its absence does not block this topic, since idempotency, auth,

@@ -1964,4 +1964,4 @@ surfaced.
 
 ---
 
-← Previous: [17 · Security Essentials Drilling](../security-essentials/drilling/overview.md)
+← Previous: [Security Essentials Drilling](../security-essentials/drilling/overview.md)

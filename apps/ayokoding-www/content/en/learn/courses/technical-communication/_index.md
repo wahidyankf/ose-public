@@ -1,5 +1,5 @@
 ---
-title: "18 · Technical Communication"
+title: "Technical Communication"
 date: 2026-07-16T00:00:00+07:00
 draft: false
 weight: 280

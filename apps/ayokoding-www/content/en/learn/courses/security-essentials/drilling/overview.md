@@ -942,4 +942,4 @@ another pass.
 
 ---
 
-← Previous: [Capstone](../learning/capstone/overview.md) · Next: [18 · Technical Communication](../../technical-communication/learning/overview.md) →
+← Previous: [Capstone](../learning/capstone/overview.md) · Next: [Technical Communication](../../technical-communication/learning/overview.md) →

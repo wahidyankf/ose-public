@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) (classes, functions, modules) -- this topic assumes the one-line class preview from topic 4 and builds the complete, usable slice of Python OOP on top of it.
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) (classes, functions, modules) -- this topic assumes the one-line class preview from topic 4 and builds the complete, usable slice of Python OOP on top of it.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.10+** (required by `@dataclass(slots=True)` in Example 39) with `pytest` installed in a `venv`; `pyright` and `mypy` for the static-typing verification every example was independently checked against. Every `example.py` in this topic is fully type-annotated and pyright-strict-clean in spirit: the two deliberate exceptions are lines that demonstrate an error a static checker correctly catches (marked `# type: ignore`, explained inline) and one classmethod-factory example (Example 49) that uses a `TypeVar` bound to the base class so the return type tracks the calling subclass instead of needing an ignore comment at all.
 - **Assumed knowledge**: reading and writing basic Python, including the one-line class preview from topic 4 -- no prior object-oriented programming background is required. This topic starts from `class Dog: pass` and builds up.
 
@@ -281,4 +281,4 @@ Validate in `__init__`, `__post_init__`, and setters on every path so an object 
 
 ---
 
-← Previous: [7 · Data Structures & Algorithms Essentials Drilling](../../data-structures-and-algorithms-essentials/drilling/overview.md) · Next: [Beginner Examples](./beginner.md) →
+← Previous: [Data Structures & Algorithms Essentials Drilling](../../data-structures-and-algorithms-essentials/drilling/overview.md) · Next: [Beginner Examples](./beginner.md) →

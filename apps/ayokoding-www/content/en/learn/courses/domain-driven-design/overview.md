@@ -7,8 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [21 · Object-Oriented Design & Patterns](../object-oriented-design-and-patterns/learning/overview.md)
-  supplies encapsulation and invariants; [42 · Software Architecture](../software-architecture/overview.md)
+- **Prior topics**: [Object-Oriented Design & Patterns](../object-oriented-design-and-patterns/learning/overview.md)
+  supplies encapsulation and invariants; [Software Architecture](../software-architecture/overview.md)
   supplies boundaries and ports.
 - **Tools and environment**: Python 3 and a terminal. Every runnable artifact uses only the
   standard library and has explicit type annotations.
@@ -29,7 +29,7 @@ work with events. DDD earns its ceremony in a complex core domain, not in a simp
 
 The 80 runnable examples progress from ubiquitous language, entities, and value objects; through
 aggregates, repositories, and domain events; to bounded contexts, context maps, and an
-anti-corruption layer (ACL). [45 · Event-Driven Architecture](../event-driven-architecture/overview.md)
+anti-corruption layer (ACL). [Event-Driven Architecture](../event-driven-architecture/overview.md)
 continues the delivery, replay, and distributed-system concerns introduced here.
 
 - [Learning](./learning/overview.md) teaches the tactical and strategic patterns through Python.

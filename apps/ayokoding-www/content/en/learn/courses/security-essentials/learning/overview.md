@@ -7,13 +7,11 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) -- every
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) -- every
   script in this topic is fully type-annotated Python, and you should already be comfortable reading
-  functions, classes, exceptions, and `list`/`dict` literals the way that primer taught them; [10 · SQL
-  Essentials](../../sql-essentials/learning/overview.md) -- this topic assumes you already know what a
+  functions, classes, exceptions, and `list`/`dict` literals the way that primer taught them; [SQL Essentials](../../sql-essentials/learning/overview.md) -- this topic assumes you already know what a
   parameterized query looks like and why string-formatting SQL is dangerous, because the SQL-injection
-  examples here go one step further and actually exploit the naive version before fixing it; [11 ·
-  Backend Essentials](../../backend-essentials/learning/overview.md) -- the small HTTP JSON service you
+  examples here go one step further and actually exploit the naive version before fixing it; [Backend Essentials](../../backend-essentials/learning/overview.md) -- the small HTTP JSON service you
   built there (routes, request parsing, a SQLite-backed repository, sessions/tokens) is exactly the
   shape of application every attack and every fix in this topic targets, and the capstone below hardens
   that same shape of service end to end.

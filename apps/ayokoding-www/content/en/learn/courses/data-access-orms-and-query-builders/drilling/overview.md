@@ -1464,5 +1464,4 @@ these drills exist to make that knowledge automatic, not just recognized when po
 
 ---
 
-← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [28 · Build Your Own ORM &
-Query Builder](../../build-your-own-orm-and-query-builder/learning/overview.md) →
+← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [Build Your Own ORM & Query Builder](../../build-your-own-orm-and-query-builder/learning/overview.md) →

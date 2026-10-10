@@ -7,8 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) and
-  [5 · Just Enough Bash](../../just-enough-bash/learning/overview.md). This topic assumes comfortable
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) and
+  [Just Enough Bash](../../just-enough-bash/learning/overview.md). This topic assumes comfortable
   terminal fluency (piping, exit codes, editing files from a shell) and enough scripting background to
   read a small commit hook.
 - **Tools & environment**: a macOS/Linux terminal; **Git** at a recent stable release (current stable is
@@ -543,5 +543,5 @@ content-change as the source, but a genuinely DIFFERENT hash.
 
 ---
 
-← Previous: [5 · Just Enough Bash Drilling](../../just-enough-bash/drilling/overview.md) · Next:
+← Previous: [Just Enough Bash Drilling](../../just-enough-bash/drilling/overview.md) · Next:
 [Beginner Examples](./beginner.md) →

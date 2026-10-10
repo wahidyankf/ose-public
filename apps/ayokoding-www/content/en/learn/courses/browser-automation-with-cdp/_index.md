@@ -1,5 +1,5 @@
 ---
-title: "51 · Browser Automation with CDP"
+title: "Browser Automation with CDP"
 date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 451

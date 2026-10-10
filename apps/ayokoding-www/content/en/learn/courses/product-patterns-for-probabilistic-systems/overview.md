@@ -22,9 +22,9 @@ always."
   set a ship criterion without a measurement -- this course's Theme D leans directly on that
   course's pass-rate framing, then extends it with the confidence interval Theme D teaches
   directly (co-21));
-  [32 · Software Product Engineering](../software-product-engineering/learning/overview.md) (product
+  [Software Product Engineering](../software-product-engineering/learning/overview.md) (product
   framing, scoping, and release practice this course applies to a non-deterministic component);
-  [14 · Frontend Essentials](../frontend-essentials/learning/overview.md) (interface vocabulary and
+  [Frontend Essentials](../frontend-essentials/learning/overview.md) (interface vocabulary and
   the accessibility baseline every uncertainty signal in this course must clear).
 - **Tools & environment**: no runtime and no code. A diagramming surface for the Mermaid flows, a
   document or whiteboard for the interface walkthroughs, and access to one real probabilistic

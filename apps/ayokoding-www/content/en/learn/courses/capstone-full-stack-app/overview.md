@@ -1621,4 +1621,4 @@ with the `tsconfig.json`/`tsconfig.build.json` settings this capstone relies on.
 
 ---
 
-← Previous: [Pass 1 Capstone · First Working Software](../capstone-first-working-software/overview.md)
+← Previous: [Capstone · First Working Software](../capstone-first-working-software/overview.md)

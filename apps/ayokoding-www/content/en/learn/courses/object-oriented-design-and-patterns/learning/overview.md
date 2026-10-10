@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [8 · Object-Oriented Programming Essentials](../../object-oriented-programming-essentials/learning/overview.md) -- this topic assumes you are already fluent with classes, `__init__`, inheritance, polymorphism, `@dataclass`, `abc.ABC`, and composition-over-inheritance from that topic, and builds a design vocabulary on top of those mechanics; [4 · Just Enough Python](../../just-enough-python/learning/overview.md) covers the base language syntax used throughout.
+- **Prior topics**: [Object-Oriented Programming Essentials](../../object-oriented-programming-essentials/learning/overview.md) -- this topic assumes you are already fluent with classes, `__init__`, inheritance, polymorphism, `@dataclass`, `abc.ABC`, and composition-over-inheritance from that topic, and builds a design vocabulary on top of those mechanics; [Just Enough Python](../../just-enough-python/learning/overview.md) covers the base language syntax used throughout.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13.12**; `pytest` (9.1.1) installed for running every example's locking test. Every `example.py` in this topic is fully type-annotated (PEP 484): parameters, return types, and non-obvious local variables all carry explicit type hints, written to be clean under a strict static checker (`pyright --strict` / `mypy --strict` in spirit) -- the handful of deliberate exceptions demonstrate an error a static checker would correctly flag, and are marked `# type: ignore[...]` with an inline explanation.
 - **Assumed knowledge**: writing Python classes; the difference between composition and inheritance; reading and writing a basic `pytest` test (topic 15 Software Testing helps but is not required).
 
@@ -451,4 +451,4 @@ A **guard** is a boolean condition that gates whether a transition is allowed to
 
 ---
 
-← Previous: [20 · Computer Architecture Drilling](../../computer-architecture/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →
+← Previous: [Computer Architecture Drilling](../../computer-architecture/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →

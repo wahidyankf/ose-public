@@ -7,9 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [12 · Networking Essentials](../networking-essentials/learning/overview.md)
-  establishes latency, loss, timeouts, and the limits of the network; [24 · Concurrency &
-  Parallelism](../concurrency-and-parallelism/learning/overview.md) establishes locally concurrent
+- **Prior topics**: [Networking Essentials](../networking-essentials/learning/overview.md)
+  establishes latency, loss, timeouts, and the limits of the network; [Concurrency & Parallelism](../concurrency-and-parallelism/learning/overview.md) establishes locally concurrent
   state and synchronization.
 - **Tools and environment**: Python 3, a terminal, and the standard library. Examples simulate
   delay, loss, reordering, and partitions locally rather than claiming a real cluster.

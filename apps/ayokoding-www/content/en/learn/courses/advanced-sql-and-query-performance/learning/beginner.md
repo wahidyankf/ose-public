@@ -6,7 +6,7 @@ weight: 10
 ---
 
 Examples 1-28 cover the query-shaping features this topic adds on top of
-[10 · SQL Essentials](../../sql-essentials/learning/overview.md): subqueries and derived tables, common
+[SQL Essentials](../../sql-essentials/learning/overview.md): subqueries and derived tables, common
 table expressions (including a first taste of recursion), the four core window-function building blocks,
 set operations, multi-level aggregation, transaction boundaries, a first index, and the first three
 `EXPLAIN`/timing tools. Every example runs against a real **PostgreSQL 18.4** instance -- every result

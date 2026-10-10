@@ -7,13 +7,13 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [10 · SQL Essentials](../../sql-essentials/learning/overview.md) -- every
+- **Prior topics**: [SQL Essentials](../../sql-essentials/learning/overview.md) -- every
   relational-vs-graph contrast example in this topic (Examples 19, 33, 38, 65, 71) assumes the
   relational join syntax that course teaches is already familiar; `nosql-databases` --
   `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is given here
   -- its absence does not block this topic, since every example here is self-contained against a
   seeded Neo4j fixture rather than assuming a wider NoSQL survey has already been read;
-  [4 · Just Enough Python](../../just-enough-python/learning/overview.md) -- every Python driver
+  [Just Enough Python](../../just-enough-python/learning/overview.md) -- every Python driver
   example across all three tiers (Examples 22, 44, 66-70, 74) assumes basic Python syntax and
   function definitions are already familiar. Example 73 is Python but not driver-based -- a pure
   simulation with no Neo4j connection -- so it is excluded from this list, like Example 45.

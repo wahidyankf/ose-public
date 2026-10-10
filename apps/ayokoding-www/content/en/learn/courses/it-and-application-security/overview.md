@@ -7,10 +7,10 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [17 · Security Essentials](../security-essentials/learning/overview.md) supplies
-  safe input handling and everyday application defenses; [39 · Backend at Scale](../backend-at-scale/learning/overview.md)
+- **Prior topics**: [Security Essentials](../security-essentials/learning/overview.md) supplies
+  safe input handling and everyday application defenses; [Backend at Scale](../backend-at-scale/learning/overview.md)
   supplies the OAuth/OIDC and service surface that this course assesses; and
-  [4 · Just Enough Python](../just-enough-python/learning/overview.md) supplies the Python needed to
+  [Just Enough Python](../just-enough-python/learning/overview.md) supplies the Python needed to
   read and run the local demonstrations.
 - **Tools and environment**: Python 3.13+, a terminal, and a virtual environment. The few external
   packages are pinned in `learning/code/requirements.txt`; every executable works only with local,

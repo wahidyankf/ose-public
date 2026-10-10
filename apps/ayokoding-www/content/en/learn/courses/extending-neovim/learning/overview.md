@@ -7,8 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [1 · Just Enough Nvim](../../just-enough-nvim/learning/overview.md) (modal
-  editing fluency, zero plugins) and [2 · Just Enough Lua](../../just-enough-lua/learning/overview.md)
+- **Prior topics**: [Just Enough Nvim](../../just-enough-nvim/learning/overview.md) (modal
+  editing fluency, zero plugins) and [Just Enough Lua](../../just-enough-lua/learning/overview.md)
   (the config you are about to write is a Lua program). Both are required -- this topic assumes you
   can already move around a file with motions and already know what a Lua table and a closure are.
 - **Tools & environment**: a macOS/Linux terminal; the latest **Neovim** (`nvim --version`) --
@@ -447,5 +447,5 @@ per-check OK/ERROR result the same way `:checkhealth` does for any bundled or th
 
 ---
 
-← Previous: [2 · Just Enough Lua Capstone](../../just-enough-lua/learning/capstone/overview.md) ·
+← Previous: [Just Enough Lua Capstone](../../just-enough-lua/learning/capstone/overview.md) ·
 Next: [Beginner Examples](./beginner.md) →

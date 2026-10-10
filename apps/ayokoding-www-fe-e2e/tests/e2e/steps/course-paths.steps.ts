@@ -218,8 +218,8 @@ Then("the single role card renders with an inline first-phase syllabus preview",
   await expect(card).toHaveAttribute("href", "/en/learn/paths/careers/interview-ready/backend-track");
   const previewItems = card.locator("xpath=..").locator("ol > li");
   await expect(previewItems).toHaveCount(2);
-  await expect(previewItems.nth(0)).toContainText("4 · Just Enough Python");
-  await expect(previewItems.nth(1)).toContainText("7 · Data Structures & Algorithms Essentials");
+  await expect(previewItems.nth(0)).toContainText("Just Enough Python");
+  await expect(previewItems.nth(1)).toContainText("Data Structures & Algorithms Essentials");
 });
 
 Then("the layout does not reserve or render a visibly empty second card", async ({ page }) => {
@@ -327,13 +327,13 @@ When("the course page renders", async ({ page }) => {
 Then("the course body renders in full with the content-tree breadcrumb and its prerequisite list", async ({ page }) => {
   await expect(page.getByRole("navigation", { name: "Breadcrumb" })).toBeVisible();
   const article = page.getByRole("article");
-  await expect(article.getByRole("heading", { level: 1, name: "4 · Just Enough Python", exact: true })).toBeVisible();
+  await expect(article.getByRole("heading", { level: 1, name: "Just Enough Python", exact: true })).toBeVisible();
   await expect(article.getByRole("link", { name: "Learning", exact: true })).toHaveAttribute(
     "href",
     "/en/learn/courses/just-enough-python/learning",
   );
   const prerequisites = page.getByRole("navigation", { name: "Prerequisites" });
-  await expect(prerequisites.getByRole("link", { name: "Pass 0 Capstone · Forge-Ready", exact: true })).toHaveAttribute(
+  await expect(prerequisites.getByRole("link", { name: "Capstone · Forge-Ready", exact: true })).toHaveAttribute(
     "href",
     "/en/learn/courses/capstone-forge-ready",
   );
@@ -462,17 +462,17 @@ Then("the left rail lists that path's courses in manifest order with the current
   await expect(items).toHaveCount(3);
   const expected = [
     {
-      name: "5 · Just Enough Bash",
+      name: "Just Enough Bash",
       href: "/en/learn/courses/just-enough-bash?path=careers/immediately-effective/backend-track",
       current: null,
     },
     {
-      name: "11 · Backend Essentials",
+      name: "Backend Essentials",
       href: "/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track",
       current: "page",
     },
     {
-      name: "10 · SQL Essentials",
+      name: "SQL Essentials",
       href: "/en/learn/courses/sql-essentials?path=careers/immediately-effective/backend-track",
       current: null,
     },
@@ -571,10 +571,7 @@ Then("it shows Home, Learn, the path title, and the course title", async ({ page
   await expect(breadcrumb.getByRole("link", { name: "Home" })).toBeVisible();
   await expect(breadcrumb.getByRole("link", { name: "Learn" })).toBeVisible();
   await expect(breadcrumb.getByRole("link", { name: "Backend Track (Immediately-Effective)" })).toBeVisible();
-  await expect(breadcrumb.getByText("11 · Backend Essentials", { exact: true })).toHaveAttribute(
-    "aria-current",
-    "page",
-  );
+  await expect(breadcrumb.getByText("Backend Essentials", { exact: true })).toHaveAttribute("aria-current", "page");
 });
 
 Then(
@@ -603,7 +600,7 @@ When("a reader opens the course page with or without a path context", async ({ p
 
 Then("the page lists each prerequisite course with a link to its canonical URL", async ({ page }) => {
   const prerequisites = page.getByRole("navigation", { name: "Prerequisites" });
-  await expect(prerequisites.getByRole("link", { name: "Pass 0 Capstone · Forge-Ready" })).toHaveAttribute(
+  await expect(prerequisites.getByRole("link", { name: "Capstone · Forge-Ready" })).toHaveAttribute(
     "href",
     "/en/learn/courses/capstone-forge-ready",
   );
@@ -644,4 +641,36 @@ Then("no path card from either category is rendered outside its category's secti
   await expect(skillsSection.getByText("Backend Track")).toHaveCount(0);
   await expect(skillsSection.getByText("Frontend Track")).toHaveCount(0);
   await expect(skillsSection.getByText("Generalist Track")).toHaveCount(0);
+});
+
+// path-position-numbers.feature, scenario 1 — no catalogue number in course titles.
+Given("a reader opens a course in path context", async ({ page }) => {
+  await page.goto("/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track");
+  await page.waitForLoadState("networkidle");
+});
+
+Then(
+  "the page heading, breadcrumb, previous and next links, and prerequisite links show course titles without a leading number",
+  async ({ page }) => {
+    const numbered = /^\d+\s*·\s/;
+    const article = page.locator("article").first();
+    const breadcrumb = page.getByRole("navigation", { name: "Breadcrumb" });
+    const pageNav = page.getByRole("navigation", { name: "Page navigation" });
+    const prerequisites = page.getByRole("navigation", { name: "Prerequisites" });
+    const texts = [
+      (await article.getByRole("heading", { level: 1 }).innerText()).trim(),
+      (await breadcrumb.getByText("Backend Essentials").innerText()).trim(),
+      (await pageNav.getByRole("link", { name: /Just Enough Bash/i }).innerText()).trim(),
+      (await pageNav.getByRole("link", { name: /SQL Essentials/i }).innerText()).trim(),
+      (await prerequisites.getByRole("link").first().innerText()).trim(),
+    ];
+    for (const text of texts) {
+      expect(text).not.toMatch(numbered);
+    }
+  },
+);
+
+Then("the only course order number on the page is the course's position in the active path", async ({ page }) => {
+  const nav = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+  await expect(nav.getByText("Course 2 of 3", { exact: true })).toBeVisible();
 });

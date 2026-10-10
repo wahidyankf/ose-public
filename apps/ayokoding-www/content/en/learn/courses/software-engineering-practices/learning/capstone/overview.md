@@ -25,7 +25,7 @@ on a real GitHub repository existing).
 ## Step 1: TDD the feature -- RED, GREEN, REFACTOR
 
 **Context**: TDD's red-green-refactor loop is a prerequisite skill from
-[15 · Software Testing](../../../software-testing/learning/overview.md) -- this topic does not
+[Software Testing](../../../software-testing/learning/overview.md) -- this topic does not
 re-teach TDD mechanics, only applies them inside the workflow this topic _does_ teach.
 `redeem_points()` caps a single redemption at `MAX_REDEMPTION_FRACTION = 0.5` (50%) of the cart's
 subtotal.

@@ -12,7 +12,7 @@ visible trade-offs.
 
 ## Prerequisites
 
-- Complete [72 · Just Enough Dart](../just-enough-dart/learning/overview.md). It owns Dart syntax,
+- Complete [Just Enough Dart](../just-enough-dart/learning/overview.md). It owns Dart syntax,
   null safety, classes, mixins, `Future`, and `Stream`; this course applies those tools in Flutter
   instead of teaching them again.
 - Complete [Frontend Essentials](../frontend-essentials/learning/overview.md) for declarative UI,

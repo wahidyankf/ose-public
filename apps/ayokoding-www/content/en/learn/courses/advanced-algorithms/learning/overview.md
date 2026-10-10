@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [7 · Data Structures & Algorithms Essentials](../../data-structures-and-algorithms-essentials/learning/overview.md) (arrays, hashmaps, trees, Big-O, recursion) and [4 · Just Enough Python](../../just-enough-python/learning/overview.md); [19 · Computer Science Foundations](../../computer-science-foundations/learning/overview.md) sharpens the complexity reasoning this topic relies on throughout.
+- **Prior topics**: [Data Structures & Algorithms Essentials](../../data-structures-and-algorithms-essentials/learning/overview.md) (arrays, hashmaps, trees, Big-O, recursion) and [Just Enough Python](../../just-enough-python/learning/overview.md); [Computer Science Foundations](../../computer-science-foundations/learning/overview.md) sharpens the complexity reasoning this topic relies on throughout.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13+** (`heapq`, `collections`, `functools`, `itertools` from the stdlib) with `pytest` installed in a `venv`; `pyright` for the static-typing verification every example was independently checked against, in strict mode, with zero errors and zero warnings.
 - **Assumed knowledge**: recursion, Big-O notation, and the basic data structures from topic 7 (arrays, hashmaps, a plain BST, a basic BFS/Dijkstra); reading a simple recurrence relation.
 
@@ -371,4 +371,4 @@ Recognizing intractable problems (like TSP, whose brute-force solution requires 
 
 ---
 
-← Previous: [24 · Concurrency & Parallelism Drilling](../../concurrency-and-parallelism/drilling/overview.md) · Next: [Beginner Examples](./beginner.md) →
+← Previous: [Concurrency & Parallelism Drilling](../../concurrency-and-parallelism/drilling/overview.md) · Next: [Beginner Examples](./beginner.md) →

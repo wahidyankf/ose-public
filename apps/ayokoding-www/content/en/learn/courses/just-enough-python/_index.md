@@ -1,5 +1,5 @@
 ---
-title: "4 · Just Enough Python"
+title: "Just Enough Python"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 140

@@ -420,4 +420,4 @@ internally consistent picture, the same way a real engineering team's documents 
 
 ---
 
-← Previous: [17 · Security Essentials Drilling](../../security-essentials/drilling/overview.md) · Next: [Beginner Scenarios](./beginner.md) →
+← Previous: [Security Essentials Drilling](../../security-essentials/drilling/overview.md) · Next: [Beginner Scenarios](./beginner.md) →

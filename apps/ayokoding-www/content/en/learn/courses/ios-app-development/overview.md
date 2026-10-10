@@ -12,11 +12,11 @@ changing boundaries.
 
 ## Prerequisites
 
-- Complete [70 · Just Enough Swift](../just-enough-swift/learning/overview.md). It supplies Swift
+- Complete [Just Enough Swift](../just-enough-swift/learning/overview.md). It supplies Swift
   syntax, optionals, protocols, errors, and the small `async`/`await` vocabulary used here.
-- [14 · Frontend Essentials](../frontend-essentials/learning/overview.md) supplies component, state,
+- [Frontend Essentials](../frontend-essentials/learning/overview.md) supplies component, state,
   and accessible-interface thinking.
-- [69 · Android App Development](../android-app-development/learning/overview.md) supplies the
+- [Android App Development](../android-app-development/learning/overview.md) supplies the
   platform-lifecycle and declarative-UI comparison this course builds on.
 - Use macOS with a current Xcode release, its iOS simulator, and optionally a physical device. Use
   `xcodebuild` for repeatable command-line builds and tests.

@@ -7,13 +7,11 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [14 · Frontend Essentials](../frontend-essentials/learning/overview.md) -- the
+- **Prior topics**: [Frontend Essentials](../frontend-essentials/learning/overview.md) -- the
   component model (state, props, one-way data flow, keyed lists), controlled validated forms, basic
   ARIA and keyboard patterns, and discriminated-union UI state. Every example here assumes you can
-  already build a typed component and read a `tsc` error; [13 · Just Enough
-  TypeScript](../just-enough-typescript/learning/overview.md) -- generics, unions, and narrowing, the
-  raw material co-33 turns into typed components; and [15 · Software
-  Testing](../software-testing/learning/overview.md) -- Testing-Library component tests and the shape
+  already build a typed component and read a `tsc` error; [Just Enough TypeScript](../just-enough-typescript/learning/overview.md) -- generics, unions, and narrowing, the
+  raw material co-33 turns into typed components; and [Software Testing](../software-testing/learning/overview.md) -- Testing-Library component tests and the shape
   of an e2e smoke, which Examples 76-78 and the capstone build directly on.
 - **Tools & environment**: a macOS/Linux terminal; **Node.js** + npm; **TypeScript** (`tsc` 5.8) and
   **tsx** to run each worked example from the CLI. No running dev server, browser, or installed
@@ -40,7 +38,7 @@ throughput` -- Core Web Vitals (co-08) and the rendering-strategy choice (co-01 
 latency/throughput trade-offs wearing a frontend vocabulary.
 
 > **Scope guard -- advanced frontend vs. the essentials that already work vs. the backend behind it.**
-> [14 · Frontend Essentials](../frontend-essentials/learning/overview.md) owns the **mechanics of a
+> [Frontend Essentials](../frontend-essentials/learning/overview.md) owns the **mechanics of a
 > single component and an accessible form**: state, props, one-way data flow, the controlled-input
 > rule, basic ARIA, and a typed component. This course assumes that mechanical layer already works
 > and owns a different, larger question: what happens once there are _many_ components, _real_

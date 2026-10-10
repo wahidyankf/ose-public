@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [27 · Data Access: ORMs & Query Builders](../../data-access-orms-and-query-builders/learning/overview.md) -- this topic re-implements the mechanisms that topic used as a black box (identity map, unit of work, lazy load, the N+1); [10 · SQL Essentials](../../sql-essentials/learning/overview.md) and [26 · Advanced SQL & Query Performance](../../advanced-sql-and-query-performance/learning/overview.md) cover the parameterized SQL and joins this builder compiles down to; [4 · Just Enough Python](../../just-enough-python/learning/overview.md) covers the base language syntax used throughout.
+- **Prior topics**: [Data Access: ORMs & Query Builders](../../data-access-orms-and-query-builders/learning/overview.md) -- this topic re-implements the mechanisms that topic used as a black box (identity map, unit of work, lazy load, the N+1); [SQL Essentials](../../sql-essentials/learning/overview.md) and [Advanced SQL & Query Performance](../../advanced-sql-and-query-performance/learning/overview.md) cover the parameterized SQL and joins this builder compiles down to; [Just Enough Python](../../just-enough-python/learning/overview.md) covers the base language syntax used throughout.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13.12**; a local SQLite database reached through the stdlib `sqlite3` module (PEP 249) -- no third-party ORM library anywhere in this topic; `pytest` (9.1.1) installed for running every example's locking test; `pyright` (1.1.411, strict mode) for the fully type-annotated public API. `sqlite3.connect()`'s optional keyword arguments (`timeout`, `detect_types`, `isolation_level`, `check_same_thread`, `factory`, `cached_statements`, `uri`, `autocommit`) are deprecated as positional on recent Python -- every example that sets one passes it by keyword. Every connection in this topic opens through `contextlib.closing()`, because an unclosed `Connection` now emits a `ResourceWarning` on garbage collection.
 - **Assumed knowledge**: the three data-access tiers and the patterns they use -- identity map, unit of work, lazy load, the N+1 (topic 27, owned there -- this topic rebuilds the mechanisms, not the vocabulary); parameterized SQL and joins (topics 10, 26); reading and writing fully type-annotated Python, including `dataclasses`, `Protocol`, and generics (topic 04).
 
@@ -349,4 +349,4 @@ Generics and explicit return-type annotations give the builder, the mapper, and 
 
 ---
 
-← Previous: [27 · Data Access: ORMs & Query Builders Drilling](../../data-access-orms-and-query-builders/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →
+← Previous: [Data Access: ORMs & Query Builders Drilling](../../data-access-orms-and-query-builders/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →

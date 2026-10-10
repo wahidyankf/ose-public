@@ -833,4 +833,4 @@ that produces the strongest, cheapest-to-test version of a product decision.
 ---
 
 ← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next:
-[33 · Engineering Management](../../engineering-management/learning/overview.md) →
+[Engineering Management](../../engineering-management/learning/overview.md) →

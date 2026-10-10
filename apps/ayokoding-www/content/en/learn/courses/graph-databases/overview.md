@@ -7,12 +7,12 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [10 · SQL Essentials](../sql-essentials/learning/overview.md) -- the relational
+- **Prior topics**: [SQL Essentials](../sql-essentials/learning/overview.md) -- the relational
   model and its join syntax, needed as the direct point of contrast every relational-vs-graph
   example in this course draws against; `nosql-databases` -- `[Unverified]` not yet present in the
   AyoKoding course library on disk, so no link is given here -- would otherwise supply the broader
   non-relational framing this course's property-graph model sits beside; and
-  [4 · Just Enough Python](../just-enough-python/learning/overview.md) -- every driver-based worked
+  [Just Enough Python](../just-enough-python/learning/overview.md) -- every driver-based worked
   example in this course's Intermediate and Advanced tiers is a Python script calling the Neo4j
   driver, and this course never re-teaches basic Python syntax.
 - **Tools & environment**: a macOS/Linux terminal; a local **Neo4j** instance (or another

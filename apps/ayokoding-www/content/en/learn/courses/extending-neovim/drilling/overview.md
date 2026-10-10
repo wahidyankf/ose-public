@@ -1031,4 +1031,4 @@ opposite direction: the shape is only a promise a plugin author has to keep on p
 
 ---
 
-← Previous: [Capstone](../learning/capstone/overview.md) · Next: [Pass 0 Capstone · Forge-Ready](../../capstone-forge-ready/overview.md) →
+← Previous: [Capstone](../learning/capstone/overview.md) · Next: [Capstone · Forge-Ready](../../capstone-forge-ready/overview.md) →

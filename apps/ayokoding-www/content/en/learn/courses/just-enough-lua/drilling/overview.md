@@ -1262,4 +1262,4 @@ rather than something the language hands you fully formed.
 ---
 
 ← Previous: [Capstone](../learning/capstone/overview.md) · Next:
-[3 · Extending Neovim](../../extending-neovim/learning/overview.md) →
+[Extending Neovim](../../extending-neovim/learning/overview.md) →

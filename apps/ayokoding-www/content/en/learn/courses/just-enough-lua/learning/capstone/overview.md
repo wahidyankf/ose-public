@@ -9,7 +9,7 @@ weight: 1
 
 Write one small, self-contained Lua program that uses tables, closures, a `require`d module, a
 metatable, and `pcall` error handling **together** -- a mini "config-value store" whose shape you
-will recognize as soon as [3 · Extending Neovim](../../../extending-neovim/learning/overview.md)
+will recognize as soon as [Extending Neovim](../../../extending-neovim/learning/overview.md)
 starts merging user options over plugin defaults. This capstone is a light consolidation, not a
 new project: every mechanism it combines was already taught, individually, somewhere in the
 Beginner, Intermediate, or Advanced tiers of this primer.
@@ -279,4 +279,4 @@ citations; no new fact was needed to write this page.
 ---
 
 ← Previous: [Advanced Examples](../advanced.md) · Next:
-[3 · Extending Neovim](../../../extending-neovim/learning/overview.md) →
+[Extending Neovim](../../../extending-neovim/learning/overview.md) →

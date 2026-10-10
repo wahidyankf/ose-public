@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [1 · Just Enough Nvim](../../just-enough-nvim/learning/overview.md) -- you should
+- **Prior topics**: [Just Enough Nvim](../../just-enough-nvim/learning/overview.md) -- you should
   be comfortable opening, editing, and saving files before writing and running Python scripts; the
   [Pass 0 forge capstone](../../capstone-forge-ready/overview.md) is recommended but not
   required.
@@ -94,5 +94,5 @@ topic in this journey, it is out of scope here on purpose, not by oversight.
 
 ---
 
-← Previous: [Pass 0 Capstone · Forge-Ready](../../capstone-forge-ready/overview.md) · Next:
+← Previous: [Capstone · Forge-Ready](../../capstone-forge-ready/overview.md) · Next:
 [Beginner Examples](./beginner.md) →

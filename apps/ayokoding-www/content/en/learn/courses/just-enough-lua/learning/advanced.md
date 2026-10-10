@@ -936,9 +936,9 @@ print(vim.inspect(vim.split("a,b,,c", ",")))
 
 **Key takeaway**: `vim.split("a,b,,c", ",")` returns four elements, not three -- the empty string between the two consecutive commas is preserved by default, since `trimempty` defaults to `false`.
 
-**Why it matters**: This default-preserves-empties behavior is a real, easy-to-miss detail: code that expects `vim.split` to silently collapse adjacent separators (the way some other languages' `split` functions do) will get an extra empty-string element it did not plan for, unless it explicitly passes `{trimempty = true}`. This closes the primer's `vim.*` coverage -- table merging, mapping, keymaps, options, buffer lines, inspection, and string splitting are exactly the seven calls [3 · Extending Neovim](../../extending-neovim/learning/overview.md) builds its first real config file on top of.
+**Why it matters**: This default-preserves-empties behavior is a real, easy-to-miss detail: code that expects `vim.split` to silently collapse adjacent separators (the way some other languages' `split` functions do) will get an extra empty-string element it did not plan for, unless it explicitly passes `{trimempty = true}`. This closes the primer's `vim.*` coverage -- table merging, mapping, keymaps, options, buffer lines, inspection, and string splitting are exactly the seven calls [Extending Neovim](../../extending-neovim/learning/overview.md) builds its first real config file on top of.
 
 ---
 
 ← Previous: [Intermediate Examples](./intermediate.md) · Next:
-[3 · Extending Neovim](../../extending-neovim/learning/overview.md) →
+[Extending Neovim](../../extending-neovim/learning/overview.md) →

@@ -7,9 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [11 · Backend Essentials](../backend-essentials/learning/overview.md) supplies a
-  running service whose boundaries can be inspected, while [21 · Object-Oriented Design &
-  Patterns](../object-oriented-design-and-patterns/learning/overview.md) supplies coupling,
+- **Prior topics**: [Backend Essentials](../backend-essentials/learning/overview.md) supplies a
+  running service whose boundaries can be inspected, while [Object-Oriented Design & Patterns](../object-oriented-design-and-patterns/learning/overview.md) supplies coupling,
   cohesion, and dependency inversion.
 - **Tools and environment**: a Python 3 interpreter, a terminal, and a Mermaid-capable Markdown
   renderer. The runnable examples use only the standard library.
@@ -24,9 +23,9 @@ small system may not need. This course teaches that judgment through styles, qua
 decision records, diagrams, and small executable boundary checks.
 
 **Scope boundary**: this course explains how to choose and protect system boundaries. It introduces
-DDD bounded contexts only as an architectural seam; [43 · Domain-Driven Design](../domain-driven-design/overview.md)
+DDD bounded contexts only as an architectural seam; [Domain-Driven Design](../domain-driven-design/overview.md)
 teaches the model-discovery techniques inside that seam. It names event-driven architecture as a
-style but leaves broker, delivery, and saga mechanics to [45 · Event-Driven Architecture](../event-driven-architecture/overview.md).
+style but leaves broker, delivery, and saga mechanics to [Event-Driven Architecture](../event-driven-architecture/overview.md).
 
 ## How the course is organized
 

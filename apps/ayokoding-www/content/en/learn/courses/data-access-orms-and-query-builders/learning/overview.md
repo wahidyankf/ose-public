@@ -7,9 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [10 · SQL Essentials](../../sql-essentials/learning/overview.md) -- writing joins,
-  `GROUP BY`, and the Python `sqlite3` DB-API this topic assumes you already know; [26 · Advanced SQL &
-  Query Performance](../../advanced-sql-and-query-performance/learning/overview.md) -- reading an
+- **Prior topics**: [SQL Essentials](../../sql-essentials/learning/overview.md) -- writing joins,
+  `GROUP BY`, and the Python `sqlite3` DB-API this topic assumes you already know; [Advanced SQL & Query Performance](../../advanced-sql-and-query-performance/learning/overview.md) -- reading an
   `EXPLAIN` plan and how indexes change one, content this topic leans on throughout.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.x**, fully type-annotated (DD-39); a
   local PostgreSQL instance (a container is the easiest path); the DB-API driver (psycopg, PEP 249), a
@@ -18,7 +17,7 @@ weight: 1
   `requirements.txt`; Neovim/VSCode with the Python LSP (DD-17); `pyright --strict` for typechecking.
 - **Assumed knowledge**: writing joins and reading an `EXPLAIN` plan (topic 10); indexes and how they
   change a query plan (topic 26); reading a typed Python module and running a `.py` script
-  ([4 · Just Enough Python](../../just-enough-python/learning/overview.md)).
+  ([Just Enough Python](../../just-enough-python/learning/overview.md)).
 
 ## Why this exists -- the big idea
 
@@ -249,5 +248,5 @@ CASCADE`.
 
 ---
 
-← Previous: [26 · Advanced SQL & Query Performance Drilling](../../advanced-sql-and-query-performance/drilling/overview.md)
+← Previous: [Advanced SQL & Query Performance Drilling](../../advanced-sql-and-query-performance/drilling/overview.md)
 &middot; Next: [Beginner Examples](./beginner.md) →

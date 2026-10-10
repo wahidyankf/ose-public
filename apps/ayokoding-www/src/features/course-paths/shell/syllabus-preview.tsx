@@ -17,12 +17,13 @@ export interface SyllabusPreviewProps {
  * not a hidden one.
  *
  * No manually-rendered `{index + 1}.` prefix (DWT-002 fix, phase-5 rule-15 design-tester retest):
- * this component previously prepended its own local list index in front of each course title, but
- * every real course title already embeds its own catalog number (e.g. `"4 · Just Enough Python"`),
- * so the two numbers collided into a nonsensical-looking `"1. 4 · Just Enough Python"`. The `<ol>`
+ * this component previously prepended its own local list index in front of each course title, and
+ * the old titles still embedded their own catalog numbers, so the two numbers collided into a
+ * doubled number in front of every preview item. Titles no longer carry catalog numbers
+ * (plan ayokoding-learn-revamp-01), so this plan's Phase 4 adds the path position number
+ * explicitly as the only visible number. The `<ol>`
  * itself already carries the "number is order" semantics (matching `path-landing.tsx`'s sibling
- * syllabus, which renders no added index either) — the visible number readers see is the course's
- * own embedded catalog number, never a second, redundant one.
+ * syllabus, which renders no added index either).
  */
 export function SyllabusPreview({ courseTitles }: SyllabusPreviewProps) {
   const preview = courseTitles.slice(0, FIRST_PHASE_PREVIEW_COUNT);

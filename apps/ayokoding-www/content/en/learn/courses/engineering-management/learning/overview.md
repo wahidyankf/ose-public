@@ -448,6 +448,6 @@ artifact below also lives, standalone, under `learning/artifacts/`.
 
 ---
 
-← Previous: [32 · Software Product Engineering
+← Previous: [Software Product Engineering
 Drilling](../../software-product-engineering/drilling/overview.md) · Next: [Beginner
 Scenarios](./beginner.md) →

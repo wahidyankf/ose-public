@@ -7,12 +7,11 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) -- every
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) -- every
   script in this topic is fully type-annotated Python, and you should already be comfortable reading
-  functions, classes, exceptions, and `list`/`dict` literals the way that primer taught them; [5 ·
-  Just Enough Bash](../../just-enough-bash/learning/overview.md) -- every example is driven from a
+  functions, classes, exceptions, and `list`/`dict` literals the way that primer taught them; [Just Enough Bash](../../just-enough-bash/learning/overview.md) -- every example is driven from a
   terminal, and several examples pipe commands, background a process with `&`, or read an exit code
-  the way that primer taught; [15 · Software Testing](../../software-testing/learning/overview.md) --
+  the way that primer taught; [Software Testing](../../software-testing/learning/overview.md) --
   this topic assumes you can already write a failing pytest-style assertion and read a traceback; a
   test tells you **that** something is wrong, this topic is about finding **where** and **why**, then
   measuring whether a fix actually helped.

@@ -9,7 +9,7 @@ Linux programs are good citizens when they honor arguments, exit codes, streams,
 
 ## Prerequisites
 
-- Complete [4 · Just Enough Python](../just-enough-python/learning/overview.md). It supplies Python syntax, functions, files, errors, and tests; this course does not repeat them.
+- Complete [Just Enough Python](../just-enough-python/learning/overview.md). It supplies Python syntax, functions, files, errors, and tests; this course does not repeat them.
 - Use Linux, WSL, or a Linux VM with Python 3 and a POSIX shell. systemd is needed only for the service-manager exercise.
 
 ## What you will build

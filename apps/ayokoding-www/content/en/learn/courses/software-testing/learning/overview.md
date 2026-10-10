@@ -7,12 +7,10 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) --
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) --
   every Python example in this topic assumes you can already read and write functions, classes,
-  `list`/`dict` literals, and exceptions the way that primer taught them; [13 · Just Enough
-  TypeScript](../../just-enough-typescript/learning/overview.md) covers the same ground for the
-  one TypeScript example (Example 51) and the Advanced-tier TS cross-refs; [11 · Backend
-  Essentials](../../backend-essentials/learning/overview.md) is a useful style reference -- the
+  `list`/`dict` literals, and exceptions the way that primer taught them; [Just Enough TypeScript](../../just-enough-typescript/learning/overview.md) covers the same ground for the
+  one TypeScript example (Example 51) and the Advanced-tier TS cross-refs; [Backend Essentials](../../backend-essentials/learning/overview.md) is a useful style reference -- the
   Advanced tier's integration and contract tests build their own small, self-contained FastAPI
   stand-in app rather than importing code from Topic 11.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13** with **pytest 9.1.1**,

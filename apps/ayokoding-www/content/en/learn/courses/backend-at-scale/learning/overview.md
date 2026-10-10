@@ -7,9 +7,9 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [11 · Backend Essentials](../../backend-essentials/learning/overview.md) -- routing
-  and serving a CRUD JSON API, assumed throughout; [10 · SQL Essentials](../../sql-essentials/learning/overview.md);
-  [17 · Security Essentials](../../security-essentials/learning/overview.md); and [15 · Software Testing](../../software-testing/learning/overview.md).
+- **Prior topics**: [Backend Essentials](../../backend-essentials/learning/overview.md) -- routing
+  and serving a CRUD JSON API, assumed throughout; [SQL Essentials](../../sql-essentials/learning/overview.md);
+  [Security Essentials](../../security-essentials/learning/overview.md); and [Software Testing](../../software-testing/learning/overview.md).
 - **Tools & environment**: a macOS/Linux terminal and **Python 3.13+** with type hints and `pyright --strict`.
   Every example is pure standard library -- no web framework, database driver, broker, or network call is
   ever required to run one.

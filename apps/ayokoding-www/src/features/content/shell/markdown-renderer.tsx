@@ -22,8 +22,17 @@ interface MarkdownRendererProps {
   locale: string;
 }
 
-export const MARKDOWN_PROSE_CLASS =
-  "prose prose-neutral dark:prose-invert prose-headings:scroll-mt-20 prose-headings:font-semibold prose-headings:text-foreground prose-p:my-4 prose-p:leading-7 prose-a:text-primary max-w-none";
+// Prevents two Markdown rendering defects: section headings styled as links
+// (underlined, primary-coloured) and inline code rendered with literal
+// backticks and bold weight.
+export const MARKDOWN_PROSE_CLASS = [
+  // Base typography
+  "prose prose-neutral dark:prose-invert prose-headings:scroll-mt-20 prose-headings:font-semibold prose-headings:text-foreground prose-p:my-4 prose-p:leading-7 prose-a:text-primary max-w-none",
+  // Headings render as headings, not as links (S6)
+  "prose-headings:[&>a]:no-underline prose-headings:[&>a]:text-inherit prose-headings:[&>a]:[font-weight:inherit] prose-headings:[&>a:hover]:underline",
+  // Inline code renders as a chip without literal backticks (S7)
+  "prose-code:before:content-none prose-code:after:content-none [&_:not(pre)>code]:rounded [&_:not(pre)>code]:bg-muted [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:[font-weight:inherit]",
+].join(" ");
 
 export function MarkdownRenderer({ html, locale }: MarkdownRendererProps) {
   const options: HTMLReactParserOptions = {

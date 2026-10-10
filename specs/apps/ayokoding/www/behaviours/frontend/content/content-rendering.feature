@@ -85,3 +85,17 @@ Feature: Content Rendering
     When a visitor opens a content page containing a raw HTML details disclosure
     Then the HTML elements should render in the browser as expected
     And the disclosure should reveal its authored answer when opened
+
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Section headings render as headings, not as links
+  @integration-exempt
+  Scenario: Section headings render as headings, not as links
+    When a visitor opens a content page with section headings
+    Then each section heading is shown in the heading text colour without an underline
+    And the heading still links to its own anchor
+
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Inline code renders without literal backticks
+  @integration-exempt
+  Scenario: Inline code renders without literal backticks
+    When a visitor opens a content page containing inline code
+    Then the inline code shows no backtick characters before or after it
+    And the inline code uses the surrounding text's font weight

@@ -31,7 +31,7 @@ export const MARKDOWN_PROSE_CLASS = [
   // Headings render as headings, not as links (S6)
   "prose-headings:[&>a]:no-underline prose-headings:[&>a]:text-inherit prose-headings:[&>a]:[font-weight:inherit] prose-headings:[&>a:hover]:underline",
   // Inline code renders as a chip without literal backticks (S7)
-  "prose-code:before:content-none prose-code:after:content-none [&_:not(pre)>code]:rounded [&_:not(pre)>code]:bg-muted [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:[font-weight:inherit]",
+  "prose-code:before:content-none prose-code:after:content-none [&_:not(pre)>code]:rounded [&_:not(pre)>code]:bg-muted [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:[font-weight:inherit] [&_:not(pre)>code]:[overflow-wrap:anywhere]",
 ].join(" ");
 
 export function MarkdownRenderer({ html, locale }: MarkdownRendererProps) {

@@ -197,35 +197,32 @@ they cover the same ground.
   (`graph-databases`), and the implementation internals of the storage engines this topic only reasons
   about from the outside (`database-internals-and-storage-engines`).
 
-## Accuracy notes
+## References
 
-> Verified in the pre-authoring `web-researcher` sweep (2026-07-12, DD-28), with a follow-up
-> spot-check sweep on 2026-07-27.
-
-- 2026-07-12 -- verified (all five license claims confirmed against primary sources): **Redis** --
+- **Redis** --
   tri-license RSALv2/SSPLv1/**AGPLv3** since Redis 8 (2025-05-01, re-adding an OSI-approved option);
   **Valkey** -- **BSD-3-Clause** (Linux Foundation fork, March 2024); **MongoDB** -- **SSPLv1**
   (unchanged since Oct 2018, not OSI-approved); **Cassandra** -- **Apache-2.0** (unchanged);
   **ScyllaDB** -- source-available (Enterprise 2025.1+; Open Source 6.2.x is the final AGPL release).
   CAP (Brewer 2000) and PACELC (Abadi 2010) framing stable. (redis.io/blog/agplv3 / valkey.io /
   mongodb.com / cassandra.apache.org / scylladb.com)
-- 2026-07-12 -- **DynamoDB license caveat**: DynamoDB is a proprietary AWS managed service, not an OSS
+- **DynamoDB license caveat**: DynamoDB is a proprietary AWS managed service, not an OSS
   product -- it has no OSI license to record. Its examples (co-22, co-23, co-27) carry no co-28
   citation; this topic states that distinction explicitly rather than forcing DynamoDB into the
   OSS license-naming pattern.
-- 2026-07-12 -- **TimescaleDB / Tiger Data license split** (drives co-28): `create_hypertable`,
+- **TimescaleDB / Tiger Data license split** (drives co-28): `create_hypertable`,
   `time_bucket`, and basic hyperfunctions are **Apache-2.0**; continuous aggregates (ex-84),
   `add_retention_policy` (ex-83), and columnar compression ("Hypercore") are **TSL / Community** --
   source-available, not OSI-approved. The vendor rebrand Timescale -> Tiger Data (June 2025) moved
   docs to tigerdata.com; the license abbreviation TSL is unchanged.
-- 2026-07-12 -- **Redis `MULTI`/`EXEC` is not ACID-isolated**: a runtime error inside the block does
+- **Redis `MULTI`/`EXEC` is not ACID-isolated**: a runtime error inside the block does
   not roll back remaining queued commands (ex-28, ex-30, ex-72). `WATCH` gives optimistic
   compare-and-swap, aborting `EXEC` with `nil` on a conflicting concurrent write (ex-29).
-- 2026-07-12 -- **Cassandra LWT cost**: the commonly quoted "four round trips" figure for
+- **Cassandra LWT cost**: the commonly quoted "four round trips" figure for
   `INSERT ... IF NOT EXISTS` was not confirmed against apache.org primary docs and is deliberately
   **not** repeated in ex-58 -- only the qualitative "LWTs are expensive, reserve them" framing is
   taught.
-- 2026-07-12 -- **DynamoDB TTL is best-effort**: expired items are typically purged within roughly two
+- **DynamoDB TTL is best-effort**: expired items are typically purged within roughly two
   days of their epoch expiry, and can still be read until purged (ex-53, ex-77) -- this topic never
   claims instant deletion.
 - **2026-07-27 spot-check correction -- `redis-py` version**: the 2026-07-12 sweep's "~8.8.0" figure

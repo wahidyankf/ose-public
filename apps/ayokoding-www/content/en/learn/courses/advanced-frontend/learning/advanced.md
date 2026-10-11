@@ -129,7 +129,7 @@ _ex-59 &middot; exercises co-30_
 
 When a component reads a promise with use() inside a Suspense boundary, React shows the fallback while the promise is pending and the content once it settles. The data fetch IS what triggers the fallback.
 
-> **Accuracy note**: "`<Suspense>` lets you display a fallback until its children have finished loading." Source: react.dev, <Suspense> (https://react.dev/reference/react/Suspense).
+> **Note:** "`<Suspense>` lets you display a fallback until its children have finished loading." ([react.dev, <Suspense>](https://react.dev/reference/react/Suspense)).
 
 **`learning/code/ex-59-suspense-for-data/example.ts`**
 
@@ -140,8 +140,8 @@ When a component reads a promise with use() inside a Suspense boundary, React sh
 // fallback while the promise is pending and the resolved content once it settles. This is the
 // Suspense-for-data path: the data fetch IS the thing that triggers the fallback.
 //
-// > **Accuracy note**: "`<Suspense>` lets you display a fallback until its children have finished
-// > loading." Source: react.dev, <Suspense> (https://react.dev/reference/react/Suspense).
+// Note: "`<Suspense>` lets you display a fallback until its children have finished
+// loading." Source: react.dev, <Suspense> (https://react.dev/reference/react/Suspense).
 
 // use models React's `use(promise)`: throw the pending promise so Suspense can catch it.
 type Resource<T> = { read: () => T }; // => a wrapped promise Suspense understands
@@ -212,7 +212,7 @@ _ex-60 &middot; exercises co-30_
 
 The trap: a fetch kicked off inside a useEffect does NOT trigger a Suspense boundary. Suspense only suspends on use() of a promise, lazy code, or a framework integration -- an effect fetch is invisible to it.
 
-> **Accuracy note**: "Suspense does not detect when data is fetched inside an Effect or event handler." Source: react.dev, <Suspense> (https://react.dev/reference/react/Suspense).
+> **Note:** "Suspense does not detect when data is fetched inside an Effect or event handler." ([react.dev, <Suspense>](https://react.dev/reference/react/Suspense)).
 
 **`learning/code/ex-60-suspense-not-useeffect/example.ts`**
 
@@ -223,8 +223,8 @@ The trap: a fetch kicked off inside a useEffect does NOT trigger a Suspense boun
 // Suspense only suspends on `use()` of a promise, lazy code, or a framework integration -- a fetch
 // started in an effect is invisible to Suspense, so the fallback NEVER shows for it.
 //
-// > **Accuracy note**: "Suspense does not detect when data is fetched inside an Effect or event
-// > handler." Source: react.dev, <Suspense> (https://react.dev/reference/react/Suspense).
+// Note: "Suspense does not detect when data is fetched inside an Effect or event
+// handler." Source: react.dev, <Suspense> (https://react.dev/reference/react/Suspense).
 
 // Tracks whether the <Suspense> fallback ever rendered for this fetch.
 let fallbackShown = false; // => stays false -- the effect-fetch never triggers the boundary
@@ -338,7 +338,7 @@ _ex-62 &middot; exercises co-31_
 
 next/image defaults loading to lazy -- a deliberate divergence from the native img, whose default is eager. Off-screen images defer until they near the viewport.
 
-> **Accuracy note**: `next/image` `loading` defaults to "lazy" ("Defers loading the image until it reaches a calculated distance from the viewport"). Source: Next.js Image (https://nextjs.org/docs/app/api-reference/components/image).
+> **Note:** `next/image` `loading` defaults to "lazy" ("Defers loading the image until it reaches a calculated distance from the viewport"). ([Next.js Image](https://nextjs.org/docs/app/api-reference/components/image)).
 
 **`learning/code/ex-62-image-lazy-default/example.ts`**
 
@@ -349,9 +349,9 @@ next/image defaults loading to lazy -- a deliberate divergence from the native i
 // default is "eager". Off-screen images defer until they near the viewport, saving bandwidth and
 // reducing initial load.
 //
-// > **Accuracy note**: `next/image` `loading` defaults to "lazy" ("Defers loading the image until
-// > it reaches a calculated distance from the viewport"). Source: Next.js Image
-// > (https://nextjs.org/docs/app/api-reference/components/image).
+// Note: `next/image` `loading` defaults to "lazy" ("Defers loading the image until
+// it reaches a calculated distance from the viewport"). Source: Next.js Image
+// (https://nextjs.org/docs/app/api-reference/components/image).
 
 // An image with its loading strategy and whether it is near the viewport.
 interface ImageSpec {
@@ -463,7 +463,7 @@ _ex-64 &middot; exercises co-32_
 
 The edge runtime runs your function in a V8 isolate at the CDN edge, close to the user -- a subset of Web APIs (fetch, Request, Response), ES modules only. A route segment config opts in.
 
-> **Accuracy note**: `runtime: 'nodejs' | 'edge'`, default 'nodejs'; the edge runtime is a V8-isolate subset of Web APIs, ES-modules only. Source: Next.js Route Segment Config (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config).
+> **Note:** `runtime: 'nodejs' | 'edge'`, default 'nodejs'; the edge runtime is a V8-isolate subset of Web APIs, ES-modules only ([Next.js Route Segment Config](https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config)).
 
 **`learning/code/ex-64-edge-runtime/example.ts`**
 
@@ -474,9 +474,9 @@ The edge runtime runs your function in a V8 isolate at the CDN edge, close to th
 // subset of Web APIs (fetch, Request, Response), ES modules only. A route segment config selects it
 // with `runtime: 'edge'` (the default is 'nodejs').
 //
-// > **Accuracy note**: `runtime: 'nodejs' | 'edge'`, default 'nodejs'; the edge runtime is a
-// > V8-isolate subset of Web APIs, ES-modules only. Source: Next.js Route Segment Config
-// > (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config).
+// Note: `runtime: 'nodejs' | 'edge'`, default 'nodejs'; the edge runtime is a
+// V8-isolate subset of Web APIs, ES-modules only. Source: Next.js Route Segment Config
+// (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config).
 
 // A route segment config: the one line that selects the runtime.
 const config = { runtime: "edge" as "nodejs" | "edge" }; // => co-32: opt into the edge runtime
@@ -585,7 +585,7 @@ _ex-66 &middot; exercises co-33_
 
 Model async UI state as a discriminated union: each branch shares a status literal that narrows the rest of the shape. The status field is the discriminant TypeScript narrows on.
 
-> **Accuracy note**: "When every type in a union contains a common property with literal types, TypeScript ... can narrow out the members of the union." Source: TS Handbook -- Narrowing (https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
+> **Note:** "When every type in a union contains a common property with literal types, TypeScript ... can narrow out the members of the union." ([TS Handbook -- Narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions)).
 
 **`learning/code/ex-66-discriminated-union-state/example.ts`**
 
@@ -596,9 +596,9 @@ Model async UI state as a discriminated union: each branch shares a status liter
 // the rest of the shape. `loading` has no data; `error` has a message; `success` has the data. The
 // `status` field is the discriminant TypeScript narrows on.
 //
-// > **Accuracy note**: "When every type in a union contains a common property with literal types,
-// > TypeScript ... can narrow out the members of the union." Source: TS Handbook -- Narrowing
-// > (https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
+// Note: "When every type in a union contains a common property with literal types,
+// TypeScript ... can narrow out the members of the union." Source: TS Handbook -- Narrowing
+// (https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
 
 // The three-state union; `status` is the discriminant (the common literal field).
 type AsyncState<T> =
@@ -653,7 +653,7 @@ _ex-67 &middot; exercises co-33_
 
 Assigning the switch's default branch to a never-typed variable turns exhaustiveness into a compile check: add a union member without a case and tsc fails. The broken variant below shows the exact error.
 
-> **Accuracy note**: Discriminated-union narrowing from the TS Handbook -- Narrowing (https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
+> **Note:** Discriminated-union narrowing ([TS Handbook -- Narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions)).
 
 **`learning/code/ex-67-exhaustive-switch/example.ts`**
 
@@ -665,9 +665,9 @@ Assigning the switch's default branch to a never-typed variable turns exhaustive
 // member is added but not handled, it falls through to the default and is NOT `never` -- a type
 // error. The "broken" variant below demonstrates that exact error.
 //
-// > **Accuracy note**: "When every type in a union contains a common property with literal types,
-// > TypeScript ... can narrow out the members of the union." Source: TS Handbook -- Narrowing
-// > (https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
+// Note: "When every type in a union contains a common property with literal types,
+// TypeScript ... can narrow out the members of the union." Source: TS Handbook -- Narrowing
+// (https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
 
 // A four-state union; every member carries the `status` discriminant.
 type State =
@@ -1288,7 +1288,7 @@ _ex-76 &middot; exercises co-36_
 
 Testing-Library's guiding principle: query the way a user sees the UI (by role, by visible text), not by implementation details (a CSS class). A behaviour-based test survives a class rename; an internals-based one breaks.
 
-> **Accuracy note**: "The more your tests resemble the way your software is used, the more confidence they can give you." Source: Testing Library -- Guiding Principles (https://testing-library.com/docs/guiding-principles/).
+> **Note:** "The more your tests resemble the way your software is used, the more confidence they can give you." ([Testing Library -- Guiding Principles](https://testing-library.com/docs/guiding-principles/)).
 
 **`learning/code/ex-76-rtl-testing-behaviour/example.ts`**
 
@@ -1300,9 +1300,9 @@ Testing-Library's guiding principle: query the way a user sees the UI (by role, 
 // that finds "the button labelled Submit" keeps passing when you swap the class name; a test that
 // finds `.submit-btn` breaks on the same change though the user saw nothing differ.
 //
-// > **Accuracy note**: "The more your tests resemble the way your software is used, the more
-// > confidence they can give you." Source: Testing Library -- Guiding Principles
-// > (https://testing-library.com/docs/guiding-principles/).
+// Note: "The more your tests resemble the way your software is used, the more
+// confidence they can give you." Source: Testing Library -- Guiding Principles
+// (https://testing-library.com/docs/guiding-principles/).
 
 // A minimal rendered DOM node: its role, its accessible name, and an internal-only class.
 interface DomNode {
@@ -1432,7 +1432,7 @@ _ex-78 &middot; exercises co-36_
 
 Playwright drives a real browser through the critical path: navigate, fill the search, click search, assert a result is visible. Unlike a unit test, it exercises the whole stack in a real browser.
 
-> **Accuracy note**: "Playwright Test is an end-to-end test framework for modern web apps." Source: Playwright (https://playwright.dev/docs/intro).
+> **Note:** "Playwright Test is an end-to-end test framework for modern web apps." ([Playwright](https://playwright.dev/docs/intro)).
 
 **`learning/code/ex-78-playwright-e2e/example.ts`**
 
@@ -1444,8 +1444,8 @@ Playwright drives a real browser through the critical path: navigate, fill the s
 // browser. This example models those steps and the visible-result assertion that defines a "smoke"
 // pass.
 //
-// > **Accuracy note**: "Playwright Test is an end-to-end test framework for modern web apps."
-// > Source: Playwright (https://playwright.dev/docs/intro).
+// Note: "Playwright Test is an end-to-end test framework for modern web apps."
+// Source: Playwright (https://playwright.dev/docs/intro).
 
 // A simulated page a Playwright test drives (the browser tab under automation).
 interface Page {

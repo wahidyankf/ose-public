@@ -4,9 +4,10 @@
 // functions, or after an early return); (2) only call Hooks from React function components or
 // custom Hooks. A hook called inside a condition breaks the call-order indexing React relies on.
 //
-// > **Accuracy note**: the two rules are verbatim from react.dev, Rules of Hooks
-// > (https://react.dev/reference/rules/rules-of-hooks). The call-order-indexed-per-fiber
-// > explanation of WHY is community/Fiber knowledge, `[Unverified]` as an official-docs quote.
+// Note: the two rules are verbatim from react.dev, Rules of Hooks
+// (https://react.dev/reference/rules/rules-of-hooks). The call-order-indexed-per-fiber
+// explanation of WHY is community/Fiber knowledge; it has not been independently
+// confirmed in the official React docs, so check the linked source before relying on it.
 
 // Each hook call site, in source order, with whether it sits inside a conditional.
 interface HookCall {

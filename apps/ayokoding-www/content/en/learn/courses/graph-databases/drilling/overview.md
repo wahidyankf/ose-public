@@ -314,7 +314,7 @@ a query to one explicitly?
 
 Neo4j ships two parallel Cypher dialects: Cypher 5, frozen and bug-fixes-only, and Cypher 25,
 evolving (Example 52, Example 53) -- see the course overview's dated
-[Accuracy notes](../overview.md#accuracy-notes) for the calendar version at which Cypher 25 became
+[References](../overview.md#references) for the calendar version at which Cypher 25 became
 the default, since that specific detail moves release to release. Prefixing a query with `CYPHER 5`
 or `CYPHER 25` pins that one statement to the named dialect regardless of the database's own
 configured default -- Example 15's quantified-relationship syntax and Example 79's `SHORTEST`
@@ -1409,7 +1409,7 @@ indefinitely, while new code deliberately opts into the evolving, GQL-aligned di
 dialects now coexist, and any course or reference material touching version-sensitive syntax has to
 say explicitly which one it targets, rather than assuming one unversioned "Cypher" the way older
 material could. (Cypher 5/Cypher 25 are the current dialect names at the time this course was
-written -- see the course overview's dated [Accuracy notes](../overview.md#accuracy-notes).)
+written -- see the course overview's dated [References](../overview.md#references).)
 
 </details>
 

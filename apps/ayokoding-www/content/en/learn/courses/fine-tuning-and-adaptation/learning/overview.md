@@ -7,16 +7,16 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: `creating-ai-powered-apps` (prompting, structured output, and RAG -- the
-  alternatives this course requires you to exhaust first) -- `[Unverified]` this course is not yet
-  present in the AyoKoding course library on disk, so no link is given here; `evaluating-ai-systems-in-depth`
+- **Prior topics**: [Creating AI-Powered Apps](/en/learn/courses/creating-ai-powered-apps) (prompting, structured output, and RAG -- the
+  alternatives this course requires you to exhaust first);
+  [Evaluating AI Systems In Depth](/en/learn/courses/evaluating-ai-systems-in-depth)
   (**hard prerequisite**: a fine-tune with no eval is unfalsifiable, and every decision in this
-  course is an eval comparison) -- `[Unverified]` not yet present in the AyoKoding course library on
-  disk; [Statistics for Evaluation](../../statistics-for-evaluation/overview.md) (the
+  course is an eval comparison);
+  [Statistics for Evaluation](../../statistics-for-evaluation/overview.md) (the
   base-versus-adapted comparison is a paired significance test, not two printed numbers);
   [Inference Serving & Model Deployment](../../inference-serving-and-model-deployment/overview.md)
-  (where an adapter is actually served); `data-engineering` (the
-  dataset pipeline) -- `[Unverified]` not yet present in the AyoKoding course library on disk; **just
+  (where an adapter is actually served); [Data Engineering](/en/learn/courses/data-engineering) (the
+  dataset pipeline); **just
   enough python** ([Just Enough Python](../../just-enough-python/learning/overview.md)) is
   assumed for reading and writing fully type-annotated Python.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13**, the standard library only
@@ -58,7 +58,7 @@ ruff 0.15.9
 ```
 
 _Captured 2026-07-26 -- these are point-in-time patch versions, not a durable claim; see this
-topic's [Accuracy notes](../overview.md#accuracy-notes) if you are reading this after a later patch
+topic's [References](../overview.md#references) if you are reading this after a later patch
 has shipped._
 
 Every worked example is a complete, self-contained, fully type-annotated (strict `pyright`) runnable
@@ -91,7 +91,7 @@ artefact the next step's file reads, so the five steps run as one small, ordered
 
 - **AI Engineering: Building Applications with Foundation Models** -- Chip Huyen (O'Reilly, 2025).
   The corrected source for this course's "exhaust prompting/RAG/scoping before fine-tuning" framing
-  -- see this topic's [Accuracy notes](../overview.md#accuracy-notes) for the correction detail.
+  -- see this topic's [References](../overview.md#references) for the correction detail.
 - **LoRA: Low-Rank Adaptation of Large Language Models** -- Hu, Shen, Wallis, Allen-Zhu, Li, S. Wang,
   L. Wang & Chen, arXiv:2106.09685 (2021). The originating paper for the low-rank-adaptation
   principle this course teaches as durable. <https://arxiv.org/abs/2106.09685>

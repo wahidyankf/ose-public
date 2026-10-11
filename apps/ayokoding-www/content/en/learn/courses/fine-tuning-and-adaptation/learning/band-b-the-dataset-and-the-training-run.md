@@ -20,7 +20,7 @@ placement bound how much an adapter can express (co-19, co-20), and learning rat
 capacity can silently memorize a small dataset instead of generalizing from it (co-23, co-24). Every
 code-medium example's real, runnable **Python 3.13** file lives under `learning/code/ex-NN-*/`, run
 for real with genuine captured output. (See this topic's
-[Accuracy notes](../overview.md#accuracy-notes) for the exact library-version facts captured for
+[References](../overview.md#references) for the exact library-version facts captured for
 `peft`, `transformers`, and LoRA's own paper.)
 
 ---
@@ -1266,8 +1266,8 @@ practice for the first time on a real base model, not just illustrated on a toy 
 
 from __future__ import annotations  # => hygiene: postpones annotation evaluation, interpreter-version-agnostic
 
-# => co-17: `Qwen/Qwen2.5-0.5B-Instruct` is this course's running base model -- Apache 2.0, see this course's Accuracy notes
-BASE_MODEL_PARAM_COUNT = 494_000_000  # => co-17: `[Unverified]` illustrative, order-of-magnitude parameter count for the 0.5B checkpoint
+# => co-17: `Qwen/Qwen2.5-0.5B-Instruct` is this course's running base model -- Apache 2.0, see this course's References
+BASE_MODEL_PARAM_COUNT = 494_000_000  # => co-17: illustrative, order-of-magnitude parameter count for the 0.5B checkpoint (not a vendor-spec figure)
 TRAINABLE_PARAM_COUNT_FULL_FINE_TUNE = BASE_MODEL_PARAM_COUNT  # => co-17: a FULL fine-tune updates every single parameter -- 100%
 
 BASELINE_TICKET_VOCAB_PASS_RATE = 0.42  # => co-06: the base model's pass rate on the internal-vocabulary eval, from ex-08's original gap
@@ -1327,10 +1327,10 @@ from __future__ import annotations  # => hygiene: postpones annotation evaluatio
 
 BASE_MODEL_PARAM_COUNT = 494_000_000  # => co-17: same base model as ex-27
 BYTES_PER_PARAM_FP32 = 4  # => co-08,co-17: a full fine-tune's optimizer state commonly needs full fp32 precision -- illustrative, library-dependent in reality
-OPTIMIZER_STATE_MULTIPLIER = 2  # => co-08,co-17: `[Unverified]` illustrative -- common optimizers keep roughly 2x the model's own size in additional state
+OPTIMIZER_STATE_MULTIPLIER = 2  # => co-08,co-17: illustrative -- common optimizers keep roughly 2x the model's own size in additional state (typical, not spec'd)
 
 FULL_FINE_TUNE_WALL_CLOCK_MINUTES = 46.0  # => co-08: measured, illustrative wall-clock time on a small consumer GPU
-FULL_FINE_TUNE_GPU_HOUR_COST_USD = 0.80  # => co-08: `[Unverified]` illustrative placeholder rate, not a live-sourced price
+FULL_FINE_TUNE_GPU_HOUR_COST_USD = 0.80  # => co-08: illustrative placeholder rate, not a confirmed live-sourced price
 
 if __name__ == "__main__":  # => co-17: entry point -- runs only when this file executes directly, not on import
     checkpoint_size_gb = (BASE_MODEL_PARAM_COUNT * BYTES_PER_PARAM_FP32) / (1024**3)  # => co-17: raw model weights alone
@@ -1390,15 +1390,15 @@ from dataclasses import dataclass  # => co-19: a LoRA config's own shape -- illu
 
 
 @dataclass(frozen=True)  # => co-19: frozen -- a training config is fixed for the duration of one run
-class LoraConfig:  # => co-19: illustrative mirror of `peft.LoraConfig` -- see this course's Accuracy notes on the real library's API surface
+class LoraConfig:  # => co-19: illustrative mirror of `peft.LoraConfig` -- see this course's References on the real library's API surface
     rank: int  # => co-20: the adapter's rank -- bounds how much behaviour change it can express
-    alpha: int  # => co-19: `[Unverified]` a scaling factor paired with rank -- library-specific, see Accuracy notes
+    alpha: int  # => co-19: a scaling factor paired with rank -- exact semantics are library-specific and were not confirmed here; see this course's References
     target_modules: tuple[str, ...]  # => co-19: WHICH weight matrices get a low-rank adapter injected
 
 
 BASE_MODEL_PARAM_COUNT = 494_000_000  # => co-17: same base model as ex-27/ex-28, base weights stay FROZEN this time
 NUM_TARGET_MATRICES = 48  # => co-19: illustrative -- 24 transformer layers x 2 targeted projections (query, value) per layer
-HIDDEN_DIM = 896  # => co-19: `[Unverified]` illustrative hidden dimension for this course's small base model
+HIDDEN_DIM = 896  # => co-19: illustrative hidden dimension for this course's small base model (not a vendor-spec figure)
 
 CONFIG = LoraConfig(rank=8, alpha=32, target_modules=("q_proj", "v_proj"))  # => co-19,co-20: a modest, commonly-cited starting rank
 
@@ -1588,9 +1588,9 @@ captures nearly all the achievable result.
 
 **Why It Matters**: this validates Example 29's original choice with a genuine sweep rather than a
 default, echoing Hu et al.'s own 2021 finding that attention-only placement is often sufficient --
-`[Needs Verification]` this specific paper finding, like every other LoRA-paper-specific figure,
-is not itself re-verified here beyond the citation metadata (see this course's [Accuracy
-notes](../overview.md#accuracy-notes)).
+this specific paper finding, like every other LoRA-paper-specific figure,
+was not independently confirmed here beyond the citation metadata -- check the paper's own listing
+before relying on it (see this course's [References](../overview.md#references)).
 
 ---
 
@@ -1976,7 +1976,7 @@ SWEEP: list[SweepResult] = [  # => co-24: one row per combo, own comment per row
     SweepResult(learning_rate=5e-3, epochs=3, eval_pass_rate=0.40),  # => co-24: rate far too high -- training genuinely diverged
 ]  # => co-24: closes SWEEP
 
-BATCH_SIZE_VARIANTS_PASS_RATE_RANGE = (0.935, 0.945)  # => co-24: `[Unverified]` illustrative -- batch size 8/16/32 barely moved the result at all, held elsewhere constant
+BATCH_SIZE_VARIANTS_PASS_RATE_RANGE = (0.935, 0.945)  # => co-24: illustrative -- batch size 8/16/32 barely moved the result at all, held elsewhere constant (not a published benchmark)
 
 
 if __name__ == "__main__":  # => co-24: entry point -- runs only when this file executes directly, not on import

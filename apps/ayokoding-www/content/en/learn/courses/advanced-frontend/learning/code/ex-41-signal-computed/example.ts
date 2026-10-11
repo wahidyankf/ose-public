@@ -3,8 +3,8 @@
 // A computed signal derives its value from other signals. It tracks which signals it read and
 // recomputes ONLY when one of those dependencies changes -- not on every signal change anywhere.
 //
-// > **Accuracy note**: "computed signals track which signals are accessed and re-run ... when those
-// > signals change." Source: Preact Signals (https://preactjs.com/guide/v10/signals/).
+// Note: "computed signals track which signals are accessed and re-run ... when those
+// signals change." Source: Preact Signals (https://preactjs.com/guide/v10/signals/).
 
 let activeEffect: (() => void) | null = null; // => the dependency-tracking context
 

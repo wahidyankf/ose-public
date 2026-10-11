@@ -12,12 +12,12 @@ weight: 1
   already familiar, since this topic never re-teaches it; [Statistics for Evaluation](../../statistics-for-evaluation/overview.md)
   -- agreement statistics, confidence intervals, and sampling are used starting with the very
   first judge example (Example 18) and throughout the Intermediate and Advanced tiers;
-  `agentic-ai` and `agent-orchestration-subagents-and-observability` -- `[Unverified]` not yet
-  present in the AyoKoding course library on disk, so no link is given here -- their absence does
-  not block this topic, since every trajectory used in Examples 35-40 and 63-80 is a small,
-  self-contained, invented trajectory rather than one produced by a real orchestrated agent
-  system; `cicd-and-release-engineering` -- `[Unverified]` not yet present in the AyoKoding course
-  library on disk, so no link is given here -- the CI-gate examples (Examples 46-49, 73-80) invent
+  [Agentic AI](/en/learn/courses/agentic-ai) and
+  [Agent Orchestration, Subagents & Observability](/en/learn/courses/agent-orchestration-subagents-and-observability)
+  -- they supply no required environment here, since every trajectory used in Examples 35-40 and
+  63-80 is a small, self-contained, invented trajectory rather than one produced by a real
+  orchestrated agent system; [CI/CD and Release Engineering](/en/learn/courses/cicd-and-release-engineering)
+  -- the CI-gate examples (Examples 46-49, 73-80) invent
   their own minimal pipeline stand-in rather than assuming a real CI product;
   [Software Testing](../../software-testing/overview.md) -- every example's
   `if __name__ == "__main__":` block reuses the arrange-act-assert mindset that topic teaches.
@@ -65,7 +65,7 @@ pip install pyright==1.1.411 ruff==0.15.9
 ```
 
 **A note on versions**: this topic's 80 examples were authored and verified against these exact
-tool versions, in this sandbox, on 2026-07-26. Every example is pure-standard-library Python 3.13
+tool versions. Every example is pure-standard-library Python 3.13
 plus a small, invented, in-file mock generator/judge model -- there is no third-party model SDK,
 eval framework, or hosted product dependency anywhere in the Learning tier, so no other version pin
 matters.
@@ -111,9 +111,9 @@ topic's pages is a genuine, captured run, never a fabricated one.
   an adjudicated ground-truth set and a validated judge, trajectory and outcome scoring, and a
   noise-aware, tiered, cost-budgeted CI gate.
 
-Every example cites the concept (`co-NN`) it exercises, and this topic's accuracy notes (in the
-[topic overview](../overview.md#accuracy-notes)) trace every version pin and external claim to its
-source, dated 2026-07-26.
+Every example cites the concept (`co-NN`) it exercises, and this topic's References (in the
+[topic overview](../overview.md#references)) trace every version pin and external claim to its
+source.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161

@@ -1,6 +1,6 @@
 # learning/code/ex-17-install-pre-commit-framework/.pre-commit-config.yaml
 # ex-17: a minimal pre-commit config -- catches a defect class BEFORE it ever reaches a commit (co-10)
-# NOTE: the config file's name is exactly `.pre-commit-config.yaml` (DD-28-verified, pre-commit.com).
+# NOTE: the config file's name is exactly `.pre-commit-config.yaml` (per pre-commit.com).
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks # => co-10: the framework's own general-purpose hook set
     rev: v6.0.0 # => co-10: pinned revision -- reproducible across every contributor's machine
@@ -8,7 +8,7 @@ repos:
       - id: trailing-whitespace # => co-10: catches a trivial, common defect class before it ever commits
       - id: end-of-file-fixer # => co-10: ensures every file ends with exactly one newline
   - repo: https://github.com/astral-sh/ruff-pre-commit # => co-10: Ruff's own official pre-commit mirror
-    rev: v0.15.17 # => co-10: pinned to the same Ruff line this topic's accuracy notes verified
+    rev: v0.15.17 # => co-10: pinned to the same Ruff line used across this course
     hooks:
       - id: ruff # => co-10: the linter, with autofix enabled
         args: [--fix] # => co-10: auto-fixes what it safely can, right at commit time

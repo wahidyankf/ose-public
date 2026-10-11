@@ -44,14 +44,12 @@ transforms are what make "just re-run it" a safe instruction instead of a destru
 > Python against local files and DuckDB. It does **not** teach:
 >
 > - **Inverted indexes and ranking** -- ad hoc, unstructured search over document collections
->   belongs to `search-and-information-retrieval`. `[Unverified]` -- this course is not yet present
->   in the AyoKoding course library on disk, so no link is given here.
+>   belongs to [Search and Information Retrieval](/en/learn/courses/search-and-information-retrieval).
 > - **Operational SQL depth** -- query plans, indexing strategy, and tuning a slow query are owned
 >   by [26 &middot; Advanced SQL & Query Performance](../advanced-sql-and-query-performance/learning/overview.md),
 >   which this course assumes as a prerequisite rather than re-teaching.
 > - **The AI/RAG data path** -- chunking, embeddings, and vector retrieval for LLM applications
->   belong to `creating-ai-powered-apps`. `[Unverified]` -- this course is not yet present in the
->   AyoKoding course library on disk, so no link is given here.
+>   belong to [Creating AI-Powered Apps](/en/learn/courses/creating-ai-powered-apps).
 >
 > If a technique's job is "get this bounded or unbounded dataset from a source, through a
 > warehouse-shaped set of layers, to something a dashboard or a model can consume, safely and
@@ -168,61 +166,59 @@ capstone's four files are the sole exception, importing from one another as one 
   those techniques exist to make _repeated, evolving_ pipelines safe, and add ceremony without
   benefit to something genuinely run-once.
 
-## Accuracy notes
+## References
 
-> Dated per this topic's own accuracy-note discipline: every volatile, version-pinned, or
-> market-dependent fact below is flagged or dated here rather than stated unqualified in the stable
-> spine above. Carried forward from the pre-authoring `web-researcher` sweep (DD-28) and the DD-35
-> no-hallucination primary-source pass (2026-07-12), re-verified 2026-07-27 with no material drift.
-
-- 2026-07-12 (DD-35) -- **durable spine**: medallion architecture (bronze/silver/gold), ETL vs.
+- **Durable spine**: medallion architecture (bronze/silver/gold), ETL vs.
   ELT, Kimball-style dimensional modeling (star schema, SCDs), and DAG-based orchestration are
-  evergreen data-engineering vocabulary, unchanged in current usage. (source: What is Medallion Architecture? -- https://www.databricks.com/blog/what-is-medallion-architecture ; accessed 2026-07-27) --
+  evergreen data-engineering vocabulary, unchanged in current usage.
+  ([What is Medallion Architecture?](https://www.databricks.com/blog/what-is-medallion-architecture)) --
   Databricks' own docs do not self-attribute _coining_ the "medallion" term; this course frames it
   as "the bronze/silver/gold pattern popularized by Databricks," never "coined in [year]."
-- 2026-07-12 (DD-35) -- **SCD types** (source: Design Tip #152 Slowly Changing Dimension Types 0, 4, 5, 6 and 7 -- https://www.kimballgroup.com/2013/02/design-tip-152-slowly-changing-dimension-types-0-4-5-6-7/ ; accessed 2026-07-27 + _The Data Warehouse Toolkit_, 3rd ed. 2013): Type 0 retain-original, Type 1 overwrite, **Type 2 = new row +
+- **SCD types** ([Design Tip #152 Slowly Changing Dimension Types 0, 4, 5, 6 and 7](https://www.kimballgroup.com/2013/02/design-tip-152-slowly-changing-dimension-types-0-4-5-6-7/),
+  plus _The Data Warehouse Toolkit_, 3rd ed. 2013): Type 0 retain-original, Type 1 overwrite, **Type 2 = new row +
   effective-date range + current flag + surrogate key**, Type 3 add-a-column, **Type 6 = 1+2+3
   hybrid**. This course does not renumber these.
-- 2026-07-12 (DD-35) -- **Kafka** (source: Delivery Semantics -- https://docs.confluent.io/kafka/design/delivery-semantics.html ; accessed 2026-07-27): ordering is guaranteed only
+- **Kafka** ([Delivery Semantics](https://docs.confluent.io/kafka/design/delivery-semantics.html)): ordering is guaranteed only
   within a partition, never across partitions. **At-least-once is the default**; exactly-once
   (since 0.11) needs the idempotent producer (producer-id + sequence dedup) plus transactions.
-- 2026-07-12 (DD-35) -- **stream-window naming collision**: **Flink** calls time-advancing
+- **Stream-window naming collision**: **Flink** calls time-advancing
   overlapping windows "sliding"; **Kafka Streams** calls the same shape "hopping" and reserves
   "sliding" for a _record-triggered_ join window. This course uses the vendor-neutral trio
   **tumbling / hopping / session** throughout and flags the Kafka Streams "sliding" meaning here
   rather than in the spine.
-- 2026-07-12 (DD-35) -- **exactly-once &ne; idempotent sink** (source: Exactly-once in Dataflow -- https://docs.cloud.google.com/dataflow/docs/concepts/exactly-once ; accessed 2026-07-27):
+- **Exactly-once &ne; idempotent sink** ([Exactly-once in Dataflow](https://docs.cloud.google.com/dataflow/docs/concepts/exactly-once)):
   exactly-once _inside_ an engine does not make an external write exactly-once; the sink write must
   itself be idempotent. This course teaches "idempotent upsert," never "the engine guarantees it
   end to end."
-- 2026-07-12 (DD-35) -- **data contracts** are a practitioner-coined pattern (Chad Sanderson /
+- **Data contracts** are a practitioner-coined pattern (Chad Sanderson /
   Andrew Jones, roughly 2022-2024), not a formal standard. dbt "model contracts" enforce
   columns/types/constraints by **failing the build** on drift.
-- 2026-07-12 (DD-35) -- **CDC** (Debezium): log-based CDC reads the database transaction log and
+- **CDC** (Debezium): log-based CDC reads the database transaction log and
   captures inserts, updates, **and deletes**; query-based polling misses deletes and between-poll
-  changes. `[Needs Verification]` -- `debezium.io` returned HTTP 403 on direct fetch as of the
-  DD-35 pass; the CDC facts are corroborated via a Red Hat mirror plus consistent independent
-  search, but this course keeps `[Unverified]` on a Debezium-primary source.
-- 2026-07-12 (DD-35) -- **modern data stack** (source: Emerging Architectures for Modern Data Infrastructure -- https://a16z.com/emerging-architectures-for-modern-data-infrastructure/ ; accessed 2026-07-27, Bornstein/Li/Casado): source &rarr; ingest (EL,
+  changes. The Debezium site blocks automated fetching (HTTP 403), so these claims were not
+  confirmed against the primary Debezium documentation directly -- check Debezium's docs before
+  relying on them.
+- **Modern data stack** ([Emerging Architectures for Modern Data Infrastructure](https://a16z.com/emerging-architectures-for-modern-data-infrastructure/),
+  Bornstein/Li/Casado): source &rarr; ingest (EL,
   e.g. Fivetran) &rarr; transform (dbt) &rarr; serve (BI); core = replication + cloud warehouse +
   SQL modeling. The a16z page is a living document; this course cites the URL, not a fixed publication year.
-- 2026-07-12 (DD-35) / 2026-07-27 (UPDATED) -- Jay Kreps, "The Log" (2013), is cited from the canonical LinkedIn
-  Engineering URL via the Wayback Machine archive (original LinkedIn URL returned HTTP 404 as of 2026-07-27):
-  (source: The Log: What every software engineer should know about real-time data's unifying abstraction -- https://web.archive.org/web/20190914012941/https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying ; accessed 2026-07-27)
-- 2026-07-27 -- **version-pinned, this course's own toolchain**: worked-example transcripts were
+- Jay Kreps, "The Log" (2013), is still readable through the Wayback Machine archive of the
+  LinkedIn Engineering blog (the original URL 404s):
+  ([The Log: What every software engineer should know about real-time data's unifying abstraction](https://web.archive.org/web/20190914012941/https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying))
+- **Version-pinned, this course's own toolchain**: worked-example transcripts were
   captured against `duckdb==1.5.5` (MIT), `pandas==3.0.5` (BSD-3-Clause, no unpatched CVEs at
   capture time), and `pytest==9.1.1` (MIT), on **Python 3.13**. `polars` (MIT) is a faster
   alternative dataframe library worth knowing about, but this course does not use it -- every
   worked example's data volume is small enough that `pandas` plus DuckDB's own native execution is
   simpler and sufficient.
-- 2026-07-27 -- **Airflow scheduling kwargs, volatile**: `schedule_interval` was deprecated in favor
+- **Airflow scheduling kwargs, version-pinned**: `schedule_interval` was deprecated in favor
   of the unified `schedule` kwarg back in Airflow **2.4.0** (2022-09-19), not Airflow 3
-  (source: Apache Airflow 2.4.0 Release Notes -- https://airflow.apache.org/docs/apache-airflow/2.4.0/release_notes.html ; accessed 2026-07-27);
+  ([Apache Airflow 2.4.0 Release Notes](https://airflow.apache.org/docs/apache-airflow/2.4.0/release_notes.html));
   Airflow **3.0** then removed the legacy `schedule_interval` (and `timetable`) parameters entirely,
   making `schedule` the only option
-  (source: Apache Airflow RELEASE_NOTES.rst, "Unified Scheduling Field" -- https://raw.githubusercontent.com/apache/airflow/main/RELEASE_NOTES.rst ; accessed 2026-07-27).
+  ([Apache Airflow RELEASE_NOTES.rst, "Unified Scheduling Field"](https://raw.githubusercontent.com/apache/airflow/main/RELEASE_NOTES.rst)).
   Airflow 3.0 separately flipped `catchup`'s default from `True` to `False`
-  (source: Apache Airflow -- Upgrading to Airflow 3 -- https://airflow.apache.org/docs/apache-airflow/stable/installation/upgrading_to_airflow3.html ; accessed 2026-07-27).
+  ([Apache Airflow -- Upgrading to Airflow 3](https://airflow.apache.org/docs/apache-airflow/stable/installation/upgrading_to_airflow3.html)).
   This course's orchestration worked examples (ex-41 through ex-45) simulate a DAG's
   dependency/retry/schedule/catchup/backfill semantics in pure Python -- no live Airflow install,
   matching this course's no-network, no-live-service discipline -- so no example cites a specific

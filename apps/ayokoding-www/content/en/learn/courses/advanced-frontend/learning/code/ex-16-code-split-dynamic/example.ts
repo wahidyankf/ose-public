@@ -4,8 +4,8 @@
 // loads only when the component is first rendered. The main bundle stays small; the heavy
 // component is fetched on demand.
 //
-// > **Accuracy note**: `React.lazy(load)` must be called at the top level and needs a `<Suspense>`
-// > wrapper. Source: react.dev, lazy (https://react.dev/reference/react/lazy).
+// Note: `React.lazy(load)` must be called at the top level and needs a `<Suspense>`
+// wrapper. Source: react.dev, lazy (https://react.dev/reference/react/lazy).
 
 // Each "chunk" is a named unit of code the bundler emits.
 interface Chunk {

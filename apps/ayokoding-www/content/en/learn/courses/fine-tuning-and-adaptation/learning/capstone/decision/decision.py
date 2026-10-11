@@ -25,7 +25,7 @@ class DecisionRecord(TypedDict):  # => co-06: the committed shape every later ca
     retrieval_pass_rate: float  # => co-04: retrieval's own measured result
     scoped_pass_rate: float  # => co-05: scoping's own measured result
     behaviour_shaped: bool  # => co-01: is this gap about behaviour, not facts
-    licence_ok: bool  # => co-31: base-model licence and data rights, verified before training
+    licence_ok: bool  # => co-31: base-model licence and data rights, cleared before training
     base_model_id: str  # => co-30: the pinned base every later step must match
     total_one_time_cost_usd: float  # => co-08: data labour + compute + eval, excluding the recurring maintenance line
     monthly_maintenance_cost_usd: float  # => co-08,co-30: the STANDING obligation, not a one-time cost
@@ -38,7 +38,7 @@ if __name__ == "__main__":  # => co-06: entry point -- runs only when this file 
     assert alternatives_exhausted, "every alternative must be genuinely measured and still fall short of the target floor before adaptation is even a candidate"  # => co-06
     behaviour_shaped = True  # => co-01: ticket triage is a format/behaviour task, not a missing-facts task -- confirmed by retrieval's own weak result above
     assert behaviour_shaped and RETRIEVAL_PASS_RATE - BASE_PASS_RATE < 0.05, "a genuinely behaviour-shaped gap must show retrieval moving the needle by only a few points, not closing it"  # => co-01,co-04
-    licence_ok = True  # => co-31: qwen2.5-0.5b-instruct-r1 is Apache 2.0 licensed, verified before training -- see this course's own Accuracy notes
+    licence_ok = True  # => co-31: qwen2.5-0.5b-instruct-r1 is Apache 2.0 licensed, checked against its model card -- see this course's References
     data_labour_usd, compute_usd, eval_usd = 1_200.00, 45.00, 150.00  # => co-08: the one-time cost lines this project actually budgeted
     total_one_time_cost_usd = data_labour_usd + compute_usd + eval_usd  # => co-08: the naive compute-only estimate would have missed the first and third of these
     monthly_maintenance_cost_usd = 650.00  # => co-08,co-30: matches this course's own retiring-adapter maintenance figure -- a recurring, not one-time, cost

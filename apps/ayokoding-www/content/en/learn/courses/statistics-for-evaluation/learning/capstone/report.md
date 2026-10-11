@@ -10,8 +10,7 @@ weight: 5
 > Exercises co-01 through co-24, the full topic.
 
 **Context**: this report answers one question -- should the candidate change described here ship?
--- for a fictional decision modeled on the kind `evaluating-ai-systems-in-depth`
--- `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is given here --
+-- for a fictional decision modeled on the kind [Evaluating AI Systems In Depth](/en/learn/courses/evaluating-ai-systems-in-depth)
 covers in full. Every number below was produced by one of the capstone's four scripts, each of which
 was actually run to capture the transcript it is cited from; none of the figures in this report were
 typed in by hand.

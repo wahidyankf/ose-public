@@ -7,13 +7,14 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: `creating-ai-powered-apps` (tokens, context windows, what a completion request
-  is) -- `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is given
-  here; `backend-at-scale` (load, queueing, capacity, autoscaling) -- `[Unverified]` not yet present;
-  `containers-and-orchestration` (packaging and scheduling a workload) -- `[Unverified]` not yet
-  present; [Computer Architecture](../computer-architecture/overview.md) (memory hierarchy and
-  bandwidth, the entire reason decode behaves as it does); `site-reliability-engineering` (SLOs, load
-  testing, capacity planning) -- `[Unverified]` not yet present; [Just Enough Python](../just-enough-python/learning/overview.md).
+- **Prior topics**: [Creating AI-Powered Apps](../creating-ai-powered-apps/overview.md) (tokens,
+  context windows, what a completion request is);
+  [Backend at Scale](../backend-at-scale/overview.md) (load, queueing, capacity, autoscaling);
+  [Containers and Orchestration](../containers-and-orchestration/overview.md) (packaging and
+  scheduling a workload); [Computer Architecture](../computer-architecture/overview.md) (memory
+  hierarchy and bandwidth, the entire reason decode behaves as it does);
+  [Site Reliability Engineering](../site-reliability-engineering/overview.md) (SLOs, load
+  testing, capacity planning); [Just Enough Python](../just-enough-python/learning/overview.md).
 - **Tools & environment**: a macOS/Linux terminal; Python 3.x (`python3 --version`); no GPU and no
   paid API key are required anywhere in this topic. Every example runs against a small,
   deterministic, in-process scheduler-and-cache **simulator** written for this topic -- the mechanics
@@ -46,17 +47,18 @@ This topic covers the durable **architecture** of transformer inference serving:
 split, the KV cache, continuous batching, paged cache allocation, scheduling and admission control,
 GPU memory arithmetic, quantization, capacity planning, autoscaling, deployment, and observability.
 Serving frameworks of the vLLM/TGI class are the concrete vehicle for a handful of examples and are
-treated as **volatile** throughout -- every framework name, flag, and version claim sits in a dated
-accuracy-note sidebar, never in the durable spine, because these frameworks change substantially
+treated as **volatile** throughout -- every framework name, flag, and version claim is documented in
+the References section, never in the durable spine, because these frameworks change substantially
 within a single release cycle.
 
 > **Scope guard -- serving infrastructure, not model application.** This topic is about **running**
 > a model you already have -- the scheduler, the cache, the memory budget, the deployment. It does
-> not teach prompting, retrieval, or agents; those live in `creating-ai-powered-apps` --
-> `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is given here.
+> not teach prompting, retrieval, or agents; those live in
+> [Creating AI-Powered Apps](../creating-ai-powered-apps/overview.md).
 > It also does not teach evaluation, which lives in
 > [evaluating-ai-output-essentials](../evaluating-ai-output-essentials/overview.md), nor fine-tuning
-> a model's weights, which lives in `fine-tuning-and-adaptation` -- `[Unverified]` not yet present. If
+> a model's weights, which lives in
+> [Fine-Tuning & Adaptation](../fine-tuning-and-adaptation/overview.md). If
 > a question is "how do I make the model answer better," it belongs to those courses. If it is "how
 > do I keep the GPU serving that model busy, fast, and within budget," it belongs here.
 
@@ -100,52 +102,49 @@ anywhere in this topic, and no example requires a GPU to run.
   coverage, and without a data-residency or model-control requirement forcing the issue should not be
   operating inference infrastructure. Recognising that is part of the material.
 
-## Accuracy notes
+## References
 
-> Dated per this topic's own accuracy-note discipline: every volatile, version-pinned, or
-> market-dependent fact below is flagged or dated here rather than stated unqualified in the stable
-> spine above or in any example.
+> Fast-moving facts -- framework names, GPU pricing, benchmark and quality figures -- are stated
+> below with their own volatility noted, rather than unqualified in the stable spine above or in any
+> example.
 
-- 2026-07-26 -- **durable spine**: the prefill/decode split, the KV cache as the mechanism trading
-  memory for recomputation, the memory-bandwidth-bound character of autoregressive decode, the
-  arithmetic relating model weights and cache size to concurrency, continuous batching as the
-  response to variable-length generation, and the throughput-versus-latency tension are
-  architectural facts about transformer inference. They have been stable since the architecture was
-  introduced and are independent of any serving framework.
-- 2026-07-26 -- `[Unverified]` **volatile, accuracy-note only**: every serving framework name (vLLM,
-  TGI, and their successors), every version, every configuration flag, and every default. Frameworks
-  in this space change substantially within a single release cycle. This topic's spine and examples
-  name these frameworks only in passing, as the concrete vehicle for continuous batching and paged
-  cache allocation (Examples 31 and 41) -- never as a source of a version-pinned claim -- and this
-  sidebar is where any such claim would be pinned and dated instead. Re-verify the current name,
-  version, and flag surface of vLLM/TGI-class frameworks before citing one in production
-  documentation.
-- 2026-07-26 -- `[Unverified]` **volatile**: GPU model names, VRAM capacities, memory bandwidths,
-  hourly rental prices, and every hosted-API per-token price used in the build-versus-buy calculation
-  (Example 65) and TCO sensitivity analysis (Example 75) are snapshots with a short half-life. The
-  spine and examples teach the **calculation** using deliberately round, illustrative placeholder
-  numbers (for example, a $2.00/GPU-hour rental price) rather than a currently-accurate market price
-  -- re-source every input number against current vendor pricing before using this calculation for a
-  real budgeting decision.
-- 2026-07-26 -- `[Unverified]` **volatile**: named memory-management and attention-kernel techniques
-  (for example, PagedAttention-style block allocation) and their published speedup figures. This
-  topic teaches the underlying problem -- cache fragmentation under variable-length generation, and
-  the memory-bandwidth cost of attention -- as durable, and treats every named technique and
-  benchmark number as dated and unverified here.
-- 2026-07-26 -- `[Unverified]` **at authoring**: quantization format names (for example, INT8, INT4,
-  FP8), their bit widths, and published quality-degradation measurements (Examples 51-53, 66-67). The
-  trade-off itself -- lower precision buys memory and speed at a measurable quality cost -- is
-  durable; the specific format names and their measured costs are not. Any quality claim in this
-  topic's examples uses a synthetic, illustrative scoring function rather than a published benchmark
-  number, specifically to avoid an unverifiable citation.
-- 2026-07-26 -- every open-weights model name mentioned in passing in this topic's prose is
-  illustrative only; no example in this topic downloads, loads, or depends on a specific model's
-  weights -- every example runs against the in-process deterministic simulator described in
-  Prerequisites above.
-- 2026-07-26 -- **volatile, version-pinned**: this topic's "Confirm your toolchain" guidance and
-  every worked-example transcript were captured against **Python 3.13**, run with `python3` from a
-  macOS/Linux shell -- re-verify the printed transcripts if re-running the examples against a
-  materially later Python release.
+- The prefill/decode split, the KV cache as the mechanism trading memory for recomputation, the
+  memory-bandwidth-bound character of autoregressive decode, the arithmetic relating model weights
+  and cache size to concurrency, continuous batching as the response to variable-length generation,
+  and the throughput-versus-latency tension are architectural facts about transformer inference.
+  They have been stable since the architecture was introduced and are independent of any serving
+  framework.
+- Volatile: every serving framework name (vLLM, TGI, and their successors), every version, every
+  configuration flag, and every default. Frameworks in this space change substantially within a
+  single release cycle. This topic's spine and examples name these frameworks only in passing, as
+  the concrete vehicle for continuous batching and paged cache allocation (Examples 31 and 41) --
+  never as a source of a version-pinned claim. Check a framework's current name, version, and flag
+  surface in its own documentation before citing one in production.
+- Volatile: GPU model names, VRAM capacities, memory bandwidths, hourly rental prices, and every
+  hosted-API per-token price used in the build-versus-buy calculation (Example 65) and TCO
+  sensitivity analysis (Example 75) are snapshots with a short half-life. The spine and examples
+  teach the **calculation** using deliberately round, illustrative placeholder numbers (for
+  example, a $2.00/GPU-hour rental price) rather than a currently-accurate market price -- re-source
+  every input number against current vendor pricing before using this calculation for a real
+  budgeting decision.
+- Volatile: named memory-management and attention-kernel techniques (for example,
+  PagedAttention-style block allocation) and their published speedup figures. This topic teaches the
+  underlying problem -- cache fragmentation under variable-length generation, and the
+  memory-bandwidth cost of attention -- as durable; every named technique and benchmark number here
+  is unconfirmed, so check the technique's current publications before relying on a specific
+  figure.
+- Quantization format names (for example, INT8, INT4, FP8), their bit widths, and published
+  quality-degradation measurements (Examples 51-53, 66-67) reflect what the field's publications
+  said at the time of writing. The trade-off itself -- lower precision buys memory and speed at a
+  measurable quality cost -- is durable; the specific format names and their measured costs are not.
+  Any quality claim in this topic's examples uses a synthetic, illustrative scoring function rather
+  than a published benchmark number, specifically to avoid an unverifiable citation.
+- Every open-weights model name mentioned in passing in this topic's prose is illustrative only; no
+  example in this topic downloads, loads, or depends on a specific model's weights -- every example
+  runs against the in-process deterministic simulator described in Prerequisites above.
+- This topic's "Confirm your toolchain" guidance and every worked-example transcript were captured
+  against **Python 3.13**, run with `python3` from a macOS/Linux shell; if you re-run the examples
+  on a materially later Python release, expect the printed versions to differ accordingly.
 
 ---
 

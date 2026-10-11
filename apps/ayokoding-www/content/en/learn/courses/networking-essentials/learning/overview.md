@@ -49,11 +49,10 @@ $ dig -v
 DiG 9.10.6
 ```
 
-**A note on versions**: this topic's examples were authored and verified against these exact tool
-versions, in this sandbox, on 2026-07-14. Any reasonably current version of Python 3, curl, `dig`,
-and `ping` behaves identically for everything this topic teaches -- the socket API, curl's flag
-set, and `dig`'s output format have all been stable for years (see each tier page's Accuracy notes
-inherited from the syllabus's DD-35 primary-source citations).
+**A note on versions**: this topic's examples were captured against these exact tool versions. Any
+reasonably current version of Python 3, curl, `dig`, and `ping` behaves identically for everything
+this topic teaches -- the socket API, curl's flag set, and `dig`'s output format have all been
+stable for years.
 
 Every Beginner-tier example is a real terminal command, run directly:
 
@@ -91,8 +90,7 @@ run afterward.
 
 Every example cites the concept (`co-NN`) it exercises, and every accuracy claim about the socket
 API, curl's flag set, and the relevant RFCs traces to `docs.python.org`, the curl/OpenSSL/OpenBSD
-man pages, and the IETF RFCs named in the syllabus's DD-35 citations, web-verified 2026-07-12 and
-re-confirmed 2026-07-14.
+man pages, and the IETF RFCs.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161

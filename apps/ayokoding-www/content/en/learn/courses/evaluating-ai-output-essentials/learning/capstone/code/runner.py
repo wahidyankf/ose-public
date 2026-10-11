@@ -12,7 +12,7 @@ from typing import TypedDict  # => co-03: types one parsed dataset.jsonl line, s
 from scorers import SCORER_REGISTRY  # => co-05: reuse the exact same five scorers scorers.py built
 
 DATASET_PATH = Path(__file__).parent / "dataset.jsonl"  # => co-03: the fourteen-case, versioned gate this runner exercises
-PRICE_PER_TOKEN = 0.000002  # => co-11: `[Unverified]` placeholder rate -- see this course's Accuracy notes (../overview.md) for the dated disclosure; read the real one from config in production
+PRICE_PER_TOKEN = 0.000002  # => co-11: placeholder rate, not a confirmed market rate -- read the real one from config in production
 
 
 class Case(TypedDict):  # => co-03: mirrors dataset.jsonl's per-line schema -- every field below is a real type, not Any

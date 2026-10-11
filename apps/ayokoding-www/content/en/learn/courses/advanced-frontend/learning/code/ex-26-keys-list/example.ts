@@ -4,9 +4,9 @@
 // React keep the same DOM node -- and its local state -- when the list reorders. Reorder with
 // stable keys: the node moves, its input state moves with it.
 //
-// > **Accuracy note**: "unstable keys (like those produced by Math.random()) will cause many ...
-// > DOM nodes to be unnecessarily recreated." Source: Reconciliation (legacy.reactjs.org)
-// > (https://legacy.reactjs.org/docs/reconciliation.html).
+// Note: "unstable keys (like those produced by Math.random()) will cause many ...
+// DOM nodes to be unnecessarily recreated." Source: Reconciliation (legacy.reactjs.org)
+// (https://legacy.reactjs.org/docs/reconciliation.html).
 
 // A list item is an id plus any per-item state (here: an input's draft text).
 interface Item {

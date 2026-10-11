@@ -15,7 +15,7 @@ _ex-29 &middot; exercises co-25_
 
 An uncontrolled input owns its value in the DOM; React does not pass it a value prop. A ref reads the current value out only when needed, on submit.
 
-> **Accuracy note**: "An input like `<input />` is uncontrolled"; a controlled input gets a `value` (or `checked`) prop. Source: react.dev, <input> (https://react.dev/reference/react-dom/components/input).
+> **Note:** "An input like `<input />` is uncontrolled"; a controlled input gets a `value` (or `checked`) prop ([react.dev, <input>](https://react.dev/reference/react-dom/components/input)).
 
 **`learning/code/ex-29-uncontrolled-input/example.ts`**
 
@@ -26,9 +26,9 @@ An uncontrolled input owns its value in the DOM; React does not pass it a value 
 // not pass it a `value` prop; instead a ref reads the current value out when needed. The DOM, not
 // state, is the source of truth.
 //
-// > **Accuracy note**: "An input like `<input />` is uncontrolled"; a controlled input gets a
-// > `value` (or `checked`) prop. Source: react.dev, `<input>`
-// > (https://react.dev/reference/react-dom/components/input).
+// Note: "An input like `<input />` is uncontrolled"; a controlled input gets a
+// `value` (or `checked`) prop. Source: react.dev, `<input>`
+// (https://react.dev/reference/react-dom/components/input).
 
 // A ref is a mutable handle to a DOM node; here it holds the element's current value.
 interface Ref<T> {
@@ -76,7 +76,7 @@ _ex-30 &middot; exercises co-25_
 
 An input that sometimes has a value prop and sometimes does not tries to switch modes during its lifetime. React forbids this and warns.
 
-> **Accuracy note**: "An input can't be both controlled and uncontrolled ... [and] cannot switch ... over its lifetime." Source: react.dev, <input> (https://react.dev/reference/react-dom/components/input).
+> **Note:** "An input can't be both controlled and uncontrolled ... [and] cannot switch ... over its lifetime." ([react.dev, <input>](https://react.dev/reference/react-dom/components/input)).
 
 **`learning/code/ex-30-controlled-vs-uncontrolled/example.ts`**
 
@@ -86,9 +86,9 @@ An input that sometimes has a value prop and sometimes does not tries to switch 
 // An input that sometimes has a `value` prop and sometimes does not tries to SWITCH modes during
 // its lifetime. React forbids this and warns: pick one mode and keep it for the input's whole life.
 //
-// > **Accuracy note**: "An input can't be both controlled and uncontrolled ... [and] cannot switch
-// > ... over its lifetime." Source: react.dev, `<input>`
-// > (https://react.dev/reference/react-dom/components/input).
+// Note: "An input can't be both controlled and uncontrolled ... [and] cannot switch
+// ... over its lifetime." Source: react.dev, `<input>`
+// (https://react.dev/reference/react-dom/components/input).
 
 // The warnings React's dev build would emit.
 const warnings: string[] = []; // => stands in for the dev-console warning sink
@@ -732,7 +732,7 @@ _ex-40 &middot; exercises co-22_
 
 A signal is an object with a .value property. Code that reads .value inside an effect subscribes; setting .value re-runs only those subscribers.
 
-> **Accuracy note**: "a signal is an object with a `.value` property ... the signal itself always stays the same." Source: Preact Signals (https://preactjs.com/guide/v10/signals/).
+> **Note:** "a signal is an object with a `.value` property ... the signal itself always stays the same." ([Preact Signals](https://preactjs.com/guide/v10/signals/)).
 
 **`learning/code/ex-40-signal-basic/example.ts`**
 
@@ -743,8 +743,8 @@ A signal is an object with a .value property. Code that reads .value inside an e
 // Code that reads `.value` inside an effect subscribes; setting `.value` re-runs only those
 // subscribed effects -- fine-grained reactivity instead of a full component re-render.
 //
-// > **Accuracy note**: "a signal is an object with a `.value` property ... the signal itself always
-// > stays the same." Source: Preact Signals (https://preactjs.com/guide/v10/signals/).
+// Note: "a signal is an object with a `.value` property ... the signal itself always
+// stays the same." Source: Preact Signals (https://preactjs.com/guide/v10/signals/).
 
 let activeEffect: (() => void) | null = null; // => the effect currently tracking dependencies
 
@@ -811,7 +811,7 @@ _ex-41 &middot; exercises co-22_
 
 A computed signal derives its value from other signals. It tracks which signals it read and recomputes only when one of those dependencies changes.
 
-> **Accuracy note**: "computed signals track which signals are accessed and re-run ... when those signals change." Source: Preact Signals (https://preactjs.com/guide/v10/signals/).
+> **Note:** "computed signals track which signals are accessed and re-run ... when those signals change." ([Preact Signals](https://preactjs.com/guide/v10/signals/)).
 
 **`learning/code/ex-41-signal-computed/example.ts`**
 
@@ -821,8 +821,8 @@ A computed signal derives its value from other signals. It tracks which signals 
 // A computed signal derives its value from other signals. It tracks which signals it read and
 // recomputes ONLY when one of those dependencies changes -- not on every signal change anywhere.
 //
-// > **Accuracy note**: "computed signals track which signals are accessed and re-run ... when those
-// > signals change." Source: Preact Signals (https://preactjs.com/guide/v10/signals/).
+// Note: "computed signals track which signals are accessed and re-run ... when those
+// signals change." Source: Preact Signals (https://preactjs.com/guide/v10/signals/).
 
 let activeEffect: (() => void) | null = null; // => the dependency-tracking context
 
@@ -901,7 +901,7 @@ _ex-42 &middot; exercises co-22_
 
 When a signal changes, only the effect that read it re-runs, updating just the bound DOM. The parent component does not re-render at all -- the fine-grained payoff.
 
-> **Accuracy note**: SolidJS "compiles its templates to real DOM nodes ... only the code that depends on it will rerun" (solidjs/solid README, fetched). Verbatim docs.solidjs.com quotes remain [Unverified] (Cloudflare-blocked, 403).
+> **Note:** SolidJS "compiles its templates to real DOM nodes ... only the code that depends on it will rerun" (SolidJS README). The exact wording of quotes from the SolidJS docs site has not been independently confirmed; check the linked source before relying on it.
 
 **`learning/code/ex-42-signal-vs-rerender/example.ts`**
 
@@ -913,9 +913,9 @@ When a signal changes, only the effect that read it re-runs, updating just the b
 // state change re-runs the whole component function. This is the core performance claim of
 // signal-based frameworks (SolidJS, Preact Signals).
 //
-// > **Accuracy note**: SolidJS "compiles its templates to real DOM nodes ... only the code that
-// > depends on it will rerun" (solidjs/solid README, fetched). Verbatim `docs.solidjs.com` quotes
-// > remain `[Unverified]` (the docs site was Cloudflare-blocked, 403, on re-check).
+// Note: SolidJS "compiles its templates to real DOM nodes ... only the code that
+// depends on it will rerun" (SolidJS README). The exact wording of quotes from the SolidJS docs
+// site has not been independently confirmed; check the linked source before relying on it.
 
 let activeEffect: (() => void) | null = null;
 let parentRenders = 0; // => counts how many times the PARENT component function ran
@@ -1121,7 +1121,7 @@ _ex-45 &middot; exercises co-24_
 
 In a composite widget, exactly one item has tabindex 0 and the rest have tabindex -1. Arrow keys move which item holds the 0, so focus walks the widget without Tab leaving it.
 
-> **Accuracy note**: "the focused element is the active element (`document.activeElement`)"; strategies are roving tabindex and aria-activedescendant. Source: W3C WAI-ARIA APG (https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/).
+> **Note:** "the focused element is the active element (`document.activeElement`)"; strategies are roving tabindex and aria-activedescendant ([W3C WAI-ARIA APG](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/)).
 
 **`learning/code/ex-45-focus-management-roving/example.ts`**
 
@@ -1132,9 +1132,9 @@ In a composite widget, exactly one item has tabindex 0 and the rest have tabinde
 // tabindex="0" (reachable by Tab); the rest have tabindex="-1" (focusable only by script). Arrow
 // keys MOVE which item has the "0", so focus walks through the items without leaving the widget.
 //
-// > **Accuracy note**: "the focused element is the active element (`document.activeElement`)";
-// > strategies are roving tabindex and aria-activedescendant. Source: W3C WAI-ARIA APG --
-// > Keyboard Interface (https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/).
+// Note: "the focused element is the active element (`document.activeElement`)";
+// strategies are roving tabindex and aria-activedescendant. Source: W3C WAI-ARIA APG --
+// Keyboard Interface (https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/).
 
 // A menu item: its label and whether it currently holds the roving "0" (is active).
 interface MenuItem {
@@ -1463,7 +1463,7 @@ _ex-50 &middot; exercises co-29_
 
 A CSS Module scopes every class name locally by default. The build rewrites each to a globally-unique name, so two files can both define .root without colliding.
 
-> **Accuracy note**: "A CSS Module is a CSS file where all class names ... are scoped locally by default." Source: css-modules README (https://github.com/css-modules/css-modules).
+> **Note:** "A CSS Module is a CSS file where all class names ... are scoped locally by default." ([css-modules README](https://github.com/css-modules/css-modules)).
 
 **`learning/code/ex-50-css-modules-scope/example.ts`**
 
@@ -1475,8 +1475,8 @@ A CSS Module scopes every class name locally by default. The build rewrites each
 // define `.root` without colliding. This is locality enforced at build time, not by naming
 // discipline.
 //
-// > **Accuracy note**: "A CSS Module is a CSS file where all class names ... are scoped locally by
-// > default." Source: css-modules README (https://github.com/css-modules/css-modules).
+// Note: "A CSS Module is a CSS file where all class names ... are scoped locally by
+// default." Source: css-modules README (https://github.com/css-modules/css-modules).
 
 // A CSS Module source: local class names the author wrote.
 const moduleSource: Record<string, string> = {
@@ -1537,7 +1537,7 @@ _ex-51 &middot; exercises co-29_
 
 Utility-first CSS styles a component by composing many single-purpose utility classes directly in the markup, instead of writing a custom class with hand-written rules.
 
-> **Accuracy note**: Tailwind = "combining many single-purpose ... utility classes directly in your markup." Source: Tailwind docs (https://tailwindcss.com/docs/styling-with-utility-classes).
+> **Note:** Tailwind = "combining many single-purpose ... utility classes directly in your markup." ([Tailwind docs](https://tailwindcss.com/docs/styling-with-utility-classes)).
 
 **`learning/code/ex-51-tailwind-utility/example.ts`**
 
@@ -1548,9 +1548,9 @@ Utility-first CSS styles a component by composing many single-purpose utility cl
 // classes directly in the markup, instead of writing a custom class with hand-written rules. The
 // result is the same rendered styles, expressed as a known set of reusable primitives.
 //
-// > **Accuracy note**: Tailwind = "combining many single-purpose ... utility classes directly in
-// > your markup." Source: Tailwind docs
-// > (https://tailwindcss.com/docs/styling-with-utility-classes).
+// Note: Tailwind = "combining many single-purpose ... utility classes directly in
+// your markup." Source: Tailwind docs
+// (https://tailwindcss.com/docs/styling-with-utility-classes).
 
 // A small registry of utility classes and the CSS declarations each stands for.
 const utilities: Record<string, string> = {
@@ -1608,7 +1608,7 @@ _ex-52 &middot; exercises co-29_
 
 Specificity is the ID--CLASS--TYPE three-column model. When two rules both match, the higher-specificity one wins; source order only breaks exact ties.
 
-> **Accuracy note**: Specificity is the ID--CLASS--TYPE three-column model; ties break by source order. Source: MDN Specificity (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity).
+> **Note:** Specificity is the ID--CLASS--TYPE three-column model; ties break by source order ([MDN Specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity)).
 
 **`learning/code/ex-52-specificity-conflict/example.ts`**
 
@@ -1619,9 +1619,9 @@ Specificity is the ID--CLASS--TYPE three-column model. When two rules both match
 // rule with more IDs wins; ties fall to more CLASSes; further ties to more TYPEs; final ties to
 // source order. A higher-specificity rule ALWAYS beats a later lower-specificity one.
 //
-// > **Accuracy note**: specificity is the ID--CLASS--TYPE three-column model; ties break by source
-// > order. Source: MDN Specificity
-// > (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity).
+// Note: specificity is the ID--CLASS--TYPE three-column model; ties break by source
+// order. Source: MDN Specificity
+// (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity).
 
 // A CSS rule: its selector breakdown and the declaration it applies.
 interface Rule {
@@ -1684,7 +1684,7 @@ _ex-53 &middot; exercises co-28_
 
 The Cache-Control directive stale-while-revalidate (RFC 5861) lets a cache serve a stale response immediately while it revalidates in the background -- instant response now, fresh data next.
 
-> **Accuracy note**: "stale-while-revalidate ... indicates that the cache could reuse a stale response while it revalidates" (RFC 5861). Source: MDN, Cache-Control (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#stale-while-revalidate).
+> **Note:** "stale-while-revalidate ... indicates that the cache could reuse a stale response while it revalidates" (RFC 5861). ([MDN, Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#stale-while-revalidate)).
 
 **`learning/code/ex-53-http-cache-headers/example.ts`**
 
@@ -1695,9 +1695,9 @@ The Cache-Control directive stale-while-revalidate (RFC 5861) lets a cache serve
 // response immediately while it revalidates in the background. The user gets an instant (stale)
 // response, and the next request gets the fresh one -- smooth perceived performance.
 //
-// > **Accuracy note**: "stale-while-revalidate ... indicates that the cache could reuse a stale
-// > response while it revalidates" (RFC 5861). Source: MDN, Cache-Control
-// > (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#stale-while-revalidate).
+// Note: "stale-while-revalidate ... indicates that the cache could reuse a stale
+// response while it revalidates" (RFC 5861). Source: MDN, Cache-Control
+// (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#stale-while-revalidate).
 
 // A cache entry with its freshness window.
 interface CacheEntry {
@@ -1777,7 +1777,7 @@ A service worker sits between the page and the network. On install it pre-caches
 // static assets; later fetches are served from the cache, so the page works even when the network
 // is down. This is the foundation of the PWA app shell (Example 70).
 //
-// > **Accuracy note**: this models the Cache API + fetch event a real service worker uses.
+// Note: this models the Cache API + fetch event a real service worker uses.
 
 // The service worker's cache: request URL -> cached response.
 const swCache: Map<string, string> = new Map(); // => stands in for the Cache Storage API

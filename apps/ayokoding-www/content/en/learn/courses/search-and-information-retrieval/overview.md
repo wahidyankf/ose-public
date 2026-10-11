@@ -168,31 +168,31 @@ than term statistics alone. The lasting winner for text is index-then-rank with 
 cheap, explainable, and strong without training data -- which is exactly why the Lucene family made it
 the default.
 
-## Accuracy notes
+## References
 
-> Dated per this topic's own accuracy-note discipline: every volatile, version-pinned, or
-> market-dependent fact below is flagged or dated here rather than stated unqualified in the stable
-> spine above or in any example.
+> Fast-moving facts -- licensing terms, version numbers, and other market-dependent details -- are
+> stated below with their own volatility and snapshot date noted, rather than unqualified in the
+> stable spine above or in any example.
 
-- 2026-07-12 -- **verified**: BM25 (Okapi BM25) remains the default lexical ranking function across
+- BM25 (Okapi BM25) remains the default lexical ranking function across
   the Lucene family and is left correctly version-unpinned -- the formula and its `k1`/`b` parameters
   are stable and standard. TF-IDF as the teaching stepping-stone to BM25 is unchanged.
-- 2026-07-12 -- **verified (gap noted at authoring)**: the practical/advanced tier names the
+- The practical/advanced tier names the
   Lucene/Elasticsearch/OpenSearch family generically on purpose -- the licensing split (Elastic vs the
   OpenSearch fork) and default analyzers shift between releases. The Beginner and Advanced tiers'
   build-your-own code is engine-independent and stable; several examples (e.g. 49, 51, 56, 57, 70)
   discuss how a Lucene-family engine's real behavior compares, always as a pure-Python model, never a
   live dependency.
-- 2026-07-12 -- **BM25 exact formula and defaults**: Robertson & Zaragoza (2009), "The Probabilistic
+- **BM25 exact formula and defaults**: Robertson & Zaragoza (2009), "The Probabilistic
   Relevance Framework: BM25 and Beyond." Term weight `B = (1 - b) + b*(dl/avgdl)`;
   `score = tf/(k1*B + tf) * idf_RSJ`, RSJ idf `log((N - n_i + 0.5)/(n_i + 0.5))`. `k1=1.2, b=0.75` are
   the Lucene/Elasticsearch **software** defaults, distinct from the paper's own recommended
   experimental range `1.2 < k1 < 2, 0.5 < b < 0.8` (Example 36 verifies this exact boundary case: the
   software default `k1=1.2` sits ON the paper's lower bound, not strictly inside its open interval).
-- 2026-07-12 -- **Porter stemmer**: M.F. Porter, "An algorithm for suffix stripping," _Program_
+- **Porter stemmer**: M.F. Porter, "An algorithm for suffix stripping," _Program_
   14(3):130-137, 1980 (algorithm written 1979/1980). Taught as 1980 throughout. Stemming raises recall
   while harming precision.
-- 2026-07-27 -- **Elastic/OpenSearch licensing, re-verified**: the three-way licensing split confirmed
+- **Elastic/OpenSearch licensing** (snapshot 2026-07-27): the three-way licensing split stands
   unchanged as of this date -- Elastic offers dual SSPL + Elastic License v2 + AGPLv3, while
   OpenSearch (forked from ES 7.10.2, April 2021) remains Apache 2.0. Precise dating: Elastic
   _announced_ the SSPL/Elastic-License-v2 change on January 14, 2021, but Elastic License v2 itself
@@ -201,14 +201,14 @@ the default.
   conflating the two. AGPLv3 was added as a third option in September 2024. Sources:
   [elastic.co/pricing/faq/licensing](https://www.elastic.co/pricing/faq/licensing) and
   [opensearch.org/releases](https://opensearch.org/releases/).
-- 2026-07-27 -- **current stable versions, snapshot only**: Apache Lucene 10.5.0, Elasticsearch 9.4.4,
+- **Current stable versions** (snapshot 2026-07-27): Apache Lucene 10.5.0, Elasticsearch 9.4.4,
   and OpenSearch 3.7.0, with BM25 still the default similarity in every one of them. Sources:
   [lucene.apache.org/core/downloads.html](https://lucene.apache.org/core/downloads.html),
   [github.com/elastic/elasticsearch/releases](https://github.com/elastic/elasticsearch/releases), and
-  [opensearch.org/releases](https://opensearch.org/releases/). `[Needs Verification]`: whether
-  OpenSearch 3.0 changed its `BM25Similarity` implementation details -- flagged here rather than
-  asserted in the stable spine or in any example.
-- 2026-07-27 -- **dense-vector defaults, noted but out of this topic's worked-example scope**:
+  [opensearch.org/releases](https://opensearch.org/releases/). Not independently confirmed: whether
+  OpenSearch 3.0 changed its `BM25Similarity` implementation details -- check the OpenSearch release
+  notes before relying on it.
+- **Dense-vector defaults** (snapshot 2026-07-27, out of this topic's worked-example scope):
   Elasticsearch's `dense_vector` field has moved through several quantized-HNSW defaults --
   `int8_hnsw` since 9.0, `bbq_hnsw` for dimensions >= 384 since 9.1+ -- rather than defaulting to
   unquantized HNSW; as of the 9.4.x line pinned elsewhere in this note, the default has moved again to
@@ -219,8 +219,8 @@ the default.
   models using brute-force cosine similarity over hand-picked vectors, never a live Elasticsearch
   index, so this quantization-default churn is noted here for completeness rather than reflected in
   any example's code.
-- 2026-07-27 -- **Python version, informational only**: this topic's examples were authored and run
-  against a recent Python 3 release (Python 3.14.6 at authoring). No example pins a specific Python
+- **Python version, informational only**: this topic's examples were authored and run
+  against a recent Python 3 release (Python 3.14.6). No example pins a specific Python
   version in its own code -- the stable spine above intentionally carries no hard version pin, since
   every example is stdlib-only and has no version-sensitive dependency.
 

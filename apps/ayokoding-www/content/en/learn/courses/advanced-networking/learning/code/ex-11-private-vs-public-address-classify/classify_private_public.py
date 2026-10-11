@@ -5,7 +5,7 @@ from __future__ import annotations  # => DD-39 hygiene: postpones type-annotatio
 
 import ipaddress  # => co-06: stdlib's own IPv4Network -- used both to test containment and to cross-check the classification
 
-PRIVATE_RANGES = [  # => co-06: the exact three RFC 1918 blocks this topic's accuracy notes cite -- nothing outside these is private
+PRIVATE_RANGES = [  # => co-06: the three RFC 1918 blocks -- nothing outside these is private
     ipaddress.IPv4Network("10.0.0.0/8"),  # => co-06: the largest RFC 1918 block -- 16,777,216 addresses
     ipaddress.IPv4Network("172.16.0.0/12"),  # => co-06: a mid-sized block -- 1,048,576 addresses
     ipaddress.IPv4Network("192.168.0.0/16"),  # => co-06: the smallest, most commonly seen home-router block -- 65,536 addresses

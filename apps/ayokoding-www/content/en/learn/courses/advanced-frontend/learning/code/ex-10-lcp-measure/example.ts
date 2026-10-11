@@ -4,8 +4,8 @@
 // that paints. The "LCP element" is whichever element won that race. Good <= 2.5 s; poor > 4.0 s,
 // at the 75th percentile over a rolling 28-day CrUX window.
 //
-// > **Accuracy note**: LCP good <= 2.5 s / poor > 4.0 s, at the 75th percentile. Source:
-// > web.dev, LCP (https://web.dev/articles/lcp).
+// Note: LCP good <= 2.5 s / poor > 4.0 s, at the 75th percentile. Source:
+// web.dev, LCP (https://web.dev/articles/lcp).
 
 // Each "paint entry" the browser would report: an element and when it painted (ms).
 interface PaintEntry {

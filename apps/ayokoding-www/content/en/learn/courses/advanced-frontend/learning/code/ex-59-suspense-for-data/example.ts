@@ -4,8 +4,8 @@
 // fallback while the promise is pending and the resolved content once it settles. This is the
 // Suspense-for-data path: the data fetch IS the thing that triggers the fallback.
 //
-// > **Accuracy note**: "`<Suspense>` lets you display a fallback until its children have finished
-// > loading." Source: react.dev, <Suspense> (https://react.dev/reference/react/Suspense).
+// Note: "`<Suspense>` lets you display a fallback until its children have finished
+// loading." Source: react.dev, <Suspense> (https://react.dev/reference/react/Suspense).
 
 // use models React's `use(promise)`: throw the pending promise so Suspense can catch it.
 type Resource<T> = { read: () => T }; // => a wrapped promise Suspense understands

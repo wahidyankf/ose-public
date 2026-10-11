@@ -247,8 +247,8 @@ directory, `chmod +x report.sh`, and runs the commands shown in Step 1 and Step 
 identical output shown on this page, verified against a real `bash` run (Bash 5.3, not merely
 described). Every mechanism combined here -- `getopts`-with-usage (co-20), strict mode (co-03),
 safe quoting (co-06), the `tr`/`grep`/`sort`/`uniq` pipeline (co-15, co-18), `mktemp` + `trap`
-cleanup (co-21, co-22), and correct exit codes (co-09) -- traces to a primary source already cited
-in this primer's Accuracy notes and DD-35 citations; no new fact was needed to write this page.
+cleanup (co-21, co-22), and correct exit codes (co-09) -- is stated exactly as its primary source
+documents it; no new fact was needed to write this page.
 
 ---
 

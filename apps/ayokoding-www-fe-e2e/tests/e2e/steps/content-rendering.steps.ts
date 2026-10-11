@@ -302,3 +302,64 @@ Then("the course list page shows every course title without a leading number", a
     expect(text).not.toMatch(numbered);
   }
 });
+
+// course-content-hygiene.feature, scenario 2 (S10) — sources cited under a References heading
+// with no internal verification note on the reader-facing page. The delivered contract: the
+// rendered article must not carry the internal markers and must expose its sources under a
+// level-2 "References" heading.
+When("its course pages and example files are read", async ({ page }) => {
+  await page.goto("/en/learn/courses/search-and-information-retrieval/overview");
+  await page.waitForLoadState("networkidle");
+});
+
+Then(
+  'no file contains an "Accuracy notes" section, an "Accuracy note" label, or an internal confidence tag',
+  async ({ page }) => {
+    const article = page.getByRole("article");
+    await expect(article.getByRole("heading", { name: "Accuracy notes" })).toHaveCount(0);
+    await expect(article).not.toContainText("Accuracy notes");
+    await expect(article).not.toContainText("[Unverified]");
+    await expect(article).not.toContainText("[Needs Verification]");
+  },
+);
+
+Then('a course that cites sources shows them under a "References" heading', async ({ page }) => {
+  await expect(page.getByRole("article").getByRole("heading", { name: "References", level: 2 })).toBeVisible();
+});
+
+// course-content-rendering UWT-005 fix (phase-8 rule-15 retest) — a long unbreakable inline code
+// token must never force the page to pan horizontally at 375px, and fenced blocks must stay
+// inside the article (internal horizontal scroll, not a wider document).
+Given("a content page containing a long inline code token on a phone-wide article", async () => {
+  // The page is opened by the render step with the 375px viewport applied.
+});
+
+When("its prose renders at a 375px viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto("/en/learn/courses/statistics-for-evaluation/learning/theme-a-uncertainty-on-a-rate");
+  await page.waitForLoadState("networkidle");
+});
+
+Then("the inline code chips break within themselves instead of widening the page", async ({ page }) => {
+  const chips = page.getByRole("article").locator("code:not(pre code)");
+  const count = await chips.count();
+  expect(count).toBeGreaterThan(0);
+  for (let i = 0; i < count; i += 1) {
+    await expect(chips.nth(i)).toHaveCSS("overflow-wrap", "anywhere");
+  }
+  const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+  expect(scrollWidth).toBeLessThanOrEqual(375);
+});
+
+Then("the fenced code blocks stay confined to the article with an internal horizontal scroll", async ({ page }) => {
+  const blocks = page.getByRole("article").locator("pre");
+  const count = await blocks.count();
+  expect(count).toBeGreaterThan(0);
+  for (let i = 0; i < count; i += 1) {
+    const pre = blocks.nth(i);
+    const overflowX = await pre.evaluate((element) => getComputedStyle(element).overflowX);
+    expect(["auto", "scroll", "hidden"].some((value) => overflowX.startsWith(value))).toBe(true);
+  }
+  const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+  expect(scrollWidth).toBeLessThanOrEqual(375);
+});

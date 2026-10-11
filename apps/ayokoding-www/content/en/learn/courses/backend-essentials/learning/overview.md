@@ -42,7 +42,7 @@ $ python3 -m venv .venv
 $ source .venv/bin/activate
 ```
 
-Install the pinned, web-verified, CVE-clean framework versions from the syllabus's Accuracy notes:
+Install the pinned, CVE-clean framework versions below:
 
 ```text
 $ pip install fastapi==0.139.0 uvicorn==0.51.0 flask==3.1.3

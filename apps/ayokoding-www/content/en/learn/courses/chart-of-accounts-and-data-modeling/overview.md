@@ -18,6 +18,6 @@ A chart of accounts makes balances useful for decisions and controls. You will c
 
 This course links to `sql-essentials` for relational modeling and query skills. It does not re-teach SQL, relational design, or query performance.
 
-## Accuracy notes
+## References
 
-- [Verified — stable domain fact] A chart of accounts is organization-specific; example account names are original.
+- A chart of accounts is organization-specific; example account names in this course are original.

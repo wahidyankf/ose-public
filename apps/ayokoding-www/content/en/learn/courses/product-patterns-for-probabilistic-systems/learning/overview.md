@@ -7,8 +7,9 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: `creating-ai-powered-apps` (what the model can and cannot be asked for --
-  `[Unverified]` not yet present in the AyoKoding course library on disk);
+- **Prior topics**:
+  [Creating AI-Powered Apps](../../creating-ai-powered-apps/learning/overview.md) (what the model
+  can and cannot be asked for);
   [Evaluating AI Output -- Essentials](../../evaluating-ai-output-essentials/learning/overview.md)
   for the pass-rate framing Theme D's ship criteria extend with a confidence interval (co-21);
   [Software Product Engineering](../../software-product-engineering/learning/overview.md) for

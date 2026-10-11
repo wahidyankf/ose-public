@@ -15,7 +15,7 @@ pyramid (topic 15), and the argon2id/injection-safety/headers/env-secrets harden
 `curl`/HTTP client walkthrough throughout narrates the request path (topic 12).
 
 **Prerequisites** -- restated from this capstone's anchoring spec in
-[`syllabus/17-security-essentials.md`](https://github.com/wahidyankf/ose-public/blob/main/plans/in-progress/fundamentally-strong-software-engineer/syllabus/17-security-essentials.md):
+[`syllabus/17-security-essentials.md`](https://github.com/wahidyankf/ose-public/blob/main/plans/done/2026-07-19__fundamentally-strong-software-engineer/syllabus/17-security-essentials.md):
 
 - **Prior topics**: every Pass 1 topic this page integrates --
   [04 Just Enough Python](../just-enough-python/learning/overview.md),
@@ -32,9 +32,9 @@ pyramid (topic 15), and the argon2id/injection-safety/headers/env-secrets harden
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13** in a `venv` (3.13.12 used for every
   run captured on this page); pinned, CVE-clean packages -- `fastapi==0.139.0`, `uvicorn==0.51.0`,
   `pydantic==2.13.4`, `argon2-cffi==25.1.0`, `pytest==9.1.1`, `hypothesis==6.156.6`, `httpx2==2.7.0`,
-  `coverage==7.15.2` (all re-verified current/CVE-clean for this page --
-  [syllabus/17-security-essentials.md](https://github.com/wahidyankf/ose-public/blob/main/plans/in-progress/fundamentally-strong-software-engineer/syllabus/17-security-essentials.md)'s
-  2026-07-16 Accuracy note); `curl`; the `sqlite3` CLI; `pip-audit==2.10.1`; `shellcheck`/`shfmt` for
+  `coverage==7.15.2` (pinned versions were current and CVE-clean as of 2026-07-16 per
+  [syllabus/17-security-essentials.md](https://github.com/wahidyankf/ose-public/blob/main/plans/done/2026-07-19__fundamentally-strong-software-engineer/syllabus/17-security-essentials.md));
+  `curl`; the `sqlite3` CLI; `pip-audit==2.10.1`; `shellcheck`/`shfmt` for
   `setup.sh`.
 - **Assumed knowledge**: everything the Prior topics above already teach -- this page does not re-teach
   FastAPI routing, SQL, argon2id, or `pytest` from scratch; it composes them.
@@ -1956,11 +1956,10 @@ every `curl` command shown on this page reaches the identical output shown here 
 naive draft and failed against the shipped, hardened code; a genuine argon2id hash read directly from
 the SQLite file; a genuine `pip-audit -l` clean run against the full pinned dependency graph; and a
 genuine `pytest`/`coverage` run (34/34 passing, 99% coverage) -- nothing on this page is a fabricated
-transcript (DD-19). Every version this capstone's Python stack pins is confirmed current and
-CVE-clean as of 2026-07-16 in
-[`syllabus/17-security-essentials.md`](https://github.com/wahidyankf/ose-public/blob/main/plans/in-progress/fundamentally-strong-software-engineer/syllabus/17-security-essentials.md)'s
-Accuracy notes, including the `httpx2` successor-package finding this page's own re-verification
-surfaced.
+transcript. Every version this capstone's Python stack pins is confirmed current and CVE-clean as of
+2026-07-16 in
+[syllabus/17-security-essentials.md](https://github.com/wahidyankf/ose-public/blob/main/plans/done/2026-07-19__fundamentally-strong-software-engineer/syllabus/17-security-essentials.md),
+including the `httpx2` successor-package finding.
 
 ---
 

@@ -4,8 +4,8 @@
 // change. This turns an O(n) recomputation-every-render into a cheap cache hit on renders where
 // the inputs did not change.
 //
-// > **Accuracy note**: "`useMemo` ... lets you cache the result of a calculation between
-// > re-renders." Source: react.dev, useMemo (https://react.dev/reference/react/useMemo).
+// Note: "`useMemo` ... lets you cache the result of a calculation between
+// re-renders." Source: react.dev, useMemo (https://react.dev/reference/react/useMemo).
 
 // Counters track how many times the expensive fn actually ran vs. how many renders happened.
 let computeCalls = 0; // => increments only on a REAL recomputation

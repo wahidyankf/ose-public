@@ -14,7 +14,7 @@ accounting** into the same run as the pass rate, so a quality win never gets rep
 price, and closes with **co-09**'s first committed run artefact, plus proof the identical runner
 works equally well as an ordinary pytest suite. Every code-medium example's real, runnable
 **Python 3.13** file lives under `learning/code/ex-NN-*/`, run for real with genuine captured
-output. (See this topic's [Accuracy notes](../overview.md#accuracy-notes) for the exact patch
+output. (See this topic's [References](../overview.md#references) for the exact patch
 version captured.)
 
 ---
@@ -574,7 +574,7 @@ CASES = {  # => co-11: case id -> (prompt text, output text) -- what actually go
     "case-01": ("How much free storage does Nimbus give?", "New Nimbus accounts start with 15 GB of free storage."),  # => co-11: case 1
     "case-02": ("How much storage does Nimbus Pro include?", "Nimbus Pro includes 200 GB of storage."),  # => co-11: case 2
 }  # => co-11: closes CASES
-PRICE_PER_TOKEN = 0.000002  # => co-11: `[Unverified]` placeholder rate -- see this course's Accuracy notes (overview.md) for the dated disclosure; read the real one from config, never hard-code it in production
+PRICE_PER_TOKEN = 0.000002  # => co-11: placeholder rate, not a confirmed market rate -- read the real one from config, never hard-code it in production
 
 
 def estimate_tokens(text: str) -> int:  # => co-11: a mocked, offline token estimate -- no real tokenizer call needed
@@ -620,9 +620,9 @@ MATCH: every case's tokens and cost are recorded in the SAME run as its pass/fai
 `$0.000080`) equals the sum of the per-case values, satisfying co-11's rule that cost is tracked
 per case and aggregated in the same run as the pass/fail verdicts.
 
-**Key takeaway**: `PRICE_PER_TOKEN` here is flagged `[Unverified]` -- it is a stand-in for whatever
-rate a real provider actually charges at the time of the run, which is exactly the kind of volatile
-fact this course's own accuracy-note discipline keeps out of any stable claim.
+**Key takeaway**: `PRICE_PER_TOKEN` here is a placeholder, not a confirmed market rate -- it stands
+in for whatever rate a real provider actually charges at the time of the run, a volatile fact the
+example deliberately keeps out of any stable claim.
 
 **Why It Matters**: recording cost alongside pass rate, in the same run, is what makes Example 32's
 quality/cost trade-off report possible without a separate reconciliation step against a billing

@@ -1640,7 +1640,7 @@ prefixes.
 **Why it matters**: Neo4j's calendar-versioned releases ship two parallel Cypher dialects side by
 side -- Cypher 5, frozen and bug-fixes-only, exists specifically so existing queries and application
 code keep behaving identically even as Cypher 25 (Example 53) continues evolving underneath it
-(co-21). See the course overview's dated [Accuracy notes](../overview.md#accuracy-notes) for the
+(co-21). See the course overview's dated [References](../overview.md#references) for the
 current release-version specifics.
 
 ---
@@ -1651,7 +1651,7 @@ _ex-53 &middot; exercises co-21 &middot; targets Cypher 25 explicitly_
 
 The `CYPHER 25` prefix pins a query to the evolving dialect -- the default for new databases created
 from the calendar version stated in the course overview's dated
-[Accuracy notes](../overview.md#accuracy-notes) onward -- returning the identical result to
+[References](../overview.md#references) onward -- returning the identical result to
 Example 52 on identical data.
 
 **`learning/code/ex-53-cypher-version-pin-cypher25/example.cypher`**

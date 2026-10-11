@@ -4,9 +4,9 @@
 // tabindex="0" (reachable by Tab); the rest have tabindex="-1" (focusable only by script). Arrow
 // keys MOVE which item has the "0", so focus walks through the items without leaving the widget.
 //
-// > **Accuracy note**: "the focused element is the active element (`document.activeElement`)";
-// > strategies are roving tabindex and aria-activedescendant. Source: W3C WAI-ARIA APG --
-// > Keyboard Interface (https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/).
+// Note: "the focused element is the active element (`document.activeElement`)";
+// strategies are roving tabindex and aria-activedescendant. Source: W3C WAI-ARIA APG --
+// Keyboard Interface (https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/).
 
 // A menu item: its label and whether it currently holds the roving "0" (is active).
 interface MenuItem {

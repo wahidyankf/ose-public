@@ -4,9 +4,9 @@
 // the rest of the shape. `loading` has no data; `error` has a message; `success` has the data. The
 // `status` field is the discriminant TypeScript narrows on.
 //
-// > **Accuracy note**: "When every type in a union contains a common property with literal types,
-// > TypeScript ... can narrow out the members of the union." Source: TS Handbook -- Narrowing
-// > (https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
+// Note: "When every type in a union contains a common property with literal types,
+// TypeScript ... can narrow out the members of the union." Source: TS Handbook -- Narrowing
+// (https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
 
 // The three-state union; `status` is the discriminant (the common literal field).
 type AsyncState<T> =

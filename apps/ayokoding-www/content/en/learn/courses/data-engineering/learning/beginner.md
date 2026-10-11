@@ -13,7 +13,7 @@ disciplines that make a rerun safe (co-05, co-06), Hive-style partitioning and t
 pruning it enables (co-07), and the fact/dimension/grain/additivity foundations of dimensional
 modeling (co-08 through co-10). Every worked example's real, runnable **Python 3.13** file lives
 under `learning/code/ex-NN-*/`, run for real with genuine captured output. (See this topic's
-[Accuracy notes](../overview.md#accuracy-notes) for the exact pinned dependency versions.)
+[References](../overview.md#references) for the exact pinned dependency versions.)
 
 ---
 

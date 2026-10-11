@@ -1836,7 +1836,7 @@ to eventually replace `shortestPath()`/`allShortestPaths()` (Example 16, Example
 the same way Example 15's quantified relationships replace classic `*1..3` -- new Cypher 25 code
 should reach for this syntax, while existing Cypher 5 code using the legacy functions continues to
 work unchanged (co-21). (Cypher 5/Cypher 25 are the current dialect names at the time this course was
-written -- see the course overview's dated [Accuracy notes](../overview.md#accuracy-notes).)
+written -- see the course overview's dated [References](../overview.md#references).)
 
 ---
 

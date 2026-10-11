@@ -1290,16 +1290,16 @@ a default.
 _ex-38 &middot; exercises co-14_
 
 A verifier that disables signature checking to "just read the claims" -- `options={"verify_signature":
-False}` -- accepts a hand-forged, completely unsigned token exactly as if it were real. **Accuracy
-note**: PyJWT `>=2.x` hardcodes `NoneAlgorithm.verify()` to always return `False` (verified directly
-against the pinned 2.13.0), so the textbook "pass the token's own `alg` into `algorithms=`" attack no
+False}` -- accepts a hand-forged, completely unsigned token exactly as if it were real. **Note:**
+PyJWT `>=2.x` hardcodes `NoneAlgorithm.verify()` to always return `False` (against the pinned
+2.13.0), so the textbook "pass the token's own `alg` into `algorithms=`" attack no
 longer works against `jwt.decode()` -- the still-real, still-common vulnerable pattern demonstrated
 below is `verify_signature: False`, which bypasses that protection entirely.
 
 ```python
 # learning/code/ex-38-jwt-alg-none-attack/exploit_and_fix.py
 """Example 38: a hand-forged alg:none JWT accepted by a naive verifier, then pinned algorithms blocks
-it (co-14). See this example's Brief Explanation in the markdown for the PyJWT 2.x accuracy note."""
+it (co-14). See this example's Brief Explanation in the markdown for the PyJWT 2.x note."""
 
 from __future__ import annotations  # => DD-39 hygiene -- unrelated to the JWT attack itself
 
@@ -1381,7 +1381,7 @@ _ex-39 &middot; exercises co-14_
 
 A verifier that dynamically dispatches by the token's own `alg` header, and reuses the server's public
 RSA key as the "key" for both RS256 and HS256, can be tricked into accepting an attacker-forged HS256
-token signed with that same public key used as an HMAC secret. **Accuracy note**: PyJWT's own
+token signed with that same public key used as an HMAC secret. **Note:** PyJWT's own
 `HMACAlgorithm.prepare_key()` rejects PEM-looking keys outright, so this example's naive verifier
 performs the HMAC step by hand -- exactly the pattern that made this attack class famous across many
 languages' JWT libraries (Auth0's 2015 disclosure) -- rather than routing it through PyJWT's own,
@@ -1390,7 +1390,7 @@ already-hardened HMAC path.
 ```python
 # learning/code/ex-39-jwt-hs256-rs256-confusion/exploit_and_fix.py
 """Example 39: HS256/RS256 confusion -- the RSA public key, used as an HMAC secret, forges a token
-(co-14). See this example's Brief Explanation in the markdown for the PyJWT hardening accuracy note."""
+(co-14). See this example's Brief Explanation in the markdown for the PyJWT hardening note."""
 
 from __future__ import annotations  # => DD-39 hygiene -- unrelated to the confusion attack itself
 

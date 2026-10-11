@@ -4,9 +4,9 @@
 // is the single source of truth, and the input never holds a value the state does not also know
 // about. (Example 29 shows the uncontrolled opposite; Example 30 shows you cannot switch.)
 //
-// > **Accuracy note**: a controlled input gets a `value` (or `checked`) prop; "An input can't be
-// > both controlled and uncontrolled ... [and] cannot switch ... over its lifetime." Source:
-// > react.dev, `<input>` (https://react.dev/reference/react-dom/components/input).
+// Note: a controlled input gets a `value` (or `checked`) prop; "An input can't be
+// both controlled and uncontrolled ... [and] cannot switch ... over its lifetime." Source:
+// react.dev, `<input>` (https://react.dev/reference/react-dom/components/input).
 
 // A minimal controlled input: its value is always whatever `state.value` says.
 interface ControlledInput {

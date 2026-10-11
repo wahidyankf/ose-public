@@ -783,7 +783,7 @@ prefixed with `CYPHER 25`, per Example 53)
 syntax.
 
 **Why it matters**: Neo4j ships two parallel Cypher versions, one frozen and one evolving (see the
-course overview's dated [Accuracy notes](../overview.md#accuracy-notes) for the current dialect
+course overview's dated [References](../overview.md#references) for the current dialect
 names and the calendar version at which the evolving one became the default). New code should reach
 for the quantified form here, not the classic `*1..3` from Example 14, even though both still work
 today -- this pair of examples exists specifically so both are visible side by side rather than

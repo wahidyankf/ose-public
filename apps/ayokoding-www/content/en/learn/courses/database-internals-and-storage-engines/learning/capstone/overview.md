@@ -891,7 +891,7 @@ realistic storage-engine correctness bug was actually found and fixed.
 This capstone is runnable end to end: a reader who copies the eight files above into a
 `learning/capstone/code/`-shaped directory and runs `python3 pages.py`, `python3 index.py`,
 `python3 wal.py`, and `python3 mvcc.py` there reaches the identical output blocks shown in each step,
-verified against a real CPython 3.13 interpreter run (not merely described); `pytest -q` reaches the
+confirmed against a real CPython 3.13 interpreter run; `pytest -q` reaches the
 identical `21 passed` verified against a real `pytest` run, and `pyright --strict` reports zero errors
 across all eight files. Every mechanism combined here -- a slotted-page layout (co-02, co-03), a
 buffer-pool read path (co-04, co-06), a B-tree-style index (co-07), a write-ahead log (co-16, co-17),

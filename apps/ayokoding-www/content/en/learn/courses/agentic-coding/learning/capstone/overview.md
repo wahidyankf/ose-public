@@ -38,8 +38,7 @@ being built on; the log justifies each trust/verify call; no unreviewed agent ou
 final diff.
 
 **Done bar**: runnable end-to-end -- `python3 -m pytest test_parse_duration.py -q` against
-`learning/capstone/code/` reproduces the final `7 passed` transcript -- and web-verified per this
-topic's syllabus Accuracy notes.
+`learning/capstone/code/` reproduces the final `7 passed` transcript.
 
 ---
 

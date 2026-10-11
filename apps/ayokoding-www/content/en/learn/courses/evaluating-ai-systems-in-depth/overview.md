@@ -13,11 +13,11 @@ weight: 1
   light gate deliberately leaves out; [Statistics for Evaluation](../statistics-for-evaluation/overview.md)
   (agreement statistics, sampling, and significance) is also a hard prerequisite -- every measured
   agreement rate and confidence interval in this course assumes that statistical vocabulary is
-  already in hand; `agentic-ai` and `agent-orchestration-subagents-and-observability` --
-  `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is given here
-  -- supply the agent trajectories and traces this course's trajectory-evaluation tier treats as
-  its own object of evaluation; `cicd-and-release-engineering` -- `[Unverified]` not yet present in
-  the AyoKoding course library on disk, so no link is given here -- supplies the pipeline this
+  already in hand; [Agentic AI](/en/learn/courses/agentic-ai) and
+  [Agent Orchestration, Subagents & Observability](/en/learn/courses/agent-orchestration-subagents-and-observability)
+  supply the agent trajectories and traces this course's trajectory-evaluation tier treats as
+  its own object of evaluation; [CI/CD and Release Engineering](/en/learn/courses/cicd-and-release-engineering)
+  supplies the pipeline this
   course's CI gate runs inside; [Software Testing](../software-testing/overview.md) gives the
   assertion mindset (fixtures, arrange-act-assert, a written expectation checked automatically)
   every worked example's `if __name__ == "__main__":` block directly reuses.
@@ -185,42 +185,27 @@ many steps, the trajectory becomes an object of evaluation in its own right, bec
 answer via a wrong path is a failure waiting for a different input. This course is the library's
 single owner of that material -- it absorbs the evaluation treatments previously scattered across
 `creating-ai-powered-apps`, `agentic-ai`, and `agent-orchestration-subagents-and-observability`
-(all three `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is
-given here), each of which now forward-links here rather than teaching a fourth parallel version.
+(each of which now forward-links here rather than teaching a fourth parallel version).
 
-## Accuracy notes
+## References
 
-> Dated per this topic's own accuracy-note discipline: every volatile, version-pinned, or
-> contested fact below is flagged or dated here rather than stated unqualified in the stable spine
-> above.
-
-- 2026-07-26 -- **durable spine**: error-analysis-before-metrics, deriving criteria from observed
+- **Durable spine**: error-analysis-before-metrics, deriving criteria from observed
   failure modes, validating a judge against human labels, reporting agreement rather than
   asserting it, and gating merges on a measured regression bar are methodology. None of them
   depend on a model, vendor, or framework, and none has changed as models improved.
-- 2026-07-26 -- Anthropic's published guidance is to "use a different model to evaluate than the
+- Anthropic's published guidance is to "use a different model to evaluate than the
   model used to generate," and its eval principles are "Be task-specific... Automate when
-  possible... Prioritize volume over quality." Source:
-  [Anthropic -- Develop your tests](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
-  (source: Anthropic -- Develop your tests (the "use a different model to evaluate than the
-  model used to generate" guidance, and the three principles "Be task-specific", "Automate when
-  possible", "Prioritize volume over quality", all quoted verbatim) --
-  https://platform.claude.com/docs/en/test-and-evaluate/develop-tests ; accessed 2026-07-22) --
-  re-verify the wording if this course is revised.
-- 2026-07-26 -- LangSmith's trajectory evaluation examines "the exact sequence of messages,
+  possible... Prioritize volume over quality."
+  ([Anthropic -- Develop your tests](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)).
+- LangSmith's trajectory evaluation examines "the exact sequence of messages,
   including tool calls," scored either by a deterministic trajectory-match evaluator (with
-  Strict/Unordered/Subset/Superset modes) or an LLM judge. Treat the **trajectory-vs-outcome
-  distinction as durable spine** and the **named product as volatile**. Source:
-  [LangSmith -- Trajectory evals](https://docs.langchain.com/langsmith/trajectory-evals)
-  (source: LangSmith -- Trajectory evaluation ("the exact sequence of messages, including tool
-  calls"; scored by a trajectory-match evaluator or an LLM judge) --
-  https://docs.langchain.com/langsmith/trajectory-evals ; accessed 2026-07-22) -- re-verify at
-  the next revision.
-- 2026-07-26 -- **volatile, product sunset**: OpenAI's Evals platform becomes read-only
+  Strict/Unordered/Subset/Superset modes) or an LLM judge. The **trajectory-vs-outcome
+  distinction is durable**; the **named product's surface is volatile**.
+  ([LangSmith -- Trajectory evals](https://docs.langchain.com/langsmith/trajectory-evals)).
+- **Product sunset**: OpenAI's Evals platform becomes read-only
   2026-10-31 and shuts down 2026-11-30. This topic's own "Read more" list and worked examples do
-  not depend on this platform remaining available; re-verify or replace any citation to it after
-  that date.
-- 2026-07-26 -- **contested, taught as contested**: whether pairwise or pointwise judging tracks
+  not depend on the platform remaining available.
+- **Contested**: whether pairwise or pointwise judging tracks
   human preference more reliably is not settled. Liusie et al. 2023
   ([arxiv.org/abs/2307.07889](https://arxiv.org/abs/2307.07889)) and Liu et al. 2024
   ([arxiv.org/abs/2403.16950](https://arxiv.org/abs/2403.16950)) find pairwise comparisons track
@@ -229,7 +214,7 @@ given here), each of which now forward-links here rather than teaching a fourth 
   more robust to adversarial manipulation -- pairwise preferences flip in about 35% of adversarial
   cases, compared to only 9% for absolute scores. This course presents both findings side by side
   (Examples 28 and 54) rather than smoothing them into one conclusion.
-- 2026-07-26 -- **contested, taught as contested**: there is no settled industry threshold for
+- **Contested**: there is no settled industry threshold for
   "good enough" judge-human agreement, and this topic does not repeat the unsourced claim that
   judge-human agreement exceeds human-human agreement. Zheng et al. 2023, "Judging LLM-as-a-Judge
   with MT-Bench and Chatbot Arena" ([arxiv.org/abs/2306.05685](https://arxiv.org/abs/2306.05685)),
@@ -249,7 +234,7 @@ given here), each of which now forward-links here rather than teaching a fourth 
   principles and the different-model-as-judge guidance this course's judge chapter builds on.
   <https://platform.claude.com/docs/en/test-and-evaluate/develop-tests>
 - **OpenAI -- Evals** -- the schema data-spec + testing-criteria + golden-JSONL shape as a second
-  reference implementation (read-only 2026-10-31, shut down 2026-11-30 -- see Accuracy notes
+  reference implementation (read-only 2026-10-31, shut down 2026-11-30 -- see References
   above). <https://developers.openai.com/api/docs/guides/evals>
 - **LangSmith -- Trajectory evals** -- the trajectory-versus-outcome distinction applied to
   agents; cite the durable distinction, treat the product surface as volatile.

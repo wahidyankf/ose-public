@@ -162,7 +162,7 @@ status ok
 ```
 
 **Key takeaway**: `http.server`'s default `protocol_version` is `"HTTP/1.0"`, which is why `curl -i`
-shows `HTTP/1.0 200 OK` here -- an accuracy detail the syllabus's Python docs citation confirms
+shows `HTTP/1.0 200 OK` here -- a detail the Python documentation confirms
 explicitly.
 
 **Why it matters**: The status line is the very first thing any HTTP client parses, before a single
@@ -735,7 +735,7 @@ def report_versions() -> tuple[str, str]:  # => returns both installed versions
 if __name__ == "__main__":  # => only runs when executed directly, not on import
     fastapi_version, uvicorn_version = report_versions()  # => unpacks the tuple
     print(f"fastapi=={fastapi_version}")  # => pinned CVE-clean version (co-22)
-    # => matches the syllabus's Accuracy notes pin exactly, or the run fails
+    # => matches the pinned version above exactly, or the run fails
     print(f"uvicorn=={uvicorn_version}")  # => confirms the SECOND pinned package
 ```
 
@@ -749,8 +749,8 @@ uvicorn==0.51.0
 ```
 
 **Key takeaway**: `__version__` attributes are the reliable, network-free way to confirm exactly which
-package version a `venv` actually has installed -- matching this output against the syllabus's Accuracy
-notes pin is the whole verification.
+package version a `venv` actually has installed -- matching this output against the pinned versions
+shown above is the whole verification.
 
 **Why it matters**: Every later example in this topic assumes these exact versions are installed --
 FastAPI's `strict_content_type=True` default (Example 27) only exists from 0.132.0 onward, so a stale
@@ -1746,8 +1746,8 @@ content-type: application/json
 0.132.0), not hand-written validation code -- the wrong `Content-Type` means the body is never even
 attempted as JSON, so it fails `Note`'s model check with a native, structured error (co-11).
 
-**Why it matters**: FastAPI does NOT natively return a dedicated 415 for this case (confirmed against
-`fastapi/routing.py` in the syllabus's Accuracy notes) -- claiming a 415 here would be factually wrong.
+**Why it matters**: FastAPI does NOT natively return a dedicated 415 for this case (per
+`fastapi/routing.py`) -- claiming a 415 here would be factually wrong.
 It also does not enforce the `Accept` header at all; Intermediate Example 54 revisits that gap and shows
 it still requires hand-written validation, unlike this example's `Content-Type` check.
 

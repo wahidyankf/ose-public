@@ -617,11 +617,10 @@ executed `pytest` run, per this topic's verification discipline.
 This capstone is runnable end to end: a reader who copies the five domain files
 (`order_engine_smelly.py`, `order_engine.py`, `notifications.py`, `logging_order_engine.py`, plus
 their five `tests/test_*.py` companions) into a `learning/capstone/code/`-shaped tree and runs
-`pytest -q` there reaches the identical `19 passed` result shown above, verified against a real
-CPython 3.13.12 interpreter run (not merely described). Every mechanism combined here -- SRP/OCP/DIP
+`pytest -q` there reaches the identical `19 passed` result shown above, confirmed against a real
+CPython 3.13.12 interpreter run. Every mechanism combined here -- SRP/OCP/DIP
 (co-01, co-02, co-05), GRASP pure fabrication (co-12), composition over inheritance (co-09), and
-Strategy + factory + Observer + Decorator used cohesively (co-25, co-16, co-26, co-21) -- traces to the
-same sources already cited in this topic's Accuracy notes; no new fact was needed to write this page.
+Strategy + factory + Observer + Decorator used cohesively (co-25, co-16, co-26, co-21).
 
 ---
 

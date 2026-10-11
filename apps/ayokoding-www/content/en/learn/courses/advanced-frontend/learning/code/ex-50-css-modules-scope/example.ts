@@ -5,8 +5,8 @@
 // define `.root` without colliding. This is locality enforced at build time, not by naming
 // discipline.
 //
-// > **Accuracy note**: "A CSS Module is a CSS file where all class names ... are scoped locally by
-// > default." Source: css-modules README (https://github.com/css-modules/css-modules).
+// Note: "A CSS Module is a CSS file where all class names ... are scoped locally by
+// default." Source: css-modules README (https://github.com/css-modules/css-modules).
 
 // A CSS Module source: local class names the author wrote.
 const moduleSource: Record<string, string> = {

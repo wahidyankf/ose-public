@@ -18,6 +18,6 @@ Accounting turns events into claims that other people can inspect. Start with th
 
 This course establishes the ledger vocabulary. [Chart of Accounts and Data Modeling](../chart-of-accounts-and-data-modeling/overview.md) owns account structure; it does not appear here.
 
-## Accuracy notes
+## References
 
-- [Verified — stable domain fact] Double-entry uses equal debit and credit totals; all examples are original.
+- Double-entry uses equal debit and credit totals; all examples are original.

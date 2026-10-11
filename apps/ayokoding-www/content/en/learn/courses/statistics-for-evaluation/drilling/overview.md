@@ -609,7 +609,7 @@ Computing from definition first forces genuine understanding of what the statist
 which function call produces it -- a reader who only ever calls `cohen_kappa_score` never sees why it
 subtracts a chance term. Verifying the two agree also catches a real class of error: passing
 arguments in the wrong order, using the wrong variant of a coefficient, or misreading a library's
-own default parameter (as this topic's own accuracy notes flag for `proportion_confint`'s default
+own default parameter (as this topic's References flag for `proportion_confint`'s default
 method) -- errors that would otherwise silently produce a plausible-looking but wrong number.
 
 </details>

@@ -67,7 +67,7 @@ pip install pytest==9.1.1 hypothesis==6.156.6 pytest-cov==7.15.1 freezegun==1.5.
 ```
 
 **A note on versions**: this topic's examples were authored and verified against these exact tool
-versions, in this sandbox, on 2026-07-15. Any reasonably current pytest 9.x, Hypothesis 6.x, and
+versions. Any reasonably current pytest 9.x, Hypothesis 6.x, and
 coverage.py 7.x behaves identically for everything the Beginner and Intermediate tiers teach --
 `assert` rewriting, fixtures, parametrization, and Hypothesis's `@given`/strategies API have all
 been stable across many releases (see the syllabus's DD-35 primary-source citations, re-confirmed

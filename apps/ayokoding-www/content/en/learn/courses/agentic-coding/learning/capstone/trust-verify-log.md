@@ -36,9 +36,8 @@ gate.
       merged -- only the fixed-and-refactored final version lives in `learning/capstone/code/`.
 
 **Done bar**: runnable end-to-end -- `python3 -m pytest test_parse_duration.py -q` against
-`learning/capstone/code/` reproduces the final `7 passed` transcript exactly; web-verified -- this
-capstone names no external protocol, vendor, or version claim requiring re-verification (the syllabus
-Accuracy notes cover the topic's own protocol/standard citations).
+`learning/capstone/code/` reproduces the final `7 passed` transcript; the capstone names no external
+protocol, vendor, or version claim requiring a source.
 
 ---
 

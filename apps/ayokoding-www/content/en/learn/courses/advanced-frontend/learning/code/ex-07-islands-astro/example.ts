@@ -4,9 +4,9 @@
 // "islands" of interactivity ship any JS at all. The result: a page that is mostly static (fast,
 // cacheable) plus a few hydrated widgets.
 //
-// > **Accuracy note**: islands means "rendering the majority of your page to fast, static HTML with
-// > smaller 'islands' of JavaScript ... when interactivity ... is needed." Source: Astro Docs --
-// > Islands (https://docs.astro.build/en/concepts/islands/).
+// Note: islands means "rendering the majority of your page to fast, static HTML with
+// smaller 'islands' of JavaScript ... when interactivity ... is needed." Source: Astro Docs --
+// Islands (https://docs.astro.build/en/concepts/islands/).
 
 // Each region of the page is either static (no JS) or an island (ships JS).
 interface Region {

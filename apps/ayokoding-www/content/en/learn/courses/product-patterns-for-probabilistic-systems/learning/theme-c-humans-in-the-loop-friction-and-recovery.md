@@ -376,9 +376,10 @@ prerequisite courses cover.
 >   promoted to a new, permanent case in the eval dataset the light eval gate runs against -- the
 >   exact mechanism `evaluating-ai-output-essentials`'s co-10 "regression cases from real bugs"
 >   describes.
-> - **Closes the loop into**: `evaluating-ai-systems-in-depth`'s error-analysis workflow --
->   `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is given here
->   -- for corrections that recur but do not fit a simple, addable eval case.
+> - **Closes the loop into**:
+>   [Evaluating AI Systems In Depth](../../evaluating-ai-systems-in-depth/learning/overview.md)'s
+>   error-analysis workflow --
+>   for corrections that recur but do not fit a simple, addable eval case.
 
 **Verify**: the plan names a concrete promotion threshold (three or more recurrences in a week) and
 a specific destination for each promoted correction (the eval dataset), satisfying co-24's rule that

@@ -261,7 +261,7 @@ the mistake this example is built to catch before it reaches production.
 
 ---
 
-### Example 31: MongoDB $match + $group
+### Example 31: MongoDB match + group
 
 _ex-31 &middot; exercises co-19_
 
@@ -2347,7 +2347,7 @@ def main() -> None:  # => entry point -- runs only when this file executes direc
     # => typically within a few days. There is no separate "fast read-filter" tier; this example's
     # => ~10-second background-sweep visibility is DynamoDB Local's own faster, more eager
     # => implementation detail, not a demonstration of the real AWS service's read path (see
-    # => overview.md's TTL accuracy note)
+    # => overview.md's References)
 
 
 if __name__ == "__main__":  # => guards against running main() on `import example`

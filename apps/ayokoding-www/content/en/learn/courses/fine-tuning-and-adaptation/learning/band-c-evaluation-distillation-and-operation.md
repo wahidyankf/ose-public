@@ -21,7 +21,7 @@ candidate as it did to the original training run (co-31, co-32). Example 50 clos
 capstone-shaped example citing all sixteen prior phases by name, before the capstone itself begins.
 Every code-medium example's real, runnable **Python 3.13** file lives under
 `learning/code/ex-NN-*/`, run for real with genuine captured output. (See this topic's
-[Accuracy notes](../overview.md#accuracy-notes) for this course's corrected Huyen citation and the
+[References](../overview.md#references) for this course's corrected Huyen citation and the
 verified facts behind co-25's statistical machinery.)
 
 ---

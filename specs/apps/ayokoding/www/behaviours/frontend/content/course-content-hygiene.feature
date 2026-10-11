@@ -11,3 +11,11 @@ Feature: Course content hygiene
     When its course titles are read
     Then no course title starts with a catalogue number or a pass number
     And the course list page shows every course title without a leading number
+
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Courses cite sources in a References section without internal verification tags
+  @integration-exempt
+  Scenario: Courses cite sources in a References section without internal verification tags
+    Given the published English course library
+    When its course pages and example files are read
+    Then no file contains an "Accuracy notes" section, an "Accuracy note" label, or an internal confidence tag
+    And a course that cites sources shows them under a "References" heading

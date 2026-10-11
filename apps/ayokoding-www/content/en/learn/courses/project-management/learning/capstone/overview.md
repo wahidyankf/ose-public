@@ -113,10 +113,10 @@ framing (co-01, implicit in the fixed 3-sprint/17-day schedule this plan commits
 breakdown and critical-path scheduling (co-03, co-04), velocity-based estimation and sprint planning
 (co-05, co-07), risk management (co-10), and a decision-mapped metrics plan (co-09) -- into one
 document, exactly as Worked Scenario 25 already demonstrated at a smaller scale for the Aurora
-project. Every technique used here traces to a primary source already cited in this topic's Accuracy
-notes and DD-35 citations (the Scrum Guide, November 2020 revision, for velocity and sprint
+project. Every technique used here traces to a primary source
+(the Scrum Guide, November 2020 revision, for velocity and sprint
 planning; the Critical Path Method's DuPont/Remington Rand and PERT's US Navy lineage for the
-dependency graph and critical path); no new fact was needed to write this page or `plan.md`.
+dependency graph and critical path).
 
 ---
 

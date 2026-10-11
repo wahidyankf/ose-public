@@ -16,5 +16,5 @@ def report_versions() -> tuple[str, str]:  # => returns both installed versions
 if __name__ == "__main__":  # => only runs when executed directly, not on import
     fastapi_version, uvicorn_version = report_versions()  # => unpacks the tuple
     print(f"fastapi=={fastapi_version}")  # => pinned CVE-clean version (co-22)
-    # => matches the syllabus's Accuracy notes pin exactly, or the run fails
+    # => matches the pinned version above exactly, or the run fails
     print(f"uvicorn=={uvicorn_version}")  # => confirms the SECOND pinned package

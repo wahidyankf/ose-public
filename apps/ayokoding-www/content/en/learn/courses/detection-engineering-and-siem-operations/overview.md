@@ -38,7 +38,7 @@ rules, a dashboard plan, and a documented false-positive tuning decision. It fol
 lifecycle, and hardening work. This course consumes that foundation; it does not re-teach broad IR or
 baseline hardening, and it never presents a detection as authorization to probe a real system.
 
-## Accuracy notes
+## References
 
 - Wazuh's current [decoder XML reference](https://documentation.wazuh.com/current/user-manual/ruleset/ruleset-xml-syntax/decoders.html)
   documents `prematch`, `regex`, and `order`; the lab illustrates those concepts with invented events.

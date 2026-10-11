@@ -39,7 +39,7 @@ or specialist false-positive tuning owned by `detection-engineering-and-siem-ope
 this course. A reader should leave here able to collaborate with that specialist—not mistake this
 generalist lab for that deep SIEM-operations tier.
 
-## Accuracy notes
+## References
 
 - [NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final), published in April 2025,
   supersedes Rev. 2 and frames incident-response considerations through CSF 2.0. The familiar prepare →

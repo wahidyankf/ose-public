@@ -609,7 +609,7 @@ quick brown fox jumps
 
 **Key takeaway**: `w` moves forward to the start of the next word; `b` moves backward to the start of the previous word.
 
-**Why it matters**: Motions are cursor-movement commands classified inclusive, exclusive, or linewise, and they work standalone or as an operator's argument. Word motions are exclusive (per the Accuracy notes) -- when used as an operator's argument, `w` stops exactly at the next word's first character rather than including it, which is why `dw` (later in co-04) deletes trailing whitespace up to, but not swallowing, the following word. Understanding `w`/`b` alone, before combining them with operators, makes that later composition predictable instead of mysterious.
+**Why it matters**: Motions are cursor-movement commands classified inclusive, exclusive, or linewise, and they work standalone or as an operator's argument. Word motions are exclusive (documented in Neovim's own help under `:h exclusive`) -- when used as an operator's argument, `w` stops exactly at the next word's first character rather than including it, which is why `dw` (later in co-04) deletes trailing whitespace up to, but not swallowing, the following word. Understanding `w`/`b` alone, before combining them with operators, makes that later composition predictable instead of mysterious.
 
 ---
 
@@ -642,7 +642,7 @@ quick brown fox
 
 **Key takeaway**: `e` moves to a word's last character, and -- unlike `w` -- it is an inclusive motion, so an operator combined with `e` includes that final character.
 
-**Why it matters**: Motions are cursor-movement commands classified inclusive, exclusive, or linewise, and they work standalone or as an operator's argument. The inclusive/exclusive distinction between `e` and `w` (per the Accuracy notes' classification) is easy to overlook until an operator makes it visible: `de` deletes through the final letter of the current word, while `dw` from the same position deletes only up to the next word's start. Knowing `e` in isolation first makes that later contrast in co-04 land clearly rather than as an unexplained surprise.
+**Why it matters**: Motions are cursor-movement commands classified inclusive, exclusive, or linewise, and they work standalone or as an operator's argument. The inclusive/exclusive distinction between `e` and `w` (exclusive versus inclusive in Neovim's own motion documentation) is easy to overlook until an operator makes it visible: `de` deletes through the final letter of the current word, while `dw` from the same position deletes only up to the next word's start. Knowing `e` in isolation first makes that later contrast in co-04 land clearly rather than as an unexplained surprise.
 
 ---
 
@@ -713,7 +713,7 @@ line three
 
 **Key takeaway**: `gg` jumps to line 1; `G` jumps to the file's last line -- both work from anywhere in the buffer.
 
-**Why it matters**: Motions are cursor-movement commands classified inclusive, exclusive, or linewise, and they work standalone or as an operator's argument. Per the Accuracy notes, `G` registers as a jump in the jumplist (co-08) while `gg` does not -- a small asymmetry worth remembering once you start relying on `<C-o>`/`<C-i>` to retrace your steps later in this primer. `G` also accepts a count prefix (`42G` jumps to line 42), previewing the count-prefixed motions formally introduced in co-05.
+**Why it matters**: Motions are cursor-movement commands classified inclusive, exclusive, or linewise, and they work standalone or as an operator's argument. Per Neovim's own help documentation, `G` registers as a jump in the jumplist (co-08) while `gg` does not -- a small asymmetry worth remembering once you start relying on `<C-o>`/`<C-i>` to retrace your steps later in this primer. `G` also accepts a count prefix (`42G` jumps to line 42), previewing the count-prefixed motions formally introduced in co-05.
 
 ---
 

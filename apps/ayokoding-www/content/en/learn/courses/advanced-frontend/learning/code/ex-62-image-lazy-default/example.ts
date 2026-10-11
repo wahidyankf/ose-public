@@ -4,9 +4,9 @@
 // default is "eager". Off-screen images defer until they near the viewport, saving bandwidth and
 // reducing initial load.
 //
-// > **Accuracy note**: `next/image` `loading` defaults to "lazy" ("Defers loading the image until
-// > it reaches a calculated distance from the viewport"). Source: Next.js Image
-// > (https://nextjs.org/docs/app/api-reference/components/image).
+// Note: `next/image` `loading` defaults to "lazy" ("Defers loading the image until
+// it reaches a calculated distance from the viewport"). Source: Next.js Image
+// (https://nextjs.org/docs/app/api-reference/components/image).
 
 // An image with its loading strategy and whether it is near the viewport.
 interface ImageSpec {

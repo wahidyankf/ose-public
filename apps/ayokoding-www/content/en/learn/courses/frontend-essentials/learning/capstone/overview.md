@@ -603,13 +603,11 @@ pass.
 This capstone is runnable end to end: a reader who copies the four files above (`types.ts`,
 `render.ts`, `app.ts`, `taskList.test.ts`) into a `learning/capstone/code/`-shaped tree and runs
 `npx vitest run taskList.test.ts --environment=jsdom` there reaches the identical `13 passed` result
-shown above, verified against a real Vitest 4.1.0 + `@testing-library/dom` 10.4.1 run (not merely
-described) in this sandbox on 2026-07-15. Every mechanism combined here -- components as functions
+shown above, confirmed against a real Vitest 4.1.0 + `@testing-library/dom` 10.4.1 run. Every mechanism combined here -- components as functions
 of props/state (co-19, co-20), list rendering with real DOM events (co-21), a controlled+validated
 form (co-22, co-23), accessible labeling and error announcement (co-24, co-25), a real keyboard-
 operable button (co-26), an exhaustively-modeled discriminated union (co-27), and typed props/state
-(co-28) -- traces to the same MDN/WHATWG/WAI-ARIA sources already cited in this topic's Accuracy
-notes; no new fact was needed to write this page.
+(co-28) -- traces to MDN, WHATWG, and WAI-ARIA.
 
 ---
 

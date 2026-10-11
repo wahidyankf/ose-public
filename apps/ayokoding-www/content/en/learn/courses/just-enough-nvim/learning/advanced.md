@@ -1049,7 +1049,7 @@ notes for later
 
 **Key takeaway**: `:Explore` opens a netrw directory listing of the current file's folder as a regular buffer, navigable with the same motions as any other buffer.
 
-**Why it matters**: Netrw is Neovim's built-in file browser, reachable via `:Explore`, supporting navigation, creation, deletion, and renaming without leaving the editor. Per the Accuracy notes, netrw ships and auto-loads by default in vanilla Neovim (`runtime/plugin/netrwPlugin.vim` runs `packadd netrw` at startup), so this file-browsing capability requires no plugin at all -- squarely within this primer's zero-plugin scope. Because netrw is just a specially formatted buffer, every motion and search command already covered in this primer works inside it exactly as it would in any text file.
+**Why it matters**: Netrw is Neovim's built-in file browser, reachable via `:Explore`, supporting navigation, creation, deletion, and renaming without leaving the editor. Per Neovim's own help documentation, netrw ships and auto-loads by default in vanilla Neovim (`runtime/plugin/netrwPlugin.vim` runs `packadd netrw` at startup), so this file-browsing capability requires no plugin at all -- squarely within this primer's zero-plugin scope. Because netrw is just a specially formatted buffer, every motion and search command already covered in this primer works inside it exactly as it would in any text file.
 
 ---
 

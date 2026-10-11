@@ -74,7 +74,9 @@ export function PathLanding({ locale, manifest, courseTitles, bodyHtml }: PathLa
                     // prior `hover:bg-accent`-only styling gave no always-visible signal this
                     // syllabus row is a link — a reader who has not yet moved a mouse over it had
                     // no way to recognize it as clickable (Heuristic 4 / Fitts's Law).
-                    className="rounded-md px-2 py-1 text-sm underline underline-offset-2 hover:bg-accent hover:text-foreground"
+                    // `text-primary` (DWT-001 fix, phase-8 rule-15 retest): the mockup renders
+                    // each row title in this site's link blue, like every prose link.
+                    className="rounded-md px-2 py-1 text-sm text-primary underline underline-offset-2 hover:bg-accent hover:text-foreground"
                   >
                     {title}
                   </Link>

@@ -4,8 +4,8 @@
 // Code that reads `.value` inside an effect subscribes; setting `.value` re-runs only those
 // subscribed effects -- fine-grained reactivity instead of a full component re-render.
 //
-// > **Accuracy note**: "a signal is an object with a `.value` property ... the signal itself always
-// > stays the same." Source: Preact Signals (https://preactjs.com/guide/v10/signals/).
+// Note: "a signal is an object with a `.value` property ... the signal itself always
+// stays the same." Source: Preact Signals (https://preactjs.com/guide/v10/signals/).
 
 let activeEffect: (() => void) | null = null; // => the effect currently tracking dependencies
 

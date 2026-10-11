@@ -391,8 +391,8 @@ sandbox's own `:checkhealth` reports one unrelated `ERROR` about its tmux termin
 of the machine running Neovim, not a dependency this config installs or controls, and present
 identically with or without this capstone's config in place. Every mechanism this capstone combines
 -- `vim.pack` (co-08), native LSP config (co-10, co-11), Treesitter (co-16, co-17), and the
-plugin-module pattern (co-18) -- traces to a primary source already cited in this topic's Accuracy
-notes and DD-35 citations; no new fact was needed to write this page.
+plugin-module pattern (co-18) -- is stated exactly as its primary source documents it; no new fact
+was needed to write this page.
 
 ---
 

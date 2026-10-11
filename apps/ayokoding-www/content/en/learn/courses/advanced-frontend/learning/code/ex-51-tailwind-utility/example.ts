@@ -4,9 +4,9 @@
 // classes directly in the markup, instead of writing a custom class with hand-written rules. The
 // result is the same rendered styles, expressed as a known set of reusable primitives.
 //
-// > **Accuracy note**: Tailwind = "combining many single-purpose ... utility classes directly in
-// > your markup." Source: Tailwind docs
-// > (https://tailwindcss.com/docs/styling-with-utility-classes).
+// Note: Tailwind = "combining many single-purpose ... utility classes directly in
+// your markup." Source: Tailwind docs
+// (https://tailwindcss.com/docs/styling-with-utility-classes).
 
 // A small registry of utility classes and the CSS declarations each stands for.
 const utilities: Record<string, string> = {

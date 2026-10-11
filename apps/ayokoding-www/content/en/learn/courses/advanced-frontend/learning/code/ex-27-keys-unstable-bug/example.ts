@@ -4,9 +4,9 @@
 // value), every key is NEW on every render. React treats each as a different item, DESTROYS the
 // old node, and creates a new one -- so any per-item state (an input's draft, focus) is lost.
 //
-// > **Accuracy note**: "unstable keys (like those produced by Math.random()) will cause many ...
-// > DOM nodes to be unnecessarily recreated." Source: Reconciliation (legacy.reactjs.org)
-// > (https://legacy.reactjs.org/docs/reconciliation.html).
+// Note: "unstable keys (like those produced by Math.random()) will cause many ...
+// DOM nodes to be unnecessarily recreated." Source: Reconciliation (legacy.reactjs.org)
+// (https://legacy.reactjs.org/docs/reconciliation.html).
 
 // Each node is keyed by whatever key the render assigned it.
 const nodes: Map<string, { draft: string }> = new Map(); // => the DOM table keyed by item key

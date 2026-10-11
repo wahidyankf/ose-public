@@ -969,7 +969,7 @@ def test_single_bit_flip_changes_the_checksum() -> None:
 
 **Key takeaway**: A single flipped bit anywhere the checksum covers is enough to change the result -- a checksum mismatch on read is the signal that a page's bytes are not what was written.
 
-**Why it matters**: Storage hardware occasionally corrupts bytes silently -- a torn write during a crash (ex-62) is one concrete cause. A checksum is the cheapest defense: it does not fix corruption, but it turns an undetected wrong answer into a detected, loud failure, which is the difference between a bug report and quietly serving wrong data forever. Real engines use a stronger algorithm than CRC32 for this (InnoDB's exact checksum algorithm is `[Needs Verification]` here), but the detection principle is identical.
+**Why it matters**: Storage hardware occasionally corrupts bytes silently -- a torn write during a crash (ex-62) is one concrete cause. A checksum is the cheapest defense: it does not fix corruption, but it turns an undetected wrong answer into a detected, loud failure, which is the difference between a bug report and quietly serving wrong data forever. Real engines use a stronger algorithm than CRC32 for this (InnoDB's exact checksum algorithm was not independently confirmed here), but the detection principle is identical.
 
 ---
 
@@ -1933,7 +1933,7 @@ def test_higher_fanout_yields_a_shallower_tree() -> None:
 
 **Key takeaway**: `ceil(log_fanout(N))` gives the number of levels ABOVE the leaf; the actual level count (leaf included) is exactly one more -- and a higher fanout produces a measurably shallower tree for the same key count.
 
-**Why it matters**: This is why B-trees dominate disk-backed indexing: a high fanout (dozens to hundreds of children per node, illustrative here -- `[Needs Verification]` for exact vendor numbers) keeps the height low enough that a lookup over a billion keys still touches only a handful of pages. Every page touched is a potential disk read, so height IS the number-of-I/Os bound a B-tree lookup gives you.
+**Why it matters**: This is why B-trees dominate disk-backed indexing: a high fanout (dozens to hundreds of children per node, illustrative here -- exact vendor figures were not independently confirmed) keeps the height low enough that a lookup over a billion keys still touches only a handful of pages. Every page touched is a potential disk read, so height IS the number-of-I/Os bound a B-tree lookup gives you.
 
 ---
 

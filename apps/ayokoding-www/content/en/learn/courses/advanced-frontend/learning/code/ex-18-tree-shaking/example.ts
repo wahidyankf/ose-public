@@ -4,8 +4,8 @@
 // function nothing imports, the bundler drops it from the output. This ONLY works because ES
 // modules are statically analyzable -- imports/exports are known at build time, not runtime.
 //
-// > **Accuracy note**: tree shaking = "the removal of dead code" via ES-module static analysis.
-// > Source: MDN (https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking).
+// Note: tree shaking = "the removal of dead code" via ES-module static analysis.
+// Source: MDN (https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking).
 
 // A source module and the names it exports / that are imported elsewhere.
 interface ModuleShape {

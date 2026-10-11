@@ -4,8 +4,8 @@
 // Suspense only suspends on `use()` of a promise, lazy code, or a framework integration -- a fetch
 // started in an effect is invisible to Suspense, so the fallback NEVER shows for it.
 //
-// > **Accuracy note**: "Suspense does not detect when data is fetched inside an Effect or event
-// > handler." Source: react.dev, <Suspense> (https://react.dev/reference/react/Suspense).
+// Note: "Suspense does not detect when data is fetched inside an Effect or event
+// handler." Source: react.dev, <Suspense> (https://react.dev/reference/react/Suspense).
 
 // Tracks whether the <Suspense> fallback ever rendered for this fetch.
 let fallbackShown = false; // => stays false -- the effect-fetch never triggers the boundary

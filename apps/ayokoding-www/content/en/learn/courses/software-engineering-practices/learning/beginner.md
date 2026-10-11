@@ -682,7 +682,7 @@ View this pull request on GitHub: https://github.com/acme/checkout-service/pull/
 **Key takeaway**: the approval comment appears AFTER the request-changes comment, in the order the
 two reviews actually happened -- `gh pr view --comments` never reorders history.
 
-**Why It Matters**: `gh pr view --json reviewDecision` (per this topic's accuracy notes) would now
+**Why It Matters**: `gh pr view --json reviewDecision` (see GitHub's `gh` CLI documentation) would now
 report `APPROVED` -- one of exactly three values GitHub's GraphQL schema defines
 (`APPROVED`/`CHANGES_REQUESTED`/`REVIEW_REQUIRED`) -- the field a required-review branch-protection
 rule actually reads to unlock the merge button.
@@ -714,7 +714,7 @@ jobs: # => co-08: three ordered, GATED stages follow, cheapest first
     runs-on: ubuntu-latest # => co-08: a fresh, ephemeral runner per job
     steps: # => co-08: this job's own ordered list of steps
       - uses: actions/checkout@v7 # => co-08: fetches the commit under test
-      - run: pip install ruff # => co-08: installs the linter/formatter (Ruff 0.15, DD-28-verified)
+      - run: pip install ruff # => co-08: installs the linter/formatter (Ruff 0.15)
       - run: ruff check . # => co-08: fails the JOB (and the pipeline) on any lint violation
       - run: ruff format --check . # => co-08: fails on any unformatted file -- no silent auto-fix in CI
 
@@ -940,7 +940,7 @@ defect before it ever reaches a commit or a CI run.
 ```yaml
 # learning/code/ex-17-install-pre-commit-framework/.pre-commit-config.yaml
 # ex-17: a minimal pre-commit config -- catches a defect class BEFORE it ever reaches a commit (co-10)
-# NOTE: the config file's name is exactly `.pre-commit-config.yaml` (DD-28-verified, pre-commit.com).
+# NOTE: the config file's name is exactly `.pre-commit-config.yaml` (per pre-commit.com).
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks # => co-10: the framework's own general-purpose hook set
     rev: v6.0.0 # => co-10: pinned revision -- reproducible across every contributor's machine
@@ -948,7 +948,7 @@ repos:
       - id: trailing-whitespace # => co-10: catches a trivial, common defect class before it ever commits
       - id: end-of-file-fixer # => co-10: ensures every file ends with exactly one newline
   - repo: https://github.com/astral-sh/ruff-pre-commit # => co-10: Ruff's own official pre-commit mirror
-    rev: v0.15.17 # => co-10: pinned to the same Ruff line this topic's accuracy notes verified
+    rev: v0.15.17 # => co-10: pinned to the same Ruff line used across this course
     hooks:
       - id: ruff # => co-10: the linter, with autofix enabled
         args: [--fix] # => co-10: auto-fixes what it safely can, right at commit time

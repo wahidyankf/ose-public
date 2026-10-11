@@ -10,7 +10,7 @@ evaluated rather than assumed, model parallelism and its failure mode, capacity 
 length distribution, GPU-aware autoscaling, deployment packaging, staged rollout with guardrails,
 serving observability, and the self-hosting-versus-hosted-API decision. Every framework name, GPU
 price, and quantization figure that shows up here is deliberately illustrative -- see this course's
-[Accuracy notes](../overview.md#accuracy-notes) for exactly which facts are volatile and why none of
+[References](../overview.md#references) for exactly which facts are volatile and why none of
 them are stated as a current market fact.
 
 ---
@@ -104,7 +104,7 @@ trade at fp16, INT8, and INT4 using an illustrative, synthetic quality curve.
 
 
 def synthetic_quality_score(precision_bits: int) -> float:
-    # => co-19: illustrative synthetic degradation curve, NOT a published benchmark number -- see Accuracy notes
+    # => co-19: illustrative synthetic degradation curve, NOT a published benchmark number -- see this course's References
     baseline = 100.0  # => an arbitrary quality ceiling -- fp16 loses nothing relative to this baseline
     degradation = {16: 0.0, 8: 1.5, 4: 6.0}[precision_bits]  # => illustrative points, not measured data
     return baseline - degradation  # => lower precision, more degradation -- monotonic by construction
@@ -139,9 +139,8 @@ ex-52 OK
 ```
 
 **Key takeaway**: Every step down in precision buys real memory (13.04 GB to 6.52 GB to 3.26 GB) at a
-real, monotonically-worsening quality cost -- neither side of the trade is free, and this course's own
-Accuracy notes flag exactly why the specific numbers here are illustrative rather than a benchmark
-claim.
+real, monotonically-worsening quality cost -- neither side of the trade is free, and the specific
+numbers here are illustrative placeholders rather than a benchmark claim.
 
 **Why it matters**: This topic's [Tensions & trade-offs](../overview.md#tensions--trade-offs----when-not-to-reach-for-this)
 section is explicit that a published degradation figure does not transfer to your workload -- this
@@ -806,8 +805,8 @@ from dataclasses import asdict, dataclass  # => stdlib only -- packaging a manif
 class DeploymentManifest:  # => co-24: the served artefact is weights + runtime + config, versioned as ONE unit
     model_id: str  # => which model -- half of "what's actually running in production"
     model_revision: str  # => co-24: pins the EXACT weight snapshot, not just a model family name
-    framework_version_pin: str  # => `[Unverified]` placeholder -- see this course's Accuracy notes
-    gpu_type: str  # => `[Unverified]` placeholder -- see this course's Accuracy notes
+    framework_version_pin: str  # => placeholder -- the deployer must pin the real framework version at deploy time
+    gpu_type: str  # => placeholder -- the deployer must pin the real hardware at deploy time
     replica_count: int  # => co-24: how many copies of this EXACT artefact are currently serving traffic
     max_batch_slots: int  # => co-24: a serving-time knob, versioned alongside the weights it runs against
 
@@ -815,20 +814,20 @@ class DeploymentManifest:  # => co-24: the served artefact is weights + runtime 
 manifest = DeploymentManifest(
     model_id="example-org/example-7b",  # => illustrative model ID -- co-24: every field is versioned together
     model_revision="a1b2c3d",  # => a specific, reproducible weight snapshot -- not "latest"
-    framework_version_pin="[Unverified]-pin-at-deploy-time",  # => co-24: pin the REAL version at actual deploy time
-    gpu_type="[Unverified]-pin-at-deploy-time",  # => co-24: pin the REAL hardware at actual deploy time
+    framework_version_pin="PLACEHOLDER-pin-at-deploy-time",  # => co-24: pin the REAL version at actual deploy time
+    gpu_type="PLACEHOLDER-pin-at-deploy-time",  # => co-24: pin the REAL hardware at actual deploy time
     replica_count=3,  # => an illustrative fleet size for this worked example
     max_batch_slots=64,  # => an illustrative batching cap for this worked example
 )
 print(asdict(manifest))
 # => Output: {'model_id': 'example-org/example-7b', 'model_revision': 'a1b2c3d',
-# => Output: 'framework_version_pin': '[Unverified]-pin-at-deploy-time', 'gpu_type': '[Unverified]-pin-at-deploy-time',
+# => Output: 'framework_version_pin': 'PLACEHOLDER-pin-at-deploy-time', 'gpu_type': 'PLACEHOLDER-pin-at-deploy-time',
 # => Output: 'replica_count': 3, 'max_batch_slots': 64}
 # => co-24: every field a rollback needs to reconstruct EXACTLY what was running, in one dict
 
 assert manifest.replica_count == 3  # => the manifest round-trips through asdict() without losing any field
 # => co-24: this ONE dict is what an incident responder needs first when a served model misbehaves
-assert "Unverified" in manifest.framework_version_pin  # => co-24: volatile fields are FLAGGED, never hard-guessed
+assert "PLACEHOLDER" in manifest.framework_version_pin  # => co-24: volatile fields stay PLACEHOLDER, never hard-guessed
 print("ex-62 OK")  # => a self-check marker confirming the manifest holds every field a real deploy needs
 
 ```
@@ -838,7 +837,7 @@ print("ex-62 OK")  # => a self-check marker confirming the manifest holds every 
 **Output**:
 
 ```text
-{'model_id': 'example-org/example-7b', 'model_revision': 'a1b2c3d', 'framework_version_pin': '[Unverified]-pin-at-deploy-time', 'gpu_type': '[Unverified]-pin-at-deploy-time', 'replica_count': 3, 'max_batch_slots': 64}
+{'model_id': 'example-org/example-7b', 'model_revision': 'a1b2c3d', 'framework_version_pin': 'PLACEHOLDER-pin-at-deploy-time', 'gpu_type': 'PLACEHOLDER-pin-at-deploy-time', 'replica_count': 3, 'max_batch_slots': 64}
 ex-62 OK
 ```
 
@@ -1040,20 +1039,20 @@ graph LR
 
 
 def self_hosted_cost_per_million_tokens(gpu_hourly_rate: float, tokens_per_second: float) -> float:
-    # => co-27: `[Unverified]` gpu_hourly_rate is an illustrative placeholder -- see this course's Accuracy notes
+    # => co-27: gpu_hourly_rate is an illustrative placeholder, not a current market price
     tokens_per_hour = tokens_per_second * 3600  # => converts a per-second rate into an hourly one
     return (gpu_hourly_rate / tokens_per_hour) * 1_000_000  # => cost per million tokens, at FULL utilization
 
 
 def hosted_api_cost_per_million_tokens(price_per_token: float) -> float:
-    # => co-27: `[Unverified]` price_per_token is an illustrative placeholder -- see this course's Accuracy notes
+    # => co-27: price_per_token is an illustrative placeholder, not a current market rate
     return price_per_token * 1_000_000  # => a simple linear scale -- no utilization assumption needed
 
 
-gpu_hourly_rate = 2.00  # => `[Unverified]` illustrative placeholder, NOT a current market price
+gpu_hourly_rate = 2.00  # => illustrative placeholder, NOT a current market price
 tokens_per_second = 800.0  # => sustained aggregate throughput at a chosen batch size
 self_hosted = self_hosted_cost_per_million_tokens(gpu_hourly_rate, tokens_per_second)  # => co-27: the "build" side
-hosted_api = hosted_api_cost_per_million_tokens(price_per_token=0.000002)  # => `[Unverified]` illustrative placeholder
+hosted_api = hosted_api_cost_per_million_tokens(price_per_token=0.000002)  # => illustrative placeholder rate
 print(round(self_hosted, 4), round(hosted_api, 4))  # => Output: 0.6944 2.0
 
 assert self_hosted < hosted_api  # => co-27: at THIS illustrative, FULL utilization, self-hosting is cheaper per token
@@ -1078,8 +1077,8 @@ full utilization every hour it is billed for, which Example 75 shows is rarely t
 **Why it matters**: This calculation is the one this topic's
 [Tensions & trade-offs](../overview.md#tensions--trade-offs----when-not-to-reach-for-this) section
 explicitly warns is "almost always wrong" when done at full-utilization assumptions -- the calculation
-itself is durable and correct, but every input number here is `[Unverified]` and must be re-sourced
-against current pricing and REAL observed utilization before it informs a real decision.
+itself is durable and correct, but every input number here is an illustrative placeholder; re-source
+them against current pricing and REAL observed utilization before they inform a real decision.
 
 ---
 
@@ -1706,7 +1705,7 @@ def tco_per_million_tokens(gpu_hourly_rate: float, tokens_per_second_at_full_loa
     return (gpu_hourly_rate / effective_tokens_per_hour) * 1_000_000  # => the SAME formula as Example 65, utilization-scaled
 
 
-gpu_hourly_rate = 2.00  # => `[Unverified]` illustrative placeholder -- see this course's Accuracy notes
+gpu_hourly_rate = 2.00  # => illustrative placeholder, NOT a current market price
 tokens_per_second_at_full_load = 800.0  # => the SAME peak throughput used in Example 65
 hosted_api_cost = 2.00  # => co-27's hosted-API comparison point from Example 65, per million tokens
 

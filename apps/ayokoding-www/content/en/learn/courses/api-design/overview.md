@@ -9,9 +9,9 @@ weight: 1
 
 - **Prior topics**: [Backend Essentials](../backend-essentials/learning/overview.md) -- HTTP
   verbs, status codes, routing, and JSON request/response handling, the direct foundation every
-  example in this course's Beginner tier builds on; `backend-at-scale` --
-  `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is given here --
-  would otherwise supply idempotency, auth, and rate limiting as production concerns, which this
+  example in this course's Beginner tier builds on; [Backend at
+  Scale](../backend-at-scale/learning/overview.md) would otherwise supply idempotency, auth, and
+  rate limiting as production concerns, which this
   course instead teaches from first principles in its Intermediate tier (Examples 37-48) rather than
   assuming prior exposure.
 - **Tools & environment**: a macOS/Linux terminal; **Python** at a recent stable release with type
@@ -43,12 +43,12 @@ throughput-and-latency decisions dressed up as an API-style preference.
 > mechanics**: routing, request parsing, and returning a JSON response from a running web framework.
 > This course assumes that mechanical layer already works and owns a different, narrower question:
 > what SHAPE should the contract itself take, and what PROMISES does that shape make to a caller who
-> will never see the server's own source code. `backend-at-scale` -- `[Unverified]` not yet present
-> in the AyoKoding course library on disk, so no link is given here -- would own operating a backend
+> will never see the server's own source code.
+> [Backend at Scale](../backend-at-scale/learning/overview.md) would own operating a backend
 > under real production load (scaling, observability, incident response); this course instead treats
 > idempotency and rate limiting purely as CONTRACT-level concerns -- what a caller can rely on, not
-> how the server internally survives a traffic spike. `software-architecture` -- `[Unverified]` not
-> yet present in the AyoKoding course library on disk, so no link is given here -- would own how
+> how the server internally survives a traffic spike.
+> [Software Architecture](../software-architecture/learning/overview.md) would own how
 > services are decomposed and how they communicate with EACH OTHER at a system level; this course
 > stops at the shape of ONE API's own contract, the stable interface a `software-architecture`
 > course would build service boundaries on top of.
@@ -80,37 +80,36 @@ mechanics are simulated in-process, in pure standard library, rather than depend
 `grpcio` or `graphql-core` installation, so every printed "Output" block on this course's pages is a
 real captured run, not a fabricated transcript.
 
-## Accuracy notes
+## References
 
-> Verified in the pre-authoring `web-researcher` sweep (DD-28). Dated per this topic's own
-> accuracy-note discipline: every volatile, version-pinned, or calendar-dependent fact below is
-> flagged or dated here rather than stated unqualified in the stable spine above.
+> Every volatile, version-pinned, or calendar-dependent fact below is stated here with its own
+> status noted, rather than unqualified in the stable spine above.
 
-- 2026-07-12 -- verified: OpenAPI remains the dominant REST contract format, and Protocol Buffers/
+- OpenAPI remains the dominant REST contract format, and Protocol Buffers/
   gRPC and the GraphQL specification remain the standard non-REST contrasts. RFC 9110's HTTP
   semantics (methods, status codes), which REST builds on, is current -- this course targets **RFC
   9110**, not the obsoleted RFC 7231, throughout.
-- 2026-07-12 -- **pinned at drafting (GAP flagged by the research sweep)**: this course targets
+- This course targets
   **OpenAPI 3.1.0**, whose schema keywords align with **JSON Schema Draft 2020-12** (co-10). The
-  error envelope is **RFC 9457** `application/problem+json` (co-08) -- the research sweep flagged
-  this as a defensible-but-optional choice rather than a single mandated standard; see Drilling's
-  elaborative-interrogation prompt E4 for the reasoning behind picking this one specific standard.
-- 2026-07-12 -- **Idempotency-Key (correction)**: the IETF draft
+  error envelope is **RFC 9457** `application/problem+json` (co-08) -- a defensible-but-optional
+  choice rather than a single mandated standard; see Drilling's elaborative-interrogation prompt E4
+  for the reasoning behind picking this one specific standard.
+- **Idempotency-Key (correction)**: the IETF draft
   `draft-ietf-httpapi-idempotency-key-header-07` is **EXPIRED** (2026-04-18), not an RFC. This
   course's Idempotency-Key examples (co-18) follow Stripe's own prior art instead, and label the
   IETF draft "lapsed" wherever it comes up.
-- 2026-07-12 -- **Rate-limit headers (status split)**: `429 Too Many Requests` is standardized (RFC
+- **Rate-limit headers (status split)**: `429 Too Many Requests` is standardized (RFC
   6585, co-19); the structured `RateLimit`/`RateLimit-Policy` header fields (co-20) are an **active**
   IETF draft (`draft-ietf-httpapi-ratelimit-headers-11`, expires 2026-11-24) -- active, unlike the
   lapsed Idempotency-Key draft above.
-- 2026-07-12 -- **Deprecation/Sunset (precise RFCs)**: the `Deprecation` response header is **RFC
+- **Deprecation/Sunset (precise RFCs)**: the `Deprecation` response header is **RFC
   9745** (2025, Standards Track); the `Sunset` header is **RFC 8594** (2019, Informational) -- two
   different statuses, both notification-only (co-15).
-- 2026-07-22 -- **GraphQL's primary sources were fetch-blocked (403)** at verification time
-  (graphql.org, spec.graphql.org, and graphql.org/learn all returned 403 on re-check). This course's
+- **GraphQL's primary spec sits behind fetch-blocked sites**: graphql.org, spec.graphql.org,
+  and graphql.org/learn all block automated fetches. This course's
   GraphQL claims (co-24, co-25) are corroborated by well-established secondary sources and taught as
   the widely-documented GraphQL value proposition, not quoted directly from the blocked primary spec.
-- 2026-07-22 -- **the REST-vs-GraphQL-vs-gRPC three-way comparison (co-27) is synthesized guidance**,
+- **The REST-vs-GraphQL-vs-gRPC three-way comparison (co-27) is synthesized guidance**,
   not a single-source citation -- no one primary source states the three-way trade-off; each leg
   traces back to its own project's stated design goals (REST's cacheability via RFC 9111, GraphQL's
   client-shaped queries, gRPC's typed streaming), cited independently rather than as one unified

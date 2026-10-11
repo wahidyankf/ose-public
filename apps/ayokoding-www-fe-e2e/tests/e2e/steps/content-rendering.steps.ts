@@ -1,7 +1,7 @@
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 
-const { When, Then } = createBdd();
+const { Given, When, Then } = createBdd();
 
 When("a visitor opens a content page with prose body text", async ({ page }) => {
   await page.goto("/en/learn/overview");
@@ -269,4 +269,36 @@ Then("the inline code uses the surrounding text's font weight", async ({ page })
     paragraph: getComputedStyle(element.parentElement as Element).fontWeight,
   }));
   expect(weights.code).toBe(weights.paragraph);
+});
+
+// course-content-hygiene.feature, scenario 1 — no catalogue number in course titles.
+Given("the published English course library", async () => {
+  // The course library is the static content tree served by the running app; no setup needed.
+});
+
+When("its course titles are read", async ({ page }) => {
+  await page.goto("/en/learn/courses");
+  await page.waitForLoadState("networkidle");
+});
+
+Then("no course title starts with a catalogue number or a pass number", async ({ page }) => {
+  const numbered = /^\d+\s*·\s|^Pass \d+ /;
+  const links = page.getByRole("main").getByRole("link");
+  const count = await links.count();
+  expect(count).toBeGreaterThan(0);
+  for (let i = 0; i < count; i += 1) {
+    const text = (await links.nth(i).innerText()).trim();
+    expect(text).not.toMatch(numbered);
+  }
+});
+
+Then("the course list page shows every course title without a leading number", async ({ page }) => {
+  const numbered = /^\d+\s*·\s|^Pass \d+ /;
+  const links = page.getByRole("main").getByRole("link");
+  const count = await links.count();
+  expect(count).toBeGreaterThan(0);
+  for (let i = 0; i < count; i += 1) {
+    const text = (await links.nth(i).innerText()).trim();
+    expect(text).not.toMatch(numbered);
+  }
 });

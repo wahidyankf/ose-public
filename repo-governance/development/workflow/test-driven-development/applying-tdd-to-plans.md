@@ -12,6 +12,8 @@ TDD-shaped outcome sections with separate, detailed RED, GREEN, and REFACTOR che
 write "implement X, then write tests," combine the cycle into one checkbox, or omit detail merely to
 keep the checklist short.
 
+Use [Focused Runs and Regression Gates](./the-red-green-refactor-cycle.md#focused-runs-and-regression-gates) for selection, execution evidence, and phase/pre-PR regression boundaries.
+
 Write instead:
 
 ```markdown
@@ -22,10 +24,11 @@ Write instead:
 - [ ] [AI] **RED:** add `[test case]` in `[test path]`; run `[focused command]`; acceptance: it fails
       for `[expected missing behaviour]`; record the output.
 - [ ] [AI] **GREEN:** implement `[symbol]` in `[source path]`; rerun `[focused command]`;
-      acceptance: the focused suite passes.
-- [ ] [AI] **REFACTOR:** clean `[specific concern]`; run `[focused command]` and
-      `rtk nx run <project>:test:quick`; acceptance: behaviour stays green.
-- **Proof:** RED failure evidence, focused pass, and the project `test:quick` result.
+      acceptance: the named cases execute and pass with a positive count.
+- [ ] [AI] **REFACTOR:** clean `[specific concern]`; run `[named affected-boundary selection]`;
+      acceptance: behaviour stays green.
+- **Proof:** RED failure and GREEN/REFACTOR output with executed identities and positive counts.
+  The phase gate carries full required regression proof.
 ```
 
 When one cohesive outcome needs multiple cycles, give every behaviour slice its own checkbox trio in
@@ -40,7 +43,8 @@ the same outcome section:
 - [ ] [AI] **RED — error path:** [exact test/path/command/failure].
 - [ ] [AI] **GREEN — error path:** [exact source/symbol/command/pass].
 - [ ] [AI] **REFACTOR — error path:** [exact cleanup/commands/invariant].
-- **Proof:** each RED failure and GREEN/refactor pass plus `rtk nx run <project>:test:quick`.
+- **Proof:** each RED failure and GREEN/REFACTOR pass with executed identities and positive counts;
+  full required regression runs at the phase/pre-PR boundaries.
 ```
 
 The TDD actions remain one cohesive delivered behaviour, but they are independent checklist progress
@@ -66,7 +70,8 @@ checkboxes, or omit paths, commands, expected observations, or proof, as HIGH.
 - Confirm the test fails for the right reason.
 - Write the minimum implementation to pass.
 - Refactor.
-- Run the full test suite (`nx run [project]:test:quick`) to confirm no regressions.
+- Run named affected-boundary tests after refactoring, and full required regression at phase gates
+  and before PR creation, per the focused-run rule above.
 
 This applies inside subrepo worktrees too. The worktree execution context does not change the
 TDD requirement.

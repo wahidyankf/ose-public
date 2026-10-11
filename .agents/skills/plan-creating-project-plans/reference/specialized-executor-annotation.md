@@ -2,13 +2,16 @@
 
 Domain-specialized agents hallucinate less than generic orchestration. When a delivery checkbox names a domain that maps cleanly to a specialized agent, annotate the checkbox with the suggested executor.
 
+Selections follow [Focused Runs and Regression Gates](../../../../repo-governance/development/workflow/test-driven-development/the-red-green-refactor-cycle.md#focused-runs-and-regression-gates); resolve the example
+command placeholder to a verified guarded runner invocation when authoring a plan.
+
 **Annotation format** (sub-bullet under the checkbox prose, before any implementation notes):
 
 ```markdown
 - [ ] Edit `apps/organiclever-be/src/Domain/User.fs`: add `email: string option` field
       with case-insensitive uniqueness. Verify by running
-      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:test:unit` — new test
-      `User_RejectsDuplicateEmailIgnoringCase` passes.
+      `[verified runner command selecting User_RejectsDuplicateEmailIgnoringCase]` — the named
+      case executes and passes with a positive count.
   - _Suggested executor: `swe-developer`_
 ```
 

@@ -7,8 +7,9 @@
 // megabytes and an argument list has a host limit far below that.
 //
 // The plugin is TypeScript in a package whose type is CommonJS, so its types are stripped and it is imported as a
-// module from memory; it uses only Node built-ins. Each exported plugin is built with a minimal context, then the
-// named hooks are called in order. The driver writes nothing to standard output or standard error, and it lets the
+// module from memory; it uses only Node built-ins. The v2 default export carries the setup as `{ id, setup }`;
+// older files export the setup function directly. Resolve exactly one setup per file the way OpenCode itself
+// would, then the named hooks are called in order. The driver writes nothing to standard output or standard error, and it lets the
 // event loop drain, so the process ends only when every child the plugin started has ended.
 //
 // With "spawnLog", the driver also notes the instant each child was spawned, on the monotonic clock the tests read
@@ -44,9 +45,13 @@ if (timerLog) {
 }
 const source = stripTypeScriptTypes(readFileSync(pluginPath, "utf8"));
 const exported = await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}`);
+const setups =
+  exported.default && typeof exported.default.setup === "function"
+    ? [exported.default.setup]
+    : Object.values(exported).filter((value) => typeof value === "function");
 
-for (const plugin of Object.values(exported)) {
-  const hooks = await plugin({ directory, worktree: directory, project: { id: "example" }, client: {} });
+for (const setup of setups) {
+  const hooks = await setup({ directory, worktree: directory, project: { id: "example" }, client: {} });
   for (const { hook, args } of calls) {
     const handler = hooks[hook];
     if (handler) {

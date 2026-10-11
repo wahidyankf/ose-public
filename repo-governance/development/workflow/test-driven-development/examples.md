@@ -5,6 +5,9 @@ when_to_use: Use as a concrete reference for what a Red-Green-Refactor cycle loo
 
 # Examples
 
+Choose the runner selection and boundary gates per [Focused Runs and Regression Gates](./the-red-green-refactor-cycle.md#focused-runs-and-regression-gates). The comments below denote
+case selections; the executor supplies the verified guarded runner command and records positive execution counts.
+
 ## TypeScript (Vitest)
 
 ```typescript
@@ -18,14 +21,14 @@ describe("calculateDiscount", () => {
   });
 });
 
-// Run: npx nx run [project]:test:unit  → FAIL (calculateDiscount not defined)
+// Run: selected Vitest case: "applies 10% discount to positive price"  → FAIL (calculateDiscount not defined)
 
 // Green: implement minimum code
 export function calculateDiscount(price: number, rate: number): number {
   return price * (1 - rate);
 }
 
-// Run: npx nx run [project]:test:unit  → PASS
+// Run: selected Vitest case: "applies 10% discount to positive price"  → PASS
 
 // Refactor: add type guard, improve naming if needed — keep tests green
 ```
@@ -41,14 +44,14 @@ func TestCalculateDiscount(t *testing.T) {
     }
 }
 
-// Run: go test ./... → FAIL (calculateDiscount undefined)
+// Run: selected Go case: TestCalculateDiscount → FAIL (calculateDiscount undefined)
 
 // Green: implement
 func calculateDiscount(price float64, rate float64) float64 {
     return price * (1 - rate)
 }
 
-// Run: go test ./... → PASS
+// Run: selected Go case: TestCalculateDiscount → PASS
 ```
 
 ## Gherkin-to-Test Chain (BDD)

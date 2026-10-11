@@ -73,7 +73,10 @@ class ZakatCalculator {
 
 ### Refactor Phase: Improve Design
 
-**REQUIRED**: Refactor only when all tests green.
+**REQUIRED**: Refactor only when the focused selection is green and no known checks fail.
+
+Selection, execution evidence, and phase/pre-PR regression follow
+[Focused Runs and Regression Gates](../../../../../repo-governance/development/workflow/test-driven-development/the-red-green-refactor-cycle.md#focused-runs-and-regression-gates).
 
 **REQUIRED**: Run tests after each small refactoring step.
 

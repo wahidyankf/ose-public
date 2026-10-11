@@ -40,7 +40,7 @@ Transform every task into verifiable goals with clear success criteria.
 
 ```
 ❌ Weak: "Refactor X" (how do you verify it's safe?)
-✅ Strong: "Ensure all tests pass before refactoring, refactor, ensure all tests still pass"
+✅ Strong: "Run named affected-boundary cases before and after refactoring; preserve their behaviour"
 ```
 
 **Task: "Optimize performance"**
@@ -49,6 +49,9 @@ Transform every task into verifiable goals with clear success criteria.
 ❌ Weak: "Make it faster" (faster by how much?)
 ✅ Strong: "Measure current performance, optimize, measure again, verify ≥20% improvement"
 ```
+
+Refactor selections and phase/pre-PR full regression follow
+[Focused Runs and Regression Gates](../test-driven-development/the-red-green-refactor-cycle.md#focused-runs-and-regression-gates).
 
 ## Multi-Step Task Planning
 

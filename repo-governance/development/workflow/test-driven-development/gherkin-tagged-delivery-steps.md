@@ -29,6 +29,8 @@ Gherkin (ties to the
 [Specs & Gherkin two-path completeness rule](../../quality/feature-change-completeness.md)).
 Exempt: pure refactors, docs/governance-only plans, and non-code delivery steps.
 
+Case selection and boundary proof follow [Focused Runs and Regression Gates](./the-red-green-refactor-cycle.md#focused-runs-and-regression-gates).
+
 **PASS example**:
 
 ```markdown
@@ -39,9 +41,8 @@ Exempt: pure refactors, docs/governance-only plans, and non-code delivery steps.
 - [ ] [AI] **RED:** [exact calculation test/path/command/expected failure].
 - [ ] [AI] **GREEN:** [exact implementation symbol/path/command/expected pass].
 - [ ] [AI] **REFACTOR:** [exact pricing-helper cleanup/regression command/invariant].
-- **Proof:** recorded RED failure and
-  `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:test:unit`
-  passes.
+- **Proof:** recorded RED failure; the verified named calculation-case command passes with
+  executed identities and positive counts. Full required regression runs at the phase/pre-PR gates.
 ```
 
 **FAIL examples** (each a HIGH finding):

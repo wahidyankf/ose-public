@@ -7,6 +7,8 @@ Do not write “implement X, then write tests,” combine the cycle, or omit det
 length. Write for a junior engineer fresh from bootcamp with no professional work experience and no
 repository or stack context.
 
+Use [Focused Runs and Regression Gates](../../../../repo-governance/development/workflow/test-driven-development/the-red-green-refactor-cycle.md#focused-runs-and-regression-gates) for case selection, evidence, and full regression boundaries.
+
 ```markdown
 ### AC-### — [cohesive behaviour outcome]
 
@@ -16,9 +18,10 @@ repository or stack context.
       for `[expected missing behaviour]`; save output at `[evidence destination]`.
 - [ ] [AI] **GREEN:** implement `[exact symbol/path]`; rerun `[copyable command]`; acceptance: the
       new and existing focused cases pass.
-- [ ] [AI] **REFACTOR:** clean `[specific concern/path]`; run `[focused and regression commands]`;
+- [ ] [AI] **REFACTOR:** clean `[specific concern/path]`; run `[named affected-boundary selection]`;
       acceptance: behaviour and diagnostics remain unchanged.
-- **Proof:** RED evidence plus the passing focused/regression outputs.
+- **Proof:** RED evidence plus passing focused outputs, executed identities, and positive counts.
+  The phase/pre-PR gates carry full required regression proof.
 - _Suggested executor: `swe-[lang]-dev`._
 ```
 

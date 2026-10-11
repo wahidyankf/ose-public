@@ -65,4 +65,9 @@ surface runs Integration or E2E runtime. During development and review, run impa
 Integration/E2E scenarios manually; widen uncertainty to the affected project, not automatically
 to the whole workspace. Scheduled and manually dispatched full-quality CI runs every applicable
 static coverage validator, then complete Integration suites, then complete unfiltered E2E suites.
+The full E2E suite belongs to that scheduled CI workflow
+(`.github/workflows/non-product-full-quality.yml` CRON) by default in every repository that
+has E2E; keep local E2E selective to the touched flow. Followed: the scheduled workflow runs
+unfiltered E2E while local runs name a touched flow. Violated: a local unfiltered E2E run, or
+no scheduled full-E2E run where E2E targets exist.
 All paths fail closed.

@@ -30,3 +30,4 @@ export const AgentPolicyPlugin = async ({
   const source = scope === "local" ? realpathSync(fileURLToPath(new URL("../..", import.meta.url))) : directory;
   return policyHooks(source, (payload) => invokePolicy(payload, "opencode", scope));
 };
+export default { id: "agent-policy", setup: AgentPolicyPlugin };

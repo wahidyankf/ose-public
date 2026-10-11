@@ -114,3 +114,5 @@ export const FerretPlugin = async ({ directory }: { directory: string }): Promis
     },
   };
 };
+
+export default { id: "ferret", setup: FerretPlugin };

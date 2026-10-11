@@ -62,7 +62,6 @@ names the earlier plans each one builds on directly. Every plan's Phase 0 first 
 
 | Order | Plan                                                                                                | Locally verifiable outcome                                                                          | Depends on  |
 | ----: | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------- |
-|     2 | [Path model](./ayokoding-learn-revamp-02-path-model/README.md)                                      | Phases, goals, `assumes`, outline marker, prerequisite revision, closure checks, career copy        | 01          |
 |     3 | [Catalog and metadata](./ayokoding-learn-revamp-03-catalog-and-metadata/README.md)                  | Course metadata schema and backfill, categories, catalog page, course landing header                | 01          |
 |     4 | [Learning experience](./ayokoding-learn-revamp-04-learning-experience/README.md)                    | Browser progress, phase roadmap page, context bar, mark complete (and undo), Learn home             | 02, 03      |
 |     5 | [Code harness](./ayokoding-learn-revamp-05-code-harness/README.md)                                  | Go + Cobra `ayokoding-cli`, `run.yaml` contract, runners, Nx target, CI, quality-gate propagation   | —           |

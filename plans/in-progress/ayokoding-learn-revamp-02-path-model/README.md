@@ -1,7 +1,8 @@
 # AyoKoding Learn Revamp 02 — Path Model
 
-> **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution
-> command, and plan `ayokoding-learn-revamp-01-navigation-and-display` has merged to `origin/main`.
+> **Status:** In Progress. Execution authorized by the user command of 2026-10-12; the
+> second precondition is met: plan `ayokoding-learn-revamp-01-navigation-and-display` merged to
+> `origin/main` (see delivery.md Phase 0 for the live re-verification).
 
 Today every AyoKoding learning path is one long, flat list. Each of the three software-engineer career
 paths holds 114 to 121 courses, and they share 111 of them, so a reader cannot tell what is

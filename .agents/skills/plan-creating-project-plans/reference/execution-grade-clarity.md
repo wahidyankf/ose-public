@@ -45,7 +45,8 @@ Do not duplicate that exception here.
 
 ```markdown
 - [ ] Edit `apps/ose-www/src/server/trpc.ts`: wrap the public router with
-      `unstable_cache(..., { revalidate: 300 })`. Verify by running
+      `unstable_cache(..., { revalidate: 300 })`. Verify the named caching cases with the focused
+      runner command; phase/pre-PR full regression proof runs
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-web:test:quick` — all tests pass.
 ```
 
@@ -55,12 +56,14 @@ Do not duplicate that exception here.
 - [ ] Implement the rate-limit middleware
 ```
 
-**Good**:
+**Good** (replace the command placeholder with a verified runner invocation before delivering the plan;
+case selection follows [Focused Runs and Regression Gates](../../../../repo-governance/development/workflow/test-driven-development/the-red-green-refactor-cycle.md#focused-runs-and-regression-gates)):
 
 ```markdown
 - [ ] Create `apps/organiclever-be/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
       implementing token-bucket rate limiting per `tech-docs.md §Rate Limiting`. Verify by running
-      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:test:unit` — new test `RateLimit_RejectsExceedingRequests` passes.
+      `[verified runner command selecting RateLimit_RejectsExceedingRequests]` — the named case
+      executes and passes with a positive count.
 ```
 
 **Bad**:

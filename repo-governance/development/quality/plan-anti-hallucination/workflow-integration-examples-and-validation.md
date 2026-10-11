@@ -14,12 +14,16 @@ when_to_use: "Use for a worked example of this convention."
 
 ### Good — repo-grounded file path
 
+Case commands and separate full gates follow
+[Focused Runs and Regression Gates](../../workflow/test-driven-development/the-red-green-refactor-cycle.md#focused-runs-and-regression-gates).
+
 ```markdown
 - [ ] Edit `apps/ose-www/src/server/trpc.ts` — wrap public router with
       `unstable_cache(fn, keyParts, { revalidate: 300 })` per Next.js 16 docs (verified
       2026-05-03 at https://nextjs.org/docs/app/api-reference/functions/unstable_cache,
       excerpt: "unstable_cache allows caching results of expensive operations").
-      Verify by running
+      Verify the named caching cases with the focused runner command; phase/pre-PR full regression
+      proof runs
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:test:quick`
       — all tests pass.
 ```

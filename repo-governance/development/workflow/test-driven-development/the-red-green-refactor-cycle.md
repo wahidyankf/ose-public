@@ -13,12 +13,50 @@ Every code change follows this loop:
 2. **Green** — Write the minimum production code that makes the failing test pass without a
    hardcoded outcome, literal-success sentinel, or production bypass. Do not add behaviour beyond
    what the scenario requires.
-3. **Refactor** — With all tests green, improve the implementation: remove duplication, improve
-   names, extract functions, apply clean-code principles. Tests must remain green after every
-   refactor step. If they go red during refactoring, that is a bug introduced by the refactor, not
-   a deliberate failure.
+3. **Refactor** — With the focused tests green and no known failing checks, improve the implementation:
+   remove duplication, improve names, extract functions, apply clean-code principles. The focused
+   regression selection must remain green after every refactor step. A failure introduced by
+   refactoring is a bug, not a deliberate red.
 
 Repeat the cycle for the next behaviour and applicable adapter.
+
+## Focused Runs and Regression Gates
+
+Reason: keep local feedback short without reducing test-first proof or delivery verification, following
+the [TDD principles](./principles-and-conventions-implemented.md).
+
+- For each local RED/GREEN cycle, run only its named case or the smallest named selection required
+  to exercise that behaviour; do not run the full owning suite for each item.
+- After each refactor, run the focused regression selection covering the changed behaviour and its
+  affected shared boundary; do not substitute a full-suite run for each item's focused proof.
+- At phase gates and before PR creation, run the full affected-project regression checks required
+  by the phase and existing delivery contract. Passing evidence may serve both boundaries while
+  its tested scope remains unchanged.
+- Record the executed case identities and a nonzero executed-test count for every filtered cycle run.
+  Zero tests, unmatched filters, and a cached result that did not execute the intended cases are not proof.
+
+Use runner-level case/file filters for local cycles. A filtered run must not enforce whole-project
+coverage over code it deliberately does not execute: do not append a case filter to an Nx Unit target
+that enforces full-project coverage. Leave that target and its coverage threshold unchanged; use a
+separate focused runner invocation without whole-project coverage. Preserve required build/codegen,
+real-resource setup, and test ownership/cleanup guards.
+
+Unit and every applicable higher layer still start red, per [Required Test Layers](./picking-the-right-level.md).
+Full regression checks include the owning quick gate and the applicable Integration/E2E runtime
+checks the phase requires. Existing CI, hook, coverage, and scheduled-suite contracts remain unchanged.
+
+**Followed observations:** RED executes the named cases and fails on the intended behaviour assertion;
+GREEN executes those same cases and passes; REFACTOR executes the relevant regression selection and
+passes; phase/pre-PR evidence records passing unfiltered required checks and positive execution counts.
+
+**Violated observations:** a per-item unfiltered invocation positively executes unrelated cases; a
+refactor run omits a named affected-boundary case; a boundary record explicitly substitutes filtered
+case proof for its required full-project gate; or runner output explicitly reports zero matched tests.
+
+**Enforcement disposition — unenforced by decision:** selecting the smallest meaningful set and
+interpreting runner-specific evidence require behaviour/boundary context. Plan and execution review
+inspect commands, case identities, counts, and boundary records. Existing CI does not prove local
+execution order or selection; no new scanner or gate coverage is claimed.
 
 ## A new harness needs its own red
 

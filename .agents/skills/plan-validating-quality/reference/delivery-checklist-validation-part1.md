@@ -17,6 +17,8 @@ prerequisites, paths, commands, observations, recovery, or proof, flag the relev
   and REFACTOR checkboxes with exact paths/symbols, commands, expected observations, evidence, and
   final regression proof. Combined/missing cycle actions or vague detail are **HIGH**. See
   [TDD Shape for Delivery Checklists](../../../../repo-governance/development/workflow/test-driven-development/tdd-shape-for-delivery-checklists.md#tdd-shape-for-delivery-checklists).
+- **Focused TDD proof:** validate selections, executed identities/counts, and separate full
+  phase/pre-PR regression evidence against [Focused Runs and Regression Gates](../../../../repo-governance/development/workflow/test-driven-development/the-red-green-refactor-cycle.md#focused-runs-and-regression-gates). Violations are **HIGH**.
 - **Non-code action format**: non-code outcome sections (docs, config, governance) use AC reference,
   Input/Outcome/Proof, and one detailed checkbox per independently verifiable action, not
   RED/GREEN/REFACTOR. Misapplied TDD shape:

@@ -68,11 +68,13 @@ human readability without adding maintenance burden.
 - [ ] Add caching
 ```
 
-**Good**:
+**Good** (case selection and separate full gates follow
+[Focused Runs and Regression Gates](../../../development/workflow/test-driven-development/the-red-green-refactor-cycle.md#focused-runs-and-regression-gates)):
 
 ```markdown
 - [ ] Edit `apps/ose-www/src/server/trpc.ts`: wrap the public router with
-      `unstable_cache(..., { revalidate: 300 })`. Verify by running
+      `unstable_cache(..., { revalidate: 300 })`. Verify the named caching cases with the focused
+      runner command; phase/pre-PR full regression proof runs
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:test:quick`
       — all tests pass.
 ```

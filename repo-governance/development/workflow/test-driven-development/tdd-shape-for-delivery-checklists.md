@@ -10,19 +10,22 @@ independently verifiable checkboxes. The section keeps them tied to one acceptan
 observable outcome; the checkboxes keep progress, commands, and evidence visible to a junior
 engineer with no professional experience.
 
+Use [Focused Runs and Regression Gates](./the-red-green-refactor-cycle.md#focused-runs-and-regression-gates) for case selection, positive execution evidence, and boundary gates.
+
 ```markdown
 ### AC-### — [cohesive behaviour outcome]
 
 - **Input:** canonical acceptance-criterion reference, prerequisites, and affected scope.
 - **Outcome:** [observable behaviour].
 - [ ] [AI] **RED:** write `[test path and exact case]`; run `[copyable focused command]`;
-      acceptance: it fails for `[expected missing behaviour or diagnostic]` and existing unrelated tests
+      acceptance: it fails for `[expected missing behaviour or diagnostic]` and selected existing boundary cases
       remain green; save output at `[evidence destination]`.
 - [ ] [AI] **GREEN:** implement `[exact symbol]` in `[source path]`; run `[copyable focused command]`;
       acceptance: the new test passes and no unrelated focused case regresses.
-- [ ] [AI] **REFACTOR:** clean up `[specific concern/path]`; run `[focused and regression commands]`;
+- [ ] [AI] **REFACTOR:** clean up `[specific concern/path]`; run `[named affected-boundary selection]`;
       acceptance: behaviour, public contract, and expected diagnostics remain unchanged.
-- **Proof:** RED evidence plus the passing focused and regression outputs.
+- **Proof:** RED evidence plus passing focused outputs, executed case identities, and positive counts.
+  Full required regression belongs to the phase/pre-PR gates.
 ```
 
 If one outcome needs several TDD cycles, write a separate RED/GREEN/REFACTOR checkbox trio for each

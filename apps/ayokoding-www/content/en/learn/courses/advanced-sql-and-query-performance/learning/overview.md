@@ -7,12 +7,11 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [10 · SQL Essentials](../../sql-essentials/learning/overview.md) -- `SELECT`,
+- **Prior topics**: [SQL Essentials](../../sql-essentials/learning/overview.md) -- `SELECT`,
   `JOIN`, `GROUP BY`/`HAVING`, `INSERT`/`UPDATE`/`DELETE`, foreign keys, basic transactions
   (`COMMIT`/`ROLLBACK`), and the first Python `sqlite3` examples this topic assumes as a floor and
-  then extends into a real client-server engine; [4 · Just Enough Python](../../just-enough-python/learning/overview.md)
-  -- the type-annotated Python fluency this topic's data-access-layer examples assume; [11 ·
-  Backend Essentials](../../backend-essentials/learning/overview.md) -- the N+1 query scenario that
+  then extends into a real client-server engine; [Just Enough Python](../../just-enough-python/learning/overview.md)
+  -- the type-annotated Python fluency this topic's data-access-layer examples assume; [Backend Essentials](../../backend-essentials/learning/overview.md) -- the N+1 query scenario that
   topic introduces at the application layer, which this topic's co-26 (N+1 diagnosis and fix,
   Examples 54-56) diagnoses and resolves from the database side.
 - **Tools & environment**: a macOS/Linux terminal; **PostgreSQL 18.x** (the `psql` client and a
@@ -245,4 +244,4 @@ CONCURRENTLY` proven via real thread timing, a connection-pooling benchmark, the
 
 ---
 
-← Previous: [25 · Advanced Algorithms Drilling](../../advanced-algorithms/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →
+← Previous: [Advanced Algorithms Drilling](../../advanced-algorithms/drilling/overview.md) &middot; Next: [Beginner Examples](./beginner.md) →

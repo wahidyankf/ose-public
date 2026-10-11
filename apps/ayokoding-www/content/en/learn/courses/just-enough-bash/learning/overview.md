@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: 1 · Just Enough Nvim -- this primer builds on comfort with a terminal and editor
+- **Prior topics**: Just Enough Nvim -- this primer builds on comfort with a terminal and editor
   from earlier topics in this journey, since every example here is a `.sh` file you open, edit, and
   save before running it.
 - **Tools & environment**: a macOS/Linux terminal with **Bash** installed (verify with

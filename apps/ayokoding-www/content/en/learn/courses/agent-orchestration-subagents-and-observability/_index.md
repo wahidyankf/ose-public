@@ -1,5 +1,5 @@
 ---
-title: "62 · Agent Orchestration, Subagents & Observability"
+title: "Agent Orchestration, Subagents & Observability"
 date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 462

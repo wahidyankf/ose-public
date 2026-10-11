@@ -11,7 +11,7 @@ discoverable and reusable rather than hard-wired into one agent.
 
 ## Prerequisite
 
-Complete [58 · The Agent Loop](/en/learn/courses/the-agent-loop/learning/overview) first. It owns the
+Complete [The Agent Loop](/en/learn/courses/the-agent-loop/learning/overview) first. It owns the
 bounded read-evaluate-act loop that chooses and dispatches a call; this course owns the tool schema,
 server, client, and protocol boundary that make that call possible.
 

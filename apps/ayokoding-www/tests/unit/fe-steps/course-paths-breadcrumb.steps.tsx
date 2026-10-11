@@ -65,11 +65,10 @@ describeFeature(feature, ({ Scenario }) => {
       const list = document.querySelector("ol");
       expect(list).not.toBeNull();
       const items = within(list as HTMLElement).getAllByRole("listitem");
-      expect(items.map((item) => item.textContent)).toEqual([
-        "Just Enough Python",
-        "Just Enough Bash",
-        "Version Control & Git",
-      ]);
+      // The path position number (Phase 4) sits outside each link, so the link's own
+      // textContent is exactly the title and the order assertion keeps its meaning.
+      const linkTexts = items.map((item) => within(item).getByRole("link").textContent);
+      expect(linkTexts).toEqual(["Just Enough Python", "Just Enough Bash", "Version Control & Git"]);
     });
 
     And("every course link carries the path context query parameter", () => {

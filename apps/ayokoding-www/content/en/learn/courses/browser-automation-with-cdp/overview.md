@@ -11,9 +11,9 @@ network observation, safe request handling, and bounded concurrency.
 
 ## Prerequisites
 
-- [4 · Just Enough Python](../just-enough-python/learning/overview.md): functions, dictionaries,
+- [Just Enough Python](../just-enough-python/learning/overview.md): functions, dictionaries,
   type annotations, and `asyncio` basics.
-- [12 · Networking Essentials](../networking-essentials/learning/overview.md): HTTP, WebSockets, and
+- [Networking Essentials](../networking-essentials/learning/overview.md): HTTP, WebSockets, and
   request/response terminology.
 
 Use Python 3.13+ for the runnable simulations. A local Chrome or Chromium with a remote-debugging port

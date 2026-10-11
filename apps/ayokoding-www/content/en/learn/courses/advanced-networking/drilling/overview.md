@@ -905,5 +905,4 @@ connection-tracking state-table problem this topic keeps returning to, not a liv
 
 ---
 
-← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [30 ·
-Software Engineering Practices Learning Overview](../../software-engineering-practices/learning/overview.md) →
+← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [Software Engineering Practices Learning Overview](../../software-engineering-practices/learning/overview.md) →

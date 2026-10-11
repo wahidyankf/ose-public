@@ -7,9 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [15 · Software Testing](../software-testing/learning/overview.md) -- verifying an
-  agent's output leans directly on writing and running the tests that catch a wrong generation; [30 ·
-  Software Engineering Practices](../software-engineering-practices/learning/overview.md) -- code
+- **Prior topics**: [Software Testing](../software-testing/learning/overview.md) -- verifying an
+  agent's output leans directly on writing and running the tests that catch a wrong generation; [Software Engineering Practices](../software-engineering-practices/learning/overview.md) -- code
   review, small commits, and working in trunk are exactly the discipline this topic applies to an
   agent's output instead of a human's.
 - **Tools & environment**: an AI coding agent/assistant (editor-integrated and/or CLI); a

@@ -16,13 +16,13 @@ export interface SyllabusPreviewProps {
  * first {@link FIRST_PHASE_PREVIEW_COUNT} courses in `courseOrder` — a documented simplification,
  * not a hidden one.
  *
- * No manually-rendered `{index + 1}.` prefix (DWT-002 fix, phase-5 rule-15 design-tester retest):
- * this component previously prepended its own local list index in front of each course title, but
- * every real course title already embeds its own catalog number (e.g. `"4 · Just Enough Python"`),
- * so the two numbers collided into a nonsensical-looking `"1. 4 · Just Enough Python"`. The `<ol>`
+ * Every item renders its path position (`index + 1` in `courseOrder`) as inline text before the
+ * title (plan ayokoding-learn-revamp-01 §4.2). Prepending the number is safe now — the DWT-002
+ * collision is closed: the Phase 3 strip removed every catalogue and pass number from the course
+ * titles, so the rendered position number is the only number an item can show; no item renders a
+ * doubled number any more. The `<ol>`
  * itself already carries the "number is order" semantics (matching `path-landing.tsx`'s sibling
- * syllabus, which renders no added index either) — the visible number readers see is the course's
- * own embedded catalog number, never a second, redundant one.
+ * syllabus).
  */
 export function SyllabusPreview({ courseTitles }: SyllabusPreviewProps) {
   const preview = courseTitles.slice(0, FIRST_PHASE_PREVIEW_COUNT);
@@ -38,7 +38,7 @@ export function SyllabusPreview({ courseTitles }: SyllabusPreviewProps) {
         {preview.map((title, index) => (
           <li key={title} className="inline">
             {index > 0 && " · "}
-            {title}
+            <span className="tabular-nums">{index + 1}</span> {title}
           </li>
         ))}
       </ol>

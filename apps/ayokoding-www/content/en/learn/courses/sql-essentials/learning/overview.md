@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../../just-enough-python/learning/overview.md) -- Python
+- **Prior topics**: [Just Enough Python](../../just-enough-python/learning/overview.md) -- Python
   drives every database-access example in this topic's Python-marked (†) examples, and by this point
   you should be comfortable running a `.py` script and reading typed function signatures.
 - **Tools & environment**: a macOS/Linux terminal; **SQLite** (`sqlite3 --version` confirms it is
@@ -164,4 +164,4 @@ docs.python.org primary documentation on 2026-07-12, and re-verified with no dri
 
 ---
 
-← Previous: [9 · Project Management](../../project-management/drilling/overview.md) · Next: [Beginner Examples](./beginner.md) →
+← Previous: [Project Management](../../project-management/drilling/overview.md) · Next: [Beginner Examples](./beginner.md) →

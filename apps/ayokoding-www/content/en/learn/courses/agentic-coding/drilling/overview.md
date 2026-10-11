@@ -625,4 +625,4 @@ own momentum -- it forces an escalation decision instead of an in-the-moment rat
 
 ---
 
-← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [32 · Software Product Engineering](../../software-product-engineering/learning/overview.md) →
+← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [Software Product Engineering](../../software-product-engineering/learning/overview.md) →

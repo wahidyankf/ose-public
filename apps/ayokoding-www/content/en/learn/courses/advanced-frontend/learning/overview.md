@@ -7,12 +7,10 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [14 · Frontend Essentials](../../frontend-essentials/learning/overview.md) -- the
+- **Prior topics**: [Frontend Essentials](../../frontend-essentials/learning/overview.md) -- the
   component model (state, props, one-way data flow, keyed lists), controlled validated forms, basic
-  ARIA and keyboard patterns, and discriminated-union UI state, assumed throughout; [13 · Just Enough
-  TypeScript](../../just-enough-typescript/learning/overview.md) -- generics, unions, and narrowing,
-  the raw material co-33 turns into typed components; and [15 · Software
-  Testing](../../software-testing/learning/overview.md) -- Testing-Library component tests and the
+  ARIA and keyboard patterns, and discriminated-union UI state, assumed throughout; [Just Enough TypeScript](../../just-enough-typescript/learning/overview.md) -- generics, unions, and narrowing,
+  the raw material co-33 turns into typed components; and [Software Testing](../../software-testing/learning/overview.md) -- Testing-Library component tests and the
   shape of an e2e smoke, which Examples 76-78 and the capstone build directly on.
 - **Tools & environment**: a macOS/Linux terminal; **Node.js** + npm; **TypeScript** (`tsc` 5.8) and
   **tsx** to run every worked example from the CLI. No running dev server, browser, or installed

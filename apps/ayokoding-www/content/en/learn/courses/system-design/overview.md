@@ -7,8 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [39 · Backend at Scale](../backend-at-scale/learning/overview.md) supplies
-  single-service scaling, queues, and caching; [29 · Advanced Networking](../advanced-networking/learning/overview.md)
+- **Prior topics**: [Backend at Scale](../backend-at-scale/learning/overview.md) supplies
+  single-service scaling, queues, and caching; [Advanced Networking](../advanced-networking/learning/overview.md)
   supplies latency, DNS, and load balancing; [26 · Advanced SQL](../advanced-sql-and-query-performance/learning/overview.md)
   supplies indexes, replication, and partitioning.
 - **Tools and environment**: Python 3, a terminal, and a Mermaid-capable Markdown renderer. All

@@ -34,15 +34,14 @@ describe("SyllabusPreview (Cycle 3.1c-ii — arc landing single-role inline prev
     expect(screen.getByText(/Starts with:/i)).toBeTruthy();
   });
 
-  it("renders each course title with no manually-added list-index prefix (DWT-002 fix, phase-5 rule-15 design-tester retest)", () => {
-    // Real course titles already embed their own catalog number (e.g. "4 · Just Enough Python");
-    // a second, locally-rendered "1." in front of it produced a nonsensical double-number.
-    render(<SyllabusPreview courseTitles={["4 · Just Enough Python", "7 · Data Structures & Algorithms"]} />);
+  it("numbers its courses by their path position, with the inline separator before each number (plan ayokoding-learn-revamp-01 §4.2)", () => {
+    // Replaces the DWT-002 lock: titles no longer carry catalog numbers (Phase 3 strip), so the
+    // rendered position number is now the ONLY number a preview item shows.
+    render(<SyllabusPreview courseTitles={["Just Enough Python", "Data Structures & Algorithms Essentials"]} />);
 
     const items = screen.getAllByRole("listitem");
-    expect(items[0]?.textContent).toBe("4 · Just Enough Python");
-    expect(items[1]?.textContent).toBe(" · 7 · Data Structures & Algorithms");
-    expect(screen.queryByText(/^1\.\s*4/)).toBeNull();
+    expect(items[0]?.textContent).toBe("1 Just Enough Python");
+    expect(items[1]?.textContent).toBe(" · 2 Data Structures & Algorithms Essentials");
   });
 
   it("never nests the <ol> inside a <p> — invalid HTML that triggers a hydration mismatch (phase-5 EWT finding)", () => {

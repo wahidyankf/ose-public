@@ -9,9 +9,9 @@ weight: 1
 
 - **Prior topics**: `creating-ai-powered-apps` (a working model call, structured output --
   `[Unverified]` not yet present in the AyoKoding course library on disk); **software-testing**
-  ([15 · Software Testing](../../software-testing/learning/overview.md)) for the assertion mindset
+  ([Software Testing](../../software-testing/learning/overview.md)) for the assertion mindset
   every scorer in this topic reuses; **just enough python**
-  ([4 · Just Enough Python](../../just-enough-python/learning/overview.md)) -- every script in this
+  ([Just Enough Python](../../just-enough-python/learning/overview.md)) -- every script in this
   topic is fully type-annotated Python.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13**; `pytest` for the `pytest`-suite
   worked example; a local or mockable model, so every example runs offline with no paid API key

@@ -218,8 +218,10 @@ Then("the single role card renders with an inline first-phase syllabus preview",
   await expect(card).toHaveAttribute("href", "/en/learn/paths/careers/interview-ready/backend-track");
   const previewItems = card.locator("xpath=..").locator("ol > li");
   await expect(previewItems).toHaveCount(2);
-  await expect(previewItems.nth(0)).toContainText("4 · Just Enough Python");
-  await expect(previewItems.nth(1)).toContainText("7 · Data Structures & Algorithms Essentials");
+  // Numbered preview (plan ayokoding-learn-revamp-01 §4.2): each inline item renders its path
+  // position before the title, separated by " · " from the previous item.
+  await expect(previewItems.nth(0)).toContainText("1 Just Enough Python");
+  await expect(previewItems.nth(1)).toContainText("2 Data Structures & Algorithms Essentials");
 });
 
 Then("the layout does not reserve or render a visibly empty second card", async ({ page }) => {
@@ -327,13 +329,13 @@ When("the course page renders", async ({ page }) => {
 Then("the course body renders in full with the content-tree breadcrumb and its prerequisite list", async ({ page }) => {
   await expect(page.getByRole("navigation", { name: "Breadcrumb" })).toBeVisible();
   const article = page.getByRole("article");
-  await expect(article.getByRole("heading", { level: 1, name: "4 · Just Enough Python", exact: true })).toBeVisible();
+  await expect(article.getByRole("heading", { level: 1, name: "Just Enough Python", exact: true })).toBeVisible();
   await expect(article.getByRole("link", { name: "Learning", exact: true })).toHaveAttribute(
     "href",
     "/en/learn/courses/just-enough-python/learning",
   );
   const prerequisites = page.getByRole("navigation", { name: "Prerequisites" });
-  await expect(prerequisites.getByRole("link", { name: "Pass 0 Capstone · Forge-Ready", exact: true })).toHaveAttribute(
+  await expect(prerequisites.getByRole("link", { name: "Capstone · Forge-Ready", exact: true })).toHaveAttribute(
     "href",
     "/en/learn/courses/capstone-forge-ready",
   );
@@ -462,17 +464,17 @@ Then("the left rail lists that path's courses in manifest order with the current
   await expect(items).toHaveCount(3);
   const expected = [
     {
-      name: "5 · Just Enough Bash",
+      name: "Just Enough Bash",
       href: "/en/learn/courses/just-enough-bash?path=careers/immediately-effective/backend-track",
       current: null,
     },
     {
-      name: "11 · Backend Essentials",
+      name: "Backend Essentials",
       href: "/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track",
       current: "page",
     },
     {
-      name: "10 · SQL Essentials",
+      name: "SQL Essentials",
       href: "/en/learn/courses/sql-essentials?path=careers/immediately-effective/backend-track",
       current: null,
     },
@@ -571,10 +573,7 @@ Then("it shows Home, Learn, the path title, and the course title", async ({ page
   await expect(breadcrumb.getByRole("link", { name: "Home" })).toBeVisible();
   await expect(breadcrumb.getByRole("link", { name: "Learn" })).toBeVisible();
   await expect(breadcrumb.getByRole("link", { name: "Backend Track (Immediately-Effective)" })).toBeVisible();
-  await expect(breadcrumb.getByText("11 · Backend Essentials", { exact: true })).toHaveAttribute(
-    "aria-current",
-    "page",
-  );
+  await expect(breadcrumb.getByText("Backend Essentials", { exact: true })).toHaveAttribute("aria-current", "page");
 });
 
 Then(
@@ -603,7 +602,7 @@ When("a reader opens the course page with or without a path context", async ({ p
 
 Then("the page lists each prerequisite course with a link to its canonical URL", async ({ page }) => {
   const prerequisites = page.getByRole("navigation", { name: "Prerequisites" });
-  await expect(prerequisites.getByRole("link", { name: "Pass 0 Capstone · Forge-Ready" })).toHaveAttribute(
+  await expect(prerequisites.getByRole("link", { name: "Capstone · Forge-Ready" })).toHaveAttribute(
     "href",
     "/en/learn/courses/capstone-forge-ready",
   );
@@ -644,4 +643,208 @@ Then("no path card from either category is rendered outside its category's secti
   await expect(skillsSection.getByText("Backend Track")).toHaveCount(0);
   await expect(skillsSection.getByText("Frontend Track")).toHaveCount(0);
   await expect(skillsSection.getByText("Generalist Track")).toHaveCount(0);
+});
+
+// path-position-numbers.feature, scenario 1 — no catalogue number in course titles.
+Given("a reader opens a course in path context", async ({ page }) => {
+  await page.goto("/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track");
+  await page.waitForLoadState("networkidle");
+});
+
+Then(
+  "the page heading, breadcrumb, previous and next links, and prerequisite links show course titles without a leading number",
+  async ({ page }) => {
+    const numbered = /^\d+\s*·\s/;
+    const article = page.locator("article").first();
+    const breadcrumb = page.getByRole("navigation", { name: "Breadcrumb" });
+    const pageNav = page.getByRole("navigation", { name: "Page navigation" });
+    const prerequisites = page.getByRole("navigation", { name: "Prerequisites" });
+    const texts = [
+      (await article.getByRole("heading", { level: 1 }).innerText()).trim(),
+      (await breadcrumb.getByText("Backend Essentials").innerText()).trim(),
+      (await pageNav.getByRole("link", { name: /Just Enough Bash/i }).innerText()).trim(),
+      (await pageNav.getByRole("link", { name: /SQL Essentials/i }).innerText()).trim(),
+      (await prerequisites.getByRole("link").first().innerText()).trim(),
+    ];
+    for (const text of texts) {
+      expect(text).not.toMatch(numbered);
+    }
+  },
+);
+
+Then("the only course order number on the page is the course's position in the active path", async ({ page }) => {
+  const nav = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+  await expect(nav.getByText("Course 2 of 3", { exact: true })).toBeVisible();
+});
+
+// ---------------------------------------------------------------------------
+// path-position-numbers.feature, scenarios 2–4 (plan ayokoding-learn-revamp-01, Phase 4 RED) —
+// S1 syllabus numbers, S2 rail numbers, S3 arc-card preview numbers. S2's Given ("a reader opens
+// a course in path context on a desktop-width viewport") and S3's Given/When are already bound
+// above; only the numbering steps are new here, plus the updated preview expectations in the
+// Cycle 3.1c-ii section.
+// ---------------------------------------------------------------------------
+
+// S1 — syllabus rows on the backend-track fixture path's landing page.
+Given("a learning path lists its courses in manifest order", async ({ page }) => {
+  const manifest = (await loadPublishedManifests(page)).find(
+    (candidate) => candidate.pathId === "careers/immediately-effective/backend-track",
+  );
+  expect(manifest?.courseOrder).toEqual(["just-enough-bash", "backend-essentials", "sql-essentials"]);
+});
+
+When("a reader opens that path's landing page", async ({ page }) => {
+  await page.goto("/en/learn/paths/careers/immediately-effective/backend-track");
+  await page.waitForLoadState("networkidle");
+});
+
+Then("each syllabus row shows its position number starting at 1 before the course title", async ({ page }) => {
+  const syllabus = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) syllabus" });
+  const rows = syllabus.getByRole("listitem");
+  await expect(rows).toHaveCount(3);
+  const expected = [
+    { position: "1", title: "Just Enough Bash" },
+    { position: "2", title: "Backend Essentials" },
+    { position: "3", title: "SQL Essentials" },
+  ];
+  for (const [index, { position, title }] of expected.entries()) {
+    await expect(rows.nth(index)).toHaveText(new RegExp(`^${position}\\s*${title}$`, "u"));
+    // The number sits outside the link (tech-docs §4.2), so the link's accessible name stays
+    // exactly the title (WCAG 2.5.3 Label in Name).
+    await expect(rows.nth(index).getByRole("link", { name: title, exact: true })).toBeVisible();
+  }
+});
+
+Then("the position numbers follow the manifest order with no gaps", async ({ page }) => {
+  const syllabus = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) syllabus" });
+  const rows = syllabus.getByRole("listitem");
+  const count = await rows.count();
+  expect(count).toBe(3);
+  for (let index = 0; index < count; index += 1) {
+    const leading = ((await rows.nth(index).textContent()) ?? "").match(/^\d+/u)?.[0] ?? "";
+    expect(leading).toBe(String(index + 1));
+  }
+});
+
+// S2 — rail rows on backend-essentials in path context. The already-bound Given navigates to
+// /en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track and the
+// already-bound "the page renders" waits for network idle.
+Then("each rail row shows its position number before the course title", async ({ page }) => {
+  const rail = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+  const rows = rail.getByRole("listitem");
+  await expect(rows).toHaveCount(3);
+  const expected = [
+    { position: "1", title: "Just Enough Bash" },
+    { position: "2", title: "Backend Essentials" },
+    { position: "3", title: "SQL Essentials" },
+  ];
+  for (const [index, { position, title }] of expected.entries()) {
+    // The current row's ▸ marker sits between the number and the title inside the link.
+    await expect(rows.nth(index)).toHaveText(new RegExp(`^${position}\\s*▸?\\s*${title}$`, "u"));
+    // The link keeps its aria-label={title}; the row number never leaks into the name
+    // (tech-docs §4.2, Decision D4).
+    await expect(rows.nth(index).getByRole("link", { name: title, exact: true })).toBeVisible();
+  }
+});
+
+Then("the current course's row shows its own position number with the current-course marker", async ({ page }) => {
+  const rail = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+  const currentRow = rail.locator('li:has(a[aria-current="page"])');
+  await expect(currentRow).toHaveCount(1);
+  const currentLink = currentRow.getByRole("link", { name: "Backend Essentials", exact: true });
+  await expect(currentLink).toContainText("▸");
+  await expect(currentLink).toHaveClass(/\bbg-accent\b/);
+  // backend-essentials is position 2 of 3, and its number renders before the ▸ marker.
+  await expect(currentRow).toHaveText(/^2\s*▸/u);
+});
+
+// S3 — the interview-ready arc card's inline first-phase preview (Given/When bound in the
+// Cycle 3.1c-ii section above).
+Then('the role card\'s "Starts with" preview numbers its courses 1, 2, and so on in path order', async ({ page }) => {
+  const nav = page.getByRole("navigation", { name: "interview-ready paths" });
+  const card = nav.getByRole("link", { name: /^Start the Backend Track \(Interview-Ready\) path/ });
+  const previewItems = card.locator("xpath=..").locator("ol > li");
+  await expect(previewItems).toHaveCount(2);
+  const texts = await previewItems.allTextContents();
+  // The inline separator " · " precedes every number except the first, so the second item's
+  // textContent starts with it; trailing/leading whitespace is trimmed here only.
+  expect(texts[0]?.trim()).toBe("1 Just Enough Python");
+  expect(texts[1]?.trim()).toBe("· 2 Data Structures & Algorithms Essentials");
+});
+
+Then("no preview item shows a second number inside the course title", async ({ page }) => {
+  const nav = page.getByRole("navigation", { name: "interview-ready paths" });
+  const card = nav.getByRole("link", { name: /^Start the Backend Track \(Interview-Ready\) path/ });
+  const previewItems = card.locator("xpath=..").locator("ol > li");
+  await expect(previewItems).toHaveCount(2);
+  // Strip the rendered position number and its separator; only the bare title must remain — a
+  // second number inside the title (the old DWT-002 collision) would survive this strip.
+  const bareTitles = (await previewItems.allTextContents()).map((text) =>
+    text
+      .trim()
+      .replace(/^·\s*/u, "")
+      .replace(/^\d+\s*/u, ""),
+  );
+  expect(bareTitles).toEqual(["Just Enough Python", "Data Structures & Algorithms Essentials"]);
+});
+
+// ---------------------------------------------------------------------------
+// path-order-nav.feature, scenario 4 (plan ayokoding-learn-revamp-01, Phase 5 RED) — S5: the
+// desktop rail auto-scrolls its own overflow-y: auto container so the current course's row is
+// fully visible, and the page itself never moves (tech-docs.md §4.3, Decisions D5/D11).
+// sql-essentials is the last of the backend-track fixture's three courses, so at the 1280×200
+// viewport below its row starts below the visible part of the sidebar. The When step ("the page
+// renders") is shared with cost-of-living-calculator.steps.ts (identical networkidle semantics) —
+// not redefined here, same as the canonical-fallback scenario above.
+// ---------------------------------------------------------------------------
+
+const RAIL_SCROLL_VIEWPORT = { width: 1280, height: 200 };
+
+Given("a reader opens a course whose rail row starts below the visible part of the sidebar", async ({ page }) => {
+  await page.setViewportSize(RAIL_SCROLL_VIEWPORT);
+  await page.goto("/en/learn/courses/sql-essentials?path=careers/immediately-effective/backend-track");
+  await page.waitForLoadState("networkidle");
+});
+
+Then("the sidebar scrolls so the current course's row is fully visible", async ({ page }) => {
+  const rail = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+  const currentLink = rail.locator('a[aria-current="page"]');
+  await expect(currentLink).toHaveCount(1);
+
+  const linkBox = await currentLink.boundingBox();
+  expect(linkBox).not.toBeNull();
+
+  // The nearest ancestor whose overflow-y is auto/scroll AND whose content actually overflows —
+  // the same walk the auto-scroll helper performs (tech-docs.md §4.3's findScrollContainer).
+  const scrollContainer = await currentLink
+    .evaluateHandle((link) => {
+      let node = link.parentElement as HTMLElement | null;
+      while (node && node !== document.body) {
+        const overflowY = window.getComputedStyle(node).overflowY;
+        if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight) {
+          return node;
+        }
+        node = node.parentElement as HTMLElement | null;
+      }
+      return null;
+    })
+    .then((handle) => handle.asElement());
+  expect(scrollContainer).not.toBeNull();
+
+  const containerBox = await scrollContainer!.boundingBox();
+  expect(containerBox).not.toBeNull();
+
+  // "Fully visible" = the row's box lies inside the scroll container's visible box. Vertical
+  // containment is the behaviour under test — before the fix the row starts below the container's
+  // bottom edge; horizontal containment holds trivially because rail rows truncate.
+  expect(linkBox!.y).toBeGreaterThanOrEqual(containerBox!.y);
+  expect(linkBox!.y + linkBox!.height).toBeLessThanOrEqual(containerBox!.y + containerBox!.height);
+  expect(linkBox!.x).toBeGreaterThanOrEqual(containerBox!.x);
+  expect(linkBox!.x + linkBox!.width).toBeLessThanOrEqual(containerBox!.x + containerBox!.width);
+});
+
+// playwright-bdd has no `And` keyword — the feature's And step binds via `Then` (its text is what
+// matches), the same convention as every other And step in this file.
+Then("the page itself stays scrolled to the top", async ({ page }) => {
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
 });

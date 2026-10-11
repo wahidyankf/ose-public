@@ -1,5 +1,5 @@
 ---
-title: "3 · Extending Neovim"
+title: "Extending Neovim"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 130

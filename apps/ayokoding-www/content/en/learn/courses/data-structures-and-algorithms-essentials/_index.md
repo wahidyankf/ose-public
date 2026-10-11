@@ -1,5 +1,5 @@
 ---
-title: "7 · Data Structures & Algorithms Essentials"
+title: "Data Structures & Algorithms Essentials"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 170

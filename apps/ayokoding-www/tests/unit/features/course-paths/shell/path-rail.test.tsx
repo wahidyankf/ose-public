@@ -1,5 +1,5 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen, within } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
 
 vi.mock("next/link", () => ({
@@ -10,10 +10,24 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+// plan ayokoding-learn-revamp-01 §4.3 (Phase 5 RED wiring): the helper module does not exist yet —
+// the static import below producing TS2307 under `tsc --noEmit` is the expected RED type-error
+// face (do not stub the module). At GREEN the factory intercepts PathRail's own import of the
+// same file, so the assertions here pin the wiring without exercising the helper's arithmetic.
+vi.mock("../../../../../src/features/course-paths/shell/active-course-scroll", () => ({
+  scrollActiveCourseIntoView: vi.fn(),
+}));
+
 // eslint-disable-next-line import/first
 import { PathRail } from "../../../../../src/features/course-paths/shell/path-rail";
+// eslint-disable-next-line import/first
+import { scrollActiveCourseIntoView } from "../../../../../src/features/course-paths/shell/active-course-scroll";
 
 afterEach(cleanup);
+
+beforeEach(() => {
+  vi.mocked(scrollActiveCourseIntoView).mockClear();
+});
 
 const manifest: PathManifest = {
   pathId: "skills/python-fundamentals",
@@ -61,6 +75,39 @@ describe("PathRail (Cycle 2.8 — Screen 3 Option B)", () => {
     expect(current.getAttribute("aria-current")).toBe("page");
     expect(current.textContent).toContain("▸");
     expect(current.className).toContain("font-semibold");
+  });
+
+  it("shows each row's position number before its title while the current row keeps every current-course signal (plan ayokoding-learn-revamp-01 §4.2)", () => {
+    const { container } = render(
+      <PathRail locale="en" manifest={manifest} currentCourseId="just-enough-python" courseTitles={courseTitles} />,
+    );
+
+    const ol = container.querySelector("ol");
+    expect(ol).not.toBeNull();
+    const items = within(ol as HTMLElement).getAllByRole("listitem");
+    const expected = [
+      { position: "1", title: "Git" },
+      { position: "2", title: "Just Enough Python" },
+      { position: "3", title: "Data Structures & Algorithms" },
+    ];
+    expected.forEach(({ position, title }, index) => {
+      const rowText = items[index]?.textContent ?? "";
+      expect(
+        rowText,
+        `rail row ${index + 1} should render its position number "${position}" before the title (rendered: "${rowText}")`,
+      ).toMatch(new RegExp(`^${position}\\s*▸?\\s*${title}$`, "u"));
+      // The link keeps its aria-label={title}; the row number stays outside the link, so the
+      // link's accessible name is never a numbered title (tech-docs §4.2, Decision D4).
+      expect(within(items[index]!).getByRole("link", { name: title })).toBeTruthy();
+    });
+
+    // The current row (position 2 of 3) keeps aria-current="page", the ▸ marker, and bg-accent,
+    // and its own position number renders before them.
+    const current = screen.getByRole("link", { name: "Just Enough Python" });
+    expect(current.getAttribute("aria-current")).toBe("page");
+    expect(current.textContent).toContain("▸");
+    expect(current.className).toContain("bg-accent");
+    expect(current.closest("li")?.textContent ?? "").toMatch(/^2\s*▸/u);
   });
 
   it("every row link carries the path context, and the row's aria-label holds the untruncated title", () => {
@@ -123,5 +170,30 @@ describe("PathRail (Cycle 2.8 — Screen 3 Option B)", () => {
     expect(screen.getByText("Kursus 2 dari 3")).toBeTruthy();
     expect(screen.getByRole("link", { name: /lihat jalur lengkap/i })).toBeTruthy();
     expect(screen.getByRole("link", { name: /jelajahi semua kursus/i })).toBeTruthy();
+  });
+
+  it("asks the auto-scroll helper to bring the current course's row into view on mount and again when currentCourseId changes (plan ayokoding-learn-revamp-01 §4.3)", () => {
+    const scrolled = vi.mocked(scrollActiveCourseIntoView);
+    const { rerender } = render(
+      <PathRail locale="en" manifest={manifest} currentCourseId="just-enough-python" courseTitles={courseTitles} />,
+    );
+
+    expect(scrolled).toHaveBeenCalledTimes(1);
+    expect(scrolled).toHaveBeenNthCalledWith(1, screen.getByRole("link", { name: "Just Enough Python" }).closest("li"));
+
+    rerender(
+      <PathRail
+        locale="en"
+        manifest={manifest}
+        currentCourseId="data-structures-and-algorithms-essentials"
+        courseTitles={courseTitles}
+      />,
+    );
+
+    expect(scrolled).toHaveBeenCalledTimes(2);
+    expect(scrolled).toHaveBeenNthCalledWith(
+      2,
+      screen.getByRole("link", { name: "Data Structures & Algorithms" }).closest("li"),
+    );
   });
 });

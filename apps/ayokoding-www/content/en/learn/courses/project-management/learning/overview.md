@@ -404,4 +404,4 @@ artifact and citing the `co-NN` it exercises.
 
 ---
 
-← Previous: [8 · Object-Oriented Programming Essentials Drilling](../../object-oriented-programming-essentials/drilling/overview.md) · Next: [Beginner Scenarios](./beginner.md) →
+← Previous: [Object-Oriented Programming Essentials Drilling](../../object-oriented-programming-essentials/drilling/overview.md) · Next: [Beginner Scenarios](./beginner.md) →

@@ -1675,4 +1675,4 @@ topic's whole budget on formalism before a reader has even seen the patterns pay
 
 ---
 
-← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [24 · Concurrency & Parallelism](../../concurrency-and-parallelism/learning/overview.md) →
+← Previous: [Capstone](../learning/capstone/overview.md) &middot; Next: [Concurrency & Parallelism](../../concurrency-and-parallelism/learning/overview.md) →

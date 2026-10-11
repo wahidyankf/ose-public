@@ -7,7 +7,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [13 · Just Enough TypeScript](../../just-enough-typescript/learning/overview.md) --
+- **Prior topics**: [Just Enough TypeScript](../../just-enough-typescript/learning/overview.md) --
   Examples 68-70 and the capstone's typed props/state assume you can already read a TypeScript
   interface, a union type, and a `tsc` type-error message the way that primer taught them.
 - **Tools & environment**: a modern web browser; **Node.js** + npm; **TypeScript** (`tsc`) for the

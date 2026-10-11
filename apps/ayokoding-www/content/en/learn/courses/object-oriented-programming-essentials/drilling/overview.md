@@ -1317,4 +1317,4 @@ implicitly by never hardcoding a concrete class where an interface or `cls` woul
 ---
 
 ← Previous: [Capstone](../learning/capstone/overview.md) · Next:
-[9 · Project Management](../../project-management/learning/overview.md) →
+[Project Management](../../project-management/learning/overview.md) →

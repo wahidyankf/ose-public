@@ -1,5 +1,5 @@
 ---
-title: "44 · System Design"
+title: "System Design"
 date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 444

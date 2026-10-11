@@ -9,10 +9,10 @@ weight: 1
 
 - **Prior topics**: `creating-ai-powered-apps` (a working model call, structured output) --
   `[Unverified]` this course is not yet present in the AyoKoding course library on disk, so no link
-  is given here; **software-testing** ([15 · Software Testing](../software-testing/learning/overview.md))
+  is given here; **software-testing** ([Software Testing](../software-testing/learning/overview.md))
   gives the assertion mindset -- fixtures, test doubles, and the habit of writing down what "pass"
   means before running anything -- that this course's scorers and runner directly reuse; **just
-  enough python** ([4 · Just Enough Python](../just-enough-python/learning/overview.md)) is assumed
+  enough python** ([Just Enough Python](../just-enough-python/learning/overview.md)) is assumed
   for reading and writing fully type-annotated Python.
 - **Tools & environment**: a macOS/Linux terminal; Python 3.13 (a local or mockable model so every
   example runs offline, with no paid API key required); `pytest`; a plain JSONL file as the dataset

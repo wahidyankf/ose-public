@@ -1,5 +1,5 @@
 ---
-title: "61 · Agent Permissions & Sandboxing"
+title: "Agent Permissions & Sandboxing"
 date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 461

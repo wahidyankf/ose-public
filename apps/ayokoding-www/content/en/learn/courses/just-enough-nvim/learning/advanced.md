@@ -1259,4 +1259,4 @@ print('hello')
 
 ---
 
-← Previous: [Intermediate Examples](./intermediate.md) · Next: [2 · Just Enough Lua](../../just-enough-lua/learning/overview.md) →
+← Previous: [Intermediate Examples](./intermediate.md) · Next: [Just Enough Lua](../../just-enough-lua/learning/overview.md) →

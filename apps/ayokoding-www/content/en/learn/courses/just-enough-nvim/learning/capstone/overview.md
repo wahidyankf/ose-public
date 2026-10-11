@@ -272,4 +272,4 @@ documentation per this primer's Accuracy notes, web-verified 2026-07-12.
 
 ---
 
-← Previous: [Advanced Examples](../advanced.md) · Next: [2 · Just Enough Lua](../../../just-enough-lua/learning/overview.md) →
+← Previous: [Advanced Examples](../advanced.md) · Next: [Just Enough Lua](../../../just-enough-lua/learning/overview.md) →

@@ -7,10 +7,9 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../just-enough-python/learning/overview.md) -- every
+- **Prior topics**: [Just Enough Python](../just-enough-python/learning/overview.md) -- every
   script in this topic is fully type-annotated Python, and you should already be comfortable reading
-  functions, classes, and `list`/`dict`/`set` literals the way that primer taught them; [7 · Data
-  Structures & Algorithms Essentials](../data-structures-and-algorithms-essentials/learning/overview.md)
+  functions, classes, and `list`/`dict`/`set` literals the way that primer taught them; [Data Structures & Algorithms Essentials](../data-structures-and-algorithms-essentials/learning/overview.md)
   gives the stack/heap and Big-O vocabulary this topic deepens into the theory underneath it.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13.12**; a REPL for following along
   with the number/representation demos. Every example is standard-library-only (`struct`, `sys`,

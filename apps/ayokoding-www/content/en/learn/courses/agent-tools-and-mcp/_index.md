@@ -1,5 +1,5 @@
 ---
-title: "59 · Agent Tools & MCP"
+title: "Agent Tools & MCP"
 date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 459

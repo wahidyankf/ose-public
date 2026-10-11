@@ -7,12 +7,12 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [11 · Backend Essentials](../backend-essentials/learning/overview.md) -- routing,
+- **Prior topics**: [Backend Essentials](../backend-essentials/learning/overview.md) -- routing,
   request/response handling, and serving a CRUD JSON API, the mechanical layer this course assumes
-  already works and builds the scale concerns on top of; [10 · SQL Essentials](../sql-essentials/learning/overview.md)
+  already works and builds the scale concerns on top of; [SQL Essentials](../sql-essentials/learning/overview.md)
   -- the database fluency the pagination (co-04/co-05), transaction (co-11), and N+1 (co-40) examples
-  lean on; [17 · Security Essentials](../security-essentials/learning/overview.md) -- tokens vs sessions,
-  the foundation the OAuth2/OIDC (co-15) and JWT (co-14) examples deepen; and [15 · Software Testing](../software-testing/learning/overview.md)
+  lean on; [Security Essentials](../security-essentials/learning/overview.md) -- tokens vs sessions,
+  the foundation the OAuth2/OIDC (co-15) and JWT (co-14) examples deepen; and [Software Testing](../software-testing/learning/overview.md)
   -- the testing discipline the contract (co-35) and testcontainers (co-36) examples extend.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13+** with type hints and `pyright --strict`;
   `curl` for exercising ideas conceptually. Every worked example in this course is pure Python standard
@@ -40,7 +40,7 @@ decoupling via queues are what let a service survive load instead of amplifying 
 fail and recover independently.
 
 > **Scope guard -- this course vs. the backend it builds on vs. the architecture around it.**
-> [11 · Backend Essentials](../backend-essentials/learning/overview.md) owns the **serving mechanics**:
+> [Backend Essentials](../backend-essentials/learning/overview.md) owns the **serving mechanics**:
 > routing, request parsing, and returning a JSON response from a running web framework. This course
 > assumes that mechanical layer already works and owns a different, narrower question: how does a backend
 > SURVIVE real load, retries, partial failure, and decoupled communication -- the deep pass over

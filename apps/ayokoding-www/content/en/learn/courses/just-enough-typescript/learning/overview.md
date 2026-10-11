@@ -7,9 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: 1 · Just Enough Nvim -- you should be comfortable opening, editing, and saving
-  files before writing and running TypeScript; prior programming maturity from 4 · Just Enough
-  Python helps but is not required.
+- **Prior topics**: Just Enough Nvim -- you should be comfortable opening, editing, and saving
+  files before writing and running TypeScript; prior programming maturity from Just Enough Python helps but is not required.
 - **Tools & environment**: a macOS/Linux terminal; **Node.js** installed (`node --version`) with
   **npm**; the **`tsc`** compiler, the **`tsx`** runner, and the **`eslint`**/**`prettier`** CLIs, all
   installable via `npm`. TypeScript, Node.js, `tsx`, `eslint`, and `prettier` are all Tier-1 OSS

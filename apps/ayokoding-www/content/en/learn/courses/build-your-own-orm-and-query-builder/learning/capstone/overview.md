@@ -10,7 +10,7 @@ weight: 1
 Build a working miniature ORM -- a fluent query builder, table metadata, row/object mapping with type
 coercion, a weak-ref identity map, a session-scoped unit of work with an atomic flush, and
 descriptor-based lazy loading -- entirely over the stdlib `sqlite3` driver (PEP 249), then use it to run
-the same customers/orders scenario [27 · Data Access: ORMs & Query Builders](../../../data-access-orms-and-query-builders/learning/overview.md)
+the same customers/orders scenario [Data Access: ORMs & Query Builders](../../../data-access-orms-and-query-builders/learning/overview.md)
 ran over a real framework. Every mechanism this capstone composes was already taught, individually,
 somewhere in this topic's Beginner, Intermediate, or Advanced tiers -- Example 78 ("A Mini-ORM Preview")
 previewed a compact, single-file version of this exact composition first. Example 78's own

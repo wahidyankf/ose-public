@@ -11,10 +11,9 @@ weight: 1
   is) -- `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is given
   here; `backend-at-scale` (load, queueing, capacity, autoscaling) -- `[Unverified]` not yet present;
   `containers-and-orchestration` (packaging and scheduling a workload) -- `[Unverified]` not yet
-  present; [20 · Computer Architecture](../computer-architecture/overview.md) (memory hierarchy and
+  present; [Computer Architecture](../computer-architecture/overview.md) (memory hierarchy and
   bandwidth, the entire reason decode behaves as it does); `site-reliability-engineering` (SLOs, load
-  testing, capacity planning) -- `[Unverified]` not yet present; [4 · Just Enough
-  Python](../just-enough-python/learning/overview.md).
+  testing, capacity planning) -- `[Unverified]` not yet present; [Just Enough Python](../just-enough-python/learning/overview.md).
 - **Tools & environment**: a macOS/Linux terminal; Python 3.x (`python3 --version`); no GPU and no
   paid API key are required anywhere in this topic. Every example runs against a small,
   deterministic, in-process scheduler-and-cache **simulator** written for this topic -- the mechanics

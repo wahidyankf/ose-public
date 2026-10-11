@@ -7,9 +7,8 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [4 · Just Enough Python](../just-enough-python/learning/overview.md) -- a
-  general "reading code and running experiments" fluency this topic assumes; [19 · Computer
-  Science Foundations](../computer-science-foundations/overview.md) -- number systems, two's
+- **Prior topics**: [Just Enough Python](../just-enough-python/learning/overview.md) -- a
+  general "reading code and running experiments" fluency this topic assumes; [Computer Science Foundations](../computer-science-foundations/overview.md) -- number systems, two's
   complement, IEEE-754 floats, endianness, and the stack/heap survey this topic goes on to measure
   and exploit for real.
 - **Tools & environment**: a macOS/Linux terminal; a C toolchain (a recent stable `clang`/`gcc`); a

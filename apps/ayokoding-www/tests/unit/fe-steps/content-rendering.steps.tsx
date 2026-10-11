@@ -24,6 +24,8 @@ const calloutHtml = `<div data-callout="warning"><p>Watch out!</p></div>`;
 const tabsHtml = `<div data-tabs="Tab1,Tab2"><div data-tab><p>Panel 1</p></div><div data-tab><p>Panel 2</p></div></div>`;
 const youtubeHtml = `<div data-youtube="dQw4w9WgXcQ"></div>`;
 const stepsHtml = `<div data-steps><ol><li>Step one</li><li>Step two</li></ol></div>`;
+const sectionHeadingHtml = `<h2 id="x"><a href="#x">X</a></h2>`;
+const inlineCodeHtml = `<p>Run <code>nvim --version</code></p>`;
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
   AfterEachScenario(cleanup);
@@ -239,6 +241,52 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       fireEvent.click(screen.getByText("Answer"));
       expect(details.open).toBe(true);
       expect(screen.getByText("Authored answer")).toBeTruthy();
+    });
+  });
+
+  Scenario("Section headings render as headings, not as links", ({ When, Then, And }) => {
+    When("a visitor opens a content page with section headings", () => {
+      render(<MarkdownRenderer html={sectionHeadingHtml} locale="en" />);
+    });
+
+    Then("each section heading is shown in the heading text colour without an underline", () => {
+      const container = document.querySelector(".prose");
+      expect(container).toHaveClass(
+        "prose-headings:[&>a]:no-underline",
+        "prose-headings:[&>a]:text-inherit",
+        "prose-headings:[&>a]:[font-weight:inherit]",
+      );
+    });
+
+    And("the heading still links to its own anchor", () => {
+      const heading = screen.getByRole("heading", { level: 2, name: "X" });
+      const anchor = heading.querySelector("a");
+      expect(anchor).toBeTruthy();
+      expect(anchor?.getAttribute("href")).toBe("#x");
+      expect(anchor?.getAttribute("href")).toBe(`#${heading.getAttribute("id")}`);
+    });
+  });
+
+  Scenario("Inline code renders without literal backticks", ({ When, Then, And }) => {
+    When("a visitor opens a content page containing inline code", () => {
+      render(<MarkdownRenderer html={inlineCodeHtml} locale="en" />);
+    });
+
+    Then("the inline code shows no backtick characters before or after it", () => {
+      const container = document.querySelector(".prose");
+      expect(container).toHaveClass("prose-code:before:content-none", "prose-code:after:content-none");
+      const inlineCode = screen.getByText("nvim --version");
+      expect(inlineCode.tagName).toBe("CODE");
+      expect(container?.textContent).not.toContain("`");
+    });
+
+    And("the inline code uses the surrounding text's font weight", () => {
+      const container = document.querySelector(".prose");
+      expect(container).toHaveClass("[&_:not(pre)>code]:[font-weight:inherit]");
+      const inlineCode = screen.getByText("nvim --version");
+      const paragraph = inlineCode.closest("p");
+      expect(paragraph).toBeTruthy();
+      expect(getComputedStyle(inlineCode).fontWeight).toBe(getComputedStyle(paragraph!).fontWeight);
     });
   });
 });

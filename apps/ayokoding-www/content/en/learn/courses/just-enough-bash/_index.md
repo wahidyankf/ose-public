@@ -1,5 +1,5 @@
 ---
-title: "5 · Just Enough Bash"
+title: "Just Enough Bash"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 150

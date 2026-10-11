@@ -11,10 +11,10 @@ weight: 1
 
 ## Prerequisites
 
-- **Required prior course**: [60 · Defensive Security](../defensive-security/overview.md). It establishes
+- **Required prior course**: [Defensive Security](../defensive-security/overview.md). It establishes
   generalist blue-team breadth: portable Sigma/ELK-shaped detection, incident response, and hardening.
-- **Supporting prior courses**: [17 · Security Essentials](../security-essentials/overview.md),
-  [59 · Offensive Security](../offensive-security/overview.md), and just-enough Python. You need to read
+- **Supporting prior courses**: [Security Essentials](../security-essentials/overview.md),
+  [Offensive Security](../offensive-security/overview.md), and just-enough Python. You need to read
   a log and distinguish a fictional alert from proof of an incident.
 - **Tools and environment**: Python 3.13+, a POSIX shell, and an editor. A self-owned isolated Wazuh lab
   is optional; the complete learning path runs offline with the bundled synthetic data.

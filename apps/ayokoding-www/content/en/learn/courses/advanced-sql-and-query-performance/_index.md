@@ -1,5 +1,5 @@
 ---
-title: "26 · Advanced SQL & Query Performance"
+title: "Advanced SQL & Query Performance"
 date: 2026-07-17T00:00:00+07:00
 draft: false
 weight: 360

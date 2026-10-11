@@ -14,7 +14,7 @@ standard I/O, the preprocessor, small multi-file programs, and the first allocat
 
 **Just enough to be productive here** means enough C for
 [79 · Linux OS](../linux-os/overview.md), [80 · Windows OS](../windows-os/overview.md), and
-[81 · System Programming](../system-programming/overview.md): compile warning-clean programs, follow
+[System Programming](../system-programming/overview.md): compile warning-clean programs, follow
 addresses through a pointer, use arrays and structs as laid-out data, and recognize ownership of a
 small heap allocation. It deliberately excludes concurrency, signals, sockets, POSIX process APIs,
 undefined-behaviour deep dives, complex macro metaprogramming, custom allocators, and comprehensive
@@ -22,9 +22,9 @@ C-library reference material. Those belong to the consuming systems courses or a
 
 ## Prerequisites
 
-- [4 · Just Enough Python](../just-enough-python/learning/overview.md) supplies the high-level contrast
+- [Just Enough Python](../just-enough-python/learning/overview.md) supplies the high-level contrast
   and prior programming vocabulary.
-- [5 · Just Enough Bash](../just-enough-bash/learning/overview.md) supplies terminal, compiler, and
+- [Just Enough Bash](../just-enough-bash/learning/overview.md) supplies terminal, compiler, and
   `make` build-loop comfort.
 - Use a macOS/Linux terminal with `cc` (GCC or Clang) and `make`; an editor with C
   language-server support is useful.

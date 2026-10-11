@@ -1,7 +1,7 @@
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 
-const { When, Then } = createBdd();
+const { Given, When, Then } = createBdd();
 
 When("a visitor opens a content page with prose body text", async ({ page }) => {
   await page.goto("/en/learn/overview");
@@ -216,4 +216,89 @@ Then("the disclosure should reveal its authored answer when opened", async ({ pa
   await details.locator("summary").click();
   await expect(details).toHaveAttribute("open", "");
   await expect(details).toContainText("A property graph is built from nodes");
+});
+
+When("a visitor opens a content page with section headings", async ({ page }) => {
+  await page.goto("/en/learn/courses/just-enough-nvim/learning/overview");
+});
+
+Then("each section heading is shown in the heading text colour without an underline", async ({ page }) => {
+  const headingLink = page.locator("article h2 > a").first();
+  await expect(headingLink).toBeVisible();
+  const styles = await headingLink.evaluate((element) => ({
+    textDecorationLine: getComputedStyle(element).textDecorationLine,
+    anchorColor: getComputedStyle(element).color,
+    headingColor: getComputedStyle(element.parentElement as Element).color,
+  }));
+  expect(styles.textDecorationLine).toBe("none");
+  expect(styles.anchorColor).toBe(styles.headingColor);
+});
+
+Then("the heading still links to its own anchor", async ({ page }) => {
+  const headingLink = page.locator("article h2 > a").first();
+  await expect(headingLink).toBeVisible();
+  const href = await headingLink.getAttribute("href");
+  expect(href).not.toBeNull();
+  expect(href!.startsWith("#")).toBe(true);
+});
+
+When("a visitor opens a content page containing inline code", async ({ page }) => {
+  await page.goto("/en/learn/courses/just-enough-nvim/learning/overview");
+});
+
+Then("the inline code shows no backtick characters before or after it", async ({ page }) => {
+  // Inline code only: HTML forbids a `pre` inside a `p`, so `article p code` never matches
+  // the fenced-block `pre > code` pairs.
+  const inlineCode = page.locator("article p code").first();
+  await expect(inlineCode).toBeVisible();
+  const pseudoContent = await inlineCode.evaluate((element) => ({
+    before: getComputedStyle(element, "::before").content,
+    after: getComputedStyle(element, "::after").content,
+  }));
+  // A pseudo-element without generated content reports "none" (Firefox) or "normal"
+  // (Chromium/WebKit); either means no literal backticks are generated around the code.
+  expect(["none", "normal"]).toContain(pseudoContent.before);
+  expect(["none", "normal"]).toContain(pseudoContent.after);
+});
+
+Then("the inline code uses the surrounding text's font weight", async ({ page }) => {
+  const inlineCode = page.locator("article p code").first();
+  await expect(inlineCode).toBeVisible();
+  const weights = await inlineCode.evaluate((element) => ({
+    code: getComputedStyle(element).fontWeight,
+    paragraph: getComputedStyle(element.parentElement as Element).fontWeight,
+  }));
+  expect(weights.code).toBe(weights.paragraph);
+});
+
+// course-content-hygiene.feature, scenario 1 — no catalogue number in course titles.
+Given("the published English course library", async () => {
+  // The course library is the static content tree served by the running app; no setup needed.
+});
+
+When("its course titles are read", async ({ page }) => {
+  await page.goto("/en/learn/courses");
+  await page.waitForLoadState("networkidle");
+});
+
+Then("no course title starts with a catalogue number or a pass number", async ({ page }) => {
+  const numbered = /^\d+\s*·\s|^Pass \d+ /;
+  const links = page.getByRole("main").getByRole("link");
+  const count = await links.count();
+  expect(count).toBeGreaterThan(0);
+  for (let i = 0; i < count; i += 1) {
+    const text = (await links.nth(i).innerText()).trim();
+    expect(text).not.toMatch(numbered);
+  }
+});
+
+Then("the course list page shows every course title without a leading number", async ({ page }) => {
+  const numbered = /^\d+\s*·\s|^Pass \d+ /;
+  const links = page.getByRole("main").getByRole("link");
+  const count = await links.count();
+  expect(count).toBeGreaterThan(0);
+  for (let i = 0; i < count; i += 1) {
+    const text = (await links.nth(i).innerText()).trim();
+    expect(text).not.toMatch(numbered);
+  }
 });

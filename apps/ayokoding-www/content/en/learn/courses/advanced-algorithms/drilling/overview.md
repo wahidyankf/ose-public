@@ -1743,4 +1743,4 @@ actually need.
 
 ---
 
-← Previous: [Capstone](../learning/capstone/overview.md) · Next: [26 · Advanced SQL & Query Performance Drilling](../../advanced-sql-and-query-performance/drilling/overview.md) →
+← Previous: [Capstone](../learning/capstone/overview.md) · Next: [Advanced SQL & Query Performance Drilling](../../advanced-sql-and-query-performance/drilling/overview.md) →

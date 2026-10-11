@@ -12,9 +12,9 @@ state in a ViewModel and driving UI with unidirectional data flow.
 
 ## Prerequisites
 
-- [68 · Just Enough Kotlin](../just-enough-kotlin/learning/overview.md) supplies Kotlin syntax,
+- [Just Enough Kotlin](../just-enough-kotlin/learning/overview.md) supplies Kotlin syntax,
   sealed state, and coroutine vocabulary used throughout this course.
-- [14 · Frontend Essentials](../frontend-essentials/learning/overview.md) supplies component, state,
+- [Frontend Essentials](../frontend-essentials/learning/overview.md) supplies component, state,
   and accessible-interface thinking.
 - [47 · Advanced Frontend](../advanced-frontend/learning/overview.md) supplies declarative UI,
   state-management, and optimistic-update foundations.

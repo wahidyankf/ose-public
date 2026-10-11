@@ -1,5 +1,5 @@
 ---
-title: "28 · Build Your Own ORM & Query Builder"
+title: "Build Your Own ORM & Query Builder"
 date: 2026-07-18T00:00:00+07:00
 draft: false
 weight: 380

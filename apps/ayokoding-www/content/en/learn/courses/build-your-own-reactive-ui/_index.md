@@ -1,5 +1,5 @@
 ---
-title: "48 · Build Your Own Reactive UI"
+title: "Build Your Own Reactive UI"
 date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 448

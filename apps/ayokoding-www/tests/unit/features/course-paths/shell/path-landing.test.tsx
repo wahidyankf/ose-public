@@ -36,17 +36,27 @@ describe("PathLanding (Cycle 3.1 — Screen 2)", () => {
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Interview-Ready Example Role");
   });
 
-  it("lists the courses in manifest courseOrder inside a semantic <ol>", () => {
+  it("lists the courses in manifest courseOrder inside a semantic <ol>, each row showing its position number before the title (plan ayokoding-learn-revamp-01 §4.2)", () => {
     const { container } = render(<PathLanding locale="en" manifest={manifest} courseTitles={courseTitles} />);
 
     const ol = container.querySelector("ol");
     expect(ol).not.toBeNull();
     const items = within(ol as HTMLElement).getAllByRole("listitem");
-    expect(items.map((item) => item.textContent)).toEqual([
-      "Just Enough Python",
-      "Just Enough Bash",
-      "Version Control & Git",
-    ]);
+    const expected = [
+      { position: "1", title: "Just Enough Python" },
+      { position: "2", title: "Just Enough Bash" },
+      { position: "3", title: "Version Control & Git" },
+    ];
+    expected.forEach(({ position, title }, index) => {
+      const rowText = items[index]?.textContent ?? "";
+      expect(
+        rowText,
+        `syllabus row ${index + 1} should render its position number "${position}" before the title (rendered: "${rowText}")`,
+      ).toMatch(new RegExp(`^${position}\\s*${title}$`, "u"));
+      // The number sits outside the link (tech-docs §4.2), so the link's accessible name stays
+      // exactly the title (WCAG 2.5.3 Label in Name).
+      expect(within(items[index]!).getByRole("link", { name: title })).toBeTruthy();
+    });
   });
 
   it("every course link carries the path context query parameter", () => {

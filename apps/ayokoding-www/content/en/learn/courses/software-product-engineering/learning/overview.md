@@ -550,4 +550,4 @@ under `learning/artifacts/`.
 
 ---
 
-← Previous: [31 · Agentic Coding Drilling](../../agentic-coding/drilling/overview.md) · Next: [Beginner Scenarios](./beginner.md) →
+← Previous: [Agentic Coding Drilling](../../agentic-coding/drilling/overview.md) · Next: [Beginner Scenarios](./beginner.md) →

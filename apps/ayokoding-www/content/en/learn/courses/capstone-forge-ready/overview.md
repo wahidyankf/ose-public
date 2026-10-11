@@ -307,4 +307,4 @@ now marks its own `:checkhealth lspconfig` integration deprecated in favor of `:
 
 ---
 
-← Previous: [3 · Extending Neovim Drilling](../extending-neovim/drilling/overview.md)
+← Previous: [Extending Neovim Drilling](../extending-neovim/drilling/overview.md)

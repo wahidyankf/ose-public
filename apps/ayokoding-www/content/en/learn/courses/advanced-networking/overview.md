@@ -7,10 +7,10 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [12 · Networking Essentials](../networking-essentials/learning/overview.md) --
+- **Prior topics**: [Networking Essentials](../networking-essentials/learning/overview.md) --
   this topic assumes you already know what happens when you hit a URL (DNS, TCP, TLS, HTTP), TCP vs.
   UDP at a glance, and how to read a `curl -v`/`dig` transcript; and
-  [4 · Just Enough Python](../just-enough-python/learning/overview.md) -- every Python script in this
+  [Just Enough Python](../just-enough-python/learning/overview.md) -- every Python script in this
   topic is fully type-annotated, and you should already be comfortable reading functions, classes,
   and `list`/`dict`/`set` literals the way that primer taught them.
 - **Tools & environment**: a macOS/Linux terminal; **Python 3.13**; the diagnostic CLIs `ping`,

@@ -843,4 +843,4 @@ register can target the black hole register for free, with no new command to lea
 
 ---
 
-← Previous: [Capstone](../learning/capstone/overview.md) · Next: [2 · Just Enough Lua](../../just-enough-lua/learning/overview.md) →
+← Previous: [Capstone](../learning/capstone/overview.md) · Next: [Just Enough Lua](../../just-enough-lua/learning/overview.md) →

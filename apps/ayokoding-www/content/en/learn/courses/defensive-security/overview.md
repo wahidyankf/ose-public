@@ -11,7 +11,7 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: [17 · Security Essentials](../security-essentials/overview.md) supplies baseline
+- **Prior topics**: [Security Essentials](../security-essentials/overview.md) supplies baseline
   controls; [18 · Networking Essentials](../networking-essentials/overview.md) supplies the network
   vocabulary behind telemetry and segmentation.
 - **Tools and environment**: Python 3.13+ and a POSIX shell. An optional self-owned OpenSearch or ELK

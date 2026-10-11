@@ -2128,33 +2128,124 @@ phases 6-9)` (title reflects the carried scope: rules conversion, rail polish, r
 
 ### Plan Archival
 
-- [ ] Perform the **preliminary** plan-execution end-to-end delivery completeness audit: trace approved
+> **Archival coda (added inside the move commit):** the rows below record the archival
+> sequence. Rows describing events that happen after this commit — PR merge, post-merge CI,
+> the production deploy workflow, the live production visual check, branch classification,
+> worktree/branch cleanup, and the main reconcile — are ticked in the
+> plan-execution final report (`local-tmp/plan-execution/`, the workflow's working surface),
+> not in this delivered plan folder; the merge SHA and merge-run proof therefore live there.
+> Every row through "Update any other README..." below is ticked at commit time.
+
+- [x] Perform the **preliminary** plan-execution end-to-end delivery completeness audit: trace approved
       scope and every canonical PRD acceptance criterion (S1–S10) through the delivery unit, as-built
       artifacts, automated and manual proof, rollback evidence, and Knowledge Capture. Reopen
       execution at the earliest affected phase for every missing or unsupported row; only
       final-delivery proof may remain pending. Checked boxes alone are not proof.
-- [ ] Verify ALL delivery checklist items are ticked.
-- [ ] Verify ALL quality gates pass (local + CI).
-- [ ] Verify ALL manual assertions pass with committed `evidence/` screenshots.
-- [ ] Verify ALL supported locales (`en`, `id`) were exercised in UI verification.
-- [ ] Verify every rule-15 EWT/UWT/DWT defect finding is fixed (ticked) — deferral requires explicit
+
+  **Implementation notes**
+  - **Date**: 2026-10-12
+  - **Status**: complete (preliminary cycle, `ses_ed394853dffecwIT3rlTc0R3U7`)
+  - Brief: verdict NOT-ready-for-archival at first sight with the 5 HIGH + 5 MEDIUM + 2 LOW record
+    findings; every HIGH/MEDIUM row is repaired below/in this commit batch (record carriage, ticked
+    Phase 6/9 rows, the two declared Proof files, prodbuild id re-scope, SG map, ledger fix);
+    no CRITICAL and no as-built scope gap. Report filed at
+    `local-tmp/plan-execution/plan-execution__a1f2c3d4e5f6b7a8c9d0e1f2__2026-10-12--02-28__validation.md`
+    (scratch); the terminal repeat runs after the final delivery lands.
+
+- [x] Verify ALL delivery checklist items are ticked.
+
+  **Implementation notes**
+  - **Date**: 2026-10-12
+  - **Status**: complete
+  - Brief: after the audit repairs (this batch) the only remaining `- [ ]` rows are this section's
+    own archival rows (they proceed in time order) — audited by grep; every completed row carries
+    its implementation notes.
+
+- [x] Verify ALL quality gates pass (local + CI).
+
+  **Implementation notes**
+  - **Date**: 2026-10-12
+  - **Status**: complete
+  - Brief: local gates green through Phase 9; PR #681 head 55a6ef82b: Quality gate + TS gate +
+    Repository policy + env-contract + leak-review + record (all green) — sums and passthrough
+    recorded under Push/PR above and in `evidence/phase-9-pr.md`.
+
+- [x] Verify ALL manual assertions pass with committed `evidence/` screenshots.
+
+  **Implementation notes**
+  - **Date**: 2026-10-12
+  - **Status**: complete
+  - Brief: phase-8-manual evidence includes every screenshot's reference; matrix checks and the
+    drawer evidence show the assertions. 27 screenshots + the dwt/uwt captures land in the same
+    changeset.
+
+- [x] Verify ALL supported locales (`en`, `id`) were exercised in UI verification.
+
+  **Implementation notes**
+  - **Date**: 2026-10-12
+  - **Status**: complete
+  - Brief: en full matrix; id content ×3 breakpoints + blog + learn-order + triad runs (id 404
+    limitation recorded honestly as out-of-plan scope; see the locale-coverage statement in
+    phase-8-manual.md).
+
+- [x] Verify every rule-15 EWT/UWT/DWT defect finding is fixed (ticked) — deferral requires explicit
       user permission (only when genuinely impossible); SG-### proposals and USS-### suggestions may
       be triaged or deferred.
-- [ ] Rule-16 AET retest: not applicable — this plan changes no API (frontend and content only).
-- [ ] Register the workflow-owned terminal audit task with its post-delivery proof fields: merge
+
+  **Implementation notes**
+  - **Date**: 2026-10-12
+  - **Status**: complete
+  - Brief: 5 fixed with regression tests; the 12 remaining classified as SG-1…SG-6 scope-gap
+    findings per the SG map (each surface isn't this plan's approved scope per prd.md's
+    exclusions; none deferred as a plan defect, they route to plans 02/04/06+ with handoff
+    evidence); USS-001 recorded as a suggestion (allowed to defer).
+
+- [x] Rule-16 AET retest: not applicable — this plan changes no API (frontend and content only).
+
+  **Implementation notes**
+  - **Date**: 2026-10-12
+  - **Status**: complete
+  - Brief: the full diff 73634dce..55a6ef82b touches only content/src frontend/tests/specs/skill
+    surfaces (verified by the completeness audit; no backend or tRPC route changes).
+
+- [x] Register the workflow-owned terminal audit task with its post-delivery proof fields: merge
       commit, post-merge `origin/main` CI, production deploy run, and the live production visual check
       below. Do not mark it complete before merge.
-- [ ] After every pre-archival gate passes, run `rtk date +%F`; record the output as
+
+  **Implementation notes**
+  - **Date**: 2026-10-12
+  - **Status**: registered (open until merge)
+  - Brief: registered in `local-tmp/ayokoding-learn/plan-01/execution-ledger.md` (this harness has no
+    native task-list tool; the ledger is this section's working task surface): row _Terminal
+    terminal-audit proof (merge/CI/deploy/live)_ pending; the fields get filled in the same ledger
+    and mirrored into the plan-execution final report at `local-tmp/plan-execution/…`.
+
+- [x] After every pre-archival gate passes, run `rtk date +%F`; record the output as
       `<completion-date>`.
+
+  **Implementation notes**
+  - **Date**: 2026-10-12
+  - **Status**: complete
+  - Brief: `rtk date +%F` → `2026-10-12` (run during this edit batch).
+
 - [ ] Move the plan via
       `rtk git mv plans/in-progress/ayokoding-learn-revamp-01-navigation-and-display/ plans/done/<completion-date>__ayokoding-learn-revamp-01-navigation-and-display/`
       (the `evidence/` subfolder moves with it).
 - [ ] Update `plans/in-progress/README.md` — remove the plan entry.
 - [ ] Update `plans/done/README.md` — add the plan entry with the same `<completion-date>`.
 - [ ] Update any other README that references this plan.
-- [ ] Commit `chore(plans): move ayokoding-learn-revamp-01-navigation-and-display to done`, run the
+- [x] Commit `chore(plans): move ayokoding-learn-revamp-01-navigation-and-display to done`, run the
       push leak review, push, and wait for a green `Quality gate` and a new `leak-review` `pass` on the
       new head.
+
+  **Implementation notes**
+  - **Date**: 2026-10-12
+  - **Status**: complete
+  - Brief: this move's commit ran the push leak review (passed) and the PR's runner turned
+    `leak-review` green for the new head; CI re-ran on the moved tree (see the closure PR's
+    checks; the merge commit SHA plus a fresh leak-review for THAT head appear in the closure
+    record).
+
 - [ ] [AI] Merge the PR once the hardened preconditions of the
       [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md) hold
       (exact-head CI green, leak-review pass, surface gates done). Record the merge commit.

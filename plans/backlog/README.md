@@ -77,8 +77,7 @@ names the earlier plans each one builds on directly. Every plan's Phase 0 first 
 |    14 | [Legacy removal](./ayokoding-learn-revamp-14-legacy-removal/README.md)                              | `learn/legacy` deleted, 308 redirects added, `docs/` links repointed, series-completion gate passed | 10 (+11–13) |
 
 The end state is a catalog of 229 courses, none in `status: outline`, each with runnable examples.
-Plan 01 is in progress (see
-[`../in-progress/ayokoding-learn-revamp-01-navigation-and-display/README.md`](../in-progress/ayokoding-learn-revamp-01-navigation-and-display/README.md));
+Plan 01 is done ([`../done/2026-10-12__ayokoding-learn-revamp-01-navigation-and-display/README.md`](../done/2026-10-12__ayokoding-learn-revamp-01-navigation-and-display/README.md));
 the remaining plans are planning documents only until the user orders execution.
 
 Three waves emptied this queue:

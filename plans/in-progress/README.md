@@ -13,9 +13,9 @@ execution checklist.
 
 ### AyoKoding Learn Revamp series
 
-| Order | Plan                                                                                   | Locally verifiable outcome                                                         | Depends on |
-| ----: | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------- |
-|     1 | [Navigation and display](./ayokoding-learn-revamp-01-navigation-and-display/README.md) | No `NN ·` title prefixes, path position numbers, sidebar auto-scroll, render fixes | —          |
+- Plan 01 (navigation and display) moved to
+  [plans/done/2026-10-12\_\_ayokoding-learn-revamp-01-navigation-and-display](../done/2026-10-12__ayokoding-learn-revamp-01-navigation-and-display/README.md)
+  on 2026-10-12. The series continues with plan 02 (`path-model`), which depends on 01.
 
 ## Instructions
 

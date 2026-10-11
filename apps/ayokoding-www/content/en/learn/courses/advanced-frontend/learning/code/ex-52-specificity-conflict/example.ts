@@ -4,9 +4,9 @@
 // rule with more IDs wins; ties fall to more CLASSes; further ties to more TYPEs; final ties to
 // source order. A higher-specificity rule ALWAYS beats a later lower-specificity one.
 //
-// > **Accuracy note**: specificity is the ID--CLASS--TYPE three-column model; ties break by source
-// > order. Source: MDN Specificity
-// > (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity).
+// Note: specificity is the ID--CLASS--TYPE three-column model; ties break by source
+// order. Source: MDN Specificity
+// (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity).
 
 // A CSS rule: its selector breakdown and the declaration it applies.
 interface Rule {

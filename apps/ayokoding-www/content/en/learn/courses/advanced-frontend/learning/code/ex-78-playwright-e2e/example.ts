@@ -5,8 +5,8 @@
 // browser. This example models those steps and the visible-result assertion that defines a "smoke"
 // pass.
 //
-// > **Accuracy note**: "Playwright Test is an end-to-end test framework for modern web apps."
-// > Source: Playwright (https://playwright.dev/docs/intro).
+// Note: "Playwright Test is an end-to-end test framework for modern web apps."
+// Source: Playwright (https://playwright.dev/docs/intro).
 
 // A simulated page a Playwright test drives (the browser tab under automation).
 interface Page {

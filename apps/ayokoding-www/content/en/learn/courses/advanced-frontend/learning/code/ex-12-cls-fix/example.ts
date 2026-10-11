@@ -5,8 +5,8 @@
 // Reserving its width+height up front means the image drops into a hole that already existed: zero
 // shift. Good CLS <= 0.1; poor > 0.25.
 //
-// > **Accuracy note**: CLS = the largest burst of layout-shift scores over the page lifecycle; good
-// > <= 0.1 / poor > 0.25. Source: web.dev, CLS (https://web.dev/articles/cls).
+// Note: CLS = the largest burst of layout-shift scores over the page lifecycle; good
+// <= 0.1 / poor > 0.25. Source: web.dev, CLS (https://web.dev/articles/cls).
 
 // A "shift score" = (impact fraction) * (distance fraction); stable layout => 0.
 function shiftScore(moved: number, viewport: number): number {

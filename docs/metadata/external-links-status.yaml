@@ -1,5 +1,5 @@
 version: 1.0.0
-lastFullScan: "2026-07-14T04:50:00+07:00"
+lastFullScan: "2026-10-11T22:28:18+07:00"
 description: Cache of verified external links. Each link rechecked 6 months after lastChecked timestamp. usedIn tracks file paths only (line numbers omitted for cache stability). All timestamps in UTC+7 (Indonesian time).
 links:
   - url: https://adr.github.io/
@@ -9,6 +9,12 @@ links:
     redirectChain: null
     usedIn:
       - repo-governance/conventions/writing/oss-documentation.md
+  - url: https://arxiv.org/search/?query=financial+pattern+recognition
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://arxiv.org/search/?query=financial+pattern+recognition
+    redirectChain: null
+    usedIn: []
   - url: https://aws.amazon.com/blogs/architecture/master-architecture-decision-records-adrs-best-practices-for-effective-decision-making/
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
@@ -59,12 +65,6 @@ links:
         to: https://docs.cloud.google.com/vision/docs/ocr
         status: 301
     usedIn: []
-  - url: https://cloudsecurityalliance.org/
-    lastChecked: 2025-11-30 22:45:00+07:00
-    statusCode: 200
-    finalUrl: https://cloudsecurityalliance.org/
-    redirectChain: null
-    usedIn: []
   - url: https://colorbrewer2.org/
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
@@ -86,12 +86,6 @@ links:
     redirectChain: null
     usedIn:
       - repo-governance/conventions/writing/oss-documentation.md
-  - url: https://cwe.mitre.org/top25/
-    lastChecked: 2025-11-30 22:45:00+07:00
-    statusCode: 200
-    finalUrl: https://cwe.mitre.org/top25/
-    redirectChain: null
-    usedIn: []
   - url: https://dataintensive.net/
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
@@ -130,12 +124,20 @@ links:
     finalUrl: https://diataxis.fr/tutorials/
     redirectChain: null
     usedIn: []
-  - url: https://docs.logseq.com/
-    lastChecked: 2025-11-30 07:00:00+07:00
+  - url: https://docs.aws.amazon.com/prescriptive-guidance/latest/architectural-decision-records/best-practices.html
+    lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
-    finalUrl: https://docs.logseq.com/
+    finalUrl: https://docs.aws.amazon.com/prescriptive-guidance/latest/architectural-decision-records/best-practices.html
     redirectChain: null
-    usedIn: []
+    usedIn:
+      - repo-governance/conventions/writing/oss-documentation.md
+  - url: https://docs.github.com/en/code-security/security-advisories
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://docs.github.com/en/code-security/security-advisories
+    redirectChain: null
+    usedIn:
+      - repo-governance/conventions/writing/oss-documentation.md
   - url: https://docs.oracle.com/en/java/javase/21/
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
@@ -148,13 +150,6 @@ links:
     finalUrl: https://docs.oracle.com/javase/specs/
     redirectChain: null
     usedIn: []
-  - url: https://en.wikipedia.org/wiki/Coordinated_vulnerability_disclosure
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 403
-    finalUrl: https://en.wikipedia.org/wiki/Coordinated_vulnerability_disclosure
-    redirectChain: null
-    usedIn: []
-    note: Wikipedia blocks automated tools (403 Forbidden). Use WebSearch to verify article exists.
   - url: https://en.wikibooks.org/wiki/LaTeX/Mathematics
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 403
@@ -169,6 +164,27 @@ links:
     finalUrl: https://gdpr.eu/
     redirectChain: null
     usedIn: []
+  - url: https://gist.github.com/PurpleBooth/b24679402957c63ec426
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://gist.github.com/PurpleBooth/b24679402957c63ec426
+    redirectChain: null
+    usedIn:
+      - repo-governance/conventions/writing/oss-documentation.md
+  - url: https://github.blog/2022-05-19-math-support-in-markdown/
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://github.blog/2022-05-19-math-support-in-markdown/
+    redirectChain: null
+    usedIn:
+      - repo-governance/conventions/formatting/mathematical-notation.md
+  - url: https://github.com/RichardLitt/standard-readme
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://github.com/RichardLitt/standard-readme
+    redirectChain: null
+    usedIn:
+      - repo-governance/conventions/writing/oss-documentation.md
   - url: https://github.com/angular/angular/blob/main/CONTRIBUTING.md#type
     lastChecked: 2025-11-30 07:00:00+07:00
     statusCode: 200
@@ -202,13 +218,6 @@ links:
     redirectChain: null
     usedIn:
       - repo-governance/conventions/writing/oss-documentation.md
-  - url: https://github.com/RichardLitt/standard-readme
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://github.com/RichardLitt/standard-readme
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/writing/oss-documentation.md
   - url: https://github.com/stumpsyn/policies/blob/master/citizen_code_of_conduct.md
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
@@ -222,12 +231,6 @@ links:
     finalUrl: https://github.com/tesseract-ocr/tesseract
     redirectChain: null
     usedIn: []
-  - url: https://github.com/vslinko/obsidian-outliner
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://github.com/vslinko/obsidian-outliner
-    redirectChain: null
-    usedIn: []
   - url: https://github.com/wahidyankf/ose-public
     lastChecked: 2025-11-30 07:00:00+07:00
     statusCode: 200
@@ -235,13 +238,6 @@ links:
     redirectChain: null
     usedIn:
       - repo-governance/conventions/formatting/linking.md
-  - url: https://gist.github.com/PurpleBooth/b24679402957c63ec426
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://gist.github.com/PurpleBooth/b24679402957c63ec426
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/writing/oss-documentation.md
   - url: https://go.dev/blog
     lastChecked: 2025-12-03 12:00:00+07:00
     statusCode: 200
@@ -266,15 +262,6 @@ links:
     finalUrl: https://go.dev/doc/effective_go
     redirectChain: null
     usedIn: []
-  - url: https://go.dev/help
-    lastChecked: 2025-12-03 12:00:00+07:00
-    statusCode: 301
-    finalUrl: https://go.dev/help
-    redirectChain:
-      - from: https://golang.org/help
-        to: https://go.dev/help
-        status: 301
-    usedIn: []
   - url: https://go.dev/tour/
     lastChecked: 2025-12-03 12:00:00+07:00
     statusCode: 200
@@ -287,26 +274,6 @@ links:
     finalUrl: https://go.dev/wiki/
     redirectChain: null
     usedIn: []
-  - url: https://gobyexample.com
-    lastChecked: 2025-12-03 12:00:00+07:00
-    statusCode: 200
-    finalUrl: https://gobyexample.com
-    redirectChain: null
-    usedIn: []
-  - url: https://help.obsidian.md/Editing+and+formatting/Advanced+formatting+syntax#Diagram
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://help.obsidian.md/Editing+and+formatting/Advanced+formatting+syntax#Diagram
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/formatting/diagrams.md
-  - url: https://help.obsidian.md/Editing+and+formatting/Advanced+formatting+syntax#Math
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://help.obsidian.md/Editing+and+formatting/Advanced+formatting+syntax#Math
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/formatting/mathematical-notation.md
   - url: https://jfly.uni-koeln.de/color/
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
@@ -355,6 +322,123 @@ links:
     redirectChain: null
     usedIn:
       - repo-governance/conventions/formatting/diagrams.md
+  - url: https://nx.dev/blog/managing-ts-packages-in-monorepos
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://nx.dev/blog/managing-ts-packages-in-monorepos
+    redirectChain: null
+    usedIn:
+      - repo-governance/conventions/writing/oss-documentation.md
+  - url: https://nx.dev/blog/new-nx-experience-for-typescript-monorepos
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://nx.dev/blog/new-nx-experience-for-typescript-monorepos
+    redirectChain: null
+    usedIn:
+      - repo-governance/conventions/writing/oss-documentation.md
+  - url: https://openjdk.org/
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://openjdk.org/
+    redirectChain: null
+    usedIn: []
+  - url: https://openjdk.org/jeps/
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://openjdk.org/jeps/
+    redirectChain: null
+    usedIn: []
+  - url: https://owasp.org/
+    lastChecked: 2025-11-30 07:00:00+07:00
+    statusCode: 200
+    finalUrl: https://owasp.org/
+    redirectChain: null
+    usedIn: []
+  - url: https://owasp.org/Top10/
+    lastChecked: 2025-11-30 07:00:00+07:00
+    statusCode: 200
+    finalUrl: https://owasp.org/Top10/
+    redirectChain: null
+    usedIn: []
+  - url: https://owasp.org/www-community/Source_Code_Analysis_Tools
+    lastChecked: 2025-11-30 22:45:00+07:00
+    statusCode: 200
+    finalUrl: https://owasp.org/www-community/Source_Code_Analysis_Tools
+    redirectChain: null
+    usedIn: []
+  - url: https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/
+    lastChecked: 2025-11-30 07:00:00+07:00
+    statusCode: 200
+    finalUrl: https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/
+    redirectChain: null
+    usedIn: []
+  - url: https://owasp.org/www-project-top-ten/
+    lastChecked: 2025-11-30 22:45:00+07:00
+    statusCode: 200
+    finalUrl: https://owasp.org/www-project-top-ten/
+    redirectChain: null
+    usedIn: []
+  - url: https://owasp.org/www-project-web-security-testing-guide/
+    lastChecked: 2025-11-30 07:00:00+07:00
+    statusCode: 200
+    finalUrl: https://owasp.org/www-project-web-security-testing-guide/
+    redirectChain: null
+    usedIn: []
+  - url: https://plaid.com/blog/
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://plaid.com/blog/
+    redirectChain: null
+    usedIn: []
+  - url: https://semver.org/
+    lastChecked: 2025-11-30 07:00:00+07:00
+    statusCode: 200
+    finalUrl: https://semver.org/
+    redirectChain: null
+    usedIn:
+      - repo-governance/development/workflow/commit-messages.md
+  - url: https://semver.org/spec/v2.0.0.html
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://semver.org/spec/v2.0.0.html
+    redirectChain: null
+    usedIn:
+      - repo-governance/conventions/writing/oss-documentation.md
+  - url: https://spec.commonmark.org/0.30/#list-items
+    lastChecked: 2025-11-30 07:00:00+07:00
+    statusCode: 200
+    finalUrl: https://spec.commonmark.org/0.30/#list-items
+    redirectChain: null
+    usedIn: []
+  - url: https://stripe.com/blog/engineering
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://stripe.com/blog/engineering
+    redirectChain: null
+    usedIn: []
+  - url: https://trunkbaseddevelopment.com/
+    lastChecked: 2025-11-30 07:00:00+07:00
+    statusCode: 200
+    finalUrl: https://trunkbaseddevelopment.com/
+    redirectChain: null
+    usedIn:
+      - repo-governance/development/workflow/trunk-based-development.md
+  - url: https://trunkbaseddevelopment.com/branch-for-release/
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://trunkbaseddevelopment.com/branch-for-release/
+    redirectChain: null
+    usedIn:
+      - repo-governance/development/workflow/trunk-based-development.md
+  - url: https://webaim.org/resources/contrastchecker/
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://webaim.org/resources/contrastchecker/
+    redirectChain: null
+    usedIn:
+      - repo-governance/conventions/formatting/color-accessibility.md
+      - repo-governance/conventions/formatting/diagrams.md
+
   - url: https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
@@ -368,12 +452,6 @@ links:
     redirectChain: null
     usedIn:
       - repo-governance/conventions/formatting/diagrams.md
-  - url: https://www.cisecurity.org/controls
-    lastChecked: 2025-11-30 22:45:00+07:00
-    statusCode: 200
-    finalUrl: https://www.cisecurity.org/controls
-    redirectChain: null
-    usedIn: []
   - url: https://www.color-blindness.com/coblis-color-blindness-simulator/
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
@@ -382,17 +460,17 @@ links:
     usedIn:
       - repo-governance/conventions/formatting/color-accessibility.md
       - repo-governance/conventions/formatting/diagrams.md
-  - url: https://www.contributor-covenant.org/
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://www.contributor-covenant.org/
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/writing/oss-documentation.md
   - url: https://www.contribution-guide.org/
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
     finalUrl: https://www.contribution-guide.org/
+    redirectChain: null
+    usedIn:
+      - repo-governance/conventions/writing/oss-documentation.md
+  - url: https://www.contributor-covenant.org/
+    lastChecked: 2025-12-05 10:30:00+07:00
+    statusCode: 200
+    finalUrl: https://www.contributor-covenant.org/
     redirectChain: null
     usedIn:
       - repo-governance/conventions/writing/oss-documentation.md
@@ -414,12 +492,6 @@ links:
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
     finalUrl: https://www.instructionaldesign.org/theories/cognitive-load/
-    redirectChain: null
-    usedIn: []
-  - url: https://www.linkedin.com/in/briangoetz/
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://www.linkedin.com/in/briangoetz/
     redirectChain: null
     usedIn: []
   - url: https://www.linuxfoundation.org/research/the-2023-state-of-open-source-in-financial-services
@@ -474,18 +546,6 @@ links:
     finalUrl: https://www.retrievalpractice.org/make-it-stick
     redirectChain: null
     usedIn: []
-  - url: https://www.sans.org/training/
-    lastChecked: 2025-11-30 22:45:00+07:00
-    statusCode: 200
-    finalUrl: https://www.sans.org/training/
-    redirectChain: null
-    usedIn: []
-  - url: https://www.sans.org/white-papers/
-    lastChecked: 2025-11-30 22:45:00+07:00
-    statusCode: 200
-    finalUrl: https://www.sans.org/white-papers/
-    redirectChain: null
-    usedIn: []
   - url: https://www.simplypsychology.org/Zone-of-Proximal-Development.html
     lastChecked: 2025-12-05 10:30:00+07:00
     statusCode: 200
@@ -506,187 +566,6 @@ links:
     redirectChain: null
     usedIn: []
     note: Wiley site returns 403 Forbidden to automated tools. Book is legitimate - consider replacing with book page or using ISBN reference.
-  - url: https://www.zaproxy.org/docs/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://www.zaproxy.org/docs/
-    redirectChain: null
-    usedIn: []
-  - url: https://arxiv.org/search/?query=financial+pattern+recognition
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://arxiv.org/search/?query=financial+pattern+recognition
-    redirectChain: null
-    usedIn: []
-  - url: https://docs.aws.amazon.com/prescriptive-guidance/latest/architectural-decision-records/best-practices.html
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://docs.aws.amazon.com/prescriptive-guidance/latest/architectural-decision-records/best-practices.html
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/writing/oss-documentation.md
-  - url: https://docs.github.com/en/code-security/security-advisories
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://docs.github.com/en/code-security/security-advisories
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/writing/oss-documentation.md
-  - url: https://github.blog/2022-05-19-math-support-in-markdown/
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://github.blog/2022-05-19-math-support-in-markdown/
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/formatting/mathematical-notation.md
-  - url: https://nx.dev/blog/new-nx-experience-for-typescript-monorepos
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://nx.dev/blog/new-nx-experience-for-typescript-monorepos
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/writing/oss-documentation.md
-  - url: https://nx.dev/blog/managing-ts-packages-in-monorepos
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://nx.dev/blog/managing-ts-packages-in-monorepos
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/writing/oss-documentation.md
-  - url: https://openjdk.org/
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://openjdk.org/
-    redirectChain: null
-    usedIn: []
-  - url: https://openjdk.org/jeps/
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://openjdk.org/jeps/
-    redirectChain: null
-    usedIn: []
-  - url: https://plaid.com/blog/
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://plaid.com/blog/
-    redirectChain: null
-    usedIn: []
-  - url: https://owasp.org/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://owasp.org/
-    redirectChain: null
-    usedIn: []
-  - url: https://owasp.org/Top10/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://owasp.org/Top10/
-    redirectChain: null
-    usedIn: []
-  - url: https://owasp.org/chapters/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://owasp.org/chapters/
-    redirectChain: null
-    usedIn: []
-  - url: https://owasp.org/projects/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://owasp.org/projects/
-    redirectChain: null
-    usedIn: []
-  - url: https://owasp.org/www-community/Source_Code_Analysis_Tools
-    lastChecked: 2025-11-30 22:45:00+07:00
-    statusCode: 200
-    finalUrl: https://owasp.org/www-community/Source_Code_Analysis_Tools
-    redirectChain: null
-    usedIn: []
-  - url: https://owasp.org/www-community/Vulnerability_Scanning_Tools
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://owasp.org/www-community/Vulnerability_Scanning_Tools
-    redirectChain: null
-    usedIn: []
-  - url: https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/
-    redirectChain: null
-    usedIn: []
-  - url: https://owasp.org/www-project-top-ten/
-    lastChecked: 2025-11-30 22:45:00+07:00
-    statusCode: 200
-    finalUrl: https://owasp.org/www-project-top-ten/
-    redirectChain: null
-    usedIn: []
-  - url: https://owasp.org/www-project-web-security-testing-guide/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://owasp.org/www-project-web-security-testing-guide/
-    redirectChain: null
-    usedIn: []
-  - url: https://oauth.net/2/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://oauth.net/2/
-    redirectChain: null
-    usedIn: []
-  - url: https://obsidian.md/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://obsidian.md/
-    redirectChain: null
-    usedIn:
-      - docs/README.md
-      - repo-governance/conventions/formatting/linking.md
-  - url: https://semver.org/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://semver.org/
-    redirectChain: null
-    usedIn:
-      - repo-governance/development/workflow/commit-messages.md
-  - url: https://semver.org/spec/v2.0.0.html
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://semver.org/spec/v2.0.0.html
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/writing/oss-documentation.md
-  - url: https://spec.commonmark.org/0.30/#list-items
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://spec.commonmark.org/0.30/#list-items
-    redirectChain: null
-    usedIn: []
-  - url: https://stripe.com/blog/engineering
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://stripe.com/blog/engineering
-    redirectChain: null
-    usedIn: []
-  - url: https://trunkbaseddevelopment.com/
-    lastChecked: 2025-11-30 07:00:00+07:00
-    statusCode: 200
-    finalUrl: https://trunkbaseddevelopment.com/
-    redirectChain: null
-    usedIn:
-      - repo-governance/development/workflow/trunk-based-development.md
-  - url: https://trunkbaseddevelopment.com/branch-for-release/
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://trunkbaseddevelopment.com/branch-for-release/
-    redirectChain: null
-    usedIn:
-      - repo-governance/development/workflow/trunk-based-development.md
-  - url: https://webaim.org/resources/contrastchecker/
-    lastChecked: 2025-12-05 10:30:00+07:00
-    statusCode: 200
-    finalUrl: https://webaim.org/resources/contrastchecker/
-    redirectChain: null
-    usedIn:
-      - repo-governance/conventions/formatting/color-accessibility.md
-      - repo-governance/conventions/formatting/diagrams.md
 
 # Factual Validations
 # Tracks verification of factual claims in documentation

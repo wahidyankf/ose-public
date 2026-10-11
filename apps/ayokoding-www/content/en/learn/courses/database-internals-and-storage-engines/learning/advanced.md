@@ -921,7 +921,7 @@ def test_the_last_write_to_a_page_wins() -> None:
 
 **Key takeaway**: "Repeating history" means redo is a pure function of the log alone -- it never consults the transaction table at all, so a committed transaction's changes and a loser's changes are reapplied by exactly the same code path, with zero special-casing.
 
-**Why it matters**: This is the accuracy note this course's spec is explicit about: teaching "redo skips uncommitted changes" is a common but wrong simplification -- ARIES redoes EVERYTHING first, then undo (ex-66) removes the losers' changes afterward as a separate phase. Rebuilding exact pre-crash state first, before deciding what to roll back, is what makes the recovery algorithm's correctness proof tractable in the original 1992 paper.
+**Why it matters**: Teaching "redo skips uncommitted changes" is a common but wrong simplification -- ARIES redoes EVERYTHING first, then undo (ex-66) removes the losers' changes afterward as a separate phase. Rebuilding exact pre-crash state first, before deciding what to roll back, is what makes the recovery algorithm's correctness proof tractable in the original 1992 paper.
 
 ---
 
@@ -1896,7 +1896,7 @@ def test_a_row_not_matching_the_predicate_never_becomes_a_phantom() -> None:
 
 **Key takeaway**: Repeatable-read, as modeled by locking a fixed SET of already-read ROWS, protects those specific rows from changing value but does nothing to stop a NEW row from being inserted into the range -- the anomaly is about set membership, not about any one row's value.
 
-**Why it matters**: This example deliberately uses a simplified LOCK-based repeatable-read model (locking the rows a range query already matched) to make the row-vs-range distinction concrete -- it is the textbook ANSI SQL isolation-level table's classic illustration of why repeatable-read does not fully prevent phantoms. This course's own accuracy notes flag that real PostgreSQL `REPEATABLE READ` uses snapshot isolation instead of row locking, which happens to close the phantom-read gap too, but permits a DIFFERENT anomaly (write skew, ex-75) that pure row-locking would not.
+**Why it matters**: This example deliberately uses a simplified LOCK-based repeatable-read model (locking the rows a range query already matched) to make the row-vs-range distinction concrete -- it is the textbook ANSI SQL isolation-level table's classic illustration of why repeatable-read does not fully prevent phantoms. Real PostgreSQL `REPEATABLE READ` uses snapshot isolation instead of row locking (see this topic's References), which happens to close the phantom-read gap too, but permits a DIFFERENT anomaly (write skew, ex-75) that pure row-locking would not.
 
 ---
 
@@ -1988,7 +1988,7 @@ def test_the_shared_constraint_ends_up_violated() -> None:
 
 **Key takeaway**: Snapshot isolation only detects a conflict when two transactions write the SAME row -- it has no mechanism to notice that the CONSTRAINT ('at least one of us must stay on call') the two transactions were jointly relying on has been silently violated by their combined effect.
 
-**Why it matters**: This course's accuracy notes are explicit here: PostgreSQL `REPEATABLE READ` genuinely IS snapshot isolation (Berenson et al. 1995) and genuinely DOES permit write skew -- this is not a simplification but the documented, correct behavior of the isolation level most applications actually run under. The on-call-doctor and double-booking scenarios are the classic real-world write-skew examples cited in the concurrency-control literature.
+**Why it matters**: PostgreSQL `REPEATABLE READ` genuinely IS snapshot isolation (Berenson et al. 1995) and genuinely DOES permit write skew -- this is not a simplification but the documented, correct behavior of the isolation level most applications actually run under. The on-call-doctor and double-booking scenarios are the classic real-world write-skew examples cited in the concurrency-control literature.
 
 ---
 
@@ -2522,7 +2522,7 @@ def test_an_uncommitted_write_is_never_readable_even_before_a_crash() -> None:
 
 **Key takeaway**: None of the four pieces (pages, index, WAL, MVCC) is sufficient on its own -- the index answers WHERE a key's page lives (co-07), the page holds its actual bytes (co-01), the WAL makes a write survive a crash (co-16), and MVCC lets a concurrent reader see a consistent view throughout (co-21) -- together they are what "a storage engine" actually means.
 
-**Why it matters**: This mini engine is deliberately small enough to read start to finish, but it genuinely exercises the same four load-bearing pieces every real storage engine in this course's accuracy notes relies on: PostgreSQL, MySQL InnoDB, SQLite, and RocksDB each combine some version of exactly these four mechanisms, differing mainly in the specific index structure (B-tree vs LSM) and MVCC bookkeeping strategy chosen.
+**Why it matters**: This mini engine is deliberately small enough to read start to finish, but it genuinely exercises the same four load-bearing pieces real storage engines rely on: PostgreSQL, MySQL InnoDB, SQLite, and RocksDB each combine some version of exactly these four mechanisms, differing mainly in the specific index structure (B-tree vs LSM) and MVCC bookkeeping strategy chosen.
 
 ---
 

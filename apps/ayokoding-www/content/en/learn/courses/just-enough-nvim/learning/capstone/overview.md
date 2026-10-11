@@ -267,8 +267,8 @@ An empty result confirms the working copy matches `after/` exactly.
 
 This capstone is runnable end-to-end: a reader who copies `code/before/` to a scratch directory
 and follows `transcript.md` exactly reaches the identical `code/after/` tree, verified against a
-real Neovim session (not merely described). Every command traces to Neovim's own `:help`
-documentation per this primer's Accuracy notes, web-verified 2026-07-12.
+real Neovim session. Every command traces to Neovim's own `:help`
+documentation.
 
 ---
 

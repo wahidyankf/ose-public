@@ -299,8 +299,7 @@ reproduce byte-identical output, and a genuine `unittest` run from a real `:term
 honest exception `transcript.md`'s acceptance-criteria section documents for topic 3's own capstone
 applies here too: this sandbox's own `:checkhealth` reports one unrelated tmux `$TERM` `ERROR` -- a
 setting of the machine running Neovim, not a dependency this config installs or controls. Every
-mechanism this capstone combines traces to a primary source already cited in topics 1-3's Accuracy
-notes and DD-35 citations; no new fact was needed to write this page, beyond the one new,
+mechanism this capstone combines is stated exactly as its primary source documents it; no new fact was needed to write this page, beyond the one new,
 independently-verified finding surfaced while re-running `:checkhealth` here: `nvim-lspconfig` v2.10.0
 now marks its own `:checkhealth lspconfig` integration deprecated in favor of `:checkhealth vim.lsp`
 (the plugin itself still functions; only its healthcheck hook is being retired).

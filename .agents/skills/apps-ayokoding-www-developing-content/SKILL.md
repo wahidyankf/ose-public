@@ -46,6 +46,10 @@ This Skill provides comprehensive knowledge for creating and managing content on
 
 See [Canonical Content Tree Shape](./reference/canonical-content-tree-shape.md) for the mandatory four-layer hierarchy, track-naming rules, and current top-level domain census.
 
+## Course Titles and References
+
+See [Course Titles and References](./reference/course-titles-and-references.md) for the no-numbers course-title rule (R1), the no-internal-verification-vocabulary rule (R2), and the References-presentation rule for source-citing pages (R3).
+
 ## By-Example Tutorial Standards
 
 ### Annotation Density Requirement

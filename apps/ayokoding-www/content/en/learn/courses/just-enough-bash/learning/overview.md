@@ -111,9 +111,8 @@ does teach, full `awk`/`sed` language mastery (only the slice needed for the tex
 and shell profile/rc-file configuration. If a Bash feature is not exercised by a later topic in this
 journey, it is out of scope here on purpose, not by oversight.
 
-Every claim about Bash, `shellcheck`, and `shfmt` versions in this primer traces to the syllabus's
-own "Accuracy notes" and "DD-35 primary-source citations" sections, web-verified 2026-07-12 and
-re-confirmed 2026-07-14.
+Every claim about Bash, `shellcheck`, and `shfmt` versions in this primer traces to a primary
+source, such as the tool's own documentation.
 
 ---
 

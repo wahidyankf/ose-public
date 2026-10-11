@@ -544,7 +544,7 @@ new text<Esc>                      " => types the replacement content
 <p>new text</p>
 ```
 
-**Key takeaway**: `cit` changes only a tag pair's inner content -- and per the Accuracy notes, tag text objects are built in, needing no plugin.
+**Key takeaway**: `cit` changes only a tag pair's inner content -- and per Neovim's own help documentation, tag text objects are built in, needing no plugin.
 
 **Why it matters**: Text objects select semantically meaningful regions -- a word, a bracketed group, a quoted string, a tag, a paragraph -- independent of exact cursor position. Tag text objects extend the same inner/around grammar to markup, matching parentheses and quotes as the third bracket-like structure this primer covers. Because `it`/`at` ship in vanilla Neovim (confirmed against `motion.txt`), editing HTML, XML, or JSX-flavored text gets the identical text-object ergonomics as editing code, without needing any plugin this primer's scope explicitly excludes.
 
@@ -860,7 +860,7 @@ filler
 
 **Key takeaway**: `<C-o>` steps backward and `<C-i>` steps forward through the automatically recorded jumplist, independent of any mark you set yourself.
 
-**Why it matters**: Marks bookmark a buffer position for later recall, while the separate jumplist automatically records jump motions so Ctrl-o/Ctrl-i navigate history like browser back/forward. The jumplist and marks solve the same navigation problem from opposite ends: marks require deliberate bookmarking, while the jumplist requires no setup at all, silently tracking every 'big' motion (per the Accuracy notes' documented jump-motions list, which notably excludes `gg`). Together they close out co-08, giving you both a manual and an automatic way back to where you came from.
+**Why it matters**: Marks bookmark a buffer position for later recall, while the separate jumplist automatically records jump motions so Ctrl-o/Ctrl-i navigate history like browser back/forward. The jumplist and marks solve the same navigation problem from opposite ends: marks require deliberate bookmarking, while the jumplist requires no setup at all, silently tracking every 'big' motion (a jump-motions list documented in Neovim's own help, which notably excludes `gg`). Together they close out co-08, giving you both a manual and an automatic way back to where you came from.
 
 ---
 
@@ -1117,7 +1117,7 @@ tab one content
 
 **Key takeaway**: `:tabnew` opens a new tab page (a numbered collection of windows); `gt`/`gT` cycle forward/backward through open tabs, wrapping at the ends.
 
-**Why it matters**: A buffer is in-memory file text, a window is a viewport onto exactly one buffer, and a tab page is a numbered collection of windows -- three nested concepts with independent navigation. Per the Accuracy notes, tab pages are numbered left-to-right rather than named -- there is no built-in `:tabname` mechanism, unlike buffers which carry filenames. A tab page is best thought of as an entire independent window layout (its own splits, its own buffers visible) rather than a single-buffer container, completing the three-level buffer/window/tab nesting this co-15 group has built up across six examples.
+**Why it matters**: A buffer is in-memory file text, a window is a viewport onto exactly one buffer, and a tab page is a numbered collection of windows -- three nested concepts with independent navigation. Per Neovim's own help documentation, tab pages are numbered left-to-right rather than named -- there is no built-in `:tabname` mechanism, unlike buffers which carry filenames. A tab page is best thought of as an entire independent window layout (its own splits, its own buffers visible) rather than a single-buffer container, completing the three-level buffer/window/tab nesting this co-15 group has built up across six examples.
 
 ---
 

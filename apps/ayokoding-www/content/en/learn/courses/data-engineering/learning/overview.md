@@ -52,7 +52,7 @@ pytest 9.1.1
 ```
 
 _Captured 2026-07-27 -- these are point-in-time patch/pin versions, not a durable claim; see this
-topic's [Accuracy notes](../overview.md#accuracy-notes) if you are reading this after a later
+topic's [References](../overview.md#references) if you are reading this after a later
 release has shipped._
 
 Every worked example is a complete, self-contained, runnable file colocated under

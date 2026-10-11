@@ -122,11 +122,10 @@ solution framing and JTBD (co-02, co-03), MVP scoping with explicit non-goals (c
 prioritization with a defended ordering (co-07), north-star and AARRR-mapped metrics (co-17,
 co-18), and a properly guarded A/B experiment (co-15) -- into one document, exactly as Worked
 Scenario 30 already demonstrated at a smaller scale for the shift-swap-approval feature. Every
-technique used here traces to a primary source already cited in this topic's Accuracy notes and
-2026-07-18 re-verification pass (Christensen's Jobs-to-be-Done framing; Sean McBride's RICE
+technique used here traces to a primary source
+(Christensen's Jobs-to-be-Done framing; Sean McBride's RICE
 formula, Intercom, 2018; Sean Ellis's north-star concept as systematized by Amplitude; Dave
-McClure's AARRR funnel, 2007; Kohavi, Tang & Xu's guardrail-metric standard, 2020); no new fact was
-needed to write this page or `brief.md`.
+McClure's AARRR funnel, 2007; Kohavi, Tang & Xu's guardrail-metric standard, 2020).
 
 ---
 

@@ -252,7 +252,7 @@ CUBIC, and guessing which one is active leads straight to a wrong diagnosis.
 
 _ex-21 &middot; exercises co-09_
 
-A short comparison contrasting the two algorithms this topic's accuracy notes verify: CUBIC reacts
+A short comparison contrasting the two algorithms: CUBIC reacts
 to loss; BBR reacts to a continuously-updated model.
 
 | Aspect                      | CUBIC (RFC 9438)                                                                                                                                   | BBR (`draft-ietf-ccwg-bbr-05`, BBRv3)                                                                                                              |
@@ -1203,7 +1203,7 @@ curl: try 'curl --help' or 'curl --manual' for more information
 **Key takeaway**: this sandbox's curl 8.7.1 (macOS system build, `libcurl/8.7.1 (SecureTransport)`,
 `Features:` line lacking `HTTP3`) genuinely lacks HTTP/3 support at the option-parsing level -- this
 is a real, honestly-reported outcome, not a network failure and not a fabricated transcript. Current
-stable curl (8.21.0, per this topic's accuracy notes) supports `--http3` only when built against
+stable curl (8.21.0) supports `--http3` only when built against
 ngtcp2+nghttp3 paired with a QUIC-capable TLS library (OpenSSL 3.5+, BoringSSL, LibreSSL, quictls,
 GnuTLS, or wolfSSL -- plain/stock OpenSSL without QUIC support does not qualify), or against the
 still-experimental `quiche` backend. On a curl build that DOES have HTTP/3 support, a successful

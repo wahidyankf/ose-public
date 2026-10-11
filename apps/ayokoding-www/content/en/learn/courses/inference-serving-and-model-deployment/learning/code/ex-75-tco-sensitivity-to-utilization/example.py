@@ -7,7 +7,7 @@ def tco_per_million_tokens(gpu_hourly_rate: float, tokens_per_second_at_full_loa
     return (gpu_hourly_rate / effective_tokens_per_hour) * 1_000_000  # => the SAME formula as Example 65, utilization-scaled
 
 
-gpu_hourly_rate = 2.00  # => `[Unverified]` illustrative placeholder -- see this course's Accuracy notes
+gpu_hourly_rate = 2.00  # => illustrative placeholder, NOT a current market price
 tokens_per_second_at_full_load = 800.0  # => the SAME peak throughput used in Example 65
 hosted_api_cost = 2.00  # => co-27's hosted-API comparison point from Example 65, per million tokens
 

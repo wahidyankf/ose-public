@@ -5,10 +5,10 @@
 // component through its `children` prop (passed from a server parent), because `children` is not
 // an import across the boundary.
 //
-// > **Accuracy note**: "'use client' ... must be at the very beginning of a file, above any
-// > imports; it defines the boundary between server and client code on the module dependency tree,
-// > not the render tree." Source: react.dev, 'use client'
-// > (https://react.dev/reference/rsc/use-client).
+// Note: "'use client' ... must be at the very beginning of a file, above any
+// imports; it defines the boundary between server and client code on the module dependency tree,
+// not the render tree." Source: react.dev, 'use client'
+// (https://react.dev/reference/rsc/use-client).
 
 // A module is tagged by which side of the boundary it lives on.
 type Side = "server" | "client"; // => the two sides of the module boundary

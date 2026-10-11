@@ -240,8 +240,8 @@ finished request is still holding its slot.
 
 **Why it matters**: This admit/retire-at-token-granularity design is the single largest throughput win
 in modern serving, and is the mechanism every production framework in the vLLM/TGI class implements
-under whatever marketing name it uses for it -- see the accuracy note in this topic's overview for why
-those specific names and version numbers are kept out of this spine.
+under whatever marketing name it uses for it -- see this topic's References for why those specific
+names and version numbers are kept out of this spine.
 
 ---
 

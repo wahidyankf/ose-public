@@ -14,7 +14,7 @@ Every worked example's real, runnable **Python 3.13** file lives under `learning
 for real with genuine captured output. Examples 23 through 33 are pure Python -- no `duckdb` or
 `pandas` import -- because Kafka's and stream-processing engines' semantics are simulated in-memory
 rather than run against a live broker. (See this topic's
-[Accuracy notes](../overview.md#accuracy-notes) for the exact pinned dependency versions and the
+[References](../overview.md#references) for the exact pinned dependency versions and the
 Flink/Kafka-Streams "sliding" naming collision this band's window examples flag.)
 
 ---

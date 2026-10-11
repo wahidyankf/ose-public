@@ -29,7 +29,8 @@ proved by pure Unit adapters over synthetic manifest data.
 - [landing-hero.feature](./landing-hero.feature) — Path promise above the fold.
 - [manifest-integrity.feature](./manifest-integrity.feature) — Resolvable, unique manifest references.
 - [omitted-course.feature](./omitted-course.feature) — Canonical rendering for an omitted course.
-- [path-order-nav.feature](./path-order-nav.feature) — Manifest-ordered previous/next navigation.
+- [path-order-nav.feature](./path-order-nav.feature) — Manifest-ordered previous/next navigation and the rail's scroll-to-current-course behaviour.
+- [path-position-numbers.feature](./path-position-numbers.feature) — 1-based path position numbers on the syllabus, rail, and arc card preview, and catalog-number-free course titles.
 - [paths-hub-category-grouping.feature](./paths-hub-category-grouping.feature) — Category-grouped paths.
 - [prerequisite-consistent-ordering.feature](./prerequisite-consistent-ordering.feature) — Stable prerequisite ordering.
 - [prerequisite-display.feature](./prerequisite-display.feature) — Declared prerequisites on course pages.

@@ -4,8 +4,8 @@
 // fresh object/array each render is treated as DIFFERENT even if equal-by-value). No array => runs
 // every commit; `[]` => mount only; `[a, b]` => runs when a or b changes.
 //
-// > **Accuracy note**: dependencies are compared with `Object.is`; no array => every commit,
-// > `[]` => mount only. Source: react.dev, useEffect (https://react.dev/reference/react/useEffect).
+// Note: dependencies are compared with `Object.is`; no array => every commit,
+// `[]` => mount only. Source: react.dev, useEffect (https://react.dev/reference/react/useEffect).
 
 // depsChanged returns true if any dependency differs from the previous render, by Object.is.
 function depsChanged(prev: unknown[], next: unknown[]): boolean {

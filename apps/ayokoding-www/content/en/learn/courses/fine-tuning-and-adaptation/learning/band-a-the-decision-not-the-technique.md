@@ -17,7 +17,7 @@ maintenance obligation a shipped adapter creates (co-30), and the licence and da
 runs before training, never after (co-31). Vantage, a fictional B2B analytics SaaS, is this course's
 recurring scenario. Every code-medium example's real, runnable **Python 3.13** file lives under
 `learning/code/ex-NN-*/`, run for real with genuine captured output; ex-16 is a diagram-medium
-example. (See this topic's [Accuracy notes](../overview.md#accuracy-notes) for the exact facts and
+example. (See this topic's [References](../overview.md#references) for the exact facts and
 citations captured.)
 
 ---
@@ -946,8 +946,8 @@ against an acceptance threshold.
 from __future__ import annotations  # => hygiene: postpones annotation evaluation, interpreter-version-agnostic
 
 # => co-27: swapping a large general model for a small ADAPTED model, for latency and cost -- not for capability
-LARGE_MODEL_COST_PER_1K_TOKENS_USD = 0.006  # => co-07: `[Unverified]` illustrative placeholder rate, not a live-sourced price
-SMALL_ADAPTED_MODEL_COST_PER_1K_TOKENS_USD = 0.0004  # => co-07: `[Unverified]` illustrative placeholder rate, ~15x cheaper per token
+LARGE_MODEL_COST_PER_1K_TOKENS_USD = 0.006  # => co-07: illustrative placeholder rate, not a confirmed live-sourced price
+SMALL_ADAPTED_MODEL_COST_PER_1K_TOKENS_USD = 0.0004  # => co-07: illustrative placeholder rate (unconfirmed), ~15x cheaper per token
 LARGE_MODEL_P50_LATENCY_MS = 1400  # => co-07: illustrative, not a live-sourced figure
 SMALL_ADAPTED_MODEL_P50_LATENCY_MS = 180  # => co-07: illustrative -- a small model served locally responds far faster
 
@@ -1179,21 +1179,21 @@ from dataclasses import dataclass  # => co-31: two independent rights checks -- 
 
 @dataclass(frozen=True)  # => co-31: frozen -- a rights-check record should not mutate after the fact
 class RightsCheck:  # => co-31: co-31's two independent checks -- base-model licence AND training-data rights
-    base_model_licence: str  # => co-31: the base checkpoint's actual licence, verified against its model card
+    base_model_licence: str  # => co-31: the base checkpoint's actual licence, taken from its model card
     licence_permits_commercial_finetune: bool  # => co-31: does that licence allow a fine-tuned DERIVATIVE in a commercial product?
     training_data_source: str  # => co-31: where the training examples actually came from
     data_rights_permit_training: bool  # => co-31: does Vantage actually hold the right to train on this data?
 
 
 CANDIDATE_CHECK = RightsCheck(  # => co-31: the vocabulary-adapter project's own rights check, run BEFORE any training
-    base_model_licence="Apache 2.0",  # => co-31: `Qwen/Qwen2.5-0.5B-Instruct`'s verified licence -- see this course's Accuracy notes
+    base_model_licence="Apache 2.0",  # => co-31: `Qwen/Qwen2.5-0.5B-Instruct`'s Apache 2.0 licence per its model card -- see this course's References
     licence_permits_commercial_finetune=True,  # => co-31: Apache 2.0 permits commercial derivative use, including fine-tuning
     training_data_source="Vantage's own historical support tickets (internal, first-party)",  # => co-31: first-party data
     data_rights_permit_training=True,  # => co-31: Vantage's own Terms of Service reserve the right to use ticket data for product improvement
 )  # => co-31: closes CANDIDATE_CHECK
 
 REJECTED_ALTERNATIVE_CHECK = RightsCheck(  # => co-31: a rejected candidate base model, kept here as the contrasting failure case
-    base_model_licence="Custom, non-commercial research licence",  # => co-31: `[Unverified]` illustrative -- some base models ship under exactly this kind of licence
+    base_model_licence="Custom, non-commercial research licence",  # => co-31: illustrative -- some base models ship under exactly this kind of licence
     licence_permits_commercial_finetune=False,  # => co-31: a non-commercial licence blocks Vantage's for-profit product use outright
     training_data_source="Vantage's own historical support tickets (internal, first-party)",  # => co-31: same data, different base model
     data_rights_permit_training=True,  # => co-31: the data side is fine here -- the licence side is what fails
@@ -1238,9 +1238,9 @@ rule that a licence check runs and blocks before training, never after.
 while an otherwise-identical project under a non-commercial licence is blocked before a single
 training step runs.
 
-**Why It Matters**: this is the accuracy-note-anchored, verified licensing posture this whole course
+**Why It Matters**: this is the licensing posture this whole course
 insists on -- see this topic's
-[Accuracy notes](../overview.md#accuracy-notes) for the exact licensing facts. Example 74 later
+[References](../overview.md#references) for the exact licensing facts. Example 74 later
 extends this same check to a retirement candidate, proving the licence gate applies at every point
 an adapter or its replacement changes hands, not just at initial training.
 

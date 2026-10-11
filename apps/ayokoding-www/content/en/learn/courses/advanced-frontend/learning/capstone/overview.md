@@ -670,13 +670,13 @@ pass.
 This capstone is runnable end to end: a reader who copies the five files above (`types.ts`,
 `server.ts`, `store.ts`, `dashboard.ts`, `dashboard.test.ts`) plus the `tsconfig.json` into a
 `learning/capstone/code/`-shaped tree and runs `npx vitest run dashboard.test.ts --environment=jsdom`
-there reaches the identical `9 passed` result shown above, verified against a real Vitest 4.1.0 +
-`@testing-library/dom` run (not merely described) in this sandbox on 2026-07-29. Every mechanism
+there reaches the identical `9 passed` result shown above, confirmed against a real Vitest 4.1.0 +
+`@testing-library/dom` run. Every mechanism
 combined here -- streaming SSR (co-04), measured Core Web Vitals (co-08), cached fetching and
 optimistic rollback (co-15), memoized derived state (co-19), an ARIA combobox with keyboard +
 live-region support (co-23, co-24), controlled inputs (co-25), cursor pagination (co-30), and
 behaviour tests (co-36) -- traces to the same react.dev / web.dev / W3C / MDN / TypeScript Handbook
-sources already cited in this course's Accuracy notes; no new fact was needed to write this page.
+sources already cited in this course's References; no new fact was needed to write this page.
 
 ---
 

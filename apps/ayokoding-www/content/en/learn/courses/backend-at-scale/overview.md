@@ -46,12 +46,12 @@ fail and recover independently.
 > SURVIVE real load, retries, partial failure, and decoupled communication -- the deep pass over
 > reliability (idempotency, caching, rate limiting, health, resilience), AuthN/Z (OAuth2/OIDC, JWT, RBAC,
 > PKCE), persistence patterns (repository, unit-of-work, transactional outbox), and async/messaging
-> (queues, at-least-once, idempotent consumers). `system-design` -- `[Unverified]` not yet present in the
-> AyoKoding course library on disk, so no link is given here -- would own SYSTEM-LEVEL scaling
+> (queues, at-least-once, idempotent consumers). [System Design](/en/learn/courses/system-design)
+> would own SYSTEM-LEVEL scaling
 > (sharding, replication topology, capacity planning, multi-region); this course stops at the patterns
-> that make ONE backend service scale-ready, the building blocks a `system-design` course would compose
-> into a topology. `event-driven-architecture` -- `[Unverified]` not yet present -- would own the deeper
-> async/streaming story; this course covers the queue/outbox foundations it builds on.
+> that make ONE backend service scale-ready, the building blocks a System Design course would compose
+> into a topology. [Event-Driven Architecture](/en/learn/courses/event-driven-architecture) would own
+> the deeper async/streaming story; this course covers the queue/outbox foundations it builds on.
 
 ## How this topic is organized
 
@@ -78,34 +78,30 @@ brokers are simulated in-process in pure standard library rather than depending 
 `graphql-core`, `websockets`, `opentelemetry`, or `redis` installation, so every printed "Output" block on
 this course's pages is a real captured run, never a fabricated transcript.
 
-## Accuracy notes
+## References
 
-> Verified in the pre-authoring `web-researcher` sweep (DD-28/DD-35). Dated per this topic's own
-> accuracy-note discipline: every volatile, version-pinned, or calendar-dependent fact below is flagged
-> or dated here rather than stated unqualified in the stable spine of the examples.
-
-- 2026-07-12 -- verified (CORRECTION/UPDATE): the authoritative OAuth security source is **RFC 9700**
+- The authoritative OAuth security source is **RFC 9700**
   "Best Current Practice for OAuth 2.0 Security" (IETF, Jan 2025) -- deprecates the Implicit Grant and
   ROPC Grant, mandates PKCE for public clients. **OAuth 2.1 is still an IETF draft**
   (draft-ietf-oauth-v2-1-15, March 2026) -- NOT a finalized RFC as of July 2026. This course cites
   OAuth 2.0 + RFC 9700 as the settled standard and describes OAuth 2.1 as "in-progress consolidation,"
   not a finalized spec.
-- 2026-07-12 -- verified: HTTP method safety/idempotency and status codes follow **RFC 9110** (HTTP
+- HTTP method safety/idempotency and status codes follow **RFC 9110** (HTTP
   Semantics, STD 97, 2022). 422 is "Unprocessable Content" (RFC 9110 Sec 15.5.21, renamed from RFC
   4918's "Unprocessable Entity"); 429 is RFC 6585 Sec 4.
-- 2026-07-12 -- verified: the **Idempotency-Key** IETF draft (draft-ietf-httpapi-idempotency-key-header-07)
+- The **Idempotency-Key** IETF draft (draft-ietf-httpapi-idempotency-key-header-07)
   is EXPIRED/archived (expired 2026-04-18), not an RFC. This course's examples (co-06) follow Stripe's
   own prior art instead and label the IETF draft "lapsed."
-- 2026-07-22 -- verified: rate-limit algorithms -- token bucket (AWS API Gateway, allows bursts) and
-  sliding window (Cloudflare production) are vendor-verified; **leaky-bucket & fixed-window exact
-  attribution is `[Unverified]`** (no citation-grade primary source found this pass). Caching
-  cache-aside/write-through from the AWS Redis caching strategies whitepaper; write-behind wording is
-  `[Unverified]`.
-- 2026-07-22 -- verified: resilience patterns -- circuit breaker (closed/open/half-open, popularized by
+- Rate-limit algorithms -- token bucket (AWS API Gateway, allows bursts) and
+  sliding window (Cloudflare production) are documented by those vendors; leaky-bucket and fixed-window
+  exact attribution was not independently confirmed -- treat the two algorithm names as common usage
+  rather than a documented canonical attribution. Caching cache-aside/write-through comes from the AWS
+  Redis caching strategies whitepaper; the write-behind wording was not independently confirmed.
+- Resilience patterns -- circuit breaker (closed/open/half-open, popularized by
   Nygard's _Release It!_; Fowler's CircuitBreaker bliki); **Full Jitter** `sleep = random(0, min(cap,
 base*2^attempt))` from AWS "Exponential Backoff and Jitter" (Marc Brooker, 2015). Bulkhead attribution
-  to Nygard _Release It!_ (2007) is web-cited. Connection-pooling concept is `[Unverified]` (no single
-  citation-grade primary source this pass).
+  to Nygard _Release It!_ (2007). Connection-pooling concept was not independently confirmed against a
+  single primary source.
 
 ---
 

@@ -16,8 +16,9 @@ always."
 
 ## Prerequisites
 
-- **Prior topics**: `creating-ai-powered-apps` (what the model can and cannot be asked for --
-  `[Unverified]` not yet present in the AyoKoding course library on disk, so no link is given here);
+- **Prior topics**:
+  [Creating AI-Powered Apps](../creating-ai-powered-apps/overview.md) (what the model can and
+  cannot be asked for);
   [Evaluating AI Output -- Essentials](../evaluating-ai-output-essentials/overview.md) (you cannot
   set a ship criterion without a measurement -- this course's Theme D leans directly on that
   course's pass-rate framing, then extends it with the confidence interval Theme D teaches
@@ -53,8 +54,8 @@ a feature that fails often but cheaply beats one that fails rarely but catastrop
 users read it as a promise, which is exactly the gap co-08 names.
 
 > **Scope guard -- product patterns vs. the human-in-the-loop guardrail.**
-> `agent-permissions-and-sandboxing` -- `[Unverified]` not yet present in the AyoKoding course
-> library on disk, so no link is given here -- owns human-in-the-loop as a **safety control**:
+> [Agent Permissions & Sandboxing](../agent-permissions-and-sandboxing/overview.md) owns
+> human-in-the-loop as a **safety control**:
 > deny/ask/allow enforced by the harness so an agent cannot take a dangerous action. This course
 > owns human-in-the-loop as a **product design**: what the reviewer sees, how much cognitive load
 > the review imposes, whether the interface earns calibrated trust, and what happens when the
@@ -164,30 +165,28 @@ users read it as a promise, which is exactly the gap co-08 names.
   workflow can absorb, and no undo makes the failures cheap, the correct product decision is not to
   ship (Scenario 11). Recognising that case is part of this course, not an admission that it failed.
 
-## Accuracy notes
+## References
 
 > Every volatile, version-pinned, or product-name-dependent fact below is dated or flagged here
 > rather than stated unqualified in the stable spine above.
 
-- 2026-07-26 -- **durable spine**: designing for partial correctness, calibrating user trust to
-  actual reliability, provenance as an interface element, degradation paths, undo sized to blast
-  radius, and release criteria expressed as distributions rather than booleans are design
-  principles independent of model, vendor, and framework. They predate LLMs in aviation automation,
-  spam filtering, and autocomplete -- see this course's Lineage note below.
-- 2026-07-26 -- `[Unverified]` **volatile, accuracy-note only**: every named product used as an
-  illustration in this course's worked scenarios is a composite, non-attributed stand-in (a
-  fictional "Nimbus"-style feature) -- exactly which real assistant surfaces confidence how, or
-  which tool shows a diff-before-apply, changes fast enough that this course deliberately never
-  names a real product in its stable spine.
-- 2026-07-26 -- `[Unverified]` **at authoring**: the automation-trust literature this course draws
-  on (automation bias, complacency, trust calibration, the vigilance decrement) is established
-  human-factors research; this course teaches the phenomena, which are robust, and cites no specific
-  study without independently verifying it against a primary source first.
-- 2026-07-26 -- **contested, taught as contested**: whether to display a numeric confidence score to
+- Designing for partial correctness, calibrating user trust to actual reliability, provenance as an
+  interface element, degradation paths, undo sized to blast radius, and release criteria expressed
+  as distributions rather than booleans are design principles independent of model, vendor, and
+  framework. They predate LLMs in aviation automation, spam filtering, and autocomplete -- see this
+  course's Lineage note below.
+- Every named product used as an illustration in this course's worked scenarios is a composite,
+  non-attributed stand-in (a fictional "Nimbus"-style feature) -- exactly which real assistant
+  surfaces confidence how, or which tool shows a diff-before-apply, changes fast enough that this
+  course deliberately never names a real product in its stable spine.
+- The automation-trust literature this course draws on (automation bias, complacency, trust
+  calibration, the vigilance decrement) is established human-factors research; this course teaches
+  the phenomena, which are robust, and cites no specific study without a primary source behind it.
+- **Contested, taught as contested**: whether to display a numeric confidence score to
   end users is genuinely disputed in the field (Scenario 15). Numeric scores are precise and
   routinely misread as probabilities of correctness; qualitative bands are read more accurately but
   discard information. This course presents the trade-off and does not resolve it.
-- 2026-07-26 -- no model IDs, prices, or SDK shapes appear in this course's spine by design; every
+- No model IDs, prices, or SDK shapes appear in this course's spine by design; every
   pattern taught here is model-, vendor-, and framework-independent.
 
 ### Lineage -- why these patterns beat the alternative

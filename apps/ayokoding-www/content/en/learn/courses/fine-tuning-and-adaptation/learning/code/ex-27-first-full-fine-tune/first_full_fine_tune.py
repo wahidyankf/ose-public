@@ -3,8 +3,8 @@
 
 from __future__ import annotations  # => hygiene: postpones annotation evaluation, interpreter-version-agnostic
 
-# => co-17: `Qwen/Qwen2.5-0.5B-Instruct` is this course's running base model -- Apache 2.0, see this course's Accuracy notes
-BASE_MODEL_PARAM_COUNT = 494_000_000  # => co-17: `[Unverified]` illustrative, order-of-magnitude parameter count for the 0.5B checkpoint
+# => co-17: `Qwen/Qwen2.5-0.5B-Instruct` is this course's running base model -- Apache 2.0, see this course's References
+BASE_MODEL_PARAM_COUNT = 494_000_000  # => co-17: illustrative, order-of-magnitude parameter count for the 0.5B checkpoint (not a vendor-spec figure)
 TRAINABLE_PARAM_COUNT_FULL_FINE_TUNE = BASE_MODEL_PARAM_COUNT  # => co-17: a FULL fine-tune updates every single parameter -- 100%
 
 BASELINE_TICKET_VOCAB_PASS_RATE = 0.42  # => co-06: the base model's pass rate on the internal-vocabulary eval, from ex-08's original gap

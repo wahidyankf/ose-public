@@ -435,8 +435,8 @@ why co-06 treats it as a standing artifact, not a one-off prompt.
 _ex-08 &middot; exercises co-06_
 
 **Context**: a repo-level and a user-level instruction file can disagree, and co-06's
-harness-documented loading behavior -- not intuition -- decides what actually happens. Named to
-one concrete harness, per this topic's own accuracy notes: **Claude Code**, whose documented
+harness-documented loading behavior -- not intuition -- decides what actually happens. One
+harness is named throughout: **Claude Code**, whose documented
 memory-file loading is a scope-ordered concatenation, not an override.
 
 ```markdown

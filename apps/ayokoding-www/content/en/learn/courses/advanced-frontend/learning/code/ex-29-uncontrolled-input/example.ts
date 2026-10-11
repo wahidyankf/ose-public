@@ -4,9 +4,9 @@
 // not pass it a `value` prop; instead a ref reads the current value out when needed. The DOM, not
 // state, is the source of truth.
 //
-// > **Accuracy note**: "An input like `<input />` is uncontrolled"; a controlled input gets a
-// > `value` (or `checked`) prop. Source: react.dev, `<input>`
-// > (https://react.dev/reference/react-dom/components/input).
+// Note: "An input like `<input />` is uncontrolled"; a controlled input gets a
+// `value` (or `checked`) prop. Source: react.dev, `<input>`
+// (https://react.dev/reference/react-dom/components/input).
 
 // A ref is a mutable handle to a DOM node; here it holds the element's current value.
 interface Ref<T> {

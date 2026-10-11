@@ -31,5 +31,5 @@ makes that difference legible at a glance instead of requiring the author to inf
 **Why It Matters**: unlabeled feedback forces every comment to be treated as equally urgent (or
 equally optional), which either stalls a PR on a nit or lets a real blocking issue slip through
 because it read, in isolation, like a suggestion; per Example 21 (Google's own eng-practices
-guidance is cited in this topic's accuracy notes), this labeling convention is one of the most
+guidance), this labeling convention is one of the most
 widely adopted lightweight fixes for exactly that ambiguity.

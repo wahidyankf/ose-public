@@ -4,9 +4,9 @@
 // response immediately while it revalidates in the background. The user gets an instant (stale)
 // response, and the next request gets the fresh one -- smooth perceived performance.
 //
-// > **Accuracy note**: "stale-while-revalidate ... indicates that the cache could reuse a stale
-// > response while it revalidates" (RFC 5861). Source: MDN, Cache-Control
-// > (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#stale-while-revalidate).
+// Note: "stale-while-revalidate ... indicates that the cache could reuse a stale
+// response while it revalidates" (RFC 5861). Source: MDN, Cache-Control
+// (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#stale-while-revalidate).
 
 // A cache entry with its freshness window.
 interface CacheEntry {

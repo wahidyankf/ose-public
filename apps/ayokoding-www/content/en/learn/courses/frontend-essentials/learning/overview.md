@@ -45,10 +45,9 @@ $ npx tsc --version
 Version 5.8.3
 ```
 
-**A note on versions**: this topic's examples were authored and verified in this sandbox on
-2026-07-15 against TypeScript 5.8.3, Vitest 4.1.0, and `@testing-library/dom` 10.4.1 -- the exact
-pins already used elsewhere in this monorepo (see the syllabus's Accuracy notes for the DD-35
-primary-source citations behind every CSS/DOM/events/forms/ARIA claim).
+**A note on versions**: the examples and transcripts in this topic were captured against
+TypeScript 5.8.3, Vitest 4.1.0, and `@testing-library/dom` 10.4.1 -- the exact
+pins already used elsewhere in this monorepo.
 
 Every Beginner-, Intermediate-, and Advanced-tier example is a complete, self-contained
 `learning/code/ex-NN-*/index.html` -- open it directly in any browser to see it work. Alongside each
@@ -81,8 +80,7 @@ tsc --noEmit --strict --skipLibCheck example.ts
   combined worked examples closing out the topic.
 
 Every example cites the concept (`co-NN`) it exercises, and every CSS/DOM/events/forms/ARIA claim
-traces to MDN, the WHATWG DOM/HTML Living Standards, and the W3C WAI-ARIA APG + WCAG, per the
-syllabus's DD-35 citations.
+traces to MDN, the WHATWG DOM/HTML Living Standards, and the W3C WAI-ARIA APG + WCAG.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161

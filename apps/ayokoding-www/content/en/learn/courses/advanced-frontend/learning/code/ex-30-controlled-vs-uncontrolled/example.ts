@@ -3,9 +3,9 @@
 // An input that sometimes has a `value` prop and sometimes does not tries to SWITCH modes during
 // its lifetime. React forbids this and warns: pick one mode and keep it for the input's whole life.
 //
-// > **Accuracy note**: "An input can't be both controlled and uncontrolled ... [and] cannot switch
-// > ... over its lifetime." Source: react.dev, `<input>`
-// > (https://react.dev/reference/react-dom/components/input).
+// Note: "An input can't be both controlled and uncontrolled ... [and] cannot switch
+// ... over its lifetime." Source: react.dev, `<input>`
+// (https://react.dev/reference/react-dom/components/input).
 
 // The warnings React's dev build would emit.
 const warnings: string[] = []; // => stands in for the dev-console warning sink

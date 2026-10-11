@@ -573,8 +573,7 @@ in.json out.json` there reaches the identical output block shown in Step 4, veri
 3.14.7. Every mechanism combined here --
 `argparse`-CLIs (co-20), collections-and-comprehensions (co-14), `try`/`except` with a custom
 exception (co-21), `json`-file-I/O (co-22/co-23), the `if __name__` guard (co-20), and `pytest`
-(co-17) -- traces to a primary source already cited in this primer's Accuracy notes and DD-35
-citations.
+(co-17) -- is stated exactly as its primary source documents it.
 
 ---
 

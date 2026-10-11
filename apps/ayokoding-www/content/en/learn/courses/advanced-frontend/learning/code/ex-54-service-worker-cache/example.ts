@@ -4,7 +4,7 @@
 // static assets; later fetches are served from the cache, so the page works even when the network
 // is down. This is the foundation of the PWA app shell (Example 70).
 //
-// > **Accuracy note**: this models the Cache API + fetch event a real service worker uses.
+// Note: this models the Cache API + fetch event a real service worker uses.
 
 // The service worker's cache: request URL -> cached response.
 const swCache: Map<string, string> = new Map(); // => stands in for the Cache Storage API

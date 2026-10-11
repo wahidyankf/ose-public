@@ -4,8 +4,8 @@
 from __future__ import annotations  # => hygiene: postpones annotation evaluation, interpreter-version-agnostic
 
 # => co-27: swapping a large general model for a small ADAPTED model, for latency and cost -- not for capability
-LARGE_MODEL_COST_PER_1K_TOKENS_USD = 0.006  # => co-07: `[Unverified]` illustrative placeholder rate, not a live-sourced price
-SMALL_ADAPTED_MODEL_COST_PER_1K_TOKENS_USD = 0.0004  # => co-07: `[Unverified]` illustrative placeholder rate, ~15x cheaper per token
+LARGE_MODEL_COST_PER_1K_TOKENS_USD = 0.006  # => co-07: illustrative placeholder rate, not a confirmed live-sourced price
+SMALL_ADAPTED_MODEL_COST_PER_1K_TOKENS_USD = 0.0004  # => co-07: illustrative placeholder rate (unconfirmed), ~15x cheaper per token
 LARGE_MODEL_P50_LATENCY_MS = 1400  # => co-07: illustrative, not a live-sourced figure
 SMALL_ADAPTED_MODEL_P50_LATENCY_MS = 180  # => co-07: illustrative -- a small model served locally responds far faster
 

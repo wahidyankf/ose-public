@@ -9,8 +9,8 @@ weight: 1
 
 - **Prior topics**: [SQL Essentials](../sql-essentials/learning/overview.md) -- the relational
   model and its join syntax, needed as the direct point of contrast every relational-vs-graph
-  example in this course draws against; `nosql-databases` -- `[Unverified]` not yet present in the
-  AyoKoding course library on disk, so no link is given here -- would otherwise supply the broader
+  example in this course draws against; [NoSQL Databases](/en/learn/courses/nosql-databases) --
+  supplies the broader
   non-relational framing this course's property-graph model sits beside; and
   [Just Enough Python](../just-enough-python/learning/overview.md) -- every driver-based worked
   example in this course's Intermediate and Advanced tiers is a Python script calling the Neo4j
@@ -43,8 +43,8 @@ domain being modeled genuinely _is_ connectedness itself, not an incidental prop
 independent rows.
 
 > **Scope guard -- graph databases vs. the wider NoSQL landscape vs. storage internals.**
-> `nosql-databases` -- `[Unverified]` not yet present in the AyoKoding course library on disk, so no
-> link is given here -- would own the **broader non-relational survey**: document stores, key-value
+> [NoSQL Databases](/en/learn/courses/nosql-databases) would own the **broader non-relational
+> survey**: document stores, key-value
 > stores, wide-column stores, and graph databases as one family of alternatives to the relational
 > model, compared at the level of "which data shape fits which storage model." This course owns
 > **one specific member of that family in depth**: the property-graph model, Cypher as its query
@@ -83,7 +83,7 @@ independent rows.
   prompts.
 
 **A note on Cypher versions**: Neo4j ships two parallel Cypher dialects, one frozen and one evolving
--- see [Accuracy notes](#accuracy-notes) below for the current dialect names and the calendar
+-- see [References](#references) below for the current dialect names and the calendar
 version at which the evolving dialect became the default. Most examples in this course run unchanged
 under either dialect. Where the dialect genuinely matters, the example says so explicitly: Example 15
 (quantified relationship paths) and Example 79 (the `SHORTEST` path selector) target the evolving
@@ -93,17 +93,13 @@ specifically to demonstrate pinning a query to one dialect or the other with the
 `allShortestPaths()` syntax, which remains valid and runs unchanged under both dialects (not
 GQL-conformant, but not removed either).
 
-## Accuracy notes
+## References
 
-> Dated per this topic's own accuracy-note discipline: every volatile, version-pinned, or
-> calendar-dependent fact below is flagged or dated here rather than stated unqualified in the
-> stable spine above.
-
-- 2026-07-27 -- **volatile, calendar-versioned**: at the time this course was authored, Neo4j ships
+- **Calendar-versioned**: at the time this course was authored, Neo4j ships
   two parallel Cypher dialects -- **Cypher 5** (frozen, bug-fixes only) and **Cypher 25** (evolving,
   and the default dialect for newly created databases from Neo4j 2026.02 onward). Both the specific
   dialect names and the version at which the default last changed are calendar-versioning specifics
-  that will keep moving release to release -- re-verify against Neo4j's own version-support
+  that will keep moving release to release -- check Neo4j's own version-support
   documentation before relying on either claim in a later reading of this course. This same fact is
   cross-referenced, not restated, from `drilling/overview.md` (Q21, E6), `learning/overview.md`
   (co-21), `learning/beginner.md` (Example 15), and `learning/advanced.md` (Example 79).

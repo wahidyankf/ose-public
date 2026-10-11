@@ -9,6 +9,20 @@ Archived plans and completed project planning documents.
 
 ## Completed Projects
 
+- [2026-10-12: ayokoding-learn-revamp-01-navigation-and-display](./2026-10-12__ayokoding-learn-revamp-01-navigation-and-display/README.md) —
+  Shipped the AyoKoding Learn display pass: no `NN ·` catalogue prefixes on 76 course titles
+  (and the content that echoed them: 291 replacements), path position numbers on the syllabus,
+  rail, and arc preview with the replaced DWT-002 workaround, rail auto-scroll into a bounded
+  row region with a pinned "Course k of N" readout, Overview first in the sidebar, headings
+  that render as headings and inline code without literal backticks, and every internal
+  "Accuracy notes" section converted to a reader-facing `## References` in 160 files with a
+  zero-hit five-pattern guard (plus the R1/R2/R3 rules in the content-creation skill and the
+  rule-15 display fixes collected by the triad). Delivered `worktree-to-pr` in two PRs: the
+  Phase 0–5 checkpoint merged as `ose-public#680` (`73634ddce`) and the Phases 6–9 +
+  archival continuation as `ose-public#681` (head `55a6ef82b` at merge, see the delivery
+  record for the merge commit). Delivered with two plan-execution audits (the preliminary
+  cycle repaired the record carriage; the terminal repeat is recorded in the closure PR).
+
 - [2026-09-21: ferret-init-01-local-cli](./2026-09-21__ferret-init-01-local-cli/README.md) —
   Shipped FERRET's standalone local CLI: a standard-library-only Python 3.14 zipapp with twelve
   commands over a private per-user SQLite store, plus a dedicated E2E project, six feature files

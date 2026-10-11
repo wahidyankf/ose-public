@@ -406,7 +406,7 @@ exact, checked license, closing the loop Example 80 already opened.
   CRUD justifies Valkey, two named catalog reads justify MongoDB's indexes, and per-customer order
   history justifies Cassandra's partition+clustering key design.
 - The license of each product is named and checked in `rationale.md`: BSD-3-Clause (Valkey), SSPLv1 --
-  NOT OSI-approved (MongoDB), Apache License 2.0 (Cassandra) -- matching the accuracy notes' own
+  NOT OSI-approved (MongoDB), Apache License 2.0 (Cassandra) -- matching the course References' own
   citations (Examples 25-27).
 - `pyright kv.py`, `pyright doc.py`, and `pyright wide.py` (run from inside `learning/capstone/code/`,
   which is where this course's own `pyrightconfig.json` applies its `strict` mode) each report `0

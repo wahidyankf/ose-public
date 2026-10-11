@@ -49,7 +49,7 @@ The course uses a deterministic in-process bus to make those trade-offs executab
 Kafka, RabbitMQ, or cloud-broker configuration is product-specific and deliberately out of scope;
 the invariants taught here transfer to any of them.
 
-## Accuracy notes
+## References
 
 - Event notification, event-carried state transfer, event sourcing, and CQRS use the terminology
   established in Martin Fowler’s event-driven architecture writing.

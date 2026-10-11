@@ -4,9 +4,9 @@
 // PREVIOUS effect's cleanup FIRST, with the OLD values, before running the new setup with the new
 // values. Cleanup is where you tear down what setup built (remove a listener, clear a timer).
 //
-// > **Accuracy note**: "React will first run the cleanup ... with the old values, and then run
-// > your setup ... with the new values." Source: react.dev, useEffect
-// > (https://react.dev/reference/react/useEffect).
+// Note: "React will first run the cleanup ... with the old values, and then run
+// your setup ... with the new values." Source: react.dev, useEffect
+// (https://react.dev/reference/react/useEffect).
 
 // The trace of setup/cleanup events, in the order React fires them.
 const trace: string[] = []; // => pushes mirror React's actual commit-time ordering

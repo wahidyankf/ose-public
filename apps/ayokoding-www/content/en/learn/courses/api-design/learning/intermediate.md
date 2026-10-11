@@ -1232,7 +1232,7 @@ second client a chance to re-fetch and retry. Without it, two people editing the
 
 ---
 
-### Example 46: Authorization: Bearer <token>
+### Example 46: Authorization Bearer Token
 
 _ex-46 &middot; exercises co-23_
 

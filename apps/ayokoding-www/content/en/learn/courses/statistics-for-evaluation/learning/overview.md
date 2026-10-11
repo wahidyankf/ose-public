@@ -42,7 +42,7 @@ statistical toolchain OK
 ```
 
 _Captured 2026-07-26 -- these are point-in-time patch versions, not a durable claim; see this
-topic's [Accuracy notes](../overview.md#accuracy-notes) if you are reading this after a later patch
+topic's [References](../overview.md#references) if you are reading this after a later patch
 has shipped._
 
 Every code-bearing worked example is a complete, self-contained, fully type-annotated runnable
@@ -92,7 +92,7 @@ This topic's 46 worked examples group by theme, not by fixed Beginner/Intermedia
   reference for Krippendorff's alpha, the most general chance-corrected coefficient this topic
   teaches (Theme C).
 - **Wikipedia -- "Cohen's kappa"**, **"Fleiss' kappa"**, **"McNemar's test"** -- accessible
-  secondary references cross-checked in this topic's [Accuracy notes](../overview.md#accuracy-notes).
+  secondary references cross-checked in this topic's [References](../overview.md#references).
   <https://en.wikipedia.org/wiki/Cohen%27s_kappa>
 
 ---

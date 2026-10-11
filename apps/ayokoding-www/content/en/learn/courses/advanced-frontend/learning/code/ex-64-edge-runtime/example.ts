@@ -4,9 +4,9 @@
 // subset of Web APIs (fetch, Request, Response), ES modules only. A route segment config selects it
 // with `runtime: 'edge'` (the default is 'nodejs').
 //
-// > **Accuracy note**: `runtime: 'nodejs' | 'edge'`, default 'nodejs'; the edge runtime is a
-// > V8-isolate subset of Web APIs, ES-modules only. Source: Next.js Route Segment Config
-// > (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config).
+// Note: `runtime: 'nodejs' | 'edge'`, default 'nodejs'; the edge runtime is a
+// V8-isolate subset of Web APIs, ES-modules only. Source: Next.js Route Segment Config
+// (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config).
 
 // A route segment config: the one line that selects the runtime.
 const config = { runtime: "edge" as "nodejs" | "edge" }; // => co-32: opt into the edge runtime

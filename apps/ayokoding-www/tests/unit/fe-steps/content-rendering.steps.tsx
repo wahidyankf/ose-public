@@ -289,4 +289,39 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       expect(getComputedStyle(inlineCode).fontWeight).toBe(getComputedStyle(paragraph!).fontWeight);
     });
   });
+
+  // UWT-005 fix (phase-8 rule-15 retest) — the structural contract for the horizontal-overflow
+  // guard. The real scrollWidth is a layout measurement verified at e2e level (scrollWidth <= 375
+  // on the long-token page); the unit tier asserts the renderer ships the overflow-containment
+  // tokens: inline chips may break anywhere inside themselves and fenced blocks scroll internally
+  // instead of widening the article.
+  let longTokenHtml = "";
+  Scenario("Course content never scrolls the document horizontally at 375", ({ Given, When, Then, And }) => {
+    Given("a content page containing a long inline code token on a phone-wide article", () => {
+      longTokenHtml =
+        "<p>Use <code>packages/some-extremely-long-package-name/typescript-configuration-invariant</code> today.</p>" +
+        '<figure data-rehype-pretty-code-figure><pre data-language="bash"><code>npm install packages/some-extremely-long-package-name/typescript-configuration-invariant</code></pre></figure>';
+    });
+
+    When("its prose renders at a 375px viewport", () => {
+      render(<MarkdownRenderer html={longTokenHtml} locale="en" />);
+    });
+
+    Then("the inline code chips break within themselves instead of widening the page", () => {
+      const container = document.querySelector(".prose");
+      expect(container).toHaveClass("[&_:not(pre)>code]:[overflow-wrap:anywhere]");
+    });
+
+    And("the fenced code blocks stay confined to the article with an internal horizontal scroll", () => {
+      // The fenced-block containment rule lives in the app's global stylesheet (no class token on
+      // the element), and jsdom has no layout, so the real "scrollWidth stays inside the article"
+      // measurement is the e2e tier's job (over the statistics-for-evaluation long-token page).
+      // The unit tier asserts the DOM shape that keeps fences inside the article: the pre is a
+      // child of the bounded prose container, never a free-floating sibling.
+      const container = document.querySelector(".prose");
+      const pre = document.querySelector("pre");
+      expect(pre).toBeTruthy();
+      expect(container?.contains(pre!)).toBe(true);
+    });
+  });
 });

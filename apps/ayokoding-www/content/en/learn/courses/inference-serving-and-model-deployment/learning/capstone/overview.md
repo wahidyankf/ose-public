@@ -373,7 +373,7 @@ from dataclasses import asdict, dataclass
 class DeploymentManifest:  # => co-24: weights + runtime + config, versioned as ONE unit
     model_id: str
     model_revision: str
-    framework_version_pin: str  # => `[Unverified]` -- see this course's Accuracy notes
+    framework_version_pin: str  # => placeholder -- pin the real framework version at actual deploy time
     replica_count: int
     max_batch_slots: int
 
@@ -382,7 +382,7 @@ def package_deployment(model_id: str, revision: str, replica_count: int, max_bat
     manifest = DeploymentManifest(
         model_id=model_id,
         model_revision=revision,
-        framework_version_pin="[Unverified]-pin-at-deploy-time",
+        framework_version_pin="PLACEHOLDER-pin-at-deploy-time",
         replica_count=replica_count,
         max_batch_slots=max_batch_slots,
     )
@@ -505,9 +505,9 @@ test_capstone.py::test_entire_capstone_suite_runs_offline_without_gpu PASSED [10
 
 ## Done bar
 
-Runnable end to end (offline, simulator plus CPU-servable model) + web-verified: every framework name,
+Runnable end to end (offline, simulator plus CPU-servable model): every framework name,
 GPU price, and quantization figure this capstone touches is illustrative and flagged in this course's
-[Accuracy notes](../../overview.md#accuracy-notes) rather than stated as a current market fact.
+[References](../../overview.md#references) rather than stated as a current market fact.
 
 ---
 

@@ -15,7 +15,7 @@ light gate cannot tell you, and the concrete triggers that mean a project is rea
 `evaluating-ai-systems-in-depth`. Every code-medium example's real, runnable **Python 3.13**
 file lives under `learning/code/ex-NN-*/`, run for real with genuine captured output; ex-43 is a
 diagram-medium example and lives standalone under `learning/artifacts/`. (See this topic's
-[Accuracy notes](../overview.md#accuracy-notes) for the exact patch version captured.)
+[References](../overview.md#references) for the exact patch version captured.)
 
 ---
 

@@ -119,9 +119,8 @@ format this topic taught (BLUF and reader-first structure, co-01/co-02/co-03; th
 ADR formats, co-04 through co-08; PR descriptions, co-09; blameless postmortems, co-10; C4 diagrams,
 co-11/co-12; precise RFC 2119 keywords and edited, register-matched prose, co-13/co-14/co-15; and
 proportional, close-to-code artifacts, co-16/co-17). Every technique used here traces to a primary
-source already cited in this topic's Accuracy notes (RFC 2119, S. Bradner, 1997, clarified by RFC
-8174, 2017; Michael Nygard's 2011 ADR format; Simon Brown's C4 model); no new fact was needed to write
-this page or the five documents it links.
+source (RFC 2119, S. Bradner, 1997, clarified by RFC
+8174, 2017; Michael Nygard's 2011 ADR format; Simon Brown's C4 model).
 
 ---
 

@@ -7,7 +7,7 @@ CASES = {  # => co-11: case id -> (prompt text, output text) -- what actually go
     "case-01": ("How much free storage does Nimbus give?", "New Nimbus accounts start with 15 GB of free storage."),  # => co-11: case 1
     "case-02": ("How much storage does Nimbus Pro include?", "Nimbus Pro includes 200 GB of storage."),  # => co-11: case 2
 }  # => co-11: closes CASES
-PRICE_PER_TOKEN = 0.000002  # => co-11: `[Unverified]` placeholder rate -- see this course's Accuracy notes (overview.md) for the dated disclosure; read the real one from config, never hard-code it in production
+PRICE_PER_TOKEN = 0.000002  # => co-11: placeholder rate, not a confirmed market rate -- read the real one from config, never hard-code it in production
 
 
 def estimate_tokens(text: str) -> int:  # => co-11: a mocked, offline token estimate -- no real tokenizer call needed

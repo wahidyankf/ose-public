@@ -40,3 +40,13 @@ Feature: Path-order navigation
     When the page renders
     Then the sidebar scrolls so the current course's row is fully visible
     And the page itself stays scrolled to the top
+
+  # UWT-008 fix (phase-8 rule-15 retest): picking a course inside the pocket drawer must close it,
+  # matching the primary-navigation links' behaviour.
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Picking a course in the pocket drawer closes the drawer
+  @integration-exempt
+  Scenario: Picking a course in the pocket drawer closes the drawer
+    Given a reader has the pocket drawer open from a course's path readout
+    When they pick another course's row in the drawer
+    Then the drawer closes and the drawer-open state is cleared
+    And the primary navigation links still close the drawer as before

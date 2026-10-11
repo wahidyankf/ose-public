@@ -15,7 +15,7 @@ a scorer can itself be wrong (**co-05**'s "lying scorer"), and a model must neve
 output (**co-12**). Every code-medium example's real, runnable **Python 3.13** file lives under
 `learning/code/ex-NN-*/`, run for real with genuine captured output; ex-22 is a diagram-medium
 example and lives standalone under `learning/artifacts/`. (See this topic's
-[Accuracy notes](../overview.md#accuracy-notes) for the exact patch version captured.)
+[References](../overview.md#references) for the exact patch version captured.)
 
 ---
 

@@ -37,15 +37,14 @@ without proof; `abstraction-and-its-cost` -- every summary statistic discards st
 must know which structure.
 
 This topic is **scoped by a single rule**: a technique earns a place here only if
-`Evaluating AI Systems in Depth` -- `[Unverified]`
-not yet present in the AyoKoding course library on disk, so no link is given here -- cannot be
+[Evaluating AI Systems In Depth](/en/learn/courses/evaluating-ai-systems-in-depth) cannot be
 taught honestly without it. Judge concordance, significance testing, sampling design, and honest
 uncertainty reporting all clear that bar; nothing else does.
 
 > **Scope guard -- this is not a general statistics course.** Regression, causal inference, and
 > experiment design for product A/B testing are **out of scope here** and belong to
-> `analytics-and-experimentation` -- `[Unverified]`
-> not yet present in the AyoKoding course library on disk, so no link is given here -- which is a
+> [Analytics and Experimentation](/en/learn/courses/analytics-and-experimentation)
+> -- which is a
 > sibling course, not a substitute: it shares some of the same machinery (proportions, intervals,
 > significance tests) but answers a different question -- "did this product change move a business
 > metric" -- rather than "can this eval result be trusted." If a statistical technique does not
@@ -167,40 +166,35 @@ statistical library so you know what to call in practice -- with the two verifie
   product-experiment design. Those live in `analytics-and-experimentation`, which shares some
   machinery but answers a different question.
 
-## Accuracy notes
+## References
 
-> Dated per this topic's own accuracy-note discipline: every volatile, version-pinned, or
-> market-dependent fact below is flagged or dated here rather than stated unqualified in the stable
-> spine above.
-
-- 2026-07-26 -- **durable spine**: every technique in this topic predates LLMs by decades.
+- **Durable spine**: every technique in this topic predates LLMs by decades.
   Chance-corrected agreement coefficients, binomial confidence intervals, the bootstrap, and paired
   significance tests are settled classical statistics. Nothing here has a vendor, a version, or a
   deprecation risk -- which is precisely why this topic is safe to place in a spine while framework
   material is not.
-- 2026-07-26 -- the named agreement coefficients and significance tests are real, distinct
+- The named agreement coefficients and significance tests are real, distinct
   techniques with the following publication years: **Scott's pi 1955, Cohen's kappa 1960, Fleiss's
   kappa 1971, Krippendorff's alpha circa 1970, McNemar's test 1947**
-  (source: Wikipedia "Fleiss' kappa" / "McNemar's test" / "Krippendorff's alpha" --
-  https://en.wikipedia.org/wiki/Fleiss%27_kappa ; accessed 2026-07-22, carried over from this
-  topic's syllabus source). The Wilson and Clopper-Pearson binomial intervals and the bootstrap
-  percentile interval likewise predate LLMs; their exact years are `[Unverified]` here -- treat as
-  unverified until a primary reference is read.
-- 2026-07-26 -- **contested, taught as contested**: there is no consensus threshold for "acceptable"
+  ([Wikipedia "Fleiss' kappa"](https://en.wikipedia.org/wiki/Fleiss%27_kappa), carried over from this
+  topic's planning source). The Wilson and Clopper-Pearson binomial intervals and the bootstrap
+  percentile interval likewise predate LLMs; their exact years were not independently confirmed
+  here -- check a primary reference before relying on them.
+- **Contested, taught as contested**: there is no consensus threshold for "acceptable"
   kappa, and the widely circulated verbal scales (poor/fair/moderate/substantial) are conventions
   from a single paper, not results. This topic teaches reporting the coefficient with its interval
   and justifying a threshold against the stakes of the decision, and explicitly teaches that the
   verbal scales are conventions rather than findings.
-- 2026-07-26 -- **volatile, version-pinned**: this topic's worked-example transcripts were captured
+- **Version-pinned snapshots**: this topic's worked-example transcripts were captured
   against **Python 3.13.12**, `numpy==2.5.1`, `scipy==1.18.0`, `statsmodels==0.14.6`,
   `scikit-learn==1.9.0`, and `krippendorff==0.8.2` -- already-superseded patch releases by the time
-  you read this, pinned CVE-clean at authoring per this repo's dependency-bump policy. Re-verify the
-  printed transcripts if re-running the examples against later versions. In particular,
+  you read this, pinned CVE-clean at authoring per this repo's dependency-bump policy. Expect the
+  printed transcripts to differ if re-running the examples against later versions. In particular,
   `statsmodels.stats.proportion.proportion_confint`'s **default `method` is `"normal"`** -- the
   normal approximation this topic teaches learners to avoid at small n -- and it silently clips the
   result to `[0, 1]`, which hides rather than fixes the small-n failure mode Example 5 demonstrates;
-  re-verify this default has not changed before citing it in a later revision.
-- 2026-07-26 -- no model IDs, prices, or benchmark numbers appear anywhere in this topic's spine by
+  check that default has not changed before relying on it in later work.
+- No model IDs, prices, or benchmark numbers appear anywhere in this topic's spine by
   design; there is nothing here to go stale.
 
 ---

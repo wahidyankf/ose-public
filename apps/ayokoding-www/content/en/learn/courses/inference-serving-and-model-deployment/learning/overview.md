@@ -20,7 +20,7 @@ Python 3.13.x
 ```
 
 **A note on versions**: this topic's worked-example transcripts were captured against Python 3.13 --
-see this course's [Accuracy notes](../overview.md#accuracy-notes) for the exact re-verification
+see this course's [References](../overview.md#references) for the exact re-verification
 guidance if you are reading this against a materially later release. No third-party packages are
 required for any of the 75 learning examples; every one of them uses only the Python standard library.
 
@@ -54,7 +54,7 @@ Overview's Prerequisites.
 
 Every example cites the concept (`co-NN`) it exercises. Framework names, GPU prices, and quantization
 figures are deliberately illustrative throughout -- see this course's
-[Accuracy notes](../overview.md#accuracy-notes) for exactly which facts are volatile.
+[References](../overview.md#references) for exactly which facts are volatile.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161

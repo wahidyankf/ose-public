@@ -5,8 +5,8 @@
 // (2026) triad, not the older LCP/FID/CLS set. All thresholds are at the 75th percentile over a
 // rolling 28-day CrUX window.
 //
-// > **Accuracy note**: INP replaced FID on March 12, 2024
-// > (https://web.dev/blog/inp-cwv-launch). LCP/INP/CLS thresholds from web.dev (fetched, verbatim).
+// Note: INP replaced FID on March 12, 2024
+// (https://web.dev/blog/inp-cwv-launch). LCP/INP/CLS thresholds from web.dev.
 
 // Each vital has a name, a unit, and the good / poor band boundaries.
 interface Vital {

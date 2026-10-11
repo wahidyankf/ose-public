@@ -8,9 +8,8 @@ weight: 1
 ## The capstone: a statistically defensible evaluation report
 
 The capstone produces a complete, statistically defensible evaluation report for one real decision
-from `evaluating-ai-systems-in-depth` -- `[Unverified]`
-not yet present in the AyoKoding course library on disk, so no link is given here -- should this
-candidate change ship? Every claim in the final report carries its own uncertainty, every agreement
+from [Evaluating AI Systems In Depth](/en/learn/courses/evaluating-ai-systems-in-depth) --
+should this candidate change ship? Every claim in the final report carries its own uncertainty, every agreement
 number is chance-corrected and read against the human ceiling, the run comparison is paired and
 corrected for multiple comparisons, and the regression bar is derived from a measured noise floor
 rather than chosen by feel. Every script lives under `learning/capstone/code/`, fully

@@ -74,7 +74,7 @@ ship a real I/O-bound service, with the conceptual theory and the from-scratch f
 Every example is a complete, self-contained Python module colocated under `learning/code/`, run under `uv`,
 served with `uvicorn`, and exercised with `httpx`/`curl` -- there is no pseudocode anywhere in this topic.
 
-### Accuracy notes
+### References
 
 > This stack ships on a weekly cadence -- every version pin below is a reference point, not a permanent fact.
 > The **stable spine** of this topic (`async`/`await`, the `asyncio` event loop, and ASGI) is taught inline; the

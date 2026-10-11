@@ -121,6 +121,10 @@ export function MobileNav({
         side="left"
         className="overflow-y-auto p-4"
         style={{ width: `${widthPx}px` }}
+        // EWT-003 fix (phase-8 rule-15 retest): the drawer intentionally has no description
+        // element, so pass `undefined` explicitly — Radix otherwise logs a misleading
+        // "Missing 'Description' or 'aria-describedby'" warning on every open.
+        aria-describedby={undefined}
         onCloseAutoFocus={(event) => {
           event.preventDefault();
           lastTriggerRef.current?.focus();
@@ -155,12 +159,23 @@ export function MobileNav({
           </fieldset>
         </SheetHeader>
         {active ? (
-          <PathRail
-            locale={locale}
-            manifest={active.context.manifest}
-            currentCourseId={active.courseId}
-            courseTitles={courseTitles}
-          />
+          /* UWT-008 fix (phase-8 rule-15 retest): a rail row pick must close the drawer, the way
+             the primary-navigation links below already do — the capture handler closes on any link
+             activation (mouse click or keyboard Enter) inside the rail. */
+          <div
+            onClickCapture={(event) => {
+              if ((event.target as HTMLElement).closest("a")) {
+                onOpenChange(false);
+              }
+            }}
+          >
+            <PathRail
+              locale={locale}
+              manifest={active.context.manifest}
+              currentCourseId={active.courseId}
+              courseTitles={courseTitles}
+            />
+          </div>
         ) : (
           <nav className="mt-4" aria-label="Mobile navigation">
             <p className="px-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">Menu</p>

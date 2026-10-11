@@ -83,24 +83,19 @@ shows an "Expected" block, it is the verification step's observable outcome (a `
 line, a `curl` response, a `journalctl` entry), framed as what you should see when you run the
 accompanying verify command on your own box, not a transcript captured inside this build environment.
 
-## Accuracy notes
+## References
 
-> Pre-authoring `web-researcher` sweep pending (per this plan's Anti-Hallucination verification
-> recipe). Dated per this topic's own accuracy-note discipline (DD-28): every volatile,
-> version-pinned, or calendar-dependent fact below is flagged or dated here rather than stated
-> unqualified in the stable spine above.
-
-- 2026-07-30 -- **evergreen and stable**: `ssh` key-based authentication, `systemd` unit files and
+- **Evergreen and stable**: `ssh` key-based authentication, `systemd` unit files and
   the `systemctl`/`journalctl` lifecycle, the reverse-proxy concept, ACME/Let's Encrypt automatic
   TLS, and `ufw` firewall basics are stable operational concepts and are taught as such throughout.
-- 2026-07-30 -- **[Needs Verification] version-volatile, pin at authoring**: the exact CVE-clean
+- **Version-volatile, check before relying**: the exact CVE-clean
   versions and command surfaces of the chosen reverse proxy (Caddy/Nginx) and any PaaS (Dokku/Coolify
   or a managed buildpack platform) change release to release. The hedge value current as of drafting:
   Caddy latest stable **v2.11.4**
-  (source: caddyserver/caddy releases -- https://github.com/caddyserver/caddy/releases ; accessed
-  2026-07-22). Nginx and the PaaS choice are kept portable across a couple of options rather than
-  pinned to one vendor's exact release; re-verify any version before running it on a real box.
-- 2026-07-30 -- **[Needs Verification]**: provider-specific VM-provisioning UI/CLI details are kept
+  ([caddyserver/caddy releases](https://github.com/caddyserver/caddy/releases)). Nginx and the PaaS
+  choice are kept portable across a couple of options rather than
+  pinned to one vendor's exact release; re-check any version before running it on a real box.
+- **Provider specifics not confirmed**: provider-specific VM-provisioning UI/CLI details are kept
   provider-agnostic wherever possible; the examples name the _shape_ of the step ("create a Linux VM,
   record its IP") rather than one vendor's console.
 

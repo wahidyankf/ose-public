@@ -5,9 +5,9 @@
 // that finds "the button labelled Submit" keeps passing when you swap the class name; a test that
 // finds `.submit-btn` breaks on the same change though the user saw nothing differ.
 //
-// > **Accuracy note**: "The more your tests resemble the way your software is used, the more
-// > confidence they can give you." Source: Testing Library -- Guiding Principles
-// > (https://testing-library.com/docs/guiding-principles/).
+// Note: "The more your tests resemble the way your software is used, the more
+// confidence they can give you." Source: Testing Library -- Guiding Principles
+// (https://testing-library.com/docs/guiding-principles/).
 
 // A minimal rendered DOM node: its role, its accessible name, and an internal-only class.
 interface DomNode {

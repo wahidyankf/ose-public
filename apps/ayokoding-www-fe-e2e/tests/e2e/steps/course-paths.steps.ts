@@ -535,6 +535,41 @@ Then("focus moves into the drawer and returns to the control when the drawer is 
   await expect(trigger).toBeFocused();
 });
 
+// path-order-nav.feature, scenario 4 (UWT-008 fix, phase-8 rule-15 retest) — picking a course
+// inside the pocket drawer must close it, like the primary-navigation links always did.
+Given("a reader has the pocket drawer open from a course's path readout", async ({ page }) => {
+  await page.setViewportSize(PHONE_VIEWPORT);
+  await page.goto("/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: /Open path course list/ }).click();
+  await expect(page.locator("#mobile-nav-drawer")).toBeVisible();
+});
+
+When("they pick another course's row in the drawer", async ({ page }) => {
+  const drawer = page.locator("#mobile-nav-drawer");
+  // The rail rows: the current course's row comes first in navigation order, so pick a
+  // neighbouring row (a different course) rather than re-opening the same page.
+  const row = drawer.getByRole("navigation").getByRole("link").nth(1);
+  await row.click();
+});
+
+Then("the drawer closes and the drawer-open state is cleared", async ({ page }) => {
+  await expect(page.locator("#mobile-nav-drawer")).toBeHidden();
+});
+
+Then("the primary navigation links still close the drawer as before", async ({ page }) => {
+  // The untouched general-navigation branch: the header hamburger opens the drawer in menu mode
+  // (no path context), whose primary links close on pick — behaviour that predates this plan.
+  await page.setViewportSize(PHONE_VIEWPORT);
+  await page.goto("/en/learn/courses/backend-essentials");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Open navigation menu" }).click();
+  const drawer = page.locator("#mobile-nav-drawer");
+  await expect(drawer).toBeVisible();
+  await drawer.getByRole("link").first().click();
+  await expect(drawer).toBeHidden();
+});
+
 // paths-hub-category-grouping.feature.
 Given("a fixture manifest set covers both a careers-shaped and a skills-shaped fixture", async ({ page }) => {
   const manifests = await loadPublishedManifests(page);
@@ -792,13 +827,21 @@ Then("no preview item shows a second number inside the course title", async ({ p
 // path-order-nav.feature, scenario 4 (plan ayokoding-learn-revamp-01, Phase 5 RED) — S5: the
 // desktop rail auto-scrolls its own overflow-y: auto container so the current course's row is
 // fully visible, and the page itself never moves (tech-docs.md §4.3, Decisions D5/D11).
-// sql-essentials is the last of the backend-track fixture's three courses, so at the 1280×200
-// viewport below its row starts below the visible part of the sidebar. The When step ("the page
+// sql-essentials is the last of the backend-track fixture's three courses, so at the 1280×H
+// viewport below its row starts below the visible part of the rail. The When step ("the page
 // renders") is shared with cost-of-living-calculator.steps.ts (identical networkidle semantics) —
 // not redefined here, same as the canonical-fallback scenario above.
 // ---------------------------------------------------------------------------
-
-const RAIL_SCROLL_VIEWPORT = { width: 1280, height: 200 };
+// The rail viewport was height-200 in Phase 5 (the DWT-003 pre-fix geometry scrolled the whole
+// sidebar). Phase 8's DWT-003 fix pins the "Course k of N" readout above a bounded, floating row
+// region (ol flex-1 min-h-0) that also hosts the rail's own footer below; at 200px the row region
+// had 0px left (readout + footer minimums exceed it), so the helper met a zero-height container.
+// This fixture path has THREE courses, and the DWT-003-fixed geometry must keep row 3 (of 3)
+// hidden while leaving the row region nonzero (≥1 row) so the helper has a real scroll container:
+// region = viewport − 64 (header) − 32 (host padding) − 12 (readout) − 24 (nav gaps) − ~101
+// (footer) ≈ viewport − 233; 320px ⇒ ~87px of row region — rows 1–2 visible, row 3 hidden below,
+// the ol overflows (3 rows ≈ 137px > 87px) and the helper centres row 3 inside it.
+const RAIL_SCROLL_VIEWPORT = { width: 1280, height: 320 };
 
 Given("a reader opens a course whose rail row starts below the visible part of the sidebar", async ({ page }) => {
   await page.setViewportSize(RAIL_SCROLL_VIEWPORT);

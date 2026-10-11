@@ -31,11 +31,9 @@ version bloat all surface as performance you have to explain).
 
 > **Scope note -- this is not a NoSQL or graph-database course.** How a document store, wide-column
 > store, or key-value store distributes and shards data across nodes belongs to
-> `nosql-databases` -- `[Unverified]`
-> not yet present in the AyoKoding course library on disk, so no link is given here -- and how a
+> [NoSQL Databases](/en/learn/courses/nosql-databases) -- and how a
 > native graph engine stores and traverses adjacency belongs to
-> `graph-databases` -- `[Unverified]`
-> not yet present in the AyoKoding course library on disk, so no link is given here -- both are
+> [Graph Databases](/en/learn/courses/graph-databases) -- both are
 > sibling courses, not substitutes: they share some of the same substrate (a page, a WAL, an index
 > structure that must still be built on disk somehow) but answer a different question -- "how does
 > this data model distribute, shard, or traverse" -- rather than "how does a single storage engine on
@@ -70,56 +68,49 @@ transcript, never a fabricated one.
   twenty-eight concepts, applied problems, self-contained code katas exercising real storage-engine
   bugs, a self-check checklist, and elaborative-interrogation prompts.
 
-## Accuracy notes
+## References
 
-> Dated per this topic's own accuracy-note discipline: every volatile, version-pinned, or
-> product-dependent fact below is flagged or dated here rather than stated unqualified in the stable
-> spine above.
-
-- 2026-07-27 -- **verification method**: verified in the pre-authoring `web-researcher` sweep and
-  re-verified under a no-hallucination pass against primary sources (PostgreSQL/MySQL/SQLite/RocksDB
-  docs and the founding papers).
-- 2026-07-27 -- **durable spine**: the internals taught here (B-tree and LSM-tree structure,
+- **Durable spine**: the internals taught here (B-tree and LSM-tree structure,
   write-ahead logging, buffer pool, MVCC, slotted-page layout) are long-settled, engine-independent
   concepts. The canonical WAL/recovery reference remains ARIES (Mohan et al., 1992) and the
   canonical LSM reference is O'Neil et al. (1996).
-- 2026-07-27 -- Specific engine defaults (page sizes, MVCC vacuum behavior, compaction strategy)
+- Specific engine defaults (page sizes, MVCC vacuum behavior, compaction strategy)
   vary by product and version -- this topic describes them as engine-dependent rather than
   asserting one product's numbers as universal.
-- 2026-07-27 -- **Slotted page** -- PostgreSQL's storage page layout: a header, an `ItemIdData`
+- **Slotted page** -- PostgreSQL's storage page layout: a header, an `ItemIdData`
   slot array growing from the front, tuple data growing from the back, free space between; a slot
   index is a stable long-term handle even after in-page compaction. Page size is engine-specific
   (**Postgres/SQL Server 8 KB, InnoDB 16 KB**) -- this topic does not present 8 KB as universal.
-- 2026-07-27 -- **Buffer pool** -- pin count + dirty bit per frame; a dirty page is flushed (or its
+- **Buffer pool** -- pin count + dirty bit per frame; a dirty page is flushed (or its
   WAL made durable) before its frame is reused. **CLOCK/second-chance** approximates LRU via a
   per-frame reference bit -- it is an approximation, not exact LRU. **LRU-K** (O'Neil et al.,
   SIGMOD 1993) is a distinct algorithm, not "LRU with K frames."
-- 2026-07-27 -- **B-tree vs B+-tree** -- a B+-tree keeps values only in leaves with linked siblings
+- **B-tree vs B+-tree** -- a B+-tree keeps values only in leaves with linked siblings
   for range scans; PostgreSQL's `nbtree` (Lehman & Yao) and InnoDB are B+-trees though their public
   API says "btree." SQLite `WITHOUT ROWID` tables are a genuine classical-B-tree counter-example.
-  `[Needs Verification]` -- the illustrative fanout/height figures used in this topic's examples
-  (e.g. fanout 200-500 -> height 3-4 for 1e9 keys) are pedagogical, not vendor constants; taught as
-  illustrative, not as a specific product's measured number.
-- 2026-07-27 -- **LSM** -- memtable (RocksDB default = skiplist) -> immutable sorted SSTables; a
+  The illustrative fanout/height figures used in this topic's examples
+  (e.g. fanout 200-500 -> height 3-4 for 1e9 keys) are pedagogical, not vendor constants; they are
+  shown as illustrative, not as a specific product's measured number.
+- **LSM** -- memtable (RocksDB default = skiplist) -> immutable sorted SSTables; a
   read checks the memtable then SSTables newest to oldest; compaction is **leveled** (RocksDB
   default) vs **size-tiered** (Cassandra). The amplification trade-off is the **RUM conjecture**
   (Read/Update/Memory -- a conjecture, not a law).
-- 2026-07-27 -- **Bloom filter** -- false positives possible, false **negatives impossible**;
+- **Bloom filter** -- false positives possible, false **negatives impossible**;
   per-SSTable, skips files that definitely lack a key.
-- 2026-07-27 -- **WAL / ARIES** (Mohan et al. 1992) -- a log record reaches stable storage before
+- **WAL / ARIES** (Mohan et al. 1992) -- a log record reaches stable storage before
   its page (the WAL rule); LSN + pageLSN; three phases **analysis -> redo -> undo**. ARIES
   **"repeats history"**: redo replays _all_ logged changes (committed or not), _then_ undo rolls
   back losers via Compensation Log Records -- this topic does not teach "redo skips uncommitted."
-- 2026-07-27 -- **MVCC** -- row versions tagged `xmin`/`xmax` (PostgreSQL terms); a snapshot sees
+- **MVCC** -- row versions tagged `xmin`/`xmax` (PostgreSQL terms); a snapshot sees
   versions committed before it and not yet deleted; readers don't block writers. Dead versions need
   VACUUM/GC. PostgreSQL `REPEATABLE READ` **is snapshot isolation** and permits **write skew**
   (Berenson et al. 1995); true `SERIALIZABLE` (SSI, 9.1+) catches it.
-- 2026-07-27 -- **Durability** -- a page write is **not atomic** across a crash (torn page);
+- **Durability** -- a page write is **not atomic** across a crash (torn page);
   mitigations are PostgreSQL **full-page-writes** and InnoDB **doublewrite buffer**; `fsync` forces
-  durability, **group commit** batches it. `[Needs Verification]` -- InnoDB's specific checksum
-  algorithm was not fetched from a primary page for this topic; treat any InnoDB
-  checksum-algorithm detail as unverified.
-- 2026-07-27 -- **Clustered vs heap** -- InnoDB clusters rows in the PK B+-tree leaf; PostgreSQL
+  durability, **group commit** batches it. InnoDB's specific checksum
+  algorithm was not confirmed against a primary source; treat any InnoDB
+  checksum-algorithm detail as unconfirmed.
+- **Clustered vs heap** -- InnoDB clusters rows in the PK B+-tree leaf; PostgreSQL
   uses a heap with `ctid` (page, slot) row pointers; SQLite rowid tables cluster on rowid. **Row
   store** (OLTP) vs **column store** (OLAP: dictionary/run-length/delta encoding) -- C-Store,
   Stonebraker et al. 2005.

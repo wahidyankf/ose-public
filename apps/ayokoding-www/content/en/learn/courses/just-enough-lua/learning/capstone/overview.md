@@ -273,8 +273,8 @@ directory and runs `lua main.lua` there reaches the identical output block shown
 verified against a real `lua` interpreter run (Lua 5.5.0, not merely described). Every mechanism
 combined here -- modules-and-`require` (co-14), `__index` metatable defaulting (co-10),
 closures-and-upvalues (co-07), `array-part-vs-hash-part` (co-04), and `error-handling-with-pcall`
-(co-13) -- traces to a primary source already cited in this primer's Accuracy notes and DD-35
-citations; no new fact was needed to write this page.
+(co-13) -- is stated exactly as its primary source documents it; no new fact was needed to write
+this page.
 
 ---
 

@@ -9,10 +9,9 @@ weight: 1
 
 - **Prior topics**: [Backend Essentials](../../backend-essentials/learning/overview.md) --
   HTTP verbs, status codes, routing, and JSON handling, assumed familiar throughout every tier's
-  examples; `backend-at-scale` -- `[Unverified]` not yet present in the AyoKoding course library on
-  disk, so no link is given here -- its absence does not block this topic, since idempotency, auth,
-  and rate limiting are taught here from first principles (Examples 37-48) rather than assumed
-  already known.
+  examples; [Backend at Scale](../../backend-at-scale/learning/overview.md) -- its
+  absence does not block this topic, since idempotency, auth, and rate limiting are taught here from
+  first principles (Examples 37-48) rather than assumed already known.
 - **Tools & environment**: a macOS/Linux terminal and **Python 3.13+** with type hints and
   `pyright --strict`. Every example is pure standard library -- no web framework, database
   connection, or network call is ever required to run one.

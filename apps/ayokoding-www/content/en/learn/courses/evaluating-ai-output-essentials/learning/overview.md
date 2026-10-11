@@ -7,8 +7,9 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: `creating-ai-powered-apps` (a working model call, structured output --
-  `[Unverified]` not yet present in the AyoKoding course library on disk); **software-testing**
+- **Prior topics**:
+  [Creating AI-Powered Apps](../../creating-ai-powered-apps/learning/overview.md) (a working model
+  call, structured output); **software-testing**
   ([Software Testing](../../software-testing/learning/overview.md)) for the assertion mindset
   every scorer in this topic reuses; **just enough python**
   ([Just Enough Python](../../just-enough-python/learning/overview.md)) -- every script in this
@@ -48,8 +49,8 @@ $ python3 -m pytest --version
 pytest 9.1.1
 ```
 
-_Captured 2026-07-26 -- these are point-in-time patch versions, not a durable claim; see this
-topic's [Accuracy notes](../overview.md#accuracy-notes) if you are reading this after a later patch
+_These are point-in-time patch versions, not a durable claim; see this
+topic's [References](../overview.md#references) if you are reading this after a later patch
 has shipped._
 
 Every worked example is a complete, self-contained, fully type-annotated (DD-39) runnable file
@@ -99,7 +100,7 @@ capstone's four files are the sole exception, importing from one another as one 
 - **OpenAI -- Evals** -- the golden-JSONL + testing-criteria shape, a second reference point for
   the plain-file dataset pattern taught here. <https://developers.openai.com/api/docs/guides/evals>
   (as of 2026-07-26: OpenAI has announced this platform becomes read-only 2026-10-31 and shuts down
-  2026-11-30 -- see this course's [Accuracy notes](../overview.md#accuracy-notes))
+  2026-11-30 -- see this course's [References](../overview.md#references))
 
 ---
 

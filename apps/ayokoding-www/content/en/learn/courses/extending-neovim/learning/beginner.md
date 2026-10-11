@@ -471,8 +471,8 @@ _ex-15 &middot; exercises co-05_
 vim.api.nvim_create_autocmd('TextYankPost', {
                                     -- => TextYankPost fires AFTER any yank, in any mode, into any register
   callback = function() vim.hl.on_yank() end,
-                                    -- => vim.hl.on_yank is the 0.12.x spelling (0.13-dev exposes hl_op()
-                                    --    as its eventual successor per this topic's accuracy notes)
+                                    -- => vim.hl.on_yank is the 0.12.x spelling (the 0.13-dev branch
+                                    --    exposes it as a hl_op() alias)
 })                                  -- => one autocmd, one built-in highlight call -- no plugin required
 ```
 

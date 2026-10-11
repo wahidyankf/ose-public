@@ -333,13 +333,13 @@ informations`.
 This capstone is runnable end to end: a reader who applies `seed.sql`, runs `report.sql`, runs
 `tune_query.sql`, runs `n_plus_1.py` (all on the [Overview](./overview.md) page), and then runs
 `anomaly_reproduce.py` followed by `anomaly_fix.py` (this page) reaches the identical output blocks
-shown across both pages, verified against a real PostgreSQL 18.4 server (Docker,
-`postgres:18.4-alpine`) and a real CPython interpreter run -- not merely described. Every mechanism
+shown across both pages, confirmed against a real PostgreSQL 18.4 server (Docker,
+`postgres:18.4-alpine`) and a real CPython interpreter run. Every mechanism
 combined here -- a recursive CTE threaded through window functions (co-03, co-04, co-05, co-06), a
 real `EXPLAIN ANALYZE` before/after an index with refreshed statistics (co-18, co-23, co-24, co-25), an
 N+1 diagnosed and fixed by query count (co-26), and a write-skew anomaly reproduced then resolved with
-`SERIALIZABLE` and a retry (co-13, co-14, co-15) -- traces to a primary source already cited in this
-topic's Accuracy notes; no new fact was needed to write these 2 pages.
+`SERIALIZABLE` and a retry (co-13, co-14, co-15) -- traces to the PostgreSQL documentation for each
+mechanism involved.
 
 ---
 

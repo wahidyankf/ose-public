@@ -63,13 +63,16 @@ export function PathRail({ locale, manifest, currentCourseId, courseTitles }: Pa
   }, [currentCourseId]);
 
   return (
-    <nav aria-label={`${manifest.title} course list`} className="flex flex-col gap-3 text-sm">
+    <nav aria-label={`${manifest.title} course list`} className="flex h-full min-h-0 flex-col gap-3 text-sm">
       {/* prd.md's Screen 3 responsive spec requires this readout at md+ widths (phase-5 EWT
-          finding — the desktop/tablet rail shipped in Cycle 2.8 omitted it). */}
-      <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+          finding — the desktop/tablet rail shipped in Cycle 2.8 omitted it). DWT-003 fix
+          (phase-8 rule-15 retest): `shrink-0` keeps the readout pinned above the rows while the
+          rows scroll in their own bounded region below — the mockup never shows the readout
+          scrolled away with the course list. */}
+      <p className="shrink-0 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
         {t(locale as Locale, "pathsCourseWordCapital")} {index} {t(locale as Locale, "pathsOfWord")} {total}
       </p>
-      <ol className="flex flex-col gap-1">
+      <ol className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
         {courses.map((course, index) => {
           const isCurrent = course.id === currentCourseId;
           const title = courseTitles[course.id] ?? course.id;
@@ -108,7 +111,7 @@ export function PathRail({ locale, manifest, currentCourseId, courseTitles }: Pa
         })}
       </ol>
 
-      <div className="flex flex-col gap-1 border-t border-border pt-3 text-xs">
+      <div className="flex shrink-0 flex-col gap-1 border-t border-border pt-3 text-xs">
         <Link
           href={contentUrl(locale as Locale, `learn/paths/${manifest.pathId}`, manifest.pathId)}
           className={FOOTER_LINK_CLASS}

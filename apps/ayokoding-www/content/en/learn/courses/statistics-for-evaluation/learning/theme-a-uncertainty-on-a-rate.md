@@ -14,7 +14,7 @@ fix. The theme closes with the design question "how many cases do I need" (co-06
 helper that makes a bare number structurally impossible to ship (co-24). Every code-medium example's
 real, runnable **Python 3.13** file lives under `learning/code/ex-NN-*/`, run for real against the
 pinned statistical toolchain (`numpy==2.5.1`, `scipy==1.18.0`, `statsmodels==0.14.6`) to capture
-genuine output. (See this topic's [Accuracy notes](../overview.md#accuracy-notes) for the exact
+genuine output. (See this topic's [References](../overview.md#references) for the exact
 pinned versions.)
 
 ---

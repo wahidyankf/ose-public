@@ -5,9 +5,9 @@
 // state change re-runs the whole component function. This is the core performance claim of
 // signal-based frameworks (SolidJS, Preact Signals).
 //
-// > **Accuracy note**: SolidJS "compiles its templates to real DOM nodes ... only the code that
-// > depends on it will rerun" (solidjs/solid README, fetched). Verbatim `docs.solidjs.com` quotes
-// > remain `[Unverified]` (the docs site was Cloudflare-blocked, 403, on re-check).
+// Note: SolidJS "compiles its templates to real DOM nodes ... only the code that
+// depends on it will rerun" (SolidJS README). The exact wording of quotes from the SolidJS docs
+// site has not been independently confirmed; check the linked source before relying on it.
 
 let activeEffect: (() => void) | null = null;
 let parentRenders = 0; // => counts how many times the PARENT component function ran

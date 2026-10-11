@@ -95,9 +95,8 @@ an external service this environment cannot run. Pure-Python examples with no ex
 majority of the conceptual and simulation examples) are genuinely deterministic and reproducible exactly
 as shown._
 
-**Driver/toolchain pins** (`learning/code/requirements.txt`), re-verified 2026-07-27 against the topic's
-own accuracy-notes sweep -- see the [Overview](../overview.md#accuracy-notes) page for the
-license and version corrections this sweep produced:
+**Driver/toolchain pins** (`learning/code/requirements.txt`) -- the [Overview](../overview.md#references)
+page records the license and version corrections behind these pins:
 
 ```text
 redis==8.0.1
@@ -109,10 +108,10 @@ duckdb==1.5.5
 pyarrow==25.0.0
 ```
 
-`redis` and `cassandra-driver` were independently re-verified by the 2026-07-27 accuracy-notes sweep
-(see the [Overview](../overview.md#accuracy-notes) page); `pymongo`, `boto3`, `psycopg`,
+The [Overview](../overview.md#references) page cross-checks the `redis` and `cassandra-driver`
+license facts; `pymongo`, `boto3`, `psycopg`,
 `duckdb`, and `pyarrow` were confirmed directly by installing each one into this topic's own
-worked-example environment while authoring the examples below -- every pin above reflects a real
+worked-example environment -- every pin above reflects a real
 resolved version, not a guess.
 
 ## How this topic's examples are organized
@@ -180,7 +179,7 @@ resolved version, not a guess.
 - [Example 28: Redis MULTI/EXEC Transaction](/en/c/learn/courses/nosql-databases/learning/intermediate#example-28-redis-multiexec-transaction)
 - [Example 29: Redis WATCH Optimistic Lock](/en/c/learn/courses/nosql-databases/learning/intermediate#example-29-redis-watch-optimistic-lock)
 - [Example 30: Redis Pipeline vs. Transaction](/en/c/learn/courses/nosql-databases/learning/intermediate#example-30-redis-pipeline-vs-transaction)
-- [Example 31: MongoDB $match + $group](/en/c/learn/courses/nosql-databases/learning/intermediate#example-31-mongodb-match--group)
+- [Example 31: MongoDB match + group](/en/c/learn/courses/nosql-databases/learning/intermediate#example-31-mongodb-match--group)
 - [Example 32: MongoDB $lookup Correlated Subquery](/en/c/learn/courses/nosql-databases/learning/intermediate#example-32-mongodb-lookup-correlated-subquery)
 - [Example 33: MongoDB Aggregation Pipeline Stages](/en/c/learn/courses/nosql-databases/learning/intermediate#example-33-mongodb-aggregation-pipeline-stages)
 - [Example 34: MongoDB Multi-Document Transaction](/en/c/learn/courses/nosql-databases/learning/intermediate#example-34-mongodb-multi-document-transaction)

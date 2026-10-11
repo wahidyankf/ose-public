@@ -18,6 +18,6 @@ A repeatable close converts classified balances into explainable statements. You
 
 This course assembles and reviews reporting. [Journal Entries and Posting Mechanics](../journal-entries-and-posting-mechanics/overview.md) owns the detailed creation and control of journal entries.
 
-## Accuracy notes
+## References
 
-- [Verified — stable domain fact] Financial statements summarize classified balances over a period or at a reporting date.
+- Financial statements summarize classified balances over a period or at a reporting date.

@@ -13,7 +13,7 @@ jobs: # => co-08: three ordered, GATED stages follow, cheapest first
     runs-on: ubuntu-latest # => co-08: a fresh, ephemeral runner per job
     steps: # => co-08: this job's own ordered list of steps
       - uses: actions/checkout@v7 # => co-08: fetches the commit under test
-      - run: pip install ruff # => co-08: installs the linter/formatter (Ruff 0.15, DD-28-verified)
+      - run: pip install ruff # => co-08: installs the linter/formatter (Ruff 0.15)
       - run: ruff check . # => co-08: fails the JOB (and the pipeline) on any lint violation
       - run: ruff format --check . # => co-08: fails on any unformatted file -- no silent auto-fix in CI
 

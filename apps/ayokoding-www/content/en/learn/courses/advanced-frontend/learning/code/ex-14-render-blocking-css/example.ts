@@ -4,10 +4,10 @@
 // built. Both the DOM AND the CSSOM are required to construct the render tree, so a large
 // blocking stylesheet delays first paint by however long it takes to download and parse.
 //
-// > **Accuracy note**: "CSS is treated as a render-blocking resource ... the browser won't render
-// > any content until the CSSOM is constructed"; "both the DOM and the CSSOM are required to
-// > construct the render tree." Source: web.dev, render-blocking CSS
-// > (https://web.dev/articles/critical-rendering-path/render-blocking-css).
+// Note: "CSS is treated as a render-blocking resource ... the browser won't render
+// any content until the CSSOM is constructed"; "both the DOM and the CSSOM are required to
+// construct the render tree." Source: web.dev, render-blocking CSS
+// (https://web.dev/articles/critical-rendering-path/render-blocking-css).
 
 // A timeline is a sequence of (event, time-in-ms) pairs the browser would log.
 interface Step {

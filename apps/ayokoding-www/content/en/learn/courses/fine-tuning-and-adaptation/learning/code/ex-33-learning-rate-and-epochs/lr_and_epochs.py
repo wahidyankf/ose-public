@@ -21,7 +21,7 @@ SWEEP: list[SweepResult] = [  # => co-24: one row per combo, own comment per row
     SweepResult(learning_rate=5e-3, epochs=3, eval_pass_rate=0.40),  # => co-24: rate far too high -- training genuinely diverged
 ]  # => co-24: closes SWEEP
 
-BATCH_SIZE_VARIANTS_PASS_RATE_RANGE = (0.935, 0.945)  # => co-24: `[Unverified]` illustrative -- batch size 8/16/32 barely moved the result at all, held elsewhere constant
+BATCH_SIZE_VARIANTS_PASS_RATE_RANGE = (0.935, 0.945)  # => co-24: illustrative -- batch size 8/16/32 barely moved the result at all, held elsewhere constant (not a published benchmark)
 
 
 if __name__ == "__main__":  # => co-24: entry point -- runs only when this file executes directly, not on import

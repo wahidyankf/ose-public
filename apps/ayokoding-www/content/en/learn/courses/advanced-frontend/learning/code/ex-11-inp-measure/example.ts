@@ -3,8 +3,8 @@
 // Interaction to Next Paint (INP) measures RESPONSIVENESS: the latency from a user input (click,
 // keypress) to the next painted frame. Good <= 200 ms; poor > 500 ms, at the 75th percentile.
 //
-// > **Accuracy note**: INP good <= 200 ms / poor > 500 ms. INP replaced FID as a stable Core Web
-// > Vital on March 12, 2024. Source: web.dev, INP (https://web.dev/articles/inp).
+// Note: INP good <= 200 ms / poor > 500 ms. INP replaced FID as a stable Core Web
+// Vital on March 12, 2024. Source: web.dev, INP (https://web.dev/articles/inp).
 
 // An interaction's latency is the sum of its processing + presentation delay + (input) delay.
 interface Interaction {

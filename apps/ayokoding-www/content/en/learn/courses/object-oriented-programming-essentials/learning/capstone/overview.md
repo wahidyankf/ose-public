@@ -634,12 +634,11 @@ ValueError: insufficient funds
 This capstone is runnable end to end: a reader who copies the six files above (`domain/money.py`,
 `domain/account.py`, `domain/payment_method.py`, `domain/ledger_naive.py`, `domain/ledger.py`, plus the
 four `tests/test_*.py` files) into a `learning/capstone/code/`-shaped tree and runs `pytest -q` there
-reaches the identical `20 passed` result shown above, verified against a real CPython 3.13.12
-interpreter run (not merely described). Every mechanism combined here -- an encapsulated invariant
+reaches the identical `20 passed` result shown above, confirmed against a real CPython 3.13.12
+interpreter run. Every mechanism combined here -- an encapsulated invariant
 (co-02, co-17), polymorphism via a shared method (co-10), a `@dataclass` value object with `__eq__`/
 `__hash__` (co-05, co-06), composition over inheritance (co-13), and an `abc.ABC` interface (co-11) --
-traces to the same `docs.python.org` sources already cited in this topic's Accuracy notes; no new fact
-was needed to write this page.
+traces to `docs.python.org`'s published documentation for each construct.
 
 ---
 

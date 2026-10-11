@@ -2,7 +2,7 @@
 
 
 def synthetic_quality_score(precision_bits: int) -> float:
-    # => co-19: illustrative synthetic degradation curve, NOT a published benchmark number -- see Accuracy notes
+    # => co-19: illustrative synthetic degradation curve, NOT a published benchmark number -- see this course's References
     baseline = 100.0  # => an arbitrary quality ceiling -- fp16 loses nothing relative to this baseline
     degradation = {16: 0.0, 8: 1.5, 4: 6.0}[precision_bits]  # => illustrative points, not measured data
     return baseline - degradation  # => lower precision, more degradation -- monotonic by construction

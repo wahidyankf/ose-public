@@ -5,9 +5,9 @@
 // member is added but not handled, it falls through to the default and is NOT `never` -- a type
 // error. The "broken" variant below demonstrates that exact error.
 //
-// > **Accuracy note**: "When every type in a union contains a common property with literal types,
-// > TypeScript ... can narrow out the members of the union." Source: TS Handbook -- Narrowing
-// > (https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
+// Note: "When every type in a union contains a common property with literal types,
+// TypeScript ... can narrow out the members of the union." Source: TS Handbook -- Narrowing
+// (https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
 
 // A four-state union; every member carries the `status` discriminant.
 type State =

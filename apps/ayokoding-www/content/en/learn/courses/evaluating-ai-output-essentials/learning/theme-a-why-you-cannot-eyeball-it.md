@@ -15,7 +15,7 @@ little a ten-case dataset actually covers (co-12), but real enough to replace "v
 something a second person can independently re-check. Every code-medium example's real, runnable
 **Python 3.13** file lives under `learning/code/ex-NN-*/`, run for real with genuine captured
 output; ex-06 is a diagram-medium example and lives standalone under `learning/artifacts/`. (See
-this topic's [Accuracy notes](../overview.md#accuracy-notes) for the exact patch version captured.)
+this topic's [References](../overview.md#references) for the exact patch version captured.)
 
 ---
 

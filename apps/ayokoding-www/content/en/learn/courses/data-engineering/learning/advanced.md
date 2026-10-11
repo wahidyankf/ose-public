@@ -14,7 +14,7 @@ the boundary (co-21), closing with the append-only log as the source of truth ev
 just one replay of (co-12, co-05). Every worked example's real, runnable **Python 3.13** file lives
 under `learning/code/ex-NN-*/`, run for real with genuine captured output. Every example in this
 band is pure Python -- Airflow's DAG semantics are simulated in-memory, matching this course's
-no-live-service discipline. (See this topic's [Accuracy notes](../overview.md#accuracy-notes) for
+no-live-service discipline. (See this topic's [References](../overview.md#references) for
 the note on Airflow 3's `schedule_interval` &rarr; `schedule` rename.)
 
 ---

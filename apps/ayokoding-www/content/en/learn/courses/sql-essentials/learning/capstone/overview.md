@@ -522,11 +522,10 @@ This capstone is runnable end to end: a reader who copies the files above into a
 `learning/capstone/code/`-shaped tree, applies `schema.sql` then `seed.sql` with the `sqlite3` CLI, runs
 `pytest -q`, runs `demo_bulk_update.py`, and finally applies `migrate_add_column.sql` reaches the
 output blocks shown in Steps 1 through 4, verified against SQLite and a
-real CPython interpreter run (not merely described). Every mechanism combined here -- a 3NF schema with
+real CPython interpreter run. Every mechanism combined here -- a 3NF schema with
 PK/FK constraints (co-01, co-05, co-07), parameterized CRUD (co-19, co-20), a `JOIN` + `GROUP BY` report
 (co-13, co-15), a `with conn:` rollback-on-failure transaction (co-18), and a safe additive migration
-(co-22, co-24) -- traces to a primary source already cited in this topic's Accuracy notes; no new fact
-was needed to write this page.
+(co-22, co-24) -- traces to the SQLite and CPython documentation for each construct used.
 
 ---
 

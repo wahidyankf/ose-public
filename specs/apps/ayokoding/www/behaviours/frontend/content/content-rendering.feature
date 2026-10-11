@@ -99,3 +99,13 @@ Feature: Content Rendering
     When a visitor opens a content page containing inline code
     Then the inline code shows no backtick characters before or after it
     And the inline code uses the surrounding text's font weight
+
+  # UWT-005 fix (phase-8 rule-15 retest): a long unbreakable inline code token must never force
+  # the page to pan horizontally on a phone.
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Course content never scrolls the document horizontally at 375
+  @integration-exempt
+  Scenario: Course content never scrolls the document horizontally at 375
+    Given a content page containing a long inline code token on a phone-wide article
+    When its prose renders at a 375px viewport
+    Then the inline code chips break within themselves instead of widening the page
+    And the fenced code blocks stay confined to the article with an internal horizontal scroll

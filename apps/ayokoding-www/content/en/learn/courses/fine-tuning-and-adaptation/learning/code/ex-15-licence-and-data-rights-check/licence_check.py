@@ -8,21 +8,21 @@ from dataclasses import dataclass  # => co-31: two independent rights checks -- 
 
 @dataclass(frozen=True)  # => co-31: frozen -- a rights-check record should not mutate after the fact
 class RightsCheck:  # => co-31: co-31's two independent checks -- base-model licence AND training-data rights
-    base_model_licence: str  # => co-31: the base checkpoint's actual licence, verified against its model card
+    base_model_licence: str  # => co-31: the base checkpoint's actual licence, taken from its model card
     licence_permits_commercial_finetune: bool  # => co-31: does that licence allow a fine-tuned DERIVATIVE in a commercial product?
     training_data_source: str  # => co-31: where the training examples actually came from
     data_rights_permit_training: bool  # => co-31: does Vantage actually hold the right to train on this data?
 
 
 CANDIDATE_CHECK = RightsCheck(  # => co-31: the vocabulary-adapter project's own rights check, run BEFORE any training
-    base_model_licence="Apache 2.0",  # => co-31: `Qwen/Qwen2.5-0.5B-Instruct`'s verified licence -- see this course's Accuracy notes
+    base_model_licence="Apache 2.0",  # => co-31: `Qwen/Qwen2.5-0.5B-Instruct`'s Apache 2.0 licence per its model card -- see this course's References
     licence_permits_commercial_finetune=True,  # => co-31: Apache 2.0 permits commercial derivative use, including fine-tuning
     training_data_source="Vantage's own historical support tickets (internal, first-party)",  # => co-31: first-party data
     data_rights_permit_training=True,  # => co-31: Vantage's own Terms of Service reserve the right to use ticket data for product improvement
 )  # => co-31: closes CANDIDATE_CHECK
 
 REJECTED_ALTERNATIVE_CHECK = RightsCheck(  # => co-31: a rejected candidate base model, kept here as the contrasting failure case
-    base_model_licence="Custom, non-commercial research licence",  # => co-31: `[Unverified]` illustrative -- some base models ship under exactly this kind of licence
+    base_model_licence="Custom, non-commercial research licence",  # => co-31: illustrative -- some base models ship under exactly this kind of licence
     licence_permits_commercial_finetune=False,  # => co-31: a non-commercial licence blocks Vantage's for-profit product use outright
     training_data_source="Vantage's own historical support tickets (internal, first-party)",  # => co-31: same data, different base model
     data_rights_permit_training=True,  # => co-31: the data side is fine here -- the licence side is what fails

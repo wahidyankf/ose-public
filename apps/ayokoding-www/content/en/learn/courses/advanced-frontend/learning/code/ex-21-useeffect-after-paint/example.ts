@@ -5,9 +5,9 @@
 // are the right place to sync with something external (a subscription, the document title) without
 // blocking paint.
 //
-// > **Accuracy note**: "Effects run at the end of a commit after the screen updates." Source:
-// > react.dev, Synchronizing with Effects / useEffect
-// > (https://react.dev/reference/react/useEffect).
+// Note: "Effects run at the end of a commit after the screen updates." Source:
+// react.dev, Synchronizing with Effects / useEffect
+// (https://react.dev/reference/react/useEffect).
 
 // The ordered log of WHAT happened and WHEN during one render commit.
 const trace: string[] = []; // => entries are pushed in execution order

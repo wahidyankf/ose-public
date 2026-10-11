@@ -14,7 +14,7 @@ from dataclasses import asdict, dataclass
 class DeploymentManifest:  # => co-24: weights + runtime + config, versioned as ONE unit
     model_id: str
     model_revision: str
-    framework_version_pin: str  # => `[Unverified]` -- see this course's Accuracy notes
+    framework_version_pin: str  # => placeholder -- pin the real framework version at actual deploy time
     replica_count: int
     max_batch_slots: int
 
@@ -23,7 +23,7 @@ def package_deployment(model_id: str, revision: str, replica_count: int, max_bat
     manifest = DeploymentManifest(
         model_id=model_id,
         model_revision=revision,
-        framework_version_pin="[Unverified]-pin-at-deploy-time",
+        framework_version_pin="PLACEHOLDER-pin-at-deploy-time",
         replica_count=replica_count,
         max_batch_slots=max_batch_slots,
     )

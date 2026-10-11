@@ -7,9 +7,9 @@ weight: 1
 
 ## Prerequisites
 
-- **Prior topics**: `creating-ai-powered-apps` (a working model call, structured output) --
-  `[Unverified]` this course is not yet present in the AyoKoding course library on disk, so no link
-  is given here; **software-testing** ([Software Testing](../software-testing/learning/overview.md))
+- **Prior topics**: [Creating AI-Powered Apps](../creating-ai-powered-apps/learning/overview.md)
+  (a working model call, structured output);
+  **software-testing** ([Software Testing](../software-testing/learning/overview.md))
   gives the assertion mindset -- fixtures, test doubles, and the habit of writing down what "pass"
   means before running anything -- that this course's scorers and runner directly reuse; **just
   enough python** ([Just Enough Python](../just-enough-python/learning/overview.md)) is assumed
@@ -132,39 +132,33 @@ never a fabricated one.
   score something subjective, this course is out of road. Go to
   [`evaluating-ai-systems-in-depth`](../evaluating-ai-systems-in-depth/overview.md).
 
-## Accuracy notes
+## References
 
-> Dated per this topic's own accuracy-note discipline: every volatile, version-pinned, or
-> market-dependent fact below is flagged or dated here rather than stated unqualified in the stable
-> spine above.
+> Fast-moving facts -- vendor, framework, and pricing details -- are stated below with their own
+> volatility noted, rather than unqualified in the stable spine above.
 
-- 2026-07-26 -- **durable spine**: the discipline of fixing a dataset, fixing a scoring rule, and
-  comparing two runs predates LLMs entirely and is independent of any model, vendor, or framework.
-  Nothing in this course's spine names a product.
-- 2026-07-26 -- Anthropic's published eval principles are "Be task-specific ... Automate when
-  possible ... Prioritize volume over quality"; the "prioritize volume" guidance is the one that
-  most surprises engineers coming from hand-written unit tests. Source:
-  [Anthropic -- Develop your tests](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
-  (source: Anthropic -- Develop your tests (three principles quoted verbatim: "Be task-specific",
-  "Automate when possible", "Prioritize volume over quality") --
-  https://platform.claude.com/docs/en/test-and-evaluate/develop-tests ; carried over from this
-  course's syllabus source, accessed 2026-07-22) -- re-verify the wording if this course is
-  revised.
-- 2026-07-26 -- `[Unverified]` **volatile, accuracy-note only**: eval-framework names, hosted eval
-  products, and their schemas change fast. This course deliberately uses a plain JSONL file and
-  `pytest` so nothing in the spine depends on a framework.
-- 2026-07-26 -- `[Unverified]` **volatile**: `PRICE_PER_TOKEN` in this topic's capstone runner is a
-  placeholder snapshot for the worked example only -- a real project reads its per-token cost from
-  live config, never a hard-coded constant.
-- 2026-07-26 -- **volatile, version-pinned**: this topic's "Confirm your toolchain" check and every
-  worked-example transcript were captured against **Python 3.13.12** and **pytest 9.1.1** --
-  already-superseded patch releases by the time you read this. The stable spine intentionally states
-  only the unpinned **Python 3.13** minor version; re-verify the printed transcripts if re-running
-  the examples against a later patch.
-- 2026-07-26 -- **volatile, product sunset**: `learning/overview.md`'s "Read more" list cites
-  OpenAI's Evals docs for its golden-JSONL + testing-criteria shape. OpenAI has announced this
-  platform becomes read-only 2026-10-31 and shuts down 2026-11-30 -- re-verify or replace this
-  citation at the next revision after that date.
+- The discipline of fixing a dataset, fixing a scoring rule, and comparing two runs predates LLMs
+  entirely and is independent of any model, vendor, or framework. Nothing in this course's spine
+  names a product.
+- Anthropic's published eval principles are "Be task-specific ... Automate when possible ...
+  Prioritize volume over quality"; the "prioritize volume" guidance is the one that most surprises
+  engineers coming from hand-written unit tests.
+  Source: [Anthropic -- Develop your tests](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
+- Eval-framework names, hosted eval products, and their schemas change fast; the framework names in
+  older write-ups are frequently out of date, so check a current source before relying on one. This
+  course deliberately uses a plain JSONL file and `pytest` so nothing in the spine depends on a
+  framework.
+- `PRICE_PER_TOKEN` in this topic's capstone runner is a placeholder snapshot for the worked example
+  only -- it is not a current market rate -- and a real project reads its per-token cost from live
+  config, never a hard-coded constant.
+- This topic's "Confirm your toolchain" check and every worked-example transcript were captured
+  (snapshot 2026-07-26) against **Python 3.13.12** and **pytest 9.1.1** -- already-superseded patch
+  releases by the time you read this. The stable spine intentionally states only the unpinned
+  **Python 3.13** minor version; if you re-run the examples against a later patch, expect the
+  printed patch versions to differ.
+- `learning/overview.md`'s "Read more" list cites OpenAI's Evals docs for its golden-JSONL +
+  testing-criteria shape. OpenAI has announced this platform becomes read-only 2026-10-31 and shuts
+  down 2026-11-30 -- the citation will need replacing after that date.
 
 ---
 

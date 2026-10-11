@@ -25,6 +25,13 @@ let mockSearchParams = new URLSearchParams();
 vi.mock("next/navigation", () => ({
   usePathname: () => mockPathname,
   useSearchParams: () => mockSearchParams,
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+}));
+
+// The Header (used only by the drawer-close regression's general-navigation branch) pulls the
+// theme context; mirror responsive.steps.tsx's mock.
+vi.mock("next-themes", () => ({
+  useTheme: () => ({ theme: "light", setTheme: vi.fn() }),
 }));
 
 vi.mock("@/lib/trpc/client", () => ({
@@ -122,6 +129,7 @@ import { renderCoursePathPage } from "../render-course-path-page";
 import { PathRail } from "@/features/course-paths/shell/path-rail";
 // eslint-disable-next-line import/first
 import { MobileNav } from "@/features/app-shell/shell/mobile-nav";
+import { Header } from "@/features/app-shell/shell/header";
 // eslint-disable-next-line import/first
 import { PathBanner } from "@/features/course-paths/shell/path-banner";
 // eslint-disable-next-line import/first
@@ -334,6 +342,68 @@ describeFeature(feature, ({ Scenario }) => {
         await new Promise((resolve) => setTimeout(resolve, 0));
       });
       expect(document.activeElement).toBe(trigger);
+    });
+  });
+
+  // UWT-008 fix (phase-8 rule-15 retest): picking a course inside the pocket drawer must close
+  // the drawer, matching the primary-navigation links' pre-existing behaviour. RED until the
+  // drawer wraps its rail in a click handler that clears the open state.
+  Scenario("Picking a course in the pocket drawer closes the drawer", ({ Given, When, Then, And }) => {
+    Given("a reader has the pocket drawer open from a course's path readout", () => {
+      mockPathname = "/en/learn/courses/just-enough-python";
+      mockSearchParams = new URLSearchParams({ path: fixtureManifest.pathId });
+      cleanup();
+      render(
+        <MobileNavOpenProvider>
+          <PathBanner locale="en" pathTitle="Python Fundamentals" courseIndex={2} totalCourses={3} />
+          <MobileNavConsumer />
+        </MobileNavOpenProvider>,
+      );
+      fireEvent.click(screen.getByRole("button", { name: /Open path course list/i }));
+    });
+
+    When("they pick another course's row in the drawer", async () => {
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      const drawerNav = screen.getByRole("navigation", { name: /course list/ });
+      const rows = drawerNav.querySelectorAll("a");
+      expect(rows.length).toBeGreaterThanOrEqual(2);
+      fireEvent.click(rows[1]!);
+    });
+
+    Then("the drawer closes and the drawer-open state is cleared", async () => {
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      expect(screen.queryByRole("navigation", { name: /course list/ })).toBeNull();
+    });
+
+    And("the primary navigation links still close the drawer as before", async () => {
+      // Exercise the untouched general-navigation branch the way the responsive steps do: the
+      // header hamburger opens the drawer in menu mode (no path context, so `active` is null and
+      // the drawer renders its primary-nav links).
+      mockSearchParams = new URLSearchParams();
+      cleanup();
+      render(
+        <MobileNavOpenProvider>
+          <Header locale="en" />
+          <MobileNavConsumer />
+        </MobileNavOpenProvider>,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Open navigation menu" }));
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      // Radix marks the closed-sheet content `aria-hidden` in this mocked environment, so query
+      // the raw links inside the drawer for this mechanical close-on-pick check.
+      const drawer = document.querySelector("#mobile-nav-drawer");
+      expect(drawer).toBeTruthy();
+      fireEvent.click(drawer!.querySelectorAll("a")[0]!);
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      expect(document.querySelector("#mobile-nav-drawer")).toBeNull();
     });
   });
 

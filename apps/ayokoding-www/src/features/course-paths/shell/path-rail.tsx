@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { contentUrl } from "@/features/content/core/content-url";
@@ -5,6 +8,7 @@ import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
 import type { PathManifest } from "../core/schemas";
 import { coursePositionInManifest, manifestCourseOrder, slugForCourseId } from "./course-path-nav";
+import { scrollActiveCourseIntoView } from "./active-course-scroll";
 import { PathPositionNumber } from "./path-position-number";
 
 /**
@@ -44,6 +48,19 @@ export interface PathRailProps {
 export function PathRail({ locale, manifest, currentCourseId, courseTitles }: PathRailProps) {
   const courses = manifestCourseOrder(manifest);
   const { index, total } = coursePositionInManifest(manifest, currentCourseId);
+  // The current course's row — handed to scrollActiveCourseIntoView below (plan
+  // ayokoding-learn-revamp-01 §4.3, Decision D5).
+  const currentRowRef = useRef<HTMLLIElement>(null);
+
+  // Auto-scroll the current course's row into the rail's own scroll container — keyed on
+  // currentCourseId so it runs on mount and whenever the reader moves to another course. The
+  // helper itself decides "only when hidden": an already-visible row never triggers a jump,
+  // and it only ever moves the container's scrollTop, never the page.
+  useEffect(() => {
+    if (currentRowRef.current) {
+      scrollActiveCourseIntoView(currentRowRef.current);
+    }
+  }, [currentCourseId]);
 
   return (
     <nav aria-label={`${manifest.title} course list`} className="flex flex-col gap-3 text-sm">
@@ -58,7 +75,7 @@ export function PathRail({ locale, manifest, currentCourseId, courseTitles }: Pa
           const title = courseTitles[course.id] ?? course.id;
 
           return (
-            <li key={course.id} className="flex items-center gap-1">
+            <li key={course.id} className="flex items-center gap-1" ref={isCurrent ? currentRowRef : undefined}>
               {/* Position number (plan ayokoding-learn-revamp-01 §4.2): outside the link, so the
                   link's aria-label stays exactly the title, and the number stays visible on the
                   current row too (Decision D4). */}

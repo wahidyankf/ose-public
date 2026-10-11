@@ -1,7 +1,7 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { act, cleanup, render, screen, within, fireEvent } from "@testing-library/react";
-import { expect, vi } from "vitest";
+import { expect, vi, type MockInstance } from "vitest";
 
 // course-paths plan (ayokoding-learning-path-03-navigation-ui), Cycles 2.2, 2.8, 2.9 — step
 // bindings for path-order-nav.feature's 3 scenarios, reusing the fixtures and rendering
@@ -142,6 +142,78 @@ function MobileNavConsumer() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// plan ayokoding-learn-revamp-01 §4.3 (Phase 5 RED) — scroll-geometry mocks for the S5 scenario.
+// jsdom has no layout, so the rail's scroll container gets its `scrollHeight`/`clientHeight`
+// pinned with Object.defineProperty and HTMLElement.prototype.getBoundingClientRect is patched
+// per element (the container reports top 0 / height 300; every rail row reports top 900 /
+// height 44, so the current row — course 3 of 3 — starts below the container's visible box).
+// window.scrollTo is spied so the "page itself stays scrolled to the top" step can prove the
+// helper never touches it (tech-docs §4.3: container `scrollTop` only).
+// ---------------------------------------------------------------------------
+
+let railScrollContainer: HTMLElement | null = null;
+let railJsx: React.ReactElement | null = null;
+let scrollToSpy: MockInstance | null = null;
+let rectPatchInstalled = false;
+
+function jsdomRect(top: number, height: number): DOMRect {
+  return {
+    top,
+    height,
+    bottom: top + height,
+    left: 0,
+    x: 0,
+    y: top,
+    width: 0,
+    right: 0,
+    toJSON: () => ({}),
+  } as unknown as DOMRect;
+}
+
+function railRectMock(this: HTMLElement): DOMRect {
+  if (this === railScrollContainer) return jsdomRect(0, 300);
+  if (this instanceof HTMLLIElement) return jsdomRect(900, 44);
+  return jsdomRect(0, 0);
+}
+
+function installRailScrollGeometry(): void {
+  // @amiceli/vitest-cucumber runs every STEP as its own vitest test, so there is no per-scenario
+  // afterEach to lean on: state lives in these module variables across a scenario's steps, the
+  // installer re-cleans anything a previous (failed) run left behind, and the S5 And step restores
+  // best-effort. S5 is this file's last scenario, and a leaked patch cannot outlive the worker.
+  restoreRailScrollGeometry();
+
+  railScrollContainer = document.createElement("div");
+  document.body.append(railScrollContainer);
+  Object.defineProperty(railScrollContainer, "scrollHeight", { configurable: true, value: 1200 });
+  Object.defineProperty(railScrollContainer, "clientHeight", { configurable: true, value: 300 });
+  railScrollContainer.style.overflowY = "auto";
+
+  // An own property on HTMLElement.prototype shadows Element.prototype's method for HTML
+  // elements; deleting it below restores the original without ever overwriting the descriptor.
+  Object.defineProperty(HTMLElement.prototype, "getBoundingClientRect", {
+    configurable: true,
+    writable: true,
+    value: railRectMock,
+  });
+  rectPatchInstalled = true;
+
+  scrollToSpy = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+}
+
+function restoreRailScrollGeometry(): void {
+  if (rectPatchInstalled) {
+    delete (HTMLElement.prototype as unknown as { getBoundingClientRect?: unknown }).getBoundingClientRect;
+    rectPatchInstalled = false;
+  }
+  scrollToSpy?.mockRestore();
+  scrollToSpy = null;
+  railScrollContainer?.remove();
+  railScrollContainer = null;
+  railJsx = null;
+}
+
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature"),
 );
@@ -188,15 +260,20 @@ describeFeature(feature, ({ Scenario }) => {
         expect(window.innerWidth).toBeGreaterThanOrEqual(768);
       });
 
+      // "the page renders" is shared with the S5 scenario below: each Given stages what this step
+      // renders — the S5 Given also stages the scroll container the rail must render into.
       When("the page renders", () => {
         cleanup();
         render(
-          <PathRail
-            locale="en"
-            manifest={fixtureManifest}
-            currentCourseId="just-enough-python"
-            courseTitles={courseTitles}
-          />,
+          railJsx ?? (
+            <PathRail
+              locale="en"
+              manifest={fixtureManifest}
+              currentCourseId="just-enough-python"
+              courseTitles={courseTitles}
+            />
+          ),
+          railScrollContainer ? { container: railScrollContainer } : undefined,
         );
       });
 
@@ -259,4 +336,58 @@ describeFeature(feature, ({ Scenario }) => {
       expect(document.activeElement).toBe(trigger);
     });
   });
+
+  // plan ayokoding-learn-revamp-01 §4.3 (Phase 5 RED) — S5. The rail renders inside a container
+  // whose scroll geometry mocks a sidebar too short for the list (Decision D5/D11's hidden-row
+  // state), so rendering must scroll that container — and never the page.
+  Scenario(
+    "The path rail scrolls the current course into view without moving the page",
+    ({ Given, When, Then, And }) => {
+      Given("a reader opens a course whose rail row starts below the visible part of the sidebar", () => {
+        installRailScrollGeometry();
+        railJsx = (
+          <PathRail
+            locale="en"
+            manifest={fixtureManifest}
+            // Course 3 of 3 — the row whose mocked rect (top 900) starts below the container's
+            // visible box (top 0, height 300).
+            currentCourseId="data-structures-and-algorithms-essentials"
+            courseTitles={courseTitles}
+          />
+        );
+      });
+
+      When("the page renders", () => {
+        cleanup();
+        render(
+          railJsx ?? (
+            <PathRail
+              locale="en"
+              manifest={fixtureManifest}
+              currentCourseId="just-enough-python"
+              courseTitles={courseTitles}
+            />
+          ),
+          railScrollContainer ? { container: railScrollContainer } : undefined,
+        );
+      });
+
+      Then("the sidebar scrolls so the current course's row is fully visible", () => {
+        expect(railScrollContainer, "the S5 Given must have installed a scroll container").not.toBeNull();
+        // GREEN: the effect centres the hidden row → 0 + (900 - 0) - (300 - 44) / 2 = 772.
+        // RED: the rail has no auto-scroll wiring yet, so scrollTop never leaves 0.
+        expect(railScrollContainer!.scrollTop).toBeGreaterThan(0);
+      });
+
+      And("the page itself stays scrolled to the top", () => {
+        expect(scrollToSpy, "the S5 Given must have spied window.scrollTo").not.toBeNull();
+        expect(scrollToSpy).not.toHaveBeenCalled();
+        expect(window.scrollY).toBe(0);
+
+        // Best-effort teardown now that the scenario reached its last step; if an earlier step
+        // failed first, the next installRailScrollGeometry() re-cleans instead.
+        restoreRailScrollGeometry();
+      });
+    },
+  );
 });

@@ -787,3 +787,64 @@ Then("no preview item shows a second number inside the course title", async ({ p
   );
   expect(bareTitles).toEqual(["Just Enough Python", "Data Structures & Algorithms Essentials"]);
 });
+
+// ---------------------------------------------------------------------------
+// path-order-nav.feature, scenario 4 (plan ayokoding-learn-revamp-01, Phase 5 RED) — S5: the
+// desktop rail auto-scrolls its own overflow-y: auto container so the current course's row is
+// fully visible, and the page itself never moves (tech-docs.md §4.3, Decisions D5/D11).
+// sql-essentials is the last of the backend-track fixture's three courses, so at the 1280×200
+// viewport below its row starts below the visible part of the sidebar. The When step ("the page
+// renders") is shared with cost-of-living-calculator.steps.ts (identical networkidle semantics) —
+// not redefined here, same as the canonical-fallback scenario above.
+// ---------------------------------------------------------------------------
+
+const RAIL_SCROLL_VIEWPORT = { width: 1280, height: 200 };
+
+Given("a reader opens a course whose rail row starts below the visible part of the sidebar", async ({ page }) => {
+  await page.setViewportSize(RAIL_SCROLL_VIEWPORT);
+  await page.goto("/en/learn/courses/sql-essentials?path=careers/immediately-effective/backend-track");
+  await page.waitForLoadState("networkidle");
+});
+
+Then("the sidebar scrolls so the current course's row is fully visible", async ({ page }) => {
+  const rail = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+  const currentLink = rail.locator('a[aria-current="page"]');
+  await expect(currentLink).toHaveCount(1);
+
+  const linkBox = await currentLink.boundingBox();
+  expect(linkBox).not.toBeNull();
+
+  // The nearest ancestor whose overflow-y is auto/scroll AND whose content actually overflows —
+  // the same walk the auto-scroll helper performs (tech-docs.md §4.3's findScrollContainer).
+  const scrollContainer = await currentLink
+    .evaluateHandle((link) => {
+      let node = link.parentElement as HTMLElement | null;
+      while (node && node !== document.body) {
+        const overflowY = window.getComputedStyle(node).overflowY;
+        if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight) {
+          return node;
+        }
+        node = node.parentElement as HTMLElement | null;
+      }
+      return null;
+    })
+    .then((handle) => handle.asElement());
+  expect(scrollContainer).not.toBeNull();
+
+  const containerBox = await scrollContainer!.boundingBox();
+  expect(containerBox).not.toBeNull();
+
+  // "Fully visible" = the row's box lies inside the scroll container's visible box. Vertical
+  // containment is the behaviour under test — before the fix the row starts below the container's
+  // bottom edge; horizontal containment holds trivially because rail rows truncate.
+  expect(linkBox!.y).toBeGreaterThanOrEqual(containerBox!.y);
+  expect(linkBox!.y + linkBox!.height).toBeLessThanOrEqual(containerBox!.y + containerBox!.height);
+  expect(linkBox!.x).toBeGreaterThanOrEqual(containerBox!.x);
+  expect(linkBox!.x + linkBox!.width).toBeLessThanOrEqual(containerBox!.x + containerBox!.width);
+});
+
+// playwright-bdd has no `And` keyword — the feature's And step binds via `Then` (its text is what
+// matches), the same convention as every other And step in this file.
+Then("the page itself stays scrolled to the top", async ({ page }) => {
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+});

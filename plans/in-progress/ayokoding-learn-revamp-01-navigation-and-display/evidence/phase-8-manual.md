@@ -53,13 +53,29 @@ Learn order (id): ![1280](./phase-8-learn-order-id-1280px.png)
 ## Rendered production sign-off (server = the plain production build above)
 
 The manual matrix and these six subset captures come from the same server that serves the plain
-production build, so the "rendered production sign-off" and the matrix share one server pass:
+production build, so the "rendered production sign-off" and the matrix share one server pass.
+**Honest scope note:** the plan's row asked for course-in-path AND content at 375/1280 in BOTH
+locales (8 captures); only SIX exist — the two `phase-8-prodbuild-course-in-path-id-*.png` cannot
+exist because no id course page can open path context (`/id/learn/…` is 404 — the id course
+library is the plan's out-of-scope surface, recorded as follow-up row 4 in `learnings.md`, with
+404 evidence in the rule-15 retest captures), so the id-locale production captures are the two
+`content-id` ones and the `course-in-path` pair reuses the en pages. The label on the captures
+below is the accurate one; the row's re-scoped intent (id rendered correctly on production) is
+satisfied by the id `content` pair plus the id learn-order at 1280.
 
-Course in path: ![prodbuild en 375](./phase-8-prodbuild-course-in-path-en-375px.png) ![prodbuild en 1280](./phase-8-prodbuild-course-in-path-en-1280px.png) ![prodbuild id 375](./phase-8-prodbuild-content-id-375px.png) ![prodbuild id 1280](./phase-8-prodbuild-content-id-1280px.png)
-Content: ![prodbuild en 375](./phase-8-prodbuild-content-en-375px.png) ![prodbuild en 1280](./phase-8-prodbuild-content-en-1280px.png)
+Course in path: ![prodbuild en 375](./phase-8-prodbuild-course-in-path-en-375px.png) ![prodbuild en 1280](./phase-8-prodbuild-course-in-path-en-1280px.png)
+Content: ![prodbuild en 375](./phase-8-prodbuild-content-en-375px.png) ![prodbuild en 1280](./phase-8-prodbuild-content-en-1280px.png) ![prodbuild id 375](./phase-8-prodbuild-content-id-375px.png) ![prodbuild id 1280](./phase-8-prodbuild-content-id-1280px.png)
 
 Matches the selected designs in prd.md (number gutter syllabus, numbered rail with auto-scroll,
 backtick-free inline code, un-link-styled headings, References section).
+
+## Locale-coverage statement (audit item 10)
+
+`en` and `id` were both exercised: en full matrix; id content at 375/768/1280, the id blog page
+and `/id/belajar/ikhtisar` order at 1280, the rule-15 triad in both locales (with the id 404
+evidence). The path-syllabus/course-in-path manual rows are en-only because the id path surfaces
+do not exist in this plan's content scope (`content/id/**` non-goal; prd.md) — the limitation is
+recorded here rather than hidden.
 
 ## Tester gates
 

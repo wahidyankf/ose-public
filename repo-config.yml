@@ -1234,7 +1234,7 @@ gates:
         executable: bash
         args:
           - literal: -c
-          - literal: "./rhino harness adapters validate && exec bash .commandcode/hooks/policy-hooks.test.sh"
+          - literal: "./rhino harness adapters validate && bash .commandcode/hooks/policy-hooks.test.sh && exec bash .muse/hooks/run-policy-hook.test.sh"
       run-on:
         pre-commit: {}
         pull-request: {}

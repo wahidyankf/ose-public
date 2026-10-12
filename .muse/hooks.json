@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "bash \"$(git rev-parse --show-toplevel)/.muse/hooks/run-policy-hook.sh\" agent-policy",
+            "timeout": 30,
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      }
+    ]
+  }
+}

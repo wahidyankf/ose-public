@@ -15,7 +15,7 @@ try {
     if (
       args.length !== 2 ||
       args[0] !== "--harness" ||
-      !["claude", "codex", "opencode", "commandcode"].includes(args[1])
+      !["claude", "codex", "opencode", "commandcode", "muse"].includes(args[1])
     )
       throw new Error("Invalid harness");
     harness = args[1];

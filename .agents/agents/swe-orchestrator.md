@@ -58,7 +58,7 @@ the restriction. An adopter's copy lists only the family agents that repository 
   [SWE Releaser](swe-releaser.md) to cut, deploy, or repin.
 - [Repo Setup Manager](repo-setup-manager.md) to prove the checkout's baseline before plan work begins.
 
-Independent tasks run in parallel within the concurrency cap and dispatch order of
+Independent tasks run in parallel within the concurrency cap (N=3) and dispatch order of
 [Subagent Orchestration](../../repo-governance/development/agents/subagent-orchestration.md). Each result is verified
 before the next task relies on it, and the results are merged into one report.
 

@@ -310,7 +310,7 @@
     {
       "id": "agent/swe-orchestrator",
       "path": ".agents/agents/swe-orchestrator.md",
-      "digest": "9595824fa2f66ef32cc7de737e3701b91c66d33f56ee6d3ea57aa7a1e5bba82a"
+      "digest": "cb6e7dfb4baca86baf94e64c06bd58d4112f65b64ea49adb78f0da7823bb566c"
     },
     {
       "id": "agent/swe-releaser",

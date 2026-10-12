@@ -71,6 +71,12 @@ write_synthetic_terms() {
 	} >"$path"
 }
 
+# Fabricated locally, never issued by a service. Assemble the detector shape
+# only at runtime; neither a private key nor a complete token is stored here.
+write_inert_credential() {
+	printf '%s%s%s%s%s%s\n' 'ghp' '_' '8nW3cP6aB' '4yL9dU2xD' '7eS0qJ5rG' '1tM8vK3fZ' >"$1"
+}
+
 shopt -s nullglob
 cases=("$here"/cases/*.sh)
 shopt -u nullglob

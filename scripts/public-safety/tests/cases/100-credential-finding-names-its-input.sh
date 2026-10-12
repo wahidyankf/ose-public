@@ -8,19 +8,15 @@ run() {
 	terms="$CASE_TMP/terms.txt"
 	write_synthetic_terms "$terms"
 
-	# A real key generated at runtime, as in the disclosure case: the token
-	# detectors validate a checksum, so a token-shaped string would not fire.
-	openssl genrsa -out "$CASE_TMP/key.pem" 2048 2>/dev/null || {
-		echo "    cannot generate a key" >&2
-		return 1
-	}
+	# An independently fabricated, unissued detector fixture; never a key.
+	write_inert_credential "$CASE_TMP/inert.txt"
 
 	repo="$CASE_TMP/repo"
 	mkdir -p "$repo/docs" "$CASE_TMP/tmp"
 	printf 'ordinary text\n' >"$repo/docs/clean.md"
 	{
 		printf 'rotation notes\n'
-		cat "$CASE_TMP/key.pem"
+		cat "$CASE_TMP/inert.txt"
 	} >"$repo/docs/rotation.md"
 
 	# The credential sits in the second input, so a finding that named the

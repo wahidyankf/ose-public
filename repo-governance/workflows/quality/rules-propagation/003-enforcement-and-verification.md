@@ -56,7 +56,9 @@ A rule creates no obligation for another repository, per
 [Related Repositories](../../../conventions/structure/related-repositories.md#independent-repositories): the run
 records no sibling obligation, parity plan, or divergence record. A repository
 adopting from a shared catalog proposes a rule that holds beyond itself to that catalog, through the catalog's own
-delivery, published only after the catalog's outbound-safety screen passes.
+delivery, published only after the catalog's outbound-safety screen passes. A fan-out across members, at minimum
+ose-projects, MUST land in the catalog first. Members MUST adopt only from its published head, never from a branch or
+worktree. A member adoption MUST name the catalog head it copies.
 
 ## Adopter Decision: How Entry Becomes Automatic
 

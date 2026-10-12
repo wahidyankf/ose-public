@@ -36,13 +36,15 @@ for provenance, not as instructions for the current adapter layout.
 
 ## Platform Binding Directories
 
-The table below catalogs the four supported coding-agent harnesses — exactly the entries declared
-in `repo-config.yml` `harness:`. Columns record every surface each harness exposes so contributors
+The table below catalogs the five supported coding-agent harnesses — exactly the entries declared
+in `repo-config.yml` `harness:`, plus Muse, which ships a policy hook but no generated routes. Columns record every surface each harness exposes so contributors
 know which files to create or extend. Harnesses absent from the registry are not supported; adding
 one starts with a registry entry, not a row here.
 
 The predecessor rows were verified on 2026-08-26. The Command Code declaration is added on 2026-10-08;
-its actual repository leaf discovery and authenticated lifecycle remain unverified.
+its actual repository leaf discovery and authenticated lifecycle remain unverified. The Muse policy
+adapter is added on 2026-10-12; its hook allow path is verified by the adapter test and one live
+`muse exec` allow-proof, while broader installed-CLI discovery remains unverified.
 
 | Platform         | Reads root `AGENTS.md` natively?                  | Tool-specific instruction surface                                           | Project MCP config                                        | Custom-agent surface                                                                                    | Skills surface                                    | Status                                                                                            |
 | ---------------- | ------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -50,6 +52,7 @@ its actual repository leaf discovery and authenticated lifecycle remain unverifi
 | OpenCode         | Yes                                               | `.opencode/agents/` (auto-synced); reads `.agents/skills/` natively         | `opencode.json`                                           | `.opencode/agents/*.md`                                                                                 | reads `.agents/skills/` **and** `.agents/skills/` | Active                                                                                            |
 | OpenAI Codex CLI | Yes (since Apr 2025)                              | `AGENTS.md`, `AGENTS.override.md` (overrides), `.codex/config.toml`[^trust] | `.codex/config.toml` `[mcp_servers]`[^mcp]                | `.codex/agents/<name>.toml` standalone files **and** `[agents.<name>]` tables in `config.toml`[^agents] | `.agents/skills/`[^skills]                        | Partial (custom agents do not spawn by name from `codex exec`, 0.160.0, 2026-10-03)[^codex-spawn] |
 | Command Code     | Yes; actual binding discovery still needs a probe | `.commandcode/settings.json`                                                | `.commandcode/settings.json` `mcpServers` when configured | `.commandcode/agents/*.md` native leaves                                                                | Canonical `.agents/skills/` references            | Declared; runtime support remains `probe_required`                                                |
+| Muse             | Yes; no shim shipped                              | `.muse/hooks.json` (PreToolUse policy hook only)                            | None shipped                                              | None shipped                                                                                            | None shipped                                      | Declared; policy adapter verified, no generated routes                                            |
 
 [^codex-spawn]:
     The project `.codex/config.toml`, root `AGENTS.md`, and `.agents/skills/` load. On 2026-10-03, with codex-cli
@@ -196,6 +199,17 @@ native evidence, not a provider-call or discovery proof, and omission is not a c
 and Markdownlint. RHINO excludes directory names, so the declared `taste` scanner exclusion matches that name at any
 depth; no governed tracked `taste` directory exists when it is added. This does not disable learning or alter global
 Git settings. No optional instruction shim or duplicated skills tree is shipped.
+
+### Muse repository configuration
+
+[Settings](../../.muse/hooks.json) register one `PreToolUse` hook that pipes every tool payload through
+[the adapter](../../.muse/hooks/run-policy-hook.sh) to the existing endpoint as `--harness muse`. Muse
+honors exit statuses and ignores Claude-style stdout JSON decisions, so an allow stays silent with exit 0
+while every denial and every endpoint failure becomes stderr plus exit 2. The endpoint allowlist in
+`scripts/agent-policy-endpoint.mjs` names `muse`, and the adapter's six behavior cases run in the
+`harness-adapters` gate beside the Command Code transport tests. Muse reads the root `AGENTS.md` natively,
+so no instruction shim, agent routes, skills surface, MCP config, or install and deploy flow changes are
+shipped; the model stays unpinned everywhere.
 
 ### Provenance of pre-existing partial bindings
 

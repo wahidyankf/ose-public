@@ -6,6 +6,8 @@ import {
   pageLinkForCourseId,
   derivePathBadges,
   resolveCoursePathRenderData,
+  toCoursePathClientData,
+  EMPTY_COURSE_PATH_CLIENT_DATA,
   buildCourseTitleIndex,
   courseTitlesFromClientData,
   humanizeKebabSlug,
@@ -200,7 +202,7 @@ describe("resolveCoursePathRenderData", () => {
 
     const result = resolveCoursePathRenderData(
       searchParams,
-      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [] },
+      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [], outlineCourseIds: [] },
       "just-enough-python",
       "en",
       fallbackPrev,
@@ -218,7 +220,7 @@ describe("resolveCoursePathRenderData", () => {
   it("with no path context, falls back to the supplied prev/next unchanged", () => {
     const result = resolveCoursePathRenderData(
       new URLSearchParams(),
-      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [] },
+      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [], outlineCourseIds: [] },
       "just-enough-python",
       "en",
       fallbackPrev,
@@ -238,6 +240,7 @@ describe("resolveCoursePathRenderData", () => {
         manifests: [manifest],
         prerequisitesByCourse: { "just-enough-python": ["version-control-and-git"] },
         libraryCourseIds: ["version-control-and-git", "just-enough-python"],
+        outlineCourseIds: [],
       },
       "just-enough-python",
       "en",
@@ -267,6 +270,7 @@ describe("resolveCoursePathRenderData", () => {
           "data-structures-and-algorithms-essentials": ["version-control-and-git", "capstone-forge-ready"],
         },
         libraryCourseIds: ["version-control-and-git", "capstone-forge-ready"],
+        outlineCourseIds: [],
       },
       "data-structures-and-algorithms-essentials",
       "en",
@@ -283,7 +287,7 @@ describe("resolveCoursePathRenderData", () => {
   it("derives path badges only when there is no active context (canonical branch only)", () => {
     const withoutContext = resolveCoursePathRenderData(
       new URLSearchParams(),
-      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [] },
+      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [], outlineCourseIds: [] },
       "just-enough-python",
       "en",
       fallbackPrev,
@@ -293,7 +297,7 @@ describe("resolveCoursePathRenderData", () => {
 
     const withContext = resolveCoursePathRenderData(
       new URLSearchParams({ path: manifest.pathId }),
-      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [] },
+      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [], outlineCourseIds: [] },
       "just-enough-python",
       "en",
       fallbackPrev,
@@ -307,7 +311,7 @@ describe("resolveCoursePathRenderData", () => {
 
     const result = resolveCoursePathRenderData(
       searchParams,
-      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [] },
+      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [], outlineCourseIds: [] },
       "version-control-and-git",
       "en",
       fallbackPrev,
@@ -372,6 +376,7 @@ describe("courseTitlesFromClientData", () => {
       manifests: [extended],
       prerequisitesByCourse: {},
       libraryCourseIds: ["just-enough-python"],
+      outlineCourseIds: [],
       courseLinks: {
         "just-enough-python": { title: "Just Enough Python", slug: "learn/courses/just-enough-python" },
       },
@@ -381,6 +386,27 @@ describe("courseTitlesFromClientData", () => {
       "just-enough-python": "Just Enough Python",
       "does-not-exist": "Does Not Exist",
     });
+  });
+});
+
+describe("toCoursePathClientData — outlineCourseIds (AC-4.1 RED)", () => {
+  it("passes outlineCourseIds through from route data", () => {
+    const data = toCoursePathClientData(
+      {
+        contentMap: new Map(),
+        manifests: [],
+        prerequisitesByCourse: {},
+        libraryCourseIds: [],
+        outlineCourseIds: ["capstone-secure-service"],
+      },
+      "en",
+    );
+
+    expect(data.outlineCourseIds).toEqual(["capstone-secure-service"]);
+  });
+
+  it("EMPTY_COURSE_PATH_CLIENT_DATA carries no outline courses", () => {
+    expect(EMPTY_COURSE_PATH_CLIENT_DATA.outlineCourseIds).toEqual([]);
   });
 });
 

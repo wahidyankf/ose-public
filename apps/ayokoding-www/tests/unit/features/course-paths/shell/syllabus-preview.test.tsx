@@ -4,11 +4,13 @@ import { SyllabusPreview } from "../../../../../src/features/course-paths/shell/
 
 afterEach(cleanup);
 
-describe("SyllabusPreview (Cycle 3.1c-ii — arc landing single-role inline preview, R7)", () => {
+describe("SyllabusPreview (plan 02, Phase 4 — first-phase preview)", () => {
   it("renders a real <ol> so 'number is order' semantics carry over from path-landing's syllabus", () => {
     render(
       <SyllabusPreview
-        courseTitles={["Just Enough Python", "Just Enough Bash", "Version Control & Git", "Data Structures"]}
+        locale="en"
+        phaseTitle="Fixture core"
+        courseTitles={["Just Enough Python", "Just Enough Bash", "Version Control & Git"]}
       />,
     );
 
@@ -16,28 +18,42 @@ describe("SyllabusPreview (Cycle 3.1c-ii — arc landing single-role inline prev
     expect(list.tagName).toBe("OL");
   });
 
-  it("shows only the first phase's courses (capped at 3), never the whole manifest", () => {
+  it("names the first phase and lists that phase's courses", () => {
     render(
       <SyllabusPreview
-        courseTitles={["Just Enough Python", "Just Enough Bash", "Version Control & Git", "Data Structures"]}
+        locale="en"
+        phaseTitle="Fixture core"
+        courseTitles={[
+          "Just Enough Python",
+          "Just Enough Bash",
+          "Version Control & Git",
+          "Data Structures & Algorithms Essentials",
+        ]}
       />,
     );
 
+    expect(screen.getByText("Starts with Phase 1 · Fixture core:", { exact: false })).toBeTruthy();
     const items = screen.getAllByRole("listitem");
-    expect(items.length).toBe(3);
-    expect(screen.queryByText("Data Structures")).toBeNull();
+    expect(items.length).toBe(4);
+    expect(screen.getByText("Data Structures & Algorithms Essentials", { exact: false })).toBeTruthy();
   });
 
-  it("renders a 'Starts with:' label", () => {
-    render(<SyllabusPreview courseTitles={["Just Enough Python"]} />);
+  it("localizes the 'Starts with Phase 1' label on the id locale", () => {
+    render(<SyllabusPreview locale="id" phaseTitle="Fixture core" courseTitles={["Just Enough Python"]} />);
 
-    expect(screen.getByText(/Starts with:/i)).toBeTruthy();
+    expect(screen.getByText("Dimulai dengan Fase 1 · Fixture core:", { exact: false })).toBeTruthy();
   });
 
   it("numbers its courses by their path position, with the inline separator before each number (plan ayokoding-learn-revamp-01 §4.2)", () => {
     // Replaces the DWT-002 lock: titles no longer carry catalog numbers (Phase 3 strip), so the
     // rendered position number is now the ONLY number a preview item shows.
-    render(<SyllabusPreview courseTitles={["Just Enough Python", "Data Structures & Algorithms Essentials"]} />);
+    render(
+      <SyllabusPreview
+        locale="en"
+        phaseTitle="Fixture core"
+        courseTitles={["Just Enough Python", "Data Structures & Algorithms Essentials"]}
+      />,
+    );
 
     const items = screen.getAllByRole("listitem");
     expect(items[0]?.textContent).toBe("1 Just Enough Python");
@@ -50,7 +66,9 @@ describe("SyllabusPreview (Cycle 3.1c-ii — arc landing single-role inline prev
     // hydrated client tree diverge, and React logs "In HTML, <ol> cannot be a descendant of <p>"
     // plus a hydration-mismatch error at every arc-landing single-role render (caught live via
     // Playwright MCP at http://localhost:3101/en/learn/paths/careers/interview-ready).
-    const { container } = render(<SyllabusPreview courseTitles={["Just Enough Python"]} />);
+    const { container } = render(
+      <SyllabusPreview locale="en" phaseTitle="Fixture core" courseTitles={["Just Enough Python"]} />,
+    );
 
     const list = screen.getByRole("list");
     expect(list.closest("p")).toBeNull();

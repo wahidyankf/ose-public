@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import type { ContentMeta } from "@/features/content/core/types";
 
 const { fixtureManifest, contentMap } = vi.hoisted(() => {
   const manifest = {
@@ -8,7 +9,7 @@ const { fixtureManifest, contentMap } = vi.hoisted(() => {
     description: "Learn Python from the ground up.",
     courseOrder: ["just-enough-python"],
   };
-  const map = new Map([
+  const map: Map<string, ContentMeta> = new Map([
     [
       "en:learn/courses/just-enough-python",
       {
@@ -82,5 +83,24 @@ describe("loadRoutePathData — manifest-integrity course IDs are locale-indepen
     const [, passedCourseIds] = vi.mocked(loadManifests).mock.calls.at(-1) ?? [];
     expect(passedCourseIds).toContain("only-in-indonesian");
     expect(passedCourseIds).toContain("just-enough-python");
+  });
+});
+
+describe("loadRoutePathData — outlineCourseIds is locale-independent (AC-4.1)", () => {
+  it("reports an outline course declared in en for both the en and the id request", async () => {
+    contentMap.set("en:learn/courses/capstone-secure-service", {
+      title: "Capstone: Secure Service",
+      slug: "learn/courses/capstone-secure-service",
+      locale: "en",
+      weight: 0,
+      tags: [],
+      draft: false,
+      isSection: false,
+      filePath: "/tmp/z.md",
+      status: "outline",
+    });
+
+    expect((await loadRoutePathData("en")).outlineCourseIds).toContain("capstone-secure-service");
+    expect((await loadRoutePathData("id")).outlineCourseIds).toContain("capstone-secure-service");
   });
 });

@@ -298,14 +298,18 @@ describeFeature(feature, ({ Scenario }) => {
         );
       });
 
-      Then("the left rail lists that path's courses in manifest order with the current course marked", () => {
-        const rail = screen.getByRole("navigation", { name: "Python Fundamentals course list" });
-        const items = rail.querySelectorAll("li");
-        expect(items.length).toBe(3);
-        expect(items[0]?.textContent).toContain("Git");
-        expect(items[1]?.textContent).toContain("Just Enough Python");
-        expect(items[2]?.textContent).toContain("Data Structures");
-      });
+      Then(
+        "the left rail lists that path's courses grouped under phase headings in manifest order with the current course marked",
+        () => {
+          const rail = screen.getByRole("navigation", { name: "Python Fundamentals course list" });
+          expect(screen.getByText("Phase 1 · Phase A")).toBeTruthy();
+          const items = rail.querySelectorAll("li");
+          expect(items.length).toBe(3);
+          expect(items[0]?.textContent).toContain("Git");
+          expect(items[1]?.textContent).toContain("Just Enough Python");
+          expect(items[2]?.textContent).toContain("Data Structures");
+        },
+      );
 
       And("the current course is distinguished by a marker and weight, not by colour alone", () => {
         const current = screen.getByRole("link", { name: /Just Enough Python/i });

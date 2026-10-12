@@ -381,6 +381,19 @@ const translations: Record<Locale, Record<string, string>> = {
     pathsViewFullPath: "View full path",
     pathsBrowseAllCourses: "Browse all courses",
 
+    // Phase-grouped paths (plan ayokoding-learn-revamp-02-path-model, Phase 4) — every
+    // key in this block MUST exist in both locales, like the paths* keys above (DWT-003).
+    pathsBeforeYouStart: "Before you start",
+    pathsAssumesIntro: "This path assumes you already know:",
+    pathsCoreLabel: "Core",
+    pathsPhaseLabel: "Phase",
+    pathsOptionalExtensions: "Optional extensions",
+    pathsExtensionsNote: "Take these after the core, in any order, or when a topic interests you.",
+    pathsAfterPhaseCan: "After this phase you can",
+    pathsCannotYet: "You cannot yet",
+    pathsOutlineBadge: "Outline",
+    pathsStartsWith: "Starts with",
+
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Resize panel",
 
@@ -767,6 +780,19 @@ const translations: Record<Locale, Record<string, string>> = {
     pathsViewPath: "Lihat jalur",
     pathsViewFullPath: "Lihat jalur lengkap",
     pathsBrowseAllCourses: "Jelajahi semua kursus",
+
+    // Phase-grouped paths (plan ayokoding-learn-revamp-02-path-model, Phase 4) — every
+    // key in this block MUST exist in both locales, like the paths* keys above (DWT-003).
+    pathsBeforeYouStart: "Sebelum memulai",
+    pathsAssumesIntro: "Jalur ini mengasumsikan Anda sudah menguasai:",
+    pathsCoreLabel: "Inti",
+    pathsPhaseLabel: "Fase",
+    pathsOptionalExtensions: "Pendalaman opsional",
+    pathsExtensionsNote: "Ambil setelah bagian inti, dalam urutan apa pun, atau saat topiknya menarik bagi Anda.",
+    pathsAfterPhaseCan: "Setelah fase ini Anda bisa",
+    pathsCannotYet: "Anda belum bisa",
+    pathsOutlineBadge: "Kerangka",
+    pathsStartsWith: "Dimulai dengan",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Ubah ukuran panel",

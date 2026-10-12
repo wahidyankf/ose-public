@@ -66,6 +66,7 @@ export function SidebarHost({
       manifest={active.context.manifest}
       currentCourseId={active.courseId}
       courseTitles={courseTitles}
+      outlineCourseIds={runtimePathData.data.outlineCourseIds}
     />
   );
 }

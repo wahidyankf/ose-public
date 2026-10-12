@@ -13,6 +13,7 @@ vi.mock("@/lib/trpc/client", () => ({
           manifests: [],
           prerequisitesByCourse: {},
           libraryCourseIds: [],
+          outlineCourseIds: [],
           courseLinks: {},
         }),
       },

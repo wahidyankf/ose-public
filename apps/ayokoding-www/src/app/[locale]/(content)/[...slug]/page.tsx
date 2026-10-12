@@ -14,6 +14,8 @@ import {
   resolveCoursePathRenderData,
   buildCourseTitleIndex,
   buildArcTitleIndex,
+  pageLinkForCourseId,
+  humanizeKebabSlug,
 } from "@/features/course-paths/shell/course-path-nav";
 import { loadRoutePathData } from "@/features/course-paths/shell/route-path-data";
 import { CoursePageContent } from "@/features/course-paths/shell/course-page-content";
@@ -194,7 +196,7 @@ async function renderPathsRoute(locale: string, slugStr: string) {
         <h1 className="text-4xl font-extrabold tracking-tight">{seoPage?.title ?? "Paths"}</h1>
         <p className="mt-2 text-muted-foreground">{seoPage?.description ?? "Choose your path."}</p>
 
-        <CategorySection id="careers" heading="Careers" strapline="Converging within your role">
+        <CategorySection id="careers" heading="Careers" strapline="A focused core for your goal, then optional depth">
           {careersArcGroups.length === 0 ? (
             <EmptyPathListState
               fallbackHref={contentUrl(locale as Locale, `${LEARN_PATHS_PREFIX}/skills`)}
@@ -278,8 +280,25 @@ async function renderPathsRoute(locale: string, slugStr: string) {
     );
   }
 
+  // Assumed-course titles for the landing's "Before you start" note — `assumes` IDs sit
+  // outside the manifest's `courseOrder`, so `courseTitles` never covers them; resolve each
+  // from the content map, falling back to a humanized slug (never a raw slug) when the course
+  // has no page in this locale.
+  const assumedCourseTitles: Record<string, string> = {};
+  for (const courseId of resolution.manifest.assumes) {
+    const link = pageLinkForCourseId(pathData.contentMap, locale, courseId);
+    assumedCourseTitles[courseId] = link ? link.title : humanizeKebabSlug(courseId);
+  }
+
   return (
-    <PathLanding locale={locale} manifest={resolution.manifest} courseTitles={courseTitles} bodyHtml={seoPage?.html} />
+    <PathLanding
+      locale={locale}
+      manifest={resolution.manifest}
+      courseTitles={courseTitles}
+      bodyHtml={seoPage?.html}
+      outlineCourseIds={pathData.outlineCourseIds}
+      assumedCourseTitles={assumedCourseTitles}
+    />
   );
 }
 

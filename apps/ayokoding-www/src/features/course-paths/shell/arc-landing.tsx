@@ -40,13 +40,19 @@ export function ArcLanding({ locale, arc, manifests, courseTitles }: ArcLandingP
         {manifests.map((manifest) => (
           <li key={manifest.pathId}>
             <PathCard locale={locale} manifest={manifest} context="hub" />
-            {isSingleRole && (
-              <SyllabusPreview
-                courseTitles={manifest.courseOrder.map(
-                  (ref) => courseTitles[normalizeCourseRef(ref).id] ?? normalizeCourseRef(ref).id,
-                )}
-              />
-            )}
+            {isSingleRole &&
+              manifest.phases
+                .slice(0, 1)
+                .map((firstPhase) => (
+                  <SyllabusPreview
+                    key={firstPhase.id}
+                    locale={locale}
+                    phaseTitle={firstPhase.title}
+                    courseTitles={firstPhase.courses.map(
+                      (ref) => courseTitles[normalizeCourseRef(ref).id] ?? normalizeCourseRef(ref).id,
+                    )}
+                  />
+                ))}
           </li>
         ))}
       </ul>

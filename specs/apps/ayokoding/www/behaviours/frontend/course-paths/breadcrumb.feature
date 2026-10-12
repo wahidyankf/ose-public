@@ -12,7 +12,7 @@ Feature: Path-aware breadcrumb and URL context
   Scenario: A path landing page lists its courses in manifest order
     Given a fixture path manifest is loaded by the manifest repository
     When a reader opens that fixture path's landing page under /en/learn/paths/
-    Then the courses appear in the fixture manifest's courseOrder
+    Then the courses appear in the fixture manifest's phase order
     And every course link carries the path context query parameter
 
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The breadcrumb reflects the active path

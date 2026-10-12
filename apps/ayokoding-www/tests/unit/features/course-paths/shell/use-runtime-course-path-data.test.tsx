@@ -19,6 +19,7 @@ const fallback: CoursePathClientData = {
   manifests: [],
   prerequisitesByCourse: {},
   libraryCourseIds: [],
+  outlineCourseIds: [],
   courseLinks: {},
 };
 

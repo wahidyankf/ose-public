@@ -21,6 +21,16 @@ interface PublishedManifest {
   arc: string;
   title: string;
   courseOrder: string[];
+  phases?: FixturePhase[];
+  assumes?: string[];
+}
+
+interface FixturePhase {
+  id: string;
+  title: string;
+  kind: string;
+  outcome?: { can: string; cannotYet?: string };
+  courses: string[];
 }
 
 async function loadPublishedManifests(page: Page): Promise<PublishedManifest[]> {
@@ -30,6 +40,66 @@ async function loadPublishedManifests(page: Page): Promise<PublishedManifest[]> 
     manifests?: PublishedManifest[];
   };
   return data.manifests ?? [];
+}
+
+// ---------------------------------------------------------------------------
+// plan ayokoding-learn-revamp-02-path-model, Phase 4 — shared locators for the
+// phase-grouped path assertions below (one definition per locator, reused by every
+// Phase 4 scenario instead of repeating selectors).
+// ---------------------------------------------------------------------------
+
+const GENERALIST_TRACK_PATH = "careers/fundamentally-strong/generalist-track";
+const GENERALIST_LANDING_URL = `/en/learn/paths/${GENERALIST_TRACK_PATH}`;
+const GENERALIST_SYLLABUS_NAME = "Generalist Track (Fundamentally-Strong) syllabus";
+const GENERALIST_RAIL_NAME = "Generalist Track (Fundamentally-Strong) course list";
+
+function syllabusNav(page: Page, name: string | RegExp) {
+  return page.getByRole("navigation", { name });
+}
+
+function generalistSyllabus(page: Page) {
+  return syllabusNav(page, GENERALIST_SYLLABUS_NAME);
+}
+
+function generalistRail(page: Page) {
+  return syllabusNav(page, GENERALIST_RAIL_NAME);
+}
+
+/** The phase courses of a syllabus/rail nav — `ol > li` only, so the assumes `<ul>` never leaks in. */
+function phaseRows(nav: ReturnType<Page["getByRole"]>) {
+  return nav.locator("ol > li");
+}
+
+interface GeneralistTrackFixture {
+  manifest: PublishedManifest;
+  core: FixturePhase;
+  extension: FixturePhase;
+  assumes: string[];
+}
+
+async function loadGeneralistTrack(page: Page): Promise<GeneralistTrackFixture> {
+  const manifests = await loadPublishedManifests(page);
+  const manifest = manifests.find((candidate) => candidate.pathId === GENERALIST_TRACK_PATH);
+  const phases = manifest?.phases ?? [];
+  expect(phases.map((phase) => phase.kind)).toEqual(["core", "extension"]);
+  const [core, extension] = phases;
+  const assumes = manifest?.assumes ?? [];
+  if (!manifest || !core || !extension) {
+    throw new Error("generalist-track fixture manifest is missing its phases");
+  }
+  return { manifest, core, extension, assumes };
+}
+
+// The landing-page When shared by three scenarios ("a reader opens that path's landing page"
+// appears in path-position-numbers S1 plus path-phases S2/S3 and path-assumes S1): each scenario's
+// Given stages which path the shared step opens, defaulting to the backend-track fixture.
+let pendingPathLanding: string | null = null;
+
+async function gotoPendingPathLanding(page: Page): Promise<void> {
+  const pathId = pendingPathLanding ?? "careers/immediately-effective/backend-track";
+  pendingPathLanding = null;
+  await page.goto(`/en/learn/paths/${pathId}`);
+  await page.waitForLoadState("networkidle");
 }
 
 // ---------------------------------------------------------------------------
@@ -47,8 +117,9 @@ When("a reader opens that fixture path's landing page under \\/en\\/learn\\/path
   await page.waitForLoadState("networkidle");
 });
 
-Then("the courses appear in the fixture manifest's courseOrder", async ({ page }) => {
+Then("the courses appear in the fixture manifest's phase order", async ({ page }) => {
   const nav = page.getByRole("navigation", { name: /backend track \(interview-ready\) syllabus/i });
+  await expect(nav.getByRole("heading", { name: /Fixture core/ })).toBeVisible();
   const links = nav.getByRole("link");
   await expect(links).toHaveCount(2);
   await expect(links.nth(0)).toContainText("Just Enough Python");
@@ -209,20 +280,24 @@ When("a reader opens that arc's landing page", async ({ page }) => {
   await page.waitForLoadState("networkidle");
 });
 
-Then("the single role card renders with an inline first-phase syllabus preview", async ({ page }) => {
-  const nav = page.getByRole("navigation", { name: "interview-ready paths" });
-  const card = nav.getByRole("link", {
-    name: "Start the Backend Track (Interview-Ready) path — 2 courses",
-    exact: true,
-  });
-  await expect(card).toHaveAttribute("href", "/en/learn/paths/careers/interview-ready/backend-track");
-  const previewItems = card.locator("xpath=..").locator("ol > li");
-  await expect(previewItems).toHaveCount(2);
-  // Numbered preview (plan ayokoding-learn-revamp-01 §4.2): each inline item renders its path
-  // position before the title, separated by " · " from the previous item.
-  await expect(previewItems.nth(0)).toContainText("1 Just Enough Python");
-  await expect(previewItems.nth(1)).toContainText("2 Data Structures & Algorithms Essentials");
-});
+Then(
+  "the single role card renders with a preview that names the first phase and lists its courses",
+  async ({ page }) => {
+    const nav = page.getByRole("navigation", { name: "interview-ready paths" });
+    const card = nav.getByRole("link", {
+      name: "Start the Backend Track (Interview-Ready) path — 2 courses",
+      exact: true,
+    });
+    await expect(card).toHaveAttribute("href", "/en/learn/paths/careers/interview-ready/backend-track");
+    await expect(card.locator("xpath=..").getByText("Starts with Phase 1 · Fixture core:")).toBeVisible();
+    const previewItems = card.locator("xpath=..").locator("ol > li");
+    await expect(previewItems).toHaveCount(2);
+    // Numbered preview (plan ayokoding-learn-revamp-01 §4.2): each inline item renders its path
+    // position before the title, separated by " · " from the previous item.
+    await expect(previewItems.nth(0)).toContainText("1 Just Enough Python");
+    await expect(previewItems.nth(1)).toContainText("2 Data Structures & Algorithms Essentials");
+  },
+);
 
 Then("the layout does not reserve or render a visibly empty second card", async ({ page }) => {
   const nav = page.getByRole("navigation", { name: "interview-ready paths" });
@@ -447,50 +522,56 @@ Then("prev and next are the neighboring courses in that path's manifest", async 
 });
 
 Then("both links preserve the path context query parameter", async ({ page }) => {
+  // Generic across scenarios: every prev/next link keeps the current page's ?path=, whichever
+  // fixture path is active (the backend-track order scenario and the Phase 4 core→extension
+  // crossing scenario share this step text).
   const navigation = page.getByRole("navigation", { name: "Page navigation" });
-  const expectedContext = "?path=careers/immediately-effective/backend-track";
-  await expect(navigation.getByRole("link", { name: /Just Enough Bash/i })).toHaveAttribute(
-    "href",
-    `/en/learn/courses/just-enough-bash${expectedContext}`,
-  );
-  await expect(navigation.getByRole("link", { name: /SQL Essentials/i })).toHaveAttribute(
-    "href",
-    `/en/learn/courses/sql-essentials${expectedContext}`,
-  );
+  const links = navigation.getByRole("link");
+  const count = await links.count();
+  expect(count).toBeGreaterThan(0);
+  const activePath = new URL(page.url()).searchParams.get("path");
+  expect(activePath).not.toBeNull();
+  for (let i = 0; i < count; i++) {
+    await expect(links.nth(i)).toHaveAttribute("href", new RegExp(`\\?path=${activePath}$`));
+  }
 });
 
 Given("a reader opens a course in path context on a desktop-width viewport", async ({ page }) => {
   await page.goto("/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track");
 });
 
-Then("the left rail lists that path's courses in manifest order with the current course marked", async ({ page }) => {
-  const nav = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
-  const items = nav.getByRole("listitem");
-  await expect(items).toHaveCount(3);
-  const expected = [
-    {
-      name: "Just Enough Bash",
-      href: "/en/learn/courses/just-enough-bash?path=careers/immediately-effective/backend-track",
-      current: null,
-    },
-    {
-      name: "Backend Essentials",
-      href: "/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track",
-      current: "page",
-    },
-    {
-      name: "SQL Essentials",
-      href: "/en/learn/courses/sql-essentials?path=careers/immediately-effective/backend-track",
-      current: null,
-    },
-  ];
-  for (const [index, course] of expected.entries()) {
-    const link = items.nth(index).getByRole("link", { name: course.name, exact: true });
-    await expect(link).toHaveAttribute("href", course.href);
-    if (course.current) await expect(link).toHaveAttribute("aria-current", course.current);
-    else await expect(link).not.toHaveAttribute("aria-current", "page");
-  }
-});
+Then(
+  "the left rail lists that path's courses grouped under phase headings in manifest order with the current course marked",
+  async ({ page }) => {
+    const nav = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+    await expect(nav.getByText("Phase 1 · Fixture core")).toBeVisible();
+    const items = nav.locator("ol > li");
+    await expect(items).toHaveCount(3);
+    const expected = [
+      {
+        name: "Just Enough Bash",
+        href: "/en/learn/courses/just-enough-bash?path=careers/immediately-effective/backend-track",
+        current: null,
+      },
+      {
+        name: "Backend Essentials",
+        href: "/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track",
+        current: "page",
+      },
+      {
+        name: "SQL Essentials",
+        href: "/en/learn/courses/sql-essentials?path=careers/immediately-effective/backend-track",
+        current: null,
+      },
+    ];
+    for (const [index, course] of expected.entries()) {
+      const link = items.nth(index).getByRole("link", { name: course.name, exact: true });
+      await expect(link).toHaveAttribute("href", course.href);
+      if (course.current) await expect(link).toHaveAttribute("aria-current", course.current);
+      else await expect(link).not.toHaveAttribute("aria-current", "page");
+    }
+  },
+);
 
 Then("the current course is distinguished by a marker and weight, not by colour alone", async ({ page }) => {
   const nav = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
@@ -735,16 +816,18 @@ Given("a learning path lists its courses in manifest order", async ({ page }) =>
     (candidate) => candidate.pathId === "careers/immediately-effective/backend-track",
   );
   expect(manifest?.courseOrder).toEqual(["just-enough-bash", "backend-essentials", "sql-essentials"]);
+  pendingPathLanding = "careers/immediately-effective/backend-track";
 });
 
 When("a reader opens that path's landing page", async ({ page }) => {
-  await page.goto("/en/learn/paths/careers/immediately-effective/backend-track");
-  await page.waitForLoadState("networkidle");
+  // Shared by the S1 numbering scenario, the Phase 4 outcome/extensions scenarios, and the
+  // assumes scenario — each Given stages its own path above.
+  await gotoPendingPathLanding(page);
 });
 
 Then("each syllabus row shows its position number starting at 1 before the course title", async ({ page }) => {
   const syllabus = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) syllabus" });
-  const rows = syllabus.getByRole("listitem");
+  const rows = syllabus.locator("ol > li");
   await expect(rows).toHaveCount(3);
   const expected = [
     { position: "1", title: "Just Enough Bash" },
@@ -761,7 +844,7 @@ Then("each syllabus row shows its position number starting at 1 before the cours
 
 Then("the position numbers follow the manifest order with no gaps", async ({ page }) => {
   const syllabus = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) syllabus" });
-  const rows = syllabus.getByRole("listitem");
+  const rows = syllabus.locator("ol > li");
   const count = await rows.count();
   expect(count).toBe(3);
   for (let index = 0; index < count; index += 1) {
@@ -899,4 +982,254 @@ Then("the sidebar scrolls so the current course's row is fully visible", async (
 // matches), the same convention as every other And step in this file.
 Then("the page itself stays scrolled to the top", async ({ page }) => {
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
+});
+
+// ---------------------------------------------------------------------------
+// plan ayokoding-learn-revamp-02-path-model, Phase 4 — path-phases (6 browser scenarios),
+// path-assumes (1), and the outline badge, all against the generalist-track fixture: a core
+// phase ("Fixture core": computer-science-foundations, software-engineering-practices, outcome
+// "complete this fixture path"), an extension phase ("Fixture extension": capstone-secure-service,
+// status outline), and 5 assumed courses. The 7th path-phases scenario (marked skills flat list)
+// is e2e-exempt — bound only in ayokoding-www unit steps.
+// ---------------------------------------------------------------------------
+
+Given("a fixture path manifest declares a core phase and an extension phase", async ({ page }) => {
+  await loadGeneralistTrack(page);
+});
+
+When("a reader opens that path's landing page under \\/en\\/learn\\/paths\\/", async ({ page }) => {
+  await page.goto(GENERALIST_LANDING_URL);
+  await page.waitForLoadState("networkidle");
+});
+
+Then("each phase renders as a heading with its title", async ({ page }) => {
+  const nav = generalistSyllabus(page);
+  await expect(nav.getByRole("heading", { name: /Fixture core/ })).toBeVisible();
+  await expect(nav.getByRole("heading", { name: /Fixture extension/ })).toBeVisible();
+});
+
+Then("the core phase's courses appear before the extension phase's courses", async ({ page }) => {
+  const rows = phaseRows(generalistSyllabus(page));
+  await expect(rows).toHaveCount(3);
+  await expect(rows.nth(0)).toContainText("Computer Science Foundations");
+  await expect(rows.nth(1)).toContainText("Software Engineering Practices");
+  await expect(rows.nth(2)).toContainText("Capstone · Secure Service");
+});
+
+Then("course position numbers continue across the phase boundary", async ({ page }) => {
+  const rows = phaseRows(generalistSyllabus(page));
+  await expect(rows).toHaveCount(3);
+  const expected = [
+    { position: "1", title: "Computer Science Foundations" },
+    { position: "2", title: "Software Engineering Practices" },
+    { position: "3", title: "Capstone · Secure Service" },
+  ];
+  for (const [index, { position, title }] of expected.entries()) {
+    // The outline row also renders its badge text after the title, so the match anchors at the
+    // leading position number, not at the row end.
+    await expect(rows.nth(index)).toHaveText(new RegExp(`^${position}\\s*${title}`, "u"));
+    // The number sits outside the link, so the link's accessible name stays exactly the title.
+    await expect(rows.nth(index).getByRole("link", { name: title, exact: true })).toBeVisible();
+  }
+});
+
+Given("a fixture core phase declares an outcome", async ({ page }) => {
+  const { core } = await loadGeneralistTrack(page);
+  expect(core.outcome?.can).toBe("complete this fixture path");
+  pendingPathLanding = GENERALIST_TRACK_PATH;
+});
+
+Then('the phase shows "After this phase you can" followed by the outcome', async ({ page }) => {
+  await expect(generalistSyllabus(page).getByText("After this phase you can complete this fixture path")).toBeVisible();
+});
+
+Then(
+  'when the outcome declares what the reader cannot yet do, the phase also shows "You cannot yet"',
+  async ({ page }) => {
+    // The fixture outcome declares no `cannotYet`, so the conditional step proves the negative;
+    // the positive rendering is covered by the unit steps with a cannotYet-bearing fixture.
+    const { core } = await loadGeneralistTrack(page);
+    expect(core.outcome?.cannotYet).toBeUndefined();
+    await expect(generalistSyllabus(page).getByText("You cannot yet", { exact: false })).toHaveCount(0);
+  },
+);
+
+Given("a fixture path manifest declares an extension phase", async ({ page }) => {
+  const { extension } = await loadGeneralistTrack(page);
+  expect(extension.kind).toBe("extension");
+  pendingPathLanding = GENERALIST_TRACK_PATH;
+});
+
+Then('an "Optional extensions" heading appears after the last core phase', async ({ page }) => {
+  const nav = generalistSyllabus(page);
+  const headings = await nav.getByRole("heading").allTextContents();
+  const coreIndex = headings.findIndex((text) => text.includes("Fixture core"));
+  const extensionsIndex = headings.findIndex((text) => text.includes("Optional extensions"));
+  expect(coreIndex).toBeGreaterThanOrEqual(0);
+  expect(extensionsIndex).toBeGreaterThan(coreIndex);
+});
+
+Then("every extension phase is listed under that heading", async ({ page }) => {
+  const nav = generalistSyllabus(page);
+  const headings = await nav.getByRole("heading").allTextContents();
+  const extensionsIndex = headings.findIndex((text) => text.includes("Optional extensions"));
+  const extensionIndex = headings.findIndex((text) => text.includes("Fixture extension"));
+  expect(extensionsIndex).toBeGreaterThanOrEqual(0);
+  expect(extensionIndex).toBeGreaterThan(extensionsIndex);
+});
+
+Then("the left rail shows each phase title followed by that phase's courses", async ({ page }) => {
+  const nav = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+  await expect(nav.getByText("Phase 1 · Fixture core")).toBeVisible();
+  const items = nav.locator("ol > li");
+  await expect(items).toHaveCount(3);
+  await expect(items.nth(0)).toContainText("Just Enough Bash");
+  await expect(items.nth(1)).toContainText("Backend Essentials");
+  await expect(items.nth(2)).toContainText("SQL Essentials");
+});
+
+Then("the current course is still marked by a marker and weight, not by colour alone", async ({ page }) => {
+  const nav = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
+  const current = nav.locator('a[aria-current="page"]');
+  await expect(current).toContainText("▸");
+  await expect(current).toHaveClass(/\bfont-semibold\b/);
+  await expect(nav.getByText("Course 2 of 3", { exact: true })).toBeVisible();
+});
+
+Given("a reader is on the last course of a fixture path's last core phase", async ({ page }) => {
+  const { core } = await loadGeneralistTrack(page);
+  expect(core.courses.at(-1)).toBe("software-engineering-practices");
+  await page.goto(`/en/learn/courses/software-engineering-practices?path=${GENERALIST_TRACK_PATH}`);
+  await page.waitForLoadState("networkidle");
+});
+
+Then("next is the first course of the first extension phase", async ({ page }) => {
+  const { extension } = await loadGeneralistTrack(page);
+  expect(extension.courses[0]).toBe("capstone-secure-service");
+  const navigation = page.getByRole("navigation", { name: "Page navigation" });
+  await expect(navigation.getByRole("link", { name: /Capstone.*Secure Service/i })).toHaveAttribute(
+    "href",
+    `/en/learn/courses/capstone-secure-service?path=${GENERALIST_TRACK_PATH}`,
+  );
+});
+
+Then("the link preserves the path context query parameter", async ({ page }) => {
+  const navigation = page.getByRole("navigation", { name: "Page navigation" });
+  await expect(navigation.getByRole("link", { name: /Capstone.*Secure Service/i })).toHaveAttribute(
+    "href",
+    new RegExp(`\\?path=${GENERALIST_TRACK_PATH}$`),
+  );
+});
+
+let routeDataPayload: { manifests?: PublishedManifest[]; outlineCourseIds?: string[] } | null = null;
+
+Given("the fixture manifest set is loaded by the running server", async ({ page }) => {
+  const manifests = await loadPublishedManifests(page);
+  expect(manifests.length).toBeGreaterThan(0);
+});
+
+When('a client requests coursePaths.getRouteData for locale "en"', async ({ page }) => {
+  const response = await page.request.get(buildTrpcUrl("coursePaths.getRouteData", "en"));
+  await expect(response).toBeOK();
+  routeDataPayload = extractTrpcData(await response.json()) as {
+    manifests?: PublishedManifest[];
+    outlineCourseIds?: string[];
+  };
+});
+
+Then("each manifest in the response carries its phases with id, title, kind, outcome, and courses", async () => {
+  const manifests = routeDataPayload?.manifests ?? [];
+  expect(manifests.length).toBeGreaterThan(0);
+  for (const manifest of manifests) {
+    expect(manifest.phases?.length).toBeGreaterThan(0);
+    for (const phase of manifest.phases ?? []) {
+      expect(typeof phase.id).toBe("string");
+      expect(typeof phase.title).toBe("string");
+      expect(["core", "extension"]).toContain(phase.kind);
+      expect(Array.isArray(phase.courses)).toBe(true);
+    }
+  }
+  // The same payload carries the outline set the badges render from.
+  expect(routeDataPayload?.outlineCourseIds).toContain("capstone-secure-service");
+});
+
+Then("each manifest also carries a courseOrder equal to its phases' courses in order", async () => {
+  const manifests = routeDataPayload?.manifests ?? [];
+  expect(manifests.length).toBeGreaterThan(0);
+  for (const manifest of manifests) {
+    const flattened = (manifest.phases ?? []).flatMap((phase) => phase.courses);
+    expect(manifest.courseOrder).toEqual(flattened);
+  }
+});
+
+Given("a fixture path manifest declares assumed courses", async ({ page }) => {
+  const { assumes } = await loadGeneralistTrack(page);
+  expect(assumes).toEqual([
+    "just-enough-python",
+    "data-structures-and-algorithms-essentials",
+    "just-enough-bash",
+    "software-testing",
+    "backend-essentials",
+  ]);
+  pendingPathLanding = GENERALIST_TRACK_PATH;
+});
+
+Then('a "Before you start" note appears before the first phase', async ({ page }) => {
+  const nav = generalistSyllabus(page);
+  await expect(nav.getByText("Before you start")).toBeVisible();
+  const headings = await nav.getByRole("heading").allTextContents();
+  const noteIndex = headings.findIndex((text) => text.includes("Before you start"));
+  const firstPhaseIndex = headings.findIndex((text) => text.includes("Fixture core"));
+  expect(noteIndex).toBeGreaterThanOrEqual(0);
+  expect(firstPhaseIndex).toBeGreaterThan(noteIndex);
+});
+
+Then("it links every assumed course to its canonical course page without a path query parameter", async ({ page }) => {
+  // The assumes note is the syllabus nav's only unordered list — phase courses render as `<ol>`.
+  const assumedLinks = generalistSyllabus(page).locator("ul > li > a");
+  const expected = [
+    { id: "just-enough-python", title: "Just Enough Python" },
+    { id: "data-structures-and-algorithms-essentials", title: "Data Structures & Algorithms Essentials" },
+    { id: "just-enough-bash", title: "Just Enough Bash" },
+    { id: "software-testing", title: "Software Testing" },
+    { id: "backend-essentials", title: "Backend Essentials" },
+  ];
+  await expect(assumedLinks).toHaveCount(expected.length);
+  for (const [index, { id, title }] of expected.entries()) {
+    await expect(assumedLinks.nth(index)).toHaveText(title);
+    await expect(assumedLinks.nth(index)).toHaveAttribute("href", `/en/learn/courses/${id}`);
+  }
+});
+
+Given("a fixture path lists a course whose frontmatter declares status outline", async ({ page }) => {
+  const course = await page.request.get("/en/learn/courses/capstone-secure-service");
+  await expect(course).toBeOK();
+  const { manifest } = await loadGeneralistTrack(page);
+  expect(manifest.courseOrder).toContain("capstone-secure-service");
+});
+
+When("a reader opens that path's landing page and then a course in that path", async ({ page }) => {
+  await page.goto(GENERALIST_LANDING_URL);
+  await page.waitForLoadState("networkidle");
+  await page.goto(`/en/learn/courses/software-engineering-practices?path=${GENERALIST_TRACK_PATH}`);
+  await page.waitForLoadState("networkidle");
+});
+
+Then('the outline course shows a text badge reading "Outline" in the syllabus', async ({ page }) => {
+  await page.goto(GENERALIST_LANDING_URL);
+  await page.waitForLoadState("networkidle");
+  const row = generalistSyllabus(page).locator("ol > li", { hasText: "Capstone · Secure Service" });
+  await expect(row.getByText("Outline", { exact: true })).toBeVisible();
+});
+
+Then('the same course shows the "Outline" badge in the path rail', async ({ page }) => {
+  await page.goto(`/en/learn/courses/software-engineering-practices?path=${GENERALIST_TRACK_PATH}`);
+  await page.waitForLoadState("networkidle");
+  const row = generalistRail(page).locator("li", { hasText: "Capstone · Secure Service" });
+  await expect(row.getByText("Outline", { exact: true })).toBeVisible();
+});
+
+Then("a course without status outline shows no badge", async ({ page }) => {
+  const row = generalistRail(page).locator("li", { hasText: "Software Engineering Practices" });
+  await expect(row.getByText("Outline", { exact: true })).toHaveCount(0);
 });

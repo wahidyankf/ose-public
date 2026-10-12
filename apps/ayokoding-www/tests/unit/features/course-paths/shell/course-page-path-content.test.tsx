@@ -53,6 +53,7 @@ const runtimePathData = {
   ],
   prerequisitesByCourse: {},
   libraryCourseIds: ["advanced-algorithms"],
+  outlineCourseIds: [],
   courseLinks: {},
 };
 

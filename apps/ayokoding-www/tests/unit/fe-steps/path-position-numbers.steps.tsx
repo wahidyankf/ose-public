@@ -424,7 +424,7 @@ describeFeature(feature, ({ Scenario }) => {
 
     When("a reader opens that arc's landing page", () => {
       cleanup();
-      render(<SyllabusPreview courseTitles={POSITION_FIXTURE_TITLE_ORDER} />);
+      render(<SyllabusPreview locale="en" phaseTitle="Fixture core" courseTitles={POSITION_FIXTURE_TITLE_ORDER} />);
     });
 
     Then('the role card\'s "Starts with" preview numbers its courses 1, 2, and so on in path order', () => {

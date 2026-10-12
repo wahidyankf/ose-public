@@ -19,8 +19,19 @@ vi.mock("@/features/navigation/shell/toc", () => ({
 }));
 
 const { manifests, contentMap } = vi.hoisted(() => {
+  // Phase-4 shape: the mocked manifests must satisfy the domain `PathManifest` contract the
+  // terminal landing now renders from (`phases` for the sections, `assumes` for the note) — the
+  // pre-phase `{courseOrder}`-only literal crashes `corePhases`/`assumes` iteration.
   function m(pathId: string, arc: string, courseOrder: string[] = []) {
-    return { pathId, arc, title: `Title for ${pathId}`, description: `Description for ${pathId}`, courseOrder };
+    return {
+      pathId,
+      arc,
+      title: `Title for ${pathId}`,
+      description: `Description for ${pathId}`,
+      assumes: [],
+      phases: [{ id: "phase-a", title: "Phase A", kind: "core", courses: courseOrder }],
+      courseOrder,
+    };
   }
 
   const manifestList = [

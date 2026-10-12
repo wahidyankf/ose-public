@@ -52,9 +52,10 @@ describeFeature(feature, ({ Scenario }) => {
       render(<ArcLanding locale="en" arc="interview-ready" manifests={[soloRole]} courseTitles={courseTitles} />);
     });
 
-    Then("the single role card renders with an inline first-phase syllabus preview", () => {
-      expect(screen.getByText(/Starts with:/i)).toBeTruthy();
+    Then("the single role card renders with a preview that names the first phase and lists its courses", () => {
+      expect(screen.getByText("Starts with Phase 1 · Phase A:", { exact: false })).toBeTruthy();
       expect(screen.getByText(/Just Enough Python/)).toBeTruthy();
+      expect(screen.getByText(/Just Enough Bash/)).toBeTruthy();
     });
 
     And("the layout does not reserve or render a visibly empty second card", () => {

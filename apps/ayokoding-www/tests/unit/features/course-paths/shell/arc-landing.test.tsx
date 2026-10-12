@@ -68,11 +68,13 @@ describe("ArcLanding — single-role state (Cycle 3.1c-ii, R7)", () => {
     courses: ["just-enough-python", "just-enough-bash", "version-control-and-git"],
   });
 
-  it("renders one role card with an inline first-phase syllabus preview", () => {
+  it("renders one role card with a preview that names the first phase and lists its courses", () => {
     render(<ArcLanding locale="en" arc="interview-ready" manifests={[soloRole]} courseTitles={courseTitles} />);
 
-    expect(screen.getByText(/Starts with:/i)).toBeTruthy();
+    expect(screen.getByText("Starts with Phase 1 · Phase A:", { exact: false })).toBeTruthy();
     expect(screen.getByText(/Just Enough Python/)).toBeTruthy();
+    expect(screen.getByText(/Just Enough Bash/)).toBeTruthy();
+    expect(screen.getByText(/Version Control & Git/)).toBeTruthy();
   });
 
   it("never renders a second, visibly empty card", () => {

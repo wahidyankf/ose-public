@@ -19,8 +19,22 @@ vi.mock("../../../../../src/features/course-paths/shell/active-course-scroll", (
   scrollActiveCourseIntoView: vi.fn(),
 }));
 
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/en/learn/courses/just-enough-python",
+  useSearchParams: () => new URLSearchParams({ path: "skills/conventional-accounting" }),
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+}));
+
+vi.mock("@/lib/trpc/client", () => ({
+  trpcClient: {
+    content: { getTree: { query: vi.fn().mockResolvedValue([]) } },
+  },
+}));
+
 // eslint-disable-next-line import/first
 import { PathRail } from "../../../../../src/features/course-paths/shell/path-rail";
+// eslint-disable-next-line import/first
+import { MobileNav } from "@/features/app-shell/shell/mobile-nav";
 // eslint-disable-next-line import/first
 import { scrollActiveCourseIntoView } from "../../../../../src/features/course-paths/shell/active-course-scroll";
 
@@ -196,5 +210,175 @@ describe("PathRail (Cycle 2.8 — Screen 3 Option B)", () => {
       2,
       screen.getByRole("link", { name: "Data Structures & Algorithms" }).closest("li"),
     );
+  });
+});
+
+describe("PathRail — phase groups (AC-4.3 RED)", () => {
+  const phasedManifest: PathManifest = manifestFixture({
+    pathId: "careers/fundamentally-strong/generalist-track",
+    arc: "fundamentally-strong",
+    title: "Generalist Track",
+    description: "A deep route through the foundations.",
+    phases: [
+      {
+        id: "fixture-core",
+        title: "Fixture core",
+        kind: "core",
+        outcome: { can: "complete this fixture path" },
+        courses: ["computer-science-foundations", "software-engineering-practices"],
+      },
+      {
+        id: "fixture-extension",
+        title: "Fixture extension",
+        kind: "extension",
+        courses: ["capstone-secure-service"],
+      },
+    ],
+  });
+
+  const phasedTitles = {
+    "computer-science-foundations": "Computer Science Foundations",
+    "software-engineering-practices": "Software Engineering Practices",
+    "capstone-secure-service": "Capstone Secure Service",
+  };
+
+  it("renders a labelled group per phase — 'Phase n · Title' for core, the title for extensions", () => {
+    render(
+      <PathRail
+        locale="en"
+        manifest={phasedManifest}
+        currentCourseId="software-engineering-practices"
+        courseTitles={phasedTitles}
+        outlineCourseIds={["capstone-secure-service"]}
+      />,
+    );
+
+    expect(screen.getByText("Phase 1 · Fixture core")).toBeTruthy();
+    expect(screen.getByText("Fixture extension")).toBeTruthy();
+  });
+
+  it("renders an 'Optional extensions' divider before the first extension group", () => {
+    const { container } = render(
+      <PathRail
+        locale="en"
+        manifest={phasedManifest}
+        currentCourseId="software-engineering-practices"
+        courseTitles={phasedTitles}
+        outlineCourseIds={[]}
+      />,
+    );
+
+    const divider = screen.getByText("Optional extensions");
+    const extensionLabel = screen.getByText("Fixture extension");
+    expect(divider.compareDocumentPosition(extensionLabel) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(container.textContent).toContain("Optional extensions");
+  });
+
+  it("shows Outline badges on outline rows and keeps the readout and current-row marker", () => {
+    render(
+      <PathRail
+        locale="en"
+        manifest={phasedManifest}
+        currentCourseId="capstone-secure-service"
+        courseTitles={phasedTitles}
+        outlineCourseIds={["capstone-secure-service"]}
+      />,
+    );
+
+    expect(screen.getAllByText("Outline")).toHaveLength(1);
+    expect(screen.getByText("Course 3 of 3")).toBeTruthy();
+    const current = screen.getByRole("link", { name: "Capstone Secure Service" });
+    expect(current.getAttribute("aria-current")).toBe("page");
+    expect(current.textContent).toContain("▸");
+    expect(current.className).toContain("bg-accent");
+  });
+
+  it("omits the divider when the path has no extension phase", () => {
+    render(
+      <PathRail locale="en" manifest={manifest} currentCourseId="just-enough-python" courseTitles={courseTitles} />,
+    );
+
+    expect(screen.queryByText("Optional extensions")).toBeNull();
+    expect(screen.getByText("Phase 1 · Phase A")).toBeTruthy();
+  });
+
+  it("localizes the group labels and divider on the id locale", () => {
+    render(
+      <PathRail
+        locale="id"
+        manifest={phasedManifest}
+        currentCourseId="software-engineering-practices"
+        courseTitles={phasedTitles}
+        outlineCourseIds={[]}
+      />,
+    );
+
+    expect(screen.getByText("Fase 1 · Fixture core")).toBeTruthy();
+    expect(screen.getByText("Pendalaman opsional")).toBeTruthy();
+    expect(screen.getByText("Kursus 2 dari 3")).toBeTruthy();
+  });
+});
+
+describe("PathRail — marked skills path renders today's flat list (AC-4.5 RED)", () => {
+  const markedManifest: PathManifest = manifestFixture({
+    pathId: "skills/conventional-accounting",
+    arc: "conventional-accounting",
+    title: "Conventional Accounting",
+    description: "A mechanical one-phase shape awaiting its content plan.",
+    restructurePendingIn: "plan-06",
+    phases: [
+      {
+        id: "all-courses",
+        title: "All courses",
+        kind: "core",
+        courses: ["just-enough-python", "capstone-secure-service"],
+      },
+    ],
+  });
+
+  const markedTitles = {
+    "just-enough-python": "Just Enough Python",
+    "capstone-secure-service": "Capstone Secure Service",
+  };
+
+  it("lists its courses in order with positions 1…N and no phase chrome on the desktop rail", () => {
+    const { container } = render(
+      <PathRail
+        locale="en"
+        manifest={markedManifest}
+        currentCourseId="just-enough-python"
+        courseTitles={markedTitles}
+        outlineCourseIds={["capstone-secure-service"]}
+      />,
+    );
+
+    const nav = within(container).getByRole("navigation", { name: "Conventional Accounting course list" });
+    const rows = within(nav).getAllByRole("listitem");
+    expect(rows).toHaveLength(2);
+    expect(rows[0]?.textContent).toMatch(/^1\s*▸?\s*Just Enough Python$/);
+    expect(rows[1]?.textContent).toMatch(/^2\s*Capstone Secure Service$/);
+    expect(within(nav).queryByText("Phase 1 · All courses")).toBeNull();
+    expect(within(nav).queryByText("Optional extensions")).toBeNull();
+    expect(within(nav).queryByText("Outline")).toBeNull();
+    expect(screen.getByText("Course 1 of 2")).toBeTruthy();
+    const current = screen.getByRole("link", { name: "Just Enough Python" });
+    expect(current.getAttribute("aria-current")).toBe("page");
+  });
+
+  it("renders the same flat list inside the navigation drawer", async () => {
+    render(
+      <MobileNav locale="en" open onOpenChange={() => {}} manifests={[markedManifest]} courseTitles={markedTitles} />,
+    );
+
+    const drawerNav = await screen.findByRole("navigation", { name: "Conventional Accounting course list" });
+    const rows = within(drawerNav).getAllByRole("listitem");
+    expect(rows).toHaveLength(2);
+    expect(rows[0]?.textContent).toMatch(/^1\s*▸?\s*Just Enough Python$/);
+    expect(rows[1]?.textContent).toMatch(/^2\s*Capstone Secure Service$/);
+    expect(within(drawerNav).queryByText(/Phase \d/)).toBeNull();
+    expect(within(drawerNav).queryByText("Optional extensions")).toBeNull();
+    expect(within(drawerNav).queryByText("Outline")).toBeNull();
   });
 });

@@ -676,7 +676,7 @@ deletes this module` at the top of the allowlist module and next to the schema f
 - **Proof:** `<plan>/evidence/phase-4-ui.md`.
 - _Suggested executor: `specs-maker` for Gherkin, `swe-developer` for code._
 
-- [ ] [AI] **Gherkin first:** create `path-phases.feature` and `path-assumes.feature`, add the badge
+- [x] [AI] **Gherkin first:** create `path-phases.feature` and `path-assumes.feature`, add the badge
       scenario to `outline-course-status.feature`, and apply the three remaining wording changes from
       prd.md "Modified Existing Features" (`breadcrumb.feature`, `arc-landing-one-role.feature`,
       `path-order-nav.feature`). Run `BEHAVIOUR` and
@@ -684,101 +684,101 @@ deletes this module` at the top of the allowlist module and next to the schema f
 
 ### AC-4.1 — Outline IDs reach the client
 
-- [ ] [AI] **RED:** in `tests/unit/features/course-paths/shell/course-library.test.ts` add: a content
+- [x] [AI] **RED:** in `tests/unit/features/course-paths/shell/course-library.test.ts` add: a content
       map with an outline course in `en` yields it in `outlineCourseIds` for both `en` and `id`. In
       `tests/unit/features/course-paths/shell/course-path-nav.test.ts` assert `toCoursePathClientData`
       passes `outlineCourseIds` through and `EMPTY_COURSE_PATH_CLIENT_DATA.outlineCourseIds` is `[]`.
       Run both with `UNIT-FE`. Acceptance: fail.
-- [ ] [AI] **GREEN:** add `deriveOutlineCourseIds(contentMap)` (locale-independent, like
+- [x] [AI] **GREEN:** add `deriveOutlineCourseIds(contentMap)` (locale-independent, like
       `deriveAllCourseIds`) to `shell/course-library.ts`; add `outlineCourseIds` to `CoursePathData` and
       `CoursePathClientData` in `shell/course-path-nav.ts`; fill it in `shell/route-path-data.ts`.
       Rerun. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** keep the TSDoc explaining why the set is locale-independent. Run `QUICK`.
+- [x] [AI] **REFACTOR:** keep the TSDoc explaining why the set is locale-independent. Run `QUICK`.
       Acceptance: exit 0.
 
 ### AC-4.2 — Phase sections, outcomes, extension heading, and "Before you start" on the landing
 
-- [ ] [AI] **RED:** add `tests/unit/features/course-paths/shell/phase-section.test.tsx`,
+- [x] [AI] **RED:** add `tests/unit/features/course-paths/shell/phase-section.test.tsx`,
       `assumed-courses.test.tsx`, `outline-badge.test.tsx`, and new cases in `path-landing.test.tsx`:
       `h2` per phase with title and count; "Phase n" only on core; outcome lines; "Optional extensions"
       heading before the first extension; continuous position numbers; Outline badge only on outline
       rows; "Before you start" lists every assumed course with canonical links (no `?path=`) and is
       absent when `assumes` is empty; Indonesian strings for `locale="id"`. Run each with `UNIT-FE`.
       Acceptance: fail.
-- [ ] [AI] **GREEN:** create `shell/phase-section.tsx`, `shell/assumed-courses.tsx`,
+- [x] [AI] **GREEN:** create `shell/phase-section.tsx`, `shell/assumed-courses.tsx`,
       `shell/outline-badge.tsx` (wrapping `Badge` `variant="secondary"` `size="sm"` from
       `@open-sharia-enterprise/web-ui`); render them from `shell/path-landing.tsx` inside the existing
       syllabus `<nav>`; add the i18n keys from tech-docs/006 to both locales in
       `src/features/i18n/core/translations.ts`. Rerun.
       Acceptance: pass.
-- [ ] [AI] **REFACTOR:** remove now-unused flat-list code from `path-landing.tsx`; keep plan 01's
+- [x] [AI] **REFACTOR:** remove now-unused flat-list code from `path-landing.tsx`; keep plan 01's
       numbering helper as the single source of position numbers. Run `QUICK`. Acceptance: exit 0.
 
 ### AC-4.3 — Phase groups in the rail and drawer
 
-- [ ] [AI] **RED:** add `tests/unit/features/course-paths/shell/phase-group.test.tsx` and cases in
+- [x] [AI] **RED:** add `tests/unit/features/course-paths/shell/phase-group.test.tsx` and cases in
       `path-rail.test.tsx`: a labelled group per phase ("Phase n · Title" for core, the title for
       extensions), an "Optional extensions" divider, Outline badges, the "Course k of N" readout and
       `aria-current` marker unchanged. Run with `UNIT-FE`. Acceptance: fail.
-- [ ] [AI] **GREEN:** create `shell/phase-group.tsx` and use it in `shell/path-rail.tsx` for both the
+- [x] [AI] **GREEN:** create `shell/phase-group.tsx` and use it in `shell/path-rail.tsx` for both the
       desktop rail and the drawer. Rerun. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** confirm plan 01's auto-scroll still targets the current row (its test stays
+- [x] [AI] **REFACTOR:** confirm plan 01's auto-scroll still targets the current row (its test stays
       green). Run `QUICK`. Acceptance: exit 0.
 
 ### AC-4.4 — Arc preview and careers hub strapline
 
-- [ ] [AI] **RED:** in `syllabus-preview.test.tsx` and `arc-landing.test.tsx` assert "Starts with
+- [x] [AI] **RED:** in `syllabus-preview.test.tsx` and `arc-landing.test.tsx` assert "Starts with
       Phase 1 · <title>:" and that phase's course titles. If a test fixture mirrors the careers hub
       strapline (for example in `path-card.test.tsx`), update only that fixture text. Run each with
       `UNIT-FE`. Acceptance: fail.
-- [ ] [AI] **GREEN:** change `shell/syllabus-preview.tsx` and `shell/arc-landing.tsx` to pass and
+- [x] [AI] **GREEN:** change `shell/syllabus-preview.tsx` and `shell/arc-landing.tsx` to pass and
       render the first phase (remove `FIRST_PHASE_PREVIEW_COUNT`); change only the careers hub
       strapline in `src/app/[locale]/(content)/[...slug]/page.tsx`. Rerun. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** `rtk git grep -n "FIRST_PHASE_PREVIEW_COUNT" -- apps/ayokoding-www` returns
+- [x] [AI] **REFACTOR:** `rtk git grep -n "FIRST_PHASE_PREVIEW_COUNT" -- apps/ayokoding-www` returns
       nothing, and
       `rtk git diff --stat origin/main -- apps/ayokoding-www/src/features/course-paths/shell/category-landing.tsx apps/ayokoding-www/src/features/course-paths/shell/ramp-milestone-strip.tsx apps/ayokoding-www/src/features/course-paths/shell/path-card.tsx apps/ayokoding-www/content/en/learn/paths/skills`
       is empty. Run `QUICK`. Acceptance: exit 0.
 
 ### AC-4.5 — Marked skills paths render as today
 
-- [ ] [AI] **RED:** in `path-landing.test.tsx` and `path-rail.test.tsx` (desktop rail and drawer) add a
+- [x] [AI] **RED:** in `path-landing.test.tsx` and `path-rail.test.tsx` (desktop rail and drawer) add a
       case built with `manifestFixture({ pathId: "skills/conventional-accounting", restructurePendingIn: "plan-06" })`
       in the one-phase `all-courses` shape, listing outline courses: one flat ordered list with
       positions 1…N, and no "Core" label, phase heading, outcome line, "Optional extensions" heading,
       "Before you start" note, or Outline badge. Run each with `UNIT-FE`. Acceptance: the new cases fail
       (the phase view renders).
-- [ ] [AI] **GREEN:** in `shell/path-landing.tsx` and `shell/path-rail.tsx` branch on
+- [x] [AI] **GREEN:** in `shell/path-landing.tsx` and `shell/path-rail.tsx` branch on
       `isPendingSkillsRestructure(manifest)` to the flat list, reusing plan 01's numbering helper.
       Rerun. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** mark each branch with `// Decision 39: removed by plan 07`. Run `QUICK`.
+- [x] [AI] **REFACTOR:** mark each branch with `// Decision 39: removed by plan 07`. Run `QUICK`.
       Acceptance: exit 0.
 
 ### AC-4.6 — Scenario bindings (unit and E2E)
 
-- [ ] [AI] **RED (unit):** create `tests/unit/fe-steps/path-phases.steps.tsx` and
+- [x] [AI] **RED (unit):** create `tests/unit/fe-steps/path-phases.steps.tsx` and
       `tests/unit/fe-steps/path-assumes.steps.tsx` (the 7th path-phases scenario binds to the AC-4.5
       assertions), add the badge scenario to `tests/unit/fe-steps/outline-course-status.steps.tsx`, and
       update the step text in `course-paths-breadcrumb.steps.tsx`, `arc-landing-one-role.steps.tsx`, and
       `path-order-nav.steps.tsx`. Run each with `UNIT-FE`.
       Acceptance: any step that asserts not-yet-wired behaviour fails; record which.
-- [ ] [AI] **RED (E2E):** in `apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts` bind
+- [x] [AI] **RED (E2E):** in `apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts` bind
       the browser-visible scenarios against the `careers/fundamentally-strong/generalist-track` fixture
       (phase headings, outcome text "complete this fixture path", "Optional extensions", Outline badge
       on `capstone-secure-service`, "Before you start" links, Next from
       `software-engineering-practices` to `capstone-secure-service` keeping `?path=`), and the runtime
       payload scenario with the batch URL from `backend-helpers.ts`. The skills statement step stays
       unchanged. Run `E2E`. Acceptance: only the new or reworded scenarios fail.
-- [ ] [AI] **GREEN:** fix any wiring gap the RED runs exposed. Rerun the unit files, `BEHAVIOUR`,
+- [x] [AI] **GREEN:** fix any wiring gap the RED runs exposed. Rerun the unit files, `BEHAVIOUR`,
       `E2E-BEHAVIOUR`, and `E2E`. Acceptance: all exit 0.
-- [ ] [AI] **REFACTOR:** share locator helpers in `course-paths.steps.ts` instead of repeating
+- [x] [AI] **REFACTOR:** share locator helpers in `course-paths.steps.ts` instead of repeating
       selectors. Run `E2E-QUICK` and `E2E`. Acceptance: exit 0.
 
 ### Phase 4 Gate
 
 > All checks below must pass before starting Phase 5.
 
-- [ ] [AI] `QUICK`, `BEHAVIOUR`, `E2E-BEHAVIOUR`, `E2E-QUICK`, and `E2E` exit 0.
-- [ ] [AI] `INTEGRATION` exits 0.
+- [x] [AI] `QUICK`, `BEHAVIOUR`, `E2E-BEHAVIOUR`, `E2E-QUICK`, and `E2E` exit 0.
+- [x] [AI] `INTEGRATION` exits 0.
 
 > **Pause Safety**: the model is visible in the career syllabus, rail, drawer, and arc preview; skills
 > paths look as before; all tests are green. Safe to stop. To resume: `QUICK`.

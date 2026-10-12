@@ -136,7 +136,7 @@ Feature: Phase-grouped learning paths
 
   # Exemption(integration): the scenario is an internal deterministic render with no local resource boundary; alternative-proof: ayokoding-www:test:unit / A skills path awaiting restructure renders as today's flat list
   @integration-exempt
-  # Exemption(e2e): the marker is closed to the four real skills paths, which the E2E fixture manifest set does not load; alternative-proof: ayokoding-www:test:unit / A skills path awaiting restructure renders as today's flat list
+  # Exemption(e2e): the marker is closed to the four real skills paths outside the E2E fixture-manifest boundary the test server loads; alternative-proof: ayokoding-www:test:unit / A skills path awaiting restructure renders as today's flat list
   @e2e-exempt
   Scenario: A skills path awaiting restructure renders as today's flat list
     Given a skills manifest carries its restructure marker

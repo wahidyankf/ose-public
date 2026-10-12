@@ -62,7 +62,7 @@ describeFeature(feature, ({ Scenario }) => {
       render(<PathLanding locale="en" manifest={fixtureManifest} courseTitles={courseTitles} />);
     });
 
-    Then("the courses appear in the fixture manifest's courseOrder", () => {
+    Then("the courses appear in the fixture manifest's phase order", () => {
       const list = document.querySelector("ol");
       expect(list).not.toBeNull();
       const items = within(list as HTMLElement).getAllByRole("listitem");

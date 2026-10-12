@@ -19,7 +19,7 @@ Feature: Path-order navigation
   Scenario: The path rail shows the whole ordered arc beside a course at desktop width
     Given a reader opens a course in path context on a desktop-width viewport
     When the page renders
-    Then the left rail lists that path's courses in manifest order with the current course marked
+    Then the left rail lists that path's courses grouped under phase headings in manifest order with the current course marked
     And the current course is distinguished by a marker and weight, not by colour alone
     And the rail offers a link back to the full path and to the whole course library
 

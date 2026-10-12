@@ -32,3 +32,12 @@ Feature: Outline course status
     Given the published course library under content/en/learn/courses
     When the words of every markdown file in each course directory are counted
     Then every course with fewer than 1000 words declares status outline
+
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / An outline course carries an Outline badge wherever a path lists it
+  @integration-exempt
+  Scenario: An outline course carries an Outline badge wherever a path lists it
+    Given a fixture path lists a course whose frontmatter declares status outline
+    When a reader opens that path's landing page and then a course in that path
+    Then the outline course shows a text badge reading "Outline" in the syllabus
+    And the same course shows the "Outline" badge in the path rail
+    And a course without status outline shows no badge

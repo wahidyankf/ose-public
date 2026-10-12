@@ -10,5 +10,5 @@ Feature: Arc landing with one role
   Scenario: An arc landing with one path renders a full card, not a sparse stub
     Given a fixture arc manifest lists exactly one role
     When a reader opens that arc's landing page
-    Then the single role card renders with an inline first-phase syllabus preview
+    Then the single role card renders with a preview that names the first phase and lists its courses
     And the layout does not reserve or render a visibly empty second card

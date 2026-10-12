@@ -121,7 +121,7 @@ describe("PathCard", () => {
 describe("CategorySection", () => {
   it("is a <section aria-labelledby> with a real <h2> heading", () => {
     render(
-      <CategorySection id="careers" heading="Careers" strapline="Converging within your role">
+      <CategorySection id="careers" heading="Careers" strapline="A focused core for your goal, then optional depth">
         <p>content</p>
       </CategorySection>,
     );

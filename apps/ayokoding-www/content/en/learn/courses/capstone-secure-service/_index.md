@@ -5,6 +5,7 @@ draft: false
 weight: 1007
 prerequisites:
   ["security-essentials", "backend-at-scale", "it-and-application-security", "offensive-security", "defensive-security"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/capstone-secure-service/overview)

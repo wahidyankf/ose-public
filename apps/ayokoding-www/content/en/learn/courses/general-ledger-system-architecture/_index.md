@@ -4,6 +4,7 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1118
 prerequisites: ["chart-of-accounts-and-data-modeling", "financial-statements-and-close-cycle", "backend-essentials"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/general-ledger-system-architecture/overview)

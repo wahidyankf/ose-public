@@ -16,6 +16,7 @@ prerequisites:
     "offensive-security",
     "defensive-security",
   ]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/capstone-real-world-delivery/overview)

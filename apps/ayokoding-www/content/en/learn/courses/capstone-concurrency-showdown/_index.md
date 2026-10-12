@@ -4,6 +4,7 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1009
 prerequisites: ["csp-style-concurrency", "actor-model-concurrency"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/capstone-concurrency-showdown/overview)

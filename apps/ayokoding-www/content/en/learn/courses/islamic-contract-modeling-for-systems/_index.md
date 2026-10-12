@@ -4,6 +4,7 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1120
 prerequisites: ["sharia-accounting-and-aaoifi-standards", "chart-of-accounts-and-data-modeling"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/islamic-contract-modeling-for-systems/overview)

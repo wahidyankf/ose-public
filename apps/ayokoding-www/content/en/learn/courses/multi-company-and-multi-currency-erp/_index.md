@@ -4,6 +4,7 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1148
 prerequisites: ["record-to-report-systems", "consolidation-and-multi-entity-accounting"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/multi-company-and-multi-currency-erp/overview)

@@ -4,6 +4,7 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1106
 prerequisites: ["journal-entries-and-posting-mechanics", "accrual-accounting-and-revenue-recognition"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/accounts-receivable-and-order-to-cash/overview)

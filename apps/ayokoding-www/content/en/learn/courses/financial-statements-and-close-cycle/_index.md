@@ -4,6 +4,7 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1102
 prerequisites: ["chart-of-accounts-and-data-modeling"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/financial-statements-and-close-cycle/overview)

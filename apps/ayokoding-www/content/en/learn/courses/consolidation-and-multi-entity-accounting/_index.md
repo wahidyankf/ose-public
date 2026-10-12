@@ -9,6 +9,7 @@ prerequisites:
     "financial-statements-and-close-cycle",
     "multi-currency-accounting-and-fx-translation",
   ]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/consolidation-and-multi-entity-accounting/overview)

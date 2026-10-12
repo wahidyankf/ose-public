@@ -4,6 +4,7 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1010
 prerequisites: ["csp-style-concurrency", "containers-and-orchestration", "site-reliability-engineering"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/capstone-concurrency-and-systems/overview)

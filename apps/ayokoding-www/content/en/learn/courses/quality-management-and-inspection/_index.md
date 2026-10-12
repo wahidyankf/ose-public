@@ -9,6 +9,7 @@ prerequisites:
     "erp-bom-and-routing-architecture",
     "inventory-and-warehouse-management",
   ]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/quality-management-and-inspection/overview)

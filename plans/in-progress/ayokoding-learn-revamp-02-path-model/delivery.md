@@ -362,7 +362,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
   list printed by the guard before GREEN.
 - _Suggested executor: `specs-maker` for Gherkin, `swe-developer` for code and frontmatter._
 
-- [ ] [AI] **Gherkin first:** create
+- [x] [AI] **Gherkin first:** create
       `specs/apps/ayokoding/www/behaviours/frontend/course-paths/outline-course-status.feature` with the
       feature header and the three scenarios named above, copied from prd.md with their exemption
       comments and tags. The badge scenario lands in Phase 4. Run `BEHAVIOUR`. Acceptance: it fails and
@@ -370,33 +370,33 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 
 ### AC-1.1 — Frontmatter schema accepts only `outline`
 
-- [ ] [AI] **RED:** in `tests/unit/features/content/core/schemas.test.ts` add cases: `status:
+- [x] [AI] **RED:** in `tests/unit/features/content/core/schemas.test.ts` add cases: `status:
 "outline"` parses; no `status` parses; `status: "draft"` fails. Run
       `UNIT-FE tests/unit/features/content/core/schemas.test.ts`. Acceptance: the `"outline"` case fails
       (the key is stripped or rejected today); save the output.
-- [ ] [AI] **GREEN:** in `apps/ayokoding-www/src/features/content/core/schemas.ts` add
+- [x] [AI] **GREEN:** in `apps/ayokoding-www/src/features/content/core/schemas.ts` add
       `status: z.enum(["outline"]).optional()` to `frontmatterSchema` (if plan 03 landed, keep its enum
       and confirm it contains `"outline"`). Rerun the same command. Acceptance: all cases pass.
-- [ ] [AI] **REFACTOR:** add a one-line comment naming the guard test that keeps the marker honest.
+- [x] [AI] **REFACTOR:** add a one-line comment naming the guard test that keeps the marker honest.
       Run `QUICK`. Acceptance: exit 0.
 
 ### AC-1.2 — `ContentMeta` carries `status`
 
-- [ ] [AI] **RED:** in `tests/unit/features/content/shell/repository-fs.unit.test.ts` add a case whose
+- [x] [AI] **RED:** in `tests/unit/features/content/shell/repository-fs.unit.test.ts` add a case whose
       fixture course frontmatter has `status: outline` and assert the loaded `ContentMeta.status` is
       `"outline"`, and is `undefined` for a course without it. Run
       `UNIT-NODE tests/unit/features/content/shell/repository-fs.unit.test.ts`. Acceptance: the new
       assertion fails.
-- [ ] [AI] **GREEN:** add `status?: "outline"` to `ContentMeta` in
+- [x] [AI] **GREEN:** add `status?: "outline"` to `ContentMeta` in
       `apps/ayokoding-www/src/features/content/core/types.ts` and map `frontmatter.status` next to
       `prerequisites` in `apps/ayokoding-www/src/features/content/shell/repository-fs.ts`. Rerun.
       Acceptance: pass.
-- [ ] [AI] **REFACTOR:** match the doc comment style of `prerequisites` in `types.ts`. Run `QUICK`.
+- [x] [AI] **REFACTOR:** match the doc comment style of `prerequisites` in `types.ts`. Run `QUICK`.
       Acceptance: exit 0.
 
 ### AC-1.3 — Every course parses, and every skeleton course is marked
 
-- [ ] [AI] **RED:** create `tests/unit/features/content/course-frontmatter.unit.test.ts`: for each
+- [x] [AI] **RED:** create `tests/unit/features/content/course-frontmatter.unit.test.ts`: for each
       folder in `content/en/learn/courses/`, parse `_index.md` with `gray-matter` and
       `frontmatterSchema` (must succeed), and count whitespace-split tokens across every `.md` file in
       the folder; a course under 1,000 words must have `status: "outline"`. The failure message lists
@@ -404,15 +404,15 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
       Acceptance: the parse test passes; the guard fails listing exactly the 62 slugs in
       [syllabus/courses/README.md](./syllabus/courses/README.md#1-outline-marker-62-courses). Save the
       list. If the list differs, stop and report.
-- [ ] [AI] **GREEN:** add the line `status: outline` to the frontmatter of each of the 62
+- [x] [AI] **GREEN:** add the line `status: outline` to the frontmatter of each of the 62
       `apps/ayokoding-www/content/en/learn/courses/<slug>/_index.md` files, directly after
       `prerequisites`. Change nothing else. Rerun the same command. Acceptance: pass. Run
       `rtk git diff --stat -- apps/ayokoding-www/content/en/learn/courses` and confirm 62 files, one
       line each.
-- [ ] [AI] **REFACTOR:** extract the word counter into a small named helper inside the test file with
+- [x] [AI] **REFACTOR:** extract the word counter into a small named helper inside the test file with
       a comment that it is test code, not a product feature. Run `QUICK`. Acceptance: exit 0.
 
-- [ ] [AI] **Bind the scenarios:** create `tests/unit/fe-steps/outline-course-status.steps.tsx` using
+- [x] [AI] **Bind the scenarios:** create `tests/unit/fe-steps/outline-course-status.steps.tsx` using
       `describeFeature`/`loadFeature` like `tests/unit/fe-steps/course-path-manifest.steps.ts`, binding
       the three scenarios to the same assertions (schema cases; parse all; guard). Run
       `UNIT-FE tests/unit/fe-steps/outline-course-status.steps.tsx`, then `BEHAVIOUR`. Acceptance: both
@@ -422,11 +422,11 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 
 > All checks below must pass before starting Phase 2.
 
-- [ ] [AI] `QUICK` exits 0 (coverage threshold held).
-- [ ] [AI] `BEHAVIOUR` exits 0.
-- [ ] [AI] `VALIDATE-INDEXES` exits 0. If it reports drift, run `GEN-INDEXES`, review the diff, and
+- [x] [AI] `QUICK` exits 0 (coverage threshold held).
+- [x] [AI] `BEHAVIOUR` exits 0.
+- [x] [AI] `VALIDATE-INDEXES` exits 0. If it reports drift, run `GEN-INDEXES`, review the diff, and
       keep the regenerated files with this phase.
-- [ ] [AI] `rtk git status --short` lists only the feature file, the schema, types, repository-fs,
+- [x] [AI] `rtk git status --short` lists only the feature file, the schema, types, repository-fs,
       the three test files, the 62 `_index.md` files, any regenerated index files, and `<plan>/`.
 
 > **Pause Safety**: outline courses are marked and guarded; no reader-visible change yet. Safe to

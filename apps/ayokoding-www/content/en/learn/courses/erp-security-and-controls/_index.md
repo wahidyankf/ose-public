@@ -4,6 +4,7 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1149
 prerequisites: ["erp-module-map-and-architecture", "audit-controls-and-compliance"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/erp-security-and-controls/overview)

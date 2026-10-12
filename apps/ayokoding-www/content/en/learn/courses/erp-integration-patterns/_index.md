@@ -11,6 +11,7 @@ prerequisites:
     "backend-essentials",
     "api-design",
   ]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/erp-integration-patterns/overview)

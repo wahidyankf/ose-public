@@ -4,6 +4,7 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1131
 prerequisites: ["erp-module-map-and-architecture"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/erp-numbering-sequences-and-uom-conversion/overview)

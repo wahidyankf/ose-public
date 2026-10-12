@@ -79,10 +79,10 @@ Two layers, in this order:
    repository, verified before extraction, and run offline with
    `--no-verification --no-update --fail --fail-on-scan-errors`.
 
-Before either layer touches real material, a **canary** runs: a real RSA key generated at run time, scanned, and
-required to produce a detection whose output does not contain the key. The canary proves detection _and_ non-disclosure.
-A random token-shaped string would prove neither — the token detectors validate a checksum, so an invented `<token>` is
-simply not detected.
+Before either layer touches real material, a **canary** runs: an inert, unissued token-shaped marker assembled at run
+time and scanned by the pinned scanner with verification disabled. The canary must produce a real detection while
+sanitized output contains none of the marker. Missing detection, scanner errors, or disclosure block as scan errors;
+temporary canary data is removed before continuation. It creates and reads no private key.
 
 ## The Shape Set
 
@@ -154,6 +154,7 @@ bash scripts/public-safety/tests/run.sh 080        # one case by name fragment
 | `150-hostname-trailing-underscore`       | an underscore continues a hostname token; real hostnames still block           |
 | `160-typed-commit-message-adapter`       | typed hook/PR messages are screened without publishing a hook path             |
 | `170-range-history`                      | a range is screened per commit; added-then-deleted values and halves block     |
+| `180-canary-fails-closed`                | missing detection, disclosure, or scanner failure blocks and cleans up         |
 
 Every probe value is assembled at run time from fragments, so no string this repository's own gate would flag exists in
 any test file — a test that hardcoded one would block the commit that added it. `assert_absent` reports only a length on

@@ -409,17 +409,17 @@ credential_scan() {
 # ------------------------------------------------------------------------------
 
 run_canary() {
-	local dir value out detected real_findings scan_rc
+	local dir value payload out captured detected real_findings scan_rc
 
 	dir=$(mktemp -d "$WORK/canary.XXXXXX") || scan_error "cannot create the canary directory"
 
-	# Generated here, never committed, and never printed. A real RSA key rather
-	# than a token-shaped string: the token detectors validate a checksum, so a
-	# random `ghp_...` proves nothing about whether detection works.
-	openssl genrsa -out "$dir/canary.pem" 2048 2>/dev/null ||
-		scan_error "cannot generate the canary key"
-	value=$(sed -n '3p' "$dir/canary.pem")
-	[[ -n "$value" ]] || scan_error "the canary key is not in the expected form"
+	# Locally fabricated and unissued. The pinned GithubV2 detector accepts
+	# this shape without a checksum; --no-verification prevents authentication.
+	# Fragments keep the complete marker out of committed sources. Real runtime
+	# detection below proves it survives the scanner's false-positive filters.
+	payload=$(printf '%s%s%s%s' '7mQ2vN9rA' '5xK8bT3wC' '6dR1zH4pF' '0sJ7uL2eV')
+	value=$(printf '%s%s%s' 'ghp' '_' "$payload")
+	printf '%s\n' "$value" >"$dir/canary.txt" || scan_error "cannot write the inert canary"
 
 	# The canary keeps its own ledger so a proof never becomes a real finding.
 	real_findings="$FINDINGS_FILE"
@@ -439,7 +439,8 @@ run_canary() {
 		scan_error "the canary scan could not complete: the scanner cannot be trusted"
 	fi
 
-	if [[ "$out$(cat "$FINDINGS_FILE")" == *"$value"* ]]; then
+	captured="$out$(cat "$FINDINGS_FILE")"
+	if [[ "$captured" == *"$value"* || "$captured" == *"$payload"* ]]; then
 		: >"$FINDINGS_FILE"
 		rm -rf "$dir"
 		FINDINGS_FILE="$real_findings"

@@ -19,12 +19,24 @@ After completing all items in a delivery phase, verify the phase's authored gate
 
    (the first is the registry-declared gate set `.husky/pre-push` invokes, which runs no `test:quick`; the second runs affected `test:quick`)
 
-2. If the plan involves integration or e2e tests, also run:
+2. If the plan involves integration or e2e tests, also run them as the phase-end and
+   pre-PR-ready safety net: the whole automated suite except full E2E, plus only the
+   affected E2E flow:
 
    ```bash
    ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:integration
-   ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:e2e
+   ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:e2e -- <touched-flow spec or case filter>
    ```
+
+   Scope the E2E invocation to the touched flow (its spec path or case filter), never the
+   full unfiltered E2E suite. A full E2E run is never a completion condition for a plan
+   phase, plan execution, or PR readiness; full E2E is a separately batched set owned by
+   scheduled CI (see
+   [Execution Surfaces](../../../development/behaviour-driven-development/coverage-exemptions-and-execution.md#execution-surfaces)).
+
+   Followed: the boundary record shows unfiltered non-E2E suites plus a flow-scoped E2E run
+   naming the touched flow. Violated: an unfiltered E2E invocation at a phase or pre-PR
+   boundary, or phase completion conditioned on a full E2E run.
 
    **Transient contention flakes on a many-project affected run**: when `test:e2e` (or `build`) runs
    across a large affected set on one shared local machine, expect occasional non-deterministic

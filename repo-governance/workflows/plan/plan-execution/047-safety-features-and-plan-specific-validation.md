@@ -33,7 +33,7 @@ when_to_use: Use when explaining what safety guarantees plan execution provides,
 **Worktree Lifecycle**:
 
 - Worktree-based modes enter the plan's designated worktree (Step 0); main-based modes remain in the primary checkout and create no plan worktree
-- A plan worktree is synced with `origin/main` (ff-merge or rebase) before any implementation; dirty state or rebase conflicts stop execution for user decision
+- A plan worktree is synced with `origin/main` (ff-merge or rebase) before any implementation; dirty state or conflicts involving foreign work, uncertain intent, or a new material choice stop execution; owned settled conflict repair follows [authorized task sync](../../../development/workflow/no-destructive-git-operations/001-authorized-task-branch-sync.md)
 - On `pass`, after final delivery, the orchestrator runs the complete canonical [Worktree and Artifact Cleanup gate](../../../development/workflow/worktree-and-artifact-cleanup.md): verify the Delivery Branch Inventory and every mandatory pre-removal check, then clean the exact worktree, eligible plan-created branches, and plan-local regenerable build output while preserving diagnostics/shared caches and applying the bare-repository ordering exception; no additional confirmation prompt is required
 - On `partial` or `fail`, the worktree and diagnostic/resumption artifacts are retained
 

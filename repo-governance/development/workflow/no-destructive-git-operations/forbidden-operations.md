@@ -5,11 +5,12 @@ when_to_use: Use before running any git operation that could discard uncommitted
 
 # Forbidden Operations
 
-Forbidden without explicit per-instance approval. Grouped by what they destroy.
+Forbidden without explicit per-instance approval outside [authorized task sync](001-authorized-task-branch-sync.md).
+Grouped by what they destroy.
 
 **The table is illustrative, not exhaustive — read the rule first.** _Any_ git invocation whose effect
 is to destroy work you did not create, discard uncommitted changes, rewrite published history, or
-remove the means of recovering any of those, is forbidden without explicit per-instance approval —
+remove the means of recovering any of those, is forbidden without explicit per-instance approval outside that bounded contract —
 whether or not its spelling appears below. Naming a flag is a convenience for recognising the common
 cases; it is never the boundary of the rule. `git switch --discard-changes`, `git checkout -f`,
 `git update-ref -d`, `git worktree prune`, `git branch -M` over an existing ref, and any future

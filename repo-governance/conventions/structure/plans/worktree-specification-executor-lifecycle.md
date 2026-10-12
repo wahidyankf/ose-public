@@ -14,7 +14,12 @@ provisioning and use the synced primary checkout):
    it if present, or provision it from fresh `origin/main`. Reuse that same worktree for every unit;
    never provision a second one for the repo and plan. A main mode instead stays in the primary
    checkout and provisions none.
-2. **Freshness sync**: before any implementation, the worktree is synced with the latest `origin/main` (ff-merge, or rebase when the worktree carries local commits). Dirty state or rebase conflicts stop execution for an explicit user decision. Starting a new delivery unit inside an already-provisioned worktree runs this same sync before branching off it.
+2. **Freshness sync**: before any implementation, the worktree is synced with the latest `origin/main`
+   (ff-merge, or rebase when the worktree carries local commits). Dirty state stops execution for an
+   explicit user decision. Rebase conflicts follow [authorized task sync][authorized-task-sync]: only
+   owned, already settled resolutions proceed; foreign work, uncertain intent, or a new material choice
+   stops execution for an explicit user decision. Starting a new delivery unit inside an
+   already-provisioned worktree runs this same sync before branching off it.
 3. **Immediate cleanup**: when every delivery unit this plan places in a repo is confirmed delivered,
    resolve its declared repository-relative route against the selected repository root, reconcile
    the resulting runtime path with `git worktree list --porcelain`, then use the Delivery Branch
@@ -56,3 +61,5 @@ The plan-execution Step 0 gate enters this worktree by default: it auto-provisio
 implementing, and removes the runtime path resolved from that route immediately after delivery when
 its mandatory safety checks pass.
 ````
+
+[authorized-task-sync]: ../../../development/workflow/no-destructive-git-operations/001-authorized-task-branch-sync.md

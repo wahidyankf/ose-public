@@ -20,7 +20,7 @@ Git, verification, and reproducible environments.
 - [Git Hook Lifecycle](./git-hook-lifecycle.md) — Registry-backed lifecycle for the three Husky hook shims. Use when a Husky hook fails or needs changing.
 - [Git Identity From Global Config Convention](./git-identity-from-global-config.md) — Prohibits per-repo [user] overrides; identity comes from global git config. Use when auditing or setting git author identity.
 - [Git Push Default Convention](./git-push-default.md) — Default push target is worktree-to-pr; direct push is restricted per-repo. Use before pushing, or to override the default delivery mode.
-- [Git Push Safety Convention](./git-push-safety.md) — Requires explicit approval before any force-push or --no-verify. Use before running a force-push or --no-verify.
+- [Git Push Safety Convention](./git-push-safety.md) — Requires approval outside bounded authorized task sync; hook bypass remains separate. Use before running a force-push or --no-verify.
 - [Grilling-With-Options Convention](./grilling-with-options.md) — Agents must resolve design decisions via structured multiple-choice questions. Use when resolving an open design decision with the user.
 - [Implementation Workflow](./implementation.md) — Three-stage workflow: make it work, right, then fast. Use when planning or reviewing any code change.
 - [Integration Diff Review Convention](./integration-diff-review.md) — Read the full incoming diff after a rebase/merge before continuing work. Use immediately after a rebase, pull, merge, or cherry-pick.

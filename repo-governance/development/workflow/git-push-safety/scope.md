@@ -5,6 +5,11 @@ when_to_use: Use when determining whether a specific push mechanism or actor fal
 
 # Scope
 
+The approval procedure and examples on this page apply outside the
+[authorized task-owned sync contract](../no-destructive-git-operations/001-authorized-task-branch-sync.md).
+Its bounded ongoing authority needs no repeated prompt; hook bypass is outside it. The separate secret-incident
+procedure remains unchanged.
+
 This rule applies to:
 
 - All AI agents defined in `.agents/agents/` and routed through `.claude/agents/`, `.codex/agents/`, and `.opencode/agents/`.

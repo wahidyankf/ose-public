@@ -11,6 +11,8 @@ force-push and hook-bypass approval. Together they cover both directions; neithe
 
 ## Contents
 
+- [Authorized Task Branch Sync](no-destructive-git-operations/001-authorized-task-branch-sync.md) — the bounded ongoing owned-task exception, including reviewed settled conflicts.
+
 - [The Same-Machine Assumption, Principles, and Conventions](./no-destructive-git-operations/the-same-machine-assumption-principles-and-conventions.md) — Why concurrency makes these operations dangerous, and what this convention implements.
 - [Forbidden Operations](./no-destructive-git-operations/forbidden-operations.md) — The table of forbidden operations, what they destroy, and their safe equivalents.
 - [Forbidden-Operations Caveats and Cross-Worktree Facts](./no-destructive-git-operations/forbidden-operations-caveats-and-cross-worktree-facts.md) — Two easy-to-misread-as-safe behaviours, and what git already isolates.

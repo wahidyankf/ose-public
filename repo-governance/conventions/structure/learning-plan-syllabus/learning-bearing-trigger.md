@@ -22,7 +22,7 @@ If the former, the plan is learning-bearing; if the latter, it is not.
    content, so the plan is learning-bearing and must carry the folder layout, template-derived shape,
    and disposition/custody declarations below.
 2. A plan's delivery checklist splits one existing course into two, renumbers the affected
-   prerequisite stages across every path manifest that references it, and rewrites the `courseOrder`
+   prerequisite stages across every path manifest that references it, and rewrites the manifest's `phases`
    entries accordingly — this **restructures** curriculum content, so the plan is learning-bearing
    even though it touches existing files rather than creating new ones.
 

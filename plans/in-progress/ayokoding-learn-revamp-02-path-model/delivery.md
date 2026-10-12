@@ -882,65 +882,65 @@ plans 06 and 07 remove, enforced by the allowlist and marker-usage tests, so it 
 
 ### Automatic Rule-Impact Coverage — repository `ose-public`
 
-- [ ] [AI] **Inventory (freeze inputs):** record PM1–PM3 exactly as above, each with its reason,
+- [x] [AI] **Inventory (freeze inputs):** record PM1–PM3 exactly as above, each with its reason,
       strength (MUST), scope (`apps/ayokoding-www/content/en/learn/courses/**` and
       `apps/ayokoding-www/src/features/course-paths/manifests/**`), and intended enforcement, plus the
       stale example in
       `repo-governance/conventions/structure/learning-plan-syllabus/learning-bearing-trigger.md`
       (positive example 2 says "rewrites the `courseOrder` entries"), the current revision, and the
       uncommitted paths, in `local-tmp/ayokoding-learn/plan-02/rules-placement.md`.
-- [ ] [AI] **Falsifiability:** for each rule record a violating and a conforming example (PM1: a
+- [x] [AI] **Falsifiability:** for each rule record a violating and a conforming example (PM1: a
       508-word course without the marker vs with it; PM2: a core course whose prerequisite is neither
       earlier nor assumed vs one listed in `assumes`; PM3: `just-enough-python` requiring
       `capstone-forge-ready` vs requiring nothing). Acceptance: each recorded as falsifiable, or PM3
       ruled unfalsifiable by design with its reason.
-- [ ] [AI] **Existing-rule check:** search `repo-governance/`, `.agents/`, and `AGENTS.md` by term
+- [x] [AI] **Existing-rule check:** search `repo-governance/`, `.agents/`, and `AGENTS.md` by term
       (`outline`, `prerequisite`, `manifest`), by verb (`mark`, `declare`, `assume`), and by surface
       (`content/en/learn/courses`, `course-paths/manifests`). Acceptance: the record lists each hit and
       states that no existing rule carries PM1–PM3, or names the one that does.
-- [ ] [AI] **Conflict and precedence:** check PM1–PM3 against the learning-plan syllabus convention
+- [x] [AI] **Conflict and precedence:** check PM1–PM3 against the learning-plan syllabus convention
       and plan 01's course-title and References rules (if merged). Acceptance: the record states no
       contradiction, or routes one per
       [Statement and Conflict](../../../repo-governance/workflows/quality/rules-propagation/001-statement-and-conflict.md).
-- [ ] [AI] **Placement:** per
+- [x] [AI] **Placement:** per
       [Placement](../../../repo-governance/workflows/quality/rules-propagation/002-placement.md),
       confirm or replace the proposed home
       `.agents/skills/apps-ayokoding-www-developing-content/reference/course-status-and-path-model.md`
       (reaches the ayokoding content makers through the skill). Record any eviction a full surface
       needs.
-- [ ] [AI] **Canonical edits:** create the module with PM1–PM3 (statement, reason line, violating and
+- [x] [AI] **Canonical edits:** create the module with PM1–PM3 (statement, reason line, violating and
       conforming example, enforcement line), link it from
       `.agents/skills/apps-ayokoding-www-developing-content/SKILL.md` and
       `.agents/skills/apps-ayokoding-www-developing-content/reference/README.md`, and narrow-edit the
       stale example in `learning-bearing-trigger.md` to "rewrites the manifest's `phases` entries".
       If plan 01 already edited the same SKILL.md or README, rebase onto it. Acceptance: the skill
       stays within its word budget.
-- [ ] [AI] **Enforcement disposition:** PM1 → `gated` by `course-frontmatter.unit.test.ts`; PM2 →
+- [x] [AI] **Enforcement disposition:** PM1 → `gated` by `course-frontmatter.unit.test.ts`; PM2 →
       `gated` by `path-model-integrity.unit.test.ts`; PM3 → `unenforced by decision` with its reason
       recorded on the rule. Prove PM1 and PM2 both ways: temporarily remove `status: outline` from one
       outline course and run `UNIT-NODE tests/unit/features/content/course-frontmatter.unit.test.ts`
       (fails), restore it, rerun (passes); temporarily remove one entry from the AI manifest's `assumes`
       and run `UNIT-NODE tests/unit/features/course-paths/manifests/path-model-integrity.unit.test.ts`
       (fails), restore, rerun (passes). Save all four outputs.
-- [ ] [AI] **Binding generation:** run
+- [x] [AI] **Binding generation:** run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino harness adapters generate`,
       then `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- ./rhino harness adapters validate`.
       Acceptance: both exit 0; record the generated paths from `rtk git status --short`.
-- [ ] [AI] **Propagation verification:** per
+- [x] [AI] **Propagation verification:** per
       [Enforcement and Verification](../../../repo-governance/workflows/quality/rules-propagation/003-enforcement-and-verification.md):
       regenerate derived surfaces (done above), run `LINT-MD` and `QUICK` judged by exit code, read the
       changed rule text once for closure, and reconcile the placement record with
       `rtk git status --short` (every changed path accounted for). Acceptance: all exit 0 and no
       unexplained path.
-- [ ] [AI] **Rules Quality Gate:** run the
+- [x] [AI] **Rules Quality Gate:** run the
       [Rules Quality Gate](../../../repo-governance/workflows/quality/rules-quality-gate.md) on the
       changed rule surfaces (at most 2 cycles). Acceptance: no open blocking finding.
-- [ ] [AI] **Final status:** record the propagation `status` (`landed`) with each rule's home and
+- [x] [AI] **Final status:** record the propagation `status` (`landed`) with each rule's home and
       disposition in the placement record and copy a summary into the phase evidence.
 
 ### Docs Propagation
 
-- [ ] [AI] Run [Docs Propagation](../../../repo-governance/workflows/quality/docs-propagation.md) for
+- [x] [AI] Run [Docs Propagation](../../../repo-governance/workflows/quality/docs-propagation.md) for
       the branch's change. At minimum: rewrite
       `apps/ayokoding-www/src/features/course-paths/manifests/README.md` to document `phases`, `goals`,
       `assumes`, the temporary `restructurePendingIn` marker (with plans 06 and 07 as its removal
@@ -955,8 +955,8 @@ plans 06 and 07 remove, enforced by the allowlist and marker-usage tests, so it 
 
 > All checks below must pass before starting Phase 8.
 
-- [ ] [AI] The `./rhino harness adapters validate` command above exits 0.
-- [ ] [AI] `QUICK` and `LINT-MD` exit 0.
+- [x] [AI] The `./rhino harness adapters validate` command above exits 0.
+- [x] [AI] `QUICK` and `LINT-MD` exit 0.
 
 > **Pause Safety**: rules, bindings, and docs match the code. Safe to stop. To resume: rerun the
 > adapters validate command and `QUICK`.

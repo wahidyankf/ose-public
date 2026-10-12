@@ -18,7 +18,13 @@ they are not published learning content.
 | `skills/`         | Path landing bodies with distinct authored content               |
 | Missing arc slugs | The empty state, without a special zero-manifest fixture         |
 
-The two `skills/e2e-fixture-*` paths have matching draft content pages in `ayokoding-www/content`.
+## Fixture shape
+
+Each fixture manifest uses the same phase shape as the production manifests: `phases` with `core`
+and `extension` kinds, `assumes` for assumed courses, and a derived `courseOrder` (the phases'
+courses in order). Every core phase carries the outcome
+`{"can": "complete this fixture path"}`. The two `skills/e2e-fixture-*` paths have matching draft
+content pages in `ayokoding-www/content`.
 That is intentional: the tests need real page bodies as well as manifest metadata.
 
 ## When changing a fixture

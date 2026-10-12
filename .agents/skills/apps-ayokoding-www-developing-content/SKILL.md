@@ -50,6 +50,10 @@ See [Canonical Content Tree Shape](./reference/canonical-content-tree-shape.md) 
 
 See [Course Titles and References](./reference/course-titles-and-references.md) for the no-numbers course-title rule (R1), the no-internal-verification-vocabulary rule (R2), and the References-presentation rule for source-citing pages (R3).
 
+## Course Status and Path Model
+
+See [Course Status and Path Model](./reference/course-status-and-path-model.md) for the outline-marker rule (PM1), the core-closure and `assumes` rule (PM2), and the prerequisite-rubric duty (PM3, judgement).
+
 ## By-Example Tutorial Standards
 
 ### Annotation Density Requirement

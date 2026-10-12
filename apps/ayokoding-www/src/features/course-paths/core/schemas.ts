@@ -101,45 +101,8 @@ const phaseShapedFileSchema = z
     });
   });
 
-// expand-contract: removed in Phase 6
-const legacyManifestFileSchema = z
-  .object({
-    pathId: pathIdSchema,
-    // `arc` is required on every manifest regardless of category (R8) — for `skills/*` paths the
-    // arc is omitted from the URL, but it is never optional in the manifest data.
-    arc: z.string(),
-    title: z.string(),
-    description: z.string(),
-    courseOrder: z.array(courseRefSchema),
-  })
-  .strict();
-
-/**
- * On-disk shape of a manifest file during the expand step: either the phase shape above or
- * the legacy `{courseOrder}` shape, normalized to phases (a legacy file becomes one core
- * `all-courses` phase with no outcome — the outcome refine applies only to the new shape,
- * so every existing legacy manifest keeps parsing).
- */
-export const PathManifestFileSchema = z.union([phaseShapedFileSchema, legacyManifestFileSchema]).transform((file) =>
-  "courseOrder" in file
-    ? {
-        pathId: file.pathId,
-        arc: file.arc,
-        title: file.title,
-        description: file.description,
-        goals: undefined as string[] | undefined,
-        assumes: [] as string[],
-        phases: [
-          {
-            id: "all-courses",
-            title: file.title,
-            kind: "core" as const,
-            courses: file.courseOrder,
-          },
-        ],
-      }
-    : file,
-);
+/** On-disk shape of a manifest file (after the contract step, the only shape). */
+export const PathManifestFileSchema = phaseShapedFileSchema;
 
 /** Domain shape: the file shape plus the derived, flattened order. */
 export const PathManifestSchema = PathManifestFileSchema.transform((file) => ({

@@ -12,17 +12,26 @@ const careersManifest = {
 };
 
 describe("PathManifestSchema", () => {
-  it("(a) accepts a manifest whose courseOrder mixes bare course-ID strings with framing objects", () => {
+  it("(a) accepts a manifest whose phase courses mix bare course-ID strings with framing objects", () => {
+    const { courseOrder: _legacy, ...phaseBase } = careersManifest;
     const manifest = {
-      ...careersManifest,
-      courseOrder: [
-        "just-enough-python",
+      ...phaseBase,
+      phases: [
         {
-          id: "capstone-forge-ready",
-          framing: {
-            intro: "Before you start the capstone, revisit your interview notes.",
-            outro: "You are ready to walk into the interview loop.",
-          },
+          id: "foundations",
+          title: "Foundations",
+          kind: "core",
+          outcome: { can: "start" },
+          courses: [
+            "just-enough-python",
+            {
+              id: "capstone-forge-ready",
+              framing: {
+                intro: "Before you start the capstone, revisit your interview notes.",
+                outro: "You are ready to walk into the interview loop.",
+              },
+            },
+          ],
         },
       ],
     };
@@ -33,21 +42,24 @@ describe("PathManifestSchema", () => {
   });
 
   it("(b) accepts a 3-segment careers fixture, a 2-segment skills fixture, and a 4-segment forward-compatibility fixture — no fixed segment count", () => {
-    const threeSegmentCareers = careersManifest;
-    const twoSegmentSkills = {
-      pathId: "skills/conventional-accounting",
-      arc: "immediately-effective",
-      title: "Conventional Accounting",
-      description: "A from-scratch skills track in conventional accounting fundamentals.",
-      courseOrder: ["just-enough-python"],
-    };
-    const fourSegmentForwardCompat = {
-      pathId: "careers/a/b/c",
+    const phaseFileFor = (pathId: string) => ({
+      pathId,
       arc: "interview-ready",
       title: "Forward-compatibility fixture",
       description: "Proves the schema never bounds pathId depth above.",
-      courseOrder: ["just-enough-python"],
-    };
+      phases: [
+        {
+          id: "foundations",
+          title: "Foundations",
+          kind: "core",
+          outcome: { can: "start" },
+          courses: ["just-enough-python"],
+        },
+      ],
+    });
+    const threeSegmentCareers = phaseFileFor("careers/interview-ready/software-engineer");
+    const twoSegmentSkills = phaseFileFor("skills/conventional-accounting");
+    const fourSegmentForwardCompat = phaseFileFor("careers/a/b/c");
 
     expect(PathManifestSchema.safeParse(threeSegmentCareers).success).toBe(true);
     expect(PathManifestSchema.safeParse(twoSegmentSkills).success).toBe(true);
@@ -259,21 +271,21 @@ describe("PathManifestSchema phase shape (plan 02 expand)", () => {
     }
   });
 
-  it("(q) parses a legacy courseOrder file into one all-courses core phase", () => {
+  it("(q) rejects a file containing courseOrder", () => {
     const result = PathManifestSchema.safeParse(careersManifest);
 
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.phases).toEqual([
-        {
-          id: "all-courses",
-          title: careersManifest.title,
-          kind: "core",
-          courses: ["just-enough-python", "capstone-forge-ready"],
-        },
-      ]);
-      expect(result.data.courseOrder).toEqual(["just-enough-python", "capstone-forge-ready"]);
-      expect(result.data.assumes).toEqual([]);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some((issue) => issue.code === "unrecognized_keys")).toBe(true);
+    }
+  });
+
+  it("(q2) rejects a file with an unknown top-level key", () => {
+    const result = PathManifestSchema.safeParse({ ...phaseShapedFile, extraKey: "nope" });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some((issue) => issue.code === "unrecognized_keys")).toBe(true);
     }
   });
 });

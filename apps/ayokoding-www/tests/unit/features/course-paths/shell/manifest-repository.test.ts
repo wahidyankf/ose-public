@@ -27,7 +27,15 @@ describe("loadManifests", () => {
       arc: "interview-ready",
       title: "Interview-Ready Software Engineer",
       description: "Interview-first track for an experienced engineer re-entering the market.",
-      courseOrder: ["just-enough-python", "capstone-forge-ready"],
+      phases: [
+        {
+          id: "foundations",
+          title: "Foundations",
+          kind: "core",
+          outcome: { can: "start" },
+          courses: ["just-enough-python", "capstone-forge-ready"],
+        },
+      ],
     });
 
     const manifests = await loadManifests(tmpDir, ["just-enough-python", "capstone-forge-ready"]);
@@ -43,7 +51,15 @@ describe("loadManifests", () => {
       arc: "immediately-effective",
       title: "Conventional Accounting",
       description: "desc",
-      courseOrder: ["just-enough-python"],
+      phases: [
+        {
+          id: "foundations",
+          title: "Foundations",
+          kind: "core",
+          outcome: { can: "start" },
+          courses: ["just-enough-python"],
+        },
+      ],
     });
 
     const manifests = await loadManifests(tmpDir, ["just-enough-python"]);
@@ -60,7 +76,15 @@ describe("loadManifests", () => {
       arc: "interview-ready",
       title: "Interview-Ready Software Engineer",
       description: "desc",
-      courseOrder: ["just-enough-python", "does-not-exist-anywhere"],
+      phases: [
+        {
+          id: "foundations",
+          title: "Foundations",
+          kind: "core",
+          outcome: { can: "start" },
+          courses: ["just-enough-python", "does-not-exist-anywhere"],
+        },
+      ],
     });
 
     const manifests = await loadManifests(tmpDir, ["just-enough-python"]);
@@ -93,7 +117,15 @@ describe("loadManifests", () => {
       arc: "interview-ready",
       title: "Interview-Ready Software Engineer",
       description: "desc",
-      courseOrder: ["just-enough-python"],
+      phases: [
+        {
+          id: "foundations",
+          title: "Foundations",
+          kind: "core",
+          outcome: { can: "start" },
+          courses: ["just-enough-python"],
+        },
+      ],
     });
 
     const manifests = await loadManifests(tmpDir, ["just-enough-python"]);

@@ -834,13 +834,13 @@ deletes this module` at the top of the allowlist module and next to the schema f
 - **Proof:** `<plan>/evidence/phase-6-contract.md`.
 - _Suggested executor: `swe-developer`._
 
-- [ ] [AI] **RED:** in `tests/unit/features/course-paths/core/schemas.test.ts` replace the "legacy file
+- [x] [AI] **RED:** in `tests/unit/features/course-paths/core/schemas.test.ts` replace the "legacy file
       still parses" case with "a file containing `courseOrder` is rejected" and add "an unknown top-level
       key is rejected". Run `UNIT-FE tests/unit/features/course-paths/core/schemas.test.ts`. Acceptance:
       both fail.
-- [ ] [AI] **GREEN:** remove the legacy union branch and the legacy normalization from
+- [x] [AI] **GREEN:** remove the legacy union branch and the legacy normalization from
       `core/schemas.ts`; keep `.strict()` on `PathManifestFileSchema`. Rerun. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** `rtk git grep -n "expand-contract" -- apps/ayokoding-www apps/ayokoding-www-fe-e2e`
+- [x] [AI] **REFACTOR:** `rtk git grep -n "expand-contract" -- apps/ayokoding-www apps/ayokoding-www-fe-e2e`
       returns nothing, and `rtk git grep -l "all-courses" -- apps/ayokoding-www apps/ayokoding-www-fe-e2e`
       lists only the 4 skills manifests, `skills-restructure-allowlist.ts`, and test files. Run `QUICK`.
       Acceptance: exit 0.
@@ -849,8 +849,8 @@ deletes this module` at the top of the allowlist module and next to the schema f
 
 > All checks below must pass before starting Phase 7.
 
-- [ ] [AI] `QUICK`, `BEHAVIOUR`, `E2E-BEHAVIOUR`, `INTEGRATION`, and `E2E` exit 0.
-- [ ] [AI] `BUILD` exits 0.
+- [x] [AI] `QUICK`, `BEHAVIOUR`, `E2E-BEHAVIOUR`, `INTEGRATION`, and `E2E` exit 0.
+- [x] [AI] `BUILD` exits 0.
 
 > **Pause Safety**: the schema has one shape and every file uses it. Safe to stop. To resume:
 > `QUICK`.

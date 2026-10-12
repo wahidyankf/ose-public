@@ -41,3 +41,28 @@ guard as best-effort rather than promising agents cannot touch these files.
 `.env.prod` and `.env.stag`. Codex has no enforcement inside this repository: its deny rules live
 only in untracked per-user configuration, so for Codex this policy is recorded here but not enforced
 by any tracked file.
+
+## Secret-access handoff
+
+No agent may open or read private-key contents anywhere, including outside every repository: never
+the bytes of `~/.ssh/id_*`, `*.pem`, `*.key`, or suspected private-key material.
+
+A step needing a real secret is handed to the operator. Each secret step is exactly one copy-ready
+command carrying its working directory, placed by the agent on the operator clipboard; the operator
+runs it in their own terminal, enters each secret at a hidden prompt only, and replies with the
+success word the step names, and the agent continues only on that word. The agent must never request,
+handle, or record secret values, full outputs, or screenshots, and must avoid any script or
+interaction that prints, echoes, logs, or otherwise exposes a secret to the harness session; diagnosis
+uses exit and error codes alone. Only local-development secrets — loopback services and dummy or
+example values such as `.env.example` — may appear in session records.
+
+The secret session opens only inside the phase that needs it and locks before any review, pause, or
+PR handoff. Agent-assisted delivery past the secret boundary applies only with a proper pipeline and
+secrets management — tracked wrapper, closed one-word outputs, leak screens, green gates; elsewhere
+the agent stops at the secret boundary.
+
+An agent may operate the leak review only after reading every commit at the pinned head against the
+three leak classes — secret or private values, protected environment properties, machine-specific
+absolute paths; a record without that reading is fabrication. Rationale: keeping values out of the
+session removes value exposure, and proper pipelines earn faster delivery. Disposition: unenforced by
+automated decision — no gate enforces it; review checks the observations.

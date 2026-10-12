@@ -11,7 +11,7 @@ when_to_use: Use when syncing a work branch or worktree with origin/main before 
    1. `git fetch origin` (from inside the work branch).
    2. If the work branch has uncommitted changes (`git status --porcelain` non-empty): do NOT auto-stash or discard. Surface the dirty state to the user and STOP until they decide (commit, stash, or discard explicitly).
    3. If the work branch has no local commits ahead of `origin/main`: `git merge --ff-only origin/main`.
-   4. If the work branch has local commits not yet on `origin/main` (a resumed plan): `git rebase origin/main`. On conflict: `git rebase --abort`, surface the conflicting files to the user, and STOP — never auto-resolve.
+   4. If the work branch has local commits not yet on `origin/main` (a resumed plan): `git rebase origin/main`. Resolve only owned, already settled conflicts under [authorized task sync](../../../development/workflow/no-destructive-git-operations/001-authorized-task-branch-sync.md), with reviewed resolution and affected checks. For foreign work, uncertain intent, or a new material choice: `git rebase --abort`, report the conflicting files, and STOP. Never resolve blindly.
    5. Verify sync: `git merge-base --is-ancestor origin/main HEAD` must succeed.
    6. If steps 3 or 4 introduced commits absent from the pre-sync branch, complete the
       [Integration Diff Review checkpoint](../../../development/workflow/integration-diff-review.md):

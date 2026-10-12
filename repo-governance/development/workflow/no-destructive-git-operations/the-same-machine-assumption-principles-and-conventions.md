@@ -33,9 +33,10 @@ keeps no undo history for changes that were never committed.
 
 ## Conventions Implemented/Respected
 
-- **[Git Push Safety Convention](../git-push-safety.md)**: The remote-side companion. Force-push and
-  hook-bypass operations require explicit, fresh, per-instance user approval there; this convention
-  applies the same standard to local destruction.
+- **[Git Push Safety Convention](../git-push-safety.md)**: The remote-side companion. Its
+  [authorized task sync](./001-authorized-task-branch-sync.md) governs routine owned-branch publication.
+  Other force-push and hook-bypass operations retain that convention's approval requirements and
+  standing exceptions; this convention applies the same protection to local destruction.
 
 - **[Worktree Toolchain Initialization](../worktree-setup.md)**: Establishes the worktree as the unit
   of isolation. This convention states what must never be done to a worktree that is not your own.

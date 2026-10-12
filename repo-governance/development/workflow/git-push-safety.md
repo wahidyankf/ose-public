@@ -1,25 +1,28 @@
 ---
-description: Requires explicit user approval for every git push --force, --force-with-lease, or --no-verify — no exceptions for AI agents or automation.
+description: Requires approval outside bounded authorized task sync; hook bypass and secret remediation keep separate rules.
 when_to_use: Use before git push --force, --force-with-lease, or --no-verify, or when auditing for a branch-protection bypass.
 ---
 
 # Git Push Safety Convention
 
 AI agents and automation must never execute `git push --force`, `git push --force-with-lease`, or
-`git push --no-verify` without obtaining explicit, fresh user approval every single time. Prior
-approval for one instance does not carry forward to any subsequent invocation. The sole standing
+`git push --no-verify` without explicit, fresh per-instance approval outside
+[authorized task-owned sync](no-destructive-git-operations/001-authorized-task-branch-sync.md). A single-action grant
+never carries forward; the same ongoing task retains its bounded delivery authority. Hook bypass remains separate.
+The independent standing
 exception is a confirmed secret-exposure incident handled end-to-end under
 [the secret history-remediation procedure](../../conventions/security/secrets-and-env-standards/secret-exposure-history-remediation.md#secret-exposure-history-remediation): there, a lease-protected force-push is required to remove
 contaminated reachable history rather than a convenience rewrite.
 
 These rules apply identically regardless of the active delivery mode (see the
 [Plans Organization Convention — Delivery Mode](../../conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode)):
-a force-push or hook-bypass on a `worktree-to-pr` plan branch requires the same explicit, per-instance
-approval as one on `origin main` under `worktree-to-origin-main` or `main-to-origin-main`. The
-integration target changes what the approval prompt describes (a PR branch tip vs. the `main` tip); it
-does not change whether approval is required.
+a delivery mode chooses the route and grants no authority. Routine owned task-branch sync follows its bounded
+contract; direct-main and environment targets do not gain that exception. Hook bypass always remains outside it.
+The independent secret-incident procedure grants only its existing remediation operations.
 
 ## Contents
+
+- [Authorized Task Branch Sync](no-destructive-git-operations/001-authorized-task-branch-sync.md) — the bounded routine exception.
 
 - [Principles and Conventions Implemented](./git-push-safety/principles-and-conventions-implemented.md) — Why this rule exists.
 - [Covered Operations](./git-push-safety/covered-operations.md) — The operations requiring per-instance approval.

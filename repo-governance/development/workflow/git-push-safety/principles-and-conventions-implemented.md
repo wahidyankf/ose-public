@@ -5,6 +5,11 @@ when_to_use: Use when tracing why force-push and hook-bypass approval requiremen
 
 # Principles and Conventions Implemented
 
+The approval procedure and examples on this page apply outside the
+[authorized task-owned sync contract](../no-destructive-git-operations/001-authorized-task-branch-sync.md).
+Its bounded ongoing authority needs no repeated prompt; hook bypass is outside it. The separate secret-incident
+procedure remains unchanged.
+
 ## Principles Implemented/Respected
 
 This practice respects the following core principles:

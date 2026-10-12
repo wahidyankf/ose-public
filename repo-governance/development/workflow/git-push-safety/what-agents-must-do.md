@@ -5,6 +5,11 @@ when_to_use: Use when an agent is about to propose or execute a force-push or ho
 
 # What Agents Must Do
 
+The approval procedure and examples on this page apply outside the
+[authorized task-owned sync contract](../no-destructive-git-operations/001-authorized-task-branch-sync.md).
+Its bounded ongoing authority needs no repeated prompt; hook bypass is outside it. The separate secret-incident
+procedure remains unchanged.
+
 ## Before proposing the operation
 
 Before even surfacing the question to the user, the agent should investigate whether the underlying problem can be solved without a destructive operation:
@@ -19,11 +24,11 @@ When no safe alternative exists, the agent presents a clear, complete descriptio
 ```
 I need your explicit approval before running:
 
-  git push --force origin main
+  git push --force origin shared/topic
 
-What this will do: replace the remote 'main' tip with local commit abc1234.
+What this will do: replace the remote 'shared/topic' tip with local commit abc1234.
 Remote commits not present locally: def5678 (pushed 12 minutes ago by the CI bot).
-Those commits will be unreachable from 'main' after this push.
+Those commits will be unreachable from 'shared/topic' after this push.
 
 Do you want to proceed? (yes/no)
 ```

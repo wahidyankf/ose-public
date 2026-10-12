@@ -5,18 +5,23 @@ when_to_use: Use when about to run a covered git push operation, or when handlin
 
 # Rule
 
+The approval procedure and examples on this page apply outside the
+[authorized task-owned sync contract](../no-destructive-git-operations/001-authorized-task-branch-sync.md).
+Its bounded ongoing authority needs no repeated prompt; hook bypass is outside it. The separate secret-incident
+procedure remains unchanged.
+
 **AI agents and automation MUST NOT execute any of the covered operations autonomously**, except the
 lease-protected remote rewrites required by a confirmed secret-exposure incident. `--no-verify` is
 never part of that exception.
 
-For every invocation — without exception — the agent must:
+For every invocation outside the bounded contract and the separate incident procedure, the agent must:
 
 1. Stop before executing the command.
 2. Describe to the user exactly what the command is, why it is being considered, and what data or history may be affected.
 3. Wait for the user to provide explicit confirmation to proceed.
 4. Execute the command only after that confirmation is received.
 
-**Prior approval does not carry forward.** If the user approved a `git push --force` five minutes ago, that approval covers only that one execution. The next invocation starts from zero and requires a fresh confirmation.
+**A per-instance grant does not carry forward.** If the user approved a `git push --force` five minutes ago, that approval covers only that one execution. The next invocation starts from zero and requires a fresh confirmation.
 
 ## Secret-exposure history-remediation exception
 

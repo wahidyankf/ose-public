@@ -5,11 +5,16 @@ when_to_use: Use when explaining to a user or teammate why this convention requi
 
 # Rationale
 
+The approval procedure and examples on this page apply outside the
+[authorized task-owned sync contract](../no-destructive-git-operations/001-authorized-task-branch-sync.md).
+Its bounded ongoing authority needs no repeated prompt; hook bypass is outside it. The separate secret-incident
+procedure remains unchanged.
+
 ## Why force-push is destructive
 
 `git push --force` replaces the remote branch tip with the local commit. Any commits that existed on the remote but not locally are discarded. Because git history is shared, this affects every teammate who has already pulled those commits. Recovering discarded commits requires them to use `git reflog` on their own machines — a manual, error-prone process that can result in permanent data loss if it is not performed quickly.
 
-`git push --force-with-lease` adds a lease check against the last-fetched remote tip. This reduces — but does not eliminate — the risk. The lease can silently succeed if the local fetch timestamp is stale or if a teammate pushed between the fetch and the push. From the perspective of safe automation, it remains a history-rewriting operation.
+`git push --force-with-lease` adds a lease check against the last-fetched remote tip. This reduces — but does not eliminate — the risk. A bare lease relies on a tracking ref that a background fetch can refresh. The bounded contract uses the recorded actual remote tip with an explicit expected-value lease and `--force-if-includes`. From the perspective of safe automation, it remains a history-rewriting operation.
 
 ## Why --no-verify is a safety bypass
 

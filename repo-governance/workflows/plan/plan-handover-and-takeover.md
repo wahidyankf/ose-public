@@ -49,9 +49,10 @@ and track each probe, anomaly, and cleanup candidate as its own task per
    branch with neither worktree nor pull request, or two worktrees for one plan, is an anomaly: stop and escalate with
    the evidence.
 10. **Adopt live work.** Enter its worktree or create one from its branch, never the trunk, and sync as Execution does.
-    Uncommitted changes await the user's direction, never stashed or discarded; a rebase conflict is aborted and
-    reported. Until the touched-file record is rebuilt from branch history, every changed path is unattributed. Reuse an
-    existing pull request, and tick a checkbox only from cited discovery evidence.
+    Uncommitted work awaits user direction; never stash or discard. Resolve only owned, settled conflicts under
+    [sync](../../development/workflow/no-destructive-git-operations/001-authorized-task-branch-sync.md);
+    abort and report foreign work, uncertain intent, or new material choices. Until branch history rebuilds touched files,
+    every changed path is unattributed. Reuse existing pull requests; tick only from cited discovery evidence.
 11. **Clean up only after classification.** A found worktree or branch not adopted passes the pre-removal checks of
     [Dev Artifact Clean-Up](../maintenance/dev-artifact-clean-up.md). Anomalies are never cleaned, anything not proven idle stays
     and is reported, and each removal or skip is logged.

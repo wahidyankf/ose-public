@@ -5,12 +5,17 @@ when_to_use: Use when deciding whether a specific push command or its aliased/sc
 
 # Covered Operations
 
-The following operations require explicit, per-instance user approval:
+The approval procedure and examples on this page apply outside the
+[authorized task-owned sync contract](../no-destructive-git-operations/001-authorized-task-branch-sync.md).
+Its bounded ongoing authority needs no repeated prompt; hook bypass is outside it. The separate secret-incident
+procedure remains unchanged.
 
-| Operation                       | Why it is destructive or safety-bypassing                                                                                                                                                        |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `git push --force`              | Overwrites the remote branch tip, permanently discarding any remote commits not present locally. Teammates lose pushed work without warning.                                                     |
-| `git push --force-with-lease`   | Safer than `--force` but still rewrites history. The lease check can silently succeed when a teammate's push arrived before the lease was refreshed, making it unreliable as a safety guarantee. |
-| `git push --no-verify`          | Skips all git hooks on the push side, bypassing `typecheck`, `lint`, and `test:quick` quality gates. Broken code can reach the remote and block CI.                                              |
-| Any combination of the above    | The risks compound; combined flags require the same explicit approval.                                                                                                                           |
-| Aliased or scripted equivalents | Any shell alias, npm script, Makefile target, or CI step that invokes the above flags is subject to the same rule. The mechanism does not change the requirement.                                |
+Outside the bounded contract, the following operations require explicit, per-instance user approval:
+
+| Operation                       | Why it is destructive or safety-bypassing                                                                                                                                                 |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `git push --force`              | Overwrites the remote branch tip, permanently discarding any remote commits not present locally. Teammates lose pushed work without warning.                                              |
+| `git push --force-with-lease`   | A bare lease uses a tracking ref that background fetches can refresh. An explicit expected-value lease refuses a different remote tip but does not prove task ownership or authorization. |
+| `git push --no-verify`          | Skips all git hooks on the push side, bypassing `typecheck`, `lint`, and `test:quick` quality gates. Broken code can reach the remote and block CI.                                       |
+| Any combination of the above    | The risks compound; combined flags require the same explicit approval.                                                                                                                    |
+| Aliased or scripted equivalents | Any shell alias, npm script, Makefile target, or CI step that invokes the above flags is subject to the same rule. The mechanism does not change the requirement.                         |

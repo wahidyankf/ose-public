@@ -7,7 +7,8 @@ when_to_use: Use before rebasing pushed commits, or when a rebase/merge needs to
 
 ## Never Rebase Public Commits
 
-**CRITICAL RULE**: Never rebase commits that others have pulled.
+**CRITICAL RULE**: Never rebase commits others hold outside the
+[authorized owned-task sync contract](../no-destructive-git-operations/001-authorized-task-branch-sync.md).
 
 **Why this is dangerous:**
 
@@ -25,7 +26,7 @@ git push --force origin main   # BREAKS teammate's repository!
 # Their `git pull` will fail or create duplicate commits
 ```
 
-**Safe approach**: Only rebase LOCAL commits never pushed:
+**Outside that bounded contract**, only rebase LOCAL commits never pushed:
 
 ```bash
 # Safe: Rebase local commits before first push

@@ -111,7 +111,7 @@ build step, or shipped content reads the syllabus files. The Custodian is named 
 ## Corpus Custody
 
 `custodied-by:ayokoding-learn-revamp-02-path-model`. This plan reads plan 02's drafted ERP manifests under
-`plans/backlog/ayokoding-learn-revamp-02-path-model/syllabus/paths/` as read-only input and never edits,
+`plans/done/2026-10-12__ayokoding-learn-revamp-02-path-model/syllabus/paths/` as read-only input and never edits,
 copies, or forks them. A needed change to a draft is a change request routed to plan 02, which in practice
 means this plan's own copy under [syllabus/paths/](../syllabus/paths/README.md) supersedes the draft.
 Plan 02 is archived before this plan starts (strict sequence), so its archival hand-off has rewritten the two

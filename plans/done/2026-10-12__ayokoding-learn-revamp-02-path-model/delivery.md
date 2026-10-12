@@ -1122,36 +1122,36 @@ This is the only phase that pushes, opens the PR, and merges.
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] Run affected typecheck:
+- [x] [AI] Run affected typecheck:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t typecheck`.
       Acceptance: exit 0.
-- [ ] [AI] Run `rtk npm run affected:lint`. Acceptance: exit 0.
-- [ ] [AI] Run `rtk npm run affected:test`. Acceptance: exit 0.
-- [ ] [AI] Run affected spec coverage:
+- [x] [AI] Run `rtk npm run affected:lint`. Acceptance: exit 0.
+- [x] [AI] Run `rtk npm run affected:test`. Acceptance: exit 0.
+- [x] [AI] Run affected spec coverage:
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:coverage:behaviour`.
       Acceptance: exit 0.
-- [ ] [AI] Run `INTEGRATION`, `E2E`, and `VALIDATE-INDEXES` once more. Acceptance: exit 0.
-- [ ] [AI] Run `LINT-MD`. Acceptance: exit 0.
-- [ ] [AI] Fix ALL failures found, including preexisting ones, and rerun until every check above exits 0.
+- [x] [AI] Run `INTEGRATION`, `E2E`, and `VALIDATE-INDEXES` once more. Acceptance: exit 0.
+- [x] [AI] Run `LINT-MD`. Acceptance: exit 0.
+- [x] [AI] Fix ALL failures found, including preexisting ones, and rerun until every check above exits 0.
 
 ### Plan Archival
 
-- [ ] [AI] Perform the **preliminary** plan-execution end-to-end delivery completeness audit: trace
+- [x] [AI] Perform the **preliminary** plan-execution end-to-end delivery completeness audit: trace
       approved scope and every canonical PRD acceptance criterion (FR-1 to FR-15 and every scenario in
       the five new and five modified features) through the delivery unit, as-built artifacts,
       automated and manual proof, migration and rollback evidence, and Knowledge Capture. Reopen
       execution at the earliest affected phase for every missing or unsupported row; only final-delivery
       proof may remain pending. Checked boxes alone are not proof.
-- [ ] [AI] Verify ALL delivery checklist items are ticked.
-- [ ] [AI] Verify ALL quality gates pass (local now; CI below).
-- [ ] [AI] Verify ALL manual assertions pass with committed `evidence/` screenshots and the tRPC
+- [x] [AI] Verify ALL delivery checklist items are ticked.
+- [x] [AI] Verify ALL quality gates pass (local now; CI below).
+- [x] [AI] Verify ALL manual assertions pass with committed `evidence/` screenshots and the tRPC
       evidence rows.
-- [ ] [AI] Verify ALL supported locales (`en`, `id`) were exercised in UI verification.
-- [ ] [AI] Verify every rule-15 EWT/UWT/DWT defect finding is fixed (ticked) — deferral requires
+- [x] [AI] Verify ALL supported locales (`en`, `id`) were exercised in UI verification.
+- [x] [AI] Verify every rule-15 EWT/UWT/DWT defect finding is fixed (ticked) — deferral requires
       explicit user permission (only when genuinely impossible); SG-### proposals and USS-###
       suggestions may be triaged or deferred.
-- [ ] [AI] Rule-16 AET retest: not applicable (see Phase 8).
-- [ ] [AI] Register the workflow-owned terminal audit task with its post-delivery proof fields: merge
+- [x] [AI] Rule-16 AET retest: not applicable (see Phase 8).
+- [x] [AI] Register the workflow-owned terminal audit task with its post-delivery proof fields: merge
       commit, post-merge `origin/main` CI, the deploy run, and the live production check below. Do not
       mark it complete before merge.
 - [ ] [AI] After every pre-archival gate passes, run `rtk date +%F`; record the output as

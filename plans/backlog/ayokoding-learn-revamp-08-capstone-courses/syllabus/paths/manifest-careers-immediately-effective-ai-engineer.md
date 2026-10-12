@@ -6,7 +6,7 @@
 
 This file specifies the target manifest. The JSON below is the exact file body the path phase writes. It
 replaces the file plan 02 writes (plan 02 gave this path no goals; its draft is in
-`plans/backlog/ayokoding-learn-revamp-02-path-model/syllabus/paths/` until that plan is archived, then
+`plans/done/2026-10-12__ayokoding-learn-revamp-02-path-model/syllabus/paths/` until that plan is archived, then
 in `plans/done/`). The reading tables repeat the same data with position numbers.
 
 ## Phases and Outcomes

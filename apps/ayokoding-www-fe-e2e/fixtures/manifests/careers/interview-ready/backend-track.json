@@ -3,5 +3,16 @@
   "arc": "interview-ready",
   "title": "Backend Track (Interview-Ready)",
   "description": "E2E fixture: the interview-ready arc's sole role — proves the arc-landing one-role rendering (full card, syllabus preview, no sparse-stub second card).",
-  "courseOrder": ["just-enough-python", "data-structures-and-algorithms-essentials"]
+  "assumes": [],
+  "phases": [
+    {
+      "id": "fixture-core",
+      "title": "Fixture core",
+      "kind": "core",
+      "outcome": {
+        "can": "complete this fixture path"
+      },
+      "courses": ["just-enough-python", "data-structures-and-algorithms-essentials"]
+    }
+  ]
 }

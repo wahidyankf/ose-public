@@ -2,33 +2,106 @@
   "pathId": "careers/immediately-effective/ai-engineer",
   "arc": "immediately-effective",
   "title": "Immediately Effective AI Engineer",
-  "description": "A from-scratch path for building, evaluating, deploying, and operating AI systems.",
-  "courseOrder": [
-    "just-enough-python",
-    "data-structures-and-algorithms-essentials",
-    "computer-architecture",
-    "frontend-essentials",
-    "software-testing",
-    "containers-and-orchestration",
-    "data-engineering",
-    "backend-at-scale",
-    "cicd-and-release-engineering",
-    "site-reliability-engineering",
-    "software-product-engineering",
-    "creating-ai-powered-apps",
-    "evaluating-ai-output-essentials",
-    "agentic-ai",
-    "browser-automation-with-cdp",
-    "the-agent-loop",
-    "agent-tools-and-mcp",
-    "agent-context-and-memory",
-    "agent-permissions-and-sandboxing",
-    "agent-orchestration-subagents-and-observability",
-    "capstone-build-your-own-coding-agent",
-    "statistics-for-evaluation",
-    "evaluating-ai-systems-in-depth",
-    "product-patterns-for-probabilistic-systems",
-    "inference-serving-and-model-deployment",
-    "fine-tuning-and-adaptation"
+  "description": "For developers who already code: build, evaluate, deploy, and operate AI systems.",
+  "assumes": [
+    "advanced-sql-and-query-performance",
+    "api-design",
+    "backend-essentials",
+    "computer-science-foundations",
+    "just-enough-bash",
+    "just-enough-typescript",
+    "networking-essentials",
+    "security-essentials",
+    "sql-essentials",
+    "system-design",
+    "version-control-and-git"
+  ],
+  "phases": [
+    {
+      "id": "programming-and-computing",
+      "title": "Programming and computing basics",
+      "kind": "core",
+      "outcome": {
+        "can": "write and test Python, use core data structures, and reason about how hardware runs your code",
+        "cannotYet": "ship or operate a service"
+      },
+      "courses": ["just-enough-python", "data-structures-and-algorithms-essentials", "computer-architecture"]
+    },
+    {
+      "id": "shipping-software",
+      "title": "Shipping and operating software",
+      "kind": "core",
+      "outcome": {
+        "can": "build a tested frontend, run data pipelines and services in containers, and set up CI/CD and reliability targets",
+        "cannotYet": "call a language model from your product"
+      },
+      "courses": [
+        "frontend-essentials",
+        "software-testing",
+        "containers-and-orchestration",
+        "data-engineering",
+        "backend-at-scale",
+        "cicd-and-release-engineering",
+        "site-reliability-engineering",
+        "software-product-engineering"
+      ]
+    },
+    {
+      "id": "building-with-models",
+      "title": "Building with models",
+      "kind": "core",
+      "outcome": {
+        "can": "build an AI-powered feature and measure the quality of its output",
+        "cannotYet": "build an agent that plans and uses tools"
+      },
+      "courses": ["creating-ai-powered-apps", "evaluating-ai-output-essentials"]
+    },
+    {
+      "id": "agents",
+      "title": "Agents",
+      "kind": "core",
+      "outcome": {
+        "can": "build an agent loop with tools, memory, permissions, and observability",
+        "cannotYet": "measure AI quality with statistical confidence"
+      },
+      "courses": [
+        "agentic-ai",
+        "browser-automation-with-cdp",
+        "the-agent-loop",
+        "agent-tools-and-mcp",
+        "agent-context-and-memory",
+        "agent-permissions-and-sandboxing",
+        "agent-orchestration-subagents-and-observability"
+      ]
+    },
+    {
+      "id": "evaluation-in-depth",
+      "title": "Evaluation in depth",
+      "kind": "core",
+      "outcome": {
+        "can": "evaluate AI systems with sound statistics and design products around probabilistic behaviour",
+        "cannotYet": "serve or adapt your own models"
+      },
+      "courses": [
+        "statistics-for-evaluation",
+        "evaluating-ai-systems-in-depth",
+        "product-patterns-for-probabilistic-systems"
+      ]
+    },
+    {
+      "id": "serving-and-adapting",
+      "title": "Serving and adapting models",
+      "kind": "core",
+      "outcome": {
+        "can": "deploy models for inference and adapt them with fine-tuning"
+      },
+      "courses": ["inference-serving-and-model-deployment", "fine-tuning-and-adaptation"]
+    },
+    {
+      "id": "capstone",
+      "title": "Capstone",
+      "kind": "extension",
+      "courses": ["capstone-build-your-own-coding-agent"]
+    }
   ]
 }

@@ -58,3 +58,29 @@ export function deriveAllCourseIds(contentMap: ReadonlyMap<string, ContentMeta>)
 
   return [...allCourseIds];
 }
+
+/**
+ * Derive the IDs of outline courses (`status: outline` frontmatter) across **all** locales,
+ * deduplicated.
+ *
+ * Pure — no IO. Locale-independent like {@link deriveAllCourseIds}: a course's outline state
+ * comes from its authored frontmatter, and a course's translation into any one locale routinely
+ * lags behind its English original — scoping this set to one locale would make the Outline
+ * badge appear in `en` but vanish in `id` for the same course. Route data (`loadRoutePathData`)
+ * fills one such set per request; the client payload (`toCoursePathClientData`) passes it
+ * through so the syllabus, rail, and drawer badge the same courses in every locale.
+ */
+export function deriveOutlineCourseIds(contentMap: ReadonlyMap<string, ContentMeta>): string[] {
+  const outlineCourseIds = new Set<string>();
+
+  for (const meta of contentMap.values()) {
+    if (meta.status !== "outline") continue;
+
+    const courseId = courseIdFromSlug(meta.slug);
+    if (courseId === null) continue;
+
+    outlineCourseIds.add(courseId);
+  }
+
+  return [...outlineCourseIds];
+}

@@ -31,11 +31,24 @@ vi.mock("@/lib/trpc/client", () => ({
 }));
 
 const { fixtureManifest, contentMap, pages } = vi.hoisted(() => {
+  // Hand-expanded (not manifestFixture): vi.hoisted factories run before imports, so the
+  // fixture helper is unreachable here. `phases` mirrors `courseOrder` exactly, the way the
+  // schema's legacy normalization derives it.
   const manifest = {
     pathId: "skills/python-fundamentals",
     arc: "python-fundamentals",
     title: "Python Fundamentals",
     description: "Learn Python from the ground up.",
+    assumes: [],
+    phases: [
+      {
+        id: "phase-a",
+        title: "Phase A",
+        kind: "core" as const,
+        outcome: { can: "complete this fixture path" },
+        courses: ["just-enough-python"],
+      },
+    ],
     courseOrder: ["just-enough-python"],
   };
 

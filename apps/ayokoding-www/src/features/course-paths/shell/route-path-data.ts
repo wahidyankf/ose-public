@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { createTRPCContext } from "@/features/app-shell/shell/trpc-init";
-import { buildCourseLibrary, deriveAllCourseIds } from "./course-library";
+import { buildCourseLibrary, deriveAllCourseIds, deriveOutlineCourseIds } from "./course-library";
 import { defaultManifestsDir, loadManifests } from "./manifest-repository";
 import type { CoursePathData } from "./course-path-nav";
 
@@ -34,6 +34,7 @@ export const loadRoutePathData = cache(async function loadRoutePathData(locale: 
   const { libraryCourseIds, prerequisitesByCourse } = buildCourseLibrary(index.contentMap, locale);
   const allCourseIds = deriveAllCourseIds(index.contentMap);
   const manifests = await loadManifests(defaultManifestsDir(), allCourseIds);
+  const outlineCourseIds = deriveOutlineCourseIds(index.contentMap);
 
-  return { contentMap: index.contentMap, manifests, prerequisitesByCourse, libraryCourseIds };
+  return { contentMap: index.contentMap, manifests, prerequisitesByCourse, libraryCourseIds, outlineCourseIds };
 });

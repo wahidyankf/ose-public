@@ -318,7 +318,7 @@ decisions 39 and 42 and the one-plan-one-PR rule); the others are this plan's de
 - **Alternative 2 — add only a note in the course text.** Rejected: the closure check reads frontmatter, and the
   path page lists assumed courses from it.
 - **Prior art:** plan 02's rubric
-  ([tech-docs/003](../../../in-progress/ayokoding-learn-revamp-02-path-model/tech-docs/003-prerequisite-rubric-and-evidence.md)).
+  ([tech-docs/003](../../../done/2026-10-12__ayokoding-learn-revamp-02-path-model/tech-docs/003-prerequisite-rubric-and-evidence.md)).
 - **Evidence:** the closure derivation tables in the syllabus path files (12 and 14 assumed courses).
 - **Trade-offs:** plan 02's drafts and this plan differ by one assumed course; the syllabus path files say so.
 - **Consequences:** the paths' "Before you start" list shows Python and SQL.

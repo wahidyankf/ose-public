@@ -1,6 +1,6 @@
 import type { CourseRef } from "./schemas";
 
-export type { CourseRef, PathManifest } from "./schemas";
+export type { CourseRef, PathManifest, PathPhase } from "./schemas";
 
 /** A `courseOrder` entry normalized to its object shape (bare-string form resolved away). */
 export type NormalizedCourseRef = Extract<CourseRef, { id: string }>;

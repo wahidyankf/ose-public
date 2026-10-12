@@ -3,7 +3,7 @@ title: "Just Enough TypeScript"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 230
-prerequisites: ["networking-essentials"]
+prerequisites: []
 ---
 
 - [Learning](/en/learn/courses/just-enough-typescript/learning)

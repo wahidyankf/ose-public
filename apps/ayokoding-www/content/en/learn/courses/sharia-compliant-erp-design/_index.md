@@ -9,6 +9,7 @@ prerequisites:
     "islamic-contract-modeling-for-systems",
     "sharia-accounting-and-aaoifi-standards",
   ]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/sharia-compliant-erp-design/overview)

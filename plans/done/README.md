@@ -9,6 +9,13 @@ Archived plans and completed project planning documents.
 
 ## Completed Projects
 
+- [2026-10-12: ayokoding-learn-revamp-02-path-model](./2026-10-12__ayokoding-learn-revamp-02-path-model/README.md) —
+  Shipped the AyoKoding Learn path model: titled core/extension phases with outcomes, path
+  goals, exact `assumes`, the `status: outline` marker on 62 skeleton courses, revised
+  prerequisites for all 181 courses (36 removed, 75 added, 325 kept), closure/goal integrity
+  rules over synthetic and real manifests, minimal phase UI (syllabus, rail, drawer, arc
+  preview, hubs) with the skills paths held flat behind the closed `plan-06`/`plan-07` marker,
+  plain-language career copy, and the PM1/PM2 author rules in the content-creation skill.
 - [2026-10-12: ayokoding-learn-revamp-01-navigation-and-display](./2026-10-12__ayokoding-learn-revamp-01-navigation-and-display/README.md) —
   Shipped the AyoKoding Learn display pass: no `NN ·` catalogue prefixes on 76 course titles
   (and the content that echoed them: 291 replacements), path position numbers on the syllabus,

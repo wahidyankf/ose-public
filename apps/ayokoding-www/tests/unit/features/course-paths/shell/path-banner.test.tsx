@@ -79,6 +79,16 @@ describe("PathBanner (Cycle 2.9 — collapses the rail into the shipped drawer o
     render(<PathBanner locale="id" pathTitle="Python Fundamentals" courseIndex={2} totalCourses={5} />);
 
     expect(screen.getByText(/pada jalur/i).textContent).toMatch(/2 dari 5/);
-    expect(screen.getByRole("button", { name: /Open path course list/i }).textContent).toBe("Lihat jalur");
+    expect(screen.getByRole("button", { name: /Buka daftar kursus/i }).textContent).toBe("Lihat jalur");
+  });
+
+  it("localizes the trigger's accessible name on the id locale (UWT-002)", () => {
+    render(<PathBanner locale="id" pathTitle="Python Fundamentals" courseIndex={2} totalCourses={5} />);
+
+    expect(
+      screen.getByRole("button", {
+        name: "Lihat jalur: Buka daftar kursus — Python Fundamentals, kursus 2 dari 5",
+      }),
+    ).toBeTruthy();
   });
 });

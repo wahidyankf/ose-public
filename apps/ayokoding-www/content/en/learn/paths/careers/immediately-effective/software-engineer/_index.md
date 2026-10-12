@@ -1,13 +1,13 @@
 ---
 title: "Immediately Effective Software Engineer"
-description: "A shipping-first route from practical tools to durable software engineering depth."
+description: "For new engineers who want to ship: set up your editor, then build a tested full-stack app; deeper topics are optional."
 date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 10
 ---
 
-This route starts with the tools and habits that let you build a real application early. If you already know a language, jump to the build-a-real-app milestone, then return for any tooling or language foundations that would make your work smoother.
+Start here when you want to build real software soon. You first set up a fast editor, then learn Python, SQL, and a backend, then a typed frontend with tests and baseline security, and finish by shipping a full-stack app.
 
-Shipping first is the bridge to deeper study, not an excuse to skip it. Once you have delivered something real, the later stages connect that experience to computer science, systems, data, architecture, security, and leadership.
+The optional extensions start with the shell and Git, then go deeper into languages, systems, data, architecture, security, AI, and leadership. Take them in any order once the core is done.
 
-The linked course pages retain this path context, so the next and previous controls follow the shipping-first sequence you selected.
+Course pages you open from this path keep the path context, so Previous and Next follow this path.

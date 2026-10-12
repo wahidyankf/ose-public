@@ -41,18 +41,23 @@ describeFeature(feature, ({ ScenarioOutline }) => {
 
       Then("it contains its published accounting order", () => {
         expect(resolution).toMatchObject({ kind: "path", manifest: { pathId } });
-        expect(manifest.courseOrder.length).toBeGreaterThan(0);
+        // Order is read from `phases` (the file shape), not the derived `courseOrder`.
+        const manifestPhaseIds = manifest.phases.flatMap((phase) =>
+          phase.courses.map((reference) => normalizeCourseRef(reference).id),
+        );
+        const conventionalPhaseIds = conventionalAccounting.phases.flatMap((phase) =>
+          phase.courses.map((reference) => normalizeCourseRef(reference).id),
+        );
+        expect(manifestPhaseIds.length).toBeGreaterThan(0);
         if (pathId === "skills/sharia-accounting") {
-          expect(manifest.courseOrder.slice(0, conventionalAccounting.courseOrder.length)).toEqual(
-            conventionalAccounting.courseOrder,
-          );
-          expect(manifest.courseOrder.length).toBeGreaterThan(conventionalAccounting.courseOrder.length);
+          expect(manifestPhaseIds.slice(0, conventionalPhaseIds.length)).toEqual(conventionalPhaseIds);
+          expect(manifestPhaseIds.length).toBeGreaterThan(conventionalPhaseIds.length);
         }
       });
 
       And("every course context is represented by one course directory", () => {
         const injectedCourseDirectoryIds = publishedManifests.flatMap((published) =>
-          published.courseOrder.map((reference) => normalizeCourseRef(reference).id),
+          published.phases.flatMap((phase) => phase.courses.map((reference) => normalizeCourseRef(reference).id)),
         );
         expect(checkManifestIntegrity(manifest, injectedCourseDirectoryIds).unresolvedIds).toEqual([]);
       });

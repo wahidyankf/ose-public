@@ -3,7 +3,7 @@ title: "Detection Engineering & SIEM Operations"
 date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 610
-prerequisites: ["defensive-security", "security-essentials", "offensive-security", "just-enough-python"]
+prerequisites: ["defensive-security", "just-enough-python"]
 ---
 
 - [Overview](/en/learn/courses/detection-engineering-and-siem-operations/overview)

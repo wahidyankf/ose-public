@@ -3,7 +3,7 @@ title: "Data Access: ORMs & Query Builders"
 date: 2026-07-18T00:00:00+07:00
 draft: false
 weight: 370
-prerequisites: ["advanced-sql-and-query-performance"]
+prerequisites: ["advanced-sql-and-query-performance", "sql-essentials"]
 ---
 
 - [Learning](/en/learn/courses/data-access-orms-and-query-builders/learning)

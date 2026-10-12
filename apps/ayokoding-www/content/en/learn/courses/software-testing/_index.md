@@ -3,7 +3,7 @@ title: "Software Testing"
 date: 2026-07-15T00:00:00+07:00
 draft: false
 weight: 250
-prerequisites: ["frontend-essentials"]
+prerequisites: ["just-enough-python"]
 ---
 
 - [Overview](/en/learn/courses/software-testing/overview)

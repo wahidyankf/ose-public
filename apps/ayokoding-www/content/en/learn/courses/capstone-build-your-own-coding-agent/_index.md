@@ -13,6 +13,7 @@ prerequisites:
     "async-python-and-fastapi-services",
     "software-engineering-practices",
   ]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/capstone-build-your-own-coding-agent/overview)

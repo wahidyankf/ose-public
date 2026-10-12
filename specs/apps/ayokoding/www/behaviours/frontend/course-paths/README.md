@@ -25,11 +25,16 @@ proved by pure Unit adapters over synthetic manifest data.
 - [canonical-fallback.feature](./canonical-fallback.feature) — Canonical course fallback.
 - [category-landing-arc-chooser.feature](./category-landing-arc-chooser.feature) — Career arc choices.
 - [category-landing-empty-state.feature](./category-landing-empty-state.feature) — Explicit empty states.
+- [core-closure.feature](./core-closure.feature) — Core closure and path model integrity.
 - [invalid-path-fallback.feature](./invalid-path-fallback.feature) — Invalid path fallback.
 - [landing-hero.feature](./landing-hero.feature) — Path promise above the fold.
 - [manifest-integrity.feature](./manifest-integrity.feature) — Resolvable, unique manifest references.
 - [omitted-course.feature](./omitted-course.feature) — Canonical rendering for an omitted course.
+- [outline-course-status.feature](./outline-course-status.feature) — Outline course status.
+- [path-assumes.feature](./path-assumes.feature) — Assumed prior courses.
+- [path-copy.feature](./path-copy.feature) — Plain path page copy.
 - [path-order-nav.feature](./path-order-nav.feature) — Manifest-ordered previous/next navigation and the rail's scroll-to-current-course behaviour.
+- [path-phases.feature](./path-phases.feature) — Phase-grouped learning paths.
 - [path-position-numbers.feature](./path-position-numbers.feature) — 1-based path position numbers on the syllabus, rail, and arc card preview, and catalog-number-free course titles.
 - [paths-hub-category-grouping.feature](./paths-hub-category-grouping.feature) — Category-grouped paths.
 - [prerequisite-consistent-ordering.feature](./prerequisite-consistent-ordering.feature) — Stable prerequisite ordering.

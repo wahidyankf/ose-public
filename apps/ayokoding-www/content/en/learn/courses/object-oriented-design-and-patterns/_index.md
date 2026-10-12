@@ -3,7 +3,7 @@ title: "Object-Oriented Design & Patterns"
 date: 2026-07-17T00:00:00+07:00
 draft: false
 weight: 310
-prerequisites: ["computer-architecture"]
+prerequisites: ["object-oriented-programming-essentials", "just-enough-python"]
 ---
 
 - [Learning](/en/learn/courses/object-oriented-design-and-patterns/learning)

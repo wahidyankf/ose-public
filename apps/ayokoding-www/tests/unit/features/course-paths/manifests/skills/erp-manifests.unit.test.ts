@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
 import { checkManifestIntegrity } from "../../../../../../src/features/course-paths/core/manifest-integrity";
+import { normalizeCourseRef } from "../../../../../../src/features/course-paths/core/manifest";
 import { checkPrerequisiteConsistency } from "../../../../../../src/features/course-paths/core/prerequisites";
 import { PathManifestSchema } from "../../../../../../src/features/course-paths/core/schemas";
 
@@ -65,7 +66,10 @@ describe("terminal ERP manifests", () => {
         ),
       );
       expect(manifest.pathId).toBe(`skills/${name}`);
-      expect(manifest.courseOrder).toEqual(name === "conventional-erp" ? sharedExpected : shariaExpected);
+      // Order is read from `phases` (the file shape), not the derived `courseOrder`.
+      expect(manifest.phases.flatMap((phase) => phase.courses.map((ref) => normalizeCourseRef(ref).id))).toEqual(
+        name === "conventional-erp" ? sharedExpected : shariaExpected,
+      );
       expect(checkManifestIntegrity(manifest, courseIds)).toEqual({ unresolvedIds: [], duplicateIds: [] });
       expect(checkPrerequisiteConsistency(manifest, prerequisites, courseIds).violations).toEqual([]);
     });

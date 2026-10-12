@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
 import { checkManifestIntegrity } from "../../../../../../src/features/course-paths/core/manifest-integrity";
+import { normalizeCourseRef } from "../../../../../../src/features/course-paths/core/manifest";
 import { checkPrerequisiteConsistency } from "../../../../../../src/features/course-paths/core/prerequisites";
 import { PathManifestSchema } from "../../../../../../src/features/course-paths/core/schemas";
 
@@ -33,11 +34,13 @@ describe("careers AI-engineer manifest", () => {
   });
 
   it("keeps evaluation before advanced AI-system delivery work", () => {
-    expect(manifest.courseOrder.indexOf("evaluating-ai-output-essentials")).toBeLessThan(
-      manifest.courseOrder.indexOf("evaluating-ai-systems-in-depth"),
+    // Order is read from `phases` (the file shape), not the derived `courseOrder`.
+    const phaseCourseIds = manifest.phases.flatMap((phase) => phase.courses.map((ref) => normalizeCourseRef(ref).id));
+    expect(phaseCourseIds.indexOf("evaluating-ai-output-essentials")).toBeLessThan(
+      phaseCourseIds.indexOf("evaluating-ai-systems-in-depth"),
     );
-    expect(manifest.courseOrder.indexOf("evaluating-ai-systems-in-depth")).toBeLessThan(
-      manifest.courseOrder.indexOf("inference-serving-and-model-deployment"),
+    expect(phaseCourseIds.indexOf("evaluating-ai-systems-in-depth")).toBeLessThan(
+      phaseCourseIds.indexOf("inference-serving-and-model-deployment"),
     );
   });
 });

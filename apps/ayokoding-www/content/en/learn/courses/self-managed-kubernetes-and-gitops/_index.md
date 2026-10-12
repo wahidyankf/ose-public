@@ -3,7 +3,7 @@ title: "Self-Managed Kubernetes and GitOps"
 date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 530
-prerequisites: ["containers-and-orchestration", "bare-metal-virtualization", "distributed-systems"]
+prerequisites: ["containers-and-orchestration", "bare-metal-virtualization", "cicd-and-release-engineering"]
 ---
 
 - [Overview](/en/learn/courses/self-managed-kubernetes-and-gitops/overview)

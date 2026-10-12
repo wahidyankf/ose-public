@@ -6,6 +6,8 @@ import {
   pageLinkForCourseId,
   derivePathBadges,
   resolveCoursePathRenderData,
+  toCoursePathClientData,
+  EMPTY_COURSE_PATH_CLIENT_DATA,
   buildCourseTitleIndex,
   courseTitlesFromClientData,
   humanizeKebabSlug,
@@ -16,22 +18,23 @@ import {
 } from "../../../../../src/features/course-paths/shell/course-path-nav";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
 import type { ContentMeta } from "@/features/content/core/types";
+import { manifestFixture } from "../manifest-fixture";
 
-const fixtureManifest: PathManifest = {
+const fixtureManifest: PathManifest = manifestFixture({
   pathId: "careers/interview-ready/software-engineer",
   arc: "interview-ready",
   title: "Interview-Ready Software Engineer",
   description: "Interview-first track for an experienced engineer re-entering the market.",
-  courseOrder: ["just-enough-python", "data-structures-and-algorithms-essentials", "capstone-forge-ready"],
-};
+  courses: ["just-enough-python", "data-structures-and-algorithms-essentials", "capstone-forge-ready"],
+});
 
-const secondFixtureManifest: PathManifest = {
+const secondFixtureManifest: PathManifest = manifestFixture({
   pathId: "careers/fundamentally-strong/software-engineer",
   arc: "fundamentally-strong",
   title: "Fundamentally Strong Software Engineer",
   description: "Bottom-up CS foundations first.",
-  courseOrder: ["computer-science-foundations", "just-enough-python"],
-};
+  courses: ["computer-science-foundations", "just-enough-python"],
+});
 
 describe("courseIdFromSlug / slugForCourseId", () => {
   it("extracts the course ID from a course slug", () => {
@@ -134,20 +137,20 @@ describe("pageLinkForCourseId", () => {
 });
 
 describe("derivePathBadges", () => {
-  const manifestA: PathManifest = {
+  const manifestA: PathManifest = manifestFixture({
     pathId: "skills/python-fundamentals",
     arc: "python-fundamentals",
     title: "Python Fundamentals",
     description: "Learn Python from the ground up.",
-    courseOrder: ["just-enough-python", "data-structures-and-algorithms-essentials"],
-  };
-  const manifestB: PathManifest = {
+    courses: ["just-enough-python", "data-structures-and-algorithms-essentials"],
+  });
+  const manifestB: PathManifest = manifestFixture({
     pathId: "careers/interview-ready/software-engineer",
     arc: "interview-ready",
     title: "Interview-Ready Software Engineer",
     description: "Interview-first track.",
-    courseOrder: ["data-structures-and-algorithms-essentials", "capstone-forge-ready"],
-  };
+    courses: ["data-structures-and-algorithms-essentials", "capstone-forge-ready"],
+  });
 
   it("returns one badge per manifest whose courseOrder lists the course", () => {
     const badges = derivePathBadges([manifestA, manifestB], "data-structures-and-algorithms-essentials");
@@ -176,13 +179,13 @@ describe("derivePathBadges", () => {
 });
 
 describe("resolveCoursePathRenderData", () => {
-  const manifest: PathManifest = {
+  const manifest: PathManifest = manifestFixture({
     pathId: "skills/python-fundamentals",
     arc: "python-fundamentals",
     title: "Python Fundamentals",
     description: "Learn Python from the ground up.",
-    courseOrder: ["version-control-and-git", "just-enough-python", "data-structures-and-algorithms-essentials"],
-  };
+    courses: ["version-control-and-git", "just-enough-python", "data-structures-and-algorithms-essentials"],
+  });
   const contentMap = new Map<string, ContentMeta>([
     ["en:learn/courses/version-control-and-git", courseMeta("learn/courses/version-control-and-git", "Git")],
     ["en:learn/courses/just-enough-python", courseMeta("learn/courses/just-enough-python", "Just Enough Python")],
@@ -199,7 +202,7 @@ describe("resolveCoursePathRenderData", () => {
 
     const result = resolveCoursePathRenderData(
       searchParams,
-      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [] },
+      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [], outlineCourseIds: [] },
       "just-enough-python",
       "en",
       fallbackPrev,
@@ -217,7 +220,7 @@ describe("resolveCoursePathRenderData", () => {
   it("with no path context, falls back to the supplied prev/next unchanged", () => {
     const result = resolveCoursePathRenderData(
       new URLSearchParams(),
-      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [] },
+      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [], outlineCourseIds: [] },
       "just-enough-python",
       "en",
       fallbackPrev,
@@ -237,6 +240,7 @@ describe("resolveCoursePathRenderData", () => {
         manifests: [manifest],
         prerequisitesByCourse: { "just-enough-python": ["version-control-and-git"] },
         libraryCourseIds: ["version-control-and-git", "just-enough-python"],
+        outlineCourseIds: [],
       },
       "just-enough-python",
       "en",
@@ -266,6 +270,7 @@ describe("resolveCoursePathRenderData", () => {
           "data-structures-and-algorithms-essentials": ["version-control-and-git", "capstone-forge-ready"],
         },
         libraryCourseIds: ["version-control-and-git", "capstone-forge-ready"],
+        outlineCourseIds: [],
       },
       "data-structures-and-algorithms-essentials",
       "en",
@@ -282,7 +287,7 @@ describe("resolveCoursePathRenderData", () => {
   it("derives path badges only when there is no active context (canonical branch only)", () => {
     const withoutContext = resolveCoursePathRenderData(
       new URLSearchParams(),
-      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [] },
+      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [], outlineCourseIds: [] },
       "just-enough-python",
       "en",
       fallbackPrev,
@@ -292,7 +297,7 @@ describe("resolveCoursePathRenderData", () => {
 
     const withContext = resolveCoursePathRenderData(
       new URLSearchParams({ path: manifest.pathId }),
-      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [] },
+      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [], outlineCourseIds: [] },
       "just-enough-python",
       "en",
       fallbackPrev,
@@ -306,7 +311,7 @@ describe("resolveCoursePathRenderData", () => {
 
     const result = resolveCoursePathRenderData(
       searchParams,
-      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [] },
+      { contentMap, manifests: [manifest], prerequisitesByCourse: {}, libraryCourseIds: [], outlineCourseIds: [] },
       "version-control-and-git",
       "en",
       fallbackPrev,
@@ -318,13 +323,13 @@ describe("resolveCoursePathRenderData", () => {
 });
 
 describe("buildCourseTitleIndex", () => {
-  const manifest: PathManifest = {
+  const manifest: PathManifest = manifestFixture({
     pathId: "skills/python-fundamentals",
     arc: "python-fundamentals",
     title: "Python Fundamentals",
     description: "Learn Python from the ground up.",
-    courseOrder: ["version-control-and-git", "just-enough-python"],
-  };
+    courses: ["version-control-and-git", "just-enough-python"],
+  });
   const contentMap = new Map<string, ContentMeta>([
     ["en:learn/courses/version-control-and-git", courseMeta("learn/courses/version-control-and-git", "Git")],
     ["en:learn/courses/just-enough-python", courseMeta("learn/courses/just-enough-python", "Just Enough Python")],
@@ -345,9 +350,14 @@ describe("buildCourseTitleIndex", () => {
   });
 
   it("falls back to a humanized slug — never omits, never the raw slug — for a course ID with no resolvable content page (DWT-004 fix, phase-5 rule-15 design-tester retest)", () => {
-    const index = buildCourseTitleIndex(contentMap, "en", [
-      { ...manifest, courseOrder: ["version-control-and-git", "does-not-exist"] },
-    ]);
+    const extended = manifestFixture({
+      pathId: "skills/python-fundamentals",
+      arc: "python-fundamentals",
+      title: "Python Fundamentals",
+      description: "Learn Python from the ground up.",
+      courses: ["version-control-and-git", "does-not-exist"],
+    });
+    const index = buildCourseTitleIndex(contentMap, "en", [extended]);
 
     expect(index).toEqual({ "version-control-and-git": "Git", "does-not-exist": "Does Not Exist" });
   });
@@ -355,10 +365,18 @@ describe("buildCourseTitleIndex", () => {
 
 describe("courseTitlesFromClientData", () => {
   it("preserves humanized titles for manifest-only course IDs after hydration", () => {
+    const extended = manifestFixture({
+      pathId: "careers/interview-ready/software-engineer",
+      arc: "interview-ready",
+      title: "Interview-Ready Software Engineer",
+      description: "Interview-first track for an experienced engineer re-entering the market.",
+      courses: ["just-enough-python", "does-not-exist"],
+    });
     const titles = courseTitlesFromClientData({
-      manifests: [{ ...fixtureManifest, courseOrder: ["just-enough-python", "does-not-exist"] }],
+      manifests: [extended],
       prerequisitesByCourse: {},
       libraryCourseIds: ["just-enough-python"],
+      outlineCourseIds: [],
       courseLinks: {
         "just-enough-python": { title: "Just Enough Python", slug: "learn/courses/just-enough-python" },
       },
@@ -368,6 +386,27 @@ describe("courseTitlesFromClientData", () => {
       "just-enough-python": "Just Enough Python",
       "does-not-exist": "Does Not Exist",
     });
+  });
+});
+
+describe("toCoursePathClientData — outlineCourseIds (AC-4.1 RED)", () => {
+  it("passes outlineCourseIds through from route data", () => {
+    const data = toCoursePathClientData(
+      {
+        contentMap: new Map(),
+        manifests: [],
+        prerequisitesByCourse: {},
+        libraryCourseIds: [],
+        outlineCourseIds: ["capstone-secure-service"],
+      },
+      "en",
+    );
+
+    expect(data.outlineCourseIds).toEqual(["capstone-secure-service"]);
+  });
+
+  it("EMPTY_COURSE_PATH_CLIENT_DATA carries no outline courses", () => {
+    expect(EMPTY_COURSE_PATH_CLIENT_DATA.outlineCourseIds).toEqual([]);
   });
 });
 
@@ -419,13 +458,13 @@ describe("slugFromPathname", () => {
 });
 
 describe("resolveActiveCourseFromLocation", () => {
-  const manifest: PathManifest = {
+  const manifest: PathManifest = manifestFixture({
     pathId: "skills/python-fundamentals",
     arc: "python-fundamentals",
     title: "Python Fundamentals",
     description: "Learn Python from the ground up.",
-    courseOrder: ["version-control-and-git", "just-enough-python"],
-  };
+    courses: ["version-control-and-git", "just-enough-python"],
+  });
 
   it("resolves the course ID and active context from a course pathname + valid ?path=", () => {
     const result = resolveActiveCourseFromLocation(
@@ -471,13 +510,13 @@ describe("resolveActiveCourseFromLocation", () => {
 });
 
 describe("coursePositionInManifest", () => {
-  const manifest: PathManifest = {
+  const manifest: PathManifest = manifestFixture({
     pathId: "skills/python-fundamentals",
     arc: "python-fundamentals",
     title: "Python Fundamentals",
     description: "Learn Python from the ground up.",
-    courseOrder: ["version-control-and-git", "just-enough-python", "data-structures-and-algorithms-essentials"],
-  };
+    courses: ["version-control-and-git", "just-enough-python", "data-structures-and-algorithms-essentials"],
+  });
 
   it("returns the 1-based position and the total course count (PathBanner's 'course k of N')", () => {
     expect(coursePositionInManifest(manifest, "just-enough-python")).toEqual({ index: 2, total: 3 });

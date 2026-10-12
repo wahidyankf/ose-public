@@ -9,7 +9,7 @@ Feature: Prerequisite-consistent ordering
   # Exemption(e2e): the scenario is an internal deterministic transform with no public browser or HTTP boundary; alternative-proof: ayokoding-www:test:unit / A path manifest is a valid topological entry into the prerequisite DAG
   @e2e-exempt
   Scenario: A path manifest is a valid topological entry into the prerequisite DAG
-    Given a path manifest lists a courseOrder of course IDs
+    Given a path manifest lists phases of course IDs
     When the prerequisite-consistency check runs
     Then no course appears before any of its declared prerequisites that are also in the manifest
     And the check reports zero ordering violations for that manifest

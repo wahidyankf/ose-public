@@ -3,5 +3,16 @@
   "arc": "immediately-effective",
   "title": "Frontend Track (Immediately-Effective)",
   "description": "E2E fixture: one of the immediately-effective arc's two roles. Shares just-enough-python with the interview-ready fixture on purpose — the multi-badge case (one course, multiple path badges).",
-  "courseOrder": ["just-enough-python", "frontend-essentials"]
+  "assumes": ["just-enough-typescript"],
+  "phases": [
+    {
+      "id": "fixture-core",
+      "title": "Fixture core",
+      "kind": "core",
+      "outcome": {
+        "can": "complete this fixture path"
+      },
+      "courses": ["just-enough-python", "frontend-essentials"]
+    }
+  ]
 }

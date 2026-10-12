@@ -28,11 +28,24 @@ vi.mock("next/navigation", () => ({
 }));
 
 const { skillsManifest, careersManifest, contentMap, pages } = vi.hoisted(() => {
+  // Hand-expanded (not manifestFixture): vi.hoisted factories run before imports, so the
+  // fixture helper is unreachable here. Each `phases` mirrors its `courseOrder` exactly, the
+  // way the schema's legacy normalization derives it.
   const skills = {
     pathId: "skills/python-fundamentals",
     arc: "python-fundamentals",
     title: "Python Fundamentals",
     description: "Learn Python from the ground up.",
+    assumes: [],
+    phases: [
+      {
+        id: "phase-a",
+        title: "Phase A",
+        kind: "core" as const,
+        outcome: { can: "complete this fixture path" },
+        courses: ["version-control-and-git", "just-enough-python"],
+      },
+    ],
     courseOrder: ["version-control-and-git", "just-enough-python"],
   };
   const careers = {
@@ -40,6 +53,16 @@ const { skillsManifest, careersManifest, contentMap, pages } = vi.hoisted(() => 
     arc: "interview-ready",
     title: "Interview-Ready Software Engineer",
     description: "Get interview-ready.",
+    assumes: [],
+    phases: [
+      {
+        id: "phase-a",
+        title: "Phase A",
+        kind: "core" as const,
+        outcome: { can: "complete this fixture path" },
+        courses: ["just-enough-python"],
+      },
+    ],
     courseOrder: ["just-enough-python"],
   };
 

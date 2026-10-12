@@ -2,6 +2,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LandingSectionDescriptor } from "@/features/content/core/landing-sections";
 import type { PathManifest } from "@/features/course-paths/core/schemas";
+import { manifestFixture } from "../../course-paths/manifest-fixture";
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -21,7 +22,7 @@ function descriptor(slug: string, title: string, blurb: string): LandingSectionD
 }
 
 function manifest(pathId: string, arc: string, title: string): PathManifest {
-  return { pathId, arc, title, description: `${title} description`, courseOrder: ["just-enough-python"] };
+  return manifestFixture({ pathId, arc, title, description: `${title} description`, courses: ["just-enough-python"] });
 }
 
 const enSections: LandingSectionDescriptor[] = [

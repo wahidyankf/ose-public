@@ -4,6 +4,7 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1144
 prerequisites: ["production-planning-and-mrp"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/demand-and-supply-planning/overview)

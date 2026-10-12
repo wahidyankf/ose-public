@@ -41,6 +41,7 @@ describe("MobileNav runtime path data", () => {
       manifests: [],
       prerequisitesByCourse: {},
       libraryCourseIds: [],
+      outlineCourseIds: [],
       courseLinks: {},
     });
 

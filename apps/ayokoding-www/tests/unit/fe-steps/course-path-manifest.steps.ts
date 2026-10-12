@@ -4,17 +4,11 @@ import { expect } from "vitest";
 import { checkManifestIntegrity } from "../../../src/features/course-paths/core/manifest-integrity";
 import { checkPrerequisiteConsistency } from "../../../src/features/course-paths/core/prerequisites";
 import type { PathManifest } from "../../../src/features/course-paths/core/schemas";
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
 
 const behavioursRoot = path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/course-paths");
 
 const libraryCourseIds = ["foundations", "application", "advanced"] as const;
-const completeManifest: PathManifest = {
-  pathId: "skills/example",
-  arc: "example",
-  title: "Example",
-  description: "A deterministic in-memory fixture",
-  courseOrder: ["foundations", "application", "advanced"],
-};
 
 const prerequisitesByCourse: Record<string, readonly string[]> = {
   foundations: [],
@@ -29,8 +23,8 @@ describeFeature(integrityFeature, ({ Scenario }) => {
   let result: ReturnType<typeof checkManifestIntegrity>;
 
   Scenario("Every manifest course reference resolves to a real course", ({ Given, When, Then, And }) => {
-    Given("a path manifest lists a courseOrder of course IDs", () => {
-      manifest = { ...completeManifest, courseOrder: [...completeManifest.courseOrder] };
+    Given("a path manifest lists phases of course IDs", () => {
+      manifest = manifestFixture({ courses: ["foundations", "application", "advanced"] });
     });
 
     When("the manifest-integrity check runs", () => {
@@ -55,8 +49,8 @@ describeFeature(orderingFeature, ({ Scenario }) => {
   let result: ReturnType<typeof checkPrerequisiteConsistency>;
 
   Scenario("A path manifest is a valid topological entry into the prerequisite DAG", ({ Given, When, Then, And }) => {
-    Given("a path manifest lists a courseOrder of course IDs", () => {
-      manifest = { ...completeManifest, courseOrder: [...completeManifest.courseOrder] };
+    Given("a path manifest lists phases of course IDs", () => {
+      manifest = manifestFixture({ courses: ["foundations", "application", "advanced"] });
     });
 
     When("the prerequisite-consistency check runs", () => {
@@ -77,7 +71,7 @@ describeFeature(orderingFeature, ({ Scenario }) => {
     "A path may link a prerequisite it does not include, without failing integrity",
     ({ Given, When, Then, And }) => {
       Given("a path manifest includes a course whose declared prerequisite is absent from that manifest", () => {
-        manifest = { ...completeManifest, courseOrder: ["advanced"] };
+        manifest = manifestFixture({ courses: ["advanced"] });
       });
 
       When("the prerequisite-consistency check runs", () => {

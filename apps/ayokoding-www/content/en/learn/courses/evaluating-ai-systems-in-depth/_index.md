@@ -3,15 +3,7 @@ title: "Evaluating AI Systems In Depth"
 date: 2026-07-26T00:00:00+07:00
 draft: false
 weight: 442
-prerequisites:
-  [
-    "evaluating-ai-output-essentials",
-    "statistics-for-evaluation",
-    "agentic-ai",
-    "agent-orchestration-subagents-and-observability",
-    "cicd-and-release-engineering",
-    "software-testing",
-  ]
+prerequisites: ["evaluating-ai-output-essentials", "statistics-for-evaluation", "software-testing"]
 ---
 
 - [Overview](/en/learn/courses/evaluating-ai-systems-in-depth/overview)

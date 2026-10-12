@@ -3,7 +3,7 @@ title: "Programming Paradigms"
 date: 2026-07-17T00:00:00+07:00
 draft: false
 weight: 320
-prerequisites: ["object-oriented-design-and-patterns"]
+prerequisites: ["just-enough-python", "object-oriented-programming-essentials"]
 ---
 
 - [Learning](/en/learn/courses/programming-paradigms/learning)

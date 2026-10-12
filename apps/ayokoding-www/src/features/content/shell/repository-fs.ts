@@ -48,6 +48,7 @@ export class FileSystemContentRepository implements ContentRepository {
           isSection,
           filePath,
           prerequisites: frontmatter.prerequisites,
+          status: frontmatter.status,
         });
       } catch {
         // Skip files that can't be read

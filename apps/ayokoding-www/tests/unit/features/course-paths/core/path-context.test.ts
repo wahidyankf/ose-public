@@ -1,14 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { parsePathContext } from "../../../../../src/features/course-paths/core/path-context";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
+import { manifestFixture } from "../manifest-fixture";
 
-const loadedManifest: PathManifest = {
+const loadedManifest: PathManifest = manifestFixture({
   pathId: "careers/interview-ready/software-engineer",
   arc: "interview-ready",
   title: "Interview-Ready Software Engineer",
   description: "Interview-first track for an experienced engineer re-entering the market.",
-  courseOrder: ["just-enough-python"],
-};
+  courses: ["just-enough-python"],
+});
 
 const manifests: readonly PathManifest[] = [loadedManifest];
 

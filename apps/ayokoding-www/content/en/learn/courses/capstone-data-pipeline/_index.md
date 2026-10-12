@@ -11,6 +11,7 @@ prerequisites:
     "backend-at-scale",
     "creating-ai-powered-apps",
   ]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/capstone-data-pipeline/overview)

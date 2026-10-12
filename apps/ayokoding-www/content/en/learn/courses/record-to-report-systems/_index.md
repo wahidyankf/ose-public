@@ -5,6 +5,7 @@ draft: false
 weight: 1139
 prerequisites:
   ["erp-subledger-to-gl-architecture", "erp-fiscal-calendar-and-period-close", "financial-statements-and-close-cycle"]
+status: outline
 ---
 
 - [Overview](/en/learn/courses/record-to-report-systems/overview)

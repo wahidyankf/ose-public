@@ -18,14 +18,15 @@ vi.mock("next/link", () => ({
 
 // eslint-disable-next-line import/first
 import { ArcLanding } from "@/features/course-paths/shell/arc-landing";
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
 
-const soloRole: PathManifest = {
+const soloRole: PathManifest = manifestFixture({
   pathId: "careers/interview-ready/solo-role",
   arc: "interview-ready",
   title: "Solo Role",
   description: "desc",
-  courseOrder: ["just-enough-python", "just-enough-bash"],
-};
+  courses: ["just-enough-python", "just-enough-bash"],
+});
 
 const courseTitles = {
   "just-enough-python": "Just Enough Python",
@@ -51,9 +52,10 @@ describeFeature(feature, ({ Scenario }) => {
       render(<ArcLanding locale="en" arc="interview-ready" manifests={[soloRole]} courseTitles={courseTitles} />);
     });
 
-    Then("the single role card renders with an inline first-phase syllabus preview", () => {
-      expect(screen.getByText(/Starts with:/i)).toBeTruthy();
+    Then("the single role card renders with a preview that names the first phase and lists its courses", () => {
+      expect(screen.getByText("Starts with Phase 1 · Phase A:", { exact: false })).toBeTruthy();
       expect(screen.getByText(/Just Enough Python/)).toBeTruthy();
+      expect(screen.getByText(/Just Enough Bash/)).toBeTruthy();
     });
 
     And("the layout does not reserve or render a visibly empty second card", () => {

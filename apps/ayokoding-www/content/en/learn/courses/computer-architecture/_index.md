@@ -3,7 +3,7 @@ title: "Computer Architecture"
 date: 2026-07-17T00:00:00+07:00
 draft: false
 weight: 300
-prerequisites: ["computer-science-foundations"]
+prerequisites: ["computer-science-foundations", "just-enough-python"]
 ---
 
 - [Overview](/en/learn/courses/computer-architecture/overview)

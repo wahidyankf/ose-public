@@ -3,7 +3,7 @@ title: "SQL Essentials"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 200
-prerequisites: ["project-management"]
+prerequisites: ["just-enough-python"]
 ---
 
 - [Learning](/en/learn/courses/sql-essentials/learning)

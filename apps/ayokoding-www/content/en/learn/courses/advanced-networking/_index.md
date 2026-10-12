@@ -3,7 +3,7 @@ title: "Advanced Networking"
 date: 2026-07-18T00:00:00+07:00
 draft: false
 weight: 390
-prerequisites: ["build-your-own-orm-and-query-builder"]
+prerequisites: ["networking-essentials", "just-enough-python"]
 ---
 
 - [Overview](/en/learn/courses/advanced-networking/overview)

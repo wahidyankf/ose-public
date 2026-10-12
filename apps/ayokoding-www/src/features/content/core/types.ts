@@ -16,6 +16,13 @@ export interface ContentMeta {
    * absent field identically to an empty array.
    */
   prerequisites?: string[];
+  /**
+   * Outline marker (outline-course-status) — `status: outline` in the course `_index.md`
+   * frontmatter means the course is a skeleton under 1,000 words. Optional (absent means the
+   * course is complete) so the field is additive-only; consumers that badge outlines treat an
+   * absent field identically to a complete course.
+   */
+  status?: "outline";
 }
 
 export interface ContentPage extends ContentMeta {

@@ -16,6 +16,7 @@ vi.mock("@/features/course-paths/shell/route-path-data", () => ({
     manifests: [],
     prerequisitesByCourse: {},
     libraryCourseIds: [],
+    outlineCourseIds: [],
   })),
 }));
 

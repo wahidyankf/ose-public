@@ -1,6 +1,6 @@
 ---
 title: "Paths"
-description: "Choose a learning path — an ordered route through the course library toward a goal. Each path publishes as its manifest ships."
+description: "Choose a learning path: an ordered route through the course library toward a goal."
 date: 2026-07-23T00:00:00+07:00
 draft: false
 weight: 101

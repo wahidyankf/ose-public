@@ -2,128 +2,273 @@
   "pathId": "careers/fundamentally-strong/software-engineer",
   "arc": "fundamentally-strong",
   "title": "Fundamentally Strong Software Engineer",
-  "description": "A foundations-first route from computer science principles to production software systems.",
-  "courseOrder": [
-    "just-enough-nvim",
-    "just-enough-lua",
-    "extending-neovim",
-    "capstone-forge-ready",
-    "just-enough-python",
-    "just-enough-bash",
-    "version-control-and-git",
-    "just-enough-c",
-    "data-structures-and-algorithms-essentials",
-    "object-oriented-programming-essentials",
-    "just-enough-go",
-    "just-enough-rust",
-    "just-enough-java",
-    "linux-os",
-    "windows-os",
-    "system-programming",
-    "modern-system-programming",
-    "just-enough-cpp",
-    "build-your-own-git",
-    "just-enough-kotlin",
-    "just-enough-swift",
-    "just-enough-csharp",
-    "windows-app-development",
-    "linux-app-development",
-    "building-production-cli-tools",
-    "project-management",
-    "sql-essentials",
-    "backend-essentials",
-    "nosql-databases",
-    "graph-databases",
-    "search-and-information-retrieval",
-    "networking-essentials",
-    "just-enough-typescript",
-    "frontend-essentials",
-    "build-your-own-web-framework",
-    "async-python-and-fastapi-services",
-    "software-testing",
-    "advanced-frontend",
-    "build-your-own-reactive-ui",
-    "self-hosting-essentials",
-    "containers-and-orchestration",
-    "cloud-and-iac",
-    "cicd-and-release-engineering",
-    "build-automation-and-task-runners",
-    "bare-metal-virtualization",
-    "platform-engineering-and-devex",
-    "android-app-development",
-    "ios-app-development",
-    "just-enough-dart",
-    "hybrid-app-development",
-    "browser-automation-with-cdp",
-    "debugging-and-profiling",
-    "security-essentials",
-    "backend-at-scale",
-    "api-design",
-    "capstone-first-working-software",
-    "capstone-full-stack-app",
-    "creating-ai-powered-apps",
-    "agentic-ai",
-    "the-agent-loop",
-    "agent-tools-and-mcp",
-    "agent-context-and-memory",
-    "agent-permissions-and-sandboxing",
-    "agent-orchestration-subagents-and-observability",
-    "it-and-application-security",
-    "offensive-security",
-    "defensive-security",
-    "capstone-secure-service",
-    "detection-engineering-and-siem-operations",
-    "vulnerability-management-and-assessment",
-    "it-governance-grc",
-    "capstone-build-your-own-pentest-engine",
-    "analytics-and-experimentation",
-    "information-architecture-and-seo",
-    "technical-communication",
-    "computer-science-foundations",
-    "computer-architecture",
-    "object-oriented-design-and-patterns",
-    "programming-paradigms",
-    "functional-programming",
-    "concurrency-and-parallelism",
-    "advanced-algorithms",
-    "csp-style-concurrency",
-    "just-enough-elixir",
-    "actor-model-concurrency",
-    "lisp",
-    "just-enough-fsharp",
-    "type-systems",
-    "compilers-parsers-and-transpilers",
-    "capstone-concurrency-showdown",
-    "advanced-sql-and-query-performance",
-    "data-access-orms-and-query-builders",
-    "build-your-own-orm-and-query-builder",
-    "database-internals-and-storage-engines",
-    "data-engineering",
-    "advanced-networking",
-    "software-architecture",
-    "enterprise-java-and-the-jvm",
-    "domain-driven-design",
-    "system-design",
-    "event-driven-architecture",
-    "distributed-systems",
-    "build-your-own-database",
-    "build-your-own-raft",
-    "self-managed-kubernetes-and-gitops",
-    "site-reliability-engineering",
-    "capstone-concurrency-and-systems",
-    "software-engineering-practices",
-    "agentic-coding",
-    "capstone-build-your-own-coding-agent",
-    "capstone-data-pipeline",
-    "software-product-engineering",
-    "engineering-management",
-    "capstone-solid-core",
-    "capstone-real-world-delivery",
-    "capstone-lead-at-altitude",
-    "coding-interview",
-    "take-home-and-live-coding",
-    "system-design-interview",
-    "behavioral-and-leadership-interviews",
-    "capstone-interview-loop"
+  "description": "For engineers who want strong fundamentals: from first programs through computer science depth to a solid-core capstone.",
+  "goals": ["capstone-solid-core"],
+  "assumes": [],
+  "phases": [
+    {
+      "id": "programming-foundations",
+      "title": "Programming foundations",
+      "kind": "core",
+      "outcome": {
+        "can": "write Python and shell scripts, choose suitable data structures, and model code with classes",
+        "cannotYet": "build software that stores data or serves users"
+      },
+      "courses": [
+        "just-enough-python",
+        "just-enough-bash",
+        "data-structures-and-algorithms-essentials",
+        "object-oriented-programming-essentials"
+      ]
+    },
+    {
+      "id": "first-working-software",
+      "title": "Building working software",
+      "kind": "core",
+      "outcome": {
+        "can": "build, test, and secure a small working app with a database, an API, and a UI",
+        "cannotYet": "explain the theory underneath the code you wrote"
+      },
+      "courses": [
+        "sql-essentials",
+        "backend-essentials",
+        "networking-essentials",
+        "just-enough-typescript",
+        "frontend-essentials",
+        "software-testing",
+        "security-essentials",
+        "capstone-first-working-software"
+      ]
+    },
+    {
+      "id": "computer-science-depth",
+      "title": "Computer science depth",
+      "kind": "core",
+      "outcome": {
+        "can": "reason about computation, design patterns, paradigms, concurrency, advanced algorithms, and query performance",
+        "cannotYet": "lead how a team plans, builds, and ships software"
+      },
+      "courses": [
+        "computer-science-foundations",
+        "object-oriented-design-and-patterns",
+        "programming-paradigms",
+        "functional-programming",
+        "concurrency-and-parallelism",
+        "advanced-algorithms",
+        "advanced-sql-and-query-performance"
+      ]
+    },
+    {
+      "id": "practice-and-leadership",
+      "title": "Engineering practice and leadership",
+      "kind": "core",
+      "outcome": {
+        "can": "plan delivery, run review and release practices, make product trade-offs, and support a team",
+        "cannotYet": "show all of this in one integrated project"
+      },
+      "courses": [
+        "project-management",
+        "software-engineering-practices",
+        "software-product-engineering",
+        "engineering-management"
+      ]
+    },
+    {
+      "id": "solid-core-capstone",
+      "title": "Solid-core capstone",
+      "kind": "core",
+      "outcome": {
+        "can": "prove your fundamentals in one integrated project",
+        "cannotYet": "specialise; pick an optional extension for that"
+      },
+      "courses": ["capstone-solid-core"]
+    },
+    {
+      "id": "editor-and-shell",
+      "title": "Editor and shell workflow",
+      "kind": "extension",
+      "courses": [
+        "just-enough-nvim",
+        "just-enough-lua",
+        "extending-neovim",
+        "capstone-forge-ready",
+        "version-control-and-git"
+      ]
+    },
+    {
+      "id": "more-languages",
+      "title": "More programming languages",
+      "kind": "extension",
+      "courses": [
+        "just-enough-c",
+        "just-enough-cpp",
+        "just-enough-go",
+        "just-enough-rust",
+        "just-enough-java",
+        "just-enough-kotlin",
+        "just-enough-swift",
+        "just-enough-csharp",
+        "just-enough-dart"
+      ]
+    },
+    {
+      "id": "systems-and-tooling",
+      "title": "Operating systems and developer tooling",
+      "kind": "extension",
+      "courses": [
+        "linux-os",
+        "windows-os",
+        "system-programming",
+        "modern-system-programming",
+        "build-your-own-git",
+        "building-production-cli-tools",
+        "build-automation-and-task-runners",
+        "debugging-and-profiling"
+      ]
+    },
+    {
+      "id": "apps-and-interfaces",
+      "title": "Web, mobile, and desktop apps",
+      "kind": "extension",
+      "courses": [
+        "advanced-frontend",
+        "build-your-own-reactive-ui",
+        "information-architecture-and-seo",
+        "analytics-and-experimentation",
+        "android-app-development",
+        "ios-app-development",
+        "hybrid-app-development",
+        "windows-app-development",
+        "linux-app-development",
+        "browser-automation-with-cdp"
+      ]
+    },
+    {
+      "id": "backend-depth",
+      "title": "Backend depth",
+      "kind": "extension",
+      "courses": ["async-python-and-fastapi-services", "api-design", "build-your-own-web-framework", "backend-at-scale"]
+    },
+    {
+      "id": "data-and-databases",
+      "title": "Data and databases",
+      "kind": "extension",
+      "courses": [
+        "nosql-databases",
+        "graph-databases",
+        "search-and-information-retrieval",
+        "data-access-orms-and-query-builders",
+        "build-your-own-orm-and-query-builder",
+        "database-internals-and-storage-engines",
+        "build-your-own-database",
+        "data-engineering"
+      ]
+    },
+    {
+      "id": "infrastructure-and-operations",
+      "title": "Networking, infrastructure, and operations",
+      "kind": "extension",
+      "courses": [
+        "advanced-networking",
+        "self-hosting-essentials",
+        "containers-and-orchestration",
+        "cloud-and-iac",
+        "cicd-and-release-engineering",
+        "bare-metal-virtualization",
+        "platform-engineering-and-devex",
+        "self-managed-kubernetes-and-gitops"
+      ]
+    },
+    {
+      "id": "more-computer-science",
+      "title": "More computer science",
+      "kind": "extension",
+      "courses": [
+        "computer-architecture",
+        "csp-style-concurrency",
+        "just-enough-elixir",
+        "actor-model-concurrency",
+        "lisp",
+        "just-enough-fsharp",
+        "type-systems",
+        "compilers-parsers-and-transpilers",
+        "capstone-concurrency-showdown"
+      ]
+    },
+    {
+      "id": "architecture-and-distributed-systems",
+      "title": "Architecture and distributed systems",
+      "kind": "extension",
+      "courses": [
+        "software-architecture",
+        "enterprise-java-and-the-jvm",
+        "domain-driven-design",
+        "event-driven-architecture",
+        "system-design",
+        "distributed-systems",
+        "build-your-own-raft",
+        "site-reliability-engineering",
+        "capstone-concurrency-and-systems"
+      ]
+    },
+    {
+      "id": "security",
+      "title": "Security",
+      "kind": "extension",
+      "courses": [
+        "it-and-application-security",
+        "offensive-security",
+        "defensive-security",
+        "detection-engineering-and-siem-operations",
+        "vulnerability-management-and-assessment",
+        "it-governance-grc",
+        "capstone-secure-service"
+      ]
+    },
+    {
+      "id": "more-practice-and-leadership",
+      "title": "More engineering practice and leadership",
+      "kind": "extension",
+      "courses": ["technical-communication", "agentic-coding"]
+    },
+    {
+      "id": "ai-and-agents",
+      "title": "AI apps and agents",
+      "kind": "extension",
+      "courses": [
+        "creating-ai-powered-apps",
+        "agentic-ai",
+        "the-agent-loop",
+        "agent-tools-and-mcp",
+        "agent-context-and-memory",
+        "agent-permissions-and-sandboxing",
+        "agent-orchestration-subagents-and-observability",
+        "capstone-build-your-own-coding-agent",
+        "capstone-build-your-own-pentest-engine"
+      ]
+    },
+    {
+      "id": "interview-preparation",
+      "title": "Interview preparation",
+      "kind": "extension",
+      "courses": [
+        "coding-interview",
+        "take-home-and-live-coding",
+        "system-design-interview",
+        "behavioral-and-leadership-interviews",
+        "capstone-interview-loop"
+      ]
+    },
+    {
+      "id": "integrative-capstones",
+      "title": "Integrative capstones",
+      "kind": "extension",
+      "courses": [
+        "capstone-full-stack-app",
+        "capstone-data-pipeline",
+        "capstone-real-world-delivery",
+        "capstone-lead-at-altitude"
+      ]
+    }
   ]
 }

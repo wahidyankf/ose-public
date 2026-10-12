@@ -4,6 +4,8 @@ import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import matter from "gray-matter";
 import { expect, vi } from "vitest";
+import type { PathManifest } from "@/features/course-paths/core/schemas";
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
 
 // plan (ayokoding-learn-revamp-01-navigation-and-display), Phase 3 RED (unit, S4) — step
 // bindings for path-position-numbers.feature's "A course page in path context shows no
@@ -63,14 +65,6 @@ interface StoredPage {
   next: null;
 }
 
-interface StoredManifest {
-  pathId: string;
-  arc: string;
-  title: string;
-  description: string;
-  courseOrder: string[];
-}
-
 /**
  * Populated in the Given step from the real content tree. The mocked data ports below read it
  * lazily at call time — vi.mock factories run during the static-import phase, before module
@@ -80,7 +74,7 @@ interface StoredManifest {
 const store = vi.hoisted(() => ({
   pages: new Map<string, StoredPage>(),
   contentMap: new Map<string, StoredContentMeta>(),
-  manifests: [] as StoredManifest[],
+  manifests: [] as PathManifest[],
 }));
 
 vi.mock("@/lib/trpc/server", () => ({
@@ -121,13 +115,14 @@ const COURSE_IDS = ["just-enough-bash", "backend-essentials", "sql-essentials"] 
 // The e2e suite's fixture path manifest
 // (apps/ayokoding-www-fe-e2e/fixtures/manifests/careers/immediately-effective/backend-track.json):
 // exactly the three courses this plan binds S4 with, so backend-essentials sits at 2 of 3.
-const BACKEND_TRACK_MANIFEST: StoredManifest = {
+const BACKEND_TRACK_COURSES = ["just-enough-bash", "backend-essentials", "sql-essentials"] as const;
+const BACKEND_TRACK_MANIFEST: PathManifest = manifestFixture({
   pathId: "careers/immediately-effective/backend-track",
   arc: "immediately-effective",
   title: "Backend Track (Immediately-Effective)",
   description: "Fixture path whose courseOrder is exactly the three courses this binding renders.",
-  courseOrder: ["just-enough-bash", "backend-essentials", "sql-essentials"],
-};
+  courses: [...BACKEND_TRACK_COURSES],
+});
 const BACKEND_TRACK_PATH_ID = BACKEND_TRACK_MANIFEST.pathId;
 
 // S1–S3 bind the position NUMBER itself, not the real content titles (the S4 scenario above
@@ -139,7 +134,7 @@ const POSITION_FIXTURE_TITLES: Readonly<Record<string, string>> = {
   "backend-essentials": "Backend Essentials",
   "sql-essentials": "SQL Essentials",
 };
-const POSITION_FIXTURE_TITLE_ORDER: readonly string[] = BACKEND_TRACK_MANIFEST.courseOrder.map(
+const POSITION_FIXTURE_TITLE_ORDER: readonly string[] = BACKEND_TRACK_COURSES.map(
   (courseId) => POSITION_FIXTURE_TITLES[courseId] ?? courseId,
 );
 const POSITION_FIXTURE_ROWS = [
@@ -194,13 +189,15 @@ describeFeature(feature, ({ Scenario }) => {
       breadcrumbCrumbTexts: string[];
       prevNextLinkTexts: string[];
       prerequisiteLinkTexts: string[];
+      declaredPrerequisiteCount: number;
     }
 
     let renderedSurfaces: RenderedSurfaces[] = [];
     const readoutTextByCourseId = new Map<string, string>();
+    let frontmatterByCourseId = new Map<string, CourseFrontmatter>();
 
     Given("a reader opens a course in path context", () => {
-      const frontmatterByCourseId = new Map<string, CourseFrontmatter>();
+      frontmatterByCourseId = new Map<string, CourseFrontmatter>();
       const declaredPrerequisiteIds = new Set<string>();
       for (const courseId of COURSE_IDS) {
         const frontmatter = readCourseFrontmatter(courseId);
@@ -263,7 +260,10 @@ describeFeature(feature, ({ Scenario }) => {
 
         const breadcrumb = screen.getByRole("navigation", { name: "Breadcrumb" });
         const pageNav = within(screen.getByRole("navigation", { name: "Page navigation" }));
-        const prerequisitesNav = within(screen.getByRole("navigation", { name: "Prerequisites" }));
+        // The prerequisites nav renders nothing at all when the course declares no
+        // prerequisites (plan 02 revised `just-enough-bash` to `[]` under rubric rule T4),
+        // so query it optionally and pin the absence to the declaration below.
+        const prerequisitesNav = screen.queryByRole("navigation", { name: "Prerequisites" });
 
         renderedSurfaces.push({
           courseId,
@@ -274,7 +274,13 @@ describeFeature(feature, ({ Scenario }) => {
           prevNextLinkTexts: pageNav
             .getAllByRole("link")
             .map((link) => (link.textContent ?? "").replace(/^(Previous|Next)/u, "").trim()),
-          prerequisiteLinkTexts: prerequisitesNav.getAllByRole("link").map((link) => link.textContent ?? ""),
+          prerequisiteLinkTexts:
+            prerequisitesNav === null
+              ? []
+              : within(prerequisitesNav)
+                  .getAllByRole("link")
+                  .map((link) => link.textContent ?? ""),
+          declaredPrerequisiteCount: frontmatterByCourseId.get(courseId)?.prerequisites.length ?? 0,
         });
 
         readoutTextByCourseId.set(courseId, screen.getByText(/course \d+ of \d+/iu).textContent ?? "");
@@ -305,6 +311,14 @@ describeFeature(feature, ({ Scenario }) => {
             if (CATALOGUE_NUMBERED_TITLE.test(titleText) || PASS_NUMBERED_TITLE.test(titleText)) {
               offences.push(`${surfaceLabel}: "${titleText}"`);
             }
+          }
+          // A missing prerequisites nav is legitimate only when the course declares none —
+          // otherwise the nav (or its links) failed to render.
+          if (surface.prerequisiteLinkTexts.length === 0) {
+            expect(
+              surface.declaredPrerequisiteCount,
+              `${surface.courseId} renders no prerequisite links but declares ${surface.declaredPrerequisiteCount}`,
+            ).toBe(0);
           }
         }
         expect(
@@ -410,7 +424,7 @@ describeFeature(feature, ({ Scenario }) => {
 
     When("a reader opens that arc's landing page", () => {
       cleanup();
-      render(<SyllabusPreview courseTitles={POSITION_FIXTURE_TITLE_ORDER} />);
+      render(<SyllabusPreview locale="en" phaseTitle="Fixture core" courseTitles={POSITION_FIXTURE_TITLE_ORDER} />);
     });
 
     Then('the role card\'s "Starts with" preview numbers its courses 1, 2, and so on in path order', () => {

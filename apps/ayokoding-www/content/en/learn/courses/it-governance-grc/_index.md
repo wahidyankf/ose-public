@@ -3,7 +3,7 @@ title: "IT Governance & GRC"
 date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 620
-prerequisites: ["it-and-application-security", "defensive-security", "project-management"]
+prerequisites: ["it-and-application-security"]
 ---
 
 - [Overview](/en/learn/courses/it-governance-grc/overview)

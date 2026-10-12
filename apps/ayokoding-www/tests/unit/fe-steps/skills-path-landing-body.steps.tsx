@@ -18,21 +18,20 @@ vi.mock("next/link", () => ({
 
 // eslint-disable-next-line import/first
 import { PathLanding } from "@/features/course-paths/shell/path-landing";
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
 
-const alpha: PathManifest = {
+const alpha: PathManifest = manifestFixture({
   pathId: "skills/e2e-fixture-alpha",
   arc: "skills",
   title: "Alpha Ramp",
   description: "desc",
-  courseOrder: [],
-};
-const beta: PathManifest = {
+});
+const beta: PathManifest = manifestFixture({
   pathId: "skills/e2e-fixture-beta",
   arc: "skills",
   title: "Beta Ramp",
   description: "desc",
-  courseOrder: [],
-};
+});
 const alphaBody = "<p>Alpha's own runway-justification paragraph, unique to alpha.</p>";
 const betaBody = "<p>Beta's own runway-justification paragraph, unique to beta.</p>";
 

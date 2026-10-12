@@ -16,14 +16,15 @@ vi.mock("next/link", () => ({
 import { Breadcrumb } from "@/features/navigation/shell/breadcrumb";
 import { PathLanding } from "@/features/course-paths/shell/path-landing";
 import { courseRehomeRedirects } from "@/redirects/course-rehome";
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
 
-const fixtureManifest: PathManifest = {
+const fixtureManifest: PathManifest = manifestFixture({
   pathId: "careers/interview-ready/example-role",
   arc: "interview-ready",
   title: "Interview-Ready Example Role",
   description: "An interview-first track.",
-  courseOrder: ["just-enough-python", "just-enough-bash", "version-control-and-git"],
-};
+  courses: ["just-enough-python", "just-enough-bash", "version-control-and-git"],
+});
 
 const courseTitles = {
   "just-enough-python": "Just Enough Python",
@@ -61,7 +62,7 @@ describeFeature(feature, ({ Scenario }) => {
       render(<PathLanding locale="en" manifest={fixtureManifest} courseTitles={courseTitles} />);
     });
 
-    Then("the courses appear in the fixture manifest's courseOrder", () => {
+    Then("the courses appear in the fixture manifest's phase order", () => {
       const list = document.querySelector("ol");
       expect(list).not.toBeNull();
       const items = within(list as HTMLElement).getAllByRole("listitem");

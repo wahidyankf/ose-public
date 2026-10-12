@@ -1,6 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
+import { manifestFixture } from "../manifest-fixture";
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -15,13 +16,11 @@ import { ArcLanding } from "../../../../../src/features/course-paths/shell/arc-l
 
 afterEach(cleanup);
 
-function manifest(overrides: Partial<PathManifest> & Pick<PathManifest, "pathId" | "arc">): PathManifest {
-  return {
-    title: overrides.pathId,
-    description: "desc",
-    courseOrder: [],
-    ...overrides,
-  };
+function manifest(
+  overrides: Pick<PathManifest, "pathId" | "arc"> &
+    Partial<Pick<PathManifest, "title">> & { courses?: readonly string[] },
+): PathManifest {
+  return manifestFixture({ description: "desc", ...overrides, title: overrides.title ?? overrides.pathId });
 }
 
 const courseTitles = {
@@ -35,13 +34,13 @@ describe("ArcLanding — two-role state (Cycle 3.1c-i, R7)", () => {
     pathId: "careers/immediately-effective/role-a",
     arc: "immediately-effective",
     title: "Role A",
-    courseOrder: ["just-enough-python"],
+    courses: ["just-enough-python"],
   });
   const roleB = manifest({
     pathId: "careers/immediately-effective/role-b",
     arc: "immediately-effective",
     title: "Role B",
-    courseOrder: ["just-enough-bash"],
+    courses: ["just-enough-bash"],
   });
 
   it("renders both role cards side by side, no placeholder", () => {
@@ -66,14 +65,16 @@ describe("ArcLanding — single-role state (Cycle 3.1c-ii, R7)", () => {
     pathId: "careers/interview-ready/solo-role",
     arc: "interview-ready",
     title: "Solo Role",
-    courseOrder: ["just-enough-python", "just-enough-bash", "version-control-and-git"],
+    courses: ["just-enough-python", "just-enough-bash", "version-control-and-git"],
   });
 
-  it("renders one role card with an inline first-phase syllabus preview", () => {
+  it("renders one role card with a preview that names the first phase and lists its courses", () => {
     render(<ArcLanding locale="en" arc="interview-ready" manifests={[soloRole]} courseTitles={courseTitles} />);
 
-    expect(screen.getByText(/Starts with:/i)).toBeTruthy();
+    expect(screen.getByText("Starts with Phase 1 · Phase A:", { exact: false })).toBeTruthy();
     expect(screen.getByText(/Just Enough Python/)).toBeTruthy();
+    expect(screen.getByText(/Just Enough Bash/)).toBeTruthy();
+    expect(screen.getByText(/Version Control & Git/)).toBeTruthy();
   });
 
   it("never renders a second, visibly empty card", () => {

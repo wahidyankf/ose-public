@@ -135,6 +135,8 @@ export interface CoursePathData {
   manifests: readonly PathManifest[];
   prerequisitesByCourse: PrerequisitesByCourse;
   libraryCourseIds: readonly string[];
+  /** Locale-independent outline course IDs (see `deriveOutlineCourseIds`) — the badge source. */
+  outlineCourseIds: readonly string[];
 }
 
 /**
@@ -147,6 +149,7 @@ export interface CoursePathClientData {
   manifests: readonly PathManifest[];
   prerequisitesByCourse: PrerequisitesByCourse;
   libraryCourseIds: readonly string[];
+  outlineCourseIds: readonly string[];
   courseLinks: Readonly<Record<string, PageLink>>;
 }
 
@@ -155,6 +158,7 @@ export const EMPTY_COURSE_PATH_CLIENT_DATA: CoursePathClientData = {
   manifests: [],
   prerequisitesByCourse: {},
   libraryCourseIds: [],
+  outlineCourseIds: [],
   courseLinks: {},
 };
 
@@ -172,6 +176,7 @@ export function toCoursePathClientData(data: CoursePathData, locale: string): Co
     manifests: data.manifests,
     prerequisitesByCourse: data.prerequisitesByCourse,
     libraryCourseIds: data.libraryCourseIds,
+    outlineCourseIds: data.outlineCourseIds,
     courseLinks,
   };
 }

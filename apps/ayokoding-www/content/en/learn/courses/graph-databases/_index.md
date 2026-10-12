@@ -3,7 +3,7 @@ title: "Graph Databases"
 date: 2026-07-27T00:00:00+07:00
 draft: false
 weight: 447
-prerequisites: ["sql-essentials", "nosql-databases", "just-enough-python"]
+prerequisites: ["sql-essentials", "just-enough-python"]
 ---
 
 - [Overview](/en/learn/courses/graph-databases/overview)

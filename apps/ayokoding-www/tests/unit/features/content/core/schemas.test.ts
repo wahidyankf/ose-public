@@ -17,3 +17,21 @@ describe("frontmatterSchema — prerequisites (course-paths cycle 2.4)", () => {
     expect(parsed.prerequisites).toEqual([]);
   });
 });
+
+describe("frontmatterSchema — status (outline-course-status)", () => {
+  it('parses status "outline"', () => {
+    const parsed = frontmatterSchema.parse({ title: "An outline course", status: "outline" });
+
+    expect(parsed.status).toEqual("outline");
+  });
+
+  it("parses when status is absent", () => {
+    const parsed = frontmatterSchema.parse({ title: "A complete course" });
+
+    expect(parsed.status).toBeUndefined();
+  });
+
+  it('rejects status "draft"', () => {
+    expect(() => frontmatterSchema.parse({ title: "A draft course", status: "draft" })).toThrow();
+  });
+});

@@ -18,21 +18,22 @@ vi.mock("next/link", () => ({
 
 // eslint-disable-next-line import/first
 import { ArcLanding } from "@/features/course-paths/shell/arc-landing";
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
 
-const roleA: PathManifest = {
+const roleA: PathManifest = manifestFixture({
   pathId: "careers/immediately-effective/role-a",
   arc: "immediately-effective",
   title: "Role A",
   description: "desc",
-  courseOrder: ["just-enough-python"],
-};
-const roleB: PathManifest = {
+  courses: ["just-enough-python"],
+});
+const roleB: PathManifest = manifestFixture({
   pathId: "careers/immediately-effective/role-b",
   arc: "immediately-effective",
   title: "Role B",
   description: "desc",
-  courseOrder: ["just-enough-bash"],
-};
+  courses: ["just-enough-bash"],
+});
 
 const courseTitles = {
   "just-enough-python": "Just Enough Python",

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SKILLS_RESTRUCTURE_ALLOWLIST, isMarkedShape } from "./skills-restructure-allowlist";
 
 // pathId is variable-depth by design (R2, R8): `careers/<arc>/<role>` (3 segments) or
 // `skills/<subject>` (2 segments), and no depth beyond the category segment is ever fixed —
@@ -43,15 +44,73 @@ const courseRefSchema = z.union([
   }),
 ]);
 
-export const PathManifestSchema = z.object({
-  pathId: pathIdSchema,
-  // `arc` is required on every manifest regardless of category (R8) — for `skills/*` paths the
-  // arc is omitted from the URL, but it is never optional in the manifest data.
-  arc: z.string(),
-  title: z.string(),
-  description: z.string(),
-  courseOrder: z.array(courseRefSchema),
-});
+const phaseIdSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
-export type PathManifest = z.infer<typeof PathManifestSchema>;
+export const phaseOutcomeSchema = z
+  .object({ can: z.string().min(1), cannotYet: z.string().min(1).optional() })
+  .strict();
+
+export const pathPhaseSchema = z
+  .object({
+    id: phaseIdSchema,
+    title: z.string().min(1),
+    kind: z.enum(["core", "extension"]),
+    outcome: phaseOutcomeSchema.optional(),
+    courses: z.array(courseRefSchema).min(1),
+  })
+  .strict();
+
+/** On-disk shape of a phase-shaped manifest file (after the contract step, the only shape). */
+const phaseShapedFileSchema = z
+  .object({
+    pathId: pathIdSchema,
+    // `arc` is required on every manifest regardless of category (R8) — for `skills/*` paths the
+    // arc is omitted from the URL, but it is never optional in the manifest data.
+    arc: z.string(),
+    title: z.string(),
+    description: z.string(),
+    // Decision 39: plan 06 removes the accounting entries; plan 07 deletes this module
+    restructurePendingIn: z.enum(["plan-06", "plan-07"]).optional(),
+    goals: z.array(z.string()).min(1).optional(),
+    assumes: z.array(z.string()).default([]),
+    phases: z.array(pathPhaseSchema).min(1),
+  })
+  .strict()
+  .superRefine((file, ctx) => {
+    const marker = file.restructurePendingIn;
+    if (marker !== undefined) {
+      // Closed allowlist: exact path ID and exact plan, or the file fails to parse.
+      if (SKILLS_RESTRUCTURE_ALLOWLIST.get(file.pathId) !== marker) {
+        ctx.addIssue({ code: "custom", path: ["restructurePendingIn"], message: "marker not allowed" });
+      }
+      if (!isMarkedShape(file)) {
+        ctx.addIssue({ code: "custom", path: ["phases"], message: "marked manifest must be one all-courses phase" });
+      }
+      return; // a marked manifest's single core phase has no outcome
+    }
+    // The core-outcome rule lives here (not on the phase schema) because only the manifest
+    // knows whether it is marked.
+    file.phases.forEach((phase, index) => {
+      if (phase.kind === "core" && phase.outcome === undefined) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["phases", index, "outcome"],
+          message: "a core phase must declare an outcome",
+        });
+      }
+    });
+  });
+
+/** On-disk shape of a manifest file (after the contract step, the only shape). */
+export const PathManifestFileSchema = phaseShapedFileSchema;
+
+/** Domain shape: the file shape plus the derived, flattened order. */
+export const PathManifestSchema = PathManifestFileSchema.transform((file) => ({
+  ...file,
+  courseOrder: file.phases.flatMap((phase) => phase.courses),
+}));
+
+export type PathPhase = z.infer<typeof pathPhaseSchema>;
+export type PathManifestFile = z.output<typeof PathManifestFileSchema>;
+export type PathManifest = z.output<typeof PathManifestSchema>;
 export type CourseRef = z.infer<typeof courseRefSchema>;

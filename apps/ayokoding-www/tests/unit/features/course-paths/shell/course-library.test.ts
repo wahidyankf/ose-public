@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { buildCourseLibrary, deriveAllCourseIds } from "../../../../../src/features/course-paths/shell/course-library";
+import {
+  buildCourseLibrary,
+  deriveAllCourseIds,
+  deriveOutlineCourseIds,
+} from "../../../../../src/features/course-paths/shell/course-library";
 import type { ContentMeta } from "@/features/content/core/types";
 
 function meta(overrides: Partial<ContentMeta> & { slug: string }): ContentMeta {
@@ -13,6 +17,7 @@ function meta(overrides: Partial<ContentMeta> & { slug: string }): ContentMeta {
     isSection: overrides.isSection ?? false,
     filePath: overrides.filePath ?? "/tmp/x.md",
     prerequisites: overrides.prerequisites,
+    status: overrides.status,
   };
 }
 
@@ -91,5 +96,42 @@ describe("deriveAllCourseIds", () => {
     const allCourseIds = deriveAllCourseIds(contentMap);
 
     expect(allCourseIds).toEqual(["translated-course"]);
+  });
+});
+
+/**
+ * AC-4.1 RED: `deriveOutlineCourseIds` does not exist yet — the outline set must be
+ * locale-independent (like `deriveAllCourseIds`): an outline course declared in `en` still
+ * counts as an outline course when rendering `id`, so the Outline badge never depends on
+ * which locale's content map entry was read.
+ */
+describe("deriveOutlineCourseIds", () => {
+  it("collects the IDs of outline courses while excluding complete courses and non-course pages", () => {
+    const contentMap = new Map<string, ContentMeta>([
+      [
+        "en:learn/courses/capstone-secure-service",
+        meta({ slug: "learn/courses/capstone-secure-service", status: "outline" }),
+      ],
+      ["en:learn/courses/just-enough-python", meta({ slug: "learn/courses/just-enough-python" })],
+      // Non-course page carrying a status — must still be excluded.
+      ["en:learn/paths", meta({ slug: "learn/paths", isSection: true, status: "outline" })],
+    ]);
+
+    expect(deriveOutlineCourseIds(contentMap)).toEqual(["capstone-secure-service"]);
+  });
+
+  it("deduplicates an outline course that exists in more than one locale", () => {
+    const contentMap = new Map<string, ContentMeta>([
+      [
+        "en:learn/courses/translated-course",
+        meta({ slug: "learn/courses/translated-course", locale: "en", status: "outline" }),
+      ],
+      [
+        "id:learn/courses/translated-course",
+        meta({ slug: "learn/courses/translated-course", locale: "id", status: "outline" }),
+      ],
+    ]);
+
+    expect(deriveOutlineCourseIds(contentMap)).toEqual(["translated-course"]);
   });
 });

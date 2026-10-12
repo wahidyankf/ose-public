@@ -19,6 +19,8 @@ export const frontmatterSchema = z.object({
   // library and rendered by `course-paths/shell/prerequisite-list.tsx` in both the canonical and
   // path-aware views.
   prerequisites: z.array(z.string()).default([]),
+  // Marker honesty: course-frontmatter.unit.test.ts fails if a sub-1000-word course lacks this status.
+  status: z.enum(["outline"]).optional(),
 });
 
 export type Frontmatter = z.infer<typeof frontmatterSchema>;

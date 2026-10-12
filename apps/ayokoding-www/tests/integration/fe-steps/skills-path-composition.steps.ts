@@ -2,6 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
+import { PathManifestSchema, type PathManifest } from "../../../src/features/course-paths/core/schemas";
+import { normalizeCourseRef } from "../../../src/features/course-paths/core/manifest";
 
 const feature = await loadFeature(
   path.resolve(
@@ -44,7 +46,9 @@ describeFeature(feature, ({ ScenarioOutline }) => {
   ScenarioOutline(
     "A two-segment skills path ID resolves to its full shared accounting slice",
     ({ Given, When, Then, And }, variables) => {
-      let manifest: { pathId: string; courseOrder: string[] };
+      // Parsed through the schema: the file shape is now `phases`, and the derived
+      // domain `courseOrder` below is the flattened phases — the same order readers see.
+      let manifest: PathManifest;
       Given('the published accounting manifest for "<path-id>"', () => {
         const pathId = String(variables["path-id"]);
         const [, manifestName] = pathId.split("/");
@@ -52,7 +56,7 @@ describeFeature(feature, ({ ScenarioOutline }) => {
           process.cwd(),
           `src/features/course-paths/manifests/skills/${manifestName}.json`,
         );
-        manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as typeof manifest;
+        manifest = PathManifestSchema.parse(JSON.parse(fs.readFileSync(manifestPath, "utf8")));
         expect(manifest.pathId).toBe(pathId);
       });
       When("its ordered course context is inspected", () => {
@@ -67,7 +71,8 @@ describeFeature(feature, ({ ScenarioOutline }) => {
       });
       And("every course context is represented by one course directory", () => {
         const coursesRoot = path.resolve(process.cwd(), "content/en/learn/courses");
-        for (const courseId of manifest.courseOrder) {
+        for (const reference of manifest.courseOrder) {
+          const courseId = normalizeCourseRef(reference).id;
           expect(fs.statSync(path.join(coursesRoot, courseId)).isDirectory()).toBe(true);
         }
       });

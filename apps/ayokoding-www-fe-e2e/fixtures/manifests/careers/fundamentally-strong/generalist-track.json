@@ -3,5 +3,28 @@
   "arc": "fundamentally-strong",
   "title": "Generalist Track (Fundamentally-Strong)",
   "description": "E2E fixture: the third fixture arc — proves the careers category landing's arc chooser renders one arc card per arc (three total) rather than assuming exactly two.",
-  "courseOrder": ["computer-science-foundations", "software-engineering-practices"]
+  "assumes": [
+    "just-enough-python",
+    "data-structures-and-algorithms-essentials",
+    "just-enough-bash",
+    "software-testing",
+    "backend-essentials"
+  ],
+  "phases": [
+    {
+      "id": "fixture-core",
+      "title": "Fixture core",
+      "kind": "core",
+      "outcome": {
+        "can": "complete this fixture path"
+      },
+      "courses": ["computer-science-foundations", "software-engineering-practices"]
+    },
+    {
+      "id": "fixture-extension",
+      "title": "Fixture extension",
+      "kind": "extension",
+      "courses": ["capstone-secure-service"]
+    }
+  ]
 }

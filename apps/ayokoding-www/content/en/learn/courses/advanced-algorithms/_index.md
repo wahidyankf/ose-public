@@ -3,7 +3,7 @@ title: "Advanced Algorithms"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 350
-prerequisites: ["concurrency-and-parallelism"]
+prerequisites: ["data-structures-and-algorithms-essentials", "just-enough-python"]
 ---
 
 - [Learning](/en/learn/courses/advanced-algorithms/learning)

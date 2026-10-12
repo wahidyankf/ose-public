@@ -3,7 +3,8 @@ title: "Build Your Own ORM & Query Builder"
 date: 2026-07-18T00:00:00+07:00
 draft: false
 weight: 380
-prerequisites: ["data-access-orms-and-query-builders"]
+prerequisites:
+  ["data-access-orms-and-query-builders", "sql-essentials", "advanced-sql-and-query-performance", "just-enough-python"]
 ---
 
 - [Learning](/en/learn/courses/build-your-own-orm-and-query-builder/learning)

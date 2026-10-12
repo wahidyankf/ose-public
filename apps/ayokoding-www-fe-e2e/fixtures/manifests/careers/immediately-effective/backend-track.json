@@ -3,5 +3,16 @@
   "arc": "immediately-effective",
   "title": "Backend Track (Immediately-Effective)",
   "description": "E2E fixture: the immediately-effective arc's second role. A deliberately different course count than its sibling frontend-track fixture, proving the two-role arc landing renders each role card's own count rather than a shared/placeholder value.",
-  "courseOrder": ["just-enough-bash", "backend-essentials", "sql-essentials"]
+  "assumes": ["just-enough-python"],
+  "phases": [
+    {
+      "id": "fixture-core",
+      "title": "Fixture core",
+      "kind": "core",
+      "outcome": {
+        "can": "complete this fixture path"
+      },
+      "courses": ["just-enough-bash", "backend-essentials", "sql-essentials"]
+    }
+  ]
 }

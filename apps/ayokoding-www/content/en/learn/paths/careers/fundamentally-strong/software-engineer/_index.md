@@ -1,13 +1,13 @@
 ---
 title: "Fundamentally Strong Software Engineer"
-description: "A foundations-first route from computer science principles to production software systems."
+description: "For engineers who want strong fundamentals: from first programs through computer science depth to a solid-core capstone."
 date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 10
 ---
 
-Choose this route when you want a bottom-up model of software engineering. It begins with computer science, architecture, programming paradigms, and algorithms before turning those ideas into applications, platforms, and teams.
+Choose this path when you want a strong base before you specialise. You start with Python, the shell, data structures, and object-oriented programming, build a first working app, then study computer science in depth and the practices of running a team. A solid-core capstone ties it all together.
 
-If you already have a CS degree, skim the early theory stages for gaps and concentrate on the theory-to-application bridge. The later work makes the abstract foundations useful in production rather than treating them as a separate track.
+If you already have a computer science degree, skim the phases you know and use the outcome under each phase to decide where to slow down. The optional extensions cover every specialisation after the core.
 
-The linked course pages retain this path context, so the next and previous controls follow the foundations-first sequence you selected.
+Course pages you open from this path keep the path context, so Previous and Next follow this path.

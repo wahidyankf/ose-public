@@ -795,20 +795,20 @@ deletes this module` at the top of the allowlist module and next to the schema f
 - **Proof:** `<plan>/evidence/phase-5-copy.md`.
 - _Suggested executor: `apps-ayokoding-www-general-maker` for copy, `swe-developer` for the test._
 
-- [ ] [AI] **Gherkin first:** create `path-copy.feature` with both scenarios, exemption comments, and
+- [x] [AI] **Gherkin first:** create `path-copy.feature` with both scenarios, exemption comments, and
       tags. Run `BEHAVIOUR`. Acceptance: fails naming the two scenarios.
-- [ ] [AI] **RED:** create `tests/unit/features/course-paths/content/path-copy.unit.test.ts`:
+- [x] [AI] **RED:** create `tests/unit/features/course-paths/content/path-copy.unit.test.ts`:
       `apps/ayokoding-www/content/en/learn/paths/_index.md` and every `.md` under
       `apps/ayokoding-www/content/en/learn/paths/careers/` have no case-insensitive match of
       `dangerous`, `oi-2`, `append`, `manifest`, or `from.scratch`; the AI Engineer page description and
       the AI manifest description both contain "for developers who already code". Bind both scenarios
       in `tests/unit/fe-steps/path-copy.steps.ts`. Run `UNIT-NODE tests/unit/features/course-paths/content/path-copy.unit.test.ts`.
       Acceptance: fails, listing the current offending pages.
-- [ ] [AI] **GREEN:** apply every description and body in tech-docs/006 to the listed `_index.md`
+- [x] [AI] **GREEN:** apply every description and body in tech-docs/006 to the listed `_index.md`
       files (frontmatter keys other than `description` unchanged; skills and fixture pages untouched;
       the section "Proposed for Plans 06 and 07" is not applied). Rerun the test and
       `UNIT-FE tests/unit/fe-steps/path-copy.steps.ts`. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** read each changed page once for plain English (short sentences, no internal
+- [x] [AI] **REFACTOR:** read each changed page once for plain English (short sentences, no internal
       plan names). Run `VALIDATE-INDEXES` (run `GEN-INDEXES` and keep the output if it reports drift),
       `QUICK`, and `BEHAVIOUR`. Acceptance: exit 0, and
       `rtk git diff --stat origin/main -- apps/ayokoding-www/content/en/learn/paths` lists exactly the 8
@@ -818,8 +818,8 @@ deletes this module` at the top of the allowlist module and next to the schema f
 
 > All checks below must pass before starting Phase 6.
 
-- [ ] [AI] `QUICK`, `BEHAVIOUR`, and `VALIDATE-INDEXES` exit 0.
-- [ ] [AI] `E2E` exits 0 (fixture pages unchanged, so `skills-path-landing-body.feature` still passes).
+- [x] [AI] `QUICK`, `BEHAVIOUR`, and `VALIDATE-INDEXES` exit 0.
+- [x] [AI] `E2E` exits 0 (fixture pages unchanged, so `skills-path-landing-body.feature` still passes).
 
 > **Pause Safety**: copy and tests agree. Safe to stop. To resume: `QUICK`.
 

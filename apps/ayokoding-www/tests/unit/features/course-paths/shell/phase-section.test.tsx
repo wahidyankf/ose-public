@@ -55,6 +55,22 @@ describe("PhaseSection — core phase (AC-4.2 RED)", () => {
     expect(heading.textContent).toContain("2 courses");
   });
 
+  it("separates the Phase badge and the title with a space in the heading's accessible name (EWT-001)", () => {
+    render(
+      <PhaseSection
+        locale="en"
+        pathId="careers/fundamentally-strong/generalist-track"
+        phase={corePhase}
+        phaseNumber={1}
+        startPosition={1}
+        courseTitles={courseTitles}
+        outlineCourseIds={[]}
+      />,
+    );
+
+    expect(screen.getByRole("heading", { level: 2, name: "Phase 1 Fixture core (2 courses)" })).toBeTruthy();
+  });
+
   it("states the outcome with 'After this phase you can' and 'You cannot yet'", () => {
     render(
       <PhaseSection
@@ -170,5 +186,23 @@ describe("PhaseSection — extension phase (AC-4.2 RED)", () => {
     expect(heading.textContent).toContain("Fase 1");
     expect(screen.getByText("Setelah fase ini Anda bisa complete this fixture path")).toBeTruthy();
     expect(screen.getByText("Anda belum bisa lead a team")).toBeTruthy();
+  });
+
+  it("localizes the course count on the id locale (UWT-001)", () => {
+    render(
+      <PhaseSection
+        locale="id"
+        pathId="careers/fundamentally-strong/generalist-track"
+        phase={corePhase}
+        phaseNumber={1}
+        startPosition={1}
+        courseTitles={courseTitles}
+        outlineCourseIds={[]}
+      />,
+    );
+
+    const heading = screen.getByRole("heading", { level: 2, name: /Fixture core/ });
+    expect(heading.textContent).toContain("(2 kursus)");
+    expect(heading.textContent).not.toContain("courses");
   });
 });

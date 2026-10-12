@@ -4,6 +4,7 @@ import type { MouseEvent } from "react";
 import { useMobileNavOpen } from "@/features/app-shell/shell/use-mobile-nav-open";
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
+import { formatTemplate } from "@/features/course-paths/shell/format-template";
 
 /** Must match the `id` the shipped drawer's content element renders (`mobile-nav.tsx`). */
 export const MOBILE_NAV_DRAWER_ID = "mobile-nav-drawer";
@@ -45,7 +46,14 @@ export function PathBanner({ locale, pathTitle, courseIndex, totalCourses }: Pat
         type="button"
         aria-expanded={open}
         aria-controls={MOBILE_NAV_DRAWER_ID}
-        aria-label={`View path: Open path course list — ${pathTitle}, course ${courseIndex} of ${totalCourses}`}
+        // UWT-002: the accessible name localizes like the visible trigger text (WCAG 2.5.3 keeps
+        // the visible "View path"/"Lihat jalur" label as the name's prefix); the path title is
+        // course data and stays as-is.
+        aria-label={formatTemplate(t(locale as Locale, "pathsViewPathLabel"), {
+          pathTitle,
+          courseIndex,
+          totalCourses,
+        })}
         onClick={handleActivate}
         className="flex min-h-11 items-center px-2 font-medium underline underline-offset-2 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
       >

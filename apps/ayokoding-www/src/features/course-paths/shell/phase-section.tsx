@@ -5,6 +5,7 @@ import { t } from "@/features/i18n/core/translations";
 import { normalizeCourseRef } from "../core/manifest";
 import type { PathPhase } from "../core/schemas";
 import { slugForCourseId } from "./course-path-nav";
+import { formatTemplate } from "./format-template";
 import { OutlineBadge } from "./outline-badge";
 import { PathPositionNumber } from "./path-position-number";
 
@@ -46,6 +47,12 @@ export function PhaseSection({
   outlineCourseIds,
 }: PhaseSectionProps) {
   const courseCount = phase.courses.length;
+  // UWT-001: the count is interface chrome, so it localizes (Indonesian has no plural change:
+  // "1 kursus" / "{count} kursus"); course data itself stays English per series decision 35.
+  const countText =
+    courseCount === 1
+      ? t(locale as Locale, "pathsCourseCountOne")
+      : formatTemplate(t(locale as Locale, "pathsCourseCountOther"), { count: courseCount });
 
   return (
     <section>
@@ -54,11 +61,8 @@ export function PhaseSection({
           <span className="mr-2 rounded-full bg-secondary px-2 py-0.5 align-middle text-xs font-semibold text-secondary-foreground uppercase">
             {t(locale as Locale, "pathsPhaseLabel")} {phaseNumber}
           </span>
-        )}
-        {phase.title}{" "}
-        <span className="text-sm font-normal text-muted-foreground">
-          ({courseCount} {courseCount === 1 ? "course" : "courses"})
-        </span>
+        )}{" "}
+        {phase.title} <span className="text-sm font-normal text-muted-foreground">({countText})</span>
       </h2>
       {phase.outcome && (
         <p className="mt-1 text-sm text-muted-foreground">

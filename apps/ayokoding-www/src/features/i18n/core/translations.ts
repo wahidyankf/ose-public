@@ -393,6 +393,9 @@ const translations: Record<Locale, Record<string, string>> = {
     pathsCannotYet: "You cannot yet",
     pathsOutlineBadge: "Outline",
     pathsStartsWith: "Starts with",
+    pathsCourseCountOne: "1 course",
+    pathsCourseCountOther: "{count} courses",
+    pathsViewPathLabel: "View path: Open path course list — {pathTitle}, course {courseIndex} of {totalCourses}",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Resize panel",
@@ -793,6 +796,9 @@ const translations: Record<Locale, Record<string, string>> = {
     pathsCannotYet: "Anda belum bisa",
     pathsOutlineBadge: "Kerangka",
     pathsStartsWith: "Dimulai dengan",
+    pathsCourseCountOne: "1 kursus",
+    pathsCourseCountOther: "{count} kursus",
+    pathsViewPathLabel: "Lihat jalur: Buka daftar kursus — {pathTitle}, kursus {courseIndex} dari {totalCourses}",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Ubah ukuran panel",

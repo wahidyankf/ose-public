@@ -975,95 +975,95 @@ plans 06 and 07 remove, enforced by the allowlist and marker-usage tests, so it 
 
 ### Manual UI Verification (Playwright MCP) — all locales × all breakpoints
 
-- [ ] [AI] Confirm the locale set: `SUPPORTED_LOCALES` in
+- [x] [AI] Confirm the locale set: `SUPPORTED_LOCALES` in
       `apps/ayokoding-www/src/features/i18n/core/config.ts` is `["en", "id"]`.
-- [ ] [AI] Start `DEV` (port 3101). For every page below use `browser_resize` to 375×800, 768×800, and
+- [x] [AI] Start `DEV` (port 3101). For every page below use `browser_resize` to 375×800, 768×800, and
       1280×800, check `browser_snapshot` for `html[lang]` matching the locale, read
       `browser_console_messages` (zero errors, hydration warnings count as errors), and take one
       screenshot per breakpoint.
-- [ ] [AI] `/en/learn/paths/careers/interview-ready/software-engineer`. Acceptance: "Core" label; four
+- [x] [AI] `/en/learn/paths/careers/interview-ready/software-engineer`. Acceptance: "Core" label; four
       core phase headings with "Phase 1"…"Phase 4" (Programming and the command line; Data structures
       and backend basics; Interview skills; Interview capstone) and their outcome lines; course 13 is
       Capstone · Interview Loop; "Optional extensions" heading; first extension "Editor and shell
       workflow" starts at 14; no "Phase 1 prioritizes" text. Screenshot `phase-8-ir-path-en-<bp>px.png`.
-- [ ] [AI] `/en/learn/paths/careers/immediately-effective/software-engineer` (core 13, first phase is
+- [x] [AI] `/en/learn/paths/careers/immediately-effective/software-engineer` (core 13, first phase is
       the editor), `/en/learn/paths/careers/fundamentally-strong/software-engineer` (core 24 in five
       phases). Acceptance: phases and counts match tech-docs/004; Outline badges only on outline rows.
       Screenshots `phase-8-ie-path-en-<bp>px.png`, `phase-8-fs-path-en-<bp>px.png`.
-- [ ] [AI] `/en/learn/paths/careers/immediately-effective/ai-engineer`. Acceptance: description says
+- [x] [AI] `/en/learn/paths/careers/immediately-effective/ai-engineer`. Acceptance: description says
       "for developers who already code"; "Before you start" lists 11 linked courses whose links have no
       `?path=`; six core phases; extension "Capstone" with an Outline badge on course 26. Screenshot
       `phase-8-ai-path-en-<bp>px.png`.
-- [ ] [AI] **Skills unchanged (decision 39):** the same pages as the Phase 0 skills baseline
+- [x] [AI] **Skills unchanged (decision 39):** the same pages as the Phase 0 skills baseline
       (`/en/learn/paths/skills`, the four skills paths, and the accounting course in path context) at
       375 and 1280. Acceptance: each syllabus and rail list has the same courses in the same order as
       the saved Phase 0 text; no phase heading, outcome line, Outline badge, "Before you start" note,
       "Optional extensions" heading, or Preview label; the category statement and milestone strip
       match the Phase 0 screenshots. Screenshots `phase-8-skills-<page>-en-<bp>px.png`, compared side
       by side with the Phase 0 files in the evidence.
-- [ ] [AI] `/en/learn/paths/careers/interview-ready` (arc landing) and `/en/learn/paths`. Acceptance:
+- [x] [AI] `/en/learn/paths/careers/interview-ready` (arc landing) and `/en/learn/paths`. Acceptance:
       "Starts with Phase 1 · Programming and the command line:" with its three courses; the new
       careers hub strapline; the skills hub strapline unchanged. Screenshots `phase-8-arc-en-<bp>px.png`, `phase-8-hub-en-<bp>px.png`.
-- [ ] [AI] `/en/learn/courses/capstone-interview-loop?path=careers/interview-ready/software-engineer`.
+- [x] [AI] `/en/learn/courses/capstone-interview-loop?path=careers/interview-ready/software-engineer`.
       Acceptance at 768 and 1280: rail grouped by phase, "Course 13 of 116", current row marked; Next
       goes to Just Enough Nvim with `?path=` kept. At 375: the banner opens the drawer with the same
       grouping (`browser_click`). Screenshot `phase-8-course-in-path-en-<bp>px.png` (375 with the drawer
       open).
-- [ ] [AI] `/en/learn/courses/capstone-secure-service?path=careers/fundamentally-strong/software-engineer`.
+- [x] [AI] `/en/learn/courses/capstone-secure-service?path=careers/fundamentally-strong/software-engineer`.
       Acceptance: the current row in the extension group shows the Outline badge. Screenshot
       `phase-8-outline-in-rail-en-<bp>px.png`.
-- [ ] [AI] Indonesian: open `/id/learn/paths/careers/interview-ready/software-engineer`. Acceptance:
+- [x] [AI] Indonesian: open `/id/learn/paths/careers/interview-ready/software-engineer`. Acceptance:
       the same status and rendering as the Phase 0 baseline (the Indonesian site has no paths tree; this
       plan adds none). Open `/id` and `/id/belajar/ikhtisar`. Acceptance: `html[lang="id"]`, no English
       strings introduced by this plan, zero console errors. Screenshots
       `phase-8-id-paths-id-<bp>px.png`, `phase-8-id-home-id-<bp>px.png`. The Indonesian path strings
       are proven by the unit tests rendering each new component with `locale="id"`.
-- [ ] [AI] Rendered production sign-off: stop `DEV`; run `BUILD`, then
+- [x] [AI] Rendered production sign-off: stop `DEV`; run `BUILD`, then
       `rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www:start`;
       repeat the IR path and course-in-path checks at 375 and 1280 against the selected hi-fi images in
       prd.md. Acceptance: matches; screenshots `phase-8-prodbuild-<feature>-en-<bp>px.png`. Stop the
       server.
-- [ ] [AI] Reference every screenshot in `<plan>/evidence/phase-8-manual.md` with `![alt](./<file>)`.
+- [x] [AI] Reference every screenshot in `<plan>/evidence/phase-8-manual.md` with `![alt](./<file>)`.
 
 ### Manual API Wire Verification (tRPC over HTTP)
 
-- [ ] [AI] With `DEV` running, run the **success** command from
+- [x] [AI] With `DEV` running, run the **success** command from
       [tech-docs/005](./tech-docs/005-integrity-validation-and-testing.md#manual-api-wire-checks-trpc).
       Acceptance: status `200`; `content-type: application/json`; `[0].result.data.json.manifests` has 8
       entries, each with non-empty `phases` (`id`, `title`, `kind`, `courses`), `courseOrder` equal to
       the flattened phases, and `assumes`; the 4 skills entries have one `all-courses` phase and their
       `restructurePendingIn`, the 4 career entries have none; `outlineCourseIds` has 62 entries.
-- [ ] [AI] Repeat it with locale `id` (input `%7B%220%22%3A%7B%22json%22%3A%22id%22%7D%7D`, output files
+- [x] [AI] Repeat it with locale `id` (input `%7B%220%22%3A%7B%22json%22%3A%22id%22%7D%7D`, output files
       `trpc-id.*`). Acceptance: status `200`; the same 8 manifests and 62 `outlineCourseIds`.
-- [ ] [AI] Run the **failure** command (locale `xx`). Acceptance: status `400`;
+- [x] [AI] Run the **failure** command (locale `xx`). Acceptance: status `400`;
       `[0].error.json.data.code` is `BAD_REQUEST`.
-- [ ] [AI] Record one sanitized evidence row per case (status line, header names, asserted fields) in
+- [x] [AI] Record one sanitized evidence row per case (status line, header names, asserted fields) in
       `<plan>/evidence/phase-8-manual.md`; delete the raw bodies under `local-tmp/`. A mismatch routes
       to Phase 4 (AC-4.1).
 
 ### UI Quality Gate and Rule-15 Retest
 
-- [ ] [AI] Run the [UI Web Quality Gate](../../../repo-governance/workflows/quality/ui-web-quality-gate.md)
+- [x] [AI] Run the [UI Web Quality Gate](../../../repo-governance/workflows/quality/ui-web-quality-gate.md)
       against the running dev server for the changed screens (at most 2 cycles). Append each finding
       below as an unchecked checkbox and repair it through
       [UI Web Propagation](../../../repo-governance/workflows/quality/ui-web-propagation.md) with a
       reproducing test.
-- [ ] [AI] Run [UX Review Fix Planning](../../../repo-governance/workflows/quality/ux-review-fix-planning.md):
+- [x] [AI] Run [UX Review Fix Planning](../../../repo-governance/workflows/quality/ux-review-fix-planning.md):
       `swe-web-tester` (exploratory charter), `swe-usability-tester`, and `swe-web-tester` (design
       charter) against the running site in `en` and `id`. Append each finding here as an unchecked
       checkbox labelled `EWT-###`, `UWT-###`, or `DWT-###` with its source, then fix it with a
       regression test.
-- [ ] [AI] Rule-16 API exploratory retest: not applicable — the only API change is an additive field
+- [x] [AI] Rule-16 API exploratory retest: not applicable — the only API change is an additive field
       set on an internal tRPC procedure with no REST or GraphQL contract; it is covered by the wire
       checks above.
-- [ ] [AI] Rerun `QUICK` and `E2E` after the fixes. Acceptance: exit 0.
+- [x] [AI] Rerun `QUICK` and `E2E` after the fixes. Acceptance: exit 0.
 
 ### Phase 8 Gate
 
 > All checks below must pass before starting Phase 9.
 
-- [ ] [AI] Every manual acceptance above holds and every screenshot is referenced.
-- [ ] [AI] Every UI-gate, EWT, UWT, and DWT defect checkbox is ticked (deferral only with explicit user
+- [x] [AI] Every manual acceptance above holds and every screenshot is referenced.
+- [x] [AI] Every UI-gate, EWT, UWT, and DWT defect checkbox is ticked (deferral only with explicit user
       permission).
 
 > **Pause Safety**: behaviour is verified by hand and by testers. Safe to stop. To resume: `QUICK`.

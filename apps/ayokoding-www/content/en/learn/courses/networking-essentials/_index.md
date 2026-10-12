@@ -3,7 +3,7 @@ title: "Networking Essentials"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 220
-prerequisites: ["backend-essentials"]
+prerequisites: ["just-enough-python"]
 ---
 
 - [Overview](/en/learn/courses/networking-essentials/overview)

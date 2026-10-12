@@ -3,8 +3,9 @@ import path from "node:path";
 import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
 import { checkManifestIntegrity } from "../../../../../../src/features/course-paths/core/manifest-integrity";
+import { normalizeCourseRef } from "../../../../../../src/features/course-paths/core/manifest";
 import { checkPrerequisiteConsistency } from "../../../../../../src/features/course-paths/core/prerequisites";
-import { PathManifestSchema } from "../../../../../../src/features/course-paths/core/schemas";
+import { PathManifestSchema, type PathManifest } from "../../../../../../src/features/course-paths/core/schemas";
 
 const appRoot = process.cwd();
 const coursesRoot = path.join(appRoot, "content/en/learn/courses");
@@ -36,6 +37,13 @@ const manifests = manifestPaths.map((manifestPath) =>
   PathManifestSchema.parse(JSON.parse(fs.readFileSync(path.join(manifestsRoot, manifestPath), "utf8"))),
 );
 
+/** Flattened course IDs read from `phases` (the file shape), not the derived `courseOrder`. */
+function phaseCourseIds(manifest: PathManifest | undefined): string[] {
+  return (manifest?.phases ?? []).flatMap((phase) =>
+    phase.courses.map((reference) => normalizeCourseRef(reference).id),
+  );
+}
+
 describe("careers software-engineer manifests", () => {
   it("validates each full syllabus transcription against integrity and prerequisite ordering", () => {
     for (const manifest of manifests) {
@@ -45,14 +53,15 @@ describe("careers software-engineer manifests", () => {
   });
 
   it("keeps Band 9 in exactly the interview-ready and fundamentals-first routes", () => {
-    expect(manifests[0]?.courseOrder).toEqual(expect.arrayContaining([...bandNine]));
-    expect(manifests[1]?.courseOrder).toEqual(expect.not.arrayContaining([...bandNine]));
-    expect(manifests[2]?.courseOrder).toEqual(expect.arrayContaining([...bandNine]));
+    // Membership is read from `phases` (the file shape), not the derived `courseOrder`.
+    expect(phaseCourseIds(manifests[0])).toEqual(expect.arrayContaining([...bandNine]));
+    expect(phaseCourseIds(manifests[1])).toEqual(expect.not.arrayContaining([...bandNine]));
+    expect(phaseCourseIds(manifests[2])).toEqual(expect.arrayContaining([...bandNine]));
   });
 
   it("preserves the distinct shipping-first and fundamentals-first entry points", () => {
-    const immediatelyEffective = manifests[1]?.courseOrder ?? [];
-    const fundamentallyStrong = manifests[2]?.courseOrder ?? [];
+    const immediatelyEffective = phaseCourseIds(manifests[1]);
+    const fundamentallyStrong = phaseCourseIds(manifests[2]);
     expect(immediatelyEffective.indexOf("capstone-full-stack-app")).toBeLessThan(
       immediatelyEffective.indexOf("computer-science-foundations"),
     );

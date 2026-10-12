@@ -314,11 +314,12 @@ Then('a "Compare all paths" link to \\/en\\/learn\\/paths is visible below the c
 // ---------------------------------------------------------------------------
 
 // canonical-fallback.feature, scenario 1 — production manifests place
-// just-enough-python in four career paths.
+// backend-essentials in every career path, and it declares prerequisites
+// (sql-essentials, just-enough-python), so the prerequisite list is exercised too.
 Given(
   "a reader opens a course URL \\/en\\/learn\\/courses\\/<course-id> with no path context query parameter",
   async ({ page }) => {
-    await page.goto("/en/learn/courses/just-enough-python");
+    await page.goto("/en/learn/courses/backend-essentials");
   },
 );
 
@@ -329,22 +330,26 @@ When("the course page renders", async ({ page }) => {
 Then("the course body renders in full with the content-tree breadcrumb and its prerequisite list", async ({ page }) => {
   await expect(page.getByRole("navigation", { name: "Breadcrumb" })).toBeVisible();
   const article = page.getByRole("article");
-  await expect(article.getByRole("heading", { level: 1, name: "Just Enough Python", exact: true })).toBeVisible();
+  await expect(article.getByRole("heading", { level: 1, name: "Backend Essentials", exact: true })).toBeVisible();
   await expect(article.getByRole("link", { name: "Learning", exact: true })).toHaveAttribute(
     "href",
-    "/en/learn/courses/just-enough-python/learning",
+    "/en/learn/courses/backend-essentials/learning",
   );
   const prerequisites = page.getByRole("navigation", { name: "Prerequisites" });
-  await expect(prerequisites.getByRole("link", { name: "Capstone · Forge-Ready", exact: true })).toHaveAttribute(
+  await expect(prerequisites.getByRole("link", { name: "SQL Essentials", exact: true })).toHaveAttribute(
     "href",
-    "/en/learn/courses/capstone-forge-ready",
+    "/en/learn/courses/sql-essentials",
+  );
+  await expect(prerequisites.getByRole("link", { name: "Just Enough Python", exact: true })).toHaveAttribute(
+    "href",
+    "/en/learn/courses/just-enough-python",
   );
 });
 
 Then('a "this course is part of" affordance lists every path that includes the course', async ({ page }) => {
   const nav = page.getByRole("navigation", { name: "This course is part of" });
   const paths = (await loadPublishedManifests(page)).filter(({ courseOrder }) =>
-    courseOrder.includes("just-enough-python"),
+    courseOrder.includes("backend-essentials"),
   );
 
   await expect(nav).toBeVisible();
@@ -626,20 +631,24 @@ Then(
 );
 
 Given("a course declares prerequisites in its canonical metadata", async ({ page }) => {
-  const response = await page.request.get("/en/learn/courses/just-enough-python");
+  const response = await page.request.get("/en/learn/courses/backend-essentials");
   await expect(response).toBeOK();
 });
 
 When("a reader opens the course page with or without a path context", async ({ page }) => {
-  await page.goto("/en/learn/courses/just-enough-python");
+  await page.goto("/en/learn/courses/backend-essentials");
   await page.waitForLoadState("networkidle");
 });
 
 Then("the page lists each prerequisite course with a link to its canonical URL", async ({ page }) => {
   const prerequisites = page.getByRole("navigation", { name: "Prerequisites" });
-  await expect(prerequisites.getByRole("link", { name: "Capstone · Forge-Ready" })).toHaveAttribute(
+  await expect(prerequisites.getByRole("link", { name: "SQL Essentials" })).toHaveAttribute(
     "href",
-    "/en/learn/courses/capstone-forge-ready",
+    "/en/learn/courses/sql-essentials",
+  );
+  await expect(prerequisites.getByRole("link", { name: "Just Enough Python" })).toHaveAttribute(
+    "href",
+    "/en/learn/courses/just-enough-python",
   );
 });
 

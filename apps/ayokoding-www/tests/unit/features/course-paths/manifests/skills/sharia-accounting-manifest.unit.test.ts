@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
 import { checkManifestIntegrity } from "../../../../../../src/features/course-paths/core/manifest-integrity";
+import { normalizeCourseRef } from "../../../../../../src/features/course-paths/core/manifest";
 import { checkPrerequisiteConsistency } from "../../../../../../src/features/course-paths/core/prerequisites";
 import { PathManifestSchema } from "../../../../../../src/features/course-paths/core/schemas";
 
@@ -30,7 +31,8 @@ describe("Sharia accounting manifest", () => {
   it("contains the terminal ordered twenty-four-course Sharia accounting path", () => {
     expect(manifest.pathId).toBe("skills/sharia-accounting");
     expect(manifest.arc).toBe("immediately-effective");
-    expect(manifest.courseOrder).toEqual([
+    // Order is read from `phases` (the file shape), not the derived `courseOrder`.
+    expect(manifest.phases.flatMap((phase) => phase.courses.map((ref) => normalizeCourseRef(ref).id))).toEqual([
       "accounting-foundations",
       "chart-of-accounts-and-data-modeling",
       "financial-statements-and-close-cycle",

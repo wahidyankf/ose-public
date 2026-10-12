@@ -3,7 +3,7 @@ title: "Defensive Security"
 date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 600
-prerequisites: ["offensive-security", "it-and-application-security", "just-enough-bash"]
+prerequisites: ["just-enough-bash", "security-essentials", "networking-essentials"]
 ---
 
 - [Overview](/en/learn/courses/defensive-security/overview)

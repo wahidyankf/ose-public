@@ -3,5 +3,16 @@
   "arc": "e2e-fixture-alpha-track",
   "title": "E2E Fixture Alpha Skills Path",
   "description": "E2E fixture: a skills path whose landing page renders its own authored runway-justification body content (paired with e2e-fixture-beta to prove neither path's body leaks onto the other's page).",
-  "courseOrder": ["just-enough-bash", "version-control-and-git"]
+  "assumes": ["just-enough-python"],
+  "phases": [
+    {
+      "id": "fixture-core",
+      "title": "Fixture core",
+      "kind": "core",
+      "outcome": {
+        "can": "complete this fixture path"
+      },
+      "courses": ["just-enough-bash", "version-control-and-git"]
+    }
+  ]
 }

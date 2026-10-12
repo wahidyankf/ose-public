@@ -3,7 +3,7 @@ title: "Functional Programming"
 date: 2026-07-17T00:00:00+07:00
 draft: false
 weight: 330
-prerequisites: ["programming-paradigms"]
+prerequisites: ["just-enough-python", "data-structures-and-algorithms-essentials"]
 ---
 
 - [Learning](/en/learn/courses/functional-programming/learning)

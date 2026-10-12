@@ -591,12 +591,12 @@ deletes this module` at the top of the allowlist module and next to the schema f
   `<plan>/evidence/phase-3-manifests.md`.
 - _Suggested executor: agent A `apps-ayokoding-www-general-maker`; agents B and C `swe-developer`._
 
-- [ ] [AI] **Gherkin first:** add the four scenarios above to `core-closure.feature`. Run `BEHAVIOUR`.
+- [x] [AI] **Gherkin first:** add the four scenarios above to `core-closure.feature`. Run `BEHAVIOUR`.
       Acceptance: fails naming only those four.
 
 ### AC-3.1 — Real manifests pass every rule (RED before data)
 
-- [ ] [AI] **RED:** create `tests/unit/features/course-paths/manifests/path-model-integrity.unit.test.ts`.
+- [x] [AI] **RED:** create `tests/unit/features/course-paths/manifests/path-model-integrity.unit.test.ts`.
       For each of the 8 real manifests, load real frontmatter through the content repository (or
       `gray-matter` over `content/en/learn/courses/*/_index.md`), build `PathModelContext`, run
       `checkPathModelIntegrity`, and assert zero violations; on failure print every violation and, for
@@ -612,26 +612,26 @@ deletes this module` at the top of the allowlist module and next to the schema f
 
 ### AC-3.2 — Data migration (GREEN), three agents in parallel on disjoint files
 
-- [ ] [AI] **Agent A — prerequisites:** for each of the 43 courses whose row in
+- [x] [AI] **Agent A — prerequisites:** for each of the 43 courses whose row in
       [tech-docs/003](./tech-docs/003-prerequisite-rubric-and-evidence.md) shows a change, set the
       `prerequisites` list in `apps/ayokoding-www/content/en/learn/courses/<slug>/_index.md` to the
       table's "after" list, in the table's order. Change nothing else. Acceptance:
       `rtk git diff --stat -- apps/ayokoding-www/content/en/learn/courses` shows exactly 43 more files
       than Phase 1's 62 (105 total), and each diff matches its row; record the 43-row review in
       `<plan>/evidence/phase-3-prerequisites.md`.
-- [ ] [AI] **Agent B — real manifests:** replace the body of each of the 4 career files under
+- [x] [AI] **Agent B — real manifests:** replace the body of each of the 4 career files under
       `apps/ayokoding-www/src/features/course-paths/manifests/careers/` with the "Target JSON" block in
       its `syllabus/paths/manifest-careers-*.md`. Replace the body of each of the 4 skills files under
       `manifests/skills/` with the **"What Plan 02 Writes"** block in its
       `syllabus/paths/manifest-skills-*.md`, never the drafted JSON. Acceptance: each file parses as JSON
       (`rtk node -e "JSON.parse(require('fs').readFileSync('<file>','utf8'))"` exits 0 for each), and
       each skills file still has its current `title` and `description`.
-- [ ] [AI] **Agent C — fixture manifests:** rewrite the 6 files under
+- [x] [AI] **Agent C — fixture manifests:** rewrite the 6 files under
       `apps/ayokoding-www-fe-e2e/fixtures/manifests/` to the phase shape per the table in
       [syllabus/paths/README.md](./syllabus/paths/README.md#e2e-fixture-manifests): same courses, same
       order, the listed phases and `assumes`, and the core outcome `{"can": "complete this fixture path"}`.
       Acceptance: each parses as JSON; `generalist-track` has a core phase and an extension phase.
-- [ ] [AI] **GREEN check (root):** rerun the three `UNIT-NODE` files from AC-3.1. Acceptance: zero
+- [x] [AI] **GREEN check (root):** rerun the three `UNIT-NODE` files from AC-3.1. Acceptance: zero
       violations for all 8 manifests, clean marker usage, membership unchanged, and skills order
       unchanged. If a closure or core mismatch appears,
       compare the printed expected core with tech-docs/004 and fix the data entry that diverges from
@@ -639,22 +639,22 @@ deletes this module` at the top of the allowlist module and next to the schema f
 
 ### AC-3.3 — Existing manifest tests read phases (REFACTOR)
 
-- [ ] [AI] **REFACTOR:** update `tests/unit/features/course-paths/manifests/careers/*.unit.test.ts`
+- [x] [AI] **REFACTOR:** update `tests/unit/features/course-paths/manifests/careers/*.unit.test.ts`
       and `skills/*.unit.test.ts` to read `phases` where they asserted on the file's `courseOrder`;
       keep every existing assertion's intent. Run
       `UNIT-NODE tests/unit/features/course-paths/manifests` and `QUICK`. Acceptance: exit 0.
-- [ ] [AI] **Bind the scenarios:** add the four scenarios to `tests/unit/fe-steps/core-closure.steps.ts`
+- [x] [AI] **Bind the scenarios:** add the four scenarios to `tests/unit/fe-steps/core-closure.steps.ts`
       by calling the same loaders as AC-3.1. Run `BEHAVIOUR`. Acceptance: exit 0.
 
 ### Phase 3 Gate
 
 > All checks below must pass before starting Phase 4.
 
-- [ ] [AI] `QUICK`, `BEHAVIOUR`, and `E2E-BEHAVIOUR` exit 0.
-- [ ] [AI] `E2E` exits 0: the UI still renders flat lists from the derived `courseOrder`, and every
+- [x] [AI] `QUICK`, `BEHAVIOUR`, and `E2E-BEHAVIOUR` exit 0.
+- [x] [AI] `E2E` exits 0: the UI still renders flat lists from the derived `courseOrder`, and every
       fixture keeps its order, so existing scenarios (for example "Course 2 of 3" on
       `immediately-effective/backend-track`) pass unchanged.
-- [ ] [AI] `INTEGRATION` and `VALIDATE-INDEXES` exit 0.
+- [x] [AI] `INTEGRATION` and `VALIDATE-INDEXES` exit 0.
 
 > **Pause Safety**: all data is migrated and validated; readers see the new order of career extension
 > courses but no new UI, and the skills paths are unchanged. Safe to stop. To resume: `QUICK`.

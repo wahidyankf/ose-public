@@ -3,7 +3,7 @@ title: "Agentic Coding"
 date: 2026-07-18T00:00:00+07:00
 draft: false
 weight: 410
-prerequisites: ["software-engineering-practices"]
+prerequisites: ["software-engineering-practices", "software-testing"]
 ---
 
 - [Overview](/en/learn/courses/agentic-coding/overview)

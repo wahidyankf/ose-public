@@ -189,13 +189,15 @@ describeFeature(feature, ({ Scenario }) => {
       breadcrumbCrumbTexts: string[];
       prevNextLinkTexts: string[];
       prerequisiteLinkTexts: string[];
+      declaredPrerequisiteCount: number;
     }
 
     let renderedSurfaces: RenderedSurfaces[] = [];
     const readoutTextByCourseId = new Map<string, string>();
+    let frontmatterByCourseId = new Map<string, CourseFrontmatter>();
 
     Given("a reader opens a course in path context", () => {
-      const frontmatterByCourseId = new Map<string, CourseFrontmatter>();
+      frontmatterByCourseId = new Map<string, CourseFrontmatter>();
       const declaredPrerequisiteIds = new Set<string>();
       for (const courseId of COURSE_IDS) {
         const frontmatter = readCourseFrontmatter(courseId);
@@ -258,7 +260,10 @@ describeFeature(feature, ({ Scenario }) => {
 
         const breadcrumb = screen.getByRole("navigation", { name: "Breadcrumb" });
         const pageNav = within(screen.getByRole("navigation", { name: "Page navigation" }));
-        const prerequisitesNav = within(screen.getByRole("navigation", { name: "Prerequisites" }));
+        // The prerequisites nav renders nothing at all when the course declares no
+        // prerequisites (plan 02 revised `just-enough-bash` to `[]` under rubric rule T4),
+        // so query it optionally and pin the absence to the declaration below.
+        const prerequisitesNav = screen.queryByRole("navigation", { name: "Prerequisites" });
 
         renderedSurfaces.push({
           courseId,
@@ -269,7 +274,13 @@ describeFeature(feature, ({ Scenario }) => {
           prevNextLinkTexts: pageNav
             .getAllByRole("link")
             .map((link) => (link.textContent ?? "").replace(/^(Previous|Next)/u, "").trim()),
-          prerequisiteLinkTexts: prerequisitesNav.getAllByRole("link").map((link) => link.textContent ?? ""),
+          prerequisiteLinkTexts:
+            prerequisitesNav === null
+              ? []
+              : within(prerequisitesNav)
+                  .getAllByRole("link")
+                  .map((link) => link.textContent ?? ""),
+          declaredPrerequisiteCount: frontmatterByCourseId.get(courseId)?.prerequisites.length ?? 0,
         });
 
         readoutTextByCourseId.set(courseId, screen.getByText(/course \d+ of \d+/iu).textContent ?? "");
@@ -300,6 +311,14 @@ describeFeature(feature, ({ Scenario }) => {
             if (CATALOGUE_NUMBERED_TITLE.test(titleText) || PASS_NUMBERED_TITLE.test(titleText)) {
               offences.push(`${surfaceLabel}: "${titleText}"`);
             }
+          }
+          // A missing prerequisites nav is legitimate only when the course declares none —
+          // otherwise the nav (or its links) failed to render.
+          if (surface.prerequisiteLinkTexts.length === 0) {
+            expect(
+              surface.declaredPrerequisiteCount,
+              `${surface.courseId} renders no prerequisite links but declares ${surface.declaredPrerequisiteCount}`,
+            ).toBe(0);
           }
         }
         expect(

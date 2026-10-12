@@ -3,7 +3,7 @@ title: "Version Control & Git"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 160
-prerequisites: ["just-enough-bash"]
+prerequisites: ["just-enough-bash", "just-enough-python"]
 ---
 
 - [Learning](/en/learn/courses/version-control-and-git/learning)

@@ -99,3 +99,40 @@ Feature: Core closure and path model integrity
     When the path model integrity check runs
     Then it reports no closure, outline-in-core, goals, assumes, skills-shape, or outcome violation
     But it still reports unresolved and duplicate course IDs
+
+  # Exemption(integration): the scenario reads committed manifest files only and has no separate local resource boundary; alternative-proof: ayokoding-www:test:unit / Every allowlist entry is still in use
+  @integration-exempt
+  # Exemption(e2e): the scenario reads committed manifest files only and has no separate local resource boundary; alternative-proof: ayokoding-www:test:unit / Every allowlist entry is still in use
+  @e2e-exempt
+  Scenario: Every allowlist entry is still in use
+    Given the skills restructure allowlist and the published manifests
+    When they are compared
+    Then each allowlisted path ID has a published manifest carrying exactly its allowlisted marker
+    And no other published manifest carries a marker
+
+  # Exemption(integration): the scenario reads committed manifest and course files only and has no separate local resource boundary; alternative-proof: ayokoding-www:test:unit / The published manifests pass every integrity rule
+  @integration-exempt
+  # Exemption(e2e): the scenario reads committed manifest and course files only and has no separate local resource boundary; alternative-proof: ayokoding-www:test:unit / The published manifests pass every integrity rule
+  @e2e-exempt
+  Scenario: The published manifests pass every integrity rule
+    Given the 8 published path manifests and the published course frontmatter
+    When the path model integrity check and the prerequisite ordering check run on each manifest
+    Then every manifest reports zero violations
+
+  # Exemption(integration): the scenario reads committed manifest files only and has no separate local resource boundary; alternative-proof: ayokoding-www:test:unit / The rewritten manifests keep every course of their previous version
+  @integration-exempt
+  # Exemption(e2e): the scenario reads committed manifest files only and has no separate local resource boundary; alternative-proof: ayokoding-www:test:unit / The rewritten manifests keep every course of their previous version
+  @e2e-exempt
+  Scenario: The rewritten manifests keep every course of their previous version
+    Given the frozen course membership of each manifest before this change
+    When the published manifests are loaded
+    Then each published manifest contains exactly the same set of courses as before
+
+  # Exemption(integration): the scenario reads committed manifest files only and has no separate local resource boundary; alternative-proof: ayokoding-www:test:unit / The marked skills manifests keep today's course order
+  @integration-exempt
+  # Exemption(e2e): the scenario reads committed manifest files only and has no separate local resource boundary; alternative-proof: ayokoding-www:test:unit / The marked skills manifests keep today's course order
+  @e2e-exempt
+  Scenario: The marked skills manifests keep today's course order
+    Given the frozen course order of each skills manifest before this change
+    When the published skills manifests are loaded
+    Then each one's flattened course order equals its frozen order exactly

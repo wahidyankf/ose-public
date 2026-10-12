@@ -3,7 +3,7 @@ title: "API Design"
 date: 2026-07-29T00:00:00+07:00
 draft: false
 weight: 449
-prerequisites: ["backend-essentials", "backend-at-scale"]
+prerequisites: ["backend-essentials"]
 ---
 
 - [Overview](/en/learn/courses/api-design/overview)

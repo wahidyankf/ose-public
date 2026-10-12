@@ -3,7 +3,7 @@ title: "Computer Science Foundations"
 date: 2026-07-16T00:00:00+07:00
 draft: false
 weight: 290
-prerequisites: ["technical-communication"]
+prerequisites: ["just-enough-python", "data-structures-and-algorithms-essentials"]
 ---
 
 - [Overview](/en/learn/courses/computer-science-foundations/overview)

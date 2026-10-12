@@ -3,7 +3,7 @@ title: "Just Enough Python"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 140
-prerequisites: ["capstone-forge-ready"]
+prerequisites: []
 ---
 
 - [Overview](/en/learn/courses/just-enough-python/overview)

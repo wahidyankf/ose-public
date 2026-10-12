@@ -1,12 +1,19 @@
 import path from "node:path";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
+import fs from "node:fs";
+import matter from "gray-matter";
 import {
   checkPathModelIntegrity,
   type PathModelContext,
 } from "../../../src/features/course-paths/core/manifest-integrity";
+import { checkPrerequisiteConsistency } from "../../../src/features/course-paths/core/prerequisites";
+import { checkMarkerUsage } from "../../../src/features/course-paths/core/skills-restructure-allowlist";
+import { LEGACY_MEMBERSHIP } from "../features/course-paths/manifests/legacy-membership";
+import { LEGACY_SKILLS_ORDER } from "../features/course-paths/manifests/legacy-skills-order";
 import {
   PathManifestFileSchema,
+  PathManifestSchema,
   type PathManifest,
   type PathPhase,
 } from "../../../src/features/course-paths/core/schemas";
@@ -15,6 +22,70 @@ import { manifestFixture } from "../features/course-paths/manifest-fixture";
 const behavioursRoot = path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/course-paths");
 
 const closureFeature = await loadFeature(path.join(behavioursRoot, "core-closure.feature"));
+
+// Real-manifest loaders shared by scenarios 11–14 (the same loaders as AC-3.1's unit tests:
+// committed manifest files plus gray-matter frontmatter, never fixtures).
+const APP_ROOT = process.cwd();
+const COURSES_ROOT = path.join(APP_ROOT, "content/en/learn/courses");
+const MANIFESTS_ROOT = path.join(APP_ROOT, "src/features/course-paths/manifests");
+const PUBLISHED_MANIFEST_PATHS = [
+  "careers/fundamentally-strong/software-engineer.json",
+  "careers/immediately-effective/ai-engineer.json",
+  "careers/immediately-effective/software-engineer.json",
+  "careers/interview-ready/software-engineer.json",
+  "skills/conventional-accounting.json",
+  "skills/conventional-erp.json",
+  "skills/sharia-accounting.json",
+  "skills/sharia-erp.json",
+] as const;
+
+function loadPublishedManifests(): PathManifest[] {
+  return PUBLISHED_MANIFEST_PATHS.map((relativePath) =>
+    PathManifestSchema.parse(JSON.parse(fs.readFileSync(path.join(MANIFESTS_ROOT, relativePath), "utf8"))),
+  );
+}
+
+function loadPublishedWithFrontmatter(): { manifests: PathManifest[]; context: PathModelContext } {
+  const manifests = loadPublishedManifests();
+  const slugs = fs
+    .readdirSync(COURSES_ROOT, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+  const dataBySlug = new Map(
+    slugs.map((slug) => [slug, matter(fs.readFileSync(path.join(COURSES_ROOT, slug, "_index.md"), "utf8")).data]),
+  );
+  return {
+    manifests,
+    context: {
+      prerequisitesByCourse: Object.fromEntries(
+        slugs.map((slug) => [slug, (dataBySlug.get(slug)?.prerequisites as string[] | undefined) ?? []]),
+      ),
+      outlineCourseIds: new Set(slugs.filter((slug) => dataBySlug.get(slug)?.status === "outline")),
+      libraryCourseIds: slugs,
+    },
+  };
+}
+
+function flattenedIds(manifest: PathManifest): string[] {
+  return manifest.courseOrder.map((ref) => (typeof ref === "string" ? ref : ref.id));
+}
+
+const CLEAN_VIOLATIONS = {
+  unresolvedIds: [],
+  duplicateIds: [],
+  duplicatePhaseIds: [],
+  emptyPhaseIds: [],
+  coreAfterExtension: [],
+  closure: [],
+  outlineInCore: [],
+  goalsOutsideCore: [],
+  coreMismatch: null,
+  unusedAssumes: [],
+  assumesInsidePath: [],
+  unresolvedAssumes: [],
+  skillsExtension: [],
+  markerNotAllowed: false,
+};
 
 const FIXTURE_META = {
   pathId: "careers/interview-ready/software-engineer",
@@ -408,6 +479,97 @@ describeFeature(closureFeature, ({ Scenario }) => {
     But("it still reports unresolved and duplicate course IDs", () => {
       expect(violations.unresolvedIds).toEqual(["ghost-course"]);
       expect(violations.duplicateIds).toEqual(["b-tooling"]);
+    });
+  });
+
+  Scenario("Every allowlist entry is still in use", ({ Given, When, Then, And }) => {
+    let manifests: PathManifest[];
+    let usage: ReturnType<typeof checkMarkerUsage>;
+
+    Given("the skills restructure allowlist and the published manifests", () => {
+      manifests = loadPublishedManifests();
+    });
+
+    When("they are compared", () => {
+      usage = checkMarkerUsage(manifests);
+    });
+
+    Then("each allowlisted path ID has a published manifest carrying exactly its allowlisted marker", () => {
+      expect(usage.unusedAllowlistEntries).toEqual([]);
+    });
+
+    And("no other published manifest carries a marker", () => {
+      expect(usage.unexpectedMarkers).toEqual([]);
+    });
+  });
+
+  Scenario("The published manifests pass every integrity rule", ({ Given, When, Then }) => {
+    let manifests: PathManifest[];
+    let context: PathModelContext;
+    let results: { pathId: string; violations: ReturnType<typeof checkPathModelIntegrity> }[];
+
+    Given("the 8 published path manifests and the published course frontmatter", () => {
+      ({ manifests, context } = loadPublishedWithFrontmatter());
+      expect(manifests).toHaveLength(8);
+    });
+
+    When("the path model integrity check and the prerequisite ordering check run on each manifest", () => {
+      results = manifests.map((manifest) => ({
+        pathId: manifest.pathId,
+        violations: checkPathModelIntegrity(manifest, context),
+      }));
+      for (const manifest of manifests) {
+        expect(
+          checkPrerequisiteConsistency(manifest, context.prerequisitesByCourse, context.libraryCourseIds).violations,
+        ).toEqual([]);
+      }
+    });
+
+    Then("every manifest reports zero violations", () => {
+      for (const { pathId, violations } of results) {
+        expect(violations, `violations for ${pathId}`).toEqual(CLEAN_VIOLATIONS);
+      }
+    });
+  });
+
+  Scenario("The rewritten manifests keep every course of their previous version", ({ Given, When, Then }) => {
+    let manifests: PathManifest[];
+
+    Given("the frozen course membership of each manifest before this change", () => {
+      expect(Object.keys(LEGACY_MEMBERSHIP)).toHaveLength(8);
+    });
+
+    When("the published manifests are loaded", () => {
+      manifests = loadPublishedManifests();
+    });
+
+    Then("each published manifest contains exactly the same set of courses as before", () => {
+      for (const manifest of manifests) {
+        const frozen = LEGACY_MEMBERSHIP[manifest.pathId];
+        expect(frozen, `no frozen membership for ${manifest.pathId}`).toBeDefined();
+        expect([...flattenedIds(manifest)].sort()).toEqual([...(frozen as readonly string[])].sort());
+      }
+    });
+  });
+
+  Scenario("The marked skills manifests keep today's course order", ({ Given, When, Then }) => {
+    let manifests: PathManifest[];
+
+    Given("the frozen course order of each skills manifest before this change", () => {
+      expect(Object.keys(LEGACY_SKILLS_ORDER)).toHaveLength(4);
+    });
+
+    When("the published skills manifests are loaded", () => {
+      manifests = loadPublishedManifests().filter((manifest) => manifest.pathId.startsWith("skills/"));
+      expect(manifests).toHaveLength(4);
+    });
+
+    Then("each one's flattened course order equals its frozen order exactly", () => {
+      for (const manifest of manifests) {
+        const frozen = LEGACY_SKILLS_ORDER[manifest.pathId];
+        expect(frozen, `no frozen skills order for ${manifest.pathId}`).toBeDefined();
+        expect(flattenedIds(manifest)).toEqual([...(frozen as readonly string[])]);
+      }
     });
   });
 });

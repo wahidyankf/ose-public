@@ -3,7 +3,7 @@ title: "Software Product Engineering"
 date: 2026-07-18T00:00:00+07:00
 draft: false
 weight: 420
-prerequisites: ["agentic-coding"]
+prerequisites: ["backend-essentials", "frontend-essentials", "software-testing"]
 ---
 
 - [Learning](/en/learn/courses/software-product-engineering/learning)

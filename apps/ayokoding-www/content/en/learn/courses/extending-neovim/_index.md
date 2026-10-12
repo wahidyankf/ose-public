@@ -3,7 +3,7 @@ title: "Extending Neovim"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 130
-prerequisites: ["just-enough-lua"]
+prerequisites: ["just-enough-lua", "just-enough-nvim"]
 ---
 
 - [Learning](/en/learn/courses/extending-neovim/learning)

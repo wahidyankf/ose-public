@@ -3,5 +3,16 @@
   "arc": "e2e-fixture-beta-track",
   "title": "E2E Fixture Beta Skills Path",
   "description": "E2E fixture: the second of two skills paths used to prove each path's authored runway-justification body renders only on its own landing page, never the other's.",
-  "courseOrder": ["sql-essentials", "backend-essentials"]
+  "assumes": ["just-enough-python"],
+  "phases": [
+    {
+      "id": "fixture-core",
+      "title": "Fixture core",
+      "kind": "core",
+      "outcome": {
+        "can": "complete this fixture path"
+      },
+      "courses": ["sql-essentials", "backend-essentials"]
+    }
+  ]
 }

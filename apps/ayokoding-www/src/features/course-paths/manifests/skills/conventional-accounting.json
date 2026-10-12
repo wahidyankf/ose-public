@@ -3,25 +3,34 @@
   "arc": "immediately-effective",
   "title": "Conventional Accounting",
   "description": "A practical accounting path from a balancing ledger to controlled reporting.",
-  "courseOrder": [
-    "accounting-foundations",
-    "chart-of-accounts-and-data-modeling",
-    "financial-statements-and-close-cycle",
-    "journal-entries-and-posting-mechanics",
-    "accrual-accounting-and-revenue-recognition",
-    "accounts-payable-and-procure-to-pay",
-    "accounts-receivable-and-order-to-cash",
-    "managerial-and-cost-accounting",
-    "fixed-assets-and-depreciation",
-    "inventory-and-cogs-accounting",
-    "lease-and-intangible-asset-accounting",
-    "multi-currency-accounting-and-fx-translation",
-    "consolidation-and-multi-entity-accounting",
-    "financial-reporting-standards-ifrs-vs-gaap",
-    "audit-controls-and-compliance",
-    "payroll-and-tax-accounting-essentials",
-    "treasury-and-cash-management",
-    "financial-reporting-and-xbrl",
-    "general-ledger-system-architecture"
+  "restructurePendingIn": "plan-06",
+  "assumes": [],
+  "phases": [
+    {
+      "id": "all-courses",
+      "title": "Conventional Accounting",
+      "kind": "core",
+      "courses": [
+        "accounting-foundations",
+        "chart-of-accounts-and-data-modeling",
+        "financial-statements-and-close-cycle",
+        "journal-entries-and-posting-mechanics",
+        "accrual-accounting-and-revenue-recognition",
+        "accounts-payable-and-procure-to-pay",
+        "accounts-receivable-and-order-to-cash",
+        "managerial-and-cost-accounting",
+        "fixed-assets-and-depreciation",
+        "inventory-and-cogs-accounting",
+        "lease-and-intangible-asset-accounting",
+        "multi-currency-accounting-and-fx-translation",
+        "consolidation-and-multi-entity-accounting",
+        "financial-reporting-standards-ifrs-vs-gaap",
+        "audit-controls-and-compliance",
+        "payroll-and-tax-accounting-essentials",
+        "treasury-and-cash-management",
+        "financial-reporting-and-xbrl",
+        "general-ledger-system-architecture"
+      ]
+    }
   ]
 }

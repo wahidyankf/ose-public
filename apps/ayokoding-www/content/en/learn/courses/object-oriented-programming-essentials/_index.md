@@ -3,7 +3,7 @@ title: "Object-Oriented Programming Essentials"
 date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 180
-prerequisites: ["data-structures-and-algorithms-essentials"]
+prerequisites: ["just-enough-python"]
 ---
 
 - [Learning](/en/learn/courses/object-oriented-programming-essentials/learning)

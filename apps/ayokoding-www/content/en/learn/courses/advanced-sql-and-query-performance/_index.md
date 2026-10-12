@@ -3,7 +3,7 @@ title: "Advanced SQL & Query Performance"
 date: 2026-07-17T00:00:00+07:00
 draft: false
 weight: 360
-prerequisites: ["advanced-algorithms"]
+prerequisites: ["sql-essentials", "just-enough-python", "backend-essentials"]
 ---
 
 - [Learning](/en/learn/courses/advanced-sql-and-query-performance/learning)

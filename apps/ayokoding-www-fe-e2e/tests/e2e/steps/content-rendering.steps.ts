@@ -220,6 +220,10 @@ Then("the disclosure should reveal its authored answer when opened", async ({ pa
 
 When("a visitor opens a content page with section headings", async ({ page }) => {
   await page.goto("/en/learn/courses/just-enough-nvim/learning/overview");
+  // Stylesheets still in flight make single-shot getComputedStyle reads race (WebKit reports
+  // "" for text-decoration/pseudo content before author styles apply); wait for the network to
+  // settle the same way the other content-rendering steps do before asserting on styles.
+  await page.waitForLoadState("networkidle");
 });
 
 Then("each section heading is shown in the heading text colour without an underline", async ({ page }) => {
@@ -244,6 +248,9 @@ Then("the heading still links to its own anchor", async ({ page }) => {
 
 When("a visitor opens a content page containing inline code", async ({ page }) => {
   await page.goto("/en/learn/courses/just-enough-nvim/learning/overview");
+  // Same style race as the section-headings step above: wait for stylesheets before reading
+  // ::before/::after content.
+  await page.waitForLoadState("networkidle");
 });
 
 Then("the inline code shows no backtick characters before or after it", async ({ page }) => {

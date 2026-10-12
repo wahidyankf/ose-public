@@ -1,0 +1,112 @@
+=== skills ===
+       0
+=== skills/conventional-accounting ===
+      20
+/en/learn/courses/accounting-foundations
+/en/learn/courses/accounts-payable-and-procure-to-pay
+/en/learn/courses/accounts-receivable-and-order-to-cash
+/en/learn/courses/accrual-accounting-and-revenue-recognition
+/en/learn/courses/audit-controls-and-compliance
+/en/learn/courses/chart-of-accounts-and-data-modeling
+/en/learn/courses/consolidation-and-multi-entity-accounting
+/en/learn/courses/financial-reporting-and-xbrl
+/en/learn/courses/financial-reporting-standards-ifrs-vs-gaap
+/en/learn/courses/financial-statements-and-close-cycle
+/en/learn/courses/fixed-assets-and-depreciation
+/en/learn/courses/general-ledger-system-architecture
+/en/learn/courses/inventory-and-cogs-accounting
+/en/learn/courses/journal-entries-and-posting-mechanics
+/en/learn/courses/lease-and-intangible-asset-accounting
+/en/learn/courses/managerial-and-cost-accounting
+/en/learn/courses/multi-currency-accounting-and-fx-translation
+/en/learn/courses/payroll-and-tax-accounting-essentials
+/en/learn/courses/sql-essentials
+/en/learn/courses/treasury-and-cash-management
+=== skills/sharia-accounting ===
+      24
+/en/learn/courses/accounting-foundations
+/en/learn/courses/accounts-payable-and-procure-to-pay
+/en/learn/courses/accounts-receivable-and-order-to-cash
+/en/learn/courses/accrual-accounting-and-revenue-recognition
+/en/learn/courses/audit-controls-and-compliance
+/en/learn/courses/chart-of-accounts-and-data-modeling
+/en/learn/courses/consolidation-and-multi-entity-accounting
+/en/learn/courses/financial-reporting-and-xbrl
+/en/learn/courses/financial-reporting-standards-ifrs-vs-gaap
+/en/learn/courses/financial-statements-and-close-cycle
+/en/learn/courses/fixed-assets-and-depreciation
+/en/learn/courses/general-ledger-system-architecture
+/en/learn/courses/inventory-and-cogs-accounting
+/en/learn/courses/islamic-contract-modeling-for-systems
+/en/learn/courses/journal-entries-and-posting-mechanics
+/en/learn/courses/lease-and-intangible-asset-accounting
+/en/learn/courses/managerial-and-cost-accounting
+/en/learn/courses/multi-currency-accounting-and-fx-translation
+/en/learn/courses/payroll-and-tax-accounting-essentials
+/en/learn/courses/sharia-accounting-and-aaoifi-standards
+/en/learn/courses/sharia-ledger-system-architecture
+/en/learn/courses/sukuk-and-islamic-capital-markets-accounting
+/en/learn/courses/treasury-and-cash-management
+/en/learn/courses/zakah-computation-and-reporting-for-systems
+=== skills/conventional-erp ===
+      28
+/en/learn/courses/demand-and-supply-planning
+/en/learn/courses/erp-analytics-and-reporting
+/en/learn/courses/erp-audit-trail-and-change-tracking
+/en/learn/courses/erp-availability-and-reservations
+/en/learn/courses/erp-bom-and-routing-architecture
+/en/learn/courses/erp-conceptual-data-model
+/en/learn/courses/erp-document-lifecycle-and-state-machines
+/en/learn/courses/erp-extension-and-customization
+/en/learn/courses/erp-fiscal-calendar-and-period-close
+/en/learn/courses/erp-foundations-and-history
+/en/learn/courses/erp-integration-patterns
+/en/learn/courses/erp-inventory-costing-methods
+/en/learn/courses/erp-inventory-integrity-and-concurrency
+/en/learn/courses/erp-module-map-and-architecture
+/en/learn/courses/erp-numbering-sequences-and-uom-conversion
+/en/learn/courses/erp-posting-rules-and-account-determination
+/en/learn/courses/erp-procurement-and-fulfillment-exceptions
+/en/learn/courses/erp-security-and-controls
+/en/learn/courses/erp-subledger-to-gl-architecture
+/en/learn/courses/human-capital-management-and-hire-to-retire
+/en/learn/courses/inventory-and-wareh
+/en/learn/courses/inventory-and-warehouse-management
+/en/learn/courses/multi-company-and-multi-currency-erp
+/en/learn/courses/order-to-cash-systems
+/en/learn/courses/procure-to-pay-systems
+/en/learn/courses/production-planning-and-mrp
+/en/learn/courses/quality-management-and-inspection
+/en/learn/courses/record-to-report-systems
+=== skills/sharia-erp ===
+      30
+/en/learn/courses/demand-and-supply-planning
+/en/learn/courses/erp-analytics-and-reporting
+/en/learn/courses/erp-audit-trail-and-change-tracking
+/en/learn/courses/erp-availability-and-reservations
+/en/learn/courses/erp-bom-and-routing-architecture
+/en/learn/courses/erp-conceptual-data-model
+/en/learn/courses/erp-document-lifecycle-and-state-machines
+/en/learn/courses/erp-extension-and-customization
+/en/learn/courses/erp-fiscal-calendar-and-period-close
+/en/learn/courses/erp-foundations-and-history
+/en/learn/courses/erp-integration-patterns
+/en/learn/courses/erp-inventory-costing-methods
+/en/learn/courses/erp-inventory-integrity-and-concurrency
+/en/learn/courses/erp-module-map-and-architecture
+/en/learn/courses/erp-numbering-sequences-and-uom-conversion
+/en/learn/courses/erp-posting-rules-and-account-determination
+/en/learn/courses/erp-procurement-and-fulfillment-exceptions
+/en/learn/courses/erp-security-and-controls
+/en/learn/courses/erp-subledger-to-gl-architecture
+/en/learn/courses/human-capital-management-and-hire-to-retire
+/en/learn/courses/inventory-and-warehouse-management
+/en/learn/courses/islamic-contract-based-transaction-flows
+/en/learn/courses/multi-company-and-multi-currency-erp
+/en/learn/courses/order-to-cash-systems
+/en/learn/courses/procure-to-pay-systems
+/en/learn/courses/production-planning-and-mrp
+/en/learn/courses/quality-management-and-inspection
+/en/learn/courses/record-to-report-systems
+/en/learn/courses/sharia-compliant-erp-design
+/en/learn/courses/zakat-and-sharia-compliance-modules

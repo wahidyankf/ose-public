@@ -3,6 +3,7 @@ import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { cleanup, render, screen } from "@testing-library/react";
 import { expect, vi } from "vitest";
 import type { PathManifest } from "@/features/course-paths/core/schemas";
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
 
 // course-paths plan (ayokoding-learning-path-03-navigation-ui), Cycle 3.2 — step binding for
 // landing-hero.feature, reusing the fixture already proven in landing.test.tsx.
@@ -19,7 +20,7 @@ vi.mock("next/link", () => ({
 import { Landing } from "@/features/app-shell/shell/landing";
 
 function manifest(pathId: string, arc: string, title: string): PathManifest {
-  return { pathId, arc, title, description: `${title} description`, courseOrder: ["just-enough-python"] };
+  return manifestFixture({ pathId, arc, title, description: `${title} description`, courses: ["just-enough-python"] });
 }
 
 const heroManifests: PathManifest[] = [

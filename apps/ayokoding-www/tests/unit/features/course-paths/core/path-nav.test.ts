@@ -1,14 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { resolvePathNav } from "../../../../../src/features/course-paths/core/path-nav";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
+import { manifestFixture } from "../manifest-fixture";
 
-const manifest: PathManifest = {
+const manifest: PathManifest = manifestFixture({
   pathId: "careers/interview-ready/software-engineer",
   arc: "interview-ready",
   title: "Interview-Ready Software Engineer",
   description: "Interview-first track for an experienced engineer re-entering the market.",
-  courseOrder: ["just-enough-python", "data-structures-and-algorithms-essentials", "capstone-forge-ready"],
-};
+  courses: ["just-enough-python", "data-structures-and-algorithms-essentials", "capstone-forge-ready"],
+});
 
 describe("resolvePathNav", () => {
   it("returns both neighbours for a middle course", () => {
@@ -42,5 +43,28 @@ describe("resolvePathNav", () => {
     const result = resolvePathNav(manifest, "not-in-this-path");
 
     expect(result).toEqual({ prev: null, next: null });
+  });
+
+  it("returns the first extension course as next from the last core course (pins existing behaviour across a phase boundary)", () => {
+    const phased: PathManifest = manifestFixture({
+      pathId: "careers/interview-ready/software-engineer",
+      arc: "interview-ready",
+      title: "Interview-Ready Software Engineer",
+      description: "Interview-first track for an experienced engineer re-entering the market.",
+      phases: [
+        {
+          id: "core-one",
+          title: "Core One",
+          kind: "core",
+          outcome: { can: "start" },
+          courses: ["just-enough-python", "coding-interview"],
+        },
+        { id: "depth", title: "Depth", kind: "extension", courses: ["advanced-algorithms"] },
+      ],
+    });
+
+    const result = resolvePathNav(phased, "coding-interview");
+
+    expect(result).toEqual({ prev: { id: "just-enough-python" }, next: { id: "advanced-algorithms" } });
   });
 });

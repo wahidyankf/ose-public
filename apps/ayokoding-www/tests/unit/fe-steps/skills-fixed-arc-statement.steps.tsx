@@ -18,21 +18,20 @@ vi.mock("next/link", () => ({
 
 // eslint-disable-next-line import/first
 import { CategoryLanding } from "@/features/course-paths/shell/category-landing";
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
 
-const subjectA: PathManifest = {
+const subjectA: PathManifest = manifestFixture({
   pathId: "skills/subject-a",
   arc: "track-a",
   title: "Subject A",
   description: "desc",
-  courseOrder: [],
-};
-const subjectB: PathManifest = {
+});
+const subjectB: PathManifest = manifestFixture({
   pathId: "skills/subject-b",
   arc: "track-b",
   title: "Subject B",
   description: "desc",
-  courseOrder: [],
-};
+});
 
 const feature = await loadFeature(
   path.resolve(

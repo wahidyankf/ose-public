@@ -1,5 +1,6 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { manifestFixture } from "../../course-paths/manifest-fixture";
 
 const getTreeMock = vi.fn().mockResolvedValue([
   {
@@ -115,13 +116,13 @@ describe("Phase 3 — mobile nav primary links", () => {
 
 // Cycle 2.9 (course-paths plan) — the rail collapses into this shipped drawer on a phone.
 describe("Cycle 2.9 — MobileNav swaps SidebarTree for PathRail when a path context is active", () => {
-  const manifest = {
+  const manifest = manifestFixture({
     pathId: "skills/python-fundamentals",
     arc: "python-fundamentals",
     title: "Python Fundamentals",
     description: "Learn Python from the ground up.",
-    courseOrder: ["just-enough-python"],
-  };
+    courses: ["just-enough-python"],
+  });
 
   it("renders the generic SidebarTree, unchanged, with no manifests/no active path (Cycle 2.10 direction 1)", async () => {
     const { MobileNav } = await import("../../../../../src/features/app-shell/shell/mobile-nav");

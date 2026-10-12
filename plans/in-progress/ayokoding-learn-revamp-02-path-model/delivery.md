@@ -450,7 +450,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - **Proof:** `<plan>/evidence/phase-2-expand.md`.
 - _Suggested executor: `specs-maker` for Gherkin, `swe-developer` for code._
 
-- [ ] [AI] **Gherkin first:** create `core-closure.feature` with scenarios 1–10 from prd.md, each with
+- [x] [AI] **Gherkin first:** create `core-closure.feature` with scenarios 1–10 from prd.md, each with
       both exemption comments and `@integration-exempt` `@e2e-exempt` tags in the format of
       `manifest-integrity.feature`. In `manifest-integrity.feature` and
       `prerequisite-consistent-ordering.feature`, change "lists a courseOrder of course IDs" to "lists
@@ -459,7 +459,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 
 ### AC-2.1 — The schema accepts phases and derives `courseOrder` (expand)
 
-- [ ] [AI] **RED:** create `tests/unit/features/course-paths/manifest-fixture.ts` exporting
+- [x] [AI] **RED:** create `tests/unit/features/course-paths/manifest-fixture.ts` exporting
       `manifestFixture({ phases?, goals?, assumes?, restructurePendingIn?, pathId? })` that builds a parsed
       `PathManifest` with one core phase by default. In
       `tests/unit/features/course-paths/core/schemas.test.ts` add cases: a phase-shaped file parses and
@@ -467,44 +467,44 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
       empty phase fails; a bad phase ID (`Phase 1`) fails; a legacy `{courseOrder}` file still parses
       into one core phase `all-courses`. Run `UNIT-FE tests/unit/features/course-paths/core/schemas.test.ts`.
       Acceptance: the new cases fail.
-- [ ] [AI] **GREEN:** in `apps/ayokoding-www/src/features/course-paths/core/schemas.ts` add
+- [x] [AI] **GREEN:** in `apps/ayokoding-www/src/features/course-paths/core/schemas.ts` add
       `phaseOutcomeSchema`, `pathPhaseSchema`, `PathManifestFileSchema`, and the transform from
       [tech-docs/002](./tech-docs/002-manifest-schema-and-migration.md#target-schema-coreschemasts), plus
       a temporary union that also accepts the legacy shape and normalizes it (Expand step). Leave
       `restructurePendingIn` and its `superRefine` branch for AC-2.5; until then the core-outcome check
       is the only `superRefine` rule. Export `PathPhase`; re-export from `core/manifest.ts`. Rerun.
       Acceptance: pass.
-- [ ] [AI] **REFACTOR:** mark the legacy branch with a `// expand-contract: removed in Phase 6`
+- [x] [AI] **REFACTOR:** mark the legacy branch with a `// expand-contract: removed in Phase 6`
       comment. Run `QUICK`. Acceptance: exit 0. Typecheck errors in tests that build `PathManifest`
       literals are fixed by switching them to `manifestFixture` (including
       `tests/unit/fe-steps/course-path-manifest.steps.ts`), not by casting.
 
 ### AC-2.2 — Phase helpers
 
-- [ ] [AI] **RED:** create `tests/unit/features/course-paths/core/path-phases.test.ts` covering
+- [x] [AI] **RED:** create `tests/unit/features/course-paths/core/path-phases.test.ts` covering
       `corePhases`, `extensionPhases`, and `phaseOfCourse` (first course of the first extension phase in
       a 2-core + 1-extension manifest returns that phase and position `= core count + 1`; unknown ID
       returns `null`). Run `UNIT-FE tests/unit/features/course-paths/core/path-phases.test.ts`.
       Acceptance: fails (module missing).
-- [ ] [AI] **GREEN:** create `apps/ayokoding-www/src/features/course-paths/core/path-phases.ts` with
+- [x] [AI] **GREEN:** create `apps/ayokoding-www/src/features/course-paths/core/path-phases.ts` with
       the three pure functions from tech-docs/005. Rerun. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** add TSDoc that names plan 04 as the consumer. Run `QUICK`. Acceptance: exit 0.
+- [x] [AI] **REFACTOR:** add TSDoc that names plan 04 as the consumer. Run `QUICK`. Acceptance: exit 0.
 
 ### AC-2.3 — `computeCore`
 
-- [ ] [AI] **RED:** create `tests/unit/features/course-paths/core/path-core.test.ts`: single goal;
+- [x] [AI] **RED:** create `tests/unit/features/course-paths/core/path-core.test.ts`: single goal;
       two goals (union); closure stops at an `assumes` course; diamond dependency counted once; unknown
       prerequisite IDs ignored. Run `UNIT-FE tests/unit/features/course-paths/core/path-core.test.ts`.
       Acceptance: fails (module missing).
-- [ ] [AI] **GREEN:** create `apps/ayokoding-www/src/features/course-paths/core/path-core.ts` with
+- [x] [AI] **GREEN:** create `apps/ayokoding-www/src/features/course-paths/core/path-core.ts` with
       `computeCore(goals, prerequisitesByCourse, assumes?)` (breadth-first walk, returns a `Set`). Rerun.
       Acceptance: pass.
-- [ ] [AI] **REFACTOR:** remove any duplication with `core/prerequisites.ts` types (import
+- [x] [AI] **REFACTOR:** remove any duplication with `core/prerequisites.ts` types (import
       `PrerequisitesByCourse` from there). Run `QUICK`. Acceptance: exit 0.
 
 ### AC-2.4 — `checkPathModelIntegrity` (R1–R8) and the phase-aware existing checks
 
-- [ ] [AI] **RED:** in `tests/unit/features/course-paths/core/manifest-integrity.test.ts` add, for
+- [x] [AI] **RED:** in `tests/unit/features/course-paths/core/manifest-integrity.test.ts` add, for
       each rule R1–R8 in tech-docs/005, one passing and one failing synthetic manifest built with
       `manifestFixture`, asserting the exact violation field and IDs. Add a case that
       `checkManifestIntegrity` reports a duplicate across two phases. In
@@ -512,18 +512,18 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
       course returns the first extension course. Run both files with `UNIT-FE`. Acceptance: the new
       integrity cases fail; the path-nav case already passes (it pins existing behaviour across a
       phase boundary) — record that in the evidence.
-- [ ] [AI] **GREEN:** in `apps/ayokoding-www/src/features/course-paths/core/manifest-integrity.ts` add
+- [x] [AI] **GREEN:** in `apps/ayokoding-www/src/features/course-paths/core/manifest-integrity.ts` add
       `PathModelContext`, `PathModelViolations`, `checkPathModelIntegrity`, and `isCleanPathModel`
       exactly as in tech-docs/005, without the marker parts (AC-2.5 adds them). Keep
       `checkManifestIntegrity`'s signature; make it read the derived `courseOrder`. Rerun. Acceptance:
       pass (Next/Prev needs no change because it walks `courseOrder`).
-- [ ] [AI] **REFACTOR:** split each rule into a small named function inside the module; keep the file
+- [x] [AI] **REFACTOR:** split each rule into a small named function inside the module; keep the file
       pure (no IO, no `console`). Run `QUICK`. Acceptance: exit 0 and coverage at or above the
       threshold.
 
 ### AC-2.5 — The closed skills restructure marker (R9)
 
-- [ ] [AI] **RED:** create `tests/unit/features/course-paths/core/skills-restructure-allowlist.test.ts`:
+- [x] [AI] **RED:** create `tests/unit/features/course-paths/core/skills-restructure-allowlist.test.ts`:
       the allowlist has exactly the four entries from tech-docs/002, every key starts with `skills/`,
       and accounting maps to `plan-06`, ERP to `plan-07`; `isMarkedShape` accepts the one-phase
       `all-courses` shape and rejects a second phase, an outcome, goals, a non-empty `assumes`, and
@@ -535,26 +535,26 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
       and outside prerequisites reports no R4–R8 violation but still reports an unresolved and a
       duplicate ID; a synthetic career manifest carrying the marker sets `markerNotAllowed`. Run the
       three files with `UNIT-FE`. Acceptance: the new cases fail.
-- [ ] [AI] **GREEN:** create `apps/ayokoding-www/src/features/course-paths/core/skills-restructure-allowlist.ts`
+- [x] [AI] **GREEN:** create `apps/ayokoding-www/src/features/course-paths/core/skills-restructure-allowlist.ts`
       with `SKILLS_RESTRUCTURE_ALLOWLIST`, `isMarkedShape`, `isPendingSkillsRestructure`, and
       `checkMarkerUsage` from tech-docs/005; add `restructurePendingIn` and the marker branch of the
       `superRefine` from tech-docs/002 to `core/schemas.ts`; add `markerNotAllowed` and the marked
       exemption to `checkPathModelIntegrity`. Rerun. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** put the comment `// Decision 39: plan 06 removes the accounting entries; plan 07
+- [x] [AI] **REFACTOR:** put the comment `// Decision 39: plan 06 removes the accounting entries; plan 07
 deletes this module` at the top of the allowlist module and next to the schema field. Run `QUICK`.
       Acceptance: exit 0.
 
-- [ ] [AI] **Freeze legacy membership:** create
+- [x] [AI] **Freeze legacy membership:** create
       `tests/unit/features/course-paths/manifests/legacy-membership.ts` exporting a sorted course-ID
       array per real path ID, copied from the current manifests on this branch (not computed by a
       script: copy each `courseOrder` array, then sort). Acceptance: lengths IR 116, IE SE 114, IE AI
       26, FS 121, skills 19 / 24 / 27 / 30 (record in evidence).
-- [ ] [AI] **Freeze the skills order:** create
+- [x] [AI] **Freeze the skills order:** create
       `tests/unit/features/course-paths/manifests/legacy-skills-order.ts` exporting, for each of the four
       skills path IDs, its current `courseOrder` array copied **unsorted** from the manifest on this
       branch. Acceptance: lengths 19 / 24 / 27 / 30 and each array equals the "What Plan 02 Writes" list
       in its `syllabus/paths/manifest-skills-*.md` (record in evidence).
-- [ ] [AI] **Bind the scenarios:** create `tests/unit/fe-steps/core-closure.steps.ts` binding scenarios
+- [x] [AI] **Bind the scenarios:** create `tests/unit/fe-steps/core-closure.steps.ts` binding scenarios
       1–10 to `checkPathModelIntegrity` and the manifest schema over `manifestFixture` inputs; update
       `tests/unit/fe-steps/course-path-manifest.steps.ts` to the reworded steps. Run
       `UNIT-FE tests/unit/fe-steps/core-closure.steps.ts`, `UNIT-FE tests/unit/fe-steps/course-path-manifest.steps.ts`,
@@ -564,9 +564,9 @@ deletes this module` at the top of the allowlist module and next to the schema f
 
 > All checks below must pass before starting Phase 3.
 
-- [ ] [AI] `QUICK` and `BEHAVIOUR` exit 0.
-- [ ] [AI] `E2E-QUICK` exits 0 (step files still compile against the new types).
-- [ ] [AI] `rtk git diff --stat origin/main -- apps/ayokoding-www/src/features/course-paths/manifests apps/ayokoding-www-fe-e2e/fixtures/manifests`
+- [x] [AI] `QUICK` and `BEHAVIOUR` exit 0.
+- [x] [AI] `E2E-QUICK` exits 0 (step files still compile against the new types).
+- [x] [AI] `rtk git diff --stat origin/main -- apps/ayokoding-www/src/features/course-paths/manifests apps/ayokoding-www-fe-e2e/fixtures/manifests`
       is empty (no data changed yet).
 
 > **Pause Safety**: the schema accepts both shapes, every manifest still loads in the legacy shape,

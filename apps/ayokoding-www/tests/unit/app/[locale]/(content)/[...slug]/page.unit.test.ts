@@ -32,6 +32,8 @@ vi.mock("@/features/course-paths/shell/manifest-repository", () => ({
 
 // eslint-disable-next-line import/first
 import ContentPage, { generateMetadata } from "../../../../../../src/app/[locale]/(content)/[...slug]/page";
+// eslint-disable-next-line import/first
+import { manifestFixture } from "../../../../features/course-paths/manifest-fixture";
 
 // Carried over from the retired c/[...slug]/page.unit.test.ts (DD-48 route
 // merge) — same assertions, updated for the uniform bare join (no /c/).
@@ -104,13 +106,12 @@ describe("generateMetadata", () => {
     const { loadManifests } = await import("@/features/course-paths/shell/manifest-repository");
     vi.mocked(serverCaller.content.getBySlug).mockRejectedValueOnce(new Error("not found"));
     vi.mocked(loadManifests).mockResolvedValueOnce([
-      {
+      manifestFixture({
         pathId: "careers/interview-ready/some-role",
         arc: "interview-ready",
         title: "Some Role",
         description: "desc",
-        courseOrder: [],
-      },
+      }),
     ]);
     const meta = await generateMetadata({
       params: Promise.resolve({ locale: "en", slug: ["learn", "paths", "careers", "interview-ready"] }),

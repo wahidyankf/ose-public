@@ -11,14 +11,10 @@ import {
   PATH_CATEGORIES,
 } from "../../../../../src/features/course-paths/shell/paths-route";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
+import { manifestFixture } from "../manifest-fixture";
 
-function manifest(overrides: Partial<PathManifest> & Pick<PathManifest, "pathId" | "arc">): PathManifest {
-  return {
-    title: overrides.pathId,
-    description: "desc",
-    courseOrder: [],
-    ...overrides,
-  };
+function manifest(overrides: Pick<PathManifest, "pathId" | "arc">): PathManifest {
+  return manifestFixture({ title: overrides.pathId, description: "desc", ...overrides });
 }
 
 describe("resolvePathsRoute", () => {

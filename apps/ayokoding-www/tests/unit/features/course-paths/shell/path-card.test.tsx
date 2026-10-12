@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
+import { manifestFixture } from "../manifest-fixture";
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -15,13 +16,13 @@ import { PathCard, CategorySection, ArcGroup } from "../../../../../src/features
 
 afterEach(cleanup);
 
-const manifest: PathManifest = {
+const manifest: PathManifest = manifestFixture({
   pathId: "careers/interview-ready/example-role",
   arc: "interview-ready",
   title: "Interview-Ready Example Role",
   description: "An interview-first track.",
-  courseOrder: ["just-enough-python", "just-enough-bash", "capstone-forge-ready"],
-};
+  courses: ["just-enough-python", "just-enough-bash", "capstone-forge-ready"],
+});
 
 describe("PathCard", () => {
   it("is a single <a> wrapping the card content (no link-in-link)", () => {

@@ -4,6 +4,7 @@ import {
   resolvePrerequisites,
 } from "../../../../../src/features/course-paths/core/prerequisites";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
+import { manifestFixture } from "../manifest-fixture";
 
 const prerequisitesByCourse: Record<string, readonly string[]> = {
   "advanced-algorithms": ["data-structures-and-algorithms-essentials", "discrete-math-foundations"],
@@ -18,13 +19,13 @@ const libraryCourseIds: readonly string[] = [
 ];
 
 // Clean: every in-manifest prerequisite of advanced-algorithms precedes it.
-const cleanManifest: PathManifest = {
+const cleanManifest: PathManifest = manifestFixture({
   pathId: "skills/algorithms",
   arc: "algorithms",
   title: "Algorithms",
   description: "Algorithms path",
-  courseOrder: ["data-structures-and-algorithms-essentials", "discrete-math-foundations", "advanced-algorithms"],
-};
+  courses: ["data-structures-and-algorithms-essentials", "discrete-math-foundations", "advanced-algorithms"],
+});
 
 // Violating: advanced-algorithms precedes its declared prerequisite
 // data-structures-and-algorithms-essentials. discrete-math-foundations is deliberately absent
@@ -33,21 +34,21 @@ const cleanManifest: PathManifest = {
 // Link-don't-walk (OI-4): advanced-algorithms is included but its declared, in-library
 // prerequisite discrete-math-foundations is omitted from the manifest entirely — permitted by
 // design, never an ordering violation, only informational.
-const omittedPrerequisiteManifest: PathManifest = {
+const omittedPrerequisiteManifest: PathManifest = manifestFixture({
   pathId: "skills/algorithms",
   arc: "algorithms",
   title: "Algorithms",
   description: "Algorithms path",
-  courseOrder: ["data-structures-and-algorithms-essentials", "advanced-algorithms"],
-};
+  courses: ["data-structures-and-algorithms-essentials", "advanced-algorithms"],
+});
 
-const violatingManifest: PathManifest = {
+const violatingManifest: PathManifest = manifestFixture({
   pathId: "skills/algorithms",
   arc: "algorithms",
   title: "Algorithms",
   description: "Algorithms path",
-  courseOrder: ["advanced-algorithms", "data-structures-and-algorithms-essentials"],
-};
+  courses: ["advanced-algorithms", "data-structures-and-algorithms-essentials"],
+});
 
 describe("resolvePrerequisites", () => {
   it("returns both declared prerequisites in declaration order", () => {
@@ -150,13 +151,13 @@ describe("checkPrerequisiteConsistency", () => {
     const duplicatePrerequisitesByCourse: Record<string, readonly string[]> = {
       "advanced-algorithms": ["just-enough-python"],
     };
-    const duplicateManifest: PathManifest = {
+    const duplicateManifest: PathManifest = manifestFixture({
       pathId: "skills/algorithms",
       arc: "algorithms",
       title: "Algorithms",
       description: "Algorithms path",
-      courseOrder: ["just-enough-python", "advanced-algorithms", "just-enough-python"],
-    };
+      courses: ["just-enough-python", "advanced-algorithms", "just-enough-python"],
+    });
 
     const result = checkPrerequisiteConsistency(duplicateManifest, duplicatePrerequisitesByCourse, libraryCourseIds);
 

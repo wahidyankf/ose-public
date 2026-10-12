@@ -1,6 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
+import { manifestFixture } from "../manifest-fixture";
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -29,13 +30,13 @@ beforeEach(() => {
   vi.mocked(scrollActiveCourseIntoView).mockClear();
 });
 
-const manifest: PathManifest = {
+const manifest: PathManifest = manifestFixture({
   pathId: "skills/python-fundamentals",
   arc: "python-fundamentals",
   title: "Python Fundamentals",
   description: "Learn Python from the ground up.",
-  courseOrder: ["version-control-and-git", "just-enough-python", "data-structures-and-algorithms-essentials"],
-};
+  courses: ["version-control-and-git", "just-enough-python", "data-structures-and-algorithms-essentials"],
+});
 
 const courseTitles = {
   "version-control-and-git": "Git",

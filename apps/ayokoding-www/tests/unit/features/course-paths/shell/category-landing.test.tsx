@@ -1,6 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
+import { manifestFixture } from "../manifest-fixture";
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -15,13 +16,10 @@ import { CategoryLanding } from "../../../../../src/features/course-paths/shell/
 
 afterEach(cleanup);
 
-function manifest(overrides: Partial<PathManifest> & Pick<PathManifest, "pathId" | "arc">): PathManifest {
-  return {
-    title: overrides.pathId,
-    description: "desc",
-    courseOrder: [],
-    ...overrides,
-  };
+function manifest(
+  overrides: Pick<PathManifest, "pathId" | "arc"> & Partial<Pick<PathManifest, "title">>,
+): PathManifest {
+  return manifestFixture({ description: "desc", ...overrides, title: overrides.title ?? overrides.pathId });
 }
 
 describe("CategoryLanding — careers instance (Cycle 3.1b-i, R7)", () => {

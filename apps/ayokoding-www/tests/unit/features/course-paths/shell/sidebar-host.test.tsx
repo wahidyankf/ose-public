@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";
+import { manifestFixture } from "../manifest-fixture";
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -23,13 +24,13 @@ import { SidebarHost } from "../../../../../src/features/course-paths/shell/side
 
 afterEach(cleanup);
 
-const manifest: PathManifest = {
+const manifest: PathManifest = manifestFixture({
   pathId: "skills/python-fundamentals",
   arc: "python-fundamentals",
   title: "Python Fundamentals",
   description: "Learn Python from the ground up.",
-  courseOrder: ["just-enough-python"],
-};
+  courses: ["just-enough-python"],
+});
 
 describe("SidebarHost (Cycle 2.8 — content swap into the existing desktop rail host)", () => {
   it("renders the passed-through children (the generic Sidebar) when there is no active path context", () => {

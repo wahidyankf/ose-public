@@ -153,3 +153,192 @@ describe("PathManifestSchema", () => {
     expect(PathManifestSchema.safeParse(doubledSlash).success).toBe(false);
   });
 });
+
+describe("PathManifestSchema phase shape (plan 02 expand)", () => {
+  const phaseShapedFile = {
+    pathId: "careers/interview-ready/software-engineer",
+    arc: "interview-ready",
+    title: "Interview-Ready Software Engineer",
+    description: "Interview-first track for an experienced engineer re-entering the market.",
+    goals: ["capstone-interview-loop"],
+    assumes: ["sql-essentials"],
+    phases: [
+      {
+        id: "foundations",
+        title: "Foundations",
+        kind: "core",
+        outcome: { can: "write small programs" },
+        courses: ["just-enough-python"],
+      },
+      {
+        id: "interview-skills",
+        title: "Interview Skills",
+        kind: "core",
+        outcome: { can: "pass the interview loop", cannotYet: "lead a team" },
+        courses: ["coding-interview", "capstone-interview-loop"],
+      },
+      {
+        id: "depth",
+        title: "Depth",
+        kind: "extension",
+        courses: ["advanced-algorithms"],
+      },
+    ],
+  };
+
+  it("(m) parses a phase-shaped file and derives courseOrder from its phases in order", () => {
+    const result = PathManifestSchema.safeParse(phaseShapedFile);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.phases.map((phase) => phase.id)).toEqual(["foundations", "interview-skills", "depth"]);
+      expect(result.data.courseOrder).toEqual([
+        "just-enough-python",
+        "coding-interview",
+        "capstone-interview-loop",
+        "advanced-algorithms",
+      ]);
+    }
+  });
+
+  it("(n) rejects a core phase without an outcome", () => {
+    const file = {
+      ...phaseShapedFile,
+      phases: [{ id: "foundations", title: "Foundations", kind: "core", courses: ["just-enough-python"] }],
+    };
+
+    const result = PathManifestSchema.safeParse(file);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some((issue) => issue.path[0] === "phases")).toBe(true);
+    }
+  });
+
+  it("(o) rejects an empty phase", () => {
+    const file = {
+      ...phaseShapedFile,
+      phases: [
+        {
+          id: "foundations",
+          title: "Foundations",
+          kind: "core",
+          outcome: { can: "write small programs" },
+          courses: [],
+        },
+      ],
+    };
+
+    const result = PathManifestSchema.safeParse(file);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some((issue) => issue.path[0] === "phases")).toBe(true);
+    }
+  });
+
+  it("(p) rejects a bad phase ID", () => {
+    const file = {
+      ...phaseShapedFile,
+      phases: [
+        {
+          id: "Phase 1",
+          title: "Foundations",
+          kind: "core",
+          outcome: { can: "write small programs" },
+          courses: ["just-enough-python"],
+        },
+      ],
+    };
+
+    const result = PathManifestSchema.safeParse(file);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some((issue) => issue.path[0] === "phases")).toBe(true);
+    }
+  });
+
+  it("(q) parses a legacy courseOrder file into one all-courses core phase", () => {
+    const result = PathManifestSchema.safeParse(careersManifest);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.phases).toEqual([
+        {
+          id: "all-courses",
+          title: careersManifest.title,
+          kind: "core",
+          courses: ["just-enough-python", "capstone-forge-ready"],
+        },
+      ]);
+      expect(result.data.courseOrder).toEqual(["just-enough-python", "capstone-forge-ready"]);
+      expect(result.data.assumes).toEqual([]);
+    }
+  });
+});
+
+describe("PathManifestSchema skills restructure marker (plan 02, decision 39)", () => {
+  const markedSkillsFile = {
+    pathId: "skills/conventional-accounting",
+    arc: "immediately-effective",
+    title: "Conventional Accounting",
+    description: "A practical accounting path from a balancing ledger to controlled reporting.",
+    restructurePendingIn: "plan-06",
+    assumes: [],
+    phases: [
+      {
+        id: "all-courses",
+        title: "Conventional Accounting",
+        kind: "core",
+        courses: ["accounting-foundations", "chart-of-accounts-and-data-modeling"],
+      },
+    ],
+  };
+
+  it("(r) parses a marked allowlisted skills file", () => {
+    const result = PathManifestSchema.safeParse(markedSkillsFile);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.restructurePendingIn).toBe("plan-06");
+      expect(result.data.courseOrder).toEqual(["accounting-foundations", "chart-of-accounts-and-data-modeling"]);
+    }
+  });
+
+  it("(s) rejects the same marker on a career path", () => {
+    const result = PathManifestSchema.safeParse({
+      ...markedSkillsFile,
+      pathId: "careers/interview-ready/software-engineer",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("(t) rejects the marker on an unlisted skills path", () => {
+    const result = PathManifestSchema.safeParse({ ...markedSkillsFile, pathId: "skills/e2e-fixture-alpha" });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("(u) rejects an accounting path carrying the ERP plan value", () => {
+    const result = PathManifestSchema.safeParse({ ...markedSkillsFile, restructurePendingIn: "plan-07" });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("(v) rejects a marked file with two phases", () => {
+    const result = PathManifestSchema.safeParse({
+      ...markedSkillsFile,
+      phases: [...markedSkillsFile.phases, { id: "more", title: "More", kind: "core", courses: ["x-extra"] }],
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("(w) parses a marked file whose core phase has no outcome", () => {
+    const result = PathManifestSchema.safeParse(markedSkillsFile);
+
+    expect(result.success).toBe(true);
+  });
+});

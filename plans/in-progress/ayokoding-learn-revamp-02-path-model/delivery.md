@@ -1072,33 +1072,33 @@ plans 06 and 07 remove, enforced by the allowlist and marker-usage tests, so it 
 
 ## Phase 9: Knowledge Capture
 
-- [ ] [AI] Apply the litmus test to every `learnings.md` entry — keep only entries where a durable
+- [x] [AI] Apply the litmus test to every `learnings.md` entry — keep only entries where a durable
       surface would catch this automatically next time; discard the rest with a one-line reason.
-- [ ] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to
+- [x] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to
       `<placeholder>` tokens or discard if the entry cannot be sanitized without losing its meaning.
-- [ ] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
+- [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
       private and is never routed into this public repo; public-governance content may route here.
-- [ ] [AI] Route each surviving entry to exactly one durable home (`repo-governance/`, `docs/`,
+- [x] [AI] Route each surviving entry to exactly one durable home (`repo-governance/`, `docs/`,
       `.agents/agents/`, `.agents/skills/`, a post-mortem, or another owner), landing a small non-code
       edit inline. Create or update a `plans/ideas/<slug>.md` two-pager only when the user has
       literally authorized that plan artifact; otherwise report the follow-up and record
       `Reported without plan authorization` with handoff evidence.
-- [ ] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
+- [x] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
       two-pagers first, after the user literally authorizes an idea artifact; fold into an overlapping
       brief instead of creating a duplicate.
-- [ ] [AI] **Code-routing rule**: a learning whose home is `apps/`, `libs/`, or tests never lands
+- [x] [AI] **Code-routing rule**: a learning whose home is `apps/`, `libs/`, or tests never lands
       inline in this PR; it becomes an authorized `plans/ideas/` two-pager or a report. Never create or
       write under `plans/backlog/` for it. A bug that blocks this plan's own scope is fixed inline as
       ordinary root-cause work.
-- [ ] [AI] Record the terminal state of every entry (routed inline / authorized two-pager at `<path>` /
+- [x] [AI] Record the terminal state of every entry (routed inline / authorized two-pager at `<path>` /
       reported without plan authorization with handoff evidence / discarded with reason) in
       `learnings.md`.
-- [ ] [AI] If execution surfaced no generalizable learning, record
+- [x] [AI] If execution surfaced no generalizable learning, record
       `No generalizable learnings — <one-line reason>`.
-- [ ] [AI] Report the known follow-up to the user with handoff evidence: an `ayokoding-cli paths core`
+- [x] [AI] Report the known follow-up to the user with handoff evidence: an `ayokoding-cli paths core`
       subcommand wrapping `computeCore`, owned by plan 05 (see
       [tech-docs/README.md](./tech-docs/README.md#out-of-scope-follow-up)).
-- [ ] [AI] Report the cross-plan handoffs from
+- [x] [AI] Report the cross-plan handoffs from
       [tech-docs/README.md](./tech-docs/README.md#cross-plan-handoffs) to the user: plan 06 restructures
       the accounting paths and removes their allowlist entries; plan 07 does the same for ERP and
       deletes the marker mechanism; plan 08 fills the capstones and gives the AI path its goal. Note the
@@ -1108,8 +1108,8 @@ plans 06 and 07 remove, enforced by the allowlist and marker-usage tests, so it 
 
 > All checks below must pass before starting Phase 10.
 
-- [ ] [AI] Every `learnings.md` entry has a terminal state, or the explicit "none" escape is present.
-- [ ] [AI] No code-homed learning landed inline.
+- [x] [AI] Every `learnings.md` entry has a terminal state, or the explicit "none" escape is present.
+- [x] [AI] No code-homed learning landed inline.
 
 > **Pause Safety**: all learnings are routed, reported, or discarded. Safe to stop. To resume:
 > re-check `learnings.md` for any entry without a terminal-state marker.

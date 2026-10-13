@@ -27,7 +27,8 @@ Include one record in the review body, under the marker `ose-pr-leak-review`, wh
 
 ## Terminal States
 
-API, posting, read-back, or authentication errors return `failed` without an internal retry.
+Spawn, API, posting, read-back, or authentication errors, or an unreadable pin, return `failed` without an internal
+retry.
 Otherwise return `pass` when every count is zero, or `findings` when any class is nonzero. Only
 `pass` for the exact head being merged satisfies the merge precondition, and the hosted
 `pr-leak-review` workflow publishes it as the `leak-review` commit status on that head per

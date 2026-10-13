@@ -8,26 +8,30 @@ when_to_use: "Use before every push to the remote, and for every open pull reque
 A **leak** is anything in outbound history that a reader of the remote could use to reach an
 environment or identify the machine it came from. [Scope and Exclusions](./pr-leak-review/001-scope-and-exclusions.md)
 defines the three classes and what is not one. History is the subject, not the final tree: a value
-one commit adds and a later commit deletes is still in every clone. The review binds from adoption
-onward; history published before it is out of scope.
+added and later deleted remains in every clone. The review binds from adoption onward; earlier
+published history is out of scope.
 
-It performs no broad security or semantic review, fixer pass, CI wait, retry, or
-consecutive-clean confirmation. Run [`pr-review-security-checker`](../../../.agents/agents/pr-review-security-checker.md)
-in **exact leak-only mode**; its ordinary security charter is disabled for this invocation.
+It performs no broad security or semantic review, fixer pass, CI wait, retry, or consecutive-clean
+confirmation. Judgement is delegated: the harness spawns a fresh-context subagent running
+[`pr-review-security-checker`](../../../.agents/agents/pr-review-security-checker.md) in **exact leak-only mode** —
+no part in authoring the change, no memory of an earlier head or range, read-only, never posting — and then posts that
+verdict unchanged on behalf of the repository owner (merge entry) or acts on it privately (push entry). No human is on
+the merge path; a self-judged verdict satisfies nothing. Adopted from the shared catalog at
+`f452d6190911f29f5898ecb2e991c89412afa426`; the local module names stand.
 
 ## Entry
 
-Two entry points share one judgement:
+Two entries share one judgement:
 
-- **Push.** Before any push to the remote, review the outgoing range privately per
-  [Push Review](./pr-leak-review/002-push-review.md). Nothing is posted; a finding blocks the push.
-- **Merge.** A pull request is open and no `pass` record posted by the repository owner exists for
-  its current head. Run [Execution](./pr-leak-review/003-execution.md), then
+- **Push.** Before any push, review the outgoing range privately per
+  [Push Review](./pr-leak-review/002-push-review.md): nothing is posted, and a finding blocks the push.
+- **Merge.** A pull request is open and no owner `pass` record exists for its current head. Run
+  [Execution](./pr-leak-review/003-execution.md), then
   [Evidence and Outcomes](./pr-leak-review/004-evidence-and-outcomes.md).
 
 ## Goal and Termination
 
-**Goal**: Detect real sensitive values, protected environment properties, and machine-specific values in every outbound commit without broad semantic review
+**Goal**: Detect real leaks in every outbound commit without broad semantic review
 
 **Termination**: Push entry: push or remediate. Merge entry: return pass/findings after one authenticated current-head review, or stale/failed without retrying inside the run
 
@@ -48,26 +52,22 @@ Two entry points share one judgement:
 
 Read in order; the [module index](./pr-leak-review/README.md) carries it.
 
-- [Scope and Exclusions](./pr-leak-review/001-scope-and-exclusions.md) — the three leak classes, what
-  is not a leak, and why history is the subject.
-- [Push Review](./pr-leak-review/002-push-review.md) — the private review of each outgoing range, and
-  remediation before and after a push.
-- [Execution](./pr-leak-review/003-execution.md) — pinning the head, reading every commit, and
-  producing the sanitized review.
-- [Evidence and Outcomes](./pr-leak-review/004-evidence-and-outcomes.md) — the posted record, its
-  read-back, and the terminal states.
-- [Enforcement](./pr-leak-review/005-enforcement.md) — the history screen, hosted checks, the required
-  `leak-review` status, and this repository's adopter decisions.
+- [Scope and Exclusions](./pr-leak-review/001-scope-and-exclusions.md) — the three leak classes and
+  what is not one.
+- [Push Review](./pr-leak-review/002-push-review.md) — the private range review and remediation.
+- [Execution](./pr-leak-review/003-execution.md) — pinning, reading, judging, posting.
+- [Evidence and Outcomes](./pr-leak-review/004-evidence-and-outcomes.md) — the record and terminal states.
+- [Enforcement](./pr-leak-review/005-enforcement.md) — the screen, the checks, and adopter decisions.
 
-Merge requires one authenticated `ose-pr-leak-review:v1` `pass` whose repository, base, and head
-equal the PR's exact current coordinates, published as the `leak-review` commit status. A moved head
-needs one new pass, never a clean streak.
+Merge requires one authenticated `ose-pr-leak-review:v1` `pass` for the PR's exact current
+coordinates, published as the `leak-review` commit status. A moved head needs one new pass, never a
+clean streak.
 
 ## Example Usage
 
 ```text
-Run pr-leak-review for the exact current head of PR 412.
-Run the push leak review for the commits this branch is about to push.
+Run pr-leak-review for the current head of PR 412.
+Run the push leak review for this branch's outgoing commits.
 ```
 
 ## Related Workflows

@@ -71,6 +71,12 @@ independent execution.
 Delivery units follow the canonical natural-seam, immediately deployable-state, and temporary-flag
 lifecycle rules; numeric counts never set their boundaries.
 
+## Order the Checklist by Dependency
+
+Sequence in the file is not dependency. Express phases and items as the dependency graph
+[Delivery Checklists Express a DAG](../../../repo-governance/conventions/structure/plans/delivery-checklists-express-a-dag.md)
+defines, with a Parallelization Model section, so independent nodes can run concurrently.
+
 ## Reference Modules
 
 - [mandatory-grilling.md](reference/mandatory-grilling.md) — evidence-first pre-write and post-write grilling

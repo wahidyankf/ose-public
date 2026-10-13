@@ -24,13 +24,17 @@ Read the plan in full, reconcile against any prior run's state, and build the li
   workflow is invoked—at the start, for the first time after some checklist work already happened,
   after compaction/handoff, or when reinvoked mid-run. Parse every action checkbox top-to-bottom.
   For each `- [x]`, require exactly one matching completed task when the harness can retain completed
-  tasks. For each `- [ ]`, require exactly one matching open task in reading order. If an existing
+  tasks. For each `- [ ]`, require exactly one matching open task, ordered by the dependency graph
+  rather than list position. If an existing
   Task list disagrees with disk, discard the stale mapping and rebuild it from `delivery.md`; disk is
   authoritative.
 - **Granular-action parsing (Iron Rule 1)**: identify every delivery action checkbox at any nesting
   level. Outcome-section Input/Outcome/Proof prose is context, not a task. Separate RED, GREEN, and
   REFACTOR checkboxes are separate tasks.
-- **`TaskCreate` one task per remaining checkbox**, in reading order. Task titles short-form the
+- **`TaskCreate` one task per remaining checkbox**, ordered by the dependency graph rather than
+  list position, per
+  [Delivery Checklists Express a DAG](../../../conventions/structure/plans/delivery-checklists-express-a-dag.md).
+  Task titles short-form the
   checkbox text for monitoring parity. Never reuse one task for multiple checkboxes.
 - **Verify the full bijection before moving on**: every checked action maps to one completed task
   when retained, every unchecked action maps to one open task, and no harness task is orphaned from
@@ -49,7 +53,7 @@ Read the plan in full, reconcile against any prior run's state, and build the li
 - Tasks map 1:1 to action checkboxes. Never materialize section context as tasks or hide distinct
   actions inside one task.
 - Tasks must be concrete and independently verifiable.
-- Preserve the exact phase and item ordering from delivery.md in the Task list.
+- Preserve the dependency order from the plan's `## Parallelization Model` in the Task list, not list position.
 - Already-ticked items are not re-executed. They remain part of the audited 1:1 history when the
   harness retains completed tasks; otherwise record that the harness cannot reconstruct completed
   entries and build the exact open-task mirror from disk.

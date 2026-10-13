@@ -30,7 +30,7 @@ Conversely, a unit nobody can review is too large regardless of how coherent it 
 This repository already owns how a unit lands, so this module does not restate it:
 
 - [PRs Open at Delivery Boundaries](../../../conventions/structure/plans/prs-open-at-delivery-boundaries-rules.md) owns
-  when a change opens, one change per boundary, and sequential landing.
+  when a change opens, one change per boundary, and bounded-parallel landing.
 - [Delivery Mode](../../../conventions/structure/plans/delivery-mode-the-four-modes.md) owns the four delivery modes.
 - [Natural Seams and Deployable State](../../../conventions/structure/plans/prs-open-at-delivery-boundaries-natural-seams.md)
   owns the integration state: every landed change leaves `main` deployable, with incomplete behaviour behind a disabled

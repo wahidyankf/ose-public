@@ -15,7 +15,9 @@ happened—disk state wins. Reconciliation is a mandatory entry gate:
    separate RED, GREEN, and REFACTOR checkboxes as separate actions.
 3. For every `- [x]`, count it as done and require one matching completed task when the harness
    retains completed history. Never re-execute it merely to recreate a task.
-4. For every `- [ ]`, `TaskCreate` exactly one open task in reading order.
+4. For every `- [ ]`, `TaskCreate` exactly one open task, ordered by the dependency graph rather
+   than list position, per
+   [Delivery Checklists Express a DAG](../../../conventions/structure/plans/delivery-checklists-express-a-dag.md).
 5. Audit the full bijection: no action without a task, no task without an action, no duplicate
    mapping, and task status agrees with checkbox state. At minimum, remaining-checkbox count equals
    plan-mapped open-task count.

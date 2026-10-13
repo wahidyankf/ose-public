@@ -36,6 +36,10 @@ export class FileSystemContentRepository implements ContentRepository {
 
         const { locale, slug, isSection } = this.deriveSlug(filePath);
 
+        // Catalog metadata belongs to course roots only (learn/courses/<course> section
+        // indexes); a stray key on any other page stays out of ContentMeta and off the wire.
+        const isCourseRoot = isSection && /^learn\/courses\/[^/]+$/.test(slug);
+
         results.push({
           title: frontmatter.title,
           slug,
@@ -49,6 +53,9 @@ export class FileSystemContentRepository implements ContentRepository {
           filePath,
           prerequisites: frontmatter.prerequisites,
           status: frontmatter.status,
+          category: isCourseRoot ? frontmatter.category : undefined,
+          format: isCourseRoot ? frontmatter.format : undefined,
+          estimatedHours: isCourseRoot ? frontmatter.estimatedHours : undefined,
         });
       } catch {
         // Skip files that can't be read

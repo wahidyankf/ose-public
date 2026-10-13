@@ -4,6 +4,10 @@ date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 448
 prerequisites: ["advanced-frontend"]
+category: application-development
+description: "Build a small reactive UI library two ways: a virtual DOM and signals."
+format: by-example
+estimatedHours: 6
 ---
 
 - [Learning](/en/learn/courses/build-your-own-reactive-ui/learning)

@@ -12,6 +12,10 @@ prerequisites:
     "data-engineering",
     "just-enough-python",
   ]
+category: ai-engineering
+description: "Learn when fine-tuning a model helps and when retrieval or prompting works better."
+format: by-example
+estimatedHours: 8
 ---
 
 - [Overview](/en/learn/courses/fine-tuning-and-adaptation/overview)

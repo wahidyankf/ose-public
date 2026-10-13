@@ -1,0 +1,8 @@
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+[41m[1m FAIL [22m[49m [30m[42m unit [49m[39m tests/unit/be-steps/course-metadata.steps.ts[2m > [22mFeature: Course metadata[2m > [22mScenario: Every course in the library carries valid metadata[2m > [22mWhen the course metadata check runs
+sql-essentials: estimatedHours: stored 9, expected 8
+sql-essentials 8
+[41m[1m FAIL [22m[49m [30m[42m unit [49m[39m tests/unit/be-steps/course-metadata.steps.ts[2m > [22mFeature: Course metadata[2m > [22mScenario: Every course in the library carries valid metadata[2m > [22mThen every course has a known category and a one-sentence description
+[31m+ sql-essentials: estimatedHours: stored 9, expected 8[39m
+[31m+ sql-essentials 8[39m
+[41m[1m FAIL [22m[49m [30m[42m unit [49m[39m tests/unit/be-steps/course-metadata.steps.ts[2m > [22mFeature: Course metadata[2m > [22mScenario: Every course in the library carries valid metadata[2m > [22mAnd every course that is not an outline has a format and an estimated time

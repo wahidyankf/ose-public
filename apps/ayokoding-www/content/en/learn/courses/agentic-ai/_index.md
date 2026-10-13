@@ -4,6 +4,10 @@ date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 457
 prerequisites: ["creating-ai-powered-apps"]
+category: ai-engineering
+description: "Survey how AI agents use tools, memory, and planning, and where they fail."
+format: by-example
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/agentic-ai/overview)

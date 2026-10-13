@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 172
 prerequisites: ["object-oriented-programming-essentials", "just-enough-typescript"]
+category: programming-languages
+description: "Learn the Dart you need for Flutter: types, null safety, classes, and async code."
+format: primer
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/just-enough-dart/overview)

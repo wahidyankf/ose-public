@@ -4,6 +4,10 @@ date: 2026-07-16T00:00:00+07:00
 draft: false
 weight: 290
 prerequisites: ["just-enough-python", "data-structures-and-algorithms-essentials"]
+category: computer-science
+description: "Understand number representation, automata, and the limits of computation."
+format: annotated-concept
+estimatedHours: 5
 ---
 
 - [Overview](/en/learn/courses/computer-science-foundations/overview)

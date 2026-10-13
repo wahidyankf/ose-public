@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1153
 prerequisites: ["erp-security-and-controls", "sharia-compliant-erp-design"]
+category: erp-systems
+description: "Build compliance modules with reviewable inputs, rules, and reports."
 status: outline
 ---
 

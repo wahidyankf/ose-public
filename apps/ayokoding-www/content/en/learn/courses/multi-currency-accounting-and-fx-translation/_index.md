@@ -4,6 +4,8 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1111
 prerequisites: ["financial-statements-and-close-cycle"]
+category: accounting
+description: "Record foreign-currency transactions and translate balances with traceable rates."
 status: outline
 ---
 

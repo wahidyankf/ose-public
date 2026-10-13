@@ -15,6 +15,10 @@ prerequisites:
     "networking-essentials",
     "software-testing",
   ]
+category: application-development
+description: "Ship a small, tested habit-tracker app with a Python API and a SQLite database."
+format: capstone
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/capstone-first-working-software/overview)

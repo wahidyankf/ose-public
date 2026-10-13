@@ -5,6 +5,10 @@ draft: false
 weight: 541
 prerequisites:
   ["coding-interview", "take-home-and-live-coding", "system-design-interview", "behavioral-and-leadership-interviews"]
+category: interview-preparation
+description: "Practice a complete interview loop after finishing the four interview courses."
+format: capstone
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/capstone-interview-loop/overview)

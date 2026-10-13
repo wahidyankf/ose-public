@@ -4,6 +4,8 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1113
 prerequisites: ["accrual-accounting-and-revenue-recognition", "lease-and-intangible-asset-accounting"]
+category: accounting
+description: "Compare how IFRS and US GAAP recognize, measure, and present the same events."
 status: outline
 ---
 

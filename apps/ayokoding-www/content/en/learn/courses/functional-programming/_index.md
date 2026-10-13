@@ -4,6 +4,10 @@ date: 2026-07-17T00:00:00+07:00
 draft: false
 weight: 330
 prerequisites: ["just-enough-python", "data-structures-and-algorithms-essentials"]
+category: computer-science
+description: "Write pure functions, avoid shared mutable state, and compose small pieces."
+format: by-example
+estimatedHours: 10
 ---
 
 - [Learning](/en/learn/courses/functional-programming/learning)

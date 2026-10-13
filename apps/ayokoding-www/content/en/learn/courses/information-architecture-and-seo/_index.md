@@ -4,6 +4,10 @@ date: 2026-07-31T00:00:00+07:00
 draft: false
 weight: 259
 prerequisites: ["frontend-essentials", "advanced-frontend"]
+category: application-development
+description: "Structure web content so people, search engines, and screen readers can use it."
+format: annotated-concept
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/information-architecture-and-seo/overview)

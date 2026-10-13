@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 190
 prerequisites: ["database-internals-and-storage-engines", "sql-essentials"]
+category: data-and-databases
+description: "Build a small database with pages, an index, a write-ahead log, and crash recovery."
+format: by-example
+estimatedHours: 2
 ---
 
 - [Drilling](/en/learn/courses/build-your-own-database/drilling)

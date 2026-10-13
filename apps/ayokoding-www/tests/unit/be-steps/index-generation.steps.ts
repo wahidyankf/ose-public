@@ -189,4 +189,29 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(result.errors).toEqual([]);
     });
   });
+
+  Scenario("The course catalog section keeps a frontmatter-only index", ({ Given, When, Then, And }) => {
+    Given('a "learn/courses" section in locale "en" with two course sections', () => {
+      port.add("en/learn/courses/_index.md", "Courses", 102, makeIndex("Courses", 102));
+      port.add("en/learn/courses/sql-essentials/_index.md", "SQL Essentials", 200, makeIndex("SQL Essentials", 200));
+      port.add("en/learn/courses/sql-essentials/overview.md", "Overview", 10, makePage("Overview", 10));
+      port.add("en/learn/courses/git-course/_index.md", "Git Course", 100, makeIndex("Git Course", 100));
+      port.add("en/learn/courses/git-course/overview.md", "Overview", 10, makePage("Overview", 10));
+    });
+
+    When("the index generator runs in generate mode", async () => {
+      result = await processAllIndexFiles(CONTENT_ROOT, "generate", port);
+    });
+
+    Then("the learn/courses _index.md contains only its frontmatter", () => {
+      const content = port.files.get(`${CONTENT_ROOT}/en/learn/courses/_index.md`) ?? "";
+      expect(content.split("\n").filter((l) => l.startsWith("- ["))).toEqual([]);
+      expect(content.split("---").slice(2).join("---").trim()).toBe("");
+    });
+
+    And("each course _index.md still lists its own children", () => {
+      const content = port.files.get(`${CONTENT_ROOT}/en/learn/courses/sql-essentials/_index.md`) ?? "";
+      expect(content).toContain("- [Overview](/en/learn/courses/sql-essentials/overview)");
+    });
+  });
 });

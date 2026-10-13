@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 360
 prerequisites: ["just-enough-c"]
+category: programming-languages
+description: "Move from C to modern C++ with RAII, classes, the standard library, and templates."
+format: primer
+estimatedHours: 4
 ---
 
 - [Overview](/en/learn/courses/just-enough-cpp/overview)

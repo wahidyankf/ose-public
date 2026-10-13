@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1122
 prerequisites: ["islamic-contract-modeling-for-systems", "multi-currency-accounting-and-fx-translation"]
+category: accounting
+description: "Account for sukuk using the assets and contracts behind them."
 status: outline
 ---
 

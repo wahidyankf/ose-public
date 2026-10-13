@@ -4,6 +4,10 @@ date: 2026-07-15T00:00:00+07:00
 draft: false
 weight: 260
 prerequisites: ["software-testing", "just-enough-python", "just-enough-bash"]
+category: tools-and-practices
+description: "Find bugs with a method instead of guessing, and measure where code is slow."
+format: by-example
+estimatedHours: 15
 ---
 
 - [Overview](/en/learn/courses/debugging-and-profiling/overview)

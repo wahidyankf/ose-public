@@ -4,6 +4,10 @@ date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 160
 prerequisites: ["just-enough-bash", "just-enough-python"]
+category: tools-and-practices
+description: "Track changes, branch, merge, and share work safely with Git."
+format: by-example
+estimatedHours: 7
 ---
 
 - [Learning](/en/learn/courses/version-control-and-git/learning)

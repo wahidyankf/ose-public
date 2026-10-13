@@ -4,6 +4,10 @@ date: 2026-07-27T00:00:00+07:00
 draft: false
 weight: 395
 prerequisites: ["sql-essentials", "data-structures-and-algorithms-essentials"]
+category: data-and-databases
+description: "Build full-text search with inverted indexes and relevance ranking."
+format: by-example
+estimatedHours: 15
 ---
 
 - [Overview](/en/learn/courses/search-and-information-retrieval/overview)

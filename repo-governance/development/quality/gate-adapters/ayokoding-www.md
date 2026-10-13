@@ -38,10 +38,14 @@ target is wired into no gate. They are judgeable.
 - **Overviews.** Every new topic directory has an `overview.md` of about 150 to 400 words. A track folder that holds only
   subdirectories also needs an `overview.md`, so its parent page renders.
 - **Generated indexes.** `_index.md` files come from `generate-indexes.ts`, never from hand edits.
+  Course frontmatter metadata is hand-authored and preserved by the generator; only
+  `content/en/learn/courses/_index.md` keeps a frontmatter-only body while the catalog page
+  renders from course metadata.
 - **Renames redirect.** Every URL rename adds an entry to `apps/ayokoding-www/src/redirects/learn-reorg.ts`; the
   propagation may edit that file for a rename row.
 - **Front matter.** Present and conforming to the site's metadata standards in the `apps-ayokoding-www-developing-content`
   skill; missing front matter is a HIGH-confidence repair. The `author` field appears only on rants (`celoteh`).
+  Course roots also carry the catalog fields in that skill's [Course Metadata](../../../../.agents/skills/apps-ayokoding-www-developing-content/reference/course-metadata.md).
 - **Internal links.** Absolute paths with a language prefix (`/en/`, `/id/`), or relative `.md` paths, which
   `src/features/content/core/content-link-rewrite.ts` resolves; either form must reach an existing page.
 - **Site compliance.** Bilingual content, structure, metadata, and linking follow the

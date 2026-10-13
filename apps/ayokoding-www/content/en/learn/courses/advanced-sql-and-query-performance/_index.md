@@ -4,6 +4,10 @@ date: 2026-07-17T00:00:00+07:00
 draft: false
 weight: 360
 prerequisites: ["sql-essentials", "just-enough-python", "backend-essentials"]
+category: data-and-databases
+description: "Read query plans and use indexes to make slow SQL fast."
+format: by-example
+estimatedHours: 16
 ---
 
 - [Learning](/en/learn/courses/advanced-sql-and-query-performance/learning)

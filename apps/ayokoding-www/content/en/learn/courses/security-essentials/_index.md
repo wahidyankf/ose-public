@@ -4,6 +4,10 @@ date: 2026-07-15T00:00:00+07:00
 draft: false
 weight: 270
 prerequisites: ["just-enough-python", "sql-essentials", "backend-essentials"]
+category: security
+description: "Find and fix the most common web vulnerabilities in services you build."
+format: by-example
+estimatedHours: 20
 ---
 
 - [Overview](/en/learn/courses/security-essentials/overview)

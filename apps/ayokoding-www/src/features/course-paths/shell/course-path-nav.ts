@@ -19,6 +19,21 @@ export function courseIdFromSlug(slug: string): string | null {
   return slug.startsWith(COURSE_SLUG_PREFIX) ? slug.slice(COURSE_SLUG_PREFIX.length) : null;
 }
 
+/** The catalog section slug (plan 03): `page.tsx` dispatches it to the course catalog. */
+export const COURSE_CATALOG_SLUG = "learn/courses";
+
+/**
+ * The course ID when `slug` is exactly a course root (`learn/courses/<id>`, no further `/`),
+ * otherwise `null`. Unlike {@link courseIdFromSlug}, subpages inside a course return `null`.
+ */
+export function courseRootIdFromSlug(slug: string): string | null {
+  const id = courseIdFromSlug(slug);
+  if (id === null || id.length === 0 || id.includes("/")) {
+    return null;
+  }
+  return id;
+}
+
 /** The canonical content slug for a course ID — the inverse of {@link courseIdFromSlug}. */
 export function slugForCourseId(courseId: string): string {
   return `${COURSE_SLUG_PREFIX}${courseId}`;

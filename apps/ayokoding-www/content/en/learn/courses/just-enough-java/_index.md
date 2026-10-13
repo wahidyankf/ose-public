@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 184
 prerequisites: ["object-oriented-programming-essentials"]
+category: programming-languages
+description: "Learn modern Java syntax, records, collections, and streams before enterprise Java."
+format: primer
+estimatedHours: 3
 ---
 
 - [Overview](/en/learn/courses/just-enough-java/overview)

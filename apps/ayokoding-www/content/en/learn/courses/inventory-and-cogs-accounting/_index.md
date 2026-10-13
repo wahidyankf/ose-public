@@ -4,6 +4,8 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1109
 prerequisites: ["chart-of-accounts-and-data-modeling", "managerial-and-cost-accounting"]
+category: accounting
+description: "Account for inventory and cost of goods sold so margins are correct."
 status: outline
 ---
 

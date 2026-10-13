@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 186
 prerequisites: ["functional-programming"]
+category: programming-languages
+description: "See how code can be data, with Scheme macros and a short look at Clojure."
+format: by-example
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/lisp/overview)

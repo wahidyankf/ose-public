@@ -21,6 +21,20 @@ export const frontmatterSchema = z.object({
   prerequisites: z.array(z.string()).default([]),
   // Marker honesty: course-frontmatter.unit.test.ts fails if a sub-1000-word course lacks this status.
   status: z.enum(["outline"]).optional(),
+  // Course catalog metadata (plan 03): tolerant at runtime so a typo never hides a page;
+  // the strict check lives in course-metadata.ts and runs in tests. An explicitly empty
+  // string carries no meaning, so it normalizes to absent (unknown) rather than the wire.
+  category: z
+    .string()
+    .optional()
+    .catch(undefined)
+    .transform((value) => (value !== undefined && value.trim() === "" ? undefined : value)),
+  format: z
+    .string()
+    .optional()
+    .catch(undefined)
+    .transform((value) => (value !== undefined && value.trim() === "" ? undefined : value)),
+  estimatedHours: z.number().optional().catch(undefined),
 });
 
 export type Frontmatter = z.infer<typeof frontmatterSchema>;

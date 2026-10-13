@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1147
 prerequisites: ["erp-module-map-and-architecture", "payroll-and-tax-accounting-essentials"]
+category: erp-systems
+description: "Manage worker records from hiring to leaving, with payroll inputs and privacy."
 status: outline
 ---
 

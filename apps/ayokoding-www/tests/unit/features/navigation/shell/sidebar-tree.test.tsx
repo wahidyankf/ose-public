@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("next/link", () => ({
@@ -52,5 +52,41 @@ describe("SidebarTree", () => {
     expect(screen.getByRole("link", { name: "Immediately-Effective" }).getAttribute("title")).toBe(
       "Immediately-Effective",
     );
+  });
+});
+
+describe("SidebarTree — Courses category grouping (plan 03)", () => {
+  it("renders CourseCategoryGroups under learn/courses and plain recursion elsewhere", () => {
+    const tree = [
+      {
+        slug: "learn",
+        title: "Learn",
+        weight: 0,
+        isSection: true,
+        children: [
+          {
+            slug: "learn/courses",
+            title: "Courses",
+            weight: 1,
+            isSection: true,
+            children: [
+              {
+                slug: "learn/courses/sql-essentials",
+                title: "SQL Essentials",
+                weight: 1,
+                isSection: true,
+                category: "data-and-databases",
+                children: [],
+              },
+            ],
+          },
+          { slug: "learn/paths", title: "Paths", weight: 2, isSection: true, children: [] },
+        ],
+      },
+    ];
+    render(<SidebarTree nodes={tree} locale="en" />);
+    fireEvent.click(screen.getByRole("button", { name: "Expand section" }));
+    expect(screen.getByRole("button", { name: /Data and databases/ })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Paths" })).toBeTruthy();
   });
 });

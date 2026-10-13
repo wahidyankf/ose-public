@@ -4,6 +4,8 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1115
 prerequisites: ["chart-of-accounts-and-data-modeling"]
+category: accounting
+description: "Account for payroll and tax with clear authorization and calculation records."
 status: outline
 ---
 

@@ -4,6 +4,10 @@ date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 459
 prerequisites: ["the-agent-loop"]
+category: ai-engineering
+description: "Give agents typed tools and connect them with the Model Context Protocol."
+format: by-example
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/agent-tools-and-mcp/overview)

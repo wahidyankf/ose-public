@@ -4,6 +4,10 @@ date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 130
 prerequisites: ["just-enough-lua", "just-enough-nvim"]
+category: tools-and-practices
+description: "Turn Neovim into a reproducible editor with Lua config, plugins, and language servers."
+format: by-example
+estimatedHours: 6
 ---
 
 - [Learning](/en/learn/courses/extending-neovim/learning)

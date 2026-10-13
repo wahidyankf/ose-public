@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 82
 prerequisites: []
+category: programming-languages
+description: "Learn Rust ownership, borrowing, traits, and Cargo before systems programming in Rust."
+format: primer
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/just-enough-rust/overview)

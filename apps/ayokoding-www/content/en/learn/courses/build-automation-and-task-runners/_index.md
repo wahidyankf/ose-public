@@ -4,6 +4,10 @@ date: 2026-07-31T00:00:00+07:00
 draft: false
 weight: 258
 prerequisites: ["just-enough-bash", "version-control-and-git", "just-enough-typescript"]
+category: tools-and-practices
+description: "Declare build inputs and tasks so a tool reruns only what changed."
+format: by-example
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/build-automation-and-task-runners/overview)

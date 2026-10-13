@@ -9,6 +9,8 @@ prerequisites:
     "islamic-contract-modeling-for-systems",
     "sharia-accounting-and-aaoifi-standards",
   ]
+category: erp-systems
+description: "Design an ERP where Sharia contract terms and local policy stay configurable."
 status: outline
 ---
 

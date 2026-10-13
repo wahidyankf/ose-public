@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import type { TreeNode } from "@/features/content/core/types";
 import { contentUrl } from "@/features/content/core/content-url";
 import type { Locale } from "@/features/i18n/core/config";
+import { COURSE_CATALOG_SLUG } from "@/features/course-paths/shell/course-path-nav";
+import { CourseCategoryGroups } from "./course-category-groups";
 
 interface SidebarTreeProps {
   nodes: TreeNode[];
@@ -121,7 +123,13 @@ function SidebarNode({ node, locale, depth }: { node: TreeNode; locale: string; 
           </button>
         )}
       </div>
-      {hasChildren && expanded && <SidebarTree nodes={node.children} locale={locale} depth={depth + 1} />}
+      {hasChildren &&
+        expanded &&
+        (node.slug === COURSE_CATALOG_SLUG ? (
+          <CourseCategoryGroups nodes={node.children} locale={locale} depth={depth + 1} />
+        ) : (
+          <SidebarTree nodes={node.children} locale={locale} depth={depth + 1} />
+        ))}
     </li>
   );
 }

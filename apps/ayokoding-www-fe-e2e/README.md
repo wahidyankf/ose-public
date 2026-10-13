@@ -13,3 +13,8 @@ local-resource boundary.
 
 Run `npm exec nx -- run ayokoding-www-fe-e2e:test:quick` for static checks or
 `npm exec nx -- run ayokoding-www-fe-e2e:test:e2e` for the complete runtime suite.
+
+Rebuild the app with `--skip-nx-cache` under the fixture env before the runtime suite:
+statically generated pages bake manifest and content data at build time, and the Nx
+build cache key does not see environment variables, so a cached build from a
+non-fixture run serves real data to fixture expectations.

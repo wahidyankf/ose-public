@@ -4,6 +4,10 @@ date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 140
 prerequisites: []
+category: programming-languages
+description: "Learn Python as your everyday language for scripts, tests, and small services."
+format: primer
+estimatedHours: 4
 ---
 
 - [Overview](/en/learn/courses/just-enough-python/overview)

@@ -20,6 +20,8 @@ execution checklist.
   [plans/done/2026-10-12\_\_ayokoding-learn-revamp-02-path-model](../done/2026-10-12__ayokoding-learn-revamp-02-path-model/README.md)
   on 2026-10-12. The series continues with plan 03 (`catalog-and-metadata`), which depends on 01
   and 02.
+- Plan 03 (catalog and metadata) is in progress:
+  [ayokoding-learn-revamp-03-catalog-and-metadata](./ayokoding-learn-revamp-03-catalog-and-metadata/README.md).
 
 ## Instructions
 

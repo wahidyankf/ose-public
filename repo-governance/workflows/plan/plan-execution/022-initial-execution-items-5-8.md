@@ -23,6 +23,7 @@ when_to_use: Use when verifying a delegated agent's work, capturing a learning, 
    a. `Edit` delivery.md to change `- [ ]` → `- [x]` for THIS one item (context-unique `old_string`; never `replace_all`; never tick multiple items in one Edit call).
    b. `Edit` delivery.md to add the implementation-notes block (Date, Status, Files Changed, brief notes) under the ticked checkbox. Notes MUST themselves be repo-grounded — only state files actually modified, only quote commands actually run.
    c. `TaskUpdate completed` on the matching task.
-4. Proceed IMMEDIATELY to the next item — no pausing, no waiting for approval, no deferring notes.
+4. Release the slot IMMEDIATELY — the freed capacity takes the next ready item; no pausing, no
+   waiting for approval, no deferring notes.
 
 Nested sub-checkboxes iterate the same loop. A parent `- [ ]` can only be ticked after all its sub-`- [ ]` items have each completed steps 1–6 of the loop.

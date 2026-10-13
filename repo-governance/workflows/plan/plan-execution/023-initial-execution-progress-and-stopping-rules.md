@@ -13,7 +13,11 @@ when_to_use: Use when deciding whether the orchestrator may pause between items,
 
 **Success criteria**: Every `- [ ]` that started the phase is now `- [x]` with implementation notes; every matching task is `completed`.
 
-**On failure**: If a delegated agent fails and cannot resolve the issue, terminate with status `fail`. If the failure is recoverable, retry once before escalating. If the ritual partially lands (checkbox ticked but notes missing, or task marked completed but checkbox still `- [ ]`), roll back and treat the item as incomplete.
+**On failure**: A failure blocks only its downstream items; independent ready items continue.
+If the failure is recoverable, retry once before escalating. Terminate with status `fail` only
+when no executable item remains or the issue cannot be resolved. If the ritual partially lands
+(checkbox ticked but notes missing, or task marked completed but checkbox still `- [ ]`), roll
+back and treat the item as incomplete.
 
 **Stopping rules**:
 

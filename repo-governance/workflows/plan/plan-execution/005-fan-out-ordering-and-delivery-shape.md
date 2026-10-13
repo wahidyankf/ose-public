@@ -28,7 +28,9 @@ Each unit follows one natural cohesive seam, keeps all artifacts required for in
 and leaves `main` immediately safe to deploy to production. LOC and file counts never create,
 erase, or force the boundary. Incomplete behaviour requires a temporary production-disabled flag,
 tests for both paths, and rollout/rollback/removal evidence. Integrate a ready unit promptly rather
-than holding it to batch.
+than holding it to batch; independent units land in any order, each refreshed with its gates
+re-run, per
+[Delivery Seams and Ownership](../../../development/agents/planning-capabilities/005-delivery-seams-and-ownership.md).
 Cleanup is the terminal DAG node, so a provisioned worktree is removed only once **every** delivery
 unit that used it has landed and no in-flight node still needs it — not when the first one does.
 **Phase 0 is not a delivery node** — it is setup and baseline only, so it opens no PR under any

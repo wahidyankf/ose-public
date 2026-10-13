@@ -22,10 +22,12 @@ rollback support belong in the same unit when separating them would leave either
 contradictory, or unsafe. A directory or surface boundary alone is not a delivery seam. Unrelated
 purposes remain separate even when they happen to touch the same file or surface.
 
-Split units run sequentially from the delivery mode's resolved work location: reuse the plan's one
-worktree for worktree modes, or use the primary checkout for main modes. Land one unit, update that
-location from fresh `origin/main`, then begin the next unit. Each PR unit is reviewed against a base
-that already contains its dependencies rather than stacked on an unmerged sibling. See
+Independent units land in any order, up to the declared concurrency cap, serializing under host
+or budget pressure. Split units share the delivery mode's resolved work location: reuse the plan's
+one worktree for worktree modes, or use the primary checkout for main modes. Before landing, each
+unit refreshes that location from fresh `origin/main` and re-runs its gates. Each PR unit is
+reviewed against a base that already contains its dependencies rather than stacked on an unmerged
+sibling. See
 [Worktree Specification](./worktree-specification.md#worktree-specification) and
 [Worktree Cap](./worktree-cap.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule).
 

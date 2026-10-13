@@ -28,7 +28,7 @@ reflect actual completion state at all times.
 
 ## Never Skip Items
 
-Every delivery checklist item must be executed in order. The orchestrator may not skip an item
+Every delivery checklist item must be executed in dependency order. The orchestrator may not skip an item
 because it seems redundant or out of scope. If an item is genuinely irrelevant, mark it
 with a note explaining why it was skipped rather than silently omitting it.
 

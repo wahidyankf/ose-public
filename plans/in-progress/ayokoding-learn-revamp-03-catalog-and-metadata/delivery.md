@@ -936,43 +936,43 @@ against the local production build.
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] Run the registry pre-push gate (`./rhino gate run --surface pre-push` via the HIPPO wrapper) and affected typecheck:
+- [x] [AI] Run the registry pre-push gate (`./rhino gate run --surface pre-push` via the HIPPO wrapper) and affected typecheck:
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t typecheck`.
       Acceptance: exit 0.
-- [ ] [AI] Run `rtk npm run affected:lint`. Acceptance: exit 0.
-- [ ] [AI] Run `rtk npm run affected:test`. Acceptance: exit 0 (`test:quick` for every affected
+- [x] [AI] Run `rtk npm run affected:lint`. Acceptance: exit 0.
+- [x] [AI] Run `rtk npm run affected:test`. Acceptance: exit 0 (`test:quick` for every affected
       project, including `ayokoding-www-fe-e2e` and `ayokoding-www-be-e2e`).
-- [ ] [AI] Run affected spec coverage:
+- [x] [AI] Run affected spec coverage:
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:coverage:behaviour`.
       Acceptance: exit 0.
-- [ ] [AI] Run `INTEGRATION`, `E2E`, `BE-E2E`, and `VALIDATE-INDEXES` once more on the final tree.
+- [x] [AI] Run `INTEGRATION`, `E2E`, `BE-E2E`, and `VALIDATE-INDEXES` once more on the final tree.
       Acceptance: exit 0.
-- [ ] [AI] Run `rtk npm run lint:md`. Acceptance: exit 0.
-- [ ] [AI] Fix ALL failures found, including preexisting ones, and rerun until every check above
+- [x] [AI] Run `rtk npm run lint:md`. Acceptance: exit 0.
+- [x] [AI] Fix ALL failures found, including preexisting ones, and rerun until every check above
       exits 0.
 
 ### Push and PR
 
-- [ ] [AI] Commit the evidence gathered so far with the planned `docs(plans)` evidence message from
+- [x] [AI] Commit the evidence gathered so far with the planned `docs(plans)` evidence message from
       the Commit Guidelines (explicit `<plan>/` paths).
-- [ ] [AI] `rtk git status --short`: confirm `apps/ayokoding-www/next-env.d.ts` and
+- [x] [AI] `rtk git status --short`: confirm `apps/ayokoding-www/next-env.d.ts` and
       `.serena/project.yml` are neither staged nor modified; restore them if they are.
-- [ ] [AI] Run the push leak review for the outgoing range per
+- [x] [AI] Run the push leak review for the outgoing range per
       [PR Leak Review — Push Review](../../../repo-governance/workflows/quality/pr-leak-review/002-push-review.md).
       Acceptance: no finding (a finding blocks the push until the history is cleaned).
-- [ ] [AI] Push the branch and open a **draft** PR against `main`:
+- [x] [AI] Push the branch and open a **draft** PR against `main`:
       `gh pr create --draft --base main --title "feat(ayokoding-www): course catalog, category sidebar, and course header" --body-file <file>`.
       The body states scope (181 courses' metadata, three screens, one optional API field, rules and
       skills), the rollback (revert the merge commit), the new-code cost and benefit (about ten small
       modules and components plus translation keys; they replace a 693-link list and give the tutorial
       gates one place to read a course's format; tests exempt from the cost statement), the
       frontmatter-only content claim, and a link to this plan. Record the PR number.
-- [ ] [AI] Poll the PR checks every 2 minutes with `rtk gh pr checks <number>` (never
+- [x] [AI] Poll the PR checks every 2 minutes with `rtk gh pr checks <number>` (never
       `gh run watch`). Acceptance: the `Quality gate` from `.github/workflows/pr-quality-gate.yml` is
       green for the exact current head and base. On failure, read the failing log
       (`rtk gh run view <run-id> --log-failed`), fix the root cause, run the push leak review, push,
       and poll again.
-- [ ] [AI] Run [PR Leak Review](../../../repo-governance/workflows/quality/pr-leak-review.md) for the
+- [x] [AI] Run [PR Leak Review](../../../repo-governance/workflows/quality/pr-leak-review.md) for the
       exact current head. Acceptance: one posted `ose-pr-leak-review:v1` `pass` and a successful
       `leak-review` status on that head. Any new push needs a new pass.
 
@@ -980,7 +980,7 @@ against the local production build.
 
 > All checks below must pass before starting Phase 8.
 
-- [ ] [AI] The PR's current head has green `Quality gate` and `leak-review` statuses (recorded with
+- [x] [AI] The PR's current head has green `Quality gate` and `leak-review` statuses (recorded with
       run IDs and head SHA).
 
 > **Pause Safety**: the draft PR is open and green; nothing is merged. Safe to stop. To resume:

@@ -23,6 +23,14 @@ describe("checkCourseMetadata", () => {
     ).toEqual([]);
   });
 
+  it("requires format and estimatedHours when other fields are valid", () => {
+    const issues = checkCourseMetadata("sql-essentials", {
+      category: base.category,
+      description: base.description,
+    });
+    expect(issues.map((i) => i.field).sort()).toEqual(["estimatedHours", "format"]);
+  });
+
   it("still validates declared fields on an outline", () => {
     const issues = checkCourseMetadata("x", {
       category: "accounting",

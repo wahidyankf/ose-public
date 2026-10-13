@@ -45,6 +45,18 @@ describe("resolveCourseStartSlug", () => {
     expect(resolveCourseStartSlug(course, real("learn/courses/x/overview"))).toBe("learn/courses/x/overview");
   });
 
+  it("rule 2b: skips a leaf page that is not real and resolves the next one", () => {
+    const course = node("learn/courses/x", 1, true, [
+      node("learn/courses/x/learning", 1, true, [
+        node("learn/courses/x/learning/ghost", 0, false),
+        node("learn/courses/x/learning/beginner", 1, false),
+      ]),
+    ]);
+    expect(resolveCourseStartSlug(course, real("learn/courses/x/learning", "learn/courses/x/learning/beginner"))).toBe(
+      "learn/courses/x/learning/beginner",
+    );
+  });
+
   it("rule 4: returns null when nothing qualifies, without mutating the tree", () => {
     const course = node("learn/courses/x", 1, true, [node("learn/courses/x/learning", 1, true, [])]);
     const before = JSON.stringify(course);

@@ -50,6 +50,7 @@ describe("CourseHeader", () => {
     expect(screen.getByRole("link", { name: "Start course" }).getAttribute("href")).toBe(
       "/en/learn/courses/sql-essentials/learning/overview",
     );
+    expect(screen.getByRole("region", { name: "Course summary" })).toBeTruthy();
   });
 
   it("keeps ?path= on Start and renders both plan-04 slots", () => {

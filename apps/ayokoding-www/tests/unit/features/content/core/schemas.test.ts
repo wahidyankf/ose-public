@@ -61,4 +61,14 @@ describe("frontmatterSchema — course catalog metadata (plan 03)", () => {
     expect(parsed.format).toBeUndefined();
     expect(parsed.estimatedHours).toBeUndefined();
   });
+
+  it("normalizes explicitly empty category and format strings to absent", () => {
+    const parsed = frontmatterSchema.parse({
+      title: "Empty Course",
+      category: "",
+      format: "   ",
+    });
+    expect(parsed.category).toBeUndefined();
+    expect(parsed.format).toBeUndefined();
+  });
 });

@@ -69,6 +69,9 @@ describe("CourseCatalog", () => {
     expect(screen.getByText("About 8 h")).toBeTruthy();
     expect(screen.getByText("In 2 paths")).toBeTruthy();
     expect(screen.getByText("Outline")).toBeTruthy();
+    expect(screen.getByText(/2 courses in 1 categories\./)).toBeTruthy();
+    const cardLink = screen.getByRole("link", { name: "SQL Essentials" });
+    expect(cardLink.className).not.toMatch(/outline-none/);
     const section = screen.getByRole("heading", { name: /Data and databases/ }).closest("section")!;
     expect(
       within(section)

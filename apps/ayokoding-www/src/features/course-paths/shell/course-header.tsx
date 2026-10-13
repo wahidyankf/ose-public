@@ -41,7 +41,7 @@ export function CourseHeader({
 }: CourseHeaderProps) {
   const loc = locale as Locale;
   return (
-    <header aria-label={t(loc, "courseHeaderLabel")} className="mb-8">
+    <header role="region" aria-label={t(loc, "courseHeaderLabel")} className="mb-8">
       {data.description ? <p className="text-lg text-muted-foreground">{data.description}</p> : null}
       <div className="mt-3">
         <CourseMetaRow

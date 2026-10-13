@@ -5,7 +5,6 @@ import { contentUrl } from "@/features/content/core/content-url";
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
 import { tf } from "@/features/i18n/core/fill";
-import { COURSE_CATEGORIES } from "@/features/content/core/course-categories";
 import type { CourseCatalogEntry, CourseCatalogGroup } from "../core/course-catalog";
 import { CourseMetaRow } from "./course-meta-row";
 
@@ -29,8 +28,7 @@ export function CourseCatalog({ locale, title, breadcrumbSegments, groups }: Cou
       <Breadcrumb locale={locale} slug="learn/courses" segments={breadcrumbSegments} />
       <h1 className="mb-6 text-4xl font-extrabold tracking-tight">{title}</h1>
       <p className="text-muted-foreground">
-        {tf(loc, "catalogSummary", { courses: total, categories: COURSE_CATEGORIES.length })}{" "}
-        {t(loc, "catalogEstimateNote")}
+        {tf(loc, "catalogSummary", { courses: total, categories: groups.length })} {t(loc, "catalogEstimateNote")}
       </p>
       <CategoryJumpLinks locale={locale} groups={groups} />
       {groups.map((group) => {
@@ -84,7 +82,7 @@ export function CourseCard({ locale, entry }: { locale: string; entry: CourseCat
     <Card className="relative h-full has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring">
       <CardHeader>
         <CardTitle>
-          <Link href={href} className="after:absolute after:inset-0 focus-visible:outline-none">
+          <Link href={href} className="after:absolute after:inset-0">
             {entry.title}
           </Link>
         </CardTitle>

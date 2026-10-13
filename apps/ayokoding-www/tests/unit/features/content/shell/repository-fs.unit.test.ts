@@ -87,4 +87,24 @@ describe("FileSystemContentRepository#readAllContent — course catalog metadata
       await rm(parent, { recursive: true, force: true });
     }
   });
+
+  it("drops catalog metadata from non-course pages so stray keys stay off the wire", async () => {
+    const parent = await mkdtemp(join(tmpdir(), "repository-fs-noncourse-test-"));
+    const guideDir = join(parent, "en", "learn", "guides", "g");
+    try {
+      await mkdir(guideDir, { recursive: true });
+      await writeFile(
+        join(guideDir, "_index.md"),
+        '---\ntitle: "Guide G"\nprerequisites: []\ncategory: oops\ndescription: "A guide that is not a course at all."\nformat: by-example\nestimatedHours: 8\n---\n\nBody.\n',
+      );
+      const repo = new FileSystemContentRepository(parent);
+      const all = await repo.readAllContent();
+      const meta = all.find((m) => m.slug === "learn/guides/g");
+      expect(meta?.category).toBeUndefined();
+      expect(meta?.format).toBeUndefined();
+      expect(meta?.estimatedHours).toBeUndefined();
+    } finally {
+      await rm(parent, { recursive: true, force: true });
+    }
+  });
 });

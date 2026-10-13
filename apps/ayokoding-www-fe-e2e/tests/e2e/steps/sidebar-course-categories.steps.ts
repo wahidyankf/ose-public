@@ -41,6 +41,7 @@ Then("every other group is closed", async ({ page }) => {
 
 Given("the sidebar shows a closed group", async ({ page }) => {
   await page.goto("/en/learn/courses");
+  await page.waitForLoadState("networkidle");
 });
 
 When("the reader focuses its button and presses Enter", async ({ page }) => {

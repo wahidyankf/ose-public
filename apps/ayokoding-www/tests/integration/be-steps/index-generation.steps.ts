@@ -159,4 +159,29 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(content).toContain("draft: false");
     });
   });
+
+  Scenario("The course catalog section keeps a frontmatter-only index", ({ Given, When, Then, And }) => {
+    Given('a "learn/courses" section in locale "en" with two course sections', async () => {
+      await writeIndexFile(tmpDir, "en/learn/courses/_index.md", makeIndex("Courses", 102));
+      await writeIndexFile(tmpDir, "en/learn/courses/sql-essentials/_index.md", makeIndex("SQL Essentials", 200));
+      await writeIndexFile(tmpDir, "en/learn/courses/sql-essentials/overview.md", makePage("Overview", 10));
+      await writeIndexFile(tmpDir, "en/learn/courses/git-course/_index.md", makeIndex("Git Course", 100));
+      await writeIndexFile(tmpDir, "en/learn/courses/git-course/overview.md", makePage("Overview", 10));
+    });
+
+    When("the index generator runs in generate mode", async () => {
+      await processAllIndexFiles(tmpDir, "generate");
+    });
+
+    Then("the learn/courses _index.md contains only its frontmatter", async () => {
+      const content = await fs.readFile(path.join(tmpDir, "en/learn/courses/_index.md"), "utf-8");
+      expect(content.split("\n").filter((l) => l.startsWith("- ["))).toEqual([]);
+      expect(content.split("---").slice(2).join("---").trim()).toBe("");
+    });
+
+    And("each course _index.md still lists its own children", async () => {
+      const content = await fs.readFile(path.join(tmpDir, "en/learn/courses/sql-essentials/_index.md"), "utf-8");
+      expect(content).toContain("- [Overview](/en/learn/courses/sql-essentials/overview)");
+    });
+  });
 });

@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 600
 prerequisites: ["just-enough-bash", "security-essentials", "networking-essentials"]
+category: security
+description: "Detect attacks, respond to incidents, and stop them from happening again."
+format: by-example
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/defensive-security/overview)

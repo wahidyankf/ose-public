@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 171
 prerequisites: ["just-enough-swift", "frontend-essentials", "android-app-development"]
+category: application-development
+description: "Build native iOS apps in Swift with SwiftUI, view models, and async data."
+format: by-example
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/ios-app-development/overview)

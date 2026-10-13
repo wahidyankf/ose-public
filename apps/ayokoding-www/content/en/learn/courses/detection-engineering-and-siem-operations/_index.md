@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 610
 prerequisites: ["defensive-security", "just-enough-python"]
+category: security
+description: "Turn raw logs into tested detection rules a security team can trust."
+format: by-example
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/detection-engineering-and-siem-operations/overview)

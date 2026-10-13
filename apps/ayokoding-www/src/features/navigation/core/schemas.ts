@@ -9,6 +9,7 @@ export const treeNodeSchema: z.ZodType<TreeNodeType> = z.lazy(() =>
     slug: z.string(),
     weight: z.number(),
     isSection: z.boolean(),
+    category: z.string().optional(),
     children: z.array(treeNodeSchema),
   }),
 );
@@ -18,5 +19,6 @@ interface TreeNodeType {
   slug: string;
   weight: number;
   isSection: boolean;
+  category?: string;
   children: TreeNodeType[];
 }

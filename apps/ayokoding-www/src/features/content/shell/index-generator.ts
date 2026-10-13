@@ -133,7 +133,11 @@ export async function processAllIndexFiles(
         continue;
       }
 
-      const childList = generateChildList(section.locale, children, knownSlugs);
+      // The catalog section (plan 03): page.tsx renders the catalog from course metadata,
+      // so the generator keeps this one _index.md frontmatter-only. Every other section is
+      // generated as before.
+      const isCatalogSection = section.locale === "en" && section.slug === "learn/courses";
+      const childList = isCatalogSection ? "" : generateChildList(section.locale, children, knownSlugs);
       const expected = rebuildIndexFile(withFields, childList);
 
       if (rawContent !== expected) {

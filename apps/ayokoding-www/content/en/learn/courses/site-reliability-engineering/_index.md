@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1040
 prerequisites: ["containers-and-orchestration", "system-design"]
+category: infrastructure-and-operations
+description: "Set reliability targets, measure them, and respond well to incidents."
+format: annotated-concept
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/site-reliability-engineering/overview)

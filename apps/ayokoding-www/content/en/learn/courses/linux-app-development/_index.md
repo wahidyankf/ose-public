@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 449
 prerequisites: ["just-enough-python"]
+category: application-development
+description: "Write Linux programs in Python that respect arguments, streams, files, and signals."
+format: by-example
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/linux-app-development/overview)

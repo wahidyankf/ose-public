@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 187
 prerequisites: ["functional-programming", "object-oriented-programming-essentials"]
+category: programming-languages
+description: "Learn F# records, unions, and pattern matching for functional-first code."
+format: primer
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/just-enough-fsharp/overview)

@@ -4,6 +4,10 @@ date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 462
 prerequisites: ["agent-tools-and-mcp", "agent-context-and-memory"]
+category: ai-engineering
+description: "Split agent work across subagents and trace what each one does."
+format: annotated-concept
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/agent-orchestration-subagents-and-observability/overview)

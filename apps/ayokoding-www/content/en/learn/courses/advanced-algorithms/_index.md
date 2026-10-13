@@ -4,6 +4,10 @@ date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 350
 prerequisites: ["data-structures-and-algorithms-essentials", "just-enough-python"]
+category: computer-science
+description: "Solve hard problems with graphs, dynamic programming, and other proven techniques."
+format: by-example
+estimatedHours: 14
 ---
 
 - [Learning](/en/learn/courses/advanced-algorithms/learning)

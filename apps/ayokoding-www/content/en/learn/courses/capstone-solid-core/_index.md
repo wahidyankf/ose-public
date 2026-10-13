@@ -17,6 +17,10 @@ prerequisites:
     "software-engineering-practices",
     "software-product-engineering",
   ]
+category: architecture-and-distributed-systems
+description: "Rework the first capstone app into a clean, well-designed professional codebase."
+format: capstone
+estimatedHours: 4
 ---
 
 - [Overview](/en/learn/courses/capstone-solid-core/overview)

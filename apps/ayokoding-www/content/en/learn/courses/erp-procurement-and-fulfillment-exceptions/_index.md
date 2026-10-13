@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1135
 prerequisites: ["procure-to-pay-systems", "order-to-cash-systems"]
+category: erp-systems
+description: "Handle returns, disputes, cancellations, and partial deliveries inside the ERP."
 status: outline
 ---
 

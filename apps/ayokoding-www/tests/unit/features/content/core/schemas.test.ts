@@ -35,3 +35,30 @@ describe("frontmatterSchema — status (outline-course-status)", () => {
     expect(() => frontmatterSchema.parse({ title: "A draft course", status: "draft" })).toThrow();
   });
 });
+
+describe("frontmatterSchema — course catalog metadata (plan 03)", () => {
+  it("parses good category, format, and estimatedHours values", () => {
+    const parsed = frontmatterSchema.parse({
+      title: "SQL Essentials",
+      category: "data-and-databases",
+      format: "by-example",
+      estimatedHours: 8,
+    });
+    expect(parsed.category).toBe("data-and-databases");
+    expect(parsed.format).toBe("by-example");
+    expect(parsed.estimatedHours).toBe(8);
+  });
+
+  it("parses bad metadata values to undefined instead of failing", () => {
+    const parsed = frontmatterSchema.parse({
+      title: "Typo Course",
+      category: "not-a-category",
+      format: 42,
+      estimatedHours: "lots",
+    });
+    // category is a string so it passes the tolerant string check; strict validation is separate.
+    expect(parsed.category).toBe("not-a-category");
+    expect(parsed.format).toBeUndefined();
+    expect(parsed.estimatedHours).toBeUndefined();
+  });
+});

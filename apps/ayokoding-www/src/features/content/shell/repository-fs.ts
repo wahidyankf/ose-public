@@ -49,6 +49,9 @@ export class FileSystemContentRepository implements ContentRepository {
           filePath,
           prerequisites: frontmatter.prerequisites,
           status: frontmatter.status,
+          category: frontmatter.category,
+          format: frontmatter.format,
+          estimatedHours: frontmatter.estimatedHours,
         });
       } catch {
         // Skip files that can't be read

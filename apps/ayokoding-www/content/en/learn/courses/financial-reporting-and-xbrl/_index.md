@@ -4,6 +4,8 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1117
 prerequisites: ["financial-reporting-standards-ifrs-vs-gaap"]
+category: accounting
+description: "Tag financial report facts with XBRL so machines can read them correctly."
 status: outline
 ---
 

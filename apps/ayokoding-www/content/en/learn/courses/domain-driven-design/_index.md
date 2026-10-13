@@ -4,6 +4,10 @@ date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 443
 prerequisites: ["object-oriented-design-and-patterns", "software-architecture"]
+category: architecture-and-distributed-systems
+description: "Model business rules in code with bounded contexts and aggregates."
+format: by-example
+estimatedHours: 3
 ---
 
 - [Overview](/en/learn/courses/domain-driven-design/overview)

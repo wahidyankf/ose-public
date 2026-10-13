@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 350
 prerequisites: ["just-enough-go", "just-enough-rust"]
+category: tools-and-practices
+description: "Build command-line tools in Go and Rust that people and scripts can rely on."
+format: by-example
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/building-production-cli-tools/overview)

@@ -4,6 +4,10 @@ date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 220
 prerequisites: ["just-enough-python"]
+category: systems-and-networking
+description: "Follow a request from URL to response through DNS, TCP, and HTTP."
+format: by-example
+estimatedHours: 7
 ---
 
 - [Overview](/en/learn/courses/networking-essentials/overview)

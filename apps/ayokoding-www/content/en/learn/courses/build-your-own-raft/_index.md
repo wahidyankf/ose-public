@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 190
 prerequisites: ["just-enough-go", "distributed-systems"]
+category: architecture-and-distributed-systems
+description: "Build a small Raft cluster with leader election and a replicated key-value store."
+format: by-example
+estimatedHours: 1
 ---
 
 - [Drilling](/en/learn/courses/build-your-own-raft/drilling)

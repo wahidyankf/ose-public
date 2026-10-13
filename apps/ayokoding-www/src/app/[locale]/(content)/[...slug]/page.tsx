@@ -29,6 +29,10 @@ import {
   LEARN_PATHS_PREFIX,
 } from "@/features/course-paths/shell/paths-route";
 import { PathCard, CategorySection, ArcGroup } from "@/features/course-paths/shell/path-card";
+import { COURSE_CATALOG_SLUG, courseRootIdFromSlug } from "@/features/course-paths/shell/course-path-nav";
+import { buildCourseCatalog } from "@/features/course-paths/core/course-catalog";
+import { CourseCatalog } from "@/features/course-paths/shell/course-catalog";
+import { buildCourseHeaderData } from "@/features/course-paths/shell/course-header-data";
 import { CategoryLanding } from "@/features/course-paths/shell/category-landing";
 import { ArcLanding } from "@/features/course-paths/shell/arc-landing";
 import { PathLanding } from "@/features/course-paths/shell/path-landing";
@@ -356,6 +360,22 @@ export default async function ContentPage({ params }: Props) {
     breadcrumbSegments,
   };
 
+  // The catalog (plan 03): the courses section renders from course metadata, not from the
+  // generated _index.md body (which the generator now keeps frontmatter-only). Checked before
+  // the `courseId === null` early return because `courseIdFromSlug("learn/courses")` is null
+  // (the slug is the section itself, not a course root).
+  if (slugStr === COURSE_CATALOG_SLUG) {
+    const catalogData = await loadRoutePathData(locale);
+    return (
+      <CourseCatalog
+        locale={locale}
+        title={page.title}
+        breadcrumbSegments={breadcrumbSegments}
+        groups={buildCourseCatalog(catalogData.contentMap, catalogData.manifests, locale)}
+      />
+    );
+  }
+
   if (courseId === null) {
     return <CoursePageContent {...contentProps} renderData={canonicalRenderData} />;
   }
@@ -370,13 +390,31 @@ export default async function ContentPage({ params }: Props) {
     page.next,
   );
 
+  // Course root pages (plan 03) get the header; pages inside a course do not. The tree is
+  // rebuilt from the already-loaded content metas — no extra fetch for the header.
+  const rootId = courseRootIdFromSlug(slugStr);
+  let courseHeader = undefined;
+  if (rootId !== null) {
+    const { buildTrees } = await import("@/features/content/core/tree-builder");
+    const trees = buildTrees([...pathData.contentMap.values()]);
+    courseHeader = buildCourseHeaderData(pathData.contentMap, trees[locale] ?? [], rootId, locale) ?? undefined;
+  }
+
   return (
     <Suspense
-      fallback={<CoursePageContent {...contentProps} courseId={courseId} renderData={canonicalCourseRenderData} />}
+      fallback={
+        <CoursePageContent
+          {...contentProps}
+          courseId={courseId}
+          renderData={canonicalCourseRenderData}
+          courseHeader={courseHeader}
+        />
+      }
     >
       <CoursePagePathContent
         {...contentProps}
         courseId={courseId}
+        courseHeader={courseHeader}
         canonicalRenderData={canonicalCourseRenderData}
         fallbackPrev={page.prev}
         fallbackNext={page.next}

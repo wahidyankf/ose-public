@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 173
 prerequisites: ["just-enough-dart", "frontend-essentials"]
+category: application-development
+description: "Ship one Flutter app to mobile and desktop from a single Dart codebase."
+format: by-example
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/hybrid-app-development/overview)

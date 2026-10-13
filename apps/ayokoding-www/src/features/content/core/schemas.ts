@@ -21,6 +21,11 @@ export const frontmatterSchema = z.object({
   prerequisites: z.array(z.string()).default([]),
   // Marker honesty: course-frontmatter.unit.test.ts fails if a sub-1000-word course lacks this status.
   status: z.enum(["outline"]).optional(),
+  // Course catalog metadata (plan 03): tolerant at runtime so a typo never hides a page;
+  // the strict check lives in course-metadata.ts and runs in tests.
+  category: z.string().optional().catch(undefined),
+  format: z.string().optional().catch(undefined),
+  estimatedHours: z.number().optional().catch(undefined),
 });
 
 export type Frontmatter = z.infer<typeof frontmatterSchema>;

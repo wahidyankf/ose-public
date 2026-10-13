@@ -125,6 +125,11 @@ Feature: Course catalog
     And the main content does not scroll sideways
 ```
 
+The catalog scenarios speak of category sections; the FR-07 "Other courses" section is the
+fallback for a course whose category is missing or unknown. It is a fifteenth, last section that
+appears only when such a course exists — the metadata guard keeps it empty on the real corpus, and
+the Unit binding covers it with a fixture course.
+
 ### New: `frontend/course-paths/course-landing-header.feature`
 
 ```gherkin

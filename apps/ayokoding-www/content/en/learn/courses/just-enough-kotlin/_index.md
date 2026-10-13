@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 168
 prerequisites: []
+category: programming-languages
+description: "Learn Kotlin null safety, functions, and classes before Android development."
+format: primer
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/just-enough-kotlin/overview)

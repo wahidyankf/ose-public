@@ -4,6 +4,10 @@ date: 2026-07-18T00:00:00+07:00
 draft: false
 weight: 390
 prerequisites: ["networking-essentials", "just-enough-python"]
+category: systems-and-networking
+description: "Debug real network problems with load balancers, proxies, and TLS."
+format: annotated-concept
+estimatedHours: 5
 ---
 
 - [Overview](/en/learn/courses/advanced-networking/overview)

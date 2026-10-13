@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1142
 prerequisites: ["inventory-and-warehouse-management"]
+category: erp-systems
+description: "Keep stock numbers correct when many people change inventory at once."
 status: outline
 ---
 

@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1128
 prerequisites: ["erp-document-lifecycle-and-state-machines"]
+category: erp-systems
+description: "Turn approved business events into ledger postings with clear, testable rules."
 status: outline
 ---
 

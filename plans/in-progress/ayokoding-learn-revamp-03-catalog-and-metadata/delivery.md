@@ -10,23 +10,31 @@ below). Plans 01 and 02 must also be merged first (see Phase 0).
 
 Authored 2026-10-09.
 
+plan-quality-gate: PASS_WITH_FINDINGS (2 cycles, 0 open blocking; cycle 1 BLOCKED on API contract delta, manual API recipe, and worktree identity — all repaired and re-audited in cycle 2)
+
 ## Worktree
 
 - **Execution worktree:** `worktrees/ayokoding-learn-revamp-03-catalog-and-metadata/`
-- **Provisioning status:** pending
+- **Provisioning status:** provisioned
 - **Authoring-worktree exception:** this plan was authored inside the separate authoring worktree
   `.claude/worktrees/ayokoding-update` (branch `worktree-ayokoding-update`), which the user required
   for writing all plans of the AyoKoding Learn Revamp series together. That authoring worktree is
   removed after the plan-docs PR merges and is **never** used for execution. The Provisioned Worktree
   Identity and Delivery Branch Inventory are intentionally omitted until Step 0 below creates them.
-- **Step 0 obligation (blocking):** the plan-execution Step 0 gate provisions the execution worktree
-  from fresh `origin/main` with
-  `rtk git worktree add -b ayokoding-learn-revamp-03-catalog-and-metadata-base worktrees/ayokoding-learn-revamp-03-catalog-and-metadata origin/main`,
-  initializes it per
-  [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md),
-  writes the immutable identity and the first inventory row into this section, replaces
-  `Provisioning status: pending` with `Provisioning status: provisioned` in the same plan update, and
-  syncs with `origin/main` before any delivery packet starts.
+- **Provisioned Worktree Identity:** `worktrees/ayokoding-learn-revamp-03-catalog-and-metadata/`
+  on base branch `ayokoding-learn-revamp-03-catalog-and-metadata-base`, provisioned from
+  `origin/main` at `f133a96d5` (promotion merge, PR #691), created 2026-10-13T07:29:10Z by
+  the executing agent session (`git worktree add -b ayokoding-learn-revamp-03-catalog-and-metadata-base worktrees/ayokoding-learn-revamp-03-catalog-and-metadata origin/main`), and initialized per
+  [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md)
+  (`npm install` exit 0, Husky hooks present; `npm run doctor` exit 0).
+- **Delivery Branch Inventory:**
+
+  | Branch                                                | Mode              | Status                                |
+  | ----------------------------------------------------- | ----------------- | ------------------------------------- |
+  | `ayokoding-learn-revamp-03-catalog-and-metadata-base` | worktree base     | active                                |
+  | `promote-ayokoding-learn-revamp-03`                   | promotion PR #691 | delivered (squash-merged `f133a96d5`) |
+  | `ayokoding-learn-revamp-03-catalog-and-metadata`      | worktree-to-pr    | active                                |
+
 - **Cleanup:** after the PR merges, the worktree and its branches come down through
   [Dev Artifact Clean-Up](../../../repo-governance/workflows/maintenance/dev-artifact-clean-up.md)
   (see Plan Archival).
@@ -48,12 +56,19 @@ folder moves to `plans/done/` inside this same PR, before the merge (archival-in
 | ----- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | DU-03 | 1–8 and Plan Archival (Phase 0 opens no PR) | All 181 courses carry valid metadata; the catalog, grouped sidebar, and course header are live; the real-corpus guard runs in `test:quick`; rules, skills, and docs describe the new fields | Revert the merge commit in a revert PR (code and content together; see [tech-docs/002](./tech-docs/002-metadata-schema-and-migration.md#rollback)) |
 
+### Delivery Boundaries
+
+| Boundary  | Branches                                                  | Opens           | Merges when                                                                     |
+| --------- | --------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------- |
+| Promotion | `promote-ayokoding-learn-revamp-03` → `main`              | Before Phase 0  | Pure move + indexes green (PR #691, merged `f133a96d5`)                         |
+| DU-03     | `ayokoding-learn-revamp-03-catalog-and-metadata` → `main` | Phase 7 (draft) | Phases 1–8 + archival inside the PR; exact-head Quality gate + leak-review pass |
+
 There is no feature flag ([tech-docs/README](./tech-docs/README.md#feature-flag)). The phases are
 natural pauses inside the one branch; no phase is merged on its own.
 
 ### Before Phase 0: Promotion
 
-- [ ] [AI] Promote the plan per
+- [x] [AI] Promote the plan per
       [Starting and Completing Work](../../../repo-governance/conventions/structure/plans/starting-and-completing-work.md):
       a pure move of `plans/backlog/ayokoding-learn-revamp-03-catalog-and-metadata/` to
       `plans/in-progress/ayokoding-learn-revamp-03-catalog-and-metadata/` plus the
@@ -207,33 +222,37 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
   a recorded green baseline; an exact inventory of the 181 course folders.
 - **Proof:** `<plan>/evidence/phase-0-baseline.md` and `<plan>/evidence/phase-0-inventory.md`.
 
-- [ ] [AI] **Plan quality gate (deferred from authoring):** run the `plan-quality-gate` workflow on this
+- [x] [AI] **Plan quality gate (deferred from authoring):** run the `plan-quality-gate` workflow on this
       plan with `max-cycles` 2 before any other step below. It was deliberately not run when this plan was
       written, to keep token use even (user decision, 2026-10-09). Acceptance: verdict `PASS` or
       `PASS_WITH_FINDINGS`; record the line `plan-quality-gate: <verdict> (<n> cycles, <k> open)` in this
       file's header section. If the plan is still in `plans/backlog/`, run the gate before the promotion PR.
       A `BLOCKED` verdict stops execution and is reported to the user.
-- [ ] [AI] Run the plan-execution Step 0 gate described in [## Worktree](#worktree): provision
-      `worktrees/ayokoding-learn-revamp-03-catalog-and-metadata/` from fresh `origin/main`, record the
-      Provisioned Worktree Identity and the first Delivery Branch Inventory row in this file, and set
-      `Provisioning status: provisioned`. Acceptance: `rtk git worktree list --porcelain` shows the
-      worktree on branch `ayokoding-learn-revamp-03-catalog-and-metadata-base`.
-- [ ] [AI] From the worktree root, run
+- [x] [AI] Run the plan-execution Step 0 gate described in [## Worktree](#worktree). If the
+      Provisioned Worktree Identity above is already recorded (resume case), verify it with
+      `rtk git worktree list --porcelain` and continue; do not provision a second worktree.
+      Otherwise provision `worktrees/ayokoding-learn-revamp-03-catalog-and-metadata/` from fresh
+      `origin/main`, record the Provisioned Worktree Identity and the first Delivery Branch
+      Inventory row in this file, and set `Provisioning status: provisioned`. Acceptance:
+      `rtk git worktree list --porcelain` shows the worktree on branch
+      `ayokoding-learn-revamp-03-catalog-and-metadata-base` (recorded 2026-10-13; delivery
+      continues on branch `ayokoding-learn-revamp-03-catalog-and-metadata`).
+- [x] [AI] From the worktree root, run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`.
       Acceptance: exit 0 and Husky hooks installed (`.husky/_` exists).
-- [ ] [AI] Run `rtk npm run doctor`. Acceptance: exit 0. Only if it reports a missing or drifted
+- [x] [AI] Run `rtk npm run doctor`. Acceptance: exit 0. Only if it reports a missing or drifted
       toolchain, run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
       and then `rtk npm run doctor` again (exit 0).
-- [ ] [AI] Create the delivery branch from the synced base:
+- [x] [AI] Create the delivery branch from the synced base:
       `rtk git switch -c ayokoding-learn-revamp-03-catalog-and-metadata` and append it to the Delivery
       Branch Inventory (`worktree-to-pr`, `active`).
 
 ### Preconditions (decision D1)
 
-- [ ] [AI] Plan 01 merged: `rtk git ls-tree -d --name-only origin/main plans/done/` lists a folder
+- [x] [AI] Plan 01 merged: `rtk git ls-tree -d --name-only origin/main plans/done/` lists a folder
       ending in `__ayokoding-learn-revamp-01-navigation-and-display`. Record the folder name.
-- [ ] [AI] Plan 02 merged: the same listing has a folder ending in
+- [x] [AI] Plan 02 merged: the same listing has a folder ending in
       `__ayokoding-learn-revamp-02-path-model`; `rtk git grep -n "status" origin/main -- apps/ayokoding-www/src/features/content/core/schemas.ts`
       shows the `status` field; and
       `rtk git cat-file -e origin/main:apps/ayokoding-www/src/features/course-paths/shell/outline-badge.tsx`
@@ -242,21 +261,21 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
       either waits for it to merge or explicitly authorizes
       [D1](./tech-docs/007-decision-records.md#d1--order-against-plan-02) Alternative A in writing. Do
       not continue on an assumption.
-- [ ] [AI] Re-probe Vercel MCP: record in `<plan>/evidence/phase-0-baseline.md` whether any Vercel
+- [x] [AI] Re-probe Vercel MCP: record in `<plan>/evidence/phase-0-baseline.md` whether any Vercel
       MCP tool is listed in this session (`present` or `absent`). Either way this plan uses no Vercel
       tool ([tech-docs/README](./tech-docs/README.md#vercel-mcp-capability)); record no Vercel
       identifiers.
 
 ### Baseline
 
-- [ ] [AI] Run `QUICK`. Acceptance: exit 0. Save the summary (exit code, test counts, line coverage)
+- [x] [AI] Run `QUICK`. Acceptance: exit 0. Save the summary (exit code, test counts, line coverage)
       in `<plan>/evidence/phase-0-baseline.md`.
-- [ ] [AI] Run `E2E-QUICK` and `BE-E2E-QUICK`. Acceptance: both exit 0; save the summaries.
-- [ ] [AI] Run `INTEGRATION`. Acceptance: exit 0; save the pass count.
-- [ ] [AI] Run `E2E`, then `BE-E2E`. Acceptance: both exit 0 with every scenario passing; save the
+- [x] [AI] Run `E2E-QUICK` and `BE-E2E-QUICK`. Acceptance: both exit 0; save the summaries.
+- [x] [AI] Run `INTEGRATION`. Acceptance: exit 0; save the pass count.
+- [x] [AI] Run `E2E`, then `BE-E2E`. Acceptance: both exit 0 with every scenario passing; save the
       pass/fail counts. If either fails before any change, fix the root cause first per the Failure
       handling rule.
-- [ ] [AI] Run `VALIDATE-INDEXES`. Acceptance: exit 0 (indexes already in sync).
+- [x] [AI] Run `VALIDATE-INDEXES`. Acceptance: exit 0 (indexes already in sync).
 - [ ] [AI] Start `DEV` in the background. With Playwright MCP at 1280×800, open
       `http://localhost:3101/en/learn/courses` and `http://localhost:3101/en/learn/courses/sql-essentials`.
       Acceptance: the courses page is the long generated link list (record the number of links inside
@@ -267,13 +286,13 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
 
 ### Inventory
 
-- [ ] [AI] List the course folders:
+- [x] [AI] List the course folders:
       `find apps/ayokoding-www/content/en/learn/courses -mindepth 1 -maxdepth 1 -type d | sort`.
       Acceptance: 181 lines. Write the list to `<plan>/evidence/phase-0-inventory.md` under "Course
       folders". Compare it with the 181 slugs in
       [tech-docs/003](./tech-docs/003-category-taxonomy-and-course-mapping.md#the-181-row-mapping) and
       record "identical" or the exact differences.
-- [ ] [AI] Count the outline set:
+- [x] [AI] Count the outline set:
       `grep -l "^status: outline" apps/ayokoding-www/content/en/learn/courses/*/_index.md | sort`.
       Acceptance: 62 files, matching the courses marked outline in tech-docs/003. Record the list.
 - [ ] [AI] **If the folder list or the outline set differs from tech-docs/003:** stop and record the
@@ -282,17 +301,17 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
       the rules in tech-docs/003, and report them to the user before continuing; a different outline
       count means plan 02's or this plan's measurement is wrong
       ([tech-docs/002](./tech-docs/002-metadata-schema-and-migration.md#reconciliation)).
-- [ ] [AI] Record the current frontmatter keys of the course `_index.md` files (for example with
+- [x] [AI] Record the current frontmatter keys of the course `_index.md` files (for example with
       `head -12` on three of them) so Phase 4 can prove that existing lines did not change.
 
 ### Phase 0 Gate
 
 > All checks below must pass before starting Phase 1.
 
-- [ ] [AI] Both preconditions hold (or the user has authorized D1 Alternative A in writing).
-- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records exit 0 for `QUICK`, `E2E-QUICK`,
+- [x] [AI] Both preconditions hold (or the user has authorized D1 Alternative A in writing).
+- [x] [AI] `<plan>/evidence/phase-0-baseline.md` records exit 0 for `QUICK`, `E2E-QUICK`,
       `BE-E2E-QUICK`, `INTEGRATION`, `E2E`, `BE-E2E`, and `VALIDATE-INDEXES`.
-- [ ] [AI] `<plan>/evidence/phase-0-inventory.md` lists 181 course folders and 62 outline courses, or
+- [x] [AI] `<plan>/evidence/phase-0-inventory.md` lists 181 course folders and 62 outline courses, or
       records a reported difference.
 - [ ] [AI] `rtk git status --short` shows only `<plan>/` changes.
 
@@ -311,29 +330,29 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
 - **Proof:** `<plan>/evidence/phase-1-gherkin.md` with the failing coverage output.
 - _Suggested executor: `specs-maker`, checked by `specs-checker`._
 
-- [ ] [AI] Create `specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature`
+- [x] [AI] Create `specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature`
       with the 6 scenarios in prd.md, verbatim.
-- [ ] [AI] Create `specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature`
+- [x] [AI] Create `specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature`
       with the 7 scenarios in prd.md, verbatim.
-- [ ] [AI] Create `specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature`
+- [x] [AI] Create `specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature`
       with the 4 scenarios in prd.md, verbatim.
-- [ ] [AI] Create `specs/apps/ayokoding/www/behaviours/backend/content/course-metadata.feature` with
+- [x] [AI] Create `specs/apps/ayokoding/www/behaviours/backend/content/course-metadata.feature` with
       the 5 scenarios in prd.md, verbatim.
-- [ ] [AI] Append the scenario "The course catalog section keeps a frontmatter-only index" (with its
+- [x] [AI] Append the scenario "The course catalog section keeps a frontmatter-only index" (with its
       exemption comment) to
       `specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature`.
       Acceptance: the six existing scenarios are byte-identical (`rtk git diff` shows only added lines).
-- [ ] [AI] Append the scenario "Course nodes carry their category" to
+- [x] [AI] Append the scenario "Course nodes carry their category" to
       `specs/apps/ayokoding/www/behaviours/backend/navigation/navigation-api.feature`. Acceptance: only
       added lines.
-- [ ] [AI] Index the new features in `specs/apps/ayokoding/www/behaviours/frontend/course-paths/README.md`,
+- [x] [AI] Index the new features in `specs/apps/ayokoding/www/behaviours/frontend/course-paths/README.md`,
       `specs/apps/ayokoding/www/behaviours/frontend/navigation/README.md`, and
       `specs/apps/ayokoding/www/behaviours/backend/content/README.md`, one annotated line each, in the
       existing style.
-- [ ] [AI] Run `specs-checker` on the six feature files (at most 2 cycles). Acceptance: no open
+- [x] [AI] Run `specs-checker` on the six feature files (at most 2 cycles). Acceptance: no open
       blocking finding; each exemption comment sits directly above its tag and names a real target and
       scenario.
-- [ ] [AI] **RED (coverage):** run `COVERAGE`. Acceptance: it fails, and the missing bindings it names
+- [x] [AI] **RED (coverage):** run `COVERAGE`. Acceptance: it fails, and the missing bindings it names
       are exactly the new scenarios (24 new scenarios: 6 + 7 + 4 + 5 in the new files and 1 + 1 appended, minus the adapters each one is exempt from).
       Run `COVERAGE-BE-E2E`. Acceptance: it fails and names only "Course nodes carry their category".
       Save both outputs in `<plan>/evidence/phase-1-gherkin.md`.
@@ -342,9 +361,9 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
 
 > All checks below must pass before starting Phase 2.
 
-- [ ] [AI] The coverage failures name only this plan's new scenarios.
-- [ ] [AI] `rtk npm run lint:md` exits 0 on the changed READMEs.
-- [ ] [AI] Nothing is committed (see Commit Guidelines).
+- [x] [AI] The coverage failures name only this plan's new scenarios.
+- [x] [AI] `rtk npm run lint:md` exits 0 on the changed READMEs.
+- [x] [AI] Nothing is committed (see Commit Guidelines).
 
 > **Pause Safety**: only specs changed; the app is untouched. Safe to stop. To resume: rerun
 > `COVERAGE` and confirm the same failure list.
@@ -365,7 +384,7 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
 
 ### 2.1 Tolerant runtime fields
 
-- [ ] [AI] **RED:** in `apps/ayokoding-www/tests/unit/be-steps/course-metadata.steps.ts` (new, with
+- [x] [AI] **RED:** in `apps/ayokoding-www/tests/unit/be-steps/course-metadata.steps.ts` (new, with
       `loadFeature` + `describeFeature`), bind "A metadata typo does not hide the page": build a
       content index from a temporary folder whose course `_index.md` has `category: not-a-category`
       and `estimatedHours: lots`; assert the page is present. Add cases to
@@ -377,94 +396,94 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
       `UNIT-NODE tests/unit/features/content/shell/repository-fs.unit.test.ts`. Acceptance: the new
       cases fail (unknown keys stripped, fields missing); the rest of each file passes. Unbound
       scenarios in the step file are expected to fail at this point.
-- [ ] [AI] **GREEN:** add `category`, `format`, and `estimatedHours` with `.optional().catch(undefined)`
+- [x] [AI] **GREEN:** add `category`, `format`, and `estimatedHours` with `.optional().catch(undefined)`
       to `frontmatterSchema` in `src/features/content/core/schemas.ts`; add the fields to `ContentMeta`
       in `src/features/content/core/types.ts`; map them in `src/features/content/shell/repository-fs.ts`.
       Rerun the three commands. Acceptance: the new cases pass.
-- [ ] [AI] **REFACTOR:** keep field order and comments consistent with plan 02's `status` field. Run
+- [x] [AI] **REFACTOR:** keep field order and comments consistent with plan 02's `status` field. Run
       `TYPECHECK`. Acceptance: exit 0.
 
 ### 2.2 Tree `category` and `content.getTree`
 
-- [ ] [AI] **RED:** give one mock course in `tests/unit/be-steps/helpers/test-service.ts` the category
+- [x] [AI] **RED:** give one mock course in `tests/unit/be-steps/helpers/test-service.ts` the category
       `data-and-databases`; bind "Course nodes carry their category" in
       `tests/unit/be-steps/navigation-api.steps.ts` and in
       `tests/integration/be-steps/navigation-api.steps.ts` (following each file's existing pattern).
       Run `UNIT-NODE tests/unit/be-steps/navigation-api.steps.ts`. Acceptance: the new scenario fails
       (no `category` on the node); existing scenarios pass.
-- [ ] [AI] **GREEN:** add `category?: string` to `TreeNode`, copy it in `tree-builder.ts`, and add
+- [x] [AI] **GREEN:** add `category?: string` to `TreeNode`, copy it in `tree-builder.ts`, and add
       `category: z.string().optional()` to `treeNodeSchema` in
       `src/features/navigation/core/schemas.ts`. Rerun. Acceptance: pass, including "nodes without a
       category should have no `category` field" (the key is omitted, not `undefined`-valued in JSON).
-- [ ] [AI] **E2E bindings (run in Phase 4):** add the same scenario's steps to
+- [x] [AI] **E2E bindings (run in Phase 4):** add the same scenario's steps to
       `apps/ayokoding-www-fe-e2e/tests/e2e/steps/backend-navigation-api.steps.ts` and
       `apps/ayokoding-www-be-e2e/tests/e2e/steps/navigation-api.steps.ts` (real content: course
       `learn/courses/sql-essentials`, category `data-and-databases`). Acceptance: `E2E-QUICK` and
       `BE-E2E-QUICK` pass typecheck and lint.
-- [ ] [AI] **REFACTOR:** no duplicate tree walk; reuse the existing `findNode` helpers. Run `TYPECHECK`.
+- [x] [AI] **REFACTOR:** no duplicate tree walk; reuse the existing `findNode` helpers. Run `TYPECHECK`.
 
 ### 2.3 Category constant
 
-- [ ] [AI] **RED:** write `tests/unit/features/content/core/course-categories.test.ts` per
+- [x] [AI] **RED:** write `tests/unit/features/content/core/course-categories.test.ts` per
       [tech-docs/006](./tech-docs/006-testing-strategy.md#plain-unit-tests-no-gherkin) (14 ids in the
       order of tech-docs/003, `groupByCourseCategory` order, empty groups skipped, unknown category
       to the "Other courses" group). Run `UNIT-FE` on it. Acceptance: fails (module missing).
-- [ ] [AI] **GREEN:** create `src/features/content/core/course-categories.ts` with
+- [x] [AI] **GREEN:** create `src/features/content/core/course-categories.ts` with
       `COURSE_CATEGORIES` and `groupByCourseCategory` per
       [tech-docs/005](./tech-docs/005-ui-components-and-copy.md#shared-helpers). Rerun. Acceptance:
       pass.
-- [ ] [AI] **REFACTOR:** export only what the catalog and sidebar use. Run `TYPECHECK`.
+- [x] [AI] **REFACTOR:** export only what the catalog and sidebar use. Run `TYPECHECK`.
 
 ### 2.4 Strict course schema
 
-- [ ] [AI] **RED:** bind "An outline course may omit format and estimated time" and "Invalid metadata
+- [x] [AI] **RED:** bind "An outline course may omit format and estimated time" and "Invalid metadata
       names the course and the field" in `course-metadata.steps.ts`; write
       `tests/unit/features/content/core/course-metadata.test.ts` (each field rule, outline exemptions,
       description edge cases: `.NET`, semicolons, two sentences, `·`, 19 and 121 characters). Run
       `CORPUS-GUARD` and `UNIT-FE tests/unit/features/content/core/course-metadata.test.ts`.
       Acceptance: the new cases fail (module missing).
-- [ ] [AI] **GREEN:** create `src/features/content/core/course-metadata.ts` with `COURSE_FORMATS`,
+- [x] [AI] **GREEN:** create `src/features/content/core/course-metadata.ts` with `COURSE_FORMATS`,
       `courseMetadataSchema` (reusing `frontmatterSchema.shape.status`, never redefining it), and
       `checkCourseMetadata` exactly as in
       [tech-docs/002](./tech-docs/002-metadata-schema-and-migration.md#strict-course-schema-srcfeaturescontentcorecourse-metadatats-new).
       Rerun. Acceptance: the two scenarios and the plain test pass.
-- [ ] [AI] **REFACTOR:** error messages follow the `<courseId>: <field>: <message>` format. Run
+- [x] [AI] **REFACTOR:** error messages follow the `<courseId>: <field>: <message>` format. Run
       `TYPECHECK`.
 
 ### 2.5 Effort estimate
 
-- [ ] [AI] **RED:** write `tests/unit/features/content/core/course-effort.test.ts` and
+- [x] [AI] **RED:** write `tests/unit/features/content/core/course-effort.test.ts` and
       `tests/unit/features/content/shell/course-effort-scan.unit.test.ts` per tech-docs/006 (fences,
       words, minimum 1 h, `max` of the two code counts, rounding at .5; temp folder with a rendered
       page, an untitled `.md` in `code/`, a draft, a binary file, an `_index.md`). Run `UNIT-FE` and
       `UNIT-NODE` on them. Acceptance: fail (modules missing).
-- [ ] [AI] **GREEN:** create `src/features/content/core/course-effort.ts` (`countPageEffort`,
+- [x] [AI] **GREEN:** create `src/features/content/core/course-effort.ts` (`countPageEffort`,
       `estimateCourseHours`) and `src/features/content/shell/course-effort-scan.ts`
       (`scanCourseEffort`) per [tech-docs/004](./tech-docs/004-estimated-hours-and-start-target.md#code).
       Rerun. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** the rates (200 words per minute, 10 code lines per minute) are named constants
+- [x] [AI] **REFACTOR:** the rates (200 words per minute, 10 code lines per minute) are named constants
       with a comment citing tech-docs/004's reasoning. Run `TYPECHECK`.
 
 ### 2.6 Start resolver
 
-- [ ] [AI] **RED:** write `tests/unit/features/content/core/course-start.test.ts` (rules 1–4, the
+- [x] [AI] **RED:** write `tests/unit/features/content/core/course-start.test.ts` (rules 1–4, the
       synthetic `artifacts` folder skipped, a weight tie broken by slug). Run `UNIT-FE` on it.
       Acceptance: fails (module missing).
-- [ ] [AI] **GREEN:** create `src/features/content/core/course-start.ts` with
+- [x] [AI] **GREEN:** create `src/features/content/core/course-start.ts` with
       `resolveCourseStartSlug(courseNode, isRealPage)` per
       [tech-docs/004](./tech-docs/004-estimated-hours-and-start-target.md#start-target-rule). Rerun.
       Acceptance: pass.
-- [ ] [AI] **REFACTOR:** the resolver sorts a copy; it never mutates the tree. Run `TYPECHECK`.
+- [x] [AI] **REFACTOR:** the resolver sorts a copy; it never mutates the tree. Run `TYPECHECK`.
 
 ### 2.7 Real-corpus check
 
-- [ ] [AI] **RED:** write `tests/unit/features/content/shell/course-corpus-check.unit.test.ts` (temp
+- [x] [AI] **RED:** write `tests/unit/features/content/shell/course-corpus-check.unit.test.ts` (temp
       content folder: a clean course, a stale estimate, a missing field; report sorting). Bind "A stale
       estimate fails with the expected value" (temp folder fixture) and "Every course in the library
       carries valid metadata" (real `apps/ayokoding-www/content`) in `course-metadata.steps.ts` and in
       `tests/integration/be-steps/course-metadata.steps.ts` (new). Run `UNIT-NODE` on the plain test
       and `CORPUS-GUARD`. Acceptance: fail (module missing).
-- [ ] [AI] **GREEN:** create `src/features/content/shell/course-corpus-check.ts` with
+- [x] [AI] **GREEN:** create `src/features/content/shell/course-corpus-check.ts` with
       `checkCourseCorpus` per
       [tech-docs/006](./tech-docs/006-testing-strategy.md#the-real-corpus-guard). Rerun. Acceptance:
       the plain test, "A stale estimate ...", and the other metadata scenarios pass; **"Every course
@@ -472,18 +491,18 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
       `category`, `description`, and, for non-outline courses, `format` and `estimatedHours`) and
       printing the expected-hours table. Save that full output as
       `<plan>/evidence/phase-2-corpus-red.txt`.
-- [ ] [AI] **REFACTOR:** the failure message matches the format in tech-docs/004 exactly (problems
+- [x] [AI] **REFACTOR:** the failure message matches the format in tech-docs/004 exactly (problems
       sorted, then the expected-hours block). Run `TYPECHECK` and `LINT`.
 
 ### Phase 2 Gate
 
 > All checks below must pass before starting Phase 3.
 
-- [ ] [AI] `TYPECHECK` and `LINT` exit 0.
-- [ ] [AI] `UNIT` fails only on "Every course in the library carries valid metadata" (recorded).
-- [ ] [AI] `COVERAGE` fails only on the three frontend features and the index-generation scenario
+- [x] [AI] `TYPECHECK` and `LINT` exit 0.
+- [x] [AI] `UNIT` fails only on "Every course in the library carries valid metadata" (recorded).
+- [x] [AI] `COVERAGE` fails only on the three frontend features and the index-generation scenario
       (still unbound); `COVERAGE-BE-E2E` exits 0.
-- [ ] [AI] `rtk git diff --stat -- apps/ayokoding-www/content` is empty.
+- [x] [AI] `rtk git diff --stat -- apps/ayokoding-www/content` is empty.
 
 > **Pause Safety**: the core exists and is tested; nothing is committed and no content changed. Safe
 > to stop. To resume: rerun the Phase 2 Gate commands and compare with the evidence file.
@@ -503,17 +522,17 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
 
 ### 3.1 Shared helpers
 
-- [ ] [AI] **RED:** write `tests/unit/features/i18n/core/fill.test.ts` (cases moved from the
+- [x] [AI] **RED:** write `tests/unit/features/i18n/core/fill.test.ts` (cases moved from the
       ai-benchmark `fill`/`tf` tests, plus one that imports through the ai-benchmark re-export) and add
       `courseRootIdFromSlug` and `COURSE_CATALOG_SLUG` cases to
       `tests/unit/features/course-paths/shell/course-path-nav.test.ts` (root, subpage, non-course
       slugs). Run `UNIT-FE` on both. Acceptance: the new cases fail.
-- [ ] [AI] **GREEN:** create `src/features/i18n/core/fill.ts`; make
+- [x] [AI] **GREEN:** create `src/features/i18n/core/fill.ts`; make
       `src/features/ai-benchmark/shell/format.ts` re-export `fill` and `tf` from it; add the two
       exports to `src/features/course-paths/shell/course-path-nav.ts`. Rerun. Acceptance: pass, and
       the existing ai-benchmark tests still pass (`UNIT-FE tests/unit/features/ai-benchmark`).
-- [ ] [AI] **REFACTOR:** no other module imports `fill` from ai-benchmark. Run `TYPECHECK`.
-- [ ] [AI] Add every translation key in
+- [x] [AI] **REFACTOR:** no other module imports `fill` from ai-benchmark. Run `TYPECHECK`.
+- [x] [AI] Add every translation key in
       [tech-docs/005](./tech-docs/005-ui-components-and-copy.md#translation-keys) to both dictionaries
       in `src/features/i18n/core/translations.ts`, including the 14 category labels and 14 blurbs
       (Indonesian blurbs translated in the same plain style). Acceptance: `TYPECHECK` exits 0 (the
@@ -521,77 +540,77 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
 
 ### 3.2 Catalog page (S1)
 
-- [ ] [AI] **RED (unit):** write `tests/unit/features/course-paths/core/course-catalog.test.ts` and
+- [x] [AI] **RED (unit):** write `tests/unit/features/course-paths/core/course-catalog.test.ts` and
       `tests/unit/features/course-paths/shell/course-catalog.test.tsx` per tech-docs/006, and bind all
       6 scenarios of `course-catalog.feature` in `tests/unit/fe-steps/course-catalog.steps.tsx` with a
       fixture tree (three categories, one outline course, one unknown category, `sql-essentials` with
       format `by-example`). Run `UNIT-FE` on the three files. Acceptance: fail (modules missing).
-- [ ] [AI] **RED (e2e):** write `apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-catalog.steps.ts`
+- [x] [AI] **RED (e2e):** write `apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-catalog.steps.ts`
       for the 6 scenarios against `/en/learn/courses` (outline course `accounting-foundations`; time
       matched with `/^About \d+ h$/`; path count matched with `/^In \d+ paths?$/`, because `E2E` uses
       the fixture manifests). Acceptance: `E2E-QUICK` passes typecheck and lint. The steps run in
       Phase 4.
-- [ ] [AI] **GREEN:** create `src/features/course-paths/core/course-catalog.ts` (`buildCourseCatalog`),
+- [x] [AI] **GREEN:** create `src/features/course-paths/core/course-catalog.ts` (`buildCourseCatalog`),
       `src/features/course-paths/shell/course-meta-row.tsx`, and
       `src/features/course-paths/shell/course-catalog.tsx` (`CourseCatalog`, `CourseCard`,
       `CategoryJumpLinks`, wrapped in `<article>`); add the `learn/courses` dispatch and its
       `breadcrumbSegments` to `src/app/[locale]/(content)/[...slug]/page.tsx` per
       [tech-docs/005](./tech-docs/005-ui-components-and-copy.md#s1--catalog). Rerun the unit
       commands. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** the card is one stretched link whose accessible name is the course title;
+- [x] [AI] **REFACTOR:** the card is one stretched link whose accessible name is the course title;
       the meta row is shared with the header. Run `TYPECHECK` and `LINT` (the `jsx-a11y` plugin must
       report nothing).
 
 ### 3.3 Index generator (R4)
 
-- [ ] [AI] **RED:** bind "The course catalog section keeps a frontmatter-only index" in
+- [x] [AI] **RED:** bind "The course catalog section keeps a frontmatter-only index" in
       `tests/unit/be-steps/index-generation.steps.ts` and
       `tests/integration/be-steps/index-generation.steps.ts`. Run
       `UNIT-NODE tests/unit/be-steps/index-generation.steps.ts`. Acceptance: the new scenario fails
       (the generator writes the link list); the six existing ones pass.
-- [ ] [AI] **GREEN:** in `src/features/content/shell/index-generator.ts`, write only the frontmatter
+- [x] [AI] **GREEN:** in `src/features/content/shell/index-generator.ts`, write only the frontmatter
       for the `learn/courses` section in locale `en`. Rerun. Acceptance: pass.
-- [ ] [AI] **REFACTOR:** the special case is one named constant with a comment pointing to the
+- [x] [AI] **REFACTOR:** the special case is one named constant with a comment pointing to the
       catalog dispatch. Run `TYPECHECK`.
 
 ### 3.4 Sidebar groups (S3)
 
-- [ ] [AI] **RED (unit):** write `tests/unit/features/navigation/shell/course-category-groups.test.tsx`,
+- [x] [AI] **RED (unit):** write `tests/unit/features/navigation/shell/course-category-groups.test.tsx`,
       extend `tests/unit/features/navigation/shell/sidebar-tree.test.tsx`, and bind the 4 scenarios of
       `sidebar-course-categories.feature` in `tests/unit/fe-steps/sidebar-course-categories.steps.tsx`.
       Run `UNIT-FE` on the three files. Acceptance: the new cases fail.
-- [ ] [AI] **RED (e2e):** write `apps/ayokoding-www-fe-e2e/tests/e2e/steps/sidebar-course-categories.steps.ts`
+- [x] [AI] **RED (e2e):** write `apps/ayokoding-www-fe-e2e/tests/e2e/steps/sidebar-course-categories.steps.ts`
       (keyboard Enter and Space on the group button; drawer at 375 px). Change
       `TALL_WIDE_SIDEBAR_PAGE` in `apps/ayokoding-www-fe-e2e/tests/e2e/steps/resizable-sidebar.steps.ts`
       to `/en/learn/courses/erp-foundations-and-history` and update its comment
       ([tech-docs/006](./tech-docs/006-testing-strategy.md#existing-tests-that-change)). Acceptance:
       `E2E-QUICK` passes.
-- [ ] [AI] **GREEN:** create `src/features/navigation/shell/course-category-groups.tsx` (client
+- [x] [AI] **GREEN:** create `src/features/navigation/shell/course-category-groups.tsx` (client
       component; the wrapper is always rendered with `hidden` when closed, and `aria-controls` points
       to it) and route the `learn/courses` children through it in `sidebar-tree.tsx`, per
       [tech-docs/005](./tech-docs/005-ui-components-and-copy.md#s3--sidebar-groups). Rerun.
       Acceptance: pass.
-- [ ] [AI] **REFACTOR:** open state comes from the pathname on first render (no layout shift); the
+- [x] [AI] **REFACTOR:** open state comes from the pathname on first render (no layout shift); the
       chevron uses `motion-safe:`. Run `TYPECHECK` and `LINT`.
 
 ### 3.5 Course header (S2)
 
-- [ ] [AI] **RED (unit):** write `tests/unit/features/course-paths/shell/course-header.test.tsx` and
+- [x] [AI] **RED (unit):** write `tests/unit/features/course-paths/shell/course-header.test.tsx` and
       `course-header-data.test.ts`, and bind the 7 scenarios of `course-landing-header.feature` in
       `tests/unit/fe-steps/course-landing-header.steps.tsx` with fixture trees for the three Start
       shapes and an outline course. Run `UNIT-FE` on the three files. Acceptance: fail.
-- [ ] [AI] **RED (e2e):** write `apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-landing-header.steps.ts`
+- [x] [AI] **RED (e2e):** write `apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-landing-header.steps.ts`
       (`sql-essentials`; `accounting-foundations`; `capstone-data-pipeline`;
       `capstone-first-working-software`; `sql-essentials/learning/beginner`). Acceptance:
       `E2E-QUICK` passes.
-- [ ] [AI] **GREEN:** create `src/features/course-paths/shell/course-header-data.ts`
+- [x] [AI] **GREEN:** create `src/features/course-paths/shell/course-header-data.ts`
       (`buildCourseHeaderData`) and `course-header.tsx` (`CourseHeader` with `primaryAction` and
       `progress` slots, `StartCourseButton`); change `course-page-content.tsx` and
       `course-page-path-content.tsx` and pass `courseHeader` from `page.tsx`, per
       [tech-docs/005](./tech-docs/005-ui-components-and-copy.md#s2--course-header). Rerun.
       Acceptance: pass, and the existing `prerequisite-display.feature` unit bindings still pass
       (`UNIT-FE tests/unit/fe-steps/prerequisite-display.steps.tsx`).
-- [ ] [AI] **REFACTOR:** both slots are covered by tests with placeholder nodes (plan 04 starts
+- [x] [AI] **REFACTOR:** both slots are covered by tests with placeholder nodes (plan 04 starts
       green); Start keeps `?path=` when present. Run `TYPECHECK` and `LINT`.
 
 ### Phase 3 Gate
@@ -673,9 +692,9 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
 
 > All checks below must pass before starting Phase 5.
 
-- [ ] [AI] `QUICK`, `INTEGRATION`, `E2E`, `BE-E2E`, and `VALIDATE-INDEXES` exit 0 (outputs recorded).
-- [ ] [AI] The reconciliation table matches every expected value.
-- [ ] [AI] The product commit exists and `rtk git status --short` shows only `<plan>/` changes.
+- [x] [AI] `QUICK`, `INTEGRATION`, `E2E`, `BE-E2E`, and `VALIDATE-INDEXES` exit 0 (outputs recorded).
+- [x] [AI] The reconciliation table matches every expected value.
+- [x] [AI] The product commit exists and `rtk git status --short` shows only `<plan>/` changes.
 
 > **Pause Safety**: the full change is committed locally and green; nothing is pushed. Safe to stop.
 > To resume: `rtk git log --oneline -3` and rerun `QUICK`.
@@ -779,6 +798,16 @@ against the local production build.
       with `subject` = `http://localhost:3101/api/trpc` (procedures `content.getTree` and
       `content.getBySlug`, both locales, with and without `rootSlug`) plus the contract above,
       `mode` `normal`, `max-cycles` 2. Append each finding to the follow-ups section and fix it.
+- [ ] [AI] **Manual wire recipe (changed operation `content.getTree`)** against the running
+      production build (`http://localhost:3101`, no setup data — the real content tree is the
+      fixture; no cleanup needed because both calls are read-only queries):
+      Success: `curl -s 'http://localhost:3101/api/trpc/content.getTree?input=%7B%22json%22%3A%7B%22locale%22%3A%22en%22%2C%22rootSlug%22%3A%22learn%2Fcourses%22%7D%7D'`
+      — expect HTTP 200 and a JSON body whose `sql-essentials` node carries
+      `"category":"data-and-databases"` while its `learning` child has no `category` key.
+      Failure: `curl -s 'http://localhost:3101/api/trpc/content.getBySlug?input=%7B%22json%22%3A%7B%22locale%22%3A%22en%22%2C%22slug%22%3A%22learn%2Fcourses%2Fno-such-course%22%7D%7D'`
+      — expect a tRPC `NOT_FOUND` error ("Page not found"). Save both raw responses to
+      `<plan>/evidence/phase-5-api-wire.txt`. If either expectation fails, route the finding to
+      the API follow-ups below and fix the root cause before archival.
 - [ ] [AI] Run the rule-16 retest per
       [Rule-16 API Retest](../../../repo-governance/workflows/plan/plan-execution/037-finalization-rule16-api-retest.md):
       `swe-api-tester` (exploratory charter) with `output-mode: delivery` and this plan's path, against
@@ -905,7 +934,7 @@ against the local production build.
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] Run affected typecheck:
+- [ ] [AI] Run the registry pre-push gate (`./rhino gate run --surface pre-push` via the HIPPO wrapper) and affected typecheck:
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t typecheck`.
       Acceptance: exit 0.
 - [ ] [AI] Run `rtk npm run affected:lint`. Acceptance: exit 0.

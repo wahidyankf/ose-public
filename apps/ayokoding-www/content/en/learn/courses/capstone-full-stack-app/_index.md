@@ -12,6 +12,10 @@ prerequisites:
     "software-testing",
     "security-essentials",
   ]
+category: application-development
+description: "Connect a typed frontend to a backend and database in one working app."
+format: capstone
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/capstone-full-stack-app/overview)

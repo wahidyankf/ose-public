@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1141
 prerequisites: ["inventory-and-warehouse-management"]
+category: erp-systems
+description: "Value inventory with a clear costing method and reproducible cost history."
 status: outline
 ---
 

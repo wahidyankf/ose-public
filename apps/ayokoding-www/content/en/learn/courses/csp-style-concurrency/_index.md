@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 365
 prerequisites: ["just-enough-go", "concurrency-and-parallelism"]
+category: computer-science
+description: "Coordinate Go goroutines with channels, bounded work, and clear cancellation."
+format: by-example
+estimatedHours: 5
 ---
 
 - [Overview](/en/learn/courses/csp-style-concurrency/overview)

@@ -4,6 +4,8 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1106
 prerequisites: ["journal-entries-and-posting-mechanics", "accrual-accounting-and-revenue-recognition"]
+category: accounting
+description: "Trace what customers owe from order through billing to collection."
 status: outline
 ---
 

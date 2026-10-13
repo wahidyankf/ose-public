@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1133
 prerequisites: ["erp-subledger-to-gl-architecture"]
+category: erp-systems
+description: "Build the purchase flow from request to supplier payment with a three-way match."
 status: outline
 ---
 

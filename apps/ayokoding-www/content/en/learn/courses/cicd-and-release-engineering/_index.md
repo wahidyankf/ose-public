@@ -4,6 +4,10 @@ date: 2026-07-31T00:00:00+07:00
 draft: false
 weight: 650
 prerequisites: ["version-control-and-git", "containers-and-orchestration"]
+category: infrastructure-and-operations
+description: "Build pipelines that test every change and release it safely."
+format: by-example
+estimatedHours: 9
 ---
 
 - [Overview](/en/learn/courses/cicd-and-release-engineering/overview)

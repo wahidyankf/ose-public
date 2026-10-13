@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 780
 prerequisites: ["just-enough-python", "just-enough-bash"]
+category: programming-languages
+description: "Learn the small part of C you need for systems courses: pointers, memory, and builds."
+format: primer
+estimatedHours: 4
 ---
 
 - [Overview](/en/learn/courses/just-enough-c/overview)

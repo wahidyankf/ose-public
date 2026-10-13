@@ -4,6 +4,10 @@ date: 2026-07-17T00:00:00+07:00
 draft: false
 weight: 310
 prerequisites: ["object-oriented-programming-essentials", "just-enough-python"]
+category: computer-science
+description: "Apply SOLID principles and design patterns to keep code easy to change."
+format: by-example
+estimatedHours: 14
 ---
 
 - [Learning](/en/learn/courses/object-oriented-design-and-patterns/learning)

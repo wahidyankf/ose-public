@@ -23,3 +23,9 @@ Feature: Navigation API
     When the client calls content.getTree with locale "en"
     Then the "learn/courses/just-enough-go/learning" node should have a non-empty "children" array
     And each child should include a "slug" and "title"
+
+  Scenario: Course nodes carry their category
+    Given content exists in locale "en" with a course "learn/courses/sql-essentials" in category "data-and-databases"
+    When the client calls content.getTree with locale "en"
+    Then the "learn/courses/sql-essentials" node should include category "data-and-databases"
+    And nodes without a category should have no "category" field

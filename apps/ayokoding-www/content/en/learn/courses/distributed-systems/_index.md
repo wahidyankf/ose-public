@@ -4,6 +4,10 @@ date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 446
 prerequisites: ["networking-essentials", "concurrency-and-parallelism"]
+category: architecture-and-distributed-systems
+description: "Reason about partial failure, clocks, replication, and consensus across machines."
+format: by-example
+estimatedHours: 3
 ---
 
 - [Overview](/en/learn/courses/distributed-systems/overview)

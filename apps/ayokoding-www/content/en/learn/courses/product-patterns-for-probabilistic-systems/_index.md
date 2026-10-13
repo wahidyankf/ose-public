@@ -5,6 +5,10 @@ draft: false
 weight: 443
 prerequisites:
   ["creating-ai-powered-apps", "evaluating-ai-output-essentials", "software-product-engineering", "frontend-essentials"]
+category: ai-engineering
+description: "Design product experiences around AI features that are sometimes wrong."
+format: annotated-concept-no-code
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/product-patterns-for-probabilistic-systems/overview)

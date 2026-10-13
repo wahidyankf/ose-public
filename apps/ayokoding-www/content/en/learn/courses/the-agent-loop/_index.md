@@ -4,6 +4,10 @@ date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 458
 prerequisites: ["agentic-ai"]
+category: ai-engineering
+description: "Build the observe, decide, act loop at the heart of an AI agent."
+format: by-example
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/the-agent-loop/overview)

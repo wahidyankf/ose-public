@@ -4,6 +4,10 @@ date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 456
 prerequisites: ["backend-essentials", "api-design"]
+category: ai-engineering
+description: "Build apps that use language models safely, with retrieval and output checks."
+format: by-example
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/creating-ai-powered-apps/overview)

@@ -4,6 +4,10 @@ date: 2026-07-18T00:00:00+07:00
 draft: false
 weight: 410
 prerequisites: ["software-engineering-practices", "software-testing"]
+category: ai-engineering
+description: "Use AI coding agents to plan, write, and check code without losing control."
+format: annotated-concept
+estimatedHours: 5
 ---
 
 - [Overview](/en/learn/courses/agentic-coding/overview)

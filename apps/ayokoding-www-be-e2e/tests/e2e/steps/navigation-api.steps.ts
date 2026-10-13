@@ -85,3 +85,22 @@ Then('each child should include a "slug" and "title"', async () => {
     expect(child).toMatchObject({ slug: expect.any(String), title: expect.any(String) });
   }
 });
+
+Given(
+  "content exists in locale {string} with a course {string} in category {string}",
+  async ({ request }, _locale: string, slug: string, category: string) => {
+    const node = findNode(await getTree(request), slug) as (TreeNode & { category?: string }) | undefined;
+    expect(node?.category).toBe(category);
+  },
+);
+
+Then("the {string} node should include category {string}", async ({ request }, slug: string, category: string) => {
+  const node = findNode(await getTree(request), slug) as (TreeNode & { category?: string }) | undefined;
+  expect(node?.category).toBe(category);
+});
+
+Then('nodes without a category should have no "category" field', async ({ request }) => {
+  const tree = (await getTree(request)) as (TreeNode & { category?: string })[];
+  const learn = findNode(tree, "learn") as (TreeNode & { category?: string }) | undefined;
+  expect(learn && "category" in learn).toBe(false);
+});

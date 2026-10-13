@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1126
 prerequisites: ["erp-conceptual-data-model"]
+category: erp-systems
+description: "Map ERP modules to business capabilities without splitting the shared data."
 status: outline
 ---
 

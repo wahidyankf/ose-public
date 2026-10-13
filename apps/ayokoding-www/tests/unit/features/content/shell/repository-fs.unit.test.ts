@@ -66,3 +66,25 @@ describe("FileSystemContentRepository#readAllContent — missing content directo
     }
   });
 });
+
+describe("FileSystemContentRepository#readAllContent — course catalog metadata (plan 03)", () => {
+  it("maps category, format, and estimatedHours into ContentMeta", async () => {
+    const parent = await mkdtemp(join(tmpdir(), "repository-fs-metadata-test-"));
+    const courseDir = join(parent, "en", "learn", "courses", "sql-essentials");
+    try {
+      await mkdir(courseDir, { recursive: true });
+      await writeFile(
+        join(courseDir, "_index.md"),
+        '---\ntitle: "SQL Essentials"\nprerequisites: []\ncategory: data-and-databases\ndescription: "Model data in tables and query it well."\nformat: by-example\nestimatedHours: 8\n---\n\nBody.\n',
+      );
+      const repo = new FileSystemContentRepository(parent);
+      const all = await repo.readAllContent();
+      const meta = all.find((m) => m.slug === "learn/courses/sql-essentials");
+      expect(meta?.category).toBe("data-and-databases");
+      expect(meta?.format).toBe("by-example");
+      expect(meta?.estimatedHours).toBe(8);
+    } finally {
+      await rm(parent, { recursive: true, force: true });
+    }
+  });
+});

@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 170
 prerequisites: ["object-oriented-programming-essentials", "just-enough-kotlin"]
+category: programming-languages
+description: "Learn Swift optionals, structs, and enums before iOS development."
+format: primer
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/just-enough-swift/overview)

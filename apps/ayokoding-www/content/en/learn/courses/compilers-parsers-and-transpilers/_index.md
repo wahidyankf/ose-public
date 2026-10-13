@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 189
 prerequisites: ["just-enough-fsharp", "type-systems", "computer-science-foundations"]
+category: computer-science
+description: "Build a lexer, parser, and code generator for a small language."
+format: by-example
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/compilers-parsers-and-transpilers/overview)

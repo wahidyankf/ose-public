@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 300
 prerequisites: ["just-enough-c", "linux-os"]
+category: systems-and-networking
+description: "Write C programs that work directly with memory, files, and processes."
+format: by-example
+estimatedHours: 3
 ---
 
 - [Overview](/en/learn/courses/system-programming/overview)

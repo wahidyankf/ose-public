@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 520
 prerequisites: ["containers-and-orchestration", "cloud-and-iac", "networking-essentials"]
+category: infrastructure-and-operations
+description: "Run virtual machines on your own hardware with KVM and Proxmox."
+format: by-example
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/bare-metal-virtualization/overview)

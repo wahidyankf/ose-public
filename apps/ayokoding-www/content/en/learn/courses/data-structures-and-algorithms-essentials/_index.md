@@ -4,6 +4,10 @@ date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 170
 prerequisites: ["just-enough-python"]
+category: computer-science
+description: "Pick the right data structure and algorithm, and reason about their cost."
+format: by-example
+estimatedHours: 9
 ---
 
 - [Overview](/en/learn/courses/data-structures-and-algorithms-essentials/overview)

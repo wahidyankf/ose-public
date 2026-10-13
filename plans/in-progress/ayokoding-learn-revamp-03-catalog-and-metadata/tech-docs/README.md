@@ -14,6 +14,7 @@ self-contained enough for a junior engineer to build its part.
 | [007-decision-records.md](./007-decision-records.md)                                         | Material decisions with alternatives, prior art, trade-offs, consequences, and revisit triggers                 |
 | [008-file-impact.md](./008-file-impact.md)                                                   | Root-relative file-impact tree with `[E]`/`[N]`/`[D]`/`[G]` markers                                             |
 | [009-rule-and-docs-impact.md](./009-rule-and-docs-impact.md)                                 | Rule changes, enforcement dispositions, generated harness routes, docs and specs propagation, C4 reconciliation |
+| [010-api-contract-delta.md](./010-api-contract-delta.md)                                     | The `content.getTree` contract delta: optional `category`, semantics, examples, errors, compatibility           |
 
 ## Summary
 

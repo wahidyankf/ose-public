@@ -4,6 +4,10 @@ date: 2026-07-27T00:00:00+07:00
 draft: false
 weight: 450
 prerequisites: ["sql-essentials", "advanced-sql-and-query-performance"]
+category: data-and-databases
+description: "Learn how B-trees, LSM-trees, and write-ahead logs store and protect data."
+format: by-example
+estimatedHours: 13
 ---
 
 - [Overview](/en/learn/courses/database-internals-and-storage-engines/overview)

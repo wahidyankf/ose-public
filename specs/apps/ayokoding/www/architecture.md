@@ -48,14 +48,14 @@ built from it. Both are derived at build time, which is what makes the deploymen
 Six bounded contexts span both tiers. A context owns its rendering, its tRPC procedures, and its
 scenarios together.
 
-| Bounded context | Responsibility                                                             |
-| --------------- | -------------------------------------------------------------------------- |
-| `app-shell`     | header, footer, mobile navigation, responsive layout, accessibility        |
-| `content`       | Markdown parsing, syntax highlighting, `content.getBySlug`, `listChildren` |
-| `navigation`    | sidebar tree, breadcrumbs, prev/next ordering, `content.getTree`           |
-| `search`        | search dialog, per-locale index, `search.query`                            |
-| `i18n`          | locale middleware, language switcher, `meta.languages`                     |
-| `health`        | `meta.health`                                                              |
+| Bounded context | Responsibility                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------ |
+| `app-shell`     | header, footer, mobile navigation, responsive layout, accessibility                                    |
+| `content`       | Markdown parsing, syntax highlighting, `content.getBySlug`, `listChildren`, course metadata validation |
+| `navigation`    | sidebar tree, breadcrumbs, prev/next ordering, `content.getTree`                                       |
+| `search`        | search dialog, per-locale index, `search.query`                                                        |
+| `i18n`          | locale middleware, language switcher, `meta.languages`                                                 |
+| `health`        | `meta.health`                                                                                          |
 
 ## Behaviour Perspectives
 

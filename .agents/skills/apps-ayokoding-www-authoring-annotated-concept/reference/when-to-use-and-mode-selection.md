@@ -28,9 +28,10 @@ conventions.
 ## Mode Selection (Determine First, Before Authoring)
 
 Every Annotated-concept topic is authored in exactly one of two modes. Determine the mode from the
-topic's format designation (the content plan or syllabus states this explicitly — look for a
-leadership/no-code marker, commonly written as a `‡` glyph or an explicit "no-code" label) before
-writing any content:
+course `_index.md` `format` field (`annotated-concept-no-code` selects the no-code sub-mode;
+`annotated-concept` selects standard mode); for a new course, the content plan states it — look
+for a leadership/no-code marker, commonly written as a `‡` glyph or an explicit "no-code" label —
+before writing any content:
 
 **Standard mode** (concept-centric, code-bearing):
 

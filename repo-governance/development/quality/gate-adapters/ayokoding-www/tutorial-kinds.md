@@ -54,8 +54,10 @@ For the [Tutorial Primer Quality Gate](../../../../workflows/quality/tutorial-pr
 
 For the [Tutorial Annotated Concept Quality Gate](../../../../workflows/quality/tutorial-annotated-concept-quality-gate.md):
 
-- **Mode.** A topic's format designation declares its mode. Leadership and governance topics use the no-code sub-mode,
-  which has no `code/` directory; standard mode keeps colocated runnable files in `code/`.
+- **Mode.** The course `_index.md` `format` field declares a topic's mode: `annotated-concept-no-code` selects the
+  no-code sub-mode; `annotated-concept` selects standard mode. Leadership and governance topics are authored in the
+  no-code sub-mode (their `format` is `annotated-concept-no-code`), which has no `code/` directory; standard mode keeps
+  colocated runnable files in `code/`.
 - **Worked-example floor.** 45 (band 45 to 60) in standard mode; 20 scenarios (band 20 to 30) in no-code mode. Floors,
   never caps.
 - **Density.** The shared band applies only to code-bearing worked examples.

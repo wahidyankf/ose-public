@@ -55,6 +55,9 @@ Static coverage proves exact recursive corpus membership, complete applicable ad
 exactly-one bindings, no unused bindings, valid exemption syntax, and mandatory Unit proof. It does
 not prove semantic implementation or execute tests. Runtime code-coverage instrumentation and its
 threshold belong to the corresponding runtime test target, never a `test:coverage:*` validator.
+An exempt scenario's steps must have no bindings in the exempt adapter's files, and the files'
+`describeFeature` must exclude that adapter's tag — otherwise the static unused-binding check
+and the runtime uncalled-scenario check fail against each other.
 
 ## Execution Surfaces
 

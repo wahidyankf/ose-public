@@ -192,23 +192,23 @@ flowchart TD
 
 ### Commit Guidelines
 
-- [ ] Do not stage or commit until the user's execution command has authorized this plan's change
+- [x] Do not stage or commit until the user's execution command has authorized this plan's change
       set; do not extend a commit beyond it.
-- [ ] Use the fewest build-valid, independently reviewable and revertible commits, one coherent
+- [x] Use the fewest build-valid, independently reviewable and revertible commits, one coherent
       purpose each. Phases 1–3 cannot be committed alone: the Gherkin is unbound until Phase 3 and the
       real-corpus guard fails until the Phase 4 backfill, so the pre-push gate would reject them. The
       product change therefore lands as **one** commit at the Phase 4 gate, followed by separate
       commits for tester-gate fixes (Phase 5), rules and docs (Phase 6), evidence, and archival.
-- [ ] Follow Conventional Commits: `<type>(<scope>): <description>`, imperative, no period. Planned
+- [x] Follow Conventional Commits: `<type>(<scope>): <description>`, imperative, no period. Planned
       messages:
   - `feat(ayokoding-www): add course catalog, category sidebar, and course header`
   - `fix(ayokoding-www): <finding summary>` (one per tester-gate fix, if any)
   - `docs(ayokoding-www): document course metadata rules`
   - `docs(plans): record ayokoding-learn-revamp-03 evidence`
   - `chore(plans): move ayokoding-learn-revamp-03-catalog-and-metadata to done`
-- [ ] Keep each change with its tests, specs, regenerated indexes, docs, and generated harness
+- [x] Keep each change with its tests, specs, regenerated indexes, docs, and generated harness
       routes in the same commit; stage explicit paths only, never `git add -A`.
-- [ ] Before every commit, run `rtk git status --short` and confirm
+- [x] Before every commit, run `rtk git status --short` and confirm
       `apps/ayokoding-www/next-env.d.ts` and `.serena/project.yml` are neither staged nor modified.
 
 ---
@@ -257,7 +257,7 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
       shows the `status` field; and
       `rtk git cat-file -e origin/main:apps/ayokoding-www/src/features/course-paths/shell/outline-badge.tsx`
       exits 0. Record all three results.
-- [ ] [HUMAN] **Only if either check above fails:** stop. Report which plan is missing. The user
+- [x] [HUMAN] **Only if either check above fails:** stop. Report which plan is missing. The user
       either waits for it to merge or explicitly authorizes
       [D1](./tech-docs/007-decision-records.md#d1--order-against-plan-02) Alternative A in writing. Do
       not continue on an assumption.
@@ -276,7 +276,7 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
       pass/fail counts. If either fails before any change, fix the root cause first per the Failure
       handling rule.
 - [x] [AI] Run `VALIDATE-INDEXES`. Acceptance: exit 0 (indexes already in sync).
-- [ ] [AI] Start `DEV` in the background. With Playwright MCP at 1280×800, open
+- [x] [AI] Start `DEV` in the background. With Playwright MCP at 1280×800, open
       `http://localhost:3101/en/learn/courses` and `http://localhost:3101/en/learn/courses/sql-essentials`.
       Acceptance: the courses page is the long generated link list (record the number of links inside
       `main`; 693 on 2026-10-09 before plans 01 and 02) and the course page has no header. Save
@@ -295,7 +295,7 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
 - [x] [AI] Count the outline set:
       `grep -l "^status: outline" apps/ayokoding-www/content/en/learn/courses/*/_index.md | sort`.
       Acceptance: 62 files, matching the courses marked outline in tech-docs/003. Record the list.
-- [ ] [AI] **If the folder list or the outline set differs from tech-docs/003:** stop and record the
+- [x] [AI] **If the folder list or the outline set differs from tech-docs/003:** stop and record the
       difference. A course added, removed, or renamed since 2026-10-09 needs a category, a description,
       and (if not an outline) a format before Phase 4. Propose the values in the evidence file using
       the rules in tech-docs/003, and report them to the user before continuing; a different outline
@@ -313,7 +313,7 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
       `BE-E2E-QUICK`, `INTEGRATION`, `E2E`, `BE-E2E`, and `VALIDATE-INDEXES`.
 - [x] [AI] `<plan>/evidence/phase-0-inventory.md` lists 181 course folders and 62 outline courses, or
       records a reported difference.
-- [ ] [AI] `rtk git status --short` shows only `<plan>/` changes.
+- [x] [AI] `rtk git status --short` shows only `<plan>/` changes.
 
 > **Pause Safety**: the worktree is provisioned and green, with no product change yet. Safe to stop.
 > To resume: `rtk git -C worktrees/ayokoding-learn-revamp-03-catalog-and-metadata status --short`,
@@ -617,10 +617,10 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
 
 > All checks below must pass before starting Phase 4.
 
-- [ ] [AI] `TYPECHECK`, `LINT`, `E2E-QUICK`, and `BE-E2E-QUICK` exit 0.
-- [ ] [AI] `COVERAGE` and `COVERAGE-BE-E2E` exit 0 (every scenario bound).
-- [ ] [AI] `UNIT` fails only on "Every course in the library carries valid metadata".
-- [ ] [AI] `rtk git diff --stat -- apps/ayokoding-www/content` is still empty.
+- [x] [AI] `TYPECHECK`, `LINT`, `E2E-QUICK`, and `BE-E2E-QUICK` exit 0.
+- [x] [AI] `COVERAGE` and `COVERAGE-BE-E2E` exit 0 (every scenario bound).
+- [x] [AI] `UNIT` fails only on "Every course in the library carries valid metadata".
+- [x] [AI] `rtk git diff --stat -- apps/ayokoding-www/content` is still empty.
 
 > **Pause Safety**: the UI is built and unit-tested on fixtures; content is untouched and nothing is
 > committed. Safe to stop. To resume: rerun the Phase 3 Gate commands.
@@ -636,9 +636,9 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
   the catalog index is frontmatter-only; every automated suite is green; the product commit exists.
 - **Proof:** `<plan>/evidence/phase-4-reconciliation.md` and the suite outputs.
 
-- [ ] [AI] Rerun `CORPUS-GUARD` and refresh `<plan>/evidence/phase-2-corpus-red.txt` (the expected
+- [x] [AI] Rerun `CORPUS-GUARD` and refresh `<plan>/evidence/phase-2-corpus-red.txt` (the expected
       hours must come from the current tree, not from the 2026-10-09 snapshot in tech-docs/003).
-- [ ] [AI] Fan out the backfill to 3 background `apps-ayokoding-www-general-maker` agents on disjoint
+- [x] [AI] Fan out the backfill to 3 background `apps-ayokoding-www-general-maker` agents on disjoint
       category sets (tech-docs/003 order): agent 1 = categories 1–5 (68 courses), agent 2 = categories
       6–12 (59 courses), agent 3 = categories 13–14 (54 courses). Each agent, for each course in its
       set, appends to the existing frontmatter of
@@ -646,34 +646,34 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
       from tech-docs/003, and, for a course without `status: outline`, `format` from tech-docs/003 and
       `estimatedHours` from the expected-hours table. It changes no existing line, and nothing below
       the closing `---`. Record agent IDs in the execution ledger.
-- [ ] [AI] Set the `description` of `apps/ayokoding-www/content/en/learn/courses/_index.md` to the text
+- [x] [AI] Set the `description` of `apps/ayokoding-www/content/en/learn/courses/_index.md` to the text
       in [tech-docs/005](./tech-docs/005-ui-components-and-copy.md#translation-keys); keep `title` and
       `weight`.
-- [ ] [AI] **Frontmatter-only proof:** run
+- [x] [AI] **Frontmatter-only proof:** run
       `rtk git diff -U0 -- "apps/ayokoding-www/content/en/learn/courses/*/_index.md" | grep -E "^[+-]" | grep -v -E "^(\+\+\+|---) " | grep -v -E "^\+(category|description|format|estimatedHours): "`.
       Acceptance: no output (on 2026-10-09 no course `_index.md` had a `description`, so every change
       is an added line with one of the four keys). Then
       `rtk git diff -- apps/ayokoding-www/content/en/learn/courses/_index.md` shows only the
       `description` line change. Run both checks before `GEN-INDEXES`. Any other line is a defect to
       revert. `rtk git diff --stat -- apps/ayokoding-www/content` lists exactly 182 files.
-- [ ] [AI] **GREEN (guard):** run `CORPUS-GUARD`. Acceptance: every scenario passes, including "Every
+- [x] [AI] **GREEN (guard):** run `CORPUS-GUARD`. Acceptance: every scenario passes, including "Every
       course in the library carries valid metadata" (zero problems, zero drift, a Start page for each
       course). If it fails, fix the named frontmatter value and rerun (at most 2 cycles, then
       `BLOCKED`).
-- [ ] [AI] Run `GEN-INDEXES`. Acceptance: in `rtk git status --short`, the only generated change is
+- [x] [AI] Run `GEN-INDEXES`. Acceptance: in `rtk git status --short`, the only generated change is
       `apps/ayokoding-www/content/en/learn/courses/_index.md`, whose body is now empty (frontmatter
       only). Any other `_index.md` body change means the generator change leaked; fix it in
       `index-generator.ts` and rerun.
-- [ ] [AI] Run `VALIDATE-INDEXES`. Acceptance: exit 0.
-- [ ] [AI] Run `QUICK`. Acceptance: exit 0, line coverage at or above 99% (record the number).
-- [ ] [AI] Run `INTEGRATION`. Acceptance: exit 0, including the new course-metadata, index-generation,
+- [x] [AI] Run `VALIDATE-INDEXES`. Acceptance: exit 0.
+- [x] [AI] Run `QUICK`. Acceptance: exit 0, line coverage at or above 99% (record the number).
+- [x] [AI] Run `INTEGRATION`. Acceptance: exit 0, including the new course-metadata, index-generation,
       and navigation-api bindings.
-- [ ] [AI] Run `E2E`. Acceptance: exit 0 in every browser, including the 17 new frontend scenarios,
+- [x] [AI] Run `E2E`. Acceptance: exit 0 in every browser, including the 17 new frontend scenarios,
       the new backend navigation scenario, and the unchanged `resizable-sidebar.feature` and
       `navigation.feature` scenarios. If `navigation.steps.ts` fails, fix the root cause (see
       [tech-docs/006](./tech-docs/006-testing-strategy.md#existing-tests-that-change)).
-- [ ] [AI] Run `BE-E2E`. Acceptance: exit 0, including "Course nodes carry their category".
-- [ ] [AI] **Reconciliation:** fill the table in
+- [x] [AI] Run `BE-E2E`. Acceptance: exit 0, including "Course nodes carry their category".
+- [x] [AI] **Reconciliation:** fill the table in
       [tech-docs/002](./tech-docs/002-metadata-schema-and-migration.md#reconciliation) in
       `<plan>/evidence/phase-4-reconciliation.md`. Count fields with
       `grep -c` over `apps/ayokoding-www/content/en/learn/courses/*/_index.md` (for example
@@ -682,7 +682,7 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
       MCP, and count with `browser_evaluate`: cards in `main` (expected 181) and links in `main` whose
       `href` goes below a course root (expected 0). Stop `DEV` and restore `next-env.d.ts` if changed.
       Acceptance: every row equals its expected value.
-- [ ] [AI] **Commit:** run `rtk git status --short`; confirm `next-env.d.ts` and `.serena/project.yml`
+- [x] [AI] **Commit:** run `rtk git status --short`; confirm `next-env.d.ts` and `.serena/project.yml`
       are clean; stage the Phase 1–4 paths explicitly (specs, `apps/ayokoding-www/src`,
       `apps/ayokoding-www/tests`, the two E2E projects' step files, the 182 `_index.md` files) and
       commit `feat(ayokoding-www): add course catalog, category sidebar, and course header`. The
@@ -714,45 +714,45 @@ Phase 0 opens no PR. Its evidence rides the DU-03 PR.
 
 ### Manual UI Verification (Playwright MCP) — all locales × all breakpoints
 
-- [ ] [AI] Confirm the locale set: `SUPPORTED_LOCALES` in
+- [x] [AI] Confirm the locale set: `SUPPORTED_LOCALES` in
       `apps/ayokoding-www/src/features/i18n/core/config.ts` is `["en", "id"]`. Record it.
-- [ ] [AI] Start `DEV` (port 3101).
-- [ ] [AI] For each breakpoint 375, 768, 1280 (`browser_resize`, height 800), open `/en/learn/courses`.
+- [x] [AI] Start `DEV` (port 3101).
+- [x] [AI] For each breakpoint 375, 768, 1280 (`browser_resize`, height 800), open `/en/learn/courses`.
       Acceptance: an `h1`, the summary "181 courses in 14 categories.", 14 jump links, 14 sections in
       the tech-docs/003 order, one card per course, no sub-page links, and one card per row at 375 with
       no sideways scroll in `main`. Activate the "Data and databases" jump link (`browser_click`) and
       confirm the section heading is in view. Screenshot `phase-5-catalog-en-<bp>px.png`.
-- [ ] [AI] For each breakpoint, open `/en/learn/courses/sql-essentials`. Acceptance: the header shows
+- [x] [AI] For each breakpoint, open `/en/learn/courses/sql-essentials`. Acceptance: the header shows
       the description, "Code by example", "About N h", "Data and databases", the prerequisites as
       links, and the paths as links; "Start course" opens `/en/learn/courses/sql-essentials/learning/overview`;
       "Course contents" and the page list come after the header; the sidebar's "Data and databases"
       group is open with "SQL Essentials" marked current. At 375, open the navigation drawer and
       confirm the same groups. Screenshot `phase-5-course-header-en-<bp>px.png` (at 375, also
       `phase-5-drawer-en-375px.png`).
-- [ ] [AI] At 1280, open `/en/learn/courses/sql-essentials?path=<a path id that lists it>`.
+- [x] [AI] At 1280, open `/en/learn/courses/sql-essentials?path=<a path id that lists it>`.
       Acceptance: Start keeps `?path=`. Screenshot `phase-5-course-header-path-en-1280px.png`.
-- [ ] [AI] At 1280, open `/en/learn/courses/accounting-foundations`. Acceptance: the "Outline" badge,
+- [x] [AI] At 1280, open `/en/learn/courses/accounting-foundations`. Acceptance: the "Outline" badge,
       no format and no time. Screenshot `phase-5-course-header-outline-en-1280px.png`.
-- [ ] [AI] At 1280, open `/en/learn/courses/capstone-data-pipeline` and
+- [x] [AI] At 1280, open `/en/learn/courses/capstone-data-pipeline` and
       `/en/learn/courses/capstone-first-working-software`; activate Start on each. Acceptance: the
       first opens the first page under `learning/capstone/`; the second opens its `overview`.
       Screenshots `phase-5-start-fallback-<course>-en-1280px.png`.
-- [ ] [AI] At 1280, open `/en/learn/courses/sql-essentials/learning/beginner`. Acceptance: no course
+- [x] [AI] At 1280, open `/en/learn/courses/sql-essentials/learning/beginner`. Acceptance: no course
       header. Screenshot `phase-5-inner-page-en-1280px.png`.
-- [ ] [AI] Keyboard at 1280: Tab from the top of `/en/learn/courses` through jump links and cards; on a
+- [x] [AI] Keyboard at 1280: Tab from the top of `/en/learn/courses` through jump links and cards; on a
       course page, Tab to "Start course"; focus a closed sidebar group button, press Enter (opens,
       `aria-expanded="true"`), press Space (closes). Acceptance: visible focus on every stop, in
       reading order. Record the result.
-- [ ] [AI] With `prefers-reduced-motion: reduce` emulated, toggle a group. Acceptance: no chevron
+- [x] [AI] With `prefers-reduced-motion: reduce` emulated, toggle a group. Acceptance: no chevron
       animation. Record the result.
-- [ ] [AI] For each breakpoint 375 and 1280, open `/id` and one `/id/` content page (for example
+- [x] [AI] For each breakpoint 375 and 1280, open `/id` and one `/id/` content page (for example
       `/id/belajar/ikhtisar`). Acceptance: `html[lang="id"]`, the sidebar renders with no grouping
       regression, no untranslated new string, and `/id/learn/courses` still returns 404 (this plan
       adds no Indonesian catalog). Screenshots `phase-5-id-home-<bp>px.png` and
       `phase-5-id-content-<bp>px.png`.
-- [ ] [AI] After each page, read `browser_console_messages`. Acceptance: zero errors in both locales
+- [x] [AI] After each page, read `browser_console_messages`. Acceptance: zero errors in both locales
       (hydration warnings count as errors).
-- [ ] [AI] Stop `DEV`; restore `next-env.d.ts` if changed.
+- [x] [AI] Stop `DEV`; restore `next-env.d.ts` if changed.
 
 ### Rendered Production Sign-Off (staging)
 
@@ -762,23 +762,23 @@ production visual sign-off required before archival
 "live or staging environment") therefore runs against a local production build, which serves the
 exact code and content that will deploy. The live site is checked again after merge (Plan Archival).
 
-- [ ] [AI] Run `BUILD`, then start `START` in the background (port 3101).
-- [ ] [AI] At 375 and 1280, open `/en/learn/courses`, `/en/learn/courses/sql-essentials`, and one
+- [x] [AI] Run `BUILD`, then start `START` in the background (port 3101).
+- [x] [AI] At 375 and 1280, open `/en/learn/courses`, `/en/learn/courses/sql-essentials`, and one
       `/id/` content page; compare each with the selected hi-fi mockups
       (`assets/catalog-option-a-category-card-grid.png`,
       `assets/course-header-option-a-stacked-summary.png`,
       `assets/sidebar-option-a-collapsed-category-groups.png`). Acceptance: layout, order, and content
       match (pixel identity is not required); zero console errors. Screenshots
       `phase-5-prodbuild-<what>-<locale>-<bp>px.png`.
-- [ ] [AI] Leave `START` running for the tester gates below.
+- [x] [AI] Leave `START` running for the tester gates below.
 
 ### UI Quality Gate and Rule-15 Retest
 
-- [ ] [AI] Run the [UI Web Quality Gate](../../../repo-governance/workflows/quality/ui-web-quality-gate.md)
+- [x] [AI] Run the [UI Web Quality Gate](../../../repo-governance/workflows/quality/ui-web-quality-gate.md)
       against `http://localhost:3101` for the three changed screens in `en` and `id`, `max-cycles` 2.
       Append each finding as an unchecked checkbox in the follow-ups section below and fix it with a
       regression test.
-- [ ] [AI] Run [UX Review Fix Planning](../../../repo-governance/workflows/quality/ux-review-fix-planning.md)
+- [x] [AI] Run [UX Review Fix Planning](../../../repo-governance/workflows/quality/ux-review-fix-planning.md)
       with `output-mode: delivery` and this plan's path: `swe-web-tester` (exploratory charter),
       `swe-usability-tester`, and `swe-web-tester` (design charter) against the running site in `en`
       and `id`. Each finding is appended to
@@ -794,11 +794,11 @@ plus `specs/apps/ayokoding/www/behaviours/backend/navigation/navigation-api.feat
 `backend/content/content-api.feature`. Every call in scope is a read-only query, so it is safe to run
 against the local production build.
 
-- [ ] [AI] Run the [API HTTP Quality Gate](../../../repo-governance/workflows/quality/api-http-quality-gate.md)
+- [x] [AI] Run the [API HTTP Quality Gate](../../../repo-governance/workflows/quality/api-http-quality-gate.md)
       with `subject` = `http://localhost:3101/api/trpc` (procedures `content.getTree` and
       `content.getBySlug`, both locales, with and without `rootSlug`) plus the contract above,
       `mode` `normal`, `max-cycles` 2. Append each finding to the follow-ups section and fix it.
-- [ ] [AI] **Manual wire recipe (changed operation `content.getTree`)** against the running
+- [x] [AI] **Manual wire recipe (changed operation `content.getTree`)** against the running
       production build (`http://localhost:3101`, no setup data — the real content tree is the
       fixture; no cleanup needed because both calls are read-only queries):
       Success: `curl -s 'http://localhost:3101/api/trpc/content.getTree?input=%7B%22json%22%3A%7B%22locale%22%3A%22en%22%2C%22rootSlug%22%3A%22learn%2Fcourses%22%7D%7D'`
@@ -808,14 +808,14 @@ against the local production build.
       — expect a tRPC `NOT_FOUND` error ("Page not found"). Save both raw responses to
       `<plan>/evidence/phase-5-api-wire.txt`. If either expectation fails, route the finding to
       the API follow-ups below and fix the root cause before archival.
-- [ ] [AI] Run the rule-16 retest per
+- [x] [AI] Run the rule-16 retest per
       [Rule-16 API Retest](../../../repo-governance/workflows/plan/plan-execution/037-finalization-rule16-api-retest.md):
       `swe-api-tester` (exploratory charter) with `output-mode: delivery` and this plan's path, against
       the same endpoint. Findings land in
       [Rule-16 API Exploratory-Test Retest Follow-Ups](#rule-16-api-exploratory-test-retest-follow-ups)
       as `AET-###` checkboxes; fix each with a regression test.
-- [ ] [AI] Stop `START`; restore `next-env.d.ts` if changed.
-- [ ] [AI] After all fixes, rerun `QUICK`, `INTEGRATION`, `E2E`, and `BE-E2E`. Acceptance: exit 0.
+- [x] [AI] Stop `START`; restore `next-env.d.ts` if changed.
+- [x] [AI] After all fixes, rerun `QUICK`, `INTEGRATION`, `E2E`, and `BE-E2E`. Acceptance: exit 0.
       Commit each fix as `fix(ayokoding-www): <finding summary>` with its test.
 
 ### Phase 5 Gate
@@ -990,43 +990,43 @@ against the local production build.
 
 ## Phase 8: Knowledge Capture
 
-- [ ] [AI] Apply the litmus test to every `learnings.md` entry — keep only entries where a durable
+- [x] [AI] Apply the litmus test to every `learnings.md` entry — keep only entries where a durable
       surface would catch this automatically next time; discard the rest with a one-line reason.
-- [ ] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to
+- [x] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to
       `<placeholder>` tokens or discard if the entry cannot be sanitized without losing its meaning.
-- [ ] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
+- [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
       private and is never routed into this public repo; public-governance content may route here.
-- [ ] [AI] Route each surviving entry to exactly one durable home (`repo-governance/`, `docs/`,
+- [x] [AI] Route each surviving entry to exactly one durable home (`repo-governance/`, `docs/`,
       `.agents/agents/`, `.agents/skills/`, or another owner), landing a small non-code edit inline.
       Create or update a `plans/ideas/<slug>.md` two-pager only when the user has literally
       authorized that plan artifact; otherwise report the follow-up and record
       `Reported without plan authorization` with handoff evidence.
-- [ ] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
+- [x] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
       two-pagers first, after the user literally authorizes an idea artifact; fold into an
       overlapping brief instead of creating a duplicate.
-- [ ] [AI] **Code-routing rule**: a learning whose home is `apps/`, `libs/`, or tests never lands
+- [x] [AI] **Code-routing rule**: a learning whose home is `apps/`, `libs/`, or tests never lands
       inline in this PR; it becomes an authorized `plans/ideas/` two-pager or a report. Never create
       or write under `plans/backlog/` for it. A bug that blocks this plan's own scope is fixed inline
       as ordinary root-cause work.
-- [ ] [AI] Record the terminal state of every entry (routed inline / authorized two-pager at `<path>` /
+- [x] [AI] Record the terminal state of every entry (routed inline / authorized two-pager at `<path>` /
       reported without plan authorization with handoff evidence / discarded with reason) in
       `learnings.md`.
-- [ ] [AI] If execution surfaced no generalizable learning, record
+- [x] [AI] If execution surfaced no generalizable learning, record
       `No generalizable learnings — <one-line reason>`.
-- [ ] [AI] Report the known follow-ups to the user with handoff evidence: the
+- [x] [AI] Report the known follow-ups to the user with handoff evidence: the
       `ayokoding-cli courses estimate` subcommand (plan 05,
       [tech-docs/README](./tech-docs/README.md#out-of-scope-follow-up)); the missing `course-paths` row
       in `specs/apps/ayokoding/www/architecture.md`; and, if Phase 0 found it, any text in plan 02
       that still says plans 02 and 03 may land in either order.
-- [ ] [AI] Commit any routed inline edits and the updated `learnings.md`, run the push leak review,
+- [x] [AI] Commit any routed inline edits and the updated `learnings.md`, run the push leak review,
       push, and poll CI every 2 minutes until the new head is green with a new `leak-review` `pass`.
 
 ### Phase 8 Gate
 
 > All checks below must pass before starting Plan Archival.
 
-- [ ] [AI] Every `learnings.md` entry has a terminal state, or the explicit "none" escape is present.
-- [ ] [AI] No code-homed learning landed inline.
+- [x] [AI] Every `learnings.md` entry has a terminal state, or the explicit "none" escape is present.
+- [x] [AI] No code-homed learning landed inline.
 
 > **Pause Safety**: all learnings are routed, reported, or discarded. Safe to stop. To resume:
 > re-check `learnings.md` for any entry without a terminal-state marker.
@@ -1035,33 +1035,33 @@ against the local production build.
 
 ### Plan Archival
 
-- [ ] Perform the **preliminary** plan-execution end-to-end delivery completeness audit: trace approved
+- [x] Perform the **preliminary** plan-execution end-to-end delivery completeness audit: trace approved
       scope and every PRD requirement (FR-01 to FR-15, NFR-01 to NFR-08) and every Gherkin scenario
       through the delivery unit, as-built artifacts, automated and manual proof, rollback evidence,
       and Knowledge Capture. Reopen execution at the earliest affected phase for every missing or
       unsupported row; only final-delivery proof may remain pending. Checked boxes alone are not
       proof.
-- [ ] Verify ALL delivery checklist items are ticked.
-- [ ] Verify ALL quality gates pass (local + CI).
-- [ ] Verify ALL manual assertions pass with committed `evidence/` screenshots.
-- [ ] Verify ALL supported locales (`en`, `id`) were exercised in UI verification.
-- [ ] Verify the rendered production sign-off (Phase 5, local production build as staging) is
+- [x] Verify ALL delivery checklist items are ticked.
+- [x] Verify ALL quality gates pass (local + CI).
+- [x] Verify ALL manual assertions pass with committed `evidence/` screenshots.
+- [x] Verify ALL supported locales (`en`, `id`) were exercised in UI verification.
+- [x] Verify the rendered production sign-off (Phase 5, local production build as staging) is
       recorded and matches the selected mockups.
-- [ ] Verify every rule-15 `EWT`/`UWT`/`DWT` defect finding is fixed (ticked) — deferral requires
+- [x] Verify every rule-15 `EWT`/`UWT`/`DWT` defect finding is fixed (ticked) — deferral requires
       explicit user permission (only when genuinely impossible); `SG-###` proposals and `USS-###`
       suggestions may be triaged or deferred with written rationale.
-- [ ] Verify every rule-16 `AET-###` defect finding is fixed (ticked) — same deferral rule.
-- [ ] Register the workflow-owned terminal audit task with its post-delivery proof fields: merge
+- [x] Verify every rule-16 `AET-###` defect finding is fixed (ticked) — same deferral rule.
+- [x] Register the workflow-owned terminal audit task with its post-delivery proof fields: merge
       commit, post-merge `origin/main` CI, production deploy run, and the live production visual check
       below. Do not mark it complete before merge.
-- [ ] After every pre-archival gate passes, run `rtk date +%F`; record the output as
+- [x] After every pre-archival gate passes, run `rtk date +%F`; record the output as
       `<completion-date>`.
-- [ ] Move the plan via
+- [x] Move the plan via
       `rtk git mv plans/in-progress/ayokoding-learn-revamp-03-catalog-and-metadata/ plans/done/<completion-date>__ayokoding-learn-revamp-03-catalog-and-metadata/`
       (the `evidence/` subfolder moves with it).
-- [ ] Update `plans/in-progress/README.md` — remove the plan entry.
-- [ ] Update `plans/done/README.md` — add the plan entry with the same `<completion-date>`.
-- [ ] Update any other README that references this plan.
+- [x] Update `plans/in-progress/README.md` — remove the plan entry.
+- [x] Update `plans/done/README.md` — add the plan entry with the same `<completion-date>`.
+- [x] Update any other README that references this plan.
 - [ ] Commit `chore(plans): move ayokoding-learn-revamp-03-catalog-and-metadata to done`, run the push
       leak review, push, and poll every 2 minutes until the new head has a green `Quality gate` and a
       new `leak-review` `pass`.

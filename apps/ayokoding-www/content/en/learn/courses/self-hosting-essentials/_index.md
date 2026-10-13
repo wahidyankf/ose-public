@@ -4,6 +4,10 @@ date: 2026-07-30T00:00:00+07:00
 draft: false
 weight: 235
 prerequisites: ["backend-essentials", "just-enough-bash"]
+category: infrastructure-and-operations
+description: "Run your own server with a reverse proxy, TLS, a firewall, and backups."
+format: by-example
+estimatedHours: 6
 ---
 
 - [Overview](/en/learn/courses/self-hosting-essentials/overview)

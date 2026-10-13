@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 448
 prerequisites: ["just-enough-csharp"]
+category: application-development
+description: "Build responsive Windows desktop apps in C# with the MVVM pattern."
+format: by-example
+estimatedHours: 6
 ---
 
 - [Overview](/en/learn/courses/windows-app-development/overview)

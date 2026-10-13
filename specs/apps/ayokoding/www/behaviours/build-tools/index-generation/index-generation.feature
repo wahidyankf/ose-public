@@ -49,3 +49,11 @@ Feature: Index file generation
     When the index generator runs in generate mode
     Then the _index.md should contain a date field
     And the _index.md should contain draft set to false
+
+  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / The course catalog section keeps a frontmatter-only index
+  @e2e-exempt
+  Scenario: The course catalog section keeps a frontmatter-only index
+    Given a "learn/courses" section in locale "en" with two course sections
+    When the index generator runs in generate mode
+    Then the learn/courses _index.md contains only its frontmatter
+    And each course _index.md still lists its own children

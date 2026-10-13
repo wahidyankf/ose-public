@@ -4,6 +4,8 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1104
 prerequisites: ["journal-entries-and-posting-mechanics"]
+category: accounting
+description: "Record revenue and costs when they are earned, not just when cash moves."
 status: outline
 ---
 

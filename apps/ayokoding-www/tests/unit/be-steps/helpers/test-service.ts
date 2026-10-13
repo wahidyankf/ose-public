@@ -134,6 +134,17 @@ const mockContentMeta: ContentMeta[] = [
     filePath: "/mock/en/learn/courses/_index.md",
   },
   {
+    title: "SQL Essentials",
+    slug: "learn/courses/sql-essentials",
+    locale: "en",
+    weight: 200,
+    draft: false,
+    isSection: true,
+    tags: [],
+    category: "data-and-databases",
+    filePath: "/mock/en/learn/courses/sql-essentials/_index.md",
+  },
+  {
     title: "Just Enough Go",
     slug: "learn/courses/just-enough-go",
     locale: "en",

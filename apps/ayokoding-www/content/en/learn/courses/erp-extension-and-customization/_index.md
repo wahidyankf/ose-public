@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1137
 prerequisites: ["erp-module-map-and-architecture", "sql-essentials"]
+category: erp-systems
+description: "Choose between configuration, extensions, and custom code in an ERP."
 status: outline
 ---
 

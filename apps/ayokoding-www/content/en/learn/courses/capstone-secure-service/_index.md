@@ -5,6 +5,8 @@ draft: false
 weight: 1007
 prerequisites:
   ["security-essentials", "backend-at-scale", "it-and-application-security", "offensive-security", "defensive-security"]
+category: security
+description: "Take an HTTP service through a full security review, fix, and detection loop."
 status: outline
 ---
 

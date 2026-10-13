@@ -12,6 +12,10 @@ prerequisites:
     "site-reliability-engineering",
     "just-enough-python",
   ]
+category: ai-engineering
+description: "Understand what model serving costs and how to deploy models efficiently."
+format: by-example
+estimatedHours: 6
 ---
 
 - [Overview](/en/learn/courses/inference-serving-and-model-deployment/overview)

@@ -4,6 +4,10 @@ date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 150
 prerequisites: []
+category: programming-languages
+description: "Write shell scripts with pipes, redirection, and small composable commands."
+format: primer
+estimatedHours: 4
 ---
 
 - [Learning](/en/learn/courses/just-enough-bash/learning)

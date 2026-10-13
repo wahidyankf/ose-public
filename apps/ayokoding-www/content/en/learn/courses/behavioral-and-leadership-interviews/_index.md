@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 540
 prerequisites: []
+category: interview-preparation
+description: "Tell short, honest stories about your real work for behavioral interviews."
+format: annotated-concept
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/behavioral-and-leadership-interviews/overview)

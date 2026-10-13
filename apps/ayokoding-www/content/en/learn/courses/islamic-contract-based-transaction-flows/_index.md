@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1152
 prerequisites: ["procure-to-pay-systems", "order-to-cash-systems", "sharia-compliant-erp-design"]
+category: erp-systems
+description: "Build ERP flows that keep Islamic contract terms, approvals, and settlement records."
 status: outline
 ---
 

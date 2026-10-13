@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 66
 prerequisites: ["functional-programming", "just-enough-python"]
+category: programming-languages
+description: "Learn Elixir values, pattern matching, and recursion before actor-model concurrency."
+format: primer
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/just-enough-elixir/overview)

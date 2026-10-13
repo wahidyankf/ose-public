@@ -9,6 +9,12 @@ Archived plans and completed project planning documents.
 
 ## Completed Projects
 
+- [2026-10-13: ayokoding-learn-revamp-03-catalog-and-metadata](./2026-10-13__ayokoding-learn-revamp-03-catalog-and-metadata/README.md) —
+  Shipped the AyoKoding Learn course catalog and metadata: tolerant course frontmatter
+  with a strict corpus guard, 14 course categories, the category-grouped catalog page,
+  grouped sidebar Courses sections, course landing headers with description/meta/Start,
+  estimated-hours and Start-target derivation, a frontmatter-only catalog index, the
+  181-course backfill, and rules R1–R4 in the content skill and gate adapters.
 - [2026-10-12: ayokoding-learn-revamp-02-path-model](./2026-10-12__ayokoding-learn-revamp-02-path-model/README.md) —
   Shipped the AyoKoding Learn path model: titled core/extension phases with outcomes, path
   goals, exact `assumes`, the `status: outline` marker on 62 skeleton courses, revised

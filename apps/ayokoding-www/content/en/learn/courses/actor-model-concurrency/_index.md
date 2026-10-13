@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 67
 prerequisites: ["just-enough-elixir", "concurrency-and-parallelism"]
+category: computer-science
+description: "Build fault-tolerant concurrent programs with Elixir processes and supervisors."
+format: by-example
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/actor-model-concurrency/overview)

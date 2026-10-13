@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 480
 prerequisites: ["just-enough-c"]
+category: systems-and-networking
+description: "Learn the Windows object-and-handle model through Win32 C and PowerShell."
+format: by-example
+estimatedHours: 4
 ---
 
 - [Overview](/en/learn/courses/windows-os/overview)

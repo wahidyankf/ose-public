@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 174
 prerequisites: ["object-oriented-programming-essentials"]
+category: programming-languages
+description: "Get productive in C# and .NET before building a Windows desktop app."
+format: primer
+estimatedHours: 3
 ---
 
 - [Overview](/en/learn/courses/just-enough-csharp/overview)

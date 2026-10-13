@@ -16,6 +16,8 @@ prerequisites:
     "offensive-security",
     "defensive-security",
   ]
+category: architecture-and-distributed-systems
+description: "Ship a prior capstone app as a documented, event-driven, secure, deployed service."
 status: outline
 ---
 

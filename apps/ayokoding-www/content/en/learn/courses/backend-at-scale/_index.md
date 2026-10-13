@@ -4,6 +4,10 @@ date: 2026-07-29T00:00:00+07:00
 draft: false
 weight: 439
 prerequisites: ["backend-essentials", "sql-essentials", "security-essentials", "software-testing"]
+category: application-development
+description: "Keep a backend correct under heavy load, retries, and partial failure."
+format: by-example
+estimatedHours: 7
 ---
 
 - [Overview](/en/learn/courses/backend-at-scale/overview)

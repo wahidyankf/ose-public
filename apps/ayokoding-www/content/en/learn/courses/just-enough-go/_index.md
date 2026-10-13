@@ -4,6 +4,10 @@ date: 2026-08-03T00:00:00+07:00
 draft: false
 weight: 360
 prerequisites: []
+category: programming-languages
+description: "Learn Go packages, types, errors, and tooling before Go concurrency."
+format: primer
+estimatedHours: 3
 ---
 
 - [Overview](/en/learn/courses/just-enough-go/overview)

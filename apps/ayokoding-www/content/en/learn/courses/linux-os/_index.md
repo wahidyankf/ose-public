@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 450
 prerequisites: ["just-enough-c", "just-enough-bash"]
+category: systems-and-networking
+description: "Explore Linux processes, system calls, file systems, and signals hands-on."
+format: by-example
+estimatedHours: 3
 ---
 
 - [Overview](/en/learn/courses/linux-os/overview)

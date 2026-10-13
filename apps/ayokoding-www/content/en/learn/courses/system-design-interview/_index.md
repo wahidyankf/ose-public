@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 530
 prerequisites: ["backend-essentials", "networking-essentials", "sql-essentials"]
+category: interview-preparation
+description: "Run a system design interview from requirements to trade-offs within the time."
+format: annotated-concept
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/system-design-interview/overview)

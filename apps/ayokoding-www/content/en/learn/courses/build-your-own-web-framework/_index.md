@@ -4,6 +4,10 @@ date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 440
 prerequisites: ["backend-essentials", "networking-essentials"]
+category: application-development
+description: "Build a small web framework core: routing, middleware, and error handling."
+format: by-example
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/build-your-own-web-framework/overview)

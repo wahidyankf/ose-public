@@ -108,4 +108,28 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(firstChild).toHaveProperty("title");
     });
   });
+
+  Scenario("Course nodes carry their category", ({ Given, When, Then, And }) => {
+    let result: TreeNode[];
+    Given(
+      'content exists in locale "en" with a course "learn/courses/sql-essentials" in category "data-and-databases"',
+      async () => {
+        const tree = (await testCaller.content.getTree({ locale: "en" })) as TreeNode[];
+        expect(tree.length).toBeGreaterThan(0);
+      },
+    );
+    When('the client calls content.getTree with locale "en"', async () => {
+      result = (await testCaller.content.getTree({ locale: "en" })) as TreeNode[];
+    });
+    Then('the "learn/courses/sql-essentials" node should include category "data-and-databases"', () => {
+      const learn = result.find(({ slug }) => slug === "learn");
+      const courses = learn?.children.find(({ slug }) => slug === "learn/courses");
+      const sql = courses?.children.find(({ slug }) => slug === "learn/courses/sql-essentials");
+      expect(sql?.category).toBe("data-and-databases");
+    });
+    And('nodes without a category should have no "category" field', () => {
+      const learn = result.find(({ slug }) => slug === "learn");
+      expect(learn && "category" in learn).toBe(false);
+    });
+  });
 });

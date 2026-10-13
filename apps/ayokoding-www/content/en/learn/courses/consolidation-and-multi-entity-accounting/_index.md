@@ -9,6 +9,8 @@ prerequisites:
     "financial-statements-and-close-cycle",
     "multi-currency-accounting-and-fx-translation",
   ]
+category: accounting
+description: "Combine the books of related companies and remove internal transactions."
 status: outline
 ---
 

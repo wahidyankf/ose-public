@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1127
 prerequisites: ["erp-module-map-and-architecture", "domain-driven-design"]
+category: erp-systems
+description: "Model ERP documents with named states and guarded, reversible transitions."
 status: outline
 ---
 

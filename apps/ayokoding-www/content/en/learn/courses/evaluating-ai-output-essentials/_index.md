@@ -4,6 +4,10 @@ date: 2026-07-26T00:00:00+07:00
 draft: false
 weight: 440
 prerequisites: ["creating-ai-powered-apps", "software-testing", "just-enough-python"]
+category: ai-engineering
+description: "Test AI features with fixed cases and clear scoring instead of guesswork."
+format: annotated-concept
+estimatedHours: 4
 ---
 
 - [Overview](/en/learn/courses/evaluating-ai-output-essentials/overview)

@@ -54,6 +54,10 @@ See [Course Titles and References](./reference/course-titles-and-references.md) 
 
 See [Course Status and Path Model](./reference/course-status-and-path-model.md) for the outline-marker rule (PM1), the core-closure and `assumes` rule (PM2), and the prerequisite-rubric duty (PM3, judgement).
 
+## Course Metadata
+
+See [Course Metadata](./reference/course-metadata.md) for the per-course catalog fields, the estimated-hours rule, and the drift guard that enforces both.
+
 ## By-Example Tutorial Standards
 
 ### Annotation Density Requirement

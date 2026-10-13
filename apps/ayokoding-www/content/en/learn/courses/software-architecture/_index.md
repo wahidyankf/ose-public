@@ -4,6 +4,10 @@ date: 2026-08-14T00:00:00+07:00
 draft: false
 weight: 442
 prerequisites: ["backend-essentials", "object-oriented-design-and-patterns"]
+category: architecture-and-distributed-systems
+description: "Decide where to draw boundaries in a system and what each one costs."
+format: annotated-concept
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/software-architecture/overview)

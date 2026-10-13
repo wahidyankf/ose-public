@@ -23,6 +23,12 @@ export interface ContentMeta {
    * absent field identically to a complete course.
    */
   status?: "outline";
+  /** Course catalog category id (plan 03); absent when unknown. */
+  category?: string;
+  /** Course tutorial format id (plan 03); absent on outlines and when unknown. */
+  format?: string;
+  /** Estimated reading/working hours (plan 03); absent on outlines and when unknown. */
+  estimatedHours?: number;
 }
 
 export interface ContentPage extends ContentMeta {
@@ -49,6 +55,8 @@ export interface TreeNode {
   weight: number;
   isSection: boolean;
   children: TreeNode[];
+  /** Set only on nodes whose ContentMeta carries a category (plan 03). */
+  category?: string;
 }
 
 export interface SearchResult {

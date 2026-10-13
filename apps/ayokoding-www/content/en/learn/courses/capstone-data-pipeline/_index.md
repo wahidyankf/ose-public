@@ -11,6 +11,8 @@ prerequisites:
     "backend-at-scale",
     "creating-ai-powered-apps",
   ]
+category: data-and-databases
+description: "Build a data pipeline from raw ingestion to quality checks and a query interface."
 status: outline
 ---
 

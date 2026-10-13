@@ -4,6 +4,10 @@ date: 2026-07-15T00:00:00+07:00
 draft: false
 weight: 250
 prerequisites: ["just-enough-python"]
+category: tools-and-practices
+description: "Write unit, integration, and end-to-end tests that keep working code working."
+format: by-example
+estimatedHours: 8
 ---
 
 - [Overview](/en/learn/courses/software-testing/overview)

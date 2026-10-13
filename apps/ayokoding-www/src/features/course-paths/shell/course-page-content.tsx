@@ -5,6 +5,8 @@ import { MarkdownRenderer } from "@/features/content/shell/markdown-renderer";
 import { PrerequisiteList } from "./prerequisite-list";
 import { PathCourseLinks } from "./path-course-links";
 import { PathBanner } from "./path-banner";
+import { CourseHeader } from "./course-header";
+import type { CourseHeaderData } from "./course-header-data";
 import type { CoursePathRenderData } from "./course-path-nav";
 import type { Heading } from "@/features/content/core/types";
 import type { Locale } from "@/features/i18n/core/config";
@@ -20,6 +22,8 @@ export interface CoursePageContentProps {
   breadcrumbSegments: { label: string; slug: string; href?: string }[];
   renderData: CoursePathRenderData;
   courseId?: string;
+  /** Plan 03: present only on a course root page; renders the header above the contents. */
+  courseHeader?: CourseHeaderData;
 }
 
 /**
@@ -37,6 +41,7 @@ export function CoursePageContent({
   breadcrumbSegments,
   renderData,
   courseId,
+  courseHeader,
 }: CoursePageContentProps) {
   const activeContext = renderData.activeContext;
   const pathContext =
@@ -51,9 +56,8 @@ export function CoursePageContent({
   const coursePosition =
     activeContext === null || courseId === undefined
       ? undefined
-      : activeContext.manifest.courseOrder.findIndex(
-          (ref) => (typeof ref === "string" ? ref : ref.id) === courseId,
-        ) + 1;
+      : activeContext.manifest.courseOrder.findIndex((ref) => (typeof ref === "string" ? ref : ref.id) === courseId) +
+        1;
   const totalCourses = activeContext?.manifest.courseOrder.length;
 
   return (
@@ -78,11 +82,27 @@ export function CoursePageContent({
           />
         )}
 
+        {courseHeader ? (
+          <>
+            <CourseHeader
+              locale={locale}
+              data={courseHeader}
+              prerequisites={renderData.prerequisiteLinks}
+              pathBadges={renderData.pathBadges}
+              showPathBadges={pathContext === undefined}
+              activePathId={renderData.activeContext?.pathId}
+            />
+            <h2 className="mb-4 text-2xl font-bold tracking-tight">{t(locale as Locale, "courseContents")}</h2>
+          </>
+        ) : null}
+
         <MarkdownRenderer html={html} locale={locale} />
 
-        <PrerequisiteList locale={locale} prerequisites={renderData.prerequisiteLinks} />
+        {courseHeader ? null : <PrerequisiteList locale={locale} prerequisites={renderData.prerequisiteLinks} />}
 
-        {pathContext === undefined && <PathCourseLinks locale={locale} paths={renderData.pathBadges} />}
+        {courseHeader
+          ? null
+          : pathContext === undefined && <PathCourseLinks locale={locale} paths={renderData.pathBadges} />}
 
         {date && (
           <p className="mt-8 text-sm text-muted-foreground">

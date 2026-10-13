@@ -33,6 +33,11 @@ completed local build.
 - `src/features/search/` builds the local search data.
 - `src/features/i18n/` provides English and Indonesian routes.
 - `src/features/course-paths/` groups learning material into guided paths.
+- `content/en/learn/courses/` is the course library: every course `_index.md` declares catalog
+  metadata (`category`, `description`, plus `format` and `estimatedHours` on non-outline
+  courses), rendered as the catalog at `/en/learn/courses` with category-grouped sidebar
+  sections and course headers. The course-metadata scenario fails `test:unit` on drift, so
+  recompute `estimatedHours` after adding or removing material.
 
 The app keeps pure decisions in a feature’s `core/` directory and browser, filesystem, and Next.js
 work in `shell/`. That boundary makes content behaviour easier to test without requiring a running

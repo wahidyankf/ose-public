@@ -5,6 +5,8 @@ draft: false
 weight: 1139
 prerequisites:
   ["erp-subledger-to-gl-architecture", "erp-fiscal-calendar-and-period-close", "financial-statements-and-close-cycle"]
+category: erp-systems
+description: "Turn approved business events into controlled period-end financial results."
 status: outline
 ---
 

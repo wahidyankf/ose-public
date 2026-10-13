@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 185
 prerequisites: ["just-enough-java", "software-architecture"]
+category: application-development
+description: "Build layered Spring Boot services and understand the JVM they run on."
+format: by-example
+estimatedHours: 2
 ---
 
 - [Overview](/en/learn/courses/enterprise-java-and-the-jvm/overview)

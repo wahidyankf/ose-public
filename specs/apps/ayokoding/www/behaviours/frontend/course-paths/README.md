@@ -42,6 +42,8 @@ proved by pure Unit adapters over synthetic manifest data.
 - [skills-fixed-arc-statement.feature](./skills-fixed-arc-statement.feature) — One fixed skills arc.
 - [skills-path-composition.feature](./skills-path-composition.feature) — Skills path composition rules.
 - [skills-path-landing-body.feature](./skills-path-landing-body.feature) — Skills path landing content.
+- [course-catalog.feature](./course-catalog.feature) — Category-grouped course catalog with one card per course.
+- [course-landing-header.feature](./course-landing-header.feature) — Course landing header with summary, meta, and Start button.
 
 ## Related
 

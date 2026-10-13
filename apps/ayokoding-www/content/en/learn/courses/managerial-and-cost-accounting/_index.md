@@ -4,6 +4,8 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1107
 prerequisites: ["financial-statements-and-close-cycle"]
+category: accounting
+description: "Use cost information to support business decisions."
 status: outline
 ---
 

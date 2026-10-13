@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1136
 prerequisites: ["erp-conceptual-data-model"]
+category: erp-systems
+description: "Model bills of materials and production routings with version history."
 status: outline
 ---
 

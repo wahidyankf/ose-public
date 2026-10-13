@@ -4,6 +4,8 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 1105
 prerequisites: ["journal-entries-and-posting-mechanics", "accrual-accounting-and-revenue-recognition"]
+category: accounting
+description: "Match requests, orders, receipts, and invoices before money is paid."
 status: outline
 ---
 

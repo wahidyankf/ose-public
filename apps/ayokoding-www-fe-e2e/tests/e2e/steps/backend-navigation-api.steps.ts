@@ -86,3 +86,22 @@ Then('each child should include a "slug" and "title"', async () => {
   expect(sectionNode!.children[0]).toHaveProperty("slug");
   expect(sectionNode!.children[0]).toHaveProperty("title");
 });
+
+Given(
+  "content exists in locale {string} with a course {string} in category {string}",
+  async ({ request }, _locale: string, slug: string, category: string) => {
+    const node = findNode(await requestTree(request), slug) as (NavigationNode & { category?: string }) | undefined;
+    expect(node?.category).toBe(category);
+  },
+);
+
+Then("the {string} node should include category {string}", async ({ request }, slug: string, category: string) => {
+  const node = findNode(await requestTree(request), slug) as (NavigationNode & { category?: string }) | undefined;
+  expect(node?.category).toBe(category);
+});
+
+Then('nodes without a category should have no "category" field', async ({ request }) => {
+  const tree = (await requestTree(request)) as (NavigationNode & { category?: string })[];
+  const learn = findNode(tree, "learn") as (NavigationNode & { category?: string }) | undefined;
+  expect(learn && "category" in learn).toBe(false);
+});

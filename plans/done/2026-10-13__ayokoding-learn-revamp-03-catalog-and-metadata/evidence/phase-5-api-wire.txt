@@ -1,0 +1,9 @@
+# Phase 5 API wire evidence (production build, port 3102, 2026-10-13)
+
+## Success: content.getTree {locale: en, rootSlug: learn/courses} — HTTP 200
+- course roots: 181
+- learn/courses/sql-essentials node: category='data-and-databases'
+- child learn/courses/sql-essentials/learning node: False (absent, as specified)
+
+## Failure: content.getBySlug learn/courses/no-such-course
+- tRPC NOT_FOUND ("Page not found", httpStatus 404) — unchanged by this plan

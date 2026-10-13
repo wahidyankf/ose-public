@@ -14,6 +14,7 @@ UI-semantic scenarios for the AyoKoding navigation bounded context.
   namespace redirect guards (5 scenarios)
 - **[ia-navigation-revamp.feature](./ia-navigation-revamp.feature)** — Information-architecture
   navigation revamp (12 scenarios)
+- **[sidebar-course-categories.feature](./sidebar-course-categories.feature)** — Sidebar Courses section grouped by category (4 scenarios)
 - **[resizable-sidebar.feature](./resizable-sidebar.feature)** — Resizable desktop docs sidebar:
   width persistence, `< md` rail visibility, horizontal scroll of overflowing labels, the mobile
   nav drawer's preset-width control (and its corrupted-value fallback + visible caption), and the

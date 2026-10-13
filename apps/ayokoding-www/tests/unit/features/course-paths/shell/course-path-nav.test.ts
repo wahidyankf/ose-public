@@ -526,3 +526,15 @@ describe("coursePositionInManifest", () => {
     expect(coursePositionInManifest(manifest, "version-control-and-git")).toEqual({ index: 1, total: 3 });
   });
 });
+
+describe("courseRootIdFromSlug / COURSE_CATALOG_SLUG (plan 03)", () => {
+  it("returns the id only for an exact course root", async () => {
+    const { courseRootIdFromSlug: rootId, COURSE_CATALOG_SLUG: catalogSlug } =
+      await import("../../../../../src/features/course-paths/shell/course-path-nav");
+    expect(catalogSlug).toBe("learn/courses");
+    expect(rootId("learn/courses/sql-essentials")).toBe("sql-essentials");
+    expect(rootId("learn/courses/sql-essentials/learning/beginner")).toBeNull();
+    expect(rootId("learn/courses")).toBeNull();
+    expect(rootId("learn/paths/careers/x")).toBeNull();
+  });
+});

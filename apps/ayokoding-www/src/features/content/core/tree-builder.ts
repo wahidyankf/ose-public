@@ -23,6 +23,7 @@ export function buildTreeForLocale(items: ContentMeta[]): TreeNode[] {
       weight: item.weight,
       isSection: item.isSection,
       children: [],
+      ...(item.category !== undefined ? { category: item.category } : {}),
     });
   }
 

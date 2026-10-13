@@ -4,6 +4,10 @@ date: 2026-08-15T00:00:00+07:00
 draft: false
 weight: 188
 prerequisites: ["functional-programming", "programming-paradigms", "just-enough-typescript"]
+category: computer-science
+description: "Use algebraic data types and type inference to make wrong states hard to write."
+format: by-example
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/type-systems/overview)

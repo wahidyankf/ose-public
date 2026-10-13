@@ -4,6 +4,10 @@ date: 2026-07-18T00:00:00+07:00
 draft: false
 weight: 430
 prerequisites: ["software-product-engineering", "software-engineering-practices", "project-management"]
+category: product-and-leadership
+description: "Lead engineers through one-on-ones, feedback, growth plans, and priorities."
+format: annotated-concept-no-code
+estimatedHours: 2
 ---
 
 - [Learning](/en/learn/courses/engineering-management/learning)

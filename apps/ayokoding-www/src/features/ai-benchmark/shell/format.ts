@@ -61,15 +61,10 @@ export function formatDate(iso: string, locale: Locale): string {
   }).format(new Date(iso));
 }
 
-/** Fill `{name}` placeholders in a translated template. Unknown placeholders are left as-is. */
-export function fill(template: string, values: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (match, name: string) => (name in values ? String(values[name]) : match));
-}
-
-/** Translate `key` and fill its placeholders. */
-export function tf(locale: Locale, key: string, values: Record<string, string | number>): string {
-  return fill(t(locale, key), values);
-}
+// `fill`/`tf` live in the i18n core (plan 03) so every feature can fill placeholders;
+// re-exported here so the existing ai-benchmark imports keep working.
+export { fill, tf } from "@/features/i18n/core/fill";
+import { tf } from "@/features/i18n/core/fill";
 
 /** Ratios within this band of 1 read as "about the same price". */
 const SAME_PRICE_BAND = 0.05;

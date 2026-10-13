@@ -13,6 +13,8 @@ prerequisites:
     "async-python-and-fastapi-services",
     "software-engineering-practices",
   ]
+category: ai-engineering
+description: "Combine the agent courses into a small local coding assistant."
 status: outline
 ---
 

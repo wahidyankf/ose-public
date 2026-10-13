@@ -4,6 +4,10 @@ date: 2026-07-14T00:00:00+07:00
 draft: false
 weight: 210
 prerequisites: ["sql-essentials", "just-enough-python"]
+category: application-development
+description: "Build an HTTP backend that stores data and serves many clients."
+format: by-example
+estimatedHours: 13
 ---
 
 - [Overview](/en/learn/courses/backend-essentials/overview)

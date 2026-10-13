@@ -4,6 +4,10 @@ date: 2026-07-26T00:00:00+07:00
 draft: false
 weight: 441
 prerequisites: ["evaluating-ai-output-essentials", "just-enough-python", "data-structures-and-algorithms-essentials"]
+category: ai-engineering
+description: "Use basic statistics to tell whether an evaluation result is real."
+format: annotated-concept
+estimatedHours: 5
 ---
 
 - [Overview](/en/learn/courses/statistics-for-evaluation/overview)

@@ -11,6 +11,8 @@ prerequisites:
     "backend-essentials",
     "api-design",
   ]
+category: erp-systems
+description: "Connect ERP modules and outside systems with versioned, retry-safe messages."
 status: outline
 ---
 

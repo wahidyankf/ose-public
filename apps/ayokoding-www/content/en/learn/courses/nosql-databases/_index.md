@@ -4,6 +4,10 @@ date: 2026-07-27T00:00:00+07:00
 draft: false
 weight: 448
 prerequisites: ["sql-essentials", "just-enough-python"]
+category: data-and-databases
+description: "Choose document, key-value, or column stores to match how data is read."
+format: by-example
+estimatedHours: 10
 ---
 
 - [Overview](/en/learn/courses/nosql-databases/overview)

@@ -4,6 +4,10 @@ date: 2026-07-17T00:00:00+07:00
 draft: false
 weight: 300
 prerequisites: ["computer-science-foundations", "just-enough-python"]
+category: systems-and-networking
+description: "Learn how CPUs, caches, and memory decide how fast your code really runs."
+format: by-example
+estimatedHours: 16
 ---
 
 - [Overview](/en/learn/courses/computer-architecture/overview)

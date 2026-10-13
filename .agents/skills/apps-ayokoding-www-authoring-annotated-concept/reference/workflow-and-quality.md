@@ -4,8 +4,8 @@
 
 ### Step 1: Determine Mode and Content Path
 
-Read the topic's format designation to select standard mode or the no-code sub-mode (see Mode
-Selection) before writing any file.
+Read the course `_index.md` `format` field to select standard mode or the no-code sub-mode
+(see Mode Selection; for a new course, the content plan states it) before writing any file.
 
 ### Step 2: Create Content Metadata
 

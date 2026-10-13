@@ -9,6 +9,8 @@ prerequisites:
     "erp-bom-and-routing-architecture",
     "inventory-and-warehouse-management",
   ]
+category: erp-systems
+description: "Record inspections and decide what happens to failed material without losing its history."
 status: outline
 ---
 

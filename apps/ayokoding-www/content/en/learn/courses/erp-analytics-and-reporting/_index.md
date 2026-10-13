@@ -4,6 +4,8 @@ date: 2026-08-16T00:00:00+07:00
 draft: false
 weight: 1150
 prerequisites: ["record-to-report-systems"]
+category: erp-systems
+description: "Build ERP reports with clear sources, freshness, and control totals."
 status: outline
 ---
 

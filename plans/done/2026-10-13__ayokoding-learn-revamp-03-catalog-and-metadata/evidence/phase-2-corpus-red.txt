@@ -1,0 +1,732 @@
+Course metadata check failed for 181 courses:
+accounting-foundations: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+accounting-foundations: description: Invalid input: expected string, received undefined
+accounts-payable-and-procure-to-pay: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+accounts-payable-and-procure-to-pay: description: Invalid input: expected string, received undefined
+accounts-receivable-and-order-to-cash: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+accounts-receivable-and-order-to-cash: description: Invalid input: expected string, received undefined
+accrual-accounting-and-revenue-recognition: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+accrual-accounting-and-revenue-recognition: description: Invalid input: expected string, received undefined
+actor-model-concurrency: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+actor-model-concurrency: description: Invalid input: expected string, received undefined
+actor-model-concurrency: estimatedHours: required unless status is outline
+actor-model-concurrency: format: required unless status is outline
+advanced-algorithms: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+advanced-algorithms: description: Invalid input: expected string, received undefined
+advanced-algorithms: estimatedHours: required unless status is outline
+advanced-algorithms: format: required unless status is outline
+advanced-frontend: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+advanced-frontend: description: Invalid input: expected string, received undefined
+advanced-frontend: estimatedHours: required unless status is outline
+advanced-frontend: format: required unless status is outline
+advanced-networking: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+advanced-networking: description: Invalid input: expected string, received undefined
+advanced-networking: estimatedHours: required unless status is outline
+advanced-networking: format: required unless status is outline
+advanced-sql-and-query-performance: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+advanced-sql-and-query-performance: description: Invalid input: expected string, received undefined
+advanced-sql-and-query-performance: estimatedHours: required unless status is outline
+advanced-sql-and-query-performance: format: required unless status is outline
+agent-context-and-memory: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+agent-context-and-memory: description: Invalid input: expected string, received undefined
+agent-context-and-memory: estimatedHours: required unless status is outline
+agent-context-and-memory: format: required unless status is outline
+agent-orchestration-subagents-and-observability: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+agent-orchestration-subagents-and-observability: description: Invalid input: expected string, received undefined
+agent-orchestration-subagents-and-observability: estimatedHours: required unless status is outline
+agent-orchestration-subagents-and-observability: format: required unless status is outline
+agent-permissions-and-sandboxing: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+agent-permissions-and-sandboxing: description: Invalid input: expected string, received undefined
+agent-permissions-and-sandboxing: estimatedHours: required unless status is outline
+agent-permissions-and-sandboxing: format: required unless status is outline
+agent-tools-and-mcp: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+agent-tools-and-mcp: description: Invalid input: expected string, received undefined
+agent-tools-and-mcp: estimatedHours: required unless status is outline
+agent-tools-and-mcp: format: required unless status is outline
+agentic-ai: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+agentic-ai: description: Invalid input: expected string, received undefined
+agentic-ai: estimatedHours: required unless status is outline
+agentic-ai: format: required unless status is outline
+agentic-coding: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+agentic-coding: description: Invalid input: expected string, received undefined
+agentic-coding: estimatedHours: required unless status is outline
+agentic-coding: format: required unless status is outline
+analytics-and-experimentation: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+analytics-and-experimentation: description: Invalid input: expected string, received undefined
+analytics-and-experimentation: estimatedHours: required unless status is outline
+analytics-and-experimentation: format: required unless status is outline
+android-app-development: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+android-app-development: description: Invalid input: expected string, received undefined
+android-app-development: estimatedHours: required unless status is outline
+android-app-development: format: required unless status is outline
+api-design: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+api-design: description: Invalid input: expected string, received undefined
+api-design: estimatedHours: required unless status is outline
+api-design: format: required unless status is outline
+async-python-and-fastapi-services: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+async-python-and-fastapi-services: description: Invalid input: expected string, received undefined
+async-python-and-fastapi-services: estimatedHours: required unless status is outline
+async-python-and-fastapi-services: format: required unless status is outline
+audit-controls-and-compliance: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+audit-controls-and-compliance: description: Invalid input: expected string, received undefined
+backend-at-scale: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+backend-at-scale: description: Invalid input: expected string, received undefined
+backend-at-scale: estimatedHours: required unless status is outline
+backend-at-scale: format: required unless status is outline
+backend-essentials: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+backend-essentials: description: Invalid input: expected string, received undefined
+backend-essentials: estimatedHours: required unless status is outline
+backend-essentials: format: required unless status is outline
+bare-metal-virtualization: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+bare-metal-virtualization: description: Invalid input: expected string, received undefined
+bare-metal-virtualization: estimatedHours: required unless status is outline
+bare-metal-virtualization: format: required unless status is outline
+behavioral-and-leadership-interviews: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+behavioral-and-leadership-interviews: description: Invalid input: expected string, received undefined
+behavioral-and-leadership-interviews: estimatedHours: required unless status is outline
+behavioral-and-leadership-interviews: format: required unless status is outline
+browser-automation-with-cdp: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+browser-automation-with-cdp: description: Invalid input: expected string, received undefined
+browser-automation-with-cdp: estimatedHours: required unless status is outline
+browser-automation-with-cdp: format: required unless status is outline
+build-automation-and-task-runners: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+build-automation-and-task-runners: description: Invalid input: expected string, received undefined
+build-automation-and-task-runners: estimatedHours: required unless status is outline
+build-automation-and-task-runners: format: required unless status is outline
+build-your-own-database: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+build-your-own-database: description: Invalid input: expected string, received undefined
+build-your-own-database: estimatedHours: required unless status is outline
+build-your-own-database: format: required unless status is outline
+build-your-own-git: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+build-your-own-git: description: Invalid input: expected string, received undefined
+build-your-own-git: estimatedHours: required unless status is outline
+build-your-own-git: format: required unless status is outline
+build-your-own-orm-and-query-builder: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+build-your-own-orm-and-query-builder: description: Invalid input: expected string, received undefined
+build-your-own-orm-and-query-builder: estimatedHours: required unless status is outline
+build-your-own-orm-and-query-builder: format: required unless status is outline
+build-your-own-raft: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+build-your-own-raft: description: Invalid input: expected string, received undefined
+build-your-own-raft: estimatedHours: required unless status is outline
+build-your-own-raft: format: required unless status is outline
+build-your-own-reactive-ui: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+build-your-own-reactive-ui: description: Invalid input: expected string, received undefined
+build-your-own-reactive-ui: estimatedHours: required unless status is outline
+build-your-own-reactive-ui: format: required unless status is outline
+build-your-own-web-framework: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+build-your-own-web-framework: description: Invalid input: expected string, received undefined
+build-your-own-web-framework: estimatedHours: required unless status is outline
+build-your-own-web-framework: format: required unless status is outline
+building-production-cli-tools: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+building-production-cli-tools: description: Invalid input: expected string, received undefined
+building-production-cli-tools: estimatedHours: required unless status is outline
+building-production-cli-tools: format: required unless status is outline
+capstone-build-your-own-coding-agent: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-build-your-own-coding-agent: description: Invalid input: expected string, received undefined
+capstone-build-your-own-pentest-engine: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-build-your-own-pentest-engine: description: Invalid input: expected string, received undefined
+capstone-concurrency-and-systems: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-concurrency-and-systems: description: Invalid input: expected string, received undefined
+capstone-concurrency-showdown: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-concurrency-showdown: description: Invalid input: expected string, received undefined
+capstone-data-pipeline: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-data-pipeline: description: Invalid input: expected string, received undefined
+capstone-first-working-software: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-first-working-software: description: Invalid input: expected string, received undefined
+capstone-first-working-software: estimatedHours: required unless status is outline
+capstone-first-working-software: format: required unless status is outline
+capstone-forge-ready: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-forge-ready: description: Invalid input: expected string, received undefined
+capstone-forge-ready: estimatedHours: required unless status is outline
+capstone-forge-ready: format: required unless status is outline
+capstone-full-stack-app: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-full-stack-app: description: Invalid input: expected string, received undefined
+capstone-full-stack-app: estimatedHours: required unless status is outline
+capstone-full-stack-app: format: required unless status is outline
+capstone-interview-loop: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-interview-loop: description: Invalid input: expected string, received undefined
+capstone-interview-loop: estimatedHours: required unless status is outline
+capstone-interview-loop: format: required unless status is outline
+capstone-lead-at-altitude: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-lead-at-altitude: description: Invalid input: expected string, received undefined
+capstone-real-world-delivery: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-real-world-delivery: description: Invalid input: expected string, received undefined
+capstone-secure-service: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-secure-service: description: Invalid input: expected string, received undefined
+capstone-solid-core: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+capstone-solid-core: description: Invalid input: expected string, received undefined
+capstone-solid-core: estimatedHours: required unless status is outline
+capstone-solid-core: format: required unless status is outline
+chart-of-accounts-and-data-modeling: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+chart-of-accounts-and-data-modeling: description: Invalid input: expected string, received undefined
+cicd-and-release-engineering: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+cicd-and-release-engineering: description: Invalid input: expected string, received undefined
+cicd-and-release-engineering: estimatedHours: required unless status is outline
+cicd-and-release-engineering: format: required unless status is outline
+cloud-and-iac: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+cloud-and-iac: description: Invalid input: expected string, received undefined
+cloud-and-iac: estimatedHours: required unless status is outline
+cloud-and-iac: format: required unless status is outline
+coding-interview: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+coding-interview: description: Invalid input: expected string, received undefined
+coding-interview: estimatedHours: required unless status is outline
+coding-interview: format: required unless status is outline
+compilers-parsers-and-transpilers: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+compilers-parsers-and-transpilers: description: Invalid input: expected string, received undefined
+compilers-parsers-and-transpilers: estimatedHours: required unless status is outline
+compilers-parsers-and-transpilers: format: required unless status is outline
+computer-architecture: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+computer-architecture: description: Invalid input: expected string, received undefined
+computer-architecture: estimatedHours: required unless status is outline
+computer-architecture: format: required unless status is outline
+computer-science-foundations: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+computer-science-foundations: description: Invalid input: expected string, received undefined
+computer-science-foundations: estimatedHours: required unless status is outline
+computer-science-foundations: format: required unless status is outline
+concurrency-and-parallelism: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+concurrency-and-parallelism: description: Invalid input: expected string, received undefined
+concurrency-and-parallelism: estimatedHours: required unless status is outline
+concurrency-and-parallelism: format: required unless status is outline
+consolidation-and-multi-entity-accounting: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+consolidation-and-multi-entity-accounting: description: Invalid input: expected string, received undefined
+containers-and-orchestration: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+containers-and-orchestration: description: Invalid input: expected string, received undefined
+containers-and-orchestration: estimatedHours: required unless status is outline
+containers-and-orchestration: format: required unless status is outline
+creating-ai-powered-apps: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+creating-ai-powered-apps: description: Invalid input: expected string, received undefined
+creating-ai-powered-apps: estimatedHours: required unless status is outline
+creating-ai-powered-apps: format: required unless status is outline
+csp-style-concurrency: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+csp-style-concurrency: description: Invalid input: expected string, received undefined
+csp-style-concurrency: estimatedHours: required unless status is outline
+csp-style-concurrency: format: required unless status is outline
+data-access-orms-and-query-builders: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+data-access-orms-and-query-builders: description: Invalid input: expected string, received undefined
+data-access-orms-and-query-builders: estimatedHours: required unless status is outline
+data-access-orms-and-query-builders: format: required unless status is outline
+data-engineering: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+data-engineering: description: Invalid input: expected string, received undefined
+data-engineering: estimatedHours: required unless status is outline
+data-engineering: format: required unless status is outline
+data-structures-and-algorithms-essentials: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+data-structures-and-algorithms-essentials: description: Invalid input: expected string, received undefined
+data-structures-and-algorithms-essentials: estimatedHours: required unless status is outline
+data-structures-and-algorithms-essentials: format: required unless status is outline
+database-internals-and-storage-engines: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+database-internals-and-storage-engines: description: Invalid input: expected string, received undefined
+database-internals-and-storage-engines: estimatedHours: required unless status is outline
+database-internals-and-storage-engines: format: required unless status is outline
+debugging-and-profiling: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+debugging-and-profiling: description: Invalid input: expected string, received undefined
+debugging-and-profiling: estimatedHours: required unless status is outline
+debugging-and-profiling: format: required unless status is outline
+defensive-security: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+defensive-security: description: Invalid input: expected string, received undefined
+defensive-security: estimatedHours: required unless status is outline
+defensive-security: format: required unless status is outline
+demand-and-supply-planning: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+demand-and-supply-planning: description: Invalid input: expected string, received undefined
+detection-engineering-and-siem-operations: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+detection-engineering-and-siem-operations: description: Invalid input: expected string, received undefined
+detection-engineering-and-siem-operations: estimatedHours: required unless status is outline
+detection-engineering-and-siem-operations: format: required unless status is outline
+distributed-systems: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+distributed-systems: description: Invalid input: expected string, received undefined
+distributed-systems: estimatedHours: required unless status is outline
+distributed-systems: format: required unless status is outline
+domain-driven-design: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+domain-driven-design: description: Invalid input: expected string, received undefined
+domain-driven-design: estimatedHours: required unless status is outline
+domain-driven-design: format: required unless status is outline
+engineering-management: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+engineering-management: description: Invalid input: expected string, received undefined
+engineering-management: estimatedHours: required unless status is outline
+engineering-management: format: required unless status is outline
+enterprise-java-and-the-jvm: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+enterprise-java-and-the-jvm: description: Invalid input: expected string, received undefined
+enterprise-java-and-the-jvm: estimatedHours: required unless status is outline
+enterprise-java-and-the-jvm: format: required unless status is outline
+erp-analytics-and-reporting: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-analytics-and-reporting: description: Invalid input: expected string, received undefined
+erp-audit-trail-and-change-tracking: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-audit-trail-and-change-tracking: description: Invalid input: expected string, received undefined
+erp-availability-and-reservations: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-availability-and-reservations: description: Invalid input: expected string, received undefined
+erp-bom-and-routing-architecture: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-bom-and-routing-architecture: description: Invalid input: expected string, received undefined
+erp-conceptual-data-model: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-conceptual-data-model: description: Invalid input: expected string, received undefined
+erp-document-lifecycle-and-state-machines: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-document-lifecycle-and-state-machines: description: Invalid input: expected string, received undefined
+erp-extension-and-customization: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-extension-and-customization: description: Invalid input: expected string, received undefined
+erp-fiscal-calendar-and-period-close: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-fiscal-calendar-and-period-close: description: Invalid input: expected string, received undefined
+erp-foundations-and-history: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-foundations-and-history: description: Invalid input: expected string, received undefined
+erp-integration-patterns: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-integration-patterns: description: Invalid input: expected string, received undefined
+erp-inventory-costing-methods: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-inventory-costing-methods: description: Invalid input: expected string, received undefined
+erp-inventory-integrity-and-concurrency: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-inventory-integrity-and-concurrency: description: Invalid input: expected string, received undefined
+erp-module-map-and-architecture: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-module-map-and-architecture: description: Invalid input: expected string, received undefined
+erp-numbering-sequences-and-uom-conversion: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-numbering-sequences-and-uom-conversion: description: Invalid input: expected string, received undefined
+erp-posting-rules-and-account-determination: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-posting-rules-and-account-determination: description: Invalid input: expected string, received undefined
+erp-procurement-and-fulfillment-exceptions: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-procurement-and-fulfillment-exceptions: description: Invalid input: expected string, received undefined
+erp-security-and-controls: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-security-and-controls: description: Invalid input: expected string, received undefined
+erp-subledger-to-gl-architecture: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+erp-subledger-to-gl-architecture: description: Invalid input: expected string, received undefined
+evaluating-ai-output-essentials: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+evaluating-ai-output-essentials: description: Invalid input: expected string, received undefined
+evaluating-ai-output-essentials: estimatedHours: required unless status is outline
+evaluating-ai-output-essentials: format: required unless status is outline
+evaluating-ai-systems-in-depth: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+evaluating-ai-systems-in-depth: description: Invalid input: expected string, received undefined
+evaluating-ai-systems-in-depth: estimatedHours: required unless status is outline
+evaluating-ai-systems-in-depth: format: required unless status is outline
+event-driven-architecture: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+event-driven-architecture: description: Invalid input: expected string, received undefined
+event-driven-architecture: estimatedHours: required unless status is outline
+event-driven-architecture: format: required unless status is outline
+extending-neovim: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+extending-neovim: description: Invalid input: expected string, received undefined
+extending-neovim: estimatedHours: required unless status is outline
+extending-neovim: format: required unless status is outline
+financial-reporting-and-xbrl: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+financial-reporting-and-xbrl: description: Invalid input: expected string, received undefined
+financial-reporting-standards-ifrs-vs-gaap: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+financial-reporting-standards-ifrs-vs-gaap: description: Invalid input: expected string, received undefined
+financial-statements-and-close-cycle: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+financial-statements-and-close-cycle: description: Invalid input: expected string, received undefined
+fine-tuning-and-adaptation: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+fine-tuning-and-adaptation: description: Invalid input: expected string, received undefined
+fine-tuning-and-adaptation: estimatedHours: required unless status is outline
+fine-tuning-and-adaptation: format: required unless status is outline
+fixed-assets-and-depreciation: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+fixed-assets-and-depreciation: description: Invalid input: expected string, received undefined
+frontend-essentials: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+frontend-essentials: description: Invalid input: expected string, received undefined
+frontend-essentials: estimatedHours: required unless status is outline
+frontend-essentials: format: required unless status is outline
+functional-programming: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+functional-programming: description: Invalid input: expected string, received undefined
+functional-programming: estimatedHours: required unless status is outline
+functional-programming: format: required unless status is outline
+general-ledger-system-architecture: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+general-ledger-system-architecture: description: Invalid input: expected string, received undefined
+graph-databases: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+graph-databases: description: Invalid input: expected string, received undefined
+graph-databases: estimatedHours: required unless status is outline
+graph-databases: format: required unless status is outline
+human-capital-management-and-hire-to-retire: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+human-capital-management-and-hire-to-retire: description: Invalid input: expected string, received undefined
+hybrid-app-development: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+hybrid-app-development: description: Invalid input: expected string, received undefined
+hybrid-app-development: estimatedHours: required unless status is outline
+hybrid-app-development: format: required unless status is outline
+inference-serving-and-model-deployment: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+inference-serving-and-model-deployment: description: Invalid input: expected string, received undefined
+inference-serving-and-model-deployment: estimatedHours: required unless status is outline
+inference-serving-and-model-deployment: format: required unless status is outline
+information-architecture-and-seo: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+information-architecture-and-seo: description: Invalid input: expected string, received undefined
+information-architecture-and-seo: estimatedHours: required unless status is outline
+information-architecture-and-seo: format: required unless status is outline
+inventory-and-cogs-accounting: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+inventory-and-cogs-accounting: description: Invalid input: expected string, received undefined
+inventory-and-warehouse-management: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+inventory-and-warehouse-management: description: Invalid input: expected string, received undefined
+ios-app-development: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+ios-app-development: description: Invalid input: expected string, received undefined
+ios-app-development: estimatedHours: required unless status is outline
+ios-app-development: format: required unless status is outline
+islamic-contract-based-transaction-flows: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+islamic-contract-based-transaction-flows: description: Invalid input: expected string, received undefined
+islamic-contract-modeling-for-systems: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+islamic-contract-modeling-for-systems: description: Invalid input: expected string, received undefined
+it-and-application-security: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+it-and-application-security: description: Invalid input: expected string, received undefined
+it-and-application-security: estimatedHours: required unless status is outline
+it-and-application-security: format: required unless status is outline
+it-governance-grc: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+it-governance-grc: description: Invalid input: expected string, received undefined
+it-governance-grc: estimatedHours: required unless status is outline
+it-governance-grc: format: required unless status is outline
+journal-entries-and-posting-mechanics: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+journal-entries-and-posting-mechanics: description: Invalid input: expected string, received undefined
+just-enough-bash: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-bash: description: Invalid input: expected string, received undefined
+just-enough-bash: estimatedHours: required unless status is outline
+just-enough-bash: format: required unless status is outline
+just-enough-c: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-c: description: Invalid input: expected string, received undefined
+just-enough-c: estimatedHours: required unless status is outline
+just-enough-c: format: required unless status is outline
+just-enough-cpp: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-cpp: description: Invalid input: expected string, received undefined
+just-enough-cpp: estimatedHours: required unless status is outline
+just-enough-cpp: format: required unless status is outline
+just-enough-csharp: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-csharp: description: Invalid input: expected string, received undefined
+just-enough-csharp: estimatedHours: required unless status is outline
+just-enough-csharp: format: required unless status is outline
+just-enough-dart: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-dart: description: Invalid input: expected string, received undefined
+just-enough-dart: estimatedHours: required unless status is outline
+just-enough-dart: format: required unless status is outline
+just-enough-elixir: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-elixir: description: Invalid input: expected string, received undefined
+just-enough-elixir: estimatedHours: required unless status is outline
+just-enough-elixir: format: required unless status is outline
+just-enough-fsharp: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-fsharp: description: Invalid input: expected string, received undefined
+just-enough-fsharp: estimatedHours: required unless status is outline
+just-enough-fsharp: format: required unless status is outline
+just-enough-go: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-go: description: Invalid input: expected string, received undefined
+just-enough-go: estimatedHours: required unless status is outline
+just-enough-go: format: required unless status is outline
+just-enough-java: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-java: description: Invalid input: expected string, received undefined
+just-enough-java: estimatedHours: required unless status is outline
+just-enough-java: format: required unless status is outline
+just-enough-kotlin: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-kotlin: description: Invalid input: expected string, received undefined
+just-enough-kotlin: estimatedHours: required unless status is outline
+just-enough-kotlin: format: required unless status is outline
+just-enough-lua: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-lua: description: Invalid input: expected string, received undefined
+just-enough-lua: estimatedHours: required unless status is outline
+just-enough-lua: format: required unless status is outline
+just-enough-nvim: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-nvim: description: Invalid input: expected string, received undefined
+just-enough-nvim: estimatedHours: required unless status is outline
+just-enough-nvim: format: required unless status is outline
+just-enough-python: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-python: description: Invalid input: expected string, received undefined
+just-enough-python: estimatedHours: required unless status is outline
+just-enough-python: format: required unless status is outline
+just-enough-rust: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-rust: description: Invalid input: expected string, received undefined
+just-enough-rust: estimatedHours: required unless status is outline
+just-enough-rust: format: required unless status is outline
+just-enough-swift: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-swift: description: Invalid input: expected string, received undefined
+just-enough-swift: estimatedHours: required unless status is outline
+just-enough-swift: format: required unless status is outline
+just-enough-typescript: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+just-enough-typescript: description: Invalid input: expected string, received undefined
+just-enough-typescript: estimatedHours: required unless status is outline
+just-enough-typescript: format: required unless status is outline
+lease-and-intangible-asset-accounting: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+lease-and-intangible-asset-accounting: description: Invalid input: expected string, received undefined
+linux-app-development: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+linux-app-development: description: Invalid input: expected string, received undefined
+linux-app-development: estimatedHours: required unless status is outline
+linux-app-development: format: required unless status is outline
+linux-os: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+linux-os: description: Invalid input: expected string, received undefined
+linux-os: estimatedHours: required unless status is outline
+linux-os: format: required unless status is outline
+lisp: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+lisp: description: Invalid input: expected string, received undefined
+lisp: estimatedHours: required unless status is outline
+lisp: format: required unless status is outline
+managerial-and-cost-accounting: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+managerial-and-cost-accounting: description: Invalid input: expected string, received undefined
+modern-system-programming: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+modern-system-programming: description: Invalid input: expected string, received undefined
+modern-system-programming: estimatedHours: required unless status is outline
+modern-system-programming: format: required unless status is outline
+multi-company-and-multi-currency-erp: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+multi-company-and-multi-currency-erp: description: Invalid input: expected string, received undefined
+multi-currency-accounting-and-fx-translation: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+multi-currency-accounting-and-fx-translation: description: Invalid input: expected string, received undefined
+networking-essentials: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+networking-essentials: description: Invalid input: expected string, received undefined
+networking-essentials: estimatedHours: required unless status is outline
+networking-essentials: format: required unless status is outline
+nosql-databases: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+nosql-databases: description: Invalid input: expected string, received undefined
+nosql-databases: estimatedHours: required unless status is outline
+nosql-databases: format: required unless status is outline
+object-oriented-design-and-patterns: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+object-oriented-design-and-patterns: description: Invalid input: expected string, received undefined
+object-oriented-design-and-patterns: estimatedHours: required unless status is outline
+object-oriented-design-and-patterns: format: required unless status is outline
+object-oriented-programming-essentials: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+object-oriented-programming-essentials: description: Invalid input: expected string, received undefined
+object-oriented-programming-essentials: estimatedHours: required unless status is outline
+object-oriented-programming-essentials: format: required unless status is outline
+offensive-security: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+offensive-security: description: Invalid input: expected string, received undefined
+offensive-security: estimatedHours: required unless status is outline
+offensive-security: format: required unless status is outline
+order-to-cash-systems: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+order-to-cash-systems: description: Invalid input: expected string, received undefined
+payroll-and-tax-accounting-essentials: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+payroll-and-tax-accounting-essentials: description: Invalid input: expected string, received undefined
+platform-engineering-and-devex: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+platform-engineering-and-devex: description: Invalid input: expected string, received undefined
+platform-engineering-and-devex: estimatedHours: required unless status is outline
+platform-engineering-and-devex: format: required unless status is outline
+procure-to-pay-systems: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+procure-to-pay-systems: description: Invalid input: expected string, received undefined
+product-patterns-for-probabilistic-systems: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+product-patterns-for-probabilistic-systems: description: Invalid input: expected string, received undefined
+product-patterns-for-probabilistic-systems: estimatedHours: required unless status is outline
+product-patterns-for-probabilistic-systems: format: required unless status is outline
+production-planning-and-mrp: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+production-planning-and-mrp: description: Invalid input: expected string, received undefined
+programming-paradigms: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+programming-paradigms: description: Invalid input: expected string, received undefined
+programming-paradigms: estimatedHours: required unless status is outline
+programming-paradigms: format: required unless status is outline
+project-management: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+project-management: description: Invalid input: expected string, received undefined
+project-management: estimatedHours: required unless status is outline
+project-management: format: required unless status is outline
+quality-management-and-inspection: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+quality-management-and-inspection: description: Invalid input: expected string, received undefined
+record-to-report-systems: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+record-to-report-systems: description: Invalid input: expected string, received undefined
+search-and-information-retrieval: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+search-and-information-retrieval: description: Invalid input: expected string, received undefined
+search-and-information-retrieval: estimatedHours: required unless status is outline
+search-and-information-retrieval: format: required unless status is outline
+security-essentials: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+security-essentials: description: Invalid input: expected string, received undefined
+security-essentials: estimatedHours: required unless status is outline
+security-essentials: format: required unless status is outline
+self-hosting-essentials: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+self-hosting-essentials: description: Invalid input: expected string, received undefined
+self-hosting-essentials: estimatedHours: required unless status is outline
+self-hosting-essentials: format: required unless status is outline
+self-managed-kubernetes-and-gitops: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+self-managed-kubernetes-and-gitops: description: Invalid input: expected string, received undefined
+self-managed-kubernetes-and-gitops: estimatedHours: required unless status is outline
+self-managed-kubernetes-and-gitops: format: required unless status is outline
+sharia-accounting-and-aaoifi-standards: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+sharia-accounting-and-aaoifi-standards: description: Invalid input: expected string, received undefined
+sharia-compliant-erp-design: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+sharia-compliant-erp-design: description: Invalid input: expected string, received undefined
+sharia-ledger-system-architecture: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+sharia-ledger-system-architecture: description: Invalid input: expected string, received undefined
+site-reliability-engineering: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+site-reliability-engineering: description: Invalid input: expected string, received undefined
+site-reliability-engineering: estimatedHours: required unless status is outline
+site-reliability-engineering: format: required unless status is outline
+software-architecture: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+software-architecture: description: Invalid input: expected string, received undefined
+software-architecture: estimatedHours: required unless status is outline
+software-architecture: format: required unless status is outline
+software-engineering-practices: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+software-engineering-practices: description: Invalid input: expected string, received undefined
+software-engineering-practices: estimatedHours: required unless status is outline
+software-engineering-practices: format: required unless status is outline
+software-product-engineering: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+software-product-engineering: description: Invalid input: expected string, received undefined
+software-product-engineering: estimatedHours: required unless status is outline
+software-product-engineering: format: required unless status is outline
+software-testing: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+software-testing: description: Invalid input: expected string, received undefined
+software-testing: estimatedHours: required unless status is outline
+software-testing: format: required unless status is outline
+sql-essentials: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+sql-essentials: description: Invalid input: expected string, received undefined
+sql-essentials: estimatedHours: required unless status is outline
+sql-essentials: format: required unless status is outline
+statistics-for-evaluation: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+statistics-for-evaluation: description: Invalid input: expected string, received undefined
+statistics-for-evaluation: estimatedHours: required unless status is outline
+statistics-for-evaluation: format: required unless status is outline
+sukuk-and-islamic-capital-markets-accounting: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+sukuk-and-islamic-capital-markets-accounting: description: Invalid input: expected string, received undefined
+system-design-interview: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+system-design-interview: description: Invalid input: expected string, received undefined
+system-design-interview: estimatedHours: required unless status is outline
+system-design-interview: format: required unless status is outline
+system-design: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+system-design: description: Invalid input: expected string, received undefined
+system-design: estimatedHours: required unless status is outline
+system-design: format: required unless status is outline
+system-programming: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+system-programming: description: Invalid input: expected string, received undefined
+system-programming: estimatedHours: required unless status is outline
+system-programming: format: required unless status is outline
+take-home-and-live-coding: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+take-home-and-live-coding: description: Invalid input: expected string, received undefined
+take-home-and-live-coding: estimatedHours: required unless status is outline
+take-home-and-live-coding: format: required unless status is outline
+technical-communication: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+technical-communication: description: Invalid input: expected string, received undefined
+technical-communication: estimatedHours: required unless status is outline
+technical-communication: format: required unless status is outline
+the-agent-loop: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+the-agent-loop: description: Invalid input: expected string, received undefined
+the-agent-loop: estimatedHours: required unless status is outline
+the-agent-loop: format: required unless status is outline
+treasury-and-cash-management: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+treasury-and-cash-management: description: Invalid input: expected string, received undefined
+type-systems: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+type-systems: description: Invalid input: expected string, received undefined
+type-systems: estimatedHours: required unless status is outline
+type-systems: format: required unless status is outline
+version-control-and-git: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+version-control-and-git: description: Invalid input: expected string, received undefined
+version-control-and-git: estimatedHours: required unless status is outline
+version-control-and-git: format: required unless status is outline
+vulnerability-management-and-assessment: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+vulnerability-management-and-assessment: description: Invalid input: expected string, received undefined
+vulnerability-management-and-assessment: estimatedHours: required unless status is outline
+vulnerability-management-and-assessment: format: required unless status is outline
+windows-app-development: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+windows-app-development: description: Invalid input: expected string, received undefined
+windows-app-development: estimatedHours: required unless status is outline
+windows-app-development: format: required unless status is outline
+windows-os: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+windows-os: description: Invalid input: expected string, received undefined
+windows-os: estimatedHours: required unless status is outline
+windows-os: format: required unless status is outline
+zakah-computation-and-reporting-for-systems: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+zakah-computation-and-reporting-for-systems: description: Invalid input: expected string, received undefined
+zakat-and-sharia-compliance-modules: category: Invalid option: expected one of "tools-and-practices"|"programming-languages"|"computer-science"|"application-development"|"data-and-databases"|"systems-and-networking"|"architecture-and-distributed-systems"|"infrastructure-and-operations"|"security"|"ai-engineering"|"product-and-leadership"|"interview-preparation"|"accounting"|"erp-systems"
+zakat-and-sharia-compliance-modules: description: Invalid input: expected string, received undefined
+Expected estimatedHours for every non-outline course:
+actor-model-concurrency 2
+advanced-algorithms 14
+advanced-frontend 8
+advanced-networking 5
+advanced-sql-and-query-performance 16
+agent-context-and-memory 1
+agent-orchestration-subagents-and-observability 1
+agent-permissions-and-sandboxing 1
+agent-tools-and-mcp 2
+agentic-ai 1
+agentic-coding 5
+analytics-and-experimentation 1
+android-app-development 3
+api-design 8
+async-python-and-fastapi-services 6
+backend-at-scale 7
+backend-essentials 13
+bare-metal-virtualization 2
+behavioral-and-leadership-interviews 1
+browser-automation-with-cdp 2
+build-automation-and-task-runners 2
+build-your-own-database 2
+build-your-own-git 1
+build-your-own-orm-and-query-builder 12
+build-your-own-raft 1
+build-your-own-reactive-ui 6
+build-your-own-web-framework 2
+building-production-cli-tools 2
+capstone-first-working-software 2
+capstone-forge-ready 1
+capstone-full-stack-app 2
+capstone-interview-loop 1
+capstone-solid-core 4
+cicd-and-release-engineering 9
+cloud-and-iac 1
+coding-interview 1
+compilers-parsers-and-transpilers 1
+computer-architecture 16
+computer-science-foundations 5
+concurrency-and-parallelism 12
+containers-and-orchestration 5
+creating-ai-powered-apps 1
+csp-style-concurrency 5
+data-access-orms-and-query-builders 11
+data-engineering 5
+data-structures-and-algorithms-essentials 9
+database-internals-and-storage-engines 13
+debugging-and-profiling 15
+defensive-security 1
+detection-engineering-and-siem-operations 1
+distributed-systems 3
+domain-driven-design 3
+engineering-management 2
+enterprise-java-and-the-jvm 2
+evaluating-ai-output-essentials 4
+evaluating-ai-systems-in-depth 8
+event-driven-architecture 1
+extending-neovim 6
+fine-tuning-and-adaptation 8
+frontend-essentials 10
+functional-programming 10
+graph-databases 7
+hybrid-app-development 2
+inference-serving-and-model-deployment 6
+information-architecture-and-seo 1
+ios-app-development 1
+it-and-application-security 1
+it-governance-grc 1
+just-enough-bash 4
+just-enough-c 4
+just-enough-cpp 4
+just-enough-csharp 3
+just-enough-dart 2
+just-enough-elixir 1
+just-enough-fsharp 2
+just-enough-go 3
+just-enough-java 3
+just-enough-kotlin 1
+just-enough-lua 4
+just-enough-nvim 4
+just-enough-python 4
+just-enough-rust 2
+just-enough-swift 1
+just-enough-typescript 4
+linux-app-development 2
+linux-os 3
+lisp 1
+modern-system-programming 2
+networking-essentials 7
+nosql-databases 10
+object-oriented-design-and-patterns 14
+object-oriented-programming-essentials 8
+offensive-security 1
+platform-engineering-and-devex 1
+product-patterns-for-probabilistic-systems 2
+programming-paradigms 10
+project-management 2
+search-and-information-retrieval 15
+security-essentials 20
+self-hosting-essentials 6
+self-managed-kubernetes-and-gitops 1
+site-reliability-engineering 1
+software-architecture 1
+software-engineering-practices 5
+software-product-engineering 2
+software-testing 8
+sql-essentials 8
+statistics-for-evaluation 5
+system-design 1
+system-design-interview 1
+system-programming 3
+take-home-and-live-coding 1
+technical-communication 2
+the-agent-loop 1
+type-systems 1
+version-control-and-git 7
+vulnerability-management-and-assessment 1
+windows-app-development 6
+windows-os 4
+
+ ❯ Object.fn tests/unit/be-steps/course-metadata.steps.ts:39:23
+     37|     });
+     38|     And("every course resolves a Start page", () => {
+     39|       expect(failure).toBe("");
+       |                       ^
+     40|     });
+     41|   });
+ ❯ ../../node_modules/@amiceli/vitest-cucumber/dist/src/vitest/describe/describe-scenario.js:86:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯

@@ -158,7 +158,11 @@ The rule, in order:
 3. Otherwise, if the course has a top-level `overview` page, start there.
 4. Otherwise render no Start button.
 
-All 181 courses resolve under rules 1–3 on 2026-10-09 (169 + 8 + 4).
+All 181 courses resolve under rules 1–3 on 2026-10-09 (169 + 8 + 4). The corpus guard is the
+winner over rule 4 for real content: it asserts every current course resolves a Start page, so a
+future course with no qualifying page fails the guard until it gains one (or the guard scenario is
+deliberately amended with a recorded exemption). Rule 4 remains as UI robustness for synthetic or
+partial trees, where rendering no button is safer than linking nowhere.
 
 ```ts
 // src/features/content/core/course-start.ts (new, pure)

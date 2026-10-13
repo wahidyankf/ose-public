@@ -22,9 +22,11 @@ evidence_rule="$repository_root/repo-governance/development/practice/resource-aw
 grep -Fq '30 days' "$evidence_rule"
 # Keep every tracked active example compatible with schema 3 and prevent the
 # self-contention caused by wrapping an already-guarded package script.
+# Parked plans/backlog records are not live guidance (like plans/done
+# history), so neither scan covers them; revival re-audits the wording.
 tier_findings=$(git -C "$repository_root" grep -n -E \
 	'\./hippo run --class (ephemeral|service|transactional)' -- \
-	. ':(exclude)plans/done/**' ':(exclude).github/scripts/test-hippo-bootstrap.sh' |
+	. ':(exclude)plans/done/**' ':(exclude)plans/backlog/**' ':(exclude).github/scripts/test-hippo-bootstrap.sh' |
 	grep -v -- '--resource-tier' || true)
 if [ -n "$tier_findings" ]; then
 	printf '%s\n%s\n' 'HIPPO commands missing --resource-tier:' "$tier_findings" >&2
@@ -32,7 +34,7 @@ if [ -n "$tier_findings" ]; then
 fi
 nested_findings=$(git -C "$repository_root" grep -n -E \
 	'\./hippo run .*-- (rtk )?npm (run|test)( |$)' -- \
-	. ':(exclude)plans/done/**' ':(exclude).github/scripts/test-hippo-bootstrap.sh' || true)
+	. ':(exclude)plans/done/**' ':(exclude)plans/backlog/**' ':(exclude).github/scripts/test-hippo-bootstrap.sh' || true)
 if [ -n "$nested_findings" ]; then
 	printf '%s\n%s\n' 'HIPPO commands double-guard package scripts:' "$nested_findings" >&2
 	exit 1

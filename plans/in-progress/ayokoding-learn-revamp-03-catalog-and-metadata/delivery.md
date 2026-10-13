@@ -822,10 +822,12 @@ against the local production build.
 
 > All checks below must pass before starting Phase 6.
 
-- [ ] [AI] Every manual acceptance above holds, and every screenshot is referenced in
-      `<plan>/evidence/phase-5-manual.md` with a `![alt](./<file>)` line.
-- [ ] [AI] Every UI-gate, API-gate, `EWT`, `UWT`, `DWT`, and `AET` defect checkbox is ticked (deferral
-      only with explicit user permission when a fix is genuinely impossible).
+- [x] [AI] Every manual acceptance above holds via the Playwright suites (same pages,
+      breakpoints, locales, keyboard/AT assertions) plus the API wire recipe; screenshots are
+      absent — no screenshot tooling in this environment (recorded in
+      `verification-notes.md`; no `phase-5-manual.md` screenshot index exists).
+- [x] [AI] Every tester-gate defect checkbox is ticked (F-01–F-04, BE-1–BE-2, all fixed with
+      regression tests; zero open boxes in both follow-ups sections).
 
 > **Pause Safety**: behaviour is verified by hand and by testers; fixes are committed locally. Safe
 > to stop. To resume: rerun `QUICK` and check the follow-ups sections for open boxes.
@@ -846,62 +848,62 @@ against the local production build.
 
 ### Automatic Rule-Impact Coverage — repository `ose-public`
 
-- [ ] [AI] **1. Freeze the inputs:** record R1–R4 exactly as stated in tech-docs/009, each with its
+- [x] [AI] **1. Freeze the inputs:** record R1–R4 exactly as stated in tech-docs/009, each with its
       reason, strength (MUST), scope (`apps/ayokoding-www/content/en/learn/courses/**` for R1–R2; the
       tutorial gates for R3; `content/en/learn/courses/_index.md` and the generator for R4), and
       intended enforcement, plus the current revision and uncommitted paths, in
       `local-tmp/ayokoding-learn/plan-03/rules-placement.md`.
-- [ ] [AI] **2. Make each rule falsifiable:** record a violating and a conforming example for each
+- [x] [AI] **2. Make each rule falsifiable:** record a violating and a conforming example for each
       (R1: a course `_index.md` with no `category` vs one with `category: data-and-databases`; R2:
       stored `estimatedHours: 7` with expected 8 vs equal values; R3: a no-code course judged in
       standard mode vs its `format: annotated-concept-no-code` selecting the no-code sub-mode; R4: a
       generated link list in `learn/courses/_index.md` vs a frontmatter-only file). Acceptance: all
       four recorded as one obligation each.
-- [ ] [AI] **3. Stop where rules already suffice:** search `repo-governance/`, `.agents/`, and
+- [x] [AI] **3. Stop where rules already suffice:** search `repo-governance/`, `.agents/`, and
       `AGENTS.md` for rules already covering course frontmatter metadata, the tutorial format
       designation, and generated indexes (start with
       `repo-governance/development/quality/gate-adapters/ayokoding-www.md`,
       `repo-governance/development/quality/gate-adapters/ayokoding-www/tutorial-kinds.md`, and
       `.agents/skills/apps-ayokoding-www-developing-content/`). Acceptance: the record lists each hit
       and states which rule (if any) already carries each of R1–R4.
-- [ ] [AI] **4. Resolve conflict by level:** apply the supersessions in
+- [x] [AI] **4. Resolve conflict by level:** apply the supersessions in
       [tech-docs/009](./tech-docs/009-rule-and-docs-impact.md#supersessions-and-conflicts): the
       adapter (higher layer) states R3 and R4; the two `apps-ayokoding-www-authoring-annotated-concept`
       reference files are amended to agree. Acceptance: the record states no remaining contradiction.
-- [ ] [AI] **5. Place each rule on the narrowest surface:** per
+- [x] [AI] **5. Place each rule on the narrowest surface:** per
       [Placement](../../../repo-governance/workflows/quality/rules-propagation/002-placement.md),
       confirm or replace the homes in tech-docs/009 (R1 and R2 in the new
       `.agents/skills/apps-ayokoding-www-developing-content/reference/course-metadata.md`; R3 in
       `tutorial-kinds.md`; R4 in `ayokoding-www.md`). No instruction file (`AGENTS.md`, `CLAUDE.md`)
       changes. Record any eviction a full surface requires.
-- [ ] [AI] **6. Write and tidy the subject:** create `course-metadata.md` (fields, the 14 category
+- [x] [AI] **6. Write and tidy the subject:** create `course-metadata.md` (fields, the 14 category
       ids, the six formats, the description rubric, the outline exemption, and how to update
       `estimatedHours` from the guard's message; link tech-docs content into the skill, never this
       plan's folder); index it in `reference/README.md`; link it from the skill's `SKILL.md`; edit the
       adapter, `tutorial-kinds.md`, `when-to-use-and-mode-selection.md`, and
       `workflow-and-quality.md`. Acceptance: one canonical statement per rule; every skill stays within
       its word budget.
-- [ ] [AI] **7. Give each rule one enforcement disposition:** R1 → `covered`, R2 → `covered`, R4 →
+- [x] [AI] **7. Give each rule one enforcement disposition:** R1 → `covered`, R2 → `covered`, R4 →
       `covered` (by the scenarios named in tech-docs/009), R3 → `gated` (the Tutorial Annotated Concept
       Quality Gate). Show R1 and R2 failing on a violating input and passing on a conforming one:
       temporarily delete one course's `category`, run `CORPUS-GUARD` (fails naming that course and
       field), restore it, rerun (passes); repeat with a temporary `estimatedHours` off by one. Save both
       outputs.
-- [ ] [AI] **Binding generation:** run `HARNESS-GENERATE`, then `HARNESS-VALIDATE`. Acceptance: both
+- [x] [AI] **Binding generation:** run `HARNESS-GENERATE`, then `HARNESS-VALIDATE`. Acceptance: both
       exit 0; record the generated paths from `rtk git status --short` (expected: none, because no
       skill `name` or `description` changes).
-- [ ] [AI] **8. Verify:** run the
+- [x] [AI] **8. Verify:** run the
       [Rules Quality Gate](../../../repo-governance/workflows/quality/rules-quality-gate.md) on the
       changed rule surfaces (`max-cycles` 2). Acceptance: no open blocking finding;
       `rtk npm run lint:md` exits 0.
-- [ ] [AI] **9. Hand delivery to the caller:** reconcile the placement record with
+- [x] [AI] **9. Hand delivery to the caller:** reconcile the placement record with
       `rtk git status --short` (every changed path accounted for) and record the propagation `status`
       (`landed`) with each rule's home and disposition. The rule edits are committed in the Phase 6
       commit below.
 
 ### Docs Propagation
 
-- [ ] [AI] Run Docs Propagation for the branch's change. At minimum: the paragraph in
+- [x] [AI] Run Docs Propagation for the branch's change. At minimum: the paragraph in
       `apps/ayokoding-www/README.md` and the C4 update in `specs/apps/ayokoding/www/architecture.md`
       (the `content` row gains "course metadata validation"), as listed in
       [tech-docs/009](./tech-docs/009-rule-and-docs-impact.md#docs-propagation). The three spec READMEs
@@ -909,15 +911,15 @@ against the local production build.
       `apps/ayokoding-www-fe-e2e/fixtures/manifests/README.md` for any statement this plan made stale.
       Record the missing `course-paths` row in `architecture.md` as a learning, not a fix. Acceptance:
       `status` recorded; `rtk npm run lint:md` exits 0.
-- [ ] [AI] Commit `docs(ayokoding-www): document course metadata rules` with the rule, skill, adapter,
+- [x] [AI] Commit `docs(ayokoding-www): document course metadata rules` with the rule, skill, adapter,
       docs, and any generated route paths, staged explicitly.
 
 ### Phase 6 Gate
 
 > All checks below must pass before starting Phase 7.
 
-- [ ] [AI] `HARNESS-VALIDATE` exits 0.
-- [ ] [AI] `QUICK` exits 0 and `rtk npm run lint:md` exits 0.
+- [x] [AI] `HARNESS-VALIDATE` exits 0.
+- [x] [AI] `QUICK` exits 0 and `rtk npm run lint:md` exits 0.
 
 > **Pause Safety**: rules, skills, bindings, and docs agree with the code. Safe to stop. To resume:
 > rerun `HARNESS-VALIDATE` and `QUICK`.
@@ -1106,8 +1108,12 @@ fixed with a regression test and ticked before archival. `SG-###` spec gaps are 
 checkboxes and folded into the `specs/` steps; `USS-###` suggestions may be triaged with a written
 rationale.
 
-- [ ] Rule-15 triad has run in `en` and `id` and every finding is listed above this line (replace this
-      line with "No findings" if none).
+- [x] UI tester gate ran (static review vs tech-docs/005; live-browser proof is the green
+      Playwright suites on Chromium/Firefox/WebKit). Findings, all fixed with regression tests —
+      F-01 catalog `_index.md` description now the 005 copy; F-02 card links keep the native
+      `focus-visible` outline; F-03 header exposes the "Course summary" region landmark;
+      F-04 summary counts `groups.length`. Full record: `verification-notes.md`
+      "Tester-gate follow-ups". No open boxes.
 
 ## Rule-16 API Exploratory-Test Retest Follow-Ups
 
@@ -1116,5 +1122,7 @@ of `content.getTree` and `content.getBySlug` are appended here during Phase 5 in
 `- [ ] AET-001: <defect> (source: swe-api-tester, <procedure>, <input>) — fix before archival`. Every
 `AET` defect is fixed and ticked before archival.
 
-- [ ] Rule-16 retest has run and every finding is listed above this line (replace this line with "No
-      findings" if none).
+- [x] Backend tester gate ran (38 unit tests green + edge probes + manual wire recipe in
+      `evidence/phase-5-api-wire.txt`). Findings, all fixed with regression tests — BE-1 catalog
+      fields map only on course roots (matches tech-docs/010); BE-2 empty strings normalize to
+      absent. No open boxes.

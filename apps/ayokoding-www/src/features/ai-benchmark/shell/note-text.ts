@@ -11,6 +11,8 @@ export const ID_NOTES: Readonly<Record<string, string>> = {
   "Cursor only (app, CLI, and SDK); Composer 2 now runs as 2.5.":
     "Hanya di Cursor (aplikasi, CLI, dan SDK); Composer 2 kini dijalankan sebagai 2.5.",
   "Invitation only (Project Glasswing).": "Hanya lewat undangan (Project Glasswing).",
+  "Muse Code subscribers only; not served through the API.":
+    "Hanya untuk pelanggan Muse Code; tidak dilayani lewat API.",
   "Limited rollout in Codex; check your plan.": "Dirilis terbatas di Codex; cek paket Anda.",
   "Prompts over 272K tokens: 2× input, 1.5× output.": "Prompt di atas 272K token: input 2×, output 1,5×.",
   "Promotional price, held at least through 2026-11-21.": "Harga promo, berlaku setidaknya sampai 2026-11-21.",

@@ -69,7 +69,7 @@ export const COMPOSITE_INDEX_MAX = 100;
 export const TIER_ANCHORS: Readonly<Record<AnchoredTier, string>> = {
   ultra: "claude-opus-5",
   planning: "gpt-5.6-sol",
-  execution: "gpt-5.6-terra",
+  execution: "claude-sonnet-5",
 };
 
 /** Anchored tiers in the order they are tested. */
@@ -114,13 +114,14 @@ export const METHOD_EXAMPLE = {
   compareTier: "execution",
 } as const satisfies { indexModel: string; compareModel: string; compareTier: AnchoredTier };
 
-/** Display names for the seven harnesses — proper nouns, not translated. */
+/** Display names for the eight harnesses — proper nouns, not translated. */
 export const HARNESS_DISPLAY_NAMES: Readonly<Record<HarnessId, string>> = {
   "claude-code": "Claude Code",
   "codex-cli": "Codex CLI",
   "command-code": "Command Code",
   "command-code-pro": "Command Code Pro",
   cursor: "Cursor",
+  "muse-code": "Muse Code",
   "opencode-go": "OpenCode Go",
   "opencode-zen": "OpenCode Zen",
 };

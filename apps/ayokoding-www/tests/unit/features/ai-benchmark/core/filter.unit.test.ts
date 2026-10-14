@@ -13,13 +13,14 @@ const roster = dataset([
 const ids = (ms: { id: string }[]) => ms.map((m) => m.id);
 
 describe("known values", () => {
-  it("lists the seven harnesses in alphabetical order", () => {
+  it("lists the eight harnesses in alphabetical order", () => {
     expect(HARNESS_IDS).toEqual([
       "claude-code",
       "codex-cli",
       "command-code",
       "command-code-pro",
       "cursor",
+      "muse-code",
       "opencode-go",
       "opencode-zen",
     ]);

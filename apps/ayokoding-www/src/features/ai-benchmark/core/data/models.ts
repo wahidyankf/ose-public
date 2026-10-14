@@ -1,4 +1,4 @@
-// AI BENCHMARK DATASET — last updated 2026-10-08.
+// AI BENCHMARK DATASET — last updated 2026-10-14.
 //
 // Roster: every model from the four frontier vendors (Anthropic, OpenAI, Google, xAI), every model
 // on the catalog harnesses (OpenCode Go and Command Code) with an identified vendor, and each listed
@@ -103,7 +103,7 @@ const MUSE_CONTRIBUTOR = "Meta's cheaper Contributor tier, on which Meta may tra
 const TINKER_BETA = "Tinker serverless inference (beta).";
 
 export const dataset: Dataset = {
-  lastUpdated: "2026-10-08",
+  lastUpdated: "2026-10-14",
   models: [
     // ── Anthropic ───────────────────────────────────────────────────────────────
     {
@@ -866,13 +866,36 @@ export const dataset: Dataset = {
 
     // ── Meta ────────────────────────────────────────────────────────────────────
     {
+      id: "muse-wonder-full",
+      name: "Muse Wonder Full",
+      vendor: "Meta",
+      line: "Muse Wonder",
+      releaseDate: "2026-10-12",
+      access: "limited",
+      harnesses: ["muse-code"],
+      figures: aa("Muse Code, max effort", 76.99, 59.09, 68.01),
+      note: "Muse Code subscribers only; not served through the API.",
+    },
+    {
+      id: "muse-wonder",
+      name: "Muse Wonder",
+      vendor: "Meta",
+      line: "Muse Wonder",
+      releaseDate: "2026-10-12",
+      access: "general",
+      harnesses: ["muse-code"],
+      figures: aa("Muse Code, max effort", 75.81, 47.47, 67.2),
+      price: vendorPrice(4, 20, PRICE_URL.meta),
+      costPerTask: aaCost(8.05),
+    },
+    {
       id: "muse-spark-1.3",
       name: "Muse Spark 1.3",
       vendor: "Meta",
       line: "Muse Spark",
       releaseDate: "2026-09-02",
       access: "general",
-      harnesses: ["command-code", "command-code-pro", "cursor", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "cursor", "muse-code", "opencode-zen"],
       figures: aa("Muse Code, max effort", 71.68, 31.82, 59.41),
       price: vendorPrice(1.25, 4.25, PRICE_URL.meta),
       costPerTask: aaCost(3.98),
@@ -883,7 +906,7 @@ export const dataset: Dataset = {
       vendor: "Meta",
       line: "Muse Spark",
       access: "general",
-      harnesses: ["command-code", "command-code-pro", "opencode-zen"],
+      harnesses: ["command-code", "command-code-pro", "muse-code", "opencode-zen"],
       figures: [
         datacurve(54.87, "xhigh"),
         aaTb4(7.07, "mini-SWE-agent, xhigh effort", aaCmp("muse-spark-1-2-vs-glm-5-2")),

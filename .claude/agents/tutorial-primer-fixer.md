@@ -2,7 +2,7 @@
 description: |-
   Executes Tutorial Primer Propagation on a frozen tutorial-primer ledger, repairing only what each example itself settles, with every threshold read from the adopting repository's adapter, and leaving authoring and pedagogy to the author.
 effort: xhigh
-model: sonnet
+model: haiku
 name: tutorial-primer-fixer
 skills:
   - docs-creating-by-example-tutorials

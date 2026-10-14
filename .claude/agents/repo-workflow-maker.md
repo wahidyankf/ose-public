@@ -2,7 +2,7 @@
 description: |-
   Creates workflow documentation in repo-governance/workflows/ following workflow pattern convention.
 effort: xhigh
-model: sonnet
+model: haiku
 name: repo-workflow-maker
 skills:
   - docs-applying-content-quality

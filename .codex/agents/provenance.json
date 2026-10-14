@@ -739,6 +739,9 @@
     }
   ],
   "resolvedModels": {
-    "fast": "gpt-6-luna"
+    "execution": "gpt-6-luna",
+    "fast": "gpt-6-luna",
+    "plan": "gpt-6.1-sol",
+    "ultra": "gpt-6.1-sol"
   }
 }

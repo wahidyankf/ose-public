@@ -3,7 +3,8 @@ description: |-
   Prepares one pinned review pass before fan-out by choosing its risk tier, route, and specialist set with reasons, reading settled thread outcomes, and assembling one shared brief, without reviewing the change.
 disallowedTools: |-
   mcp__serena__replace_symbol_body, mcp__serena__insert_after_symbol, mcp__serena__insert_before_symbol, mcp__serena__rename_symbol, mcp__serena__safe_delete_symbol, mcp__serena__replace_content, mcp__serena__replace_in_files, mcp__serena__create_text_file, mcp__serena__delete_lines, mcp__serena__replace_lines, mcp__serena__insert_at_line, mcp__serena__write_memory, mcp__serena__delete_memory, mcp__serena__rename_memory, mcp__serena__edit_memory, mcp__serena__execute_shell_command, mcp__serena__remove_project
-model: inherit
+effort: high
+model: sonnet
 name: pr-review-scout
 skills:
   - pr-review-scout-classification

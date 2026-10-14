@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from link-checker audit reports. Re-validates link findings before applying changes.
-effort: xhigh
+effort: medium
 model: haiku
 name: apps-ayokoding-www-link-fixer
 skills:

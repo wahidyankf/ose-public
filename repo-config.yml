@@ -240,10 +240,10 @@ harness:
         route: "Read {path} completely, resolve every relative resource from that skill directory, and follow it as authoritative before acting."
         identity: { name: name, description: description }
       tiers:
-        ultra: {}
-        plan: {}
-        execution: { model: sonnet, effort: xhigh }
-        fast: { model: haiku, effort: xhigh }
+        ultra: { model: opus, effort: xhigh }
+        plan: { model: sonnet, effort: high }
+        execution: { model: haiku, effort: xhigh }
+        fast: { model: haiku, effort: medium }
     - id: codex
       supports:
         capabilities:
@@ -270,12 +270,18 @@ harness:
         identity: { name: name, description: description }
         tier-fields: { model: model, effort: model_reasoning_effort }
       tiers:
-        ultra: {}
-        plan: {}
-        execution: {}
-        fast:
+        ultra:
+          model-resolve: { command: [codex, debug, models], pattern: gpt-*-sol, fallback: gpt-6-sol }
+          effort: xhigh
+        plan:
+          model-resolve: { command: [codex, debug, models], pattern: gpt-*-sol, fallback: gpt-6-sol }
+          effort: high
+        execution:
           model-resolve: { command: [codex, debug, models], pattern: gpt-*-luna, fallback: gpt-6-luna }
           effort: xhigh
+        fast:
+          model-resolve: { command: [codex, debug, models], pattern: gpt-*-luna, fallback: gpt-6-luna }
+          effort: medium
     - id: opencode
       supports:
         capabilities:

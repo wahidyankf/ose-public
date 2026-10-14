@@ -1,7 +1,7 @@
 ---
 description: Applies validated fixes from docs-tutorial-checker audit reports. Re-validates pedagogical findings before applying changes. Use after reviewing docs-tutorial-checker output.
 effort: xhigh
-model: sonnet
+model: haiku
 name: docs-tutorial-fixer
 skills:
   - docs-fixing-tutorial-quality

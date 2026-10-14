@@ -2,7 +2,7 @@
 description: |-
   Executes PR Review Propagation on a frozen review ledger, answering each blocking row on one change with a fix, a reasoned reject, or a deferral, tagging each answer's cause, and committing fixes only to the change's own branch.
 effort: xhigh
-model: sonnet
+model: haiku
 name: pr-review-fixer
 skills:
   - pr-review-fixer-resolution

@@ -1,7 +1,7 @@
 ---
 description: |-
   Cuts versioned releases, deploys built artifacts to named environments, and repins pinned tools, each only through the repository's documented workflow, verifying the published result before reporting done.
-effort: xhigh
+effort: high
 model: haiku
 name: swe-releaser
 skills:

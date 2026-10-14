@@ -1,7 +1,7 @@
 ---
 description: |-
   Creates Primer ("Just Enough X") tutorial content for ayokoding-web: fast language or tool on-ramps with 75-85 annotated code examples at By-Example pace, scoped to just-enough breadth for productive use. Ensures bilingual content and quality compliance.
-effort: xhigh
+effort: high
 model: haiku
 name: apps-ayokoding-www-primer-maker
 skills:

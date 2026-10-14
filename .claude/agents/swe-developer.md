@@ -1,7 +1,7 @@
 ---
 description: |-
   Builds new or changed behaviour in named projects test-first under the adopted language-neutral and stack standards, and applies re-validated findings from a review, a test, or a frozen quality-gate ledger, never judging its own work.
-effort: xhigh
+effort: high
 model: haiku
 name: swe-developer
 skills:

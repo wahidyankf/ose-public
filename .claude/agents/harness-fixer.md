@@ -1,7 +1,7 @@
 ---
 description: |-
   Re-validates harness compatibility findings against current files and their cited sources, repairs mechanical drift at the canonical source, regenerates adapters, and hands every decision to a person.
-effort: xhigh
+effort: high
 model: haiku
 name: harness-fixer
 skills:

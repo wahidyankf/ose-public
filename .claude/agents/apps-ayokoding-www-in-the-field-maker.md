@@ -1,6 +1,6 @@
 ---
 description: Creates In-the-Field production implementation guides for ayokoding-web with 20-40 guides following standard library first principle. Ensures production-ready code with framework integration.
-effort: xhigh
+effort: high
 model: haiku
 name: apps-ayokoding-www-in-the-field-maker
 skills:

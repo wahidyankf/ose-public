@@ -3,7 +3,7 @@ description: |-
   Reviews one pinned change for the instruction currency discipline, finding toolchain, dependency-manager, environment, or pipeline changes the agent instruction files no longer describe, and filler that adds no rule.
 disallowedTools: |-
   mcp__serena__replace_symbol_body, mcp__serena__insert_after_symbol, mcp__serena__insert_before_symbol, mcp__serena__rename_symbol, mcp__serena__safe_delete_symbol, mcp__serena__replace_content, mcp__serena__replace_in_files, mcp__serena__create_text_file, mcp__serena__delete_lines, mcp__serena__replace_lines, mcp__serena__insert_at_line, mcp__serena__write_memory, mcp__serena__delete_memory, mcp__serena__rename_memory, mcp__serena__edit_memory, mcp__serena__execute_shell_command, mcp__serena__remove_project
-effort: xhigh
+effort: high
 model: haiku
 name: pr-review-instruction-checker
 skills:

@@ -1,7 +1,7 @@
 ---
 description: |-
   Re-validates each PDF conversion finding against the source and the current Markdown, restores confirmed gaps from the source, and records false positives and uncertain repairs.
-effort: xhigh
+effort: high
 model: haiku
 name: pdf-to-md-fixer
 skills:

@@ -1,7 +1,7 @@
 ---
 description: |-
   Converts PDF files to verbatim Markdown: text PDFs via pdftotext, image-only PDFs via OCR (tesseract), diagrams to Mermaid, and large files in 50-page chunks. By default it writes the .md beside the PDF under the same name.
-effort: xhigh
+effort: high
 model: haiku
 name: pdf-to-md-maker
 skills:

@@ -1,7 +1,7 @@
 ---
 description: |-
   Evaluates a running web interface or command-line tool as a first-time user would, without its specifications, source, or designs, judging frozen tasks by named usability principles and recording severity-rated findings.
-effort: xhigh
+effort: high
 model: haiku
 name: swe-usability-tester
 skills:

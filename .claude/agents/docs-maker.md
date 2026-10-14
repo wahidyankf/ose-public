@@ -1,7 +1,7 @@
 ---
 description: |-
   Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
-effort: xhigh
+effort: high
 model: haiku
 name: docs-maker
 skills:

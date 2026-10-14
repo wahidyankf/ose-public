@@ -1,7 +1,7 @@
 ---
 description: |-
   Researches current, verifiable information from the web in an isolated context. Use when you need facts beyond training data cutoff, latest API or library docs, current best practices, or verification of uncertain claims. Returns cited, structured findings without bloating main conversation context.
-effort: xhigh
+effort: high
 model: haiku
 name: web-researcher
 skills:

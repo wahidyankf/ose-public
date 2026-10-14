@@ -345,25 +345,25 @@ file carries all five required pieces.
 - **Proof:** RED and GREEN outputs in `<plan>/evidence/phase-1-core.md`.
 - _Suggested executor: `swe-developer`._
 
-- [ ] [AI] **Gherkin:** this phase has no reader-visible behaviour, so it adds no scenario. Record in
+- [x] [AI] **Gherkin:** this phase has no reader-visible behaviour, so it adds no scenario. Record in
       the evidence file which later scenarios each module serves (schema and state: S1–S7; lesson
       sequence: S10, S12–S16, S33; path context: S10, S11, S17; derivations: S19, S24, S25, S35; next
       step: S21, S22, S28, S33, S34). Acceptance: the trace table is saved.
-- [ ] [AI] **RED (schema and state):** create `tests/unit/features/learning-progress/progress-schema.unit.test.ts`
+- [x] [AI] **RED (schema and state):** create `tests/unit/features/learning-progress/progress-schema.unit.test.ts`
       and `progress-state.unit.test.ts` (under `apps/ayokoding-www/`) with every case in
       [tech-docs/006](./tech-docs/006-testing-strategy.md#new-unit-test-files). Run
       `UNIT-NODE tests/unit/features/learning-progress/progress-schema.unit.test.ts` and the same for
       `progress-state.unit.test.ts`. Acceptance: both fail with "module not found".
-- [ ] [AI] **GREEN (schema and state):** create `src/features/learning-progress/core/progress-schema.ts`
+- [x] [AI] **GREEN (schema and state):** create `src/features/learning-progress/core/progress-schema.ts`
       and `core/progress-state.ts` exactly as specified in tech-docs/002 (widened patterns from Phase 0,
       if any). Rerun both files. Acceptance: all cases pass.
-- [ ] [AI] **RED (lesson sequence and location):** create `lesson-sequence.unit.test.ts` (synthetic
+- [x] [AI] **RED (lesson sequence and location):** create `lesson-sequence.unit.test.ts` (synthetic
       trees) and `course-location.unit.test.ts` with the cases in tech-docs/006. Acceptance: both fail
       with "module not found".
-- [ ] [AI] **GREEN (lesson sequence and location):** create `core/lesson-sequence.ts` and
+- [x] [AI] **GREEN (lesson sequence and location):** create `core/lesson-sequence.ts` and
       `core/course-location.ts` per [tech-docs/003](./tech-docs/003-active-path-and-navigation.md#lesson-sequence).
       Rerun both. Acceptance: all cases pass.
-- [ ] [AI] **RED (corpus):** create `lesson-sequence.corpus.unit.test.ts` and
+- [x] [AI] **RED (corpus):** create `lesson-sequence.corpus.unit.test.ts` and
       `progress-schema.corpus.unit.test.ts`. They read the real `content/en/learn/courses/**` and the
       real manifests from `process.cwd()`, build each course tree the way plan 03's start-slug corpus
       test does, and assert: every course has a non-empty sequence whose first slug equals
@@ -371,26 +371,41 @@ file carries all five required pieces.
       pattern. Run both with `UNIT-NODE`. Acceptance: they pass on the first run only if the GREEN
       code above is correct; if one fails, the failure names the course and the cause. Fix the core
       module (not the test) and record the fix.
-- [ ] [AI] **RED (path context, derivations, next step):** create `lesson-path-context.unit.test.ts`,
+- [x] [AI] **RED (path context, derivations, next step):** create `lesson-path-context.unit.test.ts`,
       `progress-derivations.unit.test.ts`, and `next-step.unit.test.ts` with the cases in tech-docs/006.
       Acceptance: all three fail with "module not found".
-- [ ] [AI] **GREEN (path context, derivations, next step):** create `core/lesson-path-context.ts`,
+- [x] [AI] **GREEN (path context, derivations, next step):** create `core/lesson-path-context.ts`,
       `core/progress-derivations.ts`, and `core/next-step.ts` per tech-docs/003, importing plan 02's
       `corePhases`, `extensionPhases`, and `isPendingSkillsRestructure` under their merged names.
       Rerun the three files. Acceptance: all cases pass.
-- [ ] [AI] **REFACTOR:** remove duplication between derivations and next step (one shared
+- [x] [AI] **REFACTOR:** remove duplication between derivations and next step (one shared
       `isCourseDone` helper); confirm no file under `core/` imports `react`, `next`, or `window`
       (`rtk git grep -n "from \"react\"\|from \"next\|window\." -- apps/ayokoding-www/src/features/learning-progress/core`
       prints nothing). Run `QUICK`. Acceptance: exit 0 with line coverage at or above 99%.
+
+**Phase 1 implementation notes (2026-10-14, `swe-developer`).** Status: complete. Files created:
+seven core modules under `src/features/learning-progress/core/` (`progress-schema.ts`,
+`progress-state.ts`, `lesson-sequence.ts`, `course-location.ts`, `lesson-path-context.ts`,
+`progress-derivations.ts`, `next-step.ts`); nine test files plus a shared `corpus-tree.ts` helper under
+`tests/unit/features/learning-progress/`. Each RED failed with "module not found"; each GREEN passed.
+Two first-run RED defects were synthetic-fixture data errors corrected in the test (a weight tie that
+mis-ordered siblings, and a remembered course that was already in the fixture path) — no module and no
+assertion was weakened. `QUICK` (with `--maxWorkers=1`) exited 0 with line coverage 99.47%. Full detail
+in `evidence/phase-1-core.md`.
 
 ### Phase 1 Gate
 
 > All checks below must pass before starting Phase 2.
 
-- [ ] [AI] `QUICK` exits 0; the corpus tests print the course count, page count, and skipped synthetic
+- [x] [AI] `QUICK` exits 0; the corpus tests print the course count, page count, and skipped synthetic
       page count, saved in the evidence file.
-- [ ] [AI] `rtk git status --short` lists only new files under `src/features/learning-progress/core/`,
+- [x] [AI] `rtk git status --short` lists only new files under `src/features/learning-progress/core/`,
       `tests/unit/features/learning-progress/`, and `<plan>/`.
+
+**Phase 1 Gate notes (2026-10-14).** `QUICK` exit 0 (`Test Files 208 passed`, `Tests 3792 passed`,
+lines 99.47%). Corpus printed `courses=182 pages=873 skippedSyntheticPages=269`. Tree shows only the two
+new untracked directories plus `<plan>/`; `next-env.d.ts` (a dev-server rewrite, not tracked here) was
+restored.
 
 > **Pause Safety**: pure modules exist and nothing renders them yet. Safe to stop. To resume: `QUICK`.
 

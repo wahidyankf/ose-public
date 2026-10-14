@@ -1,7 +1,7 @@
 ---
 description: |-
   Applies specification checker findings inside the folders that audit covered, after re-validating each one, repairs only structure a rule settles, and records what it fixed, disproved, and left for a person.
-effort: xhigh
+effort: high
 model: haiku
 name: specs-fixer
 skills:

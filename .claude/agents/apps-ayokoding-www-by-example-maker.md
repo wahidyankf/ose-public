@@ -1,6 +1,6 @@
 ---
 description: Creates By Example tutorial content for ayokoding-web with 75-85 heavily annotated code examples following five-part structure. Ensures bilingual content and quality compliance.
-effort: xhigh
+effort: high
 model: haiku
 name: apps-ayokoding-www-by-example-maker
 skills:

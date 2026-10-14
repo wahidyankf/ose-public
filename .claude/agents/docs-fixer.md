@@ -1,7 +1,7 @@
 ---
 description: |-
   Applies documentation checker findings after re-validating each against the current text and its recorded evidence, edits only high-confidence fixes, and records false positives and findings left for a person.
-effort: xhigh
+effort: high
 model: haiku
 name: docs-fixer
 skills:

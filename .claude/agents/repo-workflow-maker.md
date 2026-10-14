@@ -1,7 +1,7 @@
 ---
 description: |-
   Creates workflow documentation in repo-governance/workflows/ following workflow pattern convention.
-effort: xhigh
+effort: high
 model: haiku
 name: repo-workflow-maker
 skills:

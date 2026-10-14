@@ -1,7 +1,7 @@
 ---
 description: |-
   Judges a running web interface in a real browser under one charter, against its specification, its approved design, or frozen exploratory charters, and records criticality-rated findings with reproduction steps without fixing anything.
-effort: xhigh
+effort: high
 model: haiku
 name: swe-web-tester
 skills:

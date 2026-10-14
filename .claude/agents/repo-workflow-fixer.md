@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from workflow-checker audit reports. Re-validates before applying changes.
-effort: xhigh
+effort: high
 model: haiku
 name: repo-workflow-fixer
 skills:

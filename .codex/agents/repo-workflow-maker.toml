@@ -1,5 +1,5 @@
 description = "Creates workflow documentation in repo-governance/workflows/ following workflow pattern convention."
 developer_instructions = "Before acting, read the complete canonical agent definition at the repository-root path .agents/agents/repo-workflow-maker.md and follow it as authoritative. If it cannot be read, stop and report the missing path."
 model = "gpt-6-luna"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 name = "repo-workflow-maker"

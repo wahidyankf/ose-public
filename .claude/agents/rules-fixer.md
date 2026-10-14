@@ -1,7 +1,7 @@
 ---
 description: |-
   Re-validates each repository rules finding against current files, applies only high-confidence repairs through Rules Propagation with the higher governance level as authority, and hands every open judgement to the rule's owner.
-effort: xhigh
+effort: high
 model: haiku
 name: rules-fixer
 skills:

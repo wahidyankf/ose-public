@@ -30,7 +30,7 @@ Each Husky hook runs one surface of the `repo-config.yml` gate registry through
 - **Run `test:quick` for affected projects**: Language jobs run affected `typecheck`, `lint`, and
   `test:quick` — every project must expose a `test:quick` target
 
-> **Note**: `test:integration` and `test:e2e` do NOT run in pre-commit, pre-push, or PR/main gates.
+> **Note**: `test:integration` and `test:e2e` do NOT run in pre-commit, pre-push, or PR gates.
 > Select only impacted targets manually during development/review; scheduled GitHub Actions
 > workflows run the complete suites. See [Nx Target Standards](../../../../repo-governance/development/infra/nx-targets.md)
 > for the full execution model.

@@ -42,7 +42,7 @@ below for the non-Playwright `*-be-e2e` shape:
 | `test:e2e:ui`     | Run tests with Playwright UI |
 | `test:e2e:report` | Open the HTML test report    |
 
-**Execution strategy**: `test:e2e` never runs through pre-commit, pre-push, PR/main gates,
+**Execution strategy**: `test:e2e` never runs through pre-commit, pre-push, PR gates,
 `test:quick`, or a static coverage target. Developers run impacted scenarios manually; scheduled
 full-quality workflows run complete Integration suites before complete unfiltered E2E suites.
 

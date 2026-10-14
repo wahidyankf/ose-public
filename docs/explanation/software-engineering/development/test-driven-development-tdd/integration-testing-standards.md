@@ -44,7 +44,7 @@ executes tests. A genuine boundary mismatch may use `@integration-exempt` only u
 [coverage and exemption contract](../../../../../repo-governance/development/behaviour-driven-development/coverage-exemptions-and-execution.md).
 
 Run impacted Integration tests manually during development and review. Never place Integration
-runtime in pre-commit, pre-push, PR/main quality gates, `test:quick`, or `test:coverage:*`.
+runtime in pre-commit, pre-push, PR quality gates, `test:quick`, or `test:coverage:*`.
 Scheduled/manual full-quality CI runs the complete Integration suite before complete E2E.
 
 ## Review Checklist

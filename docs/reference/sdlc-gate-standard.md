@@ -53,13 +53,13 @@ mechanics.
 | 1. pre-commit      | `.husky/pre-commit`                     | `git commit` (before message) |
 | 2. commit-msg      | `.husky/commit-msg`                     | `git commit` (on the message) |
 | 3. pre-push        | `.husky/pre-push`                       | `git push`                    |
-| 4. PR quality gate | `.github/workflows/pr-quality-gate.yml` | pull request (+ branch push)  |
+| 4. PR quality gate | `.github/workflows/pr-quality-gate.yml` | pull request                  |
 
 A standalone `validate-env.yml` workflow runs on `pull_request` and `push:main` in parallel with the
 PR gate. No full-quality pipeline is part of the gate set; impacted `test:integration` and
 `test:e2e` run by manual selection during development/review, while complete higher-layer suites
 run only in scheduled or manually dispatched full-quality workflows. `deps:audit` remains outside
-the gate. None runs in a hook or PR/main gate.
+the gate. None runs in a hook or PR gate.
 
 ### Command Scope
 
@@ -94,7 +94,7 @@ One composition rule, one formatter verification rule, and one exclusion govern 
    applies the formatted bytes to the index; on the pull-request surface it replays the formatters
    and fails if any byte would change (`ci: verify-clean`).
 
-3. **Heavy/uncacheable tiers never run in any hook or PR/main gate.**
+3. **Heavy/uncacheable tiers never run in any hook or PR gate.**
    Run impacted `test:integration` and `test:e2e` targets manually during development/review and
    complete suites on schedule. `deps:audit` remains scheduled; none belongs to a gate surface.
 

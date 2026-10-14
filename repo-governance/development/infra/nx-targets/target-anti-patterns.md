@@ -17,7 +17,7 @@ when_to_use: "Use when reviewing project.json target definitions."
 - E2E tests that permit network use but do not observe a public boundary.
 - Any `test:coverage:*` target that executes or depends on a runtime test target.
 - A `test:quick` that omits an applicable static coverage validator or reaches Integration/E2E.
-- Integration/E2E runtime wired into pre-commit, pre-push, or PR/main quality gates.
+- Integration/E2E runtime wired into pre-commit, pre-push, or PR quality gates.
 - Inputs that omit the owning recursively discovered Gherkin corpus.
 - Cached targets whose real mutable resource cannot be isolated deterministically.
 

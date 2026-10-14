@@ -19,9 +19,13 @@ with a justification; undocumented deviations are always bugs.
 | All entry-point workflows carry a `concurrency` block: `${{ github.workflow }}-${{ github.ref }}`                                                           | `actionlint`; PR quality gate                                       |
 | Lint gates named after the tool they run: `shellcheck`, `hadolint`, `actionlint`                                                                            | `repo-config.yml` gate ids; CI `repository-policy` job              |
 | Affected quick runs every applicable `test:coverage:*`; spec-file link targets are checked by the gate `md-internal-link` at pre-commit and on PRs          | `pr-quality-gate.yml` affected quick job                            |
-| Full quality gate runs on every PR event (`opened`/`synchronize`/`reopened`) **and** on every push to `main`                                                | `pr-quality-gate.yml` `on.push` trigger                             |
+| Full quality gate runs on every PR event (`opened`/`synchronize`/`reopened`) and on no other event                                                          | `pr-quality-gate.yml` `on:` block; workflow lanes test              |
 | App-tier scheduled workflows use staggered 2× WIB cadence: `*-app-test-local-deploy-stag` at 03:00/15:00, `*-app-test-stag` at 05:30/17:30 (+2.5 h)         | `*-app-test-local-deploy-stag.yml` and `*-app-test-stag-*.yml` CRON |
 | www-tier scheduled workflows run at 06:00/18:00 WIB (23:00/11:00 UTC)                                                                                       | `*-www-test-local-deploy-prod.yml` CRON expressions                 |
+
+Note: `pr-quality-gate.yml` has no `push` trigger. Protected `main` requires an up-to-date branch,
+so the PR run tests the tree that merges and a push run would repeat it.
+`scripts/workflow-language-lanes.test.mjs` fails if the trigger returns.
 
 Note: the former `naming:workflows-validation` check, which once validated
 `repo-governance/workflows/*.md` naming, was withdrawn — see

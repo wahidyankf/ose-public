@@ -1,6 +1,6 @@
 import type { Locale } from "./config";
 
-const translations: Record<Locale, Record<string, string>> = {
+export const translations: Record<Locale, Record<string, string>> = {
   en: {
     readMore: "Read More",
     lastUpdated: "Last updated",
@@ -446,6 +446,21 @@ const translations: Record<Locale, Record<string, string>> = {
     pathsCourseCountOne: "1 course",
     pathsCourseCountOther: "{count} courses",
     pathsViewPathLabel: "View path: Open path course list — {pathTitle}, course {courseIndex} of {totalCourses}",
+
+    // Learning progress — status, progress, and storage copy (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 2). Every key in this block MUST exist
+    // in both locales, like the paths* keys above.
+    statusDone: "Done",
+    statusInProgress: "In progress",
+    statusNotStarted: "Not started",
+    progressSavedInBrowser: "Saved in this browser",
+    progressYourProgress: "Your progress (saved in this browser)",
+    progressCoreCoursesDone: "{done} of {total} core courses done",
+    progressCoursesDone: "{done} of {total} courses done",
+    progressCoreComplete: "Core path complete. The optional extensions are below.",
+    progressPhaseDone: "{done} of {total} done",
+    progressPagesDone: "{done} of {total} pages done",
+    progressStorageUnavailable: "Progress can't be saved in this browser. It lasts until you close this tab.",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Resize panel",
@@ -900,6 +915,21 @@ const translations: Record<Locale, Record<string, string>> = {
     pathsCourseCountOne: "1 kursus",
     pathsCourseCountOther: "{count} kursus",
     pathsViewPathLabel: "Lihat jalur: Buka daftar kursus — {pathTitle}, kursus {courseIndex} dari {totalCourses}",
+
+    // Learning progress — status, progress, and storage copy (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 2). See the en block.
+    statusDone: "Selesai",
+    statusInProgress: "Sedang berjalan",
+    statusNotStarted: "Belum dimulai",
+    progressSavedInBrowser: "Tersimpan di browser ini",
+    progressYourProgress: "Progres Anda (tersimpan di browser ini)",
+    progressCoreCoursesDone: "{done} dari {total} kursus inti selesai",
+    progressCoursesDone: "{done} dari {total} kursus selesai",
+    progressCoreComplete: "Jalur inti selesai. Pendalaman opsional ada di bawah.",
+    progressPhaseDone: "{done} dari {total} selesai",
+    progressPagesDone: "{done} dari {total} halaman selesai",
+    progressStorageUnavailable:
+      "Progres tidak bisa disimpan di browser ini. Progres hanya bertahan sampai tab ini ditutup.",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Ubah ukuran panel",

@@ -424,41 +424,51 @@ restored.
 - **Proof:** `<plan>/evidence/phase-2-store.md`.
 - _Suggested executor: `swe-developer`._
 
-- [ ] [AI] **Gherkin:** no scenario is added here; S1, S2, S4, S5, S8, and S9 bind in the phases that
+- [x] [AI] **Gherkin:** no scenario is added here; S1, S2, S4, S5, S8, and S9 bind in the phases that
       render them. Record that in the evidence file.
-- [ ] [AI] **RED (store):** create `tests/unit/features/learning-progress/progress-storage.test.ts`
+- [x] [AI] **RED (store):** create `tests/unit/features/learning-progress/progress-storage.test.ts`
       (`unit-fe`, jsdom) with every case in tech-docs/006, using a fake `Storage` object whose methods
       can be set to throw. Run `UNIT-FE tests/unit/features/learning-progress/progress-storage.test.ts`.
       Acceptance: fails with "module not found".
-- [ ] [AI] **GREEN (store):** create `src/features/learning-progress/shell/progress-storage.ts` with
+- [x] [AI] **GREEN (store):** create `src/features/learning-progress/shell/progress-storage.ts` with
       `createProgressStore` and the lazy `learningProgressStore`, following the seven rules in
       tech-docs/002. Rerun. Acceptance: all cases pass.
-- [ ] [AI] **RED (hook):** create `use-learning-progress.test.tsx`: render a probe component with
+- [x] [AI] **RED (hook):** create `use-learning-progress.test.tsx`: render a probe component with
       `renderToString`, put the HTML in a container, seed a valid record in `localStorage`, call
       `hydrateRoot`, spy on `console.error`, and assert no call mentions hydration, then assert the
       ready state renders. Acceptance: fails with "module not found".
-- [ ] [AI] **GREEN (hook):** create `shell/use-learning-progress.ts`. Rerun. Acceptance: passes with no
+- [x] [AI] **GREEN (hook):** create `shell/use-learning-progress.ts`. Rerun. Acceptance: passes with no
       hydration error logged.
-- [ ] [AI] **RED (components and keys):** create one test per component (`progress-meter.test.tsx`,
+- [x] [AI] **RED (components and keys):** create one test per component (`progress-meter.test.tsx`,
       `course-status-label.test.tsx`, `progress-placeholder.test.tsx`, `storage-notice.test.tsx`):
       meter width from `value / max`, `aria-hidden="true"`, empty track at `max = 0`, `motion-safe`
       transition class only; status label words and icon for all three statuses in `en` and `id`;
       placeholder is `aria-hidden`; notice shows `progressStorageUnavailable` only when `persisted` is
       false and keeps its `h-5` slot otherwise. Add a test that every key added to the `en` dictionary
       exists in `id`. Acceptance: all fail.
-- [ ] [AI] **GREEN (components and keys):** create the four components under `shell/` and add the
+- [x] [AI] **GREEN (components and keys):** create the four components under `shell/` and add the
       progress, status, and storage keys from tech-docs/004 to both dictionaries in
       `src/features/i18n/core/translations.ts`. Rerun the tests. Acceptance: all pass.
-- [ ] [AI] **REFACTOR:** check that the store module reads no other `localStorage` key
+- [x] [AI] **REFACTOR:** check that the store module reads no other `localStorage` key
       (`rtk git grep -n "localStorage" -- apps/ayokoding-www/src/features/learning-progress` shows only
       `progress-storage.ts`). Run `QUICK`. Acceptance: exit 0, coverage at or above 99%.
+
+**Phase 2 implementation notes (2026-10-14, `swe-developer`).** Status: complete. Six `shell/` files
+(store, hook, four components) plus seven test files; `translations.ts` gained the 11 status/progress
+keys in both locales. Each RED failed with "module not found" (or missing keys); each GREEN passed. The
+store follows the seven guarded-storage rules; `QUICK` (with `--maxWorkers=1`) exited 0 with lines
+99.49%. Full detail in `evidence/phase-2-store.md`.
 
 ### Phase 2 Gate
 
 > All checks below must pass before starting Phase 3.
 
-- [ ] [AI] `QUICK` exits 0.
-- [ ] [AI] The hydration test log shows zero hydration errors (output saved).
+- [x] [AI] `QUICK` exits 0.
+- [x] [AI] The hydration test log shows zero hydration errors (output saved).
+
+**Phase 2 Gate notes (2026-10-14).** `QUICK` exit 0 (`Test Files 215 passed`, `Tests 3822 passed`, lines
+99.49%). The hydration test passes with the `console.error` spy seeing no `/hydrat|did not match/i`
+message. `typecheck` and `lint` exit 0.
 
 > **Pause Safety**: the store and components exist but no page uses them. Safe to stop. To resume:
 > `QUICK`.

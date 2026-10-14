@@ -33,7 +33,7 @@ export function PhaseProgress({ locale, phase, sequences }: PhaseProgressProps) 
 
   if (snapshot.status !== "ready") {
     return (
-      <span className="flex h-5 items-center gap-2">
+      <span data-progress-slot="phase-progress" className="flex h-5 items-center gap-2">
         <ProgressPlaceholder className="h-4 w-20" />
         <ProgressPlaceholder className="h-2 w-12" />
       </span>
@@ -44,7 +44,7 @@ export function PhaseProgress({ locale, phase, sequences }: PhaseProgressProps) 
   const status: CourseStatus = total > 0 && done === total ? "done" : done > 0 ? "in-progress" : "not-started";
 
   return (
-    <span className="flex h-5 items-center gap-2">
+    <span data-progress-slot="phase-progress" className="flex h-5 items-center gap-2">
       <CourseStatusLabel locale={locale} status={status} size="sm" />
       <span aria-hidden="true">·</span>
       <span className="text-sm whitespace-nowrap text-muted-foreground">

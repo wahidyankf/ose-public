@@ -61,9 +61,10 @@ export function CourseProgressAction({ locale, courseId, sequence, startSlug, pa
   }
 
   return (
-    <div className="mt-4">
+    <div data-progress-slot="course-action" className="mt-4 flex min-h-11 flex-col justify-center">
       <Link
         href={link.href}
+        data-progress-control="course-primary"
         className="inline-flex min-h-11 w-full min-w-0 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto"
       >
         <span className="truncate">{link.label}</span>

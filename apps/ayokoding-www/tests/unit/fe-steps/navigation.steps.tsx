@@ -193,14 +193,20 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
 
     Then("the corresponding item in the sidebar should be visually highlighted as active", () => {
       const active = screen.getByRole("link", { name: "Active" });
-      expect(active.className).toContain("bg-primary/10");
+      // The highlight is the tinted surface plus the primary label, and the tint sits at 5% rather
+      // than the previous 10%: the primary label on a 10% tint measured 4.39:1 against the rail
+      // surface, below the 4.5:1 AA minimum for body text (S39's axe scan), where 5% keeps the
+      // same treatment at 4.8:1 (sidebar-tree.tsx).
+      expect(active.className).toContain("bg-primary/5");
       expect(active.className).toContain("text-primary");
+      expect(active.className).toContain("font-medium");
     });
 
     And("no other sidebar item should be highlighted as active", () => {
       const other = screen.getByRole("link", { name: "Other" });
-      expect(other.className).not.toContain("bg-primary/10");
-      expect(document.querySelectorAll("a.bg-primary\\/10")).toHaveLength(1);
+      expect(other.className).not.toContain("bg-primary");
+      expect(other.className).not.toContain("text-primary");
+      expect(document.querySelectorAll("a.bg-primary\\/5")).toHaveLength(1);
     });
   });
 

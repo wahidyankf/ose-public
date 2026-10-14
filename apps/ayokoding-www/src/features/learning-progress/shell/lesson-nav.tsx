@@ -55,7 +55,8 @@ export function LessonNav() {
   return (
     <nav
       aria-label="Page navigation"
-      className="mt-12 flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between"
+      data-progress-slot="lesson-nav"
+      className="mt-12 flex min-h-11 flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between"
     >
       <Link
         href={previous.href}
@@ -69,6 +70,7 @@ export function LessonNav() {
         type="button"
         aria-pressed={complete}
         disabled={!ready}
+        data-progress-control="lesson-toggle"
         onClick={() => {
           learningProgressStore.update((state) => setPageComplete(state, courseId, pagePath, !complete));
           setAnnouncement(complete ? "incomplete" : "complete");
@@ -87,6 +89,7 @@ export function LessonNav() {
 
       <Link
         href={primary.href}
+        data-progress-control="lesson-primary"
         onClick={() => {
           if (!complete) {
             learningProgressStore.update((state) => setPageComplete(state, courseId, pagePath, true));

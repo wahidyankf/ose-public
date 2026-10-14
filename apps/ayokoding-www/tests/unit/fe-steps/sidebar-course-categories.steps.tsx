@@ -69,7 +69,12 @@ describeFeature(feature, ({ Scenario }) => {
       expect(screen.getByRole("button", { name: /Data and databases/ }).getAttribute("aria-expanded")).toBe("true");
     });
     And('"SQL Essentials" is marked as the current page', () => {
-      expect(screen.getByRole("link", { name: "SQL Essentials" }).className).toContain("bg-primary/10");
+      // The active treatment: the primary label on the tinted surface. The tint is 5% rather than
+      // the previous 10% so that label clears the 4.5:1 AA minimum on the rail surface (S39's axe
+      // scan; sidebar-tree.tsx).
+      const link = screen.getByRole("link", { name: "SQL Essentials" });
+      expect(link.className).toContain("bg-primary/5");
+      expect(link.className).toContain("text-primary");
     });
     And("every other group is closed", () => {
       expect(screen.getByRole("button", { name: /Tools and practices/ }).getAttribute("aria-expanded")).toBe("false");

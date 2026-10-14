@@ -65,6 +65,14 @@ Feature: Learning progress store
     Then the saved progress is unchanged
     And focus returns to the "Reset progress" button
 
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Progress appears without moving the page
+  @integration-exempt
+  Scenario: Progress appears without moving the page
+    Given a reader has saved progress
+    When the reader opens a path page, a learning page, a course landing page, and the Learn home
+    Then each progress area and the content below it sit at the same position as in the page served before scripts run
+    And the browser console shows no hydration error
+
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Progress updates in another open tab
   @integration-exempt
   Scenario: Progress updates in another open tab

@@ -24,7 +24,7 @@ export function CourseCardStatus({ locale, courseId, sequence }: CourseCardStatu
   const snapshot = useLearningProgress();
 
   return (
-    <span className="inline-flex h-5 items-center">
+    <span data-progress-slot="course-status" className="inline-flex h-5 items-center">
       {snapshot.status === "ready" ? (
         <CourseStatusLabel
           locale={locale}

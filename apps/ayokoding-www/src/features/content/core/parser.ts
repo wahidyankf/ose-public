@@ -43,9 +43,14 @@ export async function parseMarkdown(content: string, context?: ParseContext): Pr
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypePrettyCode, {
+      // The light palette must meet WCAG 2 AA against the code surface `globals.css` pins for it
+      // (#f6f8fa, DWT-001): plain `github-light` renders keywords at #d73a49, only 4.29:1 there,
+      // and axe reports every one of them (S39). The high-contrast variant is the same palette
+      // with AA-safe values, so the pinned background and the copy-to-clipboard affordance are
+      // untouched.
       theme: {
         dark: "github-dark",
-        light: "github-light",
+        light: "github-light-high-contrast",
       },
       keepBackground: true,
     })

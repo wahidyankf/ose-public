@@ -35,7 +35,10 @@ export function CourseProgressSummary({ locale, courseId, sequence }: CourseProg
   const { done, total, status } = courseProgress(state, courseId, sequence);
 
   return (
-    <div className="mt-4 flex h-16 flex-col justify-center rounded-xl border border-border px-4">
+    <div
+      data-progress-slot="course-summary"
+      className="mt-4 flex h-16 flex-col justify-center rounded-xl border border-border px-4"
+    >
       <div className="flex items-center justify-between gap-2">
         <span className="inline-flex h-5 items-center">
           {ready ? (

@@ -124,7 +124,11 @@ export function CoursePageContent({
             data={courseHeader}
             prerequisites={renderData.prerequisiteLinks}
             pathBadges={renderData.pathBadges}
-            showPathBadges={pathContext === undefined}
+            // Which paths include this course is a fact the URL's path context never changes, and the
+            // statically served page always carries the list. Hiding it whenever a `?path=` resolved
+            // would remove the whole block under the header — and move every line below it — the
+            // moment the runtime path data arrived (S8), so the header always offers it.
+            showPathBadges
             activePathId={renderData.activeContext?.pathId}
             progress={
               courseHeaderProgress === undefined ? undefined : (

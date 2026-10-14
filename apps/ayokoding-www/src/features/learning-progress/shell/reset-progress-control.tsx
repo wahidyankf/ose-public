@@ -47,8 +47,9 @@ export function ResetProgressControl({ locale }: ResetProgressControlProps) {
       <button
         ref={triggerRef}
         type="button"
+        data-progress-control="reset-trigger"
         onClick={() => setOpen(true)}
-        className="inline-flex min-h-11 items-center rounded-md border border-border px-4 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        className="inline-flex min-h-11 w-full items-center justify-center rounded-md border border-border px-4 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto"
       >
         {t(loc, "resetButton")}
       </button>

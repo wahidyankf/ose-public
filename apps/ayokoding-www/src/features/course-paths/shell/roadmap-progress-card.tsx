@@ -47,7 +47,10 @@ export function RoadmapProgressCard({ locale, manifest, courseCards, sequences }
   const targetTitle = target === null ? "" : (courseCards[target.courseId]?.title ?? target.courseId);
 
   return (
-    <div className="mt-8 flex h-40 flex-col justify-between rounded-xl border border-border p-4 sm:h-36">
+    <div
+      data-progress-slot="roadmap-progress"
+      className="mt-8 flex h-40 flex-col justify-between rounded-xl border border-border p-4 sm:h-36"
+    >
       <div>
         <p className="text-sm font-semibold tracking-wide text-muted-foreground">{t(loc, "progressYourProgress")}</p>
         <div className="mt-1 flex h-6 items-center">
@@ -84,6 +87,7 @@ export function RoadmapProgressCard({ locale, manifest, courseCards, sequences }
               : `${slugForCourseId(target.courseId)}/${target.pagePath}`,
             manifest.pathId,
           )}
+          data-progress-control="roadmap-primary"
           className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto"
         >
           {tf(loc, step !== null && step.kind === "continue" ? "roadmapContinue" : "roadmapStart", {

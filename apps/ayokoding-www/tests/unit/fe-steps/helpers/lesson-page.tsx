@@ -25,11 +25,13 @@ export function lessonProps(overrides: Partial<LessonProps> = {}): LessonProps {
   };
 }
 
-/** Render (or re-render) one lesson page; every page starts from a clean tree. */
-export function openLessonPage(overrides: Partial<LessonProps> = {}): void {
-  cleanup();
+/**
+ * The lesson page as a React tree — the same element the server renders and the browser hydrates.
+ * `openLessonPage` mounts it; the no-layout-shift step (S8) renders it to string first.
+ */
+export function lessonPageElement(overrides: Partial<LessonProps> = {}) {
   const props = lessonProps(overrides);
-  render(
+  return (
     <CoursePageContent
       locale={props.locale}
       slug={`learn/courses/${props.courseId}/${props.pagePath}`}
@@ -40,8 +42,14 @@ export function openLessonPage(overrides: Partial<LessonProps> = {}): void {
       renderData={{ activeContext: null, prerequisiteLinks: [], pathBadges: [], prev: null, next: null }}
       courseId={props.courseId}
       lesson={props}
-    />,
+    />
   );
+}
+
+/** Render (or re-render) one lesson page; every page starts from a clean tree. */
+export function openLessonPage(overrides: Partial<LessonProps> = {}): void {
+  cleanup();
+  render(lessonPageElement(overrides));
 }
 
 /** The context bar's landmark, which only a lesson page renders. */

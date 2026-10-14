@@ -38,7 +38,7 @@ export function PathCardProgress({ locale, manifest, sequences }: PathCardProgre
 
   if (snapshot.status !== "ready") {
     return (
-      <span className="flex h-5 items-center gap-2">
+      <span data-progress-slot="path-card-progress" className="flex h-5 items-center gap-2">
         <ProgressPlaceholder className="h-4 w-24" />
         <ProgressPlaceholder className="h-2 w-12" />
       </span>
@@ -49,7 +49,7 @@ export function PathCardProgress({ locale, manifest, sequences }: PathCardProgre
   const status: CourseStatus = complete ? "done" : coreDone > 0 ? "in-progress" : "not-started";
 
   return (
-    <span className="flex h-5 items-center gap-2">
+    <span data-progress-slot="path-card-progress" className="flex h-5 items-center gap-2">
       <CourseStatusLabel locale={locale} status={status} size="sm" />
       <span aria-hidden="true">·</span>
       <span className="text-sm whitespace-nowrap text-muted-foreground">

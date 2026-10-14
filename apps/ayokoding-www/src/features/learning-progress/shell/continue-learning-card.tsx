@@ -46,7 +46,10 @@ export function ContinueLearningCard({ locale, manifests, courseTitles, sequence
     snapshot.status === "ready" ? cardView(snapshot.state, manifests, courseTitles, sequences) : { kind: "start" };
 
   return (
-    <div className="mt-6 flex h-44 flex-col justify-between rounded-xl border border-border bg-muted/40 p-4 sm:h-32">
+    <div
+      data-progress-slot="continue-learning"
+      className="mt-6 flex h-44 flex-col justify-between rounded-xl border border-border bg-muted/40 p-4 sm:h-32"
+    >
       {view.kind === "start" ? (
         <>
           <div>
@@ -55,6 +58,7 @@ export function ContinueLearningCard({ locale, manifests, courseTitles, sequence
           </div>
           <Link
             href={`${contentUrl(loc, "learn")}#career-paths`}
+            data-progress-control="continue-primary"
             className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto"
           >
             {t(loc, "homeChoosePath")}
@@ -74,11 +78,19 @@ export function ContinueLearningCard({ locale, manifests, courseTitles, sequence
             ) : null}
           </div>
           {view.step.kind === "core-complete" ? (
-            <Link href={contentUrl(loc, `${LEARN_PATHS_PREFIX}/${view.pathId}`)} className={primaryLinkClass}>
+            <Link
+              href={contentUrl(loc, `${LEARN_PATHS_PREFIX}/${view.pathId}`)}
+              data-progress-control="continue-primary"
+              className={primaryLinkClass}
+            >
               {t(loc, "homeViewPath")}
             </Link>
           ) : (
-            <Link href={targetHref(loc, view.step.target, view.pathId)} className={primaryLinkClass}>
+            <Link
+              href={targetHref(loc, view.step.target, view.pathId)}
+              data-progress-control="continue-primary"
+              className={primaryLinkClass}
+            >
               {tf(loc, view.step.kind === "start" ? "roadmapStart" : "roadmapContinue", {
                 title: courseTitles[view.step.target.courseId] ?? humanizeKebabSlug(view.step.target.courseId),
               })}
@@ -101,6 +113,7 @@ export function ContinueLearningCard({ locale, manifests, courseTitles, sequence
                 ? contentUrl(loc, slugForCourseId(view.courseId))
                 : targetHref(loc, view.target, undefined)
             }
+            data-progress-control="continue-primary"
             className={primaryLinkClass}
           >
             {tf(loc, "roadmapContinue", { title: view.title })}

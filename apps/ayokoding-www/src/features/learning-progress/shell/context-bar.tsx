@@ -37,6 +37,7 @@ export function ContextBar() {
   return (
     <nav
       aria-label={t(loc, "contextBarLabel")}
+      data-progress-slot="context-bar"
       className="mb-4 flex h-[4.75rem] flex-col justify-center gap-1 rounded-md border border-border px-3 text-sm sm:h-14"
     >
       <div className="flex min-w-0 flex-wrap items-center gap-x-2">

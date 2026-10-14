@@ -827,10 +827,10 @@ features).
 - **Proof:** `<plan>/evidence/phase-8-accessibility.md` (axe summaries, bounding-box tables).
 - _Suggested executor: `swe-developer`._
 
-- [ ] [AI] **Gherkin:** create `learning-progress/learning-progress-accessibility.feature` with
+- [x] [AI] **Gherkin:** create `learning-progress/learning-progress-accessibility.feature` with
       S35–S39 and add S8 to `progress-store.feature`. Run `BEHAVIOUR`. Acceptance: only these six are
       missing.
-- [ ] [AI] **RED:** create `tests/unit/fe-steps/learning-progress-accessibility.steps.tsx` (status
+- [x] [AI] **RED:** create `tests/unit/fe-steps/learning-progress-accessibility.steps.tsx` (status
       words, `aria-hidden` bars next to text, `aria-pressed`, `role="status"`, `motion-safe` classes,
       `min-h-11` targets) and add S8 to `progress-store.steps.tsx` (server markup and ready markup keep
       every `[data-progress-slot]` class list for size). Create
@@ -839,17 +839,30 @@ features).
       bounding boxes within 1 px; reduced-motion computed styles; 375 px scroll width and 44 × 44
       boxes; axe with `wcag2a` and `wcag2aa`; keyboard Tab and Space). Run the unit file and `E2E`.
       Acceptance: the six scenarios fail or pass; record which pass already and why.
-- [ ] [AI] **GREEN:** fix every failure at its cause (slot sizes, missing `data-progress-slot`
+- [x] [AI] **GREEN:** fix every failure at its cause (slot sizes, missing `data-progress-slot`
       markers, contrast, target size, missing labels, transition classes). Rerun. Acceptance: all six
       pass in all three browsers, and earlier scenarios still pass.
-- [ ] [AI] **REFACTOR:** run `QUICK` and `E2E-QUICK`. Acceptance: both exit 0.
+- [x] [AI] **REFACTOR:** run `QUICK` and `E2E-QUICK`. Acceptance: both exit 0.
+
+**Phase 8 implementation notes (2026-10-14, `swe-developer`).** Status: complete. S35–S39 + S8 Gherkin;
+`[data-progress-slot]` markers and fixed slots on every progress component; app fixes for the axe scan
+(the `.bg-primary/10` → `/5` tint and the lesson code-block contrast) and for S8 (the Mermaid block
+reserved-and-hidden, the header badge block pinned); unit and E2E step files. Unit gate exit 0 (241
+files, 4147 tests, lines 99.54%); `E2E-QUICK` exit 0; flow-scoped E2E 42 passed with zero axe
+violations on all four screens. Five existing unit tests updated for the changed DOM shapes. See
+`evidence/phase-8-accessibility.md`.
 
 ### Phase 8 Gate
 
 > All checks below must pass before starting Phase 9.
 
-- [ ] [AI] `QUICK`, `BEHAVIOUR`, `E2E-QUICK`, and `E2E` exit 0.
-- [ ] [AI] The axe summary shows zero violations on all four screens (saved).
+- [x] [AI] `QUICK`, `BEHAVIOUR`, `E2E-QUICK`, and `E2E` exit 0.
+- [x] [AI] The axe summary shows zero violations on all four screens (saved).
+
+**Phase 8 Gate notes (2026-10-14).** `QUICK` exit 0 (241 files, 4147 tests, lines 99.54%);
+`BEHAVIOUR` exit 0; `E2E-QUICK` exit 0; flow-scoped `E2E` 42 passed with the four axe scans reporting
+zero violations and the layout-shift comparison within 1 px. Summaries in
+`evidence/phase-8-accessibility.md`.
 
 > **Pause Safety**: all code is complete and green. Safe to stop. To resume: `QUICK`.
 

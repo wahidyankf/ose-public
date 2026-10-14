@@ -1,5 +1,5 @@
 import { createBdd } from "playwright-bdd";
-import { expect, type Page } from "@playwright/test";
+import { expect, type Browser, type Page } from "@playwright/test";
 import { buildTrpcUrl, extractTrpcData } from "./backend-helpers";
 import { completeCourseThroughUi } from "./support/complete-course";
 
@@ -380,6 +380,131 @@ Then("both open tabs show the new count without a reload", async ({ page }) => {
 
   await (secondTab as Page).close();
   secondTab = null;
+});
+
+// ---------------------------------------------------------------------------
+// plan ayokoding-learn-revamp-04-learning-experience, Phase 8 — S8: progress appears without moving
+// the page. Each screen is opened twice: once in a context with scripts switched off (the page
+// exactly as the server sent it, where every progress slot still holds its placeholder) and once in
+// the seeded context the scenario's Given filled (where the slots carry the reader's own progress).
+// Every `[data-progress-slot]`, and the element after it, must sit at the same position and size in
+// both — within 1 px (tech-docs/006 E2E Techniques) — and hydration must log no mismatch.
+// ---------------------------------------------------------------------------
+
+/** The four screens the feature names, in its own order. */
+const S8_SCREENS: ReadonlyArray<{ name: string; url: string }> = [
+  { name: "a path page", url: `/en/learn/paths/${PATH_ID}` },
+  { name: "a learning page", url: LESSON_URL },
+  { name: "a course landing page", url: `${BASH_ROOT}?path=${PATH_ID}` },
+  { name: "the Learn home", url: "/en/learn" },
+];
+
+/** How far apart two measurements may be and still count as the same position (tech-docs/006). */
+const POSITION_TOLERANCE_PX = 1;
+
+interface SlotBox {
+  slot: string;
+  y: number;
+  height: number;
+  nextY: number | null;
+  nextHeight: number | null;
+}
+
+/** Every progress slot's box, and the element after it, in document order. */
+async function slotBoxes(page: Page): Promise<SlotBox[]> {
+  return page.evaluate(() =>
+    Array.from(document.querySelectorAll("[data-progress-slot]")).map((slot) => {
+      const box = slot.getBoundingClientRect();
+      const next = slot.nextElementSibling;
+      const nextBox = next?.getBoundingClientRect() ?? null;
+
+      return {
+        slot: slot.getAttribute("data-progress-slot") ?? "",
+        y: box.top,
+        height: box.height,
+        nextY: nextBox?.top ?? null,
+        nextHeight: nextBox?.height ?? null,
+      };
+    }),
+  );
+}
+
+/** Why two readings of one slot differ by more than the tolerance, or `null` when they do not. */
+function boxDifference(screen: string, served: SlotBox, hydrated: SlotBox): string | null {
+  const differences: string[] = [];
+  const compare = (what: string, before: number | null, after: number | null): void => {
+    if (before === null && after === null) return;
+    if (before === null || after === null || Math.abs(before - after) > POSITION_TOLERANCE_PX) {
+      differences.push(`${what}: served ${String(before)} → hydrated ${String(after)}`);
+    }
+  };
+
+  compare("slot y", served.y, hydrated.y);
+  compare("slot height", served.height, hydrated.height);
+  compare("next element y", served.nextY, hydrated.nextY);
+  compare("next element height", served.nextHeight, hydrated.nextHeight);
+
+  return differences.length === 0 ? null : `${screen} [${served.slot}]: ${differences.join("; ")}`;
+}
+
+/** Open one URL in a throwaway context with page scripts switched off. */
+async function withScriptsDisabled<T>(browser: Browser, url: string, read: (page: Page) => Promise<T>): Promise<T> {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1280, height: 800 } });
+  try {
+    const page = await context.newPage();
+    await page.goto(url);
+    await page.waitForLoadState("domcontentloaded");
+    return await read(page);
+  } finally {
+    await context.close();
+  }
+}
+
+/** Where a slot moved when progress arrived, and what the browser logged while it hydrated. */
+let layoutDifferences: string[] = [];
+let browserMessages: string[] = [];
+
+When(
+  "the reader opens a path page, a learning page, a course landing page, and the Learn home",
+  async ({ page, browser }) => {
+    layoutDifferences = [];
+    browserMessages = [];
+    page.on("console", (message) => browserMessages.push(message.text()));
+    page.on("pageerror", (error) => browserMessages.push(error.message));
+
+    for (const screen of S8_SCREENS) {
+      // What the server sent: a context with scripts switched off never hydrates, so every slot is
+      // still the placeholder the markup carried.
+      const served = await withScriptsDisabled(browser, screen.url, slotBoxes);
+
+      // What the reader gets: this context, hydrated with the saved progress.
+      await page.goto(screen.url);
+      await page.waitForLoadState("networkidle");
+      await expect(page.locator("[data-progress-slot]").first()).toBeVisible();
+      const hydrated = await slotBoxes(page);
+
+      expect(served.length, `${screen.name} carries progress slots`).toBeGreaterThan(0);
+      expect(hydrated.map((box) => box.slot)).toEqual(served.map((box) => box.slot));
+
+      for (const [index, box] of served.entries()) {
+        const difference = boxDifference(screen.name, box, hydrated[index] as SlotBox);
+        if (difference !== null) {
+          layoutDifferences.push(difference);
+        }
+      }
+    }
+  },
+);
+
+Then(
+  "each progress area and the content below it sit at the same position as in the page served before scripts run",
+  () => {
+    expect(layoutDifferences).toEqual([]);
+  },
+);
+
+Then("the browser console shows no hydration error", () => {
+  expect(browserMessages.filter((message) => /hydrat|did not match/i.test(message))).toEqual([]);
 });
 
 // ---------------------------------------------------------------------------

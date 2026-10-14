@@ -14,7 +14,7 @@ export function StorageNotice({ locale }: { locale: string }) {
   const unavailable = snapshot.status === "ready" && !snapshot.persisted;
 
   return (
-    <p className="h-5 text-sm text-muted-foreground">
+    <p data-progress-slot="storage-notice" className="h-5 text-sm text-muted-foreground">
       {unavailable ? t(locale as Locale, "progressStorageUnavailable") : null}
     </p>
   );

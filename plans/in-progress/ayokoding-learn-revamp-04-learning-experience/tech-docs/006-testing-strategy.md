@@ -85,8 +85,14 @@ in `apps/ayokoding-www-fe-e2e/tests/e2e/steps/<feature>.steps.ts`. The feature f
   and primary link in progress slots and `LessonNav` has a bounding box at least 44 × 44.
 - **Axe (S39):** `new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze()` on each screen with
   seeded progress; zero violations.
-- **Keyboard (S36):** press `Tab` until `document.activeElement` is the toggle (at most 80 presses),
-  press `Space`, assert `aria-pressed="true"` and the `role="status"` text.
+- **Keyboard (S36):** press that reader's own traversal key — `Tab` on Chromium and Firefox,
+  `Alt+Tab` on WebKit, where Safari leaves plain `Tab` on text fields and focusable scrollable panes
+  (this page's code blocks) and moves through links and buttons on Option+Tab — until
+  `document.activeElement` is the toggle itself (matched as the `Page navigation` row's button, whose
+  accessible name is the named label, at most the page's own focus order — its tabbable controls plus
+  the scrollable code panes the browsers focus — measured up front; a lesson page's sidebar tree and
+  per-block copy buttons put the action row far past any fixed allowance), press `Space`, assert
+  `aria-pressed="true"` and the `role="status"` text.
 
 ## Fixtures
 

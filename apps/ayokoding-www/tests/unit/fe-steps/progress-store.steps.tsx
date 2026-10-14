@@ -1,8 +1,14 @@
 import path from "node:path";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { expect, vi } from "vitest";
 import "./helpers/test-setup";
+
+// React's act environment: hydrating a rendered string is a React, not a DOM-testing-library,
+// concern (the same technique as `use-learning-progress.test.tsx`).
+(globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -30,6 +36,7 @@ import { PathLanding } from "@/features/course-paths/shell/path-landing";
 import { LearnHome } from "@/features/learning-progress/shell/learn-home";
 import { manifestFixture } from "../features/course-paths/manifest-fixture";
 import { BASH_SEQUENCE } from "../features/learning-progress/lesson-fixtures";
+import { PROGRESS_SCREENS, slotFingerprints } from "./helpers/progress-screens";
 import { completedPages, completionToggle, contextBar, noSavedProgress, openLessonPage } from "./helpers/lesson-page";
 
 const feature = await loadFeature(
@@ -487,6 +494,91 @@ describeFeature(feature, ({ Scenario, Background }) => {
 
     And('focus returns to the "Reset progress" button', () => {
       expect(document.activeElement).toBe(screen.getByRole("button", { name: "Reset progress…" }));
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // S8 (Phase 8) — progress appears without moving the page. Added last, before S4 below: it reads
+  // and writes the shared key through the lesson page's own control, which a memory-mode store
+  // cannot do.
+  //
+  // Every element whose content depends on stored progress carries `data-progress-slot`, and the
+  // slot's class list is what gives it its size. This scenario proves the served markup and the
+  // hydrated markup agree on that class list — and on the element that follows each slot — for all
+  // four screens, and that hydration logs no mismatch. The real bounding boxes (within 1 px) are
+  // the E2E binding's proof (tech-docs/006 E2E Techniques, S8).
+  // -------------------------------------------------------------------------
+
+  Scenario("Progress appears without moving the page", ({ Given, When, Then, And }) => {
+    /** The order the feature names the screens in, which is the order they are walked here. */
+    const S8_SCREENS = ["a path page", "a learning page", "a course landing page", "the Learn home"] as const;
+
+    let served: ReturnType<typeof slotFingerprints> = [];
+    let hydrated: ReturnType<typeof slotFingerprints> = [];
+    let hydrationErrors: string[] = [];
+
+    Given("a reader has saved progress", () => {
+      noSavedProgress();
+      openLessonPage({ pagePath: "learning/beginner", pathParam: PATH_ID });
+      fireEvent.click(completionToggle());
+      expect(completedPages()).toEqual(["learning/beginner"]);
+    });
+
+    When("the reader opens a path page, a learning page, a course landing page, and the Learn home", async () => {
+      served = [];
+      hydrated = [];
+      hydrationErrors = [];
+
+      for (const name of S8_SCREENS) {
+        const screen = PROGRESS_SCREENS.find((candidate) => candidate.name === name);
+        if (screen === undefined) {
+          throw new Error(`No progress screen is named "${name}"`);
+        }
+
+        cleanup();
+        // What the server sends: the snapshot is `unknown`, so every slot holds its placeholder.
+        const html = renderToString(screen.element());
+        const asServed = document.createElement("div");
+        asServed.innerHTML = html;
+        served.push(...slotFingerprints(asServed));
+
+        // What the reader gets once scripts run: the same markup, hydrated with saved progress.
+        const container = document.createElement("div");
+        container.innerHTML = html;
+        document.body.append(container);
+
+        const logged: string[] = [];
+        const spy = vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => {
+          logged.push(args.map((value) => String(value)).join(" "));
+        });
+
+        let root: ReturnType<typeof hydrateRoot> | null = null;
+        await act(async () => {
+          root = hydrateRoot(container, screen.element());
+        });
+        hydrationErrors.push(...logged.filter((message) => /hydrat|did not match/i.test(message)));
+        hydrated.push(...slotFingerprints(container));
+
+        await act(async () => {
+          root?.unmount();
+        });
+        spy.mockRestore();
+        container.remove();
+      }
+    });
+
+    Then(
+      "each progress area and the content below it sit at the same position as in the page served before scripts run",
+      () => {
+        // A slot that changed class — or that moved to another tag — is a slot that could resize and
+        // push the content below it down; an empty comparison here means none did.
+        expect(served.length).toBeGreaterThan(0);
+        expect(hydrated).toEqual(served);
+      },
+    );
+
+    And("the browser console shows no hydration error", () => {
+      expect(hydrationErrors).toEqual([]);
     });
   });
 

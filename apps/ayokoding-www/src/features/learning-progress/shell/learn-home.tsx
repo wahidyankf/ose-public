@@ -152,7 +152,7 @@ export function LearnHome({
         <span aria-hidden="true">→</span>
       </Link>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+      <div data-progress-slot="reset-footer" className="mt-6 flex flex-wrap items-center justify-between gap-4">
         <p className="text-sm text-muted-foreground">{t(loc, "homePrivacyNote")}</p>
         <ResetProgressControl locale={locale} />
       </div>

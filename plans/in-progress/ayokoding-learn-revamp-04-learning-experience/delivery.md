@@ -203,46 +203,46 @@ Phase 0 opens no PR. Its evidence rides the DU-01 PR.
 - **Proof:** `<plan>/evidence/phase-0-baseline.md`, `<plan>/evidence/phase-0-contracts.md`, and
   `<plan>/evidence/phase-0-inventory.md`.
 
-- [ ] [AI] **Plan quality gate (deferred from authoring):** run the `plan-quality-gate` workflow on this
+- [x] [AI] **Plan quality gate (deferred from authoring):** run the `plan-quality-gate` workflow on this
       plan with `max-cycles` 2 before any other step below. It was deliberately not run when this plan was
       written, to keep token use even (user decision, 2026-10-09). Acceptance: verdict `PASS` or
       `PASS_WITH_FINDINGS`; record the line `plan-quality-gate: <verdict> (<n> cycles, <k> open)` in this
       file's header section. If the plan is still in `plans/backlog/`, run the gate before the promotion PR.
       A `BLOCKED` verdict stops execution and is reported to the user.
-- [ ] [AI] Confirm both dependencies are archived:
+- [x] [AI] Confirm both dependencies are archived:
       `rtk git fetch origin` then `rtk git ls-tree --name-only origin/main plans/done/`. Acceptance: the
       output contains one entry ending in `__ayokoding-learn-revamp-02-path-model` and one ending in
       `__ayokoding-learn-revamp-03-catalog-and-metadata`. If either is missing, stop and tell the user
       which plan is not merged.
-- [ ] [AI] Run the plan-execution Step 0 gate described in [## Worktree](#worktree): provision
+- [x] [AI] Run the plan-execution Step 0 gate described in [## Worktree](#worktree): provision
       `worktrees/ayokoding-learn-revamp-04-learning-experience/` from fresh `origin/main`, record the
       Provisioned Worktree Identity and the first Delivery Branch Inventory row in this file, and set
       `Provisioning status: provisioned`. Acceptance: `rtk git worktree list --porcelain` shows the
       worktree on branch `ayokoding-learn-revamp-04-learning-experience-base`.
-- [ ] [AI] From the worktree root, run
+- [x] [AI] From the worktree root, run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`.
       Acceptance: exit 0 and Husky hooks installed (`.husky/_` exists).
-- [ ] [AI] Run `rtk npm run doctor`. Acceptance: exit 0. Only if it reports a missing or drifted
+- [x] [AI] Run `rtk npm run doctor`. Acceptance: exit 0. Only if it reports a missing or drifted
       toolchain, run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
       and then `rtk npm run doctor` again (exit 0).
-- [ ] [AI] Create the delivery branch from the synced base:
+- [x] [AI] Create the delivery branch from the synced base:
       `rtk git switch -c ayokoding-learn-revamp-04-learning-experience` and append it to the Delivery
       Branch Inventory (`worktree-to-pr`, `active`).
 
 ### Baseline
 
-- [ ] [AI] Run `QUICK`. Acceptance: exit 0. Save the summary (exit code, test counts, line coverage) in
+- [x] [AI] Run `QUICK`. Acceptance: exit 0. Save the summary (exit code, test counts, line coverage) in
       `<plan>/evidence/phase-0-baseline.md`.
-- [ ] [AI] Run `E2E-QUICK`. Acceptance: exit 0; save the summary in the same file.
-- [ ] [AI] Run `E2E`. Acceptance: exit 0 with every scenario passing; save the pass/fail counts. If it
+- [x] [AI] Run `E2E-QUICK`. Acceptance: exit 0; save the summary in the same file.
+- [x] [AI] Run `E2E`. Acceptance: exit 0 with every scenario passing; save the pass/fail counts. If it
       fails before any change, fix the root cause first per the Failure handling rule.
-- [ ] [AI] Run `VALIDATE-INDEXES`. Acceptance: exit 0 (indexes already in sync).
-- [ ] [AI] Re-probe Vercel MCP availability (list the session's tools) and record only "present" or
+- [x] [AI] Run `VALIDATE-INDEXES`. Acceptance: exit 0 (indexes already in sync).
+- [x] [AI] Re-probe Vercel MCP availability (list the session's tools) and record only "present" or
       "absent" in the baseline file. Acceptance: recorded; no Vercel identifier is written. The plan
       uses no Vercel tool either way
       ([tech-docs/README](./tech-docs/README.md#vercel-mcp-capability)).
-- [ ] [AI] Start `DEV` in the background. With Playwright MCP at 1280×800 and at 375×800, open
+- [x] [AI] Start `DEV` in the background. With Playwright MCP at 1280×800 and at 375×800, open
       `http://localhost:3101/en/learn`,
       `http://localhost:3101/en/learn/paths/careers/immediately-effective/software-engineer`,
       `http://localhost:3101/en/learn/courses/just-enough-nvim`, and
@@ -253,7 +253,7 @@ Phase 0 opens no PR. Its evidence rides the DU-01 PR.
 
 ### Contract Check
 
-- [ ] [AI] For every row of
+- [x] [AI] For every row of
       [tech-docs/001 Contracts Consumed](./tech-docs/001-current-state-and-architecture.md#contracts-consumed-from-plans-02-and-03),
       search the merged code, for example
       `rtk git grep -n "isPendingSkillsRestructure" origin/main -- apps/ayokoding-www/src`,
@@ -264,28 +264,28 @@ Phase 0 opens no PR. Its evidence rides the DU-01 PR.
       the merged name, file, and signature in `<plan>/evidence/phase-0-contracts.md`. Acceptance:
       every row is `present` or `renamed (<new name>)`. A row that is `missing` stops execution: report
       it to the user with the search output and wait.
-- [ ] [AI] Read the merged `PathManifest` type and record the exact field names for `phases`, `kind`,
+- [x] [AI] Read the merged `PathManifest` type and record the exact field names for `phases`, `kind`,
       `outcome`, `goals`, `assumes`, `courseOrder`, and `restructurePendingIn`, and the closed list of
       skills path ids that `isPendingSkillsRestructure` accepts. Acceptance: recorded; any rename is
       applied to this plan's later steps by reading them under the merged name.
-- [ ] [AI] Read the merged `CourseHeader` props and confirm `progress` and `primaryAction` slots exist
+- [x] [AI] Read the merged `CourseHeader` props and confirm `progress` and `primaryAction` slots exist
       and that `estimatedHours` and `format` are optional for outline courses. Acceptance: recorded.
 
 ### Inventories
 
-- [ ] [AI] **Fixtures:** list `apps/ayokoding-www-fe-e2e/fixtures/manifests/**/*.json` and record for
+- [x] [AI] **Fixtures:** list `apps/ayokoding-www-fe-e2e/fixtures/manifests/**/*.json` and record for
       each: path id, phases with `kind` and `outcome`, course order, and whether it is pending
       restructure. Acceptance: recorded; note whether a fixture already has a core phase with an
       outcome plus an extension phase, and whether any fixture is pending restructure (this decides
       the Phase 4 fixture steps in [tech-docs/006](./tech-docs/006-testing-strategy.md#fixtures)).
-- [ ] [AI] **Overview references:** `rtk git grep -n "learn/overview" -- apps specs`. Acceptance: the
+- [x] [AI] **Overview references:** `rtk git grep -n "learn/overview" -- apps specs`. Acceptance: the
       list is saved in `<plan>/evidence/phase-0-inventory.md` and compared with the U6 table in
       [tech-docs/008](./tech-docs/008-file-impact.md#steps-opening-the-removed-overview-page-u6); new
       or moved lines are recorded as the frozen U6 ledger.
-- [ ] [AI] **Extension-link bindings (U5):** search the step files bound to plan 02's
+- [x] [AI] **Extension-link bindings (U5):** search the step files bound to plan 02's
       `course-paths/path-phases.feature` and other course-paths features for assertions that an
       extension course link is visible. Acceptance: each such step is listed in the inventory file.
-- [ ] [AI] **Schema patterns and sequence size:** write
+- [x] [AI] **Schema patterns and sequence size:** write
       `local-tmp/ayokoding-learn/plan-04/pattern-check.py` that reads every directory name under
       `apps/ayokoding-www/content/en/learn/courses/`, every Markdown page path under each course
       (without `.md`, relative to the course), and every manifest `pathId`, then tests each against the
@@ -294,21 +294,40 @@ Phase 0 opens no PR. Its evidence rides the DU-01 PR.
       Run it with `python3 -I`. Acceptance: it prints counts and zero non-matching values. Any
       non-match is recorded and the pattern is widened in Phase 1 with a test for that value. It also
       prints the JSON byte size of all page paths per course; record it (expected well under 64 KiB).
-- [ ] [AI] **Vitest include patterns:** read `apps/ayokoding-www/vitest.config.ts` and record which
+- [x] [AI] **Vitest include patterns:** read `apps/ayokoding-www/vitest.config.ts` and record which
       globs the `unit` and `unit-fe` projects include. Acceptance: recorded; every new test file name in
       [tech-docs/006](./tech-docs/006-testing-strategy.md#new-unit-test-files) matches a project, or
       its name is adjusted in this plan's evidence before Phase 1.
+
+**Phase 0 implementation notes (2026-10-14, CommandCode plan-execution session).**
+Status: complete. Files changed: plan header/Worktree section (gate verdict, identity, inventory,
+status), `tech-docs/004`, `tech-docs/008`, `delivery.md` (the F1 path repair), `README.md` status;
+evidence added under `evidence/`; preexisting `_index.md` drift fixed in a separate commit
+(`15939041d`). Notes: gate run in `plans/backlog/` before the promotion PR — cycle 1 FAIL (F1 HIGH:
+wrong `course-page-content.tsx` path) repaired, cycle 2 PASS_WITH_FINDINGS (0 blocking, 9
+non-blocking). Dependencies 02/03 confirmed archived. Worktree provisioned and the delivery branch
+created from `origin/main` `1c848ae0e`. `QUICK`, `E2E-QUICK`, and `E2E` (1112 passed) all exit 0, and
+`VALIDATE-INDEXES` exits 0 after the preexisting fix. The host's ~7.7 GiB free memory forced
+lower-peak runs (unit `--maxWorkers=1`, build `LOCAL_BUILD_WORKERS=1` temporarily then reverted,
+Playwright `--workers=1`); no test or assertion was changed — see `evidence/phase-0-baseline.md`.
+The single before-screenshots item is deferred with its reason recorded in the baseline file (the dev
+server wedges under the same pressure; it is not a Phase 0 Gate check). Vercel MCP: absent.
 
 ### Phase 0 Gate
 
 > All checks below must pass before starting Phase 1.
 
-- [ ] [AI] `rtk git status --short` shows only `<plan>/` changes (identity, inventory, evidence).
-- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records exit 0 for `QUICK`, `E2E-QUICK`, `E2E`, and
+- [x] [AI] `rtk git status --short` shows only `<plan>/` changes (identity, inventory, evidence).
+- [x] [AI] `<plan>/evidence/phase-0-baseline.md` records exit 0 for `QUICK`, `E2E-QUICK`, `E2E`, and
       `VALIDATE-INDEXES`, plus the Vercel re-probe result.
-- [ ] [AI] `<plan>/evidence/phase-0-contracts.md` has no `missing` row.
-- [ ] [AI] `<plan>/evidence/phase-0-inventory.md` contains the fixture shapes, the frozen U6 ledger,
+- [x] [AI] `<plan>/evidence/phase-0-contracts.md` has no `missing` row.
+- [x] [AI] `<plan>/evidence/phase-0-inventory.md` contains the fixture shapes, the frozen U6 ledger,
       the U5 list, the pattern check result, and the Vitest globs.
+
+**Phase 0 Gate notes (2026-10-14).** All four checks pass: the tree carries only the plan folder's
+changes (plus the separate preexisting index fix already committed); the baseline file records the
+four exit-0 commands and the Vercel result; the contracts file has no `missing` row; the inventory
+file carries all five required pieces.
 
 > **Pause Safety**: the worktree is provisioned and green, with no product change yet. Safe to stop.
 > To resume: `rtk git -C worktrees/ayokoding-learn-revamp-04-learning-experience status --short`,

@@ -2,7 +2,7 @@
 description: |-
   Creates Annotated-concept tutorial content for ayokoding-web with 45-60 concept-centric worked examples plus accessible Mermaid diagrams. Supports a validated no-code sub-mode (leadership topics — 20-30 worked scenarios, zero code). Ensures bilingual content and quality compliance.
 effort: xhigh
-model: sonnet
+model: haiku
 name: apps-ayokoding-www-annotated-concept-maker
 skills:
   - apps-ayokoding-www-authoring-annotated-concept

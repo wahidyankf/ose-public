@@ -1,7 +1,8 @@
 ---
 description: |-
   Authors a complete formal plan from an authorized request or groomed brief, returns every open decision to the root for grilling, and repairs its own draft within the declared budget.
-model: inherit
+effort: high
+model: sonnet
 name: plan-maker
 skills:
   - docs-applying-content-quality

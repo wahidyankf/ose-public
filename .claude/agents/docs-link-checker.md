@@ -1,7 +1,7 @@
 ---
 description: |-
   Validates internal and external documentation links. Always uses docs/metadata/external-links-status.yaml as its sole cache, prunes it, and updates lastFullScan on every invocation. Use for dead links, URL reachability, internal references, or link-health audits.
-effort: xhigh
+effort: medium
 model: haiku
 name: docs-link-checker
 skills:

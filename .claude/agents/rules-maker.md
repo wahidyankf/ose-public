@@ -1,7 +1,8 @@
 ---
 description: |-
   Creates repository rules and conventions in repo-governance/ directories. Documents standards, patterns, and quality requirements.
-model: inherit
+effort: high
+model: sonnet
 name: rules-maker
 skills:
   - docs-applying-content-quality

@@ -2,7 +2,7 @@
 description: |-
   Creates LinkedIn posts in social-media-posts/linkedin/ from completed origin/main updates across the ose-public and private-sibling repos, enforcing the 3,000-character body limit (from the "OPEN SHARIA ENTERPRISE" line down) in a professional, engaging tone.
 effort: xhigh
-model: sonnet
+model: haiku
 name: social-linkedin-post-maker
 skills:
   - social-linkedin-posting

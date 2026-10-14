@@ -2,7 +2,7 @@
 description: |-
   Executes Tutorial Annotated Concept Propagation on a frozen tutorial-annotated-concept ledger, repairing only what each worked example itself settles, with every threshold read from the adopting repository's adapter, and leaving authoring and pedagogy to the author.
 effort: xhigh
-model: sonnet
+model: haiku
 name: tutorial-annotated-concept-fixer
 skills:
   - repo-applying-maker-checker-fixer

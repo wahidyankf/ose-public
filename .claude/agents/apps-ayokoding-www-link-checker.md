@@ -1,6 +1,6 @@
 ---
 description: Validates links in ayokoding-web content. Checks internal and external links for correctness and accessibility.
-effort: xhigh
+effort: medium
 model: haiku
 name: apps-ayokoding-www-link-checker
 skills:

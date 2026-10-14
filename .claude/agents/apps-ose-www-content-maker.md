@@ -1,7 +1,7 @@
 ---
 description: Creates content for ose-web Next.js 16 content platform. English-only with date-based organization.
 effort: xhigh
-model: sonnet
+model: haiku
 name: apps-ose-www-content-maker
 skills:
   - docs-applying-content-quality

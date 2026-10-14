@@ -2,7 +2,7 @@
 description: |-
   Executes Tutorial In the Field Propagation on a frozen tutorial-in-the-field ledger, repairing only what each guide itself settles, with every threshold read from the adopting repository's adapter, and leaving authoring and pedagogy to the author.
 effort: xhigh
-model: sonnet
+model: haiku
 name: tutorial-in-the-field-fixer
 skills:
   - docs-creating-in-the-field-tutorials

@@ -1,7 +1,8 @@
 ---
 description: |-
   Creates and updates tutorial documentation following Diátaxis framework and tutorial conventions
-model: inherit
+effort: high
+model: sonnet
 name: docs-tutorial-maker
 skills:
   - docs-creating-tutorial-structure

@@ -1,7 +1,8 @@
 ---
 description: |-
   Designs module boundaries, dependencies, and tradeoffs before implementation, judges finished work against that design, and serves as the architecture lens of a review pass, writing nothing but decision records.
-model: inherit
+effort: high
+model: sonnet
 name: swe-architect
 skills:
   - developing-applications

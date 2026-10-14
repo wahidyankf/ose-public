@@ -2,7 +2,7 @@
 description: |-
   Executes Phase 0 of a plan delivery checklist: uses HIPPO for dependency and toolchain convergence, then runs scoped baselines and resolves preexisting failures before plan work begins.
 effort: xhigh
-model: sonnet
+model: haiku
 name: repo-setup-manager
 skills:
   - repo-maintaining-task-lists

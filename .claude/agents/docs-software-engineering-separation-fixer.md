@@ -2,7 +2,7 @@
 description: |-
   Executes Software Engineering Separation Propagation on a frozen ledger, adding prerequisite statements, removing duplicated teaching from style guides, and repairing table entries and cross-links, without ever writing AyoKoding educational content.
 effort: xhigh
-model: sonnet
+model: haiku
 name: docs-software-engineering-separation-fixer
 skills:
   - docs-validating-software-engineering-separation

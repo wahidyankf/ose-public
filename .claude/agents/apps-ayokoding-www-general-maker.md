@@ -2,7 +2,7 @@
 description: |-
   Creates general ayokoding-web content (by-concept tutorials, guides, references). Ensures bilingual completeness and content quality compliance.
 effort: xhigh
-model: sonnet
+model: haiku
 name: apps-ayokoding-www-general-maker
 skills:
   - docs-applying-content-quality

@@ -18,12 +18,8 @@ created: 2026-08-14
 | organiclever-www     | [www.organiclever.com](https://www.organiclever.com/)    | 3200 | `prod-organiclever-www`     |
 | organiclever-app-web | TBD                                                      | 3202 | `prod-organiclever-app-web` |
 | ose-app-web          | [app.oseplatform.com](https://app.oseplatform.com) (TBD) | 3300 | `prod-ose-app-web` (TBD)    |
-| ose-id-web           | TBD                                                      | 3500 | `prod-ose-id-web` (TBD)     |
 | ose-be               | api.oseplatform.com (F# / Giraffe / ASP.NET 10)          | 8302 | —                           |
-| ose-lms-be           | (Java 25 / Spring Boot 4)                                | 8303 | —                           |
 | organiclever-be      | (F# / Giraffe / ASP.NET 10, Kubernetes)                  | 8202 | —                           |
-| roots-be             | (Go 1.26 / Gin)                                          | 8402 | —                           |
-| ose-id-be            | (C# / ASP.NET Core 10)                                   | 8501 | —                           |
 
 ## Overriding a port
 
@@ -38,12 +34,8 @@ than falling back silently.
 | organiclever-www     | `ORGANICLEVER_WWW_PORT`     |
 | organiclever-app-web | `ORGANICLEVER_APP_WEB_PORT` |
 | ose-app-web          | `OSE_APP_WEB_PORT`          |
-| ose-id-web           | `OSE_ID_WEB_PORT`           |
 | organiclever-be      | `ORGANICLEVER_BE_PORT`      |
 | ose-be               | `OSE_BE_PORT`               |
-| ose-lms-be           | `OSE_LMS_BE_PORT`           |
-| roots-be             | `ROOTS_BE_PORT`             |
-| ose-id-be            | `OSE_ID_BE_PORT`            |
 
 ```bash
 ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev ose-www --port=4000       # flag
@@ -99,31 +91,18 @@ for a developer-run PostgreSQL or NATS shared across apps by database name, not 
 The `infra/dev/ose-app` Compose scaffold publishes its PostgreSQL on host port 5437; inside the
 Compose network the backend still reaches it at `postgres:5432`.
 
-`ose-id-be-e2e`'s owned local-stack (`OSE_ID_POSTGRES_PORT`, default 5438) does not fit the table
-above — OSE ID uses no NATS container — so it is recorded here instead: the E2E project's
-self-contained PostgreSQL container publishes on host port 5438 by default, overridable the same way
-as the app ports above.
-
 ## Test and Tooling Ports
 
 Ports that a test suite or a developer tool binds on the host, outside the app and backend stack
 tables above:
 
-| Port | Owner                                     | Use                                                                                    |
-| ---- | ----------------------------------------- | -------------------------------------------------------------------------------------- |
-| 3190 | `ose-www-fe-e2e`, `ose-www-be-e2e`        | The `ose-www` server Playwright starts for the E2E suites                              |
-| 3501 | `ose-id-web-e2e`                          | The "backend unreachable" web shell                                                    |
-| 3502 | `ose-id-web-e2e`                          | The "backend reports unready" stack's web shell                                        |
-| 8502 | `ose-id-web-e2e`                          | The "backend reports unready" stack's backend                                          |
-| 5439 | `ose-id-web-e2e`                          | The "backend reports unready" stack's PostgreSQL (`BACKEND_UNREADY_STACK_PORTS`)       |
-| 3599 | `ose-id-web-e2e`                          | The runtime-mode guard probe; must stay free so a rejected start collides with nothing |
-| 8599 | `ose-id-web-e2e`, `ose-id-be` integration | Reserved and never bound: the unreachable backend origin and the refused-start port    |
-| 8403 | `ose-lms-be-e2e`                          | The suite's own backend, kept off `ose-lms-be`'s 8303                                  |
-| 6006 | `libs/web-ui`                             | Storybook (`storybook` target and its Playwright suite)                                |
+| Port | Owner                              | Use                                                       |
+| ---- | ---------------------------------- | --------------------------------------------------------- |
+| 3190 | `ose-www-fe-e2e`, `ose-www-be-e2e` | The `ose-www` server Playwright starts for the E2E suites |
+| 6006 | `libs/web-ui`                      | Storybook (`storybook` target and its Playwright suite)   |
 
-`ose-id-web-e2e`'s ready stack reuses `ose-id-be-e2e`'s ports (PostgreSQL 5438, backend 8501, web
-3500). A port listed here is claimed the same way as an app port: pick a new one listed nowhere on
-this page.
+A port listed here is claimed the same way as an app port: pick a new one listed nowhere on this
+page.
 
 Each app README at `apps/[app-name]/README.md` covers framework, deployment, E2E tests, and content
 details. Staging branches: `stag-organiclever-app-web`, `stag-ose-app-web`.

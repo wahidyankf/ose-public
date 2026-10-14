@@ -15,15 +15,15 @@ the repository. Every freshly provisioned worktree therefore starts without it, 
 only once that project's `codegen` target runs:
 
 ```bash
-# Run once per project whose generated sources are absent, e.g. roots-be
+# Run once per project whose generated sources are absent, e.g. ose-be
 rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run <project>:codegen
 ```
 
 The rule: run a project's `codegen` target once in a freshly provisioned worktree before running
 its Nx targets directly or trusting a language server's diagnostics for it.
 
-Some contract owners also gitignore their bundled OpenAPI spec (`a-demo`, `ose/lms-be`, and
-`roots/be` do; `organiclever/be` and `ose/be` commit theirs), so that may be missing too. Every
+A contract owner may also gitignore its bundled OpenAPI spec (`organiclever/be` and `ose/be` commit
+theirs), so that may be missing too. Every
 `codegen` target declares `dependsOn: ["<owner>-contracts:bundle"]`, so the single command above
 rebuilds the spec and the code together — there is no separate step to remember.
 

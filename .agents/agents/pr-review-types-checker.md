@@ -55,8 +55,6 @@ Examples, by stack:
   [TypeScript Standards](../../repo-governance/development/quality/stacks/typescript-standards.md);
 - Rust: an `unwrap` on a fallible path, or `unsafe` without its stated invariant, per
   Rust Standards;
-- C#: a null-forgiving operator or suppressed warning with no reason beside it, per
-  [C# Standards](../../repo-governance/development/quality/stacks/csharp-standards.md);
 - F#: a wildcard arm or suppressed warning hiding an unhandled case, per
   [F# Standards](../../repo-governance/development/quality/stacks/fsharp-standards.md).
 

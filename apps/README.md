@@ -8,12 +8,9 @@
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | OSE's public presence                        | [ose-www](./ose-www/README.md)                                                                              | Public website for Open Sharia Enterprise and its updates.               |
 | OSE governance, risk, and compliance product | [ose-app-web](./ose-app-web/README.md) and [ose-be](./ose-be/README.md)                                     | The product web client and its REST API backend.                         |
-| OSE learning management                      | [ose-lms-be](./ose-lms-be/README.md)                                                                        | REST API backend for the OSE LMS.                                        |
-| OSE identity platform                        | [ose-id-web](./ose-id-web/README.md) and [ose-id-be](./ose-id-be/README.md)                                 | The OSE ID status shell and its identity backend.                        |
 | AyoKoding                                    | [ayokoding-www](./ayokoding-www/README.md)                                                                  | Educational content platform.                                            |
 | OrganicLever's public presence               | [organiclever-www](./organiclever-www/README.md)                                                            | Marketing website for the OrganicLever productivity platform.            |
 | OrganicLever's life journal                  | [organiclever-app-web](./organiclever-app-web/README.md) and [organiclever-be](./organiclever-be/README.md) | Local-first journal and productivity tracker, with its REST API backend. |
-| Roots                                        | [roots-be](./roots-be/README.md)                                                                            | REST API backend for the Roots Islamic-tooling surface.                  |
 
 ## Tools
 
@@ -30,12 +27,9 @@ End-to-end projects keep browser and API behaviour separate from the application
 | --------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
 | OSE public website          | [ose-www-fe-e2e](./ose-www-fe-e2e/)                              | [ose-www-be-e2e](./ose-www-be-e2e/)                              |
 | OSE product                 | [ose-app-web-e2e](./ose-app-web-e2e/README.md)                   | [ose-be-e2e](./ose-be-e2e/README.md)                             |
-| OSE learning management     | Not applicable; the service has no browser surface               | [ose-lms-be-e2e](./ose-lms-be-e2e/README.md)                     |
-| OSE identity platform       | [ose-id-web-e2e](./ose-id-web-e2e/README.md)                     | [ose-id-be-e2e](./ose-id-be-e2e/README.md)                       |
 | AyoKoding                   | [ayokoding-www-fe-e2e](./ayokoding-www-fe-e2e/)                  | [ayokoding-www-be-e2e](./ayokoding-www-be-e2e/)                  |
 | OrganicLever public website | [organiclever-www-fe-e2e](./organiclever-www-fe-e2e/README.md)   | Not applicable; the site has no backend public boundary          |
 | OrganicLever product        | [organiclever-app-web-e2e](./organiclever-app-web-e2e/README.md) | [organiclever-be-e2e](./organiclever-be-e2e/README.md)           |
-| Roots                       | Not applicable; the service has no browser surface               | [roots-be-e2e](./roots-be-e2e/README.md)                         |
 | Ferret                      | Not applicable; the tool has no browser surface                  | [ferret-cli-e2e](./ferret-cli-e2e/README.md) (CLI process tests) |
 
 ## Work with an app

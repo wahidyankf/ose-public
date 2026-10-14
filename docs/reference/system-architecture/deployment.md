@@ -18,7 +18,7 @@ Deployment architecture, environment branches, and Vercel configuration for the 
 ```mermaid
 graph LR
     accTitle: Deployment Diagram
-    accDescr: main branch Trunk-Based Dev leads to prod-ose-www Deploy Only via Merge/Push; main branch Trunk-Based Dev leads to prod-ayokoding-www Deploy Only - Next.js via Merge/Push; and 13 more links.
+    accDescr: main branch Trunk-Based Dev leads to prod-ose-www Deploy Only via Merge/Push; main branch Trunk-Based Dev leads to prod-ayokoding-www Deploy Only - Next.js via Merge/Push; and 11 more links.
     subgraph "Source Control"
         MAIN[main branch<br/>Trunk-Based Dev]
         PROD_OSE[prod-ose-www<br/>Deploy Only]
@@ -29,7 +29,6 @@ graph LR
     subgraph "Build System"
         NX_BUILD[Nx Build System<br/>Affected Detection]
         NEXT_BUILD[Next.js Build<br/>Standalone Output]
-        SPRING_BUILD[Spring Boot Build<br/>Maven]
         RUST_BUILD[Rust Build<br/>CLI Tools]
     end
 
@@ -48,7 +47,6 @@ graph LR
     PROD_AYO --> NEXT_BUILD
     PROD_OL --> NEXT_BUILD
     MAIN --> RUST_BUILD
-    MAIN --> SPRING_BUILD
 
     NEXT_BUILD --> VERCEL_OSE
     NEXT_BUILD --> VERCEL_AYO
@@ -56,7 +54,6 @@ graph LR
     RUST_BUILD --> LOCAL
 
     NX_BUILD -.->|Orchestrates| NEXT_BUILD
-    NX_BUILD -.->|Orchestrates| SPRING_BUILD
     NX_BUILD -.->|Orchestrates| RUST_BUILD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
@@ -67,7 +64,7 @@ graph LR
     class MAIN blue
     class PROD_OSE,PROD_AYO,PROD_OL teal
     class NX_BUILD,LOCAL purple
-    class NEXT_BUILD,SPRING_BUILD,RUST_BUILD brown
+    class NEXT_BUILD,RUST_BUILD brown
     class VERCEL_OSE,VERCEL_AYO,VERCEL_OL orange
     classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

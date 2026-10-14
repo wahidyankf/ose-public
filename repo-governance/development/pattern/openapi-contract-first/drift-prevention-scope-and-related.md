@@ -31,8 +31,6 @@ Contract-first development covers these backend↔client pairs:
 | ----------------- | ---------------------- | --------------------------------------------------- |
 | `organiclever-be` | `organiclever-app-web` | `specs/apps/organiclever/be/contracts/openapi.yaml` |
 | `ose-be`          | `ose-app-web`          | `specs/apps/ose/be/contracts/openapi.yaml`          |
-| `ose-lms-be`      | — (server only)        | `specs/apps/ose/lms-be/contracts/openapi.yaml`      |
-| `roots-be`        | — (server only)        | `specs/apps/roots/be/contracts/openapi.yaml`        |
 
 A backend with no client still participates: `codegen` generates its server interface, so an
 operation added to the spec fails compilation until it is served.

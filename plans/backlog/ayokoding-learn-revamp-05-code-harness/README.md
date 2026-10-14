@@ -17,7 +17,8 @@ course without a `run.yaml` stays exactly as it is, and the harness ignores it.
 ## Scope
 
 - **Revive `apps/ayokoding-cli` as a Go + Cobra CLI** (decision 37). It is a full-bar Nx project
-  with the roots-be layout and targets, the product shape of `ferret-cli` and `crane-cli` (README,
+  with the layout and targets of the removed `roots-be` Go backend (deleted 2026-10-14; restated in
+  tech-docs/002), the product shape of `ferret-cli` and `crane-cli` (README,
   CHANGELOG, CONTRIBUTING, LICENSE, `behaviour-coverage.json`, Gherkin under `specs/`), and the
   HIPPO strictness bar:
   - golangci-lint v2 with `default: all`, where every disabled linter has a written reason;

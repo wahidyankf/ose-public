@@ -28,7 +28,7 @@ This directory contains documentation on programming languages used throughout t
 2. **Best Practices** - Proven approaches for writing clean, maintainable code
 3. **Antipatterns** - Common mistakes and pitfalls to avoid
 
-**Domain-Specific Standards Pattern** (Rust, F#, C#, Java):
+**Domain-Specific Standards Pattern** (Rust, F#):
 
 Multiple domain-focused standards files covering specific areas (testing, security, concurrency, etc.) as separate documents rather than three consolidated files. See each language's README for their specific document structure.
 
@@ -42,16 +42,14 @@ Multiple domain-focused standards files covering specific areas (testing, securi
 | Infrastructure tooling                   | F#                   | See existing CLI tools                                                                                                 |
 | Real-time updates and WebSocket handling | TypeScript           | [TypeScript Standards](./typescript/README.md) — TypeScript development for frontend applications and Node.js services |
 | Complex domain logic with DDD            | F#                   | See language-specific README files                                                                                     |
-| Enterprise API with .NET interop         | C#/F#                | See c-sharp/ and f-sharp/ README files                                                                                 |
-| LMS backend (ose-lms-be only)            | Java/Spring Boot     | [Java Standards](./java/README.md) — active for the LMS backend only; not the default for new backends                 |
+| Enterprise API on .NET                   | F#                   | See the F# README                                                                                                      |
 
 **Platform Guidance**:
 
 - **TypeScript**: Active for frontend applications, including Next.js sites
 - **F#**: Active for REST API backends (organiclever-be, ose-be) and CLI tooling (Rhino, crane-cli — Content Retrieval And Normalization Engine)
 - **Rust**: Retained for the AyoKoding Rust course content standards only; no active platform app (Rhino was ported to F# 2026-08-30)
-- **C#**: Retained for potential .NET interop with F#
-- **Java**: Active for the LMS backend (ose-lms-be) only — not the default for new backends, which remain F#
+- **C# and Java**: Not used for first-party code and have no standards here. Both appear only as AyoKoding course content under `apps/ayokoding-www/content/`. F# remains the default for new backends
 
 ## Purpose
 
@@ -81,8 +79,6 @@ All code written in the languages documented here MUST follow the standards, pat
 
 - `programming-typescript` - TypeScript standards procedure
 - `programming-fsharp` - F# standards procedure
-- `programming-csharp` - C# standards procedure
-- `programming-java` - Java standards procedure
 
 <!-- TODO: Software Design Reference - Create governance documentation for software design principles -->
 
@@ -100,7 +96,7 @@ Each language directory contains a README.md (language overview and version info
 └── antipatterns.md        # Common antipatterns
 ```
 
-**Domain-Specific Standards Pattern** (Rust, F#, C#, Java):
+**Domain-Specific Standards Pattern** (Rust, F#):
 
 ```
 [language-name]/
@@ -138,20 +134,6 @@ Each language directory contains a README.md (language overview and version info
 - Maintainability issues
 - Anti-idiomatic code patterns
 
-### 💠 [C#](./c-sharp/README.md) — C# development with ASP.NET Core, Entity Framework Core, and functional patterns
-
-**C# development with ASP.NET Core, Entity Framework Core, and functional patterns**
-
-C# is a versatile, type-safe language on the .NET ecosystem. These standards guide C# development with ASP.NET Core, applying functional patterns through records, pattern matching, and nullable reference types.
-
-**Use C# when you need:**
-
-- Enterprise backend APIs (ASP.NET Core)
-- Database-driven applications (Entity Framework Core)
-- High-performance services with async/await and Channels
-- Domain modeling with records and sealed class hierarchies
-- .NET interop with F# components
-
 ### 🔷 [F#](./f-sharp/README.md) — F# development with functional-first programming, railway-oriented error handling, and Giraffe
 
 **F# development with functional-first programming, railway-oriented error handling, and Giraffe**
@@ -165,16 +147,6 @@ F# is a functional-first .NET language where immutability is the default and dis
 - Functional microservices with Giraffe or Saturn
 - Pure computation engines with units of measure
 - Content pipeline tooling (PDF-to-Markdown conversion, crane-cli)
-
-### ☕ [Java](./java/README.md) — Java development with Spring Boot for the LMS backend
-
-**Java development with Spring Boot for the LMS backend**
-
-Java is active for exactly one project — `ose-lms-be`, the Learning Management System backend — because the LMS targets an ecosystem where Spring Boot is the incumbent. It is not the default for new backends; that remains F#. Introducing Java elsewhere needs its own recorded decision.
-
-**Use Java when you need:**
-
-- The LMS backend, where Spring Boot is the incumbent ecosystem choice
 
 ### 🦀 [Rust](./rust/README.md) — Rust development with ownership-based memory safety, zero-cost abstractions, and Axum
 
@@ -234,22 +206,22 @@ Languages in this documentation are chosen based on:
 
 ### Current Language Usage
 
-| Language       | Primary Use Cases                              | Status                                                        |
-| -------------- | ---------------------------------------------- | ------------------------------------------------------------- |
-| **C#**         | Enterprise APIs, .NET interop with F#          | 📋 Retained — .NET interop                                    |
-| **F#**         | REST API backends, CLI tools, content pipeline | ✅ Active — organiclever-be, ose-be, Rhino, crane-cli         |
-| **Java**       | LMS backend (Spring Boot)                      | ✅ Active — ose-lms-be only; not the default for new backends |
-| **Rust**       | AyoKoding course content standards             | 📋 Retained — no active app (Rhino ported to F# 2026-08-30)   |
-| **TypeScript** | Frontend applications, tRPC backends           | ✅ Active — all Next.js apps                                  |
+| Language       | Primary Use Cases                              | Status                                                      |
+| -------------- | ---------------------------------------------- | ----------------------------------------------------------- |
+| **F#**         | REST API backends, CLI tools, content pipeline | ✅ Active — organiclever-be, ose-be, Rhino, crane-cli       |
+| **Rust**       | AyoKoding course content standards             | 📋 Retained — no active app (Rhino ported to F# 2026-08-30) |
+| **TypeScript** | Frontend applications, tRPC backends           | ✅ Active — all Next.js apps                                |
 
 **Legend**: ✅ Active (in use in ose-public) | 📋 Retained (standards documented; not yet used in active apps)
+
+C# and Java are not listed because no first-party code uses them and no standards are kept for them here. An AyoKoding course can still teach them.
 
 ### For Backend Developers
 
 1. **F# backends** - See [organiclever-be](../../../../apps/organiclever-be/README.md) and [ose-be](../../../../apps/ose-be/README.md) for active examples
 2. **Apply Rust standards** - [Rust Standards](./rust/README.md) — Rust development with ownership-based memory safety, zero-cost abstractions, and Axum
 3. **Hexagonal DDD** - [DDD + Hexagonal In Practice](../architecture/ddd-hexagonal-in-practice/README.md)
-4. **For F#/C# standards** - See language-specific README files
+4. **For F# standards** - See the [F# README](./f-sharp/README.md)
 
 ### For Full-Stack Developers
 

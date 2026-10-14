@@ -1,9 +1,0 @@
-HelloResponse:
-  type: object
-  description: Greeting response
-  required:
-    - message
-  properties:
-    message:
-      type: string
-      example: Hello, world!

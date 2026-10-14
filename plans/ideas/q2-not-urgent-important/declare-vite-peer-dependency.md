@@ -2,20 +2,22 @@
 
 > **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
 
-One-line summary: nine workspace packages run their tests through a `vite*.config.*` that imports a
+One-line summary: eight workspace packages run their tests through a `vite*.config.*` that imports a
 `vite` none of them declares — it resolves only because npm auto-installs `vitest`'s peer and hoists
-it to the root — so the manifests misdescribe their own packages and no gate would notice an eleventh.
+it to the root — so the manifests misdescribe their own packages and no gate would notice a ninth.
 
 > Provenance: demoted from the full `backlog/` plan `declare-vite-peer-dependency/` to a two-pager on
 > 2026-08-21. Filed 2026-08-18 by
 > [`repo-rules-sweep`](../../done/2026-08-18__repo-rules-sweep/README.md)'s Knowledge Capture phase.
+> Recounted 2026-10-14: nine packages matched when filed. `wahidyankf-www` was removed on 2026-09-01,
+> so eight remain, and every count below says eight.
 
 ## Problem / context
 
 Search rule: every `package.json` sitting beside a `vite*.config.*` that declares `vitest`, checked
-for a `vite` declaration. Nine packages match in `ose-public` (`web-ui`, `web-ui-token`,
+for a `vite` declaration. Eight packages match in `ose-public` (`web-ui`, `web-ui-token`,
 `ts-env-loader`, `ayokoding-www`, `ose-www`, `ose-app-web`, `organiclever-www`,
-`organiclever-app-web`, `wahidyankf-www`), and none declares `vite`.
+`organiclever-app-web`), and none declares `vite`.
 
 They all work because `vite` is a peer dependency of `vitest`
 (`"^6.0.0 || ^7.0.0 || ^8.0.0-0"`), npm 7+ auto-installs peers, and Node's resolver walks up from any
@@ -26,7 +28,7 @@ of hoisting, not a decision anyone made or reviewed.
 this repository, a test target failed with `Cannot find module 'vite'` because a runner cache
 symlinked `node_modules` into `$HOME`, so Node realpath'd the symlink and the ancestor walk continued
 under `$HOME` instead of the repository; the fix was to copy workspace trees instead of symlinking
-them. `ose-public` never had that scheme at all, which is why nine undeclared packages sat green
+them. `ose-public` never had that scheme at all, which is why its undeclared packages sat green
 throughout.
 
 **And declaring would not have fixed it** — verified, not assumed. After `vite` was declared in the
@@ -63,9 +65,9 @@ since the versions are already resolved and already installed.
   `*.config.{ts,js,mts,mjs,cts,cjs}`, extracts every import specifier, ignores relative paths and Node
   builtins, maps subpaths to their package (`vite/client` → `vite`, `@vitejs/plugin-react/x` →
   `@vitejs/plugin-react`), and fails naming any specifier the package does not declare. Written before
-  the declarations land, its failing state is the actual repository — nine findings in `ose-public` —
+  the declarations land, its failing state is the actual repository — eight findings in `ose-public` —
   which is stronger evidence than a fixture.
-- **Then declare the nine, inertly.** Each pinned to the version the lockfile already
+- **Then declare the eight, inertly.** Each pinned to the version the lockfile already
   resolves, with the lockfile diff required to be declaration-only: any changed `version`, `resolved`,
   or `integrity` field means the range was wrong and the hygiene change has become an upgrade.
 - **Keep the gate deliberately narrow** — config files only, not application source. A config import
@@ -74,7 +76,7 @@ since the versions are already resolved and already installed.
 
 ## Rough scope & non-goals
 
-In scope: nine `package.json` files, the root `package-lock.json`, and — for the gate — its home (the
+In scope: eight `package.json` files, the root `package-lock.json`, and — for the gate — its home (the
 upstream Rhino repository or a repo-local check) plus `repo-config.yml`.
 
 Out of scope (for now):
@@ -95,12 +97,12 @@ Out of scope (for now):
 ## What success looks like + promotion signal
 
 Success: every package whose config imports `vite` declares it, pinned to what the lockfile already
-resolves; the lockfile diff is declaration-only and all nine packages report the _same_ test counts
+resolves; the lockfile diff is declaration-only and all eight packages report the _same_ test counts
 as before; and a package whose config imports an undeclared module fails CI with a message naming the
 package and the module.
 
 Promotion signal: the build-vs-buy question above is answered — a single evaluation of `depcheck`
 against one workspace package decides whether this is a small config-and-declare plan or a full
 upstream-Rhino gate plan, and the two have very different shapes. Promote once that verdict is written
-down. Absent that, the nine declarations alone are small enough to fold into any adjacent
+down. Absent that, the eight declarations alone are small enough to fold into any adjacent
 manifest-touching plan rather than justifying one of their own.

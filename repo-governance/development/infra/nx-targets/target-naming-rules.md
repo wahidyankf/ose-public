@@ -18,4 +18,3 @@ when_to_use: "Use when naming or reviewing an Nx target."
   multiple owned processes (for example a multi-process local stack with selectable fixture
   profiles) for manual verification. This is not a `dev`/`start` alias — the project has neither —
   and the E2E project explicitly needs a name distinct from `test:e2e`'s automated Gherkin run.
-  Example: `ose-id-be-e2e:serve`.

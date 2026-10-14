@@ -95,7 +95,7 @@ never committed.
 
 ```text
 Run docs-software-engineering-separation-quality-gate on
-docs/explanation/software-engineering/programming-languages/java/ with mode normal.
+docs/explanation/software-engineering/programming-languages/rust/ with mode normal.
 ```
 
 ## Related Workflows

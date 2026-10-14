@@ -2,5 +2,11 @@
   "printWidth": 120,
   "proseWrap": "preserve",
   "plugins": ["prettier-plugin-sql", "prettier-plugin-tailwindcss"],
-  "tailwindStylesheet": "./apps/organiclever-app-web/src/app/globals.css"
+  "tailwindStylesheet": "./apps/organiclever-app-web/src/app/globals.css",
+  "overrides": [
+    {
+      "files": "*.java",
+      "options": { "plugins": ["prettier-plugin-java", "prettier-plugin-sql", "prettier-plugin-tailwindcss"] }
+    }
+  ]
 }

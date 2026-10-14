@@ -622,17 +622,9 @@ policies:
         - glob: "apps/ose-app-web-e2e/README.md"
         - glob: "apps/ose-be/README.md"
         - glob: "apps/ose-be-e2e/README.md"
-        - glob: "apps/ose-id-be/README.md"
-        - glob: "apps/ose-id-be-e2e/README.md"
-        - glob: "apps/ose-id-web/README.md"
-        - glob: "apps/ose-id-web-e2e/README.md"
-        - glob: "apps/ose-lms-be/README.md"
-        - glob: "apps/ose-lms-be-e2e/README.md"
         - glob: "apps/ose-www/README.md"
         - glob: "apps/ose-www-be-e2e/README.md"
         - glob: "apps/ose-www-fe-e2e/README.md"
-        - glob: "apps/roots-be/README.md"
-        - glob: "apps/roots-be-e2e/README.md"
         - glob: "libs/fsharp-crane-core/README.md"
         - glob: "libs/fsharp-env-loader/README.md"
         - glob: "libs/ts-env-loader/README.md"
@@ -753,19 +745,11 @@ policies:
           require-direct-children: true
         - path: specs/apps/ose/be
           require-direct-children: true
-        - path: specs/apps/ose/id-be
-          require-direct-children: true
-        - path: specs/apps/ose/id-web
-          require-direct-children: true
-        - path: specs/apps/ose/lms-be
-          require-direct-children: true
         - path: specs/apps/ose/www/behaviours/backend
           require-direct-children: true
         - path: specs/apps/ose/www/behaviours/frontend/app-shell
           require-direct-children: true
         - path: specs/apps/ose/www/behaviours/frontend/landing
-          require-direct-children: true
-        - path: specs/apps/roots
           require-direct-children: true
   governance:
     # Owner: repo-governance/conventions/structure/governance-vendor-independence.md.
@@ -1043,11 +1027,7 @@ environment:
     - { source: apps/organiclever-www/.env.example, target: apps/organiclever-www/.env.local }
     - { source: apps/ose-app-web/.env.example, target: apps/ose-app-web/.env.local }
     - { source: apps/ose-be/.env.example, target: apps/ose-be/.env.local }
-    - { source: apps/ose-id-be/.env.example, target: apps/ose-id-be/.env.local }
-    - { source: apps/ose-id-web/.env.example, target: apps/ose-id-web/.env.local }
-    - { source: apps/ose-lms-be/.env.example, target: apps/ose-lms-be/.env.local }
     - { source: apps/ose-www/.env.example, target: apps/ose-www/.env.local }
-    - { source: apps/roots-be/.env.example, target: apps/roots-be/.env.local }
   staged:
     forbidden: [".env*", "**/.env*"]
     allowed:
@@ -1060,31 +1040,20 @@ environment:
       - apps/organiclever-www/.env.example
       - apps/ose-app-web/.env.example
       - apps/ose-be/.env.example
-      - apps/ose-id-be/.env.example
-      - apps/ose-id-web/.env.example
-      - apps/ose-lms-be/.env.example
       - apps/ose-www/.env.example
-      - apps/roots-be/.env.example
   contracts:
     - path: apps/ayokoding-www/.env.example
       keys: [AYOKODING_WEB_CONTENT_DIR, AYOKODING_WEB_SHOW_DRAFTS, AYOKODING_WEB_MANIFESTS_DIR]
     - path: apps/organiclever-app-web/.env.example
       keys: [ORGANICLEVER_BE_URL]
-    - path: apps/ose-id-web/.env.example
-      keys: [OSE_RUNTIME_MODE, OSE_ID_WEB_PORT, OSE_ID_BE_URL]
     - path: apps/ose-www/.env.example
       keys: [OSE_WEB_CONTENT_DIR, OSE_WEB_SEARCH_DATA_PATH, OSE_WEB_SHOW_DRAFTS]
-    - path: apps/roots-be/.env.example
-      keys: [ROOTS_BE_PORT]
   detectors:
     - language: type-script
       paths:
         - apps/ayokoding-www/src/env.ts
         - apps/organiclever-app-web/src/env.ts
-        - apps/ose-id-web/src/env.ts
         - apps/ose-www/src/env.ts
-    - language: go
-      paths: [apps/roots-be/cmd/roots-be/main.go]
 
 toolchains:
   entries:
@@ -1095,6 +1064,8 @@ toolchains:
     - { id: dotnet, executable: dotnet, probe: [--version], required: true }
     - { id: go, executable: go, probe: [version], required: true }
     - { id: golangci-lint, executable: golangci-lint, probe: [version], required: true }
+    # A JRE stays required because openapi-generator-cli runs `java -jar` for the ose-be and
+    # organiclever-be contract code generation; no first-party project is written in Java.
     - { id: java, executable: java, probe: [--version], required: true }
     - { id: docker, executable: docker, probe: [--version], required: true }
     - { id: jq, executable: jq, probe: [--version], required: true }
@@ -1105,7 +1076,7 @@ toolchains:
     # `shellcheck` over every workflow `run:` block).
     # Deliberately undeclared, per the cross-language lint-strictness policy: npm-lockfile tools
     # (prettier, markdownlint-cli2, stylua, buildifier), `gofmt` and `npx` (shipped with go and
-    # npm), Gradle (projects run their own wrapper), the digest-pinned scanner, base utilities.
+    # npm), the digest-pinned scanner, base utilities.
     - { id: bash, executable: bash, probe: [--version], required: true }
     - { id: curl, executable: curl, probe: [--version], required: true }
     - { id: rustfmt, executable: rustfmt, probe: [--version], required: true }
@@ -1527,30 +1498,6 @@ extensions:
         path: apps/ose-be-e2e
         kind: app
         stacks: [typescript]
-      ose-id-be:
-        path: apps/ose-id-be
-        kind: app
-        stacks: [csharp, aspnet-core]
-      ose-id-be-e2e:
-        path: apps/ose-id-be-e2e
-        kind: app
-        stacks: [csharp]
-      ose-id-web:
-        path: apps/ose-id-web
-        kind: app
-        stacks: [typescript, react, nextjs]
-      ose-id-web-e2e:
-        path: apps/ose-id-web-e2e
-        kind: app
-        stacks: [typescript]
-      ose-lms-be:
-        path: apps/ose-lms-be
-        kind: app
-        stacks: [java, spring-boot]
-      ose-lms-be-e2e:
-        path: apps/ose-lms-be-e2e
-        kind: app
-        stacks: [typescript]
       ose-www:
         path: apps/ose-www
         kind: app
@@ -1561,14 +1508,6 @@ extensions:
         stacks: [typescript]
       ose-www-fe-e2e:
         path: apps/ose-www-fe-e2e
-        kind: app
-        stacks: [typescript]
-      roots-be:
-        path: apps/roots-be
-        kind: app
-        stacks: [golang, gin]
-      roots-be-e2e:
-        path: apps/roots-be-e2e
         kind: app
         stacks: [typescript]
       fsharp-crane-core:
@@ -1597,18 +1536,6 @@ extensions:
         stacks: [nx]
       ose-contracts:
         path: specs/apps/ose/be/contracts
-        kind: tooling
-        stacks: [nx]
-      ose-id-contracts:
-        path: specs/apps/ose/id-be/contracts
-        kind: tooling
-        stacks: [nx]
-      ose-lms-contracts:
-        path: specs/apps/ose/lms-be/contracts
-        kind: tooling
-        stacks: [nx]
-      roots-contracts:
-        path: specs/apps/roots/be/contracts
         kind: tooling
         stacks: [nx]
       repo-scripts:

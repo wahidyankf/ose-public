@@ -21,8 +21,9 @@ Each record names:
 - **Alternative 1 — TypeScript scripts inside `apps/ayokoding-www`.** Rejected by the user: tooling
   belongs in `apps/ayokoding-cli`, never in ad-hoc scripts.
 - **Alternative 2 — Python, like ferret-cli.** Rejected by the user ("golang + cobra").
-- **Prior art:** HIPPO (Go, Cobra) and roots-be (Go) in the same ecosystem.
-- **Consequences:** a second Go module in the repository; the CI Go cache covers both.
+- **Prior art:** HIPPO (Go, Cobra) in the same ecosystem, and the removed `roots-be` Go backend
+  (deleted 2026-10-14).
+- **Consequences:** the repository's only Go module; the CI Go cache covers it.
 - **Revisit when:** the user changes decision 37.
 
 ## D2 — HIPPO strictness with justified differences (decision 37, user)
@@ -30,7 +31,7 @@ Each record names:
 - **Selected:** mirror HIPPO's `.golangci.yml`, tools, and test contract. The parity table in
   [002](./002-cli-project-and-hippo-parity.md#hippo-parity-table) has 33 rows: 24 parity, 5
   stricter, 4 different with reasons.
-- **Alternative 1 — copy roots-be's `default: standard`.** Rejected: the user named HIPPO as the
+- **Alternative 1 — copy the removed roots-be backend's `default: standard`.** Rejected: the user named HIPPO as the
   bar, and five linters are too weak.
 - **Alternative 2 — mirror HIPPO byte for byte, including all adapters in `test:quick`.** Rejected:
   this repository forbids Integration and E2E runtime in hooks and the PR gate.
@@ -75,8 +76,8 @@ Each record names:
 - **Alternative 1 — a JSON run spec, which needs no dependency.** Rejected: decision 30 names
   `run.yaml`.
 - **Alternative 2 — `gopkg.in/yaml.v3`.** Rejected: unmaintained upstream. The `go.yaml.in` fork is
-  maintained by the YAML organization and already present (v3.0.4) in this repository's Go module
-  graph.
+  maintained by the YAML organization. Its v3.0.4 was already in the module graph of the removed
+  `roots-be` backend (deleted 2026-10-14), and this plan pins that version.
 - **Consequences:** one extra production dependency, allowed by depguard and recorded in the parity
   table (row 3).
 - **Revisit when:** the fork stops releasing.
@@ -196,10 +197,11 @@ Each record names:
 ## D15 — The CLI uses Go 1.26; courses use Go 1.27
 
 - **Selected:** the module declares `go 1.26.1`, as HIPPO does. The course image is `golang:1.27`.
-- **Alternative 1 — Go 1.27 for the CLI.** Rejected: CI installs Go from roots-be's `go 1.26`, and
-  the tool's Go version is independent of the version courses teach.
+- **Alternative 1 — Go 1.27 for the CLI.** Rejected: CI installs Go from the literal `go-version`
+  default in `.github/actions/setup-go` (`1.26`), and the tool's Go version is independent of the
+  version courses teach.
 - **Alternative 2 — Go 1.26 for courses.** Rejected: courses teach the current stable release.
-- **Revisit when:** roots-be moves to 1.27.
+- **Revisit when:** the `setup-go` `go-version` default moves to 1.27.
 
 ## D16 — CI topology: PR job, reusable workflow, monthly caller, shards
 

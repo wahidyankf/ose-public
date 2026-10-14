@@ -9,19 +9,21 @@ announces it.
 > [`ose-id-init-01-foundation`](../../done/2026-09-17__ose-id-init-01-foundation/learnings.md), which
 > flagged it as a `rules-propagation` candidate rather than an ad-hoc edit from inside that plan's
 > delivery unit.
+> Updated 2026-10-14: the four `ose-id-*` projects named below were removed from this repository on that
+> date. The evidence lives in the done plan's learnings entry; the rule gap does not depend on them.
 
 ## Problem / context
 
-`npm exec nx -- run-many -t typecheck,lint,test:quick` across `ose-id-be`, `ose-id-be-e2e`,
-`ose-id-web`, and `ose-id-web-e2e`, run outside the HIPPO boundary, put the host into severe memory
-pressure and the run had to be interrupted by hand to recover the machine. Three causes compounded,
+`npm exec nx -- run-many -t typecheck,lint,test:quick` across the four `ose-id-*` projects (a backend,
+a web app, and an E2E project for each; all removed 2026-10-14), run outside the HIPPO boundary, put
+the host into severe memory pressure and the run had to be interrupted by hand to recover the machine. Three causes compounded,
 and none of them is visible from reading the command:
 
 1. Every project's `test:quick` is itself a chain of nested `npm exec -- nx run ...` calls, so one
    `run-many` over 4 projects x 3 targets expanded into dozens of concurrent Node and Nx processes.
 2. Repeated `dotnet build`/`publish`/`test` leave MSBuild node-reuse workers and Roslyn
    `VBCSCompiler` servers resident between commands.
-3. `ose-id-web-e2e:test:e2e` transitively started a Next.js dev server and Chromium on top of that
+3. The web E2E project's `test:e2e` target transitively started a Next.js dev server and Chromium on top of that
    residue.
 
 [`guarded-admission-and-parallelism.md`](../../../repo-governance/development/practice/resource-aware-development/guarded-admission-and-parallelism.md)
@@ -36,12 +38,12 @@ the command "looks read-only" or "is just one target".
 ## Why now
 
 The cost is already paid once, in a user-visible host recovery, and the conditions that produced it
-are not going away: the repository just gained four more projects whose `test:quick` targets are
-nested chains, so the fan-out multiplier is larger now than when the rule was written. The symptom is
-cheap to recognize once named and effectively invisible until then — `MaxListenersExceededWarning` is
-a generic Node warning that reads as noise unless a reader has been told it is the signature of this
-specific condition. Nothing is blocked while this stays undocumented; the next person to hit it just
-pays the same recovery cost again.
+are not going away: the four projects that triggered it are removed, but other projects' `test:quick`
+targets are still nested chains, so any `run-many` over several of them has the same fan-out
+multiplier. The symptom is cheap to recognize once named and effectively invisible until then —
+`MaxListenersExceededWarning` is a generic Node warning that reads as noise unless a reader has been
+told it is the signature of this specific condition. Nothing is blocked while this stays undocumented;
+the next person to hit it just pays the same recovery cost again.
 
 ## Prior art / precedents
 

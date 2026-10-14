@@ -84,7 +84,7 @@ Before installing dependencies, have these tools available:
 - Git to clone the repository.
 - [Volta](https://volta.sh/) to install the Node.js and npm versions pinned in
   [`package.json`](./package.json).
-- The .NET SDK used by the repository's F# and C# projects.
+- The .NET SDK used by the repository's F# projects.
 - Rust (`rustfmt`) only when you edit Rust course content; no workspace project is written in Rust.
 - Docker and `jq` only for container-based or broader local-tooling work. Neither is needed for the
   first `ose-www` website run.
@@ -148,7 +148,7 @@ or explore the [OSE Platform app](./apps/ose-www/) itself.
 ## Project status
 
 OSE is pre-alpha. Expect breaking changes, evolving architecture, and experimental implementations.
-The project uses TypeScript and Next.js for web applications, F#, C#, Java, and Go for
+The project uses TypeScript and Next.js for web applications, F# and Go for
 backend and document-processing work, and pinned external releases of RHINO and HIPPO for repository tooling.
 See the
 [technology-stack reference](./docs/reference/system-architecture/technology-stack.md) for the

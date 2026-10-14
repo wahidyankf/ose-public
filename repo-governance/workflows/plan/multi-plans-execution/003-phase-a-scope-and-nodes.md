@@ -25,10 +25,10 @@ explicit list or a set-selector; both resolve once into one enumerated set.
   paths without creating an issue, branch, pull request, merge, or direct push. `execute` likewise
   defers every durable mutation until A2 accepts the complete set.
 
-**A2. Refuse unvetted plans before side effects.** Confirm every frozen member passed
-`plan-quality-gate` (a `PASS` verdict — check its ledger or re-run the gate). If any
-member fails, report the full result and stop the run before creating recovery state or promotion
-artifacts; never promote a subset around it.
+**A2. Record each member's verdict state before side effects.** Note every frozen member's `plan-quality-gate`
+state from its ledger when present; a missing or non-`PASS` verdict is recorded as advisory history and never stops
+the run. A missing verdict is recorded as `plan-quality-gate: not run (manual-only)`; never promote a subset around
+a member silently — report each member's state before promotion.
 
 **Execute-mode promotion gate.** Only after A2 accepts the complete caller-confirmed set, apply
 [Frozen Scope Recovery](./004-phase-a-frozen-scope-recovery.md), then promote every `plans/backlog/`

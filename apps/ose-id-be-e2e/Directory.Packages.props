@@ -1,5 +1,0 @@
-<Project>
-
-  <Import Project="../ose-id-be/Directory.Packages.props" />
-
-</Project>

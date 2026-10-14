@@ -140,7 +140,7 @@ environment-policy validation. Pre-push runs no `test:quick` and no Markdown lin
 
 **File**: `.github/workflows/pr-quality-gate.yml`
 
-**Trigger**: Pull request opened, synchronized, or reopened, or push to `main`
+**Trigger**: Pull request opened, synchronized, or reopened
 
 **Steps:**
 
@@ -148,12 +148,13 @@ environment-policy validation. Pre-push runs no `test:quick` and no Markdown lin
 2. `Repository policy` runs the whole `pull-request` surface with
    `./rhino gate run --surface pull-request --base <sha> --head <sha>`; `format-staged` replays the
    formatters over the changed paths and fails on any difference.
-3. One job per detected language (TypeScript, .NET, Flutter, Java, Go, Python) runs affected
+3. One job per detected language (TypeScript, .NET, Flutter, Go, Python) runs affected
    `typecheck`, `lint`, and `test:quick` (plus `compat:min-version` where declared).
 4. The stable `Quality gate` join fails if any of those jobs failed.
 
-**Purpose**: Full quality gate on every PR and push to `main`. The registry is the check-set source
-of truth for the `pull-request` surface; `gate validate` checks its composition.
+**Purpose**: Full quality gate on every PR. The registry is the check-set source of truth for the
+`pull-request` surface; `gate validate` checks its composition. The workflow has no push trigger:
+protected `main` requires an up-to-date branch, so the PR run tests the tree that merges.
 
 **Note**: The standalone `markdown-validate.yml` workflow has been deleted. Per-file Markdown
 validators (markdownlint, mermaid, heading hierarchy, naming, front matter) run as declared
@@ -176,7 +177,7 @@ deployment responsibilities. Product workflows cover their owning groups, while
 
 **Steps**: Run complete non-product Unit and static quick gates serially, then every applicable
 non-networked Integration suite, then every applicable complete public-boundary E2E suite. The
-ordered jobs fail closed; Integration and E2E remain outside pre-commit, pre-push, and PR/main.
+ordered jobs fail closed; Integration and E2E remain outside pre-commit, pre-push, and the PR gate.
 
 **Purpose**: Ensure libraries and executable tools receive full scheduled test-layer coverage even
 when no product deployment workflow owns them.
@@ -261,7 +262,7 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
 
 **File**: `.github/workflows/pr-quality-gate.yml`
 
-**Trigger**: Pull request opened, synchronized, or reopened, or push to `main`
+**Trigger**: Pull request opened, synchronized, or reopened
 
 **Purpose**: Runs affected tests and quality checks for pull requests (see primary entry above)
 

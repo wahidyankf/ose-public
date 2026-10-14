@@ -1,5 +1,0 @@
-test-results/
-playwright-report/
-.features-gen/
-node_modules/
-dist/

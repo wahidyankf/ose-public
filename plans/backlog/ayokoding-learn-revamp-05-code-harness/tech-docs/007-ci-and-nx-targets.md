@@ -74,8 +74,9 @@ flowchart TD
   `selection: since`, the base, and the shard list.
 - The **Go job** needs no change. `ayokoding-cli` carries `lang:go`, so
   `nx affected -t typecheck,lint,test:quick,compat:min-version` already includes it.
-- **setup-go.** `.github/actions/setup-go` lists both `apps/roots-be/go.sum` and
-  `apps/ayokoding-cli/go.sum` in `cache-dependency-path`, so the new module is cached.
+- **setup-go.** `.github/actions/setup-go` defaults `cache-dependency-path` to
+  `apps/ayokoding-cli/go.sum`, so the new module is cached. The action's `go-version` input is a
+  literal (currently `1.26`) and stays equal to the module's `go` directive.
 
 ## The Reusable Workflow
 

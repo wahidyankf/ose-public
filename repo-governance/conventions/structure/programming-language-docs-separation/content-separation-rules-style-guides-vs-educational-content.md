@@ -19,7 +19,7 @@ docs/explanation/software-engineering/programming-languages/rust/
 └── testing-standards.md           # OSE Platform testing standards
 ```
 
-> **Note**: Rust (along with F# and C#) follows the "Domain-Specific Standards Pattern" — multiple topic-focused standards files — rather than the "Three-Document Pattern" (idioms/best-practices/anti-patterns) used by TypeScript. Both patterns are valid. See `docs/explanation/software-engineering/programming-languages/README.md` for details.
+> **Note**: Rust (along with F#) follows the "Domain-Specific Standards Pattern" — multiple topic-focused standards files — rather than the "Three-Document Pattern" (idioms/best-practices/anti-patterns) used by TypeScript. Both patterns are valid. See `docs/explanation/software-engineering/programming-languages/README.md` for details.
 
 **Content includes**:
 

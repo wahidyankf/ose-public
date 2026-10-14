@@ -33,11 +33,8 @@ semantic correctness of prerequisite relationships and all separation checks.
 
 **Current explicit relationships to validate**:
 
-1. docs/explanation/programming-languages/java/ ↔ ayokoding-web/.../java/
-2. docs/explanation/programming-languages/golang/ ↔ ayokoding-web/.../golang/
-3. docs/explanation/programming-languages/elixir/ ↔ ayokoding-web/.../elixir/
-4. docs/explanation/platform-web/tools/jvm-spring/ ↔ ayokoding-web/.../jvm-spring/
-5. docs/explanation/platform-web/tools/jvm-spring-boot/ ↔ ayokoding-web/.../jvm-spring-boot/
+1. docs/explanation/programming-languages/golang/ ↔ ayokoding-web/.../golang/
+2. docs/explanation/programming-languages/elixir/ ↔ ayokoding-web/.../elixir/
 
 **DO NOT validate** languages/frameworks not in this table (TypeScript, Python, etc.) until they are explicitly added to the Software Design Reference.
 

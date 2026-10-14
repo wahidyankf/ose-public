@@ -7,6 +7,11 @@ One-line summary: all six Next.js app images fail to build because every `next.c
 > Surfaced 2026-08-19 during the runtime-port-override delivery (PR #230), confirmed pre-existing on
 > `main`, and deliberately left out of that PR's scope.
 
+**Update 2026-10-14:** `wahidyankf-www` was removed from this repository on 2026-09-01, so five Next.js
+apps remain (`ose-www`, `ayokoding-www`, `organiclever-www`, `organiclever-app-web`, `ose-app-web`) and
+three scheduled `*-www` workflows. The 2026-08-19 observations below are kept as written; read every
+count in them as one lower and skip `wahidyankf-www` in each list.
+
 ## Problem / context
 
 `docker build -f apps/ose-www/Dockerfile .` fails with

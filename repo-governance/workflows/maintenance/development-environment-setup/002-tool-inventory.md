@@ -20,9 +20,9 @@ nothing here — install a reported tool through the phase or manager listed, th
 | 3   | node          | Nx, hooks, TypeScript projects                  | `package.json` → `volta.node`       | Phase 3                     |
 | 4   | npm           | dependency install, `npx`                       | `package.json` → `volta.npm`        | Phase 3                     |
 | 5   | dotnet        | .NET projects, `format-staged` (F#)             | each .NET project's `global.json`   | Phase 9                     |
-| 6   | go            | `roots-be`, `gofmt` in `format-staged`          | `apps/roots-be/go.mod`              | Phase 4                     |
-| 7   | golangci-lint | `roots-be` lint                                 | CI `setup-go` input                 | Phase 4                     |
-| 8   | java          | `ose-lms-be`                                    | the project's Gradle toolchain      | SDKMAN or a JDK 25 package  |
+| 6   | go            | Go projects, `gofmt` in `format-staged`         | CI `setup-go` input                 | Phase 4                     |
+| 7   | golangci-lint | Go project lint                                 | CI `setup-go` input                 | Phase 4                     |
+| 8   | java          | `openapi-generator-cli` (`codegen` targets)     | —                                   | SDKMAN or a JDK package     |
 | 9   | docker        | dev stacks, E2E                                 | —                                   | Phase 2                     |
 | 10  | jq            | hooks, CI scripts                               | —                                   | Phase 2                     |
 | 11  | bash          | every gate script                               | —                                   | Phase 2 (ships with the OS) |
@@ -45,8 +45,7 @@ nothing here — install a reported tool through the phase or manager listed, th
 The [cross-language lint-strictness policy](../../../development/quality/cross-language-lint-strictness/policy.md)
 exempts some binaries the gates call, and `repo-config.yml` records the same list beside the
 declaration: `prettier`, `markdownlint-cli2`, `stylua`, and `buildifier` come from the npm lockfile
-through the guarded `npm install`; `gofmt` and `npx` ship with `go` and `npm`; Java formatting runs
-Spotless through the owning project's `gradlew`; the public-safety scanner downloads and verifies
+through the guarded `npm install`; `gofmt` and `npx` ship with `go` and `npm`; the public-safety scanner downloads and verifies
 its own pinned release; and base utilities (`awk`, `sed`, `tar`, `shasum`) are assumed.
 
 Playwright browsers are installed by Phase 12 and are not a doctor probe.

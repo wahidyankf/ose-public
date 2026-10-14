@@ -5,7 +5,7 @@
 One-line summary: governance tables, agent files, and npm scripts all name commands that do not
 exist — Nx targets that were never implemented, a `rhino-cli` subcommand that was removed — so a
 reader following any of them runs something that exits non-zero. The retired Rhino commands that
-approved backlog plans cited were corrected in PR #591.
+approved backlog plans cited were corrected in PR #591; those plans have since been removed.
 
 > Surfaced 2026-08-17 during `optimize-gov` PR review.
 > Merged specs-checker-phantom-nx-targets.md into this brief on 2026-08-19 by plan-ideas-grooming:
@@ -18,6 +18,8 @@ approved backlog plans cited were corrected in PR #591.
 > `./rhino md links validate`, cited by the same five backlog plans and one reference doc.
 > Resolved the fourth drift 2026-09-26 in PR #591, with owner authorization to edit the approved
 > plans: every live citation of a Rhino form pinned v0.6.0 rejects was replaced.
+> Mooted the fourth drift 2026-10-14: the five backlog plans that carried those citations (`lms-user`
+> and `ose-id-init-02`, `-03`, `-08`, `-09`) were deleted from the backlog, so no plan cites them.
 
 ## Problem / context
 
@@ -54,59 +56,38 @@ section instructs the reader to run `validate:specs-adoption`, `validate:specs-t
 as out of that sweep's scope. This is the drift that makes the whole set systemic rather than a
 governance-table quirk: the same class of defect reaches `.claude/agents/**` too.
 
-**Approved backlog plans citing retired Rhino commands (resolved in PR #591).** Five plans under `plans/backlog/` tell
-their executor to run `rtk ./rhino plan validate`. The pinned Rhino (`rhino.lock`, v0.6.0) has no
-`plan` command family: `./rhino --help` lists none, and `./rhino plan validate` exits with
-`unrecognized command`. Citations, from `git grep -n "rhino plan validate" -- plans/backlog`:
+**Approved backlog plans citing retired Rhino commands (resolved in PR #591, since moot).** Five
+approved backlog plans told their executor to run retired Rhino forms: `rtk ./rhino plan validate`,
+`./rhino md links validate`, and the positional `./rhino md mermaid validate <path>`. The pinned Rhino
+(`rhino.lock`, v0.6.0) rejects all three. PR #591 replaced every citation, and the five plans were
+later deleted from the backlog, so nothing live cites them. What PR #591 learned still applies to any
+future plan:
 
-- `plans/backlog/lms-user/delivery.md:104`, `:175`, and `:1027`;
-- `plans/backlog/ose-id-init-02-local-email-account/delivery.md:77`;
-- `plans/backlog/ose-id-init-03-company-tenancy-core/delivery.md:77`;
-- `plans/backlog/ose-id-init-08-company-admin/delivery.md:97`;
-- `plans/backlog/ose-id-init-09-local-scale-and-composition/delivery.md:76`.
+- **`plan validate` has no replacement command.** The pinned Rhino has no `plan` command family:
+  `./rhino --help` lists none, and `./rhino plan validate` exits with `unrecognized command`. The
+  [Plan Validator Contract](../../../repo-governance/conventions/structure/plan-validator-contract.md)
+  freezes the plan-structure rules but says the catalog ships no validator, and `repo-config.yml`
+  declares no plan-structure gate: `./rhino gate list` shows only generic Markdown checks (front
+  matter, heading hierarchy, naming, Mermaid) for plans. The Plans Convention's own Validation sections
+  assign plan judgement to semantic plan-quality review, which `plan-checker` performs; its "run
+  structural validation" step names no command. Structural plan validation is therefore review plus
+  the generic Markdown gates, not a single runnable command. PR #591 cited a `plan-checker`
+  structural review against the Plans Convention instead.
+- **`md links validate` has a replacement, but not a drop-in one.** Pinned v0.6.0 prints
+  `rhino: unrecognized command` and exits 2; `./rhino --help` and `./rhino md --help` list
+  `md internal-link validate` in its place. It takes no path arguments (a path argument is itself an
+  `unrecognized command`) and checks the whole surface `repo-config.yml` declares, whose
+  `exclude-sources` include `plans/done/**`. A citation that scoped the check to an archived plan
+  therefore cannot be translated literally. PR #591 used `./rhino md internal-link validate`, which
+  checks the declared surface.
+- **`md mermaid validate` takes paths only as repeated `--file <path>` options**, and a directory
+  passed as `--file` "cannot be read". PR #591 replaced each positional use with
+  `find <paths> -type f -name '*.md' -exec ./scripts/validate-mermaid-files {} +`: the `md-mermaid`
+  gate's own executable, which passes each file as `--file` and propagates a failing exit.
 
-There is no drop-in replacement to cite. The
-[Plan Validator Contract](../../../repo-governance/conventions/structure/plan-validator-contract.md)
-freezes the plan-structure rules but says the catalog ships no validator, and `repo-config.yml`
-declares no plan-structure gate: `./rhino gate list` shows only generic Markdown checks (front
-matter, heading hierarchy, naming, Mermaid) for plans. The Plans Convention's own Validation sections
-assign plan judgement to semantic plan-quality review, which `plan-checker` performs; its "run
-structural validation" step names no command. Today, therefore, structural plan validation is
-review plus the generic Markdown gates, not a single runnable command.
-
-The same five plans also cite the retired `./rhino md links validate`. Pinned v0.6.0 prints
-`rhino: unrecognized command` and exits 2; `./rhino --help` and `./rhino md --help` list
-`md internal-link validate` in its place. Citations, from
-`git grep -n "md links validate" -- ':!plans/done'`:
-
-- `plans/backlog/lms-user/delivery.md:738` (with seven path arguments) and `:1028` (as
-  `md links validate plans`);
-- `plans/backlog/ose-id-init-02-local-email-account/delivery.md:77`;
-- `plans/backlog/ose-id-init-03-company-tenancy-core/delivery.md:77`;
-- `plans/backlog/ose-id-init-08-company-admin/delivery.md:97`;
-- `plans/backlog/ose-id-init-09-local-scale-and-composition/delivery.md:76`;
-- `docs/reference/sdlc-gate-standard.md:328` (a docs surface).
-
-This one has a replacement, but not a drop-in one: `md internal-link validate` takes no path
-arguments (a path argument is itself an `unrecognized command`) and checks the whole surface
-`repo-config.yml` declares, whose `exclude-sources` include `plans/done/**`. A plan citation that
-scoped the check to an archived plan therefore cannot be translated literally. The remaining hits of
-that grep are ideas briefs and the ideas index using the old name as shorthand, not commands to run.
-
-A third retired form sat beside them: `./rhino md mermaid validate <path>`. Pinned v0.6.0 accepts
-paths only as repeated `--file <path>` options, and a directory passed as `--file` "cannot be read".
-It was cited at `plans/backlog/lms-user/delivery.md:250`, `:281`, and `:1029`,
-`ose-id-init-02-local-email-account/delivery.md:225`, and
-`ose-id-init-03-company-tenancy-core/delivery.md:227`.
-
-**Resolution (PR #591).** Every citation above, found with
-`git grep -nE "rhino (plan validate|md links validate|md mermaid validate [^-])" -- ':!plans/done'`,
-was replaced; nothing else in those plans changed. `./rhino plan validate` became a `plan-checker`
-structural review against the Plans Convention, since no runnable plan validator exists.
-`./rhino md links validate …` became `./rhino md internal-link validate`, which checks the declared
-surface. Each positional `md mermaid validate` became
-`find <paths> -type f -name '*.md' -exec ./scripts/validate-mermaid-files {} +`: the `md-mermaid`
-gate's own executable, which passes each file as `--file` and propagates a failing exit.
+The citations were found with
+`git grep -nE "rhino (plan validate|md links validate|md mermaid validate [^-])" -- ':!plans/done'`;
+nothing else in those plans changed.
 
 Two claims in this brief went stale in the other direction. It once said
 `harness:bindings-validation` exists as a real npm script in ose-public, and that ose-public's
@@ -150,8 +131,9 @@ stale script name is a dead end rather than a data-loss risk.
 ## Rough scope & non-goals
 
 In scope: `repo-governance/**`, `docs/**`, and the canonical `.agents/agents/**`; the triage table's
-own accuracy. The five approved backlog plans' retired
-Rhino steps are already corrected (PR #591), with owner authorization. Agent-file corrections regenerate their
+own accuracy. The retired Rhino steps in five approved
+backlog plans were corrected in PR #591 with owner authorization, and those plans have since been
+deleted. Agent-file corrections regenerate their
 `.opencode/`/`.codex/` mirrors via `./rhino harness adapters generate` in the same commit — the mirrors are
 never hand-edited.
 

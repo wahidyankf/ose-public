@@ -32,7 +32,7 @@ second testing contract. In particular:
 - `test:*` executes tests while `test:coverage:*` validates coverage statically without executing
   tests;
 - every applicable static coverage target runs through `test:quick`; and
-- Integration/E2E runtime stays out of pre-commit, pre-push, PR/main quality gates, and
+- Integration/E2E runtime stays out of pre-commit, pre-push, PR quality gates, and
   `test:quick`.
 
 Use the [coverage, exemption, and execution contract](../behaviour-driven-development/coverage-exemptions-and-execution.md)

@@ -23,9 +23,9 @@ tests relevant to the project you are changing.
 
 ## Overview
 
-The monorepo contains projects in TypeScript, F#, C#, Java, Go, and Python, plus course-example
-content in several more languages under `apps/ayokoding-www/content/` (Rust, Elixir, Dart, Lua, C,
-shell, and OpenTofu among them). Each language has its own runtime, but they all share the same Nx
+The monorepo contains projects in TypeScript, F#, and Python, plus course-example content in
+several more languages under `apps/ayokoding-www/content/` (C#, Java, Go, Rust, Elixir, Dart, Lua,
+C, shell, and OpenTofu among them). Each language has its own runtime, but they all share the same Nx
 build system and git hooks. Repository tooling is not an in-tree project: `./rhino` and `./hippo`
 are wrappers that install and verify independently released executables pinned in `rhino.lock`
 and `hippo.lock`.
@@ -38,8 +38,8 @@ and `hippo.lock`.
   it reports the ones you skipped; that is expected. A commit that stages a file whose formatter
   you skipped (an `.fs`, `.py`, or `.sh` file, say) fails the pre-commit `format-staged` gate.
 - **Full** — Every toolchain declared under `toolchains` in `repo-config.yml`, so `npm run doctor`
-  reports no findings. Required for the .NET projects (`organiclever-be`, `ose-be`, `ose-id-be`,
-  `crane-cli`), the Go and Java backends, FERRET, and course content in other languages. The
+  reports no findings. Required for the .NET projects (`organiclever-be`, `ose-be`, `crane-cli`),
+  OpenAPI code generation (needs a Java runtime), FERRET, and course content in other languages. The
   [tool inventory](../../repo-governance/workflows/maintenance/development-environment-setup/002-tool-inventory.md)
   lists each toolchain and where to install it.
 - **Automated** — When the read-only `npm run doctor` reports a missing or drifted toolchain, run
@@ -164,7 +164,7 @@ from this page:
 ### Step 4: .NET SDK
 
 Required for the F# projects (`organiclever-be`, `ose-be`, `crane-cli`, and the `fsharp-*`
-libraries) and the C# project `ose-id-be`. Each pins its SDK in its own `global.json` (for example
+libraries). Each pins its SDK in its own `global.json` (for example
 `apps/ose-be/global.json`); doctor proves only that `dotnet --version` runs, so install that major
 version. The pre-commit formatter also needs the `fantomas` and `csharpier` global tools at the
 versions `.config/dotnet-tools.json` pins — see
@@ -412,7 +412,7 @@ runs; the version manager or project build enforces the pin:
 | Node.js    | `package.json` → `volta.node`                     |
 | npm        | `package.json` → `volta.npm`                      |
 | .NET       | each .NET project's `global.json` → `sdk.version` |
-| Go         | `apps/roots-be/go.mod` → `go` directive           |
+| Go         | `.github/actions/setup-go` → `go-version` input   |
 | Docker, jq | Any (no pinned version)                           |
 
 Never hardcode version numbers in scripts — always read from these source-of-truth files.

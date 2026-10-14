@@ -42,7 +42,7 @@ specs/apps/ayokoding/
         └── toolchains/{README.md,toolchain-catalog.feature}               [N]
 
 .github/
-├── actions/setup-go/action.yml                           [E] cache-dependency-path lists both go.sum files
+├── actions/setup-go/action.yml                           [E] cache-dependency-path defaults to the CLI's go.sum
 └── workflows/
     ├── pr-quality-gate.yml                               [E] detect output, examples-plan and examples jobs, aggregator needs
     ├── _reusable-ayokoding-www-examples-check.yml        [N]

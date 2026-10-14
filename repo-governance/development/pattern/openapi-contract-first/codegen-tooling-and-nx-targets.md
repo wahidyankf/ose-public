@@ -11,8 +11,6 @@ when_to_use: "Use when running codegen for an app or looking up which tool gener
 | ------------------------------------------------- | ----------------------- | -------------------------- | --------------------------------------- |
 | TS client (`organiclever-app-web`, `ose-app-web`) | `@hey-api/openapi-ts`   | `src/generated-contracts/` | Emits typed fetch client + schema types |
 | F# server (`organiclever-be`, `ose-be`)           | `openapi-generator-cli` | `generated-contracts/`     | Emits Giraffe handler types + models    |
-| Java server (`ose-lms-be`)                        | `openapi-generator-cli` | `generated-contracts/`     | Emits Spring handler types + models     |
-| Go server (`roots-be`)                            | `go tool oapi-codegen`  | `generated-contracts/`     | Emits Gin `ServerInterface` + models    |
 
 Generated directories are **not** committed. The root `.gitignore` ignores `**/generated-contracts/`
 and `**/generated_contracts/`, so every fresh clone and worktree starts without them and

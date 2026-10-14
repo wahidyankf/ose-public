@@ -84,8 +84,6 @@ Flat structure - all apps at the same level, no subdirectories.
 - `ose-www-fe-e2e` - Playwright FE E2E tests for ose-www UI
 - `ose-be` - OSE Application F#/Giraffe/ASP.NET REST API backend (port 8302)
 - `ose-be-e2e` - Playwright BE E2E tests for ose-be
-- `ose-lms-be` - OSE LMS Java 25/Spring Boot 4 REST API backend (port 8303)
-- `ose-lms-be-e2e` - Playwright BE E2E tests for ose-lms-be
 - `ayokoding-www` - AyoKoding educational platform (Next.js 16 fullstack content platform, port 3101)
 - `ayokoding-www-be-e2e` - Playwright BE E2E tests for ayokoding-www tRPC API
 - `ayokoding-www-fe-e2e` - Playwright FE E2E tests for ayokoding-www UI
@@ -99,13 +97,6 @@ Flat structure - all apps at the same level, no subdirectories.
 - `organiclever-app-web-e2e` - Playwright FE E2E tests for organiclever-app-web
 - `organiclever-be` - OrganicLever F#/Giraffe/ASP.NET REST API backend (port 8202)
 - `organiclever-be-e2e` - Playwright BE E2E tests for organiclever-be
-- `roots-be` - Roots Islamic-practice tooling Go/Gin REST API backend (port 8402)
-- `roots-be-e2e` - Playwright BE E2E tests for roots-be
-- `ose-id-be` - OSE ID C#/ASP.NET Core REST API backend (port 8501)
-- `ose-id-be-e2e` - Reqnroll/xUnit BE E2E tests for ose-id-be (C#, not Playwright — see
-  [Mandatory Targets — CLI and E2E](../../repo-governance/development/infra/nx-targets/mandatory-targets-cli-e2e.md))
-- `ose-id-web` - OSE ID web shell (Next.js 16 application, port 3500)
-- `ose-id-web-e2e` - Playwright FE E2E tests for ose-id-web
 
 ### App Structure (Next.js Application — ose-www)
 
@@ -176,7 +167,6 @@ Contains reusable library packages.
 - `ts-` - TypeScript (future)
 - `rust-` - Rust (future)
 - `fsharp-` - F# (e.g., `fsharp-crane-core`)
-- `java-` - Java (future)
 - `kt-` - Kotlin (future)
 - `py-` - Python (future)
 
@@ -215,7 +205,7 @@ libs/ts-utils/
 
 ### Library Characteristics
 
-- **Polyglot-Ready** - Designed for multiple languages (TypeScript now, Java/Kotlin/Python future)
+- **Polyglot-Ready** - Designed for multiple languages (TypeScript now, Kotlin/Python future)
 - **Flat Structure** - All libs at same level, no nested scopes
 - **Reusable** - Designed to be imported by apps and other libs
 - **Focused** - Each lib has single, clear purpose
@@ -360,7 +350,7 @@ All projects use a standard four-dimension tag scheme:
 | Dimension   | Values                                        | Required                 | Purpose                 |
 | ----------- | --------------------------------------------- | ------------------------ | ----------------------- |
 | `type:`     | `app`, `lib`, `e2e`                           | Yes                      | Project kind            |
-| `platform:` | `cli`, `nextjs`, `spring-boot`, `playwright`  | For apps/e2e             | Framework/runtime       |
+| `platform:` | `cli`, `nextjs`, `playwright`                 | For apps/e2e             | Framework/runtime       |
 | `lang:`     | `rust`, `ts`, `dotnet`                        | Where source code exists | Primary language        |
 | `domain:`   | `ayokoding`, `ose`, `organiclever`, `tooling` | Yes                      | Business/product domain |
 

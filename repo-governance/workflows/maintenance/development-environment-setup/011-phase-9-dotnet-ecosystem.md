@@ -1,6 +1,6 @@
 ---
 description: "Phase 9 (full scope only): install the .NET SDK pinned by the .NET projects' global.json files, plus the Fantomas and CSharpier global tools."
-when_to_use: "Use when setting up .NET for the F# and C# projects, or when doctor reports dotnet, fantomas, or csharpier missing."
+when_to_use: "Use when setting up .NET for the F# projects and C# course content, or when doctor reports dotnet, fantomas, or csharpier missing."
 ---
 
 # Phase 9: .NET Ecosystem (Sequential)
@@ -8,7 +8,8 @@ when_to_use: "Use when setting up .NET for the F# and C# projects, or when docto
 **Condition**: `{input.scope} == full`
 
 Required for: the F# projects `organiclever-be`, `ose-be`, `crane-cli`, `fsharp-crane-core`, and
-`fsharp-env-loader`, the C# project `ose-id-be`, and the F# and C# formatting in `scripts/format-staged`. `dotnet`, `fantomas`, and `csharpier` are
+`fsharp-env-loader`, and the F# and C# formatting in `scripts/format-staged`. No first-party C# project
+exists today; `csharpier` formats the C# course content. `dotnet`, `fantomas`, and `csharpier` are
 declared under `toolchains` in `repo-config.yml`.
 
 ## 9.1 Install .NET SDK

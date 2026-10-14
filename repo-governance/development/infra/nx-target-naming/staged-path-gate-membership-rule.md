@@ -24,8 +24,9 @@ The following checks satisfy both criteria and run as staged-path gates:
 
 - **Formatters** — the one `format-staged` mutation gate: `prettier`, `rustfmt`, `fantomas`,
   `ruff format`, `gofmt`, `csharpier`, `dart format`, `shfmt`, `tofu fmt`, `stylua`,
-  `clang-format`, `buildifier`, and — each via a wrapper, because it is invoked from a project root
-  rather than on bare file paths — Elixir's formatter and Spotless (`*.java`). See
+  `clang-format`, `buildifier`, and — via a wrapper, because it is invoked from a project root
+  rather than on bare file paths — Elixir's formatter. `*.java` goes through `prettier` with
+  `prettier-plugin-java`. See
   [Formatting and File-Type Linting](../nx-targets/formatting-and-file-type-linting.md).
 - **File-type linters**: `shellcheck` (shell scripts), `hadolint` (`Dockerfile`/`*.Dockerfile`),
   `actionlint` (`.github/workflows/*.{yml,yaml}`) — see

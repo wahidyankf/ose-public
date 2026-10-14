@@ -82,28 +82,28 @@ apps/ayokoding-www/                                                    (down 1)
 content/en/learn/software-engineering/programming-languages/typescript/     (down to target)
 ```
 
-### From docs/explanation/software-engineering/platform-web/tools/jvm-spring/
+### From docs/explanation/software-engineering/platform-web/tools/fe-react/
 
 **Depth:** 6 levels deep
 
-**Target:** `apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring/`
+**Target:** `apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-react/`
 
 **Path:**
 
 ```markdown
-../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring/
+../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-react/
 ```
 
-### From docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/
+### From docs/explanation/software-engineering/platform-web/tools/fe-nextjs/
 
 **Depth:** 6 levels deep
 
-**Target:** `apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring-boot/`
+**Target:** `apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-nextjs/`
 
 **Path:**
 
 ```markdown
-../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring-boot/
+../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-nextjs/
 ```
 
 ## Language Selection
@@ -137,9 +137,9 @@ Use **descriptive, context-appropriate link text** that follows [Content Quality
 ```markdown
 [TypeScript programming language explanation](../../../../../apps/ayokoding-www/content/en/learn/software-engineering/programming-languages/typescript/)
 
-[Spring Framework fundamentals](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring/)
+[React fundamentals](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-react/)
 
-[Complete Spring Boot tutorial series](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring-boot/)
+[Complete Next.js tutorial series](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-nextjs/)
 ```
 
 **Avoid:**
@@ -147,7 +147,7 @@ Use **descriptive, context-appropriate link text** that follows [Content Quality
 ```markdown
 [here](../../../../../apps/ayokoding-www/content/en/learn/software-engineering/programming-languages/typescript/) ← Vague
 
-[Click this link](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring/) ← Non-descriptive
+[Click this link](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-react/) ← Non-descriptive
 
-[ayokoding-www](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring-boot/) ← Technical, not semantic
+[ayokoding-www](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-nextjs/) ← Technical, not semantic
 ```

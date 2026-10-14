@@ -29,17 +29,9 @@ its reason. Stack IDs per project live in the inventory in `repo-config.yml`.
 - [ose-app-web-e2e](../../../../../apps/ose-app-web-e2e/README.md)
 - [ose-be](../../../../../apps/ose-be/README.md)
 - [ose-be-e2e](../../../../../apps/ose-be-e2e/README.md)
-- [ose-id-be](../../../../../apps/ose-id-be/README.md)
-- [ose-id-be-e2e](../../../../../apps/ose-id-be-e2e/README.md)
-- [ose-id-web](../../../../../apps/ose-id-web/README.md)
-- [ose-id-web-e2e](../../../../../apps/ose-id-web-e2e/README.md)
-- [ose-lms-be](../../../../../apps/ose-lms-be/README.md)
-- [ose-lms-be-e2e](../../../../../apps/ose-lms-be-e2e/README.md)
 - [ose-www](../../../../../apps/ose-www/README.md)
 - [ose-www-be-e2e](../../../../../apps/ose-www-be-e2e/README.md)
 - [ose-www-fe-e2e](../../../../../apps/ose-www-fe-e2e/README.md)
-- [roots-be](../../../../../apps/roots-be/README.md)
-- [roots-be-e2e](../../../../../apps/roots-be-e2e/README.md)
 - [fsharp-crane-core](../../../../../libs/fsharp-crane-core/README.md)
 - [fsharp-env-loader](../../../../../libs/fsharp-env-loader/README.md)
 - [ts-env-loader](../../../../../libs/ts-env-loader/README.md)
@@ -47,9 +39,6 @@ its reason. Stack IDs per project live in the inventory in `repo-config.yml`.
 - [web-ui-token](../../../../../libs/web-ui-token/README.md)
 - [organiclever-contracts](../../../../../specs/apps/organiclever/be/contracts/README.md)
 - [ose-contracts](../../../../../specs/apps/ose/be/contracts/README.md)
-- [ose-id-contracts](../../../../../specs/apps/ose/id-be/contracts/README.md)
-- [ose-lms-contracts](../../../../../specs/apps/ose/lms-be/contracts/README.md)
-- [roots-contracts](../../../../../specs/apps/roots/be/contracts/README.md)
 - [repo-scripts](../../../../../scripts/README.md)
 - [public-safety](../../../../../scripts/public-safety/README.md)
 - [workspace](../../../../.././README.md)
@@ -68,11 +57,9 @@ its reason. Stack IDs per project live in the inventory in `repo-config.yml`.
 - `typescript`, `javascript`, `react`, `nextjs`: each project's `package.json`; Node in the root `package.json` `volta`
   block
 - `nx`: the root `package.json`
-- `fsharp`, `giraffe`: each project's `.fsproj`, and its `global.json` where present
-- `csharp`, `aspnet-core`: `apps/ose-id-be/global.json` and `apps/ose-id-be/Directory.Packages.props`, and the same files
-  in `apps/ose-id-be-e2e`
-- `java`, `spring-boot`: `apps/ose-lms-be/build.gradle.kts`
-- `golang`, `gin`: `apps/roots-be/go.mod`
+- `fsharp`, `aspnet-core`, `giraffe`: each project's `.fsproj` (target framework and package references), and its
+  `global.json` (SDK version) where present
+- `golang`: no first-party project declares a version today
 - `python`: `apps/ferret-cli/.python-version` and `apps/ferret-cli/pyproject.toml`, and the same files in
   `apps/ferret-cli-e2e`
 - `shell`: the host Bash; no tracked file pins it

@@ -114,7 +114,7 @@ Frameworks in this documentation are chosen based on:
 
 This framework documentation connects with:
 
-- **[Programming Languages](../programming-languages/README.md)** - Language-specific idioms (TypeScript, Rust, Go, F#, C#)
+- **[Programming Languages](../programming-languages/README.md)** - Language-specific idioms (TypeScript, Rust, Go, F#)
 - **[Architecture](../architecture/README.md)** - C4 model, DDD patterns
 - **[Development Practices](../development/README.md)** - TDD, BDD, testing strategies
 - **[Functional Programming](../../../../repo-governance/development/pattern/functional-programming.md)** - FP principles

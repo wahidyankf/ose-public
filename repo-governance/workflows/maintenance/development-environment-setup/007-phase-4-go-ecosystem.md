@@ -1,14 +1,15 @@
 ---
-description: "Phase 4: install Go and golangci-lint for the roots-be backend and gofmt; Lua formatting needs no install."
+description: "Phase 4: install Go and golangci-lint for Go projects and gofmt; Lua formatting needs no install."
 when_to_use: "Use when setting up or verifying the Go toolchain, or checking where the Lua formatter comes from."
 ---
 
 # Phase 4: Go and Lua Toolchains (Sequential)
 
 The two toolchains in this phase are no longer alike. **Go is a build-and-test dependency**:
-`apps/roots-be` is written in it, so Go is needed to build, test, and lint that project as well
-as to run `gofmt` over the `*.go` course corpus under `apps/ayokoding-www/content/**`. **Lua is
-formatter-only**: no project is written in it, and `stylua` exists solely for the `*.lua` corpus.
+Go is needed to build, test, and lint any Go project, and to run `gofmt` over the `*.go` course
+corpus under `apps/ayokoding-www/content/**`. No first-party Go project exists today, so the
+course corpus is the only current `gofmt` input. **Lua is formatter-only**: no project is written
+in it, and `stylua` exists solely for the `*.lua` corpus.
 The `format-staged` gate in `repo-config.yml` runs both formatters at pre-commit and replays them
 on the pull-request surface in CI.
 
@@ -25,11 +26,11 @@ brew install go
 # Linux — download from https://go.dev/dl/
 ```
 
-`apps/roots-be/go.mod` pins the language version with its `go` directive; CI installs exactly that
-version. Doctor proves only that `go version` runs, so match the directive yourself.
+CI installs the version pinned by the `go-version` input of `.github/actions/setup-go`. Doctor proves only that
+`go version` runs, so match that pin yourself.
 
-**Success criteria**: `go version` reports at or above the `go` directive in `apps/roots-be/go.mod`,
-and `gofmt -l apps/roots-be` runs without error.
+**Success criteria**: `go version` reports at or above the `go-version` input of
+`.github/actions/setup-go`, and `command -v gofmt` finds the formatter that ships with Go.
 
 ## 4.2 Install golangci-lint
 

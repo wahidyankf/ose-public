@@ -5,7 +5,7 @@ description: >-
   deliberately, proving options fail at startup, and testing the request pipeline through the in-process host.
 when_to_use: >-
   Use when writing, changing, or reviewing an ASP.NET Core endpoint, middleware, service registration, options type, or
-  host test, in C# or F#, before the first test of the change.
+  host test, in F#, before the first test of the change.
 compatibility: Requires an ASP.NET Core application on .NET with its build, format, and test commands.
 ---
 
@@ -13,9 +13,8 @@ compatibility: Requires an ASP.NET Core application on .NET with its build, form
 
 Every ASP.NET Core rule is owned by
 [ASP.NET Core Standards](../../../repo-governance/development/quality/stacks/aspnet-core-standards.md), which inherits
-the project's language standard. [C# Programming](../programming-csharp/SKILL.md) or
-[F# Programming](../programming-fsharp/SKILL.md) carries the language procedure, and a Giraffe application adds
-[Giraffe Framework](../framework-giraffe/SKILL.md). This skill adds only the judgement of working at the framework
+the project's language standard. [F# Programming](../programming-fsharp/SKILL.md) carries the language procedure, and a
+Giraffe application adds [Giraffe Framework](../framework-giraffe/SKILL.md). This skill adds only the judgement of working at the framework
 boundary. Where a sentence here seems to state a rule, the standard decides.
 
 ## Start From What the Project Records

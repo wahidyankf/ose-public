@@ -2,6 +2,8 @@
 // repository-policy job must carry a toolchain for every language whose files the staged formatter
 // touches. Both invariants broke silently when this repository gained its first Python projects: the
 // other lanes kept running FERRET targets without `uv`, and the policy job could not run `ruff`.
+// The same workflow must also run on pull requests only: a push trigger on `main` would repeat the
+// run of the tree that the protected, up-to-date pull request already tested.
 import { strict as assert } from "node:assert";
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -138,4 +140,42 @@ test("the repository policy job puts every project-local formatter on PATH", () 
         `cannot run the bare \`${binary}\` that scripts/format-staged invokes`,
     );
   }
+});
+
+// The gate used to run on `push` to `main` as well as on pull requests. `main` is protected: a pull
+// request merges only when it is up to date with `main` and its gate is green, so the pull-request
+// run already tested the tree that lands and the push run repeated it. With one event left, a step
+// that still branches on a push, or reads the push-only `github.event.before`, is dead code.
+test("the quality gate triggers on pull requests only and never branches on a push", () => {
+  const live = readFileSync(WORKFLOW, "utf8")
+    .split("\n")
+    .filter((line) => !/^\s*#/.test(line));
+  const problems = [];
+
+  // The `on:` block runs from its key to the next top-level key.
+  const start = live.indexOf("on:");
+  assert.notEqual(start, -1, `${WORKFLOW}: the workflow has no block-style \`on:\` key`);
+  const block = [];
+  for (const line of live.slice(start + 1)) {
+    if (/^\S/.test(line)) break;
+    block.push(line);
+  }
+
+  const events = block.map((line) => /^ {2}([a-z_]+):/.exec(line)?.[1]).filter(Boolean);
+  if (events.join(",") !== "pull_request") {
+    problems.push(`on: triggers [${events.join(", ")}], expected only [pull_request]`);
+  }
+  const types = block.map((line) => /^ {4}types:\s*\[([^\]]*)\]\s*$/.exec(line)?.[1]).find(Boolean);
+  const listed = (types ?? "").split(",").map((type) => type.trim());
+  if (listed.join(",") !== "opened,synchronize,reopened") {
+    problems.push(`pull_request types are [${listed.join(", ")}], expected [opened, synchronize, reopened]`);
+  }
+
+  for (const line of live) {
+    if (/github\.event_name\s*==\s*['"]push['"]/.test(line) || /github\.event\.before/.test(line)) {
+      problems.push(`push-only expression can never be true here: ${line.trim()}`);
+    }
+  }
+
+  assert.deepEqual(problems, [], `${WORKFLOW}:\n${problems.join("\n")}`);
 });

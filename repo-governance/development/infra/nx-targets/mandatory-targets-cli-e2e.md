@@ -42,7 +42,7 @@ below for the non-Playwright `*-be-e2e` shape:
 | `test:e2e:ui`     | Run tests with Playwright UI |
 | `test:e2e:report` | Open the HTML test report    |
 
-**Execution strategy**: `test:e2e` never runs through pre-commit, pre-push, PR/main gates,
+**Execution strategy**: `test:e2e` never runs through pre-commit, pre-push, PR gates,
 `test:quick`, or a static coverage target. Developers run impacted scenarios manually; scheduled
 full-quality workflows run complete Integration suites before complete unfiltered E2E suites.
 
@@ -58,8 +58,7 @@ corpus is an explicit Nx input of both coverage and runtime targets.
 ### Dotnet/Reqnroll E2E Test Projects
 
 A `*-be-e2e` project binding Gherkin with Reqnroll/xUnit instead of Playwright (its backend's own
-implementation language, not the test framework, drives this choice — see
-`apps/ose-id-be-e2e/project.json` for the canonical example):
+implementation language, not the test framework, drives this choice):
 
 | Target                    | Requirement                                                                                                                                      |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |

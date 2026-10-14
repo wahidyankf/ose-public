@@ -30,7 +30,6 @@ Follow the naming convention: `[language-prefix]-[name]`
 
 - `ts-` - TypeScript
 - `rust-` - Rust
-- `java-` - Java (future)
 - `py-` - Python (future)
 
 **Examples**:
@@ -334,7 +333,7 @@ ts-users imports ts-auth  ❌ CIRCULAR DEPENDENCY
 
 ### Language Boundaries
 
-TypeScript libraries can only directly import other TypeScript libraries. To use libraries in other languages (Java, Python, etc.), use:
+TypeScript libraries can only directly import other TypeScript libraries. To use libraries in other languages (Python, etc.), use:
 
 - HTTP APIs
 - gRPC

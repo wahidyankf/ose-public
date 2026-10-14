@@ -11,7 +11,7 @@ to run locally. For a local first success, start from the
 | -------------------- | --------------------------------------------------------- | -------------------------------------------- |
 | `setup-node`         | The pinned Node.js toolchain, dependencies, and Nx cache  | A workflow runs workspace tasks              |
 | `setup-dotnet`       | .NET tooling and its cache                                | A workflow validates F# work                 |
-| `setup-java`         | The pinned Temurin JDK and the Gradle dependency cache    | A workflow validates Java work               |
+| `setup-java`         | The pinned Temurin JDK for openapi-generator-cli          | A workflow generates API contract code       |
 | `setup-rust`         | The pinned Rust toolchain and Rust quality tools          | A workflow validates Rust work               |
 | `setup-go`           | The pinned Go toolchain, its caches, and golangci-lint    | A workflow validates Go work                 |
 | `setup-python`       | The pinned Python, checksum-verified uv, and the uv cache | A workflow validates Python work             |

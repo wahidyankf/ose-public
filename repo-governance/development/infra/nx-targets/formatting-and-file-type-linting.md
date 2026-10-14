@@ -28,7 +28,7 @@ the formatter and fails if any byte would change:
 | `*.{ex,exs}`                                                   | `scripts/format-elixir.sh` (CWD-aware wrapper for `mix format`) |
 | `*.cs`                                                         | `csharpier format`                                              |
 | `*.dart`                                                       | `dart format`                                                   |
-| `*.java`                                                       | `scripts/format-java.sh` (Gradle-root wrapper for Spotless)     |
+| `*.java`                                                       | `prettier --write` with `prettier-plugin-java`                  |
 | `*.sh`                                                         | `shfmt -w`                                                      |
 | `*.tf`                                                         | `tofu fmt`                                                      |
 | `*.lua`                                                        | `stylua`                                                        |
@@ -36,12 +36,18 @@ the formatter and fails if any byte would change:
 | `BUILD`, `BUILD.bazel`, `*.bzl`                                | `buildifier`                                                    |
 
 The per-project `format` and `format:check` Nx targets are **not standard lifecycle targets** and
-**must not be added**. Two languages use a wrapper script, both for the same reason — their
-formatter is invoked from a project root rather than on bare file paths. `mix format` needs the
-root that resolves `.formatter.exs`; Spotless is a whole-project Gradle task, so the wrapper maps
-each staged file back to its owning Gradle root and runs the task once per root. Every other
-formatter accepts bare file-path arguments and is invoked directly. To format a new file type, add
-its extension and formatter to `scripts/format-staged`; do not add a new gate or Nx target.
+**must not be added**. One language uses a wrapper script because its formatter is invoked from a
+project root rather than on bare file paths: `mix format` needs the root that resolves
+`.formatter.exs`. Every other formatter accepts bare file-path arguments and is invoked directly. To
+format a new file type, add its extension and formatter to `scripts/format-staged`; do not add a new
+gate or Nx target.
+
+Java has no wrapper and no build-tool formatter. `scripts/format-staged` sends each staged `*.java`
+path through the same Prettier call as the other Prettier paths. `.prettierrc.json` loads
+`prettier-plugin-java` only for `*.java`, through an `overrides` entry, so the plugin does not also
+reformat the Java code fences in Markdown. The `.cs`, `.java`, and `.go` files this repository tracks are
+AyoKoding course content under `apps/ayokoding-www/content/`, so `csharpier`, `prettier-plugin-java`, and
+`gofmt` keep that content consistently formatted.
 
 **Tool linting** — file-scoped registry gates in `repo-config.yml`, **not** Nx targets:
 

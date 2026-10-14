@@ -11,7 +11,7 @@ caught mechanically.
 **Path scope**: `repo-governance/**/*.md`, `.agents/agents/*.md`, `.agents/skills/**/*.md`,
 `docs/**/*.md`, root instruction surfaces (`AGENTS.md`, `CLAUDE.md`, `README.md`), active plans
 (`plans/in-progress/**/*.md`, `plans/backlog/**/*.md`). **Exempt**: website content
-(`apps/ayokoding-www/`, `apps/ose-www/`, `apps/organiclever-www/`, `apps/wahidyankf-www/`),
+(`apps/ayokoding-www/`, `apps/ose-www/`, `apps/organiclever-www/`),
 `plans/done/` (immutable archive), registry-declared generated binding paths and regions,
 `generated-reports/`, `local-tmp/`, `worktrees/`. Mixed-ownership binding roots are not exempt as
 a whole; source and vendored paths remain in scope when another scope rule includes them.

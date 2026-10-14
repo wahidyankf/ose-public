@@ -10,7 +10,7 @@
   "scripts": {
     "build": "./hippo run --class ephemeral --resource-tier heavy --disk-path . -- nx run-many -t build",
     "test": "./hippo run --class ephemeral --resource-tier heavy --disk-path . -- nx run-many -t test:quick",
-    "test:validators": "./hippo run --class ephemeral --resource-tier light --disk-path . -- node --test scripts/behaviour-coverage.test.mjs scripts/dotnet-unit-coverage.test.mjs scripts/format-staged.test.mjs scripts/lint-gates.test.mjs scripts/workflow-language-lanes.test.mjs",
+    "test:validators": "./hippo run --class ephemeral --resource-tier light --disk-path . -- node --test scripts/behaviour-coverage.test.mjs scripts/format-staged.test.mjs scripts/lint-gates.test.mjs scripts/workflow-language-lanes.test.mjs",
     "lint": "./hippo run --class ephemeral --resource-tier standard --disk-path . -- nx run-many -t lint",
     "lint:md": "./hippo run --class ephemeral --resource-tier light --disk-path . -- markdownlint-cli2 \"**/*.md\"",
     "lint:md:fix": "./hippo run --class transactional --resource-tier standard --disk-path . -- markdownlint-cli2 --fix \"**/*.md\"",
@@ -58,6 +58,7 @@
     "nx": "22.5.4",
     "oxlint": "1.78.0",
     "prettier": "3.8.1",
+    "prettier-plugin-java": "2.11.0",
     "prettier-plugin-sql": "0.20.0",
     "prettier-plugin-tailwindcss": "0.7.2",
     "tsx": "4.21.0"

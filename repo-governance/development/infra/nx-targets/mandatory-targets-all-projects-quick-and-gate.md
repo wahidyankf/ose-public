@@ -34,7 +34,7 @@ command structure, but retains static-only coverage targets and cache-correct qu
 
 Pre-commit runs staged deterministic checks only, and pre-push runs only its declared gates; neither
 runs quick. The PR workflow's language jobs run affected quick targets with explicitly bounded
-project parallelism while preserving each project's ordered quick composition. No hook or PR/main job
+project parallelism while preserving each project's ordered quick composition. No hook or PR job
 may reach Integration or E2E runtime. Developers select
 impacted higher-layer scenarios manually; scheduled/full-quality CI runs complete applicable
 Integration and E2E suites.

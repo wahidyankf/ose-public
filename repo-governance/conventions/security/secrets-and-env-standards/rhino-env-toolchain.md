@@ -29,8 +29,8 @@ not report environment values.
 reader it is passed to. Injecting the reader is good design — it is what lets a resolver be
 unit-tested without touching the OS — so the rule is not "call the reader directly" but **keep the
 key literal at the composition root, beside the reader**. `ose-be`'s `Program.fs` passes
-`readEnvironment "OSE_BE_PORT"`; `roots-be`'s `main.go` passes
-`os.LookupEnv, "ROOTS_BE_PORT"`. Move the key into a constant the resolver dereferences and the
+`readEnvironment "OSE_BE_PORT"`; `organiclever-be`'s `Program.fs` passes
+`readEnvironment "ORGANICLEVER_BE_PORT"`. Move the key into a constant the resolver dereferences and the
 scanner sees no read at all, reporting a key that is genuinely read as `declared-but-unread`.
 
 `allowlist:` is for keys that are legitimately not read. Using it to silence a key the scanner

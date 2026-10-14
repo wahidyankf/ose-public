@@ -53,13 +53,13 @@ mechanics.
 | 1. pre-commit      | `.husky/pre-commit`                     | `git commit` (before message) |
 | 2. commit-msg      | `.husky/commit-msg`                     | `git commit` (on the message) |
 | 3. pre-push        | `.husky/pre-push`                       | `git push`                    |
-| 4. PR quality gate | `.github/workflows/pr-quality-gate.yml` | pull request (+ branch push)  |
+| 4. PR quality gate | `.github/workflows/pr-quality-gate.yml` | pull request                  |
 
 A standalone `validate-env.yml` workflow runs on `pull_request` and `push:main` in parallel with the
 PR gate. No full-quality pipeline is part of the gate set; impacted `test:integration` and
 `test:e2e` run by manual selection during development/review, while complete higher-layer suites
 run only in scheduled or manually dispatched full-quality workflows. `deps:audit` remains outside
-the gate. None runs in a hook or PR/main gate.
+the gate. None runs in a hook or PR gate.
 
 ### Command Scope
 
@@ -94,7 +94,7 @@ One composition rule, one formatter verification rule, and one exclusion govern 
    applies the formatted bytes to the index; on the pull-request surface it replays the formatters
    and fails if any byte would change (`ci: verify-clean`).
 
-3. **Heavy/uncacheable tiers never run in any hook or PR/main gate.**
+3. **Heavy/uncacheable tiers never run in any hook or PR gate.**
    Run impacted `test:integration` and `test:e2e` targets manually during development/review and
    complete suites on schedule. `deps:audit` remains scheduled; none belongs to a gate surface.
 
@@ -179,12 +179,12 @@ are checked by the gate `md-internal-link` at pre-commit and on the pull-request
 
 `pr-quality-gate.yml`. Language jobs run only for languages detected among the affected projects.
 
-| Job                                                        | Exact command(s) CI runs                                                                                                                                                                                                                                                             | Scope             |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
-| detect                                                     | `npx nx show projects --affected`, then each project's tags — derives which language jobs run. Runs no test.                                                                                                                                                                         | other             |
-| repository-policy                                          | `./rhino gate run --surface pull-request --base <sha> --head <sha>` — the whole `pull-request` surface: every local gate (with `format-staged` verifying clean), the commit-message and range screens, `md-mermaid-repository`, `md-internal-link`, `md-readme-index`, and the rest. | other             |
-| language job (TypeScript, .NET, Flutter, Java, Go, Python) | `nx affected -t typecheck,lint,test:quick` (plus `compat:min-version` where declared) — types/lint, Unit runtime, and applicable static coverage; no Integration/E2E runtime                                                                                                         | affected projects |
-| quality-gate                                               | Sentinel join — `needs: [repository-policy, typescript, dotnet, flutter, java, go, python]`; fails if any needed job failed. Runs no other command.                                                                                                                                  | other             |
+| Job                                                  | Exact command(s) CI runs                                                                                                                                                                                                                                                             | Scope             |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| detect                                               | `npx nx show projects --affected`, then each project's tags — derives which language jobs run. Runs no test.                                                                                                                                                                         | other             |
+| repository-policy                                    | `./rhino gate run --surface pull-request --base <sha> --head <sha>` — the whole `pull-request` surface: every local gate (with `format-staged` verifying clean), the commit-message and range screens, `md-mermaid-repository`, `md-internal-link`, `md-readme-index`, and the rest. | other             |
+| language job (TypeScript, .NET, Flutter, Go, Python) | `nx affected -t typecheck,lint,test:quick` (plus `compat:min-version` where declared) — types/lint, Unit runtime, and applicable static coverage; no Integration/E2E runtime                                                                                                         | affected projects |
+| quality-gate                                         | Sentinel join — `needs: [repository-policy, typescript, dotnet, flutter, go, python]`; fails if any needed job failed. Runs no other command.                                                                                                                                        | other             |
 
 All jobs except the join run in parallel. No `test:integration`/`test:e2e`: the language jobs run the
 fast set that no local hook runs.
@@ -236,7 +236,7 @@ The following variations are not flagged as drift:
 - **App set and per-app deploy CRONs** — `ose-public` ships content/web apps (`ose-www`,
   `ayokoding-www`, `organiclever-www`, `*-app-web`, `*-be`). It keeps only the deploy CRON workflows
   for apps it actually ships, and those deploy CRONs push to real Vercel/self-hosted environments.
-- **Language gate jobs** — the PR gate's per-language jobs (golang, jvm, dotnet, python, rust, elixir,
+- **Language gate jobs** — the PR gate's per-language jobs (golang, dotnet, python, rust, elixir,
   clojure, dart, typescript) exist only for languages present in this repository.
 - **lint-staged formatter entries** — only for languages present (for example `*.go`, `*.{ex,exs}`
   exist where that language ships). The common entries are `*.md`, `*.json`, `*.{yml,yaml}`,

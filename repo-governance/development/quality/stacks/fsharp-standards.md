@@ -78,7 +78,7 @@ The adopter records each choice that applies:
 | web framework  | a minimal functional layer, such as Giraffe       | handlers compose as plain functions    | routing conventions assembled by hand |
 |                | an opinionated layer built on one, such as Saturn | routing and defaults arrive ready-made | more framework idiom to learn         |
 | test framework | an F#-native one, such as Expecto                 | tests are composable values            | fewer runner integrations             |
-|                | xUnit or NUnit                                    | tooling shared with C# projects        | attribute-style tests                 |
+|                | xUnit or NUnit                                    | tooling shared across .NET projects    | attribute-style tests                 |
 
 ## Enforcement
 

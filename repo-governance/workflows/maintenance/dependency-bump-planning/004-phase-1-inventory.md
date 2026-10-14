@@ -14,9 +14,8 @@ governed by the policy (intersected with `scope-filter`/`ecosystems`):
   appears. RHINO is an external executable pinned by version and per-platform digest in
   `rhino.lock`, not a Cargo dependency.
 - **.NET**: `apps/*/*.fsproj`/`*.csproj` `<PackageReference>` (e.g. `crane-cli`), plus the per-app
-  `global.json` SDK pins (`apps/organiclever-be`, `apps/ose-be`, `apps/ose-id-be`,
-  `apps/ose-id-be-e2e`). The `.github/actions/setup-dotnet` composite-action default pins the SDK CI
-  installs; bump them together. `./rhino toolchain validate` only probes that `dotnet` runs; it
+  `global.json` SDK pins (`apps/organiclever-be`, `apps/ose-be`). The `.github/actions/setup-dotnet`
+  composite-action default pins the SDK CI installs; bump them together. `./rhino toolchain validate` only probes that `dotnet` runs; it
   reads no `global.json`.
 - **Go**: no Go module exists in the active tree — the tracked `*.go` files are AyoKoding course
   corpora with no `go.mod`. Treat Go as empty unless a `go.mod` appears.

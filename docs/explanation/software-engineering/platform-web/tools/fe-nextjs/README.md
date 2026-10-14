@@ -707,7 +707,7 @@ Excellent development workflow:
 **Consider alternatives when:**
 
 ❌ Building a pure SPA without SEO needs - use Vite + React
-❌ Backend-heavy application - use Spring Boot, Phoenix
+❌ Backend-heavy application - use a dedicated backend such as F#/Giraffe or Phoenix
 ❌ Real-time collaboration features - consider Phoenix LiveView
 ❌ Extreme customization of build process - use custom Webpack setup
 ❌ Static-only site with no dynamic features - use Astro or Hugo

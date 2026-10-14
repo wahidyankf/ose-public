@@ -8,13 +8,16 @@ pattern, so the next author gets to rediscover it a fourth time.
 > [`ose-id-init-01-foundation`](../../done/2026-09-17__ose-id-init-01-foundation/learnings.md), which
 > flagged it as a `rules-propagation` candidate rather than an ad-hoc edit from inside that plan's
 > delivery unit.
+> Updated 2026-10-14: the `ose-id` product and the two files that showed the pattern were removed from
+> this repository. The done plan's learnings entry is now the only source, and this brief reads from it.
 
 ## Problem / context
 
 `ose-id-init-01-foundation` needed eight separate concurrency fixes before its local-stack runner was
-reliable under repeated real starts and stops. Four of those eight are not about that runner at all —
-they are properties of driving a containerized PostgreSQL from a test harness, and they were each
-learned the expensive way:
+reliable under repeated real starts and stops. That runner and its tests were removed on 2026-10-14;
+the done plan's learnings entry records every fix and its failure sequence. Four of those eight are
+not about that runner at all — they are properties of driving a containerized PostgreSQL from a test
+harness, and they were each learned the expensive way:
 
 - **A one-time readiness probe proves only that the probe saw a ready instance.** `pg_isready` can
   observe the official postgres image's temporary init-script instance and report ready moments
@@ -36,21 +39,24 @@ learned the expensive way:
   reported the whole call successful. The database was then silently never created.
 
 The decisive evidence is not any one of these. It is that the identical class existed independently
-in `apps/ose-id-be-e2e/scripts/local-stack.mjs` and in `apps/ose-id-be-e2e/steps/PostgresResource.cs`
-— two files written separately, by separate passes, that nobody connected until both broke in the
-same investigation. The fourth item above was found not by a purpose-built concurrency test but by an
-ordinary fresh-stack start under heavier Docker-daemon load, after six full-suite runs had already
-passed.
+in the removed ose-id local-stack runner (a JavaScript script) and in its shared C# PostgreSQL test
+helper — two files written separately, by separate passes, that nobody connected until both broke in
+the same investigation. The learnings entry names both files. The fourth item above was found not by a
+purpose-built concurrency test but by an ordinary fresh-stack start under heavier Docker-daemon load,
+after six full-suite runs had already passed.
 
 ## Why now
 
-The repository now has exactly one PostgreSQL-backed product (`ose-id`), and its backlog holds eight
-further OSE ID plans that will add tenancy, sessions, and federation — each one a fresh opportunity
-to write a third helper with the same shape. Writing the pattern down costs one propagation run now;
-skipping it costs another multi-run investigation each time a new helper appears. The window is
-also unusually good: all four properties are freshly evidenced with named error text, named files,
-and a recorded failure sequence, so the document can be sourced from real transcripts rather than
-recalled from memory later.
+The repository has no PostgreSQL-backed product today, because `ose-id` was removed on 2026-10-14.
+The next one is the reason to write this down: the queued
+[`ferret-init-02-local-backend`](../../backlog/ferret-init-02-local-backend/README.md) plan adds a
+loopback PostgreSQL stack, and a later core banking or ERP delivery would add more. Without a page,
+each new PostgreSQL-backed product would rediscover the same race in its own helper. Writing the
+pattern down costs one propagation run now; skipping it costs another multi-run investigation each
+time. The window is also still good: all four properties have named error text and a recorded failure
+sequence in the done plan's learnings, so the page can be sourced from real transcripts rather than
+recalled from memory after that history fades. The code itself is gone, so the learnings entry is the
+only source.
 
 ## Prior art / precedents
 
@@ -92,17 +98,18 @@ In scope:
 
 - One new page capturing the four (or five) defaults, sourced from the recorded fixes.
 - A conflict scan against the BDD contract, the Integration target contract, and the flaky-tests rule.
-- A decision on whether the two existing implementations are refactored toward a shared helper or
-  simply annotated as the reference implementations.
+- A decision on whether the page also points at a shared helper for the next product to adopt, or
+  stays a documented pattern only. The two original implementations no longer exist to annotate.
 
 Out of scope:
 
-- Reopening any of the eight fixes. They are merged, verified, and not up for re-litigation here.
+- Reopening any of the eight fixes. They were merged and verified in the originating plan, and the
+  code they fixed has since been removed.
 - A generic database-test framework, or extending the pattern to databases this repository does not
-  run. PostgreSQL is the only one in the tree.
+  run. PostgreSQL is the only one the originating plan used.
 - The test-only port-allocation pattern (`AllocateDistinctEphemeralPorts` versus the narrower
-  `AllocateAdjacentFreePortPair`) noted alongside these fixes. It is a real duplication, but it is a
-  refactor candidate in one project, not a governance rule.
+  `AllocateAdjacentFreePortPair`) noted alongside these fixes. It was a real duplication, but it lived
+  in one removed project and is not a governance rule.
 
 ## Risks & open questions
 
@@ -110,12 +117,13 @@ Out of scope:
   exceed the word budget for a single page under the governance budget rules. (open)
 - **Does documenting it change anything?** These are properties a reviewer must actively look for;
   without a check, the page may be read only after the next incident. (open)
-- **Extract a shared helper, or document and leave two implementations?** One is JavaScript and one is
-  C#, so "shared" means a documented pattern, not shared code — but that is exactly the situation
-  that produced the second occurrence. (open)
+- **Ship a shared helper with the page, or document only?** The two originals were one JavaScript file
+  and one C# file, so "shared" meant a documented pattern, not shared code — and that is exactly the
+  situation that produced the second occurrence. With both removed, the next product's plan decides
+  whether it writes the helper once. (open)
 - **Over-generalizing from one product.** Every data point comes from a single plan against a single
-  service. A property that is really about the official postgres image's entrypoint should be
-  attributed to that image, not stated as a universal law.
+  service, and that product is now removed. A property that is really about the official postgres
+  image's entrypoint should be attributed to that image, not stated as a universal law.
 
 ## What success looks like + promotion signal
 
@@ -123,7 +131,7 @@ Success: the next PostgreSQL-backed runner in this repository is written with th
 in place, and a reviewer can cite one page rather than reconstructing the argument from an archived
 plan's learnings file. No fourth independent rediscovery of the same race.
 
-**Promotion signal**: promote to a full plan only if the answer to "extract a shared helper" turns out
-to be yes, because that is a code change across two languages with its own test obligations. If the
-outcome stays documentation, one `rules-propagation` run is the whole job. A third independent
-implementation appearing with the same defect class forces promotion either way.
+**Promotion signal**: promote to a full plan only if the answer to "ship a shared helper" turns out to
+be yes, because that is new code with its own test obligations. If the outcome stays documentation,
+one `rules-propagation` run is the whole job. A new independent implementation appearing with the same
+defect class forces promotion either way.

@@ -1566,7 +1566,7 @@ test("rejects a coverage target that executes the Gradle test task", async () =>
 });
 
 // Go has no build-tool-integrated coverage gate the way Gradle has JaCoCo, so
-// roots-be enforces its floor through a repo script. The threshold must still
+// a Go project enforces its floor through a repo script. The threshold must still
 // be visible on the command surface: a floor hidden inside a script body is a
 // floor no reviewer or validator can check.
 const goCoverageProject = (unitCommand) =>

@@ -137,14 +137,14 @@ Feature: Lesson navigation
     Given the app is running
 
   Scenario: S10 The context bar shows where the reader is in a path
-    Given a reader opens a learning page of a course in path context
+    When a reader opens a learning page of a course in path context
     Then the context bar links to the path page
     And it names the phase that contains the course
     And it shows "Course k of N" for the course's position in the path
     And it shows "Page p of P" and how many pages of the course are done
 
   Scenario: S11 The context bar works without a path
-    Given a reader opens a learning page with no path context and no remembered path for that course
+    When a reader opens a learning page with no path context and no remembered path for that course
     Then the context bar shows the course title, "Page p of P", and how many pages are done
     And it shows no path or phase link
 

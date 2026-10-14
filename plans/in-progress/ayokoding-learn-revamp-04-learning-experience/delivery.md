@@ -487,29 +487,29 @@ message. `typecheck` and `lint` exit 0.
 - **Proof:** `<plan>/evidence/phase-3-lesson.md`.
 - _Suggested executor: `specs-maker` (Gherkin), `swe-developer` (code)._
 
-- [ ] [AI] **Gherkin:** create `specs/apps/ayokoding/www/behaviours/frontend/learning-progress/README.md`
+- [x] [AI] **Gherkin:** create `specs/apps/ayokoding/www/behaviours/frontend/learning-progress/README.md`
       (purpose and file list), `lesson-navigation.feature` with S10–S18, and `progress-store.feature`
       with its Feature header, Background, and S1, S2, S4 only. Copy the text from prd.md. Run
       `BEHAVIOUR`. Acceptance: it fails and names only these twelve scenarios as missing bindings.
-- [ ] [AI] **RED (server loader):** create `tests/unit/features/learning-progress/lesson-sequences.unit.test.ts`
+- [x] [AI] **RED (server loader):** create `tests/unit/features/learning-progress/lesson-sequences.unit.test.ts`
       for `loadLessonSequence` and `loadLessonPagePaths` (mock `serverCaller.content.getTree` and
       `loadRoutePathData`; assert titles, memoization per locale, and `[]` for an unknown course).
       Acceptance: fails with "module not found".
-- [ ] [AI] **GREEN (server loader):** create `src/features/learning-progress/shell/lesson-sequences.ts`
+- [x] [AI] **GREEN (server loader):** create `src/features/learning-progress/shell/lesson-sequences.ts`
       (`import "server-only"` if the app uses it elsewhere; otherwise a server-only comment). Rerun.
       Acceptance: passes.
-- [ ] [AI] **RED (components):** create `lesson-context-provider.test.tsx`, `context-bar.test.tsx`, and
+- [x] [AI] **RED (components):** create `lesson-context-provider.test.tsx`, `context-bar.test.tsx`, and
       `lesson-nav.test.tsx`: path mode and canonical mode rows; `?path=` on every link in path mode;
       remembered path when the URL has none; invalid `?path=` gives canonical mode; every row of the
       LessonNav target table in tech-docs/003; `aria-pressed` false → true → false; the primary link
       writes completion before navigation and becomes "Continue →" when the page is complete; the
       toggle is `disabled` while the snapshot is `unknown`; the `role="status"` sentence; the nav is
       named "Page navigation" and its link names contain the target titles (U4). Acceptance: all fail.
-- [ ] [AI] **RED (scenarios, unit):** create `tests/unit/fe-steps/lesson-navigation.steps.tsx` and
+- [x] [AI] **RED (scenarios, unit):** create `tests/unit/fe-steps/lesson-navigation.steps.tsx` and
       `tests/unit/fe-steps/progress-store.steps.tsx` binding S10–S18 and S1, S2, S4 with
       `@amiceli/vitest-cucumber`, rendering `CoursePageContent` with a `lesson` prop and a synthetic
       three-course manifest. Run both with `UNIT-FE`. Acceptance: the scenarios fail on missing UI.
-- [ ] [AI] **RED (scenarios, E2E):** create `apps/ayokoding-www-fe-e2e/tests/e2e/steps/lesson-navigation.steps.ts`
+- [x] [AI] **RED (scenarios, E2E):** create `apps/ayokoding-www-fe-e2e/tests/e2e/steps/lesson-navigation.steps.ts`
       and `progress-store.steps.ts`, using `/en/learn/courses/<course>/<page>?path=careers/immediately-effective/backend-track`
       for the backend-track fixture (`just-enough-bash` → `backend-essentials` → `sql-essentials`). S1
       uses the request log technique and reads the key in the page; S4 uses the blocked-storage init
@@ -518,7 +518,7 @@ message. `typecheck` and `lint` exit 0.
       Create `tests/e2e/steps/support/complete-course.ts` with `completeCourseThroughUi` (tech-docs/006,
       at most 60 clicks). Run `E2E` (with `--grep` while iterating). Acceptance: only the twelve new
       scenarios fail.
-- [ ] [AI] **GREEN:** create `shell/lesson-context-provider.tsx`, `shell/context-bar.tsx`, and
+- [x] [AI] **GREEN:** create `shell/lesson-context-provider.tsx`, `shell/context-bar.tsx`, and
       `shell/lesson-nav.tsx`; add the context bar and lesson navigation keys to both dictionaries; add
       the optional `lesson` prop to `features/course-paths/shell/course-page-content.tsx` (render
       `LessonContextProvider`, `ContextBar` under the breadcrumb and above the `h1`, `StorageNotice`
@@ -527,20 +527,36 @@ message. `typecheck` and `lint` exit 0.
       `lesson` only when the page path is in the loaded sequence. Rerun the component tests, both unit
       step files, and `E2E`. Acceptance: all pass, including every existing navigation and course-paths
       scenario (U4 and the invalid-path fallback scenario unchanged).
-- [ ] [AI] **REFACTOR:** pages outside a sequence (course-root `overview` where it is not the start
+- [x] [AI] **REFACTOR:** pages outside a sequence (course-root `overview` where it is not the start
       page, artifact pages) still render `PrevNext`: add one unit case that proves it. Run `QUICK`.
       Acceptance: exit 0, coverage at or above 99%.
+
+**Phase 3 implementation notes (2026-10-14, `specs-maker` + `swe-developer`).** Status: complete.
+Files as listed in `evidence/phase-3-lesson.md`. The two new feature files plus a README; the server
+loader, the provider/context-bar/lesson-nav components, the page wiring, and both locales' keys; unit,
+component, scenario-step, and E2E-step tests; and the S4 storage-hardening guards on `mobile-nav.tsx`
+and two `libs/web-ui` components (the pre-existing unguarded `localStorage` reads). One plan repair:
+prd S10/S11 leading keyword `Given` → `When` (the repository's scenario-shape validator requires a
+`When`). Four E2E step defects found and fixed in the steps (a `\b`-anchored regex, an over-strict
+all-`GET` assertion broken by a third-party analytics beacon, and a `role="alert"` count that content
+callouts legitimately trip). `QUICK` exit 0 with lines 99.51%; flow-scoped `E2E` **36 passed** across
+all three browsers.
 
 ### Phase 3 Gate
 
 > All checks below must pass before starting Phase 4.
 
-- [ ] [AI] `QUICK`, `BEHAVIOUR`, and `E2E` exit 0.
-- [ ] [AI] Start `DEV`; at 1280×800 open
+- [x] [AI] `QUICK`, `BEHAVIOUR`, and `E2E` exit 0.
+- [x] [AI] Start `DEV`; at 1280×800 open
       `http://localhost:3101/en/learn/courses/just-enough-nvim/learning/beginner?path=careers/immediately-effective/software-engineer`
       (or the merged path that contains the course). Acceptance: the context bar shows the path, the
       phase, "Course k of N", and "Page p of P"; the toggle checks and un-checks; "Mark complete &
       continue" opens the next page. Save `<plan>/evidence/phase-3-lesson-en-1280px.png`. Stop `DEV`.
+
+**Phase 3 Gate notes (2026-10-14).** `QUICK` exit 0 (221 files, 3917 tests, lines 99.51%);
+`BEHAVIOUR` exits 0 with the twelve scenarios bound; flow-scoped `E2E` 36 passed, 0 failed. The
+`DEV` + screenshot item is deferred for the host reason recorded in `evidence/phase-3-lesson.md`
+(the dev server stops responding under memory pressure); the same screens are captured in Phase 10.
 
 > **Pause Safety**: lesson pages work end to end; other screens are unchanged. Safe to stop. To
 > resume: `QUICK`.

@@ -2,6 +2,10 @@ import { Breadcrumb } from "@/features/navigation/shell/breadcrumb";
 import { TableOfContents } from "@/features/navigation/shell/toc";
 import { PrevNext } from "@/features/navigation/shell/prev-next";
 import { MarkdownRenderer } from "@/features/content/shell/markdown-renderer";
+import { ContextBar } from "@/features/learning-progress/shell/context-bar";
+import { LessonContextProvider, type LessonProps } from "@/features/learning-progress/shell/lesson-context-provider";
+import { LessonNav } from "@/features/learning-progress/shell/lesson-nav";
+import { StorageNotice } from "@/features/learning-progress/shell/storage-notice";
 import { PrerequisiteList } from "./prerequisite-list";
 import { PathCourseLinks } from "./path-course-links";
 import { PathBanner } from "./path-banner";
@@ -24,6 +28,12 @@ export interface CoursePageContentProps {
   courseId?: string;
   /** Plan 03: present only on a course root page; renders the header above the contents. */
   courseHeader?: CourseHeaderData;
+  /**
+   * Plan 04: present only when this page is part of its course's lesson sequence. It swaps the
+   * page's chrome for the lesson context bar (above the `h1`) and the lesson action row (in place
+   * of `PrevNext`). Pages outside a sequence keep today's render untouched.
+   */
+  lesson?: LessonProps;
 }
 
 /**
@@ -42,6 +52,7 @@ export function CoursePageContent({
   renderData,
   courseId,
   courseHeader,
+  lesson,
 }: CoursePageContentProps) {
   const activeContext = renderData.activeContext;
   const pathContext =
@@ -60,68 +71,83 @@ export function CoursePageContent({
         1;
   const totalCourses = activeContext?.manifest.courseOrder.length;
 
-  return (
-    <>
-      <article className="min-w-0 flex-1 px-6 py-8 lg:px-8">
-        <Breadcrumb
+  const page = (
+    <article className="min-w-0 flex-1 px-6 py-8 lg:px-8">
+      <Breadcrumb
+        locale={locale}
+        slug={slug}
+        segments={breadcrumbSegments}
+        showCurrent={pathContext !== undefined}
+        pathContext={pathContext}
+      />
+
+      {lesson === undefined ? null : (
+        <>
+          <ContextBar />
+          <StorageNotice locale={lesson.locale} />
+        </>
+      )}
+
+      <h1 className="mb-6 text-4xl font-extrabold tracking-tight">{title}</h1>
+
+      {pathContext !== undefined && coursePosition !== undefined && totalCourses !== undefined && (
+        <PathBanner
           locale={locale}
-          slug={slug}
-          segments={breadcrumbSegments}
-          showCurrent={pathContext !== undefined}
-          pathContext={pathContext}
+          pathTitle={pathContext.pathTitle}
+          courseIndex={coursePosition}
+          totalCourses={totalCourses}
         />
+      )}
 
-        <h1 className="mb-6 text-4xl font-extrabold tracking-tight">{title}</h1>
-
-        {pathContext !== undefined && coursePosition !== undefined && totalCourses !== undefined && (
-          <PathBanner
+      {courseHeader ? (
+        <>
+          <CourseHeader
             locale={locale}
-            pathTitle={pathContext.pathTitle}
-            courseIndex={coursePosition}
-            totalCourses={totalCourses}
+            data={courseHeader}
+            prerequisites={renderData.prerequisiteLinks}
+            pathBadges={renderData.pathBadges}
+            showPathBadges={pathContext === undefined}
+            activePathId={renderData.activeContext?.pathId}
           />
-        )}
+          <h2 className="mb-4 text-2xl font-bold tracking-tight">{t(locale as Locale, "courseContents")}</h2>
+        </>
+      ) : null}
 
-        {courseHeader ? (
-          <>
-            <CourseHeader
-              locale={locale}
-              data={courseHeader}
-              prerequisites={renderData.prerequisiteLinks}
-              pathBadges={renderData.pathBadges}
-              showPathBadges={pathContext === undefined}
-              activePathId={renderData.activeContext?.pathId}
-            />
-            <h2 className="mb-4 text-2xl font-bold tracking-tight">{t(locale as Locale, "courseContents")}</h2>
-          </>
-        ) : null}
+      <MarkdownRenderer html={html} locale={locale} />
 
-        <MarkdownRenderer html={html} locale={locale} />
+      {courseHeader ? null : <PrerequisiteList locale={locale} prerequisites={renderData.prerequisiteLinks} />}
 
-        {courseHeader ? null : <PrerequisiteList locale={locale} prerequisites={renderData.prerequisiteLinks} />}
+      {courseHeader
+        ? null
+        : pathContext === undefined && <PathCourseLinks locale={locale} paths={renderData.pathBadges} />}
 
-        {courseHeader
-          ? null
-          : pathContext === undefined && <PathCourseLinks locale={locale} paths={renderData.pathBadges} />}
+      {date && (
+        <p className="mt-8 text-sm text-muted-foreground">
+          {t(locale as Locale, "lastUpdated")}{" "}
+          {new Date(date).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
+      )}
 
-        {date && (
-          <p className="mt-8 text-sm text-muted-foreground">
-            {t(locale as Locale, "lastUpdated")}{" "}
-            {new Date(date).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-        )}
-
+      {lesson === undefined ? (
         <PrevNext
           locale={locale}
           prev={renderData.prev}
           next={renderData.next}
           pathId={renderData.activeContext?.pathId}
         />
-      </article>
+      ) : (
+        <LessonNav />
+      )}
+    </article>
+  );
+
+  const chrome = (
+    <>
+      {page}
 
       <aside className="hidden w-[200px] shrink-0 xl:block">
         <div className="sticky top-20 p-4">
@@ -130,4 +156,9 @@ export function CoursePageContent({
       </aside>
     </>
   );
+
+  // One provider instance serves both the bar above the `h1` and the action row at the foot of the
+  // page, so the runtime-manifest read, the active-path resolution, and the visit record each
+  // happen once (tech-docs/004, tech-docs/003 visit recording).
+  return lesson === undefined ? chrome : <LessonContextProvider {...lesson}>{chrome}</LessonContextProvider>;
 }

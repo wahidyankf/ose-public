@@ -52,5 +52,14 @@ export function CoursePagePathContent({
   const renderData =
     runtimeRenderData?.activeContext === null ? canonicalRenderData : (runtimeRenderData ?? canonicalRenderData);
 
-  return <CoursePageContent {...page} courseId={courseId} renderData={renderData} />;
+  return (
+    <CoursePageContent
+      {...page}
+      courseId={courseId}
+      renderData={renderData}
+      // The provider resolves the path context from the URL itself (tech-docs/003 active path
+      // rule), so the live `?path=` value has to reach it here rather than in the static shell.
+      lesson={page.lesson === undefined ? undefined : { ...page.lesson, pathParam: searchParams.get("path") }}
+    />
+  );
 }

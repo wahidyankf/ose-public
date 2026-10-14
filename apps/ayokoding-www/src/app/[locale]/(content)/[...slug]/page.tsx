@@ -16,7 +16,11 @@ import {
   buildArcTitleIndex,
   pageLinkForCourseId,
   humanizeKebabSlug,
+  EMPTY_COURSE_PATH_CLIENT_DATA,
 } from "@/features/course-paths/shell/course-path-nav";
+import { courseLocationFromSlug } from "@/features/learning-progress/core/course-location";
+import { loadLessonSequence } from "@/features/learning-progress/shell/lesson-sequences";
+import type { LessonProps } from "@/features/learning-progress/shell/lesson-context-provider";
 import { loadRoutePathData } from "@/features/course-paths/shell/route-path-data";
 import { CoursePageContent } from "@/features/course-paths/shell/course-page-content";
 import { CoursePagePathContent } from "@/features/course-paths/shell/course-page-path-content";
@@ -400,6 +404,8 @@ export default async function ContentPage({ params }: Props) {
     courseHeader = buildCourseHeaderData(pathData.contentMap, trees[locale] ?? [], rootId, locale) ?? undefined;
   }
 
+  const lesson = await buildLessonProps(locale, slugStr, pathData);
+
   return (
     <Suspense
       fallback={
@@ -408,6 +414,7 @@ export default async function ContentPage({ params }: Props) {
           courseId={courseId}
           renderData={canonicalCourseRenderData}
           courseHeader={courseHeader}
+          lesson={lesson}
         />
       }
     >
@@ -418,9 +425,43 @@ export default async function ContentPage({ params }: Props) {
         canonicalRenderData={canonicalCourseRenderData}
         fallbackPrev={page.prev}
         fallbackNext={page.next}
+        lesson={lesson}
       />
     </Suspense>
   );
+}
+
+/**
+ * The lesson chrome (plan 04, tech-docs/001 route dispatch step 3): a `lesson` prop only when this
+ * page is one of its course's lesson-sequence pages. Every other page — the course root, the
+ * course-root `overview` where it is not the start page, and artifact pages — keeps today's render.
+ */
+async function buildLessonProps(
+  locale: string,
+  slugStr: string,
+  pathData: Awaited<ReturnType<typeof loadRoutePathData>>,
+): Promise<LessonProps | undefined> {
+  const location = courseLocationFromSlug(slugStr);
+  if (location === null || location.pagePath === null) {
+    return undefined;
+  }
+
+  const sequence = await loadLessonSequence(locale, location.courseId);
+  if (!sequence.some((page) => page.pagePath === location.pagePath)) {
+    return undefined;
+  }
+
+  const courseTitle =
+    pageLinkForCourseId(pathData.contentMap, locale, location.courseId)?.title ?? humanizeKebabSlug(location.courseId);
+
+  return {
+    locale,
+    courseId: location.courseId,
+    courseTitle,
+    pagePath: location.pagePath,
+    sequence,
+    initialPathData: EMPTY_COURSE_PATH_CLIENT_DATA,
+  };
 }
 
 function buildBreadcrumbs(

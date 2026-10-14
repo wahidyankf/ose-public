@@ -462,6 +462,24 @@ export const translations: Record<Locale, Record<string, string>> = {
     progressPagesDone: "{done} of {total} pages done",
     progressStorageUnavailable: "Progress can't be saved in this browser. It lasts until you close this tab.",
 
+    // Learning progress — lesson context bar and action row (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 3). Every key in this block MUST exist
+    // in both locales, like the progress keys above.
+    contextBarLabel: "Lesson location",
+    contextCourseOf: "Course {position} of {total}",
+    contextPageOf: "Page {position} of {total}",
+    lessonPrevious: "Previous: {title}",
+    lessonMarkComplete: "Mark as complete",
+    lessonCompleted: "Completed",
+    lessonMarkCompleteContinue: "Mark complete & continue",
+    lessonContinue: "Continue",
+    lessonNextPage: "Next: {title}",
+    lessonNextCourse: "Next course: {title}",
+    lessonBackToPath: "Back to the path",
+    lessonBackToCourse: "Back to the course",
+    lessonAnnounceComplete: "{title} marked as complete. {done} of {total} pages done.",
+    lessonAnnounceIncomplete: "{title} marked as not complete. {done} of {total} pages done.",
+
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Resize panel",
 
@@ -930,6 +948,23 @@ export const translations: Record<Locale, Record<string, string>> = {
     progressPagesDone: "{done} dari {total} halaman selesai",
     progressStorageUnavailable:
       "Progres tidak bisa disimpan di browser ini. Progres hanya bertahan sampai tab ini ditutup.",
+
+    // Learning progress — lesson context bar and action row (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 3). See the en block.
+    contextBarLabel: "Lokasi pelajaran",
+    contextCourseOf: "Kursus {position} dari {total}",
+    contextPageOf: "Halaman {position} dari {total}",
+    lessonPrevious: "Sebelumnya: {title}",
+    lessonMarkComplete: "Tandai selesai",
+    lessonCompleted: "Sudah selesai",
+    lessonMarkCompleteContinue: "Tandai selesai & lanjutkan",
+    lessonContinue: "Lanjutkan",
+    lessonNextPage: "Berikutnya: {title}",
+    lessonNextCourse: "Kursus berikutnya: {title}",
+    lessonBackToPath: "Kembali ke jalur",
+    lessonBackToCourse: "Kembali ke kursus",
+    lessonAnnounceComplete: "{title} ditandai selesai. {done} dari {total} halaman selesai.",
+    lessonAnnounceIncomplete: "{title} ditandai belum selesai. {done} dari {total} halaman selesai.",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Ubah ukuran panel",

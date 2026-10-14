@@ -13,7 +13,12 @@ const ThemeToggle = ({
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    const theme = localStorage.getItem("theme");
+    let theme: string | null = null;
+    try {
+      theme = localStorage.getItem("theme");
+    } catch {
+      theme = null;
+    }
     setIsDark(theme !== "light");
     document.documentElement.classList.toggle("light-theme", theme === "light");
   }, []);
@@ -21,7 +26,11 @@ const ThemeToggle = ({
   const toggleTheme = () => {
     const newTheme = isDark ? "light" : "dark";
     setIsDark(!isDark);
-    localStorage.setItem("theme", newTheme);
+    try {
+      localStorage.setItem("theme", newTheme);
+    } catch {
+      // Storage can be blocked; the theme still applies for this session.
+    }
     document.documentElement.classList.toggle("light-theme");
   };
 

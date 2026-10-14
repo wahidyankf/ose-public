@@ -22,22 +22,37 @@ if (!contains(snapshotRoot, configPath)) {
 
 const config = JSON.parse(readFileSync(configPath, "utf8"));
 const resolver = createRequire(resolve(repositoryRoot, "package.json"));
-const plugins = config.plugins ?? [];
 
-if (!Array.isArray(plugins) || !plugins.every((plugin) => typeof plugin === "string")) {
-  throw new Error("the Prettier plugin list must contain only package names");
+// Prettier loads a plugin named anywhere in the configuration, so the top-level list and every
+// override's list pass through the same resolution and the same refusals.
+const resolvePlugins = (plugins) => {
+  if (!Array.isArray(plugins) || !plugins.every((plugin) => typeof plugin === "string")) {
+    throw new Error("the Prettier plugin list must contain only package names");
+  }
+
+  return plugins.map((plugin) => {
+    if (isAbsolute(plugin) || plugin.includes("..")) {
+      throw new Error("the Prettier plugin list must not contain path-shaped entries");
+    }
+    const resolved = resolver.resolve(plugin);
+    if (!contains(nodeModulesDirectory, resolved)) {
+      throw new Error(`the Prettier plugin resolves outside node_modules: ${plugin}`);
+    }
+    return resolved;
+  });
+};
+
+config.plugins = resolvePlugins(config.plugins ?? []);
+
+const overrides = config.overrides ?? [];
+if (!Array.isArray(overrides)) {
+  throw new Error("the Prettier overrides must be a list");
 }
-
-config.plugins = plugins.map((plugin) => {
-  if (isAbsolute(plugin) || plugin.includes("..")) {
-    throw new Error("the Prettier plugin list must not contain path-shaped entries");
+for (const override of overrides) {
+  if (override?.options?.plugins !== undefined) {
+    override.options.plugins = resolvePlugins(override.options.plugins);
   }
-  const resolved = resolver.resolve(plugin);
-  if (!contains(nodeModulesDirectory, resolved)) {
-    throw new Error(`the Prettier plugin resolves outside node_modules: ${plugin}`);
-  }
-  return resolved;
-});
+}
 
 if (typeof config.tailwindStylesheet === "string") {
   if (isAbsolute(config.tailwindStylesheet)) {

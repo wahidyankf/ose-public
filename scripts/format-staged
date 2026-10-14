@@ -12,7 +12,6 @@ go_paths=()
 elixir_paths=()
 csharp_paths=()
 dart_paths=()
-java_paths=()
 shell_paths=()
 tofu_paths=()
 lua_paths=()
@@ -46,7 +45,7 @@ for path in "$@"; do
   [[ -f "$path" ]] || continue
 
   case "$path" in
-    *.md | *.js | *.jsx | *.ts | *.tsx | *.mjs | *.cjs | *.json | *.yml | *.yaml | *.css | *.scss | *.html | *.sql)
+    *.md | *.js | *.jsx | *.ts | *.tsx | *.mjs | *.cjs | *.json | *.yml | *.yaml | *.css | *.scss | *.html | *.sql | *.java)
       prettier_paths+=("$path")
       ;;
     *.rs) rust_paths+=("$path") ;;
@@ -56,7 +55,6 @@ for path in "$@"; do
     *.ex | *.exs) elixir_paths+=("$path") ;;
     *.cs) csharp_paths+=("$path") ;;
     *.dart) dart_paths+=("$path") ;;
-    *.java) java_paths+=("$path") ;;
     *.sh) shell_paths+=("$path") ;;
     *.tf) tofu_paths+=("$path") ;;
     *.lua) lua_paths+=("$path") ;;
@@ -95,7 +93,6 @@ fi
 (( ${#elixir_paths[@]} == 0 )) || scripts/format-elixir.sh "${elixir_paths[@]}"
 (( ${#csharp_paths[@]} == 0 )) || csharpier format "${csharp_paths[@]}"
 (( ${#dart_paths[@]} == 0 )) || dart format "${dart_paths[@]}"
-(( ${#java_paths[@]} == 0 )) || scripts/format-java.sh "${java_paths[@]}"
 (( ${#shell_paths[@]} == 0 )) || shfmt -w "${shell_paths[@]}"
 (( ${#tofu_paths[@]} == 0 )) || tofu fmt "${tofu_paths[@]}"
 (( ${#lua_paths[@]} == 0 )) || stylua "${lua_paths[@]}"

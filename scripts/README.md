@@ -56,16 +56,21 @@ offline suite runs as the `leak-review-tests` gate.
 
 ## Which gates invoke these
 
-| Gate id         | Command                                                 | Surface                                     |
-| --------------- | ------------------------------------------------------- | ------------------------------------------- |
-| `format-staged` | `scripts/format-staged` (calls both formatter wrappers) | pre-commit (staged), pull-request (changed) |
+| Gate id         | Command                                                      | Surface                                     |
+| --------------- | ------------------------------------------------------------ | ------------------------------------------- |
+| `format-staged` | `scripts/format-staged` (calls the Elixir formatter wrapper) | pre-commit (staged), pull-request (changed) |
 
 At pre-commit Rhino applies the formatted bytes to the index; on the pull-request surface it
 replays `format-staged` and fails on any change, so no separate verify gate exists.
 
-Both wrappers serve `apps/ayokoding-www/content/**`, where the kata corpora are written —
+The Elixir wrapper serves `apps/ayokoding-www/content/**`, where the kata corpora are written —
 Go, Elixir, and the other teaching languages ship as course content rather than as built
-projects, and their formatters run so that content stays consistently formatted.
+projects, and their formatters run so that content stays consistently formatted. `*.java` needs
+no wrapper: `format-staged` routes it through the shared Prettier call with `prettier-plugin-java`,
+which formats a path that has no Gradle project. `.prettierrc.json` loads that plugin only for
+`*.java` through an `overrides` entry, because a plugin loaded everywhere would also reformat the
+Java code fences in Markdown; `prettier-snapshot-config.mjs` resolves an override's plugin names
+exactly like the top-level ones.
 
 ## Adding a script here
 

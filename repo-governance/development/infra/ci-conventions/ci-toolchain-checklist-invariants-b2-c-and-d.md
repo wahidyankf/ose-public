@@ -7,10 +7,10 @@ when_to_use: "Use when checking lifecycle execution or the Rhino command surface
 
 ## Invariant B2 — Closed Fast Gates
 
-Pre-commit runs staged deterministic checks only. Pre-push and PR/main run affected
+Pre-commit runs staged deterministic checks only. Pre-push and the PR gate run affected
 `test:quick --parallel=1`. Quick includes every applicable static `test:coverage:*` validator and
 Unit runtime for each behaviour owner. Integration/E2E runtime is unreachable directly or
-transitively from hooks, PR/main gates, quick, and coverage validators.
+transitively from hooks, PR gates, quick, and coverage validators.
 
 Developers run impacted higher-layer scenarios manually. Scheduled/manual full-quality CI runs all
 static validators, complete Integration, then complete unfiltered E2E. Each path fails closed.

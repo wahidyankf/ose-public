@@ -3,18 +3,16 @@ name: pr-quality-gate
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-  push:
-    branches: [main]
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 env:
-  NX_BASE: ${{ github.event_name == 'push' && github.event.before || format('origin/{0}', github.base_ref) }}
+  NX_BASE: origin/${{ github.base_ref }}
   NX_HEAD: ${{ github.sha }}
 
 jobs:
@@ -91,8 +89,8 @@ jobs:
           npx nx run ferret-cli:install
       - name: Verify the declared lifecycle surface
         env:
-          RHINO_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
-          RHINO_HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          RHINO_BASE: ${{ github.event.pull_request.base.sha }}
+          RHINO_HEAD: ${{ github.event.pull_request.head.sha }}
           RHINO_GATE_SURFACE: pull-request
         run: |
           set -euo pipefail

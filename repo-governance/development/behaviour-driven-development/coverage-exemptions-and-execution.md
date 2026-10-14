@@ -62,7 +62,7 @@ and the runtime uncalled-scenario check fail against each other.
 ## Execution Surfaces
 
 Pre-commit runs deterministic staged-file checks only. Pre-push runs affected `test:quick` targets
-with `--parallel=1`. PR/main quality gates may use explicitly bounded project parallelism suitable
+with `--parallel=1`. The PR quality gate may use explicitly bounded project parallelism suitable
 for their shard, while each project's quick target preserves its ordered composition. Neither
 surface runs Integration or E2E runtime. During development and review, run impacted
 Integration/E2E scenarios manually; widen uncertainty to the affected project, not automatically

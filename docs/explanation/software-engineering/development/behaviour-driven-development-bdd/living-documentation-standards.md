@@ -30,9 +30,9 @@ Every active scenario has mandatory Unit proof and must not use `@pending` or `@
 
 ## REQUIRED: Scenario Proof Runs on the Correct CI Surface
 
-**REQUIRED**: Pull-request and main gates run affected `test:quick`: Unit runtime with its 99% line
+**REQUIRED**: The pull-request gate runs affected `test:quick`: Unit runtime with its 99% line
 gate plus every applicable static `test:coverage:*` validator. Complete Integration and E2E runtime
-stay outside these fast gates and run only in scheduled or manually dispatched full-quality CI.
+stay outside this fast gate and run only in scheduled or manually dispatched full-quality CI.
 
 **REQUIRED**: A failing Unit scenario or static binding validator blocks merge to main. A failing
 Integration or E2E scenario fails its scheduled/manual full-quality run and blocks any downstream

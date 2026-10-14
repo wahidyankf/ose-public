@@ -75,12 +75,12 @@ formatter fixes.
 ## CI relationship
 
 Pre-commit runs deterministic checks only. Pre-push runs only its declared gates; neither hook
-runs `test:quick`. The `pr-quality-gate.yml` workflow, on every pull request and push to `main`,
-runs the `pull-request` surface in its `Repository policy` job through
+runs `test:quick`. The `pr-quality-gate.yml` workflow, on every pull request, runs the
+`pull-request` surface in its `Repository policy` job through
 `./rhino gate run --surface pull-request --base <sha> --head <sha>`, and runs affected
 `typecheck`, `lint`, and `test:quick` in its language-detected jobs. Quick includes Unit runtime
 for every behaviour owner and all applicable static `test:coverage:*` validators. Neither a hook
-nor PR/main may invoke Integration or E2E runtime directly or transitively; scheduled/manual
+nor the PR gate may invoke Integration or E2E runtime directly or transitively; scheduled/manual
 full-quality workflows own complete Integration and E2E execution.
 
 ## Bypass policy

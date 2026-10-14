@@ -1,107 +1,83 @@
 ---
-description: "Defines a leak and reviews every commit bound for the remote for one: privately before each push, and as one sanitized record posted for each PR head before merge."
-when_to_use: "Use before every push to the remote, and for every open pull request before merge and again whenever its head changes."
+name: pr-leak-review
+description: >-
+  Defines a leak and reviews every commit bound for a remote for one, privately before each push and before each merge,
+  with the delivery harness acting on the verdict.
+when_to_use: >-
+  Use before every push to a remote, and for every open pull request before merge and whenever its head moves.
 ---
 
-# PR Leak Review Workflow
+# PR Leak Review
 
-A **leak** is anything in outbound history that a reader of the remote could use to reach an
-environment or identify the machine it came from. [Scope and Exclusions](./pr-leak-review/001-scope-and-exclusions.md)
-defines the three classes and what is not one. History is the subject, not the final tree: a value
-added and later deleted remains in every clone. The review binds from adoption onward; earlier
-published history is out of scope.
+A **leak** is anything in outbound history a reader of the remote could use to reach an environment or identify its
+source machine. [Leak Classes](pr-leak-review/001-scope-and-exclusions.md) defines the three classes and what is not one.
+History is the subject, not the final tree: a value added and later deleted remains in every clone. The review binds
+from adoption onward; earlier published history is out of scope.
 
-It performs no broad security or semantic review, fixer pass, CI wait, retry, or consecutive-clean
-confirmation. Judgement is delegated: the harness spawns a fresh-context subagent running
-[`pr-review-security-checker`](../../../.agents/agents/pr-review-security-checker.md) in **exact leak-only mode** —
-no part in authoring the change, no memory of an earlier head or range, read-only, never posting — and then posts that
-verdict unchanged on behalf of the repository owner (merge entry) or acts on it privately (push entry). No human is on
-the merge path; a self-judged verdict satisfies nothing. Adopted from the shared catalog at
-`f452d6190911f29f5898ecb2e991c89412afa426`; the local module names stand.
+Judgement is delegated: the delivery harness spawns a fresh-context `leak-reviewer` agent to read and judge, and the
+harness alone acts on the verdict. No human is on the merge path; a self-judged verdict satisfies nothing.
 
 ## Entry
 
-Two entries share one judgement:
+Two entry points share one judgement:
 
-- **Push.** Before any push, review the outgoing range privately per
-  [Push Review](./pr-leak-review/002-push-review.md): nothing is posted, and a finding blocks the push.
-- **Merge.** A pull request is open and no owner `pass` record exists for its current head. The delivery harness runs
-  [Execution](./pr-leak-review/003-execution.md), then
-  [Evidence and Outcomes](./pr-leak-review/004-evidence-and-outcomes.md) for that head before merge.
+- **Push.** Before any push to a remote, review the outgoing range privately per
+  [Push Review](pr-leak-review/002-push-review.md). Nothing is posted; a finding blocks the push.
+- **Merge.** A pull request is about to merge, and the harness holds no `pass` verdict for its current head. The
+  delivery harness runs this workflow for that head before merge. `pull-request` (`string`, required): its number or
+  address.
 
-## Goal and Termination
+## Sequence
 
-**Goal**: Detect real leaks in every outbound commit without broad semantic review
+1. **Pin the head.** The harness resolves the pull request through the forge's API and records the repository, base
+   branch and revision, and exact head revision. Later steps concern that head alone.
+2. **Spawn a fresh-context reviewer.** One `leak-reviewer` for this head alone: no part in authoring the change, no
+   memory of an earlier head, read-only, never posting. It receives only the pin, the title and body, and the three leak
+   classes. A failed spawn ends the run as `failed`; no self-judging fallback, and no human substitutes.
+3. **Read every commit at that head.** The reviewer reads each base-to-head diff (configuration, generated files,
+   localized content, binary metadata, file names, messages) plus the title and body. A summary or memory is not a
+   reading, and no file is skipped because another gate covers it.
+4. **Judge candidates against the three [leak classes](pr-leak-review/001-scope-and-exclusions.md) and no others.** A candidate
+   is a finding only when shape and context show the value is real. Never copy one into notes, commands, or logs.
+5. **Return each finding without its value.** The reviewer returns the result, the count per class, and each finding's
+   class, commit, location, reason, and remediation per [Push Review](pr-leak-review/002-push-review.md#remediation),
+   never the value in any form.
+6. **Confirm the head before acting.** If the live head differs from the pin, end as `stale`.
+7. **Gate on the verdict.** The harness merges or pushes only on `pass`, after a second live-head check immediately
+   before the action. A `findings`, `failed`, or `stale` outcome refuses it.
+8. **Post an optional audit comment.** On the merge entry, after a `pass` or `findings` verdict, the harness may post
+   one comment on the pull request holding only the pinned head, the result, and the per-class counts. It is non-gating:
+   no check, status, or review is posted, and nothing reads the comment as authority.
 
-**Termination**: Push entry: push or remediate. Merge entry: return pass/findings after one authenticated current-head review, or stale/failed without retrying inside the run
+## Exit
 
-## Inputs
+The run ends with `result` (`enum`: `pass`, `findings`, `stale`, `failed`), `reviewed-head` (`string`), and `counts` per
+class. `pass` means every count is zero; `findings`, any nonzero count. Only `pass` for the head about to merge or push
+lets the harness proceed; every other result refuses it.
 
-- **`pr`** (string, required for the merge entry) — Open PR number or URL
-- **`range`** (string, required for the push entry) — The outgoing range of each ref the push updates
-
-## Outputs
-
-- **`final-status`** (enum: pass, findings, stale, failed) — Leak-review result for the pinned head
-- **`reviewed-head`** (string) — Exact PR head SHA reviewed
-- **`review-id`** (string) — Authenticated GitHub review ID, or null before posting
-- **`finding-counts`** (string) — Sanitized counts by leak class
-- **`evidence`** (string) — Authenticated `ose-pr-leak-review:v1` current-head evidence
-
-## Contents
-
-Read in order; the [module index](./pr-leak-review/README.md) carries it.
-
-- [Scope and Exclusions](./pr-leak-review/001-scope-and-exclusions.md) — the three leak classes and
-  what is not one.
-- [Push Review](./pr-leak-review/002-push-review.md) — the private range review and remediation.
-- [Execution](./pr-leak-review/003-execution.md) — pinning, reading, judging, posting.
-- [Evidence and Outcomes](./pr-leak-review/004-evidence-and-outcomes.md) — the record and terminal states.
-- [Enforcement](./pr-leak-review/005-enforcement.md) — the screen, the checks, and adopter decisions.
-
-Merge requires one authenticated `ose-pr-leak-review:v1` `pass` for the PR's exact current
-coordinates, published as the `leak-review` commit status. A moved head needs one new pass, never a
-clean streak.
+`stale` means the head moved and authorizes nothing for the new head. `failed` means a spawn, API, or read error left no
+verdict. Neither retries within the run.
 
 ## Example Usage
 
 ```text
-Run pr-leak-review for the current head of PR 412.
-Run the push leak review for this branch's outgoing commits.
+Run pr-leak-review for the current head of pull request 412.
+Run the push leak review on this branch's outgoing commits.
 ```
 
 ## Related Workflows
 
-- [`pr-review`](./pr-review.md) — optional broad pass that delegates these exact predicates.
-- [`pr-review-quality-gate`](./pr-review-quality-gate.md) — optional iterative workflow that consumes the same
-  evidence without duplicating the scan.
+- [`pr-review`](pr-review.md) is the optional broad pass; it never repeats these predicates.
 
-## Success Criteria
+## One Head, One Review
 
-```gherkin
-Scenario: Current head contains no leak
-  Given an open pull request at a pinned head
-  When exact leak-only review of every commit finds no real leak
-  Then it posts one sanitized COMMENT review
-  And authenticated current-head ose-pr-leak-review:v1 evidence reports pass
-  And the leak-review commit status on that head is success
+A moved head needs one new review from a new `leak-reviewer` spawn. Earlier verdicts say nothing about the head about to
+merge, so the run neither retries nor waits for a clean streak. The optional comment is an audit trail that nothing
+reads as authority. [Enforcement](pr-leak-review/003-enforcement.md) records how the harness refuses every outcome
+except `pass`.
 
-Scenario: A commit adds a value a later commit deletes
-  Given an outgoing range whose final files are clean
-  And one commit in it added a real machine-specific absolute path
-  When the push review runs
-  Then the push is blocked
-  And the unpushed history is rewritten so no commit carries the value
+## Principles
 
-Scenario: Current head contains a protected value
-  Given a commit in the PR adds a real production credential
-  When exact leak-only review reports it
-  Then the finding names only class, commit, location, and remediation
-  And no output repeats or transforms the credential
-
-Scenario: Head moves during review
-  Given review began from a pinned head
-  When the PR head changes before or after posting
-  Then final-status is stale
-  And no evidence authorizes the new head
-```
+Fail Closed: `stale` and `failed` never satisfy the precondition.
+Evidence Over Assertion: the verdict is one reviewer's reading of one
+pinned head, and the harness acts on that reading alone.

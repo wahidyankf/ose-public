@@ -27,7 +27,6 @@ synthesis pass. `pr-review-fixer` never participates.
 - **`pr`** (string, required) — PR number or URL identifying the open pull request
 - **`probe-class`** (string, optional, default `general`) — Optional semantic angle supplied by an explicit caller or enclosing cycle
 - **`prior-review-state`** (string, optional, default `empty`) — Authenticated settled findings to deduplicate; empty for an independent pass
-- **`leak-review-evidence`** (string, optional, default `pending`) — Authenticated current-head ose-pr-leak-review:v1 evidence, or pending
 
 ## Outputs
 

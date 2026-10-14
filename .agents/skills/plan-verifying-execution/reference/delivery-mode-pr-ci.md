@@ -19,8 +19,8 @@ PR to be merged.
    - **PR exists** and targets `main` from the plan's branch. Missing: **CRITICAL**.
    - **Exact-head/base PR CI is green** — `.github/workflows/pr-quality-gate.yml`'s `Quality gate`
      matches the current head SHA and base. Missing, stale, pending, or failed: **CRITICAL**.
-   - **Leak review passes** — one authenticated `ose-pr-leak-review:v1` record reports `pass` for
-     that head. Missing, stale, failed, or findings-bearing evidence: **CRITICAL**. A head-changing
+   - **Leak review passes** — the delivery harness holds a `pass` verdict from a fresh-context
+     `leak-reviewer` for that head. Missing, stale, failed, or findings-bearing verdict: **CRITICAL**. A head-changing
      fix requires one new pass, never a clean streak.
    - **Semantic review is optional** — no review record is a valid default. If the user explicitly
      requested `pr-review` or `pr-review-quality-gate`, verify it ran at the PR boundary and every resulting

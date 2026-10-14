@@ -63,6 +63,6 @@ the agent stops at the secret boundary.
 
 An agent may operate the leak review only after reading every commit at the pinned head against the
 three leak classes — secret or private values, protected environment properties, machine-specific
-absolute paths; a record without that reading is fabrication. Rationale: keeping values out of the
+absolute paths; a verdict without that reading is fabrication. Rationale: keeping values out of the
 session removes value exposure, and proper pipelines earn faster delivery. Disposition: unenforced by
 automated decision — no gate enforces it; review checks the observations.

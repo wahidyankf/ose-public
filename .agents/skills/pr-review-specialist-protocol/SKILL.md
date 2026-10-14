@@ -42,9 +42,9 @@ discipline.
   sole poster of record.
 - **Quality-gate lifecycle ownership is exact** — suppress only delegated exact IDs or declared
   `verifies` relationships; pending evidence never triggers a duplicate check.
-- **Leak review has one owner** — `pr-leak-review` invokes `pr-review-security-checker` in exact
-  leak-only mode. Broad `pr-review` passes consume its authenticated current-head evidence and do
-  not duplicate secrets, protected-environment-property, or machine-path predicates.
+- **Leak review has one owner** — the `leak-reviewer` agent, run by the delivery harness under
+  `pr-leak-review`. Broad `pr-review` passes do not duplicate secrets, protected-environment-property, or
+  machine-path predicates.
 
 ## Related Skills / Agents
 

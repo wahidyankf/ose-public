@@ -1133,9 +1133,9 @@ gates:
             message:
               source: explicit-range
               range: explicit
-    # The leak review's history screen: every commit a push publishes, and every commit in a pull
+    # The history screen: every commit a push publishes, and every commit in a pull
     # request's base..head range, contributes its own additions, names, and message
-    # (repo-governance/workflows/quality/pr-leak-review/005-enforcement.md).
+    # (repo-governance/workflows/quality/pr-leak-review/003-enforcement.md).
     - id: public-safety-range
       type: check
       inputs:
@@ -1161,17 +1161,6 @@ gates:
             range:
               source: explicit-range
               range: explicit
-    - id: leak-review-tests
-      type: check
-      command:
-        executable: bash
-        args:
-          - literal: scripts/leak-review/tests/run.sh
-      # Offline and bounded (a stand-in forge), so the exact pull-request composition keeps a local
-      # surface for it.
-      run-on:
-        pre-push: {}
-        pull-request: {}
     - id: format-staged
       type: mutation
       inputs:

@@ -10,7 +10,7 @@ when_to_use: "Use when pre-push is slow or a check fails."
 **Symptom**: Pre-push hook takes too long or times out on a large push
 
 **Solution** — the hook runs only the registry-declared `pre-push` gates (today the public-safety tree
-and range screens, the leak-review tests, and environment validation) and no Nx target, so no test
+and range screens and environment validation) and no Nx target, so no test
 cache is involved. The range screen reads every outgoing commit, so a push of many commits costs
 more. Run the same gate set directly to see which gate is slow:
 

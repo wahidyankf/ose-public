@@ -26,7 +26,7 @@ availability grant here. An unmarked plan resolves to the tier-3 default (`workt
 
 **Every PR uses exact-head/base CI**: for `worktree-to-pr` and `main-to-pr`, the delivery checklist
 requires the `Quality gate` from `.github/workflows/pr-quality-gate.yml` for the PR's exact current
-head and base, one authenticated clean current-head `pr-leak-review`, plus applicable finite surface
+head and base, one clean current-head `pr-leak-review` verdict held by the delivery harness, plus applicable finite surface
 gates. Broad semantic review is absent by default. Include
 [`pr-review`](../../../../repo-governance/workflows/quality/pr-review.md) or
 [`pr-review-quality-gate`](../../../../repo-governance/workflows/quality/pr-review-quality-gate.md) only when the user

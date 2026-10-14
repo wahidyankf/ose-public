@@ -47,7 +47,7 @@ findings file, a JSON result — to the same generic path in the shared session 
 agents running at once share it as mutable global state, and one can overwrite the other between
 its own write and its own read. The corruption is silent: each agent's write succeeds, each read
 succeeds, and the artefact that ships belongs to a different agent. When the artefact is a merge
-precondition — a leak review carrying a head SHA — that is evidence for a commit nobody reviewed.
+precondition — a leak review verdict carrying a head SHA — that is evidence for a commit nobody reviewed.
 
 **Fix**: Give every concurrently-running agent a task-unique path, and require any agent that
 posts to an external system to verify by reading the posted object back, not by the call's exit

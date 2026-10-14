@@ -339,7 +339,7 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
 
    - Pre-push hook runs (on any push target):
      - Screens the push for public safety (tree and outgoing commits)
-     - Runs the leak-review tests and validates the environment policy
+     - Validates the environment policy
      - Runs no tests and no Markdown lint
 
 5. **Open a Pull Request** — the default path (`worktree-to-pr`); skip only under a declared direct-push mode:

@@ -128,6 +128,11 @@
       "digest": "096260df5507ae443fe9ee3f8d7ea4b613ad8f16f6e6e3cd59b9544b01bff5de"
     },
     {
+      "id": "agent/leak-reviewer",
+      "path": ".agents/agents/leak-reviewer.md",
+      "digest": "06391ea1e63076abed1b637032b4218b80f9123cacd154fbef906968ddf796dc"
+    },
+    {
       "id": "agent/pdf-to-md-checker",
       "path": ".agents/agents/pdf-to-md-checker.md",
       "digest": "2bd3119d75dd1f2ea36e401cdcd9e60c79ebd77e5fd9c38ae629a2556a6796be"
@@ -590,7 +595,7 @@
     {
       "id": "skill/pr-review-specialist-protocol",
       "path": ".agents/skills/pr-review-specialist-protocol/SKILL.md",
-      "digest": "c206a17c2f6d69398ae39cddf330ff0eee1f7c3c50d254fa7e95172612e5df8f"
+      "digest": "422e0733accafdba936162658778a4997dcd24c34c737c3ec5150ddeade4da0b"
     },
     {
       "id": "skill/pr-review-synthesis-coordination",
@@ -735,7 +740,7 @@
     {
       "id": "instruction",
       "path": "AGENTS.md",
-      "digest": "214fbbffda04a184812104c70637a1d53f683f4b2fde95d4cef312defd9f77c8"
+      "digest": "3de444bf35df92abccf663b23a39ef3403d3a3e55713a96ea985e621ac52b4c8"
     }
   ],
   "resolvedModels": {

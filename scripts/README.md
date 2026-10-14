@@ -45,12 +45,6 @@ byte from the [ose-rules](https://github.com/wahidyankf/ose-rules) catalog at pu
 copy from a resolved full `main` commit; its history-aware range screen was ported from commit
 `a1f06093d3bf18f18d84feb99227d87946575b4a`. Its README says what it screens, what it prohibits, and how to run its tests.
 
-## The leak-review record check
-
-[`leak-review/`](./leak-review/README.md) is not a wrapper either. Its `record-status.sh` publishes the `leak-review`
-commit status from the posted [PR Leak Review](../repo-governance/workflows/quality/pr-leak-review.md) record, and its
-offline suite runs as the `leak-review-tests` gate.
-
 ## Which gates invoke these
 
 | Gate id         | Command                                                      | Surface                                     |

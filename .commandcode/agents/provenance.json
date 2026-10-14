@@ -585,7 +585,7 @@
     {
       "id": "skill/pr-review-specialist-protocol",
       "path": ".agents/skills/pr-review-specialist-protocol/SKILL.md",
-      "digest": "c206a17c2f6d69398ae39cddf330ff0eee1f7c3c50d254fa7e95172612e5df8f"
+      "digest": "422e0733accafdba936162658778a4997dcd24c34c737c3ec5150ddeade4da0b"
     },
     {
       "id": "skill/pr-review-synthesis-coordination",
@@ -730,7 +730,7 @@
     {
       "id": "instruction",
       "path": "AGENTS.md",
-      "digest": "214fbbffda04a184812104c70637a1d53f683f4b2fde95d4cef312defd9f77c8"
+      "digest": "3de444bf35df92abccf663b23a39ef3403d3a3e55713a96ea985e621ac52b4c8"
     }
   ]
 }

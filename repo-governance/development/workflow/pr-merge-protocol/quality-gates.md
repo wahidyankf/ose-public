@@ -25,9 +25,9 @@ Surface quality-gate verdicts are advisory under the [Quality Gate Contract](../
 
 Every push first passes the private push leak review of each outgoing commit, and every PR runs one
 focused [`pr-leak-review`](../../../workflows/quality/pr-leak-review.md) against its exact current head.
-Only authenticated `ose-pr-leak-review:v1` `pass` evidence counts, and the hosted
-`pr-leak-review.yml` publishes it as the required `leak-review` commit status on that head. Missing,
-stale, failed, or findings-bearing evidence blocks merge; a fix triggers one new pass, never a
+The delivery harness spawns the fresh-context `leak-reviewer` for each push and each merge, and refuses
+on any finding, failed spawn, or stale head. No forge status check enforces this. Missing, stale,
+failed, or findings-bearing verdicts block merge; a fix triggers one new review, never a
 two-clean streak. Its scope is defined by the canonical
 [committed-secret](../../../conventions/security/secrets-and-env-standards/hard-iron-rule-no-secrets-in-committed-files.md),
 [protected-environment](../anti-patterns/hardcoded-environment-configuration.md), and

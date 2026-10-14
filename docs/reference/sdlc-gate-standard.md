@@ -157,8 +157,7 @@ gates, in registry order, stopping at the first failure:
 | --- | --------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | `public-safety-tree`  | other | Screens the tracked tree, its names, and the refs being pushed as outbound material.                                                                                             |
 | 2   | `public-safety-range` | other | Screens every commit in the pushed range (ids, messages, names, and each commit's additions). The range comes from the push updates, falling back to `refs/remotes/origin/main`. |
-| 3   | `leak-review-tests`   | other | Runs the offline `scripts/leak-review/tests/run.sh` suite of the leak-review record check against a stand-in forge.                                                              |
-| 4   | `env-validate`        | other | `./rhino env validate`: the declared environment policy.                                                                                                                         |
+| 3   | `env-validate`        | other | `./rhino env validate`: the declared environment policy.                                                                                                                         |
 
 Pre-push runs no `test:quick`, no Markdown lint, and none of `md internal-link validate`,
 `md readme-index validate`, `governance vendor validate`, `harness adapters validate`, or

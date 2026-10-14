@@ -43,6 +43,7 @@ weight: 10
   - [Project Management](/en/learn/courses/project-management)
   - [SQL Essentials](/en/learn/courses/sql-essentials)
   - [Backend Essentials](/en/learn/courses/backend-essentials)
+  - [Backend Essentials with Go](/en/learn/courses/backend-essentials-with-go)
   - [Async Python & FastAPI Services](/en/learn/courses/async-python-and-fastapi-services)
   - [Networking Essentials](/en/learn/courses/networking-essentials)
   - [Just Enough TypeScript](/en/learn/courses/just-enough-typescript)

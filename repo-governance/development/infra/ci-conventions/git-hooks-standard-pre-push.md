@@ -7,7 +7,7 @@ when_to_use: "Use when debugging or speeding up the pre-push hook."
 
 The pre-push hook runs `./rhino gate run --surface pre-push --push-updates-stdin`: the `pre-push` gates
 declared in `repo-config.yml`, in registry order, stopping at the first failure. Today they are
-`public-safety-tree`, `public-safety-range`, `leak-review-tests`, and `env-validate`. Use
+`public-safety-tree`, `public-safety-range`, and `env-validate`. Use
 `./rhino gate list --output text` to discover the live set and `./rhino gate validate` to verify
 registry/shim conformance.
 

@@ -18,7 +18,7 @@ procedure remains unchanged.
 
 ## Why --no-verify is a safety bypass
 
-The pre-push hook exists specifically to prevent unsafe or invalid pushes from reaching the remote. It runs the registry-declared public-safety screens, the leak-review tests, and environment validation. Bypassing it with `--no-verify` removes the last automated barrier before CI. If an unsafe or broken push reaches the remote, CI fails for every contributor working from that branch, and reverting the push requires either a fix commit or another force-push. The problem compounds.
+The pre-push hook exists specifically to prevent unsafe or invalid pushes from reaching the remote. It runs the registry-declared public-safety screens and environment validation. Bypassing it with `--no-verify` removes the last automated barrier before CI. If an unsafe or broken push reaches the remote, CI fails for every contributor working from that branch, and reverting the push requires either a fix commit or another force-push. The problem compounds.
 
 ## Why no carryover approval
 

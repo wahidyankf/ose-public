@@ -41,7 +41,7 @@ and PDF conversion gates live in the
 - [PDF to Markdown Quality Gate](pdf-to-md-quality-gate.md) — judges a Markdown conversion's fidelity to its PDF.
 - [Plan Propagation](plan-propagation.md) — repairs a plan's frozen ledger rows.
 - [Plan Quality Gate](plan-quality-gate.md) — judges whether a plan is complete, clear, and executable.
-- [PR Leak Review](pr-leak-review.md) — the mandatory leak review before each push and merge.
+- [PR Leak Review](pr-leak-review.md) — the leak review the delivery harness runs before each push and merge.
 - [PR Leak Review Modules](pr-leak-review/README.md) — its ordered modules.
 - [PR Review](pr-review.md) — one explicitly requested semantic review pass.
 - [PR Review Modules](pr-review/README.md) — its ordered modules.

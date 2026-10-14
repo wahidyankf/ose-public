@@ -11,7 +11,7 @@ when_to_use: Use as a reference when unsure whether a specific merge decision ma
 Agent: All five merge preconditions hold for PR #42:
 
   (a) PR CI:          exact current head/base green
-  (b) leak review:    authenticated current-head pass
+  (b) leak review:    harness-held current-head pass
   (c) branch vs main: up to date
   (d) conversations:  resolved
   (e) surface gates:  passed / explicitly exempt

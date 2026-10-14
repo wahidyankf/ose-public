@@ -5,7 +5,7 @@ when_to_use: "Use when deciding whether a candidate value in a commit, file name
 
 # Scope and Exclusions
 
-A leak review judges three classes and no others. Each maps to the record's count of the same name.
+A leak review judges three classes and no others. Each maps to the verdict's count of the same name.
 
 | Class                            | A finding is                                                                                                                                                                                                    |
 | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -51,9 +51,10 @@ owning convention instead.
 
 ## The Review Is Itself Published
 
-The review body is outbound, per [Public Outbound Safety](../../../conventions/security/public-outbound-safety.md).
-A path pasted into it is the finding the review exists to catch, and a quoted secret is published
-again in the record of its discovery. Anything found is treated as already disclosed.
+The optional audit comment is outbound, per [Public Outbound Safety](../../../conventions/security/public-outbound-safety.md).
+It carries only the pinned head, the result, and the per-class counts, so no value can reach it. A reviewer's notes
+stay private, because a quoted secret is published again in the record of its discovery. Anything found is treated as
+already disclosed.
 
 It is not a security or semantic review. A screen matches shapes; this review reads context, and
 three classes keep it small enough for every push and every head.

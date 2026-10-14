@@ -10,9 +10,9 @@ For `worktree-to-pr` and `main-to-pr`, finalization requires the `Quality gate` 
 base. Query the head, base, and check result together; an earlier head, different base, pending run,
 or missing run does not count. Fix and push failures, then wait for the replacement run.
 
-- Run one focused [`pr-leak-review`](../../quality/pr-leak-review.md) against that exact head. Require an
-  authenticated `ose-pr-leak-review:v1` `pass`; missing, stale, failed, or findings-bearing evidence
-  blocks finalization. Fixes that move the head require one replacement pass, never a clean streak.
+- Run one focused [`pr-leak-review`](../../quality/pr-leak-review.md) against that exact head. Require the
+  delivery harness's `pass` verdict from a fresh-context `leak-reviewer` for that exact head; a missing, stale,
+  failed, or findings-bearing verdict blocks finalization. Fixes that move the head require one replacement pass, never a clean streak.
 - Semantic review is absent by default. Run [`pr-review`](../../quality/pr-review.md) or
   [`pr-review-quality-gate`](../../quality/pr-review-quality-gate.md) only when the user explicitly requested that
   named workflow for this PR. Do not infer it from `plans/**`, executable content, risk, or delivery

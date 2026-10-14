@@ -13,9 +13,9 @@ when_to_use: "Use when running or implementing a single semantic pass."
 3. Run `pr-review-scout` once to select `trivial`, `lite`, or `full`, the specialist set, and
    one shared-context brief. Selection controls depth, never whether review occurs.
 4. Leave every property a declared CI tool checks to that tool; its result creates no finding or rerun.
-5. Authenticate `leak-review-evidence` when present and delegate its exact three predicates to
-   [`pr-leak-review`](../pr-leak-review.md). Missing, stale, findings, or failed evidence remains a
-   separate focused-gate result; broad reviewers do not duplicate it.
+5. Leave the exact three leak predicates to [`pr-leak-review`](../pr-leak-review.md), which the delivery harness
+   runs before each push and merge. A leak finding or failed verdict remains a separate focused-gate result; broad
+   reviewers do not duplicate it.
 
 Input, API, authentication, or context-assembly failure returns `failed` without posting.
 

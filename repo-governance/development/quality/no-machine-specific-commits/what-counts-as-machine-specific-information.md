@@ -32,7 +32,7 @@ repository root and reconcile the resulting runtime path with `git worktree list
 
 Keep any runtime path evidence under an ignored runtime-evidence root. A plan may retain its
 portable route, branch, creator, and timestamp as its committed identity. `plan-checker` rejects a
-nonportable worktree identity, and the required PR leak review inspects the complete changed
+nonportable worktree identity, and the harness-enforced PR leak review inspects the complete changed
 delivery document for real machine-specific absolute paths.
 
 ## Usernames Embedded in Paths or Configuration

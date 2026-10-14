@@ -9,7 +9,7 @@ Continues [Delivery Mode — main-to-origin-main Content Restriction](./delivery
 
 **[AI] merges by default.** Every PR uses one convergent default route: the `Quality gate` check
 from `.github/workflows/pr-quality-gate.yml` must be green for the exact current head and base, and
-one authenticated `ose-pr-leak-review:v1` record must pass for that head.
+a `pass` verdict from a fresh-context `leak-reviewer`, held by the delivery harness, must cover that head.
 Semantic review is not inferred from executable content, `plans/**`, risk, or delivery mode. A plan
 may include [`pr-review`](../../../workflows/quality/pr-review.md) or
 [`pr-review-quality-gate`](../../../workflows/quality/pr-review-quality-gate.md) only because the user explicitly

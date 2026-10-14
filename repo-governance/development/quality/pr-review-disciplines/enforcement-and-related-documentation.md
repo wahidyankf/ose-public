@@ -21,7 +21,7 @@ disciplines, the tie-breaker, the grey zones, and the cost/noise mechanics those
 
 ## Related Documentation
 
-- [PR Leak Review workflow](../../../workflows/quality/pr-leak-review.md) - Mandatory exact-head leak-only review.
+- [PR Leak Review workflow](../../../workflows/quality/pr-leak-review.md) - Leak-only review of each push and each exact PR head, enforced by the delivery harness.
 - [PR Review Cycle workflow](../../../workflows/quality/pr-review-quality-gate.md) - Optionally orchestrates
   the fan-out → synthesize → fixer loop this convention's disciplines and tie-breaker feed
 - [PR Merge Protocol Convention](../../workflow/pr-merge-protocol.md) - The five hardened merge

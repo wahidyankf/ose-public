@@ -33,10 +33,9 @@ genuinely separate improvement belongs in its own follow-up plan or issue. This 
 stacks with the discipline charter: a finding must be both in-scope for the PR **and**
 in-charter for this discipline before it is postable.
 
-## Focused Leak-Only Invocation
+## Leak Predicates Stay With Leak Review
 
-`pr-leak-review` bypasses the ordinary semantic scope guard only to inspect its exact three leak
-predicates across every commit's additions, names, and messages and delivery-controlled metadata,
-never only the aggregate diff. It never broadens into the
-security agent's other charter. Broad passes consume authenticated current-head leak evidence and
-suppress those predicates rather than repeating them.
+The three leak predicates belong to the [`leak-reviewer`](../../../agents/leak-reviewer.md) agent, which the delivery
+harness runs under [PR Leak Review](../../../../repo-governance/workflows/quality/pr-leak-review.md) before each push and
+merge. A broad pass never repeats them: it suppresses the secrets, protected-environment-property, and machine-path
+predicates rather than judging them again.

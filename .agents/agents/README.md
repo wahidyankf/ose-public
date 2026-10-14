@@ -63,6 +63,10 @@ Cross-cutting agents scoped to no single app: agent scaffolding, CI standards, a
 - [ci-fixer](ci-fixer.md) — repairs CI findings
 - [social-linkedin-post-maker](social-linkedin-post-maker.md) — writes LinkedIn posts
 
+## Leak Review
+
+- [leak-reviewer](leak-reviewer.md) — judges a pinned change for leaks
+
 ## PDF to Markdown
 
 Convert PDF sources to verbatim Markdown and validate or fix the conversion.
@@ -164,7 +168,7 @@ The web-researcher fact-finding agent.
 
 ## Old-to-New Map
 
-Each agent the swe family replaced, and where its work went. A reader holding an old name finds its replacement here.
+Each replaced agent and its successor.
 
 | Replaced agent                    | New agent              | Mode or charter   |
 | --------------------------------- | ---------------------- | ----------------- |

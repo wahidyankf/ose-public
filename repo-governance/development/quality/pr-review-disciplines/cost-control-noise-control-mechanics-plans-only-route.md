@@ -36,9 +36,8 @@ review-route record.
 ## Review Focus
 
 The separate mandatory [`pr-leak-review`](../../../workflows/quality/pr-leak-review.md) owns real
-secrets, protected environment properties, and machine-specific paths for every exact PR head.
-The optional plans-only semantic route consumes that authenticated evidence and does not repeat the
-predicate. Architecture reviews architecture and design decisions made by the plan. Logic reviews domain
+secrets, protected environment properties, and machine-specific paths for every push and every exact PR head.
+The optional plans-only semantic route does not repeat that predicate. Architecture reviews architecture and design decisions made by the plan. Logic reviews domain
 intent and Gherkin acceptance-criteria completeness. Documentation reviews the plan as the shipping
 artifact for substantive quality and completeness. Governance reviews mechanical conformance.
 
@@ -52,7 +51,7 @@ standard full-tier Content-Type Applicability Filter also remains unchanged.
 
 ## Enforcement
 
-**Enforcement disposition — split.** `pr-leak-review` provides mandatory current-head evidence.
+**Enforcement disposition — split.** `pr-leak-review` gives the delivery harness a verdict for the exact head, which the harness enforces before each merge.
 Explicit `pr-review` routes a plans-only pass and records every selected or skipped specialist.
 
 ## Related

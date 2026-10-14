@@ -12,12 +12,12 @@ hold.**
   `.github/workflows/pr-quality-gate.yml` is green for the PR's current head SHA and current base
   branch. A run for an earlier head or different base does not count.
 - **(b) Leak review** — every pushed commit passed the
-  [push leak review](../../../workflows/quality/pr-leak-review/002-push-review.md), and one authenticated
-  `ose-pr-leak-review:v1` pass covers the exact current head, shown by a `success` `leak-review`
-  commit status on it, and reports no violation of [committed-secret](../../../conventions/security/secrets-and-env-standards/hard-iron-rule-no-secrets-in-committed-files.md),
+  [push leak review](../../../workflows/quality/pr-leak-review/002-push-review.md), and a fresh-context
+  `leak-reviewer` returned a `pass` for the exact current head, which the delivery harness holds. The verdict
+  reports no violation of [committed-secret](../../../conventions/security/secrets-and-env-standards/hard-iron-rule-no-secrets-in-committed-files.md),
   [protected-environment](../anti-patterns/hardcoded-environment-configuration.md), or
   [machine-specific-path](../../quality/no-machine-specific-commits.md) rules. Missing, stale,
-  failed, or findings-bearing evidence blocks merge. A fix that
+  failed, or findings-bearing verdicts block merge. A fix that
   changes the head requires one new pass, never a clean streak.
 - **(c) Branch currency** — the branch is up to date with the latest target branch, brought forward
   non-destructively when behind, and GitHub reports no merge conflict.

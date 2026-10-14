@@ -335,7 +335,7 @@ names, then run `npm run doctor` again.
 ### Pre-push hook times out
 
 The pre-push hook runs only its registry-declared gates (today the public-safety tree and range
-screens, the leak-review tests, and environment validation) and no Nx target. If it is slow, the range
+screens and environment validation) and no Nx target. If it is slow, the range
 screen is reading many outgoing commits: run `./rhino gate run --surface pre-push` to see which gate is
 slow, and push fewer commits at once.
 

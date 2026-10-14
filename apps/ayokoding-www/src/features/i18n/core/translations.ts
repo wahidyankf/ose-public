@@ -488,6 +488,12 @@ export const translations: Record<Locale, Record<string, string>> = {
     roadmapCoursesCount: "{count} courses",
     roadmapHoursPlusOutline: "plus {count} outline courses",
 
+    // Course landing header — progress summary and primary action (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 5). Every key in this block MUST exist
+    // in both locales, like the blocks above. `courseStart` is plan 03's key, reused here.
+    courseContinueCourse: "Continue course: {title}",
+    courseReviewCourse: "Review course",
+
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Resize panel",
 
@@ -981,6 +987,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     roadmapCoreHeading: "Jalur inti · {count} fase",
     roadmapCoursesCount: "{count} kursus",
     roadmapHoursPlusOutline: "ditambah {count} kursus kerangka",
+
+    // Course landing header — progress summary and primary action (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 5). See the en block.
+    courseContinueCourse: "Lanjutkan kursus: {title}",
+    courseReviewCourse: "Ulas kursus",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Ubah ukuran panel",

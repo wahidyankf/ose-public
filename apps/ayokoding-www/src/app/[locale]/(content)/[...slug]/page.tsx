@@ -24,7 +24,7 @@ import { courseLocationFromSlug } from "@/features/learning-progress/core/course
 import { loadLessonSequence, loadLessonPagePaths } from "@/features/learning-progress/shell/lesson-sequences";
 import type { LessonProps } from "@/features/learning-progress/shell/lesson-context-provider";
 import { loadRoutePathData } from "@/features/course-paths/shell/route-path-data";
-import { CoursePageContent } from "@/features/course-paths/shell/course-page-content";
+import { CoursePageContent, type CoursePageContentProps } from "@/features/course-paths/shell/course-page-content";
 import { CoursePagePathContent } from "@/features/course-paths/shell/course-page-path-content";
 import {
   isLearnPathsSlug,
@@ -38,7 +38,7 @@ import { PathCard, CategorySection, ArcGroup } from "@/features/course-paths/she
 import { COURSE_CATALOG_SLUG, courseRootIdFromSlug } from "@/features/course-paths/shell/course-path-nav";
 import { buildCourseCatalog } from "@/features/course-paths/core/course-catalog";
 import { CourseCatalog } from "@/features/course-paths/shell/course-catalog";
-import { buildCourseHeaderData } from "@/features/course-paths/shell/course-header-data";
+import { buildCourseHeaderData, type CourseHeaderData } from "@/features/course-paths/shell/course-header-data";
 import { CategoryLanding } from "@/features/course-paths/shell/category-landing";
 import { ArcLanding } from "@/features/course-paths/shell/arc-landing";
 import { PathLanding } from "@/features/course-paths/shell/path-landing";
@@ -419,11 +419,22 @@ export default async function ContentPage({ params }: Props) {
   // Course root pages (plan 03) get the header; pages inside a course do not. The tree is
   // rebuilt from the already-loaded content metas — no extra fetch for the header.
   const rootId = courseRootIdFromSlug(slugStr);
-  let courseHeader = undefined;
+  let courseHeader: CourseHeaderData | undefined;
+  let courseHeaderProgress: CoursePageContentProps["courseHeaderProgress"];
+  let courseHeaderAction: CoursePageContentProps["courseHeaderAction"];
   if (rootId !== null) {
     const { buildTrees } = await import("@/features/content/core/tree-builder");
     const trees = buildTrees([...pathData.contentMap.values()]);
-    courseHeader = buildCourseHeaderData(pathData.contentMap, trees[locale] ?? [], rootId, locale) ?? undefined;
+    const header = buildCourseHeaderData(pathData.contentMap, trees[locale] ?? [], rootId, locale);
+    if (header !== null) {
+      courseHeader = header;
+      // Plan 04 Phase 5: the course landing header's own progress and action slots (S33, S34). The
+      // lesson sequence is the same one the lesson pages read, so "where I stopped" and "how much
+      // is done" mean one thing across the course.
+      const sequence = await loadLessonSequence(locale, rootId);
+      courseHeaderProgress = { courseId: rootId, sequence: sequence.map((entry) => entry.pagePath) };
+      courseHeaderAction = { courseId: rootId, sequence, startSlug: header.startSlug };
+    }
   }
 
   const lesson = await buildLessonProps(locale, slugStr, pathData);
@@ -436,6 +447,8 @@ export default async function ContentPage({ params }: Props) {
           courseId={courseId}
           renderData={canonicalCourseRenderData}
           courseHeader={courseHeader}
+          courseHeaderProgress={courseHeaderProgress}
+          courseHeaderAction={courseHeaderAction}
           lesson={lesson}
         />
       }
@@ -444,6 +457,8 @@ export default async function ContentPage({ params }: Props) {
         {...contentProps}
         courseId={courseId}
         courseHeader={courseHeader}
+        courseHeaderProgress={courseHeaderProgress}
+        courseHeaderAction={courseHeaderAction}
         canonicalRenderData={canonicalCourseRenderData}
         fallbackPrev={page.prev}
         fallbackNext={page.next}

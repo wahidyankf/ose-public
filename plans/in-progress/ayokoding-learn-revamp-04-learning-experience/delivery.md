@@ -643,29 +643,39 @@ lines 99.52%); flow-scoped E2E 42 passed, 0 failed. Four defects found and fixed
 - **Proof:** `<plan>/evidence/phase-5-course-header.md`.
 - _Suggested executor: `swe-developer`._
 
-- [ ] [AI] **Gherkin:** create `learning-progress/course-landing-progress.feature` with S33 and S34.
+- [x] [AI] **Gherkin:** create `learning-progress/course-landing-progress.feature` with S33 and S34.
       Run `BEHAVIOUR`. Acceptance: only S33 and S34 are missing.
-- [ ] [AI] **RED (components):** create `course-progress-summary.test.tsx` and
+- [x] [AI] **RED (components):** create `course-progress-summary.test.tsx` and
       `course-progress-action.test.tsx`: server render shows "Start course" to plan 03's start slug and
       a placeholder in the summary; in-progress shows the next unfinished page's title; done shows
       "Review course" to the first sequence page; `?path=` is kept when `pathId` is given; the summary
       keeps its `h-16` slot. Acceptance: both fail.
-- [ ] [AI] **RED (scenarios):** create `tests/unit/fe-steps/course-landing-progress.steps.tsx` and
+- [x] [AI] **RED (scenarios):** create `tests/unit/fe-steps/course-landing-progress.steps.tsx` and
       `apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-landing-progress.steps.ts` on
       `/en/learn/courses/just-enough-bash` (S33 marks the first two sequence pages through the UI; S34
       uses `completeCourseThroughUi`). Acceptance: S33 and S34 fail.
-- [ ] [AI] **GREEN:** create `shell/course-progress-summary.tsx` and `shell/course-progress-action.tsx`,
+- [x] [AI] **GREEN:** create `shell/course-progress-summary.tsx` and `shell/course-progress-action.tsx`,
       add their keys to both dictionaries, and pass them as `progress` and `primaryAction` to plan 03's
       `CourseHeader` from `page.tsx` for course root pages, with `loadLessonSequence`. Course landing
       pages also call `recordVisit` (tech-docs/003 Visit recording). Rerun the tests and `E2E`.
       Acceptance: all pass, including plan 03's header scenarios.
-- [ ] [AI] **REFACTOR:** run `QUICK`. Acceptance: exit 0, coverage at or above 99%.
+- [x] [AI] **REFACTOR:** run `QUICK`. Acceptance: exit 0, coverage at or above 99%.
+
+**Phase 5 implementation notes (2026-10-14, `swe-developer`).** Status: complete.
+`course-landing-progress.feature` with S33/S34; `CourseProgressSummary` and `CourseProgressAction`
+plus their keys; the header slots wired through `page.tsx` + `course-page-content.tsx` with
+`loadLessonSequence` and visit recording; unit component tests (14), unit step bindings, and E2E step
+bindings. Unit gate exit 0 (230 files, 4031 tests, lines 99.53%); flow-scoped E2E 6 passed. Two E2E
+step defects fixed (a leading-`\b` pattern and a `Continue →`-vs-`Mark complete & continue` label).
 
 ### Phase 5 Gate
 
 > All checks below must pass before starting Phase 6.
 
-- [ ] [AI] `QUICK`, `BEHAVIOUR`, and `E2E` exit 0.
+- [x] [AI] `QUICK`, `BEHAVIOUR`, and `E2E` exit 0.
+
+**Phase 5 Gate notes (2026-10-14).** `QUICK` exit 0 (230 files, 4031 tests, lines 99.53%);
+`BEHAVIOUR` exit 0 with S33/S34 bound; flow-scoped `E2E` 6 passed.
 
 > **Pause Safety**: the course header shows progress. Safe to stop. To resume: `QUICK`.
 

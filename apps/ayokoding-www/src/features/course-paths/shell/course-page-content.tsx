@@ -3,6 +3,9 @@ import { TableOfContents } from "@/features/navigation/shell/toc";
 import { PrevNext } from "@/features/navigation/shell/prev-next";
 import { MarkdownRenderer } from "@/features/content/shell/markdown-renderer";
 import { ContextBar } from "@/features/learning-progress/shell/context-bar";
+import { CourseProgressAction } from "@/features/learning-progress/shell/course-progress-action";
+import { CourseProgressSummary } from "@/features/learning-progress/shell/course-progress-summary";
+import type { LessonPage } from "@/features/learning-progress/core/lesson-sequence";
 import { LessonContextProvider, type LessonProps } from "@/features/learning-progress/shell/lesson-context-provider";
 import { LessonNav } from "@/features/learning-progress/shell/lesson-nav";
 import { StorageNotice } from "@/features/learning-progress/shell/storage-notice";
@@ -34,6 +37,19 @@ export interface CoursePageContentProps {
    * of `PrevNext`). Pages outside a sequence keep today's render untouched.
    */
   lesson?: LessonProps;
+  /**
+   * Plan 04 Phase 5: the course landing header's `progress` slot (S33, S34) — the course's own id
+   * and its lesson page paths. Built into `CourseProgressSummary` here rather than passed in as an
+   * element, because only this component knows the live `renderData` the hydrated wrapper resolved
+   * from `?path=`. Absent for every page that is not a course root.
+   */
+  courseHeaderProgress?: { courseId: string; sequence: readonly string[] };
+  /**
+   * Plan 04 Phase 5: the course landing header's `primaryAction` slot — the course's lesson pages
+   * and plan 03's start slug. `CourseProgressAction` reads the path id from `renderData`, so a
+   * header action keeps the reader's `?path=` exactly as the Start fallback does.
+   */
+  courseHeaderAction?: { courseId: string; sequence: LessonPage[]; startSlug: string | null };
 }
 
 /**
@@ -53,6 +69,8 @@ export function CoursePageContent({
   courseId,
   courseHeader,
   lesson,
+  courseHeaderProgress,
+  courseHeaderAction,
 }: CoursePageContentProps) {
   const activeContext = renderData.activeContext;
   const pathContext =
@@ -108,6 +126,20 @@ export function CoursePageContent({
             pathBadges={renderData.pathBadges}
             showPathBadges={pathContext === undefined}
             activePathId={renderData.activeContext?.pathId}
+            progress={
+              courseHeaderProgress === undefined ? undefined : (
+                <CourseProgressSummary locale={locale} {...courseHeaderProgress} />
+              )
+            }
+            primaryAction={
+              courseHeaderAction === undefined ? undefined : (
+                <CourseProgressAction
+                  locale={locale}
+                  {...courseHeaderAction}
+                  pathId={renderData.activeContext?.pathId ?? null}
+                />
+              )
+            }
           />
           <h2 className="mb-4 text-2xl font-bold tracking-tight">{t(locale as Locale, "courseContents")}</h2>
         </>

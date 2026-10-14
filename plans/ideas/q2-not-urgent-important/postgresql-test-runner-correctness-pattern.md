@@ -44,10 +44,11 @@ passed.
 
 ## Why now
 
-The repository now has exactly one PostgreSQL-backed product (`ose-id`), and its backlog holds eight
-further OSE ID plans that will add tenancy, sessions, and federation — each one a fresh opportunity
-to write a third helper with the same shape. Writing the pattern down costs one propagation run now;
-skipping it costs another multi-run investigation each time a new helper appears. The window is
+The repository now has exactly one PostgreSQL-backed product (`ose-id`), and no further OSE ID plan
+is queued. Any later work that adds tenancy, sessions, or federation — or any new PostgreSQL-backed
+product — is a fresh opportunity to write a third helper with the same shape. Writing the pattern
+down costs one propagation run now; skipping it costs another multi-run investigation each time a
+new helper appears. The window is
 also unusually good: all four properties are freshly evidenced with named error text, named files,
 and a recorded failure sequence, so the document can be sourced from real transcripts rather than
 recalled from memory later.

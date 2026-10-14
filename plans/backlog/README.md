@@ -29,28 +29,6 @@ authorization.
 |     1 | [Standalone local CLI](../done/2026-09-21__ferret-init-01-local-cli/README.md) (done) | One per-user SQLite store, 30-day retention, local analytics, and fail-open macOS/Linux POSIX harness capture; Windows CLI-local portability | —          |
 |     2 | [Protocol-independent local backend](./ferret-init-02-local-backend/README.md)        | FastAPI/PostgreSQL, OpenAPI REST, durable optional sync, and additive GraphQL/MCP adapter seams                                              | 01         |
 
-### OSE ID initialization series
-
-The original OSE Identity/CIAM idea is split into nine independently reviewable, local-only plans. OSE
-ID source code is MIT licensed. Every intermediate state is production-disabled and fail-closed; this
-series does not deploy the service.
-
-| Order | Plan                                                                                  | Locally verifiable outcome                                                           | Depends on |
-| ----: | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------- |
-|     1 | [Foundation](../done/2026-09-17__ose-id-init-01-foundation/README.md) (done)          | Four projects, PostgreSQL, migrations, health/readiness, and an owned local runner   | —          |
-|     2 | [Local email account](./ose-id-init-02-local-email-account/README.md)                 | Backend registration, verification, password sign-in/recovery, sessions, and Mailpit | 01         |
-|     3 | [Company tenancy core](./ose-id-init-03-company-tenancy-core/README.md)               | Personal/company contexts, memberships, entitlements, invitations, and RLS           | 02         |
-|     4 | [OIDC/OAuth provider](./ose-id-init-04-oidc-oauth-provider/README.md)                 | OpenIddict, PKCE, consent contract, audiences/scopes, and context-bound claims       | 03         |
-|     5 | [First-party web](./ose-id-init-05-first-party-web/README.md)                         | Identifier-first Next.js/BFF sign-in, recovery, consent, and context UI              | 04         |
-|     6 | [Passkeys and MFA](./ose-id-init-06-passkeys-and-mfa/README.md)                       | Passkeys, TOTP, and recovery codes                                                   | 05         |
-|     7 | [Google federation](./ose-id-init-07-google-federation/README.md)                     | Google-only upstream login and deterministic fake-provider proof                     | 05         |
-|     8 | [Company admin](./ose-id-init-08-company-admin/README.md)                             | Company-scoped member, invitation, and entitlement administration                    | 05         |
-|     9 | [Local scale and composition](./ose-id-init-09-local-scale-and-composition/README.md) | No-affinity multi-instance proof and reusable dependent-app stack contract           | 06, 07, 08 |
-
-Plans 06, 07, and 08 are independent siblings after Plan 05. Plan 09 joins them; only after Plan 09
-may the blocked [`lms-user`](./lms-user/README.md) plan execute. A future OSE ID deployment
-plan is outside this series and must wait for the private infrastructure cluster plan, plus any then-current platform handoff gates.
-
 ### AyoKoding Learn Revamp series
 
 The `learn` section of `apps/ayokoding-www` is reworked from a pile of documents into learning paths

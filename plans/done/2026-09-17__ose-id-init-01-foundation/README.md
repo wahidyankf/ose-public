@@ -80,4 +80,3 @@ create a principal or authorize a product.
 - [Technical design](tech-docs/README.md)
 - [Execution checklist](delivery.md)
 - [Execution learnings](learnings.md)
-- [Next plan: local email account](../../backlog/ose-id-init-02-local-email-account/README.md)

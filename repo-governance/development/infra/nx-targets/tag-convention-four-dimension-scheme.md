@@ -14,8 +14,8 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 | Dimension | Prefix      | Allowed Values                                                                   | Required                       | Purpose                                                       |
 | --------- | ----------- | -------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
 | Type      | `type:`     | `app`, `lib`, `e2e`                                                              | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
-| Platform  | `platform:` | `axum`, `cli`, `gin`, `giraffe`, `nextjs`, `playwright`, `springboot`            | Apps and e2e projects          | Framework or runtime environment                              |
-| Language  | `lang:`     | `dotnet`, `fsharp`, `go`, `java`, `python`, `rust`, `ts`                         | Projects with application code | Primary language of source code                               |
+| Platform  | `platform:` | `axum`, `cli`, `giraffe`, `nextjs`, `playwright`                                 | Apps and e2e projects          | Framework or runtime environment                              |
+| Language  | `lang:`     | `dotnet`, `fsharp`, `go`, `python`, `rust`, `ts`                                 | Projects with application code | Primary language of source code                               |
 | Domain    | `domain:`   | `ayokoding`, `config`, `crane`, `ferret`, `organiclever`, `ose`, `tooling`, `ui` | Always                         | Business or product domain                                    |
 
 ## Special Rules

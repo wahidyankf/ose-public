@@ -8,15 +8,18 @@ when_to_use: "Use when checking which formatter applies to a given language."
 The following language-specific formatters run automatically through the `format-staged` registry
 gate — at pre-commit on staged files, and as a no-change replay on the pull-request surface:
 
-| Language | Tool                                  | Trigger                         |
-| -------- | ------------------------------------- | ------------------------------- |
-| Rust     | `rustfmt --edition 2024`              | `format-staged` gate (`*.rs`)   |
-| F\#      | `fantomas`                            | `format-staged` gate (`*.fs`)   |
-| C\#      | `csharpier format`                    | `format-staged` gate (`*.cs`)   |
-| Java     | Spotless via `scripts/format-java.sh` | `format-staged` gate (`*.java`) |
+| Language | Tool                                           | Trigger                         |
+| -------- | ---------------------------------------------- | ------------------------------- |
+| Rust     | `rustfmt --edition 2024`                       | `format-staged` gate (`*.rs`)   |
+| F\#      | `fantomas`                                     | `format-staged` gate (`*.fs`)   |
+| C\#      | `csharpier format`                             | `format-staged` gate (`*.cs`)   |
+| Java     | `prettier --write` with `prettier-plugin-java` | `format-staged` gate (`*.java`) |
 
 The full extension-to-formatter table is in
 [Formatting and File-Type Linting](../../infra/nx-targets/formatting-and-file-type-linting.md).
+
+C# and Java files in this repository are AyoKoding course content, so `csharpier` and `prettier-plugin-java` format
+course examples. `.prettierrc.json` loads `prettier-plugin-java` only for `*.java`.
 
 Each formatter uses its language's standard style conventions. No custom configuration is applied
 unless a project-specific config file exists (e.g., `rustfmt.toml`, `.editorconfig`).

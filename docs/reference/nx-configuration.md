@@ -400,12 +400,12 @@ validators. Avoid generic `test` targets and no-op placeholders.
 
 All projects use a standard four-dimension tag scheme:
 
-| Dimension   | Values                                                  | Required                 | Purpose                 |
-| ----------- | ------------------------------------------------------- | ------------------------ | ----------------------- |
-| `type:`     | `app`, `lib`, `e2e`                                     | Yes                      | Project kind            |
-| `platform:` | `cli`, `nextjs`, `flutter`, `spring-boot`, `playwright` | For apps/e2e             | Framework/runtime       |
-| `lang:`     | `rust`, `ts`, `dotnet`                                  | Where source code exists | Primary language        |
-| `domain:`   | `ayokoding`, `ose`, `organiclever`, `tooling`           | Yes                      | Business/product domain |
+| Dimension   | Values                                        | Required                 | Purpose                 |
+| ----------- | --------------------------------------------- | ------------------------ | ----------------------- |
+| `type:`     | `app`, `lib`, `e2e`                           | Yes                      | Project kind            |
+| `platform:` | `cli`, `nextjs`, `flutter`, `playwright`      | For apps/e2e             | Framework/runtime       |
+| `lang:`     | `rust`, `ts`, `dotnet`                        | Where source code exists | Primary language        |
+| `domain:`   | `ayokoding`, `ose`, `organiclever`, `tooling` | Yes                      | Business/product domain |
 
 **Notes**:
 
@@ -603,7 +603,6 @@ Path mappings for TypeScript imports.
 {
   "paths": {
     "@open-sharia-enterprise/ts-*": ["libs/ts-*/src/index.ts"],
-    "@open-sharia-enterprise/java-*": ["libs/java-*/src/main/java"],
     "@open-sharia-enterprise/kt-*": ["libs/kt-*/src/main/kotlin"],
     "@open-sharia-enterprise/py-*": ["libs/py-*/src"]
   }

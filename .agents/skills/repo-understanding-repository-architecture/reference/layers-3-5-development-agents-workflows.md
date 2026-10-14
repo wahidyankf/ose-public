@@ -10,7 +10,7 @@
 
 **Scope**:
 
-- Source code (JS, TS, future: Java, Kotlin, Python)
+- Source code (JS, TS, future: Kotlin, Python)
 - Next.js 16 web applications (ayokoding-web, ose-web)
 - Build systems and tooling
 - AI agents (.agents/agents/ canonical; .claude/agents/, .codex/agents/, .opencode/agents/ generated routes)

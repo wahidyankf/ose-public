@@ -25,7 +25,6 @@ jobs:
       has-ts: ${{ steps.detect.outputs.has-ts }}
       has-dotnet-projects: ${{ steps.detect.outputs.has-dotnet-projects }}
       has-dart: ${{ steps.detect.outputs.has-dart }}
-      has-java: ${{ steps.detect.outputs.has-java }}
       has-go: ${{ steps.detect.outputs.has-go }}
       has-python: ${{ steps.detect.outputs.has-python }}
     steps:
@@ -41,7 +40,6 @@ jobs:
             echo "has-ts=false"
             echo "has-dotnet-projects=false"
             echo "has-dart=false"
-            echo "has-java=false"
             echo "has-go=false"
             echo "has-python=false"
           } >> "$GITHUB_OUTPUT"
@@ -56,9 +54,8 @@ jobs:
             for tag in $tags; do
               case "$tag" in
                 lang:ts) echo "has-ts=true" >> "$GITHUB_OUTPUT" ;;
-                lang:fsharp | lang:csharp) echo "has-dotnet-projects=true" >> "$GITHUB_OUTPUT" ;;
+                lang:fsharp) echo "has-dotnet-projects=true" >> "$GITHUB_OUTPUT" ;;
                 lang:dart) echo "has-dart=true" >> "$GITHUB_OUTPUT" ;;
-                lang:java) echo "has-java=true" >> "$GITHUB_OUTPUT" ;;
                 lang:go) echo "has-go=true" >> "$GITHUB_OUTPUT" ;;
                 lang:python) echo "has-python=true" >> "$GITHUB_OUTPUT" ;;
               esac
@@ -115,7 +112,7 @@ jobs:
       - run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick,compat:min-version
-          --exclude='tag:lang:python,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --exclude='tag:lang:python,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
           --parallel=2
 
   dotnet:
@@ -132,12 +129,12 @@ jobs:
       - run: >-
           ./hippo run --class transactional --resource-tier standard --disk-path . --
           npx nx affected -t install
-          --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:go'
           --parallel=1
       - run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick,compat:min-version
-          --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:go'
           --parallel=1
 
   flutter:
@@ -162,24 +159,7 @@ jobs:
       - run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick
-          --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:java,tag:lang:go'
-          --parallel=1
-
-  java:
-    name: Java quality gate
-    needs: detect
-    if: needs.detect.outputs.has-java == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-java
-      - run: >-
-          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
-          npx nx affected -t typecheck,lint,test:quick,compat:min-version
-          --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:go'
           --parallel=1
 
   go:
@@ -196,7 +176,7 @@ jobs:
       - run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick,compat:min-version
-          --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java'
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart'
           --parallel=1
 
   python:
@@ -217,17 +197,17 @@ jobs:
         run: >-
           ./hippo run --class transactional --resource-tier standard --disk-path . --
           npx nx affected -t install
-          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
           --parallel=1
       - run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck lint test:quick
-          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
           --parallel=1
 
   quality-gate:
     name: Quality gate
-    needs: [repository-policy, typescript, dotnet, flutter, java, go, python]
+    needs: [repository-policy, typescript, dotnet, flutter, go, python]
     if: always()
     runs-on: ubuntu-latest
     steps:

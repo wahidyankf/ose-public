@@ -1,5 +1,5 @@
 name: "Setup Java"
-description: "Install the Temurin JDK and configure Gradle with its dependency cache"
+description: "Install the Temurin JDK that openapi-generator-cli needs to spawn java -jar"
 inputs:
   java-version:
     description: "JDK major version"
@@ -50,15 +50,3 @@ runs:
       with:
         distribution: ${{ inputs.java-distribution }}
         java-version: ${{ inputs.java-version }}
-
-    # Gradle's own dependency cache is left to setup-gradle rather than duplicated through
-    # setup-java's `cache` input, so exactly one action owns ~/.gradle.
-    # Self-hosted runners already retain $HOME between jobs, so sending the same dependency tree to
-    # GitHub storage adds transfer time without improving reuse — the same reasoning the .NET action
-    # applies to its NuGet cache. Pull requests restore the default branch's cache but never write a
-    # ref-scoped copy; only main refreshes it.
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v6
-      with:
-        cache-disabled: ${{ runner.environment != 'github-hosted' }}
-        cache-read-only: ${{ github.ref != 'refs/heads/main' }}

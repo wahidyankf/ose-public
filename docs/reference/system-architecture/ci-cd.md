@@ -148,7 +148,7 @@ environment-policy validation. Pre-push runs no `test:quick` and no Markdown lin
 2. `Repository policy` runs the whole `pull-request` surface with
    `./rhino gate run --surface pull-request --base <sha> --head <sha>`; `format-staged` replays the
    formatters over the changed paths and fails on any difference.
-3. One job per detected language (TypeScript, .NET, Flutter, Java, Go, Python) runs affected
+3. One job per detected language (TypeScript, .NET, Flutter, Go, Python) runs affected
    `typecheck`, `lint`, and `test:quick` (plus `compat:min-version` where declared).
 4. The stable `Quality gate` join fails if any of those jobs failed.
 

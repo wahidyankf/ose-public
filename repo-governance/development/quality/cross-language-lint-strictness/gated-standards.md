@@ -20,8 +20,8 @@ The five registry gates run from the `repo-config.yml` gate registry through `./
 `pre-commit` in the Husky hook (formatting applies to the index) and on the `pull-request` surface
 in CI's always-run `repository-policy` job (formatting replays and must stay clean).
 `scripts/format-staged` selects Prettier, `rustfmt`, `fantomas`, `ruff format`, `gofmt`, `mix`
-(through `scripts/format-elixir.sh`), `csharpier`, `dart format`, Spotless through the project's
-Gradle wrapper, `shfmt`, `tofu fmt`, `stylua`, `clang-format`, or `buildifier` by extension. The F#
+(through `scripts/format-elixir.sh`), `csharpier`, `dart format`, `shfmt`, `tofu fmt`, `stylua`,
+`clang-format`, or `buildifier` by extension; `*.java` goes through Prettier with `prettier-plugin-java`. The F#
 gates ride the Nx targets the language-detected `dotnet` job runs.
 
 The three lint gates receive the staged or changed paths and select their own files:

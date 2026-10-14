@@ -57,8 +57,9 @@ its reason. Stack IDs per project live in the inventory in `repo-config.yml`.
 - `typescript`, `javascript`, `react`, `nextjs`: each project's `package.json`; Node in the root `package.json` `volta`
   block
 - `nx`: the root `package.json`
-- `fsharp`, `giraffe`: each project's `.fsproj`, and its `global.json` where present
-- `csharp`, `aspnet-core`, `java`, `spring-boot`, `golang`, `gin`: no first-party project declares a version today
+- `fsharp`, `aspnet-core`, `giraffe`: each project's `.fsproj` (target framework and package references), and its
+  `global.json` (SDK version) where present
+- `golang`: no first-party project declares a version today
 - `python`: `apps/ferret-cli/.python-version` and `apps/ferret-cli/pyproject.toml`, and the same files in
   `apps/ferret-cli-e2e`
 - `shell`: the host Bash; no tracked file pins it

@@ -13,7 +13,7 @@ When the Nx workspace resolves dependencies, it reads from `node_modules/` relat
 
 ## Worktrees Routinely Touch Many Languages
 
-AI agents working on worktrees routinely touch apps across many languages: `ose-be` and `organiclever-be` (F#/Giraffe), `crane-cli` (F#), `ferret-cli` (Python), TypeScript frontends, and more. The probability that a new worktree session will need a toolchain that has drifted is high, and the cost of discovering the drift mid-task — through an obscure Gradle, Go, or `dotnet` error — is much higher than the cost of running `npm run doctor` deliberately upfront.
+AI agents working on worktrees routinely touch apps across many languages: `ose-be` and `organiclever-be` (F#/Giraffe), `crane-cli` (F#), `ferret-cli` (Python), TypeScript frontends, and more. The probability that a new worktree session will need a toolchain that has drifted is high, and the cost of discovering the drift mid-task — through an obscure Go or `dotnet` error — is much higher than the cost of running `npm run doctor` deliberately upfront.
 
 Even worktree sessions whose stated intent is "I'm just editing docs" should run the full two-step init, because the commit hook's `format-staged` and lint gates call per-extension formatters and linters from the toolchains on PATH, and the affected `test:quick` run before a push can fan out to arbitrary language tasks depending on what the doc change touches.
 

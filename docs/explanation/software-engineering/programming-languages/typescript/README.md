@@ -1286,83 +1286,6 @@ let describeStatus status =
 - **TypeScript**: Web frontends, Node.js backends, tRPC APIs, teams with JavaScript background
 - **F#**: Data transformation pipelines, document processing, domain-rich backends where exhaustive modelling of states matters and .NET interop is available
 
-### TypeScript vs C\#
-
-**Language Characteristics**:
-
-| Feature          | TypeScript                       | C#                                         |
-| ---------------- | -------------------------------- | ------------------------------------------ |
-| Type System      | Structural, gradual              | Nominal, static                            |
-| Null Safety      | `strictNullChecks` (opt-in)      | ✅ Nullable reference types (C# 8+)        |
-| Runtime          | Node.js / browser (V8)           | .NET 8+ (CoreCLR)                          |
-| Async Model      | `Promise` / `async-await`        | `Task<T>` / `async-await` (same concept)   |
-| OOP Support      | ✅ Classes, interfaces, generics | ✅ Full OOP (classes, records, interfaces) |
-| Functional Style | Optional (fp-ts, native methods) | Partial (LINQ, records, pattern matching)  |
-| Interop          | JavaScript (native)              | F# / .NET (first-class, same CLR)          |
-
-**Example - Donation Processing**:
-
-```typescript
-// TypeScript: tRPC mutation for donation submission
-import { z } from "zod";
-import { publicProcedure } from "../trpc";
-
-const donationSchema = z.object({
-  campaignId: z.string().uuid(),
-  amount: z.number().positive(),
-  donorName: z.string().min(1),
-});
-
-export const submitDonation = publicProcedure.input(donationSchema).mutation(async ({ input, ctx }) => {
-  const donation = await ctx.db.donation.create({ data: input });
-  return { id: donation.id, status: "received" };
-});
-```
-
-```csharp
-// C#: ASP.NET Core minimal API endpoint for the same operation
-// Typical in .NET interop scenarios or enterprise backend integration
-app.MapPost("/donations", async (DonationRequest req, AppDbContext db) =>
-{
-    if (req.Amount <= 0)
-        return Results.BadRequest("Amount must be positive");
-
-    var donation = new Donation
-    {
-        CampaignId = req.CampaignId,
-        Amount = req.Amount,
-        DonorName = req.DonorName,
-        ReceivedAt = DateTimeOffset.UtcNow,
-    };
-
-    db.Donations.Add(donation);
-    await db.SaveChangesAsync();
-    return Results.Ok(new { donation.Id, Status = "received" });
-});
-
-record DonationRequest(Guid CampaignId, decimal Amount, string DonorName);
-```
-
-**Ecosystem and Deployment**:
-
-| Aspect          | TypeScript                     | C#                                        |
-| --------------- | ------------------------------ | ----------------------------------------- |
-| Package Manager | npm (huge ecosystem)           | NuGet (.NET ecosystem)                    |
-| Deploy Target   | Vercel, Node.js, edge runtimes | Azure, AWS, Kubernetes, IIS               |
-| Startup Time    | Fast (V8 JIT)                  | Moderate (CLR warm-up, improving in .NET) |
-| Tooling         | VSCode, esbuild, swc           | Visual Studio, Rider, `dotnet` CLI        |
-| Enterprise Fit  | Modern web stacks              | Legacy enterprise and .NET shops          |
-
-**OSE Platform Usage**:
-
-- **TypeScript**: All web frontends and tRPC backends — the primary application language for web-facing surfaces
-- **C# / .NET**: Dotnet interop layer when integrating with existing enterprise .NET systems; shares the CLR with `crane-cli`'s F# runtime, enabling smooth library sharing across the .NET stack
-
-**When to Choose**:
-
-- **TypeScript**: Web frontends, Node.js tRPC APIs, Vercel-hosted applications, npm ecosystem integration
-- **C#**: Enterprise .NET backend integration, existing ASP.NET Core services, scenarios where the full .NET SDK is already in the stack via F# tooling
-
 ### Decision Matrix
 
 **Choose TypeScript when**:
@@ -1393,12 +1316,6 @@ record DonationRequest(Guid CampaignId, decimal Amount, string DonorName);
 - Domain modelling that benefits from exhaustive discriminated unions and pattern matching
 - Functional-first design within the .NET ecosystem
 - Interop with C# libraries is needed alongside a functional style
-
-**Choose C# when**:
-
-- Integrating with existing enterprise .NET services
-- Building ASP.NET Core endpoints that share CLR with F# components
-- The team's existing codebase is .NET-first and TypeScript adoption is not yet feasible
 
 ## Learning Paths
 
@@ -1542,7 +1459,6 @@ async function processDonation(data: DonationInput): Promise<Result<Donation, Er
 
 - [Rust Documentation](../rust/README.md)
 - [F# Documentation](../f-sharp/README.md)
-- [C# Documentation](../c-sharp/README.md)
 - [TypeScript Documentation Templates](./templates/README.md) — Reusable templates for TypeScript development patterns in OSE Platform
 - [TypeScript Anti-Patterns](./anti-patterns.md) — Common TypeScript mistakes and how to avoid them
 - [TypeScript Behaviour-Driven Development](./behaviour-driven-development.md) — Canonical Gherkin with Vitest Cucumber Unit bindings and Playwright BDD E2E bindings

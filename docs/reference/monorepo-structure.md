@@ -167,7 +167,6 @@ Contains reusable library packages.
 - `ts-` - TypeScript (future)
 - `rust-` - Rust (future)
 - `fsharp-` - F# (e.g., `fsharp-crane-core`)
-- `java-` - Java (future)
 - `kt-` - Kotlin (future)
 - `py-` - Python (future)
 
@@ -206,7 +205,7 @@ libs/ts-utils/
 
 ### Library Characteristics
 
-- **Polyglot-Ready** - Designed for multiple languages (TypeScript now, Java/Kotlin/Python future)
+- **Polyglot-Ready** - Designed for multiple languages (TypeScript now, Kotlin/Python future)
 - **Flat Structure** - All libs at same level, no nested scopes
 - **Reusable** - Designed to be imported by apps and other libs
 - **Focused** - Each lib has single, clear purpose
@@ -351,7 +350,7 @@ All projects use a standard four-dimension tag scheme:
 | Dimension   | Values                                        | Required                 | Purpose                 |
 | ----------- | --------------------------------------------- | ------------------------ | ----------------------- |
 | `type:`     | `app`, `lib`, `e2e`                           | Yes                      | Project kind            |
-| `platform:` | `cli`, `nextjs`, `spring-boot`, `playwright`  | For apps/e2e             | Framework/runtime       |
+| `platform:` | `cli`, `nextjs`, `playwright`                 | For apps/e2e             | Framework/runtime       |
 | `lang:`     | `rust`, `ts`, `dotnet`                        | Where source code exists | Primary language        |
 | `domain:`   | `ayokoding`, `ose`, `organiclever`, `tooling` | Yes                      | Business/product domain |
 

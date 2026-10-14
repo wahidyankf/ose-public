@@ -15,7 +15,7 @@ This practice respects the following core principles:
 
 - **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Codifying a two-step rule enables automated agents and tooling to apply it consistently, reducing the chance of cryptic build, test, or lint failures caused by missing, stale, or drifted dependencies and toolchains.
 
-- **[Root Cause Orientation](../../../principles/general/root-cause-orientation.md)**: Addressing toolchain drift proactively at worktree-entry time is a root-cause fix. Discovering a missing or drifted language toolchain mid-task — through a cryptic Gradle, Cargo, mix, or dotnet error — is a symptom; the root cause is that the worktree's session started work without converging the toolchain first.
+- **[Root Cause Orientation](../../../principles/general/root-cause-orientation.md)**: Addressing toolchain drift proactively at worktree-entry time is a root-cause fix. Discovering a missing or drifted language toolchain mid-task — through a cryptic Cargo, mix, or dotnet error — is a symptom; the root cause is that the worktree's session started work without converging the toolchain first.
 
 ## Conventions Implemented/Respected
 

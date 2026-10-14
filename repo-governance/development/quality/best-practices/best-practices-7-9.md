@@ -44,7 +44,7 @@ done
 ## Practice 8: Enable Staged-Path Gates for Incremental Quality
 
 **Principle**: Format and lint only staged files in pre-commit, through registry gates that take a
-`files` input. For formatters that need a project root (Elixir's formatter, Spotless), route the
+`files` input. For a formatter that needs a project root (Elixir's formatter), route the
 staged paths through a wrapper script rather than formatting the whole project.
 
 **Good Example:**

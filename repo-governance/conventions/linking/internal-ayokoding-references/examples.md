@@ -5,63 +5,63 @@ when_to_use: Use when you want a concrete before/after example to copy while fix
 
 # Examples
 
-## Example 1: Java Documentation Cross-Reference
+## Example 1: Language Documentation Cross-Reference
 
-**Context:** docs/explanation/software-engineering/programming-languages/java/README.md references AyoKoding Java tutorials
+**Context:** docs/explanation/software-engineering/programming-languages/typescript/README.md references AyoKoding TypeScript tutorials
 
-**Scenario:** Pointing readers to comprehensive Java learning content
+**Scenario:** Pointing readers to comprehensive TypeScript learning content
 
 ❌ **WRONG:**
 
 ```markdown
-For hands-on Java tutorials, see our [Java learning path](https://ayokoding.com/en/learn/software-engineering/programming-languages/java/).
+For hands-on TypeScript tutorials, see our [TypeScript learning path](https://ayokoding.com/en/learn/software-engineering/programming-languages/typescript/).
 ```
 
 ✅ **CORRECT:**
 
 ```markdown
-For hands-on Java tutorials, see our [Java learning path](../../../../../apps/ayokoding-www/content/en/learn/software-engineering/programming-languages/java/).
+For hands-on TypeScript tutorials, see our [TypeScript learning path](../../../../../apps/ayokoding-www/content/en/learn/software-engineering/programming-languages/typescript/).
 ```
 
-## Example 2: Spring Framework Reference
+## Example 2: React Reference
 
-**Context:** docs/explanation/software-engineering/platform-web/tools/jvm-spring/README.md references AyoKoding Spring content
+**Context:** docs/explanation/software-engineering/platform-web/tools/fe-react/README.md references AyoKoding React content
 
 **Scenario:** Directing readers to framework tutorials
 
 ❌ **WRONG:**
 
 ```markdown
-Learn Spring Framework basics at [ayokoding.com](https://ayokoding.com/en/learn/software-engineering/platform-web/tools/jvm-spring/).
+Learn React basics at [ayokoding.com](https://ayokoding.com/en/learn/software-engineering/platforms/web/tools/fe-react/).
 ```
 
 ✅ **CORRECT:**
 
 ```markdown
-Learn Spring Framework basics in our [comprehensive Spring tutorial series](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring/).
+Learn React basics in our [comprehensive React tutorial series](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-react/).
 ```
 
-## Example 3: Spring Boot Deep Dive
+## Example 3: Next.js Deep Dive
 
-**Context:** docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/README.md references Spring Boot tutorials
+**Context:** docs/explanation/software-engineering/platform-web/tools/fe-nextjs/README.md references Next.js tutorials
 
-**Scenario:** Cross-referencing detailed Spring Boot educational content
+**Scenario:** Cross-referencing detailed Next.js educational content
 
 ❌ **WRONG:**
 
 ```markdown
-Check out our [Spring Boot tutorials](https://ayokoding.com/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/) for practical examples.
+Check out our [Next.js tutorials](https://ayokoding.com/en/learn/software-engineering/platforms/web/tools/fe-nextjs/) for practical examples.
 ```
 
 ✅ **CORRECT:**
 
 ```markdown
-Check out our [Spring Boot tutorials](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring-boot/) for practical examples.
+Check out our [Next.js tutorials](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-nextjs/) for practical examples.
 ```
 
 ## Example 4: Multiple Cross-References in One Document
 
-**Context:** docs/explanation/software-engineering/programming-languages/java/README.md references multiple AyoKoding sections
+**Context:** docs/explanation/software-engineering/programming-languages/typescript/README.md references multiple AyoKoding sections
 
 **Scenario:** Comprehensive navigation to related educational content
 
@@ -70,9 +70,9 @@ Check out our [Spring Boot tutorials](../../../../../../apps/ayokoding-www/conte
 ```markdown
 ## Learning Resources
 
-This documentation provides reference material for Java in the open-sharia-enterprise project. For comprehensive learning content, explore:
+This documentation provides reference material for TypeScript in the open-sharia-enterprise project. For comprehensive learning content, explore:
 
-- **[Java Fundamentals](../../../../../apps/ayokoding-www/content/en/learn/software-engineering/programming-languages/java/)** - Core language concepts, syntax, and basic programming
-- **[Spring Framework](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring/)** - Dependency injection, AOP, and enterprise patterns
-- **[Spring Boot](../../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/jvm-spring-boot/)** - Rapid application development with Spring ecosystem
+- **[TypeScript Fundamentals](../../../../../apps/ayokoding-www/content/en/learn/software-engineering/programming-languages/typescript/)** - Core language concepts, syntax, and basic programming
+- **[React](../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-react/)** - Component model, hooks, and state management
+- **[Next.js](../../../../../apps/ayokoding-www/content/en/learn/software-engineering/platforms/web/tools/fe-nextjs/)** - Routing, rendering, and data fetching on top of React
 ```

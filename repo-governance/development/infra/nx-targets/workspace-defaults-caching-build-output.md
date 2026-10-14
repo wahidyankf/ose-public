@@ -79,11 +79,10 @@ when_to_use: Use when deciding whether a target should be cached, or where a pro
 
 Declare the output directory in `project.json` `outputs` to enable Nx cache restoration.
 
-| Project Type | Output Directory        |
-| ------------ | ----------------------- |
-| Rust CLI     | `{projectRoot}/dist/`   |
-| Next.js      | `{projectRoot}/.next/`  |
-| Spring Boot  | `{projectRoot}/target/` |
+| Project Type | Output Directory       |
+| ------------ | ---------------------- |
+| Rust CLI     | `{projectRoot}/dist/`  |
+| Next.js      | `{projectRoot}/.next/` |
 
 Example override for a Next.js app with custom output:
 

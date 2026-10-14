@@ -4,15 +4,15 @@ description: >-
   validated requests and typed results, deliberate service lifetimes, pooled outbound HTTP clients, and in-process host
   tests for the request pipeline.
 when_to_use: >-
-  Use when building, configuring, or reviewing an ASP.NET Core application in C# or F#, or when binding its options,
+  Use when building, configuring, or reviewing an ASP.NET Core application in F#, or when binding its options,
   validating its requests, choosing a service lifetime, or testing through its host.
 ---
 
 # ASP.NET Core Standards
 
 This standard is canonical for ASP.NET Core and holds only the choices the framework leaves open. It inherits the
-standard of the .NET language the project is written in, [C# Standards](csharp-standards.md) or
-[F# Standards](fsharp-standards.md), whose gates, runtime line, build defaults, and failure rules apply unchanged. An
+standard of the .NET language the project is written in, [F# Standards](fsharp-standards.md), whose gates, runtime
+line, build defaults, and failure rules apply unchanged. An
 ASP.NET Core framework skill defers here for each rule it applies, and a functional layer built on the framework, such
 as [Giraffe Standards](giraffe-standards.md), adds its own rules on top.
 

@@ -179,12 +179,12 @@ are checked by the gate `md-internal-link` at pre-commit and on the pull-request
 
 `pr-quality-gate.yml`. Language jobs run only for languages detected among the affected projects.
 
-| Job                                                        | Exact command(s) CI runs                                                                                                                                                                                                                                                             | Scope             |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
-| detect                                                     | `npx nx show projects --affected`, then each project's tags — derives which language jobs run. Runs no test.                                                                                                                                                                         | other             |
-| repository-policy                                          | `./rhino gate run --surface pull-request --base <sha> --head <sha>` — the whole `pull-request` surface: every local gate (with `format-staged` verifying clean), the commit-message and range screens, `md-mermaid-repository`, `md-internal-link`, `md-readme-index`, and the rest. | other             |
-| language job (TypeScript, .NET, Flutter, Java, Go, Python) | `nx affected -t typecheck,lint,test:quick` (plus `compat:min-version` where declared) — types/lint, Unit runtime, and applicable static coverage; no Integration/E2E runtime                                                                                                         | affected projects |
-| quality-gate                                               | Sentinel join — `needs: [repository-policy, typescript, dotnet, flutter, java, go, python]`; fails if any needed job failed. Runs no other command.                                                                                                                                  | other             |
+| Job                                                  | Exact command(s) CI runs                                                                                                                                                                                                                                                             | Scope             |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| detect                                               | `npx nx show projects --affected`, then each project's tags — derives which language jobs run. Runs no test.                                                                                                                                                                         | other             |
+| repository-policy                                    | `./rhino gate run --surface pull-request --base <sha> --head <sha>` — the whole `pull-request` surface: every local gate (with `format-staged` verifying clean), the commit-message and range screens, `md-mermaid-repository`, `md-internal-link`, `md-readme-index`, and the rest. | other             |
+| language job (TypeScript, .NET, Flutter, Go, Python) | `nx affected -t typecheck,lint,test:quick` (plus `compat:min-version` where declared) — types/lint, Unit runtime, and applicable static coverage; no Integration/E2E runtime                                                                                                         | affected projects |
+| quality-gate                                         | Sentinel join — `needs: [repository-policy, typescript, dotnet, flutter, go, python]`; fails if any needed job failed. Runs no other command.                                                                                                                                        | other             |
 
 All jobs except the join run in parallel. No `test:integration`/`test:e2e`: the language jobs run the
 fast set that no local hook runs.
@@ -236,7 +236,7 @@ The following variations are not flagged as drift:
 - **App set and per-app deploy CRONs** — `ose-public` ships content/web apps (`ose-www`,
   `ayokoding-www`, `organiclever-www`, `*-app-web`, `*-be`). It keeps only the deploy CRON workflows
   for apps it actually ships, and those deploy CRONs push to real Vercel/self-hosted environments.
-- **Language gate jobs** — the PR gate's per-language jobs (golang, jvm, dotnet, python, rust, elixir,
+- **Language gate jobs** — the PR gate's per-language jobs (golang, dotnet, python, rust, elixir,
   clojure, dart, typescript) exist only for languages present in this repository.
 - **lint-staged formatter entries** — only for languages present (for example `*.go`, `*.{ex,exs}`
   exist where that language ships). The common entries are `*.md`, `*.json`, `*.{yml,yaml}`,

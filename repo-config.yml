@@ -1041,11 +1041,6 @@ environment:
       - apps/ose-app-web/.env.example
       - apps/ose-be/.env.example
       - apps/ose-www/.env.example
-      # Removed apps: the staged-file gate flags a deletion unless the path stays allowed for that commit.
-      - apps/ose-id-be/.env.example
-      - apps/ose-id-web/.env.example
-      - apps/ose-lms-be/.env.example
-      - apps/roots-be/.env.example
   contracts:
     - path: apps/ayokoding-www/.env.example
       keys: [AYOKODING_WEB_CONTENT_DIR, AYOKODING_WEB_SHOW_DRAFTS, AYOKODING_WEB_MANIFESTS_DIR]
@@ -1069,6 +1064,8 @@ toolchains:
     - { id: dotnet, executable: dotnet, probe: [--version], required: true }
     - { id: go, executable: go, probe: [version], required: true }
     - { id: golangci-lint, executable: golangci-lint, probe: [version], required: true }
+    # A JRE stays required because openapi-generator-cli runs `java -jar` for the ose-be and
+    # organiclever-be contract code generation; no first-party project is written in Java.
     - { id: java, executable: java, probe: [--version], required: true }
     - { id: docker, executable: docker, probe: [--version], required: true }
     - { id: jq, executable: jq, probe: [--version], required: true }
@@ -1079,7 +1076,7 @@ toolchains:
     # `shellcheck` over every workflow `run:` block).
     # Deliberately undeclared, per the cross-language lint-strictness policy: npm-lockfile tools
     # (prettier, markdownlint-cli2, stylua, buildifier), `gofmt` and `npx` (shipped with go and
-    # npm), Gradle (projects run their own wrapper), the digest-pinned scanner, base utilities.
+    # npm), the digest-pinned scanner, base utilities.
     - { id: bash, executable: bash, probe: [--version], required: true }
     - { id: curl, executable: curl, probe: [--version], required: true }
     - { id: rustfmt, executable: rustfmt, probe: [--version], required: true }

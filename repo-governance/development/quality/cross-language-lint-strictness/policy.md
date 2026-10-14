@@ -20,7 +20,7 @@ when_to_use: "Use when adding a new lint gate, deciding its failure threshold, d
   manager (see the development-environment tool inventory), then doctor runs again. Exempt, and
   recorded beside the declaration: tools pinned by the npm lockfile and resolved from
   `node_modules/.bin`; binaries shipped inside a declared toolchain's own distribution (`gofmt` with
-  `go`, `npx` with `npm`); a project-owned build wrapper such as `gradlew`; a script that downloads
+  `go`, `npx` with `npm`); a project-owned build wrapper checked into the repository; a script that downloads
   and digest-verifies its own pinned binary; and POSIX base utilities.
 - **Clean-then-gate**: a gate is wired ON only after its existing violation
   backlog is cleaned, so the first CI/hook run never breaks on pre-existing

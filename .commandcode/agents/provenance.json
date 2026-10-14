@@ -215,7 +215,7 @@
     {
       "id": "agent/pr-review-types-checker",
       "path": ".agents/agents/pr-review-types-checker.md",
-      "digest": "4739a7d0851561197e648f8219e44d0318c42fe7d23b1d1a84b6e44b455a7e22"
+      "digest": "adfb41378f744f530c38ff410b1f72bfd6f52e7d58fd5a8a32e7b08b620db6d6"
     },
     {
       "id": "agent/readme-checker",
@@ -500,7 +500,7 @@
     {
       "id": "skill/docs-validating-software-engineering-separation",
       "path": ".agents/skills/docs-validating-software-engineering-separation/SKILL.md",
-      "digest": "aad2fecd0ba9b07c774cf0d334e23775364356ad5219b7c68a47ee320d1b6fe9"
+      "digest": "13d4d6364fa487d2c6f53f5c3ea1650f1b80041ccdcb7465cdc2072bfd087e0d"
     },
     {
       "id": "skill/evolving-database-schemas",
@@ -515,12 +515,7 @@
     {
       "id": "skill/framework-aspnet-core",
       "path": ".agents/skills/framework-aspnet-core/SKILL.md",
-      "digest": "b7c4540796a40dbb06af535d1eb0aaa9acd1fcb7abb53e58b0fcef857514c288"
-    },
-    {
-      "id": "skill/framework-gin",
-      "path": ".agents/skills/framework-gin/SKILL.md",
-      "digest": "d53e25ebef2225dc57deea847b0535ffbec03d13061259e4ab3c0bce875e6225"
+      "digest": "4652161983cf6ba6753e002cf4e49affe5915975699ca6714664d505af8b2837"
     },
     {
       "id": "skill/framework-giraffe",
@@ -536,11 +531,6 @@
       "id": "skill/framework-react",
       "path": ".agents/skills/framework-react/SKILL.md",
       "digest": "1ad91e260123242fbee7ddf5ed9366e302a07b36e3ed39737da53762e76ce9d3"
-    },
-    {
-      "id": "skill/framework-spring-boot",
-      "path": ".agents/skills/framework-spring-boot/SKILL.md",
-      "digest": "b1d6f366bf899d9917aaccd8c8c013f13d3ec78f5e3acfa441acc7cdd41b9c70"
     },
     {
       "id": "skill/grill-me",
@@ -608,11 +598,6 @@
       "digest": "b2b39f866b8b1a5e344a0757e754f02f5d664e47e7bb715255687a3b5d805845"
     },
     {
-      "id": "skill/programming-csharp",
-      "path": ".agents/skills/programming-csharp/SKILL.md",
-      "digest": "efd2058d785d81ef844a9c6b0b98f650190e2936d6f9bd37950ef5809e68dc44"
-    },
-    {
       "id": "skill/programming-fsharp",
       "path": ".agents/skills/programming-fsharp/SKILL.md",
       "digest": "7845e5b1e3d0d307d65e9c7a7cb2b565dd5076a05b7db367bf881f3996d8d4c6"
@@ -621,11 +606,6 @@
       "id": "skill/programming-golang",
       "path": ".agents/skills/programming-golang/SKILL.md",
       "digest": "c8631e282c6772d4389a024d9dbd2b6b418954b2e74f39f23d339946ed4d3109"
-    },
-    {
-      "id": "skill/programming-java",
-      "path": ".agents/skills/programming-java/SKILL.md",
-      "digest": "d1aaed4b1cfc80d53bb4c01926b1c7639ab6f63591139cc9aaf6c33ff76056b7"
     },
     {
       "id": "skill/programming-javascript",

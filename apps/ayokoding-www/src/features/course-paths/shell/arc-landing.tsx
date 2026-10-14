@@ -1,11 +1,13 @@
 import { contentUrl } from "@/features/content/core/content-url";
 import type { Locale } from "@/features/i18n/core/config";
+import type { SequenceIndex } from "@/features/learning-progress/core/progress-derivations";
 import type { PathManifest } from "../core/schemas";
 import { normalizeCourseRef } from "../core/manifest";
-import { PathCard } from "./path-card";
 import { EmptyPathListState } from "./empty-path-list-state";
+import { LearnPathCard } from "./learn-path-card";
 import { SyllabusPreview } from "./syllabus-preview";
 import { LEARN_PATHS_PREFIX } from "./paths-route";
+import type { RoadmapCourseData } from "./roadmap-course-card";
 
 export interface ArcLandingProps {
   locale: string;
@@ -14,15 +16,31 @@ export interface ArcLandingProps {
   manifests: readonly PathManifest[];
   /** courseId -> title, covering every course in every manifest passed in. */
   courseTitles: Readonly<Record<string, string>>;
+  /**
+   * Per-course metadata built on the server — each card's size and time come from it (plan 04
+   * Phase 7). Optional/defaulted to an empty map so a caller without the content index still
+   * renders, just without the time line.
+   */
+  courseCards?: Record<string, RoadmapCourseData>;
+  /** Every course's lesson page paths (`loadLessonPagePaths`), so a card states real progress. */
+  sequences?: SequenceIndex;
 }
 
 /**
- * Arc landing (Cycle 3.1c-i/3.1c-ii, R7) — `/en/learn/paths/careers/<arc>/`. Renders **exactly as
- * many** `PathCard`s as the arc has roles — never a fixed-size grid; the single-role state
- * additionally renders an inline first-phase `SyllabusPreview` inside that one card so it never
- * reads as a stub next to a fabricated empty second card.
+ * Arc landing (Cycle 3.1c-i/3.1c-ii, R7; plan 04 Phase 7) — `/en/learn/paths/careers/<arc>/`.
+ * Renders **exactly as many** `LearnPathCard`s as the arc has roles — never a fixed-size grid, and
+ * the same card the Learn home and the other hubs use (S32, U3). The single-role state additionally
+ * renders an inline first-phase `SyllabusPreview` below that one card so it never reads as a stub
+ * next to a fabricated empty second card.
  */
-export function ArcLanding({ locale, arc, manifests, courseTitles }: ArcLandingProps) {
+export function ArcLanding({
+  locale,
+  arc,
+  manifests,
+  courseTitles,
+  courseCards = {},
+  sequences = {},
+}: ArcLandingProps) {
   if (manifests.length === 0) {
     return (
       <EmptyPathListState
@@ -39,7 +57,13 @@ export function ArcLanding({ locale, arc, manifests, courseTitles }: ArcLandingP
       <ul className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         {manifests.map((manifest) => (
           <li key={manifest.pathId}>
-            <PathCard locale={locale} manifest={manifest} context="hub" />
+            <LearnPathCard
+              locale={locale}
+              manifest={manifest}
+              courseTitles={courseTitles}
+              courseCards={courseCards}
+              sequences={sequences}
+            />
             {isSingleRole &&
               manifest.phases
                 .slice(0, 1)

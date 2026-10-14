@@ -34,7 +34,8 @@ import {
   manifestsForArc,
   LEARN_PATHS_PREFIX,
 } from "@/features/course-paths/shell/paths-route";
-import { PathCard, CategorySection, ArcGroup } from "@/features/course-paths/shell/path-card";
+import { CategorySection, ArcGroup } from "@/features/course-paths/shell/path-card";
+import { buildPathCardCourseData, LearnPathCard } from "@/features/course-paths/shell/learn-path-card";
 import { COURSE_CATALOG_SLUG, courseRootIdFromSlug } from "@/features/course-paths/shell/course-path-nav";
 import { buildCourseCatalog } from "@/features/course-paths/core/course-catalog";
 import { CourseCatalog } from "@/features/course-paths/shell/course-catalog";
@@ -189,6 +190,13 @@ async function renderPathsRoute(locale: string, slugStr: string) {
 
   const courseTitles = buildCourseTitleIndex(pathData.contentMap, locale, pathData.manifests);
 
+  // Plan 04 Phase 7: every path hub (the paths hub, the careers landing, a careers arc page, and
+  // the skills landing) renders the same `LearnPathCard` the Learn home renders, so it is built
+  // from the same two server-side pieces — the per-course card metadata and the locale's lesson
+  // page paths (`loadLessonPagePaths`), which is memoized per locale.
+  const sequences = await loadLessonPagePaths(locale);
+  const courseCards = buildPathCardCourseData(pathData.contentMap, locale, pathData.manifests, courseTitles);
+
   // Best-effort SEO/body content from this route's own `_index.md`, when one exists — every
   // careers `_index.md` (hub/category/arc roots) already exists; a terminal path's `_index.md` may
   // not (Cycle 3.1d's careers no-regression clause: silent no-op when absent).
@@ -229,7 +237,13 @@ async function renderPathsRoute(locale: string, slugStr: string) {
               <ArcGroup key={arc} arc={arc} arcTitle={arcTitles[arc]}>
                 {arcManifests.map((manifest) => (
                   <li key={manifest.pathId}>
-                    <PathCard locale={locale} manifest={manifest} context="hub" />
+                    <LearnPathCard
+                      locale={locale}
+                      manifest={manifest}
+                      courseTitles={courseTitles}
+                      courseCards={courseCards}
+                      sequences={sequences}
+                    />
                   </li>
                 ))}
               </ArcGroup>
@@ -247,7 +261,13 @@ async function renderPathsRoute(locale: string, slugStr: string) {
             <ul className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
               {skills.map((manifest) => (
                 <li key={manifest.pathId}>
-                  <PathCard locale={locale} manifest={manifest} context="hub" showCourseCount={false} />
+                  <LearnPathCard
+                    locale={locale}
+                    manifest={manifest}
+                    courseTitles={courseTitles}
+                    courseCards={courseCards}
+                    sequences={sequences}
+                  />
                 </li>
               ))}
             </ul>
@@ -276,6 +296,7 @@ async function renderPathsRoute(locale: string, slugStr: string) {
           category={resolution.category}
           manifests={pathData.manifests}
           contentMap={pathData.contentMap}
+          sequences={sequences}
         />
       </section>
     );
@@ -297,7 +318,14 @@ async function renderPathsRoute(locale: string, slugStr: string) {
       <section className="mx-auto max-w-6xl flex-1 px-6 py-8 lg:px-8">
         <h1 className="text-4xl font-extrabold tracking-tight">{seoPage?.title ?? resolution.arc}</h1>
         <p className="mt-2 text-muted-foreground">{seoPage?.description ?? ""}</p>
-        <ArcLanding locale={locale} arc={resolution.arc} manifests={arcManifests} courseTitles={courseTitles} />
+        <ArcLanding
+          locale={locale}
+          arc={resolution.arc}
+          manifests={arcManifests}
+          courseTitles={courseTitles}
+          courseCards={courseCards}
+          sequences={sequences}
+        />
       </section>
     );
   }
@@ -312,16 +340,14 @@ async function renderPathsRoute(locale: string, slugStr: string) {
     assumedCourseTitles[courseId] = link ? link.title : humanizeKebabSlug(courseId);
   }
 
-  // The roadmap's per-course card data and lesson sequences, both built here (plan 04 Phase 4):
-  // the server owns the content index, so format, hours, outline status, and page paths are
-  // resolved once per request and handed down as plain data.
-  const sequences = await loadLessonPagePaths(locale);
-  const courseCards: Record<string, RoadmapCourseData> = {};
+  // The roadmap's per-course card data, built here (plan 04 Phase 4) — the lesson page paths it
+  // also reads are the `sequences` loaded once above for every paths route.
+  const roadmapCourseCards: Record<string, RoadmapCourseData> = {};
   for (const reference of resolution.manifest.courseOrder) {
     const courseId = normalizeCourseRef(reference).id;
     const meta = pathData.contentMap.get(`${locale}:${slugForCourseId(courseId)}`);
 
-    courseCards[courseId] = {
+    roadmapCourseCards[courseId] = {
       title: courseTitles[courseId] ?? courseId,
       ...(meta?.format === undefined ? {} : { format: meta.format }),
       ...(meta?.estimatedHours === undefined ? {} : { estimatedHours: meta.estimatedHours }),
@@ -337,7 +363,7 @@ async function renderPathsRoute(locale: string, slugStr: string) {
       bodyHtml={seoPage?.html}
       outlineCourseIds={pathData.outlineCourseIds}
       assumedCourseTitles={assumedCourseTitles}
-      courseCards={courseCards}
+      courseCards={roadmapCourseCards}
       sequences={sequences}
     />
   );

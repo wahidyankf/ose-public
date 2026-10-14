@@ -47,3 +47,10 @@ Feature: Learn home
   Scenario: A deeper address under the old overview is not redirected
     When a visitor requests /en/learn/overview/anything
     Then the response status is 404
+
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Path hubs use the same path cards
+  @integration-exempt
+  Scenario: Path hubs use the same path cards
+    When a reader opens the paths hub, the careers landing, a careers arc page, or the skills landing
+    Then every path on the page is shown as a path card with its progress in words
+    And the careers landing groups its path cards under one heading per arc that links to the arc page

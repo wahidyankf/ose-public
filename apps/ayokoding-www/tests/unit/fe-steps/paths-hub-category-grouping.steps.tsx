@@ -21,7 +21,16 @@ vi.mock("@/features/navigation/shell/toc", () => ({
 
 const { manifests, contentMap } = vi.hoisted(() => {
   function m(pathId: string, arc: string) {
-    return { pathId, arc, title: `Title for ${pathId}`, description: `Description for ${pathId}`, courseOrder: [] };
+    // Plan 04 Phase 7: the hub renders `LearnPathCard`, which reads `phases` and `courseOrder` —
+    // an empty core phase keeps this fixture about category grouping, not content.
+    return {
+      pathId,
+      arc,
+      title: `Title for ${pathId}`,
+      description: `Description for ${pathId}`,
+      phases: [{ id: "phase-a", title: "Phase A", kind: "core", courses: [] }],
+      courseOrder: [],
+    };
   }
 
   const manifestList = [
@@ -50,6 +59,9 @@ vi.mock("@/lib/trpc/server", () => ({
       getBySlug: vi.fn(async () => {
         throw new MockTRPCError({ code: "NOT_FOUND", message: "not found" });
       }),
+      // Plan 04 Phase 7: the hub route now also reads the lesson-sequence index
+      // (`loadLessonPagePaths`) for its cards; an empty tree is the honest boundary here.
+      getTree: vi.fn(async () => []),
     },
   },
 }));

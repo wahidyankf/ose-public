@@ -778,27 +778,38 @@ return `308 http://localhost:3101/en/learn`, `200`, and `404`, with `/id/learn` 
 - **Proof:** `<plan>/evidence/phase-7-hubs.md`.
 - _Suggested executor: `swe-developer`._
 
-- [ ] [AI] **Gherkin:** add S32 to `learning-progress/learn-home.feature` and apply U3 to
+- [x] [AI] **Gherkin:** add S32 to `learning-progress/learn-home.feature` and apply U3 to
       `course-paths/category-landing-arc-chooser.feature`. Run `BEHAVIOUR`. Acceptance: only S32 and
       the U3 scenario are missing bindings.
-- [ ] [AI] **RED:** create `careers-arc-sections.test.tsx`; edit `category-landing.test.tsx`,
+- [x] [AI] **RED:** create `careers-arc-sections.test.tsx`; edit `category-landing.test.tsx`,
       `arc-landing.test.tsx`, and `route-paths-hub.test.tsx` to expect `LearnPathCard` (and arc
       sections with heading links on careers); keep the skills statement and `RampMilestoneStrip`
       assertions. Bind S32 and U3 in the unit and E2E step files (S32 visits `/en/learn/paths`,
       `/en/learn/paths/careers`, `/en/learn/paths/careers/immediately-effective`, and
       `/en/learn/paths/skills`). Acceptance: the new and edited cases fail.
-- [ ] [AI] **GREEN:** create `course-paths/shell/careers-arc-sections.tsx`; edit `path-card.tsx` (hub
+- [x] [AI] **GREEN:** create `course-paths/shell/careers-arc-sections.tsx`; edit `path-card.tsx` (hub
       sections only), `category-landing.tsx`, and `arc-landing.tsx`; pass `loadLessonPagePaths("en")`
       from `renderPathsRoute`. Rerun the tests and `E2E`. Acceptance: all pass, including
       `paths-hub-category-grouping.feature`, the skills features, and the site home hero scenario.
-- [ ] [AI] **REFACTOR:** `rtk git grep -n "<PathCard" -- apps/ayokoding-www/src` shows only the hero
+- [x] [AI] **REFACTOR:** `rtk git grep -n "<PathCard" -- apps/ayokoding-www/src` shows only the hero
       use. Run `QUICK`. Acceptance: exit 0, coverage at or above 99%.
+
+**Phase 7 implementation notes (2026-10-14, `swe-developer`).** Status: complete. S32 + U3 Gherkin; the
+`CareersArcSections` component and the hub/skills/arc landings now use `LearnPathCard`; `renderPathsRoute`
+passes the lesson page-path index; tests and bindings updated. Unit gate exit 0 (240 files, 4119 tests,
+lines 99.54%); the filtered E2E passes with the `learn-home` feature at 21/21. Three defects fixed (a
+flat-mode progress wording, a sidebar-rail collision in the card reader, and a missing
+`HomeManifest` field). See `evidence/phase-7-hubs.md`.
 
 ### Phase 7 Gate
 
 > All checks below must pass before starting Phase 8.
 
-- [ ] [AI] `QUICK`, `BEHAVIOUR`, and `E2E` exit 0.
+- [x] [AI] `QUICK`, `BEHAVIOUR`, and `E2E` exit 0.
+
+**Phase 7 Gate notes (2026-10-14).** `QUICK` exit 0 (240 files, 4119 tests, lines 99.54%);
+`BEHAVIOUR` exit 0; flow-scoped E2E green (learn-home 21/21, plus the category-landing and paths-hub
+features).
 
 > **Pause Safety**: every screen in scope is done. Safe to stop. To resume: `QUICK`.
 

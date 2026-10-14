@@ -1,22 +1,19 @@
 import Link from "next/link";
 import type { ContentMeta } from "@/features/content/core/types";
 import { contentUrl } from "@/features/content/core/content-url";
-import { normalizeCourseRef } from "@/features/course-paths/core/manifest";
 import {
   buildArcTitleIndex,
   buildCourseTitleIndex,
   COURSE_CATALOG_SLUG,
   humanizeKebabSlug,
-  slugForCourseId,
 } from "@/features/course-paths/shell/course-path-nav";
 import { EmptyPathListState } from "@/features/course-paths/shell/empty-path-list-state";
-import { LearnPathCard } from "@/features/course-paths/shell/learn-path-card";
+import { buildPathCardCourseData, LearnPathCard } from "@/features/course-paths/shell/learn-path-card";
 import {
   groupCareersManifestsByArc,
   LEARN_PATHS_PREFIX,
   skillsManifests,
 } from "@/features/course-paths/shell/paths-route";
-import type { RoadmapCourseData } from "@/features/course-paths/shell/roadmap-course-card";
 import type { PathManifest } from "@/features/course-paths/core/schemas";
 import type { Locale } from "@/features/i18n/core/config";
 import { tf } from "@/features/i18n/core/fill";
@@ -70,7 +67,7 @@ export function LearnHome({
     locale,
     careerGroups.map(({ arc }) => arc),
   );
-  const courseCards = buildCourseCards(contentMap, locale, manifests, courseTitles);
+  const courseCards = buildPathCardCourseData(contentMap, locale, manifests, courseTitles);
 
   return (
     <section className="mx-auto max-w-6xl flex-1 px-6 py-8 lg:px-8">
@@ -171,31 +168,4 @@ export function LearnHome({
       </p>
     </section>
   );
-}
-
-/** Per-course card metadata, built once for every course any manifest names (tech-docs/004). */
-function buildCourseCards(
-  contentMap: ReadonlyMap<string, ContentMeta>,
-  locale: string,
-  manifests: readonly PathManifest[],
-  courseTitles: Readonly<Record<string, string>>,
-): Record<string, RoadmapCourseData> {
-  const cards: Record<string, RoadmapCourseData> = {};
-
-  for (const manifest of manifests) {
-    for (const reference of manifest.courseOrder) {
-      const courseId = normalizeCourseRef(reference).id;
-      if (cards[courseId] !== undefined) continue;
-
-      const meta = contentMap.get(`${locale}:${slugForCourseId(courseId)}`);
-      cards[courseId] = {
-        title: courseTitles[courseId] ?? humanizeKebabSlug(courseId),
-        ...(meta?.format === undefined ? {} : { format: meta.format }),
-        ...(meta?.estimatedHours === undefined ? {} : { estimatedHours: meta.estimatedHours }),
-        isOutline: meta?.status === "outline",
-      };
-    }
-  }
-
-  return cards;
 }

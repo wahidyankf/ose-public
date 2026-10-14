@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { cleanup, render, screen, within } from "@testing-library/react";
-import { expect } from "vitest";
+import { expect, vi } from "vitest";
 import "./helpers/test-setup";
 import type { ContentMeta } from "@/features/content/core/types";
 import type { PathManifest } from "@/features/course-paths/core/schemas";
@@ -12,6 +12,67 @@ import { learningProgressStore } from "@/features/learning-progress/shell/progre
 import { manifestFixture } from "../features/course-paths/manifest-fixture";
 // eslint-disable-next-line import/first
 import { learnHomeRedirects } from "../../../src/redirects/learn-home";
+
+// ---------------------------------------------------------------------------
+// Plan ayokoding-learn-revamp-04 Phase 7 (S32) — the four path hubs render the same
+// `LearnPathCard`. The paths hub is the app route itself, so these steps render `ContentPage`
+// against the same mocked server boundaries `route-paths-hub.test.tsx` uses; the careers, arc, and
+// skills landings are the components that route composes.
+// ---------------------------------------------------------------------------
+
+/** Filled in below, once the fixtures exist — the mocked server boundaries read it lazily. */
+const routeFixtures = vi.hoisted(() => ({
+  manifests: [] as PathManifest[],
+  contentMap: new Map<string, ContentMeta>(),
+}));
+
+vi.mock("@/features/navigation/shell/toc", () => ({ TableOfContents: () => null }));
+
+const { MockTRPCError } = vi.hoisted(() => {
+  class MockTRPCError extends Error {
+    code: string;
+    constructor({ code, message }: { code: string; message?: string }) {
+      super(message);
+      this.code = code;
+    }
+  }
+  return { MockTRPCError };
+});
+
+vi.mock("@/lib/trpc/server", () => ({
+  serverCaller: {
+    content: {
+      getBySlug: vi.fn(async () => {
+        throw new MockTRPCError({ code: "NOT_FOUND", message: "not found" });
+      }),
+      // The hubs read the lesson-sequence index (`loadLessonPagePaths`) for every paths route; an
+      // empty tree (no page data) keeps this scenario about the cards, not about page progress.
+      getTree: vi.fn(async () => []),
+    },
+  },
+}));
+
+vi.mock("@/features/app-shell/shell/trpc-init", () => ({
+  createTRPCContext: () => ({
+    contentService: {
+      getIndex: async () => ({ contentMap: routeFixtures.contentMap, trees: {}, prevNext: new Map() }),
+    },
+  }),
+}));
+
+vi.mock("@/features/course-paths/shell/manifest-repository", () => ({
+  loadManifests: vi.fn(async () => routeFixtures.manifests),
+  defaultManifestsDir: () => "unused-in-test",
+}));
+
+vi.mock("@trpc/server", () => ({ TRPCError: MockTRPCError }));
+
+// eslint-disable-next-line import/first
+import ContentPage from "@/app/[locale]/(content)/[...slug]/page";
+// eslint-disable-next-line import/first
+import { ArcLanding } from "@/features/course-paths/shell/arc-landing";
+// eslint-disable-next-line import/first
+import { CategoryLanding } from "@/features/course-paths/shell/category-landing";
 
 const feature = await loadFeature(
   path.resolve(
@@ -114,6 +175,10 @@ const CONTENT_MAP = new Map<string, ContentMeta>([
       meta(`learn/courses/${courseId}`, title, COURSE_ESTIMATES[courseId]) as [string, ContentMeta],
   ),
 ]);
+
+/** The mocked server boundaries for S32 read these, so the hub route sees the same fixtures. */
+routeFixtures.manifests = MANIFESTS;
+routeFixtures.contentMap = CONTENT_MAP;
 
 /** Render the Learn home as the app does for a reader who just opened `/en/learn`. */
 function openLearnHome(): void {
@@ -321,6 +386,117 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(applyLearnHomeRedirect(requested)).toBeUndefined();
       expect(learnHomeRedirects.some((rule) => rule.source === requested)).toBe(false);
       expect(learnHomeRedirects.some((rule) => rule.source.includes(":path*"))).toBe(false);
+    });
+  });
+
+  Scenario("Path hubs use the same path cards", ({ When, Then, And }) => {
+    // The four screens S32 names, each with the paths it must show as cards. The hub renders every
+    // published path; the careers landing its career paths; the arc page that arc's one role; the
+    // skills landing the skills paths.
+    const HUB_PAGES = [
+      { url: "/en/learn/paths", pathIds: MANIFESTS.map((manifest) => manifest.pathId) },
+      { url: "/en/learn/paths/careers", pathIds: CAREER_PATHS.map((manifest) => manifest.pathId) },
+      { url: "/en/learn/paths/careers/immediately-effective", pathIds: [BACKEND_TRACK.pathId] },
+      { url: "/en/learn/paths/skills", pathIds: [SKILLS_PATH.pathId] },
+    ];
+
+    let pages: { url: string; pathIds: readonly string[]; render: () => void }[] = [];
+
+    function careersLanding() {
+      return (
+        <CategoryLanding
+          locale="en"
+          category="careers"
+          manifests={MANIFESTS}
+          contentMap={CONTENT_MAP}
+          sequences={SEQUENCES}
+        />
+      );
+    }
+
+    When("a reader opens the paths hub, the careers landing, a careers arc page, or the skills landing", async () => {
+      const hub = await ContentPage({ params: Promise.resolve({ locale: "en", slug: ["learn", "paths"] }) });
+
+      pages = [
+        { url: "/en/learn/paths", pathIds: HUB_PAGES[0]?.pathIds ?? [], render: () => void render(hub) },
+        {
+          url: "/en/learn/paths/careers",
+          pathIds: HUB_PAGES[1]?.pathIds ?? [],
+          render: () => void render(careersLanding()),
+        },
+        {
+          url: "/en/learn/paths/careers/immediately-effective",
+          pathIds: HUB_PAGES[2]?.pathIds ?? [],
+          render: () =>
+            void render(
+              <ArcLanding
+                locale="en"
+                arc="immediately-effective"
+                manifests={[BACKEND_TRACK]}
+                courseTitles={COURSE_TITLES}
+                sequences={SEQUENCES}
+              />,
+            ),
+        },
+        {
+          url: "/en/learn/paths/skills",
+          pathIds: HUB_PAGES[3]?.pathIds ?? [],
+          render: () =>
+            void render(
+              <CategoryLanding
+                locale="en"
+                category="skills"
+                manifests={MANIFESTS}
+                contentMap={CONTENT_MAP}
+                sequences={SEQUENCES}
+              />,
+            ),
+        },
+      ];
+    });
+
+    Then("every path on the page is shown as a path card with its progress in words", () => {
+      for (const page of pages) {
+        cleanup();
+        page.render();
+
+        for (const pathId of page.pathIds) {
+          const manifest = MANIFESTS.find((candidate) => candidate.pathId === pathId);
+          expect(manifest, `${page.url} must publish ${pathId}`).toBeDefined();
+
+          const card = screen.getByRole("link", { name: manifest?.title ?? pathId }).closest("li");
+          expect(card, `${page.url} must show the ${pathId} path card`).not.toBeNull();
+          expect(
+            within(card as HTMLElement)
+              .getByRole("link", { name: /View path/ })
+              .getAttribute("href"),
+          ).toBe(`/en/learn/paths/${pathId}`);
+          expect(card?.textContent).toMatch(/\d+ of \d+ core courses done/);
+          expect(card?.textContent).toMatch(/Not started|In progress|Done/);
+        }
+      }
+    });
+
+    And("the careers landing groups its path cards under one heading per arc that links to the arc page", () => {
+      cleanup();
+      render(careersLanding());
+
+      const nav = within(screen.getByRole("navigation", { name: "Careers arcs" }));
+      const arcs = [
+        { arc: "immediately-effective", title: "Immediately Effective" },
+        { arc: "interview-ready", title: "Interview Ready" },
+      ];
+      expect(nav.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent)).toEqual(
+        arcs.map(({ title }) => title),
+      );
+
+      for (const { arc, title } of arcs) {
+        // The arc's own heading links to its arc page — the arc chooser the sections replaced.
+        expect(screen.getByRole("heading", { level: 2, name: title }).querySelector("a")?.getAttribute("href")).toBe(
+          `/en/learn/paths/careers/${arc}`,
+        );
+        expect(screen.queryByRole("link", { name: /Explore the .* arc/ })).toBeNull();
+      }
     });
   });
 });

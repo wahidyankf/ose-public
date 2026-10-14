@@ -13,6 +13,9 @@ vi.mock("@/lib/trpc/server", () => ({
         prev: null,
         next: null,
       }),
+      // Plan 04 Phase 7: the paths routes also read the lesson-sequence index for their cards, so
+      // an empty content tree is the honest boundary for this suite's 404 cases.
+      getTree: vi.fn(async () => []),
     },
   },
 }));

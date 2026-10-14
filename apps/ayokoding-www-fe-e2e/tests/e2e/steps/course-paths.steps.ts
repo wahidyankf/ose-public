@@ -169,50 +169,40 @@ When("a reader opens the careers category landing at \\/en\\/learn\\/paths\\/car
   await page.waitForLoadState("networkidle");
 });
 
-// The literal parentheses in the Gherkin step text ("role(s)") must be escaped (`\\(`/`\\)`) —
-// Cucumber Expressions otherwise parse unescaped `(text)` as optional-text syntax, which would
-// match "role" or "roles" but never the literal characters "role(s)" the feature file contains.
-Then("the page renders one arc card per arc with its member role\\(s\\) previewed", async ({ page }) => {
+// Plan ayokoding-learn-revamp-04 Phase 7 (U3): the arc chooser's `ArcCard`s became one arc-headed
+// section of shared `LearnPathCard`s — the arc heading itself now links to the arc page.
+Then("the page renders one section per arc, each arc heading linking to the arc page", async ({ page }) => {
   const nav = page.getByRole("navigation", { name: "Careers arcs" });
-  const arcCards = nav.getByRole("link");
-  await expect(arcCards).toHaveCount(3);
-  const expectedCards = [
-    {
-      name: "Explore the Fundamentally Strong arc — Generalist Track",
-      href: "/en/learn/paths/careers/fundamentally-strong",
-      roles: ["Generalist Track"],
-    },
-    {
-      name: "Explore the Immediately-Effective arc — Backend Track, Frontend Track",
-      href: "/en/learn/paths/careers/immediately-effective",
-      roles: ["Backend Track", "Frontend Track"],
-    },
-    {
-      name: "Explore the Interview-Ready arc — Backend Track",
-      href: "/en/learn/paths/careers/interview-ready",
-      roles: ["Backend Track"],
-    },
+  const arcs = [
+    { arc: "fundamentally-strong", title: "Fundamentally Strong" },
+    { arc: "immediately-effective", title: "Immediately-Effective" },
+    { arc: "interview-ready", title: "Interview-Ready" },
   ];
-  for (const expected of expectedCards) {
-    const card = nav.getByRole("link", { name: expected.name, exact: true });
-    await expect(card).toHaveAttribute("href", expected.href);
-    await expect(card.getByRole("listitem")).toHaveText(expected.roles);
+
+  await expect(nav.getByRole("heading", { level: 2 })).toHaveCount(arcs.length);
+  for (const { arc, title } of arcs) {
+    const heading = nav.getByRole("heading", { level: 2, name: title, exact: true });
+    await expect(heading).toBeVisible();
+    await expect(heading.getByRole("link", { name: title, exact: true })).toHaveAttribute(
+      "href",
+      `/en/learn/paths/careers/${arc}`,
+    );
   }
 });
 
-Then("the immediately-effective arc card previews exactly two member roles", async ({ page }) => {
-  const nav = page.getByRole("navigation", { name: "Careers arcs" });
-  // Exact humanized casing (no `i` flag): the arc card's accessible name renders the arc's
-  // humanized/authored title (UWT-001 fix, phase-5 rule-15 retest — `category-landing.tsx`'s
-  // `ArcCard` builds its `aria-label` from `arcTitle`, not the raw `arc` slug), e.g. "Explore the
-  // Immediately-Effective arc — …", never the raw kebab-case slug this regex originally matched.
-  // A case-insensitive flag here would pass identically for either the pre-fix raw slug or the
-  // post-fix humanized title (they differ only in case), so it must stay case-sensitive to detect
-  // a regression back to the raw-slug defect this assertion exists to catch.
-  const arcCard = nav.getByRole("link", { name: /Explore the Immediately-Effective arc/ });
-  await expect(arcCard).toBeVisible();
-  const roleBadges = arcCard.getByRole("listitem");
-  await expect(roleBadges).toHaveCount(2);
+Then("the immediately-effective section shows exactly two path cards", async ({ page }) => {
+  const section = page.locator('section[aria-labelledby="careers-arc-immediately-effective"]');
+  await expect(section).toHaveCount(1);
+
+  const cards = section.locator(":scope > ul > li");
+  await expect(cards).toHaveCount(2);
+  await expect(
+    section.getByRole("link", { name: "Backend Track (Immediately-Effective)", exact: true }),
+  ).toHaveAttribute("href", "/en/learn/paths/careers/immediately-effective/backend-track");
+  await expect(
+    section.getByRole("link", { name: "Frontend Track (Immediately-Effective)", exact: true }),
+  ).toHaveAttribute("href", "/en/learn/paths/careers/immediately-effective/frontend-track");
+  await expect(section.getByRole("link", { name: /View path/ })).toHaveCount(2);
 });
 
 // ---------------------------------------------------------------------------
@@ -264,16 +254,26 @@ When(
 
 Then("both role cards render side by side with their own course counts", async ({ page }) => {
   const nav = page.getByRole("navigation", { name: "immediately-effective paths" });
-  const cards = nav.getByRole("link");
-  await expect(cards).toHaveCount(2);
-  await expect(page.getByText("~2 courses")).toBeVisible();
-  await expect(page.getByText("~3 courses")).toBeVisible();
+  await expect(nav.locator(":scope > ul > li")).toHaveCount(2);
+
+  // Plan 04 Phase 7: each role renders the shared learning path card, whose own progress line
+  // states that role's own core-course count — the fixture roles differ deliberately (backend
+  // three core courses, frontend two), so one shared or placeholder count could not satisfy both.
+  const backend = nav
+    .getByRole("link", { name: "Backend Track (Immediately-Effective)", exact: true })
+    .locator("xpath=ancestor::li[1]");
+  const frontend = nav
+    .getByRole("link", { name: "Frontend Track (Immediately-Effective)", exact: true })
+    .locator("xpath=ancestor::li[1]");
+  await expect(backend).toContainText(/\d+ of 3 core courses done/);
+  await expect(frontend).toContainText(/\d+ of 2 core courses done/);
 });
 
 Then("neither card is a placeholder or an empty grid cell", async ({ page }) => {
   const nav = page.getByRole("navigation", { name: "immediately-effective paths" });
-  await expect(nav.getByRole("link", { name: /Start the Frontend Track/ })).toBeVisible();
-  await expect(nav.getByRole("link", { name: /Start the Backend Track/ })).toBeVisible();
+  await expect(nav.getByRole("link", { name: "Frontend Track (Immediately-Effective)", exact: true })).toBeVisible();
+  await expect(nav.getByRole("link", { name: "Backend Track (Immediately-Effective)", exact: true })).toBeVisible();
+  await expect(nav.getByRole("link", { name: /View path/ })).toHaveCount(2);
 });
 
 // ---------------------------------------------------------------------------
@@ -301,13 +301,12 @@ Then(
   "the single role card renders with a preview that names the first phase and lists its courses",
   async ({ page }) => {
     const nav = page.getByRole("navigation", { name: "interview-ready paths" });
-    const card = nav.getByRole("link", {
-      name: "Start the Backend Track (Interview-Ready) path — 2 courses",
-      exact: true,
-    });
+    // Plan 04 Phase 7: the role card is the shared learning path card, so its link is the path
+    // title; the single-role `SyllabusPreview` still sits beside it inside the same list item.
+    const card = nav.getByRole("link", { name: "Backend Track (Interview-Ready)", exact: true });
     await expect(card).toHaveAttribute("href", "/en/learn/paths/careers/interview-ready/backend-track");
-    await expect(card.locator("xpath=..").getByText("Starts with Phase 1 · Fixture core:")).toBeVisible();
-    const previewItems = card.locator("xpath=..").locator("ol > li");
+    await expect(card.locator("xpath=ancestor::li[1]").getByText("Starts with Phase 1 · Fixture core:")).toBeVisible();
+    const previewItems = card.locator("xpath=ancestor::li[1]").locator("ol > li");
     await expect(previewItems).toHaveCount(2);
     // Numbered preview (plan ayokoding-learn-revamp-01 §4.2): each inline item renders its path
     // position before the title, separated by " · " from the previous item.
@@ -906,8 +905,9 @@ Then("the current course's row shows its own position number with the current-co
 // Cycle 3.1c-ii section above).
 Then('the role card\'s "Starts with" preview numbers its courses 1, 2, and so on in path order', async ({ page }) => {
   const nav = page.getByRole("navigation", { name: "interview-ready paths" });
-  const card = nav.getByRole("link", { name: /^Start the Backend Track \(Interview-Ready\) path/ });
-  const previewItems = card.locator("xpath=..").locator("ol > li");
+  // Plan 04 Phase 7: the role card is the shared learning path card — its link is the path title.
+  const card = nav.getByRole("link", { name: "Backend Track (Interview-Ready)", exact: true });
+  const previewItems = card.locator("xpath=ancestor::li[1]").locator("ol > li");
   await expect(previewItems).toHaveCount(2);
   const texts = await previewItems.allTextContents();
   // The inline separator " · " precedes every number except the first, so the second item's
@@ -918,8 +918,9 @@ Then('the role card\'s "Starts with" preview numbers its courses 1, 2, and so on
 
 Then("no preview item shows a second number inside the course title", async ({ page }) => {
   const nav = page.getByRole("navigation", { name: "interview-ready paths" });
-  const card = nav.getByRole("link", { name: /^Start the Backend Track \(Interview-Ready\) path/ });
-  const previewItems = card.locator("xpath=..").locator("ol > li");
+  // Plan 04 Phase 7: the role card is the shared learning path card — its link is the path title.
+  const card = nav.getByRole("link", { name: "Backend Track (Interview-Ready)", exact: true });
+  const previewItems = card.locator("xpath=ancestor::li[1]").locator("ol > li");
   await expect(previewItems).toHaveCount(2);
   // Strip the rendered position number and its separator; only the bare title must remain — a
   // second number inside the title (the old DWT-002 collision) would survive this strip.

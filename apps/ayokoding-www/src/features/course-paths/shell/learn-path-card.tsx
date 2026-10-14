@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ContentMeta } from "@/features/content/core/types";
 import { contentUrl } from "@/features/content/core/content-url";
 import type { Locale } from "@/features/i18n/core/config";
 import { tf } from "@/features/i18n/core/fill";
@@ -8,7 +9,7 @@ import { normalizeCourseRef } from "../core/manifest";
 import { corePhases, extensionPhases } from "../core/path-phases";
 import type { PathManifest } from "../core/schemas";
 import { isPendingSkillsRestructure } from "../core/skills-restructure-allowlist";
-import { humanizeKebabSlug } from "./course-path-nav";
+import { humanizeKebabSlug, slugForCourseId } from "./course-path-nav";
 import { PathCardProgress } from "./path-card-progress";
 import { LEARN_PATHS_PREFIX } from "./paths-route";
 import { roadmapHours } from "./path-roadmap";
@@ -84,4 +85,37 @@ export function LearnPathCard({ locale, manifest, courseTitles, courseCards, seq
       </div>
     </div>
   );
+}
+
+/**
+ * The per-course metadata every learning path card needs (tech-docs/004 `LearnPathCard`), built
+ * once per request on the server: each course any manifest names, with its title, format, and
+ * estimated hours from the content index, plus whether it is still an outline. Shared by the Learn
+ * home and the path hubs (plan 04 Phase 7), so one card shape reads the same everywhere. Pure — no
+ * IO.
+ */
+export function buildPathCardCourseData(
+  contentMap: ReadonlyMap<string, ContentMeta>,
+  locale: string,
+  manifests: readonly PathManifest[],
+  courseTitles: Readonly<Record<string, string>>,
+): Record<string, RoadmapCourseData> {
+  const cards: Record<string, RoadmapCourseData> = {};
+
+  for (const manifest of manifests) {
+    for (const reference of manifest.courseOrder) {
+      const courseId = normalizeCourseRef(reference).id;
+      if (cards[courseId] !== undefined) continue;
+
+      const meta = contentMap.get(`${locale}:${slugForCourseId(courseId)}`);
+      cards[courseId] = {
+        title: courseTitles[courseId] ?? humanizeKebabSlug(courseId),
+        ...(meta?.format === undefined ? {} : { format: meta.format }),
+        ...(meta?.estimatedHours === undefined ? {} : { estimatedHours: meta.estimatedHours }),
+        isOutline: meta?.status === "outline",
+      };
+    }
+  }
+
+  return cards;
 }

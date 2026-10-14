@@ -22,35 +22,56 @@ function manifest(
   return manifestFixture({ description: "desc", ...overrides, title: overrides.title ?? overrides.pathId });
 }
 
-describe("CategoryLanding — careers instance (Cycle 3.1b-i, R7)", () => {
+describe("CategoryLanding — careers instance (Cycle 3.1b-i, R7; plan 04 Phase 7)", () => {
   const interviewReady = manifest({ pathId: "careers/interview-ready/role-a", arc: "interview-ready" });
   const immediatelyA = manifest({ pathId: "careers/immediately-effective/role-b", arc: "immediately-effective" });
   const immediatelyB = manifest({ pathId: "careers/immediately-effective/role-c", arc: "immediately-effective" });
 
-  it("renders one ArcCard per arc, member roles previewed", () => {
+  it("renders one section per arc, each arc heading linking to the arc page", () => {
     render(<CategoryLanding locale="en" category="careers" manifests={[interviewReady, immediatelyA, immediatelyB]} />);
 
     const nav = within(screen.getByRole("navigation", { name: "Careers arcs" }));
-    const links = nav.getAllByRole("link");
-    expect(links.length).toBe(2);
+    const headings = nav.getAllByRole("heading", { level: 2 });
+    expect(headings.map((heading) => heading.textContent)).toEqual(["Interview Ready", "Immediately Effective"]);
+    expect(screen.getByRole("link", { name: "Interview Ready" }).getAttribute("href")).toBe(
+      "/en/learn/paths/careers/interview-ready",
+    );
+    expect(screen.getByRole("link", { name: "Immediately Effective" }).getAttribute("href")).toBe(
+      "/en/learn/paths/careers/immediately-effective",
+    );
   });
 
-  it("the immediately-effective arc card previews exactly two member roles", () => {
+  it("shows exactly two path cards in the immediately-effective section", () => {
+    const { container } = render(
+      <CategoryLanding locale="en" category="careers" manifests={[interviewReady, immediatelyA, immediatelyB]} />,
+    );
+
+    const section = container.querySelector("section[aria-labelledby='careers-arc-immediately-effective']");
+    expect(section?.querySelectorAll(":scope > ul > li").length).toBe(2);
+    // Every card is the shared `LearnPathCard`: the title links to the path page, and the card
+    // carries the "View path" control the Learn home's cards use.
+    expect(
+      within(section as HTMLElement)
+        .getByRole("link", { name: "careers/immediately-effective/role-b" })
+        .getAttribute("href"),
+    ).toBe("/en/learn/paths/careers/immediately-effective/role-b");
+    expect(within(section as HTMLElement).getAllByRole("link", { name: /View path/ }).length).toBe(2);
+  });
+
+  it("no longer renders the arc-chooser cards it replaced (no arc CTA, no course-count badge)", () => {
     render(<CategoryLanding locale="en" category="careers" manifests={[interviewReady, immediatelyA, immediatelyB]} />);
 
-    // No `contentMap` is passed, so the arc title falls back to `humanizeKebabSlug` (UWT-001 fix) —
-    // "Immediately Effective", not the raw "immediately-effective" slug.
-    const card = screen.getByRole("link", { name: /immediately effective/i });
-    expect(within(card).getAllByRole("listitem").length).toBe(2);
+    expect(screen.queryByText("Explore arc")).toBeNull();
+    expect(screen.queryByText("Explore this arc's roles")).toBeNull();
+    expect(screen.queryByText(/^\~\d+ courses$/)).toBeNull();
+    expect(screen.queryByRole("link", { name: /Explore the .* arc/ })).toBeNull();
   });
 
-  it("humanizes the arc title and role names instead of rendering raw kebab-case slugs (UWT-001 fix)", () => {
+  it("humanizes the arc title instead of rendering the raw kebab-case slug (UWT-001 fix)", () => {
     render(<CategoryLanding locale="en" category="careers" manifests={[interviewReady, immediatelyA, immediatelyB]} />);
 
     expect(screen.getByRole("heading", { name: "Immediately Effective" })).toBeTruthy();
     expect(screen.queryByText("immediately-effective")).toBeNull();
-    expect(screen.getByText("Role B")).toBeTruthy();
-    expect(screen.queryByText("role-b")).toBeNull();
   });
 
   it("resolves an arc's humanized title from the given contentMap's _index.md entry, not the fallback humanizer", () => {
@@ -89,41 +110,39 @@ describe("CategoryLanding — careers instance (Cycle 3.1b-i, R7)", () => {
     expect(screen.queryByRole("navigation", { name: "Careers arcs" })).toBeNull();
   });
 
-  it("gives an ArcCard a hue-coded left border matching its arc's documented DD-50 hue (DWT-001 fix, phase-5 rule-15 design-tester retest)", () => {
-    render(<CategoryLanding locale="en" category="careers" manifests={[interviewReady, immediatelyA, immediatelyB]} />);
-
-    const link = screen.getByRole("link", { name: /immediately effective/i });
-    const card = link.firstElementChild as HTMLElement;
-    expect(card.className).toContain("border-l-4");
-    expect(card.className).toContain("border-l-[var(--hue-current)]");
-    expect(card.getAttribute("style")).toContain("--hue-current: var(--hue-teal)");
-  });
-
-  it("localizes the 'Explore arc' CTA and 'Explore this arc's roles' description on the id locale (DWT-003 fix, phase-5 rule-15 design-tester retest)", () => {
+  it("localizes the path cards' controls on the id locale", () => {
     render(<CategoryLanding locale="id" category="careers" manifests={[interviewReady, immediatelyA, immediatelyB]} />);
 
-    expect(screen.getAllByText("Jelajahi arc").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Jelajahi peran arc ini").length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("link", { name: /Lihat jalur/ }).length).toBe(3);
+    expect(screen.queryByRole("link", { name: /View path/ })).toBeNull();
   });
 });
 
-describe("CategoryLanding — skills instance (Cycle 3.1b-ii, R7/R8)", () => {
+describe("CategoryLanding — skills instance (Cycle 3.1b-ii, R7/R8; plan 04 Phase 7)", () => {
   const subjectA = manifest({ pathId: "skills/subject-a", arc: "track-a", title: "Subject A" });
   const subjectB = manifest({ pathId: "skills/subject-b", arc: "track-b", title: "Subject B" });
 
   it("states the fixed-arc ramp promise once, with no arc-selection control anywhere", () => {
     render(<CategoryLanding locale="en" category="skills" manifests={[subjectA, subjectB]} />);
 
+    expect(screen.getByText(/Get up and running fast on the ramp/)).toBeTruthy();
     expect(screen.queryByRole("navigation", { name: "Careers arcs" })).toBeNull();
     expect(screen.queryByRole("combobox")).toBeNull();
     expect(screen.queryByRole("radiogroup")).toBeNull();
   });
 
-  it("renders the shared PathCard hub grid for the subject manifests", () => {
+  it("renders one shared learning path card plus a ramp milestone strip per subject", () => {
     render(<CategoryLanding locale="en" category="skills" manifests={[subjectA, subjectB]} />);
 
     const nav = within(screen.getByRole("navigation", { name: "Skills paths" }));
-    expect(nav.getAllByRole("link").length).toBe(2);
+    expect(nav.getAllByRole("link", { name: "Subject A" })).toHaveLength(1);
+    expect(nav.getAllByRole("link", { name: "Subject B" })).toHaveLength(1);
+    expect(nav.getAllByRole("link", { name: /View path/ }).length).toBe(2);
+    // The ramp preview stays: three milestones (Dangerous, Comfortable, Confident) per card.
+    expect(nav.getAllByText("Dangerous").length).toBe(2);
+    expect(nav.getAllByText("Confident").length).toBe(2);
+    // The old hub `PathCard`'s course-count badge is gone with it.
+    expect(screen.queryByText(/^\~\d+ courses$/)).toBeNull();
   });
 
   it("renders the shared empty state when no skills manifest is loaded", () => {

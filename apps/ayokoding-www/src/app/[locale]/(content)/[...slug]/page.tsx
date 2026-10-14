@@ -44,6 +44,14 @@ import { ArcLanding } from "@/features/course-paths/shell/arc-landing";
 import { PathLanding } from "@/features/course-paths/shell/path-landing";
 import type { RoadmapCourseData } from "@/features/course-paths/shell/roadmap-course-card";
 import { EmptyPathListState } from "@/features/course-paths/shell/empty-path-list-state";
+import { LearnHome } from "@/features/learning-progress/shell/learn-home";
+
+/**
+ * The content slug the Learn home answers at (plan ayokoding-learn-revamp-04, tech-docs/001
+ * Route Dispatch Changes). Distinct from the `learn/courses` and `learn/paths` namespaces: it
+ * is the bare section root.
+ */
+const LEARN_HOME_SLUG = "learn";
 
 /**
  * Course-path landing pages may use deployment-provided manifests, so their
@@ -77,6 +85,9 @@ export async function generateStaticParams({ params }: { params: { locale: strin
     if (!key.startsWith(`${params.locale}:`)) continue;
     if (meta.slug === "") continue;
     if (isLearnPathsSlug(meta.slug)) continue;
+    // The Learn home reads the same runtime manifests the paths routes do, so it renders on
+    // demand rather than at build time (tech-docs/001 Route Dispatch Changes step 1).
+    if (meta.slug === LEARN_HOME_SLUG) continue;
     slugs.push({ slug: meta.slug.split("/") });
   }
 
@@ -347,6 +358,15 @@ export default async function ContentPage({ params }: Props) {
     }
   }
 
+  // The Learn home (plan 04 Phase 6, tech-docs/001 Route Dispatch Changes step 2): English only,
+  // and only for the bare `learn` slug — `/id/learn` keeps its current 404.
+  if (locale === "en" && slugStr === LEARN_HOME_SLUG) {
+    const home = await renderLearnHome(locale);
+    if (home !== null) {
+      return home;
+    }
+  }
+
   let page;
   try {
     page = await serverCaller.content.getBySlug({
@@ -465,6 +485,43 @@ export default async function ContentPage({ params }: Props) {
         lesson={lesson}
       />
     </Suspense>
+  );
+}
+
+/**
+ * The Learn home's own render (plan ayokoding-learn-revamp-04, Phase 6): the reader-facing landing
+ * page at `/en/learn`, built from the already-loaded manifests, the content index, and the lesson
+ * page paths. `null` when the section has no index page, so the caller falls through to the
+ * standard render — which 404s for a genuinely missing page.
+ */
+async function renderLearnHome(locale: string) {
+  let page;
+  try {
+    page = await serverCaller.content.getBySlug({ locale: locale as Locale, slug: LEARN_HOME_SLUG });
+  } catch (err) {
+    if (err instanceof TRPCError && err.code === "NOT_FOUND") {
+      return null;
+    }
+    throw err;
+  }
+
+  const pathData = await loadRoutePathData(locale);
+  const sequences = await loadLessonPagePaths(locale);
+  const catalog = buildCourseCatalog(pathData.contentMap, pathData.manifests, locale);
+
+  return (
+    <LearnHome
+      locale={locale}
+      title={page.title}
+      description={page.description ?? ""}
+      manifests={pathData.manifests}
+      contentMap={pathData.contentMap}
+      sequences={sequences}
+      catalogCounts={{
+        courses: catalog.reduce((total, group) => total + group.entries.length, 0),
+        categories: catalog.length,
+      }}
+    />
   );
 }
 

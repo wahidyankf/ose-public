@@ -49,6 +49,22 @@ Feature: Learning progress store
     Then every course card shows "Not started"
     And marking a learning page as complete saves a valid progress record
 
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Resetting progress clears it after confirmation
+  @integration-exempt
+  Scenario: Resetting progress clears it after confirmation
+    Given a reader has saved progress
+    When the reader chooses "Reset progress" on the Learn home and confirms
+    Then every progress count on the Learn home shows nothing done
+    And no saved progress record remains in this browser
+
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Cancelling a reset keeps progress
+  @integration-exempt
+  Scenario: Cancelling a reset keeps progress
+    Given a reader has saved progress
+    When the reader chooses "Reset progress" on the Learn home and cancels
+    Then the saved progress is unchanged
+    And focus returns to the "Reset progress" button
+
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Progress updates in another open tab
   @integration-exempt
   Scenario: Progress updates in another open tab

@@ -25,5 +25,5 @@ Feature: Canonical locale entry redirects
       | source_url              | destination_url          |
       | /EN                     | /en                      |
       | /ID                     | /id                      |
-      | /EN/learn/overview      | /en/learn/overview       |
-      | /ID/learn/overview      | /id/learn/overview       |
+      | /EN/learn/courses       | /en/learn/courses        |
+      | /ID/learn/courses       | /id/learn/courses        |

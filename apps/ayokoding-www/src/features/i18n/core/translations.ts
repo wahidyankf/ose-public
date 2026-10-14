@@ -487,12 +487,36 @@ export const translations: Record<Locale, Record<string, string>> = {
     roadmapCoreHeading: "Core path · {count} phases",
     roadmapCoursesCount: "{count} courses",
     roadmapHoursPlusOutline: "plus {count} outline courses",
+    roadmapGoal: "Goal:",
 
     // Course landing header — progress summary and primary action (plan
     // ayokoding-learn-revamp-04-learning-experience, Phase 5). Every key in this block MUST exist
     // in both locales, like the blocks above. `courseStart` is plan 03's key, reused here.
     courseContinueCourse: "Continue course: {title}",
     courseReviewCourse: "Review course",
+
+    // Learn home — Screen 3 option A copy (plan ayokoding-learn-revamp-04-learning-experience,
+    // Phase 6). Every key in this block MUST exist in both locales, like the blocks above.
+    homeContinueLearning: "Continue learning",
+    homeFinishedCore: "You finished the core of {title}.",
+    homeStartLearning: "Start learning",
+    homeStartHint: "Pick a path below, or browse all courses.",
+    homeChoosePath: "Choose a path",
+    homeCareerPaths: "Career paths",
+    homeSkillPaths: "Skill paths",
+    homeBrowseAll: "Browse all courses",
+    homeOpenCatalog: "Open catalog",
+    homePrivacyNote: "Your progress is saved in this browser only. It is never sent anywhere.",
+    homeLegacyPrompt: "Looking for older material?",
+    homeViewPath: "View path",
+    pathCardPhases: "{count} core phases",
+    pathCardOptional: "{count} optional",
+    resetButton: "Reset progress…",
+    resetDialogTitle: "Reset all progress?",
+    resetDialogBody: "This clears every completed page in this browser. It cannot be undone.",
+    resetCancel: "Cancel",
+    resetConfirm: "Reset progress",
+    resetDone: "Progress reset.",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Resize panel",
@@ -987,11 +1011,36 @@ export const translations: Record<Locale, Record<string, string>> = {
     roadmapCoreHeading: "Jalur inti · {count} fase",
     roadmapCoursesCount: "{count} kursus",
     roadmapHoursPlusOutline: "ditambah {count} kursus kerangka",
+    roadmapGoal: "Tujuan:",
 
     // Course landing header — progress summary and primary action (plan
     // ayokoding-learn-revamp-04-learning-experience, Phase 5). See the en block.
     courseContinueCourse: "Lanjutkan kursus: {title}",
     courseReviewCourse: "Ulas kursus",
+
+    // Learn home — Screen 3 option A copy (plan ayokoding-learn-revamp-04-learning-experience,
+    // Phase 6). See the en block.
+    homeContinueLearning: "Lanjutkan belajar",
+    homeFinishedCore: "Anda telah menyelesaikan inti {title}.",
+    homeStartLearning: "Mulai belajar",
+    homeStartHint: "Pilih jalur di bawah, atau jelajahi semua kursus.",
+    homeChoosePath: "Pilih jalur",
+    homeCareerPaths: "Jalur karier",
+    homeSkillPaths: "Jalur keterampilan",
+    homeBrowseAll: "Jelajahi semua kursus",
+    homeOpenCatalog: "Buka katalog",
+    homePrivacyNote: "Progres Anda hanya tersimpan di browser ini dan tidak pernah dikirim ke mana pun.",
+    homeLegacyPrompt: "Mencari materi lama?",
+    homeViewPath: "Lihat jalur",
+    pathCardPhases: "{count} fase inti",
+    pathCardOptional: "{count} opsional",
+    resetButton: "Atur ulang progres…",
+    resetDialogTitle: "Atur ulang semua progres?",
+    resetDialogBody:
+      "Ini menghapus semua halaman yang sudah selesai di browser ini. Tindakan ini tidak bisa dibatalkan.",
+    resetCancel: "Batal",
+    resetConfirm: "Atur ulang progres",
+    resetDone: "Progres diatur ulang.",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Ubah ukuran panel",

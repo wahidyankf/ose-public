@@ -70,6 +70,19 @@ function phaseRows(nav: ReturnType<Page["getByRole"]>) {
   return nav.locator("ol > li");
 }
 
+/**
+ * Opens every closed optional-extensions section (plan 04 Phase 4, U5): extension phases now render
+ * as `<details>` closed by default, so their course cards only become visible once their
+ * `<summary>` is clicked.
+ */
+async function openOptionalExtensions(page: Page) {
+  const closed = page.locator("details:not([open]) > summary");
+
+  for (let remaining = await closed.count(); remaining > 0 && remaining <= 20; remaining -= 1) {
+    await closed.first().click();
+  }
+}
+
 interface GeneralistTrackFixture {
   manifest: PublishedManifest;
   core: FixturePhase;
@@ -208,7 +221,11 @@ Then("the immediately-effective arc card previews exactly two member roles", asy
 
 Given("a fixture skills manifest set is loaded", async ({ page }) => {
   const manifests = await loadPublishedManifests(page);
-  expect(manifests.filter((manifest) => manifest.pathId?.startsWith("skills/"))).toHaveLength(2);
+  // Three since plan ayokoding-learn-revamp-04, Phase 4 added the marked
+  // `skills/conventional-accounting` fixture the roadmap scenarios need (the marked shape is
+  // closed to the four real allowlisted skills paths, so it can only be exercised through a
+  // fixture). Recorded in that plan's `evidence/phase-4-roadmap.md`.
+  expect(manifests.filter((manifest) => manifest.pathId?.startsWith("skills/"))).toHaveLength(3);
 });
 
 When("a reader opens the skills category landing at \\/en\\/learn\\/paths\\/skills\\/", async ({ page }) => {
@@ -1009,6 +1026,7 @@ Then("each phase renders as a heading with its title", async ({ page }) => {
 });
 
 Then("the core phase's courses appear before the extension phase's courses", async ({ page }) => {
+  await openOptionalExtensions(page);
   const rows = phaseRows(generalistSyllabus(page));
   await expect(rows).toHaveCount(3);
   await expect(rows.nth(0)).toContainText("Computer Science Foundations");
@@ -1017,6 +1035,7 @@ Then("the core phase's courses appear before the extension phase's courses", asy
 });
 
 Then("course position numbers continue across the phase boundary", async ({ page }) => {
+  await openOptionalExtensions(page);
   const rows = phaseRows(generalistSyllabus(page));
   await expect(rows).toHaveCount(3);
   const expected = [
@@ -1218,6 +1237,7 @@ When("a reader opens that path's landing page and then a course in that path", a
 Then('the outline course shows a text badge reading "Outline" in the syllabus', async ({ page }) => {
   await page.goto(GENERALIST_LANDING_URL);
   await page.waitForLoadState("networkidle");
+  await openOptionalExtensions(page);
   const row = generalistSyllabus(page).locator("ol > li", { hasText: "Capstone · Secure Service" });
   await expect(row.getByText("Outline", { exact: true })).toBeVisible();
 });

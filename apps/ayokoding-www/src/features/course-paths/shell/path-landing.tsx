@@ -1,17 +1,12 @@
 import type { CSSProperties } from "react";
-import Link from "next/link";
-import { contentUrl } from "@/features/content/core/content-url";
-import type { Locale } from "@/features/i18n/core/config";
-import { t } from "@/features/i18n/core/translations";
-import { MarkdownRenderer } from "@/features/content/shell/markdown-renderer";
+import type { SequenceIndex } from "@/features/learning-progress/core/progress-derivations";
 import type { PathManifest } from "../core/schemas";
 import { hueCssVars, hueForManifest } from "../core/path-hue";
-import { corePhases, extensionPhases } from "../core/path-phases";
+import { normalizeCourseRef } from "../core/manifest";
 import { isPendingSkillsRestructure } from "../core/skills-restructure-allowlist";
-import { manifestCourseOrder, slugForCourseId } from "./course-path-nav";
 import { AssumedCourses } from "./assumed-courses";
-import { PhaseSection } from "./phase-section";
-import { PathPositionNumber } from "./path-position-number";
+import { PathRoadmap } from "./path-roadmap";
+import type { RoadmapCourseData } from "./roadmap-course-card";
 
 export interface PathLandingProps {
   locale: string;
@@ -30,20 +25,29 @@ export interface PathLandingProps {
    * so `courseTitles` never covers them — the route resolves these from the content map instead.
    */
   assumedCourseTitles?: Readonly<Record<string, string>>;
+  /**
+   * Per-course roadmap metadata (title, format, hours, outline), built on the server from the
+   * content index. Optional: without it each card falls back to its title and outline flag, which
+   * is what a caller that has only titles (a unit test, a synthetic render) still gets.
+   */
+  courseCards?: Record<string, RoadmapCourseData>;
+  /**
+   * Every course's lesson page paths (`loadLessonPagePaths`). Optional for the same reason —
+   * without it the roadmap renders, but every course counts as having no pages yet.
+   */
+  sequences?: SequenceIndex;
 }
 
 /**
- * Path landing (Cycles 3.1/3.1d, Screen 2; plan 02 Phase 4, FR-4/FR-7) — a manifest rendered as
- * phase sections: the "Before you start" note when `assumes` is non-empty, a "Core" label with
- * one `PhaseSection` per core phase, then an "Optional extensions" heading with one
- * `PhaseSection` per extension phase. Position numbers continue across phases (plan 01's
- * numbering, rendered per row by the shared `PathPositionNumber` inside `PhaseSection`);
- * every course link carries `?path=`. For a `skills/` path, `bodyHtml` (the shipped
- * `content.getBySlug` procedure's `html` for this path's own `_index.md`) renders via the
- * shipped `MarkdownRenderer` between the title/arc-summary and the syllabus — the rendering
- * surface for the ramp can/cannot table, runway-justification paragraph, and
- * linked-prerequisite outbound links. A careers path's `_index.md` supplies no body, so
- * `bodyHtml` is omitted and this slot is a silent no-op.
+ * Path landing (Cycles 3.1/3.1d, Screen 2; plan 02 Phase 4, FR-4/FR-7; plan 04 Phase 4) — the
+ * path's own chrome (hue bar, `h1`, description, markdown body, and the "Before you start" note for
+ * a path that assumes courses) around plan 04's `PathRoadmap`, which renders the progress card, the
+ * core milestones with their outcomes and progress, and the closed optional extensions under the
+ * `<nav aria-label="… syllabus">` wrapper every syllabus scenario looks for.
+ *
+ * The "Before you start" note stays outside that nav: an assumed course is background, not a member
+ * of the path, so it is never a roadmap row. A pending-restructure skills path skips the note (its
+ * `assumes` is empty by the marked shape) and renders the Roadmap's flat course list unchanged.
  */
 export function PathLanding({
   locale,
@@ -52,6 +56,8 @@ export function PathLanding({
   bodyHtml,
   outlineCourseIds = [],
   assumedCourseTitles = {},
+  courseCards,
+  sequences = {},
 }: PathLandingProps) {
   // DWT-001 fix (phase-5 rule-15 design-tester retest): prd.md's own Screen 2 hi-fi spec calls for
   // this bar to be framed by a hue-wash strip colour matching the path's hub card — the shipped
@@ -65,23 +71,16 @@ export function PathLanding({
     ? "mb-4 h-1.5 w-16 rounded-full bg-[var(--hue-current-wash)]"
     : "mb-4 h-1.5 w-16 rounded-full bg-border";
 
-  // Phase sections with continuous position numbers (plan 02, Phase 4, FR-4): core phases first
-  // (each numbered among the core), then the "Optional extensions" heading with the extension
-  // phases. `startPosition` accumulates in manifest order so course numbers never restart at a
-  // phase boundary.
-  const cores = corePhases(manifest);
-  const extensions = extensionPhases(manifest);
-  let nextPosition = 1;
-  const coreSections = cores.map((phase, index) => {
-    const section = { phase, phaseNumber: index + 1, startPosition: nextPosition };
-    nextPosition += phase.courses.length;
-    return section;
-  });
-  const extensionSections = extensions.map((phase) => {
-    const section = { phase, startPosition: nextPosition };
-    nextPosition += phase.courses.length;
-    return section;
-  });
+  // Every course the roadmap can show, so a caller that passes no server-built cards still renders
+  // each card with its title and its outline flag.
+  const cards: Record<string, RoadmapCourseData> = {};
+  for (const reference of manifest.courseOrder) {
+    const courseId = normalizeCourseRef(reference).id;
+    cards[courseId] = courseCards?.[courseId] ?? {
+      title: courseTitles[courseId] ?? courseId,
+      isOutline: outlineCourseIds.includes(courseId),
+    };
+  }
 
   return (
     <div className="mx-auto max-w-3xl flex-1 px-6 py-8 lg:px-8">
@@ -89,80 +88,13 @@ export function PathLanding({
       <h1 className="text-4xl font-extrabold tracking-tight">{manifest.title}</h1>
       <p className="mt-2 text-muted-foreground">{manifest.description}</p>
 
-      {bodyHtml && <MarkdownRenderer html={bodyHtml} locale={locale} />}
+      {/* // Decision 39: a marked skills path keeps today's flat ordered list with plan 01's
+          position numbers and no phase chrome, so it never carries the note either. */}
+      {!isPendingSkillsRestructure(manifest) && manifest.assumes.length > 0 && (
+        <AssumedCourses locale={locale} assumes={manifest.assumes} courseTitles={assumedCourseTitles} />
+      )}
 
-      <nav aria-label={`${manifest.title} syllabus`}>
-        <section>
-          <h2 className="mt-8 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-            {t(locale as Locale, "pathsSyllabus")}
-          </h2>
-          {/* // Decision 39: removed by plan 07 — a marked skills path keeps today's flat ordered
-              list with plan 01's position numbers and no phase chrome. */}
-          {isPendingSkillsRestructure(manifest) ? (
-            <ol className="mt-3 space-y-1">
-              {manifestCourseOrder(manifest).map((course, index) => {
-                const title = courseTitles[course.id] ?? course.id;
-
-                return (
-                  <li key={course.id} className="flex items-baseline gap-2">
-                    {/* Position number (plan ayokoding-learn-revamp-01 §4.2): outside the link, so
-                        the link's accessible name stays exactly the title (WCAG 2.5.3). */}
-                    <PathPositionNumber position={index + 1} />
-                    <Link
-                      href={contentUrl(locale as Locale, slugForCourseId(course.id), manifest.pathId)}
-                      className="rounded-md px-2 py-1 text-sm text-primary underline underline-offset-2 hover:bg-accent hover:text-foreground"
-                    >
-                      {title}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ol>
-          ) : (
-            <>
-              {manifest.assumes.length > 0 && (
-                <AssumedCourses locale={locale} assumes={manifest.assumes} courseTitles={assumedCourseTitles} />
-              )}
-              {cores.length > 0 && (
-                <p className="mt-8 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-                  {t(locale as Locale, "pathsCoreLabel")}
-                </p>
-              )}
-              {coreSections.map(({ phase, phaseNumber, startPosition }) => (
-                <PhaseSection
-                  key={phase.id}
-                  locale={locale}
-                  pathId={manifest.pathId}
-                  phase={phase}
-                  phaseNumber={phaseNumber}
-                  startPosition={startPosition}
-                  courseTitles={courseTitles}
-                  outlineCourseIds={outlineCourseIds}
-                />
-              ))}
-              {extensions.length > 0 && (
-                <>
-                  <h2 className="mt-8 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-                    {t(locale as Locale, "pathsOptionalExtensions")}
-                  </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">{t(locale as Locale, "pathsExtensionsNote")}</p>
-                </>
-              )}
-              {extensionSections.map(({ phase, startPosition }) => (
-                <PhaseSection
-                  key={phase.id}
-                  locale={locale}
-                  pathId={manifest.pathId}
-                  phase={phase}
-                  startPosition={startPosition}
-                  courseTitles={courseTitles}
-                  outlineCourseIds={outlineCourseIds}
-                />
-              ))}
-            </>
-          )}
-        </section>
-      </nav>
+      <PathRoadmap locale={locale} manifest={manifest} courseCards={cards} sequences={sequences} bodyHtml={bodyHtml} />
     </div>
   );
 }

@@ -480,6 +480,14 @@ export const translations: Record<Locale, Record<string, string>> = {
     lessonAnnounceComplete: "{title} marked as complete. {done} of {total} pages done.",
     lessonAnnounceIncomplete: "{title} marked as not complete. {done} of {total} pages done.",
 
+    // Path roadmap — Screen 1 option A copy (plan ayokoding-learn-revamp-04-learning-experience,
+    // Phase 4). Every key in this block MUST exist in both locales, like the blocks above.
+    roadmapStart: "Start: {title}",
+    roadmapContinue: "Continue: {title}",
+    roadmapCoreHeading: "Core path · {count} phases",
+    roadmapCoursesCount: "{count} courses",
+    roadmapHoursPlusOutline: "plus {count} outline courses",
+
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Resize panel",
 
@@ -965,6 +973,14 @@ export const translations: Record<Locale, Record<string, string>> = {
     lessonBackToCourse: "Kembali ke kursus",
     lessonAnnounceComplete: "{title} ditandai selesai. {done} dari {total} halaman selesai.",
     lessonAnnounceIncomplete: "{title} ditandai belum selesai. {done} dari {total} halaman selesai.",
+
+    // Path roadmap — Screen 1 option A copy (plan ayokoding-learn-revamp-04-learning-experience,
+    // Phase 4). See the en block.
+    roadmapStart: "Mulai: {title}",
+    roadmapContinue: "Lanjutkan: {title}",
+    roadmapCoreHeading: "Jalur inti · {count} fase",
+    roadmapCoursesCount: "{count} kursus",
+    roadmapHoursPlusOutline: "ditambah {count} kursus kerangka",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Ubah ukuran panel",

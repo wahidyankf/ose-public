@@ -80,15 +80,17 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("each phase renders as a heading with its title", () => {
-      expect(screen.getByRole("heading", { level: 2, name: /Fixture core/ })).toBeTruthy();
-      expect(screen.getByRole("heading", { level: 2, name: /Fixture extension/ })).toBeTruthy();
+      // Plan 04 Phase 4 renders the phase milestones as `h3`s under the roadmap's `h2` headings.
+      expect(screen.getByRole("heading", { level: 3, name: /Fixture core/ })).toBeTruthy();
+      expect(screen.getByRole("heading", { level: 3, name: /Fixture extension/ })).toBeTruthy();
     });
 
     And("the core phase's courses appear before the extension phase's courses", () => {
       const nav = screen.getByRole("navigation", { name: /syllabus/ });
       const rows = within(nav).getAllByRole("listitem");
-      // The assumes note contributes one list item; the three phase courses follow it in order.
-      const links = rows.slice(1).map((row) => within(row).getByRole("link").textContent);
+      // The "Before you start" note now sits outside the roadmap's nav (an assumed course is not a
+      // path member), so every row here is a course card, in manifest order.
+      const links = rows.map((row) => within(row).getByRole("link").textContent);
       expect(links).toEqual([
         "Computer Science Foundations",
         "Software Engineering Practices",
@@ -99,7 +101,7 @@ describeFeature(feature, ({ Scenario }) => {
     And("course position numbers continue across the phase boundary", () => {
       const nav = screen.getByRole("navigation", { name: /syllabus/ });
       const rows = within(nav).getAllByRole("listitem");
-      const positions = rows.slice(1).map((row) => row.textContent?.match(/^\d+/)?.[0]);
+      const positions = rows.map((row) => row.textContent?.match(/^\d+/)?.[0]);
       expect(positions).toEqual(["1", "2", "3"]);
     });
   });
@@ -160,7 +162,7 @@ describeFeature(feature, ({ Scenario }) => {
 
     Then('an "Optional extensions" heading appears after the last core phase', () => {
       const extensionsHeading = screen.getByRole("heading", { level: 2, name: "Optional extensions" });
-      const coreHeading = screen.getByRole("heading", { level: 2, name: /Fixture core/ });
+      const coreHeading = screen.getByRole("heading", { level: 3, name: /Fixture core/ });
       expect(coreHeading.compareDocumentPosition(extensionsHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
         Node.DOCUMENT_POSITION_FOLLOWING,
       );
@@ -168,7 +170,7 @@ describeFeature(feature, ({ Scenario }) => {
 
     And("every extension phase is listed under that heading", () => {
       const extensionsHeading = screen.getByRole("heading", { level: 2, name: "Optional extensions" });
-      const extensionHeading = screen.getByRole("heading", { level: 2, name: /Fixture extension/ });
+      const extensionHeading = screen.getByRole("heading", { level: 3, name: /Fixture extension/ });
       expect(extensionsHeading.compareDocumentPosition(extensionHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
         Node.DOCUMENT_POSITION_FOLLOWING,
       );

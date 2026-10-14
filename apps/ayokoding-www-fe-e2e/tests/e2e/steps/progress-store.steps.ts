@@ -1,12 +1,15 @@
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
+import { buildTrpcUrl, extractTrpcData } from "./backend-helpers";
+import { completeCourseThroughUi } from "./support/complete-course";
 
 const { Given, When, Then } = createBdd();
 
 // ---------------------------------------------------------------------------
-// plan ayokoding-learn-revamp-04-learning-experience, Phase 3 — the progress store's browser-only
-// guarantee (learning-progress/progress-store.feature, S1, S2, S4). The unit bindings for the same
-// scenarios live in `apps/ayokoding-www/tests/unit/fe-steps/progress-store.steps.tsx`.
+// plan ayokoding-learn-revamp-04-learning-experience, Phase 3–4 — the progress store's
+// browser-only guarantee (learning-progress/progress-store.feature, S1–S5 and S9). The unit
+// bindings for the same scenarios live in
+// `apps/ayokoding-www/tests/unit/fe-steps/progress-store.steps.tsx`.
 //
 // The lesson page is `just-enough-bash/learning/beginner` — page 2 of that course's six-page
 // lesson sequence — opened in the `careers/immediately-effective/backend-track` fixture path, so
@@ -225,4 +228,156 @@ Then("the page shows no error", async ({ page }) => {
   expect(alertTexts.filter((text) => /error|exception/i.test(text))).toEqual([]);
   await expect(page.locator("body")).not.toContainText(/Application error|client-side exception/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+});
+
+// ---------------------------------------------------------------------------
+// plan ayokoding-learn-revamp-04-learning-experience, Phase 4 — S3, S5, and S9. Their path-page
+// step texts ("the reader opens a path page") are bound once, in `path-roadmap.steps.ts`.
+// ---------------------------------------------------------------------------
+
+const BASH_TITLE = "Just Enough Bash";
+/** The second fixture path that lists `just-enough-bash` — plan 02's skills fixture. */
+const SECOND_PATH_ID = "skills/e2e-fixture-alpha";
+const SECOND_PATH_LANDING = `/en/learn/paths/${SECOND_PATH_ID}`;
+const SECOND_PATH_TITLE = "E2E Fixture Alpha Skills Path";
+const ONE_CORE_COURSE_DONE = /^1 of \d+ core courses done$/;
+
+interface StorePublishedManifest {
+  pathId: string;
+  courseOrder: string[];
+  phases?: { id: string; kind: string; courses: string[] }[];
+}
+
+/** The manifests the running server publishes — the fixture truth S3 and S9 assert against. */
+async function storePublishedManifests(page: Page): Promise<StorePublishedManifest[]> {
+  const response = await page.request.get(buildTrpcUrl("coursePaths.getRouteData", "en"));
+  await expect(response).toBeOK();
+  const data = extractTrpcData(await response.json()) as { manifests?: StorePublishedManifest[] };
+  return data.manifests ?? [];
+}
+
+async function storeManifest(page: Page, pathId: string): Promise<StorePublishedManifest> {
+  const manifest = (await storePublishedManifests(page)).find((candidate) => candidate.pathId === pathId);
+  if (manifest === undefined) {
+    throw new Error(`The running server published no "${pathId}" fixture manifest.`);
+  }
+  return manifest;
+}
+
+/** Every core course of a path, in path order — what its roadmap headline counts. */
+function storeCoreCourseIds(manifest: StorePublishedManifest): string[] {
+  return (manifest.phases ?? []).filter((phase) => phase.kind === "core").flatMap((phase) => phase.courses);
+}
+
+// S3 — progress is shared by every path that contains the course.
+// ---------------------------------------------------------------------------
+
+Given("a course belongs to two paths", async ({ page }) => {
+  const first = await storeManifest(page, PATH_ID);
+  const second = await storeManifest(page, SECOND_PATH_ID);
+
+  expect(first.courseOrder).toContain(BASH_ID);
+  expect(second.courseOrder).toContain(BASH_ID);
+});
+
+Given("the reader completed every learning page of that course while following the first path", async ({ page }) => {
+  await completeCourseThroughUi(page, BASH_ID, PATH_ID);
+  // Every page of the course, walked through the UI: only then does the course read as done.
+  expect(await completedPagePaths(page, BASH_ID)).not.toEqual([]);
+});
+
+When("the reader opens the second path's page", async ({ page }) => {
+  await page.goto(SECOND_PATH_LANDING);
+  await page.waitForLoadState("networkidle");
+});
+
+Then('that course\'s card shows "Done"', async ({ page }) => {
+  // The record carries no path, so the course's card in the *other* path shows the same completion.
+  const nav = page.getByRole("navigation", { name: `${SECOND_PATH_TITLE} syllabus` });
+  const row = nav.locator("ol > li", { hasText: BASH_TITLE });
+
+  await expect(row).toHaveCount(1);
+  await expect(row.getByText("Done", { exact: true })).toBeVisible();
+});
+
+// ---------------------------------------------------------------------------
+// S5 — unreadable saved progress is ignored and replaced. The When ("the reader opens a path
+// page") and its Then ("every course card shows \"Not started\"") are bound in
+// `path-roadmap.steps.ts`, where the When opens the backend-track fixture.
+// ---------------------------------------------------------------------------
+
+Given("the saved progress record cannot be read as valid progress", async ({ page }) => {
+  // Seeding bad data (tech-docs/006, S5): the key holds something no reader could have written.
+  // Registered before the reader's first navigation, so the very first read is the unreadable one.
+  await page.addInitScript((key) => window.localStorage.setItem(key, "not json"), PROGRESS_KEY);
+});
+
+Then("marking a learning page as complete saves a valid progress record", async ({ page }) => {
+  await openLessonPage(page);
+  await markPageComplete(page);
+
+  const raw = await storedRecord(page);
+  expect(raw).not.toBeNull();
+  expect(raw).not.toBe("not json");
+
+  // The malformed record was replaced by one the store's own schema accepts.
+  const parsed = JSON.parse(raw as string) as { completed?: Record<string, string[]> };
+  expect(parsed.completed?.[BASH_ID]).toEqual([LESSON_PAGE]);
+});
+
+// ---------------------------------------------------------------------------
+// S9 — progress updates in another open tab.
+// ---------------------------------------------------------------------------
+
+/** The two tabs the scenario keeps open, and how many times either of them navigated after that. */
+let secondTab: Page | null = null;
+let openTabNavigations = 0;
+
+Given("the same path page is open in two tabs", async ({ page, context }) => {
+  const manifest = await storeManifest(page, PATH_ID);
+  const coreTotal = storeCoreCourseIds(manifest).length;
+  expect(coreTotal).toBe(3);
+
+  await page.goto(`/en/learn/paths/${PATH_ID}`);
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByText(`0 of ${coreTotal} core courses done`, { exact: true })).toBeVisible();
+
+  secondTab = await context.newPage();
+  await secondTab.goto(`/en/learn/paths/${PATH_ID}`);
+  await secondTab.waitForLoadState("networkidle");
+  await expect(secondTab.getByText(`0 of ${coreTotal} core courses done`, { exact: true })).toBeVisible();
+
+  // From here on neither open tab may navigate: the scenario's whole point is that the new count
+  // arrives without a reload.
+  openTabNavigations = 0;
+  for (const tab of [page, secondTab]) {
+    tab.on("framenavigated", () => {
+      openTabNavigations += 1;
+    });
+  }
+});
+
+When("the reader marks a learning page as complete in a third tab", async ({ context }) => {
+  // A third tab of the same browser shares the context's storage; finishing a whole course is what
+  // moves a path page's own count.
+  const thirdTab = await context.newPage();
+  await completeCourseThroughUi(thirdTab, BASH_ID, PATH_ID);
+  await thirdTab.close();
+});
+
+Then("both open tabs show the new count without a reload", async ({ page }) => {
+  expect(secondTab).not.toBeNull();
+  const openTabs = [page, secondTab as Page];
+  expect(openTabNavigations).toBe(0);
+
+  for (const tab of openTabs) {
+    // The count moved in every tab that was already open — no reload, no re-entry into the path.
+    await expect(tab.getByText(ONE_CORE_COURSE_DONE).first()).toBeVisible();
+  }
+  // Neither open tab navigated once after the third tab started marking: the new count arrived
+  // through the store's own change notification.
+  expect(openTabNavigations).toBe(0);
+
+  await (secondTab as Page).close();
+  secondTab = null;
 });

@@ -1,0 +1,16 @@
+{
+  "pathId": "skills/conventional-accounting",
+  "arc": "conventional-accounting",
+  "title": "Conventional Accounting Skills Path",
+  "description": "E2E fixture: the one skills path on plan 02's closed restructure allowlist that the browser suite loads, in the exact mechanical marked shape — one flat all-courses core phase, no outcome, no goals, no assumed courses. It proves the roadmap renders today's single course list (plan 01 numbering, plan 02 copy) for a path still waiting for plan 06 to fill its courses.",
+  "restructurePendingIn": "plan-06",
+  "assumes": [],
+  "phases": [
+    {
+      "id": "all-courses",
+      "title": "All courses",
+      "kind": "core",
+      "courses": ["accounting-foundations", "journal-entries-and-posting-mechanics"]
+    }
+  ]
+}

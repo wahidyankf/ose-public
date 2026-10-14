@@ -79,6 +79,9 @@ vi.mock("@/lib/trpc/server", () => ({
       getBySlug: vi.fn(async () => {
         throw new MockTRPCError({ code: "NOT_FOUND", message: "not found" });
       }),
+      // Plan 04's roadmap reads the lesson-sequence index for every path page; this suite exercises
+      // the paths hub, so an empty tree (no page data) is the right boundary here.
+      getTree: vi.fn(async () => []),
     },
   },
 }));

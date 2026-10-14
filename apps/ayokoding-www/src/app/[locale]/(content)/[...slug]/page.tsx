@@ -15,11 +15,13 @@ import {
   buildCourseTitleIndex,
   buildArcTitleIndex,
   pageLinkForCourseId,
+  slugForCourseId,
   humanizeKebabSlug,
   EMPTY_COURSE_PATH_CLIENT_DATA,
 } from "@/features/course-paths/shell/course-path-nav";
+import { normalizeCourseRef } from "@/features/course-paths/core/manifest";
 import { courseLocationFromSlug } from "@/features/learning-progress/core/course-location";
-import { loadLessonSequence } from "@/features/learning-progress/shell/lesson-sequences";
+import { loadLessonSequence, loadLessonPagePaths } from "@/features/learning-progress/shell/lesson-sequences";
 import type { LessonProps } from "@/features/learning-progress/shell/lesson-context-provider";
 import { loadRoutePathData } from "@/features/course-paths/shell/route-path-data";
 import { CoursePageContent } from "@/features/course-paths/shell/course-page-content";
@@ -40,6 +42,7 @@ import { buildCourseHeaderData } from "@/features/course-paths/shell/course-head
 import { CategoryLanding } from "@/features/course-paths/shell/category-landing";
 import { ArcLanding } from "@/features/course-paths/shell/arc-landing";
 import { PathLanding } from "@/features/course-paths/shell/path-landing";
+import type { RoadmapCourseData } from "@/features/course-paths/shell/roadmap-course-card";
 import { EmptyPathListState } from "@/features/course-paths/shell/empty-path-list-state";
 
 /**
@@ -298,6 +301,23 @@ async function renderPathsRoute(locale: string, slugStr: string) {
     assumedCourseTitles[courseId] = link ? link.title : humanizeKebabSlug(courseId);
   }
 
+  // The roadmap's per-course card data and lesson sequences, both built here (plan 04 Phase 4):
+  // the server owns the content index, so format, hours, outline status, and page paths are
+  // resolved once per request and handed down as plain data.
+  const sequences = await loadLessonPagePaths(locale);
+  const courseCards: Record<string, RoadmapCourseData> = {};
+  for (const reference of resolution.manifest.courseOrder) {
+    const courseId = normalizeCourseRef(reference).id;
+    const meta = pathData.contentMap.get(`${locale}:${slugForCourseId(courseId)}`);
+
+    courseCards[courseId] = {
+      title: courseTitles[courseId] ?? courseId,
+      ...(meta?.format === undefined ? {} : { format: meta.format }),
+      ...(meta?.estimatedHours === undefined ? {} : { estimatedHours: meta.estimatedHours }),
+      isOutline: pathData.outlineCourseIds.includes(courseId),
+    };
+  }
+
   return (
     <PathLanding
       locale={locale}
@@ -306,6 +326,8 @@ async function renderPathsRoute(locale: string, slugStr: string) {
       bodyHtml={seoPage?.html}
       outlineCourseIds={pathData.outlineCourseIds}
       assumedCourseTitles={assumedCourseTitles}
+      courseCards={courseCards}
+      sequences={sequences}
     />
   );
 }

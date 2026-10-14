@@ -24,6 +24,14 @@ Feature: Learning progress store
     Then the page is shown as not completed
     And the course's pages-done count goes down by one
 
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Progress is shared by every path that contains the course
+  @integration-exempt
+  Scenario: Progress is shared by every path that contains the course
+    Given a course belongs to two paths
+    And the reader completed every learning page of that course while following the first path
+    When the reader opens the second path's page
+    Then that course's card shows "Done"
+
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The site still works when browser storage is blocked
   @integration-exempt
   Scenario: The site still works when browser storage is blocked
@@ -32,3 +40,18 @@ Feature: Learning progress store
     Then the page is shown as completed for the rest of the visit
     And a notice says progress cannot be saved in this browser
     And the page shows no error
+
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Unreadable saved progress is ignored and replaced
+  @integration-exempt
+  Scenario: Unreadable saved progress is ignored and replaced
+    Given the saved progress record cannot be read as valid progress
+    When the reader opens a path page
+    Then every course card shows "Not started"
+    And marking a learning page as complete saves a valid progress record
+
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Progress updates in another open tab
+  @integration-exempt
+  Scenario: Progress updates in another open tab
+    Given the same path page is open in two tabs
+    When the reader marks a learning page as complete in a third tab
+    Then both open tabs show the new count without a reload

@@ -574,16 +574,16 @@ all three browsers.
 - **Proof:** `<plan>/evidence/phase-4-roadmap.md`.
 - _Suggested executor: `specs-maker` (Gherkin), `swe-developer` (code)._
 
-- [ ] [AI] **Gherkin:** create `specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature`
+- [x] [AI] **Gherkin:** create `specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature`
       with S19–S26, and add S3, S5, and S9 to `learning-progress/progress-store.feature`. Run
       `BEHAVIOUR`. Acceptance: it names only these eleven scenarios as missing.
-- [ ] [AI] **Fixtures (only if Phase 0 found them missing):** reshape
+- [x] [AI] **Fixtures (only if Phase 0 found them missing):** reshape
       `apps/ayokoding-www-fe-e2e/fixtures/manifests/careers/fundamentally-strong/generalist-track.json`
       into a core phase with an outcome and an extension phase, and add one pending-restructure skills
       fixture with an allowlisted `pathId`, exactly as described in tech-docs/006. Run `E2E`.
       Acceptance: every existing scenario still passes; any changed skills count assertion is updated
       and recorded with its reason.
-- [ ] [AI] **RED (components):** create `path-roadmap.test.tsx`, `roadmap-progress-card.test.tsx`,
+- [x] [AI] **RED (components):** create `path-roadmap.test.tsx`, `roadmap-progress-card.test.tsx`,
       `roadmap-phase.test.tsx`, `roadmap-course-card.test.tsx`, `phase-progress.test.tsx`, and
       `course-card-status.test.tsx` under `tests/unit/features/course-paths/shell/`: phase sections
       with `id="phase-<id>"` and outcome lines; core headline counts core only; flat mode counts all
@@ -591,29 +591,41 @@ all three browsers.
       render; Continue target with `?path=`; core-complete state with no button; card meta row with
       format and "About N h" or the Outline badge; status words; path hours with the outline suffix.
       Edit `path-landing.test.tsx` so it expects `PathRoadmap`. Acceptance: all fail.
-- [ ] [AI] **RED (scenarios):** create `tests/unit/fe-steps/path-roadmap.steps.tsx` (S19–S26) and add
+- [x] [AI] **RED (scenarios):** create `tests/unit/fe-steps/path-roadmap.steps.tsx` (S19–S26) and add
       S3, S5, S9 to `progress-store.steps.tsx`. Create `apps/ayokoding-www-fe-e2e/tests/e2e/steps/path-roadmap.steps.ts`;
       add S3 (complete `just-enough-bash` through the UI on the backend-track path, then open
       `skills/e2e-fixture-alpha`), S5 (seed `not json`), and S9 (three pages in one context) to
       `progress-store.steps.ts`. Use the backend-track fixture for S21, S22, and S25 and the reshaped
       generalist-track fixture for S19, S23, and S24. Run both unit files and `E2E`. Acceptance: only
       the eleven new scenarios fail.
-- [ ] [AI] **GREEN:** create `path-roadmap.tsx`, `roadmap-progress-card.tsx`, `roadmap-phase.tsx`,
+- [x] [AI] **GREEN:** create `path-roadmap.tsx`, `roadmap-progress-card.tsx`, `roadmap-phase.tsx`,
       `roadmap-course-card.tsx`, `phase-progress.tsx`, and `course-card-status.tsx`; add the roadmap
       keys to both dictionaries; render `PathRoadmap` from `path-landing.tsx` with server-built course
       card data and `loadLessonPagePaths("en")`. For each U5 step from the Phase 0 list, open the
       extension `<details>` before asserting a link. Rerun the component tests, both unit files, and
       `E2E`. Acceptance: all pass, including plan 02's phase scenarios.
-- [ ] [AI] **REFACTOR:** if plan 02's `PhaseSection` has no remaining caller
+- [x] [AI] **REFACTOR:** if plan 02's `PhaseSection` has no remaining caller
       (`rtk git grep -n "PhaseSection" -- apps/ayokoding-www/src`), delete it and its test; otherwise
       keep it and record the caller. Keep the `<nav aria-label="… syllabus">` wrapper name. Run
       `QUICK`. Acceptance: exit 0, coverage at or above 99%.
+
+**Phase 4 implementation notes (2026-10-14, `specs-maker` + `swe-developer`).** Status: complete.
+Gherkin (path-roadmap.feature S19–S26; S3/S5/S9 added to progress-store.feature); the
+pending-restructure skills fixture (`skills/conventional-accounting`; generalist-track already had
+core+extension, so no reshape); six roadmap components + six component tests; `path-landing` now
+renders `PathRoadmap`; `PhaseSection` deleted (no remaining caller); translations in both locales;
+unit step files and E2E step files for S19–S26 plus S3/S5/S9. Unit gate exit 0 (227 files, 4007 tests,
+lines 99.52%); flow-scoped E2E 42 passed, 0 failed. Four defects found and fixed (a missing
+`getTree` mock, an unused import, a whitespace-dependent row assertion, and a lost-click flake).
 
 ### Phase 4 Gate
 
 > All checks below must pass before starting Phase 5.
 
-- [ ] [AI] `QUICK`, `BEHAVIOUR`, and `E2E` exit 0.
+- [x] [AI] `QUICK`, `BEHAVIOUR`, and `E2E` exit 0.
+
+**Phase 4 Gate notes (2026-10-14).** `QUICK` exit 0 (227 files, 4007 tests, lines 99.52%);
+`BEHAVIOUR` exit 0 with the eleven scenarios bound; flow-scoped `E2E` 42 passed, 0 failed.
 
 > **Pause Safety**: path pages show the roadmap; the store already works across paths. Safe to stop.
 > To resume: `QUICK`.

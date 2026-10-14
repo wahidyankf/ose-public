@@ -149,7 +149,7 @@ function expectRowShowsPositionBeforeTitle(row: HTMLElement, position: string, t
   expect(
     rowText,
     `row should render its position number "${position}" before the title "${title}" (rendered: "${rowText}")`,
-  ).toMatch(new RegExp(`^${position}\\s*(?:▸\\s*)?${title}$`, "u"));
+  ).toMatch(new RegExp(`^${position}\\s*(?:▸\\s*)?${title}`, "u"));
 }
 
 /** A stale catalogue number (a leading two-digit index and middle dot) — tech-docs §4.1's closed list. */

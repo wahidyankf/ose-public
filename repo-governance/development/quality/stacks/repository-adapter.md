@@ -21,7 +21,7 @@ decisions and deviations. Commands, test levels, and omitted targets live in eac
 | `javascript`  | adapted | `scripts/*.mjs` carry no type-check gate yet; see [Adopter Decisions](repository-adapter/adopter-decisions.md)                                                           |
 | `fsharp`      | adapted | the [F# style guide](../../../../docs/explanation/software-engineering/programming-languages/f-sharp/README.md) wins where stricter; F# is the default for a new backend |
 | `csharp`      | adapted | the [C# style guide](../../../../docs/explanation/software-engineering/programming-languages/c-sharp/README.md) wins where stricter                                      |
-| `java`        | adapted | confined to `ose-lms-be`; the [Java style guide](../../../../docs/explanation/software-engineering/programming-languages/java/README.md) wins where stricter             |
+| `java`        | adapted | the [Java style guide](../../../../docs/explanation/software-engineering/programming-languages/java/README.md) wins where stricter                                       |
 | `golang`      | adopted | as written                                                                                                                                                               |
 | `python`      | adopted | as written                                                                                                                                                               |
 | `shell`       | adapted | Script-Subject Unit Proof replaces a coverage floor for scripts                                                                                                          |
@@ -30,7 +30,7 @@ decisions and deviations. Commands, test levels, and omitted targets live in eac
 | `aspnet-core` | adopted | as written                                                                                                                                                               |
 | `giraffe`     | adopted | as written                                                                                                                                                               |
 | `gin`         | adopted | as written                                                                                                                                                               |
-| `spring-boot` | adopted | as written; confined to `ose-lms-be` with `java`                                                                                                                         |
+| `spring-boot` | adopted | as written; used with `java`                                                                                                                                             |
 | `nx`          | adopted | as written                                                                                                                                                               |
 
 No other pack is active. Rust was retired with its agent and skill; its style guide under

@@ -68,7 +68,7 @@ cmd_allows "empty command string" ""
 # --- The boundary itself, in each form it legitimately appears in ------------------------------
 cmd_allows "canonical guarded form" "rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install"
 cmd_allows "guarded without rtk" "./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run app:build"
-cmd_allows "guarded after a cd" "cd apps/ose-id-be && ../../hippo run --class ephemeral --resource-tier heavy --disk-path . -- dotnet build"
+cmd_allows "guarded after a cd" "cd apps/ose-be && ../../hippo run --class ephemeral --resource-tier heavy --disk-path . -- dotnet build"
 cmd_allows "guarded fan-out" "rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- affected -t build"
 cmd_allows "hippo on PATH" "hippo run --class ephemeral --resource-tier standard --disk-path . -- cargo test"
 cmd_allows "hippo status is not compute" "rtk ./hippo status"
@@ -98,20 +98,20 @@ cmd_allows "mix help is not compute" "rtk mix --help"
 # --- npm exec / install / ci ---------------------------------------------------------------------
 cmd_denies "unguarded npm install" "rtk npm install"
 cmd_denies "unguarded npm ci" "npm ci"
-cmd_denies "unguarded npm exec" "rtk npm exec nx -- run ose-id-be:test:quick"
-cmd_denies "the exact fan-out that exhausted the host" "rtk npm exec nx -- run-many -t typecheck,lint,test:quick -p ose-id-be,ose-id-web"
+cmd_denies "unguarded npm exec" "rtk npm exec nx -- run ose-be:test:quick"
+cmd_denies "the exact fan-out that exhausted the host" "rtk npm exec nx -- run-many -t typecheck,lint,test:quick -p ose-be,ose-app-web"
 
 # --- npx -------------------------------------------------------------------------------------------
-cmd_denies "unguarded npx" "rtk npx nx run ose-id-web:build"
+cmd_denies "unguarded npx" "rtk npx nx run ose-app-web:build"
 cmd_denies "unguarded npx playwright" "npx playwright test"
 
 # --- bare nx through a PATH shim -------------------------------------------------------------------
-cmd_denies "bare nx run" "rtk nx run ose-id-web:build"
+cmd_denies "bare nx run" "rtk nx run ose-app-web:build"
 cmd_denies "bare nx affected" "nx affected -t test:quick"
 cmd_allows "nx substring is not nx" "rtk ls linux-nxdomain"
 
 # --- dotnet ----------------------------------------------------------------------------------------
-cmd_denies "unguarded dotnet build" "rtk dotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj"
+cmd_denies "unguarded dotnet build" "rtk dotnet build apps/ose-be/src/OseBe/OseBe.fsproj"
 cmd_denies "unguarded dotnet test" "dotnet test"
 cmd_denies "unguarded dotnet publish" "rtk dotnet publish -c Release"
 cmd_denies "unguarded dotnet format" "rtk dotnet format --verify-no-changes"
@@ -140,7 +140,7 @@ cmd_allows "a filename containing a verb" "rtk cat docs/npm-install-notes.md"
 cmd_allows "a flag value containing a verb" "rtk git log --grep 'cargo build' --oneline"
 
 # The flip side: command position still catches every real invocation, including composed ones.
-cmd_denies "verb after cd and &&" "cd apps/ose-id-web && npm install"
+cmd_denies "verb after cd and &&" "cd apps/ose-app-web && npm install"
 cmd_denies "verb after a semicolon" "rtk git status; npm ci"
 cmd_denies "verb as the second stage of a pipe" "rtk echo hi | npm exec nx -- run app:build"
 cmd_denies "verb behind an env assignment" "CI=1 npm install"
@@ -170,7 +170,7 @@ cmd_denies "trailing ampersand backgrounding" "npx playwright test &"
 # A guarded segment covers the line by design, but a line with NO boundary anywhere must be denied
 # however it is composed.
 cmd_denies "unguarded command chained after a read" "rtk git status && npm exec nx -- run app:build"
-cmd_denies "unguarded command in a semicolon chain" "cd apps/ose-id-web; npx next build"
+cmd_denies "unguarded command in a semicolon chain" "cd apps/ose-app-web; npx next build"
 
 # --- Consumer check: coverage follows the ./hippo consumer, not the filesystem --------------------------
 # These run the guard from a directory that is not a HIPPO-consuming repository. The command is one

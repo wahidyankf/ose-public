@@ -15,9 +15,6 @@ when_to_use: Use when copying an existing project's tag set as a template or che
 | `crane-cli`                | `["type:app", "platform:cli", "lang:fsharp", "domain:crane"]`            |
 | `ferret-cli`               | `["type:app", "platform:cli", "lang:python", "domain:ferret"]`           |
 | `ferret-cli-e2e`           | `["type:e2e", "platform:cli", "lang:python", "domain:ferret"]`           |
-| `roots-be` †               | `["type:app", "platform:gin", "lang:go", "domain:roots"]`                |
-| `roots-be-e2e` †           | `["type:e2e", "platform:playwright", "lang:ts", "domain:roots"]`         |
-| `roots-contracts` †        | `["type:lib", "domain:roots"]`                                           |
 | `organiclever-app-web`     | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`      |
 | `organiclever-app-web-e2e` | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
 | `organiclever-be`          | `["type:app", "platform:giraffe", "lang:fsharp", "domain:organiclever"]` |
@@ -28,10 +25,6 @@ when_to_use: Use when copying an existing project's tag set as a template or che
 | `ose-app-web-e2e`          | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
 | `ose-be`                   | `["type:app", "platform:giraffe", "lang:fsharp", "domain:ose"]`          |
 | `ose-be-e2e`               | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
-| `ose-id-be`                | `["type:app", "platform:aspnetcore", "lang:csharp", "domain:ose"]`       |
-| `ose-id-be-e2e` ‡          | `["type:e2e", "platform:dotnet", "lang:csharp", "domain:ose"]`           |
-| `ose-id-web`               | `["type:app", "platform:nextjs", "lang:ts", "domain:ose"]`               |
-| `ose-id-web-e2e`           | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
 | `ose-www`                  | `["type:app", "platform:nextjs", "lang:ts", "domain:ose"]`               |
 | `ose-www-be-e2e`           | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
 | `ose-www-fe-e2e`           | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
@@ -40,11 +33,6 @@ when_to_use: Use when copying an existing project's tag set as a template or che
 | `ts-env-loader`            | `["type:lib", "lang:ts", "domain:config"]`                               |
 | `web-ui`                   | `["type:lib", "lang:ts", "domain:ui"]`                                   |
 | `web-ui-token`             | `["type:lib", "lang:ts", "domain:ui"]`                                   |
-
-† Landed with the projects in `islamic-be-init` DU2–DU4.
-‡ Uses Reqnroll/xUnit instead of Playwright — `ose-id-be` is the repository's first C# app; see
-`docs/explanation/software-engineering/programming-languages/c-sharp/testing-standards.md` and
-`evidence/phase-1/bdd-tooling-csharp-extension.txt`.
 
 ## Example: Complete Tag Declaration
 
@@ -75,12 +63,12 @@ A library has no platform boundary, so it omits `platform:` and declares the oth
 }
 ```
 
-A Java/Spring Boot backend app follows the same four-dimension shape:
+A Next.js frontend app follows the same four-dimension shape:
 
 ```json
 {
-  "name": "ose-lms-be",
-  "tags": ["type:app", "platform:springboot", "lang:java", "domain:ose"]
+  "name": "ose-app-web",
+  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:ose"]
 }
 ```
 

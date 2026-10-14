@@ -69,9 +69,6 @@ pids/
 *.seed
 *.pid.lock
 
-# local-stack runner's transient tsconfig mutation lock (apps/ose-id-be-e2e/scripts/local-stack.mjs)
-apps/ose-id-web/tsconfig.json.lock
-
 # Logs
 logs/
 *.log
@@ -177,17 +174,6 @@ coverage.xml
 **/generated_contracts/
 # Bundled OpenAPI spec + docs
 specs/apps/a-demo/contracts/generated/
-# The OSE LMS, OSE ID, and Roots contracts keep a hand-written README in their generated/ folder,
-# so the folder contents are ignored by glob and the README negated back in — required because
-# those trees are declared in `policies.markdown.readme-index.trees`, whose validator walks the
-# working tree and does not read `.gitignore`. The a-demo sibling ignores the whole directory
-# because it holds only build output.
-specs/apps/ose/lms-be/contracts/generated/*
-!specs/apps/ose/lms-be/contracts/generated/README.md
-specs/apps/ose/id-be/contracts/generated/*
-!specs/apps/ose/id-be/contracts/generated/README.md
-specs/apps/roots/be/contracts/generated/*
-!specs/apps/roots/be/contracts/generated/README.md
 
 # MemSearch vector index (local user-specific data)
 .memsearch/

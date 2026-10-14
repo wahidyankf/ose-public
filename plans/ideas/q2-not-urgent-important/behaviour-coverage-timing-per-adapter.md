@@ -10,11 +10,14 @@ check belongs in `test:quick` without saying it must also run the moment a featu
 > [`ose-id-init-01-foundation`](../../done/2026-09-17__ose-id-init-01-foundation/learnings.md), which
 > flagged it as a `rules-propagation` candidate rather than an ad-hoc edit from inside that plan's
 > delivery unit.
+> Updated 2026-10-14: the `ose-id` projects named below were removed from this repository on that date.
+> The evidence lives in the done plan's learnings entry; the lesson itself does not depend on them.
 
 ## Problem / context
 
-`route-disclosure.feature` was authored with Unit and Integration bindings and was never added to
-`apps/ose-id-be-e2e/OseId.Be.E2E.csproj`'s `<ReqnrollFeatureFile>` list. Reqnroll therefore generated
+`route-disclosure.feature` was authored with Unit and Integration bindings and was never added to the
+`<ReqnrollFeatureFile>` list of the `ose-id-be-e2e` test project's C# project file (removed 2026-10-14;
+evidence in the done plan's learnings). Reqnroll therefore generated
 no code-behind for it, and it could not run as an E2E test at all. Nothing failed loudly: `dotnet test`
 reports only the scenarios it discovers, and an unregistered feature file is invisible to it rather
 than a visible skip. The delivery record for the fix had already recorded "E2E 18/18 green against the
@@ -38,9 +41,9 @@ possible.
 This did not cost a defect in production, but it cost something worse for an evidence-driven
 repository: a delivery record that stated a coverage claim which was false at the time it was written
 and would have stayed false without a lucky gate ordering. The repository is adding BDD surfaces
-quickly — four new projects in the originating plan alone, across two test frameworks (Reqnroll and
-Playwright-BDD) with different registration mechanics — so the population of chances to repeat this is
-growing. The fix is a sentence in an existing contract, not a build.
+quickly — the originating plan alone added four projects (since removed), across two test frameworks
+(Reqnroll and Playwright-BDD) with different registration mechanics — so the population of chances to
+repeat this keeps growing. The fix is a sentence in an existing contract, not a build.
 
 ## Prior art / precedents
 
@@ -86,7 +89,8 @@ In scope:
 
 Out of scope:
 
-- The `ose-id-be-e2e` registration itself, which was fixed and verified in the originating plan.
+- The `ose-id-be-e2e` registration itself, which was fixed and verified in the originating plan and
+  has since been removed with the project.
 - Building the stronger enforcement (a check that fails on an unregistered feature file at edit time).
   That is a real candidate, but it is a tooling change with its own scenario coverage and belongs in a
   promoted plan, not in this clause.

@@ -14,7 +14,7 @@ target: specs/apps/organiclever
 surface-profile: full-stack
 
 # Create a web-only app spec area
-target: specs/apps/wahidyankf
+target: specs/apps/ayokoding
 surface-profile: web-only
 
 # Create a CLI-only app spec area

@@ -56,7 +56,7 @@ own.
 ## Rough scope & non-goals
 
 In scope: `libs/web-ui/src/components/alert/alert.tsx`, its unit test, companion Gherkin if any
-user-facing behaviour changes, and verification across all four app token files.
+user-facing behaviour changes, and verification across all three app token files.
 
 Out of scope: repointing `--color-destructive`. **This was investigated and rejected with numbers** —
 `Button` and `Badge` both hardcode `bg-destructive text-white`, and repointing the token drops that
@@ -65,19 +65,21 @@ worse one. Also out of scope: a general contrast-linting gate (worth its own ide
 
 ## Risks & open questions
 
-- `alert.tsx` is shared: `nx show projects --affected` reports **9 affected projects** beyond
-  `web-ui` (organiclever-app-web/-www, wahidyankf-www, ose-app-web and their e2e pairs), plus
-  `ayokoding-www` consuming it via `callout.tsx`. This is a cross-app change needing all of them
+- `alert.tsx` is shared: on 2026-07-22, `nx show projects --affected` reported **9 affected projects**
+  beyond `web-ui` (organiclever-app-web/-www, wahidyankf-www, ose-app-web and their e2e pairs), plus
+  `ayokoding-www` consuming it via `callout.tsx`. `wahidyankf-www` and its e2e pair were removed on
+  2026-09-01, so recount before relying on the figure. This is a cross-app change needing all of them
   green, not a one-app edit.
 - The required `--hue-terracotta-wash` / `--hue-terracotta-ink` tokens were confirmed present in all
-  four app token files (`ayokoding.css`, `organiclever.css`, `ose.css`, `wahidyankf.css`), and all
-  eight light/dark combinations were computed clear of AA with margin (**6.54:1–9.02:1**) — so the
-  fix is verified safe on paper, but has not been rendered or visually confirmed. (open)
+  four app token files on 2026-07-22 (`ayokoding.css`, `organiclever.css`, `ose.css`, and
+  `wahidyankf.css`, which was removed with its app on 2026-09-01), and all eight light/dark
+  combinations were computed clear of AA with margin (**6.54:1–9.02:1**) — so the fix is verified safe
+  on paper, but has not been rendered or visually confirmed. (open)
 - Whether any consumer relies on the current `bg-card` surface for layout reasons is unverified. (open)
 
 ## What success looks like + promotion signal
 
-Success: `Alert variant="destructive"` clears 4.5:1 in both themes in all four apps, `Button`/`Badge`
+Success: `Alert variant="destructive"` clears 4.5:1 in both themes in all three apps, `Button`/`Badge`
 keep their 10.02:1 pairing, and a regression test fails if either regresses. Ready to promote once
 someone confirms the visual result in dark mode for at least one app — the arithmetic is done; what
 remains is cross-app verification, which is execution work rather than design work.

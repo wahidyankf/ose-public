@@ -1,14 +1,14 @@
 name: "Setup Go"
-description: "Install the Go toolchain pinned by apps/roots-be/go.mod, with module and build caches and a pinned golangci-lint"
+description: "Install the pinned Go toolchain, with a pinned golangci-lint and shfmt"
 inputs:
-  go-version-file:
-    description: "go.mod whose `go` directive pins the toolchain"
+  go-version:
+    description: "Go toolchain version; a major.minor value resolves to the latest patch release"
     required: false
-    default: "apps/roots-be/go.mod"
+    default: "1.26"
   cache-dependency-path:
-    description: "go.sum used as the module-cache key"
+    description: "go.sum used as the module-cache key; empty leaves the setup-go cache off"
     required: false
-    default: "apps/roots-be/go.sum"
+    default: ""
   golangci-lint-version:
     description: "golangci-lint version used by the Go quality job"
     required: false
@@ -20,13 +20,17 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # The version lives in go.mod rather than in an input default, so the toolchain CI installs and
-    # the toolchain `go build` demands can never drift apart. setup-go owns both the module cache
-    # (~/go/pkg/mod) and the build cache (~/.cache/go-build); no second cache action touches them.
+    # No Go module is pinned by a checked-in go.mod any more, so the toolchain version is a literal
+    # input default instead. Keep it equal to the `go` directive of any Go module this repository
+    # adds, so the toolchain CI installs and the toolchain `go build` demands cannot drift apart.
+    # setup-go owns both the module cache (~/go/pkg/mod) and the build cache (~/.cache/go-build);
+    # no second cache action touches them. Its cache is keyed on a dependency file, so caching is
+    # on only when a `cache-dependency-path` is supplied.
     - name: Setup Go
       uses: actions/setup-go@v6
       with:
-        go-version-file: ${{ inputs.go-version-file }}
+        go-version: ${{ inputs.go-version }}
+        cache: ${{ inputs.cache-dependency-path != '' }}
         cache-dependency-path: ${{ inputs.cache-dependency-path }}
 
     # Installed through the module proxy rather than the upstream `install.sh`: the proxy path is

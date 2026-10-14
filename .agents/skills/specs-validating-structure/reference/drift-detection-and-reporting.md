@@ -75,7 +75,7 @@ plan, not a stub.
 
 #### [HIGH] Internal link — missing target
 
-**Folder**: `specs/apps/wahidyankf`
+**Folder**: `specs/apps/ayokoding`
 **Command**: `./rhino md internal-link validate`
 **Evidence**: The command's finding for the missing target, quoted verbatim
 **Expected**: Point the link at an existing file, or restore the target

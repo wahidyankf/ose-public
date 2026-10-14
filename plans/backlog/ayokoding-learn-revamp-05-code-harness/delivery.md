@@ -177,7 +177,6 @@ Run every command from the execution worktree root. Expected results are stated 
 | `SMOKE`             | `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- apps/ayokoding-cli/dist/ayokoding-cli --content apps/ayokoding-cli/tests/testdata/toolchain-smoke examples check --all`     |
 | `EXAMPLES-CHECK`    | `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ayokoding-www:examples:check`                                                                            |
 | `WWW-QUICK`         | `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www:test:quick`                                                                             |
-| `ROOTS-QUICK`       | `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run roots-be:test:quick`                                                                                  |
 | `SCRIPT-TESTS`      | `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test scripts/format-staged.test.mjs scripts/workflow-language-lanes.test.mjs scripts/behaviour-coverage.test.mjs` |
 | `LINT-WORKFLOWS`    | `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- scripts/lint-workflows`                                                                                                  |
 | `ADAPTERS-GEN`      | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino harness adapters generate`                                                                                   |
@@ -307,7 +306,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- docker version --format '{{.Server.Version}}'`.
       Acceptance: exit 0 and a server version; record it. If the daemon is unavailable, start it
       (`[HUMAN]` if it needs a desktop action) before Phase 3.
-- [ ] [AI] **Baseline:** run `WWW-QUICK`, `ROOTS-QUICK`, `SCRIPT-TESTS`, `LINT-WORKFLOWS`,
+- [ ] [AI] **Baseline:** run `WWW-QUICK`, `SCRIPT-TESTS`, `LINT-WORKFLOWS`,
       `ENV-VALIDATE`, and `LINT-MD`. Acceptance: each exits 0. Save the summaries. If anything fails
       before any change, fix the root cause first.
 
@@ -322,7 +321,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
   - the HIPPO differences;
   - the version table;
   - the Docker version;
-  - six green baseline commands.
+  - five green baseline commands.
 - [ ] [AI] `rtk git status --short` shows only `<plan>/` changes.
 
 > **Pause Safety**: the worktree is provisioned and green, the baseline is recorded, and no product
@@ -1009,8 +1008,10 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 
 ### AC-6.5 — CI wiring
 
-- [ ] [AI] Edit `.github/actions/setup-go/action.yml` so `cache-dependency-path` defaults to both
-      `apps/roots-be/go.sum` and `apps/ayokoding-cli/go.sum` (multi-line).
+- [ ] [AI] Edit `.github/actions/setup-go/action.yml` so `cache-dependency-path` defaults to
+      `apps/ayokoding-cli/go.sum` (the action's cache is on only when that input is non-empty). If the
+      module's `go` directive from AC-1.1 differs from the literal `go-version` default (`1.26`),
+      set the default to the directive.
 - [ ] [AI] Edit `.github/workflows/pr-quality-gate.yml`:
   - add the `has-ayokoding-examples` output and its two `case` arms in `detect`;
   - add the `examples-plan` and `examples` jobs per tech-docs/007;
@@ -1027,7 +1028,8 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] Run `LINT-WORKFLOWS` and `SCRIPT-TESTS`. Acceptance: both exit 0. If
       `workflow-language-lanes.test.mjs` encodes the job list of `pr-quality-gate.yml`, update its
       expectation in the same commit and say so in the evidence.
-- [ ] [AI] Run `ROOTS-QUICK`. Acceptance: exit 0 (the setup-go change is safe for roots-be).
+- [ ] [AI] Run `CLI-QUICK`. Acceptance: exit 0 (the module behind the new `cache-dependency-path`
+      default still builds and tests).
 
 ### AC-6.6 — Product documents
 
@@ -1047,7 +1049,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 
 > All checks below must pass before starting Phase 7.
 
-- [ ] [AI] `CLI-QUICK`, `CLI-INTEGRATION`, `CLI-E2E`, `CLI-BEHAVIOUR`, `WWW-QUICK`, `ROOTS-QUICK`,
+- [ ] [AI] `CLI-QUICK`, `CLI-INTEGRATION`, `CLI-E2E`, `CLI-BEHAVIOUR`, `WWW-QUICK`,
       `LINT-WORKFLOWS`, `SCRIPT-TESTS`, and `LINT-MD` exit 0.
 - [ ] [AI] `EXAMPLES-CHECK` exits 0 and starts no container.
 

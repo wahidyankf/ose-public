@@ -62,6 +62,7 @@ same `web` Next.js container; the split is a slug, not a container boundary.
 - [content](./content/README.md) — ayokoding-www Gherkin Domain
 - [course-paths](./course-paths/README.md) — ayokoding-www Gherkin Domain
 - [i18n](./i18n/README.md) — ayokoding-www Gherkin Domain
+- [learning-progress](./learning-progress/README.md) — ayokoding-www Gherkin Domain
 - [navigation](./navigation/README.md) — ayokoding-www Gherkin Domain
 - [search](./search/README.md) — ayokoding-www Gherkin Domain
 - [Tools](./tools/README.md) — AyoKoding Gherkin Specs

@@ -880,21 +880,21 @@ zero violations and the layout-shift comparison within 1 px. Summaries in
 
 ### Automatic Rule-Impact Coverage — repository `ose-public`
 
-- [ ] [AI] **Inventory:** list this branch's changed paths (`rtk git diff --name-only origin/main...HEAD`)
+- [x] [AI] **Inventory:** list this branch's changed paths (`rtk git diff --name-only origin/main...HEAD`)
       and confirm none is under `repo-governance/`, `.agents/`, `.claude/`, `AGENTS.md`, `CLAUDE.md`,
       `repo-config.yml`, or another declared harness directory. Acceptance: recorded.
-- [ ] [AI] **Existing-rule check:** repeat the searches in tech-docs/008 on the branch
+- [x] [AI] **Existing-rule check:** repeat the searches in tech-docs/008 on the branch
       (`rtk git grep -n "learn/overview" -- repo-governance .agents AGENTS.md`,
       `rtk git grep -n -i "progress" -- .agents/skills/apps-ayokoding-www-developing-content`).
       Acceptance: no rule names the removed page, the Learn home layout, or browser progress; the
       result is recorded.
-- [ ] [AI] **Classification and status:** record "no normative rule surface changes; no binding
+- [x] [AI] **Classification and status:** record "no normative rule surface changes; no binding
       regeneration" with the evidence above, and `status: none-required`. Report the stale
       `canonical-content-tree-shape.md` claim as a follow-up (README Follow-Ups); do not edit it here.
 
 ### Docs Propagation
 
-- [ ] [AI] Update `apps/ayokoding-www/README.md` ("How the app is shaped": the `learning-progress`
+- [x] [AI] Update `apps/ayokoding-www/README.md` ("How the app is shaped": the `learning-progress`
       feature, browser-only progress, the Learn home dispatch);
       `specs/apps/ayokoding/www/behaviours/frontend/README.md` (the `learning-progress/` folder);
       `specs/apps/ayokoding/www/behaviours/frontend/course-paths/README.md` (`path-roadmap.feature`);
@@ -902,11 +902,22 @@ zero violations and the layout-shift comparison within 1 px. Summaries in
       for statements about `/en/learn/overview` or the Learn home made stale by this plan and fix them.
       Acceptance: `status` recorded; `LINT-MD` exits 0.
 
+**Phase 9 implementation notes (2026-10-14, `docs-maker` + coordinator).** Status: complete.
+Rule-impact classification recorded as `none-required` (no changed path on a governance/harness
+surface; no rule names the removed page, the Learn home, or browser progress). Five READMEs updated
+(app README, frontend spec index, the `learning-progress/` spec README with its five feature files and
+current counts, the course-paths spec README's `path-roadmap.feature`, and the fixtures README). No
+`docs/` statement was stale. `LINT-MD` exit 0 (0 errors, 7711 files). See
+`evidence/phase-9-rules-and-docs.md`.
+
 ### Phase 9 Gate
 
 > All checks below must pass before starting Phase 10.
 
-- [ ] [AI] `QUICK` and `LINT-MD` exit 0; the classification is recorded with its evidence.
+- [x] [AI] `QUICK` and `LINT-MD` exit 0; the classification is recorded with its evidence.
+
+**Phase 9 Gate notes (2026-10-14).** `QUICK` exit 0 (241 files, 4147 tests, lines 99.54%);
+`LINT-MD` exit 0 with 0 errors. Classification `status: none-required` recorded with its evidence.
 
 > **Pause Safety**: docs match the code. Safe to stop. To resume: `QUICK`.
 

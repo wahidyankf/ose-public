@@ -33,6 +33,8 @@ completed local build.
 - `src/features/search/` builds the local search data.
 - `src/features/i18n/` provides English and Indonesian routes.
 - `src/features/course-paths/` groups learning material into guided paths.
+- `src/features/learning-progress/` keeps a reader’s progress in the browser and renders the
+  progress, lesson-navigation, and Learn-home surfaces from it.
 - `content/en/learn/courses/` is the course library: every course `_index.md` declares catalog
   metadata (`category`, `description`, plus `format` and `estimatedHours` on non-outline
   courses), rendered as the catalog at `/en/learn/courses` with category-grouped sidebar
@@ -42,6 +44,19 @@ completed local build.
 The app keeps pure decisions in a feature’s `core/` directory and browser, filesystem, and Next.js
 work in `shell/`. That boundary makes content behaviour easier to test without requiring a running
 site.
+
+`src/features/learning-progress/` follows that split. Its `core/` holds the pure modules — the
+progress schema and state transitions, course location, lesson sequence, next-step rule, and path
+context — while its `shell/` holds the `localStorage` store, the `use-learning-progress` hook, and
+the components that draw progress (context bar, action row, course status, meters, the Learn home
+and its continue/start card, and the reset control). Progress is browser-only: it is written to
+`localStorage` and nothing is sent anywhere, so a reader has no account and the site keeps no
+server-side record of what they finished.
+
+`/en/learn` is content, not a route folder. The catch-all content route’s `page.tsx` dispatches it
+through `renderLearnHome`, and the retired `/en/learn/overview` address answers a permanent (308)
+redirect to `/en/learn` declared in `src/redirects/learn-home.ts`. A deeper address under it
+(`/en/learn/overview/anything`) matches no rule and still returns 404.
 
 ## Checks and tests
 

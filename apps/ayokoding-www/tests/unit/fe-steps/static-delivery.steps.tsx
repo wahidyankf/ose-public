@@ -34,6 +34,11 @@ const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature"),
 );
 
+// U6 (plan ayokoding-learn-revamp-04): `/en/learn/overview` is now a redirect rather than a page,
+// so the real content route every step below samples is the stable course-root page the frozen
+// ledger names.
+const CONTENT_ROUTE = "/en/learn/courses/backend-essentials/overview";
+
 describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
   Background(({ Given }) => {
     Given("the app is running", async () => {
@@ -48,16 +53,16 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
       manifest = {
         routes: Object.fromEntries(
           Array.from({ length: MINIMUM_PRERENDERED_ROUTE_COUNT }, (_, index) => [
-            index === 0 ? "/en/learn/overview" : `/en/learn/generated-${index}`,
+            index === 0 ? CONTENT_ROUTE : `/en/learn/generated-${index}`,
             {},
           ]),
         ),
         dynamicRoutes: {},
       };
-      expect(manifest.routes).toHaveProperty("/en/learn/overview");
+      expect(manifest.routes).toHaveProperty(CONTENT_ROUTE);
     });
     When("the build output manifest is inspected", () => {
-      inspection = inspectPrerenderManifest(manifest, "/en/learn/overview");
+      inspection = inspectPrerenderManifest(manifest, CONTENT_ROUTE);
     });
     Then("the prerendered route count is at least two thousand", () => {
       expect(inspection.routeCount).toBeGreaterThanOrEqual(MINIMUM_PRERENDERED_ROUTE_COUNT);
@@ -71,7 +76,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     let lessonUrl: string;
     let repeatResponseHeaders: Record<string, string>;
     Given("a visitor has already requested a course lesson URL", () => {
-      lessonUrl = "/en/learn/overview";
+      lessonUrl = CONTENT_ROUTE;
     });
     When("the same URL is requested again", () => {
       const rule = contentCacheRule();

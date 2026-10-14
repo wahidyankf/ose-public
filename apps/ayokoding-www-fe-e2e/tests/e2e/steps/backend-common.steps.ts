@@ -61,9 +61,9 @@ When("the client calls content.getTree with locale {string}", async ({ request }
 });
 
 // Shared: getBySlug with slug {string}. Mirrors ayokoding-www-be-e2e's identical binding: the
-// Gherkin's own example slugs are illustrative (not seeded fixtures), so real, known-good content
-// (learn/overview) stands in for the "happy path" case while the invalid-locale/bad-request/draft
-// cases exercise the tRPC endpoint's real error responses.
+// Gherkin's own example slugs name real, known-good content (a course lesson page such as
+// learn/courses/just-enough-go/learning/beginner) for the "happy path" case, while the
+// invalid-locale/bad-request/draft cases exercise the tRPC endpoint's real error responses.
 When("the client calls content.getBySlug with slug {string}", async ({ request }, slugStr: string) => {
   const parts = slugStr.split("/");
   const locale = parts[0];

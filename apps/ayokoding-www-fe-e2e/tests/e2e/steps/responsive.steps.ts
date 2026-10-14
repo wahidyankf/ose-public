@@ -46,7 +46,9 @@ Then("the sidebar navigation should not be visible", async ({ page }) => {
 });
 
 Given("a visitor is on a content page", async ({ page }) => {
-  await page.goto("/en/learn/overview");
+  // U6 (plan ayokoding-learn-revamp-04): the stable course-root page replaces the retired
+  // `/en/learn/overview`.
+  await page.goto("/en/learn/courses/backend-essentials/overview");
 });
 
 When("the visitor taps the hamburger menu button", async ({ page }) => {

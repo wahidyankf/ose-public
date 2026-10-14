@@ -1,6 +1,6 @@
 import path from "node:path";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { expect, vi } from "vitest";
 import "./helpers/test-setup";
 
@@ -24,8 +24,10 @@ import {
   serializeProgress,
   setPageComplete,
 } from "@/features/learning-progress/core/progress-state";
+import type { ContentMeta } from "@/features/content/core/types";
 import type { PathManifest } from "@/features/course-paths/core/schemas";
 import { PathLanding } from "@/features/course-paths/shell/path-landing";
+import { LearnHome } from "@/features/learning-progress/shell/learn-home";
 import { manifestFixture } from "../features/course-paths/manifest-fixture";
 import { BASH_SEQUENCE } from "../features/learning-progress/lesson-fixtures";
 import { completedPages, completionToggle, contextBar, noSavedProgress, openLessonPage } from "./helpers/lesson-page";
@@ -185,6 +187,70 @@ function headlinesIn(container: HTMLElement): HTMLElement[] {
   return Array.from(container.querySelectorAll<HTMLElement>("p")).filter((element) =>
     /^\d+ of \d+ core courses done$/u.test(element.textContent ?? ""),
   );
+}
+
+// ---------------------------------------------------------------------------
+// plan ayokoding-learn-revamp-04-learning-experience, Phase 6 — S6 and S7 render the Learn home,
+// where the guarded reset lives. Kept above S4 below, which leaves the app-wide store in memory
+// mode for the life of the "tab".
+// ---------------------------------------------------------------------------
+
+function contentMeta(slug: string, title: string, estimatedHours?: number): [string, ContentMeta] {
+  return [
+    `en:${slug}`,
+    {
+      title,
+      slug,
+      locale: "en",
+      weight: 0,
+      tags: [],
+      draft: false,
+      isSection: true,
+      filePath: `/content/en/${slug}/_index.md`,
+      ...(estimatedHours === undefined ? {} : { estimatedHours }),
+    },
+  ];
+}
+
+/** The arc and course metadata the app reads from the content index, for the Learn home's cards. */
+const LEARN_HOME_CONTENT_MAP = new Map<string, ContentMeta>([
+  contentMeta("learn/paths/careers/immediately-effective", "Immediately Effective"),
+  contentMeta("learn/courses/just-enough-bash", "Just Enough Bash", 4),
+  contentMeta("learn/courses/backend-essentials", "Backend Essentials", 6),
+  contentMeta("learn/courses/sql-essentials", "SQL Essentials", 8),
+]);
+
+/** Render the Learn home, where a reader resets or keeps the progress this browser holds. */
+function openLearnHome(): void {
+  cleanup();
+  render(
+    <LearnHome
+      locale="en"
+      title="Learn"
+      description="Follow a path from your first course to a finished project, or pick single courses from the catalog."
+      manifests={[backendTrackManifest()]}
+      contentMap={LEARN_HOME_CONTENT_MAP}
+      sequences={PATH_SEQUENCES}
+      catalogCounts={{ courses: 3, categories: 1 }}
+    />,
+  );
+}
+
+/** Let Radix's portal mount, its focus scope run, and its close-focus restore settle. */
+async function settle(): Promise<void> {
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+}
+
+/** Save progress a reader can lose: every page of the path's first course, through its own control. */
+function saveProgress(): void {
+  noSavedProgress();
+  for (const page of BASH_SEQUENCE) {
+    openLessonPage({ pagePath: page.pagePath, pathParam: PATH_ID });
+    fireEvent.click(completionToggle());
+  }
+  expect(completedPages()).toHaveLength(BASH_SEQUENCE.length);
 }
 
 describeFeature(feature, ({ Scenario, Background }) => {
@@ -360,6 +426,67 @@ describeFeature(feature, ({ Scenario, Background }) => {
       // The very element the first tab rendered is the one that changed: neither tab was re-mounted
       // (a reload builds a new tree) — the count arrived through the store's own notification.
       expect(headlines[0]).toBe(firstHeadline);
+    });
+  });
+
+  Scenario("Resetting progress clears it after confirmation", ({ Given, When, Then, And }) => {
+    Given("a reader has saved progress", () => {
+      saveProgress();
+    });
+
+    When('the reader chooses "Reset progress" on the Learn home and confirms', async () => {
+      openLearnHome();
+      expect(screen.getByText("1 of 3 core courses done")).toBeTruthy();
+
+      fireEvent.click(screen.getByRole("button", { name: "Reset progress…" }));
+      await settle();
+      expect(screen.getByRole("dialog")).toBeTruthy();
+
+      // The dialog's own confirm clears every record; the trigger above only opens it.
+      fireEvent.click(screen.getByRole("button", { name: "Reset progress" }));
+      await settle();
+      expect(screen.queryByRole("dialog")).toBeNull();
+    });
+
+    Then("every progress count on the Learn home shows nothing done", () => {
+      const counts = screen.getAllByText(/^\d+ of \d+ core courses done$/);
+      expect(counts.length).toBeGreaterThan(0);
+      expect(counts.map((count) => count.textContent)).toEqual(counts.map(() => "0 of 3 core courses done"));
+    });
+
+    And("no saved progress record remains in this browser", () => {
+      expect(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).toBeNull();
+      expect(storedRecord().completed).toEqual({});
+    });
+  });
+
+  Scenario("Cancelling a reset keeps progress", ({ Given, When, Then, And }) => {
+    let savedRecord = "";
+
+    Given("a reader has saved progress", () => {
+      saveProgress();
+      savedRecord = window.localStorage.getItem(PROGRESS_STORAGE_KEY) ?? "";
+      expect(savedRecord).not.toBe("");
+    });
+
+    When('the reader chooses "Reset progress" on the Learn home and cancels', async () => {
+      openLearnHome();
+      fireEvent.click(screen.getByRole("button", { name: "Reset progress…" }));
+      await settle();
+      expect(screen.getByRole("dialog")).toBeTruthy();
+
+      fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+      await settle();
+      expect(screen.queryByRole("dialog")).toBeNull();
+    });
+
+    Then("the saved progress is unchanged", () => {
+      expect(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).toBe(savedRecord);
+      expect(screen.getByText("1 of 3 core courses done")).toBeTruthy();
+    });
+
+    And('focus returns to the "Reset progress" button', () => {
+      expect(document.activeElement).toBe(screen.getByRole("button", { name: "Reset progress…" }));
     });
   });
 

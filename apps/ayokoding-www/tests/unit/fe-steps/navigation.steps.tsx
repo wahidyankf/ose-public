@@ -260,42 +260,54 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     },
   );
 
-  Scenario("The learn overview is the first entry under Learn in the sidebar", ({ When, Then, And }) => {
-    // The real learn entries the sidebar lists under Learn, keyed to the files that back them.
-    // Slugs and isSection flags mirror what the app derives from these paths
-    // (src/features/content/shell/repository-fs.ts deriveSlug): `overview.md` is the learn
-    // overview page itself; each `_index.md` is a section.
-    const learnEntryFiles: Array<{ file: string; slug: string; isSection: boolean }> = [
-      { file: "content/en/learn/overview.md", slug: "learn/overview", isSection: false },
-      { file: "content/en/learn/paths/_index.md", slug: "learn/paths", isSection: true },
-      { file: "content/en/learn/courses/_index.md", slug: "learn/courses", isSection: true },
-      { file: "content/en/learn/legacy/_index.md", slug: "learn/legacy", isSection: true },
+  Scenario("The Learn sidebar lists Paths, Courses, and Legacy in that order", ({ When, Then }) => {
+    // The real entries the sidebar lists under Learn, keyed to the files that back them. Each
+    // `_index.md` is a section, and the retired `learn/overview.md` is gone (U1, plan
+    // ayokoding-learn-revamp-04), so the Learn home's own sections are the whole list.
+    const learnEntryFiles: Array<{ file: string; slug: string }> = [
+      { file: "content/en/learn/paths/_index.md", slug: "learn/paths" },
+      { file: "content/en/learn/courses/_index.md", slug: "learn/courses" },
+      { file: "content/en/learn/legacy/_index.md", slug: "learn/legacy" },
     ];
-    let sidebarNodes: TreeNode[] = [];
+    let learnEntries: TreeNode[] = [];
 
-    When("a visitor opens the learn overview page", () => {
+    When("a visitor opens the Learn home", () => {
       // Build the sidebar entries the way the app does: TreeNode nodes carrying the real
-      // frontmatter title/weight read from the content files at the app root (process.cwd()).
-      sidebarNodes = learnEntryFiles.map(({ file, slug, isSection }) => {
+      // frontmatter title/weight read from the content files at the app root (process.cwd()),
+      // ordered the way the app orders tree nodes (tree-builder.ts sortTreeByWeight).
+      learnEntries = learnEntryFiles.map(({ file, slug }) => {
         const { data } = matter(fs.readFileSync(path.resolve(process.cwd(), file), "utf8"));
         return {
           title: String(data.title),
           slug,
           weight: Number(data.weight),
-          isSection,
+          isSection: true,
           children: [],
         };
       });
-      // ...and ordered the way the app orders tree nodes (tree-builder.ts sortTreeByWeight).
-      sortTreeByWeight(sidebarNodes);
+      sortTreeByWeight(learnEntries);
+
+      // The reader is on the Learn home, so the rail renders the Learn node open (sidebar-tree.tsx
+      // expands the current page's ancestor) and lists the sections beneath it.
+      mockPathname = "/en/learn";
+      render(
+        <SidebarTree
+          locale="en"
+          nodes={[{ slug: "learn", title: "Learn", isSection: true, weight: 0, children: learnEntries }]}
+        />,
+      );
     });
 
-    Then('the first entry under Learn in the sidebar is "Overview"', () => {
-      expect(sidebarNodes[0]?.title).toBe("Overview");
-    });
-
-    And("it is followed by Paths, Courses, and Legacy in that order", () => {
-      expect(sidebarNodes.map((node) => node.title)).toEqual(["Overview", "Paths", "Courses", "Legacy"]);
+    Then('the entries under Learn in the sidebar are "Paths", "Courses", and "Legacy" in that order', () => {
+      // The rendered rail's own links, in document order: the Learn node itself, then its three
+      // sections.
+      expect(screen.getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual([
+        "/en/learn",
+        "/en/learn/paths",
+        "/en/learn/courses",
+        "/en/learn/legacy",
+      ]);
+      expect(learnEntries.map((node) => node.title)).toEqual(["Paths", "Courses", "Legacy"]);
     });
   });
 });

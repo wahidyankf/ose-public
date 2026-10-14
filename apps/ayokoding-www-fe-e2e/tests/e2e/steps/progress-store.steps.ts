@@ -381,3 +381,80 @@ Then("both open tabs show the new count without a reload", async ({ page }) => {
   await (secondTab as Page).close();
   secondTab = null;
 });
+
+// ---------------------------------------------------------------------------
+// plan ayokoding-learn-revamp-04-learning-experience, Phase 6 — S6 and S7: the Learn home's
+// guarded reset, which is where those two scenarios live (they replace nothing; the path-page
+// scenarios above are unchanged).
+// ---------------------------------------------------------------------------
+
+/** A path card's own progress count on the Learn home, in words. */
+const CORE_COURSE_DONE = /^\d+ of \d+ core courses done$/;
+
+/** The record the browser held before a reset attempt, so "unchanged" can be asserted exactly. */
+let progressBeforeReset: string | null = null;
+
+async function openLearnHome(page: Page): Promise<void> {
+  await page.goto("/en/learn");
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByRole("button", { name: /^Reset progress/ })).toBeVisible();
+}
+
+Given("a reader has saved progress", async ({ page }) => {
+  // Start from a clean record, then save progress through the lesson page's own completion
+  // control — the same action S1 performs — so the Learn home's counts have something to clear.
+  await page.goto("/en/learn");
+  await page.evaluate((key) => window.localStorage.removeItem(key), PROGRESS_KEY);
+  expect(await storedRecord(page)).toBeNull();
+
+  await completeCourseThroughUi(page, BASH_ID, PATH_ID);
+  expect(await completedPagePaths(page, BASH_ID)).not.toEqual([]);
+  progressBeforeReset = await storedRecord(page);
+});
+
+When("the reader chooses {string} on the Learn home and confirms", async ({ page }, controlName: string) => {
+  await openLearnHome(page);
+  await expect(page.getByText(ONE_CORE_COURSE_DONE).first()).toBeVisible();
+
+  await page.getByRole("button", { name: new RegExp(`^${controlName}`) }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole("button", { name: controlName, exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+});
+
+Then("every progress count on the Learn home shows nothing done", async ({ page }) => {
+  const counts = await page.getByText(CORE_COURSE_DONE).allTextContents();
+  expect(counts.length, "every path card carries a count").toBeGreaterThan(0);
+  expect(counts.every((text) => text.startsWith("0 of "))).toBe(true);
+});
+
+Then("no saved progress record remains in this browser", async ({ page }) => {
+  expect(await storedRecord(page)).toBeNull();
+});
+
+When("the reader chooses {string} on the Learn home and cancels", async ({ page }, controlName: string) => {
+  await openLearnHome(page);
+  await expect(page.getByText(ONE_CORE_COURSE_DONE).first()).toBeVisible();
+
+  await page.getByRole("button", { name: new RegExp(`^${controlName}`) }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+});
+
+Then("the saved progress is unchanged", async ({ page }) => {
+  expect(progressBeforeReset).not.toBeNull();
+  // Compare the recorded completion — the part this scenario is about. The record also carries
+  // best-effort visit metadata (lastCourse/lastPath) that a page visit may legitimately refresh
+  // between the capture and this assertion.
+  const completedOf = (raw: string | null) =>
+    raw === null ? null : (JSON.parse(raw) as { completed: unknown }).completed;
+  expect(completedOf(await storedRecord(page))).toEqual(completedOf(progressBeforeReset));
+  await expect(page.getByText(ONE_CORE_COURSE_DONE).first()).toBeVisible();
+});
+
+Then("focus returns to the {string} button", async ({ page }, controlName: string) => {
+  await expect(page.getByRole("button", { name: new RegExp(`^${controlName}`) })).toBeFocused();
+});

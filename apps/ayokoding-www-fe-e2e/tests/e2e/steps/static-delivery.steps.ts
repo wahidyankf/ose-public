@@ -3,7 +3,9 @@ import { createBdd } from "playwright-bdd";
 import { getResilient } from "../support/resilient-request";
 
 const { Given, When, Then } = createBdd();
-const lessonUrl = "/en/learn/overview";
+// U6 (plan ayokoding-learn-revamp-04): a real, stable content route, since `/en/learn/overview`
+// is now a redirect rather than a page.
+const lessonUrl = "/en/learn/courses/backend-essentials/overview";
 
 interface StaticDeliveryState {
   firstResponse?: import("@playwright/test").APIResponse;

@@ -693,62 +693,75 @@ step defects fixed (a leading-`\b` pattern and a `Continue →`-vs-`Mark complet
 - **Proof:** `<plan>/evidence/phase-6-learn-home.md`, including the `rtk curl` outputs.
 - _Suggested executor: `specs-maker` (Gherkin), `swe-developer` (code)._
 
-- [ ] [AI] **Gherkin:** create `learning-progress/learn-home.feature` with S27–S31 and S31a. S32
+- [x] [AI] **Gherkin:** create `learning-progress/learn-home.feature` with S27–S31 and S31a. S32
       joins this file in Phase 7, not here. Add S6 and S7 to
       `progress-store.feature`. Apply U1 to `navigation/navigation.feature` and U2 to
       `i18n/locale-redirects.feature` exactly as in [prd.md](./prd.md#changes-to-existing-scenarios).
       Run `BEHAVIOUR`. Acceptance: only the new or changed scenarios are missing bindings.
-- [ ] [AI] **RED (redirect):** create `tests/unit/redirects/learn-home.unit.test.ts`: the rule exists,
+- [x] [AI] **RED (redirect):** create `tests/unit/redirects/learn-home.unit.test.ts`: the rule exists,
       `permanent: true`, exact source `/en/learn/overview`, destination `/en/learn`, no `:path*`, and
       it sits after `courseRehomeRedirects` and before `learnThreeBucketRedirects` in `next.config.ts`.
       Run `UNIT-NODE tests/unit/redirects/learn-home.unit.test.ts`. Acceptance: fails.
-- [ ] [AI] **RED (payload and data):** create `sequence-payload-size.corpus.unit.test.ts` (under 65,536
+- [x] [AI] **RED (payload and data):** create `sequence-payload-size.corpus.unit.test.ts` (under 65,536
       bytes, prints the size) and `tests/unit/features/course-paths/shell/route-data-shape.unit.test.ts`
       (the retained `getRouteData` keys, [tech-docs/005](./tech-docs/005-api-contract-delta.md#op-2--trpc-coursepathsgetroutedata)).
       Acceptance: the payload test passes already (the loader exists since Phase 3) and its size is
       recorded; the shape test passes and locks the retained contract. Neither is weakened later.
-- [ ] [AI] **RED (components):** create `continue-learning-card.test.tsx` (start, path, course, and
+- [x] [AI] **RED (components):** create `continue-learning-card.test.tsx` (start, path, course, and
       core-complete modes; fixed `h-44 sm:h-32` slot; server render is start mode),
       `reset-progress-control.test.tsx` (dialog opens with Cancel focused; Cancel keeps the record and
       returns focus; Confirm removes the key and announces `resetDone`), `learn-path-card.test.tsx`,
       `path-card-progress.test.tsx`, and `learn-home.test.tsx` (intro, card area, career and skills
       cards, "Browse all courses" link, no link to any `/en/learn/courses/<id>` page). Acceptance: all
       fail.
-- [ ] [AI] **RED (scenarios):** create `tests/unit/fe-steps/learn-home.steps.tsx` and
+- [x] [AI] **RED (scenarios):** create `tests/unit/fe-steps/learn-home.steps.tsx` and
       `apps/ayokoding-www-fe-e2e/tests/e2e/steps/learn-home.steps.ts` (S27–S31, S31a; S31 asserts the
       response status 308 and the `location` header with `page.request.get(url, { maxRedirects: 0 })`);
       add S6 and S7 to both progress-store step files; update the U1 and U2 bindings. Apply every U6
       replacement from the frozen ledger (open `/en/learn/courses/backend-essentials/overview`
       instead of `/en/learn/overview`). Run the unit files and `E2E`. Acceptance: only the new or
       changed scenarios fail.
-- [ ] [AI] **GREEN (redirect and content):** create `src/redirects/learn-home.ts` and spread it in
+- [x] [AI] **GREEN (redirect and content):** create `src/redirects/learn-home.ts` and spread it in
       `next.config.ts` in the tested position; delete `apps/ayokoding-www/content/en/learn/overview.md`;
       add the `description` from tech-docs/004 to `content/en/learn/_index.md`. Run `GEN-INDEXES`, then
       `VALIDATE-INDEXES`. Acceptance: exit 0; the regenerated `_index.md` body no longer lists Overview.
-- [ ] [AI] **GREEN (home):** create `shell/continue-learning-card.tsx`, `shell/reset-progress-control.tsx`,
+- [x] [AI] **GREEN (home):** create `shell/continue-learning-card.tsx`, `shell/reset-progress-control.tsx`,
       `shell/learn-home.tsx`, `course-paths/shell/learn-path-card.tsx`, and
       `course-paths/shell/path-card-progress.tsx`; add their keys to both dictionaries; in `page.tsx`,
       skip the slug `learn` in `generateStaticParams` and render `LearnHome` for `locale === "en"` and
       slug `learn` (tech-docs/001 Route Dispatch Changes steps 1–2). Rerun the component tests, the unit
       step files, the redirect test, and `E2E`. Acceptance: all pass.
-- [ ] [AI] **GREEN (integration):** if the U6 ledger includes
+- [x] [AI] **GREEN (integration):** if the U6 ledger includes
       `apps/ayokoding-www/tests/integration/fe-steps/static-delivery.steps.ts`, run `INTEGRATION`.
       Acceptance: exit 0.
-- [ ] [AI] **GREEN (HTTP check):** start `DEV` and run the three `rtk curl` recipes in
+- [x] [AI] **GREEN (HTTP check):** start `DEV` and run the three `rtk curl` recipes in
       [tech-docs/003](./tech-docs/003-active-path-and-navigation.md#overview-removal-and-redirect).
       Acceptance: `308 http://localhost:3101/en/learn`, then `200`, then `404`. Also request
       `http://localhost:3101/id/learn` and confirm its status is unchanged from Phase 0 (record both).
       Save the outputs. Stop `DEV`.
-- [ ] [AI] **REFACTOR:** `rtk git grep -n "learn/overview" -- apps specs` shows only the redirect
+- [x] [AI] **REFACTOR:** `rtk git grep -n "learn/overview" -- apps specs` shows only the redirect
       module, its test, the S31 step, synthetic mock slugs listed in tech-docs/008, and the namespace
       redirect tests. Run `QUICK`. Acceptance: exit 0, coverage at or above 99%.
+
+**Phase 6 implementation notes (2026-10-14, `specs-maker` + `swe-developer`).** Status: complete.
+Learn home feature + S6/S7 + U1/U2; the redirect module and content removal; five components and their
+keys; the Learn home route dispatch; the U6 ledger repointed to
+`/en/learn/courses/backend-essentials/overview`; unit and E2E step files. Unit gate exit 0 (239 files,
+4109 tests, lines 99.54%); flow-scoped E2E 282 passed; HTTP checks 308/200/404 and `/id/learn` 404.
+Two E2E step defects fixed (a trailing-`\b` card assertion and a whole-record reset comparison that
+raced with visit metadata).
 
 ### Phase 6 Gate
 
 > All checks below must pass before starting Phase 7.
 
-- [ ] [AI] `QUICK`, `BEHAVIOUR`, `VALIDATE-INDEXES`, and `E2E` exit 0 (and `INTEGRATION` when run).
-- [ ] [AI] The three `rtk curl` outputs match the expected lines and are saved.
+- [x] [AI] `QUICK`, `BEHAVIOUR`, `VALIDATE-INDEXES`, and `E2E` exit 0 (and `INTEGRATION` when run).
+- [x] [AI] The three `rtk curl` outputs match the expected lines and are saved.
+
+**Phase 6 Gate notes (2026-10-14).** `QUICK` exit 0 (239 files, 4109 tests, lines 99.54%);
+`BEHAVIOUR` exit 0; `VALIDATE-INDEXES` exit 0; flow-scoped `E2E` 282 passed; the three curl recipes
+return `308 http://localhost:3101/en/learn`, `200`, and `404`, with `/id/learn` still `404`. Saved to
+`evidence/phase-6-learn-home.md`.
 
 > **Pause Safety**: the Learn home is live and the old URL redirects. Hubs still use the old cards.
 > Safe to stop. To resume: `QUICK`.

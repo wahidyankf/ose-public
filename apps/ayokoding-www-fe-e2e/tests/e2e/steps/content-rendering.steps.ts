@@ -4,7 +4,9 @@ import { expect } from "@playwright/test";
 const { Given, When, Then } = createBdd();
 
 When("a visitor opens a content page with prose body text", async ({ page }) => {
-  await page.goto("/en/learn/overview");
+  // U6 (plan ayokoding-learn-revamp-04): the retired `/en/learn/overview` page's role is taken by
+  // the stable course-root page `backend-essentials/overview`.
+  await page.goto("/en/learn/courses/backend-essentials/overview");
 });
 
 Then("the body text should have prose typography classes applied", async ({ page }) => {

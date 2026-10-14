@@ -23,6 +23,8 @@ execution checklist.
 - Plan 03 (catalog and metadata) moved to
   [plans/done/2026-10-13\_\_ayokoding-learn-revamp-03-catalog-and-metadata](../done/2026-10-13__ayokoding-learn-revamp-03-catalog-and-metadata/README.md)
   on 2026-10-13. The series continues with plan 04 (`learning-experience`).
+- Plan 04 (learning experience) is in progress:
+  [ayokoding-learn-revamp-04-learning-experience](./ayokoding-learn-revamp-04-learning-experience/README.md).
 
 ## Instructions
 
